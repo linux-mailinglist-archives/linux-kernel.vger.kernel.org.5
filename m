@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-62722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D7C8524CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E10E8524D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 02:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6451C2156A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:00:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6130D1C22341
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2183127B42;
-	Tue, 13 Feb 2024 00:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E1C12836C;
+	Tue, 13 Feb 2024 00:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y5SvWaYe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t1cdexyh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E5C1272C3;
-	Tue, 13 Feb 2024 00:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A738D127B5F;
+	Tue, 13 Feb 2024 00:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783824; cv=none; b=NCnWjyhqx0H0aPDu0aDyC0p4RUmh/g0HN6oWFfc6dAdFLqJcOchLo5AebYYsarPqI5HyN7Wr30TU2LxcP0c3nJGgvoIJn2bJu00wRIPyNOmR5yy+enR9BZ4iPJDINK+h83IgCZW2StlzQ6YGxDDt9KIkvKWthlq0sVKymp2VX9U=
+	t=1707783825; cv=none; b=QEMgu7PvLbSKxRDDZsAP9GtiKPLpwCShuvKPkRo8GI8raRI45sjkHpJGgYLaiWSY/FWPj+1rgbueji5xo6fYIfOER3P/Fy6I4uyrm1Pc072H9K3MjjIQeZzJ8Ks8D6mAD9WeLnwhLxOSxHp6ImP9NyvrJYA6Rslezs5AeYUzUnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783824; c=relaxed/simple;
-	bh=zN18JXm5wM17kjVxhbDLZaOyRkLOOJpLKw/kqy+PzCU=;
+	s=arc-20240116; t=1707783825; c=relaxed/simple;
+	bh=nA6uUqOHkziK8A3kVoWfrYRKPyWyjSawbjGytWuTpno=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DMqYtAMRYdWZRYo3uH5KvFFvmTyMsRHX1M4H1KhV3tP/uP/qVsIGFgscfv0REFyC4jJUkFQ+SiIO1oSnl+PNiPYbAlH1wxt5ago0ulLxzX4pAvXZt5iNAHfZp99b8rnvBvx8qmJtvbaGyYPDWbu/91a1skFs6+wOl2HuNjT8Mec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y5SvWaYe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AF5EC43390;
-	Tue, 13 Feb 2024 00:23:43 +0000 (UTC)
+	 MIME-Version; b=fmOa2uxG6c9RykC+ObF2s5c9x7h9aOrJ/v8s04FMUUDVN+yrCS/7BeMJHesfvk5RiQlDKFrSrxuxp2gLSJbnDeEmlDvtrANXZnlOo9HlTY63UpUozaXFFT3tt9B7ss1VxQ2wtZaA0AP1/CvCypSgR2DMLv8+rC2ZGyFgNqID/sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t1cdexyh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66195C433F1;
+	Tue, 13 Feb 2024 00:23:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783824;
-	bh=zN18JXm5wM17kjVxhbDLZaOyRkLOOJpLKw/kqy+PzCU=;
+	s=k20201202; t=1707783825;
+	bh=nA6uUqOHkziK8A3kVoWfrYRKPyWyjSawbjGytWuTpno=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y5SvWaYe/RCD1rPkysHLwvufb5glVV6qZoBQ+P9TyE3GSKVmqckKDC8Ihhqf5mFJI
-	 rSbHzQEfwqbmhhT8GP5h7wrD58k6fY8aIYaiyc+oj27l4dBklk/9gg6Ktvkr9EwOoZ
-	 e3GaEjxF+HnJqGI/bZ6vRUs3JVnSm0foSLGKUkAT5dZLLQk0ph/rIWXAASiws/e8GU
-	 oqFKCjxN/FgMGip7kczNCk3up05xcLzjIJW95GwdEYlyzzdAHzJPEMUKgazIQ8rJhs
-	 CR/TEoYimtqufuoX1v5kfQbZH6MI/vgVqfI7Xtp0xrvQjlqePrzhBeqdl4YquSUOzz
-	 5ZI5h17ARvgIw==
+	b=t1cdexyhs6rc5GqACuh8peGU1yEm/9qlDafQ5L+h6/fK5aJVSRoD2C0fSBoGRV2Yv
+	 9zyK30AYNIDqV9sOPCEnfG14SWN0cXTC50g/GKCqvqNa5QbCkeLLcRPnc5E14Bub6z
+	 8ZjO84q55QEIBK5Kv8Un6FodIGSscJSlbI5PA4hJDJPvegiDeU3AgCGQDic3ICP9Lr
+	 35guKxEZg0cET/rUXd49K/il3kDK6iKZBH86IgCL8L2ox4/GHaPzTiJCVRk6qLN9bB
+	 Dp+3AgeJYm626dDu0vGCuXm0xQbMPLNuvswJ+2vIqsCIUEU0jeX1vv8EGlA5ll0aaX
+	 AMymS2Ljw9pMQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Robert Morris <rtm@csail.mit.edu>,
+	Giovanni Santini <giovannisantini93@yahoo.it>,
 	Sasha Levin <sashal@kernel.org>,
 	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 10/22] fs/ntfs3: Correct function is_rst_area_valid
-Date: Mon, 12 Feb 2024 19:23:12 -0500
-Message-ID: <20240213002331.672583-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 11/22] fs/ntfs3: Update inode->i_size after success write into compressed file
+Date: Mon, 12 Feb 2024 19:23:13 -0500
+Message-ID: <20240213002331.672583-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002331.672583-1-sashal@kernel.org>
 References: <20240213002331.672583-1-sashal@kernel.org>
@@ -66,49 +66,28 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit 1b7dd28e14c4728ae1a815605ca33ffb4ce1b309 ]
+[ Upstream commit d68968440b1a75dee05cfac7f368f1aa139e1911 ]
 
-Reported-by: Robert Morris <rtm@csail.mit.edu>
+Reported-by: Giovanni Santini <giovannisantini93@yahoo.it>
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/fslog.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/ntfs3/file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index 8b95c06e5a4c..6ba1357f3ed4 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -465,7 +465,7 @@ static inline bool is_rst_area_valid(const struct RESTART_HDR *rhdr)
- {
- 	const struct RESTART_AREA *ra;
- 	u16 cl, fl, ul;
--	u32 off, l_size, file_dat_bits, file_size_round;
-+	u32 off, l_size, seq_bits;
- 	u16 ro = le16_to_cpu(rhdr->ra_off);
- 	u32 sys_page = le32_to_cpu(rhdr->sys_page_size);
+diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+index c526e0427f2b..6d4f3431bc75 100644
+--- a/fs/ntfs3/file.c
++++ b/fs/ntfs3/file.c
+@@ -1090,6 +1090,8 @@ static ssize_t ntfs_compress_write(struct kiocb *iocb, struct iov_iter *from)
+ 	iocb->ki_pos += written;
+ 	if (iocb->ki_pos > ni->i_valid)
+ 		ni->i_valid = iocb->ki_pos;
++	if (iocb->ki_pos > i_size)
++		i_size_write(inode, iocb->ki_pos);
  
-@@ -511,13 +511,15 @@ static inline bool is_rst_area_valid(const struct RESTART_HDR *rhdr)
- 	/* Make sure the sequence number bits match the log file size. */
- 	l_size = le64_to_cpu(ra->l_size);
- 
--	file_dat_bits = sizeof(u64) * 8 - le32_to_cpu(ra->seq_num_bits);
--	file_size_round = 1u << (file_dat_bits + 3);
--	if (file_size_round != l_size &&
--	    (file_size_round < l_size || (file_size_round / 2) > l_size)) {
--		return false;
-+	seq_bits = sizeof(u64) * 8 + 3;
-+	while (l_size) {
-+		l_size >>= 1;
-+		seq_bits -= 1;
- 	}
- 
-+	if (seq_bits != ra->seq_num_bits)
-+		return false;
-+
- 	/* The log page data offset and record header length must be quad-aligned. */
- 	if (!IS_ALIGNED(le16_to_cpu(ra->data_off), 8) ||
- 	    !IS_ALIGNED(le16_to_cpu(ra->rec_hdr_len), 8))
+ 	return written;
+ }
 -- 
 2.43.0
 
