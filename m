@@ -1,115 +1,103 @@
-Return-Path: <linux-kernel+bounces-64341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 014C6853D46
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:37:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC222853D43
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:37:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3407F1C26730
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:37:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96E8F28EE32
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0166214A;
-	Tue, 13 Feb 2024 21:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD7A61681;
+	Tue, 13 Feb 2024 21:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="QEIyaW03"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mPLvwzG+"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DAC260BA6
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB63612F9
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707860243; cv=none; b=M0YWJ2nl53MIk+xJ7kP5orVs4zCyZTAswvYfT+pQRznWwixLwqIGnJy0tNBxLymvn9AWfU/zTiSJx79a8NmRg1k3ImRPadCdiT97TloMph5AQ4ckJ+w5JbQH4HPYSz4oqOwnN65hGjaV/lyM3xPoP2ikto2S7lr4CsiwL5oE1ks=
+	t=1707860232; cv=none; b=cGeHFLSs+FbBCEWoO4ohnezZ1ZT+vkfHKbjR3s8qPlXFCJOmVuZg7EAvaRDO7ewcSvRPY+NtEUvZZCJpgkhcoI0wzQqSu1urWny7P1Cek4uoJYBUzedPpXQ5ZENgy6S80SGPb4izrk8jej/hPT/PItGt1OhpTjVz3ttQHVdmmvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707860243; c=relaxed/simple;
-	bh=+u+owyuKuJFkGHSGbKvz4UTc229rDQ9Sn38kEXmB04M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mtfow/npcQ5F9Mr85eWl+UMMxqm14U6F2uWOvaEaHPiO1FNVuzkVqjL3zjqFyB1lkSOvYQi0ukzPvEBTYhrl77nQ8efy9SO2tS+45eovfp9ozx1Bx0UWCE+HlcQPomOsH6nMrds9OtkFaZ1OOcyPaQAnLXU7q9+dklHvsrdHH4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=QEIyaW03; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E805740E01F7;
-	Tue, 13 Feb 2024 21:37:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id rI83Hgbywzby; Tue, 13 Feb 2024 21:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707860235; bh=D3ecxWaMVByifJVjnfG1Ub3I2qDV2hVXXGWWQRAmNxM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QEIyaW03qmQqCOv7v/9h+CCMwtAfHmbKYaK2mU8d9SBu8+btRkVpuDZonh6URfSKn
-	 Uviju+rT83R47ybInt0FYq4+K+thLxdWuB07OsQYzAoRbTySC1DdlLs3g730ezDIiS
-	 faq6Ou+fIHaL72eY1QOllXmj7VeglRkxDu6jS3fgrdkx7zF0w/WvKty+RC2+dq2Rhh
-	 wuZoDmQvhF2Wc6/COvGL76w/DlOn9pjgvGWlPEqtSrNh/uC3u303PiR6T+YIIUmYEy
-	 080edipcK2tzZJdUwoAmfY+MKInu5Gi04xqCfRdfu+8VPmR0n9ie5uVm+sa2zTkZy6
-	 TnJYLNCmC8V38d5GIuv7JiV6nS7vT0WUkYRwqG7VDL+IvDiCSyabHG1pbBlVs6qvBD
-	 CaX3rDyzPFqMk9T1mE6p4dkIPEm+DorTu01dkaEmc7wymFCNVWDe2GxEtj+2Dt0bBx
-	 5avd4WDmuUd/PlBZolK+VzZSpksmbIQL4DI7MSBFal5cJ5bzoeLFsK/mB1mRPPeD2o
-	 QilTRXqY0tE7n6U6XJF1ACiwxg0gC9dPvzUygbPti3iCJA0AmKpWS7YNmNgca4wo5Q
-	 UYgONNPohLjk2Wtb7FJA06Yk+Yuyr2YVVZj4B+TQ6uKjeoAcVtk2pvGu5Z3temJ/N0
-	 4AtKxDQpn55wGP4Ji/Qv/Mw0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2C60340E00B2;
-	Tue, 13 Feb 2024 21:36:56 +0000 (UTC)
-Date: Tue, 13 Feb 2024 22:36:50 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andy Shevchenko <andy@infradead.org>,
-	Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Wang Wendy <wendy.wang@intel.com>
-Subject: Re: [patch V6 01/19] x86/cpu: Provide cpuid_read() et al.
-Message-ID: <20240213213650.GEZcvg8uvjPXTVhmHv@fat_crate.local>
-References: <20240212153109.330805450@linutronix.de>
- <20240212153624.516965279@linutronix.de>
+	s=arc-20240116; t=1707860232; c=relaxed/simple;
+	bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WXcuoTEPPDswCHhAhmaXt2749KGcBmHw4yh2ds50O8nFvtJss1K1n18qghZqqmgfUTUBafZH26Io1nMI4nfllsv78NnUopIzeWHbtveeAp6NmjG6rm07HFqL8J0/QGNB/zJB9Nt5EA/9969f04zkoV77zFRQ4P1i+bFKyKL91kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mPLvwzG+; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso1322202276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707860230; x=1708465030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
+        b=mPLvwzG+dAg/ZrBSskb2yaAqP1pj/EP61lY1fsx/EM7lL4aK4EbFHBRiFliToUaK1h
+         QhVPYIXILxhPmDWiibFPnqRczQrNzyZbUfpYpIhnQnBiEPqHk7UAbNh+JEY1I8CCAYe0
+         sbs5fMT29hx1ng9/0rstitr6Xi451W7KSWg8gc2ac4MlSdINbROvsKZKHh0YAOgmn3i4
+         hqIlb9EpBkFgP34FOF17rRMhpYHDKyYl276TledgapAs/3KuZkhnxMdOPkxLWx8oHqB0
+         ib1dWPIFRVrRxnpcIY7rWH+/O8CvgCKU6Dbz9mPTDxf/XDvax6y/OJ7gNfDwWHszZRrJ
+         HKpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707860230; x=1708465030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hPKvVthMBWAzdAWbIPUJR/Iy8plEfEcAcGfAR1gE6mA=;
+        b=YyZ6iSahJaf7WNxJ/risoQ6DOHgv7wq3JC6Ag0cI3ilSHDpLbo1pIW+L5uCuCiQPh4
+         rHGpitnaeAkjl6Jio1kuqm1WzddSjo3dGlOEfqW+9Glk9445/bJM1Y4GSTdP191mdil+
+         ZkEgfhKkQLH7d3bxadcwI0FMYV/Z1aSUMVfxCgvmbWVs8vNP0olnzYwe+b36UxvOl7pK
+         DegHs7fEem5j0FZNnDL00KpDf5cxP6KQDrbkYGS1aP8HEagpxPJeYJGeDc6yrNwQr5HE
+         3ZPJBpJMxX7F9vYqkclfLm9gbNV7piVAvq1JurabsnmXX6cyfALwQlLqzBUKn863DF+1
+         vdaA==
+X-Gm-Message-State: AOJu0Yx+AzT7JuAVNbkiefN/dKBsEp5+mp7LCmUG+O5LxeS8z3ZRbkXV
+	16SXZSrxtRxaoUAnk1DxBjUdDwFV5frIP86K59h9vDWQQu/bz3c+4EZIrik5qrCc0+24b3AAOBv
+	v3l1RGm5nHR85tSeVcSu3wfSOd/aJegbWvoQzrw==
+X-Google-Smtp-Source: AGHT+IGvYycVOdI6CpAMfmqVx3TyTpHq47iLCCyvfSu+9n4B1EJovMa/1p5n1RWt0xmytAfy456aC9UfVc+QwLV2GdY=
+X-Received: by 2002:a25:210:0:b0:dcd:65fa:ea06 with SMTP id
+ 16-20020a250210000000b00dcd65faea06mr383635ybc.24.1707860229766; Tue, 13 Feb
+ 2024 13:37:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240212153624.516965279@linutronix.de>
+References: <20240211101421.166779-1-warthog618@gmail.com>
+In-Reply-To: <20240211101421.166779-1-warthog618@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 13 Feb 2024 22:36:58 +0100
+Message-ID: <CACRpkdYYyBTmiYF16NF3+nFDsqyqXcXBU=AvrxDy+h32eB-0hg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: uapi: clarify default_values being logical
+To: Kent Gibson <warthog618@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, brgl@bgdev.pl, 
+	andy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 10:04:00PM +0100, Thomas Gleixner wrote:
-> +static inline void __cpuid_read(unsigned int leaf, unsigned int subleaf, u32 *regs)
-> +{
-> +	regs[CPUID_EAX] = leaf;
-> +	regs[CPUID_ECX] = subleaf;
-> +	__cpuid(regs, regs + 1, regs + 2, regs + 3);
+On Sun, Feb 11, 2024 at 11:14=E2=80=AFAM Kent Gibson <warthog618@gmail.com>=
+ wrote:
 
-Yeah, 
+> The documentation for default_values mentions high/low which can be
+> confusing, particularly when the ACTIVE_LOW flag is set.
+>
+> Replace high/low with active/inactive to clarify that the values are
+> logical not physical.
+>
+> Similarly, clarify the interpretation of values in struct gpiohandle_data=
+.
+>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
 
-	__cpuid(regs, regs + CPUID_EBX, regs + CPUID_ECX, regs + CPUID_EDX);
+After the fixes pointed out by others:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-explains what those numbers are.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours,
+Linus Walleij
 
