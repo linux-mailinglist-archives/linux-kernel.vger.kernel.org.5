@@ -1,154 +1,105 @@
-Return-Path: <linux-kernel+bounces-63288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B824852D47
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:00:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13044852D4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:00:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 413E41C20F7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:00:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C281F2884F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C3323778;
-	Tue, 13 Feb 2024 09:58:17 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E682BB08;
+	Tue, 13 Feb 2024 09:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="szljOOS0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08B22EEB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86D42BB01;
+	Tue, 13 Feb 2024 09:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707818296; cv=none; b=g9vVsjKhYsk5LxhovIrKnWbMdLTp4yYWUHxE7NstTrX6p8c+mzcZ45KQQUrK9KhDvdKLrpaTKYYVFr9xu0hy7JwO/tjyCJarbR0zjWyzHa5himzD/EOpZkoIKi1HmlRiS0O6VIEVl0Vw/1Q7g2K0jwYglK9pW3RsxzUegBHKHmg=
+	t=1707818319; cv=none; b=as3HTdFl/C5+Kku1WksYsb6t7M66PgzNB1zrluky5rdP7EkwhsaHgYLfuGj7CCDAEDQmgkqPR58A88NqbqKITRKA1d8vflfFNQ0Ex46nTU/LiCAFNqyArjAFQtnsNhGBg+o26w1gaeoL48wjGIXODRV/GKk0+Ertq4ucjV5I0hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707818296; c=relaxed/simple;
-	bh=buHQqgA9PJmKH08QqCJcwEZzYqGaox6glEvk7ezmG9w=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Re2l+5oHD735DPYw006YURWmwHXYub7bcdJFaxPCi6gReMtjZc4f/iT4+RU4R6MBFj5exKrjQRHglh4WcY9gqcIpaL5o2OAhpltZ0ULp9jay3tani8IcWCVd7aZId/Qsk4E4pkQmCKn2YbPQNCfFt4xBTRxkEsFWAERy2LiKB1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363e7f0c9daso26787905ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:58:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707818294; x=1708423094;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3G4oWomSO8B+fHRBn+T30jaygW1WjcEa8TRPVgJlG6M=;
-        b=P77BfuxevhcdhnBKYaAvGtXjCoNOu9BOudWA68Buqb1yNWCtCq45HwWoFnGeQ8qsQm
-         ZmkZfiCGuh/Cr/g5Ir2YOdYrkLWm9+1Hp+e+nIylXbAtFeIgVd+yoatBEQAo9l4AWOVj
-         O7AtjXY+gRtPOX5/8lpZDojv+xCZkwZ37/wR9xp5/a/gvjr0k/DRjPV8xTAngyxKJIeK
-         mt9Rp+TCt7qkcdLW3kDoijmSPhf2mIRuBf1KBB/G9hcXhHJ5EZ4yembT4kUpTj0myuU+
-         2QGOcL2Ct1PuNl0afd2DXax2zbarNyby+we8QM/h7X/nr885sHl9gdsmEF6jDq4PVqU5
-         mN2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVxIfEmQBDyn87s/G7+r9/fThzB/w1LZus3Q+sS05PIrwOdZrMoUEhLyb0FgWh2ohMpz1QmAYD5ISm7966wJIulBiTUI71sQyhtzajG
-X-Gm-Message-State: AOJu0YwO1nIxqr5/waUN6DwDwJW9cgBZQqb/m3QzECu8ZJa02giRIzSR
-	KFj2fdWZDTf/Wn2Oa1rIFv8B5T4uxqiCydV2vdPrxz5am84T12kFgZf9qfGn7kv4jrd5HpNON7a
-	Q4Zv7tg7X2IusDqe6xpyIOzC6+safo7D6nPsJDAGn7t+CabS/NIRL9sU=
-X-Google-Smtp-Source: AGHT+IGfsKCOOK1a+TeuJvZKuzJnFeJYixWJAsDzFlaOfHhAzRdLKZH9O5FFbcGvwxuCQNKg9ZBmpbPGY9piOqjA3RhxLIb17JDy
+	s=arc-20240116; t=1707818319; c=relaxed/simple;
+	bh=zRzb7KQv3xRBZo9WYphp8IEg9VdrU4vqON6031OOSn0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=THw1qx+0ACLbCG2ZKKzV1S50hfBDyiRsmV3RBH3/DHV+mmHn/82SngqEmcPyyKZxUdbJp4DrAguYv5Me+r0Zx6QpVFtfumAMi0ZCVw3QE2evhaUIxntIPfQhDFkXcrBROF6JiMWAApktMbT7jWoTJZnpbXtz/R+FyoVmiOFu1qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=szljOOS0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF023C433C7;
+	Tue, 13 Feb 2024 09:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707818319;
+	bh=zRzb7KQv3xRBZo9WYphp8IEg9VdrU4vqON6031OOSn0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=szljOOS0X5reBC/rEedA3Pp3GuGD4SQq7ebT+rhQK6CV0qKApjF0nrIt7hVDh42mv
+	 t3NOycP/SJhpr9wfFtjQcbzaMYE51opx1y56z0RLNyt0Z4U7HN0ndRt/FN5x+y2ORN
+	 UzHqEE8V0ejjXSLZ7C4JkeGM/4m+1AzEZnTvFAMTZGOe3luBtOeFPBrhyFO4LtnA9a
+	 RxrBis7RD+0EFrCTQsVevCGgs2PyqM53/46X+j1X9wlqeq66uhtVEh/MrszBBR+bzW
+	 HEuRulOJ3NDV22pnID7xB9KDaeQpVIbTY3KWvIoo82UA94AIKDBR7WjXJ+9AONr8Yf
+	 /8wBUR0r4oOQA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Yi Liu <yi.l.liu@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] iommu/vt-d: fix constant-out-of-range warning
+Date: Tue, 13 Feb 2024 10:58:20 +0100
+Message-Id: <20240213095832.455245-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c2f:b0:360:134:535e with SMTP id
- m15-20020a056e021c2f00b003600134535emr168811ilh.1.1707818294088; Tue, 13 Feb
- 2024 01:58:14 -0800 (PST)
-Date: Tue, 13 Feb 2024 01:58:14 -0800
-In-Reply-To: <000000000000b8f8610609479fa3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c299950611406e55@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
- dereference in sk_psock_verdict_data_ready
-From: syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, mukattreyee@gmail.com, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+From: Arnd Bergmann <arnd@arndb.de>
 
-HEAD commit:    577e4432f3ac tcp: add sanity checks to rx zerocopy
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=149a6fe0180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5e23375d0c3afdc8
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e2ddf4180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c5d592180000
+On 32-bit builds, the vt-d driver causes a warning with clang:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d512cc35258d/disk-577e4432.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/83484fcd4968/vmlinux-577e4432.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dc2452784eec/bzImage-577e4432.xz
+drivers/iommu/intel/nested.c:112:13: error: result of comparison of constant 18446744073709551615 with expression of type 'unsigned long' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+  112 |         if (npages == U64_MAX)
+      |             ~~~~~~ ^  ~~~~~~~
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com
+This can be easily avoided by making the variable a 64-bit type, which matches
+both the caller and the use anyway.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 8000000023d8f067 P4D 8000000023d8f067 PUD 7af79067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 5255 Comm: syz-executor278 Not tainted 6.8.0-rc1-syzkaller-00195-g577e4432f3ac #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000437f8c8 EFLAGS: 00010246
-RAX: 1ffff1100482de5c RBX: ffff88802416f2e0 RCX: ffff888023a7bb80
-RDX: 0000000000000000 RSI: ffff88802416f000 RDI: ffff888023a96800
-RBP: ffffc9000437fad0 R08: ffffffff8957112c R09: 1ffffffff2590c84
-R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000004 R14: ffffffff89570ff9 R15: ffff888023a96800
-FS:  00007f8dfb0eb6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000023dae000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- sk_psock_verdict_data_ready+0x232/0x340 net/core/skmsg.c:1230
- unix_stream_sendmsg+0x9b4/0x1230 net/unix/af_unix.c:2293
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f8dfb16c729
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8dfb0eb218 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8dfb1f6368 RCX: 00007f8dfb16c729
-RDX: 0000000000040000 RSI: 0000000020000980 RDI: 0000000000000003
-RBP: 00007f8dfb1f6360 R08: 00007fff2e940fc7 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8dfb1f636c
-R13: 00007f8dfb1c3074 R14: 656c6c616b7a7973 R15: 00007fff2e940fc8
- </TASK>
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc9000437f8c8 EFLAGS: 00010246
-RAX: 1ffff1100482de5c RBX: ffff88802416f2e0 RCX: ffff888023a7bb80
-RDX: 0000000000000000 RSI: ffff88802416f000 RDI: ffff888023a96800
-RBP: ffffc9000437fad0 R08: ffffffff8957112c R09: 1ffffffff2590c84
-R10: dffffc0000000000 R11: 0000000000000000 R12: dffffc0000000000
-R13: 0000000000000004 R14: ffffffff89570ff9 R15: ffff888023a96800
-FS:  00007f8dfb0eb6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 0000000023dae000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Fixes: f6f3721244a8 ("iommu/vt-d: Add iotlb flush for nested domain")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ drivers/iommu/intel/nested.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
+index f26c7f1c46cc..77a09c982979 100644
+--- a/drivers/iommu/intel/nested.c
++++ b/drivers/iommu/intel/nested.c
+@@ -95,7 +95,7 @@ static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
+ }
+ 
+ static void intel_nested_flush_cache(struct dmar_domain *domain, u64 addr,
+-				     unsigned long npages, bool ih)
++				     u64 npages, bool ih)
+ {
+ 	struct iommu_domain_info *info;
+ 	unsigned int mask;
+-- 
+2.39.2
+
 
