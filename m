@@ -1,210 +1,154 @@
-Return-Path: <linux-kernel+bounces-64012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF77E8538F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:50:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DBA8538FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7662328F43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89581C24371
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFD5605AE;
-	Tue, 13 Feb 2024 17:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBE3604D6;
+	Tue, 13 Feb 2024 17:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7tP/T9i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z7oDrq7i"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82E8604D4;
-	Tue, 13 Feb 2024 17:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EA160266
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846631; cv=none; b=LtNxrhs3j1Z8Bs8cmg8bJYdIaztTZrNBRt7WowtRaP+1nxshYr6g7obQjQptwEKnF4PSv/i9BZc50dzCr+enBC+Qawd5g8ZAF8YwwFsZz8Q65HqLnGMcY7rl9R9k3HMqpm4FkQxZm4HjviRpFPAcDpmytrkRqiFDsTEJJ5y7zfY=
+	t=1707846684; cv=none; b=mFB8x7Z/9lri7DXH8AhKx0K8eB4IA5LcHjnWPnzqcLaeQzWWHGmun2E2A1Va9D9Yy7mwBlHMq8eD3D/pgUPhWEHbQ1iDx28iSZ3h4hyvu5EJ3jR22D1WLZINxPkhbQvGZqDD5l4CRS24HeT/TMIY6BmRGn75zfVw/m0D93IFXhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846631; c=relaxed/simple;
-	bh=5C6J2AoGti6fVk51X5hb7PlrcA7riKG8jWDj230jXh8=;
+	s=arc-20240116; t=1707846684; c=relaxed/simple;
+	bh=E/LvFyL4pfiUZegDtERhyPrQ0GB689M3GTCWPgPEMxk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ROXTUwYoMxFfYSXrT833LsWufV4Fk3V7BCQUGSrdcoHOvTBk4bM+wrT2gnytxe9Yr22zOgMsnGNvRclB7LiBKq8tQdD9O7B3gYxet7i+40BGgKReYFwnAO2JQgit/ahIVP5NEzr6SnQk8KVzU3tlVkAe4poxbdiUm0KgGqCgiz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7tP/T9i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49AE4C433A6;
-	Tue, 13 Feb 2024 17:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707846631;
-	bh=5C6J2AoGti6fVk51X5hb7PlrcA7riKG8jWDj230jXh8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e7tP/T9iMSHjzKBiYtzmws53ZK7Z+90BzS76f/jbm7+5+7hJps4zsT41q7KJaDAS5
-	 loE3MzRwneIsuAvoiTBguhrmMK5rots642mz0UaK89wWIt9RPsyOkb1zHhKelntdW1
-	 oDKUyvWXMOGY4MjZeaQfl9QdWY6PmvFmMKhbkO93GdJIqqgpp+9KNUEHF0VHNBu9hH
-	 eo2R49cMH048iwhFuhuW7iynhDkCj3f52bZzBjnSkDb9gZgInyB8VcSQXJSq37oFd4
-	 MP0sp0Wvk1jnE9gJ5DiSZD8xWWg7vlKiH/nuos+6Vn57F6PnOe+bL/ZOzLY07pG/1p
-	 yJwJZWp+13smw==
-Date: Tue, 13 Feb 2024 09:50:30 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
-	martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
-Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
-Message-ID: <20240213175030.GC6184@frogsfrogsfrogs>
-References: <20240124142645.9334-1-john.g.garry@oracle.com>
- <20240124142645.9334-6-john.g.garry@oracle.com>
- <20240202184758.GA6226@frogsfrogsfrogs>
- <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=llXPxLtrTUWMV4mAr0/14z2Ge17g5InHgpXOmPWfpV4WqaAlksLO9r1K+LVZyUh/c+8/i0kyP9OI2Vc1n+i/lvMn+WZQOfiq31GUGACI5j0+onsYw+W0MdZEk0yafhIVqa74pXYtj7uxgZ2ks3oVQgeGMWv6Co19lU893gIZAjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z7oDrq7i; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d944e8f367so9462805ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:51:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707846683; x=1708451483; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9TLdNuqXzTO2w5/ka+t0YKsYCwn1V8IlWERUbhKLe88=;
+        b=Z7oDrq7i0wDlBLIait68TNXCfro/nhBVB1+XDFLGmMnRWLYaagdvaMfpQ2Bg2qPZJZ
+         fk6RTxiorxYwFV5umzRMEnQLnzuluLZ5BqHnquwPK2bSpB34JXN1BTfYoHQmQU5/25Ki
+         jtb/VD8YvwcRTrkgZyuAsbiCbrQVUZt4CxD19JhCrfau060wA0TPqeU4RhfeKCowgs6b
+         wgEwjUzRpWeqJvOOpJaIfRW94rS2xqOW4UostM1fzG0qNAnVM5fHtqvA/nFaEabG8OYn
+         vNoQuAEMu0UgmLpOpwEWIWv5uuYvFCvgMTykl5O+6n63kC5ZgpLc9cYxzy1IZ4igDHvj
+         aVfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707846683; x=1708451483;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9TLdNuqXzTO2w5/ka+t0YKsYCwn1V8IlWERUbhKLe88=;
+        b=pP/3IUIMjmqpMQ/ftQsOWMn0jeaaq+QJcWgLyqbIeahK/+bM35fwfTTiRcfLaYSWZk
+         j6DqCbYCMckKthfQ22ZXFySLwRe0JKoV7CaCah8s4Xf1GnHzXx++PbFU3q7wYSatXvbk
+         046NieOe5YC/nW0UsuItiDITygwdE11Rqy855fTybaF/orrAAXnVNckOxsVckujFet8i
+         jg+ZtooVYuF32f1JXDR3iGYOr0bC1ScyGbz5m2NSIEgnohJH1MJcxtou/BUCbW7jD3pb
+         /iT1Xt5oAk+t7gIsMt63FXUhaiAgKyhE9Fe2iL3wU79fJP6jLBteddHTv3nlhjdUVhxk
+         xSOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVt5cG7mU3dHPKwCzGg3lNjHCpDcFpGRSixa/c/OKyPPa4vFZfZ8g7OxveWGc9DKNEULeyM3LBrSlVtEsAl+6Bh63ERE7eLBXVBj1Yx
+X-Gm-Message-State: AOJu0Yw+uCRpShYlY1G+FZX5XfSn/4BJukYMH/tlY8V+5I6MB1QWV9NA
+	EsdaerMFEBeccgLmUcRS+nfB6mOpkpSHQNFP0MtSMvQlL6qsI0y7/f4oPHPinA==
+X-Google-Smtp-Source: AGHT+IFsr7hJmo9gmDMN8k7jf65TnKIzpKFMCr03CVdWTCsY5dqkNPVVelrznea0R1Ejj5NnyLma3A==
+X-Received: by 2002:a17:90a:c246:b0:297:11a7:e789 with SMTP id d6-20020a17090ac24600b0029711a7e789mr149465pjx.45.1707846682692;
+        Tue, 13 Feb 2024 09:51:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW0mHwyYc78YP9/He2J9TYMOW9hV7rEWl4Mgy+2hzXbaVqhhIwfYfJR2im7o8F8s6BwHA6qEYeYSPStj5qVkJN4TGnB4VJIY8u5e5X89eSOb4/d5UMEy5ky89FZqvzHKR2N1GTGl1Fg7qlZS43mR6zbDt+17nAHZPFu1m3UIfu58/Omv0W3f53upEcSrYzNew92eqIgB+ts5PcgR+iRTOYg7JxEfom0hqwPCoeZkAZguCMgyFo+klb3300/nojKNj0ohJvkjyFXmkieiF4TqgSfbGbdJleICIQ+17xtXIMZmBBJ2YHeX4B/03xY1VU=
+Received: from thinkpad ([103.246.195.75])
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090ae38800b00298b4e896a5sm1531414pjz.46.2024.02.13.09.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 09:51:22 -0800 (PST)
+Date: Tue, 13 Feb 2024 23:21:18 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: jenneron@postmarketos.org
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] arm64: dts: qcom: sc8180x-lenovo-flex-5g: fix GPU
+ firmware path
+Message-ID: <20240213175118.GC30092@thinkpad>
+References: <20240203191200.99185-1-jenneron@postmarketos.org>
+ <20240203191200.99185-2-jenneron@postmarketos.org>
+ <20240213171416.GB30092@thinkpad>
+ <94bdff480e699f27f25f483e1207a22801f41174@postmarketos.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <94bdff480e699f27f25f483e1207a22801f41174@postmarketos.org>
 
-On Mon, Feb 05, 2024 at 01:36:03PM +0000, John Garry wrote:
-> On 02/02/2024 18:47, Darrick J. Wong wrote:
-> > On Wed, Jan 24, 2024 at 02:26:44PM +0000, John Garry wrote:
-> > > Ensure that when creating a mapping that we adhere to all the atomic
-> > > write rules.
+On Tue, Feb 13, 2024 at 05:33:42PM +0000, jenneron@postmarketos.org wrote:
+> February 13, 2024 at 7:14 PM, "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org> wrote:
+> 
+> 
+> 
+> > 
+> > On Sat, Feb 03, 2024 at 09:11:55PM +0200, Anton Bambura wrote:
+> > 
 > > > 
-> > > We check that the mapping covers the complete range of the write to ensure
-> > > that we'll be just creating a single mapping.
+> > > Fix GPU firmware path so it uses model-specific directory.
 > > > 
-> > > Currently minimum granularity is the FS block size, but it should be
-> > > possibly to support lower in future.
+> > >  
 > > > 
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > > I am setting this as an RFC as I am not sure on the change in
-> > > xfs_iomap_write_direct() - it gives the desired result AFAICS.
+> > >  Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
 > > > 
-> > >   fs/xfs/xfs_iomap.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 41 insertions(+)
+> > >  Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > > > 
-> > > diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> > > index 18c8f168b153..758dc1c90a42 100644
-> > > --- a/fs/xfs/xfs_iomap.c
-> > > +++ b/fs/xfs/xfs_iomap.c
-> > > @@ -289,6 +289,9 @@ xfs_iomap_write_direct(
-> > >   		}
-> > >   	}
-> > > +	if (xfs_inode_atomicwrites(ip))
-> > > +		bmapi_flags = XFS_BMAPI_ZERO;
+> > >  ---
+> > > 
+> > >  arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts | 2 +-
+> > > 
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > >  
+> > > 
+> > >  diff --git a/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts b/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
+> > > 
+> > >  index 0c22f3efec20..49b740c54674 100644
+> > > 
+> > >  --- a/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
+> > > 
+> > >  +++ b/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
+> > > 
+> > >  @@ -350,7 +350,7 @@ &gpu {
+> > > 
+> > >  
+> > > 
+> > >  zap-shader {
+> > > 
+> > >  memory-region = <&gpu_mem>;
+> > > 
+> > >  - firmware-name = "qcom/sc8180x/qcdxkmsuc8180.mbn";
+> > > 
+> > >  + firmware-name = "qcom/sc8180x/LENOVO/82AK/qcdxkmsuc8180.mbn";
+> > > 
 > > 
-> > Why do we want to write zeroes to the disk if we're allocating space
-> > even if we're not sending an atomic write?
-> > 
-> > (This might want an explanation for why we're doing this at all -- it's
-> > to avoid unwritten extent conversion, which defeats hardware untorn
-> > writes.)
+> > Where is the firmware located for this device? I couldn't find it in
 > 
-> It's to handle the scenario where we have a partially written extent, and
-> then try to issue an atomic write which covers the complete extent. In this
-> scenario, the iomap code will issue 2x IOs, which is unacceptable. So we
-> ensure that the extent is completely written whenever we allocate it. At
-> least that is my idea.
+> NHLOS partition on the storage. I also maintain a package in postmarketOS
 > 
-> > 
-> > I think we should support IOCB_ATOMIC when the mapping is unwritten --
-> > the data will land on disk in an untorn fashion, the unwritten extent
-> > conversion on IO completion is itself atomic, and callers still have to
-> > set O_DSYNC to persist anything.
-> 
-> But does this work for the scenario above?
-> 
-> > Then we can avoid the cost of
-> > BMAPI_ZERO, because double-writes aren't free.
-> 
-> About double-writes not being free, I thought that this was acceptable to
-> just have this write zero when initially allocating the extent as it should
-> not add too much overhead in practice, i.e. it's one off.
-> 
-> > 
-> > > +
-> > >   	error = xfs_trans_alloc_inode(ip, &M_RES(mp)->tr_write, dblocks,
-> > >   			rblocks, force, &tp);
-> > >   	if (error)
-> > > @@ -812,6 +815,44 @@ xfs_direct_write_iomap_begin(
-> > >   	if (error)
-> > >   		goto out_unlock;
-> > > +	if (flags & IOMAP_ATOMIC) {
-> > > +		xfs_filblks_t unit_min_fsb, unit_max_fsb;
-> > > +		unsigned int unit_min, unit_max;
-> > > +
-> > > +		xfs_get_atomic_write_attr(ip, &unit_min, &unit_max);
-> > > +		unit_min_fsb = XFS_B_TO_FSBT(mp, unit_min);
-> > > +		unit_max_fsb = XFS_B_TO_FSBT(mp, unit_max);
-> > > +
-> > > +		if (!imap_spans_range(&imap, offset_fsb, end_fsb)) {
-> > > +			error = -EINVAL;
-> > > +			goto out_unlock;
-> > > +		}
-> > > +
-> > > +		if ((offset & mp->m_blockmask) ||
-> > > +		    (length & mp->m_blockmask)) {
-> > > +			error = -EINVAL;
-> > > +			goto out_unlock;
-> > > +		}
-> > > +
-> > > +		if (imap.br_blockcount == unit_min_fsb ||
-> > > +		    imap.br_blockcount == unit_max_fsb) {
-> > > +			/* ok if exactly min or max */
-> > > +		} else if (imap.br_blockcount < unit_min_fsb ||
-> > > +			   imap.br_blockcount > unit_max_fsb) {
-> > > +			error = -EINVAL;
-> > > +			goto out_unlock;
-> > > +		} else if (!is_power_of_2(imap.br_blockcount)) {
-> > > +			error = -EINVAL;
-> > > +			goto out_unlock;
-> > > +		}
-> > > +
-> > > +		if (imap.br_startoff &&
-> > > +		    imap.br_startoff & (imap.br_blockcount - 1)) {
-> > 
-> > Not sure why we care about the file position, it's br_startblock that
-> > gets passed into the bio, not br_startoff.
-> 
-> We just want to ensure that the length of the write is valid w.r.t. to the
-> offset within the extent, and br_startoff would be the offset within the
-> aligned extent.
 
-Yes, I understand what br_startoff is, but this doesn't help me
-understand why this code is necessary.  Let's say you have a device that
-supports untorn writes of 16k in length provided the LBA of the write
-command is also aligned to 16k, and the fs has 4k blocks.
+Could you point me to the package?
 
-Userspace issues an 16k untorn write at offset 13k in the file, and gets
-this mapping:
+- Mani
 
-[startoff: 13k, startblock: 16k, blockcount: 16k]
-
-Why should this IO be rejected?  The physical space extent satisfies the
-alignment requirements of the underlying device, and the logical file
-space extent does not need aligning at all.
-
-> > I'm also still not convinced that any of this validation is useful here.
-> > The block device stack underneath the filesystem can change at any time
-> > without any particular notice to the fs, so the only way to find out if
-> > the proposed IO would meet the alignment constraints is to submit_bio
-> > and see what happens.
-> 
-> I am not sure what submit_bio() would do differently. If the block device is
-> changing underneath the block layer, then there is where these things need
-> to be checked.
-
-Agreed.
-
-> > 
-> > (The "one bio per untorn write request" thing in the direct-io.c patch
-> > sound sane to me though.)
-> > 
-> 
-> ok
-> 
-> Thanks,
-> John
-> 
+-- 
+மணிவண்ணன் சதாசிவம்
 
