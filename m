@@ -1,302 +1,166 @@
-Return-Path: <linux-kernel+bounces-63125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B97852B3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:31:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47288852B40
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11D471F23577
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1CCB281DB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F001182D2;
-	Tue, 13 Feb 2024 08:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B569018026;
+	Tue, 13 Feb 2024 08:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xU4ZwmkL"
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bnvGbFPo"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA29134CB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C794210F8
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707813064; cv=none; b=X/lU+nNalnfaF4HDX3o48W/C5Pzu+cWk2zhoqw7c9XbtV/a0OvB8u0JrgPoNplvOmEpvER9DKRsiP9PCUJ9uwMB+xbFxosm3Kbv5DPoTwBVKKJZmI/QeMKe2Q1T4RRpb/Nere2+AogX3NgdHtajlJaH3sLUwxXNssxdw/9kSHE0=
+	t=1707813114; cv=none; b=DE/dEShAAQHF0Lds4cjfBeEpreKPtlBuf8dWpmVc6KDaHBW7Ujrw9/hK6hUv25TBHI3bkWiSGTTDnB6YmcWlTdUrJlrkA9/Xh4bGd9yekY+AVY6zbqsETAZIuTpO0G+0a1wehIkUAoVSXKdPtT4QuT06yyLLTE+kyUBc26f+yEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707813064; c=relaxed/simple;
-	bh=B488vyl8pabc01O0uX7dySNBwLEZhjtj177lXeqiO+w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=stw315jHU+e2eNCGEjY7+FuRIJYsL63klDf5lwln2krzQTXW0KR8LfpRiVr2Dq8kYIungygqKi3/PawGiYf74/Wh8KUkx/2/7+QuqpNav9PoTzonPiq46KXUwXvRoZ0fIPPoYhzSKmE3nqFH9y+Nfs6PdvXoWDMxXn5FdUrkt+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xU4ZwmkL; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-46d7a67d751so232173137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:31:02 -0800 (PST)
+	s=arc-20240116; t=1707813114; c=relaxed/simple;
+	bh=LyBIaArFIcO2x6uNyD6g6ihvCa/mFgvkSZZsFZNh2cI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n8ZDRtU0/bcDCEYlWbEmal/W4HRL6SQ2ePBAmbznr3hPe1SlgUx52LcQMNGZ5v3XifqvtFW4isHJTFBQCko69xptHcgvT0rW6LdSkC+EHIS+ICRllvbAX+9iL6PNe9D4e0PZpTDJU5NpmLvCiwuj+Fl2Iq2Sb6AnfnlyrB5o2KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bnvGbFPo; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40efcb37373so32483465e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:31:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707813061; x=1708417861; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EiWyDX8gZQ5GT1eLZA5ntSQqn41f+SSf5JGmboV5GBo=;
-        b=xU4ZwmkLT5m6W2lfCsd1HVrjekT3uQRn6v7Be7rVPT6vl6F5a0F6nuAn55jrU+rOxh
-         b1R48VQ+NKFgAsSFf0ugFbpXtu8K+dvKfjErMbBM0lO1dV5LDhhBnfWcm6zivqeNtff/
-         wvZ/7M1sVz7WvAxhnbi52PeoSjLg70/h2HqH0Uxv7NC+PxN/idb/L9j8IY11ZP/U9Eg7
-         kG/l1au5ADcrd2qxfKyKq9QDF3yITpOdhUfL1/K4ML58zIATEIEBnflrSVir5om1dF/H
-         FfoPaA95wVd1hIkP2WpMvo3ynKJVaA1oJSERsKtoSKQszbJmjTb4lNt8PDTyoNM1IPYc
-         iV0Q==
+        d=linaro.org; s=google; t=1707813111; x=1708417911; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Dde3EbS6VWJqvGKjav4KSnBK0JRdRxmSb9vh6mKuzWo=;
+        b=bnvGbFPo7iB+nx1Eb/95nPeSE3ayr8srjZktKvRC86q0tWdZEywKdxqFcB4jQ+Vu79
+         T5V6tQJPTp9GNW/hTyuZsEZhSbYLnLJgLWbIPG6ap9OXPOITJ/srDMFNZo+jIVeCnoI1
+         L+rA11zb1ArrgR8SP6vRCNtruNTOh0lNOnBhla2cQLytmmBVr5boIMxAMJtPWuXhHDO0
+         IzhXQbuKTLOf0jo0ziZWq1CpwM1nQB32WiYpRX0gQbJTmC/kKTiPWgLeYh+wmWUAXh4v
+         UIXxJ71pnhJncc+ERN0njD4S+lwcyxzmVkWAnBVooVe5ZZ7Q0FUIh7RRxg5BOCDhZXFo
+         RpAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707813061; x=1708417861;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EiWyDX8gZQ5GT1eLZA5ntSQqn41f+SSf5JGmboV5GBo=;
-        b=JItByxhyBtTIrmWyQ/SAPM7IPsAqcdcP1WcM4T/IKltvfCCFXKPnIk5YDw+XRmGSWY
-         PZLamMDcD3W8xqDZnWIaTJOFSJDjiKM+sjPpcfH/k2Ayv1xZdYgqmSUZzZVMzR3xC79K
-         Um/iR6L/HGQinapgg8J8Ks5lkAEYQi2TYxjaJGVvSoLUqLnX+BEgYJo5y2/e9/2y8MN8
-         y1JnPdeOVTNQQLeHPAdNfBebPc0LxVz4CHH07+/Rfx6M8yw8R3e0fEdL0LipEhN351oq
-         HP1ktd9zHqtz5oK0sOm5tQ1tV8h3SBDykLikxd92KQd5FG+p3aN7peuu2U8Eqs6knY1w
-         Ivpw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFxKE0re7S5FcNB4HFqXJU97G01wSVdbgk64JWq2vq7yK3+ywie36m3FVbmidjvMyHIF3vbbGr9Yd13abMt8lsoYQVnK/m+vrv21E8
-X-Gm-Message-State: AOJu0YzasoXfe05IIaZ1sNvh5aQInn8oNti/WtAeiTVax4rJ573HwyI7
-	lJZCJL9lmDa+YRxHqMay62h6BTHF8ddKnndC8CKc0E5Vb5vbNA/GmYl/IAm6FR3jwJu8ZtNPi3l
-	xnt3yKCHPlmQSJpsQw0IxA8i6u6GLUV/keOJ4JJglmx9C4+DcXDkE
-X-Google-Smtp-Source: AGHT+IHJeM5sDvTlXvVffHHRpIV6W5kCTGGavnEnHCHDrtF2b+J/gj3+DI8aNndCTcTyifNRLqP/JqLU4eJQ/tBr5q4=
-X-Received: by 2002:a67:eb42:0:b0:46a:f7e0:e6a3 with SMTP id
- x2-20020a67eb42000000b0046af7e0e6a3mr6755456vso.24.1707813061441; Tue, 13 Feb
- 2024 00:31:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707813111; x=1708417911;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dde3EbS6VWJqvGKjav4KSnBK0JRdRxmSb9vh6mKuzWo=;
+        b=JfQQt4GR8Tp/0EDPmWMoPwTXgXFesqLm6TMzCzDI7yZNN9qovF7k1GUA4JWJNS05XF
+         uYh2FaPHUt1/Dm4OELeNvAaBTwRKPtTvzeMWoLgoml3M/1ysLXSIWOjINC0YQ9vMXhMP
+         w4EjEAi8AL3hRESe6qUCamdKYC2Jst9gS6UTH9deWSIVxp8AXqhrv5OZ6CtCWvZHXRlo
+         Kmz4HQ7DpmHp/Jh6q75ViaOrFWIZ8Zy9yOkuz3F0CWJzVArv8xOCgNacH+YRc1yRx1HB
+         ituSGmYq/Gip7TAlJThFuLTK51M4jyjmpDzC6L3bbT6Wi0lbcDoINkK/9NU+PK9JN7cJ
+         GB4A==
+X-Forwarded-Encrypted: i=1; AJvYcCU9S1kKYYu/2XVEkf0ZB5PZrnHbirbpa3jV7RDiZbgLhP3IzpB9FxfSewzKxinsWvrXmuIuJFprFxKe7Piu4lLKgmJmZd3qhVerXe0l
+X-Gm-Message-State: AOJu0YyNnBfbUZkYKTDJWMHJSKahjh8CVRTcsLkquZckPJsWW8w0vXbA
+	C2e53r9nDMvbkNOWJmg7n66oalotkLboeSbbVgbm9ouJBpa1VRrhRG4pnthBRnE=
+X-Google-Smtp-Source: AGHT+IHpvUw/qDTTMCNzLOjJTulKDkhaY2ngH6JlcBNuwoR0OBe3hQ8tB56KDVOclzwa4Zlj+2IXEQ==
+X-Received: by 2002:a05:600c:1c91:b0:410:218d:8a21 with SMTP id k17-20020a05600c1c9100b00410218d8a21mr8254548wms.20.1707813111421;
+        Tue, 13 Feb 2024 00:31:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCULwES8tzyOa95T8WU12zOZkyS3mQOXSGaWVgro+ADdbnq5f1aL0M1/J44JxMPh7turmFZrXD/svj6Pp5Z08dpdb/vOZATOAoMpboQScgU++dE6tnn4namSgb/tDxGNdWYM0dfcxgEReBWqRxR1POSko7DRvxfLoUV8e/mBA8q0VcDjm/e8S8BNMLO3KQhu09ep1p1VZU0c0Ocqh8/1sdIjC2u2hgLa7ByDfVlVMhETYlJFDMrIuFgwSAFcPcwEjd0c5QXjWvS7GPWjkK5+/mUtHpsMyBNKt4UUBfE9EKgN4DRJmV8bn42XgrKVAnweeKn3lOO3Ntf6GqeNMncioWqnHWPNaKEO1sBJQtFCfji6z5WjNTcvnftUqclG4PTB+19IMaS1ksECHVI=
+Received: from [192.168.1.20] ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id e12-20020a05600c4e4c00b00411c9c0ede4sm308961wmq.7.2024.02.13.00.31.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 00:31:51 -0800 (PST)
+Message-ID: <72ab2968-5e35-41c1-a689-6353a1d43b82@linaro.org>
+Date: Tue, 13 Feb 2024 09:31:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212223029.30769-1-osalvador@suse.de> <20240212223029.30769-3-osalvador@suse.de>
-In-Reply-To: <20240212223029.30769-3-osalvador@suse.de>
-From: Marco Elver <elver@google.com>
-Date: Tue, 13 Feb 2024 09:30:25 +0100
-Message-ID: <CANpmjNOaUdBOX1z1TST5djOLuL2DWj1Vus=ot_F_e_-8am3qZQ@mail.gmail.com>
-Subject: Re: [PATCH v8 2/5] mm,page_owner: Implement the tracking of the
- stacks count
-To: Oscar Salvador <osalvador@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] pinctrl: qcom: sm8450: Add pll_clk to pin group 98
+ for SM8475
+Content-Language: en-US
+To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, linus.walleij@linaro.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, vkoul@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240212191046.77013-1-danila@jiaxyga.com>
+ <20240212191046.77013-3-danila@jiaxyga.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240212191046.77013-3-danila@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 12 Feb 2024 at 23:29, Oscar Salvador <osalvador@suse.de> wrote:
->
-> page_owner needs to increment a stack_record refcount when a new allocation
-> occurs, and decrement it on a free operation.
-> In order to do that, we need to have a way to get a stack_record from a
-> handle.
-> Implement __stack_depot_get_stack_record() which just does that, and make
-> it public so page_owner can use it.
->
-> Also implement {inc,dec}_stack_record_count() which increments
-> or decrements on respective allocation and free operations, via
-> __reset_page_owner() (free operation) and __set_page_owner() (alloc
-> operation).
->
-> Traversing all stackdepot buckets comes with its own complexity,
-> plus we would have to implement a way to mark only those stack_records
-> that were originated from page_owner, as those are the ones we are
-> interested in.
-> For that reason, page_owner maintains its own list of stack_records,
-> because traversing that list is faster than traversing all buckets
-> while keeping at the same time a low complexity.
-> inc_stack_record_count() is responsible of adding new stack_records
-> into the list stack_list.
->
-> Modifications on the list are protected via a spinlock with irqs
-> disabled, since this code can also be reached from IRQ context.
->
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On 12/02/2024 20:10, Danila Tikhonov wrote:
+> Add pll_clk to pin group 98 for compatibility with SM8475.
 
-For the code:
+I don't understand this. What compatibility? Is it valid on SM8450? Ifi
+so, then this would be fix. If not, then you just introduced incorrect
+group for SM8450 and called it compatibility.
 
-Reviewed-by: Marco Elver <elver@google.com>
-
-But see minor comments below.
-
+> 
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 > ---
->  include/linux/stackdepot.h |  9 +++++
->  lib/stackdepot.c           |  8 +++++
->  mm/page_owner.c            | 73 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 90 insertions(+)
->
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index 90274860fd8e..f3c2162bf615 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -175,6 +175,15 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
->  depot_stack_handle_t stack_depot_save(unsigned long *entries,
->                                       unsigned int nr_entries, gfp_t gfp_flags);
->
-> +/**
-> + * __stack_depot_get_stack_record - Get a pointer to a stack_record struct
-> + * This function is only for internal purposes.
-
-I think the body of the kernel doc needs to go after argument declarations.
-
-> + * @handle: Stack depot handle
-> + *
-> + * Return: Returns a pointer to a stack_record struct
-> + */
-> +struct stack_record *__stack_depot_get_stack_record(depot_stack_handle_t handle);
-> +
->  /**
->   * stack_depot_fetch - Fetch a stack trace from stack depot
->   *
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 6f9095374847..fdb09450a538 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -685,6 +685,14 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
->  }
->  EXPORT_SYMBOL_GPL(stack_depot_save);
->
-> +struct stack_record *__stack_depot_get_stack_record(depot_stack_handle_t handle)
-> +{
-> +       if (!handle)
-> +               return NULL;
-> +
-> +       return depot_fetch_stack(handle);
-> +}
-> +
->  unsigned int stack_depot_fetch(depot_stack_handle_t handle,
->                                unsigned long **entries)
->  {
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 5634e5d890f8..7d1b3f75cef3 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -36,6 +36,14 @@ struct page_owner {
->         pid_t free_tgid;
+>  drivers/pinctrl/qcom/pinctrl-sm8450.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sm8450.c b/drivers/pinctrl/qcom/pinctrl-sm8450.c
+> index 617286711695..45ac8e72c1c7 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sm8450.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sm8450.c
+> @@ -957,7 +957,7 @@ static const char * const pll_bist_groups[] = {
 >  };
->
-> +struct stack {
-> +       struct stack_record *stack_record;
-> +       struct stack *next;
-> +};
-> +
-> +static struct stack *stack_list;
-> +static DEFINE_SPINLOCK(stack_list_lock);
-> +
->  static bool page_owner_enabled __initdata;
->  DEFINE_STATIC_KEY_FALSE(page_owner_inited);
->
-> @@ -61,6 +69,57 @@ static __init bool need_page_owner(void)
->         return page_owner_enabled;
->  }
->
-> +static void add_stack_record_to_list(struct stack_record *stack_record)
-> +{
-> +       unsigned long flags;
-> +       struct stack *stack;
-> +
-> +       stack = kmalloc(sizeof(*stack), GFP_KERNEL);
-> +       if (stack) {
+>  
+>  static const char * const pll_clk_groups[] = {
+> -	"gpio107",
+> +	"gpio98", "gpio107",
 
-It's usually more elegant to write
 
-if (!stack)
-  return;
+Best regards,
+Krzysztof
 
-If the rest of the function is conditional.
-
-> +               stack->stack_record = stack_record;
-> +               stack->next = NULL;
-> +
-> +               spin_lock_irqsave(&stack_list_lock, flags);
-> +               if (!stack_list) {
-> +                       stack_list = stack;
-> +               } else {
-> +                       stack->next = stack_list;
-> +                       stack_list = stack;
-> +               }
-> +               spin_unlock_irqrestore(&stack_list_lock, flags);
-> +       }
-> +}
-> +
-> +static void inc_stack_record_count(depot_stack_handle_t handle)
-> +{
-> +       struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
-> +
-> +       if (stack_record) {
-> +               /*
-> +                * New stack_record's that do not use STACK_DEPOT_FLAG_GET start
-> +                * with REFCOUNT_SATURATED to catch spurious increments of their
-> +                * refcount.
-> +                * Since we do not use STACK_DEPOT_FLAG_{GET,PUT} API, let us
-
-I think I mentioned this in the other email, there is no
-STACK_DEPOT_FLAG_PUT, only stack_depot_put().
-
-> +                * set a refcount of 1 ourselves.
-> +                */
-> +               if (refcount_read(&stack_record->count) == REFCOUNT_SATURATED) {
-> +                       refcount_set(&stack_record->count, 1);
-> +
-> +                       /* Add the new stack_record to our list */
-> +                       add_stack_record_to_list(stack_record);
-> +               }
-> +               refcount_inc(&stack_record->count);
-> +       }
-> +}
-> +
-> +static void dec_stack_record_count(depot_stack_handle_t handle)
-> +{
-> +       struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
-> +
-> +       if (stack_record)
-> +               refcount_dec(&stack_record->count);
-> +}
-> +
->  static __always_inline depot_stack_handle_t create_dummy_stack(void)
->  {
->         unsigned long entries[4];
-> @@ -140,6 +199,7 @@ void __reset_page_owner(struct page *page, unsigned short order)
->         int i;
->         struct page_ext *page_ext;
->         depot_stack_handle_t handle;
-> +       depot_stack_handle_t alloc_handle;
->         struct page_owner *page_owner;
->         u64 free_ts_nsec = local_clock();
->
-> @@ -147,6 +207,9 @@ void __reset_page_owner(struct page *page, unsigned short order)
->         if (unlikely(!page_ext))
->                 return;
->
-> +       page_owner = get_page_owner(page_ext);
-> +       alloc_handle = page_owner->handle;
-> +
->         handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
->         for (i = 0; i < (1 << order); i++) {
->                 __clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
-> @@ -158,6 +221,15 @@ void __reset_page_owner(struct page *page, unsigned short order)
->                 page_ext = page_ext_next(page_ext);
->         }
->         page_ext_put(page_ext);
-> +       if (alloc_handle != early_handle)
-> +               /*
-> +                * early_handle is being set as a handle for all those
-> +                * early allocated pages. See init_pages_in_zone().
-> +                * Since their refcount is not being incremented because
-> +                * the machinery is not ready yet, we cannot decrement
-> +                * their refcount either.
-> +                */
-> +               dec_stack_record_count(alloc_handle);
->  }
->
->  static inline void __set_page_owner_handle(struct page_ext *page_ext,
-> @@ -199,6 +271,7 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
->                 return;
->         __set_page_owner_handle(page_ext, handle, order, gfp_mask);
->         page_ext_put(page_ext);
-> +       inc_stack_record_count(handle);
->  }
->
->  void __set_page_owner_migrate_reason(struct page *page, int reason)
-> --
-> 2.43.0
->
 
