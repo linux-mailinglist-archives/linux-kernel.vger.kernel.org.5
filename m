@@ -1,159 +1,91 @@
-Return-Path: <linux-kernel+bounces-63402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 650AA852ED8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:12:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC305852EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:14:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5466B22408
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:12:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2661128333D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E39364B6;
-	Tue, 13 Feb 2024 11:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A34436AF3;
+	Tue, 13 Feb 2024 11:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Og/M57C7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sZSClFad"
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA25533CD2;
-	Tue, 13 Feb 2024 11:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA5932C8B
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707822758; cv=none; b=BAsQieRm2PVAcy7oNZ8CZDwDfuin8v6qR1hjQInJq67gYIEx+V1A9DM7UlDPcdcgrUqqu2k9st/vX/hjZZ0c1YT/JgmPqQjlo9NjBKSj1zMNo92ata/f1f0gaDO6Vw8eErXxLNIPbTguHnWnTVvffuaV6t2TRcCpV+hAQVcerC4=
+	t=1707822844; cv=none; b=B2Edk9B87u2KIkcEamIfFjouPTBvThDNJrMxqTWWUsoRupUivZnQpCgZbU6Uc27cgIiJmCPmsR5K6ZEQzA9Gg0XWtjhpZ2c3Bgw9KluWSdH5CWeKulmFVjQptcBTzbG4UOZHEjyCjW9KZj9er9qeo7Q5oxoBUoaEnXAU4LBFeGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707822758; c=relaxed/simple;
-	bh=l/AxHuvyDAvfAeJ5JccBgRd6aZPBlEBLaye5AHZE0xA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UFLfb215OhsBUkoPIqE0r/KpNwNdvBiPvW2/7E1+TJHnl3j6zHA0G+QFSDdaDj12gu9MNFamK4KXC6W8TtaggIqQxRJeH46tLjrsxhssu121Kd+kIVTCY3lPsxK9G70KIEJYQFrZ+VxebI6Xsj+Fj+K8+U5uoJwNmViS8hBxCBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Og/M57C7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DEC5C433F1;
-	Tue, 13 Feb 2024 11:12:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707822757;
-	bh=l/AxHuvyDAvfAeJ5JccBgRd6aZPBlEBLaye5AHZE0xA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Og/M57C7LQu00prdAWJXqpV2oMEynPTBR9XSjclZ3/8LnEMoXQWAU02JwRQexq0Q2
-	 y9DZxcgl8ZNzRf9AeMBrg1YBvZK08E5oCCCtyqpuEaL0jJS87bHx0QV2hKdEDKQ46Z
-	 J2ruq+3i5m2PJP7glCUxu4mZCg++RxHZuO3QYYYqMsESX20dFSgUlpNMcuG/E27ccZ
-	 QFLjrT7rIvBLWwLOmqMtBUo+Zbeob6GPKWW++KWeVk9zc0UHnfnwOpvqkc7bl4oZD5
-	 a7IJ6dOg82EIrWhuW7P0G9rMGEgLzQm15EY+C6vn0PupohGo6Wr93UpsFDArPYz2+W
-	 mxIvvTWeWYnXw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rZqiI-002kE0-TP;
-	Tue, 13 Feb 2024 11:12:34 +0000
-Date: Tue, 13 Feb 2024 11:12:34 +0000
-Message-ID: <86cyt062jh.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Will Deacon <will@kernel.org>, Oliver Upton <oliver.upton@linux.dev>
-Cc: 	kvmarm@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Ricardo Koller <ricarkol@google.com>
-Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following kvm_pgtable_stage2_free_unlinked()
-In-Reply-To: <Zcp8LcvsZiZVkNKe@linux.dev>
-References: <20240212193052.27765-1-will@kernel.org>
-	<Zcp8LcvsZiZVkNKe@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707822844; c=relaxed/simple;
+	bh=EG1EZw1Wj3VaqQqg8ln6Y174YJHRi0e6BlwHMvR9T8E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VKW71BQivWn4mlF3PndNlW4uy+Od+zlTyLTlzyUAqNd+l23BGEtQv9isMP41sGYJSdnYgLuVJFUO2ciq3tt37X6Etmvgm0mM4TmIWaxBmL8OwztvMRmvGEjmwuU8GboAO6cF7PZxYj9OVnApv6Ct1mw+VsXa1Pwi/0jn8aiGMn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sZSClFad; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707822840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AI3Ra2sQ8veiZ8Eia6tE4Ic8YKKMR3VVEKXPe2BHlbQ=;
+	b=sZSClFaduLax0DxszdkKqA/EFs81dCIDgkUqYn1K24eJu8/VWr7vSm6o41CzUBgqbT/7VH
+	2cLtrJW0XRrUzZcljmuODvsBo8k4/tU5Q21eLSTljqCDp05juTrxe+mWKIm6GEy5ai8/V/
+	nn1Wh3ipvTAlC85GbUu9eG/Ds0TvIJk=
+From: Gang Li <gang.li@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Daniel Jordan <daniel.m.jordan@oracle.com>,
+	Jane Chu <jane.chu@oracle.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Gang Li <gang.li@linux.dev>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Gang Li <ligang.bdlg@bytedance.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v1 0/2] hugetlb: two small improvements of hugetlb init parallelization
+Date: Tue, 13 Feb 2024 19:13:45 +0800
+Message-Id: <20240213111347.3189206-1-gang.li@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: will@kernel.org, oliver.upton@linux.dev, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ricarkol@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 12 Feb 2024 20:14:37 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
-> 
-> On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
-> > kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
-> > root page of the sub-tree before returning, so remove the additional
-> > put_page() invocations in the callers.
-> > 
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Oliver Upton <oliver.upton@linux.dev>
-> > Cc: Ricardo Koller <ricarkol@google.com>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> > 
-> > Hi folks,
-> > 
-> > Sending this as an RFC as I only spotted it from code inspection and I'm
-> > surprised others aren't seeing fireworks if it's a genuine bug. I also
-> > couldn't come up with a sensible Fixes tag, as all of:
-> > 
-> >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
-> >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
-> >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
+This series includes two improvements: fixing the PADATA Kconfig warning
+and a potential bug in gather_bootmem_prealloc_parallel. Please refer to
+the specific commit message for details.
 
-I'd blame it on the last commit, as we really ought to have it if we
-have the others.
+For Andrew:
+If you want me to include these two fixes into the previous series[1], I
+would be happy to send v6. Otherwise, you can directly apply these two
+patches.
 
-> >
-> > are actually ok in isolation. Hrm. Please tell me I'm wrong?
-> > 
-> >  arch/arm64/kvm/hyp/pgtable.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> > index c651df904fe3..ab9d05fcf98b 100644
-> > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
-> >  				 level + 1);
-> >  	if (ret) {
-> >  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
-> > -		mm_ops->put_page(pgtable);
-> >  		return ERR_PTR(ret);
-> >  	}
-> 
-> AFAICT, this entire branch is effectively dead code, unless there's a
-> KVM bug lurking behind the page table walk. The sub-tree isn't visible
-> to other software or hardware walkers yet, so none of the PTE races
-> could cause this to pop.
-> 
-> So while this is very obviously a bug, it might be pure luck that folks
-> haven't seen smoke here. Perhaps while fixing the bug we should take the
-> opportunity to promote the condition to WARN_ON_ONCE().
+[1]. https://lore.kernel.org/lkml/20240126152411.1238072-1-gang.li@linux.dev/
 
-Can't you construct a case where an allocation fails during the walk
-(memcache empty), and we end up on this exact path?
+Gang Li (2):
+  padata: downgrade padata_do_multithreaded to serial execution for
+    non-SMP
+  hugetlb: process multiple lists in gather_bootmem_prealloc_parallel
 
-> 
-> > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
-> >  
-> >  	if (!stage2_try_break_pte(ctx, mmu)) {
-> >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
-> > -		mm_ops->put_page(childp);
-> >  		return -EAGAIN;
-> >  	}
-> 
-> This, on the other hand, seems possible. There exists a race where an
-> old block PTE could have the AF set on it and the underlying cmpxchg()
-> could fail. There shouldn't be a race with any software walkers, as we
-> hold the MMU lock for write here.
-
-AF update is indeed a likely candidate.
-
-In any case, this patch looks good to me as it is, and we can always
-have a separate tweak to adjust the severity of the first case as
-required. Unless anyone objects, I'd like to queue it shortly.
-
-Thanks,
-
-	M.
+ fs/Kconfig             |  2 +-
+ include/linux/padata.h | 13 +++++++++----
+ mm/hugetlb.c           | 15 +++++++++++----
+ 3 files changed, 21 insertions(+), 9 deletions(-)
 
 -- 
-Without deviation from the norm, progress is not possible.
+2.20.1
+
 
