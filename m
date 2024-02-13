@@ -1,143 +1,100 @@
-Return-Path: <linux-kernel+bounces-63449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61DD852FAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:40:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF6B852FB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:41:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06AE91C2258E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:40:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CFDA1F2784B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C8838DFC;
-	Tue, 13 Feb 2024 11:40:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D94376F7;
+	Tue, 13 Feb 2024 11:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fooishbar-org.20230601.gappssmtp.com header.i=@fooishbar-org.20230601.gappssmtp.com header.b="ZskQNqdd"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EVhoF9a/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE5938DD5
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3B4374C1;
+	Tue, 13 Feb 2024 11:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824407; cv=none; b=a6keQHSDW3M+qvxBbCiLctBBLi3PeIdxQNKAHm4zGj0L4rxa3LIXRHLoJExumN5uhHx1SokdtQX0Ab5NSSNHRYy6S5RfFgdFlRJbzLDEYrqcMzES+j2yMiLdxKeVYYpjRhec1zkSmcyM+u2dZl495x6unOia3PzShNlVj4JF2Lk=
+	t=1707824460; cv=none; b=J/1mL4DLLT0uaA8M2zsZ2AduM6rMGwSVr1kDH05Xa6hxlTD2AjEeGf2vAX/nRWdJqs1UPJ+gfb8s5hdttGkm4aehontu04YJtsDXHIbNKaP61Qt5yExVaUcHe+4+fVRKxLfETjO5NFHFBEJtskG+afr4zbFMNRTSpUV4wYgabjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824407; c=relaxed/simple;
-	bh=5Q2HXSgg+WfNCJ48Lf3xpfGuoRZjbywT1xHUXRUUcU4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lbSQU5LMtdlqPR//xGP8VryQPlfkyT6flJkOfGIQRmUUDcleU/zov7ZEJ+FImwSoNben++Ny+tTEZ5HT37kOgfGvrcX+o7pWsMNIbdAscbxbLCXB5trsBb7pEu75nIkNHsWY2w7m1Gkxfwv+qDMHwOt5/M3s8BTAfVDOWIQwRNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fooishbar.org; spf=none smtp.mailfrom=fooishbar.org; dkim=pass (2048-bit key) header.d=fooishbar-org.20230601.gappssmtp.com header.i=@fooishbar-org.20230601.gappssmtp.com header.b=ZskQNqdd; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fooishbar.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fooishbar.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bbbc6bcc78so3292972b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1707824405; x=1708429205; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Q2HXSgg+WfNCJ48Lf3xpfGuoRZjbywT1xHUXRUUcU4=;
-        b=ZskQNqddfZI+gxMdYQ8F9NPNrv6CrHSCiA3F/hPu8g94Bs4eFRVIMjlC5ygXrEWb4L
-         xXkHT5TRtZzLfVgg5XmljMlNit34scTctLgZhgCO2YCrDu5Mbfk4QP5/hLxuDARDRFX3
-         7upeAKFsGk50WwhMVJpkXLYXFfAww9QemCuyYnrBtJHoUeuKbfq9CM6fqRAVNemyb+hy
-         0MuF/XwN8DahkugryOPvBP+J+8W3HIjCQiK2RiGaQ8lxweW1621PMheWCHpjnkkQmrdX
-         W/HAbMheG0FT0bxPZGwmwPrzQbq8V99sULybOkY2ey6PQJT2lzrkpCzYwbsp34LR2sKe
-         uPBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707824405; x=1708429205;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Q2HXSgg+WfNCJ48Lf3xpfGuoRZjbywT1xHUXRUUcU4=;
-        b=oD/bFv9pGEeegzwyn2Jwesm3gHF5YfE9JOETATA6uH+x8p3+BTQu3qlNafxIaq9/HH
-         1Pl+UJHnX0QCFLTAqT98kfiAFnr/4I7ybi+CZe43DyWo6N3OvGnfdD3+eCfXI1KA+dgM
-         9AlAfJBcZxsC56cKlILTagmxvNx576b0dUw6YU9wIzyloK7VAaktFnztWshGKg4Ru7TJ
-         RA585BhUf4y1ZihLbl4FJxX49vSqcS4JYS5zef19/+jGRWAfvWmQJwM0PxXAHpMOJsKT
-         1FBKSS/X1bCM5mO4TECc5p9RXAhzXr4qAwOk8zdQnJ0Fybmm1VnHCtlCcvy4v0aq5mYc
-         ojQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUi//mnV6SePOEiM2S5hk0tKO2gh8OXAvez7oqP5K+hh6qyi7eb0NDvvHKQkfIJnLbL/YNKSsqTZr/b/8Rv4hG+C9vJC3jyA7qBOvgB
-X-Gm-Message-State: AOJu0YxqQEDHyD1cwl5MJZcglY9T1L+IXvMWeKLwBcvbNpLG3mBinuo8
-	WqGoPQ2Ig4PiuJwBHgPdo96/zvIwg1Ju6++rUiDv1W4GUCiQ+lc8qLeD9DS4kRDVhqRcZVxcXeJ
-	rI7pbSU/rTfC9f633Fvy2aEvsCxHWQutOo7Ryxg==
-X-Google-Smtp-Source: AGHT+IGY/umyWm9bGSp8LHaGaJz80J84aewnjhUP9V6Jb+gnCRdR0+blD57TP5/5wjkX/1eM5Zy3sDhyNB6cBCf5o5M=
-X-Received: by 2002:a05:6808:302a:b0:3c0:32d7:b93b with SMTP id
- ay42-20020a056808302a00b003c032d7b93bmr8548576oib.50.1707824404899; Tue, 13
- Feb 2024 03:40:04 -0800 (PST)
+	s=arc-20240116; t=1707824460; c=relaxed/simple;
+	bh=cAEOJQ0iVAmTq4TMQkM/F2qB7/WnkhIygmoxAcjPA3Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=i/ERbz3Sp0y9fh5w7qIT4fMzaKXxslNVcz71k8EQuhOjWp/rmS5iJvOVszWz/OhxTAH2zpACFcu/kTDmddypaRVnJGxNyX9dyRAa3L/l6I/UsszBJzEFmbPVHqxoEM2VUNPwflSdFbPezh+zQNxPnLRcznqpYJ5d51YJmRoZTU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EVhoF9a/; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707824459; x=1739360459;
+  h=from:to:cc:in-reply-to:references:subject:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=cAEOJQ0iVAmTq4TMQkM/F2qB7/WnkhIygmoxAcjPA3Y=;
+  b=EVhoF9a/lab6/iL//mGKibBfz+e55ifClqX2pFCBgg+zALaVP848x/YN
+   0EHbC2wX6IWcNjLaarWvAggA7at6SasU3l2gQfWx/Oaykpt9+S1bpbDBx
+   OWYRYC+LlqA/F5tyMT4ADDl+NzICYM9DZct46epbK1sANB9gW0cOfxj/x
+   2V+N5vDLFOJoEBUyxTNbLeu6pI29Q54Vj1UKdZi3Kh1My68/SP/f6OZXi
+   +MJGwvBsIgEqoDTm0nuGPMtvy+/nLiMs8zTjN3PJCcsRKPurQWCaj55LA
+   mRLg3fuJ3Vg5h0jtnwSm/uZGCJMM91S7muLxAcly5wSDq3lCDjlFAAHUb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1948832"
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="1948832"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 03:40:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
+   d="scan'208";a="40330058"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.103])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 03:40:57 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: hdegoede@redhat.com, Armin Wolf <W_Armin@gmx.de>
+Cc: sathyanarayanan.kuppuswamy@linux.intel.com, 
+ platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240212185016.5494-1-W_Armin@gmx.de>
+References: <20240212185016.5494-1-W_Armin@gmx.de>
+Subject: Re: [PATCH v2] platform/x86: wmi: Make input buffer madatory when
+ evaulating methods
+Message-Id: <170782445006.2452.5996713889135628313.b4-ty@linux.intel.com>
+Date: Tue, 13 Feb 2024 13:40:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213-tidss-fixes-v1-0-d709e8dfa505@ideasonboard.com>
- <20240213-tidss-fixes-v1-1-d709e8dfa505@ideasonboard.com> <20240213110440.13af335a@eldfell>
- <bb8089cd-2a57-4ed0-a8bd-2140a89b0887@ideasonboard.com> <ZctCCCJORdDEaDl1@xpredator>
-In-Reply-To: <ZctCCCJORdDEaDl1@xpredator>
-From: Daniel Stone <daniel@fooishbar.org>
-Date: Tue, 13 Feb 2024 11:39:53 +0000
-Message-ID: <CAPj87rPpdOQLLu5oGVfqDUh0_j9NXqc3XgZe5=tcOzUfVoeeqg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/tidss: Fix initial plane zpos values
-To: Marius Vlad <marius.vlad@collabora.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
-	Pekka Paalanen <pekka.paalanen@haloniitty.fi>, Jyri Sarha <jyri.sarha@iki.fi>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sam Ravnborg <sam@ravnborg.org>, Devarsh Thakkar <devarsht@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>, 
-	Francesco Dolcini <francesco@dolcini.it>, Tomi Valkeinen <tomi.valkeinen@ti.com>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	"wayland-devel@lists.freedesktop.org" <wayland-devel@lists.freedesktop.org>, Randolph Sapp <rs@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 
-Hi,
+On Mon, 12 Feb 2024 19:50:16 +0100, Armin Wolf wrote:
 
-On Tue, 13 Feb 2024 at 10:18, Marius Vlad <marius.vlad@collabora.com> wrote:
-> On Tue, Feb 13, 2024 at 11:57:59AM +0200, Tomi Valkeinen wrote:
-> > I haven't. I'm quite unfamiliar with Weston, and Randolph from TI (cc'd) has
-> > been working on the Weston side of things. I also don't know if there's
-> > something TI specific here, as the use case is with non-mainline GPU drivers
-> > and non-mainline Mesa. I should have been a bit clearer in the patch
-> > description, as I didn't mean that upstream Weston has a bug (maybe it has,
-> > maybe it has not).
+> The ACPI-WMI specification declares in the section "ACPI Control Method
+> Naming Conventions and Functionality for Windows 2000 Instrumentation"
+> that a WMxx control method takes 3 arguments: instance, method id and
+> argument buffer.
+> This is also the case even when the underlying WMI method does not
+> have any input arguments.
+> 
+> [...]
 
-Don't worry about it. We've had bugs in the past and I'm sure we'll
-have more. :) Either way, it's definitely better to have the kernel
-expose sensible behaviour rather than weird workarounds, unless
-they've been around for so long that they're basically baked into ABI.
 
-> > The issue seen is that when Weston decides to use DRM planes for
-> > composition, the plane zpositions are not configured correctly (or at all?).
-> > Afaics, this leads to e.g. weston showing a window with a DRM "overlay"
-> > plane that is behind the "primary" root plane, so the window is not visible.
-> > And as Weston thinks that the area supposedly covered by the overlay plane
-> > does not need to be rendered on the root plane, there are also artifacts on
-> > that area.
-> >
-> > Also, the Weston I used is a bit older one (10.0.1), as I needed to go back
-> > in my buildroot versions to get all that non-mainline GPU stuff compiled and
-> > working. A more recent Weston may behave differently.
->
-> Right after Weston 10, we had a few minor changes related to the
-> zpos-sorting list of planes and how we parse the plan list without having
-> a temporary zpos ordered list to pick planes from.
->
-> And there's another fix for missing out to set out the zpos for scanout
-> to the minimum available - which seems like a good candidate to explain
-> what happens in the issue described above. So if trying Weston again,
-> please try with at least Weston 12, which should have those changes
-> in.
+Thank you for your contribution, it has been applied to my local
+review-ilpo branch. Note it will show up in the public
+platform-drivers-x86/review-ilpo branch only once I've pushed my
+local branch there, which might take a while.
 
-Specifically, you probably want commits 4cde507be6a1 and 58dde0e0c000.
-I think the window of breakage was small enough that - assuming either
-those commits or an upgrade to Weston 12/13 fixes it - we can just ask
-people to upgrade to a fixed Weston.
+The list of commits applied:
+[1/1] platform/x86: wmi: Make input buffer madatory when evaulating methods
+      commit: 5b559e8ab01c8d7a92478f8143ba844161292203
 
-> > Presuming this is not related to any TI specific code, I guess it's a
-> > regression in the sense that at some point Weston added the support to use
-> > planes for composition, so previously with only a single plane per display
-> > there was no issue.
+--
+ i.
 
-That point was 12 years ago, so not that novel. ;)
-
-Cheers,
-Daniel
 
