@@ -1,87 +1,46 @@
-Return-Path: <linux-kernel+bounces-63031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074B9852989
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:02:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D36385298A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70F811F22CE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14FF81F23555
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8609317556;
-	Tue, 13 Feb 2024 07:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZE5Fb00n"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012D4171AF;
-	Tue, 13 Feb 2024 07:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE1F1755C;
+	Tue, 13 Feb 2024 07:03:00 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADDE1754E
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707807759; cv=none; b=QFhpZScfAL3iI9hV6tBtIgARSbJ8x+zLzBIbmt9g+BUyuhAVmN4I7h1BGjPk46mcHmE6Py22tLac//n1ZfaFBgAWI3TqMnKAEBfM3R7bsSHUgLUNrtvFXDEYsJSP9bzK9bKNV9rqmDuJF+lqBjEKBgqjJzni0fXUCcDy2b6fERg=
+	t=1707807779; cv=none; b=GJUhU62fL6fXnWWVehFLR8XMG9enoEEUPPOLDmbbDfg66PcArTNobGbgbVbpcIXioumQ43LaAiiF2F4La3X36bZG5gvJ7PcDi5iNuC1skApfysmkWhjluP2NqRW8Wm1cRigtKzqFJfC0g1DMh4GQwPN9xfm+TFpTql7z64eu3aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707807759; c=relaxed/simple;
-	bh=lZeK2gRHpuUy0pQK9B/76rraAeuXtQdDGPNtMRsJMF8=;
+	s=arc-20240116; t=1707807779; c=relaxed/simple;
+	bh=/a3P/GhqLx0rDmCoRZFonH8ikP/rBut5hIB1oTEVRSw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rmHL3yz+AEOsMIlWJNw29HXZ1f+hEnOeBmH1ASj0PTlJ8TZUFdFwxA4JoMjPxgQEjkjDmlSWcXY5HtuoWsk22C7c1ZSKw901pVtWYtPNX84hd7kIY6MBp/scWXAuUd37ZiHbjGmpCPs0kMjFocKHTU/4TaIDmwTEd00h9Bg0Bh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZE5Fb00n; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55fc7f63639so5059041a12.1;
-        Mon, 12 Feb 2024 23:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707807756; x=1708412556; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+udwVZEdtua1lL/X4tovmfNwH/O3Old1O5MzEt/irs=;
-        b=ZE5Fb00nnHxD8PsR03/c5TrpVaOllm/UVBNFOXos5T6J4Fm1oaakHk9VFXXq2yUPam
-         TN4UwaX8zrwt93uusJV6Ph/utyvbahLraaC1obwg6DGENxrSdsK01SFRjWNNYKVA4sMU
-         lH7acMOOeqRnfleqOr5/5x/ZA9VOTXpVKoUMZfCgHn2aDqwXEpHmgnTppBG2EcAFtyJc
-         nitsKgy6aDEKnsvM7mfIQ7IQ2fQyDXRTdf731Pz9/3mFLWfo6xI8vtBSrB0P/J3JQq6s
-         P7y2Wj8O9LWQxe5bpFS6A4GE7pEgN0LlcwST6m7LKNIfLb2HXov9/L1b6iGTS6zHKRr+
-         9dDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707807756; x=1708412556;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z+udwVZEdtua1lL/X4tovmfNwH/O3Old1O5MzEt/irs=;
-        b=PRSu5uZzGtN7iVOSiZa/rtAKaLEq1K+qSBISX0TfG6aSixGrGhUeDgglPcMUkue1IS
-         K3y9jQsm3zrsAR1wdhCnKseiyG97xSwdtWZI3R0OrafO7isSWbgnaTVu6MKlkGk7f8co
-         /SnduQ2FN1E3Mb/1fKZCeZoF1go4iXftIQ1LPEKv2bGpI+JbaPT2pAQRHnkaWUhc/vMO
-         efgrxyni+5z8m8iP8wqTJ114d1yRGLbDJ8Ftkz7iIw+eUX9mX9NYDFkoj5+NagT+Un4d
-         l2cIsSGv+aDFvJUcTlu/lpBYzyfTxtHEaiXdAf0mNcYKzZOIExii9Jo8Q+s/51mLBmUu
-         0SkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWEf9jKn4pImKcz5iAsE2lW6pPWCGbjHnA9FralO0q520Q3mIBN8fMC7QPxudzbSzSaJa9Uy1sIcF43OIPljb/fNc7w3gNYJBC4+Xg70g8FUcQTvdxK4HiluOWQ57CuHKzxIfHMDXW+z2gLC3bXpM2fdyJO980y/h/h2BNYLo0vT1sr5n71V2LsREW+Wq1QgmCgAR0t1I6DalAjSCmQiDpWRQ==
-X-Gm-Message-State: AOJu0YypugRqdUOH8G+dHICo2jiFAwvY0liWg/KZXgD6WcpyGXM6ZwWQ
-	r7yi8qv96/DSpj3VqigHog4meusPCktsnKt2poJJsOetzBFmjX3w
-X-Google-Smtp-Source: AGHT+IH32n/VabfZRui3/N1kTk9igIxKOYGMUC2zi3BJn1fDEZGUSEd0VTQEtIvUszYxkgShIm+Mvw==
-X-Received: by 2002:a05:6402:2c2:b0:561:d3d4:242d with SMTP id b2-20020a05640202c200b00561d3d4242dmr2187954edx.38.1707807756060;
-        Mon, 12 Feb 2024 23:02:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVUfht4Z1J2zaP0zNNC/mk7MaOFF4NJRIq6XBG/hkGxTMG/VqdYWnKEjzcFoEjuOTY1sxXW8La/POimFkUCplPmF1sCypg9DPPRX417dFmMr37YYUyMgX1UiIYR9RPij1flWIQcbV/PLuTaE4es/5AX88SMDOdGU2u0Piz2880i/ji4Snkh4QSqVN5Q7qDns7aOHevOG119hzutDzEbqk2hDfba219tNOU2rL9YhMYh4JhwY7M1wFCMK/fX0GojQdXHP9I86qSYwZt4EnzaoEWWox2YI6YKUhJnluTPjMG3SD3EN67NJVUcUy5Zz4Z025XwqVdiMV6M8w==
-Received: from cjw-notebook (2a02-8388-0502-f480-6c32-186a-368b-d6a9.cable.dynamic.v6.surfer.at. [2a02:8388:502:f480:6c32:186a:368b:d6a9])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05640233d700b0055ff708dee3sm3409005edc.11.2024.02.12.23.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 23:02:35 -0800 (PST)
-Date: Tue, 13 Feb 2024 08:02:32 +0100
-From: Christoph Winklhofer <cj.winklhofer@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] w1: add UART w1 bus driver
-Message-ID: <ZcsUCHu42ILfKSBs@cjw-notebook>
-References: <20240209-w1-uart-v6-0-3e753c149196@gmail.com>
- <20240209-w1-uart-v6-3-3e753c149196@gmail.com>
- <466d7be4-6ca1-4eb2-a59b-a3f0a846a2df@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gkltcbvFvdAMlhbRwwkJMq0OlSwjJ+QJWuo8l5or1GceRibJtELjMObbj9I71FqlTZPMxiUf9nK0TGljFqiHYunRwBjUwGU9EuWxzyf9T8ApnIrl6z4w/O/+RVlggswdAYNuoFeNhO26ie4UeteFbLwLeCsGXsD1aiSYen0l7e8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by pcw.home.local (8.15.2/8.15.2/Submit) id 41D72h3G009724;
+	Tue, 13 Feb 2024 08:02:43 +0100
+Date: Tue, 13 Feb 2024 08:02:43 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Rodrigo Campos <rodrigo@sdfg.com.ar>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
+ usage
+Message-ID: <20240213070243.GB9530@1wt.eu>
+References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
+ <20240129141516.198636-3-rodrigo@sdfg.com.ar>
+ <20240211104817.GA19364@1wt.eu>
+ <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,159 +49,214 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <466d7be4-6ca1-4eb2-a59b-a3f0a846a2df@linaro.org>
+In-Reply-To: <52c52665-35f5-4111-a9d4-f8669c79bf70@sdfg.com.ar>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Feb 12, 2024 at 04:30:00PM +0100, Krzysztof Kozlowski wrote:
-> On 09/02/2024 07:22, Christoph Winklhofer via B4 Relay wrote:
-> > From: Christoph Winklhofer <cj.winklhofer@gmail.com>
+Hi Rodrigo,
+
+On Tue, Feb 13, 2024 at 12:16:06AM +0100, Rodrigo Campos wrote:
+> On 2/11/24 11:48, Willy Tarreau wrote:
+> > Hi Rodrigo,
 > > 
-> > Add a UART 1-Wire bus driver. The driver utilizes the UART interface via
-> > the Serial Device Bus to create the 1-Wire timing patterns. The driver
-> > was tested on a "Raspberry Pi 3B" with a DS18B20 and on a "Variscite
-> > DART-6UL" with a DS18S20 temperature sensor.
+> > first, thanks for the series!
+> 
+> Thank you, for your time and review! :)
+
+You're welcome. I'm sorry I couldn't respond earlier.
+
+> > On Mon, Jan 29, 2024 at 03:15:14PM +0100, Rodrigo Campos wrote:
+> > > The return code should always be strlen(src) + strlen(dst), but dst is
+> > > considered shorter if size is less than strlen(dst).
+> > > 
+> > > While we are there, make sure to copy at most size-1 bytes and
+> > > null-terminate the dst buffer.
+> > > 
+> > > Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
+> > > ---
+> > >   tools/include/nolibc/string.h | 14 +++++++-------
+> > >   1 file changed, 7 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/tools/include/nolibc/string.h b/tools/include/nolibc/string.h
+> > > index ed15c22b1b2a..b2149e1342a8 100644
+> > > --- a/tools/include/nolibc/string.h
+> > > +++ b/tools/include/nolibc/string.h
+> > > @@ -187,23 +187,23 @@ char *strndup(const char *str, size_t maxlen)
+> > >   static __attribute__((unused))
+> > >   size_t strlcat(char *dst, const char *src, size_t size)
+> > >   {
+> > > -	size_t len;
+> > >   	char c;
+> > > +	size_t len = strlen(dst);
+> > > +	size_t ret = strlen(src) + (size < len? size: len);
 > > 
-> > The 1-Wire timing pattern and the corresponding UART baud-rate with the
-> > interpretation of the transferred bytes are described in the document:
+> >  From what I'm reading in the man page, ret should *always* be the sum
+> > of the two string lengths. I guess it helps for reallocation. It's even
+> > explicitly mentioned:
+> > 
+> >    "While this may seem somewhat confusing, it was done to make truncation
+> >     detection simple."
+> 
+> Yes, that was my *first* understanding of the manpage too. But it doesn't
+> seem to be the correct interpretation.
+> 
+> Also, this is exactly what I tried to say in the cover letter, with:
+> 
+> 	I thought the manpage was clear, but when checking against that,
+> 	I noted a few twists (like the manpage says the return code of
+> 	strlcat is strlen(src) + strlen(dst), but it was not clear it is
+> 	not that if size < strlen(dst). When looking at the libbsd
+> 	implementation and re-reading the manpage, I understood what it
+> 	really meant).
 > 
 > 
-> > +/*
-> > + * struct w1_uart_config - configuration for 1-Wire operation
-> > + *
-> > + * @baudrate: baud-rate returned from serdev
-> > + * @delay_us: delay to complete a 1-Wire cycle (in us)
-> > + * @tx_byte: byte to generate 1-Wire timing pattern
-> > + */
-> > +struct w1_uart_config {
-> > +	unsigned int baudrate;
-> > +	unsigned int delay_us;
-> > +	u8 tx_byte;
-> > +};
-> > +
-> > +/*
-> > + * struct w1_uart_config - w1-uart device data
+> Sorry if I wasn't clear. Let me try again.
 > 
-> That's neither correct (device, not config) nor proper kerneldoc nor
-> useful. Your comment repeats struct name. If you want to make it
-> kerneldoc, go ahead, but then make it a full kerneldoc.
+> My first interpretation of the manpage was also that, and I think it would
+> make sense to be that one. However, it is wrong, they also say this, that is
+> what made me add the ternary operator:
 > 
+> 	Note, however, that if strlcat() traverses size characters
+> 	without finding a NUL, the length of the string is considered
+> 	to be  size and the destination string will not be NUL
+> 	terminated (since there was no space for the NUL)
+> 
+> So, my interpretation is that it is the sum of both, except when we can't
+> find the NUL in that size, in which case we conside "size" to be the len of
+> dst.
 
-Yes, sorry - will use the correct name.
+I've read it as well and I don't interpret it the same way. I'm reading it
+as "if dst doesn't contain a NUL char before size, its length is considered
+to be size", and the reason is explicitly explained just after:
 
-> And obviously compile with W=1.
-> 
+   This keeps strlcat() from running off the end of a string. In practice
+   this should not happen (as it means that either size is incorrect or
+   that dst is not a proper ``C'' string).
 
-You mean the padding error of mutex, I get it with W=3 and will fix it
-by moving mutex up.
+So this explicitly means that supporting this specific use case is by
+definition incompatible with the use of strlen(). Thus it's a matter
+of choice for us, either we explicitly want to support invalid strings
+in the destination and we need the check but we're not allowed to use
+strlen() on dst, or we're not interested in such bogus cases and we can
+stick to strlen() and the test is not needed. But the test combined with
+strlen() is not logical.
 
-> > + *
-> > + * @serdev: serial device
-> > + * @bus: w1-bus master
-> > + * @cfg_reset: config for 1-Wire reset
-> > + * @cfg_touch_0: config for 1-Wire write-0 cycle
-> > + * @cfg_touch_1: config for 1-Wire write-1 and read cycle
-> > + * @rx_byte_received: completion for serdev receive
-> > + * @rx_err: indicates an error in serdev-receive
-> > + * @rx_byte: result byte from serdev-receive
-> > + * @mutex: mutex to protected rx_err and rx_byte from concurrent access
-> > + *         in w1-callbacks and serdev-receive.
-> > + */
-> > +struct w1_uart_device {
-> > +	struct serdev_device *serdev;
-> > +	struct w1_bus_master bus;
-> > +
-> > +	struct w1_uart_config cfg_reset;
-> > +	struct w1_uart_config cfg_touch_0;
-> > +	struct w1_uart_config cfg_touch_1;
-> > +
-> > +	struct completion rx_byte_received;
-> > +	int rx_err;
-> > +	u8 rx_byte;
-> > +
-> 
-> How did you solve my comment and checkpatch warning from previous version:
-> 
-> CHECK: struct mutex definition without comment
-> 
+> If you compare it with the output of libbsd, the return code seems to be
+> exactly that. I was surprised too, as the manpage seem so clear... :-/
 
-Thanks, I missed the option --strict in checkpatch.pl and dit not get
-this warning. Will add a comment.
+I trust you since I have not tried. I understand the rationale, i.e. still
+being able to realloc() the new string, except that the caller must be
+extremely prudent here since there's no way for it to know that it faces
+a non-terminated string and that it must resort to a special code path
+that relies on two strlcpy() instead of strlcat().
 
-> > +	struct mutex mutex;
-> > +};
-> > +
-> > +/*
-> > + * struct w1_uart_limits - limits for 1-Wire operations
-> > + *
-> > + * @baudrate: Requested baud-rate to create 1-Wire timing pattern
-> > + * @bit_min_us: minimum time for a bit (in us)
-> > + * @bit_max_us: maximum time for a bit (in us)
-> > + * @sample_us: timespan to sample 1-Wire response
-> > + * @cycle_us: duration of the 1-Wire cycle
-> > + */
-> > +struct w1_uart_limits {
-> > +	unsigned int baudrate;
-> > +	unsigned int bit_min_us;
-> > +	unsigned int bit_max_us;
-> > +	unsigned int sample_us;
-> > +	unsigned int cycle_us;
+> > Above ret will be bound to the existing size so a realloc wouldn't work.
+> > Thus I think the correct solution is:
 > 
-> ...
-> 
-> > +/*
-> > + * Configuration for write-1 and read cycle (touch bit 1)
-> > + * - bit_min_us is 5us, add margin and use 6us
-> > + * - limits for sample time 5us-15us, use 15us
-> > + */
-> > +static int w1_uart_set_config_touch_1(struct w1_uart_device *w1dev)
-> > +{
-> > +	struct serdev_device *serdev = w1dev->serdev;
-> > +	struct device_node *np = serdev->dev.of_node;
-> > +
-> > +	struct w1_uart_limits limits = { .baudrate = 115200,
-> > +					 .bit_min_us = 6,
-> > +					 .bit_max_us = 15,
-> > +					 .sample_us = 15,
-> > +					 .cycle_us = 70 };
-> > +
-> > +	of_property_read_u32(np, "write-1-bps", &limits.baudrate);
-> > +
-> > +	return w1_uart_set_config(serdev, &limits, &w1dev->cfg_touch_1);
-> > +}
-> > +
-> > +/*
-> > + * Configure and open the serial device
-> > + */
-> > +static int w1_uart_serdev_open(struct w1_uart_device *w1dev)
-> > +{
-> > +	struct serdev_device *serdev = w1dev->serdev;
-> > +	struct device *dev = &serdev->dev;
-> > +	int ret;
-> > +
-> > +	/* serdev is automatically closed on unbind or driver remove */
-> 
-> Drop comment, that's obvious. That's what devm* functions are for.
-> 
-> 
+> Note that this implementation fails the tests added on patch 4. I've tested
+> them (output and return code) to match the libbsd implementation.
 
-Ok.
+OK.
 
-> > +	ret = devm_serdev_device_open(dev, serdev);
+> > The test inside the loop is going to make this not very efficient. Same
+> > for the fact that we're measuring the length of src twice (once via
+> > strlen, a second time through the loop). I've just had a look and it
+> > compiles to 77 bytes at -Os. A simpler variant would consist in trying
 > 
+> How are you measuring the size?
 > 
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = serdev_device_set_parity(serdev, SERDEV_PARITY_NONE);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "set parity failed\n");
-> > +		return ret;
-> > +	}
+> I've added noinline to strlcat to the version I sent, so now it is shown in
+> nm, but I have this as output:
 > 
+> $ nm --size -t x test.o
+> 	0000000000000004 V errno
+> 	0000000000000006 t strlcat.constprop.0
+> 	0000000000000008 V _auxv
+> 	0000000000000008 V environ
+> 	000000000000000e W strlen
+> 	000000000000000f W _start
+> 	0000000000000018 W raise
+> 	000000000000001b W abort
+> 	000000000000004c T main
+> 	000000000000005a t u64toa_r.isra.0
+> 	0000000000000095 W _start_c
+> 	00000000000002a8 t printf
 > 
-> Best regards,
-> Krzysztof
+> How are you measuring it there?
 > 
+> Sorry, I'm not familiar with this :)
 
-Thanks!
-Christoph
+Oh, sorry for not providing the detalis! I just remove "static" in front
+of the function. The reason for this is that if the function is used only
+once in a program, and it is inlined, you never know in practice how it
+will be inlined, depending on the opportunities the compiler will face
+in the calling function. However, when it compiles it into its own
+function, you get a better picture at the emitted code.
+
+A second option, that's sometimes more convenient when you're hacking
+directly in the include files themselves, is to write wrappers around
+these functions and look at them. For example:
+
+  $ cd tools/testing/selftests/nolibc/
+  $ printf "size_t test_strlcat(char *dst, const char *src, size_t size) { return strlcat(dst, src, size); }\n" | gcc-9.5 -xc -c -Os -I sysroot/x86/include -include nolibc.h - -o test.o
+  $ nm --size test.o
+  0000000000000004 V errno
+  0000000000000008 V _auxv
+  0000000000000008 V environ
+  000000000000000f W _start
+  0000000000000018 W raise
+  000000000000001b W abort
+  0000000000000025 T test_strlcat
+  000000000000008d W _start_c
+  $ objdump --disassemble=test_strlcat test.o
+  ...
+
+I can't say I'm having a preference, it depends how I'm proceeding.
+When comparing multiple variants of a same function, I generally like
+to just copy them into a new file under different names so that I can
+compare them all at once.
+
+> > to copy what fits in <size> and once reached, go on just for trailing
+> > zero and the size measurement:
+> > 
+> > size_t strlcat(char *dst, const char *src, size_t size)
+> > {
+> >          size_t len = strlen(dst);
+> 
+> The thing is, we need to return always at least strlen(src). Maybe plus
+> something else. Even if size==0 and we don't copy anything.
+
+Yes, but that's exactly what the function does, look at the end:
+
+        while (*src++)
+                len++;
+
+        return len;
+
+> Maybe we can special case that, so we simplify the loop, and it's smaller?
+
+As a general rule, to keep code small it's best to avoid special cases
+and to make them part of the general case as much as possible. And if
+some special cases need to be made, as much as possible we need to
+arrange them around existing jump or return points, i.e. preferably
+just before a return statement that uses a value that was already
+computed, or sometimes around a break or continue in a loop, but
+conditions inside loops should be avoided as much as possible because
+compilers often maintain multiple indexes inside loops (e.g. both target
+pointer and a counter), while conditions also tend to consume registers
+that force the compiler to perform some permutations to keep all of its
+variables available, the worst being calling functions from loops since
+the ABI indicates that a number of registers are clobbered and need to
+be saved and restored. But these are essentially hints and need to be
+verified on a case-by-case basis. Similarly, some architectures provide
+convenient addressing mechanisms such as a=b[c+d] that we have on x86
+and not necessarily elsewhere, and which favors the usage of offsets
+instead of pointers. But again it depends on a lot of variables.
+
+> I've been playing, but as I can't measure the size, I'm not sure what is
+> really better. I'd like to play a little once I know how to measure it :)
+
+Be careful not to spend too much time on it, nm --size and objdump are
+quickly addictive ;-)
+
+Willy
 
