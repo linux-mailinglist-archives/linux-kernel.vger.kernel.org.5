@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-62632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FF338523DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:35:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B878523DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE49A1F22573
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:35:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3624285ECB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C19EBE49;
-	Tue, 13 Feb 2024 00:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F67E570;
+	Tue, 13 Feb 2024 00:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jks511qW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Huuc3P6A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE6A10FF;
-	Tue, 13 Feb 2024 00:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F96BE6B;
+	Tue, 13 Feb 2024 00:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783654; cv=none; b=iCzn5uN5r1Ot0+pZJLwlId03ZX4c414kSn2UmcB4wlomNZ9uKk5Qy7aPx3pfCTCGlKTuLycFmdmBf8895rJ8hZtIdRqUsPIsEVqKbLA5toHsxpIlcayQLR0D8GenA7+sDLp0njPW3ioaoXmk88ZufIhzKYVZX5FXe7AcWh+0xRY=
+	t=1707783656; cv=none; b=LpSD1MkFwUtUV7RD8mXcAN01qyJWz92+VsE0M42M/eHONDxOSW7swjaW5X4s/VYhBElKdJE0xLu7Fndbj9/+dKjNjiIuQGaRruDd6FPaomLSaCGjWN2DAHg0NLMxFdGSzHCjPKUK92NP+M4xCpgsYYBVKnZIQg/0qO7aG72Ol1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783654; c=relaxed/simple;
-	bh=DdzK22q+qsA1FusfEyCR6OfvhS+La0DV+WT2cEim5mw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WPFOEE/9XUrrsy/V3uzP/7N/ZtA/l7SRVFDGKL6XKUXODsrlm+wCYJTE//V7Ei5H719cS18XkQgEnJn5AZYm1cBRFsby6AU0zU87ReL1l9N6N5RTYC8ft+rTh01My/LUWmi/o7w6aYSdSk8aqwX0TRvSnnsIFt1aU8Vbh3MoBFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jks511qW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA18C433C7;
-	Tue, 13 Feb 2024 00:20:53 +0000 (UTC)
+	s=arc-20240116; t=1707783656; c=relaxed/simple;
+	bh=4q8f+1EZ96FP3EZ+oGugQyTMVbkPPMDmROXjxrksiuk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Kr9k/1RTcoYnCbMzhmL+E/9fRc/sGs6ao9bKjRBwCw510PSvzhc2DMpVe/dO4CfIm8o9uMTWz2mKDRVmE4rFZwrfTNbBQfZvGpUCgUFXeGgcS6O0ngeiAax+B7aJL2NHSCVV7gY91m/wBTTb54u5C+mZKApVrmkyMjPHgz/RV7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Huuc3P6A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC2DC43390;
+	Tue, 13 Feb 2024 00:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783654;
-	bh=DdzK22q+qsA1FusfEyCR6OfvhS+La0DV+WT2cEim5mw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Jks511qWpabRviuxoCXeL75aIG56oEoSigLTMMqGEKg6ZiQpYBLjhy1xOX+kZWQsq
-	 Mak8tt+gEhsuRTvmEXomfp/PYTNXtIoQfifBJSlGO4nGEKbH7Wq3Aib/S+iu0/JRH2
-	 PLv5J16H5ozfsDe7xi0ymzHIxdhKAg0HOtq6kfd7yQFpIs4jFP6PBIig7JHFbBre4A
-	 XGY3wAFPH+6ldaQTn2Zk29vsw4k0QOZ89zN3ljN6XNVIv5t4TydIcow2k6Ll9lLxM+
-	 3dHuLDyVeQTaeCjXB2qXnJfsZ+wzj6r3Uixg3I4S4ZYE6BFNuVoBlS6Yrmz34tbgy/
-	 21rAcQKgDw0xw==
+	s=k20201202; t=1707783655;
+	bh=4q8f+1EZ96FP3EZ+oGugQyTMVbkPPMDmROXjxrksiuk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Huuc3P6AMDoHSyTZB7l/mVZrVAqh6oPFdho4waJ5Mk6wdBDemNs/lGwZCnDdJTZ2y
+	 zZ1v0BAX8hiuIlXEytSz1X/NQ/Ey0hReY4BnbsBgPwKK/1fKiqbaXFndPvGro92cE6
+	 xPyiiXWb0k5LWczjMBwvt50gfm1SmkvjAVKnjcfwo/D3/Ezalj4qyA1lw9ffcPGxRe
+	 4icMyI1p6uzVnoH/QLdUD7Zp3c6J1KNEF54rpKfsC+MhBXYwi3ocZFsWfyY6Skgxxp
+	 05UHDCqckxrmHGSIeh/kquhefr8/fzcupP4kpboU/IVIvFafaQVN4BHfmUexocMdga
+	 cJWKb1pXZZnBg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
 	Sasha Levin <sashal@kernel.org>,
 	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 01/51] fs/ntfs3: Improve alternative boot processing
-Date: Mon, 12 Feb 2024 19:19:38 -0500
-Message-ID: <20240213002052.670571-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 02/51] fs/ntfs3: Modified fix directory element type detection
+Date: Mon, 12 Feb 2024 19:19:39 -0500
+Message-ID: <20240213002052.670571-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
+References: <20240213002052.670571-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,80 +65,59 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit c39de951282df9a60ef70664e4378d88006b2670 ]
+[ Upstream commit 22457c047ed971f2f2e33be593ddfabd9639a409 ]
+
+Unfortunately reparse attribute is used for many purposes (several dozens).
+It is not possible here to know is this name symlink or not.
+To get exactly the type of name we should to open inode (read mft).
+getattr for opened file (fstat) correctly returns symlink.
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/super.c | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ fs/ntfs3/dir.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index f763e3256ccc..aa3b2c262ab6 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -865,6 +865,7 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 	u16 fn, ao;
- 	u8 cluster_bits;
- 	u32 boot_off = 0;
-+	sector_t boot_block = 0;
- 	const char *hint = "Primary boot";
- 
- 	/* Save original dev_size. Used with alternative boot. */
-@@ -872,11 +873,11 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
- 
- 	sbi->volume.blocks = dev_size >> PAGE_SHIFT;
- 
--	bh = ntfs_bread(sb, 0);
-+read_boot:
-+	bh = ntfs_bread(sb, boot_block);
- 	if (!bh)
--		return -EIO;
-+		return boot_block ? -EINVAL : -EIO;
- 
--check_boot:
- 	err = -EINVAL;
- 
- 	/* Corrupted image; do not read OOB */
-@@ -1107,26 +1108,24 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
+index ec0566b322d5..22ede4da0450 100644
+--- a/fs/ntfs3/dir.c
++++ b/fs/ntfs3/dir.c
+@@ -309,11 +309,31 @@ static inline int ntfs_filldir(struct ntfs_sb_info *sbi, struct ntfs_inode *ni,
+ 		return 0;
  	}
  
- out:
--	if (err == -EINVAL && !bh->b_blocknr && dev_size0 > PAGE_SHIFT) {
-+	brelse(bh);
+-	/* NTFS: symlinks are "dir + reparse" or "file + reparse" */
+-	if (fname->dup.fa & FILE_ATTRIBUTE_REPARSE_POINT)
+-		dt_type = DT_LNK;
+-	else
+-		dt_type = (fname->dup.fa & FILE_ATTRIBUTE_DIRECTORY) ? DT_DIR : DT_REG;
++	/*
++	 * NTFS: symlinks are "dir + reparse" or "file + reparse"
++	 * Unfortunately reparse attribute is used for many purposes (several dozens).
++	 * It is not possible here to know is this name symlink or not.
++	 * To get exactly the type of name we should to open inode (read mft).
++	 * getattr for opened file (fstat) correctly returns symlink.
++	 */
++	dt_type = (fname->dup.fa & FILE_ATTRIBUTE_DIRECTORY) ? DT_DIR : DT_REG;
 +
-+	if (err == -EINVAL && !boot_block && dev_size0 > PAGE_SHIFT) {
- 		u32 block_size = min_t(u32, sector_size, PAGE_SIZE);
- 		u64 lbo = dev_size0 - sizeof(*boot);
- 
--		/*
--	 	 * Try alternative boot (last sector)
--		 */
--		brelse(bh);
--
--		sb_set_blocksize(sb, block_size);
--		bh = ntfs_bread(sb, lbo >> blksize_bits(block_size));
--		if (!bh)
--			return -EINVAL;
--
-+		boot_block = lbo >> blksize_bits(block_size);
- 		boot_off = lbo & (block_size - 1);
--		hint = "Alternative boot";
--		dev_size = dev_size0; /* restore original size. */
--		goto check_boot;
-+		if (boot_block && block_size >= boot_off + sizeof(*boot)) {
-+			/*
-+			 * Try alternative boot (last sector)
-+			 */
-+			sb_set_blocksize(sb, block_size);
-+			hint = "Alternative boot";
-+			dev_size = dev_size0; /* restore original size. */
-+			goto read_boot;
++	/*
++	 * It is not reliable to detect the type of name using duplicated information
++	 * stored in parent directory.
++	 * The only correct way to get the type of name - read MFT record and find ATTR_STD.
++	 * The code below is not good idea.
++	 * It does additional locks/reads just to get the type of name.
++	 * Should we use additional mount option to enable branch below?
++	 */
++	if ((fname->dup.fa & FILE_ATTRIBUTE_REPARSE_POINT) &&
++	    ino != ni->mi.rno) {
++		struct inode *inode = ntfs_iget5(sbi->sb, &e->ref, NULL);
++		if (!IS_ERR_OR_NULL(inode)) {
++			dt_type = fs_umode_to_dtype(inode->i_mode);
++			iput(inode);
 +		}
- 	}
--	brelse(bh);
++	}
  
- 	return err;
+ 	return !dir_emit(ctx, (s8 *)name, name_len, ino, dt_type);
  }
 -- 
 2.43.0
