@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-64540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE544854016
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:28:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8283D854015
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6F41F26414
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:28:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FC2728FCD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3999A6341A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269E46340C;
 	Tue, 13 Feb 2024 23:28:26 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E753D63100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFD263106
 	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707866905; cv=none; b=ZpOY/uVWqIuSSKqFC2/ChmeViZ45n7omfEnozpx+RkI6OWb3zxPWiBaLk1nDUBqKRkg4K50cQy4n2pg6rPy8JyJZ86Cn7Loyxi+frExVeL39rhMBx/FqBjmPhfNCif5iYn0OlS0H96/LQNTL55+7R4Cm2rSVwdYp2h9yWLYEPrY=
+	t=1707866905; cv=none; b=OcpKASm3wg3jIwXRriNeD7OykG2BxEJbUJZuiu2rQk4PnbLY/ABSR/QXMUBTWn73PhgcyBmZ+551j4muzz0HIjKbBs+sNcRDs6NCVOvmwZX2RR+24q+Va0MxiQZCozIO+9BGlpfn+xouRcOEKbL62GeAAyaIkGduElJaHcLhYQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707866905; c=relaxed/simple;
-	bh=CVvV8hDYr9bL6m/v186v76mN5LV1BfGeIcNkfm5yuxU=;
+	bh=30YYmuToXt0Be5FF1D9822Y6K2GuA90aOezsbaqJW0s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bBb16mw4KHbyJwRaSFR6JOb6WuOGU3aKAgcGCF6OAar5naAs2RhuJAp+L71oGxoI08bBs/GBJzsqhauJ2aGK1+vB5izHS4PnftvJ5l/f+jdcnA4PlSJZmjuiSYDUSU1hTBmpg6/2hjeIATPJmrYiyjtJ8IG5zeif2AF4vtmcNfM=
+	 In-Reply-To:To:Cc; b=MaV2dA8pIMgXJQ1orxBQmuGLQ24G1DB65lZp/Begp8ZcGbQG/Dw+Yk5lPfJVEB6NWujHRZaQnY26zH6hjKj4hPMC9QkPdJ8Mt36a/9bCOSvdSctP/xAl3aSkHRLvwRo9fjSs1q5HO8fOYB2G5aAIVzKqorHw6dKHA4EkmpRVYeY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,21 +32,21 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CI-0000eT-Ig; Wed, 14 Feb 2024 00:28:18 +0100
+	id 1ra2CI-0000eR-Ij; Wed, 14 Feb 2024 00:28:18 +0100
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CH-000Zco-UN; Wed, 14 Feb 2024 00:28:17 +0100
+	id 1ra2CH-000Zcp-Up; Wed, 14 Feb 2024 00:28:17 +0100
 Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
 	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
 	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1ra2CH-002uYW-2s;
+	id 1ra2CH-002uYW-2t;
 	Wed, 14 Feb 2024 00:28:17 +0100
 From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Wed, 14 Feb 2024 00:28:00 +0100
-Subject: [PATCH 1/3] usb: gadget: uvc: drop unnecessary check for always
- set req
+Date: Wed, 14 Feb 2024 00:28:01 +0100
+Subject: [PATCH 2/3] usb: gadget: uvc: refactor the check for a valid
+ buffer in the pump worker
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240214-uvc-gadget-cleanup-v1-1-de6d78780459@pengutronix.de>
+Message-Id: <20240214-uvc-gadget-cleanup-v1-2-de6d78780459@pengutronix.de>
 References: <20240214-uvc-gadget-cleanup-v1-0-de6d78780459@pengutronix.de>
 In-Reply-To: <20240214-uvc-gadget-cleanup-v1-0-de6d78780459@pengutronix.de>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
@@ -64,21 +64,21 @@ To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Michael Grzeschik <m.grzeschik@pengutronix.de>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1032;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1153;
  i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=CVvV8hDYr9bL6m/v186v76mN5LV1BfGeIcNkfm5yuxU=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBly/sQQgP/ZZy8ylorPv7GT/3A9CuCeeR014oGi
- 9Gb6LEjUnKJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZcv7EAAKCRC/aVhE+XH0
- q4VlD/9MdVUKJntclRLZA9+6LfgBeSjMnA8IU3fGMyrHpVnji8ec9PYNN6B32ZBAwLVrXO2AJMe
- /uwnF1rwcMZh3SNwuYd8/F4KNHoGczMBLKde7lMbMqe/dw/ZMFmfu+X8vSFtsEiG7tglYclDVF9
- b7dPDaWNtDfC8NFeDDSpEBXKt6IXAmvrmnU7O2gjA/C7jEwRiVNlwNHemS5aGag001x+ZMCePUJ
- ERP9/oKtX/YbayjsgX8ELtbKtTXP7JafYBCluP2wVCi61KH3hsAr2htd64TEj6Rt9g6F0oWYqqj
- dAgf+AxbexdinTMdIIeUX/pzFKsIQ6vMUctyzGEzRvjrK7YoIIE4SC4ojlEWYqajkKs68KFUvS0
- zVld8t8K7bXeOQjBd5b4p5glYwR5pelkZbqansD/CF105Bg5slCKJeAXb1XEQaN11HtATeYsjkj
- wsSHPL0KuzvE2+BGCSpkRWT+HgiYpDk+k/iAm3i5p8EGPWcFmAlVWzitrbGfxDBQoRiSVbJj12g
- 8WkmKm194XIg11UAXmxfLaOHF7N285QK816uedbPsDfKpebN8nbGjZxdNQOpXbVvH+CVNgBZtJ8
- o5uqotVDYFQLZxDLd30L6W5x68yJsfNr+BhHIYBga1tPOXKeBITfsn7ku/Win2YMAuqmrK8qYJ4
- aeAfTYjv/EL7ImQ==
+ bh=30YYmuToXt0Be5FF1D9822Y6K2GuA90aOezsbaqJW0s=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBly/sR6vOuNRf8bz1usN1hrU8dGhJSMxHuyafO/
+ vgaWNxSX/eJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZcv7EQAKCRC/aVhE+XH0
+ q3pXEACPUYRmu19z11qUsOha/z9QRa+P7klnxF6Mf3Zgi6d8WSPDG3m1wdvDxkGuPcRJ6ksszw6
+ qBmF8jzi/kPJFD8aOZwdaPExVhPEP2QN9n7k09m2C+hLlEzstCtqMF4oIUseP4P+4ERtJDac0JW
+ qux4XtvYoU2d4OIMKZ0jHTLKT2TDe+QSuvYhFCFse0EUufu1lJvQrY36oaYFbIMGRN4jIqS3/OL
+ LqmIQPuKzluEaypn5dL2EiUMt/e8SWbtBGowp6byn0x2YK7x14x7VaZqzcWRsF1c3W77PS9GFtA
+ kVdq9F2uUQaI/MOGtx/aYZ0c3Z+C4JTV0JJOjoc+3dgsNXRqn+qOE/Wusr3fMgKd+mbg4B970lE
+ pZETUw5p5wv1CwsbcKeEp6MZZGLU4ujE3ortF9rWAAJx4WJzlXiYRoTnBg7TrfFf+41ssu5kdPU
+ ZcXN0G6VQlz7r42JKbezSEIeGbjhUAEFpMv3RDOqxm1DUw0z+Ao9KfAV724kGW407Y8gE8kWfmT
+ D5Xw9BMLebOHgSiEqJPtKzym3/fkI6uc2pMycN7pZzgqhLLiawSLiYqDKiI+bV6Tucy6/mOV2cZ
+ VYTZr5upT5Xy0zxQKbIr9nb968YB9ybO+KD7A75HetLTqQ5un+Daq+T0KJYhJdAlXf2QtGeYwU5
+ lizaj9dmtWYG1aw==
 X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
  fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -86,35 +86,39 @@ X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-The pump function is running in an while(1) loop. The only case this
-loop will be escaped is the two breaks. In both cases the req is valid.
-Therefor the check for an not set req can be dropped and setting the req
-to NULL does also has never any effect.
+By toggling the condition check for a valid buffer, the else path
+can be completely avoided.
 
 Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 ---
- drivers/usb/gadget/function/uvc_video.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/usb/gadget/function/uvc_video.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index dd3241fc6939d..b17c61c932652 100644
+index b17c61c932652..b4f3b3c784218 100644
 --- a/drivers/usb/gadget/function/uvc_video.c
 +++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -623,14 +623,7 @@ static void uvcg_video_pump(struct work_struct *work)
- 			uvcg_queue_cancel(queue, 0);
+@@ -594,10 +594,7 @@ static void uvcg_video_pump(struct work_struct *work)
+ 		 */
+ 		spin_lock_irqsave(&queue->irqlock, flags);
+ 		buf = uvcg_queue_head(queue);
+-
+-		if (buf != NULL) {
+-			video->encode(req, video, buf);
+-		} else {
++		if (!buf) {
+ 			/*
+ 			 * Either the queue has been disconnected or no video buffer
+ 			 * available for bulk transfer. Either way, stop processing
+@@ -607,6 +604,8 @@ static void uvcg_video_pump(struct work_struct *work)
  			break;
  		}
--
--		/* The request is owned by  the endpoint / ready list. */
--		req = NULL;
- 	}
--
--	if (!req)
--		return;
--
- 	spin_lock_irqsave(&video->req_lock, flags);
- 	if (video->is_enabled)
- 		list_add_tail(&req->list, &video->req_free);
+ 
++		video->encode(req, video, buf);
++
+ 		spin_unlock_irqrestore(&queue->irqlock, flags);
+ 
+ 		spin_lock_irqsave(&video->req_lock, flags);
 
 -- 
 2.39.2
