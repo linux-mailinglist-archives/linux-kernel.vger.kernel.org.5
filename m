@@ -1,182 +1,131 @@
-Return-Path: <linux-kernel+bounces-63453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E789852FBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:42:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 878AA852FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB06128ACEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:42:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 447A428AD2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F190937706;
-	Tue, 13 Feb 2024 11:42:19 +0000 (UTC)
-Received: from r3-11.sinamail.sina.com.cn (r3-11.sinamail.sina.com.cn [202.108.3.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764D5381A0;
+	Tue, 13 Feb 2024 11:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZGgT/ET7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F93E38DD9
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 11:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA393376F3;
+	Tue, 13 Feb 2024 11:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707824539; cv=none; b=by26Elcg9L2pRXOk1oXPWylQD1u0lsqKoO5dPuZ/9I9R9fDKW3LqMH3DecuVLmgBGbaPI7Qz855c1Ob5E6cx0d8Tne/1l2tt8WaLSPGCBGB+ti66CcyMWCdT2xoAfFzKN+vE2Jl1pivC3kzxxseoVaLHVOPZm8oOvJU/3M23ZJ0=
+	t=1707824521; cv=none; b=KJmIemVvSu9Ih3vwwjBscVbZtCSKu172ys2eLgh6K5NCv7s+dIll4x524zdlPCD+7LTWpRGd5xOBi1mtkVe9UObFZJ3HFdjigtDEQ6Nizjrt28YuJ54HIvAVN7IMxIYZz759pEcblGMOTTPpYmlKExwsZSgBPn9kp3TAk012Y1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707824539; c=relaxed/simple;
-	bh=oSxe1FJZlCGcbRapDJTRHz75Y/P6sXJvOGbg3MtEggU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SfvJgWCIa5Tz/bFUO7ufjgLjZwT5pxxp7FylGLo9CKrSrnL6bbjhJkU1W7ZnR2Glw3EatfRmOkNLMh9V7NQXI9EZdsvaWX4E2iORrFe8xprG3AJCuLRgM4qK3o40ScI4opDXaYXAKTn49xsO6pTVsARNFJJxpbRXrJW3U4pD1o8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=202.108.3.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([114.249.59.61])
-	by sina.com (10.182.253.22) with ESMTP
-	id 65CB558C00007BC9; Tue, 13 Feb 2024 19:42:06 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 3290486816228
-X-SMAIL-UIID: FEEA4E0FB2D3410CBE3ECB306D4FB6FA-20240213-194206-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com>
-Cc: almaz.alexandrovich@paragon-software.com,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
-Date: Tue, 13 Feb 2024 19:41:50 +0800
-Message-ID: <20240213114151.982-1-hdanton@sina.com>
-In-Reply-To: <000000000000998cff06113e1d91@google.com>
-References: 
+	s=arc-20240116; t=1707824521; c=relaxed/simple;
+	bh=1GtEqKV+wQs0MT2SIs+9S6c4LRpp7sxXEmK272Gtxpg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=S32zIvEFuX6zTXkA5Qg9jiaUT8nleJrj8N0vi7s4otDpvMiU8qowEtlENoDSAqdhhUAsDeZKlUmKPqosq2ItYwAWI/jTwe6w3skbv9eVMEDrDKn2axadAcX68Cs071oeZ0+Pg/a4WoeXI/65xUlCjqu75ohduPWkxbn5jfmTVmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZGgT/ET7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED0DC433C7;
+	Tue, 13 Feb 2024 11:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707824521;
+	bh=1GtEqKV+wQs0MT2SIs+9S6c4LRpp7sxXEmK272Gtxpg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ZGgT/ET7ls9NrBGdLxIAC0UWI4xJYDbxoV9/v+C/uAWRn0JFRVxM93plQwxAKyLBb
+	 Hly2wL+syAtopYQ6Vb0znNINhkDdxjsOgd6XDrJ/vYfJnBPNgL70AQ6H4UdXSvYzRn
+	 Zx1Qzk++dZx9WWT/Iuwgjuo7p5Fd0dchYjhkL2a9GRD1nLavEoBWbEp0L4ySefp8Zf
+	 HN1WV6a5QHbOLs1Ffj2qyxMCx3LgyOW0TfSGwARG1bByAPHEJ0DBI4EhmkzsduosLi
+	 9E6eiG7fR899DrgOlWWMXVGz+feqhf4OLNnJi8uOoR6VgK9cWa1nfDbJADd58FIJDz
+	 OCMMIQT1kIujA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rZrB2-000000007yd-1wrs;
+	Tue, 13 Feb 2024 12:42:17 +0100
+Date: Tue, 13 Feb 2024 12:42:16 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: drm/msm: DisplayPort regressions in 6.8-rc1
+Message-ID: <ZctVmLK4zTwcpW3A@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 12 Feb 2024 23:12:22 -0800
-> HEAD commit:    716f4aaa7b48 Merge tag 'vfs-6.8-rc5.fixes' of git://git.ke..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=100fd062180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1d7c92dd8d5c7a1e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c2ada45c23d98d646118
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11fcbd48180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f6e642180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/ca4bf59e5a18/disk-716f4aaa.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/3d7ade517e63/vmlinux-716f4aaa.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/e13f7054c0c1/bzImage-716f4aaa.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/00ba9c2f3dd0/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com
-> 
-> loop0: detected capacity change from 0 to 4096
-> ntfs3: loop0: Different NTFS sector size (4096) and media sector size (512).
-> ntfs3: loop0: ino=5, "/" ntfs_iget5
-> ============================================
-> WARNING: possible recursive locking detected
-> 6.8.0-rc4-syzkaller-00003-g716f4aaa7b48 #0 Not tainted
-> --------------------------------------------
-> syz-executor354/5071 is trying to acquire lock:
-> ffff888070ee0100 (&ni->ni_lock#3){+.+.}-{3:3}, at: ntfs_set_state+0x1ff/0x6c0 fs/ntfs3/fsntfs.c:947
-> 
-> but task is already holding lock:
-> ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1141 [inline]
-> ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_write_inode+0x1bc/0x1010 fs/ntfs3/frecord.c:3265
-> 
-This report looks false positive but raises the question -- what made lockedp
-pull the wrong trigger? Because of the correct lock_class_key in mutex_init()
-instead of &ni->ni_lock?
+Hi,
 
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
-> 
->        CPU0
->        ----
->   lock(&ni->ni_lock#3);
->   lock(&ni->ni_lock#3);
-> 
->  *** DEADLOCK ***
-> 
->  May be due to missing lock nesting notation
-> 
-> 3 locks held by syz-executor354/5071:
->  #0: ffff88802223a420 (sb_writers#9){.+.+}-{0:0}, at: do_sys_ftruncate+0x25c/0x390 fs/open.c:191
->  #1: ffff888070de3ea0 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
->  #1: ffff888070de3ea0 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}, at: do_truncate+0x20c/0x310 fs/open.c:64
->  #2: ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_trylock fs/ntfs3/ntfs_fs.h:1141 [inline]
->  #2: ffff888070de3c00 (&ni->ni_lock#3){+.+.}-{3:3}, at: ni_write_inode+0x1bc/0x1010 fs/ntfs3/frecord.c:3265
-> 
-> stack backtrace:
-> CPU: 0 PID: 5071 Comm: syz-executor354 Not tainted 6.8.0-rc4-syzkaller-00003-g716f4aaa7b48 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
->  check_deadlock kernel/locking/lockdep.c:3062 [inline]
->  validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
->  __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
->  lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
->  __mutex_lock_common kernel/locking/mutex.c:608 [inline]
->  __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
->  ntfs_set_state+0x1ff/0x6c0 fs/ntfs3/fsntfs.c:947
->  ntfs_iget5+0x3f0/0x3b70 fs/ntfs3/inode.c:535
->  ni_update_parent+0x943/0xdd0 fs/ntfs3/frecord.c:3218
->  ni_write_inode+0xde9/0x1010 fs/ntfs3/frecord.c:3324
->  ntfs_truncate fs/ntfs3/file.c:410 [inline]
->  ntfs3_setattr+0x950/0xb40 fs/ntfs3/file.c:703
->  notify_change+0xb9f/0xe70 fs/attr.c:499
->  do_truncate+0x220/0x310 fs/open.c:66
->  do_sys_ftruncate+0x2f7/0x390 fs/open.c:194
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> RIP: 0033:0x7fd0ca446639
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fff0baab678 EFLAGS: 00000246 ORIG_RAX: 000000000000004d
-> RAX: ffffffffffffffda RBX: 00007fff0baab848 RCX: 00007fd0ca446639
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-> RBP: 00007fd0ca4d8610 R08: 0000000000000000 R09: 00007fff0baab848
-> R10: 000000000001f20a R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007fff0baab838 R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+Since 6.8-rc1 the internal eDP display on the Lenovo ThinkPad X13s does
+not always show up on boot.
+
+The logs indicate problems with the runtime PM and eDP rework that went
+into 6.8-rc1:
+
+	[    6.006236] Console: switching to colour dummy device 80x25
+	[    6.007542] [drm:dpu_kms_hw_init:1048] dpu hardware revision:0x80000000
+	[    6.007872] [drm:drm_bridge_attach [drm]] *ERROR* failed to attach bridge /soc@0/phy@88eb000 to encoder TMDS-31: -16
+	[    6.007934] [drm:dp_bridge_init [msm]] *ERROR* failed to attach panel bridge: -16
+	[    6.007983] msm_dpu ae01000.display-controller: [drm:msm_dp_modeset_init [msm]] *ERROR* failed to create dp bridge: -16
+	[    6.008030] [drm:_dpu_kms_initialize_displayport:588] [dpu error]modeset_init failed for DP, rc = -16
+	[    6.008050] [drm:_dpu_kms_setup_displays:681] [dpu error]initialize_DP failed, rc = -16
+	[    6.008068] [drm:dpu_kms_hw_init:1153] [dpu error]modeset init failed: -16
+	[    6.008388] msm_dpu ae01000.display-controller: [drm:msm_drm_kms_init [msm]] *ERROR* kms hw init failed: -16
+	
+and this can also manifest itself as a NULL-pointer dereference:
+
+	[    7.339447] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+	
+	[    7.643705] pc : drm_bridge_attach+0x70/0x1a8 [drm]
+	[    7.686415] lr : drm_aux_bridge_attach+0x24/0x38 [aux_bridge]
+	
+	[    7.769039] Call trace:
+	[    7.771564]  drm_bridge_attach+0x70/0x1a8 [drm]
+	[    7.776234]  drm_aux_bridge_attach+0x24/0x38 [aux_bridge]
+	[    7.781782]  drm_bridge_attach+0x80/0x1a8 [drm]
+	[    7.786454]  dp_bridge_init+0xa8/0x15c [msm]
+	[    7.790856]  msm_dp_modeset_init+0x28/0xc4 [msm]
+	[    7.795617]  _dpu_kms_drm_obj_init+0x19c/0x680 [msm]
+	[    7.800731]  dpu_kms_hw_init+0x348/0x4c4 [msm]
+	[    7.805306]  msm_drm_kms_init+0x84/0x324 [msm]
+	[    7.809891]  msm_drm_bind+0x1d8/0x3a8 [msm]
+	[    7.814196]  try_to_bring_up_aggregate_device+0x1f0/0x2f8
+	[    7.819747]  __component_add+0xa4/0x18c
+	[    7.823703]  component_add+0x14/0x20
+	[    7.827389]  dp_display_probe+0x47c/0x568 [msm]
+	[    7.832052]  platform_probe+0x68/0xd8
+
+Users have also reported random crashes at boot since 6.8-rc1, and I've
+been able to trigger hard crashes twice when testing an external display
+(USB-C/DP), which may also be related to the DP regressions.
+
+I've opened an issue here:
+
+	https://gitlab.freedesktop.org/drm/msm/-/issues/51
+
+but I also want Thorsten's help to track this so that it gets fixed
+before 6.8 is released.
+
+#regzbot introduced: v6.7..v6.8-rc1
+
+The following series is likely the culprit:
+
+	https://lore.kernel.org/all/1701472789-25951-1-git-send-email-quic_khsieh@quicinc.com/
+
+Johan
 
