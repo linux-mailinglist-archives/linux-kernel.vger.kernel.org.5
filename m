@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-63510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C8C853097
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:34:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 312C185309A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57F4CB22DF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:34:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 556621C26276
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 12:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A153CF73;
-	Tue, 13 Feb 2024 12:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B50850246;
+	Tue, 13 Feb 2024 12:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YMYtD1nz"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Nxf4nv38"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD4B4CB22
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224BB4E1BA
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707827636; cv=none; b=slhi5IuukL/ra7b5NRJQ+WT29cyCiNqVE78AQawFTEVloP9pSBJM8oqTTTbF7OmdKabz3BVksavqQPsQ2nngqNV/og8GHRYk9vmmkw1Ui7beAABaUjR37kdVfYugnObaLPlT8lHC1gslhJazn+7j2NqrNZ6MmBLhS0PKtQLtgw4=
+	t=1707827639; cv=none; b=rH5MKN9dJcyEJb9vYUKLhVT45NbvJOOe834s6X/Hjrhn/vZAI+ZsdZarmNmi783YgX9Qsvm0nM57iEK8sp/tcgpgywY7wsqdZzwcF0wwqZ0P7aczyuDd2Tyl7sytsrBr8wVkV+Go2Vy7b2FpwT831mcUKQzp4fqiUXlmeBASYDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707827636; c=relaxed/simple;
-	bh=qUG8PR2r8UZ6lS80DR72SY9ifyJEWN2so7+GelRjNxQ=;
+	s=arc-20240116; t=1707827639; c=relaxed/simple;
+	bh=aM4bIl9eWKjV3yDMzVMnnvyt3XnsotON19iQ0XJi1q8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M6L2czVIq6rwmozZ0ULjgtm26zIbFbIijHPEf6pPcy5iNyqdBDUpcJD3giatM1zNg/QYh9JtFKYMRFJDtSOzyAjTQ7mmS6aiUclAStyEYLawKbW25bZvO7Kj2OGouEfRH2BXLCVsVeHi1eJPZQAYlff6VgUjQzRebA7rMX3IdEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YMYtD1nz; arc=none smtp.client-ip=209.85.219.177
+	 To:Cc:Content-Type; b=j+BL+uejmoT8ICq5z8lv0dEweV1qqAaaw3VNRSPHEb4gS2EGHXMA1Tf7qWO2GHiy0ZW+/mxHnfxS/yrfhbeja8wNe+Lb/DqQKKm5lsEpSuHeSMPIHyRWTz7NmTXqmUi9DlyjiQD3hRc/LlBe3WXe2ZNIQdjp/VJbIkCW91tOd1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Nxf4nv38; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso4404059276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:33:54 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-db3a09e96daso3577143276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 04:33:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707827634; x=1708432434; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707827637; x=1708432437; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQkSTMTNz7Lw479EGzO5uGlI3m6Qr+ts8Yhi4TuIF9s=;
-        b=YMYtD1nz623uF5hA2py6rKKxyYq7VxopF9MUK+XPzG8kLIdC7spjdkDRQaipeEtiHn
-         Xk/h+k2oc94W9x74bz/Q/LbiL1UnZ1eSgJVLieaJtJFtaMiHBebBkN72hHDB+kjKH06D
-         PE5KHYDs6e9dt5mNNdaNUo0G5Jedz3PF/hn7TFC+CaXgZBYdPz2CbtTiEQhbAVAWO6TN
-         HyWcn1JkNQNUaRM3DZLVG0CNox+J7V4PUIlOHR5Uk2E7HwXlDwHfVV92uSoV5mkrjQAG
-         cWxVOyW8gALkuKcg80YPHIyIecQht31sO0+d7yfyt0+Z56SWqR49oLyVdGUyKyJzD166
-         /whw==
+        bh=tu7SNQnx0i2xazLUM+3IUH69yXJUiUg7fnfrZ1sLaQc=;
+        b=Nxf4nv38G3+mx64mQ1Bo6ijIzLNOS3uh+uoxKfO9Br4nlB3m4MGQ146BKx6VyAAhq3
+         4kjsGdyFnNMT0/NuGFaLV1GQjSdOGH8cJLxSHdiHzDPFKDshgk7JrEqzf2J8MZkYz4ZM
+         nmwNrIKtsq+J1pp0vHZmx2UA3tVf3oy/4oABkdX7tBC3gUewap8AB+dvLjk7Jucinq2/
+         RKsKsLoLseOu5IHyg74qSjAwiekJ++/SxeK36aPgo8m4TYtAkWDES2K2AgSUD46SDiZM
+         acddZpBIJW17A3Q9MGuad9W1dfguYrSptWm+WsQ5SWpRmaeWnfrvflyXBauk1/Tq+W6z
+         Y2kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707827634; x=1708432434;
+        d=1e100.net; s=20230601; t=1707827637; x=1708432437;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CQkSTMTNz7Lw479EGzO5uGlI3m6Qr+ts8Yhi4TuIF9s=;
-        b=KabDt1tFtkLgrk6r3glIyfCHBgWKJmjhJ5jai6DY6O4WkuUonBzWx3lzg+3dJiiVoX
-         lHEwsCYsQWRv0Jz7J/SgNzbh67HRsgkxNkBTRAffGtBuN5QqhR5yX4KboeOnkfrCTWip
-         1U3YN3KhBUp1M+TlMLmv4ZZ7kSotlUpGcQuCIk3hZmmoUOiJXPPF+U/xb8QbJLKUms01
-         WvuK2XRV0aUahqN4g/zQDUpYXgofgNsKaipM5K1nL0QtP5XSdWgQfPbfCbh+3VVZX7GK
-         xSKac2b7a2nrnSg7Vef7onBY4gCD7cxCqzqYW2v9jFDMm/KaFuwAofI5wcsD4NWJk4fT
-         UORQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3wwHQe4+StBR84PGzqpNbiaGBRUZ6buJIevQstG5CW9ucu6Wk/NPcFnAJqqMFk4GRgdXTg6Wjuc+RxrjWR69oPmKFLF9LJfWtan2w
-X-Gm-Message-State: AOJu0Yw9NgiMNKBg9LABJzIv/5RljOyI/08vFikzQJwq8xuhgW7WVK4z
-	BrkPefmf5x/RsIeXViBnRi3fv6LWSgkYJDbNDw42FQd4v/qylfdYJEbA8E1SywwH/ZINhZcARlS
-	hgXKB6nO+u5+1mKHTpl7MDm3Y310KnJbWV+KOIQ==
-X-Google-Smtp-Source: AGHT+IEItpPRp0JDqmMU5LM1yDLksBo5Ixso4A65GTlcQpvHvL7IBDZ3JMq2DOMT684roeylKkqheTZzDc/B7oATafQ=
-X-Received: by 2002:a25:db8b:0:b0:dc6:ba11:6edd with SMTP id
- g133-20020a25db8b000000b00dc6ba116eddmr10543179ybf.8.1707827634082; Tue, 13
- Feb 2024 04:33:54 -0800 (PST)
+        bh=tu7SNQnx0i2xazLUM+3IUH69yXJUiUg7fnfrZ1sLaQc=;
+        b=QJcFzbevwuhOtaCx9H5LlD6qr/DIMqJgROyo7tIqhrhAXvpWU2wkAdmaPou85ZwbrK
+         L+DFpfH+WDSJ93gC3TvksnMHKzIN3Thz5LrR9WeL3IOeacmRhvzkfz3VOxo32OGZ50SA
+         kHL+6ld5qpNSaaC9ikfUZTcoRO0gwtSisK5O82W/35Jw9HArmb6jVCS2a4XxoXm7MSaX
+         n+Bv6xwMC8Yt0WXl+m6DmAqx0aLB/0MzoIUxce3i3ov2jevBgn11JnIl6tzMRJ2VToGU
+         fDYtaGCqmjz2c9ym64dLiFy9VgX3ToA9eRzA7X2EimeBqBxT17Dz5wB8R4hwGlAZ3O0S
+         0q+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUb+zOKrg8Sd44IVsmjEbUzQ8F/uDdrb1AF+x6eiTu/2DS6iTx23KIJkPZ2KLIob9dZ8iClLnIOaOwmPG55zV7kh4qH1jlRTzzjeAuE
+X-Gm-Message-State: AOJu0YzxTOwkJ9QzOdsaId19K8KMJ9PW5TzbCgt3lIc1DUFb1hD22xwx
+	4bPEegpK8nZKFxesrMTf9QH5FQtcSiYD4W+GPWXk2ikHcVMcHgMDPwUtmfbDxNF92pw+WU/uZM4
+	oqIlUyHfTimTMiR3Vx6g/8DG9F8WIsxrX8SEeiQ==
+X-Google-Smtp-Source: AGHT+IEGOEobuHtzZk9d51dS2TbILWN3Fo1EkXlSUML6sBQOl574XzjSdCTa5r7ZJQ6v2wQ2sMfTYfgHCvBOMKFTlOU=
+X-Received: by 2002:a25:d686:0:b0:dcd:905:3d17 with SMTP id
+ n128-20020a25d686000000b00dcd09053d17mr707344ybg.32.1707827637070; Tue, 13
+ Feb 2024 04:33:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208202822.631449-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240208202822.631449-1-krzysztof.kozlowski@linaro.org>
+References: <20240208202822.631449-1-krzysztof.kozlowski@linaro.org> <20240208202822.631449-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208202822.631449-2-krzysztof.kozlowski@linaro.org>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 13 Feb 2024 13:33:18 +0100
-Message-ID: <CAPDyKFr8rTEaJkQtvZwEsHiYz77hUGb7CvBw9oGfBOzxcWWV3g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pmdomain: constify of_phandle_args in xlate
+Date: Tue, 13 Feb 2024 13:33:21 +0100
+Message-ID: <CAPDyKFpAnrhVWnt-qy3ysT1EGgEB7h6UvoSa6w=faQXqyk+nsA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pmdomain: constify of_phandle_args in add device and subdomain
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
 	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
@@ -88,9 +88,9 @@ Content-Type: text/plain; charset="UTF-8"
 On Thu, 8 Feb 2024 at 21:28, Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
 >
-> The xlate callbacks are supposed to translate of_phandle_args to proper
-> provider without modifying the of_phandle_args.  Make the argument
-> pointer to const for code safety and readability.
+> Pointer to of_phandle_args is not modified by of_genpd_add_device() and
+> of_genpd_add_subdomain(), so it can be made pointer to const for code
+> safety and readability.
 >
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
@@ -101,101 +101,101 @@ Uffe
 
 
 > ---
->  drivers/pmdomain/core.c                     | 4 ++--
->  drivers/pmdomain/imx/scu-pd.c               | 2 +-
->  drivers/pmdomain/tegra/powergate-bpmp.c     | 2 +-
->  drivers/pmdomain/ti/ti_sci_pm_domains.c     | 2 +-
->  drivers/pmdomain/xilinx/zynqmp-pm-domains.c | 2 +-
->  include/linux/pm_domain.h                   | 2 +-
->  6 files changed, 7 insertions(+), 7 deletions(-)
+>  drivers/pmdomain/core.c   | 12 ++++++------
+>  include/linux/pm_domain.h | 20 ++++++++++----------
+>  2 files changed, 16 insertions(+), 16 deletions(-)
 >
 > diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
-> index 46331e71108a..ea4b29475206 100644
+> index ea4b29475206..4215ffd9b11c 100644
 > --- a/drivers/pmdomain/core.c
 > +++ b/drivers/pmdomain/core.c
-> @@ -2266,7 +2266,7 @@ static DEFINE_MUTEX(of_genpd_mutex);
->   * to be a valid pointer to struct generic_pm_domain.
+> @@ -2526,7 +2526,7 @@ EXPORT_SYMBOL_GPL(of_genpd_del_provider);
+>   * on failure.
 >   */
->  static struct generic_pm_domain *genpd_xlate_simple(
-> -                                       struct of_phandle_args *genpdspec,
-> +                                       const struct of_phandle_args *genpdspec,
->                                         void *data)
+>  static struct generic_pm_domain *genpd_get_from_provider(
+> -                                       struct of_phandle_args *genpdspec)
+> +                                       const struct of_phandle_args *genpdspec)
 >  {
->         return data;
-> @@ -2283,7 +2283,7 @@ static struct generic_pm_domain *genpd_xlate_simple(
->   * the genpd_onecell_data struct when registering the provider.
+>         struct generic_pm_domain *genpd = ERR_PTR(-ENOENT);
+>         struct of_genpd_provider *provider;
+> @@ -2557,7 +2557,7 @@ static struct generic_pm_domain *genpd_get_from_provider(
+>   * Looks-up an I/O PM domain based upon phandle args provided and adds
+>   * the device to the PM domain. Returns a negative error code on failure.
 >   */
->  static struct generic_pm_domain *genpd_xlate_onecell(
-> -                                       struct of_phandle_args *genpdspec,
-> +                                       const struct of_phandle_args *genpdspec,
->                                         void *data)
+> -int of_genpd_add_device(struct of_phandle_args *genpdspec, struct device *dev)
+> +int of_genpd_add_device(const struct of_phandle_args *genpdspec, struct device *dev)
 >  {
->         struct genpd_onecell_data *genpd_data = data;
-> diff --git a/drivers/pmdomain/imx/scu-pd.c b/drivers/pmdomain/imx/scu-pd.c
-> index 891c1d925a9d..05841b0bf7f3 100644
-> --- a/drivers/pmdomain/imx/scu-pd.c
-> +++ b/drivers/pmdomain/imx/scu-pd.c
-> @@ -393,7 +393,7 @@ static int imx_sc_pd_power_off(struct generic_pm_domain *domain)
->         return imx_sc_pd_power(domain, false);
->  }
->
-> -static struct generic_pm_domain *imx_scu_pd_xlate(struct of_phandle_args *spec,
-> +static struct generic_pm_domain *imx_scu_pd_xlate(const struct of_phandle_args *spec,
->                                                   void *data)
->  {
->         struct generic_pm_domain *domain = ERR_PTR(-ENOENT);
-> diff --git a/drivers/pmdomain/tegra/powergate-bpmp.c b/drivers/pmdomain/tegra/powergate-bpmp.c
-> index 179ed895c279..b0138ca9f851 100644
-> --- a/drivers/pmdomain/tegra/powergate-bpmp.c
-> +++ b/drivers/pmdomain/tegra/powergate-bpmp.c
-> @@ -305,7 +305,7 @@ static void tegra_bpmp_remove_powergates(struct tegra_bpmp *bpmp)
->  }
->
->  static struct generic_pm_domain *
-> -tegra_powergate_xlate(struct of_phandle_args *spec, void *data)
-> +tegra_powergate_xlate(const struct of_phandle_args *spec, void *data)
->  {
->         struct generic_pm_domain *domain = ERR_PTR(-ENOENT);
->         struct genpd_onecell_data *genpd = data;
-> diff --git a/drivers/pmdomain/ti/ti_sci_pm_domains.c b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> index c091d569ecd5..9dddf227a3a6 100644
-> --- a/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> +++ b/drivers/pmdomain/ti/ti_sci_pm_domains.c
-> @@ -85,7 +85,7 @@ static int ti_sci_pd_power_on(struct generic_pm_domain *domain)
->   * @data: genpd core data for all the powerdomains on the device
+>         struct generic_pm_domain *genpd;
+>         int ret;
+> @@ -2591,8 +2591,8 @@ EXPORT_SYMBOL_GPL(of_genpd_add_device);
+>   * provided and adds the subdomain to the parent PM domain. Returns a
+>   * negative error code on failure.
 >   */
->  static struct generic_pm_domain *ti_sci_pd_xlate(
-> -                                       struct of_phandle_args *genpdspec,
-> +                                       const struct of_phandle_args *genpdspec,
->                                         void *data)
+> -int of_genpd_add_subdomain(struct of_phandle_args *parent_spec,
+> -                          struct of_phandle_args *subdomain_spec)
+> +int of_genpd_add_subdomain(const struct of_phandle_args *parent_spec,
+> +                          const struct of_phandle_args *subdomain_spec)
 >  {
->         struct genpd_onecell_data *genpd_data = data;
-> diff --git a/drivers/pmdomain/xilinx/zynqmp-pm-domains.c b/drivers/pmdomain/xilinx/zynqmp-pm-domains.c
-> index 6fd514286d82..0b5831e5ba1b 100644
-> --- a/drivers/pmdomain/xilinx/zynqmp-pm-domains.c
-> +++ b/drivers/pmdomain/xilinx/zynqmp-pm-domains.c
-> @@ -210,7 +210,7 @@ static void zynqmp_gpd_detach_dev(struct generic_pm_domain *domain,
->  }
->
->  static struct generic_pm_domain *zynqmp_gpd_xlate
-> -                               (struct of_phandle_args *genpdspec, void *data)
-> +                               (const struct of_phandle_args *genpdspec, void *data)
+>         struct generic_pm_domain *parent, *subdomain;
+>         int ret;
+> @@ -2629,8 +2629,8 @@ EXPORT_SYMBOL_GPL(of_genpd_add_subdomain);
+>   * provided and removes the subdomain from the parent PM domain. Returns a
+>   * negative error code on failure.
+>   */
+> -int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
+> -                             struct of_phandle_args *subdomain_spec)
+> +int of_genpd_remove_subdomain(const struct of_phandle_args *parent_spec,
+> +                             const struct of_phandle_args *subdomain_spec)
 >  {
->         struct genpd_onecell_data *genpd_data = data;
->         unsigned int i, idx = genpdspec->args[0];
+>         struct generic_pm_domain *parent, *subdomain;
+>         int ret;
 > diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index fb91770ba4ba..1a391ef1b6f8 100644
+> index 1a391ef1b6f8..772d3280d35f 100644
 > --- a/include/linux/pm_domain.h
 > +++ b/include/linux/pm_domain.h
-> @@ -349,7 +349,7 @@ static inline void dev_pm_genpd_resume(struct device *dev) {}
->  /* OF PM domain providers */
->  struct of_device_id;
+> @@ -364,11 +364,11 @@ int of_genpd_add_provider_simple(struct device_node *np,
+>  int of_genpd_add_provider_onecell(struct device_node *np,
+>                                   struct genpd_onecell_data *data);
+>  void of_genpd_del_provider(struct device_node *np);
+> -int of_genpd_add_device(struct of_phandle_args *args, struct device *dev);
+> -int of_genpd_add_subdomain(struct of_phandle_args *parent_spec,
+> -                          struct of_phandle_args *subdomain_spec);
+> -int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
+> -                             struct of_phandle_args *subdomain_spec);
+> +int of_genpd_add_device(const struct of_phandle_args *args, struct device *dev);
+> +int of_genpd_add_subdomain(const struct of_phandle_args *parent_spec,
+> +                          const struct of_phandle_args *subdomain_spec);
+> +int of_genpd_remove_subdomain(const struct of_phandle_args *parent_spec,
+> +                             const struct of_phandle_args *subdomain_spec);
+>  struct generic_pm_domain *of_genpd_remove_last(struct device_node *np);
+>  int of_genpd_parse_idle_states(struct device_node *dn,
+>                                struct genpd_power_state **states, int *n);
+> @@ -393,20 +393,20 @@ static inline int of_genpd_add_provider_onecell(struct device_node *np,
 >
-> -typedef struct generic_pm_domain *(*genpd_xlate_t)(struct of_phandle_args *args,
-> +typedef struct generic_pm_domain *(*genpd_xlate_t)(const struct of_phandle_args *args,
->                                                    void *data);
+>  static inline void of_genpd_del_provider(struct device_node *np) {}
 >
->  struct genpd_onecell_data {
+> -static inline int of_genpd_add_device(struct of_phandle_args *args,
+> +static inline int of_genpd_add_device(const struct of_phandle_args *args,
+>                                       struct device *dev)
+>  {
+>         return -ENODEV;
+>  }
+>
+> -static inline int of_genpd_add_subdomain(struct of_phandle_args *parent_spec,
+> -                                        struct of_phandle_args *subdomain_spec)
+> +static inline int of_genpd_add_subdomain(const struct of_phandle_args *parent_spec,
+> +                                        const struct of_phandle_args *subdomain_spec)
+>  {
+>         return -ENODEV;
+>  }
+>
+> -static inline int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
+> -                                       struct of_phandle_args *subdomain_spec)
+> +static inline int of_genpd_remove_subdomain(const struct of_phandle_args *parent_spec,
+> +                                           const struct of_phandle_args *subdomain_spec)
+>  {
+>         return -ENODEV;
+>  }
 > --
 > 2.34.1
 >
