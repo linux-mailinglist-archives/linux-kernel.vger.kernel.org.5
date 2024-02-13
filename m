@@ -1,136 +1,141 @@
-Return-Path: <linux-kernel+bounces-64441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9969A853E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FAED853E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:15:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55534285594
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEF632866B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A74A62814;
-	Tue, 13 Feb 2024 22:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11F062A01;
+	Tue, 13 Feb 2024 22:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ErAo2G/h"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L6j3IBWe"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDC4627FD
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C55629E3
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707862198; cv=none; b=gCO74/VQF7vlXwMCBznTfQcbLL0w+leVpszF3VGYqpTmpLgH/zBbSz5qLExkuP5o9vnIrX/ciAdt1PEnkjtO4QQaq6p8Ww2LkeD1EWkILCdfIRkx5xRtSBylsRn7IpWv221BoK3GPXg10TFsR0yD4DzkJXrUdbKbVd4vuyPId2w=
+	t=1707862265; cv=none; b=u0hNBJuZKuBc4OBw1eTbF+r2NKT97z7AS42hv05FlBK5zZ7cAk6Prvh6kB+XgGqKB8ZGzjquVcy9Qgu4dLtYXKj/TzYGBtM4iFRgdILniFnnst92ye9Sksp/4jrrHPglK02EvY2ZGVfyHCFUCZbJyzDAKWnPtnRGVZYbG8RWWNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707862198; c=relaxed/simple;
-	bh=W8CKXLRXzCPIbeiYhYvLTtnfDtGO8TmN5pF7T5jBlOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hS7UvTO87II3WgTipksaGmB8S/kNtJBzbdFkake5MJKOfadkmsIXV4Y1VQmOLLJxFS4GxVXmf9yTmGHo60UEjpNZEW73U4SEuheaMxZcXhKFnzWpDGrjj1x6YNzjbROXHyJcvULcjUm3Re+0oNpZ7glESa94eFo5M4oVBEy+JsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ErAo2G/h; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d70b0e521eso36992735ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:09:57 -0800 (PST)
+	s=arc-20240116; t=1707862265; c=relaxed/simple;
+	bh=gk9Sm9RrNWP7qFVWwHlEux51dUehEpnRcBtAM29pgs4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pS3MPwNf3V7WSltzTMYlvHQ1w+JWai5kdnbO3fylOSLsH9nzgw/lHgmsH2sd3yuLZLNKB+ALiky5TD6B9nLIuTfkhfNgvXHkxYd2wYZVa5daWEc3WsAIDCumd+O683L6D+lLxFy0/Y30yGLmrgwTzpd8RtpdXeZbyfArXP51ZyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L6j3IBWe; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d93edfa76dso39214615ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:11:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707862196; x=1708466996; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KHrAkUvYa6loZ8pQ9MvgMBm7Y/FcJKqjouZpJd3Deg4=;
-        b=ErAo2G/hJ/ZxmlbuU9tjLAdCWW2ovpypumay2kxa3Q4ub7fwWqDo94g2yvKnIrlZG8
-         eCCec52cAgWrPjktmrsyQqTbFm+lCLeW8GJfPmQi6ekECy4qrXtGKc/XgQICTzaNqYfY
-         LwVBbXwijBQR7+Bq1HCkbdaj101v2hC7wMYESLg7FuYSGh7KWkPMeK/fLri4DZb38mGR
-         Co06+kfrnFyjim5orX5wksGvdzVyN5NvF45lMsb4D6wHE9AvbPBMcgsW25Nv42awDlak
-         jrbjUdD72BLFExhEtghrcyK9kFNBDoxc3iv11fFQpvtnJngncV8BMiGjn45IVsp5ptsr
-         9puQ==
+        d=chromium.org; s=google; t=1707862262; x=1708467062; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/l7cYejTBwG/ZbXfVuNOUK+p83wyeqabIOdAUG0DV4=;
+        b=L6j3IBWef2o6ehNBNeBtrHiATS/+L4t2oXT0QZo3mDE0j6FGufyPLphJC3RAvJWuhD
+         6gjgAFNq3eTJV8tC+Dgtu+jKjVwQU8pbGa9lOcBewVPo7vunEbV9MG7/S/qwzx2/2UTb
+         A7lpTW6H0Smmrz4guT9sAWiwm/8qPipmTpXrE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707862196; x=1708466996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KHrAkUvYa6loZ8pQ9MvgMBm7Y/FcJKqjouZpJd3Deg4=;
-        b=WhOk/wUGOqNnNFQcABq92uZv6N7nMjeM8nf6DL201ORtIKmyZ9EzrfEd8toCqwU42+
-         ElZCBXVMBmWUfaRjefcEakAmLGo0swCNMRTTlHkPErkx9AArTLLyk8UqQWNM9kTaQyZB
-         /lP9C41wSJh5Y75QSH5zqPYBm8gSWP00/fu0fzVeqZZdfLFKS+G7xH0mOp8myxRoZB31
-         E7L5BVZXwvQJOFVpajEVp1+fWZZvsUTHX2XnPVr0Qq7ZWAxzDGb/qp1paA0UZ3MIkbCE
-         RcBbRuML8gJ2aw0fh1ek1MYu30vToetmFsm3eJV/WuubtDSdIv0pJ8FA5bv+als98La7
-         Cb/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVCDUkOb8WUDG3lad5orWLUsPGAV1ComFAzLzliW3iOE3WVmdS6vOurFimQ6f1WjARg/7x80qYOYBXjLa+AUS4kLLRbz9hn7hKcqvcv
-X-Gm-Message-State: AOJu0YwTFthNBgzkIFB6FHacsg1cnZkulp9dZo+W5d9JdBnl7NBzyl2e
-	B/kjVHSsCMypQtTcbgzrWjBnxpNmACFTixDjj4EzG5V3SMTHhn5SXofNL2hnGUTdK86dnObXglk
-	9
-X-Google-Smtp-Source: AGHT+IGgqUUsjn257/XY2P22HF+jK6l4KCqtveCToMslA6YTTEIfSnRD2gkjjAU8E2S7/q7gFf6VFw==
-X-Received: by 2002:a17:902:e5d0:b0:1d9:14fb:d142 with SMTP id u16-20020a170902e5d000b001d914fbd142mr1287192plf.32.1707862196652;
-        Tue, 13 Feb 2024 14:09:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU0ESVTZZSVdnxEus9YiyUaZmdXAgx/Xl1gU3CR6MVu9J4mZ+RaM5oZScWBYV6lzac7Dd70RSYsCsBl6RjMuqdB1SViohyMqK9AjP/0Nubsg9spL66O5OJ9Ilh7PBEprTOECIhR4U6k6dNjIhuTIXL/2IwZhep/x5ggajcUnMC/bk5OAyhKaCOSKT/Fhh0h9gzWNpDTA1yDdR0F3fWjhBlbaaNq9IE4qPiAV6YN6DHzTGkL0o98qmyE1stg1SerRm983++Xdcd9i9cIKm6UmxT76yjpRoBGWL4/rDpAF6zXb4cbDPR+ZUd4YdnTtJs5vpMd34GoiUONqcfhPSbbZ7BjT1L6j/ImosHNqAYul6ynTtmVdRe1uBCKFj0KHY0Z7CP/NUPO++Ga4G3eJACOq5GzM8gHlKkeW/vvvzQ=
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id jc19-20020a17090325d300b001db2ff16acasm1894517plb.128.2024.02.13.14.09.56
+        d=1e100.net; s=20230601; t=1707862262; x=1708467062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6/l7cYejTBwG/ZbXfVuNOUK+p83wyeqabIOdAUG0DV4=;
+        b=udUXPay1fs7KPH/G+FkXrwGZg5kc6b0IT03f5OiXISglZv3tvN4+fgnmjl02nhxmDL
+         bc5KTG+2Y4kS5gH/yobNNDjVWZTOHl5Mz4UwesEkzPCmBjvTxjMH9wdiH99VBFAjxXAY
+         bVj6W07NfC7ZEl7kblRHtgtP4hf1EHh/y7n8QmcDmzzva5V2jXCef1VWZTiGckw19CYe
+         LlJPT01GYZ+cjIsDmmkwVq0lSkoMwlSssHB5jqUhHT9fN23xTGjYq6sruLkv1aaMnEEQ
+         kx1U0tDZGtMSGVzxekdg4QdTkpUvQZG3j9PeItYXTWRDv5zwv8LyfE/bRpU0IIrILfJT
+         oI3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWHcwItHjLg7+mbgt3TULqzqE+QaAq/5r91gEoI0JpUc9m9n+qe18N1r82feyejQV33TUubBiSwzKUi+0QimjRLaWmBfSUJK46wdsa5
+X-Gm-Message-State: AOJu0YwF4PuoXQhEA2HZMnQbqksdfhRRAAvr70rAKkIMJjZns3abgiEp
+	LBDKwUoC6Sn81mJBM7ShNTorQ67IsYwY7NyEN9Y7p4+5aBq9ZxAcZqPE7E8D8g==
+X-Google-Smtp-Source: AGHT+IGscCU141CmwJ2WYvkJl7vsKDQXUtAWyU4SDUKZc2g1xeH1JVOVpz19E/aw39LMpLEKmeO4fw==
+X-Received: by 2002:a17:903:280b:b0:1d9:a4ec:c5b2 with SMTP id kp11-20020a170903280b00b001d9a4ecc5b2mr775828plb.48.1707862262652;
+        Tue, 13 Feb 2024 14:11:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWtoxK5uvAlsQt2axOXVYoFte05bc2pnd1mWStQ74cxgrpyY7px//7+H1hDsFtVk4D4PiphUeDXk/DmNqffhGRz9g/4wIj3lsU4f8eqVRGIkYfP5wWMybFBecEMONYfIVdn1VlZIJ+/Fhl2eUSaaUStMU0TisdvdRpPo159ASIR64ymwCvionKnMl3yIAep+On4dWq2sRY2CxfIgkgniuXW8jBWGloPXopzP7RwVoATJQToHDvfIzBGqltODSzuPtkr/0mv2iNROiLD2Ba6VuYUZcnGsqZjJnBuODvG24B6MV3Nqy6WbYUGfZXmDoLtVuibWaD7d+49wg==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x13-20020a170902ec8d00b001d7222d8caasm2508776plg.50.2024.02.13.14.11.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 14:09:56 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1ra0yP-0067hn-1k;
-	Wed, 14 Feb 2024 09:09:53 +1100
-Date: Wed, 14 Feb 2024 09:09:53 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
-	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com,
-	p.raghav@samsung.com, linux-kernel@vger.kernel.org, hare@suse.de,
-	willy@infradead.org, linux-mm@kvack.org
-Subject: Re: [RFC v2 04/14] readahead: set file_ra_state->ra_pages to be at
- least mapping_min_order
-Message-ID: <ZcvosYG9F0ImM9OS@dread.disaster.area>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-5-kernel@pankajraghav.com>
+        Tue, 13 Feb 2024 14:11:01 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v6 0/3] overflow: Introduce wrapping helpers
+Date: Tue, 13 Feb 2024 14:10:56 -0800
+Message-Id: <20240213220844.it.345-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213093713.1753368-5-kernel@pankajraghav.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1656; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=gk9Sm9RrNWP7qFVWwHlEux51dUehEpnRcBtAM29pgs4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBly+jzxdRJEY5FqMROusW/9i6Wzp3o1ypZVJb7h
+ YkSj1ZNhcSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZcvo8wAKCRCJcvTf3G3A
+ JgH/D/4vgtaPXk0KWcLTLiJHtP/4BVDnRMBnnjHRKPNZJTzFtr0xrvrvitXfOBUYmJ+Lx8HifKS
+ He4LRsgMd/CYZOK9jKUwcXvby63qMhJBK1w1KIdbJ4Lw2BV92OSMkNSkGNsqA9uqEOVc05tlF2Z
+ wQ9JpNsGUqMZUHXYMZrBXJbGMq3/E56iNAuokPIw77Ikofdl5wDgajp/nCUAEYUSoqW5sAnetJE
+ stN6XyFY8TnPeBcSO7fWb9T28zKzLBcqpyBPM1u1U6w7F7l69XxwjifGQ8bfcQ7Bmge84Dz8smA
+ JvURngdGXHC2hlHLEOxCuDWxgSAbEwDQDJwivzItmmLU6SG4qkNzOG5bc4ZgGyrzMiyqf8H008A
+ 4r6h+woAQSQhuYNOWPGdZxHHO7r0bLdc2nfBIvKZ6JIxDy3P+9kynO3prHF7r/1KS2FiqxrFEJn
+ QvEdsGBfjlqtG/5KMYy5owi91NA1jyRxlBTVnceQmxxdx1nwBqxtqtQK8OU51t2sK3TQ0lo7Z/X
+ WPTxXk9O0LAJOkPoQvoC4HqMQrMJxYWA5bu2y2Ov4HsRExZL8qdWHIRQcniKlCZWwlC8MlEur8g
+ u3DlvtXpA9lk4vLzGpf6di0u1AZq+pDdj/bFqGjqJcV+v0Z9+IkJKq94fDgXRL9SRpLvt3//7+u
+ gVDUv70 hieHnvTg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 10:37:03AM +0100, Pankaj Raghav (Samsung) wrote:
-> From: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Set the file_ra_state->ra_pages in file_ra_state_init() to be at least
-> mapping_min_order of pages if the bdi->ra_pages is less than that.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  mm/readahead.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 2648ec4f0494..4fa7d0e65706 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -138,7 +138,12 @@
->  void
->  file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
->  {
-> +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
-> +	unsigned int max_pages = inode_to_bdi(mapping->host)->io_pages;
-> +
->  	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
-> +	if (ra->ra_pages < min_nrpages && min_nrpages < max_pages)
-> +		ra->ra_pages = min_nrpages;
+v6: rename wrapping_inc/dec to wraping_assign_add/sub (andy)
+v5: https://lore.kernel.org/all/20240207152317.do.560-kees@kernel.org/
+v4: https://lore.kernel.org/all/20240206102354.make.081-kees@kernel.org/
+v3: https://lore.kernel.org/all/20240205090854.make.507-kees@kernel.org/
+v2: https://lore.kernel.org/all/20240130220218.it.154-kees@kernel.org/
+v1: https://lore.kernel.org/all/20240129182845.work.694-kees@kernel.org/
 
-Why do we want to clamp readahead in this case to io_pages?
+Hi,
 
-We're still going to be allocating a min_order folio in the page
-cache, but it is far more efficient to initialise the entire folio
-all in a single readahead pass than it is to only partially fill it
-with data here and then have to issue and wait for more IO to bring
-the folio fully up to date before we can read out data out of it,
-right?
+In preparation for gaining instrumentation for signed[1], unsigned[2], and
+pointer[3] wrap-around, expand the overflow header to include wrap-around
+helpers that can be used to annotate arithmetic where wrapped calculations
+are expected (e.g. atomics).
 
--Dave.
+After spending time getting the unsigned integer wrap-around sanitizer
+running warning-free on a basic x86_64 boot[4], I think the add/sub/mul
+helpers first argument being the output type makes the most sense (as
+suggested by Rasmus).
+
+-Kees
+
+Link: https://github.com/KSPP/linux/issues/26 [1]
+Link: https://github.com/KSPP/linux/issues/27 [2]
+Link: https://github.com/KSPP/linux/issues/344 [3]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=devel/overflow/enable-unsigned-sanitizer [4]
+
+Kees Cook (3):
+  overflow: Adjust check_*_overflow() kern-doc to reflect results
+  overflow: Introduce wrapping_add(), wrapping_sub(), and wrapping_mul()
+  overflow: Introduce wrapping_assign_add() and wrapping_assign_sub()
+
+ include/linux/overflow.h | 98 +++++++++++++++++++++++++++++++++++-----
+ lib/overflow_kunit.c     | 67 +++++++++++++++++++++++++--
+ 2 files changed, 149 insertions(+), 16 deletions(-)
+
 -- 
-Dave Chinner
-david@fromorbit.com
+2.34.1
+
 
