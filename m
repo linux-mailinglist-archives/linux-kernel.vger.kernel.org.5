@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-63550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355BF853121
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:01:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC3E853123
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 672E11C26A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:01:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D2D4B25E12
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A0750A99;
-	Tue, 13 Feb 2024 13:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAEBF51C31;
+	Tue, 13 Feb 2024 13:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nyIsDATi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="loBi76Bu"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF895024A;
-	Tue, 13 Feb 2024 13:00:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D374D51039;
+	Tue, 13 Feb 2024 13:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707829229; cv=none; b=mL0qV+EM5tSGB6IuLxRd5D9oDDxalBCuVw06cI/iNna2YkBz55xnlFZdNWM11U3q2k8ZAFKthplXPC7iP9kzK5uKULxVST72s1eBJZRo4GTIpLlP1x6oPBf/03fHHuh+uwGsdmanLAkl6KZHa2bn34nwJwk+hpjmr2sRwXtzPPw=
+	t=1707829233; cv=none; b=KQiO76iCGJ88gmybRzYfl94r2RDOen6xJgP4FA3xO6sz1bMASvvnKmN4y06BIky9DNxBtena8qVOjyDVmeUWW+ledzxvbwHVhDPSXG1oThBLirc77nvtaz9F34kDZyjt2thVACZ10SfmnJtFmjc38Icoua9M6J+Siroo0Ly0sXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707829229; c=relaxed/simple;
-	bh=GPXSlwYiixoQscrKQneXqLxQNPyv7GTgiXwdLZGez6A=;
+	s=arc-20240116; t=1707829233; c=relaxed/simple;
+	bh=FPXgBnSmS+6sKYbXhTyHNlC+korVLPzZkGCgDSeKV5I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CtSA7KWIhKAKqfuf346jyAgOuGdbIrtc9EUU7HHKlAMqrfxk7YpNjqp6aniOMkbzLYlbH6tesb7aLvXkdpOTJ/dgVEq8YN/ULOh+XGxChxmLmeyCCiW+5F3b9c1FjbLnmguTGsXvfoH0jIfVuoT3dfMxNA3s8rGHHr9MbKbB9jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nyIsDATi; arc=none smtp.client-ip=198.175.65.20
+	 MIME-Version; b=U1vbQa0nz8ePesFnxlrgoWdhQV18PA25FzbbxeDZN24HPWcXD7WUo+p6sWeWQxRW0u9GvRghYzNxv2uOm/ivzQFRiHFISr5dPCxw6BUkvbBt0okvKsI0YiiTWQjWfmd6zxVoO9ShRtAK7rKrfELRSaF1ncMq49ARXIE5PTNgqgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=loBi76Bu; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707829228; x=1739365228;
+  t=1707829232; x=1739365232;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GPXSlwYiixoQscrKQneXqLxQNPyv7GTgiXwdLZGez6A=;
-  b=nyIsDATitK9+bInlP9qABfewtbzMs2zWdotgBNBq5M3dYi+vzn9UX2Xt
-   ez2sUozyZu7rsMkLMASJxEA7bod/iIMgFgX6uLDoNdmJF2H8FVha8hGEm
-   ZnBV4JVPXGhXFXUASmjctfzmNYpHMboipvBxL/MuF+Arb66wPwBKaGeZ3
-   XjJsAQVTst0MR49qAwut6JKYTThc2oJZIqYEIVwmYTC17qt3Q6Cf1ZzB1
-   yXkQ71gkK2/lj370shF70BVQSKpiPXgTk0f+5PsyUpvzD6Ru4OG6orVRJ
-   N2ZeFHsq2MghbCckT48QFlo0JoMWKoTQYjjz4QeL/PEQDyer9DXKPhM3q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1708886"
+  bh=FPXgBnSmS+6sKYbXhTyHNlC+korVLPzZkGCgDSeKV5I=;
+  b=loBi76BuShhYeDmHFGG/8Iramm+LjE8Vau7YaP2GUObELxoqJcfqgURq
+   s9Dn+4Vp61VJEa6zRgxazhMK616QqUE+kuQuxoZSqJwyL60bxTgOXFq9k
+   K39fHnzWYFjFqwY+sM2UUNcmhGFNaZR1LrjTVd20dtrkpG8HPyD7eiL+m
+   27Emin+V+lIRdh7Xh2RHOE9oxFPEe4HvDIKPZytmUFOscf2OP0moWGK4A
+   GbBrlKN9VU6zXiqavOZMdyZZy3xu4LEC0Qd2DkZomtztmdvRMvXdfIzfw
+   voWEBvTeWMDUS6jSzWs5JFO3WI87p0fd5RCcEm5qc2E0LQIZDB0paIXPK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1708904"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="1708886"
+   d="scan'208";a="1708904"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 05:00:27 -0800
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 05:00:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935348370"
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935348383"
 X-IronPort-AV: E=Sophos;i="6.06,157,1705392000"; 
-   d="scan'208";a="935348370"
+   d="scan'208";a="935348383"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 05:00:23 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 13 Feb 2024 05:00:27 -0800
 From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 To: Prashant Malani <pmalani@chromium.org>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -69,9 +69,9 @@ Cc: Benson Leung <bleung@chromium.org>,
 	linux-usb@vger.kernel.org,
 	chrome-platform@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] usb: roles: Link the switch to its connector
-Date: Tue, 13 Feb 2024 15:00:17 +0200
-Message-ID: <20240213130018.3029991-2-heikki.krogerus@linux.intel.com>
+Subject: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Make sure the USB role switch has PLD
+Date: Tue, 13 Feb 2024 15:00:18 +0200
+Message-ID: <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com>
 References: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com>
@@ -83,105 +83,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is probable useful information to have in user space in
-general, but it's primarily needed for the xHCI DbC (Debug
-Capability). When xHCI DbC is being used, the USB port needs
-to be muxed to the xHCI even in device role. In xHCI DbC mode,
-the xHCI is the USB device controller.
+The USB role switch does not always have the _PLD (Physical
+Location of Device) in ACPI tables. If it's missing,
+assigning the PLD hash of the port to the switch. That
+should guarantee that the USB Type-C port mapping code is
+always able to find the connection between the two (the port
+and the switch).
 
 Tested-by: Uday Bhat <uday.m.bhat@intel.com>
 Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
- .../ABI/testing/sysfs-class-usb_role          |  6 +++
- drivers/usb/roles/class.c                     | 40 ++++++++++++++++++-
- 2 files changed, 44 insertions(+), 2 deletions(-)
+ drivers/platform/chrome/cros_ec_typec.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-usb_role b/Documentation/ABI/testing/sysfs-class-usb_role
-index 3b810a425a52..9fab3f06679e 100644
---- a/Documentation/ABI/testing/sysfs-class-usb_role
-+++ b/Documentation/ABI/testing/sysfs-class-usb_role
-@@ -19,3 +19,9 @@ Description:
- 		- none
- 		- host
- 		- device
-+
-+What:		/sys/class/usb_role/<switch>/connector
-+Date:		Feb 2024
-+Contact:	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-+Description:
-+		Optional symlink to the USB Type-C connector.
-diff --git a/drivers/usb/roles/class.c b/drivers/usb/roles/class.c
-index ae41578bd014..4ad03c93c17f 100644
---- a/drivers/usb/roles/class.c
-+++ b/drivers/usb/roles/class.c
-@@ -7,6 +7,7 @@
-  *         Hans de Goede <hdegoede@redhat.com>
-  */
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index 2b2f14a1b711..4d305876ec08 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -24,6 +24,23 @@
+ #define DP_PORT_VDO	(DP_CONF_SET_PIN_ASSIGN(BIT(DP_PIN_ASSIGN_C) | BIT(DP_PIN_ASSIGN_D)) | \
+ 				DP_CAP_DFP_D | DP_CAP_RECEPTACLE)
  
-+#include <linux/component.h>
- #include <linux/usb/role.h>
- #include <linux/property.h>
- #include <linux/device.h>
-@@ -34,6 +35,32 @@ struct usb_role_switch {
- 
- #define to_role_switch(d)	container_of(d, struct usb_role_switch, dev)
- 
-+static int connector_bind(struct device *dev, struct device *connector, void *data)
++static void cros_typec_role_switch_quirk(struct fwnode_handle *fwnode)
 +{
-+	int ret;
++#ifdef CONFIG_ACPI
++	struct fwnode_handle *switch_fwnode;
 +
-+	ret = sysfs_create_link(&dev->kobj, &connector->kobj, "connector");
-+	if (ret)
-+		return ret;
++	/* Supply the USB role switch with the correct pld_crc if it's missing. */
++	switch_fwnode = fwnode_find_reference(fwnode, "usb-role-switch", 0);
++	if (!IS_ERR_OR_NULL(switch_fwnode)) {
++		struct acpi_device *adev = to_acpi_device_node(switch_fwnode);
 +
-+	ret = sysfs_create_link(&connector->kobj, &dev->kobj, "usb-role-switch");
-+	if (ret)
-+		sysfs_remove_link(&dev->kobj, "connector");
-+
-+	return ret;
++		if (adev && !adev->pld_crc)
++			adev->pld_crc = to_acpi_device_node(fwnode)->pld_crc;
++		fwnode_handle_put(switch_fwnode);
++	}
++#endif
 +}
 +
-+static void connector_unbind(struct device *dev, struct device *connector, void *data)
-+{
-+	sysfs_remove_link(&connector->kobj, "usb-role-switch");
-+	sysfs_remove_link(&dev->kobj, "connector");
-+}
-+
-+static const struct component_ops connector_ops = {
-+	.bind = connector_bind,
-+	.unbind = connector_unbind,
-+};
-+
- /**
-  * usb_role_switch_set_role - Set USB role for a switch
-  * @sw: USB role switch
-@@ -352,6 +379,12 @@ usb_role_switch_register(struct device *parent,
- 		return ERR_PTR(ret);
+ static int cros_typec_parse_port_props(struct typec_capability *cap,
+ 				       struct fwnode_handle *fwnode,
+ 				       struct device *dev)
+@@ -66,6 +83,8 @@ static int cros_typec_parse_port_props(struct typec_capability *cap,
+ 		cap->prefer_role = ret;
  	}
  
-+	if (dev_fwnode(&sw->dev)) {
-+		ret = component_add(&sw->dev, &connector_ops);
-+		if (ret)
-+			dev_warn(&sw->dev, "failed to add component\n");
-+	}
++	cros_typec_role_switch_quirk(fwnode);
 +
- 	/* TODO: Symlinks for the host port and the device controller. */
+ 	cap->fwnode = fwnode;
  
- 	return sw;
-@@ -366,8 +399,11 @@ EXPORT_SYMBOL_GPL(usb_role_switch_register);
-  */
- void usb_role_switch_unregister(struct usb_role_switch *sw)
- {
--	if (!IS_ERR_OR_NULL(sw))
--		device_unregister(&sw->dev);
-+	if (IS_ERR_OR_NULL(sw))
-+		return;
-+	if (dev_fwnode(&sw->dev))
-+		component_del(&sw->dev, &connector_ops);
-+	device_unregister(&sw->dev);
- }
- EXPORT_SYMBOL_GPL(usb_role_switch_unregister);
- 
+ 	return 0;
 -- 
 2.43.0
 
