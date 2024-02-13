@@ -1,65 +1,62 @@
-Return-Path: <linux-kernel+bounces-63611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B928D85323A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:48:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFEAF853240
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BB211F21E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:48:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 688C9B23283
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 13:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7EB56474;
-	Tue, 13 Feb 2024 13:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE625647F;
+	Tue, 13 Feb 2024 13:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X2GzlSb8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0GkEPW9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6533756465
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 13:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654F35577C;
+	Tue, 13 Feb 2024 13:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707832105; cv=none; b=HQDiJBs9M+bL5X3MC9mgMyAkD9IFoXXZD+B4A100B2Fb6quQo/uPFnTDBezHYXsZnHd1H+W60ysm2fx4ELSsjDk6Zg3DFpUw4bgSjh3U1IspWIphjPn4b61JiXKqnQTA4oFzQjyFjW88MGmO/iY6LbGvG8ps1aj1bZysl+oYaaU=
+	t=1707832207; cv=none; b=rUITkVT4/6viWtlKHZTCyyNmIa5bt514jQtNywYleyAP7shehH89+Vu8VxUWIVa23GbTLtCoub0LVSohB/EcKw8jo1tgyAFQx0mlMFBPk+8DXQyWZb4GuYdqEqVjVlUsKq33ze+scS7WK3kuahyaCiOZRae99U+S10v9+MH14WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707832105; c=relaxed/simple;
-	bh=26cXrqFjrg0ao0r9xUFAr1Dg4GgkrO8FmiGX8abfNuM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h/H7eS+0y8jT1BEwIXknVsZgrTgIie8/Tji39rtWjv4I/K7tuP00WIgrEokS8sHbeob836JbpPVvDV73+heWcwtUdPuAS5yTSZ7ngSNmlrNQTZ0MJ2vzZt/VPTbDevZp4ayOFvCbBqhf16sv5tTOgMT1tWhfCNxKpuoDBc3rvj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X2GzlSb8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A354C433C7;
-	Tue, 13 Feb 2024 13:48:20 +0000 (UTC)
+	s=arc-20240116; t=1707832207; c=relaxed/simple;
+	bh=jebXE4S2l9VR5ky5ojZahV3h7w5E04tMbZxudpRgGSY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ro08ii1rl5uVHuRc9vcH69zwE6HEDTlQhUvjunV4hL85U/vNGi/xzc5G5tcermSa9Mc7jB+HZIw8WJ428fGYNnQi04M+H8MeyxhbUpaXu05obIL9ZE9to4y/Zv8YvwaOV5tUYRqyesdvBGo3nXI+U7wgiHF4MvkrscHqYa4BioA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0GkEPW9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFE39C43390;
+	Tue, 13 Feb 2024 13:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707832103;
-	bh=26cXrqFjrg0ao0r9xUFAr1Dg4GgkrO8FmiGX8abfNuM=;
+	s=k20201202; t=1707832206;
+	bh=jebXE4S2l9VR5ky5ojZahV3h7w5E04tMbZxudpRgGSY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=X2GzlSb8rmaizrJ0LylQls2sNtypF+9i+aT25Vuuvh7WYZjxmctA3xM2UEvgXAHQ9
-	 LkHZlxozy10NCqsfaltRaUMEVm1POUxpoifOXVzrPA/7gyXDeedg54An0zypsT5+Bm
-	 5pL153obBaefWUE4e90RlGfLmnHfeYrp8lYPzkTZ+MQkti4KJPa6SEXkE2vy29EgEB
-	 ybIafh9Y/c0rAcuxQpDQ880xxUtDcVNVqnV34nzeQnDVi2C1vnRp07/VQKJO6SgBd1
-	 mMfBjKc5K4eYKyYJPaorx6Ar5BXdJS9P2vSyOtN0fOwTUeorMq/U7/HBLji2sl0VHG
-	 CPPlBN4LzpySQ==
+	b=Y0GkEPW9nYVaz2755BhIaDpPuFyD3qcFx46+TX74N9+5Uw6wTHUQaIXtB9ttVCAQ6
+	 69nlW8eWsC1RQWeJtsy0qlowT5JzcjMqUS3ePo5n3xR+BZ+kdWghLtutcZKWsHQdGa
+	 r0K+RTqEQvR8XsyqopBPw0TsfsziNCfoHP0a/4GKK4ybIUIxT2Wfo3SrWbAV/epZbk
+	 AfoEpgbCSlwrtcdcPFTNkbxLE274I2YIBdEhzkmc1m1o5mH+PuIB/Z9OuDQZgJiZ1v
+	 DNiRFS5+QeL2QSSodUfwRAmsxgOPg3t2IfM+1dVGcdKDfKcpDip4BfRvLAPGaNgwRh
+	 +63E9Uxj07zgA==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Lucas De Marchi <lucas.demarchi@intel.com>,
-	Oded Gabbay <ogabbay@kernel.org>,
-	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Matt Roper <matthew.d.roper@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Riana Tauro <riana.tauro@intel.com>,
-	Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/xe: skip building debugfs code for CONFIG_DEBUG_FS=n
-Date: Tue, 13 Feb 2024 14:48:05 +0100
-Message-Id: <20240213134817.3347574-1-arnd@kernel.org>
+	"David S. Miller" <davem@davemloft.net>,
+	Russell King <linux@armlinux.org.uk>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] [v2] ARM: crypto: fix function cast warnings
+Date: Tue, 13 Feb 2024 14:49:46 +0100
+Message-Id: <20240213135000.3400052-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,62 +68,108 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Some of the debugfs functions are stubbed out in these configurations,
-so trying to build the .c file with the definition fails:
+clang-16 warns about casting between incompatible function types:
 
-In file included from include/uapi/linux/posix_types.h:5,
-                 from drivers/gpu/drm/i915/display/intel_pipe_crc.c:27:
-drivers/gpu/drm/i915/display/intel_pipe_crc.c: At top level:
-include/linux/stddef.h:8:16: error: expected identifier or '(' before 'void'
-    8 | #define NULL ((void *)0)
-      |                ^~~~
-drivers/gpu/drm/i915/display/intel_pipe_crc.c:549:20: note: in expansion of macro 'intel_crtc_get_crc_sources'
-  549 | const char *const *intel_crtc_get_crc_sources(struct drm_crtc *crtc,
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+arch/arm/crypto/sha256_glue.c:37:5: error: cast from 'void (*)(u32 *, const void *, unsigned int)' (aka 'void (*)(unsigned int *, const void *, unsigned int)') to 'sha256_block_fn *' (aka 'void (*)(struct sha256_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   37 |                                 (sha256_block_fn *)sha256_block_data_order);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+arch/arm/crypto/sha512-glue.c:34:3: error: cast from 'void (*)(u64 *, const u8 *, int)' (aka 'void (*)(unsigned long long *, const unsigned char *, int)') to 'sha512_block_fn *' (aka 'void (*)(struct sha512_state *, const unsigned char *, int)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+   34 |                 (sha512_block_fn *)sha512_block_data_order);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Stop trying to build them by making the Makefile entries conditional,
-same as for the i915 driver.
+Fix the prototypes for the assembler functions to match the typedef.
+The code already relies on the digest being the first part of the
+state structure, so there is no change in behavior.
 
+Fixes: c80ae7ca3726 ("crypto: arm/sha512 - accelerated SHA-512 using ARM generic ASM and NEON")
+Fixes: b59e2ae3690c ("crypto: arm/sha256 - move SHA-224/256 ASM/NEON implementation to base layer")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/xe/Makefile | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+v2: rewrite change as suggested by Herbert Xu.
+---
+ arch/arm/crypto/sha256_glue.c | 13 +++++--------
+ arch/arm/crypto/sha512-glue.c | 12 +++++-------
+ 2 files changed, 10 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/xe/Makefile b/drivers/gpu/drm/xe/Makefile
-index efcf0ab7a1a6..7c10ffdb7809 100644
---- a/drivers/gpu/drm/xe/Makefile
-+++ b/drivers/gpu/drm/xe/Makefile
-@@ -213,8 +213,6 @@ xe-$(CONFIG_DRM_XE_DISPLAY) += \
- 	i915-display/intel_ddi.o \
- 	i915-display/intel_ddi_buf_trans.o \
- 	i915-display/intel_display.o \
--	i915-display/intel_display_debugfs.o \
--	i915-display/intel_display_debugfs_params.o \
- 	i915-display/intel_display_device.o \
- 	i915-display/intel_display_driver.o \
- 	i915-display/intel_display_irq.o \
-@@ -258,7 +256,6 @@ xe-$(CONFIG_DRM_XE_DISPLAY) += \
- 	i915-display/intel_modeset_setup.o \
- 	i915-display/intel_modeset_verify.o \
- 	i915-display/intel_panel.o \
--	i915-display/intel_pipe_crc.o \
- 	i915-display/intel_pmdemand.o \
- 	i915-display/intel_pps.o \
- 	i915-display/intel_psr.o \
-@@ -275,6 +272,13 @@ xe-$(CONFIG_DRM_XE_DISPLAY) += \
- 	i915-display/skl_universal_plane.o \
- 	i915-display/skl_watermark.o
+diff --git a/arch/arm/crypto/sha256_glue.c b/arch/arm/crypto/sha256_glue.c
+index 433ee4ddce6c..f85933fdec75 100644
+--- a/arch/arm/crypto/sha256_glue.c
++++ b/arch/arm/crypto/sha256_glue.c
+@@ -24,8 +24,8 @@
  
-+ifdef CONFIG_DEBUG_FS
-+xe-$(CONFIG_DRM_XE_DISPLAY) += \
-+	i915-display/intel_display_debugfs.o \
-+	i915-display/intel_display_debugfs_params.o \
-+	i915-display/intel_pipe_crc.o
-+endif
-+
- ifeq ($(CONFIG_ACPI),y)
- 	xe-$(CONFIG_DRM_XE_DISPLAY) += \
- 		i915-display/intel_acpi.o \
+ #include "sha256_glue.h"
+ 
+-asmlinkage void sha256_block_data_order(u32 *digest, const void *data,
+-					unsigned int num_blks);
++asmlinkage void sha256_block_data_order(struct sha256_state *state,
++					const u8 *data, int num_blks);
+ 
+ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
+ 			     unsigned int len)
+@@ -33,23 +33,20 @@ int crypto_sha256_arm_update(struct shash_desc *desc, const u8 *data,
+ 	/* make sure casting to sha256_block_fn() is safe */
+ 	BUILD_BUG_ON(offsetof(struct sha256_state, state) != 0);
+ 
+-	return sha256_base_do_update(desc, data, len,
+-				(sha256_block_fn *)sha256_block_data_order);
++	return sha256_base_do_update(desc, data, len, sha256_block_data_order);
+ }
+ EXPORT_SYMBOL(crypto_sha256_arm_update);
+ 
+ static int crypto_sha256_arm_final(struct shash_desc *desc, u8 *out)
+ {
+-	sha256_base_do_finalize(desc,
+-				(sha256_block_fn *)sha256_block_data_order);
++	sha256_base_do_finalize(desc, sha256_block_data_order);
+ 	return sha256_base_finish(desc, out);
+ }
+ 
+ int crypto_sha256_arm_finup(struct shash_desc *desc, const u8 *data,
+ 			    unsigned int len, u8 *out)
+ {
+-	sha256_base_do_update(desc, data, len,
+-			      (sha256_block_fn *)sha256_block_data_order);
++	sha256_base_do_update(desc, data, len, sha256_block_data_order);
+ 	return crypto_sha256_arm_final(desc, out);
+ }
+ EXPORT_SYMBOL(crypto_sha256_arm_finup);
+diff --git a/arch/arm/crypto/sha512-glue.c b/arch/arm/crypto/sha512-glue.c
+index 0635a65aa488..1be5bd498af3 100644
+--- a/arch/arm/crypto/sha512-glue.c
++++ b/arch/arm/crypto/sha512-glue.c
+@@ -25,27 +25,25 @@ MODULE_ALIAS_CRYPTO("sha512");
+ MODULE_ALIAS_CRYPTO("sha384-arm");
+ MODULE_ALIAS_CRYPTO("sha512-arm");
+ 
+-asmlinkage void sha512_block_data_order(u64 *state, u8 const *src, int blocks);
++asmlinkage void sha512_block_data_order(struct sha512_state *state,
++					u8 const *src, int blocks);
+ 
+ int sha512_arm_update(struct shash_desc *desc, const u8 *data,
+ 		      unsigned int len)
+ {
+-	return sha512_base_do_update(desc, data, len,
+-		(sha512_block_fn *)sha512_block_data_order);
++	return sha512_base_do_update(desc, data, len, sha512_block_data_order);
+ }
+ 
+ static int sha512_arm_final(struct shash_desc *desc, u8 *out)
+ {
+-	sha512_base_do_finalize(desc,
+-		(sha512_block_fn *)sha512_block_data_order);
++	sha512_base_do_finalize(desc, sha512_block_data_order);
+ 	return sha512_base_finish(desc, out);
+ }
+ 
+ int sha512_arm_finup(struct shash_desc *desc, const u8 *data,
+ 		     unsigned int len, u8 *out)
+ {
+-	sha512_base_do_update(desc, data, len,
+-		(sha512_block_fn *)sha512_block_data_order);
++	sha512_base_do_update(desc, data, len, sha512_block_data_order);
+ 	return sha512_arm_final(desc, out);
+ }
+ 
 -- 
 2.39.2
 
