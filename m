@@ -1,153 +1,93 @@
-Return-Path: <linux-kernel+bounces-62897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E5438527A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:14:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7FEC8527AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:17:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B023B225B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:13:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A6041F236AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36ECE8F65;
-	Tue, 13 Feb 2024 03:13:51 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A6C7A923;
-	Tue, 13 Feb 2024 03:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327218F77;
+	Tue, 13 Feb 2024 03:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J5BSFnse"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08C48BFC
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707794030; cv=none; b=kSITJzlVInch9Rp8MN9WL0InEX0mr9H7VfTcxvk5fx46PypfLvDcG2UlOkEhGZoWFypOJSzqnG+Qbyus8Kxno59skxslFuU5jqd+P0kZM4856eTM66dIKaIz528NAFe9nY2zAu922YH3CMrzPea1Rb8ZTpRTYMjtHO92WDNXzas=
+	t=1707794235; cv=none; b=bcAtasYKG/XxqVvHSH3T4PQlhHTpW42IiNpNcx1Ad55bu8rd+XGgaT/zQJDpjf6kC/d2cwdzcZYyZnALp1o5jAQs1lWIUUVnbTspN5YePtuydcylhpZVeZEzD+WociowqlA4xjnzvFQei5Rd3KhfajI2USQ85wFs1Rhml11tZvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707794030; c=relaxed/simple;
-	bh=qfdeYX1WSeI67xsYjil953V5Odinn00bOIHp83J4Uys=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eUarYANwm30R9EuGFYZzev+j4V0364a5fM5DujDgSfPBPC2/Pv1Uuhd1saMqb2M01DwMMxMt+OOxr5np9+uYJppMPrNsO7nWIlm9mkFHzO700XOJmKntKTGeVad2RmgWryBv5s2UCR74cSZP3F4jJY4OigDGXrIvvwxrF45M6pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B30DDA7;
-	Mon, 12 Feb 2024 19:14:28 -0800 (PST)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 164D33F5A1;
-	Mon, 12 Feb 2024 19:13:42 -0800 (PST)
-Message-ID: <0c65f3b0-a879-444c-b0a4-4af485e72166@arm.com>
-Date: Tue, 13 Feb 2024 08:43:39 +0530
+	s=arc-20240116; t=1707794235; c=relaxed/simple;
+	bh=F1m/aD6lzCMWutOEh5r7wEcTmpqLVziRfs8NPgMbPwQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jXBe8Dqc9IIMYPHcCx+unCpwHNczEPFSacsgpsjySU/Gijsh6NpM1QIyRPuusX+CNd/qyINhxy1JyNJySA3ZFdRMxvkUsFXcOnP7XXbpt3zZlciGKsErd9XTiQnrKyjfYxDfKLP/97qw6Ie6FA8fe4d3htR5q+CudahSbVr7BNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J5BSFnse; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707794232;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=j8JzdnskN++AwAUpZbIrZ2/Bzk43WRvT61K84t7fBEY=;
+	b=J5BSFnse1WLzcycPcS2yScjAkYH8aeTQfLOyCw7tV54aPoX0oj/mPM1gUYg3/YFg9DCxXw
+	wk7/AbY7IZdRq9pM7P73S+Y0bIIyTEGVcqLUhN2pNVm3nHi6wCcYFpB8jkf3PUB4ksfMVb
+	d1UvpC0KuwSDknz2LmZgE+zMUTlyv10=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-17-go-GN1tgMwG2tSyP-yXtLQ-1; Mon,
+ 12 Feb 2024 22:17:08 -0500
+X-MC-Unique: go-GN1tgMwG2tSyP-yXtLQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2B5841C04B5A;
+	Tue, 13 Feb 2024 03:17:08 +0000 (UTC)
+Received: from llong.com (unknown [10.22.33.62])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 98A0AAC17;
+	Tue, 13 Feb 2024 03:17:06 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	George Stark <gnstark@salutedevices.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/4] locking: Some locking code cleanups
+Date: Mon, 12 Feb 2024 22:16:52 -0500
+Message-Id: <20240213031656.1375951-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 03/11] coresight: tmc: Extract device properties from
- AMBA pid based table lookup
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-4-anshuman.khandual@arm.com>
- <44597c9a-79bd-40f8-87a7-b53582132583@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <44597c9a-79bd-40f8-87a7-b53582132583@arm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+This series contains a number of cleanup locking patches.
 
+Waiman Long (4):
+  locking/qspinlock: Fix 'wait_early' set but not used warning
+  locking/mutex: Clean up mutex.h
+  locking/rwsem: Clarify that RWSEM_READER_OWNED is just a hint
+  locking/rwsem: Make DEBUG_RWSEMS and PREEMPT_RT mutually exclusive
 
-On 2/12/24 17:43, Suzuki K Poulose wrote:
-> On 23/01/2024 05:46, Anshuman Khandual wrote:
->> This extracts device properties from AMBA pid based table lookup. This also
->> defers tmc_etr_setup_caps() after the coresight device has been initialized
->> so that PID value can be read.
->>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: James Clark <james.clark@arm.com>
->> Cc: coresight@lists.linaro.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   .../hwtracing/coresight/coresight-tmc-core.c  | 19 +++++++++++++------
->>   1 file changed, 13 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
->> index 7ec5365e2b64..e71db3099a29 100644
->> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
->> @@ -370,16 +370,24 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
->>       return (auth & TMC_AUTH_NSID_MASK) == 0x3;
->>   }
->>   +#define TMC_AMBA_MASK 0xfffff
->> +
->> +static const struct amba_id tmc_ids[];
->> +
->>   /* Detect and initialise the capabilities of a TMC ETR */
->> -static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
->> +static int tmc_etr_setup_caps(struct device *parent, u32 devid)
->>   {
->>       int rc;
->> -    u32 dma_mask = 0;
->> +    u32 tmc_pid, dma_mask = 0;
->>       struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
->> +    void *dev_caps;
->>         if (!tmc_etr_has_non_secure_access(drvdata))
->>           return -EACCES;
->>   +    tmc_pid = coresight_get_pid(&drvdata->csdev->access) & TMC_AMBA_MASK;
->> +    dev_caps = coresight_get_uci_data_from_amba(tmc_ids, tmc_pid);
->> +
->>       /* Set the unadvertised capabilities */
->>       tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
->>   @@ -497,10 +505,6 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->>           desc.type = CORESIGHT_DEV_TYPE_SINK;
->>           desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
->>           desc.ops = &tmc_etr_cs_ops;
->> -        ret = tmc_etr_setup_caps(dev, devid,
->> -                     coresight_get_uci_data(id));
->> -        if (ret)
->> -            goto out;
->>           idr_init(&drvdata->idr);
->>           mutex_init(&drvdata->idr_mutex);
->>           dev_list = &etr_devs;
->> @@ -539,6 +543,9 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->>           goto out;
->>       }
->>   +    if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
->> +        ret = tmc_etr_setup_caps(dev, devid);
->> +
-> 
-> With this change, we silently accept an ETR that may only have "SECURE" access only and crash later while we try to enable tracing. You could
-> pass in the "access" (which is already in 'desc.access' in the original
-> call site and deal with it ?
+ include/linux/mutex.h               | 23 +++++++++++------------
+ kernel/locking/qspinlock_paravirt.h |  2 +-
+ kernel/locking/rwsem.c              |  6 +++---
+ lib/Kconfig.debug                   |  4 ++--
+ 4 files changed, 17 insertions(+), 18 deletions(-)
 
-Just wondering, if something like the following will help ? A failed tmc_etr_setup_caps()
-because of failed tmc_etr_has_non_secure_access(), will unregister the coresight device
-before returning.
+-- 
+2.39.3
 
---- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-@@ -538,8 +538,13 @@ static int __tmc_probe(struct device *dev, struct resource *res)
-                goto out;
-        }
- 
--       if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
-+       if (drvdata->config_type == TMC_CONFIG_TYPE_ETR) {
-                ret = tmc_etr_setup_caps(dev, devid);
-+               if (ret) {
-+                       coresight_unregister(drvdata->csdev);
-+                       goto out;
-+               }
-+       }
- 
-        drvdata->miscdev.name = desc.name;
-        drvdata->miscdev.minor = MISC_DYNAMIC_MINOR;
 
