@@ -1,173 +1,123 @@
-Return-Path: <linux-kernel+bounces-63365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9062852E38
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:42:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D309B852E3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F36C282C16
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:42:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EFAB2837D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4447725564;
-	Tue, 13 Feb 2024 10:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B8S7Cipu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qDEhimJU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B8S7Cipu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qDEhimJU"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E54A2868D;
+	Tue, 13 Feb 2024 10:43:59 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FC4249F3;
-	Tue, 13 Feb 2024 10:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E36A24B28
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707820950; cv=none; b=N4O6lQxJanQMempNiBB1VgmlW+9MxZVlI+xjKBsnMmJ76dOtPZz8279eiaLnBaCfYgSODPR4PbrtLFZMG5O11tsoKyyDcJKytBFSts02nvbVpL663zVM+jv66gTfd0inZl+LILcheEVpkigWauGBqAyXkRHs68D/LnzbZsui4ps=
+	t=1707821039; cv=none; b=qpEJd5uM5gexod75Va8Bw4pruhIaDrFYWnII95T9PI9jkJT3+F0dhViutp3Rq3jzkawoAbsvMRo5p5QMuWDZRHMTiCMabYJRmWHKnALEmQda7nHCMwJzO3YuGJarHyUOclJKgtYEZsZDFn7FGocAtJ/gWiqkV5ueVd4F539bCEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707820950; c=relaxed/simple;
-	bh=1MPdSWwfruOrnSuLr0n9WPPbCXwNL77oYSgG5v0MEhM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BcX51MqWeHxJTWCR971ABbQTGod0QOBt0JaHpT3Yx+M2w52y4NxMpxQV8m0VWhUPmJ9sBl2kAok3pJJz7PeXdaf2xxTOf2PwOfLrgOQswkXHRkOarGEdgzdIoGltF4/Z0MuqWJHY0xCAgr0AtwMP/hXEaUXf3gp5Zs3xC7Nk1Nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8S7Cipu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qDEhimJU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B8S7Cipu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qDEhimJU; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1707821039; c=relaxed/simple;
+	bh=uPlvIFVTH5FLj43h+COsvaOy0/XUpFnl9YLEoOGxarw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=IWcKWNV0giykiv5Pa/fcofKBimNaaFVnKcVAytUiinVJnLjmOY6g2Owrm6lnjnM9FaSOuKesqVCKrGC823JPjGRcOXTcTHhvyInEyUBGkwWv2ikmsNAVVzojeWkzNEetTYqNF/vEUzeuh31oyfRHFQ0+rvjdYuQ1hBUgJopuX0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rZqGa-0004EU-0X
+	for linux-kernel@vger.kernel.org; Tue, 13 Feb 2024 11:43:56 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rZqGZ-000SsX-Ju
+	for linux-kernel@vger.kernel.org; Tue, 13 Feb 2024 11:43:55 +0100
+Received: from dspam.blackshift.org (localhost [127.0.0.1])
+	by bjornoya.blackshift.org (Postfix) with SMTP id 4A89828D59E
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 10:43:55 +0000 (UTC)
+Received: from hardanger.blackshift.org (unknown [172.20.34.65])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B17D521DFF;
-	Tue, 13 Feb 2024 10:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707820946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=22pJvaIDPDvuC7d+Y5apFd3eebCKb0VWfUr3BiGLeUI=;
-	b=B8S7CipuW50JcLfclu3kri69zjaKPYRnSH/KnRoOu+2/0A11Qqie9KHDuErDg7T5xT/0Rz
-	eoBwkdpAnN0SQcnVLWbkGoe3WOWgjxMww4+ggRA/T/eBSzHPwDFO0xa8g9ahxZE1iQ4hTw
-	CfqKufbfbanMK8ehQJZ75Gn22EPjGcE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707820946;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=22pJvaIDPDvuC7d+Y5apFd3eebCKb0VWfUr3BiGLeUI=;
-	b=qDEhimJUEKjzbBoLXQtiP/P8IUBbH+j9jYL2Buwhz5ZUwuajEtnuMMZjtqkhD+B53i5Tba
-	nUW+ZJGrFdEvAmAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707820946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=22pJvaIDPDvuC7d+Y5apFd3eebCKb0VWfUr3BiGLeUI=;
-	b=B8S7CipuW50JcLfclu3kri69zjaKPYRnSH/KnRoOu+2/0A11Qqie9KHDuErDg7T5xT/0Rz
-	eoBwkdpAnN0SQcnVLWbkGoe3WOWgjxMww4+ggRA/T/eBSzHPwDFO0xa8g9ahxZE1iQ4hTw
-	CfqKufbfbanMK8ehQJZ75Gn22EPjGcE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707820946;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=22pJvaIDPDvuC7d+Y5apFd3eebCKb0VWfUr3BiGLeUI=;
-	b=qDEhimJUEKjzbBoLXQtiP/P8IUBbH+j9jYL2Buwhz5ZUwuajEtnuMMZjtqkhD+B53i5Tba
-	nUW+ZJGrFdEvAmAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A32CD1329E;
-	Tue, 13 Feb 2024 10:42:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id r/vPJ5JHy2UENQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 10:42:26 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4AC38A0809; Tue, 13 Feb 2024 11:42:18 +0100 (CET)
-Date: Tue, 13 Feb 2024 11:42:18 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org,
-	ebiggers@google.com, ebiggers@kernel.org, jack@suse.cz,
-	krisman@collabora.com, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com, tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] general protection fault in utf8nlookup
-Message-ID: <20240213104218.utvf3t2abfgqdhbb@quack3>
-References: <0000000000001f0b970605c39a7e@google.com>
- <000000000000600b5d06113869f0@google.com>
+	(Client did not present a certificate)
+	by bjornoya.blackshift.org (Postfix) with ESMTPS id A373828D59B;
+	Tue, 13 Feb 2024 10:43:54 +0000 (UTC)
+Received: from [172.20.34.65] (localhost [::1])
+	by hardanger.blackshift.org (OpenSMTPD) with ESMTP id f05ffb33;
+	Tue, 13 Feb 2024 10:43:54 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Tue, 13 Feb 2024 11:43:51 +0100
+Subject: [PATCH] MAINTAINERS: can: xilinx_can: remove Naga Sureshkumar
+ Relli
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000600b5d06113869f0@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=B8S7Cipu;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qDEhimJU
-X-Spamd-Result: default: False [2.69 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLk8tmzebn37goht9666q8cjru)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[44.70%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122];
-	 TAGGED_RCPT(0.00)[9cf75dc581fb4307d6dd];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[dilger.ca,kernel.dk,kernel.org,google.com,suse.cz,collabora.com,vger.kernel.org,googlegroups.com,gmail.com,mit.edu];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 2.69
-X-Rspamd-Queue-Id: B17D521DFF
-X-Spam-Level: **
-X-Spam-Flag: NO
-X-Spamd-Bar: ++
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-xilinx_can-v1-1-79820de803ea@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAOdHy2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIKFbkZmTmVcRn5yYp5uUkpxoaZpokGJknKQE1FBQlJqWWQE2LDq2thY
+ AhBraHVwAAAA=
+To: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Cc: linux-kernel@vger.kernel.org, linux-can@vger.kernel.org, 
+ Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.13-dev-f0463
+X-Developer-Signature: v=1; a=openpgp-sha256; l=991; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=uPlvIFVTH5FLj43h+COsvaOy0/XUpFnl9YLEoOGxarw=;
+ b=owEBbQGS/pANAwAKASg4oj56LbxvAcsmYgBly0foJIKpCN1FnDUSl2+GbEAv/oqDCwsUbQTqZ
+ AqqZNJUgEKJATMEAAEKAB0WIQRQQLqG4LYE3Sm8Pl8oOKI+ei28bwUCZctH6AAKCRAoOKI+ei28
+ b3QwB/9G6ItdZOFAHRN4rAEH2IdEiDFF4HXrPoL2t3gzSkeyjiqifpEOtZsT3Ot71SDyYeq5gqt
+ BMigh8M8OSvlR0/F/jQBEZBilCW63+znsfvIIXGOO3OLwAK3vvckxJNOZQ2boU3ajp347Ib2t4b
+ 0J4zPpT0LwvG+ZJirXCTMdBVKisQINd8/G1wsDUk+HVgSNoqtlgN7oZLNEzJ1c3jv55d0cfrGIV
+ IVdwZrwhpeRKnvOYvJPlzSxARdDCH+ojKm7NwXxV+ddSWrSDdtBNm+4984GfPjTdsTCAK9hl3OK
+ rnwA6Y8w4v07ponGhX/qAavUB2Vk5wPjPOLMMmrVsveQzgxk
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon 12-02-24 16:24:03, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17547fd4180000
-> start commit:   e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Mails to naga.sureshkumar.relli@xilinx.com are bouncing due to a mail
+loop. Seems Naga Sureshkumar Relli has left the company.
 
-The reproducer definitely does weird stuff like mmapping the loop device.
-So makes sense:
+Remove Naga Sureshkumar Relli from the xilinx_can driver.
 
-#syz fix: fs: Block writes to mounted block devices
+Cc: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
 
-								Honza
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 000ef0e46c70..3e03092593f3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -24142,7 +24142,6 @@ F:	drivers/net/ethernet/xilinx/xilinx_axienet*
+ 
+ XILINX CAN DRIVER
+ M:	Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+-R:	Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+
+---
+base-commit: a3522a2edb3faf8cb98d38c2a99f5967beef24e2
+change-id: 20240202-xilinx_can-bdca95a0d23b
+
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Marc Kleine-Budde <mkl@pengutronix.de>
+
+
 
