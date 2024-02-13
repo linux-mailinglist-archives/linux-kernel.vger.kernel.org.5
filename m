@@ -1,277 +1,345 @@
-Return-Path: <linux-kernel+bounces-64502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0BB853FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:02:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15F9853FA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5913B1F2A07A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:02:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50E43282B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F40462A01;
-	Tue, 13 Feb 2024 23:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cs8yXryA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9312161665
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCDF629F7;
+	Tue, 13 Feb 2024 23:03:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3376280B;
+	Tue, 13 Feb 2024 23:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707865359; cv=none; b=hRXM4mD0iZTOeRNeIrBfAqGCUaj51gL6UWGvMsUTnao/nYucAN0y3o3avuFAHocdw6TZrmutaGYIht+ZZq5LBUSOiVLj0i5BY/RYkIALhg73Oibt+cPdxHIKDGwVt6IE2x+ZiOOOCVCkoABEV8AF+1Kqfe83tRxXCoRyc4AJKPE=
+	t=1707865381; cv=none; b=jhNXvDDrdO1RcRg1FympqdC0bsv931hcXdOY1l9zrsOabqWLNdCBJH684SrmCUXlolV4SjIm3NW1rDw02SKJB74mBdCsAXT4lgRQcH14K39agDrA2LF5jVuhpl6n13SGWZPDdpVLDacL9QwJvZTDvMIlQtCWhIPHtxho5BPiTXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707865359; c=relaxed/simple;
-	bh=mvBx5c1Mz1PzeUdF/phvjBEqnMk0fyJZOg0mqmgOhf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vGUyFGL4telJWSSDb6QQEjG/2qQzgmlR27ACbR+vpbodWUVX1BGB4i8goAVlfVXC02bmomXZ0nEZLDRccl8RcDWWYLKhqao6fZWwnxY1pDydusi1e+xkbi5bXP1I/WAvgYPnCQ69e3pzYkym90zmEqOKMheJ9aLPT12yfWnxACc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cs8yXryA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707865356;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=xJhJ4xEMtOy5c1y6MqLIa8bGWYDGFy49+SYmZWzszOg=;
-	b=cs8yXryA2CuoxSZgAHmSD2h0ulvo+h4G09mdovsd6d5dM8tnmbrYpqxSEOD7k+fCDMeXBs
-	jfSvYxLpLScTSy6H4qo1ZlR55+sEofzmzGQoajXz9k4aalOjvwqeI/L/zS23xNSgK5PvUF
-	34vPTtx9G9JcBlZfxy9N9MfxYSg5N2w=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-wLWU49TEO6--leKQo204zw-1; Tue, 13 Feb 2024 18:02:35 -0500
-X-MC-Unique: wLWU49TEO6--leKQo204zw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33b376cc518so2746184f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 15:02:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707865354; x=1708470154;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xJhJ4xEMtOy5c1y6MqLIa8bGWYDGFy49+SYmZWzszOg=;
-        b=pC1vv/SP4VBivUWctbcNau9xIhXPggI1V/3wMrC4akqezMLuhNyev4vF3/kuqzv5kO
-         IezUfbWHMRVCzXQqFT6r9aE6h6gn1GebufZ7Lw2KXTC0/w9FSPwuUZumnFSKJYqSNJI7
-         6BWhjBa8+GoDSJ9lLUjuFquhGwJPau0BpXAahm2dM4sJyF6SJ2d1/pETSInlNmYyqRxb
-         /sqCwQT9Ld2KcsLERXnrBGADiwFSq0GdwaFNPM+AZb1Aaeplu9wddkG7LApWRHsqBXkx
-         jfg/xOwkxKfy2RSzZZ0yAb1D3tGsttXdl0TWQfRIoP8v/8SAiOqYJqbVcz3kosAHhK1v
-         GUUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVCZe3IEOdpBwaGzLUmb5j0yX5Kcc7n95CCPZgfwPK/E8N778aDVl+CSi5290amKoY/f3ffXqhyzDeVHGeaEEFmW5IfSGZaYNiFyfZd
-X-Gm-Message-State: AOJu0Yzw3t2oiixdR322GuZNxU3JJi14VyjJezQSCCUVx+1GIXjdyYSe
-	/QX6HdozNG674wm8ORkzuY/7NdVsU/q7bDUO2+Rr2lK195+aWgf7S1ZoIn44oe/++rKCE6lZbYp
-	jTQ6zTS++HfLicSUGXJR/WdsCq/5IQPeELfqa9uW7o32X8uzRkjUGlhC/6uJnKQ==
-X-Received: by 2002:a5d:4b44:0:b0:33c:df3e:a5a4 with SMTP id w4-20020a5d4b44000000b0033cdf3ea5a4mr459842wrs.18.1707865354009;
-        Tue, 13 Feb 2024 15:02:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE4A8VhQYTSoOYs4CoXMrelxYHYlTrlDNgZogjuyEeTUIXrZp//fCLZAWwioyKng9ZFc5pN5g==
-X-Received: by 2002:a5d:4b44:0:b0:33c:df3e:a5a4 with SMTP id w4-20020a5d4b44000000b0033cdf3ea5a4mr459818wrs.18.1707865353562;
-        Tue, 13 Feb 2024 15:02:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCULCNULhD9Bp92phfdPC6lkBKgikScJFZX+7UkaEbuaMzQ1Krbp8M0+LqvBjA02TyiHZDjIxdUa5jMUULgLjqrC1UhopNz9EaXU019yBtkMjVfx8YkF84HG9p9OcblAamCCk+x/A5guJAAaWWRhWSO4QDYuwq2LRzy0zGWQMuEdIKrz50IcjZqKxL3h4wNRGOQqVsb8zLldtFhv3n3jnD811QbpMmIVzCP8H9XkY7sGK6lN9XVeqHh/CW5/Nu0I3396ogIwYNrgpmn/IY2AZ7uqbUStm7oqNgQOOCiAmhPCiSeNMqMTIEewuSPnN95cy81Q92iLW3BgaI8kPbHHos5DXwuQAe1sa9su48VJNVFYkg2VchY4Rn/O1yB0ZwGfWQdv5OTjIT3VKC0NIUCKkO24jQMORndtl/6a7pRhosqns0vBnS+TmwtQUx196cSBzIt+A7Lp/vubqT2Jm2fbaNXBDZVi5Hbxc+W5H6F5cmkuW6JhixSh3MiNYXOt7uNEn9ateuBlqhVA64Zo9HJdKhwOW8pUTLqiuhX1g8jYzYMt6gnhXFLgz9LndYdHXm7L1/pwSULXQPRDTLQoxha74Ka74v/JHAQ8/KMdcRWF30zWlzmZivps5gyGhER+fgd731LZRoMJZY1w8wMS2NcHNGIznbV++p9gNoKjy7T1Odm1TmsnXZN0eD3ivdNwv5GgjqJNG5qgDlmkTt5wqos2N2p1n6jnnmkI1xlNILo26LDsgC2z2jpPZmtqb/uLm2MoWEHPvaI2H75ka38FY0aH9CXMz/ZoNk08O4ZKsGkUYoZ5ySvNjIQ1hLHyBCLP5HCTmQdmY4R2t+mHuU5MUE0u5UyvIx+Q2UY/3pstkXlEiJOBzF0g6H6sSWFwY5wF/JC9869Sr9W5lB88fiveGDgU/nKKouTR+cj/YzCoFSODhRlNkeNy+nkIgcWkYYPYn+hKCMQAG/
- ljiIhLnCk+UFQCx3Qha17joBiFWYEnt5S+qIXR4bQprV5ro1wlYrYbetkWkWuU0f8UXi4xYCdgAe3Ws5JlbKB3FJj4zYtYLQ9dlDIn4z0yFdR27BoblD3uka6EgJHusQjl6dGMUEa4ZzLz8BQmHEJCks2qI9BHMOwG0kTNLZi3dYFraVfmNo2vpTqpEsAlgHgluK4/tha81gQyUs9rb6cvDtfNJhkry2iwVwI03P665vuKBiwtbQdhN1z/Y5PbLeiKblO6RK2QgJ7L4mtu93v7v/RmkIbzRXKlwKUlQEMaBPubHypKphDlXwI3hnfyfdABv6lK21jAs64KXOY8cV0hqS7MjC8ExPmIsYGkb92LBTDJZm7dMZzHE1KMUTERlooYa7SvxAaG+xuWmuPhGWaQWUSqnpL0v73uaMKYnNUMcKf6pxurUy1s/7vRQ1VOJuR9rMywGDFZ6BA1kaCGZTeByMvTSBFda+LHi48O3F7FeQziyW44QjfulkX6YVq9cYPzpCMVyoLltuTQlgLRzTaM+7SjFKYh0kGUKNjxPuHALSqoRqaMS1PvXXp3/TbIVuEDYzNiWzG5pp3A8ZKmWivCTNotFq8kbTvlFUstuQtoLOAJ4m49ygp0Zqk376WpuojJhWmqXdg6ra9SxmPzxkbpzDjBka4WmjYlQbVbZ9eb8n9Su6GYZ/Nx5ihbyoka4t21X0pTraPXDbZqCetbOFqktb1j9JIwp0eK6+nHQAN/O9inJsOFUixAw+B/BixxXE4NrgnKIiVNBJk7AcpvzjEsMEorc4g8LRp/ir4FVpacOn42kNNC6N5rtzKm9/ezGGYQA6z2sCauJGZ906JIgmRa6ZaCqCRjnLuccav3DEdQBbp5FXmWAFqqtDbyYw73BNrXvWRC+qDAVtZqhYySf4Ff/TvHLVgG63FSj5Tg1dfI90t/SUBI+NnVcRKGYs5KV0TqWMOzTLwfJ9idnLX6Ddas+wM4/1Cach2dvEt
- UiGRK7oVcHjG9alCI1hRT21xqEqfSdwovx7MKPpPuxDNCuC1ZHmcWlUJ3uhevQl6WKu+AodyqNOV6r37yogVBr2UqXt2nTyfry/hJvRAdBLjVDuJIIpHA9dksM05sM170yMtZN0G04Erz9Ee0AjuFtNo1b98jkkMu
-Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id r3-20020adfca83000000b0033cdbe335bcsm2512992wrh.71.2024.02.13.15.02.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 15:02:33 -0800 (PST)
-Message-ID: <a9b0440b-844e-4e45-a546-315d53322aad@redhat.com>
-Date: Wed, 14 Feb 2024 00:02:30 +0100
+	s=arc-20240116; t=1707865381; c=relaxed/simple;
+	bh=OJ0p45/u+iQ1A9FdK/Chkglpl9TGkCxwoKgl4PhkCyc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Phs4k82Ydv9Ev30XLhkk1EPTqb58jXusmJEZCBU4jAjgWcck8Q5U/af/3FTzkuqewddRCAo3d60SFG9xPeBko7BBrmmL29lsvtsXyEkNFC2XE1VO0lY/mBAbfx8f6YVfkoemfZV2qDoyLxmSMXDsJVWwabRLjVzoZ+N2/HfpSn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD1541FB;
+	Tue, 13 Feb 2024 15:03:32 -0800 (PST)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4FE93F7B4;
+	Tue, 13 Feb 2024 15:02:50 -0800 (PST)
+Date: Tue, 13 Feb 2024 23:02:49 +0000
+From: Ionela Voinescu <ionela.voinescu@arm.com>
+To: Beata Michalska <beata.michalska@arm.com>
+Cc: "lihuisong (C)" <lihuisong@huawei.com>,
+	Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, rafael@kernel.org,
+	sumitg@nvidia.com, zengheng4@huawei.com,
+	yang@os.amperecomputing.com, will@kernel.org, sudeep.holla@arm.com,
+	liuyonglong@huawei.com, zhanjie9@hisilicon.com,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+Message-ID: <Zcv1GXN711uI6ykr@arm.com>
+References: <9428a1ed-ba4d-1fe6-63e8-11e152bf1f09@huawei.com>
+ <lnocwcitdbmgcyhd2dlczgdlhtfw4pfot2br2i3hqscnvr3xgq@nuxlauxum3nr>
+ <d0f47e9d-6a58-8b46-89be-b3182abb69f0@huawei.com>
+ <ZZwAmqp6hcmMF8aN@arm.com>
+ <6505bdcb-5a5f-cba6-483b-75c51414a9c6@huawei.com>
+ <ZaaOQzCpBjmW71xf@e129154.nice.arm.com>
+ <a84a9749-97a5-a207-dfd3-8322a5a992d9@huawei.com>
+ <Zbyi40XtqbqXm0CL@e129154.nice.arm.com>
+ <4f66c62e-b089-a125-5a8d-4a98d4181618@huawei.com>
+ <ZcYEjMO7IhSaLAAF@e129154.nice.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>,
- Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
- vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
- dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
- <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
- <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcYEjMO7IhSaLAAF@e129154.nice.arm.com>
 
-On 13.02.24 23:59, Suren Baghdasaryan wrote:
-> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
->>
->> On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
->>> On 13.02.24 23:30, Suren Baghdasaryan wrote:
->>>> On Tue, Feb 13, 2024 at 2:17 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>
->>>>> On 13.02.24 23:09, Kent Overstreet wrote:
->>>>>> On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
->>>>>>> On 13.02.24 22:58, Suren Baghdasaryan wrote:
->>>>>>>> On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
->>>>>>>>>
->>>>>>>>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
->>>>>>>>> [...]
->>>>>>>>>> We're aiming to get this in the next merge window, for 6.9. The feedback
->>>>>>>>>> we've gotten has been that even out of tree this patchset has already
->>>>>>>>>> been useful, and there's a significant amount of other work gated on the
->>>>>>>>>> code tagging functionality included in this patchset [2].
->>>>>>>>>
->>>>>>>>> I suspect it will not come as a surprise that I really dislike the
->>>>>>>>> implementation proposed here. I will not repeat my arguments, I have
->>>>>>>>> done so on several occasions already.
->>>>>>>>>
->>>>>>>>> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
->>>>>>>>> this debugging feature will add a maintenance overhead for a very long
->>>>>>>>> time. I can live with all the downsides of the proposed implementation
->>>>>>>>> _as long as_ there is a wider agreement from the MM community as this is
->>>>>>>>> where the maintenance cost will be payed. So far I have not seen (m)any
->>>>>>>>> acks by MM developers so aiming into the next merge window is more than
->>>>>>>>> little rushed.
->>>>>>>>
->>>>>>>> We tried other previously proposed approaches and all have their
->>>>>>>> downsides without making maintenance much easier. Your position is
->>>>>>>> understandable and I think it's fair. Let's see if others see more
->>>>>>>> benefit than cost here.
->>>>>>>
->>>>>>> Would it make sense to discuss that at LSF/MM once again, especially
->>>>>>> covering why proposed alternatives did not work out? LSF/MM is not "too far"
->>>>>>> away (May).
->>>>>>>
->>>>>>> I recall that the last LSF/MM session on this topic was a bit unfortunate
->>>>>>> (IMHO not as productive as it could have been). Maybe we can finally reach a
->>>>>>> consensus on this.
->>>>>>
->>>>>> I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
->>>>>> need to see a serious proposl - what we had at the last LSF was people
->>>>>> jumping in with half baked alternative proposals that very much hadn't
->>>>>> been thought through, and I see no need to repeat that.
->>>>>>
->>>>>> Like I mentioned, there's other work gated on this patchset; if people
->>>>>> want to hold this up for more discussion they better be putting forth
->>>>>> something to discuss.
->>>>>
->>>>> I'm thinking of ways on how to achieve Michal's request: "as long as
->>>>> there is a wider agreement from the MM community". If we can achieve
->>>>> that without LSF, great! (a bi-weekly MM meeting might also be an option)
->>>>
->>>> There will be a maintenance burden even with the cleanest proposed
->>>> approach.
->>>
->>> Yes.
->>>
->>>> We worked hard to make the patchset as clean as possible and
->>>> if benefits still don't outweigh the maintenance cost then we should
->>>> probably stop trying.
->>>
->>> Indeed.
->>>
->>>> At LSF/MM I would rather discuss functonal
->>>> issues/requirements/improvements than alternative approaches to
->>>> instrument allocators.
->>>> I'm happy to arrange a separate meeting with MM folks if that would
->>>> help to progress on the cost/benefit decision.
->>> Note that I am only proposing ways forward.
->>>
->>> If you think you can easily achieve what Michal requested without all that,
->>> good.
->>
->> He requested something?
+Hi,
+
+On Friday 09 Feb 2024 at 11:55:08 (+0100), Beata Michalska wrote:
+> On Tue, Feb 06, 2024 at 04:02:15PM +0800, lihuisong (C) wrote:
+[..]
+> > > > > > 
+> > > > > > > Would you be able to test [1] on your platform and usecase?
+> > > > > > I has tested it on my platform (CPU number: 64, SMT: off and CPU base
+> > > > > > frequency: 2.7GHz).
+> > > > > > Accoding to the testing result,
+> > > > > > 1> I found that patch [1] and [2] cannot cover the no housekeeping CPUs.
+> > > > > > They still have to face the large frequency discrepancy issue my patch
+> > > > > > mentioned.
+> > > > > > 2> Additionally, the frequency value of all CPUs are almost the same by
+> > > > > > using the 'arch_freq_scale' factor way. I'm not sure if it is ok.
+> > > > > > 
+> > > > > > The patch [1] has been modified silightly as below:
+> > > > > > -->
+> > > > > > @@ -1756,7 +1756,10 @@ static unsigned int
+> > > > > > cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
+> > > > > >    {
+> > > > > >           unsigned int new_freq;
+> > > > > > 
+> > > > > > -       new_freq = cpufreq_driver->get(policy->cpu);
+> > > > > > +       new_freq = arch_freq_get_on_cpu(policy->cpu);
+> > > > > > +       if (!new_freq)
+> > > > > > +               new_freq = cpufreq_driver->get(policy->cpu);
+> > > > > > +
+> > > > > As pointed out this change will not make it to the next version of the patch.
+> > > > > So I'd say you can safely ignore it and assume that arch_freq_get_on_cpu will
+> > > > > only be wired for sysfs nodes for scaling_cur_freq/cpuinfo_cur_freq
+> > > > > >           if (!new_freq)
+> > > > > >                   return 0;
+> > > > > > 
+> > > > > > And the result is as follows:
+> > > > > > *case 1:**No setting the nohz_full and cpufreq use performance governor*
+> > > > > > *--> Step1: *read 'cpuinfo_cur_freq' in no pressure
+> > > > > >     0: 2699264     2: 2699264     4: 2699264     6: 2699264
+> > > > > >     8: 2696628    10: 2696628    12: 2696628    14: 2699264
+> > > > > >    16: 2699264    18: 2696628    20: 2699264    22: 2696628
+> > > > > >    24: 2699264    26: 2696628    28: 2699264    30: 2696628
+> > > > > >    32: 2696628    34: 2696628    36: 2696628    38: 2696628
+> > > > > >    40: 2699264    42: 2699264    44: 2696628    46: 2696628
+> > > > > >    48: 2696628    50: 2699264    52: 2699264    54: 2696628
+> > > > > >    56: 2696628    58: 2696628    60: 2696628    62: 2696628
+> > > > > >    64: 2696628    66: 2699264    68: 2696628    70: 2696628
+> > > > > >    72: 2699264    74: 2696628    76: 2696628    78: 2699264
+> > > > > >    80: 2696628    82: 2696628    84: 2699264    86: 2696628
+> > > > > >    88: 2696628    90: 2696628    92: 2696628    94: 2699264
+> > > > > >    96: 2696628    98: 2699264   100: 2699264   102: 2696628
+> > > > > > 104: 2699264   106: 2699264   108: 2699264   110: 2696628
+> > > > > > 112: 2699264   114: 2699264   116: 2699264   118: 2699264
+> > > > > > 120: 2696628   122: 2699264   124: 2696628   126: 2699264
+> > > > > > Note: the frequency of all CPUs are almost the same.
+> > > > > Were you expecting smth else ?
+> > > > The frequency of each CPU might have a different value.
+> > > > All value of all CPUs is the same under high pressure.
+> > > > I don't know what the phenomenon is on other platform.
+> > > > Do you know who else tested it?
+> > > So I might have rushed a bit with my previous comment/question: apologies for
+> > > that.
+> > > The numbers above: those are on a fairly idle/lightly loaded system right?
+> > Yes.
+> > > Would you mind having another go with just the arch_freq_get_on_cpu
+> > > implementation beign added and dropping the changes in the cpufreq and
+> > All my tests are done when cpufreq policy is "performance" and OS isn't on a
+> > high load.
+> > Reading "scaling_cur_freq" or "scaling_cur_freq" for each physical core on
+> > platform
+> > 
+> > The testing result for "cpuinfo_cur_freq" with your changes on a fairly idle
+> > and high loaded system can also be found in this thread.
+> > *A: the result with your changes*
+> > --> Reading "scaling_cur_freq"
+> >   0: 2688720     2: 2696628     4: 2699264     6: 2696628
+> >   8: 2699264    10: 2696628    12: 2699264    14: 2699264
+> >  16: 2699264    18: 2696628    20: 2696628    22: 2696628
+> >  24: 2699264    26: 2696628    28: 2696628    30: 2696628
+> >  32: 2699264    34: 2691356    36: 2696628    38: 2699264
+> >  40: 2699264    42: 2696628    44: 2696628    46: 2699264
+> >  48: 2699264    50: 2696628    52: 2696628    54: 2696628
+> >  56: 2696628    58: 2699264    60: 2691356    62: 2696628
+> >  64: 2696628    66: 2696628    68: 2696628    70: 2696628
+> >  72: 2696628    74: 2696628    76: 2699264    78: 2696628
+> >  80: 2696628    82: 2696628    84: 2699264    86: 2696628
+> >  88: 2625456    90: 2696628    92: 2699264    94: 2696628
+> >  96: 2696628    98: 2696628   100: 2699264   102: 2699264
+> > 104: 2699264   106: 2696628   108: 2699264   110: 2696628
+> > 112: 2699264   114: 2699264   116: 2696628   118: 2696628
+> > 120: 2696628   122: 2699264   124: 2696628   126: 2696628
+> > -->Reading  "cpuinfo_cur_freq"
+> >   0: 2696628     2: 2696628     4: 2699264     6: 2688720
+> >   8: 2699264    10: 2700000    12: 2696628    14: 2698322
+> >  16: 2699264    18: 2699264    20: 2696628    22: 2699264
+> >  24: 2699264    26: 2699264    28: 2699264    30: 2699264
+> >  32: 2699264    34: 2693992    36: 2696628    38: 2696628
+> >  40: 2699264    42: 2699264    44: 2699264    46: 2696628
+> >  48: 2696628    50: 2699264    52: 2696628    54: 2696628
+> >  56: 2699264    58: 2699264    60: 2696628    62: 2699264
+> >  64: 2696628    66: 2699264    68: 2696628    70: 2699264
+> >  72: 2696628    74: 2696628    76: 2696628    78: 2693992
+> >  80: 2696628    82: 2696628    84: 2696628    86: 2696628
+> >  88: 2696628    90: 2699264    92: 2696628    94: 2699264
+> >  96: 2699264    98: 2696628   100: 2699264   102: 2699264
+> > 104: 2691356   106: 2699264   108: 2699264   110: 2699264
+> > 112: 2699264   114: 2696628   116: 2699264   118: 2699264
+> > 120: 2696628   122: 2696628   124: 2696628   126: 2696628
+> > 
+> > *B: the result without your changes*
+> > -->Reading "scaling_cur_freq"
+> >   0: 2698245     2: 2706690     4: 2699649     6: 2702105
+> >   8: 2704362    10: 2697993    12: 2701672    14: 2704362
+> >  16: 2701052    18: 2701052    20: 2694385    22: 2699650
+> >  24: 2706802    26: 2702389    28: 2698299    30: 2698299
+> >  32: 2697333    34: 2697993    36: 2701337    38: 2699328
+> >  40: 2700330    42: 2700330    44: 2698019    46: 2697697
+> >  48: 2699659    50: 2701700    52: 2703401    54: 2701700
+> >  56: 2704013    58: 2697658    60: 2695000    62: 2697666
+> >  64: 2697902    66: 2701052    68: 2698245    70: 2695789
+> >  72: 2701315    74: 2696655    76: 2693666    78: 2695317
+> >  80: 2704912    82: 2699649    84: 2698245    86: 2695454
+> >  88: 2697966    90: 2697959    92: 2699319    94: 2700680
+> >  96: 2695317    98: 2698996   100: 2700000   102: 2700334
+> > 104: 2701320   106: 2695065   108: 2700986   110: 2703960
+> > 112: 2697635   114: 2704421   116: 2700680   118: 2702040
+> > 120: 2700334   122: 2697993   124: 2700334   126: 2705351
+> > -->Reading "cpuinfo_cur_freq"
+> >   0: 2696853     2: 2695454     4: 2699649     6: 2706993
+> >   8: 2706060    10: 2704362    12: 2704362    14: 2697658
+> >  16: 2707719    18: 2697192    20: 2702456    22: 2699650
+> >  24: 2705782    26: 2698299    28: 2703061    30: 2705802
+> >  32: 2700000    34: 2700671    36: 2701337    38: 2697658
+> >  40: 2700330    42: 2700330    44: 2699672    46: 2697697
+> >  48: 2703061    50: 2696610    52: 2692542    54: 2704406
+> >  56: 2695317    58: 2699331    60: 2698996    62: 2702675
+> >  64: 2704912    66: 2703859    68: 2699649    70: 2698596
+> >  72: 2703908    74: 2703355    76: 2697658    78: 2695317
+> >  80: 2702105    82: 2707719    84: 2702105    86: 2699649
+> >  88: 2697966    90: 2691525    92: 2701700    94: 2700680
+> >  96: 2695317    98: 2698996   100: 2698666   102: 2700334
+> > 104: 2690429   106: 2707590   108: 2700986   110: 2701320
+> > 112: 2696283   114: 2692881   116: 2697627   118: 2704421
+> > 120: 2698996   122: 2696321   124: 2696655   126: 2695000
+> >
+> So in both cases : whether you use arch_freq_get_on_cpu or not
+> (so with and without the patch) you get roughly the same frequencies
+> on all cores - or am I missing smth from the dump above ?
+> And those are reflecting max freq you have provided earlier (?)
+> Note that the arch_freq_get_on_cpu will return an average frequency for
+> the last tick, so even if your system is roughly idle with your performance
+> governor those numbers make sense (some/most of the cores might be idle
+> but you will see the last freq the core was running at before going to idle).
+> I do not think there is an agreement what should be shown for idle core when
+> querying their freq through sysfs. Showing last known freq makes sense, even
+> more than waking up core just to try to get one.
 > 
-> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
-> possible until the compiler feature is developed and deployed. And it
-> still would require changes to the headers, so don't think it's worth
-> delaying the feature for years.
+> @Ionela: Please jump in if I got things wrong.
+
+Yes, that's how I see things as well. When using the performance
+governor, when the CPU is active, the frequency of the CPU should be the
+maximum one (unless there has been firmware/hardware capping) and that
+would be reflected by cpuinfo_cur_freq, either through the use of the
+frequency scale factor (based on the samples on the last tick)  or the
+driver's .get() function (having woken up the CPU to sample the
+counters).
+
+So the values above look alright to me.
+
+Thanks,
+Ionela.
+
 > 
-
-I was talking about this: "I can live with all the downsides of the 
-proposed implementationas long as there is a wider agreement from the MM 
-community as this is where the maintenance cost will be payed. So far I 
-have not seen (m)any acks by MM developers".
-
-I certainly cannot be motivated at this point to review and ack this, 
-unfortunately too much negative energy around here.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> > > then read 'scaling_cur_freq', doing several reads in some intervals ?
+> > It seems that above phenomenon has not a lot to do with reading intervals.
+> > > The change has been tested on RD-N2 model (Neoverse N2 ref platform),
+> > > it has also been discussed here [1]
+> > I doesn't get the testing result on this platform in its thread.
+> It might be missing exact numbers but the conclusions should be here [1]
+> 
+> > > > > > *--> Step 2: *read 'cpuinfo_cur_freq' in the high memory access pressure.
+> > > > > >     0: 2696628     2: 2696628     4: 2696628     6: 2696628
+> > > > > >     8: 2696628    10: 2696628    12: 2696628    14: 2696628
+> > > > > >    16: 2696628    18: 2696628    20: 2696628    22: 2696628
+> > > > > >    24: 2696628    26: 2696628    28: 2696628    30: 2696628
+> > > > > >    32: 2696628    34: 2696628    36: 2696628    38: 2696628
+> > > > > >    40: 2696628    42: 2696628    44: 2696628    46: 2696628
+> > > > > >    48: 2696628    50: 2696628    52: 2696628    54: 2696628
+> > > > > >    56: 2696628    58: 2696628    60: 2696628    62: 2696628
+> > > > > >    64: 2696628    66: 2696628    68: 2696628    70: 2696628
+> > > > > >    72: 2696628    74: 2696628    76: 2696628    78: 2696628
+> > > > > >    80: 2696628    82: 2696628    84: 2696628    86: 2696628
+> > > > > >    88: 2696628    90: 2696628    92: 2696628    94: 2696628
+> > > > > >    96: 2696628    98: 2696628   100: 2696628   102: 2696628
+> > > > > > 104: 2696628   106: 2696628   108: 2696628   110: 2696628
+> > > > > > 112: 2696628   114: 2696628   116: 2696628   118: 2696628
+> > > > > > 120: 2696628   122: 2696628   124: 2696628   126: 2696628
+> > > > > > 
+> > > > > > *Case 2: setting nohz_full and cpufreq use ondemand governor*
+> > > > > > There is "isolcpus=1-10,41-50 nohz_full=1-10,41-50 rcu_nocbs=1-10,41-50" in
+> > > > > > /proc/cmdline.
+> > > > > Right, so if I remember correctly nohz_full implies rcu_nocbs, so no need to
+> > > > > set that one.
+> > > > > Now, afair, isolcpus will make the selected CPUs to disappear from the
+> > > > > schedulers view (no balancing, no migrating), so unless you affine smth
+> > > > > explicitly to those CPUs, you will not see much of an activity there.
+> > > > Correct.
+> > > > > Need to double check though as it has been a while ...
+> > > > > > *--> Step 1: *setting ondemand governor to all policy and query
+> > > > > > 'cpuinfo_cur_freq' in no pressure case.
+> > > > > > And the frequency of CPUs all are about 400MHz.
+> > > > > > *--> Step 2:* read 'cpuinfo_cur_freq' in the high memory access pressure.
+> > > > > > The high memory access pressure is from the command: "stress-ng -c 64
+> > > > > > --cpu-load 100% --taskset 0-63"
+> > > > > I'm not entirely convinced that this will affine to isolated cpus, especially
+> > > > > that the affinity mask spans all available cpus. If that is the case, no wonder
+> > > > > your isolated cpus are getting wasted being idle. But I would have to double
+> > > > > check how this is being handled.
+> > > > > > The result:
+> > > > > >    0: 2696628     1:  400000     2:  400000     3:  400909
+> > > > > >    4:  400000     5:  400000     6:  400000     7:  400000
+> > > > > >    8:  400000     9:  400000    10:  400600    11: 2696628
+> > > > > > 12: 2696628    13: 2696628    14: 2696628    15: 2696628
+> > > > > > 16: 2696628    17: 2696628    18: 2696628    19: 2696628
+> > > > > > 20: 2696628    21: 2696628    22: 2696628    23: 2696628
+> > > > > > 24: 2696628    25: 2696628    26: 2696628    27: 2696628
+> > > > > > 28: 2696628    29: 2696628    30: 2696628    31: 2696628
+> > > > > > 32: 2696628    33: 2696628    34: 2696628    35: 2696628
+> > > > > > 36: 2696628    37: 2696628    38: 2696628    39: 2696628
+> > > > > > 40: 2696628    41:  400000    42:  400000    43:  400000
+> > > > > > 44:  400000    45:  398847    46:  400000    47:  400000
+> > > > > > 48:  400000    49:  400000    50:  400000    51: 2696628
+> > > > > > 52: 2696628    53: 2696628    54: 2696628    55: 2696628
+> > > > > > 56: 2696628    57: 2696628    58: 2696628    59: 2696628
+> > > > > > 60: 2696628    61: 2696628    62: 2696628    63: 2699264
+> > > > > > 
+> > > > > > Note:
+> > > > > > (1) The frequency of 1-10 and 41-50 CPUs work on the lowest frequency.
+> > > > > >        It turned out that nohz full was already work.
+> > > > > >        I guess that stress-ng cannot use the CPU in the range of nohz full.
+> > > > > >        Because the CPU frequency will be increased to 2.7G by binding CPU to
+> > > > > > other application.
+> > > > > > (2) The frequency of the nohz full core is calculated by get() callback
+> > > > > > according to ftrace.
+> > > > > It is as there is no sched tick on those, and apparently there is nothing
+> > > > > running on them either.
+> > > > Yes.
+> > > > If we select your approach and the above phenomenon is normal,
+> > > > the large frequency discrepancy issue can be resolved for CPUs with sched
+> > > > tick by the way.
+> > > > But the nohz full cores still have to face this issue. So this patch is also
+> > > > needed.
+> > > > 
+> > > Yes, nohz cores full have to be handled by the cpufreq driver.
+> > Correct. So we still have to face the issue in this patch and push this
+> > patch.
+> > Beata, would you please review this patch?
+> Just to clarify for my benefit (apologies but I do have to contex switch
+> pretty often these days): by reviewing this patch do you mean:
+> 1) review your changes (if so I think there are few comments already to be
+> addressed, but I can try to have another look)
+> 2) review changes for AMU-based arch_freq_get_on_cpu ?
+> 
+> *note: I will still try to have a look at the non-housekeeping cpus case
+> 
+> ---
+> [1] https://lore.kernel.org/lkml/691d3eb2-cd93-f0fc-a7a4-2a8c0d44262c@nvidia.com/
+> ---
+> 
+> BR
+> Beata
+> > 
+> > 
+> > /Huisong
+> > > 
+> [...]
 
