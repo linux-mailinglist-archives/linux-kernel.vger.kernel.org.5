@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-62576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2632585232A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:20:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04A0852331
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59DC01C234DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:20:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8A21B242D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBAEA94B;
-	Tue, 13 Feb 2024 00:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D33BA56;
+	Tue, 13 Feb 2024 00:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwgaAupy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aD1q3Wm3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3D88F65;
-	Tue, 13 Feb 2024 00:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72966AD53;
+	Tue, 13 Feb 2024 00:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783527; cv=none; b=CYDHiiFHFiY7Msok62tqPPlbSqXJIFZLJwslWjCxtzKsBo9XCzLhU8V6zznVGUxQAL6erS2DCu+GLj7OTU7voW6QLkkXAgcaV1YPOICUFSBO+006JEOV2gSfg53oI+pbZE4AeYSztBPyfby7RmUtf/N9xXGfHmBet/eQeYB4T1Q=
+	t=1707783528; cv=none; b=HWDEvmmzvxA3MP1CNlle9h3bEKgpkTQAX82W6WnUjvy2eL0C5ixJ5KnAwtO8qnf81XLbgtNvF6wUU7LAxr4gT5qk0VuW1yG5LW7+UNKGKJfnLAH1cb176eriqihvSPJHjMcbZBGA31MmOW3Tn+gRt/ObeyWAUx8s7mkGtu1L124=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783527; c=relaxed/simple;
-	bh=mEZhJ+CMAS0d+aoCaCr5xPrw3Uxvg+w87QQyeITvjjM=;
+	s=arc-20240116; t=1707783528; c=relaxed/simple;
+	bh=+zQnrBocJsKRSmbpAD2SeDkbeGR/xV1SBSQUiSQVRGM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TuEBz/7WHOwf3XSdyI2Bm8UBw0AteyuBh8wkbWOW59kJzFVvsRUTj2iVd6dwNSaJSZ++XzmnPYh4ENg45DutSOv157dv6GQ0V2Gk2mtLYXpcyCEww3XvbkbWwszlbOpTwIz35eaSUpyD/g0NkSLjZPJa3Sc4aIQrm3M8fjH65eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwgaAupy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82DD0C43390;
-	Tue, 13 Feb 2024 00:18:46 +0000 (UTC)
+	 MIME-Version; b=ezhZvV+CyaRdf5MiWo+zz+/90/cBtgyk3+CYlHu1Y4OYFI5excNnZ0JpnK1s59TCRQ6xtLb4hUihIw+19ioSEv7wxiFCSdTQH59VW69JOpcqqSt1rZZ3zmVI8SQ3hC8jDKOpmZy2x2EbVnIrtQtgSwCI40ytPwARHqb1B31dsnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aD1q3Wm3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A321C43394;
+	Tue, 13 Feb 2024 00:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783527;
-	bh=mEZhJ+CMAS0d+aoCaCr5xPrw3Uxvg+w87QQyeITvjjM=;
+	s=k20201202; t=1707783528;
+	bh=+zQnrBocJsKRSmbpAD2SeDkbeGR/xV1SBSQUiSQVRGM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dwgaAupyh/myJC8OgSr0Oa1SsAMLop3M/hXVmGH8feTX7MEY3v5Cd7ICjqYICOj8M
-	 kNUPJ5MdDs8mnGgfBDbKV3z2TE533tdX3TKoZUIDl2kaWGJaQ+9egzWOuQHK6ETQ9u
-	 dqb6h0NVrh2JK1js8evPOfbfbZ/XD5jRbpbj+BgUhJpTo3/IOD52WDz8fZ0m+0vCyi
-	 fSr/XzB3lMyne1ZTMGEbmQ7GqXql9u3mSrgghZH4Ghc46BdSgpZQjUPREAg+jjFcCw
-	 FOVz8IBB/gDX205wDjZPcsihw18mS+xh3Gw70jGyE0BqWpvYrVZ2NOpk9yJHmlRAqc
-	 TFLaUOoKZzmsQ==
+	b=aD1q3Wm3oGALH9nLVwj/yA/rqF7NpKa43ZV3pcDCtfsL38Io1KRZ4vjC9+E3ZaJJB
+	 Q077QQcG1RV80ICM8x2gkcwjMsRNgZngbb3iIuuVlp8FGMliLkgIYDKIAYWAslA3Kt
+	 wT5Y1yUW/hxFr54uL81HBMaq0VYfmW3JPbYrwEmt/3tSQH/i2XZ16U7PDO+NOSzF4s
+	 7UmDPWgGrnXzAOBtt1ZBws3FyASvm8aNC6zhQfsVlCtF6M1hd7ecbviO5PinmSccZx
+	 fpR3VC3JB6sD77MM0F/x4UCF0wsr+XgnMNMsytPpv7HNYtd0dWPiTHKBul/GdfbZnJ
+	 Up3nAlthw/tDQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
 	Sasha Levin <sashal@kernel.org>,
 	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.7 07/58] fs/ntfs3: Fix multithreaded stress test
-Date: Mon, 12 Feb 2024 19:17:13 -0500
-Message-ID: <20240213001837.668862-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 08/58] fs/ntfs3: Fix detected field-spanning write (size 8) of single field "le->name"
+Date: Mon, 12 Feb 2024 19:17:14 -0500
+Message-ID: <20240213001837.668862-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213001837.668862-1-sashal@kernel.org>
 References: <20240213001837.668862-1-sashal@kernel.org>
@@ -65,60 +65,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit a8b0c9fc3a2dba07f697ef7825e04363ff12f071 ]
+[ Upstream commit d155617006ebc172a80d3eb013c4b867f9a8ada4 ]
 
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/attrib.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ fs/ntfs3/ntfs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 63f70259edc0..4b78b669a3bd 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -886,7 +886,7 @@ int attr_data_get_block(struct ntfs_inode *ni, CLST vcn, CLST clen, CLST *lcn,
- 	struct runs_tree *run = &ni->file.run;
- 	struct ntfs_sb_info *sbi;
- 	u8 cluster_bits;
--	struct ATTRIB *attr = NULL, *attr_b;
-+	struct ATTRIB *attr, *attr_b;
- 	struct ATTR_LIST_ENTRY *le, *le_b;
- 	struct mft_inode *mi, *mi_b;
- 	CLST hint, svcn, to_alloc, evcn1, next_svcn, asize, end, vcn0, alen;
-@@ -904,12 +904,8 @@ int attr_data_get_block(struct ntfs_inode *ni, CLST vcn, CLST clen, CLST *lcn,
- 		*len = 0;
- 	up_read(&ni->file.run_lock);
+diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+index 86aecbb01a92..13e96fc63dae 100644
+--- a/fs/ntfs3/ntfs.h
++++ b/fs/ntfs3/ntfs.h
+@@ -523,7 +523,7 @@ struct ATTR_LIST_ENTRY {
+ 	__le64 vcn;		// 0x08: Starting VCN of this attribute.
+ 	struct MFT_REF ref;	// 0x10: MFT record number with attribute.
+ 	__le16 id;		// 0x18: struct ATTRIB ID.
+-	__le16 name[3];		// 0x1A: Just to align. To get real name can use bNameOffset.
++	__le16 name[];		// 0x1A: Just to align. To get real name can use name_off.
  
--	if (*len) {
--		if (*lcn != SPARSE_LCN || !new)
--			return 0; /* Fast normal way without allocation. */
--		else if (clen > *len)
--			clen = *len;
--	}
-+	if (*len && (*lcn != SPARSE_LCN || !new))
-+		return 0; /* Fast normal way without allocation. */
+ }; // sizeof(0x20)
  
- 	/* No cluster in cache or we need to allocate cluster in hole. */
- 	sbi = ni->mi.sbi;
-@@ -918,6 +914,17 @@ int attr_data_get_block(struct ntfs_inode *ni, CLST vcn, CLST clen, CLST *lcn,
- 	ni_lock(ni);
- 	down_write(&ni->file.run_lock);
- 
-+	/* Repeat the code above (under write lock). */
-+	if (!run_lookup_entry(run, vcn, lcn, len, NULL))
-+		*len = 0;
-+
-+	if (*len) {
-+		if (*lcn != SPARSE_LCN || !new)
-+			goto out; /* normal way without allocation. */
-+		if (clen > *len)
-+			clen = *len;
-+	}
-+
- 	le_b = NULL;
- 	attr_b = ni_find_attr(ni, NULL, &le_b, ATTR_DATA, NULL, 0, NULL, &mi_b);
- 	if (!attr_b) {
 -- 
 2.43.0
 
