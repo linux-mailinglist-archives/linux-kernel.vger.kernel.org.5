@@ -1,112 +1,156 @@
-Return-Path: <linux-kernel+bounces-62563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383478522F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:13:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7E2852306
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8734B24270
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:13:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAB3E28404E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAF7539E;
-	Tue, 13 Feb 2024 00:12:55 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD744A18;
+	Tue, 13 Feb 2024 00:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="hRFx8OzL"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4CA4C64;
-	Tue, 13 Feb 2024 00:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1804A637
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783174; cv=none; b=PWU21QAeUOo1w0GhTXlVC8SPn42jdG3qraUfeE7N+NwERPQI05HuvVWHSxAQDG3yAz+lIMfL0bx6lTzJF4JHEoy4HHB+cpbbZoGD0Rl9TAfBSoRggWAbBFgKezDcMNmT4t3nJV5b8wDP8uo41zCKeK7QhBaBjh/UvZak8EqZeOM=
+	t=1707783300; cv=none; b=QAcNtjuQMfURNFIqn/BhHJKrYCyeS7/7Mc3YJVUxexyFKP/sV7QrYeh9qIZFOx+6n6NtBDYrge6kH5m5JStG82scyL+lvH1Hzhi0CanD0y0BPlVz2hJ+2WTUH0kx5dtfVifWJCUvEFbXAqH1q9fFJoD5S0hrmbN/0zWtpwpHTTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783174; c=relaxed/simple;
-	bh=snpDxC/p4DzWPM0PkZK4dv4AVgd2kVSFn1TwirwJ8sI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=prao1NMHHAIUNhTWXpB7ZkCcoeXfcrRvCmZSjfa68reM8yDbqb4bmN0LGt2y3UO8ZYRuWYuDZ0XqPDO4ryv1tRzHyM/J5pVaNK86zIyOHerdKA1q6qhDX5/mpBrsddjEivJ9zVTaH16/TFCRCnBbEC1rG+61nOE2KHLwe6kSBPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 389C3C433C7;
-	Tue, 13 Feb 2024 00:12:53 +0000 (UTC)
-Date: Mon, 12 Feb 2024 19:13:36 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Mark Rutland <mark.rutland@arm.com>, Vincent Donnefort
- <vdonnefort@google.com>, Sven Schnelle <svens@linux.ibm.com>, Mete Durlu
- <meted@linux.ibm.com>
-Subject: Re: [PATCH] tracing: Have saved_cmdlines arrays all in one
- allocation
-Message-ID: <20240212191336.5c502f78@gandalf.local.home>
-In-Reply-To: <ef94259e139e4579ee27db99975dc4cf397e2a06.camel@linux.intel.com>
-References: <20240212180941.379c419b@gandalf.local.home>
-	<ef94259e139e4579ee27db99975dc4cf397e2a06.camel@linux.intel.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707783300; c=relaxed/simple;
+	bh=p+IVeRU3f9COk3wBMTH0iIf+8fVqKG0n9hzN9kdq2Xc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YB5DXj90Qked2+wfjhHp69Mddw1eCHR0Lq83hZKDb3wuxmbzLny2cdfFdQQNV7BOCCO5gqVeWaqXJRu+dQkSUEKgNtjHCJVsAr9aZn6+NjUL+2vF7RNDppTuJe5dtek6Cz8ztJWsHHrS16SN3Rb5J5imMVwBE2xhHkI2VeRGlvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=hRFx8OzL reason="key not found in DNS"; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e2e096e2ccso927151a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 16:14:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1707783298; x=1708388098; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zpkbch4s+SL6zR3ce+cP/IOGuaScUrbATNvaMsX6gQU=;
+        b=hRFx8OzLpzZfkX2KYjLz4MEK93nwhIERYV36+ueQxJxoEiHKMQL/1nEjdZ+7VSdbnf
+         siT39azOSxjFsh9kTAOIuasSKEjL0EFsOsuZ1OEiypY/Q3hVEUMNHWJWjqyTUj/IyQFT
+         tLV1wc7OS5h52ntKwWemX0veu7L2EfUlY9A7hdSorOd5CLoGWAIZ7u6C3IDp4GDa1eqD
+         epkpLwBxzRsy+dYvA+NpDHfSpCTF+zyOMqrG10Sb+ySK6Cm1hzKZ5DHceUiz02THdlF9
+         aF33k3ujEKG2VjS0Cn7Yf/4/qpOuWXFxZJbKA+6dw8lTQE4hLZDefHslyXT+60uZCqLy
+         eXnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707783298; x=1708388098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zpkbch4s+SL6zR3ce+cP/IOGuaScUrbATNvaMsX6gQU=;
+        b=Zs82PSnaO2y65qZzNNwgdIExbYHjjh05y9Q9WionjcHKqCCIOTIpNkPzMhKA6jtUpp
+         MEaYOIN8QRfe1W3aiH/8mh215ojrZbUGcIbSmNXoexegUPEccPY1GP0w6icEh9zXIMhH
+         hE2h5HH3yxguJNw/LlMQd3MwHIhW7l02tXzVcDKHWkgAsF4ITAEbIFHAhq6PBRHZFg8X
+         61AVulmgifF5009gEnirzdxkTF6KwjDQ5a0G/JlW75ygnUFx24blGcXrBoO8bzf95ByU
+         vuj8JBg1zI/uQiv0x2hgYeSeOzliorSAPkE6Sj9W7U8P3i5kGnZdLUTyBqqGaMdRvVCc
+         G5Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8ay8BhWe4/5S6JGEG1JrRCjTd43GnMpxrzPvju5Aqbv9XuXPatt6jvkyH1j3zMko9tgLaBHcLZzs3xzx6MgosNLxyI5PuEKS2FD6G
+X-Gm-Message-State: AOJu0Ywdnsgk1jAEKdDiL/BvB68Pz50g9qu6gCAq3afs8tI5Z799gZAo
+	VC/0Drr/Xc0tIsguxGjq23p9Sw1jZJbcorOv1uTIEWXyW0/U/9WO8sYBiOlOPizInZxWUAuqPvX
+	IytAwM9nfaJ+qQXLm2zfZjogCt/N3HMrxwRZTFA==
+X-Google-Smtp-Source: AGHT+IENA2I2vQZTmviXZDRj9zPa9m0qm240EbRNcQEFbOk5GS9Qd9oHISJT+KIV/8e+A1RHV9ji5tIu3nuHQqetP/o=
+X-Received: by 2002:a05:6830:12c2:b0:6e2:e953:6fee with SMTP id
+ a2-20020a05683012c200b006e2e9536feemr3152110otq.24.1707783298148; Mon, 12 Feb
+ 2024 16:14:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240212213922.783301-1-surenb@google.com>
+In-Reply-To: <20240212213922.783301-1-surenb@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Mon, 12 Feb 2024 19:14:20 -0500
+Message-ID: <CA+CK2bBLD-mZ4ne56Awxbiy0EGpJq69k5qUKZwcXVB1Rt581TQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 Feb 2024 15:39:03 -0800
-Tim Chen <tim.c.chen@linux.intel.com> wrote:
+On Mon, Feb 12, 2024 at 4:39=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> Memory allocation, v3 and final:
+>
+> Overview:
+> Low overhead [1] per-callsite memory allocation profiling. Not just for d=
+ebug
+> kernels, overhead low enough to be deployed in production.
+>
+> We're aiming to get this in the next merge window, for 6.9. The feedback
+> we've gotten has been that even out of tree this patchset has already
+> been useful, and there's a significant amount of other work gated on the
+> code tagging functionality included in this patchset [2].
+>
+> Example output:
+>   root@moria-kvm:~# sort -h /proc/allocinfo|tail
+>    3.11MiB     2850 fs/ext4/super.c:1408 module:ext4 func:ext4_alloc_inod=
+e
+>    3.52MiB      225 kernel/fork.c:356 module:fork func:alloc_thread_stack=
+_node
+>    3.75MiB      960 mm/page_ext.c:270 module:page_ext func:alloc_page_ext
+>    4.00MiB        2 mm/khugepaged.c:893 module:khugepaged func:hpage_coll=
+apse_alloc_folio
+>    10.5MiB      168 block/blk-mq.c:3421 module:blk_mq func:blk_mq_alloc_r=
+qs
+>    14.0MiB     3594 include/linux/gfp.h:295 module:filemap func:folio_all=
+oc_noprof
+>    26.8MiB     6856 include/linux/gfp.h:295 module:memory func:folio_allo=
+c_noprof
+>    64.5MiB    98315 fs/xfs/xfs_rmap_item.c:147 module:xfs func:xfs_rui_in=
+it
+>    98.7MiB    25264 include/linux/gfp.h:295 module:readahead func:folio_a=
+lloc_noprof
+>     125MiB     7357 mm/slub.c:2201 module:slub func:alloc_slab_page
 
-> > diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-> > index e4fbcc3bede5..210c74dcd016 100644
-> > --- a/kernel/trace/trace_sched_switch.c
-> > +++ b/kernel/trace/trace_sched_switch.c
-> > @@ -201,7 +201,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
-> >  	int order;
-> >  
-> >  	/* Figure out how much is needed to hold the given number of cmdlines */
-> > -	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-> > +	orig_size = sizeof(*s) + val * (TASK_COMM_LEN + sizeof(int));  
-> 
-> Strictly speaking, *map_cmdline_to_pid is unsigned int so it is more consistent
-> to use sizeof(unsigned) in line above.  But I'm nitpicking and I'm fine to
-> leave it as is.
+This kind of memory profiling would be an incredible asset in cloud
+environments.
 
-I was thinking about making that into a macro as it is used in two places.
+Over the past year, we've encountered several kernel memory overhead
+issues. Two particularly severe cases involved excessively large IOMMU
+page tables (20GB per machine) and IOVA magazines (up to 8GB).
+Considering thousands of machines were affected, the cumulative memory
+waste was huge.
 
-/* Holds the size of a cmdline and pid element */
-#define SAVED_CMDLINE_MAP_ELEMENT_SIZE(s)		\
-	(TASK_COMM_LEN + sizeof((s)->map_cmdline_to_pid[0]))
-
-	orig_size = sizeof(*s) + val * SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
-
-> 
-> >  	order = get_order(orig_size);
-> >  	size = 1 << (order + PAGE_SHIFT);
-> >  	page = alloc_pages(GFP_KERNEL, order);
-> > @@ -212,16 +212,11 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
-> >  	memset(s, 0, sizeof(*s));
-> >  
-> >  	/* Round up to actual allocation */
-> > -	val = (size - sizeof(*s)) / TASK_COMM_LEN;
-> > +	val = (size - sizeof(*s)) / (TASK_COMM_LEN + sizeof(int));
-
-	val = (size - sizeof(*s)) / SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
-
--- Steve
-
-> >  	s->cmdline_num = val;
-> >  
-> > -	s->map_cmdline_to_pid = kmalloc_array(val,
-> > -					      sizeof(*s->map_cmdline_to_pid),
-> > -					      GFP_KERNEL);
-> > -	if (!s->map_cmdline_to_pid) {
-> > -		free_saved_cmdlines_buffer(s);
-> > -		return NULL;
-> > -	}
-> > +	/* Place map_cmdline_to_pid array right after saved_cmdlines */
-> > +	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
-> >  
-> >  	s->cmdline_idx = 0;
-> >  	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,  
-
+While we eventually resolved these issues with custom kernel profiling
+hacks (some based on this series) and kdump analysis, comprehensive
+memory profiling would have significantly accelerated the diagnostic
+process, pinpointing the precise source of the allocations.
 
