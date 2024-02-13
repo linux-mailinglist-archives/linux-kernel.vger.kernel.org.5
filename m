@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-64132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF5E853A7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:04:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57392853A81
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C35EF1C261CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:04:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 096981F247C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9971CD25;
-	Tue, 13 Feb 2024 19:04:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7531CD22;
+	Tue, 13 Feb 2024 19:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mdWyr/z3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQf0T7q7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0F9111AA;
-	Tue, 13 Feb 2024 19:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7765F1CD00;
+	Tue, 13 Feb 2024 19:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707851087; cv=none; b=V9OrAelLD8Z1xDJBEoVk/sL7rrO5V3EY1+JhIHBKXsrApFCPFdpOzNd3vNr6nRvmM3DcmeGjhxFQ2vxRRgnuV7Zatx4iGmKCEsqj3LLqEfzNuixDso5TUJLynscds3cYUVXEdv830rNcoAijQ3V3YZcMJp9qVpB95//1YzWTR0I=
+	t=1707851123; cv=none; b=RnYM6u5p4NdnPrw/MykOOB9EiGwipuvphQ7kfFAeQGdcWbKugVOT0nqQeiLUXnLjBgIHHObcGXYdY4CtPr77vU750n6e1NDiJPySNsFnre+I64psFiybiOjs1RVTv4JqrmBquEct4LurIkVmnxaiWdtAAZIw8AZXWcLabVOBT5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707851087; c=relaxed/simple;
-	bh=RB2sSCpdKCMYyfsROSUUgCSwa9GavmKcZ0VR+Mf1GnE=;
+	s=arc-20240116; t=1707851123; c=relaxed/simple;
+	bh=/Gi96MzHMeaaVGeQxX35dVV54SaAFNp5uBbvdaB8zd4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=InFrqRHWAB5DYGf6a8SNJT+jfXXNTXlytX+j44+e9AQGxeQ07rrX34a+Y9tzbRtcKVmeX/JDccudnA0YUX1NWPhey0IHYRDZtGnweZdhr3GdORSRPfXOtKIw1Q4qU05xbQTzyPV/rrqSNSKZSJzeDFasThpBIRsof3DH1urlvFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mdWyr/z3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5843FC433C7;
-	Tue, 13 Feb 2024 19:04:45 +0000 (UTC)
+	 MIME-Version; b=kjAhMlCEEQ/PZ/sm8vjxI1M2U4tZVtvPDr12kYfB/4PNOFeDWZQA/Ii5a7czFEGD7m7x4DErnIX+fm8OwgaWExqGo94wbGwXr0duQEiiAGJ0Nuri75qHmwSVWh6ci3iFmM5ihISnNxj8GZGcXSGJxEuoeiHdYPpzhN8VN8vRmUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQf0T7q7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DAA5C433C7;
+	Tue, 13 Feb 2024 19:05:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707851086;
-	bh=RB2sSCpdKCMYyfsROSUUgCSwa9GavmKcZ0VR+Mf1GnE=;
+	s=k20201202; t=1707851123;
+	bh=/Gi96MzHMeaaVGeQxX35dVV54SaAFNp5uBbvdaB8zd4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mdWyr/z3TO5mWs9++bUnUXwWya/3vV9bfQSGRCBzRtEkb+HCqxefRLv2EjRFr1gcq
-	 xCq8wkIZ49raFUtqv60XGmNb7846NnlVSwrJB2Vzc5JJ3jlj/oObLJaCFEru7VjRE2
-	 NBjLYbtdqyOQIFfxoOrDdQnhyXy9qbbY3YKGT6OqzGCJEuQE1RdGPO2fKz27JofHNR
-	 Wy4an2kBEqsTwRSrFPnhpZ9UoWV+Rti4kcdNRPxbFCdf9LtvAUyJKCWEEpBy69AwpP
-	 bacJffomZfRmkkqjjpGrRMEwQK7IFD2YoDQPtZ5OmRpmwcZI8L4jjUSHwmsBa4xpPL
-	 egyRpug/ni4+w==
+	b=VQf0T7q7SXstJZSuvlWeiCwfY273pkP8GZbTqZTEYmDfaNm710nSWw/7RYdfgNbmw
+	 OVZGz25Ar7JXPM2EPIZHiCzf7v5jrGbKPXFrIHd28E7kixCKTdXW52H55UklUHuI0D
+	 oBlRZ/Lz+f3h9Wj5y7EvXcEvOJL3rBEK1NLP02QbL2xWHr18INXvskJNgC4MDKqLCI
+	 b+HBgFXH6uPR6lWzGf6sBm6MnkIco4Cgzp2yIQeHIRnLedFKe/DslHIo9TCdGUAR3I
+	 dwh9h7zB8GlUIhynKT0zL5draunGwlrYPe5QFyBVGZkFOZwzmvFoos6ed36c86ONTd
+	 2p+phjMpQfcTQ==
 From: SeongJae Park <sj@kernel.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org,
@@ -61,11 +61,11 @@ Cc: stable@vger.kernel.org,
 	allen.lkml@gmail.com,
 	damon@lists.linux.dev,
 	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.7 000/124] 6.7.5-rc1 review
-Date: Tue, 13 Feb 2024 11:04:44 -0800
-Message-Id: <20240213190444.1998-1-sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/121] 6.6.17-rc1 review
+Date: Tue, 13 Feb 2024 11:05:20 -0800
+Message-Id: <20240213190520.2018-1-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240213171853.722912593@linuxfoundation.org>
+In-Reply-To: <20240213171852.948844634@linuxfoundation.org>
 References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,10 +77,10 @@ Content-Transfer-Encoding: 8bit
 
 Hello,
 
-On Tue, 13 Feb 2024 18:20:22 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Tue, 13 Feb 2024 18:20:09 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.7.5 release.
-> There are 124 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.17 release.
+> There are 121 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -88,9 +88,9 @@ On Tue, 13 Feb 2024 18:20:22 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.or
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.5-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -100,7 +100,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 93a4df567f73 ("Linux 6.7.5-rc1")
+[2] bea54b0cb986 ("Linux 6.6.17-rc1")
 
 Thanks,
 SJ
