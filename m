@@ -1,128 +1,255 @@
-Return-Path: <linux-kernel+bounces-64003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54358538D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:45:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 999AF8538E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142811C2311C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 163351F2398C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EF55FF01;
-	Tue, 13 Feb 2024 17:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BB3760252;
+	Tue, 13 Feb 2024 17:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CgP8ztxo"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jfXKY+K9"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2059.outbound.protection.outlook.com [40.107.244.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD06A5F563
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707846331; cv=none; b=liHc3MnRSY14cX6am5f7kdIfoZy28bumMIk5sXCiO7pMW7jrYCO4NQKmVStUcChJ4g4TIGyi2pZ8T5KeU/XLcQTRz0aNIX8fs1Az3oS9hWkvaJQg7khLbWnzQiy8YfW1IJaOSy1A8FHEK9OBl4uwqn5skEzbSN2Tuv5KNJ8eJIA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707846331; c=relaxed/simple;
-	bh=n03lbBp1zR0JN/uywXAdDCOyEB1rONWr55lwzpMjzLI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uNNPP/YFsOcsFjr7GBvfsJoTaCfaDc+1483EvNMy07qUAoh9oH0LoWgeSW/TREKpb72BsEqwcVIVveqvYIHPXytz8lS7nNtze2UU7GhwQ/ULcGHdlaQLciefWRpg4s6DpYi5Saayv+N5PjB/141hn9eHLZhN1p8AxiUqXCzIsJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CgP8ztxo; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso1897221276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707846329; x=1708451129; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wXlhzdNPTrDKXAkgc5vsL7hh9f5XZEfrWoq47VPOT/k=;
-        b=CgP8ztxoSfXwoKVi+fm+ly0sWz+TcvagpyoJ3eJAUA/mfpMKNMxH5zwaTDsen2HDBQ
-         wE29lKmfEvolCV+Nqty5UluuprBA+Fawoqn2NfphDoVzsxhFLSui5vOffMFgfuFzAegn
-         CYN1PIbwm5kiOfsS32RVFnxbd9i0zeoHv+3eXjfdNoHjrmXQGV1/zu4blJU3F4So3Fx5
-         6tJjJy2VlMhxgGmYd2u/WQrxUyL2mn+zPhILWfZK8Ct1/xesw9hzK1mEvO6L9APABG3Q
-         jLp2ghddQauw65iVkzHRqcGvc0zWHGxheyxuUnE3piFnXy9HhcLgWiuK2e9sLQCd46Dl
-         GX0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707846329; x=1708451129;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wXlhzdNPTrDKXAkgc5vsL7hh9f5XZEfrWoq47VPOT/k=;
-        b=OZeY93CyK+yu8PnoDqPaF4cBrWdwrhslwmebifLIUgpSu2BW4otFqWOJ47u7Ka3yXR
-         N4/dGzlUfUAiY7r9t35TtJC5iXoTE/DWre+rsD/ja09O9OFbtsl306ZDzhorFRaG8+Rq
-         UmWg9DhMwFDgX7EiSSK+1FnxCqcmWLIdrTYkZ3m2xEO+fDGuh3WR6tKUaq9UPUyNF/Lb
-         Psurhx4GspVxjuPoSAx2tuHZhGLHXLDe8IUatCcsEg3JycDI38mD/O06QFoGAJoo+vv+
-         gG2SkcDqAg5XOyKjJPR/46NiJxMHpYIAbMkCOGtFQVLZFncrho3fDbi20GMnJF0q5zgk
-         c8sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW6fOegCVpO0tw7MYs4cn0YrD8GcAHhoO7UEkR5yKLqG7R9x7ADlhQgz0BBKGivslEiRyVqYL6w87ciguWlBF3qQRGCN+DdawAXCSV2
-X-Gm-Message-State: AOJu0YyPBCExNhPtyTpZqoBvrlXLejrvL15g0zFm5fh8C5Uca5c9FqKF
-	URlQQxtFKLzTTVvHukymxu6b49U5vg3FDW7UcFDNuBHN4X/H+dM0ZKcYSH78NmcoaNNw3c+Qvgl
-	DzHaUOWh2KQztk6VLdQ==
-X-Google-Smtp-Source: AGHT+IGZTxxVMztPl41LtC95lrjWgcnvviGpN/tMTecDRzoIWpNi9hdSkUB+X9urFFRzjgntUMqgnKc15MZULdUa
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1083:b0:dcd:2f2d:7a0f with
- SMTP id v3-20020a056902108300b00dcd2f2d7a0fmr53739ybu.9.1707846328778; Tue,
- 13 Feb 2024 09:45:28 -0800 (PST)
-Date: Tue, 13 Feb 2024 17:45:26 +0000
-In-Reply-To: <1e5ffefa-8c80-44b8-986f-ee574c3b3349@bytedance.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992825FF17;
+	Tue, 13 Feb 2024 17:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707846393; cv=fail; b=UOWWxhCpmumc9QzX4eb9fWaRMv+trHL8JooWlTgP1qR30ZjXkFETANGd0P3WQkK4jCCjjO47dvBBd9MSxezJwBTYHZNL6VAJsRTgTu7QG8HidHoYgZgU995bV0xSEu6DQ8shMd289DGJfAtyUYp+X78YwrE41Rt935viIflojgg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707846393; c=relaxed/simple;
+	bh=pduI9+U7Cy+BJrYsL1795pTnB2oy9zimdkURSPnCiHc=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q4vIkfEama+/6B6OyObtfhMlwtXHdu4M6c8jODZLwIyXyDyIvyWdwaxbeyqx6EzFHdv+RlFwJqCHzcsv5mfcnaSG6BcYelBhB0TrnQAEOG30ehUVk1/5ET8MnoAfV5htKb7QDNPKRChUMlWVppO1VAvgyuAa2GqbtsJeTbhqtZc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jfXKY+K9; arc=fail smtp.client-ip=40.107.244.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NjgzeFRhBUbUEDxaBwv7Su3ujB2EdcTtwB/R0l8raGDP+Ja8viR1U/XT/tkq1af3noLdD//z7ykS2Ei6XMEneHMYRy2qN4o4oiY7ca9e2NtvsymMc//IjgF4kW06miu5XzPtnkVBa8JTiIVScwjbCK33S6+SMyGgftFc9+1YIGropMYDEfU/MadauvFhPXSLXl16G/trb/8iOxddAO9xkK+GQel5/H/G56cO+KcymZa+dBvzPaoXndijxb76CFo8blb/22f3rlyDmSAMIw3KTC8BeOdvcpcW8pbUQYkf0cj6UwOhPaPqPIz2Lb/4630suuRhvXr4/T3ph7h98kXn/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Z/4+d0G50eTQOumPM+c75urbaA7ObmJGFZcI1TqOkf0=;
+ b=Rw3Q28y2NnPAZc0OQj7v7EUIL9GydfCAC/Olq2W9Cp0qLHWouuTyr6CjeYuKlAbdywT6TED4p6It3xH+OJzuft7tkycYwigWMWvYTvhBZR2PTnuqKzAksI4OIDuiNJjVG/QKJx31kVLNKCRVPGWQzoo9/rnuJbXdzB4uPAhjspJzcYbgCCi+cBkzcsAQW+6nMi6+B/51MNoB6eXyOy3RaBxTWLJYOv1ZTBp0bnP+3SqV0JH6Np842ZLGzMpLEtZVVHmP8cDNKx2wQ7BrPqy5OykrEzg3JSUscrlxva6mXTwEk7jWUwtcCvHysSc2UXzp11X8TqIY7QmFAecN2OYNLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z/4+d0G50eTQOumPM+c75urbaA7ObmJGFZcI1TqOkf0=;
+ b=jfXKY+K95jrN28ENnZ/W8bAEJsuTbh+QMGi3oFvukYk0zDtBfzIpI5JL4XWqV5Mx8s5F0zpxxbrTpifOuSB7AE9BzM7rKWIoada1szKC2o3Gss+lQBhdCw0rqd2HQuEx3fsO4wcgm0vo5hEN2lE+9Q2n/GSs+YzK9lEz4SAYg350pmzWAqX1sv8a1XtPc9UImHUnoAxWwoumYtfVlEpdCfOBfHb5xcFiWhq/uOYGClyLCM8mWwpDncm7W7DHQOBO91BnV8ibVixq4f0IwBNX86m8CDi8X1k7XEwCDY6g75RrDdYiR++FOLGEdQuStMNpGoTka6ly4YVc+RMHxAIqRA==
+Received: from MN2PR20CA0046.namprd20.prod.outlook.com (2603:10b6:208:235::15)
+ by SN7PR12MB6714.namprd12.prod.outlook.com (2603:10b6:806:272::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Tue, 13 Feb
+ 2024 17:46:26 +0000
+Received: from BL6PEPF0001AB4C.namprd04.prod.outlook.com
+ (2603:10b6:208:235:cafe::e3) by MN2PR20CA0046.outlook.office365.com
+ (2603:10b6:208:235::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
+ Transport; Tue, 13 Feb 2024 17:46:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB4C.mail.protection.outlook.com (10.167.242.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Tue, 13 Feb 2024 17:46:26 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 13 Feb
+ 2024 09:46:06 -0800
+Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Tue, 13 Feb
+ 2024 09:46:05 -0800
+Date: Tue, 13 Feb 2024 19:46:02 +0200
+From: Leon Romanovsky <leonro@nvidia.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Jim Harris <jim.harris@samsung.com>, Bjorn Helgaas <bhelgaas@google.com>,
+	<linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jason Gunthorpe
+	<jgg@nvidia.com>, Alex Williamson <alex.williamson@redhat.com>, Pierre
+ =?iso-8859-1?Q?Cr=E9gut?= <pierre.cregut@orange.com>
+Subject: Re: [PATCH v2 1/2] PCI/IOV: Revert "PCI/IOV: Serialize sysfs
+ sriov_numvfs reads vs writes"
+Message-ID: <20240213174602.GD52640@unreal>
+References: <20240213073450.GA52640@unreal>
+ <20240213155954.GA1210633@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240210-zswap-global-lru-v1-0-853473d7b0da@bytedance.com>
- <20240210-zswap-global-lru-v1-2-853473d7b0da@bytedance.com>
- <CAJD7tkYdEWrrQj+MFNpDR6FHc60czXcuawh3dd1rSF=QQm6+yg@mail.gmail.com> <1e5ffefa-8c80-44b8-986f-ee574c3b3349@bytedance.com>
-Message-ID: <ZcuqtiIsAmDedOqK@google.com>
-Subject: Re: [PATCH 2/2] mm/zswap: change zswap_pool kref to percpu_ref
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240213155954.GA1210633@bhelgaas>
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4C:EE_|SN7PR12MB6714:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94bbc317-627a-4640-d65c-08dc2cbbb39c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	tyw3Bcaz2cWlW7Sqw+czjRQvpw5eMrOeQWGiIssTZzquAJOq5i2wWnoX7PCWYj7NG0kaBZmZLdoAcoUXImiDhpDrBJs5PBI4iC3SgxImxWjbl8+iVrkQ1spbkMXClPa5SWRTMMXvZHf2Al2o9miAiCtfXuGOqYGjvrB+F5fJbI/DVwgH+bzGB0HaX4Z8qkrFi+AsJWaTBtkvVHpF+9FMF21lebi+O7kZwdwD+ezyS32HQs+gZKURFSMEcj2bhObf6pLkeL0vFr0nMiAE7zytkZw2Sq3A7kjmLnwpN21jSF3Tbox7lEKbe4H1oNJakCS5euW7ev1QAo01g4nZD5ELwfXpKHITDrLvETuOza/38e4GqNF6Qh2Y9vPg9vEjxhVckbS9u6ZglIjDfF9UXAif4Llm68+U+ckWuRwyPRosvi93myHnh0UYh2X1sTcQiFXzgfIcudNeBa6ACeAxT6pXMN2Hcsqna5N+ip3esWbD0NeyIc5vybumTnT7l3ffa16sIiUvC6frkwwUgPeEvM8pLGYzHH4jQWbYy2sytMnBbYWv5mSJTBPpZHBmctwrxku7ttGjepWwnYDmZX7WI/REWJYvl61IovZUEQtKtgAJEReqV4IyN9htMmzSnof5MdvKdRcEqlccpaXJBnpCYHrh2g==
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(7916004)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(230273577357003)(1800799012)(186009)(82310400011)(64100799003)(451199024)(40470700004)(36840700001)(46966006)(426003)(16526019)(26005)(1076003)(41300700001)(4326008)(70206006)(53546011)(6916009)(8936002)(70586007)(83380400001)(8676002)(478600001)(9686003)(966005)(6666004)(316002)(54906003)(33656002)(7636003)(82740400003)(356005)(86362001)(336012)(2906002)(33716001)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 17:46:26.1643
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94bbc317-627a-4640-d65c-08dc2cbbb39c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB4C.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6714
 
-On Tue, Feb 13, 2024 at 10:31:16PM +0800, Chengming Zhou wrote:
-> On 2024/2/13 06:42, Yosry Ahmed wrote:
-> > On Sun, Feb 11, 2024 at 5:58=E2=80=AFAM Chengming Zhou
-> > <zhouchengming@bytedance.com> wrote:
-> >>
-> >> All zswap entries will take a reference of zswap_pool when
-> >> zswap_store(), and drop it when free. Change it to use the
-> >> percpu_ref is better for scalability performance.
-> >>
-> >> Testing kernel build in tmpfs with memory.max=3D2GB
-> >> (zswap shrinker and writeback enabled with one 50GB swapfile).
-> >>
-> >>         mm-unstable  zswap-global-lru
-> >> real    63.20        63.12
-> >> user    1061.75      1062.95
-> >> sys     268.74       264.44
-> >=20
-> > Are these numbers from a single run or the average of multiple runs?
->=20
-> The average of 5 runs. And I just checked/compared each run result,
-> the improvement is stable. So yes, it should be a real performance gain.
->=20
-> > It just seems that the improvement is small, and percpu refcnt is
-> > slightly less intuitive (and uses a bit more memory), so let's make
-> > sure there is a real performance gain first.
->=20
-> Right, percpu_ref use a bit more memory which should be ok for our use ca=
-se,
-> since we almost have only one zswap_pool to be using. The performance gai=
-n is
-> for zswap_store/load hotpath.
->=20
-> >=20
-> > It would also be useful to mention how many threads/CPUs are being used=
- here.
->=20
-> My bad, the testing uses 32 threads on a 128 CPUs x86-64 machine.
+On Tue, Feb 13, 2024 at 09:59:54AM -0600, Bjorn Helgaas wrote:
+> On Tue, Feb 13, 2024 at 09:34:50AM +0200, Leon Romanovsky wrote:
+> > On Mon, Feb 12, 2024 at 02:27:14PM -0600, Bjorn Helgaas wrote:
+> > > On Sun, Feb 11, 2024 at 10:48:44AM +0200, Leon Romanovsky wrote:
+> > > > On Fri, Feb 09, 2024 at 07:20:28PM -0800, Kuppuswamy Sathyanarayanan wrote:
+> > > > > On 2/9/24 3:52 PM, Jim Harris wrote:
+> > > > > > If an SR-IOV enabled device is held by vfio, and the device
+> > > > > > is removed, vfio will hold device lock and notify userspace
+> > > > > > of the removal. If userspace reads the sriov_numvfs sysfs
+> > > > > > entry, that thread will be blocked since sriov_numvfs_show()
+> > > > > > also tries to acquire the device lock. If that same thread
+> > > > > > is responsible for releasing the device to vfio, it results
+> > > > > > in a deadlock.
+> > > > > >
+> > > > > > The proper way to detect a change to the num_VFs value is to
+> > > > > > listen for a sysfs event, not to add a device_lock() on the
+> > > > > > attribute _show() in the kernel.
+> > > 
+> > > The lock was not about detecting a change; Pierre did this:
+> > > 
+> > >   ip monitor dev ${DEVICE} | grep --line-buffered "^${id}:" | while read line; do \
+> > >     cat ${path}/device/sriov_numvfs; \
+> > > 
+> > > which I assume works by listening for sysfs events.  
+> > 
+> > It is not, "ip monitor ..." listens to netlink events emitted by
+> > netdev core and not sysfs events. Sysfs events are not involved in
+> > this case.
+> 
+> Thanks for correcting my hasty assumption!
+> 
+> > > The problem was that after the event occurred, the sriov_numvfs
+> > > read got a stale value (see https://bugzilla.kernel.org/show_bug.cgi?id=202991).
+> > 
+> > Yes, and it is outcome of such cross-subsytem involvement, which
+> > is racy by definition. Someone can come with even simpler example of why
+> > locking sysfs read and write is not a good idea. 
+> > 
+> > For example, let's consider the following scenario with two CPUs and
+> > locks on sysfs read and write:
+> > 
+> >  CPU1					CPU2
+> >  echo 1 > ${path}/device/sriov_numvfs
+> > 		 context_switch ->
+> >  					cat ${path}/device/sriov_numvfs
+> > 					lock
+> > 					return 0
+> > 					unlock
+> > 		context_switch <-
+> >  lock
+> >  set 1
+> >  unlock
+> > 
+> >  CPU1					CPU2
+> >  echo 1 > ${path}/device/sriov_numvfs
+> >  lock
+> >  set 1
+> >  unlock
+> > 		 context_switch ->
+> >  					cat ${path}/device/sriov_numvfs
+> > 					lock
+> > 					return 1
+> > 					unlock
+> > 
+> > So same scenario will return different values if user doesn't protect
+> > such case with external to the kernel lock.
+> > 
+> > But if we return back to Pierre report and if you want to provide
+> > completely bullet proof solution to solve cross-subsystem interaction,
+> > you will need to prohibit device probe till sriov_numvfs update is completed.
+> > However, it is overkill for something that is not a real issue.
+> 
+> Pierre wanted to detect the configuration change and learn the new
+> num_vfs, which seems like a reasonable thing to do.  Is there a way to
+> do both via netlink or some other mechanism?
 
-Thanks for the clarification. Please include such details in the commit
-message.
+Please pay attention that Pierre listened to specific netdevice and not
+to something general. After patch #2 in Jim's series, he will be able to
+rely on "udevadm monitor" instead of "ip monitor".
+
+> 
+> > > So I would drop this sentence because I don't think it accurately
+> > > reflects the reason for 35ff867b7657.
+> > > 
+> > > > > Since you are reverting a commit that synchronizes SysFS read
+> > > > > /write, please add some comments about why it is not an
+> > > > > issue anymore.
+> > > > 
+> > > > It was never an issue, the idea that sysfs read and write should be
+> > > > serialized by kernel is not correct by definition. 
+> > > 
+> > > I think it *was* an issue.  The behavior Pierre observed at was
+> > > clearly wrong, 
+> > 
+> > I disagree with this sentence. 
+> > 
+> > > and we added 35ff867b7657 ("PCI/IOV: Serialize sysfs
+> > > sriov_numvfs reads vs writes") to resolve it.
+> > > 
+> > > We should try to avoid reintroducing the problem, so I think we should
+> > > probably squash these two patches and describe it as a deadlock fix
+> > > instead of dismissing 35ff867b7657 as being based on false premises.
+> > > 
+> > > It would be awesome if you had time to verify that these patches also
+> > > resolve the problem you saw, Pierre.
+> > 
+> > They won't resolve his problem, because he is not listening to sysfs
+> > events, but rely on something from netdev side.
+> 
+> I guess that means that if we apply this revert, the problem Pierre
+> reported will return.  Obviously the deadlock is more important than
+> the inconsistency Pierre observed, but from the user's point of view
+> this will look like a regression.
+> 
+> Maybe listening to netlink and then looking at sysfs isn't the
+> "correct" way to do this, but I don't want to just casually break
+> existing user code.  If we do contemplate doing the revert, at the
+> very least we should include specific details about what the user code
+> *should* do instead, at the level of the actual commands to use
+> instead of "ip monitor dev; cat ${path}/device/sriov_numvfs".
+
+udevadm monitor will do the trick.
+
+Another possible solution is to refactor the code to make sure that
+probe on VFs happens only after sriov_numvfs is updated.
+
+Thanks
+
+> 
+> Bjorn
+> 
 
