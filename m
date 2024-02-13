@@ -1,162 +1,135 @@
-Return-Path: <linux-kernel+bounces-63077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33224852A93
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:11:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B07CB852A95
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93EBB1F229C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:11:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 662482842EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19630179AE;
-	Tue, 13 Feb 2024 08:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F6117C62;
+	Tue, 13 Feb 2024 08:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b4jFAK8l"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ZwWm49vI"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA81A134CD
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F19618AE8
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707811855; cv=none; b=pO1Y16vR0A98YepEP4kUmtWwrZpyT7TOYfRh24jLZmXtY3+prLiikgoxN+By4Likdl01NGmDB0yBx4LXL/LLdGAj0BKi1cK7z35LdVj4tA+TsThqZZteacPORFDcjebCxw93q8xbNTk96XXb+mr54Ieurtnr4JXRt6TNE66pifY=
+	t=1707811866; cv=none; b=B9cGmg7qhl8zpG9Y1vAbZh4xQ2jim8+6VK4OX6ZpnuIKEj2FHUBy1waq8+vQUAr++gqErNB7vRmbgRJiWUr+ekbiZhNjU1w5nOgq2YaaXAB7ARayCa4oP/3JzKIovmrmY1AJTYgjicWdGZzD9rKVC0bKhFNpCrRSYAHZFoxRjMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707811855; c=relaxed/simple;
-	bh=5U247CdSLwfn8h6iw5PSRxaDI5O8KRpil4aQpkGAu3k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t+O3UFVh5DI+7YwpM3pM4z3MoKXzbSIytDvHcJcT5meNOsT5zy40acMl6Zfgo6Widl/+KKC6SSt+l9rfJ+H3R1VXNetsFzqQlMAJTHJhcUvjhrD1d7WTV/5yX8OoWfo/mARwzo1pHSwohMST1mpRZYh4qTWZjpgmsVBFHgGIX2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b4jFAK8l; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707811852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SPesKyrldOWhdNiuSwsZ76DEnwm8BRWGN2yy5GtATUo=;
-	b=b4jFAK8lWKNs9yD6Op4n0//OFkQUtBx+gVWgwoLAnEtVyOnTiXq6x2guhkxVzL9rdwUtWG
-	dFZbKuPVQdslkhuYvDJ1U6gI3unRf5iJ6r6mR9Zld7HLFZZilBRiOooRKB1aHEikeTwAlv
-	3tYbLfcN8zN9Qf+oERIjh7vYxNTn2gc=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-227-Pz7GkEwNMJGIr3feCi8myQ-1; Tue, 13 Feb 2024 03:10:50 -0500
-X-MC-Unique: Pz7GkEwNMJGIr3feCi8myQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4102b934ba0so23669595e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:10:50 -0800 (PST)
+	s=arc-20240116; t=1707811866; c=relaxed/simple;
+	bh=wSCAQBdMfTC+3MndVZbkwv4BtZJdwtzZ+Uis1k9VN7Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ucOZ2pfSonRjOuYDpDZS036fY/Wu2ceycAqGCkkA/I0xXXQcwvHZdBPdZpKYWldmQpLEsFKnB5HAH3gIlK2WAng5SawRv0qLDlhgOrG/TK2yzyjeW8lmvce+iap1MK1+NwNAFu+YOPLdDt6bE4Nw5PEkYfwNoF6Lcz/+lUYsVWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ZwWm49vI; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4affeacaff9so771982e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707811863; x=1708416663; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vyx00npWeFsll5nwI/taY+6s7E/z5NPem7hxp9luVYI=;
+        b=ZwWm49vIZS8z4ksySmHSXfVicTDTwBRgL2MO12IdFYCBn1If+SJBNLQvrLDoR/MjcQ
+         5rMYm0Z8ZVUqgkvKhzMMOJafD4WJ2+6VFEpkqaPpOR8b23zZR2mJVC+Xk2RKT/8O4WQA
+         tISIWG6jVAt2WBeDmVBboCs3Yg96GX0kJEfyyNbaQzkKlzVYGGuKI97TMddh6nEvboDv
+         VbiUMqTLcrtUA3RTRWP60i2zLtCgdwEKODfEnNLRzaqIiGbblvxHQFOY6/MxJRX0GP4V
+         pwCMkBk4vN3PrsuMVKQoFqn2alU1opzoW+dAcasd6umzt9f6XLybT5na+RZuVErknwji
+         5YTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707811849; x=1708416649;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SPesKyrldOWhdNiuSwsZ76DEnwm8BRWGN2yy5GtATUo=;
-        b=XdGjLHA+9oYITF7NVcZ8vO/N+DfvlAQsfNYj7B8oRaS/2bHRu/0ZqDTFT+B7KwFABw
-         74i/07oVdq9VhVdYSvN8eto0Q0+awiuoB/h1Du+DafEwHEnpx0xZYsdFrXj266ODrZDc
-         ZQXIOlCktvI4UNm1s5gRjtqhvGRXSZENbBCadqOWyVwA5fhICkG9PfVvvIXUgj1Cpg/P
-         Hc0Jrepd1sxO+nvyD8dJJKNJ6z8IS8dTjN2kfZB2aTFYE8aaWUllA3jHISkCIOORpi5E
-         ecLuqrwMk5YGFWaGZQIma6CET4QegoTW8EBaxsQhG9eZtAP2KLIPQCmRK4Ll9I5OMV3I
-         F2cA==
-X-Gm-Message-State: AOJu0YzV8KZV/sKsBBx0Y7Vz28cmu7V7ptIUZEaySvS/esE4vcTd/Xg0
-	1Q4QpVJ6rTOUSSQGs893BpoPRKnUPwnU/LKP+mwiDsNC3WY1pI5IHyvT9V2nVIgyZhaWOPbRqGG
-	nA84X7AHc0dzJZ8oNNuGHSs++VTLTVwD6I/4zAV7R+G7wgVooHqkVpdTAUiySKO3N/cIN6g==
-X-Received: by 2002:a05:600c:468e:b0:40f:dd18:a152 with SMTP id p14-20020a05600c468e00b0040fdd18a152mr7475251wmo.41.1707811849446;
-        Tue, 13 Feb 2024 00:10:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGV96DWjMl95of2ukgvtYKhM0qDXhLwfUn88ToEVnVDvTKPLeE/Nxs+RUsjRJu78/3AcewyCw==
-X-Received: by 2002:a05:600c:468e:b0:40f:dd18:a152 with SMTP id p14-20020a05600c468e00b0040fdd18a152mr7475231wmo.41.1707811849088;
-        Tue, 13 Feb 2024 00:10:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW4S+D3spM1KQRgaOa+mJylI16P/gbD5RTAmSjKSqfW0H4+pjVO08RUufyIg799WffCScXZdNSlId2CeYTkvNrZ6umzwYIssrh+ZLpoz3BZz3Mr0V0I09tn9g981dL5aIlBPkTiot7ghdNSDw==
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05600c358700b004107219c664sm11010168wmq.32.2024.02.13.00.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 00:10:48 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>
-Cc: linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 1/3] auxdisplay: Take over maintainership, but in Odd
- Fixes mode
-In-Reply-To: <ZcpKwz8J8OoODMYl@smile.fi.intel.com>
-References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
- <20240212132515.2660837-3-andriy.shevchenko@linux.intel.com>
- <9c7df0e5-31a9-4c86-b996-4cba82c4ea2f@suse.de>
- <ZcpKh_EgNM5IaV-P@smile.fi.intel.com>
- <ZcpKwz8J8OoODMYl@smile.fi.intel.com>
-Date: Tue, 13 Feb 2024 09:10:48 +0100
-Message-ID: <87sf1wkcmv.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1707811863; x=1708416663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vyx00npWeFsll5nwI/taY+6s7E/z5NPem7hxp9luVYI=;
+        b=hZkwmBulB9r1u+Ty13oaWagYVyg6ZDodgeLbur8oWeEKz7K+kEzx+q76PAHmK6h6Q/
+         Rti8Lf7n4jqWjiZ/AVxi7iBpyhSQz9cYCD4ISyCe1dBKbyxKxwN3PffcGZPlK113wz+J
+         8St3fQRdLTuXb3hI6d8IZdSZH68B5ubf7Y7SB8gy3nfcBaN9yhGr2bkgVsEIQ9lnInqk
+         2huNI788uikoSSymZbJFz4DXWO8UbD/JZZKdNlpXW8aUXDKUItKACN0D06OsiGUfNLJL
+         zirzzmWnTpTHT3xOJD5fK+tS/tG/I6xd7G90MDlD2ogEeXyKvyO8qw+j/gPKAP0Cu8LP
+         9fRw==
+X-Gm-Message-State: AOJu0Yye2sCf5UXRr+ZvMTEt7f4lgX0t30pMq4N4QK1M0it1EWwN1Jh1
+	RWWfExbr0uPvCivYTT2t07nKuKd4l+jT8zYH66Ke1nO9Pr9V2YicPguwambnFrj0A0KKw0ivR5X
+	S78w9VyEthtU/UTSVJ1j9hmibcoBtoXFaLwVMpg==
+X-Google-Smtp-Source: AGHT+IGr0rY+BYn3KFPOnwH21/cIEVqFi5fSMMU1bOGVy5YdyOfJaSi6Db4qCj8odk6BvfgVKZLys2G4N+i1W6bMMBY=
+X-Received: by 2002:a1f:dd84:0:b0:4c0:3cb3:446f with SMTP id
+ u126-20020a1fdd84000000b004c03cb3446fmr5048576vkg.4.1707811863050; Tue, 13
+ Feb 2024 00:11:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240208095920.8035-23-brgl@bgdev.pl> <202402122234.d85cca9b-lkp@intel.com>
+ <CAMRc=McrFqa-nS3L0qGZ+eCff79jWrEZLmg-OJiNw6+FQ44i+Q@mail.gmail.com>
+In-Reply-To: <CAMRc=McrFqa-nS3L0qGZ+eCff79jWrEZLmg-OJiNw6+FQ44i+Q@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 13 Feb 2024 09:10:52 +0100
+Message-ID: <CAMRc=McLsY47oAk3GWp0Cecb=+fEtRKjJ_L3kyKkxYkEnwME7A@mail.gmail.com>
+Subject: Re: [PATCH v3 22/24] gpio: protect the pointer to gpio_chip in
+ gpio_device with SRCU
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
-
-Hello Andy,
-
-> On Mon, Feb 12, 2024 at 06:42:48PM +0200, Andy Shevchenko wrote:
->> On Mon, Feb 12, 2024 at 05:33:39PM +0100, Thomas Zimmermann wrote:
->> > Am 12.02.24 um 14:23 schrieb Andy Shevchenko:
->> > > I have no time for this, but since it looks like I'm the main
->> > > contributor for the last few years to the subsystem, I'll take
->> > > it for now. Geert agreed to help me with as a designated reviwer.
->> > > Let's see how it will go...
-
-AFAICT Miguel Ojeda is quite responsive and is still doing reviews/acks
-for auxdisplay patches. Can you elaborate why the maintainership change
-has to be made?
-
-You can still be listed as co-maintainer of course, and maybe Miguel is
-on board to drop this but then I think that should be mentioned in your
-commit message (and have an ack from him).
-
->> > 
->> > A few days ago, I talked to Javier about how auxdisplay is a hotchpodge of
->> > various drivers that seem to belong into other subsystems. Could we attempt
->> > to move all drivers into other places and then remove the auxdisplay
->> > subsystem?
->> 
->> Can you be more precise on how it can be done? We have at least two clusters of
->> the displays: line-display and HD44780-based ones. Moreover, the latter might
->> use the former in the future (in some cases).
+On Mon, Feb 12, 2024 at 10:20=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 >
 
-For line-display and 7-segment display I'm less sure, and it may be that
-we do need a specific subsystem for those. But then maybe it has to be
-renamed to text-based or character based displays instead ?
+[snip]
 
-I wonder though if these can be modeled as an output only tty instead.
+> >
+> >
+> > [   76.432519][    T1] gpiochip_find_base_unlocked: found new base at 5=
+12
+> > [   76.434591][    T1]
+> > [   76.435240][    T1] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [   76.436545][    T1] WARNING: suspicious RCU usage
+> > [   76.437813][    T1] 6.8.0-rc1-00050-gc21131f83abc #1 Tainted: G     =
+            N
+> > [   76.439873][    T1] -----------------------------
+> > [   76.441158][    T1] drivers/gpio/gpiolib.c:219 suspicious rcu_derefe=
+rence_check() usage!
+> > [   76.443364][    T1]
 
-There are though more than these two types of display, for example the
-cfag12864bfb driver is a FB_VISUAL_MONO10 fbdev driver:
+[snip]
 
-https://elixir.bootlin.com/linux/latest/source/drivers/auxdisplay/cfag12864bfb.c
-
-Now that we have better support in DRM/KMS for monochrome displays, it
-seems to me that could be even ported and be a modesetting driver. I've
-mentioned this to a colleague who wants to get start with Linux graphics
-as a good learning exercise.
-
-I believe the problem is that auxdisplay is too vague of a term, so anything
-could be an "auxdisplay". Even tiny I2C/SPI panels could be defined as that.
-
-> Btw, I have no time for major things here, if you wish, please take over,
-> I will be happy to get rid of this.
 >
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> Paul,
 >
+> Could you help me out here? It seems that lockdep complains (with
+> "suspicious RCU usage") whenever an RCU-protected pointer is passed to
+> rcu_dereference() but is not actually dereferenced later - in which
+> case switching to rcu_access_pointer() helps. But in the case of the
+> of_unittests() it also emits the same warning for
+> gpiod_direction_input() where gdev->chip is fetched with
+> rcu_dereference() using CLASS(gpio_chip_guard) and later actually
+> dereferenced by calling guard.gc->...
 >
+> Any hints as to what I'm doing wrong?
+>
+> Thanks,
+> Bartosz
 
--- 
-Best regards,
+Seems like these can be silenced with rcu_dereference_protected() so
+I'll use it for now.
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Bart
 
