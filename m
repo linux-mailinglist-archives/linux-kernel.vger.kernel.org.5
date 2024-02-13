@@ -1,159 +1,114 @@
-Return-Path: <linux-kernel+bounces-63675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C16B4853318
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:29:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A255D85331B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7861F28706C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:29:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43798B219E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB3757880;
-	Tue, 13 Feb 2024 14:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE3E57893;
+	Tue, 13 Feb 2024 14:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="z589w6IZ"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uf9NvRug"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330325789F
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:28:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7ECA57873
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707834532; cv=none; b=OXcHpsKSx2Za8PX1vAnr51/dDgKb4feOtJl715XAjbTIhw6HLTUvygtq0dDqp/5kocfuTg8RMKQmUFKpkfbL4XVkbgTrEv/C+Fp3V7FMT2zueUO/37ZMrtg9eh10rwiZFNHknp3eetWWIrRCKw9XkTNOGSUJRFoGHk+iiym/lXY=
+	t=1707834545; cv=none; b=nxKHHpvsjrdVq6a5NbBQEwFaJy22Wsgs6HMUsMtS5p9BFqo1XxYaiOUrX8Z3YLEMFNI5tSzun0E3IY7oUMR8707PeOhJdMh1m6wS+0CAKDQwoUrrb13+4qQ2r+IGVrRxLNRENDKXKhcn2chDlesIbe9UCnIfafWiTqaq3Hz3X94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707834532; c=relaxed/simple;
-	bh=9Rs+Z1D53lFg4letHGtTelZBrVpQkf1x4avjmD7lVBg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q4IN0qLAO+jYV4qcHcSL6h1+XeYWy4me4PTJ7rsAsAnyLPiRWCjvzKT9AkBj7CP+Ygihr/C72m4A8gc7Xku+OOJ5kgUkCjn4S668AENltGmtf21BmQJSmilJShd9FHVLQo7i5yxOQaIKgVgx65b/CWuYzQaO9Th4BX50gidazOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=z589w6IZ; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-411a5a86078so10474535e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:28:48 -0800 (PST)
+	s=arc-20240116; t=1707834545; c=relaxed/simple;
+	bh=pUBYHNSuGacf4iIVwOjdBuoUvYgyjDhRc9q2OchczGk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=u9PFgFttXgLR9GosgaRnCzLLs4/hznrpWOUyfHV6a3pN5b1b2U5/yVKbGsul3PNRCh6mGIHn3DyjyAIx6x2tsig/O8riiHUxOo7bMpZXreuNYNQecHZYMbdG29vowFChbvsSxMhYc7ZTD1cB2R3TR8ux/ryEhPBjF80YpuS1LLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uf9NvRug; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-607838c0800so8079627b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:29:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707834527; x=1708439327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/P5OEV1VZDQ2Y6WiXRGS4Q89qwUlbC22uYjuCjHTuIU=;
-        b=z589w6IZiDUb9MPSRhyntaVnu3Nr0CUNcXzCQ44mDsBt/zgO7ieps75uVcSWSOv6e4
-         TDIiQc5SR9lEV37ZIDdfmGN1Gc3xT9e34BuRzTfpHuGCXw0aZDV6m2Ip4rBGJ0mELzPR
-         Q62kUIWg3C08H/IdfQtkINTJ34fQvMGWnVYdFdMwKmfu5HtRIbsWJape/yvv+8rhsWpR
-         71LYpU/gMfGw74qUsrW0FARBIfqFqUFr/iE6QjDaFbwg+2xDsxwu7ARRE6Dsx8jBOhgz
-         IVVN/L2EjkAjiqpLEHKsScrMnigRFJTqpAj7ybPI2LQfPF4JRruqgctEfUXPQ6b2g1Bf
-         QFOw==
+        d=google.com; s=20230601; t=1707834542; x=1708439342; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGMdDRwTTa13t5SlPIuZSJHa36hYXdnKoaK7iYV4TM8=;
+        b=uf9NvRug9SZAMLsDKJh4L93SqwDj9LqZwSoT14c83/+5CDdCTRW8VIKIxkSXGpCioI
+         /Ba8NPA0vA4b7eLWuaww7sMnr1Vx0kWurhkPtL3WzDJTXhGJq8lslpwaLcTs1bpLN2iC
+         Zc6EJjpf3V05eu0DKvPuYDmxMCICi3Zh9tO2kOZICf7yxXY0FahBstxOUKb1IQmxBQ7F
+         2alrgRlN5HRE5BnGikBOFQ/6tgH6bIci6MpvHkPBCUWtQj9s7Q5uOK/xMCyktRWiIa66
+         zYd5/vbIK8J/x06Pt6YoPSL266x4WW/FYs5oxWpvyzBWZ+3gYRwZexcW+zQopjD44ta8
+         H/qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707834527; x=1708439327;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/P5OEV1VZDQ2Y6WiXRGS4Q89qwUlbC22uYjuCjHTuIU=;
-        b=KrzSFPP+LJX+csR8dTnK00ABN+L2oD3Q9gpxyYSkdR2VGFocA7orrmDI5FRXISWcTs
-         ic0q6QwQKxz/aGKtkluE6e6w9rMwLvC6qVf2jKWdOObsLWe99C0659JIPEa6bVJy9dMQ
-         PNydQLBjhVe/kaR9rNcyGOP1zAgIjcKZxGjdGf0VUo618S5SdgitkMtJHv+O9fl+1udP
-         NaC970YX3G43k0R/Pkrk5wJqZZUCKuUUCGD2urGREYPtI/vki+KuTNvsZa7bzTCYJcjk
-         AxOHQSkTzxeFUmQh1luLNa0e9jvgzYRCTKY+nAPjwEAKBeLSsA4PoS2t6qHQqZoeoczx
-         berw==
-X-Forwarded-Encrypted: i=1; AJvYcCXMm6uqn5fB45p3h/WmBO6Q4ND0aTQ8uXzkZk4rGa1d8byPUKfXSa1oUdXTI3eQZauPAWjx1SAejKDjcGqt8GRVa3yL2f62OGm7JfQp
-X-Gm-Message-State: AOJu0YxS3Ryi48oCseC7zOlHZ4RJbmUE4cZTwyG9LJRElTBNtzfAKhOp
-	J9fdVmvIVqxbX5VjNUU3LZRH861pjQKss1hWbFzA2ESljPnUlfzfESAcM3QpkX4=
-X-Google-Smtp-Source: AGHT+IGiC793LinMHbSN0tqOwAmEoL553oU7/A6JdVsIKr0NUqRw6b4JfedsvFaXrsTmYf3tExqs3A==
-X-Received: by 2002:a5d:6049:0:b0:33b:830c:4747 with SMTP id j9-20020a5d6049000000b0033b830c4747mr4011709wrt.30.1707834527328;
-        Tue, 13 Feb 2024 06:28:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXquBLIVBSe9TCBJGJYv2su4y13BafAYhwiX0ElOknAk6XMiKuZMqZpHY/sqIlHyFuQkPvSj03zBEvur9j88JaXMgQ9THxZYuC5RSujIuZBWhZbKIiLg3h6nk4DEgt2wcNOfWXzIamNTygjXtGFE7gxeuKEx+R1MNhm5+R8wsZpmRWscM+awpuwYtaYKLuMLHMagF0zXI2t7386evdi4s6AgCL+lT/aBCVJiwS/7tprLpJlWK59xPN/L7yhi7BuHSVOA+5bL+593PDYrttx5yVi1vpAh7cwbHAkxLS0iTLGlDspuk0dfeYzwA84OVRbOF0Q7jBGIFaU1mI6vMYq5vdJlwJr1ActrIFIPInnbcCWQQhMmV270rvyP/zQpekscueZ0lTROJwdFu93vyfJp/9w7T9kZXscuLUseKLoR9w4m8BHoJpJiZdwQoXXtJcGE16KBDuhR8N/T4G8QiQY2yA+eQjnilujsne457Mzk7zcEwST2R8UkRTUJtS6l09c9g==
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:509b:4241:48a3:e3e0])
-        by smtp.googlemail.com with ESMTPSA id bs25-20020a056000071900b0033b45bdb2a1sm9880114wrb.4.2024.02.13.06.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 06:28:46 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH v2] nvmem: meson-efuse: fix function pointer type mismatch
-Date: Tue, 13 Feb 2024 15:28:28 +0100
-Message-ID: <20240213142831.3069049-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1707834542; x=1708439342;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGMdDRwTTa13t5SlPIuZSJHa36hYXdnKoaK7iYV4TM8=;
+        b=cbwX/36WgHjGPhNYAL/6RJP1zQuiz+5Sx/CHDzmWKHfe6mvQxkRR0Qu7Z78Y8c6nfR
+         CwvAz4igWGtuO2jB8Ne6Yx18yJx34N2JL6MgsDG6LbBvXCXta7QjxPvpGkRd1fQlTaBl
+         nEo5Tvh5R3VjpswRDIYUQGeUc417fm+GTdtPLlHJAiLnO7DVpdsdfi2aQXMVQ0EjvCRJ
+         AUa0UPFq6Kgmh4+4y8nWt1AHtNrqWDV41IJJQ/6ezHodi1yhS/i4RuDxG7VuXV8MQ3Nu
+         2/zuO81J53Gkk4QVkdlSaXumdCd20HSwayvyBXV2KpiKg3mMo/xniOMQbhPt7WkMLdZB
+         tP6w==
+X-Forwarded-Encrypted: i=1; AJvYcCV/ROWtHSVL4gthMIudCU9Sfqu99ATwDZKFdrUkPnRSFTc7YlOjKyjNWj/Wj1NDZG1JR8NlRwCcGKsnyFzzTmCLTf0TJ3i6zducMOMx
+X-Gm-Message-State: AOJu0YxHsC5TMGppArQDlIUOsTy1LxEx2PZqgBo3Waz2mJ2O47js7N8a
+	HzZ6Q/QXAI40Y4Z4fdBRcPNhdmNgd/AApzfJiosA7s919FiBmz0p1+7Gc5+KNlzHb/hjbnaH558
+	5khiWpSmYRn5sWra30w==
+X-Google-Smtp-Source: AGHT+IEjRJkAWZBtGKgOvWcIgZrlfSHYWUmdK6a6QAGG5yPvxwXI45ku3lc1Z4IJzt1ZqVxJm+1omyh4oxPsoQYL
+X-Received: from ericchancf.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:4139])
+ (user=ericchancf job=sendgmr) by 2002:a81:920c:0:b0:5ff:6ec3:b8da with SMTP
+ id j12-20020a81920c000000b005ff6ec3b8damr564874ywg.1.1707834542765; Tue, 13
+ Feb 2024 06:29:02 -0800 (PST)
+Date: Tue, 13 Feb 2024 14:28:56 +0000
+In-Reply-To: <20240213142632.2415127-1-ericchancf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240213142632.2415127-1-ericchancf@google.com>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240213142856.2416073-1-ericchancf@google.com>
+Subject: [PATCH v3 1/4] riscv/barrier: Define __{mb,rmb,wmb}
+From: Eric Chan <ericchancf@google.com>
+To: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	ericchancf@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-clang-16 warns about casting functions to incompatible types, as is done
-here to call clk_disable_unprepare:
+Introduce __{mb,rmb,wmb}, and rely on the generic definitions
+for {mb,rmb,wmb}.
+Although KCSAN is not yet support,
+it can be made more consistent with generic instrumentation.
 
-drivers/nvmem/meson-efuse.c:78:12: error: cast from 'void (*)(struct clk *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   78 |                                        (void(*)(void *))clk_disable_unprepare,
-
-The pattern of getting, enabling and setting a disable callback for a
-clock can be replaced with devm_clk_get_enabled(), which also fixes
-this warning.
-
-Fixes: 611fbca1c861 ("nvmem: meson-efuse: add peripheral clock")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Eric Chan <ericchancf@google.com>
 ---
- drivers/nvmem/meson-efuse.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+ arch/riscv/include/asm/barrier.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/meson-efuse.c b/drivers/nvmem/meson-efuse.c
-index b922df99f9bc..33678d0af2c2 100644
---- a/drivers/nvmem/meson-efuse.c
-+++ b/drivers/nvmem/meson-efuse.c
-@@ -47,7 +47,6 @@ static int meson_efuse_probe(struct platform_device *pdev)
- 	struct nvmem_config *econfig;
- 	struct clk *clk;
- 	unsigned int size;
--	int ret;
+diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+index 110752594228..4c49a8ff2c68 100644
+--- a/arch/riscv/include/asm/barrier.h
++++ b/arch/riscv/include/asm/barrier.h
+@@ -20,9 +20,9 @@
+ 	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
  
- 	sm_np = of_parse_phandle(pdev->dev.of_node, "secure-monitor", 0);
- 	if (!sm_np) {
-@@ -60,27 +59,9 @@ static int meson_efuse_probe(struct platform_device *pdev)
- 	if (!fw)
- 		return -EPROBE_DEFER;
+ /* These barriers need to enforce ordering on both devices or memory. */
+-#define mb()		RISCV_FENCE(iorw,iorw)
+-#define rmb()		RISCV_FENCE(ir,ir)
+-#define wmb()		RISCV_FENCE(ow,ow)
++#define __mb()		RISCV_FENCE(iorw,iorw)
++#define __rmb()		RISCV_FENCE(ir,ir)
++#define __wmb()		RISCV_FENCE(ow,ow)
  
--	clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(clk)) {
--		ret = PTR_ERR(clk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get efuse gate");
--		return ret;
--	}
--
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		dev_err(dev, "failed to enable gate");
--		return ret;
--	}
--
--	ret = devm_add_action_or_reset(dev,
--				       (void(*)(void *))clk_disable_unprepare,
--				       clk);
--	if (ret) {
--		dev_err(dev, "failed to add disable callback");
--		return ret;
--	}
-+	clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(clk))
-+		return dev_err_probe(dev, PTR_ERR(clk), "failed to get efuse gate");
- 
- 	if (meson_sm_call(fw, SM_EFUSE_USER_MAX, &size, 0, 0, 0, 0, 0) < 0) {
- 		dev_err(dev, "failed to get max user");
+ /* These barriers do not need to enforce ordering on devices, just memory. */
+ #define __smp_mb()	RISCV_FENCE(rw,rw)
 -- 
-2.43.0
+2.43.0.687.g38aa6559b0-goog
 
 
