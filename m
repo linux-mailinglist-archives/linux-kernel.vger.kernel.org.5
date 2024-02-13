@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-64561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D16285404B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:45:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E7AE85404D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 822C91C221B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:45:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF06B2827FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5051C6312D;
-	Tue, 13 Feb 2024 23:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9846312F;
+	Tue, 13 Feb 2024 23:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iAskxFN1"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zy7Yt7Ro"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D7926AD4
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389A362160;
+	Tue, 13 Feb 2024 23:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707867943; cv=none; b=ZNslQBPYCHcnpbN33Gk8cxJjuJpzN4jdmaQzZYx2J2OHq3M0yVFBkzuYlKtXB2ZBa72dznjkELdCNGUNiqX1AAyuKD0RN0itxgB8UeDz8kXWBJBBKAppehWn5dMCdzAjFgjkMiQFe2UVjqQ8tfJiI8Ur+WuMxjtjRkB1PewqTkA=
+	t=1707867997; cv=none; b=cRHfY0rlkFl1RmB14u3DlK3bgvjBf7oDBGx4oGa/E1tFcApuVq8PJ4xHGOYsrXwOUmFWi6C/SJlr0smXZ/HM2qw6C1MN0PFLfGfN4oxejuLejjX/89qort/cDVz3gmuY1nC5P7xzD6Sac/Ky42oAz4uQ2FAc89d48T8v04KplSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707867943; c=relaxed/simple;
-	bh=yn2jIFuYtxrp548f32MUQf1lMPhkhV9hIjcwOWQhpgk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G+nVANyxKyVaORZWa7PqVtB4hGEAolp2FpVSt09Ey9chlEsirG0QZQGrSR6Cx8bMqd2Uy/9FwHxy/ne+pLn+jO69cdgdWatL47UhE74MEiIVMr/3ODA06tAvQAwQArj7Cgytz0Vev8mDLBrd8YvLCVZD2vo+EYitgdAWQXFPSa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iAskxFN1; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41DNXbxo026523;
-	Tue, 13 Feb 2024 23:45:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=VVastTY
-	OjzYFoU+p3F/EWLE/+TiOzFug5zCVg4rEO/s=; b=iAskxFN1f60Lld7kVe4znNZ
-	jFc+HBk1Lq1wUt074/hWQ976s3OGrneb+dod0+T+bRKB+626VNIF6/h0ZSkiTzKK
-	YFI2NHG8ZqgC7Dr8ExFgf6o6PKa3gUSOx6i38w5oimnSonXbhs69tVaFwWFfwmLa
-	+YkDR1NPFi7+iOJc8tEEn/8QlHc34HkgOm+RokYiLpSUv2GDad774sKLC2K3HA8n
-	19hfe8P+KrkkE93Ut13YQHB9Wy5oiXddAlZHkd7OVI9/NSSYAEPfR8h2++erj5ES
-	hY1EaDcn32AVe5TMcFGYS/6xn6l5fGPQHasWTED/lAZr/sWA/OHbjoO0IsaskAA=
-	=
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8j65r0pf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 23:45:29 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41DNjTfJ004213
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 23:45:29 GMT
-Received: from abhinavk-linux1.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 13 Feb 2024 15:45:28 -0800
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-To: <dri-devel@lists.freedesktop.org>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Joonas Lahtinen
-	<joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin
-	<tvrtko.ursulin@linux.intel.com>
-CC: Abhinav Kumar <quic_abhinavk@quicinc.com>, <robdclark@gmail.com>,
-        <freedreno@lists.freedesktop.org>, <dmitry.baryshkov@linaro.org>,
-        <intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
-        <quic_jesszhan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <intel-xe@lists.freedesktop.org>
-Subject: [PATCH] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
-Date: Tue, 13 Feb 2024 15:45:13 -0800
-Message-ID: <20240213234513.2411604-1-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707867997; c=relaxed/simple;
+	bh=eXW509IpoIxVG4spuImSGkWb97Ejw1GnKstmwiIBaOs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=puvlvbS1icnFF7Ih4/RV99p8zVZ88lmm0rsOO1Xz/ranooqhvwnCG85ZM+4Wl7Sjt6bCUikDZcWtGpeQrJDfFvh+mS+nqi+aCVX5w9ckCAaXijp5vizkWue7vPD4qKlHpKvC+SgtpN2VFI1J0/QptJCrPF544uUepIEhhSUL4/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zy7Yt7Ro; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso4274447a12.0;
+        Tue, 13 Feb 2024 15:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707867994; x=1708472794; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0qMZ0nrbVy37Y2FDCLo3vG8NlDCzXNPpgVoE/GIAF4=;
+        b=Zy7Yt7RoCasb3sNdNgc9QaZcOZOGs8C4nlmzpfXn7kbok4udYr3VQemuqkULX+/N7W
+         S09pL1zOl35AKGZUod3WLydIdptbimpeOwhlp8GgTSFZFOdFwA8xiF+tMsjosQvKhLUd
+         NDzrxSXXBUb3/cdSsM78ouQrvzUcWwROC7MK03jGZoxn9B8CdowyW83huUb5uU9pfvgb
+         gat54kYrlc0jJ/LjMS83jyYgXcaKMJ3G+nkB4yhl+zzZcijwF7+48XyTWbCHsrUHe7wJ
+         YCZVtiBMswk73vaJFHPZMyapjCAGH4Qe6EuPqxPv0RTINECAFsIQtgxmui62udzQJ3Ca
+         gy4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707867994; x=1708472794;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y0qMZ0nrbVy37Y2FDCLo3vG8NlDCzXNPpgVoE/GIAF4=;
+        b=ooSqy/251b055P2FweaMmIKgcjtxwGmb40XWb30wYS02e84Oer3MU8zXXvxVShCNyR
+         yTgWZYTzCL9hkN2kcwvOtfaUj1k1Xb4uIbgWTtgpOGbflkb0ZqX48wm5b2H2DQD2w/71
+         rNMPSJaeNmyxERmIZ+T8e+V2+HfIjBQuyh+REKqTJkDGgxzcgUf1nY3OCKOg9oEEvFO0
+         vIvUyCl8zlpfN5rc1FOX6Edm9oTEHlQpyEEl1awJ26WixIDnYotsgrHURmQbVU8FCxhD
+         zW2bCekPAJg8q5CE9A2NPYPYON46ms6wacpctqgHxvdLeS2LHN+6hCrDMNuaYjVO/83z
+         dNPg==
+X-Forwarded-Encrypted: i=1; AJvYcCW1ZUL1cSVvCRMAysP32MaJbdGKWzviXmCMNCKjTc6lzw4Ji4z/iQ1RW3QX+kowYGrKfhZvqnwmGgBS9FVvxxsHrFD2JG9MhEy1mvQf7iCShkzIyxdUC/8rR1R1n26tQDJjnHamcxRfnr4w
+X-Gm-Message-State: AOJu0YzQEa0lrgVl8yRuBDxynXxuleYdmH5l5JvmLxKZEB+4FGHkfqwm
+	quF2HFpuQPiNl61XrXeoGkkGqXh1idHbBxpBQ3mvCOfiJsaDRkFg
+X-Google-Smtp-Source: AGHT+IHAfeC+EMKl0f7Hf5/ws+tXFhzAHvg1yzRbxMLDM3xOaOVhhSRquqILMNfzACnQzNn2d2mCjw==
+X-Received: by 2002:a05:6a20:c78c:b0:19e:9a97:cb12 with SMTP id hk12-20020a056a20c78c00b0019e9a97cb12mr1069227pzb.54.1707867994400;
+        Tue, 13 Feb 2024 15:46:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV1OZHNSApLabiLUWqVK2dewixlUKdn05ckmgnjatwWggZb1EDoWiFzdUUDHdrBHFyUpi0IEWXdu1/FzVR8SaJkdrfmdbfbdU+W9FnH5LOfP9OnCaEQkMffX2mbzWiceWZ9uFObtuUyC14a0bhlwmCFH9fGamggdG6abSAKmMe7VXoWUo7Q7cZ58dwHjq/ppcd6qWmBaFTKj6O44Ey9XSWSWdzIEv3IbGvV
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v11-20020a056a00148b00b006e0334e3dd9sm7864447pfu.76.2024.02.13.15.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 15:46:33 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Helge Deller <deller@gmx.de>
+Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+	linux-parisc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH] parisc: Fix csum_ipv6_magic on 64-bit systems
+Date: Tue, 13 Feb 2024 15:46:31 -0800
+Message-Id: <20240213234631.940055-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,232 +85,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uCTeSFkl4dzhDiTNPFOTpc3WpHtrIvw8
-X-Proofpoint-ORIG-GUID: uCTeSFkl4dzhDiTNPFOTpc3WpHtrIvw8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 malwarescore=0
- clxscore=1011 impostorscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402130187
 
-intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
-Lets move this to drm_dp_helper to achieve this.
+hppa 64-bit systems calculates the IPv6 checksum using 64-bit add
+operations. The last add folds protocol and length fields into the 64-bit
+result. While unlikely, this operation can overflow. The overflow can be
+triggered with a code sequence such as the following.
 
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+	/* try to trigger massive overflows */
+	memset(tmp_buf, 0xff, sizeof(struct in6_addr));
+	csum_result = csum_ipv6_magic((struct in6_addr *)tmp_buf,
+				      (struct in6_addr *)tmp_buf,
+				      0xffff, 0xff, 0xffffffff);
+
+Fix the problem by adding any overflows from the final add operation into
+the calculated checksum. Fortunately, we can do this without additional
+cost by replacing the add operation used to fold the checksum into 32 bit
+with "add,dc" to add in the missing carry.
+
+Cc: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
- drivers/gpu/drm/i915/display/intel_dp.c | 73 +----------------------
- include/drm/display/drm_dp_helper.h     |  3 +
- 3 files changed, 84 insertions(+), 70 deletions(-)
+This patch does not completely fix the problems with csum_ipv6_magic seen
+when running 64-bit parisc images with the C3700 emulation in qemu. That
+is due to unaligned 64-bit load operations which (presumably as part of
+unaligned trap handling) generate bad carry flags. It is unknown if that
+is a problem with the qemu emulation or with the Linux kernel, so it is not
+addressed here.
 
-diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
-index b1ca3a1100da..066cfbbf7a91 100644
---- a/drivers/gpu/drm/display/drm_dp_helper.c
-+++ b/drivers/gpu/drm/display/drm_dp_helper.c
-@@ -2916,6 +2916,84 @@ void drm_dp_vsc_sdp_log(const char *level, struct device *dev,
- }
- EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+ arch/parisc/include/asm/checksum.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/asm/checksum.h
+index e619e67440db..c949aa20fa16 100644
+--- a/arch/parisc/include/asm/checksum.h
++++ b/arch/parisc/include/asm/checksum.h
+@@ -137,8 +137,8 @@ static __inline__ __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+ "	add,dc		%3, %0, %0\n"  /* fold in proto+len | carry bit */
+ "	extrd,u		%0, 31, 32, %4\n"/* copy upper half down */
+ "	depdi		0, 31, 32, %0\n"/* clear upper half */
+-"	add		%4, %0, %0\n"	/* fold into 32-bits */
+-"	addc		0, %0, %0\n"	/* add carry */
++"	add,dc		%4, %0, %0\n"	/* fold into 32-bits, plus carry */
++"	addc		0, %0, %0\n"	/* add final carry */
  
-+/**
-+ * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
-+ * @vsc: vsc sdp initialized according to its purpose as defined in
-+ *       table 2-118 - table 2-120 in DP 1.4a specification
-+ * @sdp: valid handle to the generic dp_sdp which will be packed
-+ * @size: valid size of the passed sdp handle
-+ *
-+ * Returns length of sdp on success and error code on failure
-+ */
-+ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-+			    struct dp_sdp *sdp, size_t size)
-+{
-+	size_t length = sizeof(struct dp_sdp);
-+
-+	if (size < length)
-+		return -ENOSPC;
-+
-+	memset(sdp, 0, size);
-+
-+	/*
-+	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-+	 * VSC SDP Header Bytes
-+	 */
-+	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
-+	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
-+	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
-+	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
-+
-+	if (vsc->revision == 0x6) {
-+		sdp->db[0] = 1;
-+		sdp->db[3] = 1;
-+	}
-+
-+	/*
-+	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
-+	 * Format as per DP 1.4a spec and DP 2.0 respectively.
-+	 */
-+	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
-+		goto out;
-+
-+	/* VSC SDP Payload for DB16 through DB18 */
-+	/* Pixel Encoding and Colorimetry Formats  */
-+	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
-+	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
-+
-+	switch (vsc->bpc) {
-+	case 6:
-+		/* 6bpc: 0x0 */
-+		break;
-+	case 8:
-+		sdp->db[17] = 0x1; /* DB17[3:0] */
-+		break;
-+	case 10:
-+		sdp->db[17] = 0x2;
-+		break;
-+	case 12:
-+		sdp->db[17] = 0x3;
-+		break;
-+	case 16:
-+		sdp->db[17] = 0x4;
-+		break;
-+	default:
-+		WARN(1, "Missing case %d\n", vsc->bpc);
-+		return -EINVAL;
-+	}
-+
-+	/* Dynamic Range and Component Bit Depth */
-+	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
-+		sdp->db[17] |= 0x80;  /* DB17[7] */
-+
-+	/* Content Type */
-+	sdp->db[18] = vsc->content_type & 0x7;
-+
-+out:
-+	return length;
-+}
-+EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
-+
- /**
-  * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
-  * @dpcd: DisplayPort configuration data
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index f5ef95da5534..e94db51aeeb7 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -4110,73 +4110,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
- 	return false;
- }
+ #else
  
--static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
--				     struct dp_sdp *sdp, size_t size)
--{
--	size_t length = sizeof(struct dp_sdp);
--
--	if (size < length)
--		return -ENOSPC;
--
--	memset(sdp, 0, size);
--
--	/*
--	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
--	 * VSC SDP Header Bytes
--	 */
--	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
--	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
--	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
--	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
--
--	if (vsc->revision == 0x6) {
--		sdp->db[0] = 1;
--		sdp->db[3] = 1;
--	}
--
--	/*
--	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
--	 * Format as per DP 1.4a spec and DP 2.0 respectively.
--	 */
--	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
--		goto out;
--
--	/* VSC SDP Payload for DB16 through DB18 */
--	/* Pixel Encoding and Colorimetry Formats  */
--	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
--	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
--
--	switch (vsc->bpc) {
--	case 6:
--		/* 6bpc: 0x0 */
--		break;
--	case 8:
--		sdp->db[17] = 0x1; /* DB17[3:0] */
--		break;
--	case 10:
--		sdp->db[17] = 0x2;
--		break;
--	case 12:
--		sdp->db[17] = 0x3;
--		break;
--	case 16:
--		sdp->db[17] = 0x4;
--		break;
--	default:
--		MISSING_CASE(vsc->bpc);
--		break;
--	}
--	/* Dynamic Range and Component Bit Depth */
--	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
--		sdp->db[17] |= 0x80;  /* DB17[7] */
--
--	/* Content Type */
--	sdp->db[18] = vsc->content_type & 0x7;
--
--out:
--	return length;
--}
--
- static ssize_t
- intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
- 					 const struct hdmi_drm_infoframe *drm_infoframe,
-@@ -4269,8 +4202,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
- 
- 	switch (type) {
- 	case DP_SDP_VSC:
--		len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
--					    sizeof(sdp));
-+		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-+					  sizeof(sdp));
- 		break;
- 	case HDMI_PACKET_TYPE_GAMUT_METADATA:
- 		len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
-@@ -4297,7 +4230,7 @@ void intel_write_dp_vsc_sdp(struct intel_encoder *encoder,
- 	struct dp_sdp sdp = {};
- 	ssize_t len;
- 
--	len = intel_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
-+	len = drm_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
- 
- 	if (drm_WARN_ON(&dev_priv->drm, len < 0))
- 		return;
-diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-index 863b2e7add29..f8db34a2f7a5 100644
---- a/include/drm/display/drm_dp_helper.h
-+++ b/include/drm/display/drm_dp_helper.h
-@@ -813,4 +813,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
- 		       int bpp_x16, unsigned long flags);
- int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
- 
-+ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-+			    struct dp_sdp *sdp, size_t size);
-+
- #endif /* _DRM_DP_HELPER_H_ */
 -- 
-2.34.1
+2.39.2
 
 
