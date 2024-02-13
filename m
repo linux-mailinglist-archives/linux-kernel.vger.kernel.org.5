@@ -1,134 +1,185 @@
-Return-Path: <linux-kernel+bounces-63941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D63885369A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:52:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FC285369D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4988A28CC1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:52:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B0681C21F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73C75FB94;
-	Tue, 13 Feb 2024 16:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03CB5F856;
+	Tue, 13 Feb 2024 16:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNz4eBY5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAA05FB90;
-	Tue, 13 Feb 2024 16:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100732C695;
+	Tue, 13 Feb 2024 16:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843115; cv=none; b=fYH2UMgqGlLEJxwMGyCHz2yqTIv4nMkDlmgoyuCvJ8VIy4UWtCv+Loy3IPR+KxDMoyBcJVqbpJCQTKXmj6dwOiC7JaAOBRGbGli0y1KQLrRpur16lZSUeasBdQie1egyi8dSK+07x8YTM4z+gMGFzqqN2x8oIaEnXIk2PW1Zmsc=
+	t=1707843160; cv=none; b=BXlEHwcEwvaQ3YTIoMQLJ9ryMDVsnSp+YlX2mIUuHg9yJPT+fb1mtfSM0MWVe3PIDbam575eMRwDo/Pbnl6eUpQE7AhYELFo4rOGCEX3ZMpeEy5cL+snQ+1kHr5FPSVV9u6V8keiqiH/TfpLyOlRBWdGK/DBjDo2isS59nAIUOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843115; c=relaxed/simple;
-	bh=pDNrTzFYVWPEbMC4V/M9gXVJh6i7WKDwFhKiB2AoIz0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=iY+3DlZ8ipU1TY56c92vOQe5VlMmSvatVAtFINe7g1RNo9AMhudyMWUNNQGGLFaXRLJTh8izLLNiL9L42DzFd3LQNzQZ4b730wwWOBnAwiTyUpy2sCZny2JHLQbRloy6pwKPwcmFyJSZXZrbAMBj+cxe2MRTTfTB6uKDB1O8Woo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE644C433C7;
-	Tue, 13 Feb 2024 16:51:49 +0000 (UTC)
-Date: Tue, 13 Feb 2024 11:52:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, Tim
-  Chen <tim.c.chen@linux.intel.com>, Vincent Donnefort 
- <vdonnefort@google.com>, Sven Schnelle  <svens@linux.ibm.com>, Mete Durlu 
- <meted@linux.ibm.com>
-Subject: [PATCH v2] tracing: Have saved_cmdlines arrays all in one
- allocation
-Message-ID: <20240213115232.5fd9e611@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707843160; c=relaxed/simple;
+	bh=PXdxy1hTes8PVKE+xBuDu7zQhe1++IbzR9FzZbvGKBM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DfUL9bWNsmLqYJw2uhY0EGcG/+RchILD+l307cVMbDo2co987uUQpfBNQ5sBE1C2P3x+/46l4ycpLGElQEHWI7k+p5a+E6b6ng2QSVu+7Nq64IfnvdMP9WZgjkmrQr8u/gkRP1f0MYbv8iHzyJwY4nxqvvZggrijUz/BSd5tUec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNz4eBY5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB14C433C7;
+	Tue, 13 Feb 2024 16:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707843159;
+	bh=PXdxy1hTes8PVKE+xBuDu7zQhe1++IbzR9FzZbvGKBM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gNz4eBY5MfB0YkD0cIH7GgA3W+ofJnbeHVoUVVcXGT/4pS7rlMgsmAdgB2d/Jhi5h
+	 S4XjzDARZYlbxdazPlM/+VwxBlsAClBDBb0rg4qlL6gTUfn6vzY4//TCOLCnvI/e1B
+	 w4IUtm++lBt3NU6Rne5u2YGHGVI8eig+ypPIqR6RJigi8BhW79sJIz/ioy23UrvnSY
+	 5HDL5za63UCDg0uTV17WHlpamrJrhkrYK6qm39Bd8kQiZcDeGegVmGIqTbhN0QaVr6
+	 tfDZkadMbA0KasM9Q/KGy1nOLs6+nf5kjnntG8R7JbwJ4s2N88C0wGcJzrBlJId5g8
+	 oUxkk4RwpZb+A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rZw1N-002qby-2U;
+	Tue, 13 Feb 2024 16:52:37 +0000
+Date: Tue, 13 Feb 2024 16:52:36 +0000
+Message-ID: <868r3o5msr.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Will Deacon <will@kernel.org>,
+	kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Ricardo Koller <ricarkol@google.com>
+Subject: Re: [RFC PATCH] KVM: arm64: Fix double-free following kvm_pgtable_stage2_free_unlinked()
+In-Reply-To: <ZcuY9rdvGaJ66edx@linux.dev>
+References: <20240212193052.27765-1-will@kernel.org>
+	<Zcp8LcvsZiZVkNKe@linux.dev>
+	<86cyt062jh.wl-maz@kernel.org>
+	<ZcuY9rdvGaJ66edx@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, will@kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, ricarkol@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, 13 Feb 2024 16:29:42 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Tue, Feb 13, 2024 at 11:12:34AM +0000, Marc Zyngier wrote:
+> > On Mon, 12 Feb 2024 20:14:37 +0000,
+> > Oliver Upton <oliver.upton@linux.dev> wrote:
+> > > 
+> > > On Mon, Feb 12, 2024 at 07:30:52PM +0000, Will Deacon wrote:
+> > > > kvm_pgtable_stage2_free_unlinked() does the final put_page() on the
+> > > > root page of the sub-tree before returning, so remove the additional
+> > > > put_page() invocations in the callers.
+> > > > 
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > Cc: Oliver Upton <oliver.upton@linux.dev>
+> > > > Cc: Ricardo Koller <ricarkol@google.com>
+> > > > Signed-off-by: Will Deacon <will@kernel.org>
+> > > > ---
+> > > > 
+> > > > Hi folks,
+> > > > 
+> > > > Sending this as an RFC as I only spotted it from code inspection and I'm
+> > > > surprised others aren't seeing fireworks if it's a genuine bug. I also
+> > > > couldn't come up with a sensible Fixes tag, as all of:
+> > > > 
+> > > >  e7c05540c694b ("KVM: arm64: Add helper for creating unlinked stage2 subtrees")
+> > > >  8f5a3eb7513fc ("KVM: arm64: Add kvm_pgtable_stage2_split()")
+> > > >  f6a27d6dc51b2 ("KVM: arm64: Drop last page ref in kvm_pgtable_stage2_free_removed()")
+> > 
+> > I'd blame it on the last commit, as we really ought to have it if we
+> > have the others.
+> > 
+> > > >
+> > > > are actually ok in isolation. Hrm. Please tell me I'm wrong?
+> > > > 
+> > > >  arch/arm64/kvm/hyp/pgtable.c | 2 --
+> > > >  1 file changed, 2 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > > > index c651df904fe3..ab9d05fcf98b 100644
+> > > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > > @@ -1419,7 +1419,6 @@ kvm_pte_t *kvm_pgtable_stage2_create_unlinked(struct kvm_pgtable *pgt,
+> > > >  				 level + 1);
+> > > >  	if (ret) {
+> > > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, pgtable, level);
+> > > > -		mm_ops->put_page(pgtable);
+> > > >  		return ERR_PTR(ret);
+> > > >  	}
+> > > 
+> > > AFAICT, this entire branch is effectively dead code, unless there's a
+> > > KVM bug lurking behind the page table walk. The sub-tree isn't visible
+> > > to other software or hardware walkers yet, so none of the PTE races
+> > > could cause this to pop.
+> > > 
+> > > So while this is very obviously a bug, it might be pure luck that folks
+> > > haven't seen smoke here. Perhaps while fixing the bug we should take the
+> > > opportunity to promote the condition to WARN_ON_ONCE().
+> > 
+> > Can't you construct a case where an allocation fails during the walk
+> > (memcache empty), and we end up on this exact path?
+> 
+> Possibly, but AFAICT that can only happen if there was a bug in KVM. We
+> don't start the walk at all if userspace set the split chunk size to 0,
+> and otherwise we expect it to be at least PMD_SIZE, which will top up
+> the cache to 1 every pass. stage2_split_walker() will 'do the right
+> thing' if there aren't enough preallocated pages to get down to level 3.
+> 
+> It really doesn't matter either way, I'm just trying to convince myself
+> of the reasons why we haven't seen this explode yet :)
 
-The saved_cmdlines have three arrays for mapping PIDs to COMMs:
+Yeah, that's probably very unlikely to hit given the current
+conditions.
 
- - map_pid_to_cmdline[]
- - map_cmdline_to_pid[]
- - saved_cmdlines
+> 
+> > > 
+> > > > @@ -1502,7 +1501,6 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
+> > > >  
+> > > >  	if (!stage2_try_break_pte(ctx, mmu)) {
+> > > >  		kvm_pgtable_stage2_free_unlinked(mm_ops, childp, level);
+> > > > -		mm_ops->put_page(childp);
+> > > >  		return -EAGAIN;
+> > > >  	}
+> > > 
+> > > This, on the other hand, seems possible. There exists a race where an
+> > > old block PTE could have the AF set on it and the underlying cmpxchg()
+> > > could fail. There shouldn't be a race with any software walkers, as we
+> > > hold the MMU lock for write here.
+> > 
+> > AF update is indeed a likely candidate.
+> > 
+> > In any case, this patch looks good to me as it is, and we can always
+> > have a separate tweak to adjust the severity of the first case as
+> > required. Unless anyone objects, I'd like to queue it shortly.
+> 
+> Agreed, happy with the way this looks and should've added:
+> 
+> Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+> 
+> the first time around.
 
-The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
-into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
-full pid as it can be larger than PID_MAX_DEFAULT. And the
-saved_cmdlines[] just holds the COMMs associated to the pids.
+Thanks for that. I'll queue that shortly and send (another) PR.
 
-Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
-together (in reality the saved_cmdlines is just in the memory of the
-rounding of the allocation of the structure as it is always allocated in
-powers of two). The map_cmdline_to_pid[] array is allocated separately.
+	M.
 
-Since the rounding to a power of two is rather large (it allows for 8000
-elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
-(This drops it to 6000 by default, which is still plenty for most use
-cases). This saves even more memory as the map_cmdline_to_pid[] array
-doesn't need to be allocated.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@gandalf.local.home/
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240212180941.379c419b@gandalf.local.home/
-
--- Added SAVED_CMDLINE_MAP_ELEMENT_SIZE helper macro.
-
- kernel/trace/trace_sched_switch.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
-index e4fbcc3bede5..5f3e9bc87079 100644
---- a/kernel/trace/trace_sched_switch.c
-+++ b/kernel/trace/trace_sched_switch.c
-@@ -175,6 +175,10 @@ struct saved_cmdlines_buffer {
- };
- static struct saved_cmdlines_buffer *savedcmd;
- 
-+/* Holds the size of a cmdline and pid element */
-+#define SAVED_CMDLINE_MAP_ELEMENT_SIZE(s)			\
-+	(TASK_COMM_LEN + sizeof((s)->map_cmdline_to_pid[0]))
-+
- static inline char *get_saved_cmdlines(int idx)
- {
- 	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
-@@ -201,7 +205,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- 	int order;
- 
- 	/* Figure out how much is needed to hold the given number of cmdlines */
--	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-+	orig_size = sizeof(*s) + val * SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
- 	order = get_order(orig_size);
- 	size = 1 << (order + PAGE_SHIFT);
- 	page = alloc_pages(GFP_KERNEL, order);
-@@ -212,16 +216,11 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- 	memset(s, 0, sizeof(*s));
- 
- 	/* Round up to actual allocation */
--	val = (size - sizeof(*s)) / TASK_COMM_LEN;
-+	val = (size - sizeof(*s)) / SAVED_CMDLINE_MAP_ELEMENT_SIZE(s);
- 	s->cmdline_num = val;
- 
--	s->map_cmdline_to_pid = kmalloc_array(val,
--					      sizeof(*s->map_cmdline_to_pid),
--					      GFP_KERNEL);
--	if (!s->map_cmdline_to_pid) {
--		free_saved_cmdlines_buffer(s);
--		return NULL;
--	}
-+	/* Place map_cmdline_to_pid array right after saved_cmdlines */
-+	s->map_cmdline_to_pid = (unsigned *)&s->saved_cmdlines[val * TASK_COMM_LEN];
- 
- 	s->cmdline_idx = 0;
- 	memset(&s->map_pid_to_cmdline, NO_CMDLINE_MAP,
 -- 
-2.43.0
-
+Without deviation from the norm, progress is not possible.
 
