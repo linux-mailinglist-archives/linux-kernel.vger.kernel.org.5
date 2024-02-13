@@ -1,200 +1,266 @@
-Return-Path: <linux-kernel+bounces-63045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC2AE8529D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:29:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB4E8529E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C6C21C2279B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:29:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C49171C22780
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 07:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7346E17597;
-	Tue, 13 Feb 2024 07:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61F51B7F5;
+	Tue, 13 Feb 2024 07:31:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="od4RxfPD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LsC2m/a6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DE617566;
-	Tue, 13 Feb 2024 07:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CC31B7E6
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 07:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707809359; cv=none; b=ZU1vKPPhi3emw4iG1C1/eSNM6f0RVZP7wOZuoStvFG2hyJrX42rmsoh2zkX7vinwzBqZfHLY+QtSYseXPof9rP3R7/WJgs5GcmKuGGT6vb6qD5w2jltfBLo5DVXvq1mZWhitL5zJjrLq5FjiwvsjJzaJ5npXCoN+xPUDm6jyTu4=
+	t=1707809491; cv=none; b=eAGhPVU0y2rO8U9a7IZN/nquw8Ke5uKwOddkZ4YRo0c43D4NkpIfVuiA+1i9trzt15qQLtwSWrMAHPkzkPWlH6sHa3esFUybWQbihiVj1adELS+i8yTZNr0W+XcbndEq7XEv+SO3DbnY8UVOVuijweFrI/ArJB0SYNh91aQtY10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707809359; c=relaxed/simple;
-	bh=JDucEHydWXrSLUzuo2FD0MxyrhZzIoiGXp3GsPpCJRs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=NoWQROs3yc/qISf0NDLyNT2RHQZHU2H2lIBctl7cCKuKSG2sfzGQu2sHjfIRwc8NyJqSiTIvjXS/3VsklliO/9Nx0iFCHJk9+ndlZMgfTH/MPneDKrrx+0cFCOwIFgR3qrqSLJ6QEVq8Bg65AEymVAIQIGqSDwMpNTDrK0PXu60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=od4RxfPD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AE27C433F1;
-	Tue, 13 Feb 2024 07:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707809359;
-	bh=JDucEHydWXrSLUzuo2FD0MxyrhZzIoiGXp3GsPpCJRs=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=od4RxfPD9pFzMJie+sZrC/bwzACrs3e3hhPbZm2omcg6x0GgKb1hBxR5YHj9RbtbC
-	 y8ObjrPHUQum4uFG5AXC4S/4u9OuSIXemHjUu2KClHWBbGHUKRZ3euzOzQXCtIJ484
-	 jInraV0nel15LFgiTg57Zzw07JEfoG8BZF8gdjium6n33o0DFO8E+wDA46lKzexeDv
-	 n1GPXw0CcYJ+aINpgrFfshU88F56jGCUIOfFfgaRIxnE2JuXuX61y0kFTObMXcpBGw
-	 wuQlLlLmZUntIwD9M0Hg68yuBe9oCZZsLbSY1EJ3xv8oMxpX1jr7t6aKnJmpGu/Ekt
-	 4XMK0Yvg++d4Q==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0853AC48260;
-	Tue, 13 Feb 2024 07:29:19 +0000 (UTC)
-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
- <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Tue, 13 Feb 2024 10:29:05 +0300
-Subject: [PATCH net-next v2] net: dsa: remove OF-based MDIO bus
- registration from DSA core
+	s=arc-20240116; t=1707809491; c=relaxed/simple;
+	bh=uX83fvYLSelRwkepcg3ZhJhM8ULd/wwnlPcYCSkCQS4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=KsDaQxt2vIYNK6QBouRfO4Ol95kcfy9kQ9ERqRQQPQf8/wGv78+hKYpylOfGqae78x/IanLYc+bamg7adFwgVKtDm+3kF9wl37o+AX6EF6LPePmuAREs9JOIq4Ksk0/jCg1ihVgyeev/0+5vXIMTMJ44KXX03O7hGlOXvVRNoTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LsC2m/a6; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707809490; x=1739345490;
+  h=date:from:to:cc:subject:message-id;
+  bh=uX83fvYLSelRwkepcg3ZhJhM8ULd/wwnlPcYCSkCQS4=;
+  b=LsC2m/a6LxMYREbDKA4bwPqt9H/0ZxohaNNG8h9yZG7jBhrCkQiJBdfc
+   +oy54wEIWJzemom20ZnkoPWnal9VbWhdaEPvrQQOY6VOtk4ejY4o036tb
+   5ClP0QNHyaN8oK4+J7LZesjtONaScD7/RyvN9EbItDGzinoMnUEnH4my/
+   WzY5XvimU0Wd1i4qoCeX5rQ4Vl7SstuSdqke63/6768pVIKhw1vVaFxE/
+   6n4FWsQ6bTtQ5fxfvZjfTUTuL6xIquOkMYZiRG0FZbxfWvgxdGwoULBOl
+   31GCZz7NgY1k6pQ8hZqJUvWAldb7SX6wYegRiafgYhqELu1bvDIZWmaaH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13189836"
+X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
+   d="scan'208";a="13189836"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 23:31:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,156,1705392000"; 
+   d="scan'208";a="2750568"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 12 Feb 2024 23:31:27 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rZnGG-0007aQ-36;
+	Tue, 13 Feb 2024 07:31:24 +0000
+Date: Tue, 13 Feb 2024 15:31:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ f2361f2bcbb44d301ee8f8916532233c42064b83
+Message-ID: <202402131515.9CkjE2gg-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
-X-B4-Tracking: v=1; b=H4sIAEAay2UC/yWNzQ6CMBCEX4Xs2SWl5ad48j0MhwqLbCKtaYFgC
- O9urbf5MvlmDgjkmQJcswM8bRzY2QjykkE/Gfsk5CEySCFLUSiBo/NoabG0LzgEg/PADh9rwFo
- 2vSgbQVoriPrb08h7mr5DNPCnQBebicPi/Cd9bkXq//NSikqpUud1pVss0Hi2fb5a87ql2Oa9m
- 6E7z/ML1dL4grgAAAA=
-To: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
- Luiz Angelo Daros de Luca <luizluca@gmail.com>, 
- =?utf-8?q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>, 
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707809354; l=4698;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=FQVu4SdlGCbVhlJyCOryP4ivDPy0SI6ZNNcbaFbu7M0=;
- b=FBdXqqaV0vEKXzhXwwhzwHIG9P6X2VZ1lJ3hEQcD0rAhBYuWM0nf8ZjiLytG+tTVXc8bbAHN7
- u1G4tKR/i4YCZNhxGmuqgAgGAJVxHmYM814pW+T6NThhfNzT6DzChrp
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received:
- by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt with auth_id=115
-X-Original-From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Reply-To: <arinc.unal@arinc9.com>
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: f2361f2bcbb44d301ee8f8916532233c42064b83  Merge branch into tip/master: 'x86/vdso'
 
-The code block under the "!ds->user_mii_bus && ds->ops->phy_read" check
-under dsa_switch_setup() populates ds->user_mii_bus. The use of
-ds->user_mii_bus is inappropriate when the MDIO bus of the switch is
-described on the device tree [1].
+elapsed time: 1453m
 
-For this reason, use this code block only for switches [with MDIO bus]
-probed on platform_data, and OF which the switch MDIO bus isn't described
-on the device tree. Therefore, remove OF-based MDIO bus registration as
-it's useless for these cases.
+configs tested: 178
+configs skipped: 3
 
-These subdrivers which control switches [with MDIO bus] probed on OF, will
-lose the ability to register the MDIO bus OF-based:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-drivers/net/dsa/b53/b53_common.c
-drivers/net/dsa/lan9303-core.c
-drivers/net/dsa/vitesse-vsc73xx-core.c
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240212   gcc  
+arc                   randconfig-002-20240212   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                          gemini_defconfig   clang
+arm                   randconfig-001-20240212   gcc  
+arm                   randconfig-002-20240212   clang
+arm                   randconfig-003-20240212   clang
+arm                   randconfig-004-20240212   clang
+arm                        spear6xx_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240212   clang
+arm64                 randconfig-002-20240212   clang
+arm64                 randconfig-003-20240212   clang
+arm64                 randconfig-004-20240212   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240212   gcc  
+csky                  randconfig-002-20240212   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240212   clang
+hexagon               randconfig-002-20240212   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240212   clang
+i386         buildonly-randconfig-002-20240212   gcc  
+i386         buildonly-randconfig-003-20240212   gcc  
+i386         buildonly-randconfig-004-20240212   clang
+i386         buildonly-randconfig-005-20240212   gcc  
+i386         buildonly-randconfig-006-20240212   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240212   gcc  
+i386                  randconfig-002-20240212   clang
+i386                  randconfig-003-20240212   clang
+i386                  randconfig-004-20240212   gcc  
+i386                  randconfig-005-20240212   clang
+i386                  randconfig-006-20240212   gcc  
+i386                  randconfig-011-20240212   gcc  
+i386                  randconfig-012-20240212   gcc  
+i386                  randconfig-013-20240212   gcc  
+i386                  randconfig-014-20240212   gcc  
+i386                  randconfig-015-20240212   gcc  
+i386                  randconfig-016-20240212   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240212   gcc  
+loongarch             randconfig-002-20240212   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         bigsur_defconfig   gcc  
+mips                  cavium_octeon_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240212   gcc  
+nios2                 randconfig-002-20240212   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240212   gcc  
+parisc                randconfig-002-20240212   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        fsp2_defconfig   gcc  
+powerpc                 mpc8313_rdb_defconfig   gcc  
+powerpc                      ppc6xx_defconfig   gcc  
+powerpc               randconfig-001-20240212   clang
+powerpc               randconfig-002-20240212   gcc  
+powerpc               randconfig-003-20240212   clang
+powerpc                     taishan_defconfig   clang
+powerpc                     tqm8541_defconfig   clang
+powerpc                     tqm8548_defconfig   clang
+powerpc64             randconfig-001-20240212   clang
+powerpc64             randconfig-002-20240212   gcc  
+powerpc64             randconfig-003-20240212   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240212   gcc  
+riscv                 randconfig-002-20240212   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240212   clang
+s390                  randconfig-002-20240212   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240212   gcc  
+sh                    randconfig-002-20240212   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                          rsk7269_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          alldefconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240212   gcc  
+sparc64               randconfig-002-20240212   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-001-20240212   clang
+um                    randconfig-002-20240212   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240212   clang
+x86_64       buildonly-randconfig-002-20240212   clang
+x86_64       buildonly-randconfig-003-20240212   clang
+x86_64       buildonly-randconfig-004-20240212   clang
+x86_64       buildonly-randconfig-005-20240212   clang
+x86_64       buildonly-randconfig-006-20240212   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240212   gcc  
+x86_64                randconfig-002-20240212   gcc  
+x86_64                randconfig-003-20240212   gcc  
+x86_64                randconfig-004-20240212   gcc  
+x86_64                randconfig-005-20240212   gcc  
+x86_64                randconfig-006-20240212   gcc  
+x86_64                randconfig-011-20240212   gcc  
+x86_64                randconfig-012-20240212   gcc  
+x86_64                randconfig-013-20240212   clang
+x86_64                randconfig-014-20240212   gcc  
+x86_64                randconfig-015-20240212   gcc  
+x86_64                randconfig-016-20240212   clang
+x86_64                randconfig-071-20240212   gcc  
+x86_64                randconfig-072-20240212   gcc  
+x86_64                randconfig-073-20240212   clang
+x86_64                randconfig-074-20240212   gcc  
+x86_64                randconfig-075-20240212   gcc  
+x86_64                randconfig-076-20240212   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240212   gcc  
+xtensa                randconfig-002-20240212   gcc  
+xtensa                    smp_lx200_defconfig   gcc  
 
-These subdrivers let the DSA core driver register the bus:
-- ds->ops->phy_read() and ds->ops->phy_write() are present.
-- ds->user_mii_bus is not populated.
-
-The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
-OF-based MDIO bus registration on the DSA core driver is reasonably recent
-and, in this time frame, there have been no device trees in the Linux
-repository that started describing the MDIO bus, or dt-bindings defining
-the MDIO bus for the switches these subdrivers control. So I don't expect
-any devices to be affected.
-
-The logic we encourage is that all subdrivers should register the switch
-MDIO bus on their own [2]. And, for subdrivers which control switches [with
-MDIO bus] probed on OF, this logic must be followed to support all cases
-properly:
-
-No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
-bus, set the interrupts for PHYs if "interrupt-controller" is defined at
-the switch node. This case should only be covered for the switches which
-their dt-bindings documentation didn't document the MDIO bus from the
-start. This is to keep supporting the device trees that do not describe the
-MDIO bus on the device tree but the MDIO bus is being used nonetheless.
-
-Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
-bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
-the switch node and "interrupts" is defined at the PHY nodes under the
-switch MDIO bus node].
-
-Switch MDIO bus defined but explicitly disabled: If the device tree says
-status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
-Instead, just exit as early as possible and do not call any MDIO API.
-
-After all subdrivers that control switches with MDIO buses are made to
-register the MDIO buses on their own, we will be able to get rid of
-dsa_switch_ops :: phy_read() and :: phy_write(), and the code block for
-registering the MDIO bus on the DSA core driver.
-
-Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
-Link: https://lore.kernel.org/netdev/20240103184459.dcbh57wdnlox6w7d@skbuf/ [2]
-Suggested-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Acked-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
-Changes in v2:
-- Remove mention to drivers/net/dsa/realtek/realtek-mdio.c as it now
-  registers the MDIO bus OF-based on its own, and now under
-  drivers/net/dsa/realtek/rtl83xx.c. I've waited until this happened
-  because if this patch was applied beforehand, there would be no way to
-  set IRQs on PHYs as the subdriver doesn't do that for the MDIO bus
-  registered non-OF-based.
-- Link to v1: https://lore.kernel.org/r/20240122053348.6589-1-arinc.unal@arinc9.com
----
- net/dsa/dsa.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/net/dsa/dsa.c b/net/dsa/dsa.c
-index ac7be864e80d..09d2f5d4b3dd 100644
---- a/net/dsa/dsa.c
-+++ b/net/dsa/dsa.c
-@@ -15,7 +15,6 @@
- #include <linux/slab.h>
- #include <linux/rtnetlink.h>
- #include <linux/of.h>
--#include <linux/of_mdio.h>
- #include <linux/of_net.h>
- #include <net/dsa_stubs.h>
- #include <net/sch_generic.h>
-@@ -626,7 +625,6 @@ static void dsa_switch_teardown_tag_protocol(struct dsa_switch *ds)
- 
- static int dsa_switch_setup(struct dsa_switch *ds)
- {
--	struct device_node *dn;
- 	int err;
- 
- 	if (ds->setup)
-@@ -666,10 +664,7 @@ static int dsa_switch_setup(struct dsa_switch *ds)
- 
- 		dsa_user_mii_bus_init(ds);
- 
--		dn = of_get_child_by_name(ds->dev->of_node, "mdio");
--
--		err = of_mdiobus_register(ds->user_mii_bus, dn);
--		of_node_put(dn);
-+		err = mdiobus_register(ds->user_mii_bus);
- 		if (err < 0)
- 			goto free_user_mii_bus;
- 	}
-
----
-base-commit: 4acf4e62cd572b0c806035046b3698f5585ab821
-change-id: 20240130-for-netnext-dsa-mdio-bus-627c0470e883
-
-Best regards,
 -- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
