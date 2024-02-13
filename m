@@ -1,558 +1,185 @@
-Return-Path: <linux-kernel+bounces-63999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A679485389A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:39:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511398538CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 18:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAA701C2664F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA2A2822EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CBE604CC;
-	Tue, 13 Feb 2024 17:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A045FF0D;
+	Tue, 13 Feb 2024 17:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a4GWoDre"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="1DT8Sawh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="f5dtiXPx"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55CCD604AF
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8685D5FEE9
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707845901; cv=none; b=tpwZr8gv1e6d2X9ddIBt44N3BGwdraKIlBKFNuVvzI91QZ3Ik8wiPAQ/bGJ9VHqRzyvuco+95aAlKe7L8Pf6IIyp8HbePJwKy0vVmF52N6GVTS/PG72fTZdZmcVa9pt9AUCvJaGHJpru50resV5qFbwIDmQp4ZhaCLA276zG2z8=
+	t=1707846181; cv=none; b=ppkVOPm/cc/x/6nq7eFGcsveOk/lClDT/+suFsJNHwqZX2dx+OSRlYMZh62WzHybu9Wf8ABq5QVx6B9UpU3FXK8N6VSry5yWwrEz/et/T7nKwnEOsHtTjUq12efwPoh5WmTVJ5uUnC9UgZVzAGjgPLyMLUIn6ffNfhpBZKTe75c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707845901; c=relaxed/simple;
-	bh=VTV1pQPtSGetEYnKTo7BNT3cxEIkuovoFITIXVq/2YI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aJ6hRnMtYFdaYWU1tcQ0XaEm7qKSwMPFclSkm0w9LmgYJucQ3gCg1mZofZFXg3qrShdR4fTU0sQW5guuFkBmYtDSB7qcZkXfut7H7Z/xHHOvgvyDo1pSW3NDjoTgGHmHAfE7anYjXURauYwnD+nAv4BqMPlkfSGSjkbSVytqGTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a4GWoDre; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-296d667e9b3so860857a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:38:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707845898; x=1708450698; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gJIA6oYTcILeMd0YxkDSa8hcNYW75gFNASx4xCC9mSI=;
-        b=a4GWoDre+AP+GyGfKpbAlpRTGhCXZc9UIZ7a8e4VwAnZjmJH0zZOPpj/ZwqoPfqwdt
-         q6baTN1IX7xpo2I4Koq2AJgvSMBM3ozK2xJaxx1pcGyPSvwC4pouurOE/U2htJBEsxqU
-         vofLYIrhC7gFyahvFSziXfVMCNrM2PSsSdTSghXwfIvhmBjFArocJjjZLKXP/07VUenw
-         VnsA6m4RMo9tFxgSSgs7O38iGNFkhXW+dl+nNJ/Gk1bUaIiUpLK/TT3LI/WUhs1oGjew
-         BQ8oPASB88IxlVSba8PwLoxulCBRodObLg6ws2VlQ3ACciSQHfthbXyWIl+wdi3P/cEN
-         qAHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707845898; x=1708450698;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gJIA6oYTcILeMd0YxkDSa8hcNYW75gFNASx4xCC9mSI=;
-        b=pbGQ0c123pNPMdZHwePF6KkiXIMKY225IGZrbahXxnZcu10gCD2A2wRVVJtUhoKBDy
-         JmXPH676cMZdmf/aF2CBZ5NiiL4EgDh5XxqepkXi+4Qz9TtMNrKQAj/NdfQmUCTOHsSM
-         9iRz4Mw42T89391JP+MTAMHhtsfj8LK/9pFApiwg1SZ+wJibtjQpKMibZ5A0Bnxfz1ja
-         K6rHYEx3P1gh68zJ3qNycuM3595WrMqZVTJkil0h4ApNga9dir3gbSu0OvHBYpback8W
-         AjN8vpIh5dqbmOrrcVqJ9Nx6AyJNMK2aJSwbHBZgNmX9uaWjuk8JE0+LAa9lYcP9o2pF
-         IqVQ==
-X-Gm-Message-State: AOJu0Ywq/arzbbO1LS9IypqXsU6NUlVzMkEPqE49H28qV3IuppC665a5
-	9xEO8ZaVH2Ui+48oBQw5efwT/7tKWVwDpDmLqZIY7uZUG8rxfZ0NfMC8HBmW
-X-Google-Smtp-Source: AGHT+IFcP0AvrVS16soUzORygwyrT9TFZKntV+lT/p14IDW7u5D4IkDN23sVrTjFAF7zen7AKdY6aA==
-X-Received: by 2002:a17:90b:ec7:b0:296:4177:6404 with SMTP id gz7-20020a17090b0ec700b0029641776404mr173038pjb.11.1707845898160;
-        Tue, 13 Feb 2024 09:38:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCMWifeOoNfe4uhWPfL7fWX6W3gomUsn1JkfjLjSOZUcMKPCl+B4idGV9bmcVBJsDox6LTUBaQ2mzYDiJnVxQQM1eyD8hn6v/CCQzcYnDINWgnyN4RGUkZ6gQ9aWIW0i3Ni8wTOWzSoVBwZg/Ja7XdsvMJw2Ld6Nly79rDzGaeufSmew==
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:1deb:64bb:dfd3:ad56])
-        by smtp.gmail.com with ESMTPSA id a18-20020a17090acb9200b00298cc2b7e94sm198137pju.34.2024.02.13.09.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 09:38:17 -0800 (PST)
-From: Daeho Jeong <daeho43@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH v3 2/2] f2fs: support file pinning for zoned devices
-Date: Tue, 13 Feb 2024 09:38:12 -0800
-Message-ID: <20240213173812.1432663-2-daeho43@gmail.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-In-Reply-To: <20240213173812.1432663-1-daeho43@gmail.com>
-References: <20240213173812.1432663-1-daeho43@gmail.com>
+	s=arc-20240116; t=1707846181; c=relaxed/simple;
+	bh=R6UuKRBqDSOyzLFi4W3/cHdBrCqcsC6PslbCDx2B1rg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=FKvIWRIt401Z4fczqLQ4ypfdIKHa2DeaE0y/8icj9siyLtI+1vOcZuA19J4RiD+DJAKWq7FYyjLEAYOLTdBvBLAntWYi2fS6VLGz/3kSE+U8e2NH5o/qZdeHXxHwufo+cZjsLSVMagKr/arC9XuCY1PbgFxa1sw/w075Yx8x7mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=1DT8Sawh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=f5dtiXPx; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 51E6113800D0;
+	Tue, 13 Feb 2024 12:42:58 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Tue, 13 Feb 2024 12:42:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707846178; x=1707932578; bh=85jyEdoLBZ
+	fXHvD7lJWU0c6Qkt7S0BbhM44jabeka5g=; b=1DT8SawhP734exUuEaxNd4Iztw
+	l7tRdcYL7oei/3tnIKapYPZeB3PgXr2h3Q2ogAEZqLeUwaBrhVA1cf969+DLzHLW
+	XMFloDe5c5Q7xRHOKVDCVKLrOytoNQ7pSfkyl7zcmimiUVL/QSml5XgOF483BPcZ
+	FHjMl3EcmQTMvbNOcQ6pa4soBVhUD+8FUqpnZwu1Rs+O+MWtxE08zrL9aQOMvc0S
+	hBFZSI40SXPJBZUz/sITA6awNXw6tczr95RVXzL/2l+XSq2sYsXdPkGnJ0wrKuSR
+	cZ5oeVNS9cU3dJKWLQnGXCwvKAm8ozVlGPaSzjmkM6dtT2+z2F75wWn0p0Tg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707846178; x=1707932578; bh=85jyEdoLBZfXHvD7lJWU0c6Qkt7S
+	0BbhM44jabeka5g=; b=f5dtiXPx8oJUvW3VDum6lAzKvVcspaykwVyntLxzRzoM
+	9/xdPSWKYbvWsXeI6pWPmCPze/1fF90NwxYby5u8Y9fqcUliQTqB/aLpf6SN4jxL
+	oehyx6Ly+pdpZCIALTHejc2h+JevxA++ucei2g72nReKLmntQbedmlDMHvcmMqKz
+	b8Cw81HRw3Giya3m4M/jvpeRvhOI+im/5bvzCX12N9+lC4EjCLk0jslYRwycfxIB
+	VDeHtV4gt8UDnA9GwcvyPjHjqztbx4SEZc+BQ6R7GKS9nwywLSxA9UNhIguYejFd
+	blUjL/OiEqTCvIBlL2JM/UUVkl5YVOCefjykMgOz3g==
+X-ME-Sender: <xms:IqrLZWs1Tlzmx8JAkpukbu9SnBpm1wYLJ8MamB_MzQ_9WYqT_E3cfw>
+    <xme:IqrLZbf85OHlFTQkqq2txNH6s_ZhJteP0btHR5dEGZFoVKbhM_fIrG-hXEUh7p7k7
+    GL_vZQBP6jOCGlQFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehgddutdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufht
+    vghfrghnucfqkdftvggrrhdfuceoshhorhgvrghrsehfrghsthhmrghilhdrtghomheqne
+    cuggftrfgrthhtvghrnhepjeeuheegtdeuteeghfehjeejiefghfeifeejheduvdeugedt
+    hfehvefggefgkedtnecuffhomhgrihhnpehinhhfrhgruggvrggurdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhorhgvrghrsehf
+    rghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:IqrLZRxcoIv3FDqvRGrb_EmcIcYZs8hw83EMEZNehUXfnDv4YDKz4w>
+    <xmx:IqrLZRPMu_zW81eXT-y-EzxebeF31n-Rv_wHQlMilGteCZ-V_g8Pvg>
+    <xmx:IqrLZW-6Fi33AWaN5WV-i1iimn3PzkwP-lT6QevwnF_M1Jt5_TeJnQ>
+    <xmx:IqrLZdnwgLsoF7XZMqKgPr1k0iQvlB-yO7fECnRvHkxKAEK293b1hA>
+Feedback-ID: i84414492:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 12D551700093; Tue, 13 Feb 2024 12:42:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <31024f04-e3e0-4bf9-beca-ebcd4f6fe51b@app.fastmail.com>
+In-Reply-To: <20240213-limping-ether-adbdc205ebc6@spud>
+References: <20240213033744.4069020-1-samuel.holland@sifive.com>
+ <20240213033744.4069020-3-samuel.holland@sifive.com>
+ <20240213-limping-ether-adbdc205ebc6@spud>
+Date: Tue, 13 Feb 2024 12:42:37 -0500
+From: "Stefan O'Rear" <sorear@fastmail.com>
+To: "Conor Dooley" <conor@kernel.org>,
+ "Samuel Holland" <samuel.holland@sifive.com>
+Cc: "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Andrew Jones" <ajones@ventanamicro.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified privileged ISA
+ versions
+Content-Type: text/plain
 
-From: Daeho Jeong <daehojeong@google.com>
+On Tue, Feb 13, 2024, at 12:03 PM, Conor Dooley wrote:
+> On Mon, Feb 12, 2024 at 07:37:33PM -0800, Samuel Holland wrote:
+>> The baseline for the RISC-V privileged ISA is version 1.10. Using
+>> features from newer versions of the privileged ISA requires the
+>> supported version to be reported by platform firmware, either in the ISA
+>> string (where the binding already accepts version numbers) or in the
+>> riscv,isa-extensions property. So far two newer versions are ratified.
+>> 
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>> 
+>> Changes in v2:
+>>  - New patch for v2
+>> 
+>>  .../devicetree/bindings/riscv/extensions.yaml | 20 +++++++++++++++++++
+>>  1 file changed, 20 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> index 63d81dc895e5..7faf22df01af 100644
+>> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> @@ -121,6 +121,16 @@ properties:
+>>              version of the privileged ISA specification.
+>>  
+>>          # multi-letter extensions, sorted alphanumerically
+>
+>> +        - const: sm1p11
+>
+> Why are we beholden to this "1p11" format of RVI's? We have free choice
+> of characters here, what's stopping us using "machine-v1.11", for
+> example?
+>
+> Thanks,
+> Conor.
 
-Support file pinning with conventional storage area for zoned devices
+I'd prefer to use names that are at least somewhat recognizable, e.g. in
+the profiles spec, rather than making up something from whole cloth.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
-v3: check the hole when migrating blocks for swap.
-    do not use the remainder of cold pin section.
-v2: flush previous dirty pages before swapon.
-    do not re-check for the last extent of swap area.
-    merge this patch with swap file pinning support patch.
----
- fs/f2fs/data.c    | 58 ++++++++++++++++++++++++++-------------
- fs/f2fs/f2fs.h    | 17 +++++++++++-
- fs/f2fs/file.c    | 24 ++++++++++++-----
- fs/f2fs/gc.c      | 14 +++++++---
- fs/f2fs/segment.c | 69 +++++++++++++++++++++++++++++++++++++++++------
- fs/f2fs/segment.h | 10 +++++++
- 6 files changed, 154 insertions(+), 38 deletions(-)
+-s
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 828c797cd47c..0c9aa3082fcf 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -3839,25 +3839,34 @@ static int f2fs_migrate_blocks(struct inode *inode, block_t start_blk,
- 	unsigned int blkofs;
- 	unsigned int blk_per_sec = BLKS_PER_SEC(sbi);
- 	unsigned int secidx = start_blk / blk_per_sec;
--	unsigned int end_sec = secidx + blkcnt / blk_per_sec;
-+	unsigned int end_sec;
- 	int ret = 0;
- 
-+	if (!blkcnt)
-+		return 0;
-+	end_sec = secidx + (blkcnt - 1) / blk_per_sec;
-+
- 	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 	filemap_invalidate_lock(inode->i_mapping);
- 
- 	set_inode_flag(inode, FI_ALIGNED_WRITE);
- 	set_inode_flag(inode, FI_OPU_WRITE);
- 
--	for (; secidx < end_sec; secidx++) {
-+	for (; secidx <= end_sec; secidx++) {
-+		unsigned int blkofs_end = secidx == end_sec ?
-+			(blkcnt - 1) % blk_per_sec : blk_per_sec - 1;
-+
- 		f2fs_down_write(&sbi->pin_sem);
- 
--		f2fs_lock_op(sbi);
--		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
--		f2fs_unlock_op(sbi);
-+		ret = f2fs_allocate_pinning_section(sbi);
-+		if (ret) {
-+			f2fs_up_write(&sbi->pin_sem);
-+			break;
-+		}
- 
- 		set_inode_flag(inode, FI_SKIP_WRITES);
- 
--		for (blkofs = 0; blkofs < blk_per_sec; blkofs++) {
-+		for (blkofs = 0; blkofs <= blkofs_end; blkofs++) {
- 			struct page *page;
- 			unsigned int blkidx = secidx * blk_per_sec + blkofs;
- 
-@@ -3946,27 +3955,34 @@ static int check_swap_activate(struct swap_info_struct *sis,
- 		nr_pblocks = map.m_len;
- 
- 		if ((pblock - SM_I(sbi)->main_blkaddr) & sec_blks_mask ||
--				nr_pblocks & sec_blks_mask) {
-+				nr_pblocks & sec_blks_mask ||
-+				!f2fs_valid_pinned_area(sbi, pblock)) {
-+			bool last_extent = false;
-+
- 			not_aligned++;
- 
- 			nr_pblocks = roundup(nr_pblocks, blks_per_sec);
- 			if (cur_lblock + nr_pblocks > sis->max)
- 				nr_pblocks -= blks_per_sec;
- 
-+			/* this extent is last one */
- 			if (!nr_pblocks) {
--				/* this extent is last one */
--				nr_pblocks = map.m_len;
--				f2fs_warn(sbi, "Swapfile: last extent is not aligned to section");
--				goto next;
-+				nr_pblocks = last_lblock - cur_lblock;
-+				last_extent = true;
- 			}
- 
- 			ret = f2fs_migrate_blocks(inode, cur_lblock,
- 							nr_pblocks);
--			if (ret)
-+			if (ret) {
-+				if (ret == -ENOENT)
-+					ret = -EINVAL;
- 				goto out;
--			goto retry;
-+			}
-+
-+			if (!last_extent)
-+				goto retry;
- 		}
--next:
-+
- 		if (cur_lblock + nr_pblocks >= sis->max)
- 			nr_pblocks = sis->max - cur_lblock;
- 
-@@ -4004,17 +4020,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 				sector_t *span)
- {
- 	struct inode *inode = file_inode(file);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	int ret;
- 
- 	if (!S_ISREG(inode->i_mode))
- 		return -EINVAL;
- 
--	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
-+	if (f2fs_readonly(sbi->sb))
- 		return -EROFS;
- 
--	if (f2fs_lfs_mode(F2FS_I_SB(inode))) {
--		f2fs_err(F2FS_I_SB(inode),
--			"Swapfile not supported in LFS mode");
-+	if (f2fs_lfs_mode(sbi) && !f2fs_sb_has_blkzoned(sbi)) {
-+		f2fs_err(sbi, "Swapfile not supported in LFS mode");
- 		return -EINVAL;
- 	}
- 
-@@ -4027,13 +4043,17 @@ static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 
- 	f2fs_precache_extents(inode);
- 
-+	ret = filemap_fdatawrite(inode->i_mapping);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = check_swap_activate(sis, file, span);
- 	if (ret < 0)
- 		return ret;
- 
- 	stat_inc_swapfile_inode(inode);
- 	set_inode_flag(inode, FI_PIN_FILE);
--	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-+	f2fs_update_time(sbi, REQ_TIME);
- 	return ret;
- }
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 40eb590ed646..351133a11518 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3696,7 +3696,8 @@ void f2fs_get_new_segment(struct f2fs_sb_info *sbi,
- 			unsigned int *newseg, bool new_sec, int dir);
- void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 					unsigned int start, unsigned int end);
--void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
-+int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
-+int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
- void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi);
- int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range);
- bool f2fs_exist_trim_candidates(struct f2fs_sb_info *sbi,
-@@ -3870,6 +3871,9 @@ void f2fs_stop_gc_thread(struct f2fs_sb_info *sbi);
- block_t f2fs_start_bidx_of_node(unsigned int node_ofs, struct inode *inode);
- int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control);
- void f2fs_build_gc_manager(struct f2fs_sb_info *sbi);
-+int f2fs_gc_range(struct f2fs_sb_info *sbi,
-+		unsigned int start_seg, unsigned int end_seg,
-+		bool dry_run, unsigned int dry_run_sections);
- int f2fs_resize_fs(struct file *filp, __u64 block_count);
- int __init f2fs_create_garbage_collection_cache(void);
- void f2fs_destroy_garbage_collection_cache(void);
-@@ -4524,6 +4528,17 @@ static inline bool f2fs_lfs_mode(struct f2fs_sb_info *sbi)
- 	return F2FS_OPTION(sbi).fs_mode == FS_MODE_LFS;
- }
- 
-+static inline bool f2fs_valid_pinned_area(struct f2fs_sb_info *sbi,
-+					  block_t blkaddr)
-+{
-+	if (f2fs_sb_has_blkzoned(sbi)) {
-+		int devi = f2fs_target_device_index(sbi, blkaddr);
-+
-+		return !bdev_is_zoned(FDEV(devi).bdev);
-+	}
-+	return true;
-+}
-+
- static inline bool f2fs_low_mem_mode(struct f2fs_sb_info *sbi)
- {
- 	return F2FS_OPTION(sbi).memory_mode == MEMORY_MODE_LOW;
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 2c13b340c8a0..21c3aa93a8db 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1733,9 +1733,11 @@ static int f2fs_expand_inode_data(struct inode *inode, loff_t offset,
- 
- 		f2fs_down_write(&sbi->pin_sem);
- 
--		f2fs_lock_op(sbi);
--		f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
--		f2fs_unlock_op(sbi);
-+		err = f2fs_allocate_pinning_section(sbi);
-+		if (err) {
-+			f2fs_up_write(&sbi->pin_sem);
-+			goto out_err;
-+		}
- 
- 		map.m_seg_type = CURSEG_COLD_DATA_PINNED;
- 		err = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_PRE_DIO);
-@@ -3185,6 +3187,7 @@ int f2fs_pin_file_control(struct inode *inode, bool inc)
- static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	__u32 pin;
- 	int ret = 0;
- 
-@@ -3194,7 +3197,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
- 	if (!S_ISREG(inode->i_mode))
- 		return -EINVAL;
- 
--	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
-+	if (f2fs_readonly(sbi->sb))
- 		return -EROFS;
- 
- 	ret = mnt_want_write_file(filp);
-@@ -3207,9 +3210,18 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
- 		clear_inode_flag(inode, FI_PIN_FILE);
- 		f2fs_i_gc_failures_write(inode, 0);
- 		goto done;
-+	} else if (f2fs_is_pinned_file(inode)) {
-+		goto done;
- 	}
- 
--	if (f2fs_should_update_outplace(inode, NULL)) {
-+	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
-+		ret = -EFBIG;
-+		goto out;
-+	}
-+
-+	/* Let's allow file pinning on zoned device. */
-+	if (!f2fs_sb_has_blkzoned(sbi) &&
-+	    f2fs_should_update_outplace(inode, NULL)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -3231,7 +3243,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
- 	set_inode_flag(inode, FI_PIN_FILE);
- 	ret = F2FS_I(inode)->i_gc_failures[GC_FAILURE_PIN];
- done:
--	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-+	f2fs_update_time(sbi, REQ_TIME);
- out:
- 	inode_unlock(inode);
- 	mnt_drop_write_file(filp);
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index a089a938355b..3ff126316d42 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -1961,10 +1961,12 @@ void f2fs_build_gc_manager(struct f2fs_sb_info *sbi)
- 	init_atgc_management(sbi);
- }
- 
--static int f2fs_gc_range(struct f2fs_sb_info *sbi,
--		unsigned int start_seg, unsigned int end_seg, bool dry_run)
-+int f2fs_gc_range(struct f2fs_sb_info *sbi,
-+		unsigned int start_seg, unsigned int end_seg,
-+		bool dry_run, unsigned int dry_run_sections)
- {
- 	unsigned int segno;
-+	unsigned int gc_secs = dry_run_sections;
- 
- 	for (segno = start_seg; segno <= end_seg; segno += SEGS_PER_SEC(sbi)) {
- 		struct gc_inode_list gc_list = {
-@@ -1972,11 +1974,15 @@ static int f2fs_gc_range(struct f2fs_sb_info *sbi,
- 			.iroot = RADIX_TREE_INIT(gc_list.iroot, GFP_NOFS),
- 		};
- 
--		do_garbage_collect(sbi, segno, &gc_list, FG_GC, true);
-+		do_garbage_collect(sbi, segno, &gc_list, FG_GC,
-+						dry_run_sections == 0);
- 		put_gc_inode(&gc_list);
- 
- 		if (!dry_run && get_valid_blocks(sbi, segno, true))
- 			return -EAGAIN;
-+		if (dry_run && dry_run_sections &&
-+		    !get_valid_blocks(sbi, segno, true) && --gc_secs == 0)
-+			break;
- 
- 		if (fatal_signal_pending(current))
- 			return -ERESTARTSYS;
-@@ -2014,7 +2020,7 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
- 		f2fs_allocate_segment_for_resize(sbi, type, start, end);
- 
- 	/* do GC to move out valid blocks in the range */
--	err = f2fs_gc_range(sbi, start, end, dry_run);
-+	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
- 	if (err || dry_run)
- 		goto out;
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 4e985750c938..0b72c8536ccf 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2632,7 +2632,7 @@ static int is_next_segment_free(struct f2fs_sb_info *sbi,
-  * This function should be returned with success, otherwise BUG
-  */
- static void get_new_segment(struct f2fs_sb_info *sbi,
--			unsigned int *newseg, bool new_sec)
-+			unsigned int *newseg, bool new_sec, bool pinning)
- {
- 	struct free_segmap_info *free_i = FREE_I(sbi);
- 	unsigned int segno, secno, zoneno;
-@@ -2650,6 +2650,16 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
- 		if (segno < GET_SEG_FROM_SEC(sbi, hint + 1))
- 			goto got_it;
- 	}
-+
-+	/*
-+	 * If we format f2fs on zoned storage, let's try to get pinned sections
-+	 * from beginning of the storage, which should be a conventional one.
-+	 */
-+	if (f2fs_sb_has_blkzoned(sbi)) {
-+		segno = pinning ? 0 : max(first_zoned_segno(sbi), *newseg);
-+		hint = GET_SEC_FROM_SEG(sbi, segno);
-+	}
-+
- find_other_zone:
- 	secno = find_next_zero_bit(free_i->free_secmap, MAIN_SECS(sbi), hint);
- 	if (secno >= MAIN_SECS(sbi)) {
-@@ -2749,21 +2759,30 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
-  * Allocate a current working segment.
-  * This function always allocates a free segment in LFS manner.
-  */
--static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
-+static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
- 	unsigned int segno = curseg->segno;
-+	bool pinning = type == CURSEG_COLD_DATA_PINNED;
- 
- 	if (curseg->inited)
- 		write_sum_page(sbi, curseg->sum_blk, GET_SUM_BLOCK(sbi, segno));
-+
- 	segno = __get_next_segno(sbi, type);
--	get_new_segment(sbi, &segno, new_sec);
-+	get_new_segment(sbi, &segno, new_sec, pinning);
-+	if (new_sec && pinning &&
-+	    !f2fs_valid_pinned_area(sbi, START_BLOCK(sbi, segno))) {
-+		__set_free(sbi, segno);
-+		return -EAGAIN;
-+	}
-+
- 	curseg->next_segno = segno;
- 	reset_curseg(sbi, type, 1);
- 	curseg->alloc_type = LFS;
- 	if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_BLK)
- 		curseg->fragment_remained_chunk =
- 				get_random_u32_inclusive(1, sbi->max_fragment_chunk);
-+	return 0;
- }
- 
- static int __next_free_blkoff(struct f2fs_sb_info *sbi,
-@@ -3036,7 +3055,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
- }
- 
--static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-+static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 						bool new_sec, bool force)
- {
- 	struct curseg_info *curseg = CURSEG_I(sbi, type);
-@@ -3046,21 +3065,49 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 	    !curseg->next_blkoff &&
- 	    !get_valid_blocks(sbi, curseg->segno, new_sec) &&
- 	    !get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
--		return;
-+		return 0;
- 
- 	old_segno = curseg->segno;
--	new_curseg(sbi, type, true);
-+	if (new_curseg(sbi, type, true))
-+		return -EAGAIN;
- 	stat_inc_seg_type(sbi, curseg);
- 	locate_dirty_segment(sbi, old_segno);
-+	return 0;
- }
- 
--void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
-+int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force)
- {
-+	int ret;
-+
- 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
- 	down_write(&SIT_I(sbi)->sentry_lock);
--	__allocate_new_segment(sbi, type, true, force);
-+	ret = __allocate_new_segment(sbi, type, true, force);
- 	up_write(&SIT_I(sbi)->sentry_lock);
- 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-+
-+	return ret;
-+}
-+
-+int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi)
-+{
-+	int err;
-+	bool gc_required = true;
-+
-+retry:
-+	f2fs_lock_op(sbi);
-+	err = f2fs_allocate_new_section(sbi, CURSEG_COLD_DATA_PINNED, false);
-+	f2fs_unlock_op(sbi);
-+
-+	if (f2fs_sb_has_blkzoned(sbi) && err && gc_required) {
-+		f2fs_down_write(&sbi->gc_lock);
-+		f2fs_gc_range(sbi, 0, GET_SEGNO(sbi, FDEV(0).end_blk), true, 1);
-+		f2fs_up_write(&sbi->gc_lock);
-+
-+		gc_required = false;
-+		goto retry;
-+	}
-+
-+	return err;
- }
- 
- void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
-@@ -3426,6 +3473,10 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 	 * new segment.
- 	 */
- 	if (segment_full) {
-+		if (type == CURSEG_COLD_DATA_PINNED &&
-+		    !((curseg->segno + 1) % sbi->segs_per_sec))
-+			goto skip_new_segment;
-+
- 		if (from_gc) {
- 			get_atssr_segment(sbi, type, se->type,
- 						AT_SSR, se->mtime);
-@@ -3437,6 +3488,8 @@ void f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
- 			stat_inc_seg_type(sbi, curseg);
- 		}
- 	}
-+
-+skip_new_segment:
- 	/*
- 	 * segment dirty status should be updated after segment allocation,
- 	 * so we just need to update status only one time after previous
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 60d93a16f2ac..953af072915f 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -942,3 +942,13 @@ static inline void wake_up_discard_thread(struct f2fs_sb_info *sbi, bool force)
- 	dcc->discard_wake = true;
- 	wake_up_interruptible_all(&dcc->discard_wait_queue);
- }
-+
-+static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
-+{
-+	int devi;
-+
-+	for (devi = 0; devi < sbi->s_ndevs; devi++)
-+		if (bdev_is_zoned(FDEV(devi).bdev))
-+			return GET_SEGNO(sbi, FDEV(devi).start_blk);
-+	return 0;
-+}
--- 
-2.43.0.687.g38aa6559b0-goog
-
+>
+>> +          description:
+>> +            The standard Machine ISA v1.11, as ratified in the 20190608
+>> +            version of the privileged ISA specification.
+>> +
+>> +        - const: sm1p12
+>> +          description:
+>> +            The standard Machine ISA v1.12, as ratified in the 20211203
+>> +            version of the privileged ISA specification.
+>> +
+>>          - const: smaia
+>>            description: |
+>>              The standard Smaia supervisor-level extension for the advanced
+>> @@ -134,6 +144,16 @@ properties:
+>>              added by other RISC-V extensions in H/S/VS/U/VU modes and as
+>>              ratified at commit a28bfae (Ratified (#7)) of riscv-state-enable.
+>>  
+>> +        - const: ss1p11
+>> +          description:
+>> +            The standard Supervisor ISA v1.11, as ratified in the 20190608
+>> +            version of the privileged ISA specification.
+>> +
+>> +        - const: ss1p12
+>> +          description:
+>> +            The standard Supervisor ISA v1.12, as ratified in the 20211203
+>> +            version of the privileged ISA specification.
+>> +
+>>          - const: ssaia
+>>            description: |
+>>              The standard Ssaia supervisor-level extension for the advanced
+>> -- 
+>> 2.43.0
+>> 
+>> 
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> Attachments:
+> * signature.asc
 
