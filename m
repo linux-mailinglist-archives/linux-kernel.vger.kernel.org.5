@@ -1,299 +1,299 @@
-Return-Path: <linux-kernel+bounces-64325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09BB6853D15
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:25:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32B5F853C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4FEB28DB29
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:25:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE5DB28594D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48808629F0;
-	Tue, 13 Feb 2024 21:19:24 +0000 (UTC)
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7909561672;
+	Tue, 13 Feb 2024 21:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="L/Oqi+El";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ul8JJTHa"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99008629EB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8940261665
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707859163; cv=none; b=Vk67vOiDezriZdn7ABV0NYJ7JZ0M6lcu4u2RLej4wRhm73kJkHeSSr8U/J3ZvK6okMpIaxOexBzNymjmesKs5FaZWwkjiR4qBNFTZc3nJW4n3InbrMHGB4I+H+CFt20+hELgyNQ9IpHDHVoenZJO74NEBqEaDRA/NmeJ6tJ3UpA=
+	t=1707858243; cv=none; b=QC+h7USnT4VAw05Py6bxj3S3K24NIZeHWczW+FJnKC+s4QPSsuylKCMqWFJTroxA/Ti8thTiGFiUBQbqD0h5Fs5pv/Ewo4dD8jGHT4Zyl5hXrzFku4Jok6vDBelSzlsllFQpBOFtKYjiZ7fHUDEnDt1IE7VKBfYzQ5EpOiLu/MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707859163; c=relaxed/simple;
-	bh=5Nd1k/lI6t5KsdtReJT+oMYTJ+uRP6DM5fZF427GcXU=;
-	h=From:Date:Subject:To:Cc:In-Reply-To:Message-Id; b=R5XU36jnxXqMZ9hNYbo9QZliBVMq3TZ7QhoBCTgBWfGlW1pqbZTpQaMxzuDwcw41/JcFec6PuyXXKn6p6UUHMuHG0XKVZ5FRv+Jg2lzILGFKcyVZO5ZnWztQqa7kF08EXURREp2fQuveQFMwA03xDerX4vfmM/kyhMq5NfWEdSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=debian.lenovo.com; spf=pass smtp.mailfrom=motorola.com; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=debian.lenovo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355090.ppops.net [127.0.0.1])
-	by m0355090.ppops.net (8.17.1.24/8.17.1.24) with ESMTP id 41DIquMJ018802;
-	Tue, 13 Feb 2024 21:18:27 GMT
-Received: from va32lpfpp03.lenovo.com ([104.232.228.23])
-	by m0355090.ppops.net (PPS) with ESMTPS id 3w88298ydq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 21:18:27 +0000 (GMT)
-Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp03.lenovo.com (Postfix) with ESMTPS id 4TZDhL6Pr5z51Q8g;
-	Tue, 13 Feb 2024 21:18:26 +0000 (UTC)
-Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4TZDhL5C5Hz3p8NW;
-	Tue, 13 Feb 2024 21:18:26 +0000 (UTC)
-X-Mailbox-Line: From 4f16ba94cfe7625362d1df20642fee9b9ecec226 Mon Sep 17 00:00:00 2001
-From: Maxwell Bland <mbland@debian.lenovo.com>
-Date: Tue, 13 Feb 2024 14:18:15 -0600
-Subject: Re: [PATCH] arm64: allow post-init vmalloc PXNTable
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: "linux-arm-kernel@lists.infradead.org"
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "dennis@kernel.org" <dennis@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>, "cl@linux.com" <cl@linux.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "shikemeng@huaweicloud.com" <shikemeng@huaweicloud.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "pcc@google.com" <pcc@google.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gshan@redhat.com" <gshan@redhat.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        Andrew Wheeler <awheeler@motorola.com>
-In-Reply-To: <2024021321-scooter-citrus-233c@gregkh>
-Message-Id: <4TZDhL5C5Hz3p8NW@ilclmmrp02.lenovo.com>
-X-Proofpoint-ORIG-GUID: fM-dRVtHmGGBuWF6Pm8rfHSnF0drw95I
-X-Proofpoint-GUID: fM-dRVtHmGGBuWF6Pm8rfHSnF0drw95I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_13,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 suspectscore=0
- spamscore=0 clxscore=1034 priorityscore=1501 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402130167
+	s=arc-20240116; t=1707858243; c=relaxed/simple;
+	bh=LEGLmeGR7BceG3CySIyrD3+0iP6HzJS90b7Iybly928=;
+	h=Message-ID:From:To:Cc:Subject:Date; b=IiC7Z1ZE9Wx6T7219VhxYc/0KXoS8mKyck0pQsuVXrr0YddUI3GgAVj0uAdAqnI3KzDMQxUQtZA9sry+ChVMbWEDsuAfZFZ1yfmEVcDTraWmVjkRF5xXPRWLs2MY3jXjoltQNdsHp5r+37DjW9YqzggMKqxyVj8N9v0A+hRxoaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=L/Oqi+El; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ul8JJTHa; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Message-ID: <20240212153109.330805450@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707858239;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=7YW/utTa8zFtLwTXGKG/1HXOz7BHo3EGslRnmCR1PGE=;
+	b=L/Oqi+ElwLgHE8OgVkIyIG1Qyr4HjcRkFd3pYeRkFYD8RnNPK7S/t8xuqMzZ0SPZiKfopk
+	pdQCTndbbjI+asSs8ZrkpCrrnx2g+9KjqJtfwN1Et5rfb40RfDdtRzVfVWeRFkSxXOdZuv
+	FSERjzplSOXftZTkjDirIu/mH9ysEknlIGsGwhUxCjXgpA6n+jSv5vz5hirwho8TohO6gy
+	wOWF6Uz5z5NQ4nIadgT6lrh6C0Nfz+i6LhnDiWMpGmjAXdUKTrTSg6XNixX7Mvg92wJrWK
+	I1CABWHGWCMrsX1tY7570Dgc4OxSNDVs0Y1YVVc6IoJ08qea62F2twcdmeeqvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707858239;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=7YW/utTa8zFtLwTXGKG/1HXOz7BHo3EGslRnmCR1PGE=;
+	b=Ul8JJTHaDK1Zu0nBVzkmQXpatlAV2ISQ79kDkShNqcRrcFunBZBCtx2wN+81HNhFNtSOkp
+	UwGo8PWKcB+BXBCg==
+From: Thomas Gleixner <tglx@linutronix.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org,
+ Tom Lendacky <thomas.lendacky@amd.com>,
+ Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>,
+ Huang Rui <ray.huang@amd.com>,
+ Juergen Gross <jgross@suse.com>,
+ Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+ Sohil Mehta <sohil.mehta@intel.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ Kan Liang <kan.liang@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Feng Tang <feng.tang@intel.com>,
+ Andy Shevchenko <andy@infradead.org>,
+ Michael Kelley <mhklinux@outlook.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V6 00/19] x86/cpu: Rework topology evaluation
+Date: Tue, 13 Feb 2024 22:03:58 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Ensures that PXNTable can be set on all table descriptors allocated
-through vmalloc. Normally, PXNTable is set only during initial memory
-mapping and does not apply thereafter, making it possible for attackers
-to target post-init allocated writable PTEs as a staging region for
-injection of their code into the kernel. Presently it is not possible to
-efficiently prevent these attacks as VMALLOC_END overlaps with _text,
-e.g.:
+This is a follow up on V5 of this work:
 
-VMALLOC_START ffff800080000000 VMALLOC_END fffffbfff0000000
-_text         ffffb6c0c1400000 _end        ffffb6c0c3e40000
+  https://lore.kernel.org/all/20240117115752.863482697@linutronix.de
 
-Setting VMALLOC_END to _text in init would resolve this issue with the
-caveat of a sizeable reduction in the size of available vmalloc memory
-(~70,000 GB) due to requirements on aslr randomness. However, we need to
-support the enforcement of PXNTable dynamically for our static
-assignment of this flag during mm initialization to be effective.
+and contains only the not yet applied part which reworks the CPUID
+parsing. This is also preparatory work for the general overhaul of APIC ID
+enumeration and management.
 
-Because the address of _text is aslr-sensitive and this patch associates
-this value with VMALLOC_END, we remove the use of VMALLOC_END in a print
-statement in mm/percpu.c. However, only the format string is updated in
-crash_core.c, since we are dead at that point regardless. VMALLOC_END is
-updated in kernel/setup.c to associate the feature closely with aslr and
-region allocation code.
+Changes vs. V5:
 
-bpf_jit_comp.c must also be remediated to ensure that the module_alloc
-rather than vmalloc interface is used, so that regions used for BPF
-allocations are appropriately located into the _text region.
+  - Fix the AMD leaf 0x8000008 parsing
+  - Update to generated CPUID leaf structures
+  - Address review comments (coding style, comments, changelogs, boot_cpu_has())
 
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
+This applies on Linus tree and is available from git:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v6
+
+Delta patch to V5 appended.
+
+Thanks,
+
+	tglx
 ---
-
-This is an attempt to get Moto's SMTP server to send the patch without ruining
-the formatting. Based on Mark R.'s comments, though, it sounds like:
-
-1) I need to figure out a way to reduce the reduction in virtual memory.
-2) I need to actually enforce PXNTable dynamically, to make it clear this is a
-real upstream issue.
-3) I need some testing and quantification to make sure this does not ruin BPF
-and module allocations.
-
-https://lore.kernel.org/all/ZcurbvkUR-BoGTxu@FVFF77S0Q05N.cambridge.arm.com/
-
-Regardless, here's the original patch on the current Github linux main.
-
- arch/arm64/Kconfig                   | 13 +++++++++++++
- arch/arm64/include/asm/pgtable.h     |  6 ++++++
- arch/arm64/include/asm/vmalloc-pxn.h |  9 +++++++++
- arch/arm64/kernel/crash_core.c       |  2 +-
- arch/arm64/kernel/setup.c            |  9 +++++++++
- arch/arm64/net/bpf_jit_comp.c        |  5 +++--
- mm/percpu.c                          |  4 ++--
- 7 files changed, 43 insertions(+), 5 deletions(-)
- create mode 100644 arch/arm64/include/asm/vmalloc-pxn.h
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index aa7c1d435139..5f1e75d70e14 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -2165,6 +2165,19 @@ config ARM64_DEBUG_PRIORITY_MASKING
-          If unsure, say N
- endif # ARM64_PSEUDO_NMI
-
-+config ARM64_VMALLOC_PXN
-+       bool "Ensures table descriptors pointing to kernel data are PXNTable"
-+       help
-+         Reduces the range of the kernel data vmalloc region to remove any
-+         overlap with kernel code, making it possible to enable the PXNTable
-+         bit on table descriptors allocated after the kernel's initial memory
-+         mapping.
-+
-+         This increases the performance of security monitors which protect
-+         against malicious updates to page table entries.
-+
-+         If unsure, say N.
-+
- config RELOCATABLE
-        bool "Build a relocatable kernel image" if EXPERT
-        select ARCH_HAS_RELR
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 79ce70fbb751..49f64ea77c81 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -22,7 +22,9 @@
-  *     and fixed mappings
-  */
- #define VMALLOC_START          (MODULES_END)
-+#ifndef CONFIG_ARM64_VMALLOC_PXN
- #define VMALLOC_END            (VMEMMAP_START - SZ_256M)
-+#endif
-
- #define vmemmap                        ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
-
-@@ -35,6 +37,10 @@
- #include <linux/sched.h>
- #include <linux/page_table_check.h>
-
-+#ifdef CONFIG_ARM64_VMALLOC_PXN
-+#include <asm/vmalloc-pxn.h>
-+#endif
-+
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-
-diff --git a/arch/arm64/include/asm/vmalloc-pxn.h b/arch/arm64/include/asm/vmalloc-pxn.h
-new file mode 100644
-index 000000000000..d054427e2804
---- /dev/null
-+++ b/arch/arm64/include/asm/vmalloc-pxn.h
-@@ -0,0 +1,9 @@
-+#ifndef _ASM_ARM64_VMALLOC_PXN_H
-+#define _ASM_ARM64_VMALLOC_PXN_H
-+
-+#ifdef CONFIG_ARM64_VMALLOC_PXN
-+extern u64 __vmalloc_end __ro_after_init;
-+#define VMALLOC_END (__vmalloc_end)
-+#endif /* CONFIG_ARM64_VMALLOC_PXN */
-+
-+#endif /* _ASM_ARM64_VMALLOC_PXN_H */
-diff --git a/arch/arm64/kernel/crash_core.c b/arch/arm64/kernel/crash_core.c
-index 66cde752cd74..39dccae11a40 100644
---- a/arch/arm64/kernel/crash_core.c
-+++ b/arch/arm64/kernel/crash_core.c
-@@ -24,7 +24,7 @@ void arch_crash_save_vmcoreinfo(void)
-        vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
-        vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
-        vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
--       vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
-+       vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%llx\n", VMALLOC_END);
-        vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
-        vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
-        vmcoreinfo_append_str("NUMBER(kimage_voffset)=0x%llx\n",
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 42c690bb2d60..b7ccee672743 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -54,6 +54,11 @@
- #include <asm/xen/hypervisor.h>
- #include <asm/mmu_context.h>
-
-+#ifdef CONFIG_ARM64_VMALLOC_PXN
-+u64 __vmalloc_end __ro_after_init = VMEMMAP_START - SZ_256M;
-+EXPORT_SYMBOL(__vmalloc_end);
-+#endif /* CONFIG_ARM64_VMALLOC_PXN */
-+
- static int num_standard_resources;
- static struct resource *standard_resources;
-
-@@ -298,6 +303,10 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
-
-        kaslr_init();
-
-+#ifdef CONFIG_ARM64_VMALLOC_PXN
-+       __vmalloc_end = ALIGN_DOWN((u64) _text, PMD_SIZE);
-+#endif
-+
-        /*
-         * If know now we are going to need KPTI then use non-global
-         * mappings from the start, avoiding the cost of rewriting
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 8955da5c47cf..1fe0d637792c 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -11,6 +11,7 @@
- #include <linux/bpf.h>
- #include <linux/filter.h>
- #include <linux/memory.h>
-+#include <linux/moduleloader.h>
- #include <linux/printk.h>
- #include <linux/slab.h>
-
-@@ -1690,12 +1691,12 @@ u64 bpf_jit_alloc_exec_limit(void)
- void *bpf_jit_alloc_exec(unsigned long size)
- {
-        /* Memory is intended to be executable, reset the pointer tag. */
--       return kasan_reset_tag(vmalloc(size));
-+       return kasan_reset_tag(module_alloc(size));
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index a45346ad552b..de1648ee2b9e 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -705,12 +705,10 @@ static inline u32 per_cpu_l2c_id(unsigned int cpu)
  }
-
- void bpf_jit_free_exec(void *addr)
+ 
+ #ifdef CONFIG_CPU_SUP_AMD
+-extern u32 amd_get_nodes_per_socket(void);
+ extern u32 amd_get_highest_perf(void);
+ extern void amd_clear_divider(void);
+ extern void amd_check_microcode(void);
+ #else
+-static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
+ static inline u32 amd_get_highest_perf(void)		{ return 0; }
+ static inline void amd_clear_divider(void)		{ }
+ static inline void amd_check_microcode(void)		{ }
+diff --git a/arch/x86/kernel/cpu/topology.h b/arch/x86/kernel/cpu/topology.h
+index 0d1ebb3a56e7..2a3c838b6044 100644
+--- a/arch/x86/kernel/cpu/topology.h
++++ b/arch/x86/kernel/cpu/topology.h
+@@ -7,10 +7,10 @@ struct topo_scan {
+ 	unsigned int		dom_shifts[TOPO_MAX_DOMAIN];
+ 	unsigned int		dom_ncpus[TOPO_MAX_DOMAIN];
+ 
+-	// Legacy CPUID[1]:EBX[23:16] number of logical processors
++	/* Legacy CPUID[1]:EBX[23:16] number of logical processors */
+ 	unsigned int		ebx1_nproc_shift;
+ 
+-	// AMD specific node ID which cannot be mapped into APIC space.
++	/* AMD specific node ID which cannot be mapped into APIC space. */
+ 	u16			amd_nodes_per_pkg;
+ 	u16			amd_node_id;
+ };
+diff --git a/arch/x86/kernel/cpu/topology_amd.c b/arch/x86/kernel/cpu/topology_amd.c
+index 9e149673ea82..1a8b3ad493af 100644
+--- a/arch/x86/kernel/cpu/topology_amd.c
++++ b/arch/x86/kernel/cpu/topology_amd.c
+@@ -10,11 +10,12 @@
+ static bool parse_8000_0008(struct topo_scan *tscan)
  {
--       return vfree(addr);
-+       return module_memfree(addr);
+ 	struct {
+-		u32	ncores		:  8,
+-			__rsvd0		:  4,
+-			apicidsize	:  4,
+-			perftscsize	:  2,
+-			__rsvd1		: 14;
++		// ecx
++		u32	cpu_nthreads		:  8, // Number of physical threads - 1
++						:  4, // Reserved
++			apicid_coreid_len	:  4, // Number of thread core ID bits (shift) in APIC ID
++			perf_tsc_len		:  2, // Performance time-stamp counter size
++						: 14; // Reserved
+ 	} ecx;
+ 	unsigned int sft;
+ 
+@@ -23,12 +24,12 @@ static bool parse_8000_0008(struct topo_scan *tscan)
+ 
+ 	cpuid_leaf_reg(0x80000008, CPUID_ECX, &ecx);
+ 
+-	/* If the APIC ID size is 0, then get the shift value from ecx.ncores */
+-	sft = ecx.apicidsize;
++	/* If the thread bits are 0, then get the shift value from ecx.cpu_nthreads */
++	sft = ecx.apicid_coreid_len;
+ 	if (!sft)
+-		sft = get_count_order(ecx.ncores + 1);
++		sft = get_count_order(ecx.cpu_nthreads + 1);
+ 
+-	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.ncores + 1);
++	topology_set_dom(tscan, TOPO_SMT_DOMAIN, sft, ecx.cpu_nthreads + 1);
+ 	return true;
  }
-
- /* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 4e11fc1e6def..a902500ebfa0 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -3128,8 +3128,8 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
-
-        /* warn if maximum distance is further than 75% of vmalloc space */
-        if (max_distance > VMALLOC_TOTAL * 3 / 4) {
--               pr_warn("max_distance=0x%lx too large for vmalloc space 0x%lx\n",
--                               max_distance, VMALLOC_TOTAL);
-+               pr_warn("max_distance=0x%lx too large for vmalloc space\n",
-+                               max_distance);
- #ifdef CONFIG_NEED_PER_CPU_PAGE_FIRST_CHUNK
-                /* and fail if we have fallback */
-                rc = -EINVAL;
---
-2.39.2
+ 
+@@ -51,17 +52,17 @@ static bool parse_8000_001e(struct topo_scan *tscan, bool has_0xb)
+ {
+ 	struct {
+ 		// eax
+-		u32	x2apic_id	: 32;
++		u32	ext_apic_id		: 32; // Extended APIC ID
+ 		// ebx
+-		u32	cuid		:  8,
+-			threads_per_cu	:  8,
+-			__rsvd0		: 16;
++		u32	core_id			:  8, // Unique per-socket logical core unit ID
++			core_nthreads		:  8, // #Threads per core (zero-based)
++						: 16; // Reserved
+ 		// ecx
+-		u32	nodeid		:  8,
+-			nodes_per_pkg	:  3,
+-			__rsvd1		: 21;
++		u32	node_id			:  8, // Node (die) ID of invoking logical CPU
++			nnodes_per_socket	:  3, // #nodes in invoking logical CPU's package/socket
++						: 21; // Reserved
+ 		// edx
+-		u32	__rsvd2		: 32;
++		u32				: 32; // Reserved
+ 	} leaf;
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_TOPOEXT))
+@@ -69,27 +70,27 @@ static bool parse_8000_001e(struct topo_scan *tscan, bool has_0xb)
+ 
+ 	cpuid_leaf(0x8000001e, &leaf);
+ 
+-	tscan->c->topo.initial_apicid = leaf.x2apic_id;
++	tscan->c->topo.initial_apicid = leaf.ext_apic_id;
+ 
+ 	/*
+ 	 * If leaf 0xb is available, then SMT shift is set already. If not
+-	 * take it from ecx.threads_per_cu and use topo_update_dom() -
++	 * take it from ecx.threads_per_core and use topo_update_dom() -
+ 	 * topology_set_dom() would propagate and overwrite the already
+ 	 * propagated CORE level.
+ 	 */
+ 	if (!has_0xb) {
+-		unsigned int nthreads = leaf.threads_per_cu + 1;
++		unsigned int nthreads = leaf.core_nthreads + 1;
+ 
+ 		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(nthreads), nthreads);
+ 	}
+ 
+-	store_node(tscan, leaf.nodes_per_pkg + 1, leaf.nodeid);
++	store_node(tscan, leaf.nnodes_per_socket + 1, leaf.node_id);
+ 
+ 	if (tscan->c->x86_vendor == X86_VENDOR_AMD) {
+ 		if (tscan->c->x86 == 0x15)
+-			tscan->c->topo.cu_id = leaf.cuid;
++			tscan->c->topo.cu_id = leaf.core_id;
+ 
+-		cacheinfo_amd_init_llc_id(tscan->c, leaf.nodeid);
++		cacheinfo_amd_init_llc_id(tscan->c, leaf.node_id);
+ 	} else {
+ 		/*
+ 		 * Package ID is ApicId[6..] on certain Hygon CPUs. See
+@@ -143,7 +144,7 @@ static void parse_topology_amd(struct topo_scan *tscan)
+ 	 * try to get SMT and CORE shift from leaf 0xb first, then
+ 	 * try to get the CORE shift from leaf 0x8000_0008.
+ 	 */
+-	if (boot_cpu_has(X86_FEATURE_TOPOEXT))
++	if (cpu_feature_enabled(X86_FEATURE_TOPOEXT))
+ 		has_0xb = cpu_parse_topology_ext(tscan);
+ 
+ 	if (!has_0xb && !parse_8000_0008(tscan))
+diff --git a/arch/x86/kernel/cpu/topology_common.c b/arch/x86/kernel/cpu/topology_common.c
+index 5ff862db5a3a..afea34d59598 100644
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -26,7 +26,7 @@ void topology_set_dom(struct topo_scan *tscan, enum x86_topology_domains dom,
+ 	}
+ }
+ 
+-static unsigned int parse_num_cores(struct cpuinfo_x86 *c)
++static unsigned int __maybe_unused parse_num_cores_legacy(struct cpuinfo_x86 *c)
+ {
+ 	struct {
+ 		u32	cache_type	:  5,
+@@ -49,7 +49,7 @@ static void parse_legacy(struct topo_scan *tscan)
+ 	unsigned int cores, core_shift, smt_shift = 0;
+ 	struct cpuinfo_x86 *c = tscan->c;
+ 
+-	cores = parse_num_cores(c);
++	cores = parse_num_cores_legacy(c);
+ 	core_shift = get_count_order(cores);
+ 
+ 	if (cpu_has(c, X86_FEATURE_HT)) {
+@@ -97,7 +97,7 @@ static void parse_topology(struct topo_scan *tscan, bool early)
+ 	c->topo = topo_defaults;
+ 
+ 	if (fake_topology(tscan))
+-	    return;
++		return;
+ 
+ 	/* Preset Initial APIC ID from CPUID leaf 1 */
+ 	cpuid_leaf_reg(1, CPUID_EBX, &ebx);
+diff --git a/arch/x86/kernel/cpu/topology_ext.c b/arch/x86/kernel/cpu/topology_ext.c
+index b9b37296d9cd..e477228cd5b2 100644
+--- a/arch/x86/kernel/cpu/topology_ext.c
++++ b/arch/x86/kernel/cpu/topology_ext.c
+@@ -110,7 +110,7 @@ static bool parse_topology_leaf(struct topo_scan *tscan, u32 leaf)
+ 	if (!tscan->dom_shifts[TOPO_SMT_DOMAIN] && tscan->dom_ncpus[TOPO_SMT_DOMAIN] > 1) {
+ 		unsigned int sft = get_count_order(tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+ 
+-		pr_warn_once(FW_BUG "CPUID leaf 0x%x subleaf 0 has shift level 0 but %u CPUs\n",
++		pr_warn_once(FW_BUG "CPUID leaf 0x%x subleaf 0 has shift level 0 but %u CPUs. Fixing it up.\n",
+ 			     leaf, tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+ 		topology_update_dom(tscan, TOPO_SMT_DOMAIN, sft, tscan->dom_ncpus[TOPO_SMT_DOMAIN]);
+ 	}
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 2634f8f82867..9cdb056c37b5 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -513,7 +513,7 @@ static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	if (c->topo.pkg_id != o->topo.pkg_id || c->topo.die_id != o->topo.die_id)
+ 		return false;
+ 
+-	if (boot_cpu_has(X86_FEATURE_TOPOEXT) && topology_amd_nodes_per_pkg() > 1)
++	if (cpu_feature_enabled(X86_FEATURE_TOPOEXT) && topology_amd_nodes_per_pkg() > 1)
+ 		return c->topo.amd_node_id == o->topo.amd_node_id;
+ 
+ 	return true;
 
 
