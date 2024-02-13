@@ -1,123 +1,149 @@
-Return-Path: <linux-kernel+bounces-63946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BF4B8536A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:55:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784A08536A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EACCA287A35
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:55:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17DCD1F28368
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7015FB97;
-	Tue, 13 Feb 2024 16:55:00 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666B95F852
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82065FB97;
+	Tue, 13 Feb 2024 16:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hJ0ir3bi"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8505D5FDA8
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:55:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843299; cv=none; b=sxZcc1YncEn2HsseYBedodAOpmyl2P++9di+KqD5UxbFl3FcUecm3KEzHtRj6K4S3dymAyhj7P8u8/2ZmARdkZ+rNJLjBYRXYnVAKEicAPYxT1LH22cBBqQZla/PI2bdOU9vq0x4HA1BAyZ7YOZA795Jsa8anKr2RRzOqH9rCQY=
+	t=1707843335; cv=none; b=kD2xC/PEROen7Qd15rQ+mm0X2O20y0pJsd24veZjpVZ4n3qPNoCSFM8xhscsixqlLiTuiWR5MhFKBJ5qwZpRqRS3FkYGyNrjqzV1hjeqFPI0tnqRrlTQ/gKI005VGNHRln0R2VSwW/mY/mlDPuocuxz6P5v8WwdFce+u3YNcIjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843299; c=relaxed/simple;
-	bh=6r2sJzbh/wD5ErlkQRvpbpFzmFT6Ly0IdbfwOHZ+bNw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnsEdgLasftiXcvdn+NVkuPw5sgTQeNkKUmouN1Q92/N6U0TiaRT+UjOSvcfYmM2n9xzIMIn2GhNPv2zDbCtwxxpuyJ+aE5uFUWlSYSrkJAEtTDeUKCnPQxr3x84ZA7rlrDMLi1SJOg2INjWBrjNJFp4xCTEJwYPH4SpqhwrTX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5C0DDA7;
-	Tue, 13 Feb 2024 08:55:38 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.130])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE5853F5A1;
-	Tue, 13 Feb 2024 08:54:53 -0800 (PST)
-Date: Tue, 13 Feb 2024 16:54:51 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>, Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 23/25] arm64/mm: Implement pte_batch_hint()
-Message-ID: <Zcue2_wPJe8lx4_u@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240202080756.1453939-1-ryan.roberts@arm.com>
- <20240202080756.1453939-24-ryan.roberts@arm.com>
+	s=arc-20240116; t=1707843335; c=relaxed/simple;
+	bh=HE/20Xm9WCTyMPH/lmK4IPJtvUMDxg+CfKS4AXTMswA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X+Mw23eN1qbYRmw5eIVGQpJewv91xN4D6U5g+eOCM9aIZIYs9zzhWs7KgxFb/IFkCMDCA+GF7wm5Gk3y7T8YDG+dxcmtze6ZlmqALNq2kk2afDj4An/2sIPuEfmrCn85DX4VIYTmzlbSduBvjj37LiCdmaqlcJUA70vaWU/8rNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hJ0ir3bi; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c0490445eeso307082b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707843332; x=1708448132; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E4lPSxTY6wTzszL0a5uZSwuzQyy5laP/IX8YJFhtcMQ=;
+        b=hJ0ir3biFRyJOa95GJT1sIelu/9HHCFooTNOy0k6iF5kbqHZqgzxvM1mWiX9YN1qfQ
+         fe9vcN6aKgkVB0tRns5PXpr3Oi2zgL+exr5MlCMbT6maFXwq+AC0Tq3F0Nu+z3pz49fN
+         0Adk/QvqpX4kkw3veMoFVLJEDrDq1dFpy9ylA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707843332; x=1708448132;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E4lPSxTY6wTzszL0a5uZSwuzQyy5laP/IX8YJFhtcMQ=;
+        b=wh7l9ybbE2qF56WiD745Q0uGMbkjTL0sBsxd01TKNE3pHBc5AZtgLZuQhwIMLmO5x1
+         7Fug1UtNN18aHxEVU774ArmWlRqRHB/Arg0vLn59Bj3e9Rrd1f1Dxefzr31TcQltJTms
+         EhFAOlyZ5jJgJfzWZq8in7uQnIbgGH8Qd2Jlw6O4CctPXR3VdXkJIdT8OL1jKdDwAW/2
+         7/N1NsOjoh1YUVCc5YSNRoSexSoiH36EB3/fIFTJNuncD2/AZNnqaxe0yNgYnkLpzxHz
+         g+86JXpdd9lb3GUObDArcIf+ALhC8WdvAXu0sgdJWb7go+k6NsK5Tk8gplmsvr1+YLdT
+         Y4IQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6FOQTmZ7d9NgCg4AjTHIKqseeFjsW1+x8PBfFyaO7MflA6RhWb6dCg1nj4cjswu/zBIxF+EgC3cEHg5wLzYVNcqpc8Xze42E+Bman
+X-Gm-Message-State: AOJu0Yx/Hwam8bxIL9Fu+Pr/YMzMcnVL1BRypsSxMnfYqFppmDiClnnu
+	uqqxuPwoO5OWZJuoXQHbKC4+sxTGsx0EYinCRrkCAfnR/qbS+mhyrQ9DO/uJISGgjIb/eg2Jx2j
+	suxz1/aHtxK6jKiE7rji2Bis95rFVnSDJy3kJ
+X-Google-Smtp-Source: AGHT+IF621AcZlHabo8tSWMrLrYcsvXNOTbA67xsv4QZQyYYW0BcYdZTIRHza0q2P5iytSfC6OBpB6w1KP2sxrbZPoI=
+X-Received: by 2002:a05:6808:188d:b0:3c0:4719:45ad with SMTP id
+ bi13-20020a056808188d00b003c0471945admr1531810oib.40.1707843332527; Tue, 13
+ Feb 2024 08:55:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240202080756.1453939-24-ryan.roberts@arm.com>
+References: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com> <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
+In-Reply-To: <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Tue, 13 Feb 2024 08:55:20 -0800
+Message-ID: <CACeCKadLKg89c8s68QD6VsqiKBMms6765O7mFFihqtET30pUyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Make sure the USB
+ role switch has PLD
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Benson Leung <bleung@chromium.org>, 
+	Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>, 
+	Emilie Roberts <hadrosaur@google.com>, "Nyman, Mathias" <mathias.nyman@intel.com>, 
+	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>, 
+	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>, Samuel Jacob <samjaco@google.com>, 
+	Uday Bhat <uday.m.bhat@intel.com>, linux-usb@vger.kernel.org, 
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 02, 2024 at 08:07:54AM +0000, Ryan Roberts wrote:
-> When core code iterates over a range of ptes and calls ptep_get() for
-> each of them, if the range happens to cover contpte mappings, the number
-> of pte reads becomes amplified by a factor of the number of PTEs in a
-> contpte block. This is because for each call to ptep_get(), the
-> implementation must read all of the ptes in the contpte block to which
-> it belongs to gather the access and dirty bits.
-> 
-> This causes a hotspot for fork(), as well as operations that unmap
-> memory such as munmap(), exit and madvise(MADV_DONTNEED). Fortunately we
-> can fix this by implementing pte_batch_hint() which allows their
-> iterators to skip getting the contpte tail ptes when gathering the batch
-> of ptes to operate on. This results in the number of PTE reads returning
-> to 1 per pte.
-> 
-> Tested-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Hi Heikki,
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
+On Tue, Feb 13, 2024 at 5:00=E2=80=AFAM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> The USB role switch does not always have the _PLD (Physical
+> Location of Device) in ACPI tables. If it's missing,
+> assigning the PLD hash of the port to the switch. That
+> should guarantee that the USB Type-C port mapping code is
+> always able to find the connection between the two (the port
+> and the switch).
+>
+> Tested-by: Uday Bhat <uday.m.bhat@intel.com>
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > ---
->  arch/arm64/include/asm/pgtable.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index ad04adb7b87f..353ea67b5d75 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1220,6 +1220,15 @@ static inline void contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
->  		__contpte_try_unfold(mm, addr, ptep, pte);
->  }
->  
-> +#define pte_batch_hint pte_batch_hint
-> +static inline unsigned int pte_batch_hint(pte_t *ptep, pte_t pte)
+>  drivers/platform/chrome/cros_ec_typec.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/c=
+hrome/cros_ec_typec.c
+> index 2b2f14a1b711..4d305876ec08 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -24,6 +24,23 @@
+>  #define DP_PORT_VDO    (DP_CONF_SET_PIN_ASSIGN(BIT(DP_PIN_ASSIGN_C) | BI=
+T(DP_PIN_ASSIGN_D)) | \
+>                                 DP_CAP_DFP_D | DP_CAP_RECEPTACLE)
+>
+> +static void cros_typec_role_switch_quirk(struct fwnode_handle *fwnode)
 > +{
-> +	if (!pte_valid_cont(pte))
-> +		return 1;
+> +#ifdef CONFIG_ACPI
+> +       struct fwnode_handle *switch_fwnode;
 > +
-> +	return CONT_PTES - (((unsigned long)ptep >> 3) & (CONT_PTES - 1));
+> +       /* Supply the USB role switch with the correct pld_crc if it's mi=
+ssing. */
+> +       switch_fwnode =3D fwnode_find_reference(fwnode, "usb-role-switch"=
+, 0);
+> +       if (!IS_ERR_OR_NULL(switch_fwnode)) {
+> +               struct acpi_device *adev =3D to_acpi_device_node(switch_f=
+wnode);
+> +
+> +               if (adev && !adev->pld_crc)
+> +                       adev->pld_crc =3D to_acpi_device_node(fwnode)->pl=
+d_crc;
+> +               fwnode_handle_put(switch_fwnode);
+> +       }
+> +#endif
 > +}
 > +
->  /*
->   * The below functions constitute the public API that arm64 presents to the
->   * core-mm to manipulate PTE entries within their page tables (or at least this
-> -- 
-> 2.25.1
-> 
+
+I'll reiterate my comment[ 1] from v1: can this be in the
+common Type-C code, i.e typec_register_port() ?
+
+I don't see anything in this implementation which is Chrome OS specific.
+
+Thanks,
+
+-Prashant
+
+[1] https://lore.kernel.org/chrome-platform/CACeCKaffZBPA0Q_Bqs1hjKJB4HCj=
+=3DVKrqO21dXj4AF5C5VwtVQ@mail.gmail.com/
 
