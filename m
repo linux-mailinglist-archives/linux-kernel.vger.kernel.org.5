@@ -1,156 +1,270 @@
-Return-Path: <linux-kernel+bounces-63706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6A285337B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:46:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4D7F85337E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 15:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60806B26D09
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:45:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FDF11F2909D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 14:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324A857895;
-	Tue, 13 Feb 2024 14:45:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FE757898;
+	Tue, 13 Feb 2024 14:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="GFjrFfIV"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lF4rLZMM"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1498B1DFEF
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758381DFEF
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835551; cv=none; b=g1hPh1H+A3r/mm1fLXqqRfDwRNivlMRRvFNIplUZTe+hyTMKr7Bd8NcLf69jJBrEA/Azixq/O+Pb2P0i0henRi0IVLUuQHmow2GBJ1+QNkuT5t+S1SBqqxN/M0XZR6DbF8/24jEAv7OLq4HfnnYS0QZ/PaX3PjSr+RBoFl1qLdk=
+	t=1707835593; cv=none; b=ENQqzmv76DqX8IPVmfUjhiuaPrVgVdcbwU6I0e9QbGDZlTgRo6lyZfOWTlkzfq+j4Z0PTp0qgYhJimFma0ipyZF7I4GHvno1HmmP7Hn8FrL7LrA8qOED4RtMkv92HH/jZXOAPaZBtsznoZOMdMd1k3CaLi0rKHxB/owXYIY0WgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835551; c=relaxed/simple;
-	bh=/JVw6JUS7Qlkpf9PDVKxppJuv27t2j/1nfrrHYHsvoY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YU+nd5HofH0dNfj5I9EsY0CdviYuMuRAHZRcE815XpO2HVYvB1RcXbqJEtkKS8Pcxy9buYr0wrXXJo0XEDtLM+4yS3ySu2Yfkl2F568OjiXQY1pjDijAgYYzGsx7KrEi2RbkB5DzY03bYgbrIes1xgfJOQZrNy1aiNkJajSuSzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=GFjrFfIV; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e0a479a6cbso1622665b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:45:49 -0800 (PST)
+	s=arc-20240116; t=1707835593; c=relaxed/simple;
+	bh=ePaWWo0X1KJfDvze9zIfhVaXyroDIwjH96sUmRPDFcI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SEVdOqsTgvXHhBTR01yJTR/EdqkzDjPdABiDrpkRQVENXumt6yf+UpfzRMxZmLLi4ICk9Apcq6zWrzCTvRYJXU4tY2+/MtVJ334jSX93SIYdDR8x9/3WJ0WbxzSYWuk0SRl42XlCRJOOAQdhXDF90+KYKRciaT5blpz/Hw7Mz8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lF4rLZMM; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d0fd07ba8bso23480901fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 06:46:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707835589; x=1708440389; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XJGFFpyBzNQW6CoIQ52XwyrDz+SQ9l0tl8UYT3Gzx48=;
+        b=lF4rLZMMotL05HK/lIHwgmLqafb+EjPARb+hVByLbxlUyGs9tFxzt4ZJQrnBz05y/a
+         1zbOm07UEXPxQTilcECxm+Mr3yy7Mda/KUO62Khe+JMmnfveNT/8a55XClvry0BAwwE5
+         agUjQqJ7TObzkOiMUpqpZA2kszXEAkzPI7qZsWwCU/ZyTH9JUl2m8m+qLtXxTprZYMKA
+         V6zcVrHK7Q0h4bR9iRmVS3um8ztGQp7WnHtmdzdJb7w4UzbmPUNRoem9tJgcsShQSBsV
+         TlkfIAyVbi1tQKvV60b/ltTNS+NSxmWk9vA+/UrtErhYfo/aZe2Iev9IF/A1JpBxh9s+
+         2Kzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707835549; x=1708440349;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NCwgMbwC7An3DNn4GGPR+ZW0r4hzwBM1GqjFa3Sruew=;
-        b=HvPvG1wUTXxB1sdoBs3AeEuJ8f62DnVHB0R0KhAAxygEvqQ5SWYwZWgy+s/wsHp1OF
-         7b43yHdUCkijcQCDCdtYM8ZJXYzMsQMC9m3PHXhjYQnL6SVFigT5Tm3t+ECE58uBSr/Q
-         hsRHnxX76T5Qfnwvocdyv67Ou3pOnP/crHnVAWZ9IYcNSJkI2pj3Y7MTp3HQQvltLy0v
-         RYK2LtItMS9ul/4mptolT4qz3AOOEgLG584UOCIPkzi91Q952R/m8CLbpC4HtCOr7RBq
-         tx78YnD7QdM2H4IuBcHt+TPBInQz9QZOVqJqTHimzim1pU937mRvnOgdfHPtrNCK0MpG
-         i/Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCWNC6KjIdqcKFII38d8dnGCP0VZBB48ecBwDK+LLRkj2W1G1RPJsdLDyJqd7wUqDHoZZnPpIX3T9LVbh+2ukKBfpal7xMix9rPUzdJe
-X-Gm-Message-State: AOJu0Yy6/ix455cIpzWpB9BIIcrM3M6hfEQTgFOxaI3M1ruUL42wZg8U
-	d/IsFLEK61JBA+WO3WyhgC8j9WBCxOHUrRgsED94gWjY8j6Qcn/oJmllNS2CB3e8Bw==
-X-Google-Smtp-Source: AGHT+IHdMS/zz7eyofrJyTFol3uk6PD7CEhbj2N42d5cBaFZh5PQOz/Eq6MNFkW9CnlzMSQEKCHOHA==
-X-Received: by 2002:a05:6a20:e614:b0:19e:3a9f:f925 with SMTP id my20-20020a056a20e61400b0019e3a9ff925mr8138159pzb.14.1707835549331;
-        Tue, 13 Feb 2024 06:45:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtAjLGCjHI3cOozF0Sk8MS4dleiqvFOOVS7wzvZ2e4O4Mzn4qs+iQGBUmDQv9mWtn/qZUwJwl5+jgqgJmnJYqEHvq3gzvOs1CboO3vpt2RBT7U5V+PN+Lo/RaE5UKLfhiC0y+93xm6atCs2QuPj8nWmbRoGLOr89+Pxd3auD+j
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id y20-20020a170903011400b001d9d4375149sm1280232plc.215.2024.02.13.06.45.48
+        d=1e100.net; s=20230601; t=1707835589; x=1708440389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XJGFFpyBzNQW6CoIQ52XwyrDz+SQ9l0tl8UYT3Gzx48=;
+        b=LQ2u8Ykgw1gWCErlOnUM7XgVj1qIneOJ6ZgzkxZ5oOhbhwHkV3cfeFAtw1HfRgFilS
+         h5xLzZL4zdkqFFVMhv1XSRb1PsWV39ZMB0LjiBUdaedvsux2gHIvxnWt1cbJ1JXhASSC
+         DnNAuQ4kP7N/QZr1qkCNotvalOMvnU5u5tCrmbX/Ofq7h0muE/zmNkgYglkwIBOFsrDA
+         gPgj5wfawFdMrurYEYVh6h7+UpUif6UVrKwLcX3xhQcAj26HQ3LZJ20YVzALNWfoIEnE
+         YHkuhsoUToq7fUaI6AwdPxh32k/1DV9QxI7TKoxmBIc7Mw8pWsV/5INfrixqB6IDe7jo
+         FDcA==
+X-Gm-Message-State: AOJu0YxVAvvNeIvNn1LcNLXezbhHvxdM3R6sPmhYOEKOc8k8kHIW6mSa
+	c0S/t9ofUzojHZjqTtkTSwdlWeZd+ry9L8lQhhS6Bj+xCTMOwV50b1XRzYUet7M=
+X-Google-Smtp-Source: AGHT+IEw8a0U2ScUAR1Kwbgr0ZeQ/OOzbh+dcPNcy6tFAbwRUP8ubzqTERTayNc0nA5pBEeOUcp7yg==
+X-Received: by 2002:a2e:914b:0:b0:2d0:d9a7:60cc with SMTP id q11-20020a2e914b000000b002d0d9a760ccmr6422089ljg.23.1707835589451;
+        Tue, 13 Feb 2024 06:46:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUXNgKlR75DDD6TXU3t0ao6cBbnfYFC/+/yWc/VQtkfrF2Lj9aC51pV9x9IWGa1qCZNvizFnKhbERMVrpU1dvsARq0MuCGrqCMYx56x7evXBgVoOCEcDA4bVl1ydWeq4td8mezqK5JVg5sTZDSj5t/Q7GqkBUV9DrW9YtG5D/ZbLOaQYbaOX4kvNiQfXnJLxw6hfnQCY0iQRmVZBaAvyMVWWvy9Wuqm4o+a2iTdEyNKonMCN+a8M7CKV8Y9Or+E4YdmMH/8iJrAKWQ+HpGj1ZFM00Slxg+2uEig59r0HzGADj3EgQB/q/vuEiLairj19JdrzawqOC1acivgyPCAeRjjSWGIMX5mtLw=
+Received: from krzk-bin.. ([178.197.223.6])
+        by smtp.gmail.com with ESMTPSA id bg10-20020a05600c3c8a00b0040fd3121c4asm12054253wmb.46.2024.02.13.06.46.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 06:45:48 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707835547;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=NCwgMbwC7An3DNn4GGPR+ZW0r4hzwBM1GqjFa3Sruew=;
-	b=GFjrFfIV5EBELI4zA8+4T4IAoxBjxoJI6zlwYm5jht5E1suU+I78mkZo9qhCxDYpd3jn3R
-	dHov23cbkUklp+QKGKAOA8ukaFCnl3bv63CJBRyGcpA0byImRCLTTyQ5KQxrEbT6uLk+JL
-	jf9dsz8DXmWtECbWJw4bFJfm+fr4dhRM0WxFPMbVFXe3gYO+oNrjkLYShyZ+lCKd1STVMc
-	VsHR0bkL6E2D3HJd0tv3kNhRcsZ0h+6drl0dpwsGpyizXzxcac3+O1wGiBT66uiFbiZJTW
-	Rpg5MdyCOnTZmSNbc/b83Mji8qDN5+mD4Fx2tpRem1kjeyQhs+EXy3VceG99+w==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 13 Feb 2024 11:46:25 -0300
-Subject: [PATCH] tee: make tee_bus_type const
+        Tue, 13 Feb 2024 06:46:29 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] arm64: dts: mediatek: replace underscores in node names
+Date: Tue, 13 Feb 2024 15:46:26 +0100
+Message-Id: <20240213144626.341463-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-bus_cleanup-tee-v1-1-77945ae1a172@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAMCAy2UC/x3MQQqAIBBA0avErBNyKqKuEhFqUw2EhWYE4t2Tl
- m/xfwRPjsnDUERw9LDn02bIsgCzK7uR4CUbsMKmQlkLHfxsDlI2XOImEgbbDnutzdKtkKvL0cr
- vfxynlD6MhzL1YQAAAA==
-To: Jens Wiklander <jens.wiklander@linaro.org>, 
- Sumit Garg <sumit.garg@linaro.org>
-Cc: op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1663; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=/JVw6JUS7Qlkpf9PDVKxppJuv27t2j/1nfrrHYHsvoY=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBly4DDQ9wKZ20oNtPX+2IiSw52LstvRyeEqj0c/
- cxZ5DctXOWJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZcuAwwAKCRDJC4p8Y4ZY
- ptimEACUJ9WmQFcj7VNoXIXx49IP+fPFbNgZhh2OL2TlibLbBoMImQQgUM+/DpMfhUzisPLbxAk
- 4RYldBiJUSeBOZylG9vGlkcHiA+XIAYZklbern3w2HgO93gfoBGIyBZty2d0C2/23dUGN5aKqnd
- HC4ueJUfGgGeJYBxp2+W1HvkaPVoR7zJvJhTGiL3/TOTAJTLeo+DP3TEoCaeyCFLXyGPEIr7Rf9
- 1htOaH2Jv/Yg+LAw9nXs0+IfR8rVUKAKOSZBj/YBf8Fe9/syfLN9lE2ln4bVNrxMffCji2udQvk
- Aonm36uyIj7n/QHL0xjCnFDb/ETcs/XZyHLQqQiHt4G7KI+028dnI5e7sO2IV0MFXWx3Qas5bpB
- 5ytXokwwcW0WPIxcLXJxDWKh9/iio7eBtbIe8nMe3RttGxiIbjobYkr1GvHYGmNrN55yy1EwE0g
- UmxZEwG20fw2lLqi6cUUHewoKM+zfmYjEYNaQfKFba7sieYVjiRAC4k604QAvblcZKUVpLQEQzn
- Sx5AsA49SWPrm3s90vjHXRtOan1UvLGAfKeCxerTv4W+C2hXvVQ/mw++iDJ/CgtK4rI81XVhqBa
- 83fuK5+W9YR5XfQJc7/IbrJ+uFDO922hgphXtwIUbzt7J0ucD9DN+L2d+cari5UxhBMXI4W8UT0
- qP2YR4lM6D3bZ/w==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Transfer-Encoding: 8bit
 
-Since commit d492cc2573a0 ("driver core: device.h: make struct
-bus_type a const *"), the driver core can properly handle constant
-struct bus_type, move the tee_bus_type variable to be a constant
-structure as well, placing it into read-only memory which can not be
-modified at runtime.
+Underscores should not be used in node names (dtc with W=2 warns about
+them), so replace them with hyphens.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/tee/tee_core.c  | 2 +-
- include/linux/tee_drv.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi              |  2 +-
+ arch/arm64/boot/dts/mediatek/mt6797.dtsi               |  8 ++++----
+ .../dts/mediatek/mt7986a-bananapi-bpi-r3-nand.dtso     |  2 +-
+ arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts  |  2 +-
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi           |  2 +-
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi               | 10 +++++-----
+ arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts        |  2 +-
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi               |  2 +-
+ 8 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index 792d6fae4354..e59c20d74b36 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -1226,7 +1226,7 @@ static int tee_client_device_uevent(const struct device *dev,
- 	return add_uevent_var(env, "MODALIAS=tee:%pUb", dev_id);
- }
+diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+index ed1a9d319415..6d218caa198c 100644
+--- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+@@ -261,7 +261,7 @@ pericfg: syscon@10003000 {
+ 		#clock-cells = <1>;
+ 	};
  
--struct bus_type tee_bus_type = {
-+const struct bus_type tee_bus_type = {
- 	.name		= "tee",
- 	.match		= tee_client_device_match,
- 	.uevent		= tee_client_device_uevent,
-diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-index 911ddf92dcee..71632e3c5f18 100644
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -482,7 +482,7 @@ static inline bool tee_param_is_memref(struct tee_param *param)
- 	}
- }
+-	syscfg_pctl_a: syscfg_pctl_a@10005000 {
++	syscfg_pctl_a: syscon@10005000 {
+ 		compatible = "mediatek,mt2712-pctl-a-syscfg", "syscon";
+ 		reg = <0 0x10005000 0 0x1000>;
+ 	};
+diff --git a/arch/arm64/boot/dts/mediatek/mt6797.dtsi b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
+index c3677d77e0a4..0e9d11b4585b 100644
+--- a/arch/arm64/boot/dts/mediatek/mt6797.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt6797.dtsi
+@@ -117,7 +117,7 @@ topckgen: topckgen@10000000 {
+ 		#clock-cells = <1>;
+ 	};
  
--extern struct bus_type tee_bus_type;
-+extern const struct bus_type tee_bus_type;
+-	infrasys: infracfg_ao@10001000 {
++	infrasys: syscon@10001000 {
+ 		compatible = "mediatek,mt6797-infracfg", "syscon";
+ 		reg = <0 0x10001000 0 0x1000>;
+ 		#clock-cells = <1>;
+@@ -452,19 +452,19 @@ mmsys: syscon@14000000 {
+ 		#clock-cells = <1>;
+ 	};
  
- /**
-  * struct tee_client_device - tee based device
-
----
-base-commit: 716f4aaa7b48a55c73d632d0657b35342b1fefd7
-change-id: 20240213-bus_cleanup-tee-c25729bbcd7f
-
-Best regards,
+-	imgsys: imgsys_config@15000000  {
++	imgsys: syscon@15000000  {
+ 		compatible = "mediatek,mt6797-imgsys", "syscon";
+ 		reg = <0 0x15000000 0 0x1000>;
+ 		#clock-cells = <1>;
+ 	};
+ 
+-	vdecsys: vdec_gcon@16000000 {
++	vdecsys: syscon@16000000 {
+ 		compatible = "mediatek,mt6797-vdecsys", "syscon";
+ 		reg = <0 0x16000000 0 0x10000>;
+ 		#clock-cells = <1>;
+ 	};
+ 
+-	vencsys: venc_gcon@17000000 {
++	vencsys: syscon@17000000 {
+ 		compatible = "mediatek,mt6797-vencsys", "syscon";
+ 		reg = <0 0x17000000 0 0x1000>;
+ 		#clock-cells = <1>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-nand.dtso b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-nand.dtso
+index 543c13385d6e..7b97c5c91bd0 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-nand.dtso
++++ b/arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-nand.dtso
+@@ -15,7 +15,7 @@ fragment@0 {
+ 		__overlay__ {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			spi_nand: spi_nand@0 {
++			spi_nand: flash@0 {
+ 				compatible = "spi-nand";
+ 				reg = <0>;
+ 				spi-max-frequency = <10000000>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts b/arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts
+index 256f245ac01d..1c9fc791bdfc 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm-hana-rev7.dts
+@@ -14,7 +14,7 @@ / {
+ 
+ &cpu_thermal {
+ 	trips {
+-		cpu_crit: cpu_crit0 {
++		cpu_crit: cpu-crit0 {
+ 			temperature = <100000>;
+ 			type = "critical";
+ 		};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index 335aed42dc9e..6d962d437e02 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -1135,7 +1135,7 @@ rtc: mt6397rtc {
+ 			compatible = "mediatek,mt6397-rtc";
+ 		};
+ 
+-		syscfg_pctl_pmic: syscfg_pctl_pmic@c000 {
++		syscfg_pctl_pmic: syscon@c000 {
+ 			compatible = "mediatek,mt6397-pctl-pmic-syscfg",
+ 				     "syscon";
+ 			reg = <0 0x0000c000 0 0x0108>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index fe572a2f8f79..3458be7f7f61 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -222,14 +222,14 @@ CPU_SLEEP_0: cpu-sleep-0 {
+ 		};
+ 	};
+ 
+-	pmu_a53 {
++	pmu-a53 {
+ 		compatible = "arm,cortex-a53-pmu";
+ 		interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 9 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-affinity = <&cpu0>, <&cpu1>;
+ 	};
+ 
+-	pmu_a72 {
++	pmu-a72 {
+ 		compatible = "arm,cortex-a72-pmu";
+ 		interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 13 IRQ_TYPE_LEVEL_LOW>;
+@@ -286,7 +286,7 @@ target: trip-point1 {
+ 					type = "passive";
+ 				};
+ 
+-				cpu_crit: cpu_crit0 {
++				cpu_crit: cpu-crit0 {
+ 					temperature = <115000>;
+ 					hysteresis = <2000>;
+ 					type = "critical";
+@@ -318,7 +318,7 @@ reserved-memory {
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		ranges;
+-		vpu_dma_reserved: vpu_dma_mem_region@b7000000 {
++		vpu_dma_reserved: vpu-dma-mem@b7000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0 0xb7000000 0 0x500000>;
+ 			alignment = <0x1000>;
+@@ -366,7 +366,7 @@ pericfg: power-controller@10003000 {
+ 			#reset-cells = <1>;
+ 		};
+ 
+-		syscfg_pctl_a: syscfg_pctl_a@10005000 {
++		syscfg_pctl_a: syscon@10005000 {
+ 			compatible = "mediatek,mt8173-pctl-a-syscfg", "syscon";
+ 			reg = <0 0x10005000 0 0x1000>;
+ 		};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+index 76449b4cf236..333c516af490 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+@@ -33,7 +33,7 @@ reserved-memory {
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		scp_mem_reserved: scp_mem_region@50000000 {
++		scp_mem_reserved: scp-mem@50000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0 0x50000000 0 0x2900000>;
+ 			no-map;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index cdc8d86cb432..93dfbf130231 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1964,7 +1964,7 @@ larb4: larb@17010000 {
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_VENC>;
+ 		};
+ 
+-		venc_jpg: venc_jpg@17030000 {
++		venc_jpg: jpeg-encoder@17030000 {
+ 			compatible = "mediatek,mt8183-jpgenc", "mediatek,mtk-jpgenc";
+ 			reg = <0 0x17030000 0 0x1000>;
+ 			interrupts = <GIC_SPI 249 IRQ_TYPE_LEVEL_LOW>;
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.34.1
 
 
