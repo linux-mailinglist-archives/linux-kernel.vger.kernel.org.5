@@ -1,140 +1,147 @@
-Return-Path: <linux-kernel+bounces-64133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57392853A81
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:05:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD863853A83
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 096981F247C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:05:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BABE1C23030
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7531CD22;
-	Tue, 13 Feb 2024 19:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C962F1CD14;
+	Tue, 13 Feb 2024 19:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQf0T7q7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a7jFgM4X"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7765F1CD00;
-	Tue, 13 Feb 2024 19:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0191510A1F;
+	Tue, 13 Feb 2024 19:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707851123; cv=none; b=RnYM6u5p4NdnPrw/MykOOB9EiGwipuvphQ7kfFAeQGdcWbKugVOT0nqQeiLUXnLjBgIHHObcGXYdY4CtPr77vU750n6e1NDiJPySNsFnre+I64psFiybiOjs1RVTv4JqrmBquEct4LurIkVmnxaiWdtAAZIw8AZXWcLabVOBT5M=
+	t=1707851200; cv=none; b=ieMHEKwQ0OQVTN9hmFqnPwtYJNYaaBLTeEg3E/MWrh/315dbZ3KBZO7DIpt65rQ9CQ7lB5wEWRGB4yCE3IaOIuBfvSR5sxoI0SnU42+SjiN+vcBQfOmfuqTZXAIYyi/U4lg2yUxmpL0Tjqpl18OjUFGCceE5rCIMhx9aMTvAjhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707851123; c=relaxed/simple;
-	bh=/Gi96MzHMeaaVGeQxX35dVV54SaAFNp5uBbvdaB8zd4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kjAhMlCEEQ/PZ/sm8vjxI1M2U4tZVtvPDr12kYfB/4PNOFeDWZQA/Ii5a7czFEGD7m7x4DErnIX+fm8OwgaWExqGo94wbGwXr0duQEiiAGJ0Nuri75qHmwSVWh6ci3iFmM5ihISnNxj8GZGcXSGJxEuoeiHdYPpzhN8VN8vRmUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQf0T7q7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DAA5C433C7;
-	Tue, 13 Feb 2024 19:05:21 +0000 (UTC)
+	s=arc-20240116; t=1707851200; c=relaxed/simple;
+	bh=Gw1CLABHdLSREPjmsGpSQgxQ33jFrHLiGLWyntbYGi0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=TW1XgblMfGFNQHy419Es0LPb362JNx75lqYfXEa3JhchHY3PqzlzTTIGGCBdJYSsSXlBmAONGaqhlxSf3Jbm5/EveUNOkYj7I5ZFH3/SLMcL0G8jPqFZpvI2YF1NXXiRvW19Mx/6w3dVChIo+e4tH2qSxQx19zpJdRbk7svP6Ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a7jFgM4X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837ABC433F1;
+	Tue, 13 Feb 2024 19:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707851123;
-	bh=/Gi96MzHMeaaVGeQxX35dVV54SaAFNp5uBbvdaB8zd4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VQf0T7q7SXstJZSuvlWeiCwfY273pkP8GZbTqZTEYmDfaNm710nSWw/7RYdfgNbmw
-	 OVZGz25Ar7JXPM2EPIZHiCzf7v5jrGbKPXFrIHd28E7kixCKTdXW52H55UklUHuI0D
-	 oBlRZ/Lz+f3h9Wj5y7EvXcEvOJL3rBEK1NLP02QbL2xWHr18INXvskJNgC4MDKqLCI
-	 b+HBgFXH6uPR6lWzGf6sBm6MnkIco4Cgzp2yIQeHIRnLedFKe/DslHIo9TCdGUAR3I
-	 dwh9h7zB8GlUIhynKT0zL5draunGwlrYPe5QFyBVGZkFOZwzmvFoos6ed36c86ONTd
-	 2p+phjMpQfcTQ==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	damon@lists.linux.dev,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.6 000/121] 6.6.17-rc1 review
-Date: Tue, 13 Feb 2024 11:05:20 -0800
-Message-Id: <20240213190520.2018-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240213171852.948844634@linuxfoundation.org>
-References: 
+	s=k20201202; t=1707851199;
+	bh=Gw1CLABHdLSREPjmsGpSQgxQ33jFrHLiGLWyntbYGi0=;
+	h=From:Date:Subject:To:Cc:From;
+	b=a7jFgM4XnoeYLMbIPH4dAgz9wqsxVhQLSq71J9dKwBX24pVefaP3OEibgi/5+ju6s
+	 OMHKa1YNoqYKjjfmMgYtnJkwhaTmSKbA+vwruPwmQdXmMZq8uifPEHptUDWFsOm3f6
+	 tVOFLYUzEaGH+Yfr9hZCZpBYUnQJDTpc/BZ72VxWlg8fE7vcBJP01oAHIcFfaZjT3p
+	 +NCvEtIow59l9Yo6k618+cTAPu3S3Og8jrKLP9/29Wckfiq277piMo7+mhglpDMkVf
+	 tIX/4SfJ0sEJeYauiatpJSgNnYV924oUAOBvKnZxgGQ6xOrl3MurG78hqb4Y5N7jEK
+	 ZtRMMccRxiXjA==
+From: Mark Brown <broonie@kernel.org>
+Date: Tue, 13 Feb 2024 19:06:02 +0000
+Subject: [PATCH] selftests: fuxex: Report a unique test name per run of
+ futex_requeue_pi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240213-kselftest-futex-requeue-pi-unique-v1-1-fa160a4a7ade@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAJm9y2UC/x2NzQqDMBAGX0X23IWYWA++SunBny92aYk2m4ggv
+ rvB28xl5iBFFCh11UERm6gsoUj9qGj89GEGy1ScrLGNsbXjr+LnEzSxzwk7R/wzMngVzkEK87N
+ vWuuM8+0wUumsEV72+/F6n+cFU419zXMAAAA=
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
+ Davidlohr Bueso <dave@stgolabs.net>, 
+ =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2490; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=Gw1CLABHdLSREPjmsGpSQgxQ33jFrHLiGLWyntbYGi0=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBly728JE9/sjpLA+molsY4IjLnMKEYeBb56mcXOoZg
+ 43+xunCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZcu9vAAKCRAk1otyXVSH0KU5B/
+ kBnOH3XDHuaEfjvWSGla+lUJwLaB4ISoxk8/P3UFtpjh8t+MI2uV+b+Fia6XOf3TSMBgEXPaBO8kgp
+ zPmhDiI/tCqy6nD4I8SlaOfWkZPwgpp+pD2Zlaoe4uOxD/Id6Mvgih1LWSq/VyyqkmdAKgDoBGgpQw
+ 7YKNhCGmdZytZ9nErrgaUF3lrs/g9d/9yx0yHCscIzcgx9tNS9xzCiKQ/CPYes9JSXYQ4I68Xpkda4
+ w+D2OPPsaSdMet7zmQomdF73SV1S6C3JK4JWrH9dq8pzThNU2ShLvrVNbKVBzCoeIS3hi7P9z62/9H
+ p92U7NYdmDc9RtwoxyxefCnKYfj6RK
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-Hello,
+The futex_requeue_pi test program is run a number of times with different
+options to provide multiple test cases. Currently every time it runs it
+reports the result with a consistent string, meaning that automated systems
+parsing the TAP output from a test run have difficulty in distinguishing
+which test is which.
 
-On Tue, 13 Feb 2024 18:20:09 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+The parameters used for the test are already logged as part of the test
+output, let's use the same format to roll them into the test name that we
+use with KTAP so that automated systems can follow the results of the
+individual cases that get run.
 
-> This is the start of the stable review cycle for the 6.6.17 release.
-> There are 121 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/futex/functional/futex_requeue_pi.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] bea54b0cb986 ("Linux 6.6.17-rc1")
-
-Thanks,
-SJ
-
-[...]
+diff --git a/tools/testing/selftests/futex/functional/futex_requeue_pi.c b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
+index 1ee5518ee6b7..7f3ca5c78df1 100644
+--- a/tools/testing/selftests/futex/functional/futex_requeue_pi.c
++++ b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
+@@ -17,6 +17,8 @@
+  *
+  *****************************************************************************/
+ 
++#define _GNU_SOURCE
++
+ #include <errno.h>
+ #include <limits.h>
+ #include <pthread.h>
+@@ -358,6 +360,7 @@ int unit_test(int broadcast, long lock, int third_party_owner, long timeout_ns)
+ 
+ int main(int argc, char *argv[])
+ {
++	const char *test_name;
+ 	int c, ret;
+ 
+ 	while ((c = getopt(argc, argv, "bchlot:v:")) != -1) {
+@@ -397,6 +400,14 @@ int main(int argc, char *argv[])
+ 		"\tArguments: broadcast=%d locked=%d owner=%d timeout=%ldns\n",
+ 		broadcast, locked, owner, timeout_ns);
+ 
++	ret = asprintf(&test_name,
++		       "%s broadcast=%d locked=%d owner=%d timeout=%ldns",
++		       TEST_NAME, broadcast, locked, owner, timeout_ns);
++	if (ret < 0) {
++		ksft_print_msg("Failed to generate test name\n");
++		test_name = TEST_NAME;
++	}
++
+ 	/*
+ 	 * FIXME: unit_test is obsolete now that we parse options and the
+ 	 * various style of runs are done by run.sh - simplify the code and move
+@@ -404,6 +415,6 @@ int main(int argc, char *argv[])
+ 	 */
+ 	ret = unit_test(broadcast, locked, owner, timeout_ns);
+ 
+-	print_result(TEST_NAME, ret);
++	print_result(test_name, ret);
+ 	return ret;
+ }
 
 ---
+base-commit: 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478
+change-id: 20240213-kselftest-futex-requeue-pi-unique-5a462303f6bc
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
 
