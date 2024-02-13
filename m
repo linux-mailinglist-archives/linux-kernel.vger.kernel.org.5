@@ -1,143 +1,160 @@
-Return-Path: <linux-kernel+bounces-63153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37EC4852BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:49:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3AEA852BAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1B731F24ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:49:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31E1D1C22E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD321B598;
-	Tue, 13 Feb 2024 08:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAC622334;
+	Tue, 13 Feb 2024 08:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="J4PRARsI"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cFjFpPIN"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6AA21100;
-	Tue, 13 Feb 2024 08:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2F02231A
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 08:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707814192; cv=none; b=mK+7/rwWbdC8RM/HsHVot2SFdXVhq5u2+C0g80FPjfitSJM1YD1uODMQbJrxikfz8E7cNimb4dyl56RiBrYYb+7ySbHHwu3XMYOoGU+eWFksXsAqp8zubtuovCV2oE9OgP0dIdvHwhkv7cVbpJg4F3nvWjDy3h8Lczw5GBQ/sN0=
+	t=1707814205; cv=none; b=YCuOr9FNtXfPkial5VyFswztlpV9ql0bEE1VxKcTuNVSSOULTfG+NiXwBVH2nHyu/ouVR+dNt0FTKWySliZBcEVTfx9Q7saHLO9S703zAk1k81H+RYHcjrRqQI0fc+/oZNbmSBaRXPtsmHOrZ1OOTQ6U3ndgHMtVL6TgDRZom+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707814192; c=relaxed/simple;
-	bh=tTbz1v8fkqJ0/mdCR+W3RMbnx2wr06DJUcVEFdBv1ps=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a+AYEI/7dtP5YPt+j6UdPv/4bERy2+oTPcObsIgVCxWpTTQdsENwd1UuClk0qJxsrmrJpf96r/LKgAvZ9UIuXxzR2atIOncMJjcyQAHWakX6FFzLlFWV0fhYCZ+iCIHX0zdovGNMtx+fSZIFlnHB2tBSyuzKYFZS9k9tYBalc5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=J4PRARsI; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D8cnAc008573;
-	Tue, 13 Feb 2024 08:49:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=kCqPcNo+Xt7o8GNLYwi+lrAM4HO++yNt6oCLnibGDyU=; b=J4
-	PRARsIiBU0uSwPXNo9MzzZTLdpMFUc80Quj0xAZWuHpmA2xWf8PQ611M6s5y1AET
-	8vtI2NmwbVSmmyPVcmaizRIt7JB3Qn7b7D4GEcGsn3PyxghmD7BGXYSzCzKKJb0Q
-	GxG4FSdIUyGBcq+lqKzLb03y0FqWFFDf8AXkwS20qcvQqS2XvAol9dvVa7DnFyVI
-	awHrfnT5EVbhA+iQiWmVU0fEUXy9p0eS6uR9xugX2op34+KzpqUjwq3luh6VS18W
-	hbeuFaJGVVD3e/WhsuhpMkQKHgQ8olofO01OcRU2z3OwXXJAON3Bi0vVgxEZ3gDm
-	ARyciOG6jigP0TDjOFxw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7s3919c2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 08:49:35 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D8nY1Z026901
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 08:49:34 GMT
-Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 13 Feb 2024 00:49:30 -0800
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-To: <gregkh@linuxfoundation.org>, <akpm@linux-foundation.org>,
-        <willy@infradead.org>, <vbabka@suse.cz>, <dhowells@redhat.com>,
-        <david@redhat.com>, <surenb@google.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Charan Teja Kalla
-	<quic_charante@quicinc.com>,
-        # see patch description <stable@vger.kernel.org>
-Subject: [PATCH] mm/huge_memory: fix swap entry values of tail pages of THP
-Date: Tue, 13 Feb 2024 14:18:10 +0530
-Message-ID: <1707814102-22682-1-git-send-email-quic_charante@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	s=arc-20240116; t=1707814205; c=relaxed/simple;
+	bh=cv/6yNxD9P/N1UVc15lEgknGFCcdRwsHnuRhgeVobYk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jIIyEuUsV/aqXvHxUPYyNuJDEoOFXTMD1X3OWV7CyYb6M+yQN4/FZEeyFiYD9WU7GUPDQBsFts46nzuIBqpzLA+dSJ511hhy1+Oi+9zZtqqmJoGyLYL+zTxDApTXTTkF3E2qowB5GWaIWePkYXlluhtScJDVtP2O070Q08lf0F8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cFjFpPIN; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28a6cef709so549979366b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 00:50:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707814202; x=1708419002; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sw3WRWteG7bO5ZRTaxT1u5RmbXXXiTe9cEj4SvWBzyM=;
+        b=cFjFpPINLEwxMP19d3Cieooa4eDzlRvjLZ4YcWoqVrjfPlIpuQVKI8hsb1v1ShCctm
+         qJoQfCxcWbl3ZOorAVR3aehnTdITxuL4lrHZkKiQiWdGZ5XYhmqZnUbI0O5NQK5M6+Ch
+         Kb9HUtdYdr9a91TY4QNUuuqAb5nBzoUS9pAxk3bBLD/8RZGK0V+a36WnynSZTnoH9CUf
+         5SbRh8fLJagGpUp98lDaAC8De7iTct0mBE3UGOngP1bzVKgRnP3rXc4RzwOntPvVrRba
+         y0qrqK9JkfWrwPSR9ZnuK2f2TpyT6UOldw393u7TswjHOGq5m7QBwqYywKq48eVDPFFg
+         9Tfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707814202; x=1708419002;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sw3WRWteG7bO5ZRTaxT1u5RmbXXXiTe9cEj4SvWBzyM=;
+        b=pKoJGWhdMB08yVDFGpeeVTD0d+oUQ+S5pXEwlLct8lfEZWcfRIaK+ndJLxYKg2mm/d
+         /YGUelaHh7mZQu+WK3/fXuBRQcvJDP4cn5fXsT1dtDTUqAYyTUsrPJv9JgF//X9H7evo
+         aJnBfK7dzP2s/wDUjfrD9JJ21L6e+vt1RIpn1+Fs+xQ5e+wUIj8ql0oCvdD6KfOC4NkE
+         cVl+DH6x+l9+j04qt0OIPemsKGlR3BO5G++3Ifvs7zlZhaIq+AoP4R8aNXg5tXQ+DVW1
+         UoEHeSq7W8KHEf5XZhymyHqr2/hdveh+9dy9KyaWAeejGb1JQFh4aTeIiHC/T0uim9W5
+         1Oag==
+X-Forwarded-Encrypted: i=1; AJvYcCXacxmcnMAgJbkmFi58SD0l7H6n9QyU4G/4ccqVqgxAVlp6CVLT4k+o8d914iEV2fRyxh6W/BxvXwGUQYJwG7tRBZq/GytLEhUaEB/m
+X-Gm-Message-State: AOJu0Yw6ErkxsUe5yNA8WWjYI6qzujnvrPyDy6PJC5avEG5XtLGreSBN
+	fhWajNa9IYMArMh5nDJ322lADa144GY0GZyzsMtNFNXZfQI009Y6CDCF7Qm9cvYoodOymSG1p3u
+	ktdd+FadojguDA1OUcEz6jDCJXVeGWPIi64l6Pi+KvJwKPP4bPVbI3wI=
+X-Google-Smtp-Source: AGHT+IEJd0Zo2Fp93vgoVzJ1ZLV7YlDlHTruHz2LWubzKfVYl8DnUuBxaDSyZhcRphlKdG8Afh15J15F5NkwIe4IYMo=
+X-Received: by 2002:a17:906:c78d:b0:a31:7dc1:c7c1 with SMTP id
+ cw13-20020a170906c78d00b00a317dc1c7c1mr5570387ejb.65.1707814202108; Tue, 13
+ Feb 2024 00:50:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ExtM5oF4G8N0zHAvaPk-MHkzrH5KQYU0
-X-Proofpoint-GUID: ExtM5oF4G8N0zHAvaPk-MHkzrH5KQYU0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_04,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0
- phishscore=0 clxscore=1011 impostorscore=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402130068
+References: <20240209115950.3885183-1-chengming.zhou@linux.dev> <20240209115950.3885183-2-chengming.zhou@linux.dev>
+In-Reply-To: <20240209115950.3885183-2-chengming.zhou@linux.dev>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 13 Feb 2024 00:49:25 -0800
+Message-ID: <CAJD7tkZcL6=dYCHv4XvQhRXgszcevGmsZfeg12jXpzLyy4YH1g@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/1] mm/swap: queue reclaimable folio to local rotate
+ batch when !folio_test_lru()
+To: chengming.zhou@linux.dev
+Cc: willy@infradead.org, hannes@cmpxchg.org, nphamcs@gmail.com, 
+	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-An anon THP page is first added to swap cache before reclaiming it.
-Initially, each tail page contains the proper swap entry value(stored in
-->private field) which is filled from add_to_swap_cache(). After
-migrating the THP page sitting on the swap cache, only the swap entry of
-the head page is filled(see folio_migrate_mapping()).
+On Fri, Feb 9, 2024 at 4:00=E2=80=AFAM <chengming.zhou@linux.dev> wrote:
+>
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> All LRU move interfaces have a problem that it has no effect if the
+> folio is isolated from LRU (in cpu batch or isolated by shrinker).
+> Since it can't move/change folio LRU status when it's isolated, mostly
+> just clear the folio flag and do nothing in this case.
+>
+> In our case, a written back and reclaimable folio won't be rotated to
+> the tail of inactive list, since it's still in cpu lru_add batch. It
+> may cause the delayed reclaim of this folio and evict other folios.
+>
+> This patch changes to queue the reclaimable folio to cpu rotate batch
+> even when !folio_test_lru(), hoping it will likely be handled after
+> the lru_add batch which will put folio on the LRU list first, so
+> will be rotated to the tail successfully when handle rotate batch.
 
-Now when this page is tried to split(one case is when this page is again
-migrated, see migrate_pages()->try_split_thp()), the tail pages
-->private is not stored with proper swap entry values.  When this tail
-page is now try to be freed, as part of it delete_from_swap_cache() is
-called which operates on the wrong swap cache index and eventually
-replaces the wrong swap cache index with shadow/NULL value, frees the
-page.
+It seems to me that it is totally up to chance whether the lru_add
+batch is handled first, especially that there may be problems if it
+isn't.
 
-This leads to the state with a swap cache containing the freed page.
-This issue can manifest in many forms and the most common thing observed
-is the rcu stall during the swapin (see mapping_get_entry()).
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> ---
+>  mm/swap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/swap.c b/mm/swap.c
+> index cd8f0150ba3a..d304731e47cf 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -236,7 +236,8 @@ static void folio_batch_add_and_move(struct folio_bat=
+ch *fbatch,
+>
+>  static void lru_move_tail_fn(struct lruvec *lruvec, struct folio *folio)
+>  {
+> -       if (!folio_test_unevictable(folio)) {
+> +       if (!folio_test_locked(folio) && !folio_test_dirty(folio) &&
+> +           !folio_test_unevictable(folio) && !folio_test_active(folio)) =
+{
 
-On the recent kernels, this issues is indirectly getting fixed with the
-series[1], to be specific[2].
+What are these conditions based on? I assume we want to check if the
+folio is locked because we no longer check that it is on the LRUs, so
+we want to check that no one else is operating on it, but I am not
+sure that's enough.
 
-When tried to back port this series, it is observed many merge
-conflicts and also seems dependent on many other changes. As backporting
-to LTS branches is not a trivial one, the similar change from [2] is
-picked as a fix.
+>                 lruvec_del_folio(lruvec, folio);
+>                 folio_clear_active(folio);
+>                 lruvec_add_folio_tail(lruvec, folio);
+> @@ -254,7 +255,7 @@ static void lru_move_tail_fn(struct lruvec *lruvec, s=
+truct folio *folio)
+>  void folio_rotate_reclaimable(struct folio *folio)
+>  {
+>         if (!folio_test_locked(folio) && !folio_test_dirty(folio) &&
+> -           !folio_test_unevictable(folio) && folio_test_lru(folio)) {
+> +           !folio_test_unevictable(folio) && !folio_test_active(folio)) =
+{
 
-[1] https://lore.kernel.org/all/20230821160849.531668-1-david@redhat.com/
-[2] https://lore.kernel.org/all/20230821160849.531668-5-david@redhat.com/
+I am not sure it is safe to continue with a folio that is not on the
+LRUs. It could be isolated for other purposes, and we end up adding it
+to an LRU nonetheless. Also, folio_batch_move_lru() will do
+folio_test_clear_lru() and skip such folios anyway. There may also be
+messed up accounting, for example lru_move_tail_fn() calls
+lruvec_del_folio(), which does some bookkeeping, at least for the
+MGLRU case.
 
-Closes: https://lore.kernel.org/linux-mm/69cb784f-578d-ded1-cd9f-c6db04696336@quicinc.com/
-Fixes: 3417013e0d18 ("mm/migrate: Add folio_migrate_mapping()")
-Cc: <stable@vger.kernel.org> # see patch description, applicable to <=6.1
-Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
----
- mm/huge_memory.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 5957794..cc5273f 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2477,6 +2477,8 @@ static void __split_huge_page_tail(struct page *head, int tail,
- 	if (!folio_test_swapcache(page_folio(head))) {
- 		VM_WARN_ON_ONCE_PAGE(page_tail->private != 0, page_tail);
- 		page_tail->private = 0;
-+	} else {
-+		set_page_private(page_tail, (unsigned long)head->private + tail);
- 	}
- 
- 	/* Page flags must be visible before we make the page non-compound. */
--- 
-2.7.4
-
+>                 struct folio_batch *fbatch;
+>                 unsigned long flags;
+>
+> --
+> 2.40.1
+>
 
