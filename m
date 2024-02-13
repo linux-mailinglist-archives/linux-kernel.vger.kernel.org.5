@@ -1,141 +1,169 @@
-Return-Path: <linux-kernel+bounces-62949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E64C9852846
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:38:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C0C385284A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 06:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E2BF28593E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:38:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4034B23BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B79156E4;
-	Tue, 13 Feb 2024 05:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560C812B7F;
+	Tue, 13 Feb 2024 05:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiobKH55"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="l0GhWb+P"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65195134A7;
-	Tue, 13 Feb 2024 05:38:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C5511C88;
+	Tue, 13 Feb 2024 05:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707802689; cv=none; b=A+Zj2A3TEbHkg5fA1VpuHqhVfxeEHWAA3T/O/sHyKDQztizpdjCEW4Y1fBuX8yXScv9JngNBJBpUTF/58Qnf7aUynpJo7fUTsNU8Ux6bM/ERR4uPWCibBHDC68FPiB4nHJL7fSu0CUJa5vZv2TDthra8xtTesN/2qW1zykDFdwk=
+	t=1707802841; cv=none; b=OXRJCDQjy8xiBdRGQt3haBmQvAIgyJ04jniQdPzM4iFcuyVEWkOG9HdcAtuOKko7lP6OijaW/YEAQ7itq9E0eIKzhYMlKDrla7YnAfw5WhjuLXIiEBZC3SB0TChYGcbuw1Km0vfC23/dx48d9KN2wuJgNJdZ2/UnZkN98L+0N78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707802689; c=relaxed/simple;
-	bh=omVVZqAPwzo6zZ/ZclaeNjfVjhamkChXexUh9lvdRVU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jsR14zf6l5EHtnvB/4lKzNwdwRaKJ6yCjXcWeqFmfsuQcScjH20y5Fx6i5aC0/AhSoL/BSJARLJeGS2fSC5o1sCOn/Jya+dNQXtIwfplhzCF3eok3mixONHfh+0HkqfDcO9OQ8vtzmP+dGmkN1hX6oqJM3GKtmKC9WTKa8Yaw2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HiobKH55; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so534257566b.0;
-        Mon, 12 Feb 2024 21:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707802685; x=1708407485; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bYXdB3+zSKU+ziwTscLVWPyxXG/8J4FJdNu2+Hvv5wQ=;
-        b=HiobKH55fo/HAgEAojY0LPFLfOGDd6IJk+0m2IoI55iQIGv2rXkDCzfmdBw+pY/zDf
-         +78FqZdZl1ATh/GUPMcEAWvXZAXM0trInbbHRmMdKROs5O5d+YALDaoAdoUg2Wd3p+9i
-         zOqVmNQfqu43moLbJHQovc5IsIGFtkOWZdGsrH/syxEaolHCSz0QKNZ6WhHo/Iawj4+A
-         FpuJfon2kayiLwErh8KevCkVTt9NLedEJVl7jij0bH4R2Jxip4gTxxDccHao/XYTnfS/
-         Vk/FVe0Cb7i7fCh6QVIZFvX1WFGhQ8/IKMp0yDiXQkozZFkB55hG2ucm/6TPh6BV0edh
-         LxTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707802685; x=1708407485;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bYXdB3+zSKU+ziwTscLVWPyxXG/8J4FJdNu2+Hvv5wQ=;
-        b=IznXI6P0skNEOBC0R4tPa+t3IWgyFhLu1FD2LX2r9TLdputjKEQqIFNeALaZO9GwE6
-         MIZfUn9leV113VvYQ/U64ZmzgBUrgXtuZrjjI5LhmS+AotBvbfJp6IJAtH/ZXGL99Dss
-         ky++CUJiaXyNO2AWMywXc7Bll3GWRpcDYHO6jp+SQcNuJHxpyBWnrfjyQzyzOTZLZ9RS
-         P+4e6uts3MZ9KfegJ0s7KTGt+WCKQkjeYtI5MF75ffIdIMxxuT7nJ8Q88Cf/fJ+5beAT
-         x7gS9AgJcHmO600IL60h5z+76rm69wFhc0rkTZ/doaNttDh+wtUfsRItYseFYpqF7IF8
-         MIrA==
-X-Gm-Message-State: AOJu0Yyzanfqtls0Mq+exJqnUMPzJfTY3obdFUQRK0iifRoqWQ09oe9e
-	lqzC/p9cRRwRKXZLd6/1lQnk/qACLmqe+JdRfSZaXSYXzOR82Cx5
-X-Google-Smtp-Source: AGHT+IH1RI7+JKCAoucQct5YWa3nTZGYqSTFR3J5hmCbgkfu3eIRUhtFS0zPvYnp2GIoXhZ46YJTvw==
-X-Received: by 2002:a17:906:370e:b0:a38:215c:89b with SMTP id d14-20020a170906370e00b00a38215c089bmr6335504ejc.73.1707802685274;
-        Mon, 12 Feb 2024 21:38:05 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVzK/M5LmqBMpnrz+fUmQDlVL/XtC8+joam+QwRswGCuUyU/QeYQCN4iLP1hFPuUSg6PROoJPLn3bJTpX3G8I9WqT6JK0YduVZTZnfAVw6sJ26y5el3AE1I/bQXS+sT54F6pstFw7Z9PWC/jZHRRfsT7NF/3R/xCClupGPJm1R8qebInSfQTnuFRsjxyESbyWuvqRk2g9afuq3AdbDCy+8nV7uKOO595E+yrGpMvEHEU2nMNT/K7sAZA3BzEvx5h2nfTlcELq+2J/nhNMDlItRjinHMhzFDYncAqUzlN0e4PuEW7w2tY5kPvekWofxTxZysfu66X9m0ZQ/aRn9s1nuV6zHm8nb3GvlWOvS5Zm0fxZ85Atcx5Jj0c5Fg+q12QdK3DT2ZO5DWcx/3wyLMdUUesBRKwFWO/IAdJki/QqSINXqmMUo6lgCJvj8RnDvgvTO6jqoXLZzvKHx4YLP+7B/5tP8MMvHL+/zqtFEegDlrIKJqFixrRaX92wB5WTQ2eKCF+vuzOtfyyVwxjGY2UGY=
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a3d125b9c0asm16659ejc.81.2024.02.12.21.38.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 21:38:04 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Sam Shih <sam.shih@mediatek.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 3/3] arm64: dts: mediatek: mt7986: drop invalid thermal block clock
-Date: Tue, 13 Feb 2024 06:37:39 +0100
-Message-Id: <20240213053739.14387-3-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240213053739.14387-1-zajec5@gmail.com>
-References: <20240213053739.14387-1-zajec5@gmail.com>
+	s=arc-20240116; t=1707802841; c=relaxed/simple;
+	bh=/SBqz9kKLbxiDr3+vIU4yakZsEGow4mgvLGrY7vbSzo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Oq7Sd+ioiWMJRGQMUfyUXFbSc77ASDbFJNTZJUneo9qe4QCwo3Bk/G+VU72vbwr+UJWScVnxIUnfMoi/BzQ2579oZZnrhE+w09RCLTz1wgYo6rCtkIcOyjBxc3E0Mq66at3o7uIDMI3yN7+lwhDFhehTDvfT/XEHNyondCTVYZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=l0GhWb+P; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41D5CN4E032147;
+	Tue, 13 Feb 2024 05:40:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bcECAOxG27hb5viVJ2WKDRBPwzybpcZBZwp56T0Hm+M=; b=l0
+	GhWb+Pa9VTZygEdbCVtchYTP+z9qL6PEWITmhktr4Gi1ufPfKxWCI+B2w8q899sb
+	NhiaODC1n64ohyyCdcwgErzKxE2bLhXgEHsDPsGa/tckHxuEIcO0PQFjJv6lVJG7
+	DXgajTCSfPRKu54iVqXfTkGBMC3TUU1u83joyflD7rIwlHmtf+kr5tGg95235nBK
+	02cInMY9c7c8Ng5r7qzj4th3//HtnqaT91fNgz2GDX5g7fQXLvOruRAVckl2d+4a
+	mN/kr0Q22DWXvy9VYMUhrvGRQmTAubTko4jVziZjNKWB/zYh/lJoqPaXGfh98Bms
+	LjtIr52vF64MRuK7Hvuw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7hewa4p7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 05:40:29 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41D5eSCV028913
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 13 Feb 2024 05:40:29 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 12 Feb
+ 2024 21:40:25 -0800
+Message-ID: <d0b47ead-0e39-a303-66bf-43d7e3bd3fd6@quicinc.com>
+Date: Tue, 13 Feb 2024 11:10:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V2 1/4] firmware: arm_scmi: Add perf_notify_support
+ interface
+Content-Language: en-US
+To: Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla
+	<sudeep.holla@arm.com>
+CC: <viresh.kumar@linaro.org>, <morten.rasmussen@arm.com>, <rafael@kernel.org>,
+        <dietmar.eggemann@arm.com>, <lukasz.luba@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20240117104116.2055349-1-quic_sibis@quicinc.com>
+ <20240117104116.2055349-2-quic_sibis@quicinc.com> <ZbfJN1c9viiLhO1L@pluto>
+ <ZbfhdqBBpjyf3IRI@pluto> <20240131112854.24euh6c6xgljsj6c@bogus>
+ <ZcoSuv7qwexbXy-9@pluto>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <ZcoSuv7qwexbXy-9@pluto>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ES6HdPApwObErYW01lLVkdC3oSyHTg7S
+X-Proofpoint-ORIG-GUID: ES6HdPApwObErYW01lLVkdC3oSyHTg7S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_02,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=987 priorityscore=1501
+ malwarescore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402130039
 
-From: Rafał Miłecki <rafal@milecki.pl>
 
-Thermal block uses only two clocks. Its binding doesn't document or
-allow "adc_32k". Also Linux driver doesn't support it.
 
-It has been additionally verified by Angelo by his detailed research on
-MT7981 / MT7986 clocks (thanks!).
+On 2/12/24 18:14, Cristian Marussi wrote:
+> On Wed, Jan 31, 2024 at 11:28:54AM +0000, Sudeep Holla wrote:
+>> On Mon, Jan 29, 2024 at 05:33:42PM +0000, Cristian Marussi wrote:
+> 
+> Hi Sibi,
+> 
+>>> On Mon, Jan 29, 2024 at 03:50:20PM +0000, Cristian Marussi wrote:
+>>>> On Wed, Jan 17, 2024 at 04:11:13PM +0530, Sibi Sankar wrote:
+>>>>> Add a new perf_notify_support interface to the existing perf_ops to export
+>>>>> info regarding limit/level change notification support.
+>>>>>
+>>>>
+>>>> Hi Sibi,
+>>>>
+>>>> as I mentioned previously, in order not to add a needless stream of SCMI
+>>>> Perf accessors I posted this:
+>>>>
+>>>> https://lore.kernel.org/linux-arm-kernel/20240129151002.1215333-1-cristian.marussi@arm.com/T/#u
+>>>>
+>>>> to expose all the Perf domains infos via the usual info_get(), similarly
+>>>> to how other SCMI protocols do already.
+>>>>
+>>>> I think that reworking this series on that, you can certainly drop this patch and just
+>>>> check the _notify booleans on the retrieved domain info.
+>>>
+>>> Sorry, but hold on with this change, I will probably post an updated version
+>>> my patch above.
+>>>
+>>
+>> As discussed in private, I would prefer to avoid exposing all the internals
+>> to the users of SCMI perf. At the same time may we can do better if we can
+>> check the availability of notification as part of notification enablement
+>> from the SCMI driver, I need to think the details yet.
+>>
+> 
+> as previously mentioned, after speaking with Sudeep, I posted a new
+> series at [1], that aims to solve your problem with registering
+> notifications and looking up reported Perf frequencies in a new way.
+> 
+> Using the changes at [1] you should be able to:
+> 
+> - register your notifier without caring to check if the notification
+>    is supported, since the SCMI core will take care of checking that and
+>    report an error if not supported, without sending any unneeded
+>    attempted notification enable message  (so you can drop 1/4 in this
+>    series)
+> 
+> - retrieve the pre-calculated OPPs frequencies from the new extended
+>    Perf notifications reports no matter if the system if operating in
+>    level_indexing_mode or not. (so you can drop 2/4 in this series)
 
-This fixes:
-arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: thermal@1100c800: clocks: [[4, 27], [4, 44], [4, 45]] is too long
-        from schema $id: http://devicetree.org/schemas/thermal/mediatek,thermal.yaml#
-arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dtb: thermal@1100c800: clock-names: ['therm', 'auxadc', 'adc_32k'] is too long
-        from schema $id: http://devicetree.org/schemas/thermal/mediatek,thermal.yaml#
+Christian/Sudeep,
 
-Fixes: 0a9615d58d04 ("arm64: dts: mt7986: add thermal and efuse")
-Cc: Daniel Golle <daniel@makrotopia.org>
-Link: https://lore.kernel.org/linux-devicetree/17d143aa-576e-4d67-a0ea-b79f3518b81c@collabora.com/
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- arch/arm64/boot/dts/mediatek/mt7986a.dtsi | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thanks a lot for spending time on this and simplifying the series.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-index f3a2a89fada4..559990dcd1d1 100644
---- a/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7986a.dtsi
-@@ -332,9 +332,8 @@ thermal: thermal@1100c800 {
- 			reg = <0 0x1100c800 0 0x800>;
- 			interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&infracfg CLK_INFRA_THERM_CK>,
--				 <&infracfg CLK_INFRA_ADC_26M_CK>,
--				 <&infracfg CLK_INFRA_ADC_FRC_CK>;
--			clock-names = "therm", "auxadc", "adc_32k";
-+				 <&infracfg CLK_INFRA_ADC_26M_CK>;
-+			clock-names = "therm", "auxadc";
- 			nvmem-cells = <&thermal_calibration>;
- 			nvmem-cell-names = "calibration-data";
- 			#thermal-sensor-cells = <1>;
--- 
-2.35.3
+Will re-spin the series with your recommendations.
 
+-Sibi
+
+> 
+> Thanks,
+> Cristian
+> 
+> [1]: https://lore.kernel.org/linux-arm-kernel/20240212123233.1230090-1-cristian.marussi@arm.com/T/#ma68cefd753e34ba3e1f2d4392e978026a87e1bf8
+> 
 
