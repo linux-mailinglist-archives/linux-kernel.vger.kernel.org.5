@@ -1,147 +1,213 @@
-Return-Path: <linux-kernel+bounces-63101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA2C852AEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F017852AEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:22:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 156C32820CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:23:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9EF72826B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 08:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2888C22618;
-	Tue, 13 Feb 2024 08:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172A118EC0;
+	Tue, 13 Feb 2024 08:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iPh2cO4z"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="rfxBzUPS"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2089.outbound.protection.outlook.com [40.92.42.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44922208A;
-	Tue, 13 Feb 2024 08:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812514; cv=none; b=P2/+Aq+u0wyUQFwbvqyl7Nmk+/6y1oEwEVy6c/H+xGS3A5ncbBiQlDuPMO/QtIXzNJBlvc7X3iZ6jTbloTKbKGRw6bAlUV9pu06byeESOdpeTazX8BYtJ+LAlIUiQ8vKdNaGdBCr+BG0f7TgzzZ1Vl6ZmmqHSuxjp4OipM9gcmI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812514; c=relaxed/simple;
-	bh=EvesecZhCS+F8B4ydJvfk8KC+jJVk5kwfen9WAPTcVE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hgfeV6g9uICsXujesH6YBe2mzbS5jQnvLKpyOEqb3FWlcMUerzg+nagJcCglKG5or7R/AbKfXmjga6e9jMrL3KPYrWUc0Mq17sPxh90yuoBuWJw6XGNsQ+TeBv2c3HSndr6TKxwCj9TKiJLwftsVw7u0XQ8PmzhcoR+Urd2AuhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iPh2cO4z; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56003c97d98so4846961a12.3;
-        Tue, 13 Feb 2024 00:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707812511; x=1708417311; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hww4KX6AuerRDewZUOzhuppFnbJN24s7IBnlzI92hEg=;
-        b=iPh2cO4zV4YMNpILe9Ewbdhy5iEoYR/t5hhuD/GmiFV90Bp3/qOyC0CFIkbfDXz+YP
-         xHSR+m1lGjiHICMvADO9wie1fzcQs5jSm3jDwhFZaM6Uk+8k1AEADCaKO0a/zCSWYjD8
-         Wmfi9Gd46lOB5RBUwo1kSEQ0IHO7FbuXAtdl2e+e6szNnOrFmIvM/cPxwB1HjQq2ErV8
-         gq+rNB9mPjwEUjSOp4or28y5Z/f3NbOATqgXHa5ZtUyIh3lAPwAY7ZBUm2i1tJLzrXk2
-         9TgWcOEiYF0VcVQYqVn6JLJjknOlzbP1mQC9Yo7mbqcD+nRXLYSJ9balg/LYbBrjjzJO
-         hfOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707812511; x=1708417311;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hww4KX6AuerRDewZUOzhuppFnbJN24s7IBnlzI92hEg=;
-        b=m29bPlM3zpfrVlNXcDyJSQtsH6UG9ikTwT9FDfcsaiVHWGmIfJte0+7qox4SPtzIeT
-         xkwAM28XgofxTvy7zB4oiEZVUHET78c4DTb7fG2aZew3Zu23x8nVxMHt04ZF+h8FjTQs
-         vqkXbQ7VR6kINFsBpjfoxEp6arKdorAYfdsdIzR2vyGT/PE3IwZOTgGO7lsm6o6pJ9Zs
-         yyQJsTRog4PfRopQao9UeEpQMHha3vZyd6Ff1xOVpumlouNWxta77ezCIV6obl3B8PKc
-         Fk+paw3HX2OteK4Nlu/2tnQvQBTXYmBqz5WYEOfyqBQ9gvFZR0gKiDqSR2c0J4G9hsav
-         RU6A==
-X-Forwarded-Encrypted: i=1; AJvYcCU/u93C4wA1U+QwVxHv7OOO7D+8wcrr0mqLTZdhe6wzOBDHeE3J5Yves3Wrs81bB3pt3nFtWfQ6yBEbSYrpbKiDIPtpzBfOq+S5zqWBZLgmkPy0sRxxNxcrbzTiIo6o/+3SWUzEPMv59ws=
-X-Gm-Message-State: AOJu0Yx9Ax5uug+3RSietGC8kJua0GJpnMrW10KtxDiMwaZkAQU2/OwJ
-	cqo0DG2Kk+LK5ygVZkvPcr+dbAX+8EBQHkxkf//Kr2mBmyXSUVDb
-X-Google-Smtp-Source: AGHT+IEtbOgAQCr2q9wNkojH1FVB5yqlZL4vx2tEJYwJ0iwk5cxr4EarSrt3PNOwz/J1gIq7ItlMMQ==
-X-Received: by 2002:a17:906:3755:b0:a3c:9ad4:b8ff with SMTP id e21-20020a170906375500b00a3c9ad4b8ffmr4179109ejc.49.1707812510698;
-        Tue, 13 Feb 2024 00:21:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUsW2MBxSOX85UTqI3VynXX3cao1HNaEQjG8oN1kRIdQqMfckBiAidkpBjgOk3hEe0AWVG5To5wB0IaewSmr+n+mSe6soBntPCGASJngzEHoTxp7u+Fq61wWHw3lx4H8uOKzHbKsAISoXq30d5iL90WBf/IujhptnRvkWpj2bY3tuYCWXeCAPnVbjOV0BSDSUdhaqRpWpb0WEcRZ0Qx0r/KcE030I6+qwErlOMDDF4KmJB25NQZZ4Ph4PyQUmnB8vaJCfD2HS6aHbMHzrxwV1Q6nd7Ml+Oh10LMLC7U1+gSufr7vnCnc+K2vPFWRV9xxLsaPcgzjH0YW+PlhPpoEw7lJN4wUI2BSA2SbpijbjHIQHEnaT3wAU9OUw19CbaIKk/B1usYDzhIFMy9y8C7F6C2eKjiyj5mWG8+6PQj9qHlNVp5LoCjLjWc+JKO5jEH2ErRMiU6Gk4rK8uR510MPoJHaiSHbA0O25ihOeG/ep/qnl8fqCWJGEqU4jIwq5Gv6llMsq1dX2t25wseG/gHiPQ8XhCLhHVye5Rg0P8vhMdCNpzY
-Received: from tkudela.. (c156-103.icpnet.pl. [85.221.156.103])
-        by smtp.gmail.com with ESMTPSA id hw13-20020a170907a0cd00b00a3cf2f71408sm594983ejc.152.2024.02.13.00.21.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 00:21:50 -0800 (PST)
-From: Tomasz Kudela <ramzes005@gmail.com>
-To: ramzes005@gmail.com
-Cc: alsa-devel@alsa-project.org,
-	andy.chi@canonical.com,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	kailang@realtek.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F9D22EE3;
+	Tue, 13 Feb 2024 08:21:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707812504; cv=fail; b=VPDxtJjOJeKNPCbGGZN8MYlgouNLnwOAeVVNHIRVKRrCB6gdNrpaA3Gn+COFqnwCerIgdGwjXPwwXQ1ZVX6rzU4+mtwRLPhYtpr83imKhr/QhZE7V4OJ71hm2NGeq8NrANVgxEkmcfHNAEZKjexUzys02+9PhceCxVvY4YtObfg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707812504; c=relaxed/simple;
+	bh=TJMQ9b1tleWzB3EubV76b3sc1s3JXdlsf2ZDkXHgXJQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Tama3bKtuk55yWo+5xVcRLZmsuAu8mWG7LIPr2gUzwRqFxsiRi1RIsURsCb+opmEF023ZN7ftIX/j/wLOZW0fBxls05YIdGhELwBhAzREfImNWKqrCvYJkc6KWebqGr7S5bynjXco7arYCkqdWbG3vZl5vaCjoG3NIQgH4tUemA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=rfxBzUPS; arc=fail smtp.client-ip=40.92.42.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F1VEYMqONYCwE5tkvAX7qCgegRd2PA/Gp1C4Tdp9qpkn59oYcnurk3lScOzRhGSGgczVI699eKDHruRwleGYWeblx0eai77ymaPJISNb4eDm+W88A7exYHGrJfoZRM+MvMVlII3TbYYF4gW6dr/Xu11VEqehDvBDN3fJpJZBL03RJKhGW5RbnJHXPZfp4oTS6Ueg4vQrTfgFl2EgbCESRF40J3+8f2JquiyGcC/dsSlFPocj4tVzh8o2zKw0XOkVqb7mg80SgV6LkMdteZdu9TE+ELyDV0HjSuv079Tjz5fOzGnCg3rICfC9N0IWYlIzw+CwXyfz0quP+K83T5GEQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HEt50qoic42jLe4F/Hv1osOVrSwMApuYOG5cQBkRpcA=;
+ b=eanjEHN33LYMCYwzBzo3QybizHsVTcHlUjXFE5BgFvx3/HY0ZWPdhu1HukV5QIaqa0f90p+sBVxZnJz7EV9Xlw/VC+y7zKg9PY4rYv/DND9od0CBYf5zSVrA3AVqtfD1vwnZixecJa1blbatNPOfpob8xZjH7GMQAAVNPqx4xJjWlnA3jdO1+vSuxVv+R8yWFzUAOA/tcxSR7GhsOfGv/Lw+qFoe6oB43PqdWxN4mqjJA/oyD37vb/Z6SNpqcGX9UmIGPBBTvbSyWfODDZNkpKLMqVZn0ifYsongtbMnksFs8d6EBqpkzoeL84BgcU/zurzS+WYl0+O3W15R6jG2lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HEt50qoic42jLe4F/Hv1osOVrSwMApuYOG5cQBkRpcA=;
+ b=rfxBzUPSqOHHJPSYgI/VICBk55ke1sjtwEfMeIbmDEb+Z8EuWb9LvD4uGwf80SvL2T1CW7GKy9KjArZOzt+gi897kce6jwr/p3ZmiIyBhVEB7fso4Xp+G21mc9wQpEALbt8S+cTcjdHZEyt/DmcQL21uqGE85bB0tUjrF2nU99TqtOsY+VR3G3t5v5s5Zb6RflbsnEafATKawbDUmX1egoDgq6h635yx0dQtJ4P2ZvgARy1VKf6MmHnZQx/CHBRKBv7uj9i+/EJo1CUQShr4nyQCrTijdj0BxfBf0G5vWJishf3ly99uCWCFxk5MiFe/dUdUZpRfVenYQ+DbjpOq1g==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by DS7PR20MB3776.namprd20.prod.outlook.com (2603:10b6:5:3ab::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Tue, 13 Feb
+ 2024 08:21:40 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b%2]) with mapi id 15.20.7270.036; Tue, 13 Feb 2024
+ 08:21:40 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chao Wei <chao.wei@sophgo.com>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	luke@ljones.dev,
-	patches@opensource.cirrus.com,
-	perex@perex.cz,
-	rf@opensource.cirrus.com,
-	ruinairas1992@gmail.com,
-	sbinding@opensource.cirrus.com,
-	shenghao-ding@ti.com,
-	tiwai@suse.com,
-	vitalyr@opensource.cirrus.com
-Subject: [PATCH v2] Add Lenovo Legion 7i gen7 sound quirk
-Date: Tue, 13 Feb 2024 09:21:16 +0100
-Message-Id: <20240213082116.15049-1-ramzes005@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240212193327.59507-1-ramzes005@gmail.com>
-References: <20240212193327.59507-1-ramzes005@gmail.com>
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v8 0/8] riscv: sophgo: add clock support for Sophgo CV1800/SG2000 SoCs
+Date: Tue, 13 Feb 2024 16:21:42 +0800
+Message-ID:
+ <IA1PR20MB4953366482FEBFC5E7F6F34BBB4F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [8n6PzKHk2oiCnzp0EMVkK68fepHk6tva0ajc7E5F+7CR1eIb1ywgNgRxdkCWaV09]
+X-ClientProxiedBy: SG2PR01CA0109.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::13) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240213082143.591393-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|DS7PR20MB3776:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3abc961b-867e-4029-529e-08dc2c6ccddb
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NWMHQ+DHQAw+NcPXCGc7lhY3W0xvKvWf6A6oCaOD7m7pcRHFZLT9EfOOceVC2kMiYVldi02TzJB6lsRS1NxyNQSvkzx6/fH5dM9j237cMOvGAQpgH+gkD7BD6CChEXE2nOhAfLqZNMgMM6ODOU87Cb5Xw8SGIYZkGv2eyZn96oleT148Hjb/kRAP6kW7Sx9ycjVXQLJcF5SUsn1h0bG6aYRWrnCXyYyroq5eM3nRah14IWWPxUdM7pNVUc5b1rZlJnqviolCPX4WH5tAnsQCsgxf/CiW6IW7fzCq0iEk2P71nLz8/FD75hnPaLduooJw1estNcjocfy4E9IwLz9zmxtrF7sohdVPMsNRc2GzI8UAb+gbdnuRNWxxw4JpN/ro92UJ9R0p2LxsSlHQsIpEGnNw4WXGfMw/U9wCJKOYPX1Eq6fMJgyV0VWJA1/9hpKyqUkfg3Zf8PZZwj0G1ASSe8ToqyanTmaoZsygtfeERuj4DrUPmGS4l+4jAvTiteQ39yKEJLevt0mDlf47TLVHqxqbY7pDjlRl4Doixt0FyrXzwWa6dn7Y98x4OwHrzvzPn5qdvWyS2BqE0p+OD+vYyAMTdYyZHbZUwmNsAasutD43rxdPH4SmRNOihi2t3pq0
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?O98qB0I5T0BPZ1Eu/KR6DvjDjiLUjUZq22vbpnTk/HWN3upBKt4AmFqIfYft?=
+ =?us-ascii?Q?pzsAVzzS/mU9NUj1gYr8ohBmrqcgIsASHN8kYTR7gf9L6mjmG5uAmnisDnfG?=
+ =?us-ascii?Q?bbodGvHXTB93lGr6GJg8SZnqpaRnAtdgTP5YZ/lSuS7bao8oo2EAgskgsSm8?=
+ =?us-ascii?Q?wZTcfgMjacvGQMW9CIbAd3d02+jQxYIdpZI7rieqITmvuVG9Vd+KkhcBKuzI?=
+ =?us-ascii?Q?IsgHI3XiMJWTcAAsBePIiXKDuSpXIu1COZqFc9CXRgMB927J3LufckJ4wKJK?=
+ =?us-ascii?Q?1ZrCZpyGdtbrxlMq9yE38NOhmesmPq7TNkRnlnPln7kSdjSSzURul/iNuFH/?=
+ =?us-ascii?Q?qB3D46imRySPb2PLEqUmMTJsJpqDRraGpY5lhX+neftT94AjvYCYdEo9smvz?=
+ =?us-ascii?Q?Od6MFLXdVNWXqSFwe0baa6taY+lwy39L6iQ3HelgOoX8YbgPl+RJPVM6pfVm?=
+ =?us-ascii?Q?VQrHNkN1ctGhzerX+uHt8pspMTdLgzhNKjnSEUOyaM5rkXndzQCZwk5+0HGg?=
+ =?us-ascii?Q?3TOObbEatqtUr8XJrdfn2ELKasoe+6dqkDD2DQnXY63XJ+dKUt1FTiizdw6L?=
+ =?us-ascii?Q?uhs3/TDpucCt+SBGDfkuiLHFy4D1LcFRHxf9RGaOh/ltJ6ZqX9d6RsRF04wR?=
+ =?us-ascii?Q?D/i0XHdVZg7WZ1YZM35hx3Nw4Jg8tQfVePAddrRqF1/9T+Teh3WtSLjVXtDj?=
+ =?us-ascii?Q?gNbekVekKuytDMuyAdvpPlipsshT54DCoqD7a2lFbBN9XNkZ3bJYH30oqn3V?=
+ =?us-ascii?Q?9sGdN711DU9LxmVdDRUILjy3X2qK8qOQDGS+Vt+ldZguJjE0lPb63DcIRk7k?=
+ =?us-ascii?Q?HZpyjhvrkdh2MVCP8oy/B9Bp1E+cPgOteF+EtVBmc97e7Px4ltycpKg+/udv?=
+ =?us-ascii?Q?1PqeIrYlILkVi+0tOD95DJcsztX5Zwm+9tpWoq3HqSnDpu39SyQ4Sz/IPGlu?=
+ =?us-ascii?Q?sKtmKByruXXJrqyfsl98MjZYkQwgsItZnzl88n7cfuiL4FmcoGPtF+Rl4pG4?=
+ =?us-ascii?Q?0FSy8mD45I9Snd7KGsMnAZbKqB5NW0NTFERYHho6PiREJbdexBu2Cbyup0yw?=
+ =?us-ascii?Q?5E62hq8wMAKFnHGOD3Npb1V8qniFqXWIdb6Di2Vo+q4qRw8QYjaeTf6NVr3n?=
+ =?us-ascii?Q?yR2YxPxsiOr0b/YlPeJYb0F3zkKuqOd3r/mURmS9PTeDLRhPXUDZ8UXZ3eSd?=
+ =?us-ascii?Q?WNa9juw/JeYUC3birKdinnvUq0/0WCN3Wz9WpLA5UjyduiPpqThFMKmLJmZU?=
+ =?us-ascii?Q?kJ8xmiepNsTi90DFNvtND+qmvNorB7d54WjIVuf8iVuaTGwO5lHrWSRNugwA?=
+ =?us-ascii?Q?9HU=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3abc961b-867e-4029-529e-08dc2c6ccddb
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2024 08:21:40.3788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR20MB3776
 
-From: "T. Kudela" <ramzes005@gmail.com>
+Add clock controller support for the Sophgo CV1800B, CV1812H and SG2000.
 
-Add sound support for the Legion 7i gen7 laptop (16IAX7).
+Changed from v7:
+1. fix unused variables warnings in patch 3 of v7
+2. fix wrong pointer type in patch 3 of v7
+3. move the clk_disp_vip_parents variable to the patch 5 to avoid warning
 
-Signed-off-by: Tomasz Kudela <ramzes005@gmail.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- sound/pci/hda/patch_realtek.c        | 1 +
- 2 files changed, 3 insertions(+)
+Changed from v6:
+1. fix dead lock when setting rate.
+2. split the driver patch into several patch for easy reading.
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index d74cf11eef1e..8a6b484b2184 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -95,6 +95,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B5", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA38B6", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-@@ -431,6 +432,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F12", generic_dsd_config },
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
-+	{ "CSC3551", "17AA386F", generic_dsd_config },
- 	{ "CSC3551", "17AA38B4", generic_dsd_config },
- 	{ "CSC3551", "17AA38B5", generic_dsd_config },
- 	{ "CSC3551", "17AA38B6", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6994c4c5073c..0029f61d4693 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10260,6 +10260,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
--- 
-2.34.1
+Changed from v5:
+1. rebased to mainline master tree
+2. add SG2000 clock support.
+3. fix document link
+
+Changed from v4:
+1. improve code for patch 2
+2. remove the already applied bindings
+https://lore.kernel.org/all/IA1PR20MB49535E448097F6FFC1218C39BB90A@IA1PR20MB4953.namprd20.prod.outlook.com/
+
+Changed from v3:
+1. improve comment of patch 3
+2. cleanup the include of patch 2
+
+Changed from v2:
+1. remove clock-names from bindings.
+2. remove clock-frequency node of DT from previous patch.
+3. change some unused clock to bypass mode to avoid unlockable PLL.
+
+Changed from v1:
+1. fix license issues.
+
+Inochi Amaoto (8):
+  dt-bindings: clock: sophgo: Add clock controller of SG2000 series SoC
+  clk: sophgo: Add CV1800/SG2000 series clock controller driver skeleton
+  clk: sophgo: implement clk_ops for CV1800 series clock controller
+    driver
+  clk: sophgo: Add clock support for CV1800 SoC
+  clk: sophgo: Add clock support for CV1810 SoC
+  clk: sophgo: Add clock support for SG2000 SoC
+  riscv: dts: sophgo: add clock generator for Sophgo CV1800 series SoC
+  riscv: dts: sophgo: add uart clock for Sophgo CV1800 series SoC
+
+ .../bindings/clock/sophgo,cv1800-clk.yaml     |    3 +-
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |    4 +
+ arch/riscv/boot/dts/sophgo/cv1812h.dtsi       |    4 +
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |   22 +-
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |   12 +
+ drivers/clk/sophgo/Makefile                   |    7 +
+ drivers/clk/sophgo/clk-cv1800.c               | 1541 +++++++++++++++++
+ drivers/clk/sophgo/clk-cv1800.h               |  123 ++
+ drivers/clk/sophgo/clk-cv18xx-common.c        |   66 +
+ drivers/clk/sophgo/clk-cv18xx-common.h        |   81 +
+ drivers/clk/sophgo/clk-cv18xx-ip.c            |  887 ++++++++++
+ drivers/clk/sophgo/clk-cv18xx-ip.h            |  261 +++
+ drivers/clk/sophgo/clk-cv18xx-pll.c           |  420 +++++
+ drivers/clk/sophgo/clk-cv18xx-pll.h           |  118 ++
+ 16 files changed, 3545 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-cv1800.c
+ create mode 100644 drivers/clk/sophgo/clk-cv1800.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-common.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-common.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-ip.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-ip.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-pll.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-pll.h
+
+--
+2.43.1
 
 
