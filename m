@@ -1,126 +1,203 @@
-Return-Path: <linux-kernel+bounces-63203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245B5852C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:32:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5238A852C4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F750B23D32
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:32:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA89B1F2523E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7639225A4;
-	Tue, 13 Feb 2024 09:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8685A224E7;
+	Tue, 13 Feb 2024 09:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ydy0EgoC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="P/SS7Urd"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mtFtMFbU"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9801755C;
-	Tue, 13 Feb 2024 09:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924FC2231C
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707816693; cv=none; b=KzuaKBqJGi9PpZxNr7+tAIA2HkjHC4XGN8mf0hpwtMAf/7fJ696Qj+1AEmJ8S2zUl8lCW6ikeRqUVhN7JI/UJ2d2ZMBHzcR3EhLaBTQgizkvOq1wtPvzd0psSZ9uHbJlBpqGEdbK58SiSNsI1xvnUNjHD+9mZWn6YHuI7MVlyCM=
+	t=1707816798; cv=none; b=mYBvCoiswAV/sSHP6aIbWxUzgWnJb72WMUxDR5Jz2517g73JKtEx5URDTVEWV8iSv2xQF0wxiZNcE4VZOjhTSahXUahfQ1P2dBgxygziJidOVuxI6LAQ4t1Jp6vdLKnFzCdnTi3KLv17ogItN4YQv3+0JBuYs6OrJgTCsV0ipcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707816693; c=relaxed/simple;
-	bh=s2RfzRg7gU4z0m5YqtLCPpWakTha0o03sv66MfunOb8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=LHyZY1b9H3/kybTbCQ6g7/Cx3N7bKpcCft/0YuMs/r5KVUl8qxxdE41dbzR7xVlsPPYfrtMWlhdEXNFh2RN2rDLNqKttFtKQpY5zVD1I3wWs9P/b4/JIej7nwFZkubrALLaDnMKCtKsR3vvPkIv9/h1DCFAQ3zgz+g3CAmP0t+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ydy0EgoC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=P/SS7Urd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 13 Feb 2024 09:31:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707816689;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QSw1AsCmUhErrFt6VpEvcbmC0TKHggFh8fbZdrLCHV0=;
-	b=Ydy0EgoCqxYqqNM3KY4hxYd42DGyzIkdSS+ZlswAZTjEoZk4XplQyvtrT11DWk9Rr0Luxg
-	i+kRxC+euCFxaYkr5Y+J06bZ75wm9mSjExi+WAalga86jihHaxSubQ3Mlp8kp53o5slITk
-	YTLwYJeENPS3akTXoYxeJjF+ZGnHgEiC8nf5claEsHfKjAxDzvgTkjeJ4+DmsECr6hMO3D
-	WZoN3KxOBf9g0h1RCC1Wf9XknkAC+l2fPmzk4pmpEjcuUNfsoyDTDgFu7i5ugl9pWgRyqL
-	ovJ35f+g4mOgU62NKSr4/Qrz71izDeEunT6fXTFl+514GF5PmVkaaDbJ0BMTCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707816689;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QSw1AsCmUhErrFt6VpEvcbmC0TKHggFh8fbZdrLCHV0=;
-	b=P/SS7UrdCA2j0Wl/3HX8qsaek4DTPEziYD3cDgLhq6VHqrsthda75f1dhB0diCMZ+kwE0s
-	mdbWXMYwvqCZ0rAw==
-From: "tip-bot2 for Bibo Mao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] irqchip/loongson-eiointc: Use correct struct type
- in eiointc_domain_alloc()
-Cc: Bibo Mao <maobibo@loongson.cn>, Thomas Gleixner <tglx@linutronix.de>,
- Huacai Chen <chenhuacai@loongson.cn>, x86@kernel.org,
- linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240130082722.2912576-2-maobibo@loongson.cn>
-References: <20240130082722.2912576-2-maobibo@loongson.cn>
+	s=arc-20240116; t=1707816798; c=relaxed/simple;
+	bh=pqrF3xPTx1xmxqP1iL+dG5WfH700VcJkBHMegIvgDus=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nZpa/aLuDGx/h5/V8RsARu/Va08ZXHQY8eC9GMSXGri3bNP46yOEWFIBREEZUdEgNXTvjEGfiSGPO0W8NfeVMeoQA6UYzZWOl0JxghD+GEyXvexRojOQn5RMWQhxdtcx02jTNVRCDDi+ZnhgWNMomLZ2Qpoi0BuHHcFoyvt8t08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mtFtMFbU; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707816792;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NUCDH79BK5F5dDhUzT0JOtT9z48X42DlZfGByqCjqeE=;
+	b=mtFtMFbUyrNIyeJlPry/n5yCkzLHSrmTQs4DzjSh2Gw1htrh/ezDt3vUAmeuRspy1e2NgB
+	kjQI9ej2a9mUnZHLoXM9XZ0jJKEcZDClCg0+3S0OEcZ+pAEnpafmrvCe8TE4QTcrAbVXiY
+	4PQfOo/vRdB/MoNNVvnj7CMfaS94rRc=
+From: Oliver Upton <oliver.upton@linux.dev>
+To: kvmarm@lists.linux.dev
+Cc: kvm@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>
+Subject: [PATCH v2 00/23] KVM: arm64: Improvements to LPI injection
+Date: Tue, 13 Feb 2024 09:32:37 +0000
+Message-ID: <20240213093250.3960069-1-oliver.upton@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170781668902.398.16211929501605584217.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The following commit has been merged into the irq/urgent branch of tip:
+For full details on the what/why, please see the cover letter in v1.
 
-Commit-ID:     f1c2765c6afcd1f71f76ed8c9bf94acedab4cecb
-Gitweb:        https://git.kernel.org/tip/f1c2765c6afcd1f71f76ed8c9bf94acedab4cecb
-Author:        Bibo Mao <maobibo@loongson.cn>
-AuthorDate:    Tue, 30 Jan 2024 16:27:20 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 13 Feb 2024 10:26:15 +01:00
+Apologies for the delay on v2, I wanted to spend some time to get a
+microbenchmark in place to slam the ITS code pretty hard, and based on
+the results I'm glad I did.
 
-irqchip/loongson-eiointc: Use correct struct type in eiointc_domain_alloc()
+The test is built around having vCPU threads and device threads, where
+each device can signal a particular number of event IDs (alien, right?)
 
-eiointc_domain_alloc() uses struct eiointc, which is not defined, for a
-pointer. Older compilers treat that as a forward declaration and due to
-assignment of a void pointer there is no warning emitted. As the variable
-is then handed in as a void pointer argument to irq_domain_set_info() the
-code is functional.
+Anyway, here are the results of that test in some carefully-selected
+examples:
 
-Use struct eiointc_priv instead.
++----------------------------+---------------------+------------------------------+
+|           Config           | v6.8-rc1 (LPIs/sec) | v6.8-rc1 + series (LPIs/sec) |
++----------------------------+---------------------+------------------------------+
+| -v 1 -d 1 -e 1 -i 1000000  |           780151.37 |                   1255291.00 |
+| -v 16 -d 16 -e 16 -i 10000 |           437081.55 |                   5078225.70 |
+| -v 16 -d 16 -e 17 -i 10000 |           506446.50 |                   1126118.10 |
+| -v 64 -d 64 -e 1 -i 100000 |           295097.03 |                   5565964.87 |
+| -v 1 -d 1 -e 17 -i 1000    |           732934.43 |                       149.24 |
++----------------------------+---------------------+------------------------------+
 
-[ tglx: Rewrote changelog ]
+While there is an 18x improvement in the scaled-out config (64 vCPUs, 64
+devices, 1 event per device), there is an extremely disappointing 4911x
+regression in the example that effectively forces a cache eviction for
+every lookup.
 
-Fixes: dd281e1a1a93 ("irqchip: Add Loongson Extended I/O interrupt controller support")
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-Link: https://lore.kernel.org/r/20240130082722.2912576-2-maobibo@loongson.cn
----
- drivers/irqchip/irq-loongson-eiointc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Clearly the RCU synchronization is a bounding issue in this case. I
+think other scenarios where the cache is overcommitted (16 vCPUs, 16
+devices, 17 events / device) are able to hide effects somewhat, as other
+threads can make forward progress while others are stuck waiting on RCU.
 
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index 1623cd7..b3736bd 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -241,7 +241,7 @@ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
- 	int ret;
- 	unsigned int i, type;
- 	unsigned long hwirq = 0;
--	struct eiointc *priv = domain->host_data;
-+	struct eiointc_priv *priv = domain->host_data;
- 
- 	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
- 	if (ret)
+A few ideas on next steps:
+
+ 1) Rework the lpi_list_lock as an rwlock. This would obviate the need
+    for RCU protection in the LPI cache as well as memory allocations on
+    the injection path. This is actually what I had in the internal
+    version of the series, although it was very incomplete.
+
+    I'd expect this to nullify the improvement on the
+    slightly-overcommitted case and 'fix' the pathological case.
+
+ 2) call_rcu() and move on. This feels somewhat abusive of the API, as
+    the guest can flood the host with RCU callbacks, but I wasn't able
+    to make my machine fall over in any mean configuration of the test.
+
+    I haven't studied the degree to which such a malicious VM could
+    adversely affect neighboring workloads.
+
+ 3) Redo the whole ITS representation with xarrays and allow RCU readers
+    outside of the ITS lock. I haven't fully thought this out, and if we
+    pursue this option then we will need a secondary data structure to
+    track where ITSes have been placed in guest memory to avoid taking
+    the SRCU lock. We can then stick RCU synchronization in ITS command
+    processing, which feels right to me, and dump the translation cache
+    altogether.
+
+    I'd expect slightly worse average case performance in favor of more
+    consistent performance.
+
+Even though it is more work, I'm slightly in favor of (3) as it is a
+net reduction in overall complexity of the ITS implementation. But, I
+wanted to send out what I had to guage opinions on these options, and
+get feedback on the first 10 patches which are an overall win.
+
+v1: https://lore.kernel.org/kvmarm/20240124204909.105952-1-oliver.upton@linux.dev/
+
+v1 -> v2:
+ - Add the microbenchmark
+ - Add tracepoints / VM stats for the important bits of LPI injection.
+   This was extremely useful for making sense of test results.
+ - Fix a silly lock imbalance on error path in vgic_add_lpi() (Dan)
+ - Constrain xas_for_each() based on the properties of the INTID space
+   (Marc)
+ - Remove some missed vestiges of the LPI linked-list (Marc)
+ - Explicitly free unused cache entry on failed insertion race (Marc)
+ - Don't explode people's machines with a boatload of xchg() (I said it
+   was WIP!) (Marc)
+
+Oliver Upton (23):
+  KVM: arm64: Add tracepoints + stats for LPI cache effectiveness
+  KVM: arm64: vgic: Store LPIs in an xarray
+  KVM: arm64: vgic: Use xarray to find LPI in vgic_get_lpi()
+  KVM: arm64: vgic-v3: Iterate the xarray to find pending LPIs
+  KVM: arm64: vgic-its: Walk the LPI xarray in vgic_copy_lpi_list()
+  KVM: arm64: vgic: Get rid of the LPI linked-list
+  KVM: arm64: vgic: Use atomics to count LPIs
+  KVM: arm64: vgic: Free LPI vgic_irq structs in an RCU-safe manner
+  KVM: arm64: vgic: Rely on RCU protection in vgic_get_lpi()
+  KVM: arm64: vgic: Ensure the irq refcount is nonzero when taking a ref
+  KVM: arm64: vgic: Don't acquire the lpi_list_lock in vgic_put_irq()
+  KVM: arm64: vgic-its: Lazily allocate LPI translation cache
+  KVM: arm64: vgic-its: Pick cache victim based on usage count
+  KVM: arm64: vgic-its: Protect cached vgic_irq pointers with RCU
+  KVM: arm64: vgic-its: Treat the LPI translation cache as an rculist
+  KVM: arm64: vgic-its: Rely on RCU to protect translation cache reads
+  KVM: selftests: Align with kernel's GIC definitions
+  KVM: selftests: Standardise layout of GIC frames
+  KVM: selftests: Add a minimal library for interacting with an ITS
+  KVM: selftests: Add helper for enabling LPIs on a redistributor
+  KVM: selftests: Use MPIDR_HWID_BITMASK from cputype.h
+  KVM: selftests: Hack in support for aligned page allocations
+  KVM: selftests: Add stress test for LPI injection
+
+ arch/arm64/include/asm/kvm_host.h             |   3 +
+ arch/arm64/kvm/guest.c                        |   5 +-
+ arch/arm64/kvm/vgic/trace.h                   |  66 ++
+ arch/arm64/kvm/vgic/vgic-debug.c              |   2 +-
+ arch/arm64/kvm/vgic/vgic-init.c               |   7 +-
+ arch/arm64/kvm/vgic/vgic-its.c                | 220 ++++---
+ arch/arm64/kvm/vgic/vgic-v3.c                 |   3 +-
+ arch/arm64/kvm/vgic/vgic.c                    |  56 +-
+ arch/arm64/kvm/vgic/vgic.h                    |  15 +-
+ include/kvm/arm_vgic.h                        |  10 +-
+ include/linux/kvm_host.h                      |   4 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/aarch64/arch_timer.c        |   8 +-
+ .../testing/selftests/kvm/aarch64/psci_test.c |   2 +
+ .../testing/selftests/kvm/aarch64/vgic_irq.c  |  15 +-
+ .../selftests/kvm/aarch64/vgic_lpi_stress.c   | 388 ++++++++++++
+ .../kvm/aarch64/vpmu_counter_access.c         |   6 +-
+ .../selftests/kvm/dirty_log_perf_test.c       |   5 +-
+ .../selftests/kvm/include/aarch64/gic.h       |  15 +-
+ .../selftests/kvm/include/aarch64/gic_v3.h    | 586 +++++++++++++++++-
+ .../selftests/kvm/include/aarch64/processor.h |   2 -
+ .../selftests/kvm/include/aarch64/vgic.h      |  27 +-
+ .../selftests/kvm/include/kvm_util_base.h     |   2 +
+ tools/testing/selftests/kvm/lib/aarch64/gic.c |  18 +-
+ .../selftests/kvm/lib/aarch64/gic_private.h   |   4 +-
+ .../selftests/kvm/lib/aarch64/gic_v3.c        |  69 ++-
+ .../testing/selftests/kvm/lib/aarch64/vgic.c  | 337 +++++++++-
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  27 +-
+ 28 files changed, 1641 insertions(+), 262 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vgic_lpi_stress.c
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.43.0.687.g38aa6559b0-goog
+
 
