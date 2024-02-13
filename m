@@ -1,144 +1,121 @@
-Return-Path: <linux-kernel+bounces-63176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11BBA852BEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:07:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578BA852BF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:08:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC07283504
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:07:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50E90B24049
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21211C6AD;
-	Tue, 13 Feb 2024 09:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E2TySlSW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B80A208CB;
+	Tue, 13 Feb 2024 09:08:00 +0000 (UTC)
+Received: from tux.runtux.com (tux.runtux.com [176.9.82.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6242B1B7EB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024662231C;
+	Tue, 13 Feb 2024 09:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.82.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707815270; cv=none; b=SK3E5nRZwjx4ZWLu8GEUcGtEAx8+J5WZ7bpC52tF7+PnGDh1oNAMTmr/lKsx7e7ybTCOdEwoD0qRTJb1wdt1lxk12T42JJlGFK77jsJIcIeSUBnHWc+LIBO71EhBem0rbZAd0zP85gtbLsio2uZ16BDf9QqAEKk1KiGK8D/cP1M=
+	t=1707815279; cv=none; b=R8ZcNed3RzU8MrBj2szX7l7DQAHDLJn59aMguVgQZSAbmCr/WvrnHZB3q47pW6jZYABJcvCYFH2yOP9CV7jzudCCs/+aBy8xOdmc3Q3o23eeKNv6eMehsL4QZZzePAgkMikmrmTxR+O60l0sce+ACyOCgtkGp4/Q64VTCnxDjwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707815270; c=relaxed/simple;
-	bh=ybnop7dbPwRnees4BYoRMUIBLz2OAtisOjmESPrNXtE=;
+	s=arc-20240116; t=1707815279; c=relaxed/simple;
+	bh=6bs7SErVT3CfTr4R0wEWjpG2eNuE9rUybLdZOMUD2iU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fk7ShixGo1JJhc+V6qQAo8r4SstGKfg4yMdyyNF0lfRS+wormgK13gYBMp/WGsmEsR5Qjb/TGfl1Vxwwcvyx1oinVEgCjlaWEpWA+125K1BRhMTps81k/eUqJ26Y6HoyU2xN6MEfdkmGjMEmtULtYkIWOIWI/wony6pq0mtlzjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E2TySlSW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707815267;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=varjZjBxBFqiVHNuiFV3KRQmhIyNRarw3ydRqMvY0A0=;
-	b=E2TySlSWYLkJZF9Fkwcd3W6VQfKq6YDrcOYy73A7FPck2MEN9LJM25r16bbWq+2XYUIu2N
-	EyuEAYEKNeCvz4VI+V+RbjdhP0dS49zCfeslw+vvA8ypP9nK2H6lGcQPMIi81zWLqy/s7N
-	fbpCZY7LFuJhArGIP8ZEPVVLBFSwi30=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-290-QtCSk7HaPVeKyOP834nIFw-1; Tue, 13 Feb 2024 04:07:45 -0500
-X-MC-Unique: QtCSk7HaPVeKyOP834nIFw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a357c92f241so243260766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 01:07:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707815264; x=1708420064;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=varjZjBxBFqiVHNuiFV3KRQmhIyNRarw3ydRqMvY0A0=;
-        b=uvWse0xzEns9rZz/q9R5eS6LJHdCY69F7p8HORCiuA2BtKkmBnD+FwVf2m24huKyDX
-         I8feZeR1h0OyT7kCeiO0VNlyu7HBfFDC443XqZ0pFRHfLYIUbN8X39HKVivY/dZcqF+9
-         ZUhxxPt16oRpP4IdnQG+LsKpGagV+L+53jyqZTMPXQKi3l8yVvBxbkJluCF1IQMAoWIF
-         ZGlni2z2ph865HznsfGYbhZENcav9DC0KwXQrNDBH6XtBQqphyll2qhENe4aAyhPfRcz
-         Yb1tygP4bQ1ibGX6P8+1AXyuY7gQzr7FDwZ5yqb5MWVia0y5n6OauLlqtjiH36vXkcet
-         cM0w==
-X-Forwarded-Encrypted: i=1; AJvYcCW05ktsyah76YPzfJ+vmAPSGYi6SYU0orvXePwZqk4+jX+LYk3QyYwv8Fzisb5BjXN4FKdOJEaODG0hhOYK5VQhvD/gZnvaSj7mJc+X
-X-Gm-Message-State: AOJu0YwC71y7OIuw7PUGy4Uo+1D81INv5p1Pa/drcjRZf93nQ/LN8ZUj
-	7FhmBm/Mfl0/3BKs/i5MTC81eHu67owvn0y04zacPl9ynHzQEcorpv8/VX+1KH8G5BAmOFEUnfx
-	yM++n/K7oK5jpkaB0vsvjjfkjj5I8gmIs2O5oltzC5HLG7AUz+tLllj4j14RtCQ==
-X-Received: by 2002:a17:906:5a92:b0:a3c:9d1a:8dc5 with SMTP id l18-20020a1709065a9200b00a3c9d1a8dc5mr3568434ejq.63.1707815264367;
-        Tue, 13 Feb 2024 01:07:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH/xK+Aor/xzZTH8ME0aRC9uoXcmBdxOZhpQPgo5eNwxfgfoP2CKnpOj1sxDSyFQjvppURq7w==
-X-Received: by 2002:a17:906:5a92:b0:a3c:9d1a:8dc5 with SMTP id l18-20020a1709065a9200b00a3c9d1a8dc5mr3568406ejq.63.1707815264001;
-        Tue, 13 Feb 2024 01:07:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXxvJmPUdeHNhcIV56A+eFY+jIFHXqBuVrnXrw1vzKVCoicf5DD7YBH2FP/A75tPGUjqR+Bc7XZxFsYsZeq0HBoO9Z0tCIO7k3EOLK7Rl3bi2ETScxzuLVtCBJnX3e+hJlelVaztSoUjWIhiujpMwgrFJYAVTVbhAuD9h4nK8+Qa9yOlIrhcgi4L6nIlbe4ExdIO/Glr2sj0sGQ0AdFrmnLWj1QJTyzoyL39rGoAVKf6P5LmQxe4NxPIURm9wuOYcJx6pnp/UaAWrUVKxMf4He4d7A5BK1KcuvGNcHh16VSgmMvr1WDs2UlPvaBp6qNb03Ks8prSMV4bnZE6DRU+xOIr0Jyu31lfSci5aDKPE5sB258A8v+eetmK06xPCqZFYiUwkTWjnhftymBZcIEPA==
-Received: from redhat.com ([2.52.146.238])
-        by smtp.gmail.com with ESMTPSA id h12-20020a17090634cc00b00a3c838b0f1esm1091205ejb.31.2024.02.13.01.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 01:07:43 -0800 (PST)
-Date: Tue, 13 Feb 2024 04:07:35 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>, jasowang@redhat.com,
-	perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	virtualization@lists.linux-foundation.org,
-	virtio-dev@lists.oasis-open.org,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	coverity-bot <keescook+coverity-bot@chromium.org>
-Subject: Re: [PATCH] ALSA: virtio: Fix "Coverity: virtsnd_kctl_tlv_op():
- Uninitialized variables" warning.
-Message-ID: <20240213040658-mutt-send-email-mst@kernel.org>
-References: <20240213085131.503569-1-aiswarya.cyriac@opensynergy.com>
- <875xyska8v.wl-tiwai@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e9lTCkATZWUGLaTo7jJkxFJ/bZA6pndgqpAli9hnT772upmsf5taCXI8VpX1CvaBwCBbP5ffPf3n9o+eeATKN6wlVuZ0fETJxaoTU8prZlMCIEgPqc41ZF4fEV4SgwBeZzX/0kGVYEco8d9O+nHVB1uef+Bh0KwwyK1dK4Cek+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=runtux.com; spf=pass smtp.mailfrom=runtux.com; arc=none smtp.client-ip=176.9.82.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=runtux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=runtux.com
+Received: from localhost (localhost [127.0.0.1])
+	by tux.runtux.com (Postfix) with ESMTP id 922E26EF5B;
+	Tue, 13 Feb 2024 10:07:54 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+	by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+	with LMTP id dicLrwJAa5ue; Tue, 13 Feb 2024 10:07:53 +0100 (CET)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+	(Authenticated sender: postmaster@runtux.com)
+	by tux.runtux.com (Postfix) with ESMTPSA id DE5596EF02;
+	Tue, 13 Feb 2024 10:07:52 +0100 (CET)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+	id 7576B469; Tue, 13 Feb 2024 10:07:52 +0100 (CET)
+Date: Tue, 13 Feb 2024 10:07:52 +0100
+From: Ralf Schlatterbeck <rsc@runtux.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit, hd44780: drop
+ redundant GPIO node
+Message-ID: <20240213090752.5g7cnzkaqrfdqi4p@runtux.com>
+References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+ <CAMuHMdU-c5_Z2AMNtNH4Cc4JUrn+oKU-1CumEOAP6=5Zomcj_A@mail.gmail.com>
+ <2922eece-5486-4eff-af99-f7060cb61d17@linaro.org>
+ <20240212115837.efz73yxinkysdmgh@runtux.com>
+ <e2a5b005-7916-4296-b072-c24efd4b3357@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <875xyska8v.wl-tiwai@suse.de>
+In-Reply-To: <e2a5b005-7916-4296-b072-c24efd4b3357@linaro.org>
+X-ray: beware
+User-Agent: NeoMutt/20180716
 
-On Tue, Feb 13, 2024 at 10:02:24AM +0100, Takashi Iwai wrote:
-> On Tue, 13 Feb 2024 09:51:30 +0100,
-> Aiswarya Cyriac wrote:
+On Mon, Feb 12, 2024 at 02:38:27PM +0100, Krzysztof Kozlowski wrote:
+> On 12/02/2024 12:58, Ralf Schlatterbeck wrote:
+> > On Mon, Feb 12, 2024 at 12:25:48PM +0100, Krzysztof Kozlowski wrote:
+> >>
+> >> Hm, I don't understand how exactly it helps. The GPIO expander has its
+> >> own example and as you pointed below, this is basically the same code,
+> >> except rw and backlight GPIOs.
 > > 
-> > Fix the following warning when building virtio_snd driver.
-> > 
-> > "
-> > *** CID 1583619:  Uninitialized variables  (UNINIT)
-> > sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
-> > 288
-> > 289         break;
-> > 290       }
-> > 291
-> > 292       kfree(tlv);
-> > 293
-> > vvv     CID 1583619:  Uninitialized variables  (UNINIT)
-> > vvv     Using uninitialized value "rc".
-> > 294       return rc;
-> > 295     }
-> > 296
-> > 297     /**
-> > 298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
-> > 299      * @snd: VirtIO sound device.
-> > "
-> > 
-> > Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> > Signed-off-by: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
-> > Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-> > Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
-> > Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
+> > The hd44780 is a display that is very often used.
 > 
-> Thanks, applied.
-> 
-> 
-> Takashi
+> GPIO expanders and their usage is nothing specific to this device -
+> other devices also might benefit of them. Or the SoCs which have enough
+> of GPIOs... I really do not understand why do we need expander here and
+> how does it help
 
-Why did you apply it directly? The patch isn't great IMHO.
-Why not give people a couple of days to review?
+The hd44780 is most often sold together with that specific I/O expander.
+The idea was to help people with that combination how to get their
+device working.
 
+> Anyway, binding examples should not be collection of unrelated
+> solutions, because then we should accept for each device schema several
+> other variations and combinations.
+
+The solutions in that case are not unrelated because they document the
+most-often-used hw combo.
+
+I also didn't find any documentation of how to actually *use* the
+pcf8575 I/O expander. Even
+Documentation/devicetree/bindings/gpio/nxp,pcf8575.yaml
+has only docs on how to instantiate the device on the i2c bus but not
+how then to use the I/Os of the chip for something else.
+
+So I'd ask again to not remove that piece of useful documentation.
+
+And to get somehow philosophic:
+I think that docs should be didactic, not optimized to the least
+redundancy.
+
+Thanks and kind regards,
+Ralf
 -- 
-MST
-
+Dr. Ralf Schlatterbeck                  Tel:   +43/2243/26465-16
+Open Source Consulting                  www:   www.runtux.com
+Reichergasse 131, A-3411 Weidling       email: office@runtux.com
 
