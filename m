@@ -1,75 +1,111 @@
-Return-Path: <linux-kernel+bounces-64547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3343885402E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:37:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9054854033
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21081B2206C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:37:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74E53286400
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2B163111;
-	Tue, 13 Feb 2024 23:37:34 +0000 (UTC)
-Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB47633E0;
+	Tue, 13 Feb 2024 23:38:05 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E961E5FF09;
-	Tue, 13 Feb 2024 23:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786456310B
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707867454; cv=none; b=Z34rzjF7HuRvjuUJCOxOTWD/z/t2CuOeLBfmJMjmMj0Puc1plnheNlyrIijwqADxdvfFAN7xtgHb85emN6cwkoQUX3sqmsz3M0xPwwllnaHYjKLMe4bT+1Ef2jhenH5sOS3Dibbf2I1uB4eGFc3Sf0PD/CfgyNB7FoN9SdnvUQk=
+	t=1707867485; cv=none; b=Spku/KlYkUygQ31qivzzrshx+FDWdQCmuo++pBInGJq/MVwVKSW491kmQdSThc9ln/nc9LidBPda+hjSmihw9wh8q05z3D29cfe4dk+NbhLKCGHJDS/WHr4bIzOUGG5yB6FnKgzY5UmmyX1ECbsI+ifANOyP0HIvp+1Tj8yg4VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707867454; c=relaxed/simple;
-	bh=l4zlABakHG1SEs5TKwTDVAnsPVbwPbPjfVKmGSFErxw=;
-	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=efP6vtpX2l0f7oQYRBohdOAc+bBdGwtOVAvX3qLmPybfAROCT7wuBv50lYDVV9Fz/Qh+wSyU+7dKZ0kgPFud5TwGTsqcJ3tjYcb93CC6hrfhK72Xj12HavJegPDAJYERn+MESsXwtT5wOJOhcckwwbGx4A77PsFftNvCf6adj/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from zimbra-e1-03.priv.proxad.net (unknown [172.20.243.151])
-	by smtp5-g21.free.fr (Postfix) with ESMTP id 42F485FF95;
-	Wed, 14 Feb 2024 00:37:23 +0100 (CET)
-Date: Wed, 14 Feb 2024 00:37:23 +0100 (CET)
-From: =?utf-8?Q?Jean-Lo=C3=AFc?= Charroud <lagiraudiere+linux@free.fr>
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, 
-	Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: linux-sound <linux-sound@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	patches <patches@opensource.cirrus.com>
-Message-ID: <644212740.650323792.1707867443153.JavaMail.zimbra@free.fr>
-Subject: [PATCH v3 0/3] ALSA: hda/realtek: cs35l41: Fix internal speaker
- support for ASUS UM3402 with missing DSD
+	s=arc-20240116; t=1707867485; c=relaxed/simple;
+	bh=BaS/LDmT6doANyq4gk8E+Sg9Eq8IsEg++C7h6qSGKsU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=DXd9cHWhTpX0NdUelrZkcQqMqbQ/tYPfU++aHfmSeWqyOt7L6t0rIBTr895rNj0qZ78GeFfxmVpBpePZ5Xk2xLDA+qnEF0iG9lG7er8LgwEZC+YCoPju9Li/bklFbh7gl4yrfm15sifAUUKD4igG8w94tuwdL/WiL/Ah5jcTkZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1ra2Lg-00013L-2r; Wed, 14 Feb 2024 00:38:00 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1ra2Lf-000ZgZ-JR; Wed, 14 Feb 2024 00:37:59 +0100
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1ra2Lf-0032pb-1j;
+	Wed, 14 Feb 2024 00:37:59 +0100
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH 0/2] usb: gadget: uvc: improve tagging transmit errors
+Date: Wed, 14 Feb 2024 00:37:53 +0100
+Message-Id: <20240214-uvc-error-tag-v1-0-37659a3877fe@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 9.0.0_GA_1337 (ZimbraWebClient - FF122 (Linux)/9.0.0_GA_1337)
-Thread-Index: b1DHXbQj7eN1w6/I0T0Clij1GRQ0gA==
-Thread-Topic: ALSA: hda/realtek: cs35l41: Fix internal speaker support for ASUS UM3402 with missing DSD
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFH9y2UC/x2NwQqDMBAFf0X23AUNFkt/RTwk8UUXJJZNFUH8d
+ xePMzDMSQUqKPStTlLsUmTNBs2rojj7PIFlNCZXu7Z2TcvbHhmqq/LfT9yFbnTv+AFSImuCL+C
+ gPsfZqrwti8mfIsnxTPrhum4MRXQ1dAAAAA==
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Daniel Scally <dan.scally@ideasonboard.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=880;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=BaS/LDmT6doANyq4gk8E+Sg9Eq8IsEg++C7h6qSGKsU=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBly/1TiHAEaBtYlsWu5sPIVYw2S2Hj8gn6VkDlh
+ N7zCWQ++WyJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZcv9UwAKCRC/aVhE+XH0
+ q9i9D/0cN97B/pYGrXtWzqIp+tg5E7dfGN1GOw2RI8J9cQjiiUSb604/0G2kNlhYLWeYQaWJxp+
+ VtmK8EB4kszSMK2hhnmfSE1yEyWFE2JADoF+lTi1H1T9EgDiNnmvUTL4KTxPzExAbSbjgh6qDqL
+ iKOvvKZZ1OEE4Sn3+2UUMGi6BeeiD76slrSCI+Koc8I9NfmZQcga85VMLnciLcgBURWfcVYqwSB
+ jux8qeaOK7XgC4RHHETA/SWNO3K0659yQWbDqqc1/CKSZ8Swi+UPYvK6P7buIHQTGTNRkhGxSgD
+ wPheNS65muaFDIEdESKu5WEAcg7gDOzxqH2f4RJKXYsPy99SPX24h7pAuSA7SacY1/um4xraIjv
+ 1Wz9m0PZ35cORUZznEUEhUBpCEPYSf9OJyJ91obW4w7/D7Rdo+cps0QxNKEk2kTm/2wU+ElxRVD
+ GzMXgcgO8mLWWMb6mC6vf7RkkIyO4NCgH+XqM66GSdoFci72FK83YpdKD8Inw2PVj9/RhGPlY2U
+ 7ZAhAVPz2yqJs96K70Y2bBalcP22y5squePPkNRqqvoNbNAEb68OcH4eueDNbNfDCbxt6jk6sbr
+ qQx8UIOLQMDP4eX1RmgjH2jo3l8tnx+bPPzlwvZ6vHYcHr0KZTk07vC5pS1pB8AzRc+jAW7uHOa
+ Y5zQiY6RFKloSlw==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-This patch set adds the missing DSD properties, to make the internal speake=
-r works for the "ASUS UM3402" and does some cleanup.=20
+This series contains patches to improve signaling of transmit errors on
+gadget and host side. The gadget now will tag an frame with
+UVC_STREAM_ERROR in the header for the host to know that the transferred
+frame has errors. The gadget will also skip tagging the frame erroneous
+if the request that got not transmitted to the host did not contain any
+data.
 
-Following feedback, I've divided the initial patch into three independent p=
-arts and adjusted the explanations:=20
-- Patch 1 : Add internal speaker support for ASUS UM3402 with missing DSD=
-=20
-- Patch 2 : Fix device ID / model name (no functional changes)=20
-- Patch 3 : Fix order and duplicates entry in quirks table (cleanup, no fun=
-ctional changes)=20
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+Michael Grzeschik (2):
+      usb: gadget: uvc: dont drop frames if zero length packages are late
+      usb: gadget: uvc: mark incomplete frames with UVC_STREAM_ERR
 
-Thank you Takashi for your guidance=20
-I hope everything is in good shape now.=20
+ drivers/usb/gadget/function/uvc_video.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+---
+base-commit: 88bae831f3810e02c9c951233c7ee662aa13dc2c
+change-id: 20240214-uvc-error-tag-7b7d25c8eeff
 
-Regards=20
-Lo=C3=AFc=20
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-sound/pci/hda/cs35l41_hda_property.c | 2 ++=20
-sound/pci/hda/patch_realtek.c | 7 +++----=20
-2 files changed, 5 insertions(+), 4 deletions(-)
 
