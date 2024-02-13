@@ -1,182 +1,113 @@
-Return-Path: <linux-kernel+bounces-63218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39BFB852C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:38:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7EC852C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA3401F228AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEE01C23253
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 09:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC5751018;
-	Tue, 13 Feb 2024 09:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503C2524C9;
+	Tue, 13 Feb 2024 09:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kv8VMoYw"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b="I8mZAieM"
+Received: from forward502b.mail.yandex.net (forward502b.mail.yandex.net [178.154.239.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8955364DB
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF66524AC
+	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 09:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707816819; cv=none; b=fATo7uoaTe19HtlBR5iiHFN2rXhwj3RfresGf8MwZbhwZVCJca+SKJCPwpbsvtM+Qx8hFptpul7Fh1H32A6M/Uf0HDD8piN4OggAjrvtnv9dB2dfusAqZlSGfZDHcNaDO9+UqHdsTLIcTUBmhEu5mtXL+J1EUv9xJeNJaLfYBMY=
+	t=1707816842; cv=none; b=ZTdbZ6ogi7ROptb5200g+NEtoik+ElE0uNN5FdI2950CvqaOMuC/LhsgcFdHsGeE8L6L7ZIoQVYUjhNqRN902vzfAjoD2w4olX3Xt60HDu7J6sKxjYrwtovCDbydNl0JjPvahgONsGsW0lcAovToC+HQ76CJ87BZVvr57qHvf/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707816819; c=relaxed/simple;
-	bh=Qi8rU6NjOkVcx9TX1/O9p73F+ULC5MIdl/I9CDfvIew=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hsmiMYczPi3RM7gIZISGgDedbmy/i0i4dQEX8qHoeyRXAjNmDUuQZLyglgG1PTmoJmXYi3ngMEdvDN2gIuuBV7NY46/jiKrTNSGV00TpBwh6aIPM04mTrKZ6DRj2q1fxmHlO9+Alu8cXuSZx9RBwfbSFTWuGn/6x0N/1tteANxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kv8VMoYw; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707816816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BKECb1eTQQJ/f0GKxMxXWqmjCFHiATDCrLFETxE2qgY=;
-	b=Kv8VMoYwDOw5o/4ifDv6LsdWhzI+zrP+hXZ/dyggg6voxrWhMxjS3n2slHUN6XjTEoqdYA
-	dQuL0Hu9I6PuXqEFLSppH2l3M8sTV/qJmjOHGnCDT3mXHmHde1DdJLi7H/mz2ONCtgqeki
-	OIZDsSupblvzEtuDnC7WHJDgthL8+mY=
-From: Oliver Upton <oliver.upton@linux.dev>
-To: kvmarm@lists.linux.dev
-Cc: kvm@vger.kernel.org,
-	Marc Zyngier <maz@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-kernel@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: [PATCH v2 13/23] KVM: arm64: vgic-its: Pick cache victim based on usage count
-Date: Tue, 13 Feb 2024 09:32:50 +0000
-Message-ID: <20240213093250.3960069-14-oliver.upton@linux.dev>
-In-Reply-To: <20240213093250.3960069-1-oliver.upton@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	s=arc-20240116; t=1707816842; c=relaxed/simple;
+	bh=B+c8KVXvNvRuWZmvPipE8IoHwkyQbC+AExwlSKHBmjM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jMCVZh7q1JXQZopbzVvq84487AUK69fs2LZOW8HLAHcj/WZuoDImX1QaV6eWeQTHl1xaWXQZ4/epqbu+RqObiuY6Nz/JWe+YCm4b9JxD/Y9bQx35utgmJuHJU1U7eniGgn6uInANqd9FdiPFOzxXc0iNtwqbhva7m8+cBytHrX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me; spf=pass smtp.mailfrom=maquefel.me; dkim=pass (1024-bit key) header.d=maquefel.me header.i=@maquefel.me header.b=I8mZAieM; arc=none smtp.client-ip=178.154.239.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maquefel.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maquefel.me
+Received: from mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:6e01:0:640:627f:0])
+	by forward502b.mail.yandex.net (Yandex) with ESMTPS id 5635A5EEFD;
+	Tue, 13 Feb 2024 12:33:47 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id hXjareDRha60-V0PYmfUK;
+	Tue, 13 Feb 2024 12:33:46 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+	t=1707816826; bh=B+c8KVXvNvRuWZmvPipE8IoHwkyQbC+AExwlSKHBmjM=;
+	h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+	b=I8mZAieMvchcH6xGOwzxI2nRWjy2ewahNmEGqPhnXAX6geaReX3g2fYehad1UJ1NN
+	 6annbtVU6lpOxmDF/HpiS70zX23eIZqngCoAWMHysrL2tC7eRqztXUnQmQldpA5SvM
+	 MAOvP0hY8FzZdPAZ18wOi5w4SBXTYOkZDoQtzKjs=
+Authentication-Results: mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <99042a0e72b3d29bc4b582a42a70d667033e6331.camel@maquefel.me>
+Subject: Re: [PATCH v7 08/39] soc: Add SoC driver for Cirrus ep93xx
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: andy.shevchenko@gmail.com
+Cc: Conor Dooley <conor.dooley@microchip.com>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Joel Stanley <joel@jms.id.au>, Linus Walleij
+ <linus.walleij@linaro.org>, Wei Xu <xuwei5@hisilicon.com>, Huisong Li
+ <lihuisong@huawei.com>, Walker Chen <walker.chen@starfivetech.com>,
+ Jonathan =?ISO-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>, Arnd
+ Bergmann <arnd@arndb.de>, Alexander Sverdlin
+ <alexander.sverdlin@gmail.com>, linux-kernel@vger.kernel.org
+Date: Tue, 13 Feb 2024 12:33:44 +0300
+In-Reply-To: <Zb_A5H5kkxw1oiQv@surfacebook.localdomain>
+References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me>
+	 <20240118-ep93xx-v7-8-d953846ae771@maquefel.me>
+	 <Zb_A5H5kkxw1oiQv@surfacebook.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-To date the translation cache LRU policy relies on the ordering of the
-linked-list to pick the victim, as entries are moved to the head of the
-list on every cache hit. These sort of transformations are incompatible
-with an rculist, necessitating a different strategy for recording usage
-in-place.
+SGVsbG8gQW5keSEKCk9uIFN1biwgMjAyNC0wMi0wNCBhdCAxODo1MiArMDIwMCwgYW5keS5zaGV2
+Y2hlbmtvQGdtYWlsLmNvbSB3cm90ZToKPiBUaHUsIEphbiAxOCwgMjAyNCBhdCAxMToyMDo1MUFN
+ICswMzAwLCBOaWtpdGEgU2h1YmluIGtpcmpvaXR0aToKPiA+IEFkZCBhbiBTb0MgZHJpdmVyIGZv
+ciB0aGUgZXA5M3h4LiBDdXJyZW50bHkgdGhlcmUgaXMgb25seSBvbmUgdGhpbmcKPiA+IG5vdCBm
+aXR0aW5nIGludG8gYW55IG90aGVyIGZyYW1ld29yaywgYW5kIHRoYXQgaXMgdGhlIHN3bG9jawo+
+ID4gc2V0dGluZy4KPiA+IAo+ID4gVXNlZCBmb3IgY2xvY2sgc2V0dGluZ3MsIHBpbmN0cmwgYW5k
+IHJlc3RhcnQuCj4gCj4gLi4uCj4gCj4gPiArc3RhdGljIHN0cnVjdCBhdXhpbGlhcnlfZGV2aWNl
+ICplcDkzeHhfYWRldl9hbGxvYyhzdHJ1Y3QgZGV2aWNlCj4gPiAqcGFyZW50LCBjb25zdCBjaGFy
+ICpuYW1lLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1
+Y3QKPiA+IGVwOTN4eF9tYXBfaW5mbyAqaW5mbykKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBz
+dHJ1Y3QgZXA5M3h4X3JlZ21hcF9hZGV2ICpyZGV2Owo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0
+IGF1eGlsaWFyeV9kZXZpY2UgKmFkZXY7Cj4gPiArwqDCoMKgwqDCoMKgwqBpbnQgcmV0Owo+ID4g
+Kwo+ID4gK8KgwqDCoMKgwqDCoMKgcmRldiA9IGt6YWxsb2Moc2l6ZW9mKCpyZGV2KSwgR0ZQX0tF
+Uk5FTCk7Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoIXJkZXYpCj4gPiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmV0dXJuIEVSUl9QVFIoLUVOT01FTSk7Cj4gCj4gVXNlIF9fZnJlZSgp
+ID8KPiAoWW91IGFscmVhZHkgaW5jbHVkZWQgY2xlYW51cC5oIGZvciBvdGhlciBjYXNlcywgd2h5
+IG5vdCB1c2luZyBpdAo+IGhlcmU/KQoKV2h5IHNob3VsZCBpIHdhbnQgdGhpcyA/IEkgZG9uJ3Qg
+d2FudCByZGV2IGJlZWluZyBmcmVlZCBvbiBvdXQgb2Ygc2NvcGUKLSByZGV2IGlzIGZyZWVkIGlu
+IGVwOTN4eF9hZGV2X3JlbGVhc2UoKS4KCkJ1dCB0aGFuayB5b3UsIGkndmUgbm90aWNlZCBhIGJ1
+ZyAtIGkgc2hvdWxkIGZyZWUgcmRldiBhbmQgbm90IGFkZXYKYm90aCBpbiBlcDkzeHhfYWRldl9h
+bGxvYygpIGFuZCBlcDkzeHhfYWRldl9yZWxlYXNlKCkuCgo+IAo+ID4gK8KgwqDCoMKgwqDCoMKg
+cmRldi0+bWFwID0gaW5mby0+bWFwOwo+ID4gK8KgwqDCoMKgwqDCoMKgcmRldi0+YmFzZSA9IGlu
+Zm8tPmJhc2U7Cj4gPiArwqDCoMKgwqDCoMKgwqByZGV2LT5sb2NrID0gJmluZm8tPmxvY2s7Cj4g
+PiArwqDCoMKgwqDCoMKgwqByZGV2LT53cml0ZSA9IGVwOTN4eF9yZWdtYXBfd3JpdGU7Cj4gPiAr
+wqDCoMKgwqDCoMKgwqByZGV2LT51cGRhdGVfYml0cyA9IGVwOTN4eF9yZWdtYXBfdXBkYXRlX2Jp
+dHM7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBhZGV2ID0gJnJkZXYtPmFkZXY7Cj4gPiArwqDC
+oMKgwqDCoMKgwqBhZGV2LT5uYW1lID0gbmFtZTsKPiA+ICvCoMKgwqDCoMKgwqDCoGFkZXYtPmRl
+di5wYXJlbnQgPSBwYXJlbnQ7Cj4gPiArwqDCoMKgwqDCoMKgwqBhZGV2LT5kZXYucmVsZWFzZSA9
+IGVwOTN4eF9hZGV2X3JlbGVhc2U7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqByZXQgPSBhdXhp
+bGlhcnlfZGV2aWNlX2luaXQoYWRldik7Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAocmV0KSB7Cj4g
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKga2ZyZWUoYWRldik7Cj4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIEVSUl9QVFIocmV0KTsKPiA+ICvCoMKgwqDC
+oMKgwqDCoH0KPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVybiBhZGV2Owo+ID4gK30KPiAK
+PiAuLi4KPiAKPiA+ICvCoMKgwqDCoMKgwqDCoG1vZGVsID0gKGVudW0KPiA+IGVwOTN4eF9zb2Nf
+bW9kZWwpKHVpbnRwdHJfdClvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEoZGV2KTsKPiAKPiBJIGJl
+bGlldmUgUm9iIHdhbnRzIHRvIGdldCByaWQgb2Ygb2ZfZGV2aWNlLmggb3IgYXQgbGVhc3Qgb2Yg
+dGhpcwo+IGNhbGwgKHNlZSBoaXMKPiBwYXRjaGVzIHRvIGNvbnZlcnQgdGhpcyBBUEkgdG8gdXNl
+IGRldmljZV9nZXRfbWF0Y2hfZGF0YSgpIGluc3RlYWQpLgo+IAoKTm90ZWQgLSB0aGFua3MgIQoK
 
-Count the number of cache hits since the last translation cache miss for
-every entry. The preferences for selecting a victim are as follows:
-
- - Invalid entries over valid entries
-
- - Valid entry with the lowest usage count
-
- - In the case of a tie, pick the entry closest to the tail (oldest)
-
-Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
----
- arch/arm64/kvm/vgic/vgic-its.c | 46 ++++++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index a7ba20b57264..35926d5ae561 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -157,6 +157,7 @@ struct vgic_translation_cache_entry {
- 	u32			devid;
- 	u32			eventid;
- 	struct vgic_irq		*irq;
-+	atomic64_t		usage_count;
- };
- 
- /**
-@@ -580,13 +581,7 @@ static struct vgic_irq *__vgic_its_check_cache(struct vgic_dist *dist,
- 		    cte->eventid != eventid)
- 			continue;
- 
--		/*
--		 * Move this entry to the head, as it is the most
--		 * recently used.
--		 */
--		if (!list_is_first(&cte->entry, &dist->lpi_translation_cache))
--			list_move(&cte->entry, &dist->lpi_translation_cache);
--
-+		atomic64_inc(&cte->usage_count);
- 		return cte->irq;
- 	}
- 
-@@ -619,6 +614,36 @@ static unsigned int vgic_its_max_cache_size(struct kvm *kvm)
- 	return atomic_read(&kvm->online_vcpus) * LPI_DEFAULT_PCPU_CACHE_SIZE;
- }
- 
-+static struct vgic_translation_cache_entry *vgic_its_cache_victim(struct vgic_dist *dist,
-+								  s64 *max_usage)
-+{
-+	struct vgic_translation_cache_entry *cte, *victim = NULL;
-+	s64 min, tmp, max = S64_MIN;
-+
-+	/*
-+	 * Find the least used cache entry since the last cache miss, preferring
-+	 * older entries in the case of a tie. Return the max usage count seen
-+	 * during the scan to initialize the new cache entry.
-+	 */
-+	list_for_each_entry(cte, &dist->lpi_translation_cache, entry) {
-+		tmp = atomic64_read(&cte->usage_count);
-+		max = max(max, tmp);
-+
-+		if (!cte->irq) {
-+			victim = cte;
-+			break;
-+		}
-+
-+		if (!victim || tmp <= min) {
-+			victim = cte;
-+			min = tmp;
-+		}
-+	}
-+
-+	*max_usage = max;
-+	return victim;
-+}
-+
- static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 				       u32 devid, u32 eventid,
- 				       struct vgic_irq *irq)
-@@ -627,6 +652,7 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 	struct vgic_dist *dist = &kvm->arch.vgic;
- 	unsigned long flags;
- 	phys_addr_t db;
-+	s64 usage = 0;
- 
- 	/* Do not cache a directly injected interrupt */
- 	if (irq->hw)
-@@ -650,9 +676,8 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 	}
- 
- 	if (dist->lpi_cache_count >= vgic_its_max_cache_size(kvm)) {
--		/* Always reuse the last entry (LRU policy) */
--		victim = list_last_entry(&dist->lpi_translation_cache,
--				      typeof(*cte), entry);
-+		victim = vgic_its_cache_victim(dist, &usage);
-+
- 		list_del(&victim->entry);
- 		dist->lpi_cache_count--;
- 	}
-@@ -664,6 +689,7 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
- 	lockdep_assert_held(&its->its_lock);
- 	vgic_get_irq_kref(irq);
- 
-+	atomic64_set(&new->usage_count, usage);
- 	new->db		= db;
- 	new->devid	= devid;
- 	new->eventid	= eventid;
--- 
-2.43.0.687.g38aa6559b0-goog
 
 
