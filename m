@@ -1,54 +1,55 @@
-Return-Path: <linux-kernel+bounces-62644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41A4C8523F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24788523F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 01:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA650B213D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:38:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9513C1F21B4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 00:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB2D60272;
-	Tue, 13 Feb 2024 00:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA2660249;
+	Tue, 13 Feb 2024 00:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aboQWC2h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jA/co9CM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EE56025F;
-	Tue, 13 Feb 2024 00:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2A2604A3;
+	Tue, 13 Feb 2024 00:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707783668; cv=none; b=pD4a9u2CopA2itS/ufdXwfXxRUEzQeXtt4hTDP4AbKbBhL4W4MzyR1N4tsVh1nXbJu+tbYqa6aZcKxDmH6U+OC/hs4nm0IjQuX64EBDVwIYcQQ9OlR+jMEe+uetzxW45Hfb28o2Qy64gVt0Cxx8x9EAl07UgRF68pMgm+6qQqTQ=
+	t=1707783669; cv=none; b=bfmZu1oedK2n4rcPX8i2NarpmPPDXfPpX3jribeozaNaF06I7C9MehP/djNSID7gwOEwB92UAgD6g0pyCmZzEhNhd3HiSisfrrzFtjAHQaM+43g8BIA4K2K7SYF5PHOeRQGrq4WFU5nFhLAHqO4ZCWHqhsGfTFsSVxxLTM2egZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707783668; c=relaxed/simple;
-	bh=XJ/yE4/VzELE2NuVOHXY7KLGljvdrWPIc06nOowYOE8=;
+	s=arc-20240116; t=1707783669; c=relaxed/simple;
+	bh=ZfBDtGgJlXxul/Ylvz3m7NrPT+cYNKzLkb0X5m6e6DU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oI7Fv3Mge86I2T4phThTBEJ8/wy5CEalzmctodzjCyyOMOC0rwSf9udCLLNsQVr5fkDifhz4rLkjPxYvR2r4ZyzcKrO+qgFUjpBorwPaMccf1VM9956du+iO5SPPHXukmYBD8f3l6n/WZfGQ/N7Yxil9cIU5FGLUI1O05ZWh1rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aboQWC2h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 519CAC43399;
-	Tue, 13 Feb 2024 00:21:07 +0000 (UTC)
+	 MIME-Version; b=LhLAlWrkmEnq/G0EL7jGZeqISFow1ySzmx36efyfZeMSlfXh60wZ9N3IQSpW/aKMO64ycKmgMCddcxkNrf22Bse/debJtvIunl5M/rrwEM+EmEw7An0sCHcVxNVl64HhxREpDNKUQ/1ocg8MNTfvR+S7wwNl0e3pw8DK1SOdwlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jA/co9CM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADEB8C433C7;
+	Tue, 13 Feb 2024 00:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707783668;
-	bh=XJ/yE4/VzELE2NuVOHXY7KLGljvdrWPIc06nOowYOE8=;
+	s=k20201202; t=1707783669;
+	bh=ZfBDtGgJlXxul/Ylvz3m7NrPT+cYNKzLkb0X5m6e6DU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aboQWC2hhxDzArMfT8BnvB9/j5iKQez4nLYTCu6rhzOloWgRw9XqLM+2rzogNqLhK
-	 wTahGSb5oHwIT0tss+cK97CVKdK5ES2ZfLUjrB0/1k40ZhEEOZKrG5K9n0JJnslD+p
-	 lkRfMC49Cg5LLOm9k0lKFLxlQuqQKMs7OHE97haGED1jsDF6mYx+Zu3JCeGF552YQZ
-	 n7y11TqHIr39m34KHVtCjt0s+4/fzwjb9iicNvsf9Jc6w+pz6fyEwkhF7TiskmEWu8
-	 dVjX06o4nhuThG/+wbz4w5u76sKu5f9heLUVQjMDL9ix1MWZ6bZdyGHCaIcuYy3Dvc
-	 UC266IzOo/lLA==
+	b=jA/co9CMILTBYh27izuqxjB8GuiF4ic2OKQqroLkZelW1sobDjxWb+z347+7KRYfs
+	 TJ8KrypmZPhEC0hZGZ/i6O3I1sV5VbyeWKEmcrkoib3iTOb3b7I17ndfP87jAcakU/
+	 VSkGDHhr08LDjDBsMrl3LsWUwYC2qUs7bThsbbMdq0TAbCOaQgWollmLooIZpseb7r
+	 IgqS2C3jdTwuEgk7/SC1U+w6fObKfXlBMnRhy9hbxp89R5ePVwru7SHOUeToxKCAn8
+	 5seDYWXwD3e0WDG/7e5Vsis+twUCCIDKiyh7nYVnb0XFEO5cD2Czc5Tv9ImGIrLUxl
+	 DZgSbJp9QAKAA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	kernel test robot <lkp@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	ntfs3@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 13/51] fs/ntfs3: Add NULL ptr dereference checking at the end of attr_allocate_frame()
-Date: Mon, 12 Feb 2024 19:19:50 -0500
-Message-ID: <20240213002052.670571-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 14/51] fs/ntfs3: Disable ATTR_LIST_ENTRY size check
+Date: Mon, 12 Feb 2024 19:19:51 -0500
+Message-ID: <20240213002052.670571-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240213002052.670571-1-sashal@kernel.org>
 References: <20240213002052.670571-1-sashal@kernel.org>
@@ -65,56 +66,71 @@ Content-Transfer-Encoding: 8bit
 
 From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-[ Upstream commit aaab47f204aaf47838241d57bf8662c8840de60a ]
+[ Upstream commit 4cdfb6e7bc9c80142d33bf1d4653a73fa678ba56 ]
 
-It is preferable to exit through the out: label because
-internal debugging functions are located there.
+The use of sizeof(struct ATTR_LIST_ENTRY) has been replaced with le_size(0)
+due to alignment peculiarities on different platforms.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312071005.g6YrbaIe-lkp@intel.com/
 Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ntfs3/attrib.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ fs/ntfs3/attrlist.c | 8 ++++----
+ fs/ntfs3/ntfs.h     | 2 --
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 4b78b669a3bd..646e2dad1b75 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -1743,8 +1743,10 @@ int attr_allocate_frame(struct ntfs_inode *ni, CLST frame, size_t compr_size,
- 			le_b = NULL;
- 			attr_b = ni_find_attr(ni, NULL, &le_b, ATTR_DATA, NULL,
- 					      0, NULL, &mi_b);
--			if (!attr_b)
--				return -ENOENT;
-+			if (!attr_b) {
-+				err = -ENOENT;
-+				goto out;
-+			}
+diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+index 7c01735d1219..48e7da47c6b7 100644
+--- a/fs/ntfs3/attrlist.c
++++ b/fs/ntfs3/attrlist.c
+@@ -127,12 +127,13 @@ struct ATTR_LIST_ENTRY *al_enumerate(struct ntfs_inode *ni,
+ {
+ 	size_t off;
+ 	u16 sz;
++	const unsigned le_min_size = le_size(0);
  
- 			attr = attr_b;
- 			le = le_b;
-@@ -1825,13 +1827,15 @@ int attr_allocate_frame(struct ntfs_inode *ni, CLST frame, size_t compr_size,
- ok:
- 	run_truncate_around(run, vcn);
- out:
--	if (new_valid > data_size)
--		new_valid = data_size;
-+	if (attr_b) {
-+		if (new_valid > data_size)
-+			new_valid = data_size;
+ 	if (!le) {
+ 		le = ni->attr_list.le;
+ 	} else {
+ 		sz = le16_to_cpu(le->size);
+-		if (sz < sizeof(struct ATTR_LIST_ENTRY)) {
++		if (sz < le_min_size) {
+ 			/* Impossible 'cause we should not return such le. */
+ 			return NULL;
+ 		}
+@@ -141,7 +142,7 @@ struct ATTR_LIST_ENTRY *al_enumerate(struct ntfs_inode *ni,
  
--	valid_size = le64_to_cpu(attr_b->nres.valid_size);
--	if (new_valid != valid_size) {
--		attr_b->nres.valid_size = cpu_to_le64(valid_size);
--		mi_b->dirty = true;
-+		valid_size = le64_to_cpu(attr_b->nres.valid_size);
-+		if (new_valid != valid_size) {
-+			attr_b->nres.valid_size = cpu_to_le64(valid_size);
-+			mi_b->dirty = true;
-+		}
+ 	/* Check boundary. */
+ 	off = PtrOffset(ni->attr_list.le, le);
+-	if (off + sizeof(struct ATTR_LIST_ENTRY) > ni->attr_list.size) {
++	if (off + le_min_size > ni->attr_list.size) {
+ 		/* The regular end of list. */
+ 		return NULL;
  	}
+@@ -149,8 +150,7 @@ struct ATTR_LIST_ENTRY *al_enumerate(struct ntfs_inode *ni,
+ 	sz = le16_to_cpu(le->size);
  
- 	return err;
+ 	/* Check le for errors. */
+-	if (sz < sizeof(struct ATTR_LIST_ENTRY) ||
+-	    off + sz > ni->attr_list.size ||
++	if (sz < le_min_size || off + sz > ni->attr_list.size ||
+ 	    sz < le->name_off + le->name_len * sizeof(short)) {
+ 		return NULL;
+ 	}
+diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
+index 13e96fc63dae..f61f5b3adb03 100644
+--- a/fs/ntfs3/ntfs.h
++++ b/fs/ntfs3/ntfs.h
+@@ -527,8 +527,6 @@ struct ATTR_LIST_ENTRY {
+ 
+ }; // sizeof(0x20)
+ 
+-static_assert(sizeof(struct ATTR_LIST_ENTRY) == 0x20);
+-
+ static inline u32 le_size(u8 name_len)
+ {
+ 	return ALIGN(offsetof(struct ATTR_LIST_ENTRY, name) +
 -- 
 2.43.0
 
