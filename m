@@ -1,160 +1,143 @@
-Return-Path: <linux-kernel+bounces-63337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A877852DCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67749852DD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 11:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B80282312
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:25:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 247C7288AE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 10:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402C222EE4;
-	Tue, 13 Feb 2024 10:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AD822638;
+	Tue, 13 Feb 2024 10:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ifQFy0mG";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nvlxOnIn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1gexvepV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wJg3G2Ya"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GwkPBvLE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FTIkVehm"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AF4225DA;
-	Tue, 13 Feb 2024 10:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04308225CE;
+	Tue, 13 Feb 2024 10:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707819900; cv=none; b=j1FP51GTJx7E/als543sFp3KUbj+YEAAoItUjZf6+HDrp7Mw8b79JW5SA6pSf6slCGdO11B9nUzFrb4639Nsd1IUNmso3wQoIUx5iQcO1Wgi/DsfPi/dA2V/SPvxQTaaUunOjzJpbyVJFBjXK5uaWzSbqpovZO2H1+MyUNXwKl4=
+	t=1707820004; cv=none; b=Yyb4xzoZIaFkgfmItnJAf/URA4B73uf1k4p2ahxCb/YdYvG1zeEuJAc7X2x2TLaLAUbot4eVg9kv0kgAjX9DJASgbBxyTb99lbhCpLh+wH+G4SBZY45YLv8hWA49mTYGi0etingxREW71H0lecNt9x8PyiSpiIxaNtjpTwU17G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707819900; c=relaxed/simple;
-	bh=s4JlE4fKNXlqIXqNM1hnjz9Eo0A9KOGZ+8DqDWCaUFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TgBbnm+KamC0juIGdBYRelEs83z4H0ItWaAE/rhjGo1oOy8maqDwM3ZWSpjpFVelZbwAhHdAo2zaI3nAXtWR2WOPvvpU/V/pH2R9LACk+fK4zhEZjJr7vEE/mQjsZui2hac+gJsxro9kf/6AjdH71otMFCNXye4tQN9njwDFR+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ifQFy0mG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nvlxOnIn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1gexvepV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wJg3G2Ya; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C70F21AF9;
-	Tue, 13 Feb 2024 10:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707819897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1707820004; c=relaxed/simple;
+	bh=aBnhq06nlMMvbU7IDlpipxtNtoUmHZ45y8K4GgkpUWs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Zxil/62HoUGi1RceahtHa18EnjErE2kcV21abwz1qTGp6FYQnSArIH1TAybzu1LIHmgPJ45WP/q2jprxmSxaG1vqj6mmvHWAFSRUx1vDpVKTTrJOaVmDcT4n5gp1rvI5YS50Cp5/skl71JMNQbfWVDLKPrQ8EWe0vjQi3OpWIuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GwkPBvLE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FTIkVehm; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1707820001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D+EOo/LZjqjoBiGIO35YpPDhSE1PM8je1VBpRIQoP9E=;
-	b=ifQFy0mGwGLrHpV/xSCP56UDnp2SneI9HOeX9fz+w7LJAdksM8IBn1kU6xPM4MAdAOjtrN
-	VO087TBOe2pS2zLAsWSkmmEwBO11NsHwkQkKeK7nmNp4M9ccJ2jjlqusMqmzEOrW2pHUAX
-	GpgGBuZuZQDMiVW2BBnpnUOUNduLMLE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707819897;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=OirENwRVffLhqg4vLQeXmmc6qTeG6AWtBgzm4/Fep7o=;
+	b=GwkPBvLE/NQAAT43xtyROcGSWgUiucZZB2ec2g3VMikr5ObnhcXmo+RS5IDSmyM1OUGiEd
+	7xS8uBH10ljyxTHAf0TgsO0vUhc8J3cUumyVjdF+tArJNZ5Cb6qbN81/2L4SUuNb1n+xeM
+	lTUKLPRc+bLsZCgPNl5jfAbi8uQEAR9a7o0M/zk8iHPMQOA0sGKzpV8m4ycyLpvhMqIrTG
+	BzH2/fE2hX0EICezQmdB7T4kOaTHuSMg8g41lIojVhpEATsMu34Fr+weMIBkrFDgJ1m7zJ
+	smGA9OsZA5tjREuhcauzD90erNoGucb+l9Ok3++FJGDwNXwNBXF9bmy5HX/vxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1707820001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D+EOo/LZjqjoBiGIO35YpPDhSE1PM8je1VBpRIQoP9E=;
-	b=nvlxOnInRBsTSIDx17rdanYOnEpnFy4h8DEr33R1Y9pX4twIIBACjGVC6OI5Ls2hCU4E62
-	qltp8EHFCkgKoqDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707819895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D+EOo/LZjqjoBiGIO35YpPDhSE1PM8je1VBpRIQoP9E=;
-	b=1gexvepVjjvIz9naX2X3CupPsSxffFxprbb8lYtlW4cIMwFVM3/u05KUm6rYGRJobHvGsW
-	wbczL2gpAuQt9solOqoxQWJGTwXL4VZUmEPtyRkuhB2xXiFWAAaE87VQKHUdH/UtUvJ+Wc
-	IPceu4VT0hWxJWiHpF9OqUyDeXVCI90=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707819895;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D+EOo/LZjqjoBiGIO35YpPDhSE1PM8je1VBpRIQoP9E=;
-	b=wJg3G2YaOHFR8SBxvPVQMl1c0hY6n6beWhyVoCVlTh0k9Cj2tAaSqWW+We+x7D9s1quzyk
-	aPxEy8Mdmrwh5rBg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 221EB1329E;
-	Tue, 13 Feb 2024 10:24:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 2XxNCHdDy2UYMQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 10:24:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CC187A0809; Tue, 13 Feb 2024 11:24:46 +0100 (CET)
-Date: Tue, 13 Feb 2024 11:24:46 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+451384fb192454e258de@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, shaggy@kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] kernel BUG in txLock
-Message-ID: <20240213102446.pctcff4txs7cikce@quack3>
-References: <00000000000079c7640604eefa47@google.com>
- <0000000000009bd5560611401f9d@google.com>
+	bh=OirENwRVffLhqg4vLQeXmmc6qTeG6AWtBgzm4/Fep7o=;
+	b=FTIkVehmdBJJQ8PbMU0GBBiXWHp+VmaePW7Fc9q0HvKZTnjeSpYgSUQrZkAOitKr3WDpHK
+	rs9WULSDRQ3oSFCA==
+To: Nam Cao <namcao@linutronix.de>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Samuel Holland
+ <samuel@sholland.org>, Marc Zyngier <maz@kernel.org>, Guo Ren
+ <guoren@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org
+Cc: Nam Cao <namcao@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] irqchip/sifive-plic: enable interrupt if needed
+ before EOI
+In-Reply-To: <20240131081933.144512-1-namcao@linutronix.de>
+References: <20240131081933.144512-1-namcao@linutronix.de>
+Date: Tue, 13 Feb 2024 11:26:40 +0100
+Message-ID: <87wmr8hd7j.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000009bd5560611401f9d@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [2.87 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.03)[56.88%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead];
-	 TAGGED_RCPT(0.00)[451384fb192454e258de];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: **
-X-Spam-Score: 2.87
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On Tue 13-02-24 01:36:06, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1588d6ec180000
-> start commit:   65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git...
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
-> dashboard link: https://syzkaller.appspot.com/bug?extid=451384fb192454e258de
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=140b48c8680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15276fb8680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Nam!
 
-Makes sense.
- 
-#syz fix: fs: Block writes to mounted block devices
+On Wed, Jan 31 2024 at 09:19, Nam Cao wrote:
+> RISC-V PLIC cannot "end-of-interrupt" (EOI) disabled interrupts, as
+> explained in the description of Interrupt Completion in the PLIC spec:
+>
+> "The PLIC signals it has completed executing an interrupt handler by
+> writing the interrupt ID it received from the claim to the claim/complete
+> register. The PLIC does not check whether the completion ID is the same
+> as the last claim ID for that target. If the completion ID does not match
+> an interrupt source that *is currently enabled* for the target, the
+> completion is silently ignored."
+>
+> Commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
+> ensured that EOI is successful by enabling interrupt first, before EOI.
+>
+> Commit a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask
+> operations") removed the interrupt enabling code from the previous
+> commit, because it assumes that interrupt should already be enabled at the
+> point of EOI. However, this is incorrect: there is a window after a hart
+> claiming an interrupt and before irq_desc->lock getting acquired,
+> interrupt can be disabled during this window. Thus, EOI can be invoked
+> while the interrupt is disabled, effectively nullify this EOI. This
+> results in the interrupt never gets asserted again, and the device who
+> uses this interrupt appears frozen.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Nice detective work!
+
+> Make sure that interrupt is really enabled before EOI.
+>
+> Fixes: a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask operations")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Nam Cao <namcao@linutronix.de>
+> ---
+> v2:
+>   - add unlikely() for optimization
+>   - re-word commit message to make it clearer
+>
+>  drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> index e1484905b7bd..0a233e9d9607 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -148,7 +148,13 @@ static void plic_irq_eoi(struct irq_data *d)
+>  {
+>  	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
+>  
+> -	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> +	if (unlikely(irqd_irq_disabled(d))) {
+> +		plic_toggle(handler, d->hwirq, 1);
+> +		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> +		plic_toggle(handler, d->hwirq, 0);
+
+It's unfortunate to have this condition in the hotpath, though it should
+be cache hot, easy to predict and compared to the writel() completely in
+the noise.
+
+> +	} else {
+> +		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
+> +	}
+>  }
+
+Can the RISCV folks please have a look at this?
+
+Thanks,
+
+        tglx
 
