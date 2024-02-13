@@ -1,174 +1,197 @@
-Return-Path: <linux-kernel+bounces-63863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E7A8535A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94948853595
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 17:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 484EE1C20A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:07:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA6251C2191E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 16:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8196660259;
-	Tue, 13 Feb 2024 16:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7045F876;
+	Tue, 13 Feb 2024 16:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RbOfyOcL"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="RC+YzCK9";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="wykuj6PW"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BB25FF18
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381FF5F84C;
+	Tue, 13 Feb 2024 16:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707840360; cv=none; b=BISCtFIKaC2kwiFIH+Avfd4Rd1IavJdKrmQCKXoKs0WV+w+K42evwcC88FmtJiWSV4TO+Mrvk8biRqdfhl457QZd7rKw1NPhQaqZQByJ7ruLNItCSj4YB8j2HNruEiN5SMWcgfJrIKwZCvXiSAbIV31Z1PoCDT5ZPK+IjQWo8zA=
+	t=1707840351; cv=none; b=ZLnMncfxyf5cb79Qr9mXf1QgY+gVA1Whkg1sqbHQtFYP14eKjNG+/o/hsvmqNwiRcB86qqcc7wz6TMBiI0LJXq+k341nUcis+PreRNHfJp9iFTXsA5h2uSxVfxtb/Llg9bMnhRqS3k0YVF4n1zoKml5uFLuLZbLAqLb/PSQbG28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707840360; c=relaxed/simple;
-	bh=WhRGfWz3VszioO4GYJaeKnZpFuWS7voXVPXzKT0NYqQ=;
-	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=H03uuq+6d7A+ckTfo7Sghf/jTYISCab01KdHg2lsZvMJPqkaEMYFSlGh03hCvUYDwOqLnclh9SaHrN+XoyQTSLvsMcg4Fdi/Le8/Umi74ZzB6f3+chUKknHYq4E4bGE/MQMrOZzRqiZJuSjqG8GJwoZCTNi35qlyPX5mwrhVSN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RbOfyOcL; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41DFpPJk011016;
-	Tue, 13 Feb 2024 16:05:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pp1;
- bh=rLxtQUcCyyKuXIeB9jaP75L5+oTLQrw5RzCxx4o/DO0=;
- b=RbOfyOcLweilCV7WEB9RtEFP7Z/7BE3emiWTH+70aTHzuX8qXj9CfuEq0MLj1MhyOe3t
- 8jjUoaCsKuXbltAChkcqGpPob+RgY745VpuE3r0R/8ulmFJzLIuxItmr5tYW+bZb+V76
- 8h2jDAOgA7PfmowBUKhkhdf+Qco16W9/xAr5RSd8GdTHBz8QACd0aVzBRPXL9poiA2YN
- IzTTzyjJfmy4cP+RRzaUNRI9vH1sQ0/7Q8RUXZnkuwHtq51bgrudoSDKJd4x3H9+wfPK
- sL55cQo4i4ABDh0exIqAEl1hkn/ag1GBSnjuwN9l9Z2CsuDIColP5quTVYSDsIq3W4Dk YA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w876tqjkr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:05:33 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41DFqQFR016291;
-	Tue, 13 Feb 2024 16:05:32 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w876tqjk9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:05:32 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41DDEqbZ009914;
-	Tue, 13 Feb 2024 16:05:31 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p62quhh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 13 Feb 2024 16:05:31 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41DG5QOO25494264
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Feb 2024 16:05:28 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 482C52004F;
-	Tue, 13 Feb 2024 16:05:26 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9AB8320043;
-	Tue, 13 Feb 2024 16:05:23 +0000 (GMT)
-Received: from ltcd48-lp2.aus.stglab.ibm.com (unknown [9.3.101.175])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 13 Feb 2024 16:05:23 +0000 (GMT)
-Subject: [PATCH] powerpc/iommu: Fix the missing iommu_group_put() during
- platform domain attach
-From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-To: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
-        naveen.n.rao@linux.ibm.com, jgg@ziepe.ca, jroedel@suse.de,
-        tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
-        gregkh@linuxfoundation.org, sbhat@linux.ibm.com,
-        gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com,
-        venkat88@linux.vnet.ibm.com
-Date: Tue, 13 Feb 2024 10:05:22 -0600
-Message-ID: <170784021983.6249.10039296655906636112.stgit@linux.ibm.com>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1707840351; c=relaxed/simple;
+	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V/ZgC4dA/bhbtYDvcFVivFPZS9dUGd+U0igbse3XR17i0Iti+/BMhBvUoZ/L3ChZtR4Px07afe6E8VuZUp20SUSF9kOmYXi2tHmnkQ2NzImQgGxJ3i/tr4LxvoF6iWT31Zq8dhdUVGDb8gWSUwxMGSNEPokAtvi83KENYUrvqVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=RC+YzCK9; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=wykuj6PW; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1707840346;
+	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=RC+YzCK9+TmWyGc8oHMRHccejewT+5xtcOsOvZwW+ISun1i0pl5fk64i710sfujoO
+	 ar8bFmkR3b/3LR0onAdRzZeXpruSWUKztTYsELcidDjGwpVE2iLkoSlBWvEb9MfRK6
+	 sMXZgpCW9LWLEKQ045rChXrCIsSTA2NQzD6NZgL8=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7E5D812861A8;
+	Tue, 13 Feb 2024 11:05:46 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id eQwYdNqMijvb; Tue, 13 Feb 2024 11:05:46 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1707840345;
+	bh=76ZkJstMN7d/lrOa91yJRmUFOo1w7pwJqg2u8ceSdmA=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=wykuj6PWjdyHpNBbkLohFDsLNpmkH5yKdncABXFTXCyM0uJ2iTVtOCvaZFyEdRWuG
+	 3KJ8J7aWw331i7ojUyOxe51nelVmCWCxeZpa3Y9WAUWtSgV0nupx2T+ysNGWmkTDdd
+	 ABCECKzbWdn8r0dCZcZmTg4I9Fw17pf3BMQD+bfk=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id D6AA91286197;
+	Tue, 13 Feb 2024 11:05:44 -0500 (EST)
+Message-ID: <982e19fcd71c41a162ba664281eb0a68d9dc960c.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH v2 0/4] tsm: Runtime measurement registers ABI
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: "Xing, Cedric" <cedric.xing@intel.com>, Dan Williams
+	 <dan.j.williams@intel.com>, Kuppuswamy Sathyanarayanan
+	 <sathyanarayanan.kuppuswamy@linux.intel.com>, Dan Middleton
+	 <dan.middleton@linux.intel.com>, Samuel Ortiz <sameo@rivosinc.com>
+Cc: Qinkun Bao <qinkun@google.com>, "Yao, Jiewen" <jiewen.yao@intel.com>, 
+ Dionna Amalie Glaze <dionnaglaze@google.com>, biao.lu@intel.com,
+ linux-coco@lists.linux.dev,  linux-integrity@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Tue, 13 Feb 2024 11:05:41 -0500
+In-Reply-To: <226df539-b3f4-4099-b6a6-293fa200c536@intel.com>
+References: <a255bc36-2438-41b7-b304-bcf7a6628bef@linux.intel.com>
+	 <42e14f74d3819c95fdb97cd2e9b2829dcb1b1563.camel@HansenPartnership.com>
+	 <1557f98a-3d52-4a02-992b-4401c7c85dd7@linux.intel.com>
+	 <85b7a4a679eada1d17b311bf004c2d9e18ab5cd3.camel@HansenPartnership.com>
+	 <b8140cc8-a56b-40f6-a593-7be49db14c77@intel.com>
+	 <fe1722c3618a8216cb53b8fd3f1b7cbb6fdff5a0.camel@HansenPartnership.com>
+	 <65c2e4aa54a0_d4122947f@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	 <22088ed3-51a4-415f-932c-db84c92a2812@intel.com>
+	 <527da630-4952-4b1d-80c0-5a87997ff9fd@linux.intel.com>
+	 <332775d7218843d6cc168c963d76e6841eab5d5b.camel@HansenPartnership.com>
+	 <65c691e13a50d_afa42948a@dwillia2-xfh.jf.intel.com.notmuch>
+	 <226df539-b3f4-4099-b6a6-293fa200c536@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jfJf4Z8YxA_Y0Rk2X8-LmH_n6-rB5V3Y
-X-Proofpoint-GUID: q0OqJzcgkPMFV6-hjCFOY-jRUaoT6lUg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_08,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 bulkscore=0 mlxlogscore=339 phishscore=0 impostorscore=0
- clxscore=1011 mlxscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402130126
+Content-Transfer-Encoding: 8bit
 
-The function spapr_tce_platform_iommu_attach_dev() is missing to call
-iommu_group_put() when the domain is already set. This refcount leak
-shows up with BUG_ON() during DLPAR remove operation as,
+On Mon, 2024-02-12 at 23:36 -0800, Xing, Cedric wrote:
+> On 2/9/2024 12:58 PM, Dan Williams wrote:
+> > James Bottomley wrote:
+> > > Just to correct this: IMA uses its own log format, but I think
+> > > this was a mistake long ago and the new log should use TCG2
+> > > format so all the tools know how to parse it.
+> > 
+> > Is this a chance to nudge IMA towards a standard log format? In
+> > other words, one of the goals alongside userspace consumers of the
+> > RTMR log would be for IMA to support it as well as an alternate in-
+> > kernel backend next to TPM. IMA-over-TPM continues with its current
+> > format, IMA-over-RTMR internally unifies with the log format that
+> > is shared with RTMR-user-ABI.
+> > 
+> I'm not a TCG expert. As far as I know, 
+> https://trustedcomputinggroup.org/wp-content/uploads/TCG-PC-Client-Platform-Firmware-Profile-Version-1.06-Revision-52_pub-1.pdf
+>  
+> defines the event types for TCG2 logs for firmware uses only. I
+> cannot  find a spec that defines event types for OS or applications.
+> We may  reuse the firmware event types for Linux but I doubt they can
+> accommodate IMA.
 
-  KernelBug: Kernel bug in state 'None': kernel BUG at arch/powerpc/platforms/pseries/iommu.c:100!
-  Oops: Exception in kernel mode, sig: 5 [#1]
-  LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
-  <snip>
-  Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_016) hv:phyp pSeries
-  NIP:  c0000000000ff4d4 LR: c0000000000ff4cc CTR: 0000000000000000
-  REGS: c0000013aed5f840 TRAP: 0700   Tainted: G          I         (6.8.0-rc3-autotest-g99bd3cb0d12e)
-  MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 44002402  XER: 20040000
-  CFAR: c000000000a0d170 IRQMASK: 0
-  GPR00: c0000000000ff4cc c0000013aed5fae0 c000000001512700 c0000013aa362138
-  GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000119c8afd0
-  GPR08: 0000000000000000 c000001284442b00 0000000000000001 0000000000001003
-  GPR12: 0000000300000000 c0000018ffff2f00 0000000000000000 0000000000000000
-  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR24: c0000013aed5fc40 0000000000000002 0000000000000000 c000000002757d90
-  GPR28: c0000000000ff440 c000000002757cb8 c00000183799c1a0 c0000013aa362b00
-  NIP [c0000000000ff4d4] iommu_reconfig_notifier+0x94/0x200
-  LR [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200
-  Call Trace:
-  [c0000013aed5fae0] [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200 (unreliable)
-  [c0000013aed5fb10] [c0000000001a27b0] notifier_call_chain+0xb8/0x19c
-  [c0000013aed5fb70] [c0000000001a2a78] blocking_notifier_call_chain+0x64/0x98
-  [c0000013aed5fbb0] [c000000000c4a898] of_reconfig_notify+0x44/0xdc
-  [c0000013aed5fc20] [c000000000c4add4] of_detach_node+0x78/0xb0
-  [c0000013aed5fc70] [c0000000000f96a8] ofdt_write.part.0+0x86c/0xbb8
-  [c0000013aed5fce0] [c00000000069b4bc] proc_reg_write+0xf4/0x150
-  [c0000013aed5fd10] [c0000000005bfeb4] vfs_write+0xf8/0x488
-  [c0000013aed5fdc0] [c0000000005c0570] ksys_write+0x84/0x140
-  [c0000013aed5fe10] [c000000000033358] system_call_exception+0x138/0x330
-  [c0000013aed5fe50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
-  --- interrupt: 3000 at 0x20000433acb4
-  <snip>
-  ---[ end trace 0000000000000000 ]---
+The TCG crypto agile log format is
 
-The patch adds the missing iommu_group_put() call.
+ index (32 bit),
+ event tag (32 bit),
+ digests array,
+ sized event entry (up to 4GB)
 
-Fixes: a8ca9fc9134c ("powerpc/iommu: Do not do platform domain attach atctions after probe")
-Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
----
- arch/powerpc/kernel/iommu.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+So an IMA log entry can definitely be transformed into this format
+(providing someone agrees to the tag or set of tags).  The slight
+problem would be that none of the current IMA tools would understand
+it, but that could be solved over time (the kernel could use the TCG
+format internally but transform to the IMA format for the current
+securityfs IMA log).
 
-diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-index d71eac3b2887..a9bebfd56b3b 100644
---- a/arch/powerpc/kernel/iommu.c
-+++ b/arch/powerpc/kernel/iommu.c
-@@ -1289,8 +1289,10 @@ spapr_tce_platform_iommu_attach_dev(struct iommu_domain *platform_domain,
- 	struct iommu_table_group *table_group;
- 
- 	/* At first attach the ownership is already set */
--	if (!domain)
-+	if (!domain) {
-+		iommu_group_put(grp);
- 		return 0;
-+	}
- 
- 	table_group = iommu_group_get_iommudata(grp);
- 	/*
+> IMHO, we don't have to follow TCG2 format because TDX is never TPM,
+> nor are any other TEEs that support runtime measurements. The
+> existing TCG2 format looks to me somewhat like ASN.1 - well defined
+> but schema is needed to decode. In contrast, JSON is a lot more
+> popular than ASN.1  nowadays because it's human readable and doesn't
+> require a schema. I just wonder if we should introduce a text based
+> log format. We could make the log a text file, in which each line is
+> an event record and the digest of the line is extended to the
+> specified runtime measurement register. The content of each line
+> could be free-form at the ABI level, but we can still recommend a
+> convention for applications - e.g., the first word/column must be an
+> URL for readers to find out the format/syntax of the rest of the
+> line. Thoughts?
+
+https://xkcd.com/927/
+
+> > ...but be warned the above is a comment from someone who knows
+> > nothing about IMA internals, just reacting to the comment.
+> > 
+> > 
+> > > > I am wondering where will the event log be stored? Is it in the
+> > > > log_area region of CCEL table?
+> > > 
+> > > IMA stores its log in kernel memory and makes it visible in
+> > > securityfs (in the smae place as the measured boot log).  Since
+> > > this interface is using configfs, that's where I'd make the log
+> > > visible.
+> > > 
+> > > Just to add a note about how UEFI works: the measured boot log is
+> > > effectively copied into kernel memory because the UEFI memory it
+> > > once occupied is freed after exit boot services, so no UEFI
+> > > interface will suffice for the log location.
+> > > 
+> > > I'd make the file exporting it root owned but probably readable
+> > > by only the people who can also extend it (presumably enforced by
+> > > group?).
+> > 
+> > I assume EFI copying into kernel memory is ok because that log has
+> > a limited number of entries. If this RTMR log gets large I assume
+> > it needs some way cull entries that have been moved to storage.
+> > Maybe this is a problem IMA has already solved.
+> 
+> We don't have to, and are also not supposed to I guess, append to the
+> log generated by BIOS.
+
+We do actually: the EFI boot stub in the kernel appends entries for the
+initrd and command line.
+
+>  The kernel can start a new log, and potentially in a different
+> format. I think the BIOS log is exposed via securityfs today. Am I
+> correct?
+
+I already said that, yes.
+
+>  For the new TEE measurement log, I don't think it has to be
+> collocated with the BIOS log, because TEEs are never TPMs.
+
+This depends.  Logs are separable by PCRs.  As in every entry for the
+same PCR could be in a separate, correctly ordered, log.  However, you
+can't have separate logs that both use the same PCR because they won't
+replay.
+
+James
+
 
 
 
