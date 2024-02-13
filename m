@@ -1,211 +1,143 @@
-Return-Path: <linux-kernel+bounces-62923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3AC08527E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:58:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242CD8527E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 05:01:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D250284EF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 03:58:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DBDC1C22F65
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 04:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E661A94F;
-	Tue, 13 Feb 2024 03:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C466DA947;
+	Tue, 13 Feb 2024 04:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bfXONbeI"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="NeOlSrkf"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72EB28F3
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 03:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFD5883B;
+	Tue, 13 Feb 2024 04:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707796676; cv=none; b=K+BAhXXCNwpKN5pDLNYjkwD7hxktDzeA2+mrt0uij422ZU6mNKrBHwCSVm8Jq6iMmNXbVCWJXfWU7rwIzm/QtoWZlK5l723lkRIyeVT3i0a9L8SBY/7Pu+YoL6uj9ooOr/nfoAp2wBQ5qnbFrOgbMmf2z85Yfb4GHwiKLvhZBYw=
+	t=1707796858; cv=none; b=EXKWXhjSAyJHBBmG5mG0ZeaNbBqEaMo6viZHAyvDxiCAhfA6EtM+y6kO/IaLRAEYlm2hciWSQ3AnFHx3zH8SRavaIvcQ01UFQndYssPTDE1e/rU4NKLd9qdHf4RHCN4MeaU2iAjZRouzLkqXOiwOcoiI2SrdMmaTXNsB+sIcWn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707796676; c=relaxed/simple;
-	bh=bN6dK6aD4FKyqegpnhvZEjDICtz9+BSGPPA7uv6RYgw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ai0C4ZEibTdiO8j27GSLWwpJGDNAiGdqlyCgNVbu94FQOUXa6oAvkBJH8uJyjhJcsMhdN5QTY66t/I221OF0SXHP5RaSoH0j8cpUsaybp9k2OWVIZdHE21N9JVP4m66YouBb+3Q9DgBys6YmlDu0J+gHaOfvG6q1IZQT0fVT7ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bfXONbeI; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51147d0abd1so4401009e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Feb 2024 19:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1707796673; x=1708401473; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
-        b=bfXONbeIwgulPmbNIGSf3ZL3eerOXb59wypn7JW2Io7Rp8kOgFTW3N+UWfs1IfPQBx
-         cc/20zR2N/3OOt5j46uwtp1wSbw62eS2iUvpRHkEXYA2+JfYSfSjItBG+MrhDIFdEB8e
-         9lfhIvyZT61V2Qv62C5AflXNlSQ24Dy4J75SKq+1xw++gBkrBovZUgj66WGJ3kEnSAKL
-         GNOf/iFlguMLqybAXhYJgPsQgepHOmxNHK8lrb1Htz0/9rpObut8bUiN+zL9pMbGidll
-         kgiGPotOEZaK55/n/ir5NSIBadEmltbCRGBxOqDYThNcqX6Vb/X6LAzJMqUtNkCELp+w
-         aMAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707796673; x=1708401473;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HGDUec+ltrfJRSqU4fW2OgD37xMy9JdASW7ExQePVdQ=;
-        b=K7Oq4NrDxvBPvtxZ8zFmOpacWipl2lmo07dMjqKYGgAVCeDfoWm2PVXnJ/J6mhae9G
-         4l6ptKqhGSUDtpyj/q6oNPI+7dfnehvRYNAfU3yiULfdg3IBAKEGfsnX9liWEkAp/yUg
-         vHKuA4qQkCbj0yAVMVy+UajOrmaFq7W0x/1n1s3Kiy95fOTyuaRl5+2q38pyqegyj5ya
-         vdAcuO7mNheDxM/1KLbE1OBviqCN1oTkd2w/mbpYVZcLaeP4ZLosMSdc2wbGpjqUz2yc
-         4n19hy7eaqSsJaaf5NI4zt4t8KEBHs1LyGiPv4iNE4eYP0QYKjxtttSXTgOVy8WtqVct
-         trfA==
-X-Gm-Message-State: AOJu0Yxwdkyy6Skmyo6gTA7OCSicpDxR1T/WLHUixUKi7De9itLW94sY
-	R4othCCwIjEaHO+55CZfuzlwWM0zAEFvtVCrXcrvBIV6Mx9Sxoa+BRuUgJ8LU5XHe1ixlJZ18CZ
-	Wltgb70M/s0oN95Z6DIG72A2S2QtELuYFUggV
-X-Google-Smtp-Source: AGHT+IGQ73ms9lvthgj1vaExSwJhqchVTtOPhgRTVKEo8nXQ6D60UgUj5YD6xewgwpha12/NNyS7VOLR2tN8UZ5sPds=
-X-Received: by 2002:a05:6512:2e9:b0:511:2e97:add2 with SMTP id
- m9-20020a05651202e900b005112e97add2mr5394630lfq.66.1707796672701; Mon, 12 Feb
- 2024 19:57:52 -0800 (PST)
+	s=arc-20240116; t=1707796858; c=relaxed/simple;
+	bh=F4tlfjF4nqVUtVOK8guOWF4UjN0sf0A3zouGh4tn854=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lVZtu7Ygdwj0uFFme9tZQDqIP1PU+P4Mj5JeaSpa+T+yn8jYE7Jc4qt2gz3NdylclRghZFdIxj02V514yyoSCGK05YcVac3g9nPHINgPPpG0LEg/uw7FiBzzc0rQnVcs71XXetvV6B3h38SozzE+T4JKgdzKbYAwvXYMMYYJ1JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=NeOlSrkf; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707796852;
+	bh=U7e6bjJ4gcVV8EkDfFLIjscTqmmc5dLgCvjZq5sqAFM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=NeOlSrkfJ3A9OaL6AYnjy72jxgeiZ+5AL5kHyNJqdsnjKI9YlhQnb4P16i+1FnZ5O
+	 Iq5/ee+ArboT64J3V+MM9lRra2/GKZirfZsmZw5iDJqTlpvVaVfZ3FKI/4LBFUJLdj
+	 +gBbLQVJhttexKJw5Cqagh2os4mJb3Tv+116cfBgIm2t0jGqapvXPoeNvY3+JQo/bT
+	 W+QvaKzJDfkresQlWofn/P8Ko5BaULJeQ0qtrp7g+UPoBCyvKInZBM/RvHvoTs614J
+	 fxcUyNHLT8eF/4PUX38Iz77JZjyKSlT88PXcCfVKRfsWxp2mRJtzl6nzPJ4mIuTxit
+	 9iPIvmYgAgZTg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TYng80LGsz4wyr;
+	Tue, 13 Feb 2024 15:00:52 +1100 (AEDT)
+Date: Tue, 13 Feb 2024 15:00:50 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
+ <mario.limonciello@amd.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20240213150050.083de445@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122062535.8265-1-khuey@kylehuey.com> <CAP045Apecy=G_Wmcw6TMjSDfa3TbkMfFVkzGDJ9xTVksCLkZ0w@mail.gmail.com>
- <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+tRwMZiPa9Zrf6nD22dfF9MAiqv-1ML5Z2pELFNKa9KQ@mail.gmail.com>
-From: Kyle Huey <me@kylehuey.com>
-Date: Mon, 12 Feb 2024 19:57:39 -0800
-Message-ID: <CAP045Aoc3e1NE8VMWz67LZNVo68nGhxfgapjd30vAaSyBD4kFg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/MOmPc9q=TglKLWRudsda02a";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/MOmPc9q=TglKLWRudsda02a
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 6:42=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Feb 12, 2024 at 8:37=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote=
-:
-> >
-> > On Sun, Jan 21, 2024 at 10:25=E2=80=AFPM Kyle Huey <me@kylehuey.com> wr=
-ote:
-> > >
-> > > rr, a userspace record and replay debugger[0], replays asynchronous e=
-vents
-> > > such as signals and context switches by essentially[1] setting a brea=
-kpoint
-> > > at the address where the asynchronous event was delivered during reco=
-rding
-> > > with a condition that the program state matches the state when the ev=
-ent
-> > > was delivered.
-> > >
-> > > Currently, rr uses software breakpoints that trap (via ptrace) to the
-> > > supervisor, and evaluates the condition from the supervisor. If the
-> > > asynchronous event is delivered in a tight loop (thus requiring the
-> > > breakpoint condition to be repeatedly evaluated) the overhead can be
-> > > immense. A patch to rr that uses hardware breakpoints via perf events=
- with
-> > > an attached BPF program to reject breakpoint hits where the condition=
- is
-> > > not satisfied reduces rr's replay overhead by 94% on a pathological (=
-but a
-> > > real customer-provided, not contrived) rr trace.
-> > >
-> > > The only obstacle to this approach is that while the kernel allows a =
-BPF
-> > > program to suppress sample output when a perf event overflows it does=
- not
-> > > suppress signalling the perf event fd or sending the perf event's SIG=
-TRAP.
-> > > This patch set redesigns __perf_overflow_handler() and
-> > > bpf_overflow_handler() so that the former invokes the latter directly=
- when
-> > > appropriate rather than through the generic overflow handler machiner=
-y,
-> > > passes the return code of the BPF program back to __perf_overflow_han=
-dler()
-> > > to allow it to decide whether to execute the regular overflow handler=
-,
-> > > reorders bpf_overflow_handler() and the side effects of perf event
-> > > overflow, changes __perf_overflow_handler() to suppress those side ef=
-fects
-> > > if the BPF program returns zero, and adds a selftest.
-> > >
-> > > The previous version of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kyle=
-huey.com/
-> > >
-> > > Changes since v4:
-> > >
-> > > Patches 1, 2, 3, 4 added various Acked-by.
-> > >
-> > > Patch 4 addresses additional nits from Song.
-> > >
-> > > v3 of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kyl=
-ehuey.com/
-> > >
-> > > Changes since v3:
-> > >
-> > > Patches 1, 2, 3 added various Acked-by.
-> > >
-> > > Patch 4 addresses Song's review comments by dropping signals_expected=
- and the
-> > > corresponding ASSERT_OKs, handling errors from signal(), and fixing m=
-ultiline
-> > > comment formatting.
-> > >
-> > > v2 of this patchset can be found at
-> > > https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kyle=
-huey.com/
-> > >
-> > > Changes since v2:
-> > >
-> > > Patches 1 and 2 were added from a suggestion by Namhyung Kim to refac=
-tor
-> > > this code to implement this feature in a cleaner way. Patch 2 is sepa=
-rated
-> > > for the benefit of the ARM arch maintainers.
-> > >
-> > > Patch 3 conceptually supercedes v2's patches 1 and 2, now with a clea=
-ner
-> > > implementation thanks to the earlier refactoring.
-> > >
-> > > Patch 4 is v2's patch 3, and addresses review comments about C++ styl=
-e
-> > > comments, getting a TRAP_PERF definition into the test, and unnecessa=
-ry
-> > > NULL checks.
-> > >
-> > > [0] https://rr-project.org/
-> > > [1] Various optimizations exist to skip as much as execution as possi=
-ble
-> > > before setting a breakpoint, and to determine a set of program state =
-that
-> > > is practical to check and verify.
-> >
-> > Since everyone seems to be satisfied with this now, can we get it into
-> > bpf-next (or wherever) for 6.9?
->
-> The changes look fine, but since they change perf side we need
-> perf maintainer's ack-s before we can land the patches.
-> And none of them were cc-ed.
-> So please resend the whole set and cc
-> PERFORMANCE EVENTS SUBSYSTEM
-> M:      Peter Zijlstra <peterz@infradead.org>
-> M:      Ingo Molnar <mingo@redhat.com>
-> M:      Arnaldo Carvalho de Melo <acme@kernel.org>
-> M:      Namhyung Kim <namhyung@kernel.org>
+Hi all,
 
-They're all CCd to the three non-test patches in this set, Namhyung
-Kim is CCd to all of them and this cover email, and he both suggested
-the first patch and acked the third.
+After merging the amdgpu tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
 
-- Kyle
+In file included from drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:42:
+drivers/gpu/drm/amd/amdgpu/amdgpu.h:1559:13: error: 'amdgpu_choose_low_powe=
+r_state' defined but not used [-Werror=3Dunused-function]
+ 1559 | static void amdgpu_choose_low_power_state(struct amdgpu_device *ade=
+v) { }
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+
+(and many, many more)
+
+Caused by commit
+
+  c77536b15b7a ("drm/amd: Stop evicting resources on APUs in suspend")
+
+I have applied the following patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 13 Feb 2024 14:41:05 +1100
+Subject: [PATCH] fixup for "drm/amd: Stop evicting resources on APUs in sus=
+pend"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdg=
+pu/amdgpu.h
+index 2a3f12bae823..2cf4fb3f7751 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -1556,7 +1556,7 @@ void amdgpu_choose_low_power_state(struct amdgpu_devi=
+ce *adev);
+ #else
+ static inline bool amdgpu_acpi_is_s0ix_active(struct amdgpu_device *adev) =
+{ return false; }
+ static inline bool amdgpu_acpi_is_s3_active(struct amdgpu_device *adev) { =
+return false; }
+-static void amdgpu_choose_low_power_state(struct amdgpu_device *adev) { }
++static inline void amdgpu_choose_low_power_state(struct amdgpu_device *ade=
+v) { }
+ #endif
+=20
+ #if defined(CONFIG_DRM_AMD_DC)
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MOmPc9q=TglKLWRudsda02a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXK6XIACgkQAVBC80lX
+0Gz27Af9GKFbo49BCEVcMbpoXnxgMkA/RSlgK8EkkNHKK6lIBzhWN6dZ0+rQvl5T
+X9+97+fmSs091No5Cb4yckl21u+epKx2c+8sKBM28Rj5lWCw7t0yJsQNJDJQrXh7
+DUweeOImeO7HDPQq8ir0xveIDO0fwppSNpB7QIWjrgB4l22tNsAIfB23jiITbQ+i
+Wp63/t/7l6bsZXT1A822oIHHi3UXLGDOlCuJBWH6pKUpAmUk4ZetYSWkOtRLnPBp
+Ht9DLMUR25YTUExN3xHpfaGDNvMqnhZaUvBpTp6A8fAIkxR0EEVPlyp0Eb3Fzk0S
+3NmVhFgLjt12UsmzxWvm7xIm+GBKxg==
+=CSBD
+-----END PGP SIGNATURE-----
+
+--Sig_/MOmPc9q=TglKLWRudsda02a--
 
