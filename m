@@ -1,133 +1,148 @@
-Return-Path: <linux-kernel+bounces-64155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7670A853ACD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:21:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A36853ACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 082571F26297
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:21:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ADE228BE30
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 19:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981CD60885;
-	Tue, 13 Feb 2024 19:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216825FF0A;
+	Tue, 13 Feb 2024 19:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mTM4F7hQ"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sbd0fqH+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081A660884
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1A15812E;
+	Tue, 13 Feb 2024 19:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707852058; cv=none; b=EvvEshm38FE7K5gWMFkoPP3jAHPMVv39zCcmF7ixUH8Z9QcNYUEfnvOEWBbUYN6tu/7VAxf7EMTj+LgMDQzS1lpByAoOrasKtfPXygo1IQH2W4uEpIRlukQxFGnhzf5s/n9rYNGy4cO/g5aoCkt+3tEMSm6F2TuziXIIuMWaqbw=
+	t=1707852054; cv=none; b=W/fa5R1yVK7pungNQgaFhX6pvvuVv/qF7iAQ31ifm1QWW0Dwlr2l+MYNw+DowaboZJqJP57R/vVZ9c/Ucv30O/AAsoMvejlcPnVRJ8lBoZ0zWfjmrb3pc1HGvM4iK3/VzjIEXokc15+yqfTGOh917qKBGPU62hkBI4tQpcIlHwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707852058; c=relaxed/simple;
-	bh=7dXfSRYBwhsTCt6sxxpGuOjndcv/iGeQtLLQrn0l66Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fdho+YuQqryP2NhltpeB47asV8hiyFSIYUrD2hjImbsoSh6C0kBEuYwg+HQvdnEdq4Y7kyRxm5X+CcL4DS9QPhzfs0xf77e02Ii/UX3957yjRkjCL7ml+FMNe9FtN2X5gNF0cdEcu/IXq47jcq+sJjVhCHHc6l0gQM8SLu7+uDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mTM4F7hQ; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A28A960002;
-	Tue, 13 Feb 2024 19:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707852053;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3mN8xA0cTxrfZTtwyelonCfpSj29sYDVq5G0MAoHaHg=;
-	b=mTM4F7hQA4rbQGgy7sC3p/Yv7/5UjDCvUgPm6/bAWUy0+uMa+aibebP9bxlzXdgUYqX9yi
-	mil0ph6jS4jOu2kIq/+o6MRGFLxNaCxBaIOdKBeh9wjGhGlWX5sikiGc8krqb3BcrvWN0+
-	dX9mtKLCV3hUdRjCKgivbP90sRUVc+idvcfAgawP8+cgpQGLeBstLxLgtk44s57DdsStkh
-	GHnZ6TZONle3bG1I7H4plHnLMC5LFAtoq5hWFCHzzVwAJEMqaQl4ym2GgAHe65RML7KmH1
-	5o9EYyOs0pXa8bRL3ATNSbCj9HKC69SrlMvFSa344EoXEH3oIamnN8vMvyXnJw==
-Date: Tue, 13 Feb 2024 20:20:45 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Eric Curtin <ecurtin@redhat.com>
-Cc: srinivas.kandagatla@linaro.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- regressions@lists.linux.dev, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Chen-Yu Tsai <wenst@chromium.org>,
- asahi@lists.linux.dev, Sven Peter <sven@svenpeter.dev>
-Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
-Message-ID: <20240213202045.1e823a6c@xps-13>
-In-Reply-To: <CAOgh=FwFMaYvTwmqeOQrqHq2XANxghZbTuY3+SgFx_ozpysBOg@mail.gmail.com>
-References: <20240209163454.98051-1-srinivas.kandagatla@linaro.org>
-	<CAOgh=FwFMaYvTwmqeOQrqHq2XANxghZbTuY3+SgFx_ozpysBOg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707852054; c=relaxed/simple;
+	bh=62+TMzhu0tgv3ZB2azIQJRCmQ4u6vlGyJMQahNrc4uk=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=ofCL8ariIGf07bjbu+6hORcn6HuaQKileR8574bdXxQS6zVIsgT3IlGL3RiUCKlFwlvbyfjJsLNdmF1GsOtmJONphhdV+iYNV4iBx0d9ra36puOKMu/arY3Xr5ofdUWvvkIT12wfW1H7cYjRv4Qbkj8WSPw2b62CrYYmTq+EO9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sbd0fqH+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA009C43390;
+	Tue, 13 Feb 2024 19:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707852054;
+	bh=62+TMzhu0tgv3ZB2azIQJRCmQ4u6vlGyJMQahNrc4uk=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=sbd0fqH+8fvVZaS1HuE3/gKHgknB/hO//wWuduGJaEFz/hazFvc04ACkBmNqNtx8n
+	 H7mDZmu6KSOn/t5P4Msus8XXa3SnUz6qf55F1iS7YTgf1Zyrm3TPA+gr8bQjxrF7Pa
+	 E42YrmQ6GXCnMHkxl3xqCXtD9+mq+dOKgZvN8HsLGiBTtTDcUTyOZF/JBOnXi2i7Np
+	 hfKv02rU9a4xvwksbgoxZUExV3ZCoLIi9dg09ID5eb2L9nZMsOdPWCKx1LRTldneai
+	 OA0oYU1Hz6GbJiT7vCCbaG9dNXpQ92iO82K4wIHVTHRzL3Vm0oePYTO3CwsG0dcKlp
+	 6YbKhq522Lj6w==
+Date: Tue, 13 Feb 2024 13:20:52 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+From: Rob Herring <robh@kernel.org>
+To: Tanmay Shah <tanmay.shah@amd.com>
+Cc: andersson@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, linux-remoteproc@vger.kernel.org, 
+ michal.simek@amd.com, Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>, 
+ ben.levinsky@amd.com, linux-kernel@vger.kernel.org, 
+ mathieu.poirier@linaro.org, conor+dt@kernel.org, 
+ linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240213175450.3097308-3-tanmay.shah@amd.com>
+References: <20240213175450.3097308-1-tanmay.shah@amd.com>
+ <20240213175450.3097308-3-tanmay.shah@amd.com>
+Message-Id: <170785205177.2155555.1311787541370066483.robh@kernel.org>
+Subject: Re: [PATCH v10 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
 
-Hi,
 
-ecurtin@redhat.com wrote on Fri, 9 Feb 2024 16:49:22 +0000:
+On Tue, 13 Feb 2024 09:54:48 -0800, Tanmay Shah wrote:
+> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> 
+> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> UltraScale+ platform. It will help in defining TCM in device-tree
+> and make it's access platform agnostic and data-driven.
+> 
+> Tightly-coupled memories(TCMs) are low-latency memory that provides
+> predictable instruction execution and predictable data load/store
+> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+> 
+> The TCM resources(reg, reg-names and power-domain) are documented for
+> each TCM in the R5 node. The reg and reg-names are made as required
+> properties as we don't want to hardcode TCM addresses for future
+> platforms and for zu+ legacy implementation will ensure that the
+> old dts w/o reg/reg-names works and stable ABI is maintained.
+> 
+> It also extends the examples for TCM split and lockstep modes.
+> 
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
+> 
+> Changes in v10:
+>   - modify number of "reg", "reg-names" and "power-domains" entries
+>     based on cluster mode
+>   - Add extra optional atcm and btcm in "reg" property for lockstep mode
+>   - Add "reg-names" for extra optional atcm and btcm for lockstep mode
+>   - Drop previous Ack as bindings has new change
+> 
+> Changes in v9:
+>   - None
+> Changes in v8:
+>   - None
+> Changes in v7:
+>   - None
+> Changes in v6:
+>   - None
+> Changes in v5:
+>   - None
+> 
+> Changes in v4:
+>   - Use address-cells and size-cells value 2
+>   - Modify ranges property as per new value of address-cells
+>     and size-cells
+>   - Modify child node "reg" property accordingly
+>   - Remove previous ack for further review
+> 
+> v4 link: https://lore.kernel.org/all/20230829181900.2561194-2-tanmay.shah@amd.com/
+> 
+>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 192 ++++++++++++++++--
+>  1 file changed, 170 insertions(+), 22 deletions(-)
+> 
 
-> On Fri, 9 Feb 2024 at 16:43, <srinivas.kandagatla@linaro.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Creating sysfs files for all Cells caused a boot failure for linux-6.8-=
-rc1 on
-> > Apple M1, which (in downstream dts files) has multiple nvmem cells that=
- use the
-> > same byte address. This causes the device probe to fail with
-> >
-> > [    0.605336] sysfs: cannot create duplicate filename '/devices/platfo=
-rm/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
-> > [    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S              =
-   6.8.0-rc1-arnd-5+ #133
-> > [    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
-> > [    0.605362] Call trace:
-> > [    0.605365]  show_stack+0x18/0x2c
-> > [    0.605374]  dump_stack_lvl+0x60/0x80
-> > [    0.605383]  dump_stack+0x18/0x24
-> > [    0.605388]  sysfs_warn_dup+0x64/0x80
-> > [    0.605395]  sysfs_add_bin_file_mode_ns+0xb0/0xd4
-> > [    0.605402]  internal_create_group+0x268/0x404
-> > [    0.605409]  sysfs_create_groups+0x38/0x94
-> > [    0.605415]  devm_device_add_groups+0x50/0x94
-> > [    0.605572]  nvmem_populate_sysfs_cells+0x180/0x1b0
-> > [    0.605682]  nvmem_register+0x38c/0x470
-> > [    0.605789]  devm_nvmem_register+0x1c/0x6c
-> > [    0.605895]  apple_efuses_probe+0xe4/0x120
-> > [    0.606000]  platform_probe+0xa8/0xd0
-> >
-> > As far as I can tell, this is a problem for any device with multiple ce=
-lls on
-> > different bits of the same address. Avoid the issue by changing the fil=
-e name
-> > to include the first bit number.
-> >
-> > Fixes: 0331c611949f ("nvmem: core: Expose cells through sysfs")
-> > Link: https://github.com/AsahiLinux/linux/blob/bd0a1a7d4/arch/arm64/boo=
-t/dts/apple/t600x-dieX.dtsi#L156
-> > Cc: regressions@lists.linux.dev
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Cc: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> > Cc: Chen-Yu Tsai <wenst@chromium.org>
-> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: asahi@lists.linux.dev
-> > Cc: Sven Peter <sven@svenpeter.dev>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org> =20
->=20
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-My R-by must have been lost, here it is again:
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml:118:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+dtschema/dtc warnings/errors:
 
-Thanks,
-Miqu=C3=A8l
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240213175450.3097308-3-tanmay.shah@amd.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
