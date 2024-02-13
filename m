@@ -1,147 +1,113 @@
-Return-Path: <linux-kernel+bounces-64219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6012D853C13
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:12:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A98853C1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 21:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 127571F24609
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:12:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F571286685
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 20:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D4860DDD;
-	Tue, 13 Feb 2024 20:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB8460B94;
+	Tue, 13 Feb 2024 20:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qXmhTkpz"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rsySa6xI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3B060B9D
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821C160EC3;
+	Tue, 13 Feb 2024 20:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707855150; cv=none; b=X0z+eJxnW4AThIEhMIAqVrd5NBA27y/qEpDjj7uWPaP68+zHa4yJBIZweYlM64+2sLCXDpg8Y8SMfPTiMDXXgV2q3cOkZKqJVWjB1TC1Q3jRgKW3/Wuc5IhsDqwAhAUZCcYSQ0Uq2eZLONdLugZWX9V9gzg3zActCRbTwvXRFJI=
+	t=1707855240; cv=none; b=p6n8bwb+bY8SIabZmUZo2afRJzas1K8WHfl3JlmwmzMkQij5DWYY7PlT+Wj12nv1yb6JRwdKUxW06+0pUDcmv9UKwk1FDj9knR1i9/LJH7aL1yreiMVFXsY6lwu06vunfEVR+WHhL4IRUYsrTQBGs8p9EIjLtPtzRBdytB5ZOxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707855150; c=relaxed/simple;
-	bh=8Eu7h9h1OltfWiPT9pD0zhhDGm1FG6v6o8ZDtqfFamQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Gd6nnMbp8ADUb8OabC1iCpAYtgN8tyt43BPIRoSVr6BjhtcJCbs7lsNiXLbEBxrZSjfizFLuaQztOzSU2fAwHdwswD6BILS6ymJrmWuiOwAVBC9ZsYfpsThDyF6guR84Pab4Z9pwMA4o+XZM9u/n0IpQj59L9ZzvJIsRyPIh9To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qXmhTkpz; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ericchancf.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-604832bcbd0so103063747b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 12:12:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707855147; x=1708459947; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RC2T9SgmWwA0L5LQ8BYxxpjFIKV4b3AtrMRzB+GqR24=;
-        b=qXmhTkpzv1uGTpVWxJVYemmBGEHox5FDh12DktC/WPhSdd6qhnAZ+XWrGRSjnAf25a
-         a+Xv4ZX1IkoVWBtkvjkacJkcr5I1tkJu6Cvxx/S4tBtKxVuyzcPjdgj3TjASViO1ykVN
-         g6SHZ/SXUNOIf0+7Kple0+yKn190+iNleXKDUSItKgJSkfrbRPcmpU/FNYr0a9RJkpja
-         JYiRsLs6qWShLvyCZ7eFxK/GxIFkqgwubQXsb4RqsTp2quFLHzSS3cn2Bjpeegzfgdth
-         ideQe6BV4qYo+JCM2Wc64yjsuKsy26RiFGCRVkzWa9srnWIWjfAM9zBw/l0YVpgXv3W0
-         +gqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707855147; x=1708459947;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RC2T9SgmWwA0L5LQ8BYxxpjFIKV4b3AtrMRzB+GqR24=;
-        b=orih8j4+YmFhR9PPKaF1xllSd687JdaagjqD/Qd3FYrMjwxy0xF3p5ex8yh6MS+wlN
-         DftL/bfq9km4RDsc6X9tBDfNYGRtEJwZOe5ssNkIMjyGjH41fEh7ILGYdLYYXHt8SK2d
-         YMR6ejC6zYn27UotqmYEyQaVwmC2vqa8pY3f4TMQ9YsZ/pkMAj+hFuksDsM2Kkaq0q1u
-         snbBUPWQUe8eeWUrR4rv2EKS5Vmz2Ji13s9YDee5pdIudg+Z1UIN1dJPx6yRSNXRaAv2
-         MRLFWn17r+fmOkGGD3N/JSTTBjKX1z2fsePussET6UOHX5H2d6LSyu+GXzYR//4lr1DV
-         t+3A==
-X-Forwarded-Encrypted: i=1; AJvYcCXaV1QvZ342QLq0JsNIR+EqciGHg66Ozs8+A/MrcG9b/PhTlpDPu3F6aanG0eY1S7QoEAWr02xa7hbHshoTGGOvoS74v5AnF626Hdmr
-X-Gm-Message-State: AOJu0Yz8/YOIkhZSxrvCggL2/BRf2faUuRNB031RFPQ3RdIizQcKADNI
-	EEA+ymSPK91Syy76pOzV/9hO0B+2NQNVllHWo53Z3rVsQzaoMis8mC/dR90PWCp2dwpmvx2FbuV
-	5ORlq3fw2F/CFop03qA==
-X-Google-Smtp-Source: AGHT+IH3IQ/mT0lIUZt3b8aZuEy7cWkvdU0smiGeBheUVDNMUPfGxC78Td9jrmYMFkkzwF7GIe3mlZek3QW6+7nr
-X-Received: from ericchancf.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:4139])
- (user=ericchancf job=sendgmr) by 2002:a0d:d752:0:b0:5ff:6623:be27 with SMTP
- id z79-20020a0dd752000000b005ff6623be27mr93462ywd.3.1707855147567; Tue, 13
- Feb 2024 12:12:27 -0800 (PST)
-Date: Tue, 13 Feb 2024 20:12:21 +0000
-In-Reply-To: <20240213200923.2547570-1-ericchancf@google.com>
+	s=arc-20240116; t=1707855240; c=relaxed/simple;
+	bh=oJqi+TkCFTQfeAF3TAmEu+UcwKS0++cFDBDB9TAcdDA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jEIpx/mpZuBP32DJcJmskZ9uQ8tGtJzuYKH50NE99NdgETtQnOBGaER3bIG51EwkVxMtu5StetpzvbS4cFescrxcJ1eWmO7Qf6TK3ye+haYJzrTUw8gNwGP4huXHh74Y/cG2R+w3RVbibO1xE4f+5iF8Ltf/rCfmBghiwtm2uoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rsySa6xI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DAF2C433C7;
+	Tue, 13 Feb 2024 20:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707855240;
+	bh=oJqi+TkCFTQfeAF3TAmEu+UcwKS0++cFDBDB9TAcdDA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=rsySa6xIVALy8A8vdXWYBEIVuHAhI9HBVDZNQLg+JtlYjWUVfiVVJSG63o7py12SH
+	 jMCKONPxC1IaLaxVnQmfhbucetwhFWPSpUYWHenWfaj412Q5G53e016I7CP4Q3mZMF
+	 wYxSD4TlnfRKCa+3f2Yr4bMdrNNWQAQ2YKaZ4jljvHWeq1WEbvCBJlt4VK4/KCPsZX
+	 2glaNKmDJIuasE/s9o0XtMsVjZ7uEKaVqHZaHIXig6q+J1q9F4ZCFgf+bYVGQ/YR1w
+	 yUX4nhhRdlIw7BTSJ3iaJBLV+E6PU4mLbh8LOODVCb0IZsRKdVUjkUJGd4ltHzoT4q
+	 Hh64pW+l2EzRw==
+From: Conor Dooley <conor@kernel.org>
+To: Lee Jones <lee@kernel.org>
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sven Schwermer <sven.schwermer@disruptive-technologies.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: leds: pwm-multicolour: re-allow active-low
+Date: Tue, 13 Feb 2024 20:13:41 +0000
+Message-ID: <20240213-verse-clinic-e6de06e1f18d@spud>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240213200923.2547570-1-ericchancf@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240213201221.2549924-1-ericchancf@google.com>
-Subject: [PATCH v4 4/4] riscv/barrier: Resolve checkpatch.pl error
-From: Eric Chan <ericchancf@google.com>
-To: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	ericchancf@google.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1565; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=EBDvz2f7L83vswny9H9PgyID1DoSZ6oLH7Vj9u17jOE=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKmnz5ZKr2S5F3UlL+9BSMDiAx6plTP+ibWVRv5IWz/JZ Jld4umwjlIWBjEOBlkxRZbE230tUuv/uOxw7nkLM4eVCWQIAxenAEzkyGOGf0oc25gmJJauXLQ4 aLNKEvPUXyahsYz3RHq73eU8Jxz10GP4X8bZfdtzyZ9flk1bjIrsVptFn57Tkxvv8vtdQPPtqnm a7AA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 
-The past form of RISCV_FENCE would cause checkpatch.pl to issue
-error messages, the example is as follows:
-ERROR: space required after that ',' (ctx:VxV)
-+#define __atomic_acquire_fence()       RISCV_FENCE(r,rw)
-                                                     ^
-fix the remaining of RISCV_FENCE.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Signed-off-by: Eric Chan <ericchancf@google.com>
+active-low was lifted to the common schema for leds, but it went
+unnoticed that the leds-multicolour binding had "additionalProperties:
+false" where the other users had "unevaluatedProperties: false", thereby
+disallowing active-low for multicolour leds. Explicitly permit it again.
+
+Fixes: c94d1783136e ("dt-bindings: net: phy: Make LED active-low property common")
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- arch/riscv/include/asm/barrier.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
-index 4f4743d7440d..880b56d8480d 100644
---- a/arch/riscv/include/asm/barrier.h
-+++ b/arch/riscv/include/asm/barrier.h
-@@ -19,19 +19,19 @@
+I'm just assuming this is intentionally restrictive, if its not, we
+could easily just change this to uneval: false.
 
+CC: Pavel Machek <pavel@ucw.cz>
+CC: Lee Jones <lee@kernel.org>
+CC: Rob Herring <robh@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Conor Dooley <conor+dt@kernel.org>
+CC: Sven Schwermer <sven.schwermer@disruptive-technologies.com>
+CC: Christian Marangi <ansuelsmth@gmail.com>
+CC: linux-leds@vger.kernel.org
+CC: devicetree@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+---
+ Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
- /* These barriers need to enforce ordering on both devices or memory. */
--#define __mb()		RISCV_FENCE(iorw,iorw)
--#define __rmb()		RISCV_FENCE(ir,ir)
--#define __wmb()		RISCV_FENCE(ow,ow)
-+#define __mb()		RISCV_FENCE(iorw, iorw)
-+#define __rmb()		RISCV_FENCE(ir, ir)
-+#define __wmb()		RISCV_FENCE(ow, ow)
+diff --git a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+index 5edfbe347341..a31a202afe5c 100644
+--- a/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-pwm-multicolor.yaml
+@@ -41,6 +41,8 @@ properties:
+ 
+           pwm-names: true
+ 
++          active-low: true
++
+           color: true
+ 
+         required:
+-- 
+2.43.0
 
- /* These barriers do not need to enforce ordering on devices, just memory. */
--#define __smp_mb()	RISCV_FENCE(rw,rw)
--#define __smp_rmb()	RISCV_FENCE(r,r)
--#define __smp_wmb()	RISCV_FENCE(w,w)
-+#define __smp_mb()	RISCV_FENCE(rw, rw)
-+#define __smp_rmb()	RISCV_FENCE(r, r)
-+#define __smp_wmb()	RISCV_FENCE(w, w)
-
- #define __smp_store_release(p, v)					\
- do {									\
- 	compiletime_assert_atomic_type(*p);				\
--	RISCV_FENCE(rw,w);						\
-+	RISCV_FENCE(rw, w);						\
- 	WRITE_ONCE(*p, v);						\
- } while (0)
-
-@@ -39,7 +39,7 @@ do {									\
- ({									\
- 	typeof(*p) ___p1 = READ_ONCE(*p);				\
- 	compiletime_assert_atomic_type(*p);				\
--	RISCV_FENCE(r,rw);						\
-+	RISCV_FENCE(r, rw);						\
- 	___p1;								\
- })
-
-@@ -68,7 +68,7 @@ do {									\
-  * instances the scheduler pairs this with an mb(), so nothing is necessary on
-  * the new hart.
-  */
--#define smp_mb__after_spinlock()	RISCV_FENCE(iorw,iorw)
-+#define smp_mb__after_spinlock()	RISCV_FENCE(iorw, iorw)
-
- #include <asm-generic/barrier.h>
-
---
-2.43.0.687.g38aa6559b0-goog
 
