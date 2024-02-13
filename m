@@ -1,120 +1,112 @@
-Return-Path: <linux-kernel+bounces-64482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33593853F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:47:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FD2853F0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 23:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 169C4B2937A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:47:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1F141F218CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Feb 2024 22:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3760462808;
-	Tue, 13 Feb 2024 22:46:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D16627EA;
+	Tue, 13 Feb 2024 22:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZQz7qO0k"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V/Va9/dy"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AD3627F2
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC68627E6;
+	Tue, 13 Feb 2024 22:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707864397; cv=none; b=fdW7fTnlBSoOKahRdLHhZjjjYYt4xL0+7b4F1YMwYYxZfeLzxRQ5/wkVOGvhnELFbfNnTY4VHVH0kcChwx65O0VxsW9+jIYvq/sR37tcm7nou4GV6YLhCHEH9axcIaOSvBw4RBfDgTmXOXW1zquZaTbyhS02XSiQojnSaSW+hcE=
+	t=1707864413; cv=none; b=NzM/oWbPWHZjjnLoh5gt6AfoHTIZdOmtTR1WYSS34X9Zo9zqTqKH2kbeP4kmSJF4mOtxQ/Ugu7kiJ1m+IsiVP6Ky6rQYfUDKtpn+NNYO+pUX/wxj71eynT62mIxkfWFHwKH1U6MsGOzdGr7m/mmmrZwkYY59evbKpcgkMIB0XbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707864397; c=relaxed/simple;
-	bh=XjqRzsF19RiJZQ94exeXbfezzXzSTHX9xuRbZPegwrw=;
+	s=arc-20240116; t=1707864413; c=relaxed/simple;
+	bh=FRDJja71U5DrXktTUBUgHd1rXiPpJ9AuqTb+oGn1JSA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OxtjPXv2lfEqI4F1KNqyYTJyKYewhXRY48aBVtrQBNDhs90lVM+dsyFxFLzc3ZAiu2jKamyazib3Ed1LQ4NOieLCPWtp8BwuLx3z9g6UfbI4BREH/RsstgK+ye5z+uSR4tvcl9SpQ/ph8mE8uQWT3MP2+apbaTk3m5k9XbvVqU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZQz7qO0k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9212C43142
-	for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707864396;
-	bh=XjqRzsF19RiJZQ94exeXbfezzXzSTHX9xuRbZPegwrw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZQz7qO0keuO3YBKuMiI6KXcCqx9cI7pjeeHkzz5Loe+3FFlUpsnwbf0FeufA6JIu+
-	 aadbOvzuTwI35MOLhuxbseNVDV982//3cGoDKPlRFHUQl00zVDksBlkKkuckkrVi70
-	 z+F+8f6qrSTaM5YUi2STL5Stpm1FEhK7wDee7vhsziEfXqa616anElLlvn4UXjpu3S
-	 WoX6i4zfUPCZ7uRa33VkbpRcJaDLugxR3WMw2HE1CC6Sn3Oje0UylRy9vVThvCD+8G
-	 8Zn9QopcaxvIdj0F0lQW+h2/1qJ3L/Wtjo7FGlzOKmF1UW6SuDzNbNbssGdLori5pQ
-	 1kFreN6hWxC0Q==
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-363c2edac5aso17508375ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 14:46:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW7E8CCT24EKxa4WtKlBFUi1p7Pcs52J3HVfB2r//g5gvNUUN91FXumQCD1E9fWT4Dwaws1wjYZlg89m1qiPrliOjktQHqAmVTjfKcz
-X-Gm-Message-State: AOJu0YwOVbekoBIMWjnpYuBHWDQtJSVk39iAp7Rk+vIzEMaZR51MPmk1
-	YrxkY68aGrtMwQ3JBd+BfycyLGSCdc6/fh/tzDOjwkd9I2KZS/tE/PTZ2DFvY1TPhA9Qm3n6grE
-	+j4YZSrPR35B+GmYoj6w5vIkOcqOe0jWpftl8
-X-Google-Smtp-Source: AGHT+IFDbwtLxTV96mDLQjJ8ZBY9w+mfkppY90pVw7B1ds6Yr0F4l0ShfF4c2W1GGX2TgYNR2LWQoU0aY0TH7Vb+0NY=
-X-Received: by 2002:a92:c945:0:b0:364:21ba:c4d2 with SMTP id
- i5-20020a92c945000000b0036421bac4d2mr1294135ilq.17.1707864395938; Tue, 13 Feb
- 2024 14:46:35 -0800 (PST)
+	 To:Cc:Content-Type; b=P/zGzNT1VG/UqNu54YaoQEUTubbVPFRm3eVTWrn3Ng/5KQE0owX/kBEVLeqQq4TcyjZk9g+jemwRWRS4EEEW5K7AMCKPtimXtIbTiRd+Zk0yzC94WNJuDbGhXRTYKe3hOmYflDp/beIlJkEBk/NXye4LO58wUXVCUOy3toq5VCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V/Va9/dy; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4c025d5329dso1236548e0c.1;
+        Tue, 13 Feb 2024 14:46:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707864411; x=1708469211; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uy2JEYRD09aqM5i7KnSx7BIhhrKS/3nlwMCyB4mYneA=;
+        b=V/Va9/dyClUakCy1gV8lAGadD5zX6SQUtOL/c4vIy3tYICnTvKQjixmoAGQ77e2ytu
+         bPsDcjNdvR++G5XyLR7TsRNPWbIM/6RVTRG50kI8FzGHF81gLMuuiAysY3LhAlNHtmFB
+         VRJBpnPDmgrcP7iP1eQ2GiqY2KU+JCfV6IIBYdtyOddkhLLMJ2EtMmryBhQdccKtjifR
+         +jXObP9+pM0YTxy/kfMfa/Z1f4MN6+x3fOPE2MbQNN/BZWa5JnP/9dC0KKJqn+F9uEP4
+         LciqihEIrqQngQsp+o/IP91//RRzNg9CdoEh2iM91C9c3qZYAjmvFlc0dZUvpF9s3j6z
+         Wl/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707864411; x=1708469211;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uy2JEYRD09aqM5i7KnSx7BIhhrKS/3nlwMCyB4mYneA=;
+        b=YCJRX6D+kq/m5ofA8CoxtDYJUk6gY6uD4C+MfxIOWkQUSnO6hAs17GmH9d0jHyzF6w
+         QkpPsCH9mEEXQxmQ3+uLLOLSHAFHG8Aeq1wfB93tpcZJ8z4ZuEbniXmRRPumksmYSe4u
+         q0bW4R7s8fdNiaziSmmDFTEcK5vVk3017Mgj0h8QanTmnK41jCtTKaKJrowK/tuN99el
+         NRNT+9ijBZBcf2FTBLxCls9SBEk8Au+GRRxO2tL8fl7+Tzk8Mbh25GdYX7o2Hl90QsvQ
+         mLA1Bk1so4a1hfdmDio+W9Yed+lvQ1pKarL4PyjJ/kpdMu5kGQX1jOD6BnK8/mleCzjM
+         cYFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVbs5Jtw86Zl6Oej/ExuIfzEijGQVphz8jzSBATIpLGGECy9XwQdxCR5RZQtw/CnGxuBF0tizbAOglDPAmrx5NNUx728oYCA5daIpMw
+X-Gm-Message-State: AOJu0YzLOQLR9u0IUOAp0Zxyy5MvPqV4Dm70l7wyJveQjbZTeML7o0Yh
+	xsuobMbUAhkoOzYqFoWtE3/nKLiEN1FxyoBhJd+Qz81QCRFBscBCWDhfWIFKydrtEPlRzqOfRLM
+	8hO7g6ZiMsN8urDhaUJSMaUoYwXc=
+X-Google-Smtp-Source: AGHT+IFOoLL4fRg0zJbClul7V0irJCq4xfQlGRkgqqm0tw7lpzVjxWCGpCimyJ59GPzIsD+EQBElNVzfv+JC/cyMkLA=
+X-Received: by 2002:a67:f051:0:b0:46c:f77e:6f28 with SMTP id
+ q17-20020a67f051000000b0046cf77e6f28mr1032548vsm.0.1707864411160; Tue, 13 Feb
+ 2024 14:46:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240131-async-free-v2-1-525f03e07184@kernel.org>
- <87sf2ceoks.fsf@yhuang6-desk2.ccr.corp.intel.com> <7f19b4d69ff20efe8260a174c7866b4819532b1f.camel@linux.intel.com>
- <CAF8kJuNvB8gXv3kj2nkN5j2ny0ZjJoVEdkeDDWSuWxySkKE=1g@mail.gmail.com>
- <1fa1da19b0b929efec46bd02a6fc358fef1b9c42.camel@linux.intel.com>
- <CAF8kJuMz+HCHkPUQhum32EPB7E1uVvN-E-TffOS7SSHxJNwNmQ@mail.gmail.com>
- <a869aff64f69bd1e1318653559f4c32e9f0a4c08.camel@linux.intel.com>
- <CAF8kJuNC1D0sy90GoSt6yiA7T0Htsu_-gXsbTkmK5GAdO4udgA@mail.gmail.com> <4f1d0c0369e3b08cb0c8d2271396277df6e1d37e.camel@linux.intel.com>
-In-Reply-To: <4f1d0c0369e3b08cb0c8d2271396277df6e1d37e.camel@linux.intel.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 13 Feb 2024 14:46:23 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuPMJCzbWGP1oypp4_ubZ0D-bnhVnVeL5CTz4zvyOh93wA@mail.gmail.com>
-Message-ID: <CAF8kJuPMJCzbWGP1oypp4_ubZ0D-bnhVnVeL5CTz4zvyOh93wA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: swap: async free swap slot cache entries
-To: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?B?V2VpIFh177+8?= <weixugc@google.com>, 
-	=?UTF-8?B?WXUgWmhhb++/vA==?= <yuzhao@google.com>, 
-	Greg Thelen <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, 
-	=?UTF-8?Q?Suren_Baghdasaryan=EF=BF=BC?= <surenb@google.com>, 
-	=?UTF-8?B?WW9zcnkgQWhtZWTvv7w=?= <yosryahmed@google.com>, 
-	Brain Geffon <bgeffon@google.com>, Minchan Kim <minchan@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Mel Gorman <mgorman@techsingularity.net>, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Kairui Song <kasong@tencent.com>, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Barry Song <v-songbaohua@oppo.com>
+References: <20240213171852.948844634@linuxfoundation.org>
+In-Reply-To: <20240213171852.948844634@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Tue, 13 Feb 2024 14:46:40 -0800
+Message-ID: <CAOMdWSLjAwrdYJYjejkWLRTZTYjgFqJ5=_PoWfQFLA5mpG7Mkw@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/121] 6.6.17-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 9, 2024 at 9:52=E2=80=AFAM Tim Chen <tim.c.chen@linux.intel.com=
-> wrote:
-> > Yes, it will have the long tail latency due to batch freeing 64 entries=
-.
-> > My point is not that I don't care about heavy swap behavior.
-> > My point is that the app will suffer from the swap strom anyway, it is
-> > unavoidable. That will be the dominant factor shadowing the batch free
-> > optimization effect.
+> This is the start of the stable review cycle for the 6.6.17 release.
+> There are 121 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> The original optimization introducing swap_slots target such heavy
-> swap use cases when we have fast swap backend to allow higher sustainable
-> swap throughput.  We should not ignore it.  And I am afraid your current
-> patch as is will hurt that performance.  If you change the direct free
-> path to free all entries, that could maintain the throughput and I'll
-> be okay with that.
-
-That is great. Thanks for the confirmation. I will send out the V3 soon.
-In V3, I changed the direct free path to free all entries. I also add the
-/sys/kernel/swap/swap_slot_async_free to enable the async free behavior.
-
+> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
+> Anything received after that time might be too late.
 >
-> >
-> > Or do I miss your point as you want to purpose the swap cache double
-> > buffer  so it can perform better under swap storm situations?
-> >
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 >
-> I am not actually proposing doubling the buffer as that proposal have
-> its own downside.
+> thanks,
+>
+> greg k-h
+>
 
-Ack
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-Chris
+Tested-by: Allen Pais <apais@linux.microsoft.com>
+
+Thanks.
 
