@@ -1,35 +1,74 @@
-Return-Path: <linux-kernel+bounces-65013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BC78546B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:56:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 537358546B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 992541C2279A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:56:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76D721C2290F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA31168D7;
-	Wed, 14 Feb 2024 09:56:28 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09E1168CE;
+	Wed, 14 Feb 2024 09:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xeh9wA4j"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBEE79DF;
-	Wed, 14 Feb 2024 09:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F6312B69
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904588; cv=none; b=iDSNn9aEmSFzj9aBp27dORYR/ViKGmYTqSzqwWKEJNgA1sNyGUJmIeTPqb9iigqkgTSR72gP4/ArSkYcQVesG7mcQNaSX/d8Xesq7CuBJoA0ezOAlmVpLoQ9vxvde1QCCg8h8n53pPLT3pzhAcWGI+C6ncT75j3R/6k5jHsFYEQ=
+	t=1707904660; cv=none; b=GmIqwmNlv+1Q+zaEVkldtTDgwNV+WBJt71zNj+qf8Y+E1s8ApFzt29lohRifXo75CzW83GYxx274Q7f5c33f8/2uvopon8NM/cQKgXATohJmVwl/I1qg6F4C+WybRIeD3E0LnIsETzPAJeJB4RPDfGFQK9ZwLc3N+Web3yuV2hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904588; c=relaxed/simple;
-	bh=Trjd2X4kasVh37I4OiPZRdOuxLnZT7/9ZWAR9S0hh3o=;
+	s=arc-20240116; t=1707904660; c=relaxed/simple;
+	bh=ky5UXp/TObAHd8utYZilpxedN2wyos7oikTRRvpeHpw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a0NnJzxqKjFDh718CdKswmom8nON4vfUa+e7yZ0SycHlqojDtYxFkPxqJdngNQMiOs/Ubjye0WDWFT2Hwa6eLinuNsGyHCK4f1Wb9PcihxjZ+PQ/maUBWtYL2kZzzVeUb5u5UPxZPpZpbqIczQG8z91JBsYqK+nQ4y5pIowVXWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81AEAC433C7;
-	Wed, 14 Feb 2024 09:56:26 +0000 (UTC)
-Message-ID: <294f39eb-9007-48a6-b340-f3890a9eed9a@xs4all.nl>
-Date: Wed, 14 Feb 2024 10:56:24 +0100
+	 In-Reply-To:Content-Type; b=ERTa5y0/XTfVaXmFTApqqLJTJi0+EwtWIgwFZdQ1ImHSpFgfUWT2bXEkzcx34vizfltFcD3Bx+1cAZZvhZ/vUR2T+WU8iF4bY4+yeh/VEyjnv0REJe7bqqXnwEvKUFsOvTI8qVm8bzBDuxSPi4mF1WsTmc8NcfoCS3a8SA75hN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xeh9wA4j; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so7074302a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707904656; x=1708509456; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+qwgZ3XzOO4ec8IpoYOv1G1tB0JePdDeZHn75OblYmk=;
+        b=xeh9wA4j77qqo82rWvtsJ/GGJtmSS9eEYEAtqSbME2iOnd53Jh+wRxhTFS9V5NoDM2
+         HL6fPDljhdNza52CFgt0Ss6WqJBKdxRA/2ZCe9MX1cfeWvkb2iNoDnZIkRLgatL8kz3A
+         uNZZKk8KEp5CtIFxoIYo3fRW9DWypMqyy8J2agnCVgHV+FZlc1DjHtYrSHMusCAfBYMG
+         ZArmARuoqtfnIXbzwiSdF/QGnk7LgutT9i7bLxLqOjP3SYwIBK0KJMbIfkWyNLdvX05T
+         Wfmcebbu+5Lpo7tsqHj1FP5o9z8zXbxUh7j3NphtY4Yc0bbroQBIBxcArUu71v6+xcCt
+         trtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707904656; x=1708509456;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+qwgZ3XzOO4ec8IpoYOv1G1tB0JePdDeZHn75OblYmk=;
+        b=ZA6og1gC4NefQl1XXS5u1EOylVKJq+tDnOdq/KMGDxjAquVq/OvzH/Lws1XjNj41fR
+         8FI3x8cgxnSsocuqUYUAg3iq78CduGedZGP0/k6sxwFD1TC1n4UKXa4pK/A5nQY751EL
+         AFOxnDVuhe2etTEiRORzQz3QXhlKe1yzAXSt7eswXdWGZWCnMUR6c0VJlj5hQHoHrn0r
+         4CoI5JA0peJFsJgqpz0UdVB5n7ZfuKmuNMEmwOTHD09ZXtuTqogfqSFLb6CtTwDbSapt
+         VwGT/CoC80wuSoOS4xF4Q4b8JzuSPyZRa72l67jNMC9T1GccVIGnQBIg0qhMcg99VTsU
+         cQkg==
+X-Forwarded-Encrypted: i=1; AJvYcCWU7b/RlPDTsLjeM5ksnAdMPucBJQpoYvOXZ7Nt3EYOADQrbIhR7xQsjM/qYbcoJ98geGELrzAtOTRMs/btX7qcKdtXfvrts8k1uliq
+X-Gm-Message-State: AOJu0YxQHmKtW8iD7stJu70t97wN+7DNN+Q+hYXadx9Ycta5zgIDHR6q
+	80B9eRA/7Fcu1Y5wXUcMKxKJUi1Om+nfsCEZkcdOk9HXq0YCOEz/FbgazJ5t7K4=
+X-Google-Smtp-Source: AGHT+IE4Y+RGG3vUwTlBl/vvycYbLMdrrBS5nL5y8MegcfRNFh1Nw+FKrBSEvA8sKq8V0Qy7TQx8xw==
+X-Received: by 2002:a50:c181:0:b0:562:7705:57c6 with SMTP id m1-20020a50c181000000b00562770557c6mr1000458edf.14.1707904656703;
+        Wed, 14 Feb 2024 01:57:36 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUoBcuB1kBua1jwtu8FsBNnbU+6Q1BaU0+K1fVZtxPzwgsOu7qbUgLx+laB7tD583F37Kv8AZndus2Mqdxk4cOy0S7+rzeoAJuhMdNGsYhTF5B48qd39wLM98XWF/OnsIQNdFs7UN/siXR4yGvp30t9t1s4uQRoD4g932S0gRbYqQdBZojw/FfDpa+mszqmNJtjUc8EhV8ZMFVGZxQzX36aSdWEuklcyF39zUJRVE6K68elzVEVJlC1K9jiz+PvAkKOIfNOXUoT+BtcsYMJ4CkFwmnkPLKjFrV79cSrqUt/EddgZKqC07B7rEYHr6o6abaq5N3/XVgKOZUsrsoCdwgG0QFJ+f0sARYGVwW4FVninYRjshrXEDnAj/PkG2ANCLTkzzaKjkFyG7nmJVMm2rAAO4rGZm7QSRA9wvFbrjPDwAvFnA==
+Received: from [192.168.0.22] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id g22-20020a056402091600b00561623dff71sm4516924edz.59.2024.02.14.01.57.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:57:36 -0800 (PST)
+Message-ID: <d4337a53-8f4b-4782-8ce1-b0e4d7893e28@linaro.org>
+Date: Wed, 14 Feb 2024 10:57:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,109 +76,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 17/17] media: upd64031a: Check return value of
- i2c_master_recv()
-Content-Language: en-US, nl
-To: Daniil Dulov <d.dulov@aladdin.ru>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Takahiro Adachi <tadachi@tadachi-net.com>,
- Takeru Komoriya <komoriya@paken.org>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20240211150749.3832-1-d.dulov@aladdin.ru>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20240211150749.3832-1-d.dulov@aladdin.ru>
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: hit, hd44780: drop redundant
+ GPIO node
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Rob Herring <robh@kernel.org>
+Cc: Ralf Schlatterbeck <rsc@runtux.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Miguel Ojeda <ojeda@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Robin van der Gracht
+ <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240212083426.26757-1-krzysztof.kozlowski@linaro.org>
+ <CAMuHMdU-c5_Z2AMNtNH4Cc4JUrn+oKU-1CumEOAP6=5Zomcj_A@mail.gmail.com>
+ <2922eece-5486-4eff-af99-f7060cb61d17@linaro.org>
+ <20240212115837.efz73yxinkysdmgh@runtux.com>
+ <e2a5b005-7916-4296-b072-c24efd4b3357@linaro.org>
+ <Zcogl6tqbMdQldKA@smile.fi.intel.com>
+ <d603a588-d312-486e-b6c9-647a6b90580c@linaro.org>
+ <20240213161905.GA1459669-robh@kernel.org>
+ <ZcucO8R8ZOtR38jl@smile.fi.intel.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZcucO8R8ZOtR38jl@smile.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 11/02/2024 16:07, Daniil Dulov wrote:
-> i2c_master_recv() may return an error, so add a check
-> and return 0xff in case it is passed.
+On 13/02/2024 17:43, Andy Shevchenko wrote:
+> On Tue, Feb 13, 2024 at 10:19:05AM -0600, Rob Herring wrote:
+>> On Mon, Feb 12, 2024 at 02:59:02PM +0100, Krzysztof Kozlowski wrote:
+>>> On 12/02/2024 14:43, Andy Shevchenko wrote:
+>>>> On Mon, Feb 12, 2024 at 02:38:27PM +0100, Krzysztof Kozlowski wrote:
+>>>>> On 12/02/2024 12:58, Ralf Schlatterbeck wrote:
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> ...
 > 
-> Fixes: add953cecba8 ("V4L/DVB (3665): Add new NEC uPD64031A and uPD64083 i2c drivers")
-> Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
-> ---
->  drivers/media/i2c/upd64031a.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>> Anyway, binding examples should not be collection of unrelated
+>>>>> solutions, because then we should accept for each device schema several
+>>>>> other variations and combinations.
+>>>>
+>>>> Is this documented?
+>>>
+>>> Yes, writing schema says what the example is. We repeated it multiple
+>>> times on multiple reviews, we made multiple commits multiple times and I
+>>> briefly mentioned it also in my talks.
+>>
+>> While yes, this is the guidance, I think this case has provided enough
+>> justification to keep it. Let's move on please.
 > 
-> diff --git a/drivers/media/i2c/upd64031a.c b/drivers/media/i2c/upd64031a.c
-> index ef35c6574785..f51f86f30c73 100644
-> --- a/drivers/media/i2c/upd64031a.c
-> +++ b/drivers/media/i2c/upd64031a.c
-> @@ -73,11 +73,12 @@ static u8 upd64031a_read(struct v4l2_subdev *sd, u8 reg)
->  {
->  	struct i2c_client *client = v4l2_get_subdevdata(sd);
->  	u8 buf[2];
-> +	int rc;
->  
->  	if (reg >= sizeof(buf))
->  		return 0xff;
-> -	i2c_master_recv(client, buf, 2);
-> -	return buf[reg];
-> +	rc = i2c_master_recv(client, buf, 2);
-> +	return rc < 0 ? 0xff : buf[reg];
+> Thank you, Rob.
+> 
+> Krzysztof, can you send v2, I'll apply it to the tree?
 
-I don't think this patch adds anything useful.
+Sure.
 
-If you just want to avoid uninitialized memory to be returned,
-then just do: "u8 buf[2] = {};".
-
-Alternatively, this function should return an int and callers
-have to check if an error (<0) was returned and pass that on.
-
-I think the latter is overkill, but I'll take a patch that just
-zeroes buf.
-
-Regards,
-
-	Hans
-
->  }
->  
->  /* ------------------------------------------------------------------------ */
+Best regards,
+Krzysztof
 
 
