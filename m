@@ -1,459 +1,248 @@
-Return-Path: <linux-kernel+bounces-65546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17F67854E8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:34:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB07A854E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75FCE281F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:33:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6106228462B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C54164A80;
-	Wed, 14 Feb 2024 16:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uhbAE1UL"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54A376036;
+	Wed, 14 Feb 2024 16:28:25 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EAF64A87;
-	Wed, 14 Feb 2024 16:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928096; cv=fail; b=GWpACTs7MKU+qwnRlgKh2SpdT6jmQ9uBoxdM9IsmLsyk8o7JNcT6UmbrkmnsUfZVTx6b4MYbcW65x8FwBKU4RCo46qsGnE9gj6q7bO7dyaWiV6KV6T97usKw5Duisj7huXNvoO2pJ0JtMey3CHz+PCvL/CxagErZXqcSc/r8JH0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928096; c=relaxed/simple;
-	bh=/QeCv/dTflrH63J9zzvYEkfKOcfnfli1wZj4yBDGDwU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KxAbCE6K4yDHiVktTk/eL6hptzeK244eJO9qihiXD5wwa2xuqpdjNNqkAgPicTNgagI6hh+rXbr7RBJENoMXHgE4TjvZYdeNjdzdScaTLFvoV/A20HeG0sIRTlkncJYCyC/Jyr6nIRsMEnghw3gZdFgoQFV7P6z1fuOm0XScss8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uhbAE1UL; arc=fail smtp.client-ip=40.107.93.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kcTcoaTY4g/Zj3/7tiLpRkqlrqqgN+0e80OZrBazW/FTi22mlmmyE2WijPPMmsb0YUQP8hLVjeB2rFUnZjhpkQ9/YivlG8en/5u6qBGFaEHDkKyemVZgCR4f/L9jlKIURocxzg6ZUQoioI6+M8A+dIyRxzbXWZgVzb1MEPWc+MohZ+UlLV1kpWMs27H15BuXRiwBEE+q9GDg9rEE1lOHfAG/V11GeiDzNcIiWj9H0FM1IqBzm//2+cU001rdZeDbAxqSf7K07wPMMBwIAhDc9pEufrb7zZoVJoqYjoTfgqgOlKDKHAeOSzUvUgGxG5JN+EJPGf+cA/0xsOLkr/6E4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CUKDFiOX2CXHfIpda/J+vTchc0k2z+EtOA1UM9vI+z8=;
- b=eN4tJM3+gZo90xRhQLwAe3jux3E/qolWLL6PZFe2zvnO248hiYLWSrHw/6KpNg57B4AX7JewFoR5Y1KiK87OG66D2rA8bcYxEvInaJVGZc53ot0Mb+rxR8uayVsHsxfoP64WFbONUBH2t2U4osgblIU06wAGfrW4aKQzE+SECV4m/IgLQk8UOSk4Mm179HMsMiCrqw9ck1LP5JpG0eW78EysKkytPblarL2xertTXX7FTAw/LmmjEHL88CMOSvQ8NO0i+6mQdFdXT6mzC1iVycnrv72x9b4xSMykmm+6Ye+JuwGdDcLuc2Z6WTv5B5lMe5X1itfmMnhlTOwZWj6Uuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CUKDFiOX2CXHfIpda/J+vTchc0k2z+EtOA1UM9vI+z8=;
- b=uhbAE1ULb8sDcXjw3aOQ4zKAH5CZXzQ6ne69P6gwIRWvk3GMIMguEmoskQu0k7U4CWhQiywAvdwHYqUtsfMDVc5/X0pzqSwwDHz4lP3Y2lAbV4pEk4BCmpEHeSUE3isZSboSKm9thAs+VoC7kCx2Osy5UQVfe/KCJciVqwzdFsbE87vGm3CrajpiqGpowUGVPL7sk6byLBgptDCtxuxub6BV6As9ABi37XRTvz5Hu3mC1z33WUyCfO2W1a8cL4C1woNczOXANlP5M/Ja0PBWZ/39NtyaBBkghbgKtHuytRRPbR5/gwrKT8X2nbGdxuHgMxZItUfmSc+64paHvVuJwg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- SN7PR12MB7834.namprd12.prod.outlook.com (2603:10b6:806:34d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.24; Wed, 14 Feb
- 2024 16:28:11 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::db3e:28df:adc1:9c15%5]) with mapi id 15.20.7316.012; Wed, 14 Feb 2024
- 16:28:11 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>,
- linux-mm@kvack.org, "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- =?utf-8?q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- "\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 5/7] mm: thp: split huge page to any lower order pages
- (except order-1).
-Date: Wed, 14 Feb 2024 11:28:07 -0500
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <5D3CF5B4-FB16-4CE7-9D8E-CBFFA7A1FA43@nvidia.com>
-In-Reply-To: <6c986b83-e00d-46fe-8c88-374f8e6bd0fa@arm.com>
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <20240213215520.1048625-6-zi.yan@sent.com>
- <de66b9fb-ee84-473f-a69a-2ac8554f6000@arm.com>
- <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
- <6c986b83-e00d-46fe-8c88-374f8e6bd0fa@arm.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_B8C3C027-FEFE-458C-95A5-CEBF71F01278_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR07CA0027.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::37) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2B264A9B;
+	Wed, 14 Feb 2024 16:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707928105; cv=none; b=CmnWdnf4gOe8bijBwW/LEoFrtYSy3bM2ufEV2s+2Q7tNHYP7L2iNuBj0WiToVrtmuYoITmOz2ZyniWKD3sf4Khk1guPPKq/7n3jfw+1j0pO/PElRbijpL7IuAGr1N/+SlEWGM70CLFqQ4v4vitFnInZAUc1Z8QvUjnq6gnRtc/o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707928105; c=relaxed/simple;
+	bh=f2bPftzFq4ULI5UCUxmbzGjwSXmIUKk52LYeVYGadlE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SOJa3ePN61sYryUesyVOUpEcI+zX8mUrNsnfZUQiXlZNDbq6nrkpB3r+2+Oy7/D8+zMzwpHNvMG7j0NFaVul0bKS/aBCgXi4piCtERJg4FNXdH5x1gyRjW9QB7jp0Py2eVI1EPq0+e9GKnsQTrjOG/qnZhjoMR/i5U47J05zquY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZk791cXVz6K8sR;
+	Thu, 15 Feb 2024 00:24:53 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A184C140CB9;
+	Thu, 15 Feb 2024 00:28:19 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
+ 2024 16:28:19 +0000
+Date: Wed, 14 Feb 2024 16:28:18 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Andrey Skvortsov <andrej.skvortzov@gmail.com>, Icenowy Zheng
+	<icenowy@aosc.io>, <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Dalton Durst <dalton@ubports.com>, "Shoji
+ Keita" <awaittrot@shjk.jp>
+Subject: Re: [PATCH 4/4] iio: magnetometer: add a driver for Voltafield
+ AF8133J magnetometer
+Message-ID: <20240214162818.0000221a@Huawei.com>
+In-Reply-To: <skmvl3wxom6jnfh4fcvpkmswswwkfj3yopb6ahvymcwrxw5ou4@ljzmreuqiwme>
+References: <20240211205211.2890931-1-megi@xff.cz>
+	<20240211205211.2890931-5-megi@xff.cz>
+	<20240212130232.00007ebd@Huawei.com>
+	<skmvl3wxom6jnfh4fcvpkmswswwkfj3yopb6ahvymcwrxw5ou4@ljzmreuqiwme>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SN7PR12MB7834:EE_
-X-MS-Office365-Filtering-Correlation-Id: 75b0c968-eeb8-4839-16b8-08dc2d79ef44
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	OLSDUckowh+5C1VMMsiKWNvq8bURafx68OeoA4oViszijM3ASEZDEB0s904AlU+s1NQdY9mQjPuCpCktTjNs9j7vqSMAOmNsuj68HYcdF4JRqReW4A360ZPZllEC8h9qoo71MiY5RR5zoHW3q7XcgktazKF987uyUiOrg7NaFtAWnOMHj69yVTZmRg7eYXUaH4LmahfuatS64fJHa7lHRezg+Cn2gSqXxBz8oc+JAQ1XPQr3oE3qluY1osuQhdrWVVfbCJfo1Dlan0xatiB/7BA1OeV8NLwFS/PK7bpKDFvURCaMvuBxKOPCj6M2nWCLp8aHt9yMJdKOBMRAuNN+cKbavNKZQA09oSx1nAu5DR7DCxXDwUTD45C3X4MGYe2ak7KWpZfR5JSjw+KF+AqAgWMnYBaSWeGdZ+8lCYd67zMq8M82gvG+8yWRZwsGAk0rPfqiaV4blVZWnTTue/2Psd49Yn2ZLuWbkqMJGqr/tBN8UbRevx1uYmaS7TDS+04CT43SQmpnXpmfL3wbdrpcVYWzaD+2pplvVsr4Q8NHOj3+Bh/Th3gxRqzemDk5SVEM
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(136003)(39860400002)(396003)(230273577357003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(2616005)(83380400001)(26005)(38100700002)(478600001)(4326008)(7416002)(66476007)(66556008)(5660300002)(8936002)(41300700001)(6916009)(6512007)(66946007)(2906002)(6486002)(53546011)(6506007)(316002)(6666004)(54906003)(36756003)(235185007)(8676002)(86362001)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?5TXq5+SxK5E8dEmOJYd5I4Hwz/u2GAxZwvJ53GGivS5IbgvXP4aac07xQDZx?=
- =?us-ascii?Q?X8ae/ty5XaCYd+gK07Vm017hbBsI4bV2iiEmNdzHs8VVdOu/N2HkB3DE3Z7F?=
- =?us-ascii?Q?TtcaIdJgcrUWfo3HG3j3hdMqsfVT5Bc8jG0B96WVDJLtKybsFeiQ5jkHpcFe?=
- =?us-ascii?Q?MP7c4v3WVjJ6VE8JDQRHjBjJHRRCxlFJOlVu0ISr9UL0JUCSRSlV4WuqTpqu?=
- =?us-ascii?Q?ogWyNINSA906oY1jUgmvKLfc72j5kfvuURJ0TU5xlrEWn8+u87WxKzgR+JuD?=
- =?us-ascii?Q?HCXUZ4rhwoWZocxceDtmZpg1AJCjNxJjr3yBL64hxWk+1nyA1dHXFrY3iDy2?=
- =?us-ascii?Q?a1LhplrhuB5u7W8C0l7DZOEi1z5AXmbITRKdAoLpa2jpNOHiudnCX9ViefZJ?=
- =?us-ascii?Q?o7EKWFzMfwtFXW4ZEjPnZI+Y7g+G0se3640LKgc1fDX+SxFmZheJwFScjLSE?=
- =?us-ascii?Q?ASw9Sbcmy6cJzvHkSNT+HOhdw986bvRplcyuwvBKzL3/8c/AI7e5mVxnqUqi?=
- =?us-ascii?Q?2EUmeBCPz1DFEcSbX1I+H3iTICiloYQAlZVFLTRQQVhdEe4vK/4J4YAaCzZr?=
- =?us-ascii?Q?gjLlwVfJGWALj631DgwcERfSF8+joVjYzhF6kc4jNQkWWeokZoBzZkJCfCQ2?=
- =?us-ascii?Q?UiHGJBOWlB96hv48yjI/iDFiACJnKeJwpH1HZIeT/qRkU2UVi6Lj2lg8fLfT?=
- =?us-ascii?Q?Zi3jFegsdRDUY1BQTy3uMg9fDGWTVcCRkuLJ+KzupvWNQ2JFonXuajwUamwG?=
- =?us-ascii?Q?ybdWG4CYmiZRWuHhVv7c85wiomBCHXO/QRu0dsE+15wNlBrtRkfx01EhOnFd?=
- =?us-ascii?Q?jCvWgmf+1I6qSpdhzajBzdmS5X7mbayIHKhYKGw+2vJlPHU8XCl0OjwyR9Ze?=
- =?us-ascii?Q?NUneMB5vGCxMZDqDMK9iP3WA3S3f81MVthBbOxmYC2S3xsnuQwtoBvyiOpUl?=
- =?us-ascii?Q?v9IvsXMozuRuuijE+RFseFoYlkcD5qqKkpSBDREeK7TKTo6Ds/g3DhOpf3PQ?=
- =?us-ascii?Q?xI7Zs/OUnTQt3FJa5CPds/Uv4zGEb6GqNzW1yCVNHNboDDggINLoxlpKt9Ol?=
- =?us-ascii?Q?R9+4o81wlFq3nxrA2ZdS0SqFQn21PKWnAl4Z+3akNCxEl1KOHNPlAUu4/huC?=
- =?us-ascii?Q?jWFJN28P8cEJnuaBW1HXN9stpzYeVecG5hwD5to+/RsXsgYY434lrbZdzWjU?=
- =?us-ascii?Q?2QAK+B33ve9Zy5HmvJ/6kMFnCyl8eoUyPAYWc2ix92RjZl8+8+zTNjWV/E98?=
- =?us-ascii?Q?5Z+rOQWv0F5sK+PYiDP1HIKFc31Bng0uvukBdUSpxzyKSlPs+cKQu0iDOE36?=
- =?us-ascii?Q?E3htD5ghO/Ws4TKDIcF48ZlKRU+FOZTD9n8BA7B5ic8IdCu8gGV3F6BbKSoP?=
- =?us-ascii?Q?UrnRgLisZ/f9yGysXG50l4sxs0vnv9LgHbgWVo1IageT/5g0r1LHxCzWolw+?=
- =?us-ascii?Q?9Qp5lUBQWelIpkihJMLHXW16AOfHnv30MYnCXNTZxhRvhmmoFJnSsjdYN1d5?=
- =?us-ascii?Q?kkPqxd4VKkIWDfWtzFv/jApIXTJqzlfVQBCm3q4oZbiAkSpr78A4xMkYessr?=
- =?us-ascii?Q?QKy/l+mHuF3zZBSb3JL7gOfcWB4ViCSb5PzgSv+5?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75b0c968-eeb8-4839-16b8-08dc2d79ef44
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 16:28:10.9407
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZpETOXiRc59aTd//horPJSJw7/5kcrUFFBWlFHOEke4W8nJMBLyjESo5HvdVCe45
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7834
-
---=_MailMate_B8C3C027-FEFE-458C-95A5-CEBF71F01278_=
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 14 Feb 2024, at 11:22, Ryan Roberts wrote:
+On Mon, 12 Feb 2024 16:04:02 +0100
+Ond=C5=99ej Jirman <megi@xff.cz> wrote:
 
-> On 14/02/2024 16:11, Zi Yan wrote:
->> On 14 Feb 2024, at 5:38, Ryan Roberts wrote:
->>
->>> On 13/02/2024 21:55, Zi Yan wrote:
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> To split a THP to any lower order (except order-1) pages, we need to=
+> Hi Jonathan,
+>=20
+> thank you for the patch review.
+>=20
+> On Mon, Feb 12, 2024 at 01:02:32PM +0000, Jonathan Cameron wrote:
+> > On Sun, 11 Feb 2024 21:52:00 +0100
+> > Ond=C5=99ej Jirman <megi@xff.cz> wrote:
+> >  =20
+> > > From: Icenowy Zheng <icenowy@aosc.io>
+> > >=20
+> > > AF8133J is a simple I2C-connected magnetometer, without interrupts.
+> > >=20
+> > > Add a simple IIO driver for it.
+> > >=20
+> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> > > Signed-off-by: Dalton Durst <dalton@ubports.com>
+> > > Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
+> > > Signed-off-by: Ondrej Jirman <megi@xff.cz> =20
+> >=20
+> > This is a lot of sign offs.  If accurate it menas.
+> >=20
+> > Icenowy wrote teh driver,
+> > Dalton then 'handled' it on the path to Shoji who
+> > then 'handled' it on the path to Ondrej.
+> >=20
+> > That's possible if it's been in various other trees for instance, but
+> > I'd like some more explanation below the --- if that is the case.
+> > Otherwise, maybe Co-developed-by: is appropriate for some of
+> > the above list? =20
+>=20
+> Icenowy wrote basic driver, initially. Here's some older version with onl=
+y Icenowy sign off:
+>=20
+> https://github.com/Icenowy/linux/commit/468ceb921dae9d75064c46d13c60cab2b=
+42362b3
+Ok. So probably the author should be Icenowy as you have it.
+>=20
+> I picked the patch into my linux tree a few years back from one of the Mo=
+bile
+> Linux distributions, likely Mobian:
+>=20
+> https://megous.com/git/linux/commit/?h=3Daf8133j-5.17&id=3D1afd43b002a02c=
+ade051acbe7851101258e60194
+>=20
+> So I guess Dalton and/or Shoji added the orientation matrix support, beca=
+use
+> that and addition of some error logging is the only difference between pu=
+re Icenowy
+> version and the version with other sign offs.
+ok.  If we can figure that out, seems like co-developed for them as well is=
+ appropriate.
 
->>>> reform THPs on subpages at given order and add page refcount based o=
-n the
->>>> new page order. Also we need to reinitialize page_deferred_list afte=
-r
->>>> removing the page from the split_queue, otherwise a subsequent split=
- will
->>>> see list corruption when checking the page_deferred_list again.
->>>>
->>>> It has many uses, like minimizing the number of pages after
->>>> truncating a huge pagecache page. For anonymous THPs, we can only sp=
-lit
->>>> them to order-0 like before until we add support for any size anonym=
-ous
->>>> THPs.
->>>
->>> multi-size THP is now upstream. Not sure if this comment still makes =
-sense.
->> Will change it to reflect the fact that multi-size THP is already upst=
-ream.
->>
->>> Still its not completely clear to me how you would integrate this new=
- machinery
->>> and decide what non-zero order to split anon THP to?
->>
->> Originally, it was developed along with my 1GB THP support. So it was =
-intended
->> to split order-18 to order-9. But for now, like you and David said in =
-the cover
->> letter email thread, we might not want to use it for anonymous large f=
-olios
->> until we find a necessary use case.
->>
->>>>
->>>> Order-1 folio is not supported because _deferred_list, which is used=
- by
->>>> partially mapped folios, is stored in subpage 2 and an order-1 folio=
- only
->>>> has subpage 0 and 1.
->>>>
->>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>> ---
->>>>  include/linux/huge_mm.h |  21 +++++---
->>>>  mm/huge_memory.c        | 114 +++++++++++++++++++++++++++++++------=
----
->>>>  2 files changed, 101 insertions(+), 34 deletions(-)
->>>>
->>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>> index 5adb86af35fc..de0c89105076 100644
->>>> --- a/include/linux/huge_mm.h
->>>> +++ b/include/linux/huge_mm.h
->>>> @@ -265,10 +265,11 @@ unsigned long thp_get_unmapped_area(struct fil=
-e *filp, unsigned long addr,
->>>>
->>>>  void folio_prep_large_rmappable(struct folio *folio);
->>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
->>>> -int split_huge_page_to_list(struct page *page, struct list_head *li=
-st);
->>>> +int split_huge_page_to_list_to_order(struct page *page, struct list=
-_head *list,
->>>> +		unsigned int new_order);
->>>>  static inline int split_huge_page(struct page *page)
->>>>  {
->>>> -	return split_huge_page_to_list(page, NULL);
->>>> +	return split_huge_page_to_list_to_order(page, NULL, 0);
->>>>  }
->>>>  void deferred_split_folio(struct folio *folio);
->>>>
->>>> @@ -422,7 +423,8 @@ can_split_folio(struct folio *folio, int *pextra=
-_pins)
->>>>  	return false;
->>>>  }
->>>>  static inline int
->>>> -split_huge_page_to_list(struct page *page, struct list_head *list)
->>>> +split_huge_page_to_list_to_order(struct page *page, struct list_hea=
-d *list,
->>>> +		unsigned int new_order)
->>>>  {
->>>>  	return 0;
->>>>  }
->>>> @@ -519,17 +521,20 @@ static inline bool thp_migration_supported(voi=
-d)
->>>>  }
->>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>>
->>>> -static inline int split_folio_to_list(struct folio *folio,
->>>> -		struct list_head *list)
->>>> +static inline int split_folio_to_list_to_order(struct folio *folio,=
+>=20
+> Then I rewrote large parts of the driver and added a few new features, li=
+ke
+> support for changing the scale/range, RPM, and buffered mode.
+Defintely a co-developed for you then!
+>=20
+> So I don't know how to reflect this in the tags. :) It passed through all=
+ of
+> these people, and all of them touched it in some way, I think.
 
->>>> +		struct list_head *list, int new_order)
->>>>  {
->>>> -	return split_huge_page_to_list(&folio->page, list);
->>>> +	return split_huge_page_to_list_to_order(&folio->page, list, new_or=
-der);
->>>>  }
->>>>
->>>> -static inline int split_folio(struct folio *folio)
->>>> +static inline int split_folio_to_order(struct folio *folio, int new=
-_order)
->>>>  {
->>>> -	return split_folio_to_list(folio, NULL);
->>>> +	return split_folio_to_list_to_order(folio, NULL, new_order);
->>>>  }
->>>>
->>>> +#define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l=
-, 0)
->>>> +#define split_folio(f) split_folio_to_order(f, 0)
->>>> +
->>>>  /*
->>>>   * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP =
-due to
->>>>   * limitations in the implementation like arm64 MTE can override th=
-is to
->>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>> index ad7133c97428..d0e555a8ea98 100644
->>>> --- a/mm/huge_memory.c
->>>> +++ b/mm/huge_memory.c
->>>> @@ -2718,11 +2718,14 @@ void vma_adjust_trans_huge(struct vm_area_st=
-ruct *vma,
->>>>
->>>>  static void unmap_folio(struct folio *folio)
->>>>  {
->>>> -	enum ttu_flags ttu_flags =3D TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD =
-|
->>>> -		TTU_SYNC | TTU_BATCH_FLUSH;
->>>> +	enum ttu_flags ttu_flags =3D TTU_RMAP_LOCKED | TTU_SYNC |
->>>> +		TTU_BATCH_FLUSH;
->>>>
->>>>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
->>>>
->>>> +	if (folio_test_pmd_mappable(folio))
->>>> +		ttu_flags |=3D TTU_SPLIT_HUGE_PMD;
->>>
->>> Should we split this change out? I think it makes sense independent o=
-f this series?
->>>
->>
->> Sure. Since multi-size THP is upstream, this avoid unnecessary code pa=
-th if
->> the THP is not PMD-mapped.
->>
->>>> +
->>>>  	/*
->>>>  	 * Anon pages need migration entries to preserve them, but file
->>>>  	 * pages can simply be left unmapped, then faulted back on demand.=
+Lots of co-developed probably most appropriate.  Basically add one for each
+SoB other than Iceynow's
 
->>>> @@ -2756,7 +2759,6 @@ static void lru_add_page_tail(struct page *hea=
-d, struct page *tail,
->>>>  		struct lruvec *lruvec, struct list_head *list)
->>>>  {
->>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
->>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
->>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
->>>>  	lockdep_assert_held(&lruvec->lru_lock);
->>>>
->>>> @@ -2777,7 +2779,8 @@ static void lru_add_page_tail(struct page *hea=
-d, struct page *tail,
->>>>  }
->>>>
->>>>  static void __split_huge_page_tail(struct folio *folio, int tail,
->>>> -		struct lruvec *lruvec, struct list_head *list)
->>>> +		struct lruvec *lruvec, struct list_head *list,
->>>> +		unsigned int new_order)
->>>>  {
->>>>  	struct page *head =3D &folio->page;
->>>>  	struct page *page_tail =3D head + tail;
->>>> @@ -2847,10 +2850,15 @@ static void __split_huge_page_tail(struct fo=
-lio *folio, int tail,
->>>>  	 * which needs correct compound_head().
->>>>  	 */
->>>>  	clear_compound_head(page_tail);
->>>> +	if (new_order) {
->>>> +		prep_compound_page(page_tail, new_order);
->>>> +		folio_prep_large_rmappable(page_folio(page_tail));
->>>> +	}
->>>>
->>>>  	/* Finally unfreeze refcount. Additional reference from page cache=
-=2E */
->>>> -	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
->>>> -					  folio_test_swapcache(folio)));
->>>> +	page_ref_unfreeze(page_tail,
->>>> +		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
->>>> +			     folio_nr_pages(page_folio(page_tail)) : 0));
->>>>
->>>>  	if (folio_test_young(folio))
->>>>  		folio_set_young(new_folio);
->>>> @@ -2868,7 +2876,7 @@ static void __split_huge_page_tail(struct foli=
-o *folio, int tail,
->>>>  }
->>>>
->>>>  static void __split_huge_page(struct page *page, struct list_head *=
-list,
->>>> -		pgoff_t end)
->>>> +		pgoff_t end, unsigned int new_order)
->>>>  {
->>>>  	struct folio *folio =3D page_folio(page);
->>>>  	struct page *head =3D &folio->page;
->>>> @@ -2877,10 +2885,11 @@ static void __split_huge_page(struct page *p=
-age, struct list_head *list,
->>>>  	unsigned long offset =3D 0;
->>>>  	unsigned int nr =3D thp_nr_pages(head);
->>>>  	int i, nr_dropped =3D 0;
->>>> +	unsigned int new_nr =3D 1 << new_order;
->>>>  	int order =3D folio_order(folio);
->>>>
->>>>  	/* complete memcg works before add pages to LRU */
->>>> -	split_page_memcg(head, order, 0);
->>>> +	split_page_memcg(head, order, new_order);
->>>>
->>>>  	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
->>>>  		offset =3D swp_offset(folio->swap);
->>>> @@ -2893,8 +2902,8 @@ static void __split_huge_page(struct page *pag=
-e, struct list_head *list,
->>>>
->>>>  	ClearPageHasHWPoisoned(head);
->>>>
->>>> -	for (i =3D nr - 1; i >=3D 1; i--) {
->>>> -		__split_huge_page_tail(folio, i, lruvec, list);
->>>> +	for (i =3D nr - new_nr; i >=3D new_nr; i -=3D new_nr) {
->>>> +		__split_huge_page_tail(folio, i, lruvec, list, new_order);
->>>>  		/* Some pages can be beyond EOF: drop them from page cache */
->>>>  		if (head[i].index >=3D end) {
->>>>  			struct folio *tail =3D page_folio(head + i);
->>>> @@ -2910,29 +2919,41 @@ static void __split_huge_page(struct page *p=
-age, struct list_head *list,
->>>>  			__xa_store(&head->mapping->i_pages, head[i].index,
->>>>  					head + i, 0);
->>>>  		} else if (swap_cache) {
->>>> +			/*
->>>> +			 * split anonymous THPs (including swapped out ones) to
->>>> +			 * non-zero order not supported
->>>> +			 */
->>>> +			VM_WARN_ONCE(new_order,
->>>> +				"Split swap-cached anon folio to non-0 order not supported");
->>>
->>> Why isn't it supported? Even if it's not supported, is this level the=
- right
->>> place to enforce these kinds of policy decisions? I wonder if we shou=
-ld be
->>> leaving that to the higher level to decide?
->>
->> Is the swap-out small-size THP without splitting merged? This needs th=
-at patchset.
->
-> No not yet. I have to respin it. Its on my todo list.
->
-> I'm not sure I understand the dependency though?
+> > > +
+> > > +static int af8133j_power_up(struct af8133j_data *data)
+> > > +{
+> > > +	struct device *dev =3D &data->client->dev;
+> > > +	int ret;
+> > > +
+> > > +	if (data->powered)
+> > > +		return 0;
+> > > +
+> > > +	ret =3D regulator_bulk_enable(AF8133J_NUM_SUPPLIES, data->supplies);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "Could not enable regulators\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	gpiod_set_value_cansleep(data->reset_gpiod, 0);
+> > > +
+> > > +	/* Wait for power on reset */
+> > > +	usleep_range(15000, 16000);
+> > > +
+> > > +	data->powered =3D true; =20
+> >=20
+> > Why is this needed?  The RPM code is reference counted, so I don't think
+> > we should need this. =20
+>=20
+> It's here because of code in af8133j_remove just disables RPM and then ca=
+lls
+> af8133j_power_down(). I guess it can be done via RPM, too, by disabling
+> autosuspend and leaving it to RPM callbacks.
 
-IIUC, swap cache only supports one cluster size, HPAGE_PMD_NR, so splitti=
-ng
-a PMD-size swapcached folio will need to split a cluster to smaller ones,=
- which
-needs your patchset support. Let me know if I get it wrong.
+ah. Don't use a flag for that, add a little utility function
+that takes it as an explicit parameter.  Make sure you wake the device
+up using runtime_pm then disable runtime pm before powering it down manuall=
+y.
 
->
->> You are right that a warning here is not appropriate. I will fail the =
-splitting
->> if the folio is swapcached and going to be split into >0 order.
->>
->>>>  			__xa_store(&swap_cache->i_pages, offset + i,
->>>>  					head + i, 0);
->>>>  		}
->>>>  	}
->>>>
->>
->>
->> --
->> Best Regards,
->> Yan, Zi
+>=20
+> > > +	return 0;
+
+..
 
 
---
-Best Regards,
-Yan, Zi
+> > > +
+> > > +	ret =3D af8133j_take_measurement(data);
+> > > +	if (ret =3D=3D 0)
+> > > +		ret =3D regmap_bulk_read(data->regmap, AF8133J_REG_OUT,
+> > > +				       buf, sizeof(__le16) * 3);
+> > > +
+> > > +	mutex_unlock(&data->mutex);
+> > > +
+> > > +	pm_runtime_mark_last_busy(dev);
+> > > +	if (pm_runtime_put_autosuspend(dev))
+> > > +		dev_err(dev, "failed to power off\n"); =20
+> > I think this will only happen if suspend returns non 0 and yours
+> > doesn't.  What else might cause this? =20
+>=20
+> I don't know, there's quite a deep callflow under
+> https://elixir.bootlin.com/linux/latest/source/include/linux/pm_runtime.h=
+#L470
+> with a lot of error paths. I'd say it's very unlikely to get na error her=
+e.
+>=20
+> I can drop it if you like.
 
---=_MailMate_B8C3C027-FEFE-458C-95A5-CEBF71F01278_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+I would.  If something odd is going on a developer can easily
+add a check back in to debug it.
+>=20
+> > > +
+> > > +	return ret;
+> > > +} =20
 
------BEGIN PGP SIGNATURE-----
+..
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXM6hcPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUgiEP/18dlvMYmJSIGwrUYqz5rzrfeiNbQpKJhI7w
-fcSyv0g209J8PdYP9lwO/7r+gMFkuC7bBv9WdH5smmNx5RifMjV8rXwlo+DW1Jmi
-GqVY/yKXb2dJubrj+L7ciPUWM7he1+BCSHk7DATRXRFIHK3nuxvLfXlGb99A3I+H
-uoMCGXEKDf3ApiauMHcTQrgkLd8lZXDdtC+YDcfzOlA3ELbzco7yO8xWkr0Y4dHf
-1rLPD7G9F93GjpHGenEenDXEVpr8wgOsMJHUn3UcRR9K2KuSAUvEa5VdtG+FtdFQ
-ueOh45Y6CdO0LQF3oogNp3Wnfe1uFFll83qcKMsJ70Aen8uhSXIENiuHa9q4MH8z
-Gc2P7BNFCNKlBMdnGxNRHdomU3a3TeUeLHMR9nJhhhhmqj1q06b6BK9PY5+AsVYL
-6R+eMSakbREf8I9YmJZwfUL2L0+i4XHnoJUeCSmw3rLgBNT6y+tWmUoWd7W9XIkK
-oghfNdeNRLvY2tpdr2OnZCSDQFem3w74sgtLPqU8zO1QY+mmWjU71j0AkxMuUSPj
-+Si/uZEVgBdkyQepMjnNnxIiSbMNpg421CdVyAWYW3RtAXugC7OGg6qHRpasTaMe
-hUUj6UuTbDyZ8bSwTIiD6lsYhEI4F3f0UPUIyi5j9VrIg0vvXYM9qF1KYmB+PN2j
-V2OZIL5C
-=XGPg
------END PGP SIGNATURE-----
+> >  =20
+> > > +	pm_runtime_enable(dev);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void af8133j_remove(struct i2c_client *client)
+> > > +{
+> > > +	struct iio_dev *indio_dev =3D i2c_get_clientdata(client);
+> > > +	struct af8133j_data *data =3D iio_priv(indio_dev);
+> > > +	struct device *dev =3D &data->client->dev;
+> > > +
+> > > +	pm_runtime_disable(dev);
+> > > +	pm_runtime_set_suspended(dev);
+> > > +
+> > > +	af8133j_power_down(data); =20
+> >=20
+> > Can normally push these into callbacks using
+> > devm_add_action_or_reset()=20
+> > That avoids need for either explicit error handling or a remove()
+> >=20
+> > You power the device down here, but there isn't a matching call to
+> > power it up in probe() (as it is powered down in there - which you
+> > should leave to runtime_pm()) =20
+>=20
+> Yes, that's the reason for powered tracking in the driver.
+>=20
+ok.  Try and avoid that and just let runtime pm deal with it for you.
 
---=_MailMate_B8C3C027-FEFE-458C-95A5-CEBF71F01278_=--
+For future reference, crop out anything you have commented on in
+a review. It saves on scrolling and reduces chances of stuff being
+missed in the dicussion.
+
+
+Jonathan
+
 
