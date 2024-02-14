@@ -1,166 +1,182 @@
-Return-Path: <linux-kernel+bounces-65987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBFA58554CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:29:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B69418554DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C9228533F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:29:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24662B218CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334EF13EFF8;
-	Wed, 14 Feb 2024 21:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F1013F000;
+	Wed, 14 Feb 2024 21:34:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="N/ALb08p"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lk+ojk3f"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FC7134740
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7ED134740;
+	Wed, 14 Feb 2024 21:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707946174; cv=none; b=A+6uTzt0JlbBOZk4w3yIHleEgVqVwkOx506CfDYkLtAB/VWDcwaWH8S48Zruo9RJiM3M9aeQ+QDHj9DTihjHFkxSD045khJeLGVI0Yt/pbBJo8QPih8RnysTWsByUKLzJNAtM4VyX/OaZF47/MbNHdECK693hborJFJFEp4HwIw=
+	t=1707946467; cv=none; b=nJgkqwpt3etEE5QEAYbTQtk69CKZW5i/JAUM8OjlnzgH0Z9AHAIViUk9xg8YcNq4lZGhIiOJUzZaISx85a2vrDj471EJjYFt0UoL9gXM+31q32iFq3nCHTH5mdfRheJfHKA9xy34chp+i/b/Yc1yjGgY9HV3XCi7A+SKp+mAHb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707946174; c=relaxed/simple;
-	bh=1h+GU62VcVsLcL314hriaxQNUPcjpImRJ7JoY1S/BfM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GSKfbhki8eQn1kxwoOTnczFr/e1G0sbq6gzxFZlTPqF+z+HMXxScp/ZjxLHhEZxtJSkJt1N93vrhRXEmx0gcKMUw3gxO1eDBaQCVHbfjsKT00mtL1ZypCCUhNDyKdU9PbaZyurTs1tBjvWopnLt6/ukI3R+PO6X4gHdokq6K840=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N/ALb08p; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maskray.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-604832bcbd0so4922387b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:29:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707946172; x=1708550972; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dFTWNPOxarceOkMiDWt4BFJs1kZ5yk38ZT59AswMTIA=;
-        b=N/ALb08pVFsOfFx/qTqsP9I1S5YzcXoyKdAz9VmP1WeJ1/Vqxc/pca4TTrORa4mpej
-         fZ4RbeP9v7REKl0BcTNlgBnUz5C6ow+DGCNeUdJhrLmp/ra2kw6B2OuqHnd6zGYjEXEM
-         XKwKrgfjNZixlZE2rSysZ7FfTLwXv5xIIFPrfHev3mrZ/Op9gDZM5hos+6qeHOXkgbI4
-         JtQkdpa3gWOZbSrKF8VDNUhX4wPUY9l8/Nz2RES9B7i8ZsvSVopIW66/IuBhgFImLAus
-         PYYm0odIoiTBG83klqhzwBZ7rkDzR3l7Fsvi2OmpTVPyUzqbW5ykVhF/wO5TqSTrz7Lu
-         OQvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707946172; x=1708550972;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dFTWNPOxarceOkMiDWt4BFJs1kZ5yk38ZT59AswMTIA=;
-        b=ThXKI0r/2JMNZrLxHOvYA3TR9M2j0+s84U1dZA7Myg8j0waLOk2iyf7hepGl7HBlEI
-         S6AFM0K3I5JOKJlEglxnqHSEdzCFj1wBWU91qyhaFM50CDb+IDcYFQtUgw70113m6nf+
-         yfpWxWYrfmFwr99MLeTxPKLcvuRJmK4wT9YixnSft2R35J7eTYC9aExmou70DWcx2XA3
-         o37TnN2il5SEXw+l5O38zwReUgehFQDiGdbXmAx1Mr74pz4IjFe9Kk+KbGsckmj7WjYo
-         tesJTlRNT4P/aB4E76wuZAtt7YnBJy+2C+AMphftVpA33WkM/1AhlpeaP5TL3UAhM7/T
-         YZlA==
-X-Gm-Message-State: AOJu0YwPa956R8tOCPIF+7fxt3w6SXYp/MI70bHR5pIBJsZmtxAOLkAr
-	4N3bBnsBgp88OwM5pSsnoV0l7qqXsDuG/cartCHGWN4JaeYWGAzbV2kykR104IeTiFVqk+xKC5I
-	pMIz8cA==
-X-Google-Smtp-Source: AGHT+IFqu5San60pN/HO+kKe9H5ryDNbyfTlopcSoOvmM5DJ+bcwMEr6JJfznvuPvwXLyQoTSDnHHFz4G9do
-X-Received: from maskray.svl.corp.google.com ([2620:15c:2d3:205:448b:aa1a:69fe:22b6])
- (user=maskray job=sendgmr) by 2002:a81:4fce:0:b0:604:9315:b547 with SMTP id
- d197-20020a814fce000000b006049315b547mr849276ywb.5.1707946172036; Wed, 14 Feb
- 2024 13:29:32 -0800 (PST)
-Date: Wed, 14 Feb 2024 13:29:29 -0800
+	s=arc-20240116; t=1707946467; c=relaxed/simple;
+	bh=Q6j4BHMns0h+WxQIjqSMnT4o7C6OxX6xtAP1jLjnNNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DSMrAUEGBwwcHJBohw3z5bvdil03cyLwmUVRwO+7ni3XsEXYnpn3hRjD902FPtDuBvYEiS9j8Glhtx0ONNIKps1EMRPVDCJmFU9zmyt11/eXuvPKlLuZihs/Zsp+zjpuIYOMW5WpU3XORpgAGjAPuNlNqnPFlvQlmm1zaXEejX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lk+ojk3f; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41ELUeZ9005821;
+	Wed, 14 Feb 2024 21:31:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=dbVwpts8F08fJF//2xqBb1oUCy/fQrwva/LA3Jl6tbE=; b=lk
+	+ojk3fxEKc2MVBIKWw87aFtQb5Diu3u/9AwC1170Rid8VLeo1VyJf5HBycZUdN1C
+	fruWjgflEnWxGxGWlunnh8lTr/NEb749q02Tdcof7cwi/eGIsAMQV2Mb8VW5BSZZ
+	ZudRu0AtcBrwuHyE4v66aT/XP3LcOIQjvrEgOggN0izMS7bqWn82AwfDwUILczmw
+	2NPqOu6my3IdI+PoqpPoIsUpif0rlH4b8fkeCzZ4xVODuWkVX6w93ed8216Adqcq
+	S/Rlh6KOIJSiNHOIptYAbw4PRYEUTSLbY4Ha6QFcFbuqCmLaCa/VwEWhIw0/USyg
+	VmbEag0rBBNQhCXJbRVQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8myg26dt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 21:31:50 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41ELVnJn016056
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 21:31:49 GMT
+Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
+ 2024 13:31:46 -0800
+Message-ID: <03c2c48d-d05f-4906-b63b-711c94133489@quicinc.com>
+Date: Wed, 14 Feb 2024 13:31:28 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <20240214212929.3753766-1-maskray@google.com>
-Subject: [PATCH] x86/build: Simplify patterns for unwanted section
-From: Fangrui Song <maskray@google.com>
-To: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
-	llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Fangrui Song <maskray@google.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] loongarch: Call arch_mem_init() before
+ platform_init() in the init sequence
+To: Huacai Chen <chenhuacai@kernel.org>
+CC: <jonas@southpole.se>, <stefan.kristiansson@saunalahti.fi>,
+        <shorne@gmail.com>, <ysato@users.sourceforge.jp>, <dalias@libc.org>,
+        <glaubitz@physik.fu-berlin.de>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>, <linux-openrisc@vger.kernel.org>,
+        <loongarch@lists.linux.dev>, <linux-sh@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <1707524971-146908-1-git-send-email-quic_obabatun@quicinc.com>
+ <1707524971-146908-2-git-send-email-quic_obabatun@quicinc.com>
+ <CAAhV-H5f5e-cCaX7Gr20oG8F-aywJcosLn4ajxx2SQWoB8JtSA@mail.gmail.com>
+Content-Language: en-US
+From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+In-Reply-To: <CAAhV-H5f5e-cCaX7Gr20oG8F-aywJcosLn4ajxx2SQWoB8JtSA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QnVTO4n29rWWGb8jdilowa6YD6gHzyG_
+X-Proofpoint-ORIG-GUID: QnVTO4n29rWWGb8jdilowa6YD6gHzyG_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_14,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402140166
 
-A s390 patch modeling its --orphan-handling= after x86 [1] sparked my
-motivation to simplify patterns. Commit 5354e84598f2 ("x86/build: Add
-asserts for unwanted sections") added asserts that certain input
-sections must be absent or empty. The patterns can be simplified.
 
-For dynamic relocations,
+On 2/14/2024 5:03 AM, Huacai Chen wrote:
+> Hi, Oreoluwa,
+>
+> On Sat, Feb 10, 2024 at 8:29 AM Oreoluwa Babatunde
+> <quic_obabatun@quicinc.com> wrote:
+>> The platform_init() function which is called during device bootup
+>> contains a few calls to memblock_alloc().
+>> This is an issue because these allocations are done before reserved
+>> memory regions are set aside in arch_mem_init().
+>> This means that there is a possibility for memblock to allocate memory
+>> from any of the reserved memory regions.
+>>
+>> Hence, move the call to arch_mem_init() to be earlier in the init
+>> sequence so that all reserved memory is set aside before any allocations
+>> are made with memblock.
+>>
+>> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+>> ---
+>>  arch/loongarch/kernel/setup.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+>> index edf2bba..66c307c 100644
+>> --- a/arch/loongarch/kernel/setup.c
+>> +++ b/arch/loongarch/kernel/setup.c
+>> @@ -597,8 +597,8 @@ void __init setup_arch(char **cmdline_p)
+>>         parse_early_param();
+>>         reserve_initrd_mem();
+>>
+>> -       platform_init();
+>>         arch_mem_init(cmdline_p);
+>> +       platform_init();
+> Thank you for your patch, but I think we cannot simply exchange their
+> order. If I'm right, you try to move all memblock_reserve() as early
+> as possible, but both arch_mem_init() and platform_init() call
+> memblock_reserve(), we should do a complete refactor for this. And
+> since it works with the existing order, we can simply keep it as is
+> now.
+>
+> Huacai
+Hi Huacai,
 
-*(.rela.*) is sufficient to match all dynamic relocations synthesized by
-GNU ld and LLD. .rela_* is unnecessary. --emit-relocs may create .rela_*
-sections for section names prefixed with _, but they are not matched by
-linker scripts.
+Thank you for your response!
 
-plt instead of .plt.* is sufficient to match synthesized PLT entries.
+I'm not trying to move all memblock_reserve() to be as early as possible,
+I'm trying to move the call to early_init_fdt_scan_reserved_mem() to be
+as early as possible. This is the function that is used to set aside all the
+reserved memory regions that are meant for certain devices/drivers.
 
-igot and .igot.plt are for non-preemptible STT_GNU_IFUNC in GNU ld (LLD
-just uses .got), which the kernel does not use. In addition, if .igot or
-igot.plt is ever non-empty, there will be .rela.* dynamic relocations
-leading to an assert failure anyway.
+The reserved memory regions I am referring to are explicitly defined in
+the DT. These regions are set aside so that the system will have either
+limited access or no access to them at all.
+Some of these regions are also defined with a property called no-map
+which tells the system not to create a memory mapping for them.
+https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/reserved-memory/reserved-memory.yaml#L79
 
-[1]: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-6-8a665b3346ab@kernel.org/
+Hence, setting aside these memory regions should take priority and should
+be done first before any memblock allocations are done so that the system
+does not  unknowingly allocate memory from a region that is meant to be
+reserved for a device/driver.
 
-Signed-off-by: Fangrui Song <maskray@google.com>
----
- arch/x86/boot/compressed/vmlinux.lds.S | 6 +++---
- arch/x86/kernel/vmlinux.lds.S          | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Eg:
+    unflatten_and_copy_device_tree() eventually calls memblock_alloc():
+    https://elixir.bootlin.com/linux/latest/source/drivers/of/fdt.c#L1264
 
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 083ec6d7722a..9f288f67972a 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -104,17 +104,17 @@ SECTIONS
- 	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
- 
- 	.plt : {
--		*(.plt) *(.plt.*)
-+		*(.plt)
- 	}
- 	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
- 
- 	.rel.dyn : {
--		*(.rel.*) *(.rel_*)
-+		*(.rel.*)
- 	}
- 	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
- 
- 	.rela.dyn : {
--		*(.rela.*) *(.rela_*)
-+		*(.rela.*)
- 	}
- 	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
- }
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index a349dbfc6d5a..b3da7b81d2b3 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -463,22 +463,22 @@ SECTIONS
- 	 * explicitly check instead of blindly discarding.
- 	 */
- 	.got : {
--		*(.got) *(.igot.*)
-+		*(.got)
- 	}
- 	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
- 
- 	.plt : {
--		*(.plt) *(.plt.*) *(.iplt)
-+		*(.plt)
- 	}
- 	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
- 
- 	.rel.dyn : {
--		*(.rel.*) *(.rel_*)
-+		*(.rel.*)
- 	}
- 	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
- 
- 	.rela.dyn : {
--		*(.rela.*) *(.rela_*)
-+		*(.rela.*)
- 	}
- 	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
- }
--- 
-2.43.0.687.g38aa6559b0-goog
+    Since unflatten_and_copy_device_tree() is called in platform_init(), this
+    allocation is done before we are able to set aside any of the reserved
+    memory regions from the DT which is supposed to be done by
+    early_init_fdt_scan_reserved_mem() in the arch_mem_init() function.
 
+    Hence, it is possible for unflatten_and_copy_device_tree() to allocate
+    memory from a region that is meant to be set aside for a device/driver
+    without the system knowing.
+
+This can create problems for a device/driver if a region of memory that was
+supposed to be set aside for it ends up being allocated for another use case
+by memblock_alloc*().
+
+Regards,
+
+Oreoluwa
 
