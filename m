@@ -1,226 +1,101 @@
-Return-Path: <linux-kernel+bounces-65037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB597854704
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:21:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21A3D8546FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1151CB22904
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 108A81C26E23
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7CF1804E;
-	Wed, 14 Feb 2024 10:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DNRgpeGh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX6r6YD0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DNRgpeGh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX6r6YD0"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688781757A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F901756F;
 	Wed, 14 Feb 2024 10:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTKX1q4I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806F7171C4;
+	Wed, 14 Feb 2024 10:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707906036; cv=none; b=L14ozIf+XSinNjn4U9I6d70eZNHJ+MUIoLYY9ROA6owPrtLtvntRbh0lwGBeA25nbzpDvu988v7ups9jNIWl83tSAWhrQguzicE/TSYHCsndF9Mqt25aKqPp/y0YzAbWiI+YCgWsXqgUhVctHha/WDXoYxHucLbtDlOOPQR9DXQ=
+	t=1707906033; cv=none; b=NDCgNvmkHPk78hINUPrua7ZKo2XhUolNjtJeUCLjYTXbG4ynUuo32XfZBnJi5l+GMUrMFGyv+2EWwB6OLypghz3tjGKZvnIR2Cg3kcfcGkJOptUR95EWt3IP7ncitHfwzIbdmH/BdPsYSGQYRRh9WOzzspyMra8icQt6TbMKZJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707906036; c=relaxed/simple;
-	bh=20sRNx8iOq0dxtbjIRX48x/rKE5QlAzFN67tIlBtgIA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QYaClOI7qoHA195u3hu1jEGH31E/gm6Zw6kepovDgvyeeLr6oF8kys7cr7QtvkRI/D3WpSf6zxN0jnco3qIQpC3pbVygO1g6f/0XDMOsMmjnzVuWhqdTafDHaNJ9JaiS3LcbAf87d74Ec4sCTrXW71PIekRKRmCJkGuihgqj4LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DNRgpeGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX6r6YD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DNRgpeGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX6r6YD0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 110351FD18;
-	Wed, 14 Feb 2024 10:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707906027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
-	b=DNRgpeGhsDI+oSKTmcp+slsJEYfRS5HYFj3TT/mD1w+ZV1MzliTWcl4XEU6bVt3xTX9gBa
-	6c93XMG6n7uYcTsRNReflnsHj10orptTi2Vyl2Ll8/BiPXGvllIFrZYcU8UY4ckjh5/mYE
-	ecPjl2bd/Jyci9DykfeSrzt1k/0aaCY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707906027;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
-	b=nX6r6YD0jPrpVOJ83kIFxVBq3vl0couSpQ2UrxdMnSPIbg4NKpFIEC32DvhFQkJALEvR40
-	eek/vbRuZR1rV0DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707906027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
-	b=DNRgpeGhsDI+oSKTmcp+slsJEYfRS5HYFj3TT/mD1w+ZV1MzliTWcl4XEU6bVt3xTX9gBa
-	6c93XMG6n7uYcTsRNReflnsHj10orptTi2Vyl2Ll8/BiPXGvllIFrZYcU8UY4ckjh5/mYE
-	ecPjl2bd/Jyci9DykfeSrzt1k/0aaCY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707906027;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
-	b=nX6r6YD0jPrpVOJ83kIFxVBq3vl0couSpQ2UrxdMnSPIbg4NKpFIEC32DvhFQkJALEvR40
-	eek/vbRuZR1rV0DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7241913A72;
-	Wed, 14 Feb 2024 10:20:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wRKNG+qTzGW7RwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 14 Feb 2024 10:20:26 +0000
-Message-ID: <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
-Date: Wed, 14 Feb 2024 11:20:26 +0100
+	s=arc-20240116; t=1707906033; c=relaxed/simple;
+	bh=TFMAB7MBiveFe80EybzquU5dGfWXkZIHqR0E257ofTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BKcNd28uh/s1DjuryHZwOxn4/QimyogZ0ZlzN5/pFItAZWNlSFezO2RzNM9SZMcmCf+Ng6ILgmyTNAmIopjKpMpKCKzOaXY4MezSkel7Yvn/NqCrkihLoq/6t5DD4KFSpceToT/njn2JWSwoAK92Fn4OmiQfzaXxTb2tSPcjqRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTKX1q4I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D17C433F1;
+	Wed, 14 Feb 2024 10:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707906033;
+	bh=TFMAB7MBiveFe80EybzquU5dGfWXkZIHqR0E257ofTk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mTKX1q4I5bi0WSO9h8gbLDerXtf4yXy/VdjYhl0jtgwsO9d/b0pTXbbog7IrofMiZ
+	 nzdQdvqY88/hYYt/DT2kKTvpzvygypjRvyqG/0oaTYBAW/ztWYK9Qi/baV3rWaudsR
+	 QjiewJWSoWBUEXN4Otgvd1eEEijPhwChdIXyGUh3ZBex8V5k60jnfC2lTABOWPomu5
+	 pZtg158SF8YcfPciI/PEn5pQPIFnsH/KQ/LYQCdQz8LG7PfeV8QKzuFpFfhULTSzli
+	 KAZ6i8gE1yNAJBceipCVjOmkaT/Aa3XXJcbf80H1jhNVEkLLUylfbwDLkHn346YWD+
+	 QtyAXBmmTeXAQ==
+Date: Wed, 14 Feb 2024 11:20:30 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Costa Shulyupin <costa.shul@redhat.com>, llvm@lists.linux.dev,
+	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>
+Subject: Re: [tip:timers/core 3/3] kernel/time/hrtimer.c:2224:49: error:
+ implicit declaration of function 'housekeeping' is invalid in C99
+Message-ID: <ZcyT7tH35g6xOsSO@lothringen>
+References: <202402141742.oYY6J3lC-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>
-Cc: David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>,
- akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
- dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
- <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
- <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
- <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DNRgpeGh;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nX6r6YD0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[redhat.com,suse.com,linux-foundation.org,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: 110351FD18
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202402141742.oYY6J3lC-lkp@intel.com>
 
-On 2/14/24 00:08, Kent Overstreet wrote:
-> On Tue, Feb 13, 2024 at 02:59:11PM -0800, Suren Baghdasaryan wrote:
->> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
->> <kent.overstreet@linux.dev> wrote:
->> >
->> > On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
->> > > On 13.02.24 23:30, Suren Baghdasaryan wrote:
->> > > > On Tue, Feb 13, 2024 at 2:17 PM David Hildenbrand <david@redhat.com> wrote:
->> > > If you think you can easily achieve what Michal requested without all that,
->> > > good.
->> >
->> > He requested something?
->> 
->> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
->> possible until the compiler feature is developed and deployed. And it
->> still would require changes to the headers, so don't think it's worth
->> delaying the feature for years.
+On Wed, Feb 14, 2024 at 05:33:56PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+> head:   86342554e102b0d18d50abec43d40f4fc92f1993
+> commit: 86342554e102b0d18d50abec43d40f4fc92f1993 [3/3] hrtimer: Select housekeeping CPU during migration
+> config: arm-defconfig (https://download.01.org/0day-ci/archive/20240214/202402141742.oYY6J3lC-lkp@intel.com/config)
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402141742.oYY6J3lC-lkp@intel.com/reproduce)
 > 
-> Hang on, let's look at the actual code.
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402141742.oYY6J3lC-lkp@intel.com/
 > 
-> This is what instrumenting an allocation function looks like:
+> All errors (new ones prefixed by >>):
 > 
-> #define krealloc_array(...)                     alloc_hooks(krealloc_array_noprof(__VA_ARGS__))
+>    kernel/time/hrtimer.c:1651:7: warning: variable 'expires_in_hardirq' set but not used [-Wunused-but-set-variable]
+>            bool expires_in_hardirq;
+>                 ^
+> >> kernel/time/hrtimer.c:2224:49: error: implicit declaration of function 'housekeeping' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+>            int i, ncpu = cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE_TIMER));
+>                                                           ^
+> >> kernel/time/hrtimer.c:2224:62: error: use of undeclared identifier 'HK_TYPE_TIMER'
+>            int i, ncpu = cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE_TIMER));
+>                                                                        ^
+>    1 warning and 2 errors generated.
 > 
-> IOW, we have to:
->  - rename krealloc_array to krealloc_array_noprof
->  - replace krealloc_array with a one wrapper macro call
 > 
-> Is this really all we're getting worked up over?
+> vim +/housekeeping +2224 kernel/time/hrtimer.c
 > 
-> The renaming we need regardless, because the thing that makes this
-> approach efficient enough to run in production is that we account at
-> _one_ point in the callstack, we don't save entire backtraces.
-> 
-> And thus we need to explicitly annotate which one that is; which means
-> we need _noprof() versions of functions for when the accounting is done
-> by an outer wraper (e.g. mempool).
-> 
-> And, as I keep saying: that alloc_hooks() macro will also get us _per
-> callsite fault injection points_, and we really need that because - if
-> you guys have been paying attention to other threads - whenever moving
-> more stuff to PF_MEMALLOC_* flags comes up (including adding
-> PF_MEMALLOC_NORECLAIM), the issue of small allocations not failing and
-> not being testable keeps coming up.
+>   2221	
+>   2222	int hrtimers_cpu_dying(unsigned int dying_cpu)
+>   2223	{
+> > 2224		int i, ncpu = cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE_TIMER));
 
-How exactly do you envision the fault injection to help here? The proposals
-are about scoping via a process flag, and the process may then call just
-about anything under that scope. So if our tool is per callsite fault
-injection points, how do we know which callsites to enable to focus the
-fault injection on the particular scope?
+Should be housekeeping_cpumask(HK_TYPE_TIMER)
+
+Thanks.
 
