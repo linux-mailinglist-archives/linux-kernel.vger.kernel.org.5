@@ -1,102 +1,161 @@
-Return-Path: <linux-kernel+bounces-65667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA1A8855036
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:28:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2D5B855044
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461F01F21DF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:28:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 011F51C26400
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97CC1272D0;
-	Wed, 14 Feb 2024 17:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873A712837D;
+	Wed, 14 Feb 2024 17:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="rwfZs9CA"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bFxtjj5V";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dUQQDeNV"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD84212BE95;
-	Wed, 14 Feb 2024 17:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F84127B7E;
+	Wed, 14 Feb 2024 17:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931377; cv=none; b=HTbJVJjx8Xhq+vECZBAgQEhP0MRaMefdhDNBLmFPF5BTe/H5aF6ZxjAWL/+d8r/4nRFTJ2eHBryAvTFgYzFIlJ3B0o6ontz7K64cOpUAjSaq44lNZ6O1nMrAi304Jf0dgIQVV/dc+gFWkuPSct0K7WvQvGenaXtbF8Ssjim1HBU=
+	t=1707931410; cv=none; b=UcBW+L9N3mpETJ0rCJzOR/K/ySzO2xFzeGRBMIxFaPeAO9rquNu7EFi3zd0qjaFc351LMmTMNFT3WjI3mFTNpopHurARR0g1uNvwDA0noq47MAchtxGVQU5UYtQv+w4Z91/7fb9DqQoJhiU+T48Qk6NBzdizHhGfsiNRDP3eUMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931377; c=relaxed/simple;
-	bh=rozQICxhmctv2GzNoaOEIQYgEhph8grqZaAtWGhxx94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EbytRIhlRiLA3CtLEmhM130J+LzK9kvTrXJLeezRQXxuAPmQbaiJ2MXUHTfoJfEEAvd74dPd7yzps3aSgkqtnGAIiJMoajNZmEII0YMqQKszw+s4MNeXeV4P7AVUrc05xj4TqnO9JuUIuN4qhZbfVk/mDyVUxFciYsHr8uqSscI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=rwfZs9CA; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=CGXTYQZVVr0cZ4QoeJoakk9XcwslsKhvBOR/3u3KHDU=; b=rwfZs9CAmsndcBVVbkBMk5ppz3
-	b5NX9WKw56BMCBYB6qsq+W4iJCjtyciJ7Q7ef34/p8lVHt2OaLgeUTz/JnVS4CtLZzSFJf+AhAttY
-	fb31h8dmURcY4IqVWeXM2H5YGJ+s2mD+9PcwgE4CvGhtUGriqGoz1Rl5F1Veb4sFxeSY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1raIy7-007oCH-FH; Wed, 14 Feb 2024 18:22:47 +0100
-Date: Wed, 14 Feb 2024 18:22:47 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 08/17] netlink: specs: Expand the pse netlink
- command with PoE interface
-Message-ID: <d33383da-446a-4b92-930a-d601a7af9997@lunn.ch>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
- <20240208-feature_poe-v3-8-531d2674469e@bootlin.com>
+	s=arc-20240116; t=1707931410; c=relaxed/simple;
+	bh=gqEfZ2kRHvUVNQMPzyx6hDHwmUUqj5fHtD/Rz18BEQA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=esSj04JcgiWd5ujaMa3u8IOLVcIbbqf8FNNgMbRvjd4WWm+LUfrolBqq/nil0pDqBbdGHSYL1gZ/r63DVFZY9WqfP2bj3t+FpO8ZhIPG4Yu6dyrBzDcQAUYr0HXpWxq1ILYbCfbx2bgjPJcVzKZdZXKpwSdJPj8SrMPDg+tL3sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bFxtjj5V; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dUQQDeNV; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 82B9F1C00080;
+	Wed, 14 Feb 2024 12:23:26 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 12:23:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707931406; x=1708017806; bh=y+Eh983YcJ
+	xk/dsxkD7Ix5UZbVz6STVGhdNqxRo7eIQ=; b=bFxtjj5V8SLfNb5SOG3mEwBNIg
+	huUAMTfBUWmS+RH0DxnO5Sl8y8n49N4auwlAiC2H+UQNoj2z0v7Tvx1X+2GPja94
+	S0Vq9SgAincNDRgTQXKTpW1WdLwOP/94PXVnxA9p3lJ60NmRu/BDQVmsWzIWlMBD
+	WsLr6521qelYqIEk8OST89dNnl6sKKaC+F4+q3rxrUG8GDP5TQ+5r7/HXRPkTI+9
+	9QrYVNAPKFPo8Y5gGESTOEWefMK6rMkHRTQwimqeat0ccu65T5p2/9VKvdgv7d8R
+	5PLukkvfZ0yi/IsD0I11ZcLZ57RIDb4sDhqvDrWrL/FIxC4lo7rT0++RwqWQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707931406; x=1708017806; bh=y+Eh983YcJxk/dsxkD7Ix5UZbVz6
+	STVGhdNqxRo7eIQ=; b=dUQQDeNVUjm/GXz7mWysde/xhg7E995GTiVH6hMf+5mq
+	oHlw23juOB52LvdrLEuMBcFglFiPoZfCr7bM7jU1D4l8lEeA1/Ydc9CueT5YrTHx
+	I+zkNxD5emIHQ1hDKQ9FIiDjl65mwWnIXbK2u+OXKNMIsqA9aKuOTmopkGj3x3fA
+	04PtvchYkMmpJ4ag434tHI+DULvkl6ELnltH53lCXmS0s9B3EiEV9hONF60vBPLk
+	/9B32MDWPAAzX3KFNi8mx+MXv41+DWLRPL8YWeykMwHWyua6Bi+T35v1gHY/gUpz
+	TjiYIJNv2NtF7a38wxYDqkNL1Np3cgOPJURhk6zuPw==
+X-ME-Sender: <xms:DffMZYtQPWQJfcRC1E8ded2J768DNWvDeK_-ah5oBJlIaYq3X51Hjg>
+    <xme:DffMZVdJktaPxHkh9vTmVyKz7XfW2aYPHSlq2xWbtlnEsLGD84pPU1jnLUpMX2Sin
+    zy-FBtaSIJT3IkdziA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddutdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:DffMZTy8wc9ElqdfJvHVmUrRPQYxfiFzfaYwK8AsrXzkw0Lb2gdYtw>
+    <xmx:DffMZbN5zlial-ID2wAyfZdzi5LpmSRLXQUcIcaa9Pc7amZ_GPyBlA>
+    <xmx:DffMZY9niPhsoIsQxE-EiPCTCW3iL_mrIPM_ptFKYk5rje0KRqWuRA>
+    <xmx:DvfMZVPXjG3WRzWJicu-jlrNuW9pfrH8JGCiityRjbfHiA_StKNP3q1xohs>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5FA83B60092; Wed, 14 Feb 2024 12:23:25 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208-feature_poe-v3-8-531d2674469e@bootlin.com>
+Message-Id: <886629be-a492-4c8c-aa79-d13847cb228a@app.fastmail.com>
+In-Reply-To: <8634tv57i2.wl-maz@kernel.org>
+References: <20240213225619.11726-1-rdunlap@infradead.org>
+ <867cj75q52.wl-maz@kernel.org>
+ <c6e55baf-4f0c-4342-971a-713ed55f5a51@app.fastmail.com>
+ <8634tv57i2.wl-maz@kernel.org>
+Date: Wed, 14 Feb 2024 18:22:53 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Marc Zyngier" <maz@kernel.org>
+Cc: "Randy Dunlap" <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>, "Rob Herring" <robh@kernel.org>,
+ "Philipp Zabel" <p.zabel@pengutronix.de>, "Peter Rosin" <peda@axentia.se>,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] of: OF_IRQ: select IRQ_DOMAIN instead of depending on it
+Content-Type: text/plain
 
-On Thu, Feb 08, 2024 at 02:08:45PM +0100, Kory Maincent wrote:
-> Add the PoE pse attributes prefix to be able to use PoE interface.
-> 
-> Example usage:
-> ./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-get \
->              --json '{"header":{"dev-name":"eth0"}}'
-> {'header': {'dev-index': 4, 'dev-name': 'eth0'},
->  'c33-pse-admin-state': 3,
->  'c33-pse-pw-d-status': 4}
-> 
-> ./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-set \
->              --json '{"header":{"dev-name":"eth0"},
-> 		     "c33-pse-admin-control":3}'
-> 
-> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+On Wed, Feb 14, 2024, at 17:35, Marc Zyngier wrote:
+> On Wed, 14 Feb 2024 16:06:06 +0000,
+> "Arnd Bergmann" <arnd@arndb.de> wrote:
+>> 
+>> On Wed, Feb 14, 2024, at 10:52, Marc Zyngier wrote:
+>> > On Tue, 13 Feb 2024 22:56:19 +0000, Randy Dunlap <rdunlap@infradead.org> wrote:
+>> >>
+>> >> diff -- a/drivers/of/Kconfig b/drivers/of/Kconfig
+>> >> --- a/drivers/of/Kconfig
+>> >> +++ b/drivers/of/Kconfig
+>> >> @@ -80,7 +80,8 @@ config OF_ADDRESS
+>> >>  
+>> >>  config OF_IRQ
+>> >>  	def_bool y
+>> >> -	depends on !SPARC && IRQ_DOMAIN
+>> >> +	depends on !SPARC
+>> >> +	select IRQ_DOMAIN
+>> > 
+>> >
+>> > This seems to be moving is the right direction.
+>> 
+>> Can we move the 'select IRQ_DOMAIN' under CONFIG_IRQCHIP
+>> then and remove the individual selects from the irqchip
+>> drivers? It looks like CONFIG_OF (other than sparc) now
+>> unconditionally enables OF_IRQ and IRQCHIP anyway.
+>
+> As long as it also works ACPI, it should be OK.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Out of the four architectures that have ACPI support (x86,
+arm64, loongarch, rv64), only x86 doesn't always select
+IRQ_DOMAIN already, and x86 selects it for almost all
+configs:
 
-    Andrew
+config X86_UP_APIC
+        bool "Local APIC support on uniprocessors" if !PCI_MSI
+        default PCI_MSI
+        depends on X86_32 && !SMP && !X86_32_NON_STANDARD
+
+config X86_LOCAL_APIC
+        def_bool y
+        depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
+        select IRQ_DOMAIN_HIERARCHY
+
+so it's only disabled here with
+
+CONFIG_64BIT=n
+CONFIG_SMP=n
+CONFIG_X86_32_NON_STANDARD=n
+CONFIG_ACPI=y
+CONFIG_PCI=y (implied by ACPI)
+CONFIG_PCI_MSI=n
+
+As far as I can tell, this specific configuration is
+currently able to save a little bit of kernel size
+by avoiding IRQ_DOMAIN, but we are probably better off
+enabling it here as well for consistency
+
+     Arnd
 
