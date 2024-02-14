@@ -1,199 +1,134 @@
-Return-Path: <linux-kernel+bounces-64903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D28785447D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:01:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55EF85447F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A809B26BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:01:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 627CD1F2954F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F391579F4;
-	Wed, 14 Feb 2024 09:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE09B64A;
+	Wed, 14 Feb 2024 09:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BBkhg/2c"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="kOKK98GW"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7E579C0
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BBD79DC
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901305; cv=none; b=iBjjG6fWjeIlIvk9774hO3R5FOj9CGO42XbOmaFipKRwvmrxtk0RHlEXn3/S6a3xTs/8VhthY0M4BMfNqr3SMmwAgzO/f9x/rs0s32ozJhOsKSXthEtJ5D3TEoSb23nvc7X2/Xd880AnIHm/Poe7anPACB4iSYgPCWjkP++cz28=
+	t=1707901330; cv=none; b=AWx+TIRJU6EJ/biJzsWCgCLouRsNXOHY22MxCvf9ycpP+YYKZFTOe35kWfkgKJf3ghDvGN+1GiHvH1OM8GTnkPWKxDLoUsPGsmbW+ovhovJF7M+0tbLsLglE2vq5WiqisQNUtqdtcn17qxVPzOVBJLxwUMaBIyG7/cmlaqsWGFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901305; c=relaxed/simple;
-	bh=rVGyWvVFyRsLDqBCpY9swRjnG36wOAV4a+EPdavhwxE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sVQcsh6d08D74f5q+KWRrivfmtyBTQbjuNN4M1j+9XcMedWqbzVo8ZthcekrlIMeia54QOykU3iyH9/fJiHvXAsgzH1onYjNbUDjDQ0QesnqMwFF2dhJCozPKDMsdkXSIvZ56q5Jvn0qksC0M4LmDkDEgCybgnEfDM07yjlRTZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BBkhg/2c reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CF52140E016C;
-	Wed, 14 Feb 2024 09:01:40 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-	reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id JZfeISjeEu0e; Wed, 14 Feb 2024 09:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707901298; bh=rLdOtQOfh1UfG8Cn92KapL1Eu7yP6XBs8mjWI33kxGU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BBkhg/2ciQYgJxsJ6C0ntUnnShFinKwl3kW9xnWWLwc17kDv6efvKK155ay6iAI9i
-	 EWXBWGfz22xCApcblxgAVIesN9KijSZbGqO04IYgMMQM8lXpaHtpH6Ta15lgXxiVPO
-	 6HQe/QLPEl1Zutgj4vv7y9o9aRQiJxC6ZVwNFsCbeFR436kWYZCO1DpmR/AmgP0uKH
-	 Z9D1o+uNFrREVfXylq0yQMN/eS7BD+qoLvVqMmxIXzUYD2HbWdLBkIOW3etnaJr/vx
-	 FoaC9i1YhqpndlA0pV1x1RvZn6DVRIT6KCH7ZR9Mr/KA4lWeJCvUnEiH01O8WWwFN0
-	 jZ8sfP8n4QURx+ddoHw4aqXa6NYrooLHFGZ72UvxgZx9udpknCgC4t+vpYBgsB7eOB
-	 ADCGncjQrpF4BjaD0Wl6RfmUyElBhgISw1NfkIaTZLPRATg0uQ7xQv3MDV/jR/oR3j
-	 /bnrqZDSgZmNiqtDsEkkpz9mR2Hcby3xrM1BbKaj3Dbxi3rWasJ+NI2oIVCp7Jd4f7
-	 h0Dc0f/E6uamzwVGP9GDzJoisLLVUDKzNtn8Rpf+iZ6RFpPPKfy17P0Qq5+1Aw4e5x
-	 hiEZaqEm7TIaQz98kOb7G817fBNwk1dG2TCfFusXXRmLp3r71clq4YupoeOJD/eSkA
-	 hJYaMKfizoGoEZe6hGEOtAQE=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E676040E00B2;
-	Wed, 14 Feb 2024 09:01:32 +0000 (UTC)
-Date: Wed, 14 Feb 2024 10:01:27 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Costa Shulyupin <costa.shul@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Waiman Long <longman@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2] hrtimer: select housekeeping CPU during migration
-Message-ID: <20240214090127.GAZcyBZ9mRTrSOoCSR@fat_crate.local>
-References: <20240211135213.2518068-1-costa.shul@redhat.com>
- <20240213164650.2935909-3-costa.shul@redhat.com>
+	s=arc-20240116; t=1707901330; c=relaxed/simple;
+	bh=/fE39pKrfDRibqn1WWdykU0qcTy9Pk5txFzrjNPfvdA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KUDx4J0VlEHwvucnVRpnh5QOxvjPOchZyrJajUui/r+Tfu2Zbl4Y7CAY5DYteH78C01mZGEckztOsPDLenrXpJTy7OG8rn+eaYj+84GX1x7nfa+MQNF9OwLrfwhVfGWyHAoadTxJTJOxHYGaz/bP2ZQaA4X1WdhOrsdJNzef2VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=kOKK98GW; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e08dd0fa0bso431515b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1707901328; x=1708506128; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PG0IiU/s69rauKmwQQKq0QDss70qdtIt7mVzhoYNTgg=;
+        b=kOKK98GW5TnwXNE5+DFy6CR92iUrJtEYnVQg6P/w2mb6IqcF3RFjTBl2lEVhdjvlz/
+         w85VwGsPVxIiOgOPYgxIG0jUxfXGUVgRo1jlVYllSJTKcOdBDRzieCpxvcx7TSdxez7H
+         dDtxkiV2LXpXlhv3WBkldZTCEcDb6jHCqMxfHI6kP/SxuFZTx8Z5FoHCC6+Hey/B82Th
+         e6UYwVxqnQj2d2v/5/A7WfWZSYpjtR5XohB6u7XBTcjI+f2bA2OUbw2ZompoLUqr6Q1K
+         OdQpNTRKdb6TEuoDmpcvwL4rQxHuRhH+n7pbgoHLWWmMoIYbbC8OCEC8mdPqjy0oDVpo
+         dCuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707901328; x=1708506128;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PG0IiU/s69rauKmwQQKq0QDss70qdtIt7mVzhoYNTgg=;
+        b=laIfF0lqD5vVs3CcSIFFxQBrKLirJE4S1nT2QLsSePqmfMEq8zfXbgb/C+WQ/bHUG8
+         KV5j36DlSvWQ3Egrd7hIUdMq12vkgmRocIQneQpab+AakOc61a6mDkJBjLYVkm3trl8g
+         OAjLzHO7kMX7CaR0sacWXHerMzhzc4nC7aTEaGWglzKQGRXbdVrem0Gv+FaTE43WWyiJ
+         KVhazqtTc6aGpVtuUfd7wjChWL6BaEqTMDfA+hublnesLJCXdnYeM583RNJj+hz7TqmY
+         jf+vzPtrT3kxO3zs/MG2psfLxRS6vApruEaTJrdTzFOpSyQtSz13ZFyoeLDlEVzkGE0R
+         zIJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXiO05iGoeBWLS6STOEN1ifUGBFn/HxynlmuXgN/+ZNua7yaQ8Ao8r71zfQue62RJF1S9IG6ye6VaV4qqmBRWvCjsiFLS3CrrK0q4ag
+X-Gm-Message-State: AOJu0Yw2SWbXe3JN6KfLEru6evD8kirJzMHvWVt98iprL9ujPoghjBr6
+	Q17+xw6ESXdtdiWNEZv4W/11FhCkByrf6kUllt02A2ABA9BUY4NjLNTl69DjYK4=
+X-Google-Smtp-Source: AGHT+IFZDfQZGItnAQkonqR/Yikgb4B5zLgUFibXDBjJa1njdREAj5ps9BVVaW/vzNwOz21QNCGcMw==
+X-Received: by 2002:a05:6a21:3997:b0:1a0:587d:5664 with SMTP id ad23-20020a056a21399700b001a0587d5664mr2415076pzc.15.1707901327898;
+        Wed, 14 Feb 2024 01:02:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXwx8T69DaHtqPp+CeSq/WLrl/IdHgV6ExI7p/7RvPuv2E7ZTW1x36XoZ7PISg15xVLh/f2Yoh66AZ0ddPdxoWYRc/Ddqchz4mt4vauHE5KkKyhxzoxytAfLtOxiQlLneN61j5HrOVOZ0OqZU830b3Z59XwhPJl6OxtE2a46ojK0hFnlLheuEcNfvhL/FFGX6NIxwyvJm+QIPMCzVbJM2jJtUIygOpb/QKOxPPwS6OA
+Received: from sw06.internal.sifive.com ([4.53.31.132])
+        by smtp.gmail.com with ESMTPSA id m25-20020a638c19000000b005d7994a08dcsm2476681pgd.36.2024.02.14.01.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 01:02:07 -0800 (PST)
+From: Samuel Holland <samuel.holland@sifive.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Andrew Jones <ajones@ventanamicro.com>,
+	linux-kernel@vger.kernel.org,
+	Conor Dooley <conor@kernel.org>,
+	linux-riscv@lists.infradead.org,
+	Stefan O'Rear <sorear@fastmail.com>,
+	Samuel Holland <samuel.holland@sifive.com>
+Subject: [PATCH -fixes v3 0/2] riscv: cbo.zero fixes
+Date: Wed, 14 Feb 2024 01:01:55 -0800
+Message-ID: <20240214090206.195754-1-samuel.holland@sifive.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240213164650.2935909-3-costa.shul@redhat.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 06:46:51PM +0200, Costa Shulyupin wrote:
-> During CPU-down hotplug, hrtimers may migrate to isolated CPUs,
-> compromising CPU isolation. This commit addresses this issue by
-> masking valid CPUs for hrtimers using housekeeping_cpumask(HK_TYPE_TIME=
-R).
->=20
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
-> Reviewed-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->=20
-> Changes in v2:
-> - [v1] https://lore.kernel.org/all/20240211135213.2518068-1-costa.shul@=
-redhat.com/
-> - reworded and rebased on linux-next
-> ---
->  kernel/time/hrtimer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-> index edb0f821dcea..947bd6cf7105 100644
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -2224,7 +2224,7 @@ static void migrate_hrtimer_list(struct hrtimer_c=
-lock_base *old_base,
->  int hrtimers_cpu_dying(unsigned int dying_cpu)
->  {
->  	struct hrtimer_cpu_base *old_base, *new_base;
-> -	int i, ncpu =3D cpumask_first(cpu_active_mask);
-> +	int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE=
-_TIMER));
-							^^^^^^^^^^^^^^
-How was this patch tested?
+This series fixes a couple of issues related to using the cbo.zero
+instruction in userspace. The first patch fixes a bug where the wrong
+enable bit gets set if the kernel is running in M-mode. The second
+patch fixes a bug where the enable bit gets reset to its default value
+after a nonretentive idle state. I have hardware which reproduces this:
 
-It even says housekeeping_cpumask() in the commit message so the
-*intent* to use the correct function is there:
+Before this series (or without ss1p12 in the devicetree):
+  $ tools/testing/selftests/riscv/hwprobe/cbo
+  TAP version 13
+  1..3
+  ok 1 Zicboz block size
+  # Zicboz block size: 64
+  Illegal instruction
 
-kernel/time/hrtimer.c: In function =E2=80=98hrtimers_cpu_dying=E2=80=99:
-kernel/time/hrtimer.c:2226:56: error: implicit declaration of function =E2=
-=80=98housekeeping=E2=80=99 [-Werror=3Dimplicit-function-declaration]
- 2226 |         int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekee=
-ping(HK_TYPE_TIMER));
-      |                                                        ^~~~~~~~~~=
-~~
-/include/linux/cpumask.h:774:67: note: in definition of macro =E2=80=98c=
-pumask_any_and=E2=80=99
-  774 | #define cpumask_any_and(mask1, mask2) cpumask_first_and((mask1), =
-(mask2))
-      |                                                                  =
- ^~~~~
-kernel/time/hrtimer.c:2226:69: error: =E2=80=98HK_TYPE_TIMER=E2=80=99 und=
-eclared (first use in this function)
- 2226 |         int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekee=
-ping(HK_TYPE_TIMER));
-      |                                                                  =
-   ^~~~~~~~~~~~~
-/include/linux/cpumask.h:774:67: note: in definition of macro =E2=80=98c=
-pumask_any_and=E2=80=99
-  774 | #define cpumask_any_and(mask1, mask2) cpumask_first_and((mask1), =
-(mask2))
-      |                                                                  =
- ^~~~~
-kernel/time/hrtimer.c:2226:69: note: each undeclared identifier is report=
-ed only once for each function it appears in
- 2226 |         int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekee=
-ping(HK_TYPE_TIMER));
-      |                                                                  =
-   ^~~~~~~~~~~~~
-/include/linux/cpumask.h:774:67: note: in definition of macro =E2=80=98c=
-pumask_any_and=E2=80=99
-  774 | #define cpumask_any_and(mask1, mask2) cpumask_first_and((mask1), =
-(mask2))
-      |                                                                  =
- ^~~~~
-cc1: some warnings being treated as errors
-make[4]: *** [scripts/Makefile.build:243: kernel/time/hrtimer.o] Error 1
-make[3]: *** [scripts/Makefile.build:481: kernel/time] Error 2
-make[2]: *** [scripts/Makefile.build:481: kernel] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/mnt/kernel/kernel/2nd/linux/Makefile:1921: .] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+After applying this series:
+  $ tools/testing/selftests/riscv/hwprobe/cbo
+  TAP version 13
+  1..3
+  ok 1 Zicboz block size
+  # Zicboz block size: 64
+  ok 2 cbo.zero
+  ok 3 cbo.zero check
+  # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
 
-This makes it build again at least:
+Changes in v3:
+ - Drop patches added in v2
+ - Check for Zicboz instead of the privileged ISA version
 
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 2cbdf64d746c..6057fe2e179b 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -38,6 +38,7 @@
- #include <linux/sched/deadline.h>
- #include <linux/sched/nohz.h>
- #include <linux/sched/debug.h>
-+#include <linux/sched/isolation.h>
- #include <linux/timer.h>
- #include <linux/freezer.h>
- #include <linux/compat.h>
-@@ -2223,7 +2224,7 @@ static void migrate_hrtimer_list(struct hrtimer_clo=
-ck_base *old_base,
-=20
- int hrtimers_cpu_dying(unsigned int dying_cpu)
- {
--	int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekeeping(HK_TYPE_T=
-IMER));
-+	int i, ncpu =3D cpumask_any_and(cpu_active_mask, housekeeping_cpumask(H=
-K_TYPE_TIMER));
- 	struct hrtimer_cpu_base *old_base, *new_base;
-=20
- 	tick_cancel_sched_timer(dying_cpu);
+Changes in v2:
+ - Add patches to allow parsing the privileged ISA version from the DT
+ - Check for privileged ISA v1.12 instead of the specific CSR
+ - Use riscv_has_extension_likely() instead of new ALTERNATIVE()s
 
+Samuel Holland (2):
+  riscv: Fix enabling cbo.zero when running in M-mode
+  riscv: Save/restore envcfg CSR during CPU suspend
 
---=20
-Regards/Gruss,
-    Boris.
+ arch/riscv/include/asm/csr.h     | 2 ++
+ arch/riscv/include/asm/suspend.h | 1 +
+ arch/riscv/kernel/cpufeature.c   | 2 +-
+ arch/riscv/kernel/suspend.c      | 4 ++++
+ 4 files changed, 8 insertions(+), 1 deletion(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+-- 
+2.43.0
+
 
