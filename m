@@ -1,150 +1,163 @@
-Return-Path: <linux-kernel+bounces-65993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C314B8554F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:37:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47C678554F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7902E1F26D00
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:37:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057E628AC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1369113DBA7;
-	Wed, 14 Feb 2024 21:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4845A13F00C;
+	Wed, 14 Feb 2024 21:37:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="zZUZLQkh"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GI7a4rEJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E5713EFF5
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FA013EFFA;
+	Wed, 14 Feb 2024 21:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707946620; cv=none; b=YrijkUxDW67PIlwef0CVz83loiJpRsV1+/CnCHABY/9l2pKQ+ti0cTcEusNesfp+6bWk4augsrO0xxAxQrMNU6yd8FJPqVdkOagbTpWwhoqDJQj07lrFrYjd6GLWoSLu7u95souE6wnp1X1NM0NZGZ5XHNduylikNQJdO1T+49w=
+	t=1707946648; cv=none; b=R4K/ly5O4gaNI5dHNbsCz12RJnnt1rdF46lQxSCmDAyKwYdIURRV8+2cc+K1j3InJWHQQdHTWAjOFiPCFhapC/YhUe6al8UTiH5LVOyCE2+yKGT8XXZKvRDzt9Hz5SlyoAvLGshPUzB1Xers8Q9O1GrxsamQtsm+M35A+fEjvu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707946620; c=relaxed/simple;
-	bh=8NTIdvfdUShCf6KiTT4xVJr3A6EVG7UAZSouPXwWvFs=;
+	s=arc-20240116; t=1707946648; c=relaxed/simple;
+	bh=TsPOCXsLDMYvW8y1m6lrloJ2qWdhkM2QRD0tOx+Oj5s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bMahB8y1IzfFT4LtpZlgDhGtkmZNhby+4+tNBDX0VtEcP/Qk1jpI9MtyX9EuGSKO0ELYICPGQVBw4esuyCzXNhPMRwN+xxLzP7qqHKvm0M/SyPNxRl+Bh+fydYwXspWOdTgFQEixSBiBz/eHd+qeDEepmZdLNR5cGDkFZxi+FNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zZUZLQkh; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1db35934648so6425ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707946618; x=1708551418; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qm+3lAjNKCUXMK2MWRX3aA9k1EZES8aqndD5uWRzKz4=;
-        b=zZUZLQkhf/CogbGFIeK5zRCFwghXNPXzycZM/MtAFgXa2PlMR9+LHRRjTejEL82o66
-         1/CDPdgLTmdv5u+cpLtgUWKmFSIvGUYm2r1PxSmRTMmDIuBQq3G94PHMGpsITbCs1x48
-         YMg1/EDTJ3Xd2zJSevQ6zG1byffgP2NXyiOadttSROhU+dVeqBS1vj4nE1lDr/A2T8bE
-         GNwpGCtwesf6t4pENX0FH6QGoW2hGYmsJgcYltE2/VpsjWolzEKrC+5CHa4UnjOKEVSV
-         MutFRk1jW68cx4gfnTZQAAmEUxVpqihr5uuzUSGROC1ttOqnO/IAHgfNebtmgsAE3aNW
-         ZKGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707946618; x=1708551418;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qm+3lAjNKCUXMK2MWRX3aA9k1EZES8aqndD5uWRzKz4=;
-        b=sQ4rtVnFM4uPLz5StZEZlwqE5/kwB5HNAkXmrRltDZ8usOfml/J/pfqNuLgZW7tbVH
-         EzvEFxXgjSO1U5MAyllvR3Vk+wM5ftwpiuCgaEZyc7CSp9QlblNkKd4MQuuyEA0iiLHp
-         x9RnFEQndyIuQaKAjP+Mbn9oeea07O/uAaqtEdnN8Bcmz+COmmynZchLUtv+bccmcFiy
-         LZtQ9+HrAJwBMDsTAMAOKAgNS02Ia6OcqB8ORrwOR9dLkwHia1tkQ/w2HelhCO+tYaFt
-         6RVtrmqNuWWotkOsp0nwc43dO3zIL3Myq2maEBvcWjfYl79yaEgTwlgOdK/Pz1aD7uNG
-         QMHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWTjPN4dj1zLV6pbAxfid5DK08FLn5wvRlXM8z+3gUvfquuemYJXel0AAgWKMzTNdNS0Z9oXAUOcVvtP7bmapoyuqzILs88p+7e35/t
-X-Gm-Message-State: AOJu0YzxYLCOqwz11mTBqzav9+L34Q7jW4ttS0FkBpk60NWNVSbwrLL2
-	FJYSus/TRwIDDRzjrldqCd4yNRbDZK/DoMU1WJF+dQ5gXukx1g8hcUWyJu1B2CAeuSEJnLTaJVi
-	FUr8BuoGeXLqX4y/Fc+jhiHr8gZ6eU0d8eTm7
-X-Google-Smtp-Source: AGHT+IEGLkc+Vg1BB8RNbFLPcn9sA2EgZUBHfDxP0H0iDn+vMm3xC36CC6KY+0zBUA64/i36/KFEaMcOA8knBoDpJss=
-X-Received: by 2002:a17:903:2053:b0:1da:292b:cf94 with SMTP id
- q19-20020a170903205300b001da292bcf94mr397991pla.4.1707946617972; Wed, 14 Feb
- 2024 13:36:57 -0800 (PST)
+	 To:Cc:Content-Type; b=AMNXxss2YRMvdh0KdbbLaPQ7eU4xH2MG28hE2qhd7By8etxfmnOPBEap0rPWX8vb0/jyI8riQSZz1W1tpGMPMFt3Xc8mX98LYNbg8tC/Ezp+8w2xYDPzXrf8k48zyvRVetBp81f4LFVzxm0cdE/c9PdVoLwYhUxrgxcFjRnhKAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GI7a4rEJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD14FC43142;
+	Wed, 14 Feb 2024 21:37:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707946647;
+	bh=TsPOCXsLDMYvW8y1m6lrloJ2qWdhkM2QRD0tOx+Oj5s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GI7a4rEJz27vG5jhdk9ife44YZUKF+HF6XmYHsfRxhkOg/dSqgCLc/gDhgyVTx8er
+	 KBmSQv6h5xkSh53IaFu53JIZt9Kqrt/0r3gty9Vm/u+LcHrFWDTlSP4Pg3XzrJIFOG
+	 7jgwDwg6LXLyHAxzqwlZ2vzfhTR2fzXQUJk/w6hCLQfVxrv3ZEVQNge3YmiA9lTnYC
+	 ELYph0Euvs8SO2maNzGbgGSrwhxLWd5XHdbapnVMjdeKOgRNpIu6HKWzi99An6FsgD
+	 iVuAO2q1QRmYgKLAz3XIJ/G2aLWSa0YjwZEXT95JvD5c8WtYJ9g+JqCoFX0LmQ9eR+
+	 NCoLiD1o3YYNQ==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5114b2b3b73so232483e87.0;
+        Wed, 14 Feb 2024 13:37:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUzkZn9aZ8xX4fAQYwpZ4dRIhF/a9lgCqlTpwu17UGTHXnOhh6c+9jYNnKbuppDwejr1529/Snd85BJYSSPL1sZqh5nHmFfr60PXPKrzGg9jxI5PepWsq0EW4rTQ/W+i2pcKTfd00ol5SSP4KNHDtBaWFJY/d0krbxld3WD1AvVIhJvgZOxXYp4
+X-Gm-Message-State: AOJu0YypDnYrXCZ5F/s8h0lKHYsXJxhPyQn94WM6X8tfVzvxchQITmlP
+	oEtnsUTkbeDixcJrClahGjmbpKFZxxHfMIPe0Pq0lSktlmdFAshDxCu5s+Jxcx0ePEuTQ+p5zOQ
+	5vGoca0a90bmNZTmEHIspeeIGT5A=
+X-Google-Smtp-Source: AGHT+IGaABfu32aIgi1zbQgkMqIdb4dPd13u5g3Nueo8bVIDR4Cw4/c9BLtkrRJueICXYtotHNpf4oplutFFocoODpY=
+X-Received: by 2002:a05:6512:b82:b0:511:a477:64aa with SMTP id
+ b2-20020a0565120b8200b00511a47764aamr25874lfv.51.1707946646162; Wed, 14 Feb
+ 2024 13:37:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-3-irogers@google.com>
- <Zcz3iSt5k3_74O4J@x1> <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
- <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 14 Feb 2024 13:36:46 -0800
-Message-ID: <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20240207171020.41036-1-yoann.congal@smile.fr> <20240207171020.41036-2-yoann.congal@smile.fr>
+ <CAK7LNAQb=n1dWdEAJy_aJWnkW2M3bR768WKpxnUv=CtBEi28Xw@mail.gmail.com> <d845be0d-d0e4-4494-9572-753102f3fa24@smile.fr>
+In-Reply-To: <d845be0d-d0e4-4494-9572-753102f3fa24@smile.fr>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 15 Feb 2024 06:36:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARJERFRF=EM3RKL5jMgLbq0H1Op7FSRLJaVjrcR_nv0NA@mail.gmail.com>
+Message-ID: <CAK7LNARJERFRF=EM3RKL5jMgLbq0H1Op7FSRLJaVjrcR_nv0NA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] printk: Fix LOG_CPU_MAX_BUF_SHIFT when BASE_SMALL
+ is enabled
+To: Yoann Congal <yoann.congal@smile.fr>
+Cc: linux-fsdevel@vger.kernel.org, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, x86@kernel.org, 
+	=?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Borislav Petkov <bp@alien8.de>, Darren Hart <dvhart@infradead.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Jiri Slaby <jirislaby@kernel.org>, 
+	John Ogness <john.ogness@linutronix.de>, Josh Triplett <josh@joshtriplett.org>, 
+	Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Petr Mladek <pmladek@suse.com>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Vegard Nossum <vegard.nossum@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 1:15=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
+On Tue, Feb 13, 2024 at 4:01=E2=80=AFAM Yoann Congal <yoann.congal@smile.fr=
+> wrote:
 >
-> On Wed, Feb 14, 2024 at 10:27=E2=80=AFAM Ian Rogers <irogers@google.com> =
-wrote:
+>
+>
+> Le 11/02/2024 =C3=A0 00:41, Masahiro Yamada a =C3=A9crit :
+> > On Thu, Feb 8, 2024 at 2:10=E2=80=AFAM Yoann Congal <yoann.congal@smile=
+fr> wrote:
+> >>
+> >> LOG_CPU_MAX_BUF_SHIFT default value depends on BASE_SMALL:
+> >>   config LOG_CPU_MAX_BUF_SHIFT
+> >>         default 12 if !BASE_SMALL
+> >>         default 0 if BASE_SMALL
+> >> But, BASE_SMALL is a config of type int and "!BASE_SMALL" is always
+> >> evaluated to true whatever is the value of BASE_SMALL.
+> >>
+> >> This patch fixes this by using the correct conditional operator for in=
+t
+> >> type : BASE_SMALL !=3D 0.
+> >>
+> >> Note: This changes CONFIG_LOG_CPU_MAX_BUF_SHIFT=3D12 to
+> >> CONFIG_LOG_CPU_MAX_BUF_SHIFT=3D0 for BASE_SMALL defconfigs, but that w=
+ill
+> >> not be a big impact due to this code in kernel/printk/printk.c:
+> >>   /* by default this will only continue through for large > 64 CPUs */
+> >>   if (cpu_extra <=3D __LOG_BUF_LEN / 2)
+> >>           return;
+> >> Systems using CONFIG_BASE_SMALL and having 64+ CPUs should be quite
+> >> rare.
+> >>
+> >> John Ogness <john.ogness@linutronix.de> (printk reviewer) wrote:
+> >>> For printk this will mean that BASE_SMALL systems were probably
+> >>> previously allocating/using the dynamic ringbuffer and now they will
+> >>> just continue to use the static ringbuffer. Which is fine and saves
+> >>> memory (as it should).
+> >>
+> >> Petr Mladek <pmladek@suse.com> (printk maintainer) wrote:
+> >>> More precisely, it allocated the buffer dynamically when the sum
+> >>> of per-CPU-extra space exceeded half of the default static ring
+> >>> buffer. This happened for systems with more than 64 CPUs with
+> >>> the default config values.
+> >>
+> >> Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+> >> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >> Closes: https://lore.kernel.org/all/CAMuHMdWm6u1wX7efZQf=3D2XUAHascps7=
+6YQac6rdnQGhc8nop_Q@mail.gmail.com/
+> >> Reported-by: Vegard Nossum <vegard.nossum@oracle.com>
+> >> Closes: https://lore.kernel.org/all/f6856be8-54b7-0fa0-1d17-39632bf29a=
+da@oracle.com/
+> >> Fixes: 4e244c10eab3 ("kconfig: remove unneeded symbol_empty variable")
+> >>
 > >
-> > On Wed, Feb 14, 2024 at 9:25=E2=80=AFAM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
-> > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> > > > threads") made the iteration of thread tids unordered. The perf tra=
-ce
-> > > > --summary output sorts and prints each hash bucket, rather than all
-> > > > threads globally. Change this behavior by turn all threads into a
-> > > > list, sort the list by number of trace events then by tids, finally
-> > > > print the list. This also allows the rbtree in threads to be not
-> > > > accessed outside of machine.
-> > >
-> > > Can you please provide a refresh of the output that is changed by you=
-r patch?
 > >
-> > Hmm.. looks like perf trace record has broken and doesn't produce
-> > output in newer perfs. It works on 6.5 and so a bisect is necessary.
+> >
+> > All the Reviewed-by tags are dropped every time, annoyingly.
 >
-> Bisect result:
-> ```
-> 9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
-> commit 9925495d96efc14d885ba66c5696f664fe0e663c
-> Author: Ian Rogers <irogers@google.com>
-> Date:   Thu Sep 14 14:19:45 2023 -0700
+> Hi!
 >
->    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
-> ...
-> https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
-> ```
->
-> Now to do the bisect with BUILD_BPF_SKEL=3D1 on each make.
+> Was I supposed to gather these tags from patch version N to patch version=
+ N+1?
+> In that case, I'm sorry, I did not know that :-/
+> Patch 1/3 is exactly the same but patch 2/3 is equivalent but different. =
+Is there a rule written somewhere about when carrying the tags across revis=
+ion and when not? (I could not find it)
 
-This looks better (how could I be at fault :-) ):
-```
-1836480429d173c01664a633b61e525b13d41a2a is the first bad commit
-commit 1836480429d173c01664a633b61e525b13d41a2a
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Wed Aug 16 13:53:26 2023 -0300
 
-   perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter
-using &=3D sizeof(saddr)
-..
-   Cc: Adrian Hunter <adrian.hunter@intel.com>
-   Cc: Ian Rogers <irogers@google.com>
-   Cc: Jiri Olsa <jolsa@kernel.org>
-   Cc: Namhyung Kim <namhyung@kernel.org>
-   Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-```
-No LKML link.
+I do not know any written rules either.
 
-Thanks,
-Ian
+
+In my experience, people carry tags
+when changes since the previous version are small.
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
