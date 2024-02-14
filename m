@@ -1,153 +1,223 @@
-Return-Path: <linux-kernel+bounces-65094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053668547AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5058547B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93F391F24471
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:00:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79651F252DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE76A18E20;
-	Wed, 14 Feb 2024 10:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F36F18E2E;
+	Wed, 14 Feb 2024 11:03:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Tk/FiVYe"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="K/XwVZ/f"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69CF18E0F;
-	Wed, 14 Feb 2024 10:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFAC1643A;
+	Wed, 14 Feb 2024 11:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707908396; cv=none; b=nw5KSgWkbJixXU6j3kw/p3OjQHje7h6SvnMut7zonWqDjj+IPkiQSGJqzBq0FacSCOa6sqlXVx5eSN1tcSquk/UmVUjJaDK15gFZIALIett34oECw3HmsBGFgY4UxQ9mpK89zXmDlOD9ByB3Nqd/ZGu8XwU6NYQ35QdhjphXUpM=
+	t=1707908601; cv=none; b=kbs/3jlbdOUCKbRu/EcdvOGC+ISm1hzv0AH8JtMSUa3j/YCxN0/Y2yPv36dca343fpwTfByy337L1DQbUG5T8G8xM+8HYAkLDHcNyu8hzJxrjAuIwVc8t7b5U2W6wnb2qsGu7hbbOXD+uBuB3Q97x7hvvuvwymIX6HXFpscELow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707908396; c=relaxed/simple;
-	bh=2YSzh5b837LaM0eg2XU8A6dNFtANZqD5laac0BCInEw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=n0kFZzXRPd92PZd7AA8mT9bZjWqfiDrrFH+j4McczcYN88ii7f48F4VAKeW63GQzkNUYVHr38wBzowJYYK9EtY1x684r7Qd+ER9ytObufEJaAGjNp0wYhg3slDE3Wvxw7L9zs43cclW0R18ZhPo9LCggSUON5lNmNf9z6zgfoaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Tk/FiVYe; arc=none smtp.client-ip=217.70.183.194
+	s=arc-20240116; t=1707908601; c=relaxed/simple;
+	bh=PtSNdfznwWbqhoQQFKH7/wNCSFcUYs/wTcLDeBDVllI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tZMgZf/R9Ibw6o3JXeRcpMTHmlp/XadqIYYUrftaVHh3SS3n3KCo47lRcbxCboXQYwDud+fF9ONqWQfrU3TYIL4JZLai5rfRd5EylLxldda+bhFXT4jaGVucowQaKBNFiXF2/xhwVmX/GcmkkTOieYZSVpfyr/9tgFeIG10Zgto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=K/XwVZ/f; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F4DB40013;
-	Wed, 14 Feb 2024 10:59:51 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B86DFF80B;
+	Wed, 14 Feb 2024 11:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707908391;
+	t=1707908597;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o6bzV5rKBOoAiPA6G28Xjo7+PQUFbe8kxnJ2q3EXQoA=;
-	b=Tk/FiVYeIWjCHKiB7TWKNptAO9Bb6Yuxb2bad/0TiFFlJ2Nkrzh1KlwECZD7356Uh0MqhE
-	+yF87TyMxbgdx1Rvy0ndo0jMIIAgxkgbabpt1qFCbaFRsDvkUshvSCiAwjnH1gXwjJiuuA
-	3xUcjkSnq6YyFCvDN9hJeJOl/NbpTJMqxw8ovs+3QtQL7P2Csij2cnoiVu3ZnV16fJmXU5
-	or3aZxDUuWcfV68XFAujOU0oCfiUq6xHcmHI+Di+ZKk5vIOPv1GVaicTc4IDfY1AWrOq+N
-	JuoWgogY+QflxwG1OaHkXGMh8iVFsy55SvW9fsRIR0QokkvFqcuZXZOvIguTkw==
+	bh=JbA2a2kIur1xwjNXnDhSYrVB1/GrR0EMUnG/VimlxgE=;
+	b=K/XwVZ/fB4w4yax/6+s7vgiB6S4qHn0RubxBy/oW9XrM2CGyyhllgvgGkRshU3bL+UjvrU
+	Hd1BcPEOPEchireGDLgD7pCdrPN5VH8yopOav4qSn3pT00s+yIaoFkjJN+YZdSKcbJWayO
+	Z/JyRVg8klPka2AIsb/mrit5xkBihPAT9tl3v7cq7Z0+UvtqVK8bwNWDSPu+nmnrbRyWLu
+	2kxaSg1+aMIis6xWCNKufUi/C1T2IBMgsDFayKGwrxd2q69lwfJymy/+B/Wq0jDgfIOXnV
+	H7K1C+GV2A7zExwsO+PhlYMSyBsHYAEwR7zcxA/SndS/4USUzzKC0y9x2LMqKQ==
+Message-ID: <912f4e56-bd30-48c1-bf24-dd728188b1c5@bootlin.com>
+Date: Wed, 14 Feb 2024 12:03:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42:
+ sparse: sparse: incorrect type in assignment (different base types)
+Content-Language: en-US
+To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@kernel.org>,
+ kernel test robot <lkp@intel.com>
+Cc: Ajay Singh <ajay.kathat@microchip.com>, oe-kbuild-all@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+References: <202308290615.lUTIgqUl-lkp@intel.com> <877cpev0pn.fsf@kernel.org>
+ <87a5uatfl1.fsf@kernel.org>
+ <09eeb7d4-c922-45ee-a1ac-59942153dbce@bootlin.com>
+ <e9501c13be127b8b9d0c769a27d8d38636875f0f.camel@sipsolutions.net>
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <e9501c13be127b8b9d0c769a27d8d38636875f0f.camel@sipsolutions.net>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 14 Feb 2024 11:59:49 +0100
-Message-Id: <CZ4QZUSQXV4Q.3QRIRM4V0SYF8@bootlin.com>
-Subject: Re: [PATCH] spi: spi-mem: add statistics support to ->exec_op()
- calls
-Cc: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Dhruva
- Gole" <d-gole@ti.com>, "Gregory CLEMENT" <gregory.clement@bootlin.com>,
- "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Mark Brown"
- <broonie@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com>
- <b0844e5a-ee4b-4608-99a1-877660e01d57@linaro.org>
- <CZ41HDHS7WX6.6MJL1O2PBVW1@bootlin.com>
- <7b3c08b0-80ed-4409-96d4-d55b938df6f4@linaro.org>
- <CZ4O9QACM45B.2HA0L2O4QL5PL@bootlin.com>
- <c5230e6b-b988-4fdb-a8d6-543c3e9cda23@linaro.org>
-In-Reply-To: <c5230e6b-b988-4fdb-a8d6-543c3e9cda23@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-On Wed Feb 14, 2024 at 10:29 AM CET, Tudor Ambarus wrote:
-> On 2/14/24 08:51, Th=C3=A9o Lebrun wrote:
-> > On Wed Feb 14, 2024 at 9:00 AM CET, Tudor Ambarus wrote:
-> >> On 2/13/24 15:00, Th=C3=A9o Lebrun wrote:
-> >>> On Tue Feb 13, 2024 at 1:39 PM CET, Tudor Ambarus wrote:
-> >>>>>  /**
-> >>>>>   * spi_mem_exec_op() - Execute a memory operation
-> >>>>>   * @mem: the SPI memory
-> >>>>> @@ -339,8 +383,12 @@ int spi_mem_exec_op(struct spi_mem *mem, const=
- struct spi_mem_op *op)
-> >>>>>  		 * read path) and expect the core to use the regular SPI
-> >>>>>  		 * interface in other cases.
-> >>>>>  		 */
-> >>>>> -		if (!ret || ret !=3D -ENOTSUPP || ret !=3D -EOPNOTSUPP)
-> >>>>> +		if (!ret || ret !=3D -ENOTSUPP || ret !=3D -EOPNOTSUPP) {
-> >>>>> +			spi_mem_add_op_stats(ctlr->pcpu_statistics, op, ret);
-> >>>>> +			spi_mem_add_op_stats(mem->spi->pcpu_statistics, op, ret);
-> >>>>> +
-> >>>>
-> >>>> Would be good to be able to opt out the statistics if one wants it.
-> >>>>
-> >>>> SPI NORs can write with a single write op maximum page_size bytes, w=
-hich
-> >>>> is typically 256 bytes. And since there are SPI NORs that can run at=
- 400
-> >>>> MHz, I guess some performance penalty shouldn't be excluded.
-> >>>
-> >>> I did my testing on a 40 MHz octal SPI NOR with most reads being much
-> >>> bigger than 256 bytes, so I probably didn't have the fastest setup
-> >>> indeed.
-> >>
-> >> yeah, reads are bigger, the entire flash can be read with a single rea=
-d op.
-> >>
-> >>>
-> >>> What shape would that take? A spi-mem DT prop? New field in the SPI
-> >>> statistics sysfs directory?
-> >>>
-> >>
-> >> I think I'd go with a sysfs entry, it provides flexibility. But I gues=
-s
-> >> we can worry about this if we have some numbers, and I don't have, so
-> >> you're fine even without the opt-out option.
-> >=20
-> > Some ftrace numbers:
-> > - 48002 calls to spi_mem_add_op_stats();
-> > - min 1.053000=C2=B5s;
-> > - avg 1.175652=C2=B5s;
-> > - max 16.272000=C2=B5s.
-> >=20
-> > Platform is Mobileye EyeQ5. Cores are Imagine Technologies I6500-F. I
-> > don't know the precision of our timer but we might be getting close to
-> > what is measurable.
-> >=20
-> Thanks.
->
-> I took a random SPI NOR flash [1], its page program typical time is 64=C2=
-=B5s
-> according to its SFDP data. We'll have to add here the delay the
-> software handling takes.
->
-> If you want to play a bit more, you can write the entire flash then
-> compare the ftrace numbers of spi_mem_add_op_stats() with spi_nor_write()=
-.
+On 2/14/24 10:29, Johannes Berg wrote:
+> Hi,
+> 
+>>> For reference here's the old discussion:
+>>>
+>>> https://patchwork.kernel.org/project/linux-wireless/patch/20220720160302.231516-1-ajay.kathat@microchip.com/
+>>>
+>>> Any volunteers to help fix this? I would prefers fixes for issues like
+>>> this compared to questionable random cleanups we always get.
+>>
+>> I'm bumping this old thread because it looks like the sparse warning is still
+>> present in WILC driver, and I would gladly help getting rid of it, but since
+>> there's already been a fair amount of discussions around it, I am not sure what
+>> is expected/what should be done. Here is my understanding so far:
+>> - Ajay has proposed a patch ([1]) which indeed fixes the warning but involves
+>> many casts
+>> - Johannes and Jouni then gave details about the original issue leading to those
+>> casts ([2]): wpa_supplicant somehow forces the AKM suites values to be be32 at
+>> some point, while it should be treated in host endianness
+>> - as pointed by Ajay, the corresponding fix has been made since then by Jouni in
+>> wpa_supplicant ([3]). The fix make sure to handle key_mgmt_suite in host
+>> endianness AND to keep compatibility with current drivers having the be32 fix. -
+> 
+> Am I confused, or is the change [3] in the other direction?
+> 
+> From what I see, the code there (now changed again, btw) is about
+> reading the value *from the driver*.
 
-It is unclear to me why you are focusing on writes? Won't reads be much
-faster in the common case, and therefore where stats overhead would
-show the most? For cadence-qspi, only issuing command reads (reads below
-8 bytes) would be a sort of pathological case.
+Ah, you are right, so [3] is rather about supporting drivers sending values with
+host endianness, while interface historically expects big endian :/
+> 
+> The driver change is about getting the value *from the supplicant*.
+> 
+> And the _outgoing_ code (sending it to the driver) from the supplicant
+> has - as far as I can tell - been putting it into the attribute in host
+> byte order forever? See commit cfaab58007b4 ("nl80211: Connect API
+> support").
+> 
+> 
+> Aha! So, I'm not _completely_ confused, 
+
+So I am the one confused :) Thanks for the clarification. I did not dig enough,
+and since the cast is done right at connect message reception, I assumed wrongly
+that the issue was on the supplicant->driver path.
+
+> however, the only use of this value in this driver is sending it back to the supplicant!> Which seems entirely wrong, since the supplicant assumes basically anything
+will be
+> handled?
+
+Not sure to fully understand why its wrong (supplicant seems to expect AKM
+suites to be provided) , but I may be lacking more general understanding about
+the external auth process.
+Or do you mean that AKM suites should be enforced to RSN_AUTH_KEY_MGMT_SAE only
+in this driver->supplicant call (and so, not forward any possible value ?)
+
+> (But - the firmware also has a parameter key_mgmt_suites [in struct
+> wilc_external_auth_param] which is never even set in
+> wilc_set_external_auth_param??)
+> 
+> 
+> Also note that the supplicant will *only* read RSN_AUTH_KEY_MGMT_SAE in
+> big endian, so you've already lost here pretty much?
+
+So we have to keep some big endian conversion on the driver/nl80211 ->
+supplicant path, IIUC
+
+
+>>  - It could have allowed to simply get rid of the all casts on AKM suites in
+>> wilc driver ([4]), but then new kernel/drivers would break with existing
+>> userspace, so it is not an option
+> 
+> I am wondering if it works at all ...
+> 
+>> Now, I see multiple options to fix the sparse warning:
+>> - apply the same fix as for wpa_supplicant ([3]) in wilc driver (so basically,
+>> become compatible with both endianness)
+> 
+> But this cannot be done! On input to the driver, the value is in host
+> byte order always. The question is on output - and there you cannot
+> detect it.
+
+Yeah, this suggestion is wrong because of the misunderstanding clarified above.
+
+>> - apply the same fix as for wpa_supplicant ([3]), not in wilc but in nl80211
+>> (may need to update not only wilc but any driver having trailing be32 cast on
+>> AKM suites)
+
+So to fix my initial suggestion, it is not "doing the same fix" but rather "move
+the be conversion from the driver to nl80211 layer". Which matches in fact what
+you are suggesting below.
+
+> That might even work? Well, not the same fix, since again input vs.
+> output, but something like this:
+> 
+> --- a/net/wireless/nl80211.c
+> +++ b/net/wireless/nl80211.c
+> @@ -20136,9 +20136,27 @@ int cfg80211_external_auth_request(struct net_device *dev,
+>  	if (!hdr)
+>  		goto nla_put_failure;
+>  
+> +	/*
+> +	 * Some drivers and due to that userspace (wpa_supplicant) were
+> +	 * in the past interpreting this value as a big-endian value,
+> +	 * at a time where only WLAN_AKM_SUITE_SAE was used. This is now
+> +	 * fixed, but for the benefit of older wpa_supplicant versions,
+> +	 * send this particular value in big-endian. Note that newer
+> +	 * wpa_supplicant will also detect this particular value in big
+> +	 * endian still, so it all continues to work.
+> +	 */
+> +	if (params->key_mgmt_suite == WLAN_AKM_SUITE_SAE) {
+> +		if (nla_put_be32(msg, NL80211_ATTR_AKM_SUITES,
+> +				 cpu_to_be32(WLAN_AKM_SUITE_SAE))
+> +			goto nla_put_failure;
+> +	} else {
+> +		if (nla_put_u32(msg, NL80211_ATTR_AKM_SUITES,
+> +				params->key_mgmt_suite)))
+> +			goto nla_put_failure;
+> +	}
+> +
+>  	if (nla_put_u32(msg, NL80211_ATTR_WIPHY, rdev->wiphy_idx) ||
+>  	    nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex) ||
+> -	    nla_put_u32(msg, NL80211_ATTR_AKM_SUITES, params->key_mgmt_suite) ||
+>  	    nla_put_u32(msg, NL80211_ATTR_EXTERNAL_AUTH_ACTION,
+>  			params->action) ||
+>  	    nla_put(msg, NL80211_ATTR_BSSID, ETH_ALEN, params->bssid)
+> ||
+
+If this kind of fix is ok in nl80211, I can do some tests with it, see how it
+would affect other drivers ( I think there's only Quantenna driver which would
+be affected)
 
 Thanks,
 
---
-Th=C3=A9o Lebrun, Bootlin
+Alexis
+
+>> - take the initial quick but not-so-nice double cast fix and call it a day
+> 
+> but that doesn't actually work for anything other than
+> WLAN_AKM_SUITE_SAE...
+
+
+> 
+> johannes
+> 
+
+-- 
+Alexis Lothoré, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
+
 
