@@ -1,105 +1,118 @@
-Return-Path: <linux-kernel+bounces-65812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D73AA855226
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:32:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C06855228
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1630D1C2A93B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3CE291C8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C6412FB1D;
-	Wed, 14 Feb 2024 18:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A17133288;
+	Wed, 14 Feb 2024 18:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="MjznPnCi"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3AHXwqS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C2512F5A6;
-	Wed, 14 Feb 2024 18:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C10B133281;
+	Wed, 14 Feb 2024 18:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707935453; cv=none; b=sFCUsgTVMgJf6sqg6hpwNcjV//QbLjdJodaxWwnoE0FRNNki9VgSYCKxlG85cEv6pbyHEBEtn2hA9qnA8YvZSDCjEGKM7cCKIGJLB5HuI4gkCjo267g8dS4A0hxv2rdWTptcUhbhIcW8ygYretYrv+FY4xJyv1lL7MtkHOph2hY=
+	t=1707935468; cv=none; b=uTVt7dxiUGoxJWfBwKEqAynDQniObMb5gJPjh3kUalcJ66a3/q1odSdN9w/jbEjR4fAw9WKztbwOYNlAXYq+u03PCNRhyc4vR2QtRNcRi/1zQtfCUD6IvfmUMhONAaCfMJysH6MFT0IEJw2M6OlKgemG9xLOgxTtwS2n782LlBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707935453; c=relaxed/simple;
-	bh=5uP8HuasPE9jjTg8TVWNXGQF/Kh7MKjGojWz/AXkG2Y=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=BmgAfO8OVm5OZC+xU83+hEb+e1EaDe2NSKA04Fsi3cvhuiXpU9NuhmAFULEL0qD2gf3gy4OXGn9U/JQjJq+fG6+kphzF93zVGEclc2huOKkmxbtUtMPuFde7IbsqG+43qTKtDKeMuULcWRTDJetzTHLkQDeplFqsWiC54K3J7Fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=MjznPnCi; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1707935468; c=relaxed/simple;
+	bh=DqQ+n4sMmsCgeic4jR8u6aoCgKS/praQFMsaqy5xqsc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TSYvQjRuOMumzAlO8mEskTCCcIHSLhBvrTLlcge/3wIvBc+RsOtNupJlD4rmDJ0k1He3fwlLRR7IG+tXYpKWeATpeaZLOIKQSwUIxaZhWnM/vIt3OjSLyX8Yc4v51zXBP3Qb/t5PTNPhoOnRdmofO++6SMynNJzKotpnJbhDQ04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3AHXwqS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE62C43390;
+	Wed, 14 Feb 2024 18:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707935467;
+	bh=DqQ+n4sMmsCgeic4jR8u6aoCgKS/praQFMsaqy5xqsc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O3AHXwqSkO5POA0F9lBb4ChwP/ZSNILgVv96DwvQU+n4Vdq084zSQI/LKhzzz/3HE
+	 qj7UkFxJxqMPgXNxwiY3O+IL1e7TxuXkVEtWjS4oeo3E3gL2yiqzfok+5jVUr3H+nT
+	 V0QQPtPfDLjDdP0W0oyAPz45O2kftqMz6OQSiX4Aw3vxspviPc7OOo6GwN7DclWYqh
+	 audeqpj4t38pplAZIyGSaGoWTgthXRngGCWOBsaGEBzT0SdS10fwSfaio0Upkinn7n
+	 TsWx267Grb4nlbKbjw0jLxhGP+ofuhinSSmbxxf5gk9Sl3enCdypaoryVWRw08oiuC
+	 p4LjRvMwCfr0g==
+Date: Wed, 14 Feb 2024 18:31:01 +0000
+From: Conor Dooley <conor@kernel.org>
+To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc: Manojkiran Eda <manojkiran.eda@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"jk@codeconstruct.com.au" <jk@codeconstruct.com.au>,
+	Patrick Rudolph <patrick.rudolph@9elements.com>,
+	Ryan Chen <ryan_chen@aspeedtech.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+	"zev@bewilderbeest.net" <zev@bewilderbeest.net>
+Subject: Re: =?utf-8?B?5Zue6KaG?= =?utf-8?Q?=3A?= [PATCH] Add eSPI device
+ driver (flash channel)
+Message-ID: <20240214-yoyo-platinum-dcd0e7e16a22@spud>
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+ <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1707935446;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yBm/TVAwluVa6W1ppxE/9VD5uiTG5c6NeW89/JYMXY0=;
-	b=MjznPnCifzzDeID5hxhRe5HjMuAMYMBfod6hcJaXXeGnbCBQyqGdy0V0yM5MkMuUPJDXae
-	3yUbZBZOvwjzNhN/gF1r+MvKtUjvueXDXbHJ5jHp5wwOtmmDpfYBwvQ8Gs/0bGPMmWkrxv
-	byOOaaLyeYv/t6OzGbL6LfQ5CA+k3/va0d6nWFzbyJabyL2UExOVXZUX87a4DXlHioSbgd
-	TInaD9VFAlYhn45qzK8+OzoDskmLudnUYBGxgx2wQcqUitJrd1ec4kW3WojXdOBfOT+wDM
-	W5GkNZyizat53+yxu2OMvm1L3pdUY2U3RLZwjPk4g6Fd2aZtdPV3GASLaHwhsg==
-Date: Wed, 14 Feb 2024 19:30:44 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Tim Lunn <tim@feathertop.org>, linux-rockchip@lists.infradead.org, Andy
- Yan <andyshrk@163.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Chris Morgan
- <macromorgan@hotmail.com>, Conor Dooley <conor+dt@kernel.org>, Cristian
- Ciocaltea <cristian.ciocaltea@collabora.com>, David Heidelberg
- <david@ixit.cz>, Heiko Stuebner <heiko@sntech.de>, Jagan Teki
- <jagan@edgeble.ai>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Ondrej Jirman <megi@xff.cz>, Rob Herring <robh+dt@kernel.org>, Tianling Shen
- <cnsztl@gmail.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] Fix vendor strings on Rockchip boards
-In-Reply-To: <20240214-moocher-womanless-21201b67b76d@spud>
-References: <20240214040731.3069111-1-tim@feathertop.org>
- <c03220db663279c9e83bab81f3d829e7@manjaro.org>
- <e952d127-b12d-4b5a-838b-807a876db707@feathertop.org>
- <20240214-moocher-womanless-21201b67b76d@spud>
-Message-ID: <d9a17e535f8e414f91fe06b2b71849f9@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="DN7xbo+G2YJV9a8X"
+Content-Disposition: inline
+In-Reply-To: <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
 
-Hello Conor,
 
-On 2024-02-14 19:12, Conor Dooley wrote:
-> On Wed, Feb 14, 2024 at 03:27:08PM +1100, Tim Lunn wrote:
->> On 2/14/24 15:14, Dragan Simic wrote:
->> > On 2024-02-14 05:07, Tim Lunn wrote:
->> > > A couple of rockchip boards incorrectly list their vendor as Rockchip
->> > > when they are in fact not manufactured by Rockchip.
->> > >
->> > > Fix the vendor strings to correctly list the manufacturer
->> >
->> > Just checking, have you verified that the old, incorrect "compatible"
->> > strings from the board dts files aren't used anywhere in the kernel code,
->> > such as in some drivers?
->> >
->> Yes I checked that, there are no remaining references to the 
->> old/incorrect
->> compatible strings in kernel code
-> 
-> What about other code? Like a BSD or a bootloader? If nothing is using
-> them
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+--DN7xbo+G2YJV9a8X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I just quickly checked U-Boot and it's fine.
+On Wed, Feb 14, 2024 at 11:34:31AM +0000, ChiaWei Wang wrote:
+> We appreciate that you are willing to help on the open source contributio=
+n.=20
+> However, please co-work with Aspeed before submitting drivers of Aspeed H=
+W.
+> Otherwise, a misleading driver on the community are going to bring tons o=
+f customer issues to Aspeed.
 
-> Fixes tags I think wouldn't go amiss, but I'm not expecting a resend
-> with them.
+It may not apply in this particular case as Aspeed did write the
+original driver and it is polite to work with previous authors
+when respinning a patchset, but in general there is no need to work
+with a hardware vendor before writing drivers for their hardware.
+
+Blocking a driver because that company might receive more support
+requests is not the kernel's problem.
+
+Cheers,
+Conor.
+
+
+--DN7xbo+G2YJV9a8X
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc0G5QAKCRB4tDGHoIJi
+0jh4AQDULTHpmdpjBuvc/RMvcJk7Fsv+M5FEZdXcxYYbDBlSKAEA7XX/zOdWdqxP
+wKZsM8bYsV8j1gJqXlEScsdOOOgxJQU=
+=GWXb
+-----END PGP SIGNATURE-----
+
+--DN7xbo+G2YJV9a8X--
 
