@@ -1,112 +1,130 @@
-Return-Path: <linux-kernel+bounces-65501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB73854DE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F73A854DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 774EE288865
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:17:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD4E1C21DFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B5465FF00;
-	Wed, 14 Feb 2024 16:17:03 +0000 (UTC)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F25160268;
+	Wed, 14 Feb 2024 16:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="If7KvAk3"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA5D5FDD4;
-	Wed, 14 Feb 2024 16:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3965FF00;
+	Wed, 14 Feb 2024 16:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927423; cv=none; b=e9HoqIOux6FDXi1G+qAFvdls5VVFQDxGkQOoL25nO32k6W4myrPUZ7mdnkX05WCeFF8kCVtftH/CSHw1jmEkWBOY3C3WUmLfeB8u0gm/b2jR695gwpSd1q5UCdmtUJl10Q7erfB3IORhUPdjTeS3yPrPJHSvvOX6saxonCDMeXQ=
+	t=1707927455; cv=none; b=ew5yX8J5xqwOuHZEA74X9PBjwc0G3Ss1S+IoHOGcVm5kyrVyD7J7Ca6SN+i38iGJB1qY+nSQwdbiQ3raSuo2AHq0s6MgYdwov+l+N0Db6uNeOO8C77FPNKOvv2pETWGHes897w9muqmseKEqXX3TF/xUk3DUK/RrFKRL2K9t9Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927423; c=relaxed/simple;
-	bh=+KwuCyZcD1ytf8ee3jyMUEjAWvDs1bXqvMEmBHJWRI8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EnGRfQv3ifwctkJk/jLuC5rVvH6YDsIHxmaqfbHFPtyP/pwYKGRrYxq1oH5mvJHN+szJcchnxJBbsPV3G3BuHFNat8NQFC0iO6gJl7XvhiAJ1EK5HdLqszUbE/PHOTa73OivRSuF0f44trpQKGb53miaog1uFLevWZgfCcnrElA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db3a09e96daso4754168276.3;
-        Wed, 14 Feb 2024 08:17:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707927419; x=1708532219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eL9tA3rhy6+CNRIITZCNAmgKdS1I6ZY4AAyMY1xF/sk=;
-        b=pPWUc9ooy6a4E0X2+nnn/CFWp2fTk4v1GdqFn6QKemRX8y8BwHpegbvEfr4LWQLiq7
-         PLUZqJEYEqh0n/ZNbTkhs8K7xskpLix86rzYpj3ICEmOXWuoRT5nHySPNOMEhM5KnGIv
-         phhMeizRv2mQM8WRmF0gi0yM2zo/XKR97o6oCg71trEA33G81JFe3mH/63Y1Tu+POpPX
-         AI23P9UaowooqnRRtw2wShZ5W8u37NhzM+AEAllYZx7Cyk5TeQ14sb92ms6fOunR/Ls4
-         /aisGih/SGDY0ZDe4VKK42Va7pFOYDL+4kfDuy4hH/uzAIHSJv7CMxCzkVw+Na4fGxJH
-         Cysw==
-X-Forwarded-Encrypted: i=1; AJvYcCVRmvnB3E/MpvpkrpFlQE2tjDRwvnb4M6Dcx0CAqjVtmrb/BGt4WObYPjtawbrxIrgRt1j0NKaw6oJDqCZVZ2nfVsio2QhJ/xb466B6DcNhsP63ctwgQS/Ohy6YLiOKvxvk1bCQEbMZx1SjFcgsnww0O+Sl9/evtYuhqgElc/s9Y/M=
-X-Gm-Message-State: AOJu0Yw5m3xRXcyooikco2cZyoV3cjo0X4xtOVQwG4MZVD9uAQuZpOrZ
-	GfObeihFYqPzYvvOJnHitDaeFtLJ7wg1/fUPPYEpk/iz1Yu2KEUV0vZ/X2HWfWI=
-X-Google-Smtp-Source: AGHT+IG35l5QoZ9kxEYz2EfT3Mq6Kk0qe0sG+A/GAqVyEiYCsnWERBk0HHn/sbRwYKS60GzaWO2RTg==
-X-Received: by 2002:a0d:e343:0:b0:604:eb7f:30f4 with SMTP id m64-20020a0de343000000b00604eb7f30f4mr2811767ywe.31.1707927419179;
-        Wed, 14 Feb 2024 08:16:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWxFZYsqj7BcYSmrO565+ZwZ+f1/iRf3vk8hIJE7G7xsrniSnZZPDEof0g9oewzSHZwvBG1GyRrcyMGAHm9xr2hpINKmuXfrDwp+J5WNV6O1vjOaoZKiCnT3dn51pdhoGUPpcJpQDwRJbjQ2G8EVObF7mmfnHF3BPpj4ac2KUvHOww=
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id t145-20020a818397000000b005ffcb4765c9sm522613ywf.28.2024.02.14.08.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:16:57 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso5562794276.0;
-        Wed, 14 Feb 2024 08:16:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVM4E1Ri204hUXbTALa+Wi7a+lWmIKqP33ih2ZpW9dTHPQouDtzSbsy/XIYf5c9uxqjcTVkdDQBcw9xhkhhxRhoGYuL6BELrOL3FcpjU6HBV3U5BmDpZXbhpnPj6GbRyieW6/+MpJxHkRZL3jqxLKX9mwr6vUg2l7sx2DoPXWpNvnI=
-X-Received: by 2002:a25:8682:0:b0:dc7:776b:5e4a with SMTP id
- z2-20020a258682000000b00dc7776b5e4amr2417997ybk.56.1707927417345; Wed, 14 Feb
- 2024 08:16:57 -0800 (PST)
+	s=arc-20240116; t=1707927455; c=relaxed/simple;
+	bh=BMkf3NLk/iLQr+WYsIcfjcR7/4kHgrAc/NsrN13AxP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fKlo8vDAfWeUikhWaH5kZlzTKliONVxkZcuvbn8Ce3rI7nttKlxKEdq/wmg118x/toqnYJSyfX9S1M30ScS1sTFdFzjtM38S5w7ddKjjbUD6229yoRszvFOu5nLNf7Lx616bmz97Th3MKAXpb7n0BnGUG5S8B1GJGAHld4lBeEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=If7KvAk3; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 11:17:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707927450;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WvW8w5yUCB+T24tws0BE+nRUAXqLznpxXzLB9RssHjE=;
+	b=If7KvAk3S44JHt8xTRFRLZGFB9HhXr9yTjM5WxyEi5xNjIqcYGBYlgszfmKzpB+BaRdtGZ
+	n3N+YeR7XUwHyIMey1lTARWNjfYN024v3AgKYdiCjuLtH6AdMtTaqstAHFyfDaYzOPE5KS
+	nEweGtuqjPMrA6xlO/8Dh+ORbNs02fU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, 
+	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, vbabka@suse.cz, 
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
+	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <udgv2gndh4leah734rfp7ydfy5dv65kbqutse6siaewizoooyw@pdd3tcji5yld>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240214062020.GA989328@cmpxchg.org>
+ <ZczSSZOWMlqfvDg8@tiehlicka>
+ <ifz44lao4dbvvpzt7zha3ho7xnddcdxgp4fkeacqleu5lo43bn@f3dbrmcuticz>
+ <ZczkFH1dxUmx6TM3@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213220221.2380-8-wsa+renesas@sang-engineering.com> <20240213220221.2380-14-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20240213220221.2380-14-wsa+renesas@sang-engineering.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 17:16:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV6oh4x4LQKu7-UTMU+g1WGnUehyN+vJcGug2EZFuyf7w@mail.gmail.com>
-Message-ID: <CAMuHMdV6oh4x4LQKu7-UTMU+g1WGnUehyN+vJcGug2EZFuyf7w@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] mfd: tmio: Move header to platform_data
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, Lee Jones <lee@kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZczkFH1dxUmx6TM3@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 13, 2024 at 11:04=E2=80=AFPM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> All the MFD components are gone from the header meanwhile. Only the MMC
-> relevant data is left which makes it a platform_data for the MMC
-> controller. Move the header to the now fitting directory.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Acked-by: Lee Jones <lee@kernel.org>
-> Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # For MMC
-> Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+On Wed, Feb 14, 2024 at 05:02:28PM +0100, Michal Hocko wrote:
+> On Wed 14-02-24 10:01:14, Kent Overstreet wrote:
+> > On Wed, Feb 14, 2024 at 03:46:33PM +0100, Michal Hocko wrote:
+> > > On Wed 14-02-24 01:20:20, Johannes Weiner wrote:
+> > > [...]
+> > > > I agree we should discuss how the annotations are implemented on a
+> > > > technical basis, but my take is that we need something like this.
+> > > 
+> > > I do not think there is any disagreement on usefulness of a better
+> > > memory allocation tracking. At least for me the primary problem is the
+> > > implementation. At LFSMM last year we have heard that existing tracing
+> > > infrastructure hasn't really been explored much. Cover letter doesn't
+> > > really talk much about those alternatives so it is really hard to
+> > > evaluate whether the proposed solution is indeed our best way to
+> > > approach this.
+> > 
+> > Michal, we covered this before.
+> 
+> It is a good practice to summarize previous discussions in the cover
+> letter. Especially when there are different approaches discussed over a
+> longer time period or when the topic is controversial.
+> 
+> I do not see anything like that here. Neither for the existing tracing
+> infrastructure, page owner nor performance concerns discussed before
+> etc. Look, I do not want to nit pick or insist on formalisms but having
+> those data points layed out would make any further discussion much more
+> smooth.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+You don't want to nitpick???
 
-Gr{oetje,eeting}s,
+Look, you've been consistently sidestepping the technical discussion; it
+seems all you want to talk about is process or "your nack".
 
-                        Geert
+If we're going to have a technical discussion, it's incumbent upon all
+of us to /keep the focus on the technical/; that is everyone's
+responsibility.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+I'm not going to write a 20 page cover letter and recap every dead end
+that was proposed. That would be a lot of useless crap for eveyone to
+wade through. I'm going to summarize the important stuff, and keep the
+focus on what we're doing and documenting it. If you want to take part
+in a discussion, it's your responsibility to be reading with
+comprehension and finding useful things to say.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+You gotta stop with this this derailing garbage.
 
