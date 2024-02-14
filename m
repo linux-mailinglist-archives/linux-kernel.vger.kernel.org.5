@@ -1,146 +1,145 @@
-Return-Path: <linux-kernel+bounces-64589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89318854099
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:03:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8243D85409E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBF35B2A331
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:03:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3702B1F24214
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC02A64A;
-	Wed, 14 Feb 2024 00:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8026C4A00;
+	Wed, 14 Feb 2024 00:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HohXR0uB"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iOL6LIxW"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328267F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C333D6C;
+	Wed, 14 Feb 2024 00:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869011; cv=none; b=TeNMBisFCWmTtJpZinosamy/uj7gpKk/v22wI9OFK73n33JOycYr8uq4QUvD8fLiQp33Z8hMaMDK87rN+KD8AmhJGguVcXr7URNo593kgpLM0oBXIcP2odkBVgAgOuNiTdoY2uVD56tAaomLwRCtSuDHOedkBWgcraPjv27TGII=
+	t=1707869017; cv=none; b=hUOMFzyE11+nNXxINZ6DxHIGJUDQf22AJTbNHkaF7e+W44TNgB+o2C2ho23ePjfeMgUQAob4rTlOQk9i4v/xj9n8MGFB69kcIb89EBArevJFAJ7yTirld7SO57RzRd8ZDRhr3nEqPps8k/VbSo1eU881kkIQxuiTRnm/NvIGlaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869011; c=relaxed/simple;
-	bh=LUHwCmgFvsLI2w7Qfq1pAeSWXQrKo7dao4Gqpb0bey4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ekz7jTwcErmhPK/X77YY4jg6SZB93YV7JlVcL0eHjibSS4D300tqBTRZJNynUI8Xjm4XqpIr2ZiYeB6Y5fChtXpX1DXZI/6qtkX05z0hNNsM+iHLMPpL9dVqggEmFRHguhzS0CYrSViTT4iGPLfsCGbN8I9hMiTMUUejJII7GvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HohXR0uB; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so223527366b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:03:29 -0800 (PST)
+	s=arc-20240116; t=1707869017; c=relaxed/simple;
+	bh=ud6hiWlOkW4Y0z3+Rjp7RnQZGuIdyQQt0TQhTwB6A6w=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MaO/72MGYEEilobnZ2A3wr4uxSOxHxhDGjQnGYLXRFzXY6ubX/BZf67f3BtI45abB26WJxLuoQhlkHWiA5aKmb309jbmNko7m+YfSluCs9Oyh0w4yUaeVQutX7F2IAlLOsDUBe/ZkcvwXseAD6jyOyYHmX0vhpkQAQHiKrjn4/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iOL6LIxW; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a36126ee41eso674096666b.2;
+        Tue, 13 Feb 2024 16:03:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707869008; x=1708473808; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LUHwCmgFvsLI2w7Qfq1pAeSWXQrKo7dao4Gqpb0bey4=;
-        b=HohXR0uBw/a0jNLqSD3RWB2JJ51gKvKRLLEpqIsp8+P0RTMT7nNvTXF58kjEgifod6
-         Qwnld6KZ13xh23UpOXLEHesq74Av7sy0u90WExt51sfpMTx2p2kVBh7OeJynlslSYL8A
-         IepMan/+lXwGe1MWISJut/+3st5DitcOJcVkM=
+        d=gmail.com; s=20230601; t=1707869014; x=1708473814; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hudSvXJpKxgbOix/IzJC/qkrhU8IxJzfKB1kbMTIGcs=;
+        b=iOL6LIxWBXQrFVsv5j9KD7JVR3JNTLtIRtCiI30bJB6yzbFa9+d0+LaQFmh7vyseZd
+         8vVW/qZ5f3N7TD37/9M2o+kEjtz0RrDOulYZGTZlQEOVzSci8Anycn9FVAhuJtcmG1iy
+         Bk04BB9Ht2+uV9NV1w9R31dgM3fDySNc1gRYkfGC5AZ8suCE0un3wjV8ZrG7/CUU2yja
+         qvy4EURV00AzRt3/PtsI27GtDMf0Pr+GQChzrO6qEpzedDe0f0uL9KYahtf4b39onFWP
+         GUY//lUYfxql2KSuZ5Cc9e2okR35Zs0rGF67b4VERA1khIfPzIVLROA8l+9Fff20Gx41
+         ZYBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707869008; x=1708473808;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LUHwCmgFvsLI2w7Qfq1pAeSWXQrKo7dao4Gqpb0bey4=;
-        b=tq3F1tB5QMUF94oquMhnyA5IK/TcZqigkhAMg9ky843VWMKw7/eULTLPAOOIqPReje
-         hY2vr6qVc7rZ4+UxQxB53TtsinB5phd3yDTIHCd1osnBxfPZwHGYAeLcWehP1LJVyVhR
-         fUe2i08dPmz/IL9HBJ17LuTAwsiNPN9SsKtfb9YtFk7qaYLWSCaqGXopvOU3muPB0sBl
-         csEDuQ9l/9eoI835r7MyA0N0T3haQDjBMIK2a0UcLD0r64vdSbmOrj//24ZkxiiuWOh6
-         cKb6akhPe4I3cfgDqRIBzxiYVF/uvn1+ESEsoMhf6/9RRYB2lx7gym1ufI6DZouFhQri
-         TW/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWzeWbXVyXQdp89bdoIEJmPHuRQ1XigInMqs5V+oDOxhJHyUvc82+95NW9Yf4EtZuR7APQBsZ4ZtrFTf/yqiKTW+569M7RBdII1FQzt
-X-Gm-Message-State: AOJu0YzWxPLkTDXnSDaV8PKie2WJqJiyINWFdAIujWAa0Wko3u6022AT
-	qegIB3V7CaUiEiCeySySL7Bpz4RGNv0Gc/YeY6fOl05HEYMLX1IbWX1Uduhw/e8DvNqvtxELben
-	91+Pn
-X-Google-Smtp-Source: AGHT+IHkuoHBKR3IDcpm/w4tojXQFeNNBHLBeMHdeZE7nmOL4a6picEbAEeUaOavHdSM+7VQZjpPLA==
-X-Received: by 2002:a17:906:54c8:b0:a3c:b313:fb57 with SMTP id c8-20020a17090654c800b00a3cb313fb57mr544144ejp.17.1707869008231;
-        Tue, 13 Feb 2024 16:03:28 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVsNbZHw3ebJJxJpHGihusjzOpznQFYKV3XXS680Y2gu8ai59NQnlK++HV9hRgoFvfyDLMBk1hIIga9YFho+bzpfN4n0VtfxcFRh1mb
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id s7-20020a17090699c700b00a3cb136aef0sm1748030ejn.224.2024.02.13.16.03.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 16:03:27 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-411d9e901dcso42155e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:03:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXpQ8Nb6lNMgVW99FV6CjGuXR78eYDYdS7G5DMFcU1uqh21Th7jZkIB5zKLfVz95R+SF8dKDHT2V3TAGhG136za8vHLrsyHIfCDT4q9
-X-Received: by 2002:a05:600c:519b:b0:411:e5c1:9b2a with SMTP id
- fa27-20020a05600c519b00b00411e5c19b2amr21434wmb.2.1707869006878; Tue, 13 Feb
- 2024 16:03:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707869014; x=1708473814;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hudSvXJpKxgbOix/IzJC/qkrhU8IxJzfKB1kbMTIGcs=;
+        b=StSzlLyp+dPZPcSIH8upQ3G+RMcCCXsvI/g8gSaXRbrjYwMHNR1w7069DWffLXO7Ca
+         kwhgOpHlDjw/EN93apYzQuc4PNoHz+lGRP4FxNzpCc7/K6c5fDO25vL6cBw4jxTCH3wZ
+         4v3Uj9e2sctkqlwc1x1xd2+22bX0EBEdM/7qHD2HHaAm9aGjISEo1XIDYL1swn2XvL8Q
+         rrcRe8LN/LJi+ysFZ98qL3O1n7bta/pR0CW8XeviOJ24WF/kOnBGEMJXNSW2agLDgu9T
+         t1OD2A1SNonJ9NZlazHhbQ7L47RECj6KxVIt+g1lcEYcn8Uun8/XEEb0SPPRGy4SGVYk
+         1nCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWZRZyBxazRhf09kofCXiWhPYYgMdOUq418Plw/uGeiHbDjg1vvilLLPET8JFCrcLZlevkL20zSnyJtQDLvPLn21ZAn148pXjmb5fw4+Tze
+X-Gm-Message-State: AOJu0YyqnkIhziUnQ9JN6WQOBYr5q5gacCSpW9b4ddVFD6xrks4aY6mE
+	KusNGx+kt1UIc2UK81o4RZ72BYSP14n9E+IKcUTezEys9sLjq/8gaJknCndkSQmhEA==
+X-Google-Smtp-Source: AGHT+IHkPIRHHlOVTgmconF9JHdQgzE5mLUa+O5J8ImR+juKThs2QU/hYP8dz2+L/ihcdRfU/xh2Xg==
+X-Received: by 2002:a17:906:513:b0:a3d:3aee:85f5 with SMTP id j19-20020a170906051300b00a3d3aee85f5mr296850eja.75.1707869013530;
+        Tue, 13 Feb 2024 16:03:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUyd7/OBZpcF8C9S2bY/3xZ7DIvy+VGSlaP2M2dOxAJlN4w6Q4kHQZTNOmwO7CZtJzrxN1gU4WCUP6fMzT7ze0Ga8qQmpgsBl+Ea9Ayd0dGE+Wwxtv8g01MMnIsSOeUSFb7/gzT563Oo13POvDWJuoW8Zz2sstmDIuPdEzidys=
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-68a7-7041-4298-e66b.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:68a7:7041:4298:e66b])
+        by smtp.gmail.com with ESMTPSA id vo10-20020a170907a80a00b00a3cfd838f32sm1160901ejc.178.2024.02.13.16.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 16:03:33 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH v4 0/3] selftests: add missing gitignore files and include
+ generated objects
+Date: Wed, 14 Feb 2024 01:03:30 +0100
+Message-Id: <20240214-selftest_gitignore-v4-0-857b39cef2fa@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-5-swboyd@chromium.org>
-In-Reply-To: <20240210070934.2549994-5-swboyd@chromium.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Tue, 13 Feb 2024 16:03:11 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UuunNnXJ0kAzRPVy0DX7Wv2eQOa-fMJQ-aKtaGnyQaQA@mail.gmail.com>
-Message-ID: <CAD=FV=UuunNnXJ0kAzRPVy0DX7Wv2eQOa-fMJQ-aKtaGnyQaQA@mail.gmail.com>
-Subject: Re: [PATCH 04/22] usb: core: Set connect_type of ports based on DT node
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	Pin-yen Lin <treapking@chromium.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Matthias Kaehlcke <mka@chromium.org>, linux-usb@vger.kernel.org, 
-	maciek swiech <drmasquatch@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFIDzGUC/33N0YrCMBAF0F+RPBuZmdim+uR/yCJJO20HaipJt
+ +wi/XejL4qIj/fCPfeqEkfhpParq4o8S5Ix5LBdr1Tdu9CxliZnRUBbQECdeGgnTtOpk0m6MEb
+ WtnFUF2BsWbLKQ+8Sax9dqPs8Db/DkMtL5Fb+Hk/Hn5x7SdMY/x/HM97brx8zatDsS/Swc42H4
+ tCdnQybejyrOzfTkyCkjwRlwhYtNFyAQ1u9E+aVMB8JkwlsKyRTVhbIvxLLstwAbdm8rk8BAAA
+ =
+To: Shuah Khan <shuah@kernel.org>, SeongJae Park <sj@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.13-dev-0434a
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707869012; l=1876;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=ud6hiWlOkW4Y0z3+Rjp7RnQZGuIdyQQt0TQhTwB6A6w=;
+ b=CIkS03mKMQLym1bfSWkpdNIhqZ/uMbyJaIRxtGd1EBPP3ClPHeqffi0T5MR7z1GkOUQ+8iqpG
+ M636jYpbsdGBayg7cwVm2j5sj4XI9VnR0j4S7C7L0KRrpO2rzHZZyt7
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-Hi,
+This series aims to keep the git status clean after building the
+selftests by adding some missing .gitignore files and object inclusion
+in existing .gitignore files. This is one of the requirements listed in
+the selftests documentation for new tests, but it is not always followed
+as desired.
 
-On Fri, Feb 9, 2024 at 11:09=E2=80=AFPM Stephen Boyd <swboyd@chromium.org> =
-wrote:
->
-> When a USB hub is described in DT, such as any device that matches the
-> onboard-hub driver, the connect_type is set to "unknown" or
-> USB_PORT_CONNECT_TYPE_UNKNOWN. This makes any device plugged into that
-> USB port report their 'removable' device attribute as "unknown". Improve
-> the connect_type attribute for ports, and in turn the removable
-> attribute for USB devices, by looking for child devices with a reg
-> property or an OF graph when the device is described in DT.
->
-> If the graph exists, endpoints that are connected to a remote node must
-> be something like a usb-{a,b,c}-connector compatible node, or an
-> intermediate node like a redriver, and not a hardwired USB device on the
-> board. Set the connect_type to USB_PORT_CONNECT_TYPE_HOT_PLUG in this
-> case because the device is going to be plugged in. Set the connect_type
-> to USB_PORT_CONNECT_TYPE_HARD_WIRED if there's a child node for the port
-> like 'device@2' for port2. Set the connect_type to USB_PORT_NOT_USED if
-> there isn't an endpoint or child node corresponding to the port number.
+After adding these .gitignore files and including the generated objects,
+the working tree appears clean again.
 
-The above sounds good, but then I look at patch #18 ("dt-bindings:
-chrome: Add binding for ChromeOS Pogo pin connector") and patch #22
-("arm64: dts: qcom: sc7180-trogdor: Wire up USB and DP to
-usb-c-connectors") and it makes my Spidey Sense tingle.
+To: Shuah Khan <shuah@kernel.org>
+To: SeongJae Park <sj@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-Specifically, I _think_ if a port is "hard wired" that can sometimes
-tell the system that the port is a bit more trusted. In the case of
-the "pogo" pins on detachables, though, I don't _think_ there's
-anything that prevents someone from making a "pogo to USB A port"
-adapter and then you could plug anything you wanted into the pogo
-port. If there's any extra trust given to these "internal" ports a
-nefarious attacker could presumably abuse that trust for the pogo
-pins.
+Changes in v4:
+- damon: remove from the series to apply it in mm separately.
+- Link to v3: https://lore.kernel.org/r/20240213-selftest_gitignore-v3-0-1f812368702b@gmail.com
 
-I have no idea if this is a realistic concern or not. I'm about 95%
-sure that hardwired "PCIe" ports get extra trust and get "deferred
-IOMMU flush" enabled and, in the case of PCIe, that actually is a real
-security hole. For USB, though, I think the system is more isolated by
-the USB host controller so I'm not sure that there is any extra trust
-given to "hard wired" ports. ...so maybe the answer here is to just
-ignore my rambling. ...or maybe the answer here is that everything is
-fine but patches #18 and #22 should be modified not to cause the pogo
-pins to be considered as "hard wired" since they really aren't...
+Changes in v3:
+- General: base on mm-unstable to avoid conflicts.
+- damon: add missing Closes tag.
+- Link to v2: https://lore.kernel.org/r/20240212-selftest_gitignore-v2-0-75f0de50a178@gmail.com
 
+Changes in v2:
+- Remove patch for netfilter (not relevant anymore).
+- Add patch for damon (missing binary in .gitignore).
+- Link to v1: https://lore.kernel.org/r/20240101-selftest_gitignore-v1-0-eb61b09adb05@gmail.com
 
--Doug
+---
+Javier Carrasco (3):
+      selftests: uevent: add missing gitignore
+      selftests: thermal: intel: power_floor: add missing gitignore
+      selftests: thermal: intel: workload_hint: add missing gitignore
+
+ tools/testing/selftests/thermal/intel/power_floor/.gitignore   | 1 +
+ tools/testing/selftests/thermal/intel/workload_hint/.gitignore | 1 +
+ tools/testing/selftests/uevent/.gitignore                      | 1 +
+ 3 files changed, 3 insertions(+)
+---
+base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
+change-id: 20240101-selftest_gitignore-7da2c503766e
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
