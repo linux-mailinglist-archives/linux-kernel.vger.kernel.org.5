@@ -1,135 +1,104 @@
-Return-Path: <linux-kernel+bounces-65455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AEAB854D4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:49:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3911854D51
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 164DD284798
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85AE1F2974B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25575D90F;
-	Wed, 14 Feb 2024 15:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="K7ESGCYk"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDFA5DF1A;
+	Wed, 14 Feb 2024 15:49:49 +0000 (UTC)
+Received: from mail.actia.se (mail.actia.se [212.181.117.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DC95D49E;
-	Wed, 14 Feb 2024 15:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7655D910;
+	Wed, 14 Feb 2024 15:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925773; cv=none; b=QiXeMXIM45W9a0sik69K7k/DwEt7n0jJqyYs9qhHPmTbppi0rXU1WXu9LShLIMOTM/SG3O8/sE8gYi7QX54x4ppnfQIQRLgXXmGUdkjmBaAV3razhA5oULps5HFdM+YXxyh+GMaiOqPPzfdohUMCWzYttlbHZx5hC8N0ZwNcOpY=
+	t=1707925788; cv=none; b=gaxulNYdxTfJdWjokUxFliy1VYs2xI2XizcYu4O0phPYbrw+AxBdfDCSE4pPUdVYjIbi64oD4T5PtMYq1roPYnPBcrxWr0/uDuaA2vAubi4xZIrswaB5Q+h+JoRch2jeWOGoXjucQvzuOwBQy4KkXkFVrSPhwQ9S2Cm6nUZV4oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925773; c=relaxed/simple;
-	bh=Gy3naTrTrkVQJBqZTKkNJV3VvsQTnwDJIhWikooQnEQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OB4CQ6Vv6PxLySw+2AClr6hhDxNQvz54dz24IEzlfBG+pVfOb5WO4kDE+7AdAMRnukyN/Jl+7Z5lhn55NqUDpXBohtVLkdPoDbMAykMxALlHBB4UiYkzZwrRkSDGUXkiRJoIfSMIdrPItrhxb93MRZ2wjIIa5gLwTI9noRUupME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=K7ESGCYk; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CBE1D40E00B2;
-	Wed, 14 Feb 2024 15:49:27 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id k0YDfKUfjBmh; Wed, 14 Feb 2024 15:49:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707925764; bh=zYa3btJgqbNBe3d7qFp0v1+RbM0bAczz4bEAIz7Hrd4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K7ESGCYkeSNVdBp6sZ9+SFcQBHrzCWO+/YjGGaEyRah3yWLdjJYP6vDjTaL2E6r6K
-	 3hp/l95VKjxjHChd9I7YYGOf8uQE5lUKhqBLMkUko/sa38ejy31BSEZJyTx9LSy/Yb
-	 ODIQf2nq+lqc2Enx4B8FI+P+vtOVcqTPPaKD0AG5es9prigfhgKHZRlR5WhiqFyml2
-	 Y6ATbht+ANvGTqbfCVKxzzRgeBgRFKEe8+bsREnh4n5bczTXsyJadkhcRlmNdFE41V
-	 UXLb15j6kvt5XowsAwf2bZzSG3nENTzcQHAGyOnvEz1JH7fRtvrdSM1meCJZqzU8RN
-	 4Cum4Qe1ubIeiJNk7BY8c30rwlg9OLdAEYdrHS+nTy6maQDR1ypnF2HVPcIYw9nAsj
-	 oEXx76MRwFZQJ+gCZKQVvVysvwZwPjlQy9BlSfz5AjaoawfP6csSr6SG4aR5EXpify
-	 v9j2nV74yC8SPaKdZF0UKh4l2IamD0shTvWhNj37WIX5d+sucDZOuSstOX3m+A/wYa
-	 9fMM2aSB1ro6jYtnVMncKjgY068+XBnXIebwFx/46FNssVSZw9nQ1IN6qYhTtMLNhL
-	 ye+zrTYUA4Xq1v0S//AD3E3jNQhcWTop/bRtOox/LWDqZF2xf+s6j2suIKhfJiaudL
-	 GRMQ4wR72RSkg6uC2LmUjd2Y=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C5C7C40E01A9;
-	Wed, 14 Feb 2024 15:49:14 +0000 (UTC)
-Date: Wed, 14 Feb 2024 16:49:09 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214154909.GCZczg9Zfb_PXu2qV2@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214090630.GAZcyClhFloQfHEqrC@fat_crate.local>
- <9a82e9af-24c0-4277-b4d0-a708bba2cc88@amd.com>
+	s=arc-20240116; t=1707925788; c=relaxed/simple;
+	bh=FE3FLIyR5j8MemxSxaeAFQdc9r47s2aQ8K9ooV4Nn8M=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MH9dQASs+J9mbEbFGVtw2HVJMCJnhy6lBRrZb8YZ9ASKQWrUcFnr6uFcqsfwaei771BRprENy9hTpLVrSaS8KVcEHGhrV4uHA+5qR/9OakH3pT14Kv3tkMsUX0fc9masL1567JI9/BHchquElSWTALaCU5A2fsiGPs/4cXL5HZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
+Received: from S036ANL.actianordic.se (10.12.31.117) by S035ANL.actianordic.se
+ (10.12.31.116) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
+ 2024 16:49:40 +0100
+Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
+ S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%4]) with mapi id
+ 15.01.2507.035; Wed, 14 Feb 2024 16:49:40 +0100
+From: John Ernberg <john.ernberg@actia.se>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, "Clark
+ Wang" <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Paolo
+ Abeni" <pabeni@redhat.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: fec: Always call fec_restart() in resume
+ path
+Thread-Topic: [PATCH net-next] net: fec: Always call fec_restart() in resume
+ path
+Thread-Index: AQHaXaFLRIYd45z3UU+7Sl3MRdVj/bEJE22AgABftoCAAGuqgIAAEAKA
+Date: Wed, 14 Feb 2024 15:49:40 +0000
+Message-ID: <e0641509-e18f-48d6-acba-6b649496782e@actia.se>
+References: <20240212105010.2258421-1-john.ernberg@actia.se>
+ <20240213184427.5af2d7eb@kernel.org>
+ <5aba2c2b-b712-4827-acb2-d586508a3bd6@actia.se>
+ <20240214065221.26d71ed0@kernel.org>
+In-Reply-To: <20240214065221.26d71ed0@kernel.org>
+Accept-Language: en-US, sv-SE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-esetresult: clean, is OK
+x-esetid: 37303A2921D72955607464
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D63118CCB84A0C4884778A0867F5603D@actia.se>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9a82e9af-24c0-4277-b4d0-a708bba2cc88@amd.com>
 
-On Wed, Feb 14, 2024 at 09:21:45AM -0500, Yazen Ghannam wrote:
-> Do you mean this should be left out of the commit message?
-
-Yes, the text should talk only about what the patch does. What can and
-will and won't happen in the future doesn't matter.
-
-IOW, here's what I have now:
-
-RAS: Introduce a FRU memory poison manager
-
-Memory errors are an expected occurrence on systems with high memory
-density. Generally, errors within a small number of unique physical
-locations are acceptable, based on manufacturer and/or admin policy.
-During run time, memory with errors may be retired so it is no longer
-used by the system. This is done in mm through page poisoning, and the
-effect will remain until the system is restarted.
-
-If a memory location is consistently faulty, then the same run time
-error handling may occur in the next reboot cycle, leading to
-terminating jobs due to that already known bad memory. This could be
-prevented if information from the previous boot was not lost.
-
-Some add-in cards with driver-managed memory have on-board persistent
-storage. Their driver saves memory error information to the persistent
-storage during run time. The information is then be restored after
-reset, and known bad memory will be retired before the hardware is used.
-A running log of bad memory locations is kept across multiple resets.
-
-A similar solution is desirable for CPUs. However, this solution should
-leverage industry-standard components as much as possible, rather than
-a bespoke platform driver.
-
-Two components are needed: a record format and a persistent storage
-interface.
-
-Implement a new module to manage the record formats on persistent
-storage. Use the requirements for an AMD MI300-based system to start.
-Vendor- and platform-specific details can be abstracted later as needed.
-
-  [ bp: Massage commit message. ]
-
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240214033516.1344948-3-yazen.ghannam@amd.com
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+T24gMi8xNC8yNCAxNTo1MiwgSmFrdWIgS2ljaW5za2kgd3JvdGU6DQo+IE9uIFdlZCwgMTQgRmVi
+IDIwMjQgMDg6Mjc6MDIgKzAwMDAgSm9obiBFcm5iZXJnIHdyb3RlOg0KPj4gWW91IGFyZSBjb3Jy
+ZWN0LCB3ZSB0aG91Z2h0IHNvIHRvbyBhdCBbMV0sIGJ1dCBiaXNlY3Rpb24gaXMgcmVhbGx5IGhh
+cmQNCj4+IGJlY2F1c2Ugd2UgbmVlZCBhIHdob2xlIGJ1bmNoIG9mIHBhdGNoZXMgb24gdG9wIHRv
+IGV2ZW4gYm9vdCB0aGUgc3lzdGVtDQo+PiAoaW14OHF4cCBzcGVjaWZpYyBzdHVmZiBpbiB0aGUg
+TlhQIHZlbmRvciB0cmVlIHRoYXQncyBkaWZmaWN1bHQgdG8NCj4+IHJlYmFzZSksIHdlIGxlZnQg
+aXQgYSBiaXQgb3BlbiBlbmRlZC4NCj4+DQo+PiBPdmVyIHRoZSBjb3Vyc2Ugb2YgdGhlIHdlZWtl
+bmQgSSBsb3N0IGFsbCBjb25maWRlbmNlIGluIG15IGJpc2VjdGlvbg0KPj4gYWZ0ZXIgYmVpbmcg
+Y29uZmlkZW50IGZvciA0LTUgZGF5cywgYmVjYXVzZSB0aGUgbW9yZSBJIHRob3VnaHQgYWJvdXQg
+aXQNCj4+IHRoZSBsZXNzIGl0IG1hZGUgc2Vuc2UgZm9yIHRoYXQgY29tbWl0IHRvIGJlIHRoZSBj
+dWxwcml0Lg0KPj4NCj4+IEkgc2hvdWxkIHByb2JhYmx5IGhhdmUgYm90aCBmb2xsb3dlZCB1cCBv
+biB0aGF0IG1haWwgd2l0aCB0aGF0LCBhbmQgYmVlbg0KPj4gY2xlYXJlciBoZXJlLiBJIGFwb2xv
+Z2l6ZSBmb3IgZmFpbGluZyB0aGF0Lg0KPiANCj4gSXMgaXQgcGVyaGFwcyBwb3NzaWJsZSB0aGF0
+IHVwc3RyZWFtIDUuMTAgYWxzbyBkaWRuJ3Qgd29yaz8NCj4gSSdtIG5vdCBzYXlpbmcgdGhlIGNo
+YW5nZSBpdHNlbGYgaXMgaW5jb3JyZWN0LCBpbmRlZWQgdGhlcmUNCj4gaXMgZmVjX3Jlc3RhcnQo
+KSBvbiBwcm9iZSBhbmQgb3BlbiBwYXRocywgYXMgeW91IHNheS4NCj4gRGlkIHlvdSB0cnkgcmV2
+ZXJ0aW5nIGFzIG1hbnkgb2YgdGhlIGNoYW5nZXMgdGhhdCBoYXBwZW5lZA0KPiBpbiB0aGUgbWVh
+bnRpbWUgYXMgcG9zc2libGUgKGluc3RlYWQgb2YgYmlzZWN0aW9uKT8NCj4gDQoNClRoYXQncyBh
+IHJlYWxseSBnb29kIHBvaW50LiBJJ2xsIG1ha2Ugc29tZSB0aW1lIGZvciB0aGlzIGluIHRoZSBu
+ZXh0IHdlZWtzLg0KUGxlYXNlIG1hcmsgaXQgd2l0aCBjaGFuZ2VzIHJlcXVlc3RlZCBpbiB0aGUg
+bWVhbnRpbWUsIGFzIEkgZXhwZWN0IHRvIA0KbWFrZSBjaGFuZ2VzIHRvIHRoZSBwYXRjaCB3aGVu
+IEkgaGF2ZSBhIHJlc3VsdC4NCg0KPiBUaGUgb3RoZXIgcXVlc3Rpb24gaXMgd2hldGhlciB3ZSBu
+ZWVkIHRvIGVuYWJsZSBhbnkgb2YgdGhlDQo+IGNsb2NrcyBvciBydW50aW1lIHJlc3VtZSBiZWZv
+cmUgY2FsbGluZyBmZWNfcmVzdGFydCgpPw0KDQpPbiBvdXIgYm9hcmQgaXQgd29ya3MgZmluZSB3
+aXRob3V0IGl0LCBJIGRvbid0IGtub3cgZW5vdWdoIGFib3V0IHRoaXMgDQpTb0Mgb3Igb3RoZXIg
+TlhQIFNvQ3MgdG8ga25vdyBpZiBpdCdzIG5lY2Vzc2FyeSBpbiBvdGhlciBzaXR1YXRpb25zLg0K
+DQpUaGUgY2xvY2tzIGFyZSByZS1lbmFibGVkIGluIHRoZSBvcGVuIGNhbGwgd2hpY2ggYXBwZWFy
+cyB0byBiZSBlbm91Z2ggdG8gDQpnZXQgdHJhZmZpYyBnb2luZyBhZ2FpbiB3aGVuIHRoZSBsaW5r
+IGlzIGJyb3VnaHQgdXAuDQoNClBlcmhhcHMgTlhQIGNhbiBmaWxsIHVzIGluPw0KDQpUaGFua3Mh
+IC8vIEpvaG4gRXJuYmVyZw==
 
