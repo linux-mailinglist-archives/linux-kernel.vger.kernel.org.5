@@ -1,142 +1,97 @@
-Return-Path: <linux-kernel+bounces-65227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60A1A8549B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:55:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2DDC8549BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DA65289A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:55:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73D12B27CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97BC535CB;
-	Wed, 14 Feb 2024 12:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9373653E09;
+	Wed, 14 Feb 2024 12:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="XE2pPkt3"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lz26F2Iq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C413C53393
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE65F52F81;
+	Wed, 14 Feb 2024 12:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915211; cv=none; b=aQZ1rR/gjKnIS5jx3oxLw7GPqwuWh/Ty/a5/thBs22LLur+age4SDleYpxyVvK0VlReeplNnszIJqzBI/UukvCQC/TyPM9Zmx2iLHNQ+T5jNAPQ2f7xpeHBFqULVVs8YQtJ0VEmCou/ioI7npM7oIKDfi+sN8ipbUJbo08DXZ1E=
+	t=1707915248; cv=none; b=AHxQFi4E1Dj5HZ2r9YIngRy6kqJBAhE40+yPFch5stzKFhoEdZezGe+skRMmCca4bcwxaJiAeuS7CqlASRw6uEOcoy9mJpeQ+Sq4fvd26seI6u96VyjCZOxQCxt7snID4pFut64bTOskrayPs6aBzEv5RUARmVX5GHLi5wFOWXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915211; c=relaxed/simple;
-	bh=7qQl3oUH908Qo+DjPhPwTveHPALrcW4P/GCBSzvUYvg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dGcXM71uILybjAxuk1RZehlyNKA6XzuGwxFE2T7GIrnVfO4iC/fp1oucB5HFUypCMgwW9hKPCEkmg2XwriwGVIHVsZzSG6+AB/PwvNcknVZzW3v93qeq44gMtEpcMpaZ14PZDMb53giuQYEUmfwZ9cliiWPiptRK47HEPYOMTWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=XE2pPkt3; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1707915205;
-	bh=2yGYnjksCOnTrmVt4RdgHftQySQabm4BEhRKLQZMYvw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=XE2pPkt3SjW8DtGmMvWJGhlsNBiE4/O11nAWaHS4X4tOUavECaHl3WodQ6RZ02WrI
-	 almV87Vjd3dekGxaIEk1nq2vrEFBC2fwJlTQC/NPMmv0sAH/9z39AzF6g5JkxVx15l
-	 4FN5phMtb9ZgcugZSS2XWi1jNOejnfyLXMLHdYCK63VX6KVnD6nU9JaU6EscAzSUN7
-	 Ys+WtcnU4s1YvhKkoHxFUey4JGkmQX3rrPk7lI9QULOLTewhWjgb2c3Cc2zl/lb8UM
-	 PsMeR4O6sjG9HMH7rLAzoW0HSRxfrXXLAbJi30sBWqLW1D9qwqc4uVEgsFAZ4R7U3q
-	 LXiQPCup57nYg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZdR636lbz4wcp;
-	Wed, 14 Feb 2024 23:53:22 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>, Jason Gunthorpe
- <jgg@ziepe.ca>, Shivaprasad G Bhat <sbhat@linux.ibm.com>
-Cc: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com, jroedel@suse.de,
- tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
- gregkh@linuxfoundation.org, gbatra@linux.vnet.ibm.com,
- vaibhav@linux.ibm.com
-Subject: Re: [PATCH] powerpc/iommu: Fix the missing iommu_group_put() during
- platform domain attach
-In-Reply-To: <4f5e638d-30a2-4207-b515-d07c20b0fb47@linux.vnet.ibm.com>
-References: <170784021983.6249.10039296655906636112.stgit@linux.ibm.com>
- <20240213172128.GM765010@ziepe.ca>
- <4f5e638d-30a2-4207-b515-d07c20b0fb47@linux.vnet.ibm.com>
-Date: Wed, 14 Feb 2024 23:53:20 +1100
-Message-ID: <87le7n6wcf.fsf@mail.lhotse>
+	s=arc-20240116; t=1707915248; c=relaxed/simple;
+	bh=Jra6v3PLuIdfTUMCLPbuHtEJrWWs298/umdqjKiHzfg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Twut/MN4dAa5BQwbdXzWJR6FzxUpw9T+MGkHwwI1Qga47iS3v/OgVIdq7mhF9tE7Meso5Onhan/NgHmzvxdNR75o5x3p344Njy/O5z/Oacf9nYiTqC6SCkXB5SyrvaJHDL37n3mMLm8wzVqTbroQqs9/DoMEhPKPpSWKAEv5x0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lz26F2Iq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49CA9C433F1;
+	Wed, 14 Feb 2024 12:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707915248;
+	bh=Jra6v3PLuIdfTUMCLPbuHtEJrWWs298/umdqjKiHzfg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lz26F2IqlJ/5YiIBXs3eQoGhiILAbJAbFe0tmJbbCql8OHSUkDsZ6D4G5DljflMgn
+	 swWwAjpgkM/Rnb1FUzmq9FWeZtXDjVHPz30TRZjgyUPZuqxj3MPeWV0pvTAfz1Ar+R
+	 ZiKBvgcQwtPSFme842EZE3BkesKCb+b1yLSpZE/y7tgDPPS/1R8NYOkFa2sB9A8KhX
+	 +uFPu625QKMKaDf0YKYDObARIK6u4f8hnk6Tk8PYfJzhCYDU0Cp59PfwwNr8HJMkaI
+	 m63+0x6X1UPNhvLkehCQt9eMr1KEbngXEzrCiL/OSrTQ/NvUpXUZcDAJb6PAFOeAfF
+	 KWBc6fb/Yobsw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1raEmQ-000000004oS-1O2K;
+	Wed, 14 Feb 2024 13:54:27 +0100
+Date: Wed, 14 Feb 2024 13:54:26 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require
+ 'msi-map-mask'
+Message-ID: <Zcy4Atjmb6-wofCL@hovoldconsulting.com>
+References: <20240212165043.26961-1-johan+linaro@kernel.org>
+ <20240212165043.26961-3-johan+linaro@kernel.org>
+ <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
 
-Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com> writes:
-> Thanks for the patch. Applied this patch and verified and issue is fixed.
->
-> This issue way originally reported in the below mail.
->
-> https://marc.info/?l=linux-kernel&m=170737160630106&w=2
+On Wed, Feb 14, 2024 at 01:01:20PM +0100, Krzysztof Kozlowski wrote:
+> On 12/02/2024 17:50, Johan Hovold wrote:
+> > Whether the 'msi-map-mask' property is needed or not depends on how the
+> > MSI interrupts are mapped and it should therefore not be described as
+> > required.
+> 
+> I could imagine that on all devices the interrupts are mapped in a way
+> you need to provide msi-map-mask. IOW, can there be a Qualcomm platform
+> without msi-map-mask?
 
-Please use lore for links, in this case:
+I don't have access to the documentation so I'll leave that for you guys
+to determine. I do note that the downstream DT does not use it and that
+we have a new devicetree in linux-next which also does not have it:
 
-https://lore.kernel.org/all/274e0d2b-b5cc-475e-94e6-8427e88e271d@linux.vnet.ibm.com/
+	https://lore.kernel.org/r/20240125-topic-sm8650-upstream-pcie-its-v1-1-cb506deeb43e@linaro.org
 
-cheers
+But at least the latter looks like an omission that should be fixed.
 
-> On 13/02/24 10:51 pm, Jason Gunthorpe wrote:
->> On Tue, Feb 13, 2024 at 10:05:22AM -0600, Shivaprasad G Bhat wrote:
->>> The function spapr_tce_platform_iommu_attach_dev() is missing to call
->>> iommu_group_put() when the domain is already set. This refcount leak
->>> shows up with BUG_ON() during DLPAR remove operation as,
->>>
->>>    KernelBug: Kernel bug in state 'None': kernel BUG at arch/powerpc/platforms/pseries/iommu.c:100!
->>>    Oops: Exception in kernel mode, sig: 5 [#1]
->>>    LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
->>>    <snip>
->>>    Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_016) hv:phyp pSeries
->>>    NIP:  c0000000000ff4d4 LR: c0000000000ff4cc CTR: 0000000000000000
->>>    REGS: c0000013aed5f840 TRAP: 0700   Tainted: G          I         (6.8.0-rc3-autotest-g99bd3cb0d12e)
->>>    MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 44002402  XER: 20040000
->>>    CFAR: c000000000a0d170 IRQMASK: 0
->>>    GPR00: c0000000000ff4cc c0000013aed5fae0 c000000001512700 c0000013aa362138
->>>    GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000119c8afd0
->>>    GPR08: 0000000000000000 c000001284442b00 0000000000000001 0000000000001003
->>>    GPR12: 0000000300000000 c0000018ffff2f00 0000000000000000 0000000000000000
->>>    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
->>>    GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
->>>    GPR24: c0000013aed5fc40 0000000000000002 0000000000000000 c000000002757d90
->>>    GPR28: c0000000000ff440 c000000002757cb8 c00000183799c1a0 c0000013aa362b00
->>>    NIP [c0000000000ff4d4] iommu_reconfig_notifier+0x94/0x200
->>>    LR [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200
->>>    Call Trace:
->>>    [c0000013aed5fae0] [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200 (unreliable)
->>>    [c0000013aed5fb10] [c0000000001a27b0] notifier_call_chain+0xb8/0x19c
->>>    [c0000013aed5fb70] [c0000000001a2a78] blocking_notifier_call_chain+0x64/0x98
->>>    [c0000013aed5fbb0] [c000000000c4a898] of_reconfig_notify+0x44/0xdc
->>>    [c0000013aed5fc20] [c000000000c4add4] of_detach_node+0x78/0xb0
->>>    [c0000013aed5fc70] [c0000000000f96a8] ofdt_write.part.0+0x86c/0xbb8
->>>    [c0000013aed5fce0] [c00000000069b4bc] proc_reg_write+0xf4/0x150
->>>    [c0000013aed5fd10] [c0000000005bfeb4] vfs_write+0xf8/0x488
->>>    [c0000013aed5fdc0] [c0000000005c0570] ksys_write+0x84/0x140
->>>    [c0000013aed5fe10] [c000000000033358] system_call_exception+0x138/0x330
->>>    [c0000013aed5fe50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
->>>    --- interrupt: 3000 at 0x20000433acb4
->>>    <snip>
->>>    ---[ end trace 0000000000000000 ]---
->>>
->>> The patch adds the missing iommu_group_put() call.
->>>
->>> Fixes: a8ca9fc9134c ("powerpc/iommu: Do not do platform domain attach atctions after probe")
->>> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
->>> ---
->>>   arch/powerpc/kernel/iommu.c |    4 +++-
->>>   1 file changed, 3 insertions(+), 1 deletion(-)
->> Doh, that is a weird splat for this but thanks for finding it
->>
->> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->>
->> Jason
->>
+Johan
 
