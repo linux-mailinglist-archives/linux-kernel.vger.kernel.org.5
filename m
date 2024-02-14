@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-64646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FEC685411C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 771C085411E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 545391C2623B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF9E928D586
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:22:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 303351428A;
-	Wed, 14 Feb 2024 01:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A233C1643E;
+	Wed, 14 Feb 2024 01:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="xUWNFEdz"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="lcVMDoWE"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4B5111AB
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695A9134A3
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707873555; cv=none; b=qJ8r2g/FkkW0cBSmvGKcT0nV7HJupWinEIWNQTh5CN1gY5HM+oBHFmBt99ASZBQTdMwHeiKg4cHnWbuaZ1NVWbXEw+YZmncHWTdo9PswmGq9h2fQeaxxkJr1YPuwSolaocskvCkF2ch5k3S/5m+P5Pt3ZszAuPY6UvLfYE3FZ/U=
+	t=1707873559; cv=none; b=KBbJIFsfEqqGzsB84iehdlyczTYTzV0fYQeWCTn8sGfohyhzL05R08ZZIWJeqmhc4bgNyKv/GL5AN6Upf8m6qHeXjCeR/ksNvttcyBVRuck6QwhVSLTH/qCEoQ/cze37OKSJCWqSUW0o5i2v5M64xubcLBi/AvIkZhbk1Aw6CVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707873555; c=relaxed/simple;
-	bh=8Bu3i/1PoJ67GP5hK4stKw0Urz7sAjg1E9YU2tTClLg=;
+	s=arc-20240116; t=1707873559; c=relaxed/simple;
+	bh=7WQF5mw3t461g4vge2A6fg0YxRf33fDxudS29aBtKtQ=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=ZNiZk3HlrkimliKb4OLUoU3l1kWbubqcilE1tidGAXxFLhB+kQysWGj3RLxuJ6gZmNEwchp6dGDEOqb7RON5X55ZB4vLOafs5Y2GpRjoRDY7r/ur39smhNT4VhPDd87RX66AII7vRFJz0tF8iZvlreduBvEZvMSaZ0xHfhM1QP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xUWNFEdz; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=Pz0PypR585W547UvZjlev9HfjCDoMcC9cSdSpJENUz3fJzbXf2301oMZsDy0Z3ay/rGXCUbgQ8VjwYonNKYAAltPx52yi6tUMxM30ZCkduxv888niEiPbmcCvY1sLoVeGHo5lcl0doOj+qIq22W+jPTFqRpwfgitf1u0CFLCca4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lcVMDoWE; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602dae507caso87097307b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:19:11 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so7891321276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 17:19:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707873551; x=1708478351; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707873553; x=1708478353; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:references
          :mime-version:message-id:in-reply-to:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T55/agEy7XUA930kKp3NrJrA7/fyf7BB21B4ErVQLO0=;
-        b=xUWNFEdzyqVIR2IYDLQEBOT0HOT4gz/Kmgh+hNd2mZKIN8mAV/9600JrJDCtv0T6+Q
-         9s7fDoikexGXj+1d2CZ5Zz7Q/nHg0mMxh51qnu24UH7Ys/gPdYkxum3UFjmAF4IkBtYo
-         jDY3Ewka6qPOULp5gutp/I2SYt4iE8DNOYJJQJrfqbMdSdCmvgqpgWqaU3LfWvE120gz
-         2hwLBuCnt/ZFkXuoh+iO/vgPQbG85g9Ins6wIE5+JnFHfxTceNiDfUMg4Yyhe54f2wTA
-         L3ex0dYSek0wkVQjZdoDaKt0gZABB2J1aXOXnmyT/+bbwQDWzCVakJqnJRLZLZKxeDu/
-         jjKg==
+        bh=D+qRiIw92/ss0oEnWEGNsstHsEL0lCbzIs0cwMpwoJM=;
+        b=lcVMDoWE3o0tLHlaa/9eHo+XnqC8u24qYyRzvwNpZdhsd+3PQz/6lz2QzENwvaEiLB
+         lRABKjJi44tTL5yfHf2y7t5T+n7EtsWiMFeG5t9vWQt+t4TznKZ+sHDtCYo3JtYUURg4
+         jkSIkpgPONIP4jwsSkh2wrSj+kyi4WYWPE5QC8UJGC7ZrE2OdGxwuHVa55D/gW3HVQ1Y
+         x0+Uriu2JQPZdxeQb2mcaMqLR7o5k8vwMEIWT4EGgNNnVU8ujL6eVM8gi2LJOIhUq+cD
+         3VUGJS4yvO/QeqdXiwcjsYN46lH/LeKC13eTZx/bq9/bjB8quf3Xm2qfVnjnNWpmgGXE
+         O/DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707873551; x=1708478351;
+        d=1e100.net; s=20230601; t=1707873553; x=1708478353;
         h=content-transfer-encoding:cc:to:from:subject:references
          :mime-version:message-id:in-reply-to:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=T55/agEy7XUA930kKp3NrJrA7/fyf7BB21B4ErVQLO0=;
-        b=Zmnqro9KEKL6hxP0Y6NsX2LMtReiE8J9jfHWH5Ai7eeA0xLiOuw7ZfA+ar2seb1jqo
-         EvBYjAr9ykefY8g3zc36row3TZMYNe9DGSQDXlFq7/t6F131A1P8DfOcNQGBFTYdxNmq
-         y6+QmktoOesrFjDwwV9OkncCkOZUx1rRq6qO5R4uFXDFw3G+3WURqSdSZsjrrGbIDGoM
-         1tF+c6KhGoEE82IHkbymBn0SkttoIZAEG3+EMN27/aqMHIYUFRDbLTMaoPbG5gwvIVAn
-         BiNXPpBd6qDR+2cvUwzdgNY3BnO7DSQdH5dCCAPB8POdyXuf3m5XvU3rdvll15KyZ+jQ
-         yl2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWsAFc6xFaKzi6stt8MQQoh7ghju8F0E7qPX9M91Neaj8Mia4Mo9svJBpt3lggtVyd/ekk3uhCRtsEgvrf6R2nBIDh2giMjacJtoSp2
-X-Gm-Message-State: AOJu0YwcesUVLVpmQjVbyWdX0IedUmnCnvcdx6cYQuKeAqpv66ZiyOld
-	LB/mdE+7F7PdAoDDg8hS8wh5yTapemAt80THGxO0YAlyZCRliFrUSU9vMwTL23e5fbzgvXGF6Pc
-	U8ZMndQ==
-X-Google-Smtp-Source: AGHT+IETDigq1FLeWKaMwrKxwPL2GLsHUXuc/bQhjMsco+3ySWU/KZpspyuGvPyrROQHIlpwfeVHQsdT/jGC
+        bh=D+qRiIw92/ss0oEnWEGNsstHsEL0lCbzIs0cwMpwoJM=;
+        b=AEiPEQDGCpS1Kh6XCTsGIN7wVxsk4eZH+z63JGeKgZnDX9+mhrnfSbIPAvKUvvtRD3
+         EuHRE0v6f72dE2YzsV45NQu/nnN3xS5tYQc/+aA/bh08zge2ta8KG2zVjT6TahpD7/JO
+         ofWaadkL539daAMmXmEWhhBPfxneVCqNfvGLAlCSrpxFG2zhIdff9ft4Ll4fw7uaOvON
+         snU2gyynEmDROe8ZIiz8WxM3fbcFxojlpzenftSLGzhxFmnHFuJEIZjKnmvjzNbK4P9v
+         Gs21VQ3cmh7zVNMyfUcxtEoYBOym5/NT6k/80URIJ313fMyOJBQz3ax0VPzLod2P45rl
+         EQ0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVtnmvpqmzEb8br6dDmXQ6O4Ihx6Gx38TCFBlfuKW8giEkyxvXSbLZpBgN100RYJcegAS9PTbKs5EtvvxWBcjWH3AfVz5LT6MzQvLQb
+X-Gm-Message-State: AOJu0YxBJoSWB4q+UiVaoJCuzUdkn3eg/8ZY2BxE4s0iRh04KjgW8Lg3
+	QXSpAxbLC+ruJwzIRksqqOiKJqzLqDY9mq3ux3slxpjAUmr54L9NLvdZE8vTh6FhkkH/l0qm/zs
+	G8uMgKw==
+X-Google-Smtp-Source: AGHT+IHQDKxKvkK0dRl8fYPs0OOxurNQ3YtGwPyV0+c0HqdcdAgFaMZOOwrULxjphtwnchQtwuIQjQgXRDNu
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6d92:85eb:9adc:66dd])
- (user=irogers job=sendgmr) by 2002:a0d:cbd1:0:b0:607:9250:f698 with SMTP id
- n200-20020a0dcbd1000000b006079250f698mr265173ywd.3.1707873551029; Tue, 13 Feb
- 2024 17:19:11 -0800 (PST)
-Date: Tue, 13 Feb 2024 17:18:04 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:1a48:b0:dc2:398d:a671 with SMTP
+ id cy8-20020a0569021a4800b00dc2398da671mr194799ybb.10.1707873553410; Tue, 13
+ Feb 2024 17:19:13 -0800 (PST)
+Date: Tue, 13 Feb 2024 17:18:05 -0800
 In-Reply-To: <20240214011820.644458-1-irogers@google.com>
-Message-Id: <20240214011820.644458-16-irogers@google.com>
+Message-Id: <20240214011820.644458-17-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240214011820.644458-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Subject: [PATCH v1 15/30] perf vendor events intel: Update broadwellde TMA
+Subject: [PATCH v1 16/30] perf vendor events intel: Update broadwellx TMA
  metrics to 4.7
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -116,16 +116,16 @@ Running the script:
 https://github.com/intel/perfmon/blob/main/scripts/create_perf_json.py
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- .../arch/x86/broadwellde/bdwde-metrics.json   | 191 +++++++++---------
- .../arch/x86/broadwellde/metricgroups.json    |   7 +-
- 2 files changed, 97 insertions(+), 101 deletions(-)
+ .../arch/x86/broadwellx/bdx-metrics.json      | 250 +++++++++++-------
+ .../arch/x86/broadwellx/metricgroups.json     |   7 +-
+ 2 files changed, 153 insertions(+), 104 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json =
-b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-index e1f55fcfa0d0..826357787201 100644
---- a/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-+++ b/tools/perf/pmu-events/arch/x86/broadwellde/bdwde-metrics.json
-@@ -84,12 +84,12 @@
+diff --git a/tools/perf/pmu-events/arch/x86/broadwellx/bdx-metrics.json b/t=
+ools/perf/pmu-events/arch/x86/broadwellx/bdx-metrics.json
+index b319e4edc238..f2d378c9d68f 100644
+--- a/tools/perf/pmu-events/arch/x86/broadwellx/bdx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/broadwellx/bdx-metrics.json
+@@ -286,12 +286,12 @@
          "MetricExpr": "(UOPS_DISPATCHED_PORT.PORT_0 + UOPS_DISPATCHED_PORT=
 PORT_1 + UOPS_DISPATCHED_PORT.PORT_5 + UOPS_DISPATCHED_PORT.PORT_6) / tma_=
 info_thread_slots",
@@ -149,7 +149,7 @@ up",
          "MetricName": "tma_assists",
          "MetricThreshold": "tma_assists > 0.1 & (tma_microcode_sequencer >=
  0.05 & tma_heavy_operations > 0.1)",
-@@ -211,7 +211,7 @@
+@@ -413,7 +413,7 @@
          "MetricExpr": "(IDQ.ALL_DSB_CYCLES_ANY_UOPS - IDQ.ALL_DSB_CYCLES_4=
 _UOPS) / tma_info_core_core_clks / 2",
          "MetricGroup": "DSB;FetchBW;TopdownL3;tma_L3_group;tma_fetch_bandw=
@@ -164,7 +164,7 @@ eline.  For example; inefficient utilization of the DSB cache structure or =
 bank conflict when reading from it; are categorized here.",
          "ScaleUnit": "100%"
      },
-@@ -257,7 +257,7 @@
+@@ -468,7 +468,7 @@
          "MetricExpr": "tma_frontend_bound - tma_fetch_latency",
          "MetricGroup": "FetchBW;Frontend;TmaL2;TopdownL2;tma_L2_group;tma_=
 frontend_bound_group;tma_issueFB",
@@ -177,12 +177,11 @@ frontend_bound_group;tma_issueFB",
  CPU was stalled due to Frontend bandwidth issues.  For example; inefficien=
 cies at the instruction decoders; or restrictions for caching in the DSB (d=
 ecoded uops cache) are categorized under Fetch Bandwidth. In such cases; th=
-e Frontend typically delivers suboptimal amount of uops to the Backend. Sam=
-ple with: FRONTEND_RETIRED.LATENCY_GE_2_BUBBLES_GE_1_PS;FRONTEND_RETIRED.LA=
-TENCY_GE_1_PS;FRONTEND_RETIRED.LATENCY_GE_2_PS. Related metrics: tma_dsb_sw=
-itches, tma_info_frontend_dsb_coverage, tma_info_inst_mix_iptb, tma_lcp",
+e Frontend typically delivers suboptimal amount of uops to the Backend. Rel=
+ated metrics: tma_dsb_switches, tma_info_frontend_dsb_coverage, tma_info_in=
+st_mix_iptb, tma_lcp",
          "ScaleUnit": "100%"
-@@ -334,28 +334,21 @@
+@@ -545,27 +545,20 @@
          "MetricName": "tma_heavy_operations",
          "MetricThreshold": "tma_heavy_operations > 0.1",
          "MetricgroupNoGroup": "TopdownL2",
@@ -199,7 +198,7 @@ nt due to approximation using indirect events; [ADL+] .)",
      },
      {
          "BriefDescription": "This metric represents fraction of cycles the=
- CPU was stalled due to instruction cache misses",
+ CPU was stalled due to instruction cache misses.",
          "MetricExpr": "ICACHE.IFDATA_STALL / tma_info_thread_clks",
 -        "MetricGroup": "BigFoot;FetchLat;IcMiss;TopdownL3;tma_L3_group;tma=
 _fetch_latency_group",
@@ -208,9 +207,6 @@ p;tma_fetch_latency_group",
          "MetricName": "tma_icache_misses",
          "MetricThreshold": "tma_icache_misses > 0.05 & (tma_fetch_latency =
 > 0.1 & tma_frontend_bound > 0.15)",
-         "PublicDescription": "This metric represents fraction of cycles th=
-e CPU was stalled due to instruction cache misses. Sample with: FRONTEND_RE=
-TIRED.L2_MISS_PS;FRONTEND_RETIRED.L1I_MISS_PS",
          "ScaleUnit": "100%"
      },
 -    {
@@ -237,7 +233,7 @@ RE_SLOTS / UOPS_ISSUED.ANY * BR_MISP_EXEC.INDIRECT)",
          "MetricGroup": "Bad;BrMispredicts",
          "MetricName": "tma_info_bad_spec_ipmisp_indirect",
          "MetricThreshold": "tma_info_bad_spec_ipmisp_indirect < 1e3"
-@@ -381,7 +374,7 @@
+@@ -591,7 +584,7 @@
      },
      {
          "BriefDescription": "Floating Point Operations Per Cycle",
@@ -252,7 +248,7 @@ H_INST_RETIRED.256B_PACKED_SINGLE) / tma_info_core_core_clks",
          "MetricGroup": "Flops;Ret",
          "MetricName": "tma_info_core_flopc"
      },
-@@ -393,8 +386,8 @@
+@@ -603,8 +596,8 @@
          "PublicDescription": "Actual per-core usage of the Floating Point =
 non-X87 execution units (regardless of precision or vector-width). Values >=
  1 are possible due to ([BDW+] Fused-Multiply Add (FMA) counting - common; =
@@ -271,7 +267,7 @@ mask\\=3D1@",
          "MetricGroup": "Backend;Cor;Pipeline;PortsUtil",
          "MetricName": "tma_info_core_ilp"
      },
-@@ -431,7 +424,7 @@
+@@ -641,7 +634,7 @@
          "MetricGroup": "Flops;InsType",
          "MetricName": "tma_info_inst_mix_iparith",
          "MetricThreshold": "tma_info_inst_mix_iparith < 10",
@@ -285,7 +281,7 @@ intentional FMA double counting. Approximated prior to BDW."
      {
          "BriefDescription": "Instructions per FP Arithmetic AVX/SSE 128-bi=
 t instruction (lower number means higher occurrence rate)",
-@@ -439,7 +432,7 @@
+@@ -649,7 +642,7 @@
          "MetricGroup": "Flops;FpVector;InsType",
          "MetricName": "tma_info_inst_mix_iparith_avx128",
          "MetricThreshold": "tma_info_inst_mix_iparith_avx128 < 10",
@@ -299,7 +295,7 @@ possible due to intentional FMA double counting."
      {
          "BriefDescription": "Instructions per FP Arithmetic AVX* 256-bit i=
 nstruction (lower number means higher occurrence rate)",
-@@ -447,7 +440,7 @@
+@@ -657,7 +650,7 @@
          "MetricGroup": "Flops;FpVector;InsType",
          "MetricName": "tma_info_inst_mix_iparith_avx256",
          "MetricThreshold": "tma_info_inst_mix_iparith_avx256 < 10",
@@ -313,7 +309,7 @@ sible due to intentional FMA double counting."
      {
          "BriefDescription": "Instructions per FP Arithmetic Scalar Double-=
 Precision instruction (lower number means higher occurrence rate)",
-@@ -455,7 +448,7 @@
+@@ -665,7 +658,7 @@
          "MetricGroup": "Flops;FpScalar;InsType",
          "MetricName": "tma_info_inst_mix_iparith_scalar_dp",
          "MetricThreshold": "tma_info_inst_mix_iparith_scalar_dp < 10",
@@ -327,7 +323,7 @@ ercount due to FMA double counting."
      {
          "BriefDescription": "Instructions per FP Arithmetic Scalar Single-=
 Precision instruction (lower number means higher occurrence rate)",
-@@ -463,7 +456,7 @@
+@@ -673,7 +666,7 @@
          "MetricGroup": "Flops;FpScalar;InsType",
          "MetricName": "tma_info_inst_mix_iparith_scalar_sp",
          "MetricThreshold": "tma_info_inst_mix_iparith_scalar_sp < 10",
@@ -341,7 +337,7 @@ ercount due to FMA double counting."
      {
          "BriefDescription": "Instructions per Branch (lower number means h=
 igher occurrence rate)",
-@@ -481,7 +474,7 @@
+@@ -691,7 +684,7 @@
      },
      {
          "BriefDescription": "Instructions per Floating Point (FP) Operatio=
@@ -357,7 +353,7 @@ FLOPS + 8 * FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE)",
          "MetricGroup": "Flops;InsType",
          "MetricName": "tma_info_inst_mix_ipflop",
          "MetricThreshold": "tma_info_inst_mix_ipflop < 10"
-@@ -510,120 +503,114 @@
+@@ -720,120 +713,163 @@
      },
      {
          "BriefDescription": "Average per-core data fill bandwidth to the L=
@@ -387,10 +383,26 @@ FLOPS + 8 * FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE)",
 +        "MetricName": "tma_info_memory_core_l3_cache_fill_bw_2t"
 +    },
 +    {
++        "BriefDescription": "Average Parallel L2 cache miss data reads",
++        "MetricExpr": "tma_info_memory_latency_data_l2_mlp",
++        "MetricGroup": "Memory_BW;Offcore;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_data_l2_mlp",
++        "MetricgroupNoGroup": "TopdownL1"
++    },
++    {
 +        "BriefDescription": "",
 +        "MetricExpr": "64 * L1D.REPLACEMENT / 1e9 / duration_time",
 +        "MetricGroup": "Mem;MemoryBW",
 +        "MetricName": "tma_info_memory_l1d_cache_fill_bw"
++    },
++    {
++        "BriefDescription": "Average per-core data fill bandwidth to the L=
+1 data cache [GB / sec]",
++        "MetricExpr": "64 * L1D.REPLACEMENT / 1e9 / (duration_time * 1e3 /=
+ 1e3)",
++        "MetricGroup": "Mem;MemoryBW;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_l1d_cache_fill_bw_2t",
++        "MetricgroupNoGroup": "TopdownL1"
      },
      {
          "BriefDescription": "L1 cache true misses per kilo instruction for=
@@ -406,6 +418,15 @@ ANY",
 +        "MetricExpr": "64 * L2_LINES_IN.ALL / 1e9 / duration_time",
 +        "MetricGroup": "Mem;MemoryBW",
 +        "MetricName": "tma_info_memory_l2_cache_fill_bw"
++    },
++    {
++        "BriefDescription": "Average per-core data fill bandwidth to the L=
+2 cache [GB / sec]",
++        "MetricExpr": "64 * L2_LINES_IN.ALL / 1e9 / (duration_time * 1e3 /=
+ 1e3)",
++        "MetricGroup": "Mem;MemoryBW;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_l2_cache_fill_bw_2t",
++        "MetricgroupNoGroup": "TopdownL1"
 +    },
      {
          "BriefDescription": "L2 cache hits per kilo instruction for all re=
@@ -451,22 +472,19 @@ NY",
 +        "MetricGroup": "CacheHits;Mem",
          "MetricName": "tma_info_memory_l2mpki_load"
      },
-+    {
+     {
+-        "BriefDescription": "L3 cache true misses per kilo instruction for=
+ retired demand loads",
+-        "MetricExpr": "1e3 * MEM_LOAD_UOPS_RETIRED.L3_MISS / INST_RETIRED.=
+ANY",
+-        "MetricGroup": "CacheMisses;Mem",
+-        "MetricName": "tma_info_memory_l3mpki"
 +        "BriefDescription": "",
 +        "MetricExpr": "64 * LONGEST_LAT_CACHE.MISS / 1e9 / duration_time",
 +        "MetricGroup": "Mem;MemoryBW",
 +        "MetricName": "tma_info_memory_l3_cache_fill_bw"
-+    },
-     {
-         "BriefDescription": "L3 cache true misses per kilo instruction for=
- retired demand loads",
-         "MetricExpr": "1e3 * MEM_LOAD_UOPS_RETIRED.L3_MISS / INST_RETIRED.=
-ANY",
--        "MetricGroup": "CacheMisses;Mem",
-+        "MetricGroup": "Mem",
-         "MetricName": "tma_info_memory_l3mpki"
      },
--    {
+     {
 -        "BriefDescription": "Actual Average Latency for L1 data-cache miss=
  demand load operations (in core cycles)",
 -        "MetricConstraint": "NO_GROUP_EVENTS",
@@ -474,8 +492,15 @@ ANY",
 ISS + MEM_LOAD_UOPS_RETIRED.HIT_LFB)",
 -        "MetricGroup": "Mem;MemoryBound;MemoryLat",
 -        "MetricName": "tma_info_memory_load_miss_real_latency"
--    },
--    {
++        "BriefDescription": "Average per-core data fill bandwidth to the L=
+3 cache [GB / sec]",
++        "MetricExpr": "64 * LONGEST_LAT_CACHE.MISS / 1e9 / (duration_time =
+* 1e3 / 1e3)",
++        "MetricGroup": "Mem;MemoryBW;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_l3_cache_fill_bw_2t",
++        "MetricgroupNoGroup": "TopdownL1"
+     },
+     {
 -        "BriefDescription": "Memory-Level-Parallelism (average number of L=
 1 miss demand load when there is at least one such miss",
 -        "MetricConstraint": "NO_GROUP_EVENTS",
@@ -486,7 +511,13 @@ S",
 -        "PublicDescription": "Memory-Level-Parallelism (average number of =
 L1 miss demand load when there is at least one such miss. Per-Logical Proce=
 ssor)"
--    },
++        "BriefDescription": "L3 cache true misses per kilo instruction for=
+ retired demand loads",
++        "MetricExpr": "1e3 * MEM_LOAD_UOPS_RETIRED.L3_MISS / INST_RETIRED.=
+ANY",
++        "MetricGroup": "Mem",
++        "MetricName": "tma_info_memory_l3mpki"
+     },
      {
          "BriefDescription": "Average Parallel L2 cache miss data reads",
          "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.ALL_DATA_RD / OFFCORE_=
@@ -498,26 +529,35 @@ REQUESTS_OUTSTANDING.CYCLES_WITH_DATA_RD",
      {
          "BriefDescription": "Average Latency for L2 cache miss demand Load=
 s",
-         "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
+-        "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
 RE_REQUESTS.DEMAND_DATA_RD",
++        "MetricExpr": "tma_info_memory_load_l2_miss_latency",
          "MetricGroup": "Memory_Lat;Offcore",
 -        "MetricName": "tma_info_memory_oro_load_l2_miss_latency"
 +        "MetricName": "tma_info_memory_latency_load_l2_miss_latency"
      },
      {
          "BriefDescription": "Average Parallel L2 cache miss demand Loads",
-         "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
+-        "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
 RE_REQUESTS_OUTSTANDING.CYCLES_WITH_DEMAND_DATA_RD",
++        "MetricExpr": "tma_info_memory_load_l2_mlp",
          "MetricGroup": "Memory_BW;Offcore",
 -        "MetricName": "tma_info_memory_oro_load_l2_mlp"
--    },
--    {
++        "MetricName": "tma_info_memory_latency_load_l2_mlp"
+     },
+     {
 -        "BriefDescription": "Average per-thread data fill bandwidth to the=
  L1 data cache [GB / sec]",
 -        "MetricExpr": "tma_info_memory_core_l1d_cache_fill_bw",
 -        "MetricGroup": "Mem;MemoryBW",
 -        "MetricName": "tma_info_memory_thread_l1d_cache_fill_bw_1t"
-+        "MetricName": "tma_info_memory_latency_load_l2_mlp"
++        "BriefDescription": "Average Latency for L2 cache miss demand Load=
+s",
++        "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
+RE_REQUESTS.DEMAND_DATA_RD",
++        "MetricGroup": "Memory_Lat;Offcore;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_load_l2_miss_latency",
++        "MetricgroupNoGroup": "TopdownL1"
      },
      {
 -        "BriefDescription": "Average per-thread data fill bandwidth to the=
@@ -525,13 +565,14 @@ RE_REQUESTS_OUTSTANDING.CYCLES_WITH_DEMAND_DATA_RD",
 -        "MetricExpr": "tma_info_memory_core_l2_cache_fill_bw",
 -        "MetricGroup": "Mem;MemoryBW",
 -        "MetricName": "tma_info_memory_thread_l2_cache_fill_bw_1t"
--    },
--    {
--        "BriefDescription": "Average per-thread data access bandwidth to t=
-he L3 cache [GB / sec]",
--        "MetricExpr": "0",
--        "MetricGroup": "Mem;MemoryBW;Offcore",
--        "MetricName": "tma_info_memory_thread_l3_cache_access_bw_1t"
++        "BriefDescription": "Average Parallel L2 cache miss demand Loads",
++        "MetricExpr": "OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD / OFFCO=
+RE_REQUESTS_OUTSTANDING.CYCLES_WITH_DEMAND_DATA_RD",
++        "MetricGroup": "Memory_BW;Offcore;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_load_l2_mlp",
++        "MetricgroupNoGroup": "TopdownL1"
++    },
++    {
 +        "BriefDescription": "Actual Average Latency for L1 data-cache miss=
  demand load operations (in core cycles)",
 +        "MetricConstraint": "NO_GROUP_EVENTS",
@@ -541,11 +582,11 @@ ISS + MEM_LOAD_UOPS_RETIRED.HIT_LFB)",
 +        "MetricName": "tma_info_memory_load_miss_real_latency"
      },
      {
--        "BriefDescription": "Average per-thread data fill bandwidth to the=
- L3 cache [GB / sec]",
--        "MetricExpr": "tma_info_memory_core_l3_cache_fill_bw",
--        "MetricGroup": "Mem;MemoryBW",
--        "MetricName": "tma_info_memory_thread_l3_cache_fill_bw_1t"
+-        "BriefDescription": "Average per-thread data access bandwidth to t=
+he L3 cache [GB / sec]",
+-        "MetricExpr": "0",
+-        "MetricGroup": "Mem;MemoryBW;Offcore",
+-        "MetricName": "tma_info_memory_thread_l3_cache_access_bw_1t"
 +        "BriefDescription": "Memory-Level-Parallelism (average number of L=
 1 miss demand load when there is at least one such miss",
 +        "MetricConstraint": "NO_GROUP_EVENTS",
@@ -558,9 +599,22 @@ L1 miss demand load when there is at least one such miss. Per-Logical Proce=
 ssor)"
      },
      {
+-        "BriefDescription": "Average per-thread data fill bandwidth to the=
+ L3 cache [GB / sec]",
+-        "MetricExpr": "tma_info_memory_core_l3_cache_fill_bw",
+-        "MetricGroup": "Mem;MemoryBW",
+-        "MetricName": "tma_info_memory_thread_l3_cache_fill_bw_1t"
++        "BriefDescription": "Utilization of the core's Page Walker(s) serv=
+ing STLB misses triggered by instruction/Load/Store accesses",
++        "MetricExpr": "tma_info_memory_tlb_page_walks_utilization",
++        "MetricGroup": "Mem;MemoryTLB;TopdownL1;tma_L1_group",
++        "MetricName": "tma_info_memory_page_walks_utilization",
++        "MetricgroupNoGroup": "TopdownL1"
+     },
+     {
          "BriefDescription": "Utilization of the core's Page Walker(s) serv=
 ing STLB misses triggered by instruction/Load/Store accesses",
-@@ -633,8 +620,8 @@
+@@ -843,8 +879,8 @@
          "MetricThreshold": "tma_info_memory_tlb_page_walks_utilization > 0=
 5"
      },
@@ -575,7 +629,7 @@ ask\\=3D1@ / 2 if #SMT_on else UOPS_EXECUTED.CYCLES_GE_1_UOP_EXEC)",
          "MetricGroup": "Cor;Pipeline;PortsUtil;SMT",
          "MetricName": "tma_info_pipeline_execute"
      },
-@@ -645,30 +632,36 @@
+@@ -855,30 +891,36 @@
          "MetricName": "tma_info_pipeline_retire"
      },
      {
@@ -638,7 +692,22 @@ instructions, vector-width"
          "BriefDescription": "Instructions per Far Branch ( Far Branches ap=
 ply upon transition from application to operating system, handling interrup=
 ts, exceptions) [lower number means higher occurrence rate]",
-@@ -756,7 +749,7 @@
+@@ -932,6 +974,12 @@
+         "MetricGroup": "Power",
+         "MetricName": "tma_info_system_turbo_utilization"
+     },
++    {
++        "BriefDescription": "Measured Average Uncore Frequency for the SoC=
+ [GHz]",
++        "MetricExpr": "tma_info_system_socket_clks / 1e9 / duration_time",
++        "MetricGroup": "SoC",
++        "MetricName": "tma_info_system_uncore_frequency"
++    },
+     {
+         "BriefDescription": "Per-Logical Processor actual clocks when the =
+Logical Processor is active.",
+         "MetricExpr": "CPU_CLK_UNHALTED.THREAD",
+@@ -980,7 +1028,7 @@
      {
          "BriefDescription": "This metric represents fraction of cycles the=
  CPU was stalled due to Instruction TLB (ITLB) misses",
@@ -653,9 +722,9 @@ roup;tma_fetch_latency_group",
          "MetricThreshold": "tma_itlb_misses > 0.05 & (tma_fetch_latency > =
 0.1 & tma_frontend_bound > 0.15)",
          "PublicDescription": "This metric represents fraction of cycles th=
-e CPU was stalled due to Instruction TLB (ITLB) misses. Sample with: FRONTE=
-ND_RETIRED.STLB_MISS_PS;FRONTEND_RETIRED.ITLB_MISS_PS",
-@@ -765,7 +758,7 @@
+e CPU was stalled due to Instruction TLB (ITLB) misses. Sample with: ITLB_M=
+ISSES.WALK_COMPLETED",
+@@ -989,7 +1037,7 @@
      {
          "BriefDescription": "This metric estimates how often the CPU was s=
 talled without loads missing the L1 data cache",
@@ -675,10 +744,10 @@ on older stores; a load might suffer due to high latency even though it is =
 being satisfied by the L1. Another example is loads who miss in the TLB. Th=
 ese cases are characterized by execution unit stalls; while some non-comple=
 ted demand load lives in the machine without having that demand load missin=
-g the L1 cache. Sample with: MEM_LOAD_RETIRED.L1_HIT_PS;MEM_LOAD_RETIRED.FB=
-_HIT_PS. Related metrics: tma_clears_resteers, tma_machine_clears, tma_micr=
-ocode_sequencer, tma_ms_switches, tma_ports_utilized_1",
-@@ -774,7 +767,7 @@
+g the L1 cache. Sample with: MEM_LOAD_UOPS_RETIRED.L1_HIT_PS;MEM_LOAD_UOPS_=
+RETIRED.HIT_LFB_PS. Related metrics: tma_clears_resteers, tma_machine_clear=
+s, tma_microcode_sequencer, tma_ms_switches, tma_ports_utilized_1",
+@@ -998,7 +1046,7 @@
      {
          "BriefDescription": "This metric estimates how often the CPU was s=
 talled due to L2 cache accesses by loads",
@@ -694,8 +763,8 @@ oup;tma_memory_bound_group",
          "PublicDescription": "This metric estimates how often the CPU was =
 stalled due to L2 cache accesses by loads.  Avoiding cache misses (i.e. L1 =
 misses/L2 hits) can improve the latency and increase performance. Sample wi=
-th: MEM_LOAD_RETIRED.L2_HIT_PS",
-@@ -784,20 +777,20 @@
+th: MEM_LOAD_UOPS_RETIRED.L2_HIT_PS",
+@@ -1008,20 +1056,20 @@
          "BriefDescription": "This metric estimates how often the CPU was s=
 talled due to loads accesses to L3 cache or contended with a sibling Core",
          "MetricConstraint": "NO_GROUP_EVENTS_SMT",
@@ -712,7 +781,7 @@ oup;tma_memory_bound_group",
          "PublicDescription": "This metric estimates how often the CPU was =
 stalled due to loads accesses to L3 cache or contended with a sibling Core.=
   Avoiding cache misses (i.e. L2 misses/L3 hits) can improve the latency an=
-d increase performance. Sample with: MEM_LOAD_RETIRED.L3_HIT_PS",
+d increase performance. Sample with: MEM_LOAD_UOPS_RETIRED.L3_HIT_PS",
          "ScaleUnit": "100%"
      },
      {
@@ -723,11 +792,13 @@ ibly L3 latency limited)",
  demand load accesses that hit the L3 cache under unloaded scenarios (possi=
 bly L3 latency limited)",
          "MetricConstraint": "NO_GROUP_EVENTS",
-         "MetricExpr": "29 * (MEM_LOAD_UOPS_RETIRED.L3_HIT * (1 + MEM_LOAD_=
+         "MetricExpr": "41 * (MEM_LOAD_UOPS_RETIRED.L3_HIT * (1 + MEM_LOAD_=
 UOPS_RETIRED.HIT_LFB / (MEM_LOAD_UOPS_RETIRED.L2_HIT + MEM_LOAD_UOPS_RETIRE=
 D.L3_HIT + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_HIT + MEM_LOAD_UOPS_L3_HIT_RET=
-IRED.XSNP_HITM + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_MISS + MEM_LOAD_UOPS_RET=
-IRED.L3_MISS))) / tma_info_thread_clks",
+IRED.XSNP_HITM + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_MISS + MEM_LOAD_UOPS_L3_=
+MISS_RETIRED.LOCAL_DRAM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE_DRAM + MEM_L=
+OAD_UOPS_L3_MISS_RETIRED.REMOTE_HITM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE=
+_FWD))) / tma_info_thread_clks",
          "MetricGroup": "MemoryLat;TopdownL4;tma_L4_group;tma_issueLat;tma_=
 l3_bound_group",
          "MetricName": "tma_l3_hit_latency",
@@ -738,19 +809,19 @@ th demand load accesses that hit the L3 cache under unloaded scenarios (pos=
 sibly L3 latency limited).  Avoiding private cache misses (i.e. L2 misses/L=
 3 hits) will improve the latency; reduce contention with sibling physical c=
 ores and increase performance.  Note the value of this node may overlap wit=
-h its siblings. Sample with: MEM_LOAD_RETIRED.L3_HIT_PS. Related metrics: t=
-ma_mem_latency",
+h its siblings. Sample with: MEM_LOAD_UOPS_RETIRED.L3_HIT_PS. Related metri=
+cs: tma_mem_latency",
 +        "PublicDescription": "This metric estimates fraction of cycles wit=
 h demand load accesses that hit the L3 cache under unloaded scenarios (poss=
 ibly L3 latency limited).  Avoiding private cache misses (i.e. L2 misses/L3=
  hits) will improve the latency; reduce contention with sibling physical co=
 res and increase performance.  Note the value of this node may overlap with=
- its siblings. Sample with: MEM_LOAD_RETIRED.L3_HIT_PS. Related metrics: tm=
-a_mem_latency",
+ its siblings. Sample with: MEM_LOAD_UOPS_RETIRED.L3_HIT_PS. Related metric=
+s: tma_mem_latency",
          "ScaleUnit": "100%"
      },
      {
-@@ -816,7 +809,7 @@
+@@ -1040,7 +1088,7 @@
          "MetricName": "tma_light_operations",
          "MetricThreshold": "tma_light_operations > 0.6",
          "MetricgroupNoGroup": "TopdownL2",
@@ -775,7 +846,36 @@ T",
          "ScaleUnit": "100%"
      },
      {
-@@ -851,21 +844,21 @@
+@@ -1055,11 +1103,10 @@
+     },
+     {
+         "BriefDescription": "This metric estimates fraction of cycles whil=
+e the memory subsystem was handling loads from local memory",
+-        "MetricConstraint": "NO_GROUP_EVENTS",
+         "MetricExpr": "200 * (MEM_LOAD_UOPS_L3_MISS_RETIRED.LOCAL_DRAM * (=
+1 + MEM_LOAD_UOPS_RETIRED.HIT_LFB / (MEM_LOAD_UOPS_RETIRED.L2_HIT + MEM_LOA=
+D_UOPS_RETIRED.L3_HIT + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_HIT + MEM_LOAD_UO=
+PS_L3_HIT_RETIRED.XSNP_HITM + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_MISS + MEM_=
+LOAD_UOPS_L3_MISS_RETIRED.LOCAL_DRAM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE=
+_DRAM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE_HITM + MEM_LOAD_UOPS_L3_MISS_R=
+ETIRED.REMOTE_FWD))) / tma_info_thread_clks",
+         "MetricGroup": "Server;TopdownL5;tma_L5_group;tma_mem_latency_grou=
+p",
+-        "MetricName": "tma_local_dram",
+-        "MetricThreshold": "tma_local_dram > 0.1 & (tma_mem_latency > 0.1 =
+& (tma_dram_bound > 0.1 & (tma_memory_bound > 0.2 & tma_backend_bound > 0.2=
+)))",
++        "MetricName": "tma_local_mem",
++        "MetricThreshold": "tma_local_mem > 0.1 & (tma_mem_latency > 0.1 &=
+ (tma_dram_bound > 0.1 & (tma_memory_bound > 0.2 & tma_backend_bound > 0.2)=
+))",
+         "PublicDescription": "This metric estimates fraction of cycles whi=
+le the memory subsystem was handling loads from local memory. Caching will =
+improve the latency and increase performance. Sample with: MEM_LOAD_UOPS_L3=
+_MISS_RETIRED.LOCAL_DRAM_PS",
+         "ScaleUnit": "100%"
+     },
+@@ -1085,21 +1132,21 @@
          "ScaleUnit": "100%"
      },
      {
@@ -840,7 +940,7 @@ her Logical Processors/Physical Cores/sockets (see Uncore counters for that=
          "ScaleUnit": "100%"
      },
      {
-@@ -902,7 +895,7 @@
+@@ -1136,7 +1183,7 @@
          "MetricExpr": "(IDQ.ALL_MITE_CYCLES_ANY_UOPS - IDQ.ALL_MITE_CYCLES=
 _4_UOPS) / tma_info_core_core_clks / 2",
          "MetricGroup": "DSBmiss;FetchBW;TopdownL3;tma_L3_group;tma_fetch_b=
@@ -853,11 +953,10 @@ tma_frontend_bound > 0.15 & tma_info_thread_ipc / 4 > 0.35)",
 es in which CPU was likely limited due to the MITE pipeline (the legacy dec=
 ode pipeline). This pipeline is used for code that was not pre-cached in th=
 e DSB or LSD. For example; inefficiencies due to asymmetric decoders; use o=
-f long immediate or LCP can manifest as MITE fetch bandwidth bottleneck. Sa=
-mple with: FRONTEND_RETIRED.ANY_DSB_MISS",
+f long immediate or LCP can manifest as MITE fetch bandwidth bottleneck.",
          "ScaleUnit": "100%"
      },
-@@ -968,12 +961,12 @@
+@@ -1204,12 +1251,12 @@
          "ScaleUnit": "100%"
      },
      {
@@ -875,18 +974,18 @@ p;tma_issue2P",
          "MetricThreshold": "tma_port_6 > 0.6",
 -        "PublicDescription": "This metric represents Core fraction of cycl=
 es CPU dispatched uops on execution port 6 ([HSW+]Primary Branch and simple=
- ALU). Sample with: UOPS_DISPATCHED.PORT_6. Related metrics: tma_fp_scalar,=
- tma_fp_vector, tma_fp_vector_128b, tma_fp_vector_256b, tma_fp_vector_512b,=
- tma_port_0, tma_port_1, tma_port_5, tma_ports_utilized_2",
+ ALU). Sample with: UOPS_DISPATCHED_PORT.PORT_6. Related metrics: tma_fp_sc=
+alar, tma_fp_vector, tma_fp_vector_128b, tma_fp_vector_256b, tma_fp_vector_=
+512b, tma_port_0, tma_port_1, tma_port_5, tma_ports_utilized_2",
 +        "PublicDescription": "This metric represents Core fraction of cycl=
 es CPU dispatched uops on execution port 6 ([HSW+] Primary Branch and simpl=
-e ALU). Sample with: UOPS_DISPATCHED.PORT_6. Related metrics: tma_fp_scalar=
-, tma_fp_vector, tma_fp_vector_128b, tma_fp_vector_256b, tma_fp_vector_512b=
-, tma_port_0, tma_port_1, tma_port_5, tma_ports_utilized_2",
+e ALU). Sample with: UOPS_DISPATCHED_PORT.PORT_6. Related metrics: tma_fp_s=
+calar, tma_fp_vector, tma_fp_vector_128b, tma_fp_vector_256b, tma_fp_vector=
+_512b, tma_port_0, tma_port_1, tma_port_5, tma_ports_utilized_2",
          "ScaleUnit": "100%"
      },
      {
-@@ -1026,7 +1019,7 @@
+@@ -1263,7 +1310,7 @@
          "MetricExpr": "(cpu@UOPS_EXECUTED.CORE\\,cmask\\=3D3@ / 2 if #SMT_=
 on else UOPS_EXECUTED.CYCLES_GE_3_UOPS_EXEC) / tma_info_core_core_clks",
          "MetricGroup": "PortsUtil;TopdownL4;tma_L4_group;tma_ports_utiliza=
@@ -896,13 +995,39 @@ tion_group",
 zation > 0.15 & (tma_core_bound > 0.1 & tma_backend_bound > 0.2))",
 +        "MetricThreshold": "tma_ports_utilized_3m > 0.4 & (tma_ports_utili=
 zation > 0.15 & (tma_core_bound > 0.1 & tma_backend_bound > 0.2))",
-         "PublicDescription": "This metric represents fraction of cycles CP=
-U executed total of 3 or more uops per cycle on all execution ports (Logica=
-l Processor cycles since ICL, Physical Core cycles otherwise). Sample with:=
- UOPS_EXECUTED.CYCLES_GE_3",
          "ScaleUnit": "100%"
      },
-@@ -1108,10 +1101,10 @@
+     {
+@@ -1278,11 +1325,10 @@
+     },
+     {
+         "BriefDescription": "This metric estimates fraction of cycles whil=
+e the memory subsystem was handling loads from remote memory",
+-        "MetricConstraint": "NO_GROUP_EVENTS",
+         "MetricExpr": "310 * (MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE_DRAM * =
+(1 + MEM_LOAD_UOPS_RETIRED.HIT_LFB / (MEM_LOAD_UOPS_RETIRED.L2_HIT + MEM_LO=
+AD_UOPS_RETIRED.L3_HIT + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_HIT + MEM_LOAD_U=
+OPS_L3_HIT_RETIRED.XSNP_HITM + MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_MISS + MEM=
+_LOAD_UOPS_L3_MISS_RETIRED.LOCAL_DRAM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOT=
+E_DRAM + MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE_HITM + MEM_LOAD_UOPS_L3_MISS_=
+RETIRED.REMOTE_FWD))) / tma_info_thread_clks",
+         "MetricGroup": "Server;Snoop;TopdownL5;tma_L5_group;tma_mem_latenc=
+y_group",
+-        "MetricName": "tma_remote_dram",
+-        "MetricThreshold": "tma_remote_dram > 0.1 & (tma_mem_latency > 0.1=
+ & (tma_dram_bound > 0.1 & (tma_memory_bound > 0.2 & tma_backend_bound > 0.=
+2)))",
++        "MetricName": "tma_remote_mem",
++        "MetricThreshold": "tma_remote_mem > 0.1 & (tma_mem_latency > 0.1 =
+& (tma_dram_bound > 0.1 & (tma_memory_bound > 0.2 & tma_backend_bound > 0.2=
+)))",
+         "PublicDescription": "This metric estimates fraction of cycles whi=
+le the memory subsystem was handling loads from remote memory. This is caus=
+ed often due to non-optimal NUMA allocations. #link to NUMA article. Sample=
+ with: MEM_LOAD_UOPS_L3_MISS_RETIRED.REMOTE_DRAM_PS",
+         "ScaleUnit": "100%"
+     },
+@@ -1363,10 +1409,10 @@
      {
          "BriefDescription": "This metric represents fraction of cycles the=
  CPU was stalled due to new branch address clears",
@@ -918,21 +1043,21 @@ eers > 0.05 & (tma_fetch_latency > 0.1 & tma_frontend_bound > 0.15))",
 -        "PublicDescription": "This metric represents fraction of cycles th=
 e CPU was stalled due to new branch address clears. These are fetched branc=
 hes the Branch Prediction Unit was unable to recognize (e.g. first time the=
- branch is fetched or hitting BTB capacity limit). Sample with: FRONTEND_RE=
-TIRED.UNKNOWN_BRANCH",
+ branch is fetched or hitting BTB capacity limit). Sample with: BACLEARS.AN=
+Y",
 +        "PublicDescription": "This metric represents fraction of cycles th=
 e CPU was stalled due to new branch address clears. These are fetched branc=
 hes the Branch Prediction Unit was unable to recognize (e.g. first time the=
  branch is fetched or hitting BTB capacity limit) hence called Unknown Bran=
-ches. Sample with: FRONTEND_RETIRED.UNKNOWN_BRANCH",
+ches. Sample with: BACLEARS.ANY",
          "ScaleUnit": "100%"
      },
      {
-diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/metricgroups.json b=
-/tools/perf/pmu-events/arch/x86/broadwellde/metricgroups.json
+diff --git a/tools/perf/pmu-events/arch/x86/broadwellx/metricgroups.json b/=
+tools/perf/pmu-events/arch/x86/broadwellx/metricgroups.json
 index f6a0258e3241..8c808347f6da 100644
---- a/tools/perf/pmu-events/arch/x86/broadwellde/metricgroups.json
-+++ b/tools/perf/pmu-events/arch/x86/broadwellde/metricgroups.json
+--- a/tools/perf/pmu-events/arch/x86/broadwellx/metricgroups.json
++++ b/tools/perf/pmu-events/arch/x86/broadwellx/metricgroups.json
 @@ -2,10 +2,10 @@
      "Backend": "Grouping from Top-down Microarchitecture Analysis Metrics =
 spreadsheet",
