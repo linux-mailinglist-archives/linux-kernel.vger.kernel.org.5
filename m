@@ -1,59 +1,66 @@
-Return-Path: <linux-kernel+bounces-65759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C8B85513B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:04:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B67585514A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99FF01F21B6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:04:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5ACB292F03
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5073612FB14;
-	Wed, 14 Feb 2024 17:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED7712FB39;
+	Wed, 14 Feb 2024 17:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GvrEhMvu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMJ3bSz0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDF112F5B6;
-	Wed, 14 Feb 2024 17:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D0612FB25;
+	Wed, 14 Feb 2024 17:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933492; cv=none; b=YFyS1O9BMTe9GTm8ZLwZmpdA8wxIUJE9P2zOGSb9yYUnTBC4rXEY/ezEhamW7z7n4YHIZzqfsu1fGMCZjrHT9YTrWS4gTxbCWQMFfT/eJYiWl1FSVT/e5NSO/1Iih/GDM7/Vp2ZaVJsmbpIru2OtjK47SaOT/YTcw8FD2B7yGlE=
+	t=1707933493; cv=none; b=keCeBHNCHVyhAy2wByKPNuYIFSJ7nr9BxY+3wWRZjl+N1Enh1DQPz8iefvPVQmNkbD0mO9nopo02wP6Qz/iXRLmD0q1CMbPN+WrFgEo3U5PSG7cVBjV9dapc5HWp8MuMM4XIWeGB9U1MLA8B9NbxyB46ull42KBcdbLVa4/a0o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933492; c=relaxed/simple;
-	bh=OVdFZ2NgGzfZHrtkd+yxtrqdBPDwCSUB/L6vyyCfi9U=;
+	s=arc-20240116; t=1707933493; c=relaxed/simple;
+	bh=wztF8XzxdbVB9Jk+ZtbZZ2oEzTpOr4x4BBNA8Lz2aIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jPhDlkm4FWWDkAcMnbbVeEpv/mcUliLux/jukEnbKDGFBu8NQPTn6dzVqhhvzwiy4T0BS5TE3oNAL0kBZwfqMzSD7MgHcozIckDMk0hXj1rINGfAfbZdGBNvi4sqmrm+s3Nq6zgcF2pDtk+v4ulYw2RA2RSkjuKZITMBXt2hXYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GvrEhMvu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB71BC433C7;
-	Wed, 14 Feb 2024 17:58:11 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UAklT1wYNX64SaA7vk1dR4KaOeHQHhREPWiI0Nlfu2Ac/+LDNyFvAXjx0lhyUn9huXXpBygyDJPdi3BDvDZiBh9chLz119aLkKkDVjKLciTfIXWlHa8Yylu8osFZCmloG3FovUQgyr53+/w79cnnJ7YShE5+yzuvhsjqbbhxXXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMJ3bSz0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A9A9C43390;
+	Wed, 14 Feb 2024 17:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933492;
-	bh=OVdFZ2NgGzfZHrtkd+yxtrqdBPDwCSUB/L6vyyCfi9U=;
+	s=k20201202; t=1707933493;
+	bh=wztF8XzxdbVB9Jk+ZtbZZ2oEzTpOr4x4BBNA8Lz2aIQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GvrEhMvuStQEIKgvYejGKWMZvyTRtk68ObKfZU9RDR+yG+JMBeLmNUvQMCAtFOuub
-	 koPXTAflN1UuvNSo6arE9u0t0SUSXe8i9Jomb/rw3HwqHTV8M9UO4VAjTbBoQrWfVm
-	 sZQn0k+djzBe+3o2pWDhw1FvZMJ3D09TTzNRQQcRidtOESsokozNdLwqv1oqcEHl4M
-	 lyFz17nVwvJA1Ct/GYSz0o5y9fPnckSQiYCzFHSCA5y3LuvKfyvAwYkWR4/qiilDRq
-	 0NXodwESj5hKskAVdzMEnarpQP5doqG8FdU0DGP5Uu0ZrfO2tCdZnszWnVNt6zStOR
-	 4eeNcDr01O/vA==
+	b=gMJ3bSz0UubYUwNhzZrP3ZTeEE476eQttaoMMgO8tGZpIgBkeVh8AHt5LetCUltQP
+	 6RaMpNj4NnXxutc+Vdi3r4XGTY7KphLugB8kaHlddHMpRdQig04Y0dB9Gp+cTGLmv5
+	 xjvasuxw7pYWAgiQn0nec8IAkQgcrYI4iD1gtRp/VD4jQQQRI6ZuP7mR7D4q+VU4vl
+	 om1+Y919Y1rKOPYmuvTXaXSIWe4tXlv64vhuslpfMTjGLZm02BtDSlNs411bn3BSjD
+	 ZBFb2LPpXGKpiP7/tF9jFZU0FBUryO7oriSR4Du0Xe+/BSZXgCp54gmEopugIaPVoE
+	 IWE1SpDoOQgYg==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@quicinc.com,
-	Elliot Berman <quic_eberman@quicinc.com>
-Subject: Re: [PATCH v3] soc: qcom: llcc: Check return value on Broadcast_OR reg read
-Date: Wed, 14 Feb 2024 11:57:40 -0600
-Message-ID: <170793345825.27225.14319593476051547796.b4-ty@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	Raymond Hackley <raymondhackley@protonmail.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Stephan Gerhold <stephan@gerhold.net>,
+	Nikita Travkin <nikita@trvn.ru>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	Walter Broemeling <wallebroem@gmail.com>,
+	Joe Mason <buddyjojo06@outlook.com>,
+	Siddharth Manthan <siddharth.manthan@gmail.com>
+Subject: Re: [PATCH v4] arm64: dts: qcom: msm8916-samsung-fortuna/rossa: Add initial device trees
+Date: Wed, 14 Feb 2024 11:57:41 -0600
+Message-ID: <170793345832.27225.12573915129416662258.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240212183515.433873-1-quic_uchalich@quicinc.com>
-References: <20240212183515.433873-1-quic_uchalich@quicinc.com>
+In-Reply-To: <20240129143147.5058-1-raymondhackley@protonmail.com>
+References: <20240129143147.5058-1-raymondhackley@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,18 +71,23 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 12 Feb 2024 10:35:15 -0800, Unnathi Chalicheemala wrote:
-> Commit c72ca343f911 ("soc: qcom: llcc: Add v4.1 HW version support")
-> introduced a new 4.1 if statement in llcc_update_act_ctrl() without
-> considering that ret might be overwritten. So, add return value check
-> after Broadcast_OR register read in llcc_update_act_ctrl().
+On Mon, 29 Jan 2024 14:32:02 +0000, Raymond Hackley wrote:
+> Samsung Galaxy Core Prime and Grand Prime are phones based on MSM8916.
+> They are similar to the other Samsung devices based on MSM8916 with only a
+> few minor differences.
 > 
+> This initial commit adds support for:
+>  - fortuna3g (SM-G530H)
+>  - gprimeltecan (SM-G530W)
+>  - grandprimelte (SM-G530FZ)
+>  - rossa (SM-G360G)
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] soc: qcom: llcc: Check return value on Broadcast_OR reg read
-      commit: ceeaddc19a90039861564d8e1078b778a8f95101
+[1/1] arm64: dts: qcom: msm8916-samsung-fortuna/rossa: Add initial device trees
+      commit: e1839f78e4699005cfd4f5f59107c33b174fa706
 
 Best regards,
 -- 
