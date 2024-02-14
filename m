@@ -1,294 +1,167 @@
-Return-Path: <linux-kernel+bounces-65514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C5F854E0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:24:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD64854E6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35CF71F222D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32A8D28739F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A8360DE7;
-	Wed, 14 Feb 2024 16:22:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32E60B97;
-	Wed, 14 Feb 2024 16:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B87360DE5;
+	Wed, 14 Feb 2024 16:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DwTKqPcC"
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DD060261;
+	Wed, 14 Feb 2024 16:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927774; cv=none; b=WyntgX+auHcZYBMx0jItzkcyzM0QuUpvi0bp71WRR4VAMIh2dlctc1bLbnYwYdTLSL6YJZ5B8KRDT24AjvBNguecdqBmINC7K/pQ3rc1iqHWdaOwxkTiYTasU1W7k5Fz6zYk6HQURiEw9HsyxOEmPwZwCnJX3jWjDRGcgv1DjIw=
+	t=1707928079; cv=none; b=Y4J1gPHhjGuEbxD0y9py6uBXIawFRfYC8pavDiNX4GZ8FswDdfY2B5OhVdBnTXD20Rq3hFC+bsUoiv4sEcFXB5FE8cDDVsqTGjYgapDVvhzCSaSVgc/TP8wFo/O7Olv1807Oq63tbeqekO6/eRXRoIDwFbB2Db4W72fPCb4PSss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927774; c=relaxed/simple;
-	bh=tPeIGdk9ABSJ2vtL7S2gwGOmRk4EEkM+iWIHuT7Lkzs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PS962roqco3C//5W7sgHSFzpMt6QFc2M2ish3+DQoyvZ0V3lHwes+zHov4gZI1WT3+emNPdXypsVublt87nXslAMpJY5d3ILULujTVu8t2vhaOLELf4rvB8qiMnkn1WLHRn9LXsRGEUFBrva/k+M54/HNzt7FwvdGN4rMa//r2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC6721FB;
-	Wed, 14 Feb 2024 08:23:31 -0800 (PST)
-Received: from [10.57.64.120] (unknown [10.57.64.120])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32A5B3F762;
-	Wed, 14 Feb 2024 08:22:48 -0800 (PST)
-Message-ID: <6c986b83-e00d-46fe-8c88-374f8e6bd0fa@arm.com>
-Date: Wed, 14 Feb 2024 16:22:46 +0000
+	s=arc-20240116; t=1707928079; c=relaxed/simple;
+	bh=MssyRsKrJRRAkkJJGN6qgNf78K+Hb3T00EQE6Vl581o=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sgKjhF4lFlDNvHBwhU7Tnu5LRKv2y3VrSff+I4DujRKdX1Tw3p1Oh8mxmA/qVY4Gl0syeCptUH+Pe05BUQOzefLBlnComctkdyz+ECRw3HA7pMZSN0bFyiMTzTtO2TnChePynuuX4WDCNxr4WxIjmwbqRQOnBixgAjimmp4lPZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DwTKqPcC; arc=none smtp.client-ip=217.70.178.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from relay3-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::223])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id F3FC7C12D0;
+	Wed, 14 Feb 2024 16:24:51 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4EC5A60005;
+	Wed, 14 Feb 2024 16:24:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707927884;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=1yZvka761LxwcjsXeq77kW67boXyJRbXbzQuSUTAikw=;
+	b=DwTKqPcCrCFZsN6NsHcT/7rxGWfeCjdNnnI9PR0jdxKUMT0TO+WIQvhxXsoIHmOUKXnEWI
+	S+q1zlSwPidwJEQQhAIeatmHflRqgb0lEEkG/7BxEHsAaa2e/jL4nwFTUzOKg4epii17Yz
+	odGBoS+04/n3WaiKDAJ671W8wB+89ORCC2hHLq3PmLVufRbCLO48u+MUKcFTiVS2Xdpbtd
+	w7I5ry3xelUlIYCO6igxHmrLrgdSdDnmsZa54lg+4yJxN7jMxteASlaah/vjpXOiI/Cc3Q
+	KqYnY9tCRnv9H8K7NFwLgtL4Vqg6CDwkPi4BJa+zECtDIuDvMgM0dEzpmrFSfA==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH 00/23] Rework Nomadik GPIO to add Mobileye EyeQ5 support
+Date: Wed, 14 Feb 2024 17:23:53 +0100
+Message-Id: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/7] mm: thp: split huge page to any lower order pages
- (except order-1).
-Content-Language: en-GB
-To: Zi Yan <ziy@nvidia.com>
-Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
- <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <20240213215520.1048625-6-zi.yan@sent.com>
- <de66b9fb-ee84-473f-a69a-2ac8554f6000@arm.com>
- <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIABnpzGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDINbNTcqp1E0vyMzXTTQ2MDU3TE02NrIwVgKqLyhKTcusAJsVHVtbCwB
+ ftdvwWwAAAA==
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On 14/02/2024 16:11, Zi Yan wrote:
-> On 14 Feb 2024, at 5:38, Ryan Roberts wrote:
-> 
->> On 13/02/2024 21:55, Zi Yan wrote:
->>> From: Zi Yan <ziy@nvidia.com>
->>>
->>> To split a THP to any lower order (except order-1) pages, we need to
->>> reform THPs on subpages at given order and add page refcount based on the
->>> new page order. Also we need to reinitialize page_deferred_list after
->>> removing the page from the split_queue, otherwise a subsequent split will
->>> see list corruption when checking the page_deferred_list again.
->>>
->>> It has many uses, like minimizing the number of pages after
->>> truncating a huge pagecache page. For anonymous THPs, we can only split
->>> them to order-0 like before until we add support for any size anonymous
->>> THPs.
->>
->> multi-size THP is now upstream. Not sure if this comment still makes sense.
-> Will change it to reflect the fact that multi-size THP is already upstream.
-> 
->> Still its not completely clear to me how you would integrate this new machinery
->> and decide what non-zero order to split anon THP to?
-> 
-> Originally, it was developed along with my 1GB THP support. So it was intended
-> to split order-18 to order-9. But for now, like you and David said in the cover
-> letter email thread, we might not want to use it for anonymous large folios
-> until we find a necessary use case.
-> 
->>>
->>> Order-1 folio is not supported because _deferred_list, which is used by
->>> partially mapped folios, is stored in subpage 2 and an order-1 folio only
->>> has subpage 0 and 1.
->>>
->>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>> ---
->>>  include/linux/huge_mm.h |  21 +++++---
->>>  mm/huge_memory.c        | 114 +++++++++++++++++++++++++++++++---------
->>>  2 files changed, 101 insertions(+), 34 deletions(-)
->>>
->>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>> index 5adb86af35fc..de0c89105076 100644
->>> --- a/include/linux/huge_mm.h
->>> +++ b/include/linux/huge_mm.h
->>> @@ -265,10 +265,11 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
->>>
->>>  void folio_prep_large_rmappable(struct folio *folio);
->>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
->>> -int split_huge_page_to_list(struct page *page, struct list_head *list);
->>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->>> +		unsigned int new_order);
->>>  static inline int split_huge_page(struct page *page)
->>>  {
->>> -	return split_huge_page_to_list(page, NULL);
->>> +	return split_huge_page_to_list_to_order(page, NULL, 0);
->>>  }
->>>  void deferred_split_folio(struct folio *folio);
->>>
->>> @@ -422,7 +423,8 @@ can_split_folio(struct folio *folio, int *pextra_pins)
->>>  	return false;
->>>  }
->>>  static inline int
->>> -split_huge_page_to_list(struct page *page, struct list_head *list)
->>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->>> +		unsigned int new_order)
->>>  {
->>>  	return 0;
->>>  }
->>> @@ -519,17 +521,20 @@ static inline bool thp_migration_supported(void)
->>>  }
->>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>
->>> -static inline int split_folio_to_list(struct folio *folio,
->>> -		struct list_head *list)
->>> +static inline int split_folio_to_list_to_order(struct folio *folio,
->>> +		struct list_head *list, int new_order)
->>>  {
->>> -	return split_huge_page_to_list(&folio->page, list);
->>> +	return split_huge_page_to_list_to_order(&folio->page, list, new_order);
->>>  }
->>>
->>> -static inline int split_folio(struct folio *folio)
->>> +static inline int split_folio_to_order(struct folio *folio, int new_order)
->>>  {
->>> -	return split_folio_to_list(folio, NULL);
->>> +	return split_folio_to_list_to_order(folio, NULL, new_order);
->>>  }
->>>
->>> +#define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l, 0)
->>> +#define split_folio(f) split_folio_to_order(f, 0)
->>> +
->>>  /*
->>>   * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
->>>   * limitations in the implementation like arm64 MTE can override this to
->>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>> index ad7133c97428..d0e555a8ea98 100644
->>> --- a/mm/huge_memory.c
->>> +++ b/mm/huge_memory.c
->>> @@ -2718,11 +2718,14 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
->>>
->>>  static void unmap_folio(struct folio *folio)
->>>  {
->>> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
->>> -		TTU_SYNC | TTU_BATCH_FLUSH;
->>> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC |
->>> +		TTU_BATCH_FLUSH;
->>>
->>>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
->>>
->>> +	if (folio_test_pmd_mappable(folio))
->>> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
->>
->> Should we split this change out? I think it makes sense independent of this series?
->>
-> 
-> Sure. Since multi-size THP is upstream, this avoid unnecessary code path if
-> the THP is not PMD-mapped.
-> 
->>> +
->>>  	/*
->>>  	 * Anon pages need migration entries to preserve them, but file
->>>  	 * pages can simply be left unmapped, then faulted back on demand.
->>> @@ -2756,7 +2759,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
->>>  		struct lruvec *lruvec, struct list_head *list)
->>>  {
->>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
->>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
->>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
->>>  	lockdep_assert_held(&lruvec->lru_lock);
->>>
->>> @@ -2777,7 +2779,8 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
->>>  }
->>>
->>>  static void __split_huge_page_tail(struct folio *folio, int tail,
->>> -		struct lruvec *lruvec, struct list_head *list)
->>> +		struct lruvec *lruvec, struct list_head *list,
->>> +		unsigned int new_order)
->>>  {
->>>  	struct page *head = &folio->page;
->>>  	struct page *page_tail = head + tail;
->>> @@ -2847,10 +2850,15 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
->>>  	 * which needs correct compound_head().
->>>  	 */
->>>  	clear_compound_head(page_tail);
->>> +	if (new_order) {
->>> +		prep_compound_page(page_tail, new_order);
->>> +		folio_prep_large_rmappable(page_folio(page_tail));
->>> +	}
->>>
->>>  	/* Finally unfreeze refcount. Additional reference from page cache. */
->>> -	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
->>> -					  folio_test_swapcache(folio)));
->>> +	page_ref_unfreeze(page_tail,
->>> +		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
->>> +			     folio_nr_pages(page_folio(page_tail)) : 0));
->>>
->>>  	if (folio_test_young(folio))
->>>  		folio_set_young(new_folio);
->>> @@ -2868,7 +2876,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
->>>  }
->>>
->>>  static void __split_huge_page(struct page *page, struct list_head *list,
->>> -		pgoff_t end)
->>> +		pgoff_t end, unsigned int new_order)
->>>  {
->>>  	struct folio *folio = page_folio(page);
->>>  	struct page *head = &folio->page;
->>> @@ -2877,10 +2885,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->>>  	unsigned long offset = 0;
->>>  	unsigned int nr = thp_nr_pages(head);
->>>  	int i, nr_dropped = 0;
->>> +	unsigned int new_nr = 1 << new_order;
->>>  	int order = folio_order(folio);
->>>
->>>  	/* complete memcg works before add pages to LRU */
->>> -	split_page_memcg(head, order, 0);
->>> +	split_page_memcg(head, order, new_order);
->>>
->>>  	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
->>>  		offset = swp_offset(folio->swap);
->>> @@ -2893,8 +2902,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->>>
->>>  	ClearPageHasHWPoisoned(head);
->>>
->>> -	for (i = nr - 1; i >= 1; i--) {
->>> -		__split_huge_page_tail(folio, i, lruvec, list);
->>> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
->>> +		__split_huge_page_tail(folio, i, lruvec, list, new_order);
->>>  		/* Some pages can be beyond EOF: drop them from page cache */
->>>  		if (head[i].index >= end) {
->>>  			struct folio *tail = page_folio(head + i);
->>> @@ -2910,29 +2919,41 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->>>  			__xa_store(&head->mapping->i_pages, head[i].index,
->>>  					head + i, 0);
->>>  		} else if (swap_cache) {
->>> +			/*
->>> +			 * split anonymous THPs (including swapped out ones) to
->>> +			 * non-zero order not supported
->>> +			 */
->>> +			VM_WARN_ONCE(new_order,
->>> +				"Split swap-cached anon folio to non-0 order not supported");
->>
->> Why isn't it supported? Even if it's not supported, is this level the right
->> place to enforce these kinds of policy decisions? I wonder if we should be
->> leaving that to the higher level to decide?
-> 
-> Is the swap-out small-size THP without splitting merged? This needs that patchset.
+Hi,
 
-No not yet. I have to respin it. Its on my todo list.
+This patch series reworks the Nomadik GPIO driver to bring it up to date
+to current kernel standards. We then add Mobileye EyeQ5 support that
+uses the same IP block but with limited functionality. We also add
+features required by our newly supported platform:
 
-I'm not sure I understand the dependency though?
+ - Dynamic GPIO ID allocation;
+ - Make clock optional;
+ - Shared IRQ (usecase: EyeQ5 has two banks using the same IRQ);
+ - Handle variadic GPIO counts (usecase: EyeQ5 has <32 GPIOs per bank);
+ - Grab optional reset at probe (usecase: EyeQ5 has a reset available).
 
-> You are right that a warning here is not appropriate. I will fail the splitting
-> if the folio is swapcached and going to be split into >0 order.
-> 
->>>  			__xa_store(&swap_cache->i_pages, offset + i,
->>>  					head + i, 0);
->>>  		}
->>>  	}
->>>
-> 
-> 
-> --
-> Best Regards,
-> Yan, Zi
+This GPIO platform driver was previously declared & registered inside
+drivers/pinctrl/nomadik/pinctrl-nomadik.c, side-by-side with the
+pinctrl driver. Both are tightly integrated, mostly for muxing reasons.
+Now that gpio-nomadik is used for another platform, we loosen the
+relationship. The behavior should not change on already supported
+hardware but I do not have Nomadik hardware to test for that.
+
+We have some dependencies, kept neatly to the end. Those are:
+- The base platform support series from Grégory [1]. This relates to the
+  last four patches (20 thru 23), ie defconfig and devicetree.
+- The OLB syscon support series [0]. It provides reset and pinctrl nodes
+  inside the devicetree. This relates to the last two patches (22 and
+  23), ie resets and gpio-ranges DT props. GPIO works fine without it
+  if patches 22 and 23 are dropped.
+
+This has been tested on the EyeQ5 hardware, with the two parent series
+applied. It also works fine without the OLB syscon series when our last
+two patches are removed. It has been built on both Arm defconfigs that
+rely on pinctrl-nomadik: nhk8815_defconfig and u8500_defconfig. I don't
+have any Nomadik hardware to test though.
+
+Have a nice day,
+Théo
+
+[0]: https://lore.kernel.org/lkml/20240212-mbly-clk-v6-0-c46fa1f93839@bootlin.com/
+[1]: https://lore.kernel.org/lkml/20240205153503.574468-1-gregory.clement@bootlin.com/
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Théo Lebrun (23):
+      dt-bindings: gpio: nomadik: convert into yaml format
+      dt-bindings: gpio: nomadik: add optional ngpios property
+      dt-bindings: gpio: nomadik: add mobileye,eyeq5-gpio compatible
+      dt-bindings: gpio: nomadik: add optional reset property
+      gpio: nomadik: extract GPIO platform driver from drivers/pinctrl/nomadik/
+      pinctrl: nomadik: fix build warning (-Wformat)
+      pinctrl: nomadik: fix build warning (-Wpointer-to-int-cast)
+      pinctrl: nomadik: minimise indentation in probe
+      pinctrl: nomadik: follow type-system kernel coding conventions
+      pinctrl: nomadik: follow whitespace kernel coding conventions
+      pinctrl: nomadik: follow conditional kernel coding conventions
+      gpio: nomadik: request dynamic ID allocation
+      gpio: nomadik: fix offset bug in nmk_pmx_set()
+      gpio: nomadik: make clock optional
+      gpio: nomadik: change driver name from gpio to gpio-nomadik
+      gpio: nomadik: support shared GPIO IRQs
+      gpio: nomadik: handle variadic GPIO count
+      gpio: nomadik: support mobileye,eyeq5-gpio
+      gpio: nomadik: grab optional reset control and deassert it at probe
+      MIPS: eyeq5_defconfig: enable GPIO by default
+      MIPS: mobileye: eyeq5: add two GPIO bank nodes
+      MIPS: mobileye: eyeq5: add resets to GPIO banks
+      MIPS: mobileye: eyeq5: map GPIOs to pins using gpio-ranges
+
+ .../devicetree/bindings/gpio/gpio-nmk.txt          |  31 -
+ .../devicetree/bindings/gpio/st,nomadik-gpio.yaml  |  96 +++
+ MAINTAINERS                                        |   2 +
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  30 +
+ arch/mips/configs/eyeq5_defconfig                  |   2 +
+ drivers/gpio/Kconfig                               |  13 +
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-nomadik.c                        | 725 ++++++++++++++++
+ drivers/pinctrl/nomadik/Kconfig                    |   5 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c   |   3 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik-stn8815.c  |   3 +-
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c          | 938 +++------------------
+ .../linux/gpio/gpio-nomadik.h                      | 124 ++-
+ 13 files changed, 1118 insertions(+), 855 deletions(-)
+---
+base-commit: d55aa725e32849f709b61eab3b7a50b810a71a84
+change-id: 20231023-mbly-gpio-a30571ec3283
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
 
 
