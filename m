@@ -1,203 +1,97 @@
-Return-Path: <linux-kernel+bounces-64805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A93E8854305
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:41:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72AB7854307
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07247B284BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:41:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10FA81F23FF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF70C12B6D;
-	Wed, 14 Feb 2024 06:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5E9111B7;
+	Wed, 14 Feb 2024 06:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="FSncoOkU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="IDHHGp6S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92CA12B6C;
-	Wed, 14 Feb 2024 06:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A4B1119B;
+	Wed, 14 Feb 2024 06:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707892818; cv=none; b=mHxG0wMCFx3ltxNDwgzWkpToYKMi+fnUshpFafqXaKaLzHcxe4FFZ9Ou3/oM4/htwIGkrbT5G86Vus/4ZKWGkIClTp4bN1i5ORL/41RTqa6dgAF8vsVRNjhCzixJfvPN1e48pHpotVyQ1IDqVxBLokpN0SKyrhqLxmxAUlR8bXA=
+	t=1707893015; cv=none; b=oTKAu75z6AqvXWuWxVnuz+6wbgzYmulQf8BUy3rljwh+5utCz6JcTY4eFZto7yXhaT3OG2AOvaKytWIXkC42Wj63j/Bf/irjU10MFVnwuVWc+T43AHp5IQSN/vcfApsE2OblvFPEAlmxYgp5yLmWCqxUzqRfXXQJfjTBFnM7xt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707892818; c=relaxed/simple;
-	bh=wsHVfr8hdZBYZbP2L9EO1WVTmS/EVBmRVwV/3aRh+cQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=auyhQVlpjDI2o0iiPVotAa/HxqOwFw/KnsSKR7QNwTXJCRdVO9EqiwR1I1HegDpnxGyXuMLFCHBrLhVCtoGw9d7GjmZdlH5YMN2Ro3uZkZuxPrNrS2eiZTCgppL3hZoCPCIaVPQICWc/r5aOaqZW6r3LKcs0X/BFkzWMwmOW/sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=FSncoOkU; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707892815; x=1739428815;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=wsHVfr8hdZBYZbP2L9EO1WVTmS/EVBmRVwV/3aRh+cQ=;
-  b=FSncoOkUqcdbw6ryAhUeDYsgK/U/h7zWOTJxONx7sUlw+VU1rJ3PN4H8
-   tIDvSpBQB2gvlPQtzW1Y9+ZadJyfVIg6qK6A5kFzDdPisLCGVJGrA1tA9
-   EtRcvq0i+IvcuudBQpnzDjx+1MSXeywenmcT3UX0booabf0p2y33WAtnP
-   jlYAw3t1i+xQwxEDIcCsDBdbdRinxXon9pYYiKeIY1yz7pFYQEtDrrpNe
-   KgasEPlLdnp+zg8rfxwDxy3HHWuMsdIcxqlZRA7vK8chh6X28lvUluMQH
-   jhO0/tynSuETTN6sEkW+A7rV9GqPobfSf4wYkNAWd/arWiH2VZLx2znod
-   A==;
-X-CSE-ConnectionGUID: Ym+jSPJASQmf8byUSlOr0w==
-X-CSE-MsgGUID: B+vCBEvPTBmYybQn1ZsH9A==
-X-IronPort-AV: E=Sophos;i="6.06,159,1705388400"; 
-   d="scan'208";a="17663685"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Feb 2024 23:40:14 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 13 Feb 2024 23:40:12 -0700
-Received: from [127.0.0.1] (10.10.85.11) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 13 Feb 2024 23:40:07 -0700
-From: Balakrishnan Sambath <balakrishnan.s@microchip.com>
-Date: Wed, 14 Feb 2024 12:10:06 +0530
-Subject: [PATCH] dt-bindings: sound:atmel-at91sam9g20ek: convert bindings
- to json-schema
+	s=arc-20240116; t=1707893015; c=relaxed/simple;
+	bh=l0OlVPwnAA/BNoPYrpxmb0JNzdB35f0E0pfIwlxJRVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=euKSLWkcfiGBwVNXQJP39exbdRvZNkdP7CdBIeRhjAAj5KrnlcdJmYdegIqSf+H0jCdEQJAZd7OeaiS/KJbwznAaSx2q+frmUuM6XCN1xWs4PU7CdLTpdeUJBoDlFQIKw87hJiegd/TmNUKRZ8p+3M8GD2qCLQhAhUpPPsEgAD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=IDHHGp6S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 994B8C433C7;
+	Wed, 14 Feb 2024 06:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707893015;
+	bh=l0OlVPwnAA/BNoPYrpxmb0JNzdB35f0E0pfIwlxJRVg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IDHHGp6SmQ6hKT0WvGQTgkoC9BFQAX3vZaQlniWuUg90li5YMGtejyqLlX2ZhnBQF
+	 eBkpAE1vdKpQ7qIWcYUP1nfvJvjRKMUPHGODR04CbNfzeOnCY2Ec/FIYIFNqIwrFiy
+	 40RXus3X8i2k6t5nKCQ8ZE7xLCyzdryujSyPR9gM=
+Date: Wed, 14 Feb 2024 07:43:32 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH] Documentation: Document the Linux Kernel CVE process
+Message-ID: <2024021445-emporium-tightwad-3c35@gregkh>
+References: <2024021314-unwelcome-shrill-690e@gregkh>
+ <202402131429.A604440C6@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com>
-X-B4-Tracking: v=1; b=H4sIAEVgzGUC/x2MywqDMBAAf0X23IVsDNj4K8XDqltdaqwk4gPx3
- xs6tznMXJAkqiSoiwuibJr0O2ehRwHdyPMgqH12sMY6Y8khr54SBz9YIx/cw7MqCU8OEzrj+kz
- bemLI/RLlrcf//Wru+wcz//ayawAAAA==
-To: Claudiu Beznea <claudiu.beznea@tuxon.dev>, Liam Girdwood
-	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Balakrishnan Sambath
-	<balakrishnan.s@microchip.com>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202402131429.A604440C6@keescook>
 
-Convert atmel-at91sam9g20ek-wm8731-audio DT binding to yaml
-based json-schema.Change file name to match json-scheme naming.
+On Tue, Feb 13, 2024 at 02:35:24PM -0800, Kees Cook wrote:
+> On Tue, Feb 13, 2024 at 07:48:12PM +0100, Greg Kroah-Hartman wrote:
+> > +No CVEs will be assigned for unfixed security issues in the Linux
+> > +kernel, assignment will only happen after a fix is available as it can
+> > +be properly tracked that way by the git commit id of the original fix.
+> 
+> This seems at odds with the literal definition of what CVEs are:
+> _vulnerability_ enumeration. This is used especially during the
+> coordination of fixes; how is this meant to interact with embargoed
+> vulnerability fixing?
 
-Signed-off-by: Balakrishnan Sambath <balakrishnan.s@microchip.com>
----
- .../bindings/sound/atmel,at91sam9g20ek-wm8731.yaml | 60 ++++++++++++++++++++++
- .../sound/atmel-at91sam9g20ek-wm8731-audio.txt     | 26 ----------
- 2 files changed, 60 insertions(+), 26 deletions(-)
+Yes, this is totally wrong, it was the original first draft of the
+document, that I did on my workstation, and then went on the road for 3+
+weeks and I never sycned up when I got home with the updated version
+that is on my laptop.  The updated version addresses this, as it was
+rightly pointed out by the CVE group that this is not how a CNA is
+supposed to only work.
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel,at91sam9g20ek-wm8731.yaml b/Documentation/devicetree/bindings/sound/atmel,at91sam9g20ek-wm8731.yaml
-new file mode 100644
-index 000000000000..f6330707fe1b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/atmel,at91sam9g20ek-wm8731.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/atmel,at91sam9g20ek-wm8731.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel at91sam9g20ek wm8731 audio complex
-+
-+maintainers:
-+  - Balakrishnan Sambath <balakrishnan.s@microchip.com>
-+
-+properties:
-+  compatible:
-+    const: atmel,at91sam9g20ek-wm8731-audio
-+
-+  atmel,model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: The user-visible name of this sound complex.
-+  atmel,audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description: A list of the connections between audio components.
-+    minItems: 2
-+    items:
-+      enum:
-+        # Board Connectors
-+        - "Ext Spk"
-+        - "Int MIC"
-+
-+        # CODEC Pins
-+        - LHPOUT
-+        - MICIN
-+  atmel,ssc-controller:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of the SSC controller
-+  atmel,audio-codec:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of WM8731 audio codec
-+
-+required:
-+  - compatible
-+  - atmel,model
-+  - atmel,audio-routing
-+  - atmel,ssc-controller
-+  - atmel,audio-codec
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound {
-+        compatible = "atmel,at91sam9g20ek-wm8731-audio";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_pck0_as_mck>;
-+        atmel,model = "wm8731 @ AT91SAMG20EK";
-+        atmel,audio-routing =
-+            "Ext Spk", "LHPOUT",
-+            "Int MIC", "MICIN";
-+        atmel,ssc-controller = <&ssc0>;
-+        atmel,audio-codec = <&wm8731>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/atmel-at91sam9g20ek-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-at91sam9g20ek-wm8731-audio.txt
-deleted file mode 100644
-index 9c5a9947b64d..000000000000
---- a/Documentation/devicetree/bindings/sound/atmel-at91sam9g20ek-wm8731-audio.txt
-+++ /dev/null
-@@ -1,26 +0,0 @@
--* Atmel at91sam9g20ek wm8731 audio complex
--
--Required properties:
--  - compatible: "atmel,at91sam9g20ek-wm8731-audio"
--  - atmel,model: The user-visible name of this sound complex.
--  - atmel,audio-routing: A list of the connections between audio components.
--  - atmel,ssc-controller: The phandle of the SSC controller
--  - atmel,audio-codec: The phandle of the WM8731 audio codec
--Optional properties:
--  - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
--
--Example:
--sound {
--	compatible = "atmel,at91sam9g20ek-wm8731-audio";
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_pck0_as_mck>;
--
--	atmel,model = "wm8731 @ AT91SAMG20EK";
--
--	atmel,audio-routing =
--		"Ext Spk", "LHPOUT",
--		"Int MIC", "MICIN";
--
--	atmel,ssc-controller = <&ssc0>;
--	atmel,audio-codec = <&wm8731>;
--};
+Yet another reason why keeping changes private is a major pain, not only
+for security ones!  :(
 
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240214-at91sam9g20ek-wm8731-yaml-404ddddbb91a
+Let me send out the proper one after my morning coffee has kicked in and
+I resolve the differences, and make the grammer fixes that Randy pointed
+out...
 
-Best regards,
--- 
-Balakrishnan Sambath <balakrishnan.s@microchip.com>
+> Outside of that, I welcome the fire-hose of coming identifiers! I think
+> this will more accurately represent the number of fixes landing in
+> stable trees and how important it is for end users to stay current on
+> a stable kernel.
 
+Agreed.
+
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Many thanks for the review!
+
+greg k-h
 
