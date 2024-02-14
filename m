@@ -1,146 +1,218 @@
-Return-Path: <linux-kernel+bounces-65155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDEC78548AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:46:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE8C8548B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F45E1C22833
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:46:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C981F29C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8982F1AAD7;
-	Wed, 14 Feb 2024 11:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD8A1B95C;
+	Wed, 14 Feb 2024 11:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jz85hSk8"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mgi9IlDT"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3449018EB0
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B50B41B962
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707911167; cv=none; b=X/F/GFR+1epxW3u0tNm4N1InOgiBq1man/s060flcu/XxCub5t9iek4XDjMDuxcIbw+G6u+dX+hTWnOONPcs1vZDTMcSH/4ygYbwdqMW3FCRc7+Hg6FBwhYw3tTm5sm/uGGxj6FvLyl+bjMZqD2XuQo8nCZlicaPfFX4VGBitPQ=
+	t=1707911177; cv=none; b=KIMaA8bl8rTSWKjecFup07Fr2ZdSy9FMz8Y+oTmY/xu/3CmfQnfo+j6zSc6X4NMX5FDAmKBR/hdFQ/PNy0e2FM7u6E26XTlFZUXFllHxsdKdIQoGET0zN4DnlvIP8PKCDBHx4RjadCKyRz/SEBuS6UKVMS7md32z6mFGBw3XUbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707911167; c=relaxed/simple;
-	bh=5cBCTJmIkuZecSiGwWsCCZ+RQXy4vsGvUq70KIHkdRM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NI4i83mhSXgJ/Ns1YR7panUKeeurXOMYMQY6hN0VNrqbMNHCz0QL8KCGab0Npiz0gva7bWPYuxA3ZjKGgyS5nTkKzPjKbASOatarnlA5feheOV8qn8SyfVGwDBW2at1T7Mw22g0n6Wep/tKeZTdcIbkmqHEDFX9amN/9nbvlIhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jz85hSk8; arc=none smtp.client-ip=209.85.219.177
+	s=arc-20240116; t=1707911177; c=relaxed/simple;
+	bh=iaFhux7+ftCQreqL4+9rxGj5oghyh3WmJyVki73C+Bc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Z19KWh8/Ra28qFubH/YiaekMzjB581wkOr1g+9lLcaaAdnaFEyi+Qffuu7RZu0qH/sotElYId/NJ9IUB5vLUKYNCtU2OF/JsbatnfC1iHN42DEy3pgWkZ1fKD3+MsUkm6bGAJtY6604CPfUGCuryHuy9VUH8Z2QUem1co0QrqQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mgi9IlDT; arc=none smtp.client-ip=209.85.210.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc745927098so4524874276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 03:46:06 -0800 (PST)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e2ddc5f31eso1895026a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 03:46:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707911165; x=1708515965; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XMm6H1+3sxiadbeuUfjignaOEewFpqqASgu/afNzhas=;
-        b=Jz85hSk8sJ3tV1YSHJgKQYN3avRkFwAkYHyFkfdkR5bGnkuHFUIL3Yxipq8W7CqHN+
-         hF4lv1jpqa8Z7Rr6zUFjf+/JtdP93kROVM6KhxO5LhR0KWU4ryCRA1FErAHk8OECtgNh
-         /5px+6vagjYxMf4+bfnGA3/1dP8fA3+6AG/l5IazpqEu7C7jYIL3VDzdIvE2SczX2NEJ
-         WbJsK7X+MIDtrFU/9ZBLJBbUEJ7aNb90nExFsjedrQk4+CDo8k8UgS9r2fDK790FeZej
-         u+ZL6TvA/ogi/AkX3MMnmCqsfA6PdVSz7ZqJGHJlQXPpXeAcIWAr7YdmVBa4fss4yMmC
-         kaqg==
+        d=linaro.org; s=google; t=1707911175; x=1708515975; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=stU+R4KG+NyQbt4ql0bZhshhmz0bDBsi5UUfG+CKyak=;
+        b=Mgi9IlDThPJqe5w4Qu/TPIQC9vhvcSB0iPqI1PeOCHDncgzMm+uoXA8YgU8fX5fCTA
+         9l1IBhnL2VxVPR97Ea/vW+0C+/zRdKWBk7WOFACsdGmLzVXh5gmVjALxJrJz6zRsmHWP
+         GQW3l8j3FOVdixcvlhTZvXMQ96sV7D7qno3CcXMzqSm2asfEMS4OhY3y1/EajTnmOiM1
+         G7qvQp9L3ZLPSoYLTmeGJucVk5FN7Nj5yWriW/wOcjeiVVOjBrVkj7xEBvrpeo90lb26
+         buIHoJRGknozEYAeySNURmGUInZ6US0IeTYwMBYzMucFvGPH/p41+boRkXY8BkVjaMQP
+         hCxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707911165; x=1708515965;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707911175; x=1708515975;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XMm6H1+3sxiadbeuUfjignaOEewFpqqASgu/afNzhas=;
-        b=ppp4eQS6yoZVsVSopVSilVaNr/Dd5cuT7SrcIdPuou6dxQrIRMo143NDPnZQ6i5pxJ
-         whbGP8xPoQ+9WsVYI03pa0p2QmlOXgBx2PZN+gbRZBLuI0vtGUyDpJ8PvhywVglKuUsq
-         aGyimh2uI9EN7+nugyzj5pwsOOYIJoI18uZ6tCJPjvmI/QKBcbted7Bc0YgjpK0ga1Xl
-         Rbpnn3P3/xa2yeZ33k04aOx3K24pasyyMLyPXMgfGsj22tgdSiK13Adjqi724fYHBTM2
-         79svWGNArjOv4yYssOP+mgE02r1u6dgwPoGLGlPBI0AeVVXNS8PY9DwEsTanZbRpgQLP
-         9Weg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIjaXwUrustkE4Mc0qF8S/6bdvkkX8GWGgKWQDpgYGma5XDGt3xroKein+2qZoZPIvDiyXHNkj+D+kkzeB7xzd+sTLWlYjzPoki8aV
-X-Gm-Message-State: AOJu0YwVbGMvnkj6lvx/KEllv+nx6Vs7wdXUd8y9pbxUlpFUjB3XyeEt
-	kO1nocOR21PY1xUs7oxQ23v8tDULdM62TwkfeJg+KIEcYs2Mkg0wzD6EyGrs6bUJ9JZYQ3m1KQ5
-	39rJiBCj6la1/O3+4Qi3/xW3CYCp3NpCaaqK1tA==
-X-Google-Smtp-Source: AGHT+IFTWaiUO0/FDR6+92ostMkJC/ZQk2A+9uMYuYsQostIt3tNe1w41GyxBHI4EGWLZGEFOqxCNQkKG0weW2iyQng=
-X-Received: by 2002:a25:854d:0:b0:dcd:5e0f:19c7 with SMTP id
- f13-20020a25854d000000b00dcd5e0f19c7mr1595156ybn.54.1707911164746; Wed, 14
- Feb 2024 03:46:04 -0800 (PST)
+        bh=stU+R4KG+NyQbt4ql0bZhshhmz0bDBsi5UUfG+CKyak=;
+        b=sWPJiN5YA9EM5UUrK4RPU4WOT+L20g70mxLr5J+60PcIuxss4PCTC2A6RqMiTbFOJl
+         CPuUX94zytM5Y71iMC7tY/wKJ45wPK5OCcsD9OtmhSNfEaT4gCj6iT9ouXcOr56LIJty
+         8ReIAV7QTsHwoGyoBhHPejTKsHBcUm8vFG1X+VSx8G/ZhbiIb6SHFEowWvWXUU6EzgSF
+         5EfIJMXk8jbaSp386iuOg1JWFKjXip1HAP5V1TDpn5qzZ8p1qLG0SE4Gar4hLMTBQ3G/
+         VvqEmQvgyG33mrgmrX1r7smtngjSweajDw8rMqfTWorApAoDXXYPDpxbEjyDINEITmTf
+         1SSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUmJt5FJ7myXj9ShnhLadcmO5f9Fg/jZ9ko97LStY14SWHyy2/x0iC0t26dISoN/24aWfHIxpTpWtvQmTISNo36aNwvFqhc5UDhhMKc
+X-Gm-Message-State: AOJu0YyJq7MwakIi6vYJJH08wvHKaanfzHQPT2vd1Va718I6KfCcxI5j
+	l//CcmvfhmMQ7Fwd99laM33eq48paMrq8t7URN0/K5XDoclVzzJjvUGblUFX0g==
+X-Google-Smtp-Source: AGHT+IExOXztcpJuZehy39qkAgIJjMeLNBIE1g7Y0XjwPk1GFEOHTHyOZ8MtrSFaaWBsuecca5y8PQ==
+X-Received: by 2002:a05:6358:b00d:b0:176:40d5:2bd5 with SMTP id l13-20020a056358b00d00b0017640d52bd5mr2310044rwn.6.1707911174688;
+        Wed, 14 Feb 2024 03:46:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXT9B6A1cp+QOKPZkvk+EwZp++YLu3rcZe5XHi3LJPDwegVbg5YoQNUr/IRQzOR4W/UNqypDIlwKgEsy1WfzcUeEUUDoNmPd6wFJNhdGMVJ7vDtUmaogh1BNAj+ebpQ8Uz6qxK4NBfQLVKH1AC3ef/HMZDk5yj43xW9zn+yJ7d37oM1EZPpmNDamtf33G8ZhlQEJVgFvbKLmMe5MY7ZGD8XSFXYmPV93t8Q8kQJH/8Lgkf89yLGVqEMFpZQvLjvBAubk84IpYZPqNvH5WMoHre1Pn0kDY+PTdYAz/LLFwynQKg9QZ4FdmfB3HBbFWIK1LQrHqv19JjObAfB3JKFnzrc+Mzzsrwf4mTr1FJsrRI+ZjUgLnDxeZNlbfe/GRFNhy49k57ljD0YhGwLvgsNDY51wmEBi8AraTrrT4h7JSMb2LKFLQDO43LIhw==
+Received: from [127.0.1.1] ([103.28.246.124])
+        by smtp.gmail.com with ESMTPSA id y189-20020a62cec6000000b006e0d1e6036bsm6674283pfg.129.2024.02.14.03.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 03:46:14 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Wed, 14 Feb 2024 17:16:09 +0530
+Subject: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
+ platforms
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122-ipq5332-nsscc-v4-0-19fa30019770@quicinc.com>
- <20240122-ipq5332-nsscc-v4-2-19fa30019770@quicinc.com> <7a69a68d-44c2-4589-b286-466d2f2a0809@lunn.ch>
- <11fda059-3d8d-4030-922a-8fef16349a65@quicinc.com>
-In-Reply-To: <11fda059-3d8d-4030-922a-8fef16349a65@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 14 Feb 2024 13:45:53 +0200
-Message-ID: <CAA8EJpqO3j-BEQ9tcbH5HpskpbC7bJpEEpc5Y5ySb2B5c+WC3g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/8] clk: qcom: ipq5332: enable few nssnoc clocks in
- driver probe
-To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Richard Cochran <richardcochran@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240214-pcie-qcom-bridge-v3-1-3a713bbc1fd7@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAACozGUC/3WOQQ6CMBBFr2K6tqbTIi2uvIdh0dICkyjF1hAN4
+ e4WdIEJLv+fvPdnJNEFdJGcdiMJbsCIvktB7HekanXXOIo2ZcIZzxgIoH2Fjt4rf6MmoE13kyv
+ GdSEl04IkrA+uxueivJQptxgfPryWhQHm9iPjbEM2AGW0dk4W0tTmyOT5ip0O/uBDM8u/JP9DZ
+ rmVUhVK5BVbk/MfA19tQ7Zh4BRoYW1ujQGj4Ge7nKbpDWmfCRotAQAA
+To: Bjorn Helgaas <bhelgaas@google.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>
+Cc: Lukas Wunner <lukas@wunner.de>, 
+ Mika Westerberg <mika.westerberg@linux.intel.com>, quic_krichai@quicinc.com, 
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3809;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=iaFhux7+ftCQreqL4+9rxGj5oghyh3WmJyVki73C+Bc=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlzKgCyomV+XS6Wz5pwRsl7Pq4qvnDSmu3D+FVx
+ gggOTH/97qJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZcyoAgAKCRBVnxHm/pHO
+ 9R9nB/9dmzL8gNylVCHcQQfkMcfyzrnKwuvQ6ASSQ3DXHhdDWw08KgwxD3Cfm2G0GLZo08Mj+me
+ hoIqviztRLCA/stpX3XDSqhoOlbECFUuWumoXrdjWd6JskL5rhljSyu7ol51qEkD/9NpmfolqIJ
+ S+Al6CQJP6OluE7WZI1vtTCMHLJ+cF/bicicceBSerjNdIh6/ziBvs9yhytrODKmS3bvBvN5bwV
+ ogNqJLvo5Qxb2MDslQNdwKQZhF5/JlONMqQbmB+5RTY/ltCESJ7kIYq/u9xwBBm3OucAMZGPYZJ
+ VGflmQpHGohZagBRbBwV2grEKa5LnPHdZ831PQWQD0vzUcf/
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-On Wed, 14 Feb 2024 at 11:20, Kathiravan Thirumoorthy
-<quic_kathirav@quicinc.com> wrote:
->
->
->
-> On 1/26/2024 1:35 AM, Andrew Lunn wrote:
-> > On Mon, Jan 22, 2024 at 11:26:58AM +0530, Kathiravan Thirumoorthy wrote:
-> >> gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, gcc_nssnoc_nsscc_clk are
-> >> enabled by default and it's RCG is properly configured by bootloader.
-> >
-> > Which bootloader? Mainline barebox?
->
->
-> Thanks for taking time to review the patches. I couldn't get time to
-> respond back, sorry for the delay.
->
-> I was referring to the U-boot which is delivered as part of the QSDK. I
-> will call it out explicitly in the next patch.
->
-> >
-> >> Some of the NSS clocks needs these clocks to be enabled. To avoid
-> >> these clocks being disabled by clock framework, drop these entries
-> >> from the clock table and enable it in the driver probe itself.
-> >
-> > If they are critical clocks, i would expect a device to reference
-> > them. The CCF only disabled unused clocks in late_initcall_sync(),
-> > which means all drivers should of probed and taken a reference on any
-> > clocks they require.
->
->
-> Some of the NSSCC clocks are enabled by bootloaders and CCF disables the
-> same (because currently there are no consumers for these clocks
-> available in the tree. These clocks are consumed by the Networking
-> drivers which are being upstreamed). To access the NSSCC clocks,
-> gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, gcc_nssnoc_nsscc_clk clocks
-> needs to be enabled, else system is going to reboot. To prevent this, I
-> enabled it in probe.
->
-> However looking back, gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk,
-> gcc_nssnoc_nsscc_clk are consumed by the networking drivers only. So is
-> it okay to drop these clocks from the GCC driver and add it back once
-> the actual consumer needs it? So that we don't have to enable it in probe.
->
-> Please let me know your thoughts.
+Currently, PCI core will enable D3 support for PCI bridges only when the
+following conditions are met:
 
-If there are no in-kernel consumers, there is no need to worry about
-them at all, nobody is going to access corresponding hardware. If you
-have out-of-tree modules, you also probably have your out-of-tree
-overlays. So you can make use of these clocks in your overlay. I don't
-see a point in dropping the clock if it is going to be readded later.
+1. Platform is ACPI based
+2. Thunderbolt controller is used
+3. pcie_port_pm=force passed in cmdline
 
+While options 1 and 2 do not apply to most of the DT based platforms,
+option 3 will make the life harder for distro maintainers. Due to this,
+runtime PM is also not getting enabled for the bridges.
+
+To fix this, let's make use of the "supports-d3" property [1] in the bridge
+DT nodes to enable D3 support for the capable bridges. This will also allow
+the capable bridges to support runtime PM, thereby conserving power.
+
+Ideally, D3 support should be enabled by default for the more recent PCI
+bridges, but we do not have a sane way to detect them.
+
+[1] https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/pci/pci-pci-bridge.yaml#L31
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+This patch is tested on Qcom SM8450 based development board with an out-of-tree
+DT patch.
+
+NOTE: I will submit the DT patches adding this property for applicable bridges
+in Qcom SoCs separately.
+
+Changes in v3:
+- Fixed kdoc, used of_property_present() and dev_of_node() (Lukas)
+- Link to v2: https://lore.kernel.org/r/20240214-pcie-qcom-bridge-v2-1-9dd6dbb1b817@linaro.org
+
+Changes in v2:
+- Switched to DT based approach as suggested by Lukas.
+- Link to v1: https://lore.kernel.org/r/20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org
+---
+ drivers/pci/of.c  | 12 ++++++++++++
+ drivers/pci/pci.c |  3 +++
+ drivers/pci/pci.h |  6 ++++++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+index 51e3dd0ea5ab..24b0107802af 100644
+--- a/drivers/pci/of.c
++++ b/drivers/pci/of.c
+@@ -786,3 +786,15 @@ u32 of_pci_get_slot_power_limit(struct device_node *node,
+ 	return slot_power_limit_mw;
+ }
+ EXPORT_SYMBOL_GPL(of_pci_get_slot_power_limit);
++
++/**
++ * of_pci_bridge_d3 - Check if the bridge is supporting D3 states or not
++ *
++ * @node: device tree node of the bridge
++ *
++ * Return: %true if the bridge is supporting D3 states, %false otherwise.
++ */
++bool of_pci_bridge_d3(struct device_node *node)
++{
++	return of_property_present(node, "supports-d3");
++}
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index d8f11a078924..8678fba092bb 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1142,6 +1142,9 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+ 	if (pci_use_mid_pm())
+ 		return false;
+ 
++	if (dev_of_node(&dev->dev))
++		return of_pci_bridge_d3(dev->dev.of_node);
++
+ 	return acpi_pci_bridge_d3(dev);
+ }
+ 
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 2336a8d1edab..10387461b1fe 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -635,6 +635,7 @@ int of_pci_get_max_link_speed(struct device_node *node);
+ u32 of_pci_get_slot_power_limit(struct device_node *node,
+ 				u8 *slot_power_limit_value,
+ 				u8 *slot_power_limit_scale);
++bool of_pci_bridge_d3(struct device_node *node);
+ int pci_set_of_node(struct pci_dev *dev);
+ void pci_release_of_node(struct pci_dev *dev);
+ void pci_set_bus_of_node(struct pci_bus *bus);
+@@ -673,6 +674,11 @@ of_pci_get_slot_power_limit(struct device_node *node,
+ 	return 0;
+ }
+ 
++static inline bool of_pci_bridge_d3(struct device_node *node)
++{
++	return false;
++}
++
+ static inline int pci_set_of_node(struct pci_dev *dev) { return 0; }
+ static inline void pci_release_of_node(struct pci_dev *dev) { }
+ static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240131-pcie-qcom-bridge-b6802a9770a3
+
+Best regards,
 -- 
-With best wishes
-Dmitry
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
 
