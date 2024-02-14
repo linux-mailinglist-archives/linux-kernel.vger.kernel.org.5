@@ -1,80 +1,135 @@
-Return-Path: <linux-kernel+bounces-64607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA2D8540D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:24:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063A48540D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56C95283657
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:24:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942EC1F2A2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9648472;
-	Wed, 14 Feb 2024 00:24:31 +0000 (UTC)
-Received: from r3-11.sinamail.sina.com.cn (r3-11.sinamail.sina.com.cn [202.108.3.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B08A934;
+	Wed, 14 Feb 2024 00:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IwxEmGvy"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EF37F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0899449;
+	Wed, 14 Feb 2024 00:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707870270; cv=none; b=BfLS7bWAMzCfT8907pv+eKDe+fcLaEElLFCdWo2eY10ipV9vaR6BCxvbiQccVUvbqZvwjMLuCrB7BIi27mWlBWPxWw6n9SVBn/xkWz3fwHnWKhIJJWi6SYRXfYnGm1O3WEkcerCOcARqvq3q0TPCEruyLpyeNmBg9mccJwaNw/g=
+	t=1707870329; cv=none; b=e7DxbqWbG0KGAik2g6idsoheNgdYqoXAXCgpVsrOPRFF/Shf5OZGEy1OfqORTYIJqky598jDX7f2ZuEeU+jz9OiiqE3lSF1v4lYnmwjiHEYiZnZoKbLn6LmzSoBfTrMTbBnRFE6uxisiUtNIo6jq6lC/8pj8Dn6Ou3AFgmFwWqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707870270; c=relaxed/simple;
-	bh=EgZc8Cjsiwrsbynzkb2nJSqyJ4Yet779f6umXLjNS1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hjgC/AX1Pm8B70wcc8PkY3983WGtOd2NZNoX2rO71YMJRphTRhSd+wWxMSOvf14bWlP+fRnEDbWP2YwYa6qu/a8FIhGzEGb+JqY2hD7L2n8/QoHlBH0AbnmO2On6AugtO8qBjRN+3Np9/7LlpnxDE93s4YVo1OX1rVzn3uXG7+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=202.108.3.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([114.249.59.61])
-	by sina.com (10.182.253.22) with ESMTP
-	id 65CC083300002235; Wed, 14 Feb 2024 08:24:21 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 5164186816170
-X-SMAIL-UIID: 80191F2B6BA74F68B2970C7C2801EF42-20240214-082421-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+dfab1425afcdae5ac970@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] WARNING in ida_free (2)
-Date: Wed, 14 Feb 2024 08:24:05 +0800
-Message-ID: <20240214002407.1035-1-hdanton@sina.com>
-In-Reply-To: <00000000000084b931061145fe46@google.com>
-References: 
+	s=arc-20240116; t=1707870329; c=relaxed/simple;
+	bh=ZYz52E5UpZ22syPUWwTv63Zl55ZRM/Eb3jbRBRiXYFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=C7ncQ5nbN/6I420jr0OdYrZanVj1PuTd7FVc4o8pvI2g1hfPJMwI6w1SrpjVxz6Nav4ZtVtc+G19cb/QZaZ+Aar7VitAOjZ/WKLZcK6NuZS2Zw9FvmS55WWWkujhZxk/Jy/ZWjRMwe5JO27icFruEd5dFPRNfemOt1NmSkUyEZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IwxEmGvy; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1707870321;
+	bh=T9rHeq/WjASCf4FMqrpZrCbxQNqDKMlgq3tzgKIB91I=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IwxEmGvySQgBt4zTPvnibksanFVd3+ymF8wR5Bsnoo04QBHevmnkzrxILLFyUgsuo
+	 fL+kQI/XpHo7uCtYtfJR9Sp0p/5AgHbRRzC+NqO30bXFrgPwmmB55wyHfAyg6L9gDc
+	 L+WPVExXdJWXHQl/B5xD8w/THKBmmtOt7k1viPFg32Gj3Ak1RshZSwOzfVC+vCL9Ak
+	 7bi4xY6t1hasNv0zSPlGZedDbEYp/u60jLROtj+jjuySILNn5mZlk3B++Qd0U4bhxD
+	 wcGOVH3LoirgULptEYHClPJOiSFpo9Oy0AAYI7U5lzJ+S39fN6nGzwQfL8VYqjRin9
+	 5AoSAzEDrjrYA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZJr10B39z4wcr;
+	Wed, 14 Feb 2024 11:25:20 +1100 (AEDT)
+Date: Wed, 14 Feb 2024 11:25:19 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Subject: linux-next: manual merge of the block tree with the mm tree
+Message-ID: <20240214112519.153c8480@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/_N=Ct6hGFsdkTL7zn6nUMH6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Tue, 13 Feb 2024 08:36:20 -0800
-> HEAD commit:    c664e16bb1ba Merge tag 'docs-6.8-fixes2' of git://git.lwn...
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ee7970180000
+--Sig_/_N=Ct6hGFsdkTL7zn6nUMH6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Hi all,
 
---- x/net/bluetooth/hci_conn.c
-+++ y/net/bluetooth/hci_conn.c
-@@ -970,6 +970,9 @@ struct hci_conn *hci_conn_add(struct hci
- 
- 	bt_dev_dbg(hdev, "dst %pMR handle 0x%4.4x", dst, handle);
- 
-+	if (HCI_CONN_HANDLE_UNSET(handle))
-+		BUG_ON(!ida_alloc_range(&hdev->unset_handle_ida, handle, handle +1, GFP_ATOMIC));
-+
- 	conn = kzalloc(sizeof(*conn), GFP_KERNEL);
- 	if (!conn)
- 		return NULL;
---
+Today's linux-next merge of the block tree got a conflict in:
+
+  include/linux/sched.h
+
+between commit:
+
+  d9233ee073c9 ("mm: document memalloc_noreclaim_save() and memalloc_pin_sa=
+ve()")
+
+from the mm-unstable branch of the mm tree and commit:
+
+  06b23f92af87 ("block: update cached timestamp post schedule/preemption")
+
+from the block tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/sched.h
+index 5b27a548d863,15b7cb478d16..000000000000
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@@ -1642,9 -1641,8 +1642,9 @@@ extern struct pid *cad_pid
+  #define PF__HOLE__02000000	0x02000000
+  #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle=
+ with cpus_mask */
+  #define PF_MCE_EARLY		0x08000000      /* Early kill for mce process polic=
+y */
+ -#define PF_MEMALLOC_PIN		0x10000000	/* Allocation context constrained to =
+zones which allow long term pinning. */
+ +#define PF_MEMALLOC_PIN		0x10000000	/* Allocations constrained to zones w=
+hich allow long term pinning.
+ +						 * See memalloc_pin_save() */
+- #define PF__HOLE__20000000	0x20000000
++ #define PF_BLOCK_TS		0x20000000	/* plug has ts that needs updating */
+  #define PF__HOLE__40000000	0x40000000
+  #define PF_SUSPEND_TASK		0x80000000      /* This thread called freeze_pro=
+cesses() and should not be frozen */
+ =20
+
+--Sig_/_N=Ct6hGFsdkTL7zn6nUMH6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXMCG8ACgkQAVBC80lX
+0Gx2lwf+N0sZkkSiCq720HgLquFLPnRiIuegcVxgskirDnCNO0iM6BpAoL/Fu+7S
+dxz4k4SFwGvSlLk7Mhkvft4Ari2hvYyBTOtQn+u2L/iL6xGcJsCxvI7UT8bxFy9q
+p4R0qaKZ45jYFCIt5zCR6J63tzDg7IpfR0ltzz4Yu95rffRAhpOgXehet6LvWoyy
+Op4zgetnQxKGOmB51uz4oF/bK4ZKhWCg7j5SyJHXMz/Mhhj6ox2FMn7GN3caItSG
+n5k5eQIYeQparVem/F/iKFtY1rf4W1ziyAo05nLp6EFIofFG6goX7aLUkB8matBU
+HHV4xHjhLrU5RdeYoJr1Kb9nnerZ4g==
+=UH5Z
+-----END PGP SIGNATURE-----
+
+--Sig_/_N=Ct6hGFsdkTL7zn6nUMH6--
 
