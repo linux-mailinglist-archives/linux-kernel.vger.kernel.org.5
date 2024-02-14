@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-65633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E94854FB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:17:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C81854FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEC13B2CC65
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:16:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9BE72854CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D4C82C6B;
-	Wed, 14 Feb 2024 17:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287577E101;
+	Wed, 14 Feb 2024 17:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bQvbor3o"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4mD7JZfK"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081C77D418
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA79C6A002;
+	Wed, 14 Feb 2024 17:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930965; cv=none; b=R238xVQoxKx5WFXESMEkDl9b2GQML9WcvGr/0DQyWdqmZx63RKbulgZ4/pZ2mPI6GRKx+MuCEnpatkf/mdIBt39yXry/uTKFP0uLqz3tTirqyejR3FcYZ9s4v6OSZNTRouu4W0nzkL7FH6L/GaSonItT/mbYXHIAei6nks+nfso=
+	t=1707931035; cv=none; b=jHyaLBSkOPza+vkr2GRzTqXsOmM2NRBWj9orv665H7SuufvHG1oHJH4d3Y5L+wR4+0w1ewToOOe1XnTSM/5UsnvjJl1j+rkkmv+Mn9aImLXQ3uonPSb6R8s1Dqj6CgApnF3R3I+ys0C1NUTAmck06WZi0ye6i4ZR+YEI281ww6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930965; c=relaxed/simple;
-	bh=RJtU3OHMizV/FeysWQDi1FGXOk/xvSYR2aW1L7j+urU=;
+	s=arc-20240116; t=1707931035; c=relaxed/simple;
+	bh=UTA6dQy4agQnhswSzw36oVcafU0M4bUjEInWDdi20YQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Derm7SgbwOVDupCTo0Z0u3MOY3Xnjuh/CcapGyQe1lXBEXsHAdezETizIFkPvy2SYR3kqdhKGAX5whKVDlS2ZDXDovm4O/T4QdWIcxga0mX2EUNLZZf7wdOstQJsADce25/WRNlEi2JnxgYrBkg9QuBL775OvkgQv/Q8x1A4TQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bQvbor3o; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707930965; x=1739466965;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RJtU3OHMizV/FeysWQDi1FGXOk/xvSYR2aW1L7j+urU=;
-  b=bQvbor3ofg0cW3RbqarEE2TApmaxSxc2cAI3CwitFmexfJ52RaP2USOI
-   XXS9jv3PRY3alq/4BF3lYY/rkHiWFuVfcgulPZSiewOA3FW0jWzeoBWxw
-   Zikhvp48PYIgyuyU4up6+Ywi+rBnf9z6hb3pw+i5Myq0yjDHv5Sa2CKO8
-   Y1DXZnxnZGsx1VnFg+mxwTqmiNG0PLxCKuXW6M0kXK07/cbCh+dh5bhLq
-   CIWjtZBfShm8xTGHL+m/B+cw8UrgGYBQ001EDIAwfj/F9tYLm7dFjHIuA
-   q9gMqjsxIZ482tI8UVLSIKLrGKHF6zTflzuH6HC9HsEM10kvf7My8UdpP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="24458520"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="24458520"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:16:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912091707"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="912091707"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:16:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raIrW-00000004YES-2aTZ;
-	Wed, 14 Feb 2024 19:15:58 +0200
-Date: Wed, 14 Feb 2024 19:15:58 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Michal Wajdeczko <michal.wajdeczko@intel.com>
-Cc: linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [RFC] include/linux/make_type.h: Helpers for making u16/u32/u64
- values
-Message-ID: <Zcz1ThuWCfPm_33-@smile.fi.intel.com>
-References: <20240214155408.1569-1-michal.wajdeczko@intel.com>
- <ZczkhqW5_vU_hDbg@smile.fi.intel.com>
- <3cce5e9d-a79f-4b26-b758-45679b94b6ff@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXFZ2Wmapvgj1Co9N4EsGOuNFFZPG09GvKOu+6C1niCc+bKg8EMe9lNrjym3HuLg4J5X9BIXRB/ThGtls5tYXjmN6QbUt2+h3gAIhNeO8wcJv71etEozmPJecjDDABxcDx62jCefUm25aRI9uXquPb16480fbILua4v6/FTIZsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4mD7JZfK; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=iHkPVLSwZQNhDPIR6Y51dQVDy9dx3m/6H3kSC/CtpmM=; b=4mD7JZfK4F/xZNeENZHCJjuoj2
+	QpqHJlsJ458khDQPjrNaho9B/2LKr33dqpE6/YY97ygqb6nvsk2DlL2og7GITKsACYXswhTdqhm6E
+	sVJ2RJ8yDp3vXaudJcpUhF8LHkMCW7YkQKVuBXdD1MdT/wfzXuN0jyQHVVsmrD6H6hgE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raIsd-007o93-Re; Wed, 14 Feb 2024 18:17:07 +0100
+Date: Wed, 14 Feb 2024 18:17:07 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v3 02/17] of: property: Add fw_devlink support
+ for pse parent
+Message-ID: <6ed80613-bd9b-44fd-828c-c3caa0e186bd@lunn.ch>
+References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
+ <20240208-feature_poe-v3-2-531d2674469e@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,27 +77,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3cce5e9d-a79f-4b26-b758-45679b94b6ff@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240208-feature_poe-v3-2-531d2674469e@bootlin.com>
 
-On Wed, Feb 14, 2024 at 06:02:01PM +0100, Michal Wajdeczko wrote:
-> On 14.02.2024 17:04, Andy Shevchenko wrote:
-> > On Wed, Feb 14, 2024 at 04:54:08PM +0100, Michal Wajdeczko wrote:
+On Thu, Feb 08, 2024 at 02:08:39PM +0100, Kory Maincent wrote:
+> This allows fw_devlink to create device links between consumers of
+> a PSE and the supplier of the PSE.
 
-..
+It will be interesting to see how this turns out. fw_devlink often
+gets itself into knots with MAC and PHY dependencies sometimes being
+circular. If we get a PSE on an MDIO bus, this is going to get even
+more interesting.
 
-> >> +++ b/include/linux/make_type.h
-> > 
-> > If we go with this, please make better name so we can combine this with
-> > upper/lower_*_bits() helpers which seems related semantically to this.
-> 
-> what about "include/linux/uintops.h" like we have bitops.h ?
+> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-We have wordpart.h, would it work?
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+    Andrew
 
