@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-64620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F8E48540F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:54:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C6878540F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07C65B20BD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:54:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D71B5B21328
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3883290C;
-	Wed, 14 Feb 2024 00:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24BF8F59;
+	Wed, 14 Feb 2024 00:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyI55Nnc"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPwsNyUW"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720FC7F;
-	Wed, 14 Feb 2024 00:54:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70A579E4;
+	Wed, 14 Feb 2024 00:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707872069; cv=none; b=o9+0AsWq7Rl9Hm1WPlITM1levEGFmEjNofqJi1pNaL+0np/+6CvLSdNIFTp7qPJVHarLFguE3Qk6Hag+pPYR3jC2lUraF2ZmK7F3MUyubHa3OBQhz16GGhCz7ZmBh6jl6gsxM7koy7FPXSq08kC8dZUKyBKPhMfErE2ju0XTo5I=
+	t=1707872074; cv=none; b=GxFrnsZzXjFk+5E615QhjY5kmYrsTIss8wxT/L/hzBGJBnFgh/Q2ITuuRCZiThjT4rK92K27OwegowRSnYBbmcsXU8uiHPImhDFw3SGw5yEPr0Uxyzxge+NXA+aQxxgPcampVA3Sy7JCQ4QD+CDvNKOu7gtYRV+UciRnokFGkCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707872069; c=relaxed/simple;
-	bh=+MpH6MyUTdWv3FaAVCTooanj1lBPt+xls+adOgFJAzY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QIKLl8dqdEZ+RBsTODcTfyjxa+1Ek+g3FCMQ+DFf8dIWLsqDDWwkz/KKoPbMfs5F+KPLRuTvNVU25ZE33LZyKL+duoPhDYVKVXkGTEOWWD927Byg3AtxDeEX7MAzqIbmUpK7luW3oeHkoDOAfLP5XpEY2/++93WXQeyGSV8+ltI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyI55Nnc; arc=none smtp.client-ip=209.85.215.171
+	s=arc-20240116; t=1707872074; c=relaxed/simple;
+	bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=G+nvIU/wnGvsszkK0Dj1ipiW91wzmuNWkiSg/lS+biYr2Sxz2Iiwa0VJ9tTmpvAZuuIRZHG8ELKdVdWkKxi5/cgNPQ+yDpyDZlIuDiiqOlwGTiarOYX2dU9P5ypWyD1gROtr3tEfyMGKOUUF0rrCla17YIg6ze1vk4fUVGm9KSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPwsNyUW; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so1101739a12.2;
-        Tue, 13 Feb 2024 16:54:27 -0800 (PST)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so3301850a12.0;
+        Tue, 13 Feb 2024 16:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707872067; x=1708476867; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IRAv5G1mvUWjYBsrE0YtysVB4o7+LEIixKnLnZc8qP4=;
-        b=EyI55Nnc7AD3sdYkJ73MAVWdWwp8ElI5yuifLCB5c5HyLaE/jIXNNpDp31P16z37uQ
-         pvjgBoxnVFPXDVqIuc439C/pub1JorCB1PLdFMNRV8WZpX3PbJzr3Y8p+APar8OXF/9G
-         z45jkln8Wb/Xty/7mVzcvhkXozzZCg9u+NBm/IdBsHwFPXnxZ5Rdm4hRYPbNVcJim2Fz
-         5jSbXIjJv4Vqb3gIO7eZ46rnGs35mUzJseqIslbV4b61lUNVLQ/dZuJ7deFTkyGp2Lw4
-         xMNHhqokcNEMOotlzbaP12mI2ySz3u/XLYiSFN5Hwr3V7RbCl1WLaM7Ma5W85sQkSXem
-         gUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707872067; x=1708476867;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1707872072; x=1708476872; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IRAv5G1mvUWjYBsrE0YtysVB4o7+LEIixKnLnZc8qP4=;
-        b=Y0F/yhIzMPd9dY8sZduOFcsdnD7ab89PXhZE8c4XRS6KoB9N0z3yK9t1w+4cyww9eH
-         ujR8cH1uJFnP0XH/nCZLWyD3N5957oZwr5zrzEaYrqtzSHlvN2/9Lkj3XyPXbrIueJAw
-         zlnXpNHsDQtPCGpehNBtDpi0zvVooynFv0PtAavD01ghdo6+sxKadEqELvMzYR3SgAkM
-         b2K+6J5fsbUkPS+ISVqxJIGF+iOX6wK9Bf9gINbFv7+m4HvgSbv/JTL4xDHyBcgii8cQ
-         ooaq/ZrQ433VozICwIj+AvorW0owMT4v8TqVo2mmXNMt3YaCmWAeSLc7NWMO6MV/MboT
-         TomQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUckiCxdRNF9v7A9Bslq/c7bWC3W3iANEAW72PQW3/xDlNzl0f1MrnQHoWnffzHaxpovh+Pt2P8LOh7iExeOkmYiTSeawo3n7G3rl6421/VsQQ1h8N388v0vtgh83Co/2eEOeoUG+pGxw==
-X-Gm-Message-State: AOJu0YzJdrxpHDur86qU4MekMWT320yt/mmh5ERFuymESxifKXN3II1L
-	ux1/3yzUlpJHnQMhaaPywtHJbKvFYbG00jkAUwGQX1hFzWiO6Toy
-X-Google-Smtp-Source: AGHT+IHMDwwoT3BKADBeEicpLQUF/XmxqD8G8bt1SAgGiBJR+XjDvUYZMi2w90n9bZWA9TQFdxzxSA==
-X-Received: by 2002:a05:6a20:bc01:b0:19e:48e9:5052 with SMTP id fw1-20020a056a20bc0100b0019e48e95052mr1098724pzb.22.1707872066763;
-        Tue, 13 Feb 2024 16:54:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX+oLq1TSbRAwIsNWJvgzFoXR36Vm7QOY4/URojqtbdaMuz+f3u/duTCMGUylCSr4/nQOJauPk5aCJu819NPbv3FYt2YX+6kV4Nd2OlFoDlpd8WXTUOY0rU2VCkJnJnSaJ1NJ0OfvMJ9YSNfIF5inYHC5cUNj+GVNK0giAb8UoiJ7eeYLUqZCwGdxQdiyJjzuxOsQd0rZkb2Upf8p+px0ziJ/NRfvOAa+QyOt/d+tTaUl1gAABGiuywlbYJkmv7TO0U1gT8JTajajRoTb5AE25GzphwoJbPWlTLiei1yLc7WwTEyxi3FdQFPacLFPLLH1Uf60AJlPd4W76EnR/woSmDnVCVE7IesoIHEhrOER7qz2cAeJEXIJL+PACGGNsC/vQ1Id9dx9t08h2lXQvWtJ86Fm3/vn+9hQrMLQETfbwVGnHtzJmtlAeHw7cfy5Gq/T59Q1QwY57juhSxkUwJzG+OnR979EB6MIvNClPn8qKjOCNwzOcCrYsYOCKN4Gyv2iaQyUWj+lbgIoZ4w8YFjhUztgyuSRuwLr5KtuzbK5n5ggFwZFD0
+        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
+        b=dPwsNyUWR2Rus1zqntGck5QsBHrReqNEIoi9B2FVi0az7nAYEdJDN9/wD6hijMWG8b
+         3LZnxOok5OMhCHBfDYp+njV23J0JmtZl1nKva3rpOgsGOkRiqGz+uu9GjJOffzDg73L7
+         gw6yGAXqHijTx1shRq5QRNNMQd04nYdvdGNOpIKcMAT15GTGuKsGfQIhV9LuD2dViJyY
+         zTgKCKDNewId1iGy4L5odhgJnY75hDB4NyJODTy1QlaGFImUvp4LSp5KPu2B50m7kM9A
+         2OBcr3v8ctliz5ZSpmNS9yCNKs/T4mZWkHZLwbSMGvZdql/dA6AgrkxLg9LZ9zUbbWne
+         /zqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707872072; x=1708476872;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
+        b=OYtGS/77fDp4IKgYuNF67OEyP/Q0lHlxXYueyE7LEfOptc0BVruGARouyNrJNm8Y53
+         vGZzYmMTUYJjhiEe6tcgEC4ieW1sEJ7aYDyHhBta5PToKorn9BB8jUeKbD915b8pQ/Df
+         rXuGIOP8WNdvOsq7XvKqDsUrFwFfb2tihqNyL1w7Df6e/YnI4TpaMhGZ0m9cYKRes0jl
+         8pr4yYqjFEN+dvVrAENksxj1QW7WXdSMWnbPHJoPy9OnXpg2NxLQCFpyjyGZC9wr84V/
+         7xUUD4MsdLUsfce7xlLGlmQS1jAaNkVtvM86ds8sk9bCVKQYoI7Fv3kah2b2WEweEr+M
+         uJdA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+P4pS+seXBuhjtdro539omeXpp6wvkJEnBTgXj4h0WmBFjG2LGcHBVzZbGNH2EUhTv2YJi/kSBFkm0q9n523N7NLXoLxibiTVEMKLuxIjIL/O/cLBGVz28eVnUM83JYAWRqvHRJsLMA==
+X-Gm-Message-State: AOJu0YzumLQCaOMz1d8lkQTxB5p2md0hkqTfmRI9gHKd4G6slLF0EloX
+	uTLEnDijMaf1LNbMQiRPFn15jpAoAzAWevyvBG6Hlspmrr/QXl4e
+X-Google-Smtp-Source: AGHT+IGRKwM5VgclU7DYD5F3eTHEzMXSzHHdrPnUCPg7As1kOCrsB7/0iMm8yLZho2DQy+fBzDIdUw==
+X-Received: by 2002:a05:6a20:43ab:b0:19c:6a9c:2c76 with SMTP id i43-20020a056a2043ab00b0019c6a9c2c76mr1565963pzl.10.1707872071933;
+        Tue, 13 Feb 2024 16:54:31 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV71m1vw6BMjX8z5onBCo7okiJvy33cyAb6RJotJfj51XKB4dQodLyii4kJzrvz9aqPfjrPZxRx0LmpcnXkgM5JGW1DLxizBkS+9ZTAdoNKYBySTiXePgOpIiUiuYycx9rfBsIIotOpQ0Xnhj/wYOhgYRUNHZIGo0wuMOGL1DP+Z0X8Ov5t1x0m9ItP5QMgpWS+MaBMMYll+gv3b38N1EAMarTaS6Vxg8fO1JKLhbrjTE1/1utJS6eVbUr7N2b8wSHsX308vpC2rB+ZueonKL5aWttC2nWSc9L0co1RIKzSFwXzADRgTxL8DRcJW0ENZK86prt8l0SUR3qg52q0s7mtf7FfsLqKG7k8eRuDD4lyxA+qElBHLAOiTsQzJYUIAf/0dSURhcqgOnSojFjybQyo7x9pNgYw5EI7v6h7BSXZDED39hKcZ5JHroGRnVkXPotjjTEXeMvQ1mzdN+O6ViNyJ1TFx7nz62HDe0v7I4UXwjeZo/pyZ28GNE5MXtzArOe+sSWSPc9u2LCdLNgYK1hPr1vsoEMz9dctrc1IPciQqRTmuanr
 Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
-        by smtp.gmail.com with ESMTPSA id q10-20020aa7982a000000b006e094bf05f4sm8005694pfl.213.2024.02.13.16.54.21
+        by smtp.gmail.com with ESMTPSA id q10-20020aa7982a000000b006e094bf05f4sm8005694pfl.213.2024.02.13.16.54.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 16:54:26 -0800 (PST)
+        Tue, 13 Feb 2024 16:54:31 -0800 (PST)
 From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Subject: [PATCH net-next v3 0/3] net: dsa: realtek: support reset
- controller and update docs
-Date: Tue, 13 Feb 2024 21:54:14 -0300
-Message-Id: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
+Date: Tue, 13 Feb 2024 21:54:15 -0300
+Subject: [PATCH net-next v3 1/3] dt-bindings: net: dsa: realtek:
+ reset-gpios is not required
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,10 +78,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADcPzGUC/x2M0QqDMBAEf0XuuYH0rBD6K9KHxK71UNKSCxIQ/
- 92jT8PA7B6kKAKlZ3dQwS4q32zS3zqalpg/cPI2J/b88HxnVxC3itWoqC6E6NPMQ0rMZJtfwSz
- t/zdStiCjVXqd5wWUKiYtaQAAAA==
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240213-realtek-reset-v3-1-37837e574713@gmail.com>
+References: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
+In-Reply-To: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
  =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
  Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
@@ -96,70 +97,46 @@ Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
  Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2247; i=luizluca@gmail.com;
- h=from:subject:message-id; bh=+MpH6MyUTdWv3FaAVCTooanj1lBPt+xls+adOgFJAzY=;
- b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBlzA89WGb88ILlID120vimjP3ywfQPNEK9cImoT
- znBvY35E86JATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZcwPPQAKCRC7Edu60Qc7
- VvNvB/9YKsxOUQbfYacjU/vvdQf7EwylJ1tfxEDWTZloC9x0dRrYlr+AxSzy8yiErFx4BeAy32a
- 17OhSANqYzoEnwP8VcjnmBfRteKclqD7fDl3ksY1Duo7qGgj7cNwgvZ6fNeJXfL1nyq6swviH7g
- u/a6vmoI0qDgEvN/iCt2fKMU6kP8dyAqx9GiCGg5xCbTn5KV51PpxJaBxPCRIzOgiYEVUmlTLGk
- sO0U8Xciyv5YLkLLAq4CST/XjgZ1Wc5FNJPqM6of+n/FmDV3WyJ4cHY6jzzusdSIfI7a1EJ84R5
- 8F0CbQO5ZfiIdHqAapcIZT6jDYKCIKfXNgXaAKeNU/uDFcN2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1010; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBlzA89CzCn2LhoEdVuY8Dx2HQjw6UsZEIg1Rpk+
+ 1OapDXN78yJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZcwPPQAKCRC7Edu60Qc7
+ VvCFB/0Q3Gzprs8PlbF2QJvKVhs4I/uSh3llF/mUsc6lCLFaYSpSjBckdEvNQwTZZk4ksuo/Kcd
+ eJJ0a1NfzeUM95NEOjopCL2CH6Q7l+RSNUKTYubdVPhla0exbjN4PeKKtNwJ7HpkoEoczYWdhOJ
+ h92+HucGDsqIHtI8c123zck1/Vh41OVvpusw45IP18CtiNCvURrpk6jgug7s09X4Lr6kYAGNVkR
+ Qai96D3/tWnIErecl5A/ULcJfe25558Dt95LSZUuLbWYXxSvZxDuvSzg25VqCswlif+h/kw8kud
+ fSrQP77PMXWHg2L3GXYT653FWApFoI69AoFPdnTVpy763gUD
 X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
  fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-The driver previously supported reset pins using GPIO, but it lacked
-support for reset controllers. Although a reset method is generally not
-required, the driver fails to detect the switch if the reset was kept
-asserted by a previous driver.
-
-This series adds support to reset a Realtek switch using a reset
-controller. It also updates the binding documentation to remove the
-requirement of a reset method and to add the new reset controller
-property.
-
-It was tested on a TL-WR1043ND v1 router (rtl8366rb via SMI).
+The 'reset-gpios' should not be mandatory. although they might be
+required for some devices if the switch reset was left asserted by a
+previous driver, such as the bootloader.
 
 Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: devicetree@vger.kernel.org
+Acked-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 ---
+ Documentation/devicetree/bindings/net/dsa/realtek.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-Changes in v3:
-- Rebased on the Realtek DSA driver refactoring (08f627164126)
-- Dropped the reset controller example in bindings
-- Used %pe in error printing
-- Linked to v2: https://lore.kernel.org/r/20231027190910.27044-1-luizluca@gmail.com/
+diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+index cce692f57b08..46e113df77c8 100644
+--- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+@@ -127,7 +127,6 @@ else:
+     - mdc-gpios
+     - mdio-gpios
+     - mdio
+-    - reset-gpios
+ 
+ required:
+   - compatible
 
-Changes in v2:
-- Introduced a dedicated commit for removing the reset-gpios requirement
-- Placed binding patches before code changes
-- Removed the 'reset-names' property
-- Moved the example from the commit message to realtek.yaml
-- Split the reset function into _assert/_deassert variants
-- Modified reset functions to return a warning instead of a value
-- Utilized devm_reset_control_get_optional to prevent failure when the
-  reset control is missing
-- Used 'true' and 'false' for boolean values
-- Removed the CONFIG_RESET_CONTROLLER check as stub methods are
-  sufficient when undefined
-- Linked to v1: https://lore.kernel.org/r/20231024205805.19314-1-luizluca@gmail.com/
-
----
-Luiz Angelo Daros de Luca (3):
-      dt-bindings: net: dsa: realtek: reset-gpios is not required
-      dt-bindings: net: dsa: realtek: add reset controller
-      net: dsa: realtek: support reset controller
-
- .../devicetree/bindings/net/dsa/realtek.yaml       |  4 +-
- drivers/net/dsa/realtek/realtek.h                  |  2 +
- drivers/net/dsa/realtek/rtl83xx.c                  | 52 +++++++++++++++++++---
- drivers/net/dsa/realtek/rtl83xx.h                  |  2 +
- 4 files changed, 54 insertions(+), 6 deletions(-)
----
-base-commit: 0f37666d87d2dea42ec21776c3d562b7cbd71612
-change-id: 20240212-realtek-reset-88a0bf25bb22
-
-Best regards,
 -- 
-Luiz Angelo Daros de Luca <luizluca@gmail.com>
+2.43.0
 
 
