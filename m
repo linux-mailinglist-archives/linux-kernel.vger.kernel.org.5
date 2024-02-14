@@ -1,116 +1,140 @@
-Return-Path: <linux-kernel+bounces-65070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C055854772
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB9F85476F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7029F1F217B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:44:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A0E81F211D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F8119473;
-	Wed, 14 Feb 2024 10:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3CF18AEE;
+	Wed, 14 Feb 2024 10:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OsQBFktF"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wgk+GVca"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C5D18E06
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD823C2C6;
+	Wed, 14 Feb 2024 10:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907428; cv=none; b=sCEsXjrdXVnTMIgjb4BwAwSi+yrEctGmfGhUEWYAvA7LLuMxocECX4Sd/lAFgAxhWWqm/0Gt8TjElINRT5L4NpDFXHFRA8Rq7lOgrOSv8XOQFsAJYaJ6l3iMSb4wJi8qcNxBkEXsJmpuvLCHzbkLe2P9w8v+gscUftHvsPJEUNM=
+	t=1707907424; cv=none; b=l1rYz/ZSudG9QmX7UiGmFilCOVkzrBZ6pm/k0r/1R8EEUwRL839v/Sc+E18+oay2eV6yG+mGYwjGf4og346RuBZUqyxUig+lNlR9gbthPDskS3VI2MdP7OmpY6m+xgQpHeACtdAGpjeFi9xadIFVKivmNzfNZQHurbFhIGsS6fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907428; c=relaxed/simple;
-	bh=AcGZCOvlb45VIQnaaZpzTD3vsn7OICGc6903iqrS5uE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aineaVcPSRlcSpW6FgmlHhJNcQWVQj6GXGbaZIocktKP2XbkQBsvidsXEkW443RypTcumdR1VbE80Ry2zBgKAAKY19MUF+XBz5CuoF3awaj72wbDkmkBwW7wtFCpDw/JwuVZRIBt0wPybJ4lmeIj/5ogP8YOceLWSlMW5heENvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OsQBFktF; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-410cf70a057so120015e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:43:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707907425; x=1708512225; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AGa8s8kshOzGZJdfRc65h29p+oNNQfUfKoLhkZBXFbk=;
-        b=OsQBFktFZnClpgO8h076E+MshKXcXxOUSzS/Fcj3qO4dPJ5zxGaQCDZ/nRtL1PtBRO
-         Tp5ewagqlNT7rEgVmCMxTRzM5KFV0fZcndNFebN7YTtVSROy8g/7UK0k0vU2OB8IBylc
-         mMN549NRXgCZkRV2YLpx8Q+whPOOyt6ya1ec1Y9Rs81Wzb73SSoNnAHJzGu3g3DDeaUE
-         30aYdymC3zbTM4i0aapq3WsICGEF4Ebt+q1WVDCFU1FYNyt3V6RultMaAZmXJddpBwNG
-         FrFro2gNnR/uXkyCcX0yz/qd0R6J7AizZywJujcVWOt2VLfytRgBFFE1zwwjWAe63s97
-         hE/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707907425; x=1708512225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AGa8s8kshOzGZJdfRc65h29p+oNNQfUfKoLhkZBXFbk=;
-        b=jnsCvCM6iQmHLlsbJQn5il4iWdAaLYBB7Hz8T24izicasOS7h0BJZGDV5bLVfK26xt
-         jwOKvxbMcF0JkYBorSi9hwcdD2fH7381wF/Rd0s8cU5LPcUSNRwuQMnpO5kBAizzr63t
-         2/FbNHZUZuYX6RnhKon30Ao20XrOFTW80Plcps+85GYmtxP9rKsjUoK8Oe/ZB9zf+P+u
-         E+vn8bkAVz2zKoSBNm4O2HZTDV+0f0IZ/PUY+rm8SJGKxK/uY30kvs5+qFscovA0Uxba
-         8wp6C45v28xaXX0/E70IfUcDXwhoUrvAydSFYxdGeuYT+hRFxhv+OJeFqbBOzCBpT3Wp
-         KOfg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6mDZiRm0kJSDis8688fmAUaO/U3yeyUozSN+lcflTUYcU3EOLss4R7SWOGOneWJkOBSzW+KdbTlttzyD11Ud0psCv93Ngxe56g/9F
-X-Gm-Message-State: AOJu0YyQV2MRHSdmalMKd9pRFCRc4xY5rKCofovU+4hshTzEJ5rQJJrN
-	2Zj9WmuXldSy70N6B4x/Dzogg4D7pvO4IENZjRwQdogbmBnhCvRgkkwNLctFNDLYDivrQm28ItS
-	EP3a4uUzpk8tu+aEEJO6eCqw+2M7YozdlTbkZ
-X-Google-Smtp-Source: AGHT+IHnEj6DTgEs8k9eQkmDziRn7CpQe2dx+LWYoVgCYnC31F0gHuyhclq5nHYTEctCkY0/UA6ff7ygWAcf/IwqnHw=
-X-Received: by 2002:a05:600c:b92:b0:411:f8a5:f55e with SMTP id
- fl18-20020a05600c0b9200b00411f8a5f55emr19683wmb.6.1707907424629; Wed, 14 Feb
- 2024 02:43:44 -0800 (PST)
+	s=arc-20240116; t=1707907424; c=relaxed/simple;
+	bh=jsUtVeXk9SEIvKEq3azTe0X1RfROgbYT2UhZC0H8aAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YmnWemI/D97uyQRHNaT7D52iO8yD7sYdHB6+h9E7zOB3mqlMJWZWOEzx9YWMBOsRqv5/KIdxa8r+Kp2nWtFaZfgKv/beH7P+awXorAZbJxewaknKOu7+DqgKDnbVg6yt3xq4lG+Hc38B0ejS2l1Xd+hOude5fP5uVQGO/RsTvKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wgk+GVca; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707907423; x=1739443423;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jsUtVeXk9SEIvKEq3azTe0X1RfROgbYT2UhZC0H8aAw=;
+  b=Wgk+GVcaXJSsVWqyUFwMTzP6a2knQBVbZmNwXRKx1033yg9UBshVKzvx
+   hhTyeN/gkEbLbGRMW/w0rD6ok/PAMlWZwlbp0fTREwbz3ekx5T+CfaLnn
+   w8KwYUjFMHEcnZvO8uDoxq5ZLgpaUcKg7FNlzEgHoRVqYMo7/ja6QhDDQ
+   BlhnKnbN4UTVzTaVs7fW3gSMG5WRn7wJW5GSb6MhqkZsuLVgNL6px4dID
+   aJgYhSZ4zuX70YBupYqClI++mNMWzTx3P1LV/TJX5E7UsXdffYBq5BRre
+   S9mnIaA2OtWJnlBRxDPexVNPRTt2zZxsKMvaCgUoGFyfR2aBweCRvuDLa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19358809"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="19358809"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 02:43:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935615683"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="935615683"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 02:43:38 -0800
+Date: Wed, 14 Feb 2024 12:43:35 +0200
+From: Raag Jadav <raag.jadav@intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com, lukas@wunner.de,
+	rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+	sashal@kernel.org
+Subject: Re: [PATCH v1] PCI / PM: Really allow runtime PM without callback
+ functions
+Message-ID: <ZcyZV2q1_QoK43vz@black.fi.intel.com>
+References: <20240212063233.5599-1-raag.jadav@intel.com>
+ <20240213200648.GA1219964@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214084829.684541-1-edumazet@google.com> <2024021444-getaway-partly-e055@gregkh>
-In-Reply-To: <2024021444-getaway-partly-e055@gregkh>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 14 Feb 2024 11:43:30 +0100
-Message-ID: <CANn89iLaXntR3Qtsg_b_FH1CeQ9TDDFQO19OiDDB_sxWfDiSLg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] kobject: reduce uevent_sock_mutex contention
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, netdev@vger.kernel.org, 
-	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Eric Dumazet <eric.dumazet@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213200648.GA1219964@bhelgaas>
 
-On Wed, Feb 14, 2024 at 11:34=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Feb 14, 2024 at 08:48:27AM +0000, Eric Dumazet wrote:
-> > This series reduces the (small ?) contention over uevent_sock_mutex,
-> > noticed when creating/deleting many network namespaces/devices.
-> >
-> > 1) uevent_seqnum becomes an atomic64_t
-> >
-> > 2) Only acquire uevent_sock_mutex whenever using uevent_sock_list
->
-> Cool, any boot-time measured speedups from this?  Or is this just tiny
-> optimizations that you noticed doing reviews?
+On Tue, Feb 13, 2024 at 02:06:48PM -0600, Bjorn Helgaas wrote:
+> On Mon, Feb 12, 2024 at 12:02:33PM +0530, Raag Jadav wrote:
+> > Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
+> > functions") tried to eliminate the need for runtime PM callbacks
+> > by modifying pci_pm_runtime_suspend() and pci_pm_runtime_resume(),
+> > but didn't modify pci_pm_runtime_idle() with relevant changes, which
+> > still returns -ENOSYS if the driver supplies no runtime PM callbacks.
+> > 
+> > Fix this by modifying pci_pm_runtime_idle() such that it allows PCI
+> > device power state transitions without runtime PM callbacks.
+> > 
+> >  0)               |  pm_runtime_work() {
+> >  0)               |    rpm_idle() {
+> >  0)               |      rpm_check_suspend_allowed() {
+> >  0)   1.500 us    |        __dev_pm_qos_resume_latency(); /* = 0x7fffffff */
+> >  0)   4.840 us    |      } /* rpm_check_suspend_allowed = 0x0 */
+> >  0)   1.550 us    |      __rpm_get_callback(); /* = 0xffffffffb4bc84f0 */
+> >  0)   1.800 us    |      pci_pm_runtime_idle(); /* = -38 */
+> >  0) + 17.070 us   |    } /* rpm_idle = -38 */
+> >  0) + 22.450 us   |  } /* pm_runtime_work = -38 */
+> 
+> What is this timing information telling me?
 
-No impressive nice numbers yet, the main bottleneck is still rtnl,
-which I am working on net-next tree.
+It's a raw ftrace dump.
 
-Other candidates are : rdma_nets_rwsem, proc_subdir_lock, pcpu_alloc_mutex,=
- ...
+> > Debugged-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> 
+> Sounds like this resolves a problem report?  Is there a URL we can
+> cite?  If not, at least a mention of what the user-visible problem is?
+> 
+> From the c5eb1190074c commit log, it sounds like maybe this allows
+> devices to be autosuspended when they previously could not be?
+> 
+> Possibly this should have "Fixes: c5eb1190074c ("PCI / PM: Allow
+> runtime PM without callback functions")" since it sounds like it goes
+> with it?
 
-Christian made the much needed changes [1], since the last time I took
-a look at kobject (this was in 2017 !)
+As pointed out by Jarkko, it's not a regression. The implementation
+in original commit is incomplete. We discovered it while cleaning
+up another PCI based driver.
 
-[1]
-commit a3498436b3a0f8ec289e6847e1de40b4123e1639
-Author: Christian Brauner <brauner@kernel.org>
-Date:   Sun Apr 29 12:44:12 2018 +0200
+> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> > ---
+> > 
+> > This is not marked for linux-stable for the need of extensive testing
+> > and can be backported after a few releases if no issues are reported.
+> 
+> If you think this should not get backported to stable, you'll have to
+> watch the backports to prevent it.  Lots of stuff gets auto-backported
+> even though not explicitly marked for stable.  This comment won't
+> prevent it (and won't even appear in the commit log).
 
-    netns: restrict uevents
+This is why I've added Greg and Sasha here.
+
+Raag
 
