@@ -1,352 +1,155 @@
-Return-Path: <linux-kernel+bounces-64669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B049D854146
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:34:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12031854149
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D45B1F2759B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:34:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90A9D1F27970
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD0011190;
-	Wed, 14 Feb 2024 01:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A25171BC;
+	Wed, 14 Feb 2024 01:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="NBNI05yE"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cDnySdk9"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2018.outbound.protection.outlook.com [40.92.19.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C946411183
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707874472; cv=none; b=eVrekU4FWAz8xb4TyjlWcCPbJl2xW6+g4CUUHsHfGLJlHAW7TibRMsjjO60AoVL1EctElVeD5OQF7TzWSrLzZ+Un3vBLI5j1TxJOtBDV07RdUcAdL9wUrLHTKboSHJtkGzgbl4GNzDAJSarSE800htCoqiLOgcRQLGxqmFerMmw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707874472; c=relaxed/simple;
-	bh=H3y5zeEt5taFJplG2Onz+FPQRT8kzDW0Oda0EW27Csk=;
-	h=Mime-Version:Subject:From:To:Message-ID:Date:Content-Type:
-	 References; b=RzIBKK0l4BB1JSdF3Wt3LmDIlStV3yap5wUbupAlBu+WuCIG1kNGoAIbGaJb+bzRiqjrffwHJkQrb8KJbsrZ689uVdWkSEg28WT6mdiO1Lt9CuRKd+dK8JVmEn3+ojdrZdQAAay8ik9+AhZInnVgJqf/hmU6fiZ4ubIPgAtkdFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=NBNI05yE; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240214013427epoutp02c0c13cb7f80a50af7eb32fb3526c6fff~zlseW_eIv0077600776epoutp021
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:34:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240214013427epoutp02c0c13cb7f80a50af7eb32fb3526c6fff~zlseW_eIv0077600776epoutp021
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1707874467;
-	bh=wl79DqeXUlvsgVNJe52a7LLETNMoxIhqRQaM60zvAPE=;
-	h=Subject:Reply-To:From:To:Date:References:From;
-	b=NBNI05yECMbyBqdYwZcMf1Nvj+VnsGXa6nKe8nuN6YiHyPOXVmT300DiQ0DzlbXQ4
-	 5oQvl7xonoo8F2vPDBOfIcXv0E+1OsEGHPKFn6IIPsEsw6xr1vXjz70vTAuUXTxfjb
-	 Di+TO/ReIC49f+y86fU3jmbGqH/EvKOdTASriSbw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-	20240214013427epcas2p4c25ea8c1bf63b77965203e4d6c7e5bf4~zlseDOfWY3148331483epcas2p4l;
-	Wed, 14 Feb 2024 01:34:27 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.88]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4TZLMk5cFQz4x9Px; Wed, 14 Feb
-	2024 01:34:26 +0000 (GMT)
-X-AuditID: b6c32a46-fcdfd70000002596-77-65cc18a20239
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-	epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-	D4.28.09622.2A81CC56; Wed, 14 Feb 2024 10:34:26 +0900 (KST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB39171A2;
+	Wed, 14 Feb 2024 01:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.19.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707874509; cv=fail; b=MhNpaIvfBZAckLDKNUaspEwCkF1k0ulgfivMzr6ne1lnyZKn+rBa/Ly2SiOmTdhXYzfoRGQre4+SHNwxEVCeqbJDBjNha5C77NPamtAK2JMR1t6eE+HrzeGE/4uT8e9rS8v1sAT9pCv3eKy6c371j1vUZ7BtZTgvXXo4hm702nQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707874509; c=relaxed/simple;
+	bh=AlgDS1qxuHIzD4KgV17zbaO5eySpVmAWNLN+od2/21Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=LwrRhUdtgEKnNvdAceLCLIlsyJ13Oaec/D/k1FMEzn0p51LPo4//kns4GaotihJ8o5mhuE0fnRx9qdSVps/7AwESa3N2HLJR1/MWMpnz23yd0ql+YHFybcpUnhYDCH2a95tEr6bVZ1bjEK244EHfbjh1ESnTgaYFbA2kAysHJTo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cDnySdk9; arc=fail smtp.client-ip=40.92.19.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iXn9yoZ77s7kCduIICl8lSNEkOyVKjrCVlHAU2xwv20+QP7kJTaRoE9ftqCA3BD4UDJxTp5oNcl+xzxRY+sk6QTt7P78oWsIVKj0cd4Qy3/AcGn1zkiBinvUCKC+mSq6ZXpjzt8ujwN69L3dMsP9jSjuNBkBOirLS2552rrkBjYeKoHlh5+1Lz3EoVmJvAscQKIQ4xS5c0DqN5BuqkB6G7vzXv3VBJ+QEHbMr7YRsr+q2SfDw4b2I07JJ3qc9U3rr6RKSA4msiVobG8BqjmKulYJ4Z4HsObGOll8E2K4IoxqHtUTlKZ9MjtlkF93Xg4BG8ez5CFJnsh26RqoapXP/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QJ3oWre1toO1tJ3fQ/pwva5OqdmfBKn9CMUrFHLt8/c=;
+ b=DR1/uN5HLn2ckfh+X12VTvmLKBn696x1nw2TN01MfekIqSU6q9gxtuSh0nY6mavkuUM9AonNB1uGmg77Nj1rsKDK3wLkvcqln0/CzvqkAZH17E0x34vVjstCP21pPN/wT6qLInH2Emc7hCmycGOTmZSJFvkvws7xM/ky0IJpnHU0p83gme0Pqx0Mh1HUBNg1i2hgyeFaO9GORM/KAhL0/RjxPvGpaBqAWj8SeBCFwLnlabBtP0E4ogPjMx6aU6QiVPlpabXSlCat+6FXVzE0oQHu/Pt2mHWzC97FFTDOrt0Wcfdc6WkzDrXwoP6Uicu3Z2GT4CqGjrND/MKfWz0NKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QJ3oWre1toO1tJ3fQ/pwva5OqdmfBKn9CMUrFHLt8/c=;
+ b=cDnySdk9LyJOHtfun1jIyWjd6EgqwY+YhMn6K42TKnvX/+v9DADP3/m6bk+QyezEwC0HecWsCLkvc8RW12Dg3y2XJi/O2tKO2lcHszgt1yyosOmu7yqUJkynn76ngB7w2oDo+C8lMr1dj0JRpnccWV9o0RNBVkNxBFv5L6gTUDlkUM3yTPhLf3WFtFvPXShk0YY8uTFPKZxywh2fl2fiWy9rBfnmkqQ8zFNendiLP2qnG4Cs8WU0Oohu02mH1DWsg24VnZxIYV8+Z2OuX4BVcEhMz67MunQstJJJqVhLdS/uGBucoJ7SPKentXUOaH7wV1gV550yVnry23eIc0YnwQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH7PR20MB4663.namprd20.prod.outlook.com (2603:10b6:510:1d3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Wed, 14 Feb
+ 2024 01:35:05 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::406a:664b:b8bc:1e6b%2]) with mapi id 15.20.7270.036; Wed, 14 Feb 2024
+ 01:35:05 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chao Wei <chao.wei@sophgo.com>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH 0/2] riscv: sophgo: cv18xx: add top misc system controller
+Date: Wed, 14 Feb 2024 09:35:08 +0800
+Message-ID:
+ <IA1PR20MB4953D95E8657A480813767FCBB4E2@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [/RIzKeYGoLE0OWLM/butKtI61vcXo3fGt5O9peYt/6OB/XyYityQa9fsG7btveDY]
+X-ClientProxiedBy: SI1PR02CA0017.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::10) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240214013509.135383-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: [PATCH v6] f2fs: New victim selection for GC
-Reply-To: yonggil.song@samsung.com
-Sender: Yonggil Song <yonggil.song@samsung.com>
-From: Yonggil Song <yonggil.song@samsung.com>
-To: "jaegeuk@kernel.org" <jaegeuk@kernel.org>, "chao@kernel.org"
-	<chao@kernel.org>, "linux-f2fs-devel@lists.sourceforge.net"
-	<linux-f2fs-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Dongjin Kim <dongjin_.kim@samsung.com>,
-	Daejun Park <daejun7.park@samsung.com>, Siwoo Jung <siu.jung@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20240214013426epcms2p655328452ef7fac82f3df56855d7dd99b@epcms2p6>
-Date: Wed, 14 Feb 2024 10:34:26 +0900
-X-CMS-MailID: 20240214013426epcms2p655328452ef7fac82f3df56855d7dd99b
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmme4iiTOpBovnalucnnqWyWLVg3CL
-	HydNLJ6sn8VscWmRu8XlXXPYLM5PfM1kMfX8ESYHDo9NqzrZPHYv+Mzk0bdlFaPH501yASxR
-	2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QDcoKZQl
-	5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgrMC/SKE3OLS/PS9fJSS6wMDQyMTIEKE7Iz
-	7l5/ylawwLHizrynrA2Mi4y7GDk5JARMJCb+3s8OYgsJ7GCUWHrKtYuRg4NXQFDi7w5hkLCw
-	gKnEm1unoUqUJK4d6GWBiOtLbF68DCzOJqAr8XfDciCbi0NE4D6TxKp/15kg5vNKzGh/ygJh
-	S0tsX76VEcLWkPixrJcZwhaVuLn6LTuM/f7YfKgaEYnWe2ehagQlHvzcDRWXlFh06DzU/HyJ
-	vyuus0HYNRJbG9qg4voS1zo2gu3lFfCVOD9jPjvIXywCqhK3bshClLhILDz2A2wts4C8xPa3
-	c5hBSpgFNCXW79IHMSUElCWO3GKBqOCT6Dj8lx3mqR3znkAtUpPYvGkzK4QtI3HhcRvUkR4S
-	RzdNZAQZIyQQKPFxeekERvlZiKCdhWTtLIS1CxiZVzGKpRYU56anFhsVGMEjMzk/dxMjOPlp
-	ue1gnPL2g94hRiYOxkOMEhzMSiK8l2acSBXiTUmsrEotyo8vKs1JLT7EaAr070RmKdHkfGD6
-	zSuJNzSxNDAxMzM0NzI1MFcS573XOjdFSCA9sSQ1OzW1ILUIpo+Jg1OqgUn/bzvTRJe9Kz7P
-	MwieUDiP/09z4zPnb0mRcZ+TJzFIMmXrlZj3TmFdYl1ucFRMsuZXE1Nr9HHnWVFhSww3e/wy
-	+S22dOdb1ffvuBR/e085fu9t9x/3jHMizJHC6xbUNrzPvt+1ZpHBlYxHsveYJ0e/2ZK37uke
-	xZvVffxOiXMv7zly5qVMhJF21fLfG5JXMIg5BPL9iVC+rZS2UqZe2vN53M1eyyW7QsuWHvp9
-	7ILj/BmdzQ80pHSe/VtgNEmY1aUszuti88G+uX/Z7u1dW71SgydzWS+j6fbHPItr6wrTeY+s
-	m3nbTm9RFlePIu+jouB3Ww2krm4+HzR57scLB7OipxQGhz1X3S33Yp+PnroSS3FGoqEWc1Fx
-	IgD6fPkBBwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240214013426epcms2p655328452ef7fac82f3df56855d7dd99b
-References: <CGME20240214013426epcms2p655328452ef7fac82f3df56855d7dd99b@epcms2p6>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB4663:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8df57fc8-465a-4b8b-14c1-08dc2cfd2ba7
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ogEBPpSLGDzgVdxd3go1QpG7mbLDxbG1LYgHyGDO5EsxlT1nVhzPmtYyXH9Fp9HA7C46qKSR0wozew3tqdWnL9P9x7x5J5VBodHJLx3Yp4aqxrocwXfrHhOHspLYZ1EtLaFTV5kRaVDBzoIQpwnMWqkTRu2tEvyHxMQ6cInotkFo1jp7Y4MXNri93A7wo8Px4GLZ8q5Gqxm4/MduKn/vY5B6mPZcwcB0rj5ZtlHpS4N54MIq/bUeMdp6Xx2w1cuwU8uHGCIK/uuW4jxKILKQnggKSYFGhYWjkKhu1j5mBJmFYtKBz8U8HwutAzgR+d+kDMWfFeLBDyvHvdEQ+eOsawPcZvwuU16eKMkASveGqcAZgNkNqiDPi9Tq0eszr543ABm1PfMUJ2ThfhQx/TxMl5apyS6vdXB0O74aVGqtHCVohC7hz1Wu7KIWX5oKvl/MxsWEX9aG0uZLolJSvod38exrwtipIOJAkqd6YSYXAXaoWpykzsJHGiCxzV9yKEWiAfHq5IXu77MT6bbHbVkLYUO/cfvjus4riJvTrfkv3ZcMZ/V4k0uLXeTFNxcRxBGohrtIU5GjUdqoeWx8gN1GIkuMOvpYy7MNXh3HVJp2DlrGKhV9m855PlwNzNAl5dTk
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6aBJaTmWl9/A74+91Vpve6FXGd0DxaMbLMwPfgCXK5dsQy5PEssIMEq7Be+k?=
+ =?us-ascii?Q?uai6tXsopxnrlsOAm3bCZQkFXhOyWpwC6OXfLxfzagC+ihTYnavyrvg5zM3H?=
+ =?us-ascii?Q?9fLEdZSZAtH7+9iKDe0RgEIndi8hi9Xyz6IPXBW2SC5hRf+HiZC8vtpqJda9?=
+ =?us-ascii?Q?tKVpzkVHbO2xlxZFNc5KbWfDzjI2hStMC6IViKrlf6YF7MYpW1oMn7HYB6sZ?=
+ =?us-ascii?Q?q19uE1XAtKEBA8NBI2TUztCGBpfJjC1rq1GvH62fV23ow7MXnXwE9A+T3vzn?=
+ =?us-ascii?Q?jxd7ar/bzTs4GZT07mJmzCoT9HbGoy+r6Zx4X++pJCBA5iZ3qCTx5yZMXJf3?=
+ =?us-ascii?Q?hQaeGJ8I3TgezwOwmvOQgQRwwTNgUsO8PISUcRImxDKdMEczWBT8PPknWz/p?=
+ =?us-ascii?Q?hoVTlidg1pthFkYWENxhXlPdWnWZiiUmpOLhZ1+HgOJ8uxBCkXspiMwm2eXA?=
+ =?us-ascii?Q?5og0dSUaGFlDRLlp6dY9ZYF5Y1vQUIxiyu9vYkz6Bc9uMcsuBpFJuX4UWGo1?=
+ =?us-ascii?Q?J0VCzkZN7scziAKTDwGU07DEDKcOl05+nsOlhtnBpQrmARgVw1B8Ylbzgn6N?=
+ =?us-ascii?Q?COXlg+56awEXrZzOxZL64n+Fbzvafa3qJyK0qqQf/gbCFuD5Y3X4O2KLdJuJ?=
+ =?us-ascii?Q?qPrkIcuQRnUJ11uleEuTvv1wt4o1Yqg00seCZngraIjHqCYsD9rv9cwdszRc?=
+ =?us-ascii?Q?IEto78zkCWX7dj1DtNd+L/W5rFMiz+52CnL+Bwh2jly9NCYONHZHtcBgdLeW?=
+ =?us-ascii?Q?1LcpTQTjZu4XlOmHbFyRtz294x9ym0trtJry10tFWmEGvQVgnlqiTAil3xd0?=
+ =?us-ascii?Q?WzTtG9VjXnWxrQ7TUoEwk3xGYYmeSMAX6vSIkr4CkSbT4roqyKF6iwwT1CKk?=
+ =?us-ascii?Q?Q/N5uOcWUFDh/WAmH15AwiUmhtQX3fudBPHXp9Q3bIwxMSJH396L8pROzr3c?=
+ =?us-ascii?Q?3U5bVRbzM9RCCuInrrr4D8pCyE7HkQwjEndoTd2lwO4tstCYoWkQXL5oDdYG?=
+ =?us-ascii?Q?0zwcuHtrP5VsMWtX6Aqh1X+7YbLI17qrZtmttfF93TMMEgW3vPZ52sivdLRC?=
+ =?us-ascii?Q?mASlQQUtuSG9NAcWLxixDEPB4oMIu8vzoh2KaS9Pt1c/W8XOrzsZJWaeWwXJ?=
+ =?us-ascii?Q?llK9+REZ0cisrvO4hk1Y7zIbmWYQICIhR+F6ajKrIOIPAXfXTBjgcDhlTank?=
+ =?us-ascii?Q?vb8sN8jPmyMO3fKCH5A78ABl97g+yb4Rvoom/smEPVqs9ql7To5oRGqq8Ivk?=
+ =?us-ascii?Q?emzF6dBmvPGmoR7oS3BNjN02UvsOvCbLp+iKRqjcNLYUnmd0MZ7Ql20/V1OA?=
+ =?us-ascii?Q?f2M=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8df57fc8-465a-4b8b-14c1-08dc2cfd2ba7
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 01:35:05.3232
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB4663
 
+Add top misc system controller to CV18XX/SG200X series.
 
-Overview
-========
+At least for now, this topctrl dt node has no related driver, because
+it only contains register for other devices, or the subdevice for some
+other purposes. The patch is submitted for providing potential common
+dependency for watchdog, sdhci, usb phy and maybe etc.
 
-This patch introduces a new way to preference data sections when selecting
-GC victims. Migration of data blocks causes invalidation of node blocks.
-Therefore, in situations where GC is frequent, selecting data blocks as
-victims can reduce unnecessary block migration by invalidating node blocks.
-For exceptional situations where free sections are insufficient, node blocks
-are selected as victims instead of data blocks to get extra free sections.
+Inochi Amaoto (2):
+  dt-bindings: clock: sophgo: Add top misc controller of CV18XX/SG200X
+    series SoC
+  riscv: dts: sophgo: cv18xx: top misc system controller
 
-Problem
-=======
+ .../soc/sophgo/sophgo,cv1800-top-syscon.yaml  | 43 +++++++++++++++++++
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |  8 ++++
+ 2 files changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.yaml
 
-If the total amount of nodes is larger than the size of one section, nodes
-occupy multiple sections, and node victims are often selected because the
-gc cost is lowered by data block migration in GC. Since moving the data
-section causes frequent node victim selection, victim threshing occurs in
-the node section. This results in an increase in WAF.
-
-Experiment
-==========
-
-Test environment is as follows.
-
-        System info
-          - 3.6GHz, 16 core CPU
-          - 36GiB Memory
-        Device info
-          - a conventional null_blk with 228MiB
-          - a sequential null_blk with 4068 zones of 8MiB
-        Format
-          - mkfs.f2fs <conv null_blk> -c <seq null_blk> -m -Z 8 -o 3.89
-        Mount
-          - mount <conv null_blk> <mount point>
-        Fio script
-	  - fio --rw=randwrite --bs=4k --ba=4k --filesize=31187m --norandommap --overwrite=1 --name=job1 --filename=./mnt/sustain --io_size=128g
-	WAF calculation
-	  - (IOs on conv. null_blk + IOs on seq. null_blk) / random write IOs
-
-Conclusion
-==========
-
-This experiment showed that the WAF was reduced by 29% (18.75 -> 13.3) when
-the data section was selected first when selecting GC victims. This was
-achieved by reducing the migration of the node blocks by 69.4%
-(253,131,743 blks -> 77,463,278 blks). It is possible to achieve low WAF
-performance with the GC victim selection method in environments where the
-section size is relatively small.
-
-Signed-off-by: Yonggil Song <yonggil.song@samsung.com>
----
- fs/f2fs/f2fs.h |  1 +
- fs/f2fs/gc.c   | 96 +++++++++++++++++++++++++++++++++++++++-----------
- fs/f2fs/gc.h   |  6 ++++
- 3 files changed, 82 insertions(+), 21 deletions(-)
-
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 65294e3b0bef..b129f62ba541 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1654,6 +1654,7 @@ struct f2fs_sb_info {
- 	struct f2fs_mount_info mount_opt;	/* mount options */
- 
- 	/* for cleaning operations */
-+	bool require_node_gc;			/* flag for node GC */
- 	struct f2fs_rwsem gc_lock;		/*
- 						 * semaphore for GC, avoid
- 						 * race between GC and GC or CP
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index a079eebfb080..53a51a668567 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -341,6 +341,14 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
- 	unsigned int i;
- 	unsigned int usable_segs_per_sec = f2fs_usable_segs_in_sec(sbi, segno);
- 
-+	/*
-+	 * When BG_GC selects victims based on age, it prevents node victims
-+	 * from being selected. This is because node blocks can be invalidated
-+	 * by moving data blocks.
-+	 */
-+	if (__skip_node_gc(sbi, segno))
-+		return UINT_MAX;
-+
- 	for (i = 0; i < usable_segs_per_sec; i++)
- 		mtime += get_seg_entry(sbi, start + i)->mtime;
- 	vblocks = get_valid_blocks(sbi, segno, true);
-@@ -369,10 +377,24 @@ static inline unsigned int get_gc_cost(struct f2fs_sb_info *sbi,
- 		return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
- 
- 	/* alloc_mode == LFS */
--	if (p->gc_mode == GC_GREEDY)
--		return get_valid_blocks(sbi, segno, true);
--	else if (p->gc_mode == GC_CB)
-+	if (p->gc_mode == GC_GREEDY) {
-+		/*
-+		 * If the data block that the node block pointed to is GCed,
-+		 * the node block is invalidated. For this reason, we add a
-+		 * weight to cost of node victims to give priority to data
-+		 * victims during the gc process. However, in a situation
-+		 * where we run out of free sections, we remove the weight
-+		 * because we need to clean up node blocks.
-+		 */
-+		unsigned int weight = 0;
-+
-+		if (__skip_node_gc(sbi, segno))
-+			weight = BLKS_PER_SEC(sbi);
-+
-+		return get_valid_blocks(sbi, segno, true) + weight;
-+	} else if (p->gc_mode == GC_CB) {
- 		return get_cb_cost(sbi, segno);
-+	}
- 
- 	f2fs_bug_on(sbi, 1);
- 	return 0;
-@@ -557,6 +579,14 @@ static void atgc_lookup_victim(struct f2fs_sb_info *sbi,
- 	if (ve->mtime >= max_mtime || ve->mtime < min_mtime)
- 		goto skip;
- 
-+	/*
-+	 * When BG_GC selects victims based on age, it prevents node victims
-+	 * from being selected. This is because node blocks can be invalidated
-+	 * by moving data blocks.
-+	 */
-+	if (__skip_node_gc(sbi, ve->segno))
-+		goto skip;
-+
- 	/* age = 10000 * x% * 60 */
- 	age = div64_u64(accu * (max_mtime - ve->mtime), total_time) *
- 								age_weight;
-@@ -1827,8 +1857,27 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 		goto stop;
- 	}
- 
-+	__get_secs_required(sbi, NULL, &upper_secs, NULL);
-+
-+	/*
-+	 * Write checkpoint to reclaim prefree segments.
-+	 * We need more three extra sections for writer's data/node/dentry.
-+	 */
-+	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS) {
-+		sbi->require_node_gc = true;
-+
-+		if (prefree_segments(sbi)) {
-+			stat_inc_cp_call_count(sbi, TOTAL_CALL);
-+			ret = f2fs_write_checkpoint(sbi, &cpc);
-+			if (ret)
-+				goto stop;
-+			/* Reset due to checkpoint */
-+			sec_freed = 0;
-+		}
-+	}
-+
- 	/* Let's run FG_GC, if we don't have enough space. */
--	if (has_not_enough_free_secs(sbi, 0, 0)) {
-+	if (gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) {
- 		gc_type = FG_GC;
- 
- 		/*
-@@ -1863,6 +1912,18 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 		goto stop;
- 	}
- 
-+	if (sbi->require_node_gc &&
-+	    IS_DATASEG(get_seg_entry(sbi, segno)->type)) {
-+		/*
-+		 * We need to clean node sections. but, data victim
-+		 * cost is the lowest. If free sections are enough,
-+		 * stop cleaning node victim. If not, it goes on
-+		 * by GCing data victims.
-+		 */
-+		if (has_enough_free_secs(sbi, sec_freed, 0))
-+			goto stop;
-+	}
-+
- 	seg_freed = do_garbage_collect(sbi, segno, &gc_list, gc_type,
- 				gc_control->should_migrate_blocks);
- 	if (seg_freed < 0)
-@@ -1882,7 +1943,13 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 			if (!gc_control->no_bg_gc &&
- 			    total_sec_freed < gc_control->nr_free_secs)
- 				goto go_gc_more;
--			goto stop;
-+			/*
-+			 * If require_node_gc flag is set even though there
-+			 * are enough free sections, node cleaning will
-+			 * continue.
-+			 */
-+			if (!sbi->require_node_gc)
-+				goto stop;
- 		}
- 		if (sbi->skipped_gc_rwsem)
- 			skipped_round++;
-@@ -1897,21 +1964,6 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 		goto stop;
- 	}
- 
--	__get_secs_required(sbi, NULL, &upper_secs, NULL);
--
--	/*
--	 * Write checkpoint to reclaim prefree segments.
--	 * We need more three extra sections for writer's data/node/dentry.
--	 */
--	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS &&
--				prefree_segments(sbi)) {
--		stat_inc_cp_call_count(sbi, TOTAL_CALL);
--		ret = f2fs_write_checkpoint(sbi, &cpc);
--		if (ret)
--			goto stop;
--		/* Reset due to checkpoint */
--		sec_freed = 0;
--	}
- go_gc_more:
- 	segno = NULL_SEGNO;
- 	goto gc_more;
-@@ -1920,8 +1972,10 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
- 	SIT_I(sbi)->last_victim[ALLOC_NEXT] = 0;
- 	SIT_I(sbi)->last_victim[FLUSH_DEVICE] = gc_control->victim_segno;
- 
--	if (gc_type == FG_GC)
-+	if (gc_type == FG_GC) {
- 		f2fs_unpin_all_sections(sbi, true);
-+		sbi->require_node_gc = false;
-+	}
- 
- 	trace_f2fs_gc_end(sbi->sb, ret, total_freed, total_sec_freed,
- 				get_pages(sbi, F2FS_DIRTY_NODES),
-diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
-index 28a00942802c..cd07bf125177 100644
---- a/fs/f2fs/gc.h
-+++ b/fs/f2fs/gc.h
-@@ -166,3 +166,9 @@ static inline bool has_enough_invalid_blocks(struct f2fs_sb_info *sbi)
- 		free_user_blocks(sbi) <
- 			limit_free_user_blocks(invalid_user_blocks));
- }
-+
-+static inline bool __skip_node_gc(struct f2fs_sb_info *sbi, unsigned int segno)
-+{
-+	return (IS_NODESEG(get_seg_entry(sbi, segno)->type) &&
-+		!sbi->require_node_gc);
-+}
--- 
-2.34.1
+--
+2.43.1
 
 
