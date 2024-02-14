@@ -1,96 +1,294 @@
-Return-Path: <linux-kernel+bounces-65510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218C4854DFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:22:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C5F854E0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C29291F22487
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:22:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35CF71F222D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6111C60256;
-	Wed, 14 Feb 2024 16:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IT0uJOoj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456BC60240
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A8360DE7;
+	Wed, 14 Feb 2024 16:22:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32E60B97;
+	Wed, 14 Feb 2024 16:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927756; cv=none; b=bxuuxHhbc2uzP1augq3S3lUjS18j2aEw9WA62GEGnDb7ld5Y7OAo52bvgN0Xg0UXeP8OVfVsaNIzqyOdrXutW5wgLBnPhNOiA/xDK9QNg9Qw3aVIUQVYMFsJpvNneLp1V/QG+8go6bpFaBdwmTD7s9ttBp+0/fb+iO6yXcFwm7U=
+	t=1707927774; cv=none; b=WyntgX+auHcZYBMx0jItzkcyzM0QuUpvi0bp71WRR4VAMIh2dlctc1bLbnYwYdTLSL6YJZ5B8KRDT24AjvBNguecdqBmINC7K/pQ3rc1iqHWdaOwxkTiYTasU1W7k5Fz6zYk6HQURiEw9HsyxOEmPwZwCnJX3jWjDRGcgv1DjIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927756; c=relaxed/simple;
-	bh=r+hrK0VyQhwY8SaSExIiwc5DAi+rqAsbqKOce/Igzs8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PXmAMq1ADX3yyt68tjSANrsyJKAfq/jxG65mhXNswKwyYcx6HRZ+EsbwCwhP6STMztDVVAw0YmqPmbqLnZMPFMqbSLe8ncVvO4LjxA1lAg/xVJs2aU3S5n+7dsyy+4Ruvr07HNw5VDL4T+GCo0n+enJCI4RutFcZbYOInDeqrTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IT0uJOoj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707927753;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r+hrK0VyQhwY8SaSExIiwc5DAi+rqAsbqKOce/Igzs8=;
-	b=IT0uJOojlkeKzQ5QJw7EKT1IoVmMPTVxsjLDg9EAcZizZxlUSwdf6rWo8QZdr2WJbQPdNs
-	r1Qd6BehEbqNfE3se+TDHCYNYis3n7bsh1qbW8j7VnEPA4myHp1G8brqSEGSHfMo1vnA1b
-	FIKcUKdVc+01X6sR3iTckxzahQkAnbw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-269-XxW0vQoiNEOUGy1KFytB7g-1; Wed, 14 Feb 2024 11:22:32 -0500
-X-MC-Unique: XxW0vQoiNEOUGy1KFytB7g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 483408828E7;
-	Wed, 14 Feb 2024 16:22:31 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.50])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E64A72166B5E;
-	Wed, 14 Feb 2024 16:22:30 +0000 (UTC)
-From: Cornelia Huck <cohuck@redhat.com>
-To: Harald Mommer <Harald.Mommer@opensynergy.com>,
- virtio-dev@lists.oasis-open.org, Haixu Cui <quic_haixcui@quicinc.com>,
- Mark Brown <broonie@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: quic_ztu@quicinc.com, Matti Moell <Matti.Moell@opensynergy.com>, Mikhail
- Golubev <Mikhail.Golubev@opensynergy.com>
-Subject: Re: [virtio-dev] [RFC PATCH v3 0/3] Virtio SPI Linux driver
- compliant to draft spec V10
-In-Reply-To: <20240213135350.5878-1-Harald.Mommer@opensynergy.com>
-Organization: "Red Hat GmbH, Sitz: Werner-von-Siemens-Ring 12, D-85630
- Grasbrunn, Handelsregister: Amtsgericht =?utf-8?Q?M=C3=BCnchen=2C?= HRB
- 153243,
- =?utf-8?Q?Gesch=C3=A4ftsf=C3=BChrer=3A?= Ryan Barnhart, Charles Cachera,
- Michael O'Neill, Amy
- Ross"
-References: <20240213135350.5878-1-Harald.Mommer@opensynergy.com>
-User-Agent: Notmuch/0.37 (https://notmuchmail.org)
-Date: Wed, 14 Feb 2024 17:22:28 +0100
-Message-ID: <87v86rf22j.fsf@redhat.com>
+	s=arc-20240116; t=1707927774; c=relaxed/simple;
+	bh=tPeIGdk9ABSJ2vtL7S2gwGOmRk4EEkM+iWIHuT7Lkzs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PS962roqco3C//5W7sgHSFzpMt6QFc2M2ish3+DQoyvZ0V3lHwes+zHov4gZI1WT3+emNPdXypsVublt87nXslAMpJY5d3ILULujTVu8t2vhaOLELf4rvB8qiMnkn1WLHRn9LXsRGEUFBrva/k+M54/HNzt7FwvdGN4rMa//r2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC6721FB;
+	Wed, 14 Feb 2024 08:23:31 -0800 (PST)
+Received: from [10.57.64.120] (unknown [10.57.64.120])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32A5B3F762;
+	Wed, 14 Feb 2024 08:22:48 -0800 (PST)
+Message-ID: <6c986b83-e00d-46fe-8c88-374f8e6bd0fa@arm.com>
+Date: Wed, 14 Feb 2024 16:22:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/7] mm: thp: split huge page to any lower order pages
+ (except order-1).
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-6-zi.yan@sent.com>
+ <de66b9fb-ee84-473f-a69a-2ac8554f6000@arm.com>
+ <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13 2024, Harald Mommer <Harald.Mommer@opensynergy.com> wrote:
+On 14/02/2024 16:11, Zi Yan wrote:
+> On 14 Feb 2024, at 5:38, Ryan Roberts wrote:
+> 
+>> On 13/02/2024 21:55, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> To split a THP to any lower order (except order-1) pages, we need to
+>>> reform THPs on subpages at given order and add page refcount based on the
+>>> new page order. Also we need to reinitialize page_deferred_list after
+>>> removing the page from the split_queue, otherwise a subsequent split will
+>>> see list corruption when checking the page_deferred_list again.
+>>>
+>>> It has many uses, like minimizing the number of pages after
+>>> truncating a huge pagecache page. For anonymous THPs, we can only split
+>>> them to order-0 like before until we add support for any size anonymous
+>>> THPs.
+>>
+>> multi-size THP is now upstream. Not sure if this comment still makes sense.
+> Will change it to reflect the fact that multi-size THP is already upstream.
+> 
+>> Still its not completely clear to me how you would integrate this new machinery
+>> and decide what non-zero order to split anon THP to?
+> 
+> Originally, it was developed along with my 1GB THP support. So it was intended
+> to split order-18 to order-9. But for now, like you and David said in the cover
+> letter email thread, we might not want to use it for anonymous large folios
+> until we find a necessary use case.
+> 
+>>>
+>>> Order-1 folio is not supported because _deferred_list, which is used by
+>>> partially mapped folios, is stored in subpage 2 and an order-1 folio only
+>>> has subpage 0 and 1.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>  include/linux/huge_mm.h |  21 +++++---
+>>>  mm/huge_memory.c        | 114 +++++++++++++++++++++++++++++++---------
+>>>  2 files changed, 101 insertions(+), 34 deletions(-)
+>>>
+>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>> index 5adb86af35fc..de0c89105076 100644
+>>> --- a/include/linux/huge_mm.h
+>>> +++ b/include/linux/huge_mm.h
+>>> @@ -265,10 +265,11 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
+>>>
+>>>  void folio_prep_large_rmappable(struct folio *folio);
+>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
+>>> -int split_huge_page_to_list(struct page *page, struct list_head *list);
+>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order);
+>>>  static inline int split_huge_page(struct page *page)
+>>>  {
+>>> -	return split_huge_page_to_list(page, NULL);
+>>> +	return split_huge_page_to_list_to_order(page, NULL, 0);
+>>>  }
+>>>  void deferred_split_folio(struct folio *folio);
+>>>
+>>> @@ -422,7 +423,8 @@ can_split_folio(struct folio *folio, int *pextra_pins)
+>>>  	return false;
+>>>  }
+>>>  static inline int
+>>> -split_huge_page_to_list(struct page *page, struct list_head *list)
+>>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order)
+>>>  {
+>>>  	return 0;
+>>>  }
+>>> @@ -519,17 +521,20 @@ static inline bool thp_migration_supported(void)
+>>>  }
+>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>>
+>>> -static inline int split_folio_to_list(struct folio *folio,
+>>> -		struct list_head *list)
+>>> +static inline int split_folio_to_list_to_order(struct folio *folio,
+>>> +		struct list_head *list, int new_order)
+>>>  {
+>>> -	return split_huge_page_to_list(&folio->page, list);
+>>> +	return split_huge_page_to_list_to_order(&folio->page, list, new_order);
+>>>  }
+>>>
+>>> -static inline int split_folio(struct folio *folio)
+>>> +static inline int split_folio_to_order(struct folio *folio, int new_order)
+>>>  {
+>>> -	return split_folio_to_list(folio, NULL);
+>>> +	return split_folio_to_list_to_order(folio, NULL, new_order);
+>>>  }
+>>>
+>>> +#define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l, 0)
+>>> +#define split_folio(f) split_folio_to_order(f, 0)
+>>> +
+>>>  /*
+>>>   * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+>>>   * limitations in the implementation like arm64 MTE can override this to
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index ad7133c97428..d0e555a8ea98 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -2718,11 +2718,14 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>>>
+>>>  static void unmap_folio(struct folio *folio)
+>>>  {
+>>> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
+>>> -		TTU_SYNC | TTU_BATCH_FLUSH;
+>>> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC |
+>>> +		TTU_BATCH_FLUSH;
+>>>
+>>>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
+>>>
+>>> +	if (folio_test_pmd_mappable(folio))
+>>> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
+>>
+>> Should we split this change out? I think it makes sense independent of this series?
+>>
+> 
+> Sure. Since multi-size THP is upstream, this avoid unnecessary code path if
+> the THP is not PMD-mapped.
+> 
+>>> +
+>>>  	/*
+>>>  	 * Anon pages need migration entries to preserve them, but file
+>>>  	 * pages can simply be left unmapped, then faulted back on demand.
+>>> @@ -2756,7 +2759,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  		struct lruvec *lruvec, struct list_head *list)
+>>>  {
+>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
+>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
+>>>  	lockdep_assert_held(&lruvec->lru_lock);
+>>>
+>>> @@ -2777,7 +2779,8 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  }
+>>>
+>>>  static void __split_huge_page_tail(struct folio *folio, int tail,
+>>> -		struct lruvec *lruvec, struct list_head *list)
+>>> +		struct lruvec *lruvec, struct list_head *list,
+>>> +		unsigned int new_order)
+>>>  {
+>>>  	struct page *head = &folio->page;
+>>>  	struct page *page_tail = head + tail;
+>>> @@ -2847,10 +2850,15 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>  	 * which needs correct compound_head().
+>>>  	 */
+>>>  	clear_compound_head(page_tail);
+>>> +	if (new_order) {
+>>> +		prep_compound_page(page_tail, new_order);
+>>> +		folio_prep_large_rmappable(page_folio(page_tail));
+>>> +	}
+>>>
+>>>  	/* Finally unfreeze refcount. Additional reference from page cache. */
+>>> -	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
+>>> -					  folio_test_swapcache(folio)));
+>>> +	page_ref_unfreeze(page_tail,
+>>> +		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
+>>> +			     folio_nr_pages(page_folio(page_tail)) : 0));
+>>>
+>>>  	if (folio_test_young(folio))
+>>>  		folio_set_young(new_folio);
+>>> @@ -2868,7 +2876,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>  }
+>>>
+>>>  static void __split_huge_page(struct page *page, struct list_head *list,
+>>> -		pgoff_t end)
+>>> +		pgoff_t end, unsigned int new_order)
+>>>  {
+>>>  	struct folio *folio = page_folio(page);
+>>>  	struct page *head = &folio->page;
+>>> @@ -2877,10 +2885,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>  	unsigned long offset = 0;
+>>>  	unsigned int nr = thp_nr_pages(head);
+>>>  	int i, nr_dropped = 0;
+>>> +	unsigned int new_nr = 1 << new_order;
+>>>  	int order = folio_order(folio);
+>>>
+>>>  	/* complete memcg works before add pages to LRU */
+>>> -	split_page_memcg(head, order, 0);
+>>> +	split_page_memcg(head, order, new_order);
+>>>
+>>>  	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
+>>>  		offset = swp_offset(folio->swap);
+>>> @@ -2893,8 +2902,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>
+>>>  	ClearPageHasHWPoisoned(head);
+>>>
+>>> -	for (i = nr - 1; i >= 1; i--) {
+>>> -		__split_huge_page_tail(folio, i, lruvec, list);
+>>> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+>>> +		__split_huge_page_tail(folio, i, lruvec, list, new_order);
+>>>  		/* Some pages can be beyond EOF: drop them from page cache */
+>>>  		if (head[i].index >= end) {
+>>>  			struct folio *tail = page_folio(head + i);
+>>> @@ -2910,29 +2919,41 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>  			__xa_store(&head->mapping->i_pages, head[i].index,
+>>>  					head + i, 0);
+>>>  		} else if (swap_cache) {
+>>> +			/*
+>>> +			 * split anonymous THPs (including swapped out ones) to
+>>> +			 * non-zero order not supported
+>>> +			 */
+>>> +			VM_WARN_ONCE(new_order,
+>>> +				"Split swap-cached anon folio to non-0 order not supported");
+>>
+>> Why isn't it supported? Even if it's not supported, is this level the right
+>> place to enforce these kinds of policy decisions? I wonder if we should be
+>> leaving that to the higher level to decide?
+> 
+> Is the swap-out small-size THP without splitting merged? This needs that patchset.
 
-> This is the 3rd RFC version of a virtio SPI Linux driver which is
-> intended to be compliant with the proposed virtio SPI draft
-> specification V10.
+No not yet. I have to respin it. Its on my todo list.
 
-FWIW: this version of the SPI spec has been voted in for virtio 1.4 (and
-is consequently available on the virtio-1.4 branch of the virtio spec.)
-For all intents and purposes, this makes this spec final (modulo
-possible future extensions).
+I'm not sure I understand the dependency though?
+
+> You are right that a warning here is not appropriate. I will fail the splitting
+> if the folio is swapcached and going to be split into >0 order.
+> 
+>>>  			__xa_store(&swap_cache->i_pages, offset + i,
+>>>  					head + i, 0);
+>>>  		}
+>>>  	}
+>>>
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
 
