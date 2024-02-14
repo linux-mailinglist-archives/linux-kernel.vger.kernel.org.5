@@ -1,111 +1,142 @@
-Return-Path: <linux-kernel+bounces-65283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20727854A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:34:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F1C4854A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51A5B1C26E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 022DB28A873
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA11F54BCF;
-	Wed, 14 Feb 2024 13:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b="R9gRfktJ"
-Received: from mail.systec-electronic.com (mail.systec-electronic.com [77.220.239.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF0E54673;
-	Wed, 14 Feb 2024 13:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.220.239.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E89D5467A;
+	Wed, 14 Feb 2024 13:25:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819587499
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707917674; cv=none; b=kdzaYAH1NoEuaHLZSXDVXBqpjZea6DL6NjnzGW30cP14ZGOu6fIaxmKsA6Lx82CYpUkSkvvv35BiBs4GkhxZgs1tDlHxJ1BoTQEeJsZGOijGcS8slO3IkiO2lUhYk3t8vtz7M7HipTOAi8sQiV9+YZ+Xmvkl/vF8N2WHRs5KbJ0=
+	t=1707917151; cv=none; b=Z6EqRUfz3rDlswYB3TyebOqm5kig9xpnL+soKiSZLo3OU6tGE6H9NZo1KZAT0QY5hVeOh7KRnAQRdE5SmZQ0c2QAdjBAHSAUQG+4yHh3WOMZiYXQn4y8RfyZTrWSVR65bNx6538mCU57oVu8p7Lc4yuX6heZRA6k/y+Df2ezt80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707917674; c=relaxed/simple;
-	bh=KhJWijdD+8bkUZJ+O/XoQfTsdzvUphRJ1CzBA4p1eBU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PDhkg0K+UKdb2rwJgbH2j8AizYG1zVvt+7m7LU8npwppLDMjTk3iUf5eIxXfCOvCEDfWTt30Ah039TZJmk5aad7RAL3Hz30HuMsRUKhOZb4hSZRbH3D8hsH7nBrCHdS20PwG3vf9br0uU6lfp4Uar8Rf00RBfsVTN8zrDF8JK4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com; spf=pass smtp.mailfrom=systec-electronic.com; dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b=R9gRfktJ; arc=none smtp.client-ip=77.220.239.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=systec-electronic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 7F34F940010D;
-	Wed, 14 Feb 2024 14:25:32 +0100 (CET)
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id S3te8OplpbRY; Wed, 14 Feb 2024 14:25:32 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 547AE9400115;
-	Wed, 14 Feb 2024 14:25:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.systec-electronic.com 547AE9400115
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=systec-electronic.com; s=B34D3B04-5DC7-11EE-83E3-4D8CAB78E8CD;
-	t=1707917132; bh=SB9gUP4B3cFgEKKjgiQRSSTPQoKGv/D855xgKNgmWR8=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=R9gRfktJpIhAcnTjvaKDb8tQTldck+pIgTD5EybwhQzdMWRw2L3n5aJf9NCgE0hj7
-	 m1FC24NyR/zqM4ts2yd4mZkQtn6ONQbIqeWa18aksWAMdH6c/IA4eT/rTRvLavwTnJ
-	 DHQ2wncl8NSN8UHaAaQQu11II5vHremvEUPLYS4aO6ww/RFjgIbtPxDpChI0/hS8jP
-	 bYW+R0B+rmaLYH+LCHEV0mhxhbIJFJR1j+G4mYarPpda46UjwJaYOzq2NoYBd3cTL1
-	 LRoUbg2NREO5jTxqRGNS0NoHjc/WWYiOA+GrAIukVk7CDtr+60fJq2HLFL6sXCUf2f
-	 Arkwx2tuAUDQA==
-X-Virus-Scanned: amavis at systec-electronic.com
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id NXURZRmmlb0Q; Wed, 14 Feb 2024 14:25:32 +0100 (CET)
-Received: from ws-565760.systec.local (unknown [212.185.67.148])
-	by mail.systec-electronic.com (Postfix) with ESMTPSA id E87DA940010D;
-	Wed, 14 Feb 2024 14:25:31 +0100 (CET)
-From: Andre Werner <andre.werner@systec-electronic.com>
-To: steve.glendinning@shawell.net,
-	UNGLinuxDriver@microchip.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	daniel.krueger@systec-electronic.com,
-	Andre Werner <andre.werner@systec-electronic.com>
-Subject: [PATCH net-next] net: smsc95xx: add support for SYS TEC USB-SPEmodule1
-Date: Wed, 14 Feb 2024 14:25:07 +0100
-Message-ID: <20240214132507.28072-1-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707917151; c=relaxed/simple;
+	bh=hRdhPklLiRJFunCmr63f+3rRwn2AAXUVqCCfSHmiAcQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UFEQ/jp2++IIxJacxdgnVfyita6Klv7MK/1GB8xLf/WauLX5K8oTVAZeOhMy7ga25tujZvqm7tg2O68EnBHcOQbTk+pUvdTZle8axqIJAB9oruOMrircktjknr0vp4yrPvhYvbX81zO+xABHdvhtYN/831SjkXme+vuHF+ySIoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C058F1FB;
+	Wed, 14 Feb 2024 05:26:22 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.64.145])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 935313F5A1;
+	Wed, 14 Feb 2024 05:25:36 -0800 (PST)
+Date: Wed, 14 Feb 2024 13:25:32 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+	torvalds@linux-foundation.org, paulmck@kernel.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+	mattst88@gmail.com, krypton@ulrich-teichert.org,
+	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
+	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
+	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+	konrad.wilk@oracle.com
+Subject: Re: [PATCH 17/30] x86/thread_info: define TIF_NEED_RESCHED_LAZY
+Message-ID: <Zcy_TJt9L0EXcsVM@FVFF77S0Q05N>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-18-ankur.a.arora@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213055554.1802415-18-ankur.a.arora@oracle.com>
 
-This patch adds support for the SYS TEC USB-SPEmodule1 10Base-T1L
-ethernet device to the existing smsc95xx driver by adding the new
-USB VID/PID pair.
+Hi Ankur,
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
- drivers/net/usb/smsc95xx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On Mon, Feb 12, 2024 at 09:55:41PM -0800, Ankur Arora wrote:
+> Define TIF_NEED_RESCHED_LAZY which, with TIF_NEED_RESCHED provides the
+> scheduler with two kinds of rescheduling intent: TIF_NEED_RESCHED,
+> for the usual rescheduling at the next safe preemption point;
+> TIF_NEED_RESCHED_LAZY expressing an intent to reschedule at some
+> time in the future while allowing the current task to run to
+> completion.
+> 
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  arch/x86/Kconfig                   |  1 +
+>  arch/x86/include/asm/thread_info.h | 10 ++++++++--
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 5edec175b9bf..ab58558068a4 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -275,6 +275,7 @@ config X86
+>  	select HAVE_STATIC_CALL
+>  	select HAVE_STATIC_CALL_INLINE		if HAVE_OBJTOOL
+>  	select HAVE_PREEMPT_DYNAMIC_CALL
+> +	select HAVE_PREEMPT_AUTO
+>  	select HAVE_RSEQ
+>  	select HAVE_RUST			if X86_64
+>  	select HAVE_SYSCALL_TRACEPOINTS
+> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+> index d63b02940747..88c1802185fc 100644
+> --- a/arch/x86/include/asm/thread_info.h
+> +++ b/arch/x86/include/asm/thread_info.h
+> @@ -81,8 +81,11 @@ struct thread_info {
+>  #define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
+>  #define TIF_SIGPENDING		2	/* signal pending */
+>  #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
+> -#define TIF_SINGLESTEP		4	/* reenable singlestep on user return*/
+> -#define TIF_SSBD		5	/* Speculative store bypass disable */
+> +#ifdef CONFIG_PREEMPT_AUTO
+> +#define TIF_NEED_RESCHED_LAZY	4	/* Lazy rescheduling */
+> +#endif
+> +#define TIF_SINGLESTEP		5	/* reenable singlestep on user return*/
+> +#define TIF_SSBD		6	/* Speculative store bypass disable */
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index a530f20ee257..bb4e62a93d96 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -2109,6 +2109,11 @@ static const struct usb_device_id products[] =3D {
- 		USB_DEVICE(0x184F, 0x0051),
- 		.driver_info =3D (unsigned long)&smsc95xx_info,
- 	},
-+	{
-+		/* SYSTEC USB-SPEmodule1 10BASE-T1L Ethernet Device */
-+		USB_DEVICE(0x0878, 0x1400),
-+		.driver_info =3D (unsigned long)&smsc95xx_info,
-+	},
- 	{ },		/* END */
- };
- MODULE_DEVICE_TABLE(usb, products);
---=20
-2.43.0
+It's a bit awkward/ugly to conditionally define the TIF_* bits in arch code,
+and we don't do that for other bits that are only used in some configurations
+(e.g. TIF_UPROBE). That's not just for aesthetics -- for example, on arm64 we
+try to keep the TIF_WORK_MASK bits contiguous, which is difficult if a bit in
+the middle doesn't exist in some configurations.
 
+Is it painful to organise the common code so that arch code can define
+TIF_NEED_RESCHED_LAZY regardless of whether CONFIG_PREEMPT_AUTO is selected?
+
+Mark.
+
+>  #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
+>  #define TIF_SPEC_L1D_FLUSH	10	/* Flush L1D on mm switches (processes) */
+>  #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
+> @@ -104,6 +107,9 @@ struct thread_info {
+>  #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+>  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+> +#ifdef CONFIG_PREEMPT_AUTO
+> +#define _TIF_NEED_RESCHED_LAZY	(1 << TIF_NEED_RESCHED_LAZY)
+> +#endif
+>  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
+>  #define _TIF_SSBD		(1 << TIF_SSBD)
+>  #define _TIF_SPEC_IB		(1 << TIF_SPEC_IB)
+> -- 
+> 2.31.1
+> 
 
