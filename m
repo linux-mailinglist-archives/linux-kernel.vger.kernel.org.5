@@ -1,163 +1,201 @@
-Return-Path: <linux-kernel+bounces-64704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573048541BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:18:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F3DC8541BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 733011C26707
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C47BF281B8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EFD947A;
-	Wed, 14 Feb 2024 03:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89A39455;
+	Wed, 14 Feb 2024 03:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnDAuaGF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nuv5ZYY9"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A858F8F59
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 03:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40461BA22
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 03:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707880695; cv=none; b=oVbUwEJD4MidPT4uJsD7tYWYJukXJdlLs/osDlYT58x18BoSoKDVpolQpzCZTH1Acq28/ItHvqVhiCktfbPYZpgQxiOyK2HlgO2iDvVH/uXRNK7q1szqXw5e4bPcQEblUsARU1Hup9V7ve5/WJa4bxdVqUaHcuhhW/Xxb0ngPtE=
+	t=1707880723; cv=none; b=BT+N8OBOyPkK6K+c/cEWM/YJTSekXOm93VPpDkqvzqrvShPC9bS1TQcGODHXRGyHnUfLuv9xyo2NZniPxQPHIqqBS9Vg2vMcPFzB4DEcoFUmNLiFt9J6Hrgnsrx03BniTWXw2a/f1nOkx2mk82HMi3JUpWWEky48dkqHqZ7N4EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707880695; c=relaxed/simple;
-	bh=bLs6qvIQvelBnVFr2iLJ+E8oY0Lgk4r6haReuBVcFiU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oInni1FITa72b8KfZ9C4VZEoVB4h6OYPwtwZ3vt+Y/V9WmNLFbL5xRWKQbSC9VuHFaISpYP2pj0uK818iOYMR82PPzfFi8/FGUx7/Y8gXrSLlrb/E4PrPQZ2uEPSVK49bFGKnOtrt9z7v2AatcLBDRVMLmQifUyu1pgghL9C//M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dnDAuaGF; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707880693; x=1739416693;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bLs6qvIQvelBnVFr2iLJ+E8oY0Lgk4r6haReuBVcFiU=;
-  b=dnDAuaGFw7GqDhRZ0c1l/k0cZz7RwL0y1nYQ35HMK+GWreRd0ZbYH/2u
-   o0ny5w8tLE/WqNdwvqpKuNinVFOs4OzVRXAJctWIhpK3da2c2zpbyT1hS
-   yUOt7n7aj0SPKsGeGmlOyB6Ie/3xeeoVeBnLbjUTmiHWIOQj1qemAndzb
-   M85qQbuM9b1FwBN2PT83c/wJUfr9mvh9q+RpG9HDK185iQ0ae/OHQWw+F
-   VuTSfX3/wkEZe34PEeBTPtyFOGEjdjYgn6Nqlulh4HtaNaqEFsD7BfgVy
-   6VEkVExifjU6RT2Gd1dpk1OMsgswECvC7wiI/lucAhU3hwHRnK73xaDPq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13302462"
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="13302462"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 19:18:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="3364522"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 13 Feb 2024 19:18:06 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ra5md-0008Fu-1e;
-	Wed, 14 Feb 2024 03:18:03 +0000
-Date: Wed, 14 Feb 2024 11:17:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, paulmck@kernel.org,
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
-	mark.rutland@arm.com, jgross@suse.com, andrew.cooper3@citrix.com,
-	bristot@kernel.org, mathieu.desnoyers@efficios.com,
-	geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-	krypton@ulrich-teichert.org, rostedt@goodmis.org,
-	David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [PATCH 03/30] thread_info: tif_need_resched() now takes
- resched_t as param
-Message-ID: <202402141055.evTx8Q0K-lkp@intel.com>
-References: <20240213055554.1802415-4-ankur.a.arora@oracle.com>
+	s=arc-20240116; t=1707880723; c=relaxed/simple;
+	bh=LMUSDz9e18l6FbQXHJRldHrcYZXtoGgkwQw3jFDcDN8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aDqi6i6b7Nz+WhXOPdUs/AON0iWKO1AQ1qD3KTvVACkyhNyry6147tt/zvnu1oVLk/+hRTDH76a4HRuKpRqpSQ9rsC7Zv2r45MtXYP6LfsXaVFni78vl+TLIDF5++NeH9KjkGZar/aou5zGt8cp7kr9AblcT31gnPHXDnq4VTpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nuv5ZYY9; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-428405a0205so573701cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 19:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707880721; x=1708485521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sCvKWGSZEcrU3I62UsBWqAtToZ+Q/bkHpybmK6GQZiU=;
+        b=nuv5ZYY9OcGIULwArTGnsJygl5V4wbS0LzdCD3DBJm4L3nk1Olr+quUTWyY8dcY9VI
+         gXzoZmAuZOdPrqherbS7n1LAMboqbSGsKn9AvcajVe8XV2qYE7lHQUx8Lxk9A/mwZwcK
+         CtCrhcJSqAxwP7gblo8dl+FOqbDSjpM3xrDl7TWPhB05fB9e1KWaYKwP/R+mI1k+dH6P
+         2bo/NLrt6zPUPPkneu1rofx9sxV+y+p0MQSrp9MoCiqKTLfkY32ADgNBW7f6mkTVT5HG
+         Jdk/jAjPUno8cgzoz5JfVS+o5TOChdAa9MstEEhCa9GXPo9PmmDYEDqIs/RRHSbs/MaT
+         yg1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707880721; x=1708485521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sCvKWGSZEcrU3I62UsBWqAtToZ+Q/bkHpybmK6GQZiU=;
+        b=kbCijAjYAGUwHL654BvpVwaHYb7wcnEbX9APmEmIS1j2bD1XWLssdBKZD1O3lfOqZ+
+         4//YlKWfIUJNIpNhu2/QfZ2iI26dSgj4RrZABtm57iC1PhbiGnnK3CpiAOdHRCZNUy9B
+         0ZLLxwxgeINly5wvxeA7x4zJjw088y7bxbjY2HOe/lamFc7H28eA10O0mBcYmmZqfFFz
+         7Gbm6fbLqfF1IyEPjSMwfL7gdEbE3VssAwY5ajQtFW2urg4r3vFajChCCE3IB3uTlleD
+         1c0W61XO5fLeGR545vD0o8NmAj6SNEjvrH8bmD3958O8Vat+1IxKrhvngfjEKeu+Zyjw
+         yOsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXWSinP74vWSNTAIL2rhUth++T+GoWF94CNwI/p07OXMTnCxQDF1C86frDHg/GT1qdi9CsiPpxYtBlsqupCwJh2gDwwVvUDX6cWc4hU
+X-Gm-Message-State: AOJu0YyVQ3NZ4Njju/ezYx+lRqqAlHcBcTtkR939wrZa8Er58Q02eEhM
+	MB8TPbvJXp8DOGYWuejRwy6yNBOZ4FMryfhkWkZOF0l0KWaum/MtLoIFa769Nw15KdCqcS+249n
+	jq4ycjuSc5ZiBydeBP6Gn1kocXbSGQs6D0ixZ
+X-Google-Smtp-Source: AGHT+IEp+qv5fTphOIfgPXLRE+ClfamHmS/tNOlBEDSEnlU91CYmiW1H+DkSTjWWiWmrKrbLLHofzXQl4CbqVQ+DLpc=
+X-Received: by 2002:a05:622a:1882:b0:42c:501c:ed12 with SMTP id
+ v2-20020a05622a188200b0042c501ced12mr228524qtc.4.1707880720926; Tue, 13 Feb
+ 2024 19:18:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213055554.1802415-4-ankur.a.arora@oracle.com>
+References: <20240123014517.5787-1-mcpratt@pm.me> <20240123014517.5787-2-mcpratt@pm.me>
+In-Reply-To: <20240123014517.5787-2-mcpratt@pm.me>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 13 Feb 2024 19:18:03 -0800
+Message-ID: <CAGETcx-udSMDLEmwynQMxEnaHb5TR=nD+YJysAx7Jc73UVKdZA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] driver core: fw_devlink: Use driver to determine
+ probe ability
+To: Michael Pratt <mcpratt@pm.me>
+Cc: devicetree@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	abel.vesa@linaro.org, alexander.stein@ew.tq-group.com, 
+	andriy.shevchenko@linux.intel.com, bigunclemax@gmail.com, brgl@bgdev.pl, 
+	colin.foster@in-advantage.com, djrscally@gmail.com, 
+	dmitry.baryshkov@linaro.org, festevam@gmail.com, fido_max@inbox.ru, 
+	frowand.list@gmail.com, geert@linux-m68k.org, heikki.krogerus@linux.intel.com, 
+	kernel@pengutronix.de, linus.walleij@linaro.org, linux@roeck-us.net, 
+	luca.weiss@fairphone.com, magnus.damm@gmail.com, martin.kepplinger@puri.sm, 
+	miquel.raynal@bootlin.com, rafal@milecki.pl, ansuelsmth@gmail.com, 
+	richard@nod.at, sakari.ailus@linux.intel.com, sudeep.holla@arm.com, 
+	tglx@linutronix.de, tony@atomide.com, vigneshr@ti.com, dianders@chromium.org, 
+	jpb@kernel.org, rafael@kernel.org, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ankur,
+Hi Michael,
 
-kernel test robot noticed the following build warnings:
+Thanks for reporting this and being willing to work on a fix.
 
-[auto build test WARNING on paulmck-rcu/dev]
-[also build test WARNING on tip/core/entry linus/master v6.8-rc4 next-20240213]
-[cannot apply to tip/sched/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Mon, Jan 22, 2024 at 5:46=E2=80=AFPM Michael Pratt <mcpratt@pm.me> wrote=
+:
+>
+> The function __fw_devlink_pickup_dangling_consumers()
+> intends to ignore suppliers that are already capable of probing,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ankur-Arora/preempt-introduce-CONFIG_PREEMPT_AUTO/20240213-140748
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
-patch link:    https://lore.kernel.org/r/20240213055554.1802415-4-ankur.a.arora%40oracle.com
-patch subject: [PATCH 03/30] thread_info: tif_need_resched() now takes resched_t as param
-config: x86_64-buildonly-randconfig-002-20240213 (https://download.01.org/0day-ci/archive/20240214/202402141055.evTx8Q0K-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402141055.evTx8Q0K-lkp@intel.com/reproduce)
+fw_devlink isn't trying to figure out if a fwnode is "already capable"
+of probing. It's trying to figure out if a fwnode will NEVER probe. If
+it's just looking at "right now" or "already capable", it becomes
+kinda useless.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402141055.evTx8Q0K-lkp@intel.com/
+> but uses whether or not a bus struct is defined in the device struct.
 
-All warnings (new ones prefixed by >>):
+Because if you don't need a class of devices to probe, you add them to
+a "class" not a "bus".
 
->> vmlinux.o: warning: objtool: mwait_idle+0xd: call to tif_resched.constprop.0() leaves .noinstr.text section
->> vmlinux.o: warning: objtool: poll_idle+0x2c: call to tif_resched.constprop.0() leaves .noinstr.text section
+> There are some cases where a firmware child node
+> can be address translatable but not able to probe
+> (e.g. the use of of_platform_populate() for MTD partitions),
+> so whether or not a driver is present is a more accurate way
+> to guess whether a fwnode represents a real probing device here.
 
+No, checking for the driver is not a "more accurate way" for the
+reasons mentioned above.
 
-objdump-func vmlinux.o mwait_idle:
-0000 0000000000000060 <mwait_idle>:
-0000   60:	53                   	push   %rbx
-0001   61:	48 8b 1c 25 00 00 00 00 	mov    0x0,%rbx	65: R_X86_64_32S	pcpu_hot
-0009   69:	80 4b 02 20          	orb    $0x20,0x2(%rbx)
-000d   6d:	e8 00 00 00 00       	call   72 <mwait_idle+0x12>	6e: R_X86_64_PC32	.text+0xfe73c
-0012   72:	48 63 f0             	movslq %eax,%rsi
-0015   75:	48 0f a3 33          	bt     %rsi,(%rbx)
-0019   79:	72 3a                	jb     b5 <mwait_idle+0x55>
-001b   7b:	48 8b 05 00 00 00 00 	mov    0x0(%rip),%rax        # 82 <mwait_idle+0x22>	7e: R_X86_64_PC32	boot_cpu_data+0x6c
-0022   82:	48 0f ba e0 27       	bt     $0x27,%rax
-0027   87:	72 46                	jb     cf <mwait_idle+0x6f>
-0029   89:	31 d2                	xor    %edx,%edx
-002b   8b:	48 89 d8             	mov    %rbx,%rax
-002e   8e:	48 89 d1             	mov    %rdx,%rcx
-0031   91:	0f 01 c8             	monitor %rax,%ecx,%edx
-0034   94:	48 0f a3 33          	bt     %rsi,(%rbx)
-0038   98:	72 1b                	jb     b5 <mwait_idle+0x55>
-003a   9a:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # a0 <mwait_idle+0x40>	9c: R_X86_64_PC32	mds_idle_clear-0x4
-0040   a0:	85 c0                	test   %eax,%eax
-0042   a2:	7e 07                	jle    ab <mwait_idle+0x4b>
-0044   a4:	0f 00 2d 00 00 00 00 	verw   0x0(%rip)        # ab <mwait_idle+0x4b>	a7: R_X86_64_PC32	.rodata+0x15cd2
-004b   ab:	31 c0                	xor    %eax,%eax
-004d   ad:	48 89 c1             	mov    %rax,%rcx
-0050   b0:	fb                   	sti
-0051   b1:	0f 01 c9             	mwait  %eax,%ecx
-0054   b4:	fa                   	cli
-0055   b5:	48 8b 04 25 00 00 00 00 	mov    0x0,%rax	b9: R_X86_64_32S	pcpu_hot
-005d   bd:	80 60 02 df          	andb   $0xdf,0x2(%rax)
-0061   c1:	5b                   	pop    %rbx
-0062   c2:	31 c0                	xor    %eax,%eax
-0064   c4:	31 d2                	xor    %edx,%edx
-0066   c6:	31 c9                	xor    %ecx,%ecx
-0068   c8:	31 f6                	xor    %esi,%esi
-006a   ca:	e9 00 00 00 00       	jmp    cf <mwait_idle+0x6f>	cb: R_X86_64_PLT32	__x86_return_thunk-0x4
-006f   cf:	0f ae f0             	mfence
-0072   d2:	0f ae 3b             	clflush (%rbx)
-0075   d5:	0f ae f0             	mfence
-0078   d8:	eb af                	jmp    89 <mwait_idle+0x29>
-007a   da:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+> This also serves as a preparation step for further changes
+> to fw_devlink including making the contents of this function
+> less strict in order to compensate for more cases being passed into
+> the rest of the function because the return case is now more strict.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This change itself is a definite Nack, but I'll look at your other
+patches to see what you are trying to do.
+
+> "Hey! Who's driving the bus?"
+
+The driver isn't here yet. He'll be here in a while. But at least this
+is a mode of transportation and not a football stadium :)
+
+See more below.
+
+> Signed-off-by: Michael Pratt <mcpratt@pm.me>
+> ---
+>  drivers/base/core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 14d46af40f9a..c05a5f6b0641 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -214,7 +214,7 @@ static void __fwnode_links_move_consumers(struct fwno=
+de_handle *from,
+>   * @new_sup: fwnode of new supplier
+>   *
+>   * If the @fwnode has a corresponding struct device and the device suppo=
+rts
+> - * probing (that is, added to a bus), then we want to let fw_devlink cre=
+ate
+> + * probing (that is, bound to a driver), then we want to let fw_devlink =
+create
+>   * MANAGED device links to this device, so leave @fwnode and its descend=
+ant's
+>   * fwnode links alone.
+>   *
+> @@ -225,7 +225,7 @@ static void __fw_devlink_pickup_dangling_consumers(st=
+ruct fwnode_handle *fwnode,
+>  {
+>         struct fwnode_handle *child;
+>
+> -       if (fwnode->dev && fwnode->dev->bus)
+> +       if (fwnode->dev && fwnode->dev->driver)
+
+This will completely break fw_devlink when modules are enabled. Which
+is where fw_devlink is also very much needed. And if modules are
+loaded using udev events, this is guaranteed to break for those cases.
+Also, the driver gets set AFTER a device is probed. Not before. So, I
+think you are just deleting/incorrectly moving a whole bunch of device
+links that would have been created.
+
+A first level sanity test for any fw_devlink change is to take a
+sufficiently complicated board/system and then compare the output of
+this command before and after your changes:
+ls -1 /sys/class/devlink
+
+The diff you see should be exactly what you expect/want to happen. If
+there are other unexpected diffs it's generally a bug. I've caught so
+many bugs in my changes (before I send them) this way.
+
+Also, if a device is never supposed to probe, it should not be added
+to a bus anyway. That's what a "class" is for. It's for a class of
+devices. Adding a device to a bus and then never probing it is such a
+waste. And this device (at least for nvmem-cells) is never even
+referenced -- which is an even bigger waste of memory.
+
+I'd really prefer if someone with nvmem cells experience (hint hint
+Michael hint hint :) ) can clean up the framework to not create
+devices unnecessarily or at least make it a device that's added to a
+class instead of a bus.
+
+-Saravana
 
