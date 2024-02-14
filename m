@@ -1,203 +1,187 @@
-Return-Path: <linux-kernel+bounces-65210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDA14854981
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:48:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D61F8549AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EA411C21D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:48:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0EFDB2661F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C178352F73;
-	Wed, 14 Feb 2024 12:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A/mBddbj"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9295381B;
+	Wed, 14 Feb 2024 12:51:52 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C09E1A731;
-	Wed, 14 Feb 2024 12:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A682852F72;
+	Wed, 14 Feb 2024 12:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707914894; cv=none; b=pp3GKgoXMraQZl6nyW463TBTLe+ApB0L9c2wQBKgPxF2EyV1G99Y+kYhfvQMLcxRqv/7qr2DXquFHnZ980/cfDcVg3z+WzurfbR20U256+07/fiJvVu0vS3NKSxkrhsdtP4F7J6CoZDSMCX9vDMWJ7kPAWv372TXy7X6DTbz9BE=
+	t=1707915111; cv=none; b=mIY6A8MybAYcZJMNbqhMzSMVUcXZ0HrTfCcnBxUhnAQpzlV+JLQTPSUdnvB0BLpTtiFL1yyBVbGq3fVHFuCwlv60G+SA40k8L1yMiN/VU5PcbzQkfBvJ+ilozCoi3ExjaEuaoVX/fdQJXJqPADyUuWbrlEYCiWLGS23fyBXDB6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707914894; c=relaxed/simple;
-	bh=DR9oD1vhlP0vc3JPAqFuhWP9LjrRHFpS5jANBMn3sSE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mTIPhzZEeYpCtKMehisVMhIOi8hGsYpD7bFlD1NrTeiX9LQHrBtQp+GqF8Lko05ka4d7IKJfBH40DR/PNFa89WE8HCrzZxKYul6pzflCxnnORrAYuGRxu32bx1C7BJur2sysTW6c/Puk1TcRSUrylbgHxh30lksUVQYds3s1RpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A/mBddbj; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a34c5ca2537so699366266b.0;
-        Wed, 14 Feb 2024 04:48:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707914890; x=1708519690; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DR9oD1vhlP0vc3JPAqFuhWP9LjrRHFpS5jANBMn3sSE=;
-        b=A/mBddbjY5uThLIimlGXhZCcjpxuAgvZ9tylwMXkIEzGHnUlo33ks305yOyWrW7rpq
-         YAdrWT48j+S1QXK+rRnyXe2Y5K7t/6D0UGDPVaaHPvHdJvfgVlRhdcrx9Is5od/F3oAt
-         kO7hIbkBFIWpSDEknBmD3TC4TPJrYa6JxsfeueqmaWn+ERElCsuwGWLN/d4ps6ImI4ph
-         A86YqAtKv0BG7nJPSYXBvLmZCByLEHPvn2YCReA2RpexQDKotfxMuTJkfKxkunMwZOB5
-         mvGVv90Lkltxs9/iCuYm+6AGJold/1ihygwkgbhxCHnzONHC5A9IGqIYzbeM7BOIquaI
-         zeUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707914890; x=1708519690;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DR9oD1vhlP0vc3JPAqFuhWP9LjrRHFpS5jANBMn3sSE=;
-        b=AqMvlGpMXIgUVtl8o62/D2e44GwyBYzubuXItL+TJRlptj82js3CDzJ50zevZaxPAp
-         1obcoOcGop6TePvi2NlOyzxnAazl6N5yZlakBsn9wEuBMiNq4OkWOyCAR9D6mZTntcFE
-         kWvvPRE7ypXAHTU/yJsH6JUmdXB2Qxjj0bo2puxt2yz/ANch4G9BYo2lYadC3IFVlaGj
-         Lvt7V2uMp6Wg2YkRXDrChX0ZYdxJpUbLBeO3Yi4xH5RLi2s1cB2HcZuW1/1rOljyJCkJ
-         y9pZoJmzzTG4vUrWdC9AzQFtekTzm1geLS3adqXDNlNktT8V+SaeCPRgvc2XOlIxFR6R
-         ydQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbLGQ5W2lMJ0YTw+Xn9aU9uob108oK7BtR//FB0WmlRhVkSkOpf8akDU0u2c4AcGyrv93Pru4K66OFRSBFg9CtcMWpMFXHYRNhC42sgz0VA9MNLFrFaK9RvsgwdvWsPyTYLY5U7FUap175XpQKlDTk4KejqlQh0N61RlFvJNAzh7AqnZU=
-X-Gm-Message-State: AOJu0Yw+OPlAlGu6mXyPAzdH4L6TxCoL5B5rqfNCNKtnK4ZF9rVQtRJ0
-	QtoW5CdwyIwxKc6DN1k/3tTBIxSD5rmFJSjLMGEgF9gcgVnOHbyF
-X-Google-Smtp-Source: AGHT+IEegKSAQFOUPzMSNOuf2C8AnGjL8nXFejPi9Vp2cIOBbNkVpvxcH4iJcmb+xLaYqTxRhwFNfA==
-X-Received: by 2002:a17:907:7653:b0:a3c:f045:a516 with SMTP id kj19-20020a170907765300b00a3cf045a516mr1538013ejc.57.1707914890398;
-        Wed, 14 Feb 2024 04:48:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6PwgYAS1wBsdNItpTgnbAL/LcHw7GQaolP+YXvl6K5d1+ONW4LpZ7FQ6gnnAUTKXjnhL9x3DxmkJts5ckoZ3iQJobuLRXsBhVudUu91Azarp4zXPHlwtytk8YPCOnFvwHRHdCEBo6GzdeKI6D02xmLS0bG9U3c8TwJYBjz728eAOnX8cgIf3y84V1jc9KW/N7u7o7MOpazGotf0Xqt3jkn3V9jT6FXoZbDupwtWQvyyqiAEumhyPcPWN/ShCsR8Bjnc9YKlAJAFTCcXnKZlsZPMOS2bqDIBaECjT0XxF8U6HsHQQXAEuo8tnr9a9+Hddlm4CgLvi9vqpxHftVO90GuukHXv3QZ4mIZx3108ICpXL8hGTO5cweHSkdL+dIWP/gDsVR0o3KhpbTP6PY5ruJbsarojyIW8D4Qj6co237TfthBfrYhvjy4WdlWulQecjEHWsDKMzU+w8Z7lYneAHDqS8JzlFS1gHIzuUloW2QIwMkdjlJ6TkJ5leVAW5/Gag=
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id h2-20020a1709063c0200b00a3d1ea6134dsm1155253ejg.197.2024.02.14.04.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 04:48:10 -0800 (PST)
-Message-ID: <71fa22870246c4ed6ae9cbb2cb93db557dd855f7.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] of: dynamic: flush devlinks workqueue before
- destroying the changeset
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Rob Herring <robh@kernel.org>, Nuno Sa <nuno.sa@analog.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>,  Daniel Scally <djrscally@gmail.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sakari Ailus
- <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
- linux-acpi@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Android Kernel Team <kernel-team@android.com>
-Date: Wed, 14 Feb 2024 13:51:29 +0100
-In-Reply-To: <CAGETcx9xgLykm7Ti-A4+sYxQkn=KTUptW9fbFxgTcceihutwRQ@mail.gmail.com>
-References: 
-	<20240205-fix-device-links-overlays-v2-0-5344f8c79d57@analog.com>
-	 <20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com>
-	 <aed988a09cb4347ec7ac1b682c4ee53b7d2a840b.camel@gmail.com>
-	 <20240213145131.GA1180152-robh@kernel.org>
-	 <48a86fa6908a2a7a38a45dc6dbb5574c4a9d7400.camel@gmail.com>
-	 <CAGETcx9xgLykm7Ti-A4+sYxQkn=KTUptW9fbFxgTcceihutwRQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1707915111; c=relaxed/simple;
+	bh=h0bXe5xX9YW/t/MGvWzQw9+QyBCufsFJVGdR4dnIIOk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kwDa+gQK2scD49t/zSWwbyVSesSG454aMAgs/d9bh//oC7BeOv8SztH7uJ/NzEtq2gDURwEi88+UAvWIIYMNpUQq1RB71U2CbvKQqyEW6ibvPXVWSglLXsCHZNZnJRwekQfQGLPYPJN+cNDc34zzKpulLiQbho+DvHgPGKRGZkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 663E4C433C7;
+	Wed, 14 Feb 2024 12:51:49 +0000 (UTC)
+Message-ID: <f2fc7350-d39e-45c2-bfa2-9ee502d8bdec@xs4all.nl>
+Date: Wed, 14 Feb 2024 13:51:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: Add dependency of ov7670/mcam/cafe on
+ CONFIG_V4L2_ASYNC explicitly
+Content-Language: en-US, nl
+To: Dawei Li <dawei.li@shingroup.cn>, mchehab@kernel.org
+Cc: sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ hdegoede@redhat.com, oe-kbuild-all@lists.linux.dev, set_pte_at@outlook.com,
+ kernel test robot <lkp@intel.com>
+References: <202402130955.f6uxzdCA-lkp@intel.com>
+ <20240214113830.3656367-1-dawei.li@shingroup.cn>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20240214113830.3656367-1-dawei.li@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-02-13 at 19:44 -0800, Saravana Kannan wrote:
-> On Tue, Feb 13, 2024 at 6:57=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.c=
-om> wrote:
-> >=20
-> > On Tue, 2024-02-13 at 08:51 -0600, Rob Herring wrote:
-> > > On Mon, Feb 12, 2024 at 01:10:27PM +0100, Nuno S=C3=A1 wrote:
-> > > > On Mon, 2024-02-05 at 13:09 +0100, Nuno Sa wrote:
-> > > > > Device links will drop their supplier + consumer refcounts
-> > > > > asynchronously. That means that the refcount of the of_node attac=
-hed
-> > > > > to
-> > > > > these devices will also be dropped asynchronously and so we canno=
-t
-> > > > > guarantee the DT overlay assumption that the of_node refcount mus=
-t be
-> > > > > 1 in
-> > > > > __of_changeset_entry_destroy().
-> > > > >=20
-> > > > > Given the above, call the new fwnode_links_flush_queue() helper t=
-o
-> > > > > flush
-> > > > > the devlink workqueue so we can be sure that all links are droppe=
-d
-> > > > > before
-> > > > > doing the proper checks.
-> > > > >=20
-> > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > > > ---
-> > > > > =C2=A0drivers/of/dynamic.c | 8 ++++++++
-> > > > > =C2=A01 file changed, 8 insertions(+)
-> > > > >=20
-> > > > > diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-> > > > > index 3bf27052832f..b7153c72c9c9 100644
-> > > > > --- a/drivers/of/dynamic.c
-> > > > > +++ b/drivers/of/dynamic.c
-> > > > > @@ -14,6 +14,7 @@
-> > > > > =C2=A0#include <linux/slab.h>
-> > > > > =C2=A0#include <linux/string.h>
-> > > > > =C2=A0#include <linux/proc_fs.h>
-> > > > > +#include <linux/fwnode.h>
-> > > > >=20
-> > > > > =C2=A0#include "of_private.h"
-> > > > >=20
-> > > > > @@ -518,6 +519,13 @@ EXPORT_SYMBOL(of_changeset_create_node);
-> > > > >=20
-> > > > > =C2=A0static void __of_changeset_entry_destroy(struct of_changese=
-t_entry
-> > > > > *ce)
-> > > > > =C2=A0{
-> > > > > + /*
-> > > > > +=C2=A0 * device links drop their device references (and hence th=
-eir
-> > > > > of_node
-> > > > > +=C2=A0 * references) asynchronously on a dedicated workqueue. He=
-nce we
-> > > > > need
-> > > > > +=C2=A0 * to flush it to make sure everything is done before doin=
-g the
-> > > > > below
-> > > > > +=C2=A0 * checks.
-> > > > > +=C2=A0 */
-> > > > > + fwnode_links_flush_queue();
-> > > > > =C2=A0 if (ce->action =3D=3D OF_RECONFIG_ATTACH_NODE &&
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 of_node_check_flag(ce->np, OF_OVER=
-LAY)) {
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (kref_r=
-ead(&ce->np->kobj.kref) > 1) {
-> > > > >=20
-> > > >=20
-> > > > Hi Rob and Frank,
-> > > >=20
-> > > > Any way you could take a look at this and see if you're ok with the
-> > > > change
-> > > > in the
-> > > > overlay code?
-> > > >=20
-> > > > On the devlink side , we already got the ok from Rafael.
-> > >=20
-> > > Didn't Saravana say he was going to look at this? As of yesterday, he=
-'s
-> > > also a DT maintainer so deferring to him.
-> > >=20
-> >=20
-> > Yeah, I did asked him but I guess he never had the time for it... Sarav=
-ana,
-> > could you please give some feedback on this? I think the most sensible =
-part
-> > is
-> > on the devlink side but I assume this is not going to be merged without=
- an
-> > ack
-> > from a DT maintainer...
->=20
-> Sorry for the delay Nuno. I'll get to this. I promise. This week is a bit
-> busy.
->=20
+On 14/02/2024 12:38, Dawei Li wrote:
+> Kernel test robot reports:
+>    ld: drivers/media/i2c/ov7670.o: in function `ov7670_remove':
+>    drivers/media/i2c/ov7670.c:2011: undefined reference to
+>    `v4l2_async_unregister_subdev'
+>    ld: drivers/media/i2c/ov7670.o: in function `ov7670_parse_dt':
+>    drivers/media/i2c/ov7670.c:1836: undefined reference to
+>    `v4l2_fwnode_endpoint_parse'
+>    ld: drivers/media/i2c/ov7670.o: in function `ov7670_probe':
+>    drivers/media/i2c/ov7670.c:1990: undefined reference to
+>    `v4l2_async_register_subdev'
+>    ld: drivers/media/platform/marvell/cafe-driver.o: in function
+>    `cafe_pci_probe':
+>>> drivers/media/platform/marvell/cafe-driver.c:543: undefined reference
+>    to `v4l2_async_nf_init'
+>>> ld: drivers/media/platform/marvell/cafe-driver.c:545: undefined
+>    reference to `__v4l2_async_nf_add_i2c'
+>    ld: drivers/media/platform/marvell/mcam-core.o: in function
+>    `mccic_shutdown':
+>>> drivers/media/platform/marvell/mcam-core.c:1931: undefined reference to
+>    `v4l2_async_nf_unregister'
+>>> ld: drivers/media/platform/marvell/mcam-core.c:1932: undefined reference
+>    to `v4l2_async_nf_cleanup'
+>    ld: drivers/media/platform/marvell/mcam-core.o: in function
+>    `mccic_register':
+>    drivers/media/platform/marvell/mcam-core.c:1910: undefined reference to
+>    `v4l2_async_nf_unregister'
+>    ld: drivers/media/platform/marvell/mcam-core.c:1911: undefined reference
+>    to `v4l2_async_nf_cleanup'
+>>> ld: drivers/media/platform/marvell/mcam-core.c:1873: undefined reference
+>    to `v4l2_async_nf_register'
+> 
+> Add explicit dependency on CONFIG_V4L2_ASYNC to mute ld errors.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202402130955.f6uxzdCA-lkp@intel.com/
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 
-No worries. Just making sure it's not forgotten :)
+This is a duplicate of:
 
-- Nuno S=C3=A1
+https://patchwork.linuxtv.org/project/linux-media/patch/20240213095555.454392-1-arnd@kernel.org/
+
+The ov7670 undefined reference has been resolved quite some time ago, this
+kernel test robot build is from a 6 months old tree.
+
+I'll take Arnd's patch instead of yours.
+
+Regards,
+
+	Hans
+
+> ---
+>  drivers/media/i2c/Kconfig              | 1 +
+>  drivers/media/platform/marvell/Kconfig | 2 ++
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 4c3435921f19..453cb4b81d6f 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -523,6 +523,7 @@ config VIDEO_OV7640
+>  	  module will be called ov7640.
+>  
+>  config VIDEO_OV7670
+> +	select V4L2_ASYNC
+>  	tristate "OmniVision OV7670 sensor support"
+>  	help
+>  	  This is a Video4Linux2 sensor driver for the OmniVision
+> diff --git a/drivers/media/platform/marvell/Kconfig b/drivers/media/platform/marvell/Kconfig
+> index d6499ffe30e8..48f5484478a0 100644
+> --- a/drivers/media/platform/marvell/Kconfig
+> +++ b/drivers/media/platform/marvell/Kconfig
+> @@ -11,6 +11,7 @@ config VIDEO_CAFE_CCIC
+>  	select VIDEOBUF2_VMALLOC
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select VIDEOBUF2_DMA_SG
+> +	select V4L2_ASYNC
+>  	help
+>  	  This is a video4linux2 driver for the Marvell 88ALP01 integrated
+>  	  CMOS camera controller.  This is the controller found on first-
+> @@ -27,6 +28,7 @@ config VIDEO_MMP_CAMERA
+>  	select VIDEOBUF2_VMALLOC
+>  	select VIDEOBUF2_DMA_CONTIG
+>  	select VIDEOBUF2_DMA_SG
+> +	select V4L2_ASYNC
+>  	help
+>  	  This is a Video4Linux2 driver for the integrated camera
+>  	  controller found on Marvell Armada 610 application
 
 
