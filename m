@@ -1,92 +1,74 @@
-Return-Path: <linux-kernel+bounces-65399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C87B854C60
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:15:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F32A3854C62
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0261B24A69
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:15:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A895F28CD26
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206235F875;
-	Wed, 14 Feb 2024 15:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FA75B691;
+	Wed, 14 Feb 2024 15:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gU3rk2X2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IhXF164r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gU3rk2X2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IhXF164r"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="JpEw6dO6"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBAA5D47E;
-	Wed, 14 Feb 2024 15:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192A354729
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923641; cv=none; b=GtseO/qmO2P4QhzBRM22oov5sfsjHS+8diV7W1V0Ppt6MAVkdZ3g2HAeRrqtPoTzASTpqwe082aB25XH9GF9GY4ozcsKEWZgo62d0pyH2UVkqTpzu3nhEb3SXZA45E4UcEbDtR6tH56RK9ooskojuoNk3GqgFu5jQvxPlRxAR1I=
+	t=1707923691; cv=none; b=A/Dt5QP2VY6cJA8EYZo+Rb/xg/JcYy2OX0bOlgyKxWLVyE8WE+JH6Nz4jUyxR5OOhIYAfl9kmH8l6zgkJCj3Cwqo/B/YTnU6WQqH3w5az1Rk24b9XeYyAoXSoCEUbzB+Fxmpqe0XvN5bUQcYfQfdYridyBfrlik4wFXwTdguF3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923641; c=relaxed/simple;
-	bh=7rqAA2OMkjlzZfzF2L7LpXxjv4CH2lahcs7k59r/a/U=;
+	s=arc-20240116; t=1707923691; c=relaxed/simple;
+	bh=MSq1aHhyCOZwuB6HVLXhkIsc0Z/1YI2U6yTQBaiIqp8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BLDk53poI7fyyqHnhiOuajUVxqa3QwRLdhU8pZwy5cVMSz6VpmzdPqUR0P5IVfWS1MSY0ErWQNEsovp6TbOQPBCZK7bNVrcYq9FiystKCG8mL39PKFDpLtsYZfPdl5XClEGB09WZzq5uHHd7gK+mAXaLYtbw/5l8c4uLWF3mzho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gU3rk2X2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IhXF164r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gU3rk2X2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IhXF164r; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D70A220DD;
-	Wed, 14 Feb 2024 15:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707923637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=gU3rk2X2NEJX4Fh9fwdAFML7uiHJwPY6ADIvA28KKNY/2Z7m2rh+DZBQYUGyaSSqjBp0Nk
-	j9kuonCsfIAslBIukjceFCBUO5tqnhYhJHks6m+XMV8pC11+/ehOtDt2i/K1HEEXk/7AwU
-	Cka2ujVNvF+539lMChG2VJsssRfRCPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707923637;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=IhXF164rhLv5W/+NathAC18BJymcHAqy5xAL15E8/dUk8X8AocBsujmKILSINsYmD8QYgi
-	+u8unfWWkL1AV6BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707923637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=gU3rk2X2NEJX4Fh9fwdAFML7uiHJwPY6ADIvA28KKNY/2Z7m2rh+DZBQYUGyaSSqjBp0Nk
-	j9kuonCsfIAslBIukjceFCBUO5tqnhYhJHks6m+XMV8pC11+/ehOtDt2i/K1HEEXk/7AwU
-	Cka2ujVNvF+539lMChG2VJsssRfRCPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707923637;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=IhXF164rhLv5W/+NathAC18BJymcHAqy5xAL15E8/dUk8X8AocBsujmKILSINsYmD8QYgi
-	+u8unfWWkL1AV6BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 352AA13A6D;
-	Wed, 14 Feb 2024 15:13:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BizkC7TYzGVnIQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 14 Feb 2024 15:13:56 +0000
-Message-ID: <6370b20f-96fb-4918-bef0-7555563c9ce2@suse.cz>
-Date: Wed, 14 Feb 2024 16:13:55 +0100
+	 In-Reply-To:Content-Type; b=RHnPrD/H6rB/xLuQfKWsiBb69TmnnMkd1ZNCe8emzTwIbjZ15K7NCTnA7egn+89wYrD70Ehr+DbdhNj6zWSBMDyj/L4t1z1pN9x/FaMTHDMkmoLUPecJFsaFQPmYJmZkreigC6gU7w14gFy24klL7rTYACW8NOOurqS71n87sCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=JpEw6dO6; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33cf46a5f10so133618f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:14:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1707923688; x=1708528488; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oiPUoU/OSL+4s0/gfmeerSenEDwyaNer/qzbwOkxu3g=;
+        b=JpEw6dO6iuIfqBWFCOko74cH15XuM1/st6UeI6vlR+HY9hlSoD4FH04zUMuODOEk9b
+         fd0rttULK+rI5qLGcjGLGc++T8pvdiOLBIA7LaWSRXfHH4F4nj040RKPqng2m/2NmRZ4
+         Frs0FvyQDHcDFZHk49/7KnvBARqBhYnIUpuDMjxaXQvnhhAwEdZoQ7WoKIpATXlWPuZ7
+         KEo3W5MVgFROCMxmNr5R38seO2HtZ9/WBVb71R4oLmoIYFn19InzBAaPoeRzb3oXtydz
+         dh30PyeGJvxZrIuqE/iq6nnACW/tL6ksskqaudiiwGNa4qzCPS4sz2aPY/H24VczQgHX
+         3WxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707923688; x=1708528488;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oiPUoU/OSL+4s0/gfmeerSenEDwyaNer/qzbwOkxu3g=;
+        b=J0ynZM/ieRAbk+0HHN1nxH9dp/9I6ivUnsTB6WZGUcKcf6GmcNiVjm3AJJKTC8HHXl
+         Mk/oYEAFthvZwNKsa9XlSqNaDXBPFq0aDrUSgxQM/DIZazQ5Xaxy847Rxd8Af27DOfRM
+         La+sw+H+IJm154wqsWrpzUh/Is7/4wTNi/ZrhbnE9drmRxJl/ubvxiHt9MlIc1mxcI1k
+         EcJSpd2tl6PmVOpnn9V6hAm5Q+SSQVvgZSQ/Yes/B/r5hr+Zrho1ggJotXBMpcQuBLr8
+         JwqyURdmNVd2+Xg0VVvkihuIEs3qrq9Tnv8kGC/2DmeyiiGIIB7IoCvaj3pUIF8dMqWx
+         ozng==
+X-Forwarded-Encrypted: i=1; AJvYcCVgpEFq9zZRWOF8uZR2HvuPQKyCWMQ7DQb1hW4awfRWX18nVGzjkMO4bqLKoUD1pKeno2Z+QLPjF1naK9KOOUoeL+bnR2bRay/YsDk/
+X-Gm-Message-State: AOJu0YzQGGEwJiEvwDDnlzZtFWkqzBz8t91K6klF2rLFNwYorhaPbhm/
+	C9GdnQZVE1WbRdav539so6TEgiXcdnYV27SiTWhJwaLQ/Zo7JydnEoInYO4M2DM=
+X-Google-Smtp-Source: AGHT+IGEVz053KgocSLsMnqG2P0pn+W65e6jl9r1ASxuSK9ftBcG2FJaRGHvh2PfH1lRDJXA1UA5Vg==
+X-Received: by 2002:adf:f285:0:b0:33b:63a5:feaf with SMTP id k5-20020adff285000000b0033b63a5feafmr1946972wro.20.1707923688231;
+        Wed, 14 Feb 2024 07:14:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU7xiIfn89urt5aSbJHCKWUeIhMcIDfy6bdDO+pIE3BC9PJTIUiWp71xaUHldy783YGwJz2ZQv6aLdzLdhd5AwgWS7SE3C9uM+OAM0mbX0vrurYxEH+R/jGFIxfathKcTOyKEHZ7q4XuWyuZN5lLeVdIfb/xjN1gRUwxGY8DIwuVrk8uM5OY0Wt2Z4R+h4zHFHDKo203H5cFim524OSqPvndw/usaGiqZh/Ys1U5x6Q8cuRx73EylGHqY1DnSlHGt/d10Iwkj8oo2clnK2op4vOdYEHzdWpDJZwEBoT4kOFa2YwATNEZKaWV0VzyOob13Xnx+VqNmlND/3AxQlOGtbMKr7NkpbCdsgvsBF7p22llEkNte7gSkMdDMFsXWJXzxirBfHPW9gf
+Received: from ?IPV6:2a02:8011:e80c:0:bfa:fdd5:7522:6528? ([2a02:8011:e80c:0:bfa:fdd5:7522:6528])
+        by smtp.gmail.com with ESMTPSA id u9-20020adfa189000000b0033cf35e8fd8sm779460wru.57.2024.02.14.07.14.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 07:14:47 -0800 (PST)
+Message-ID: <5bb799e2-492b-49f2-b5f5-7e8f113bf56f@isovalent.com>
+Date: Wed, 14 Feb 2024 15:14:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,91 +76,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 23/35] mm/slub: Mark slab_free_freelist_hook()
- __always_inline
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-24-surenb@google.com> <202402121631.5954CFB@keescook>
- <3xhfgmrlktq55aggiy2beupy6hby33voxl65hqqxz55tivdbbi@j66oaehpauhz>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <3xhfgmrlktq55aggiy2beupy6hby33voxl65hqqxz55tivdbbi@j66oaehpauhz>
+Subject: Re: [PATCH] Corrected GPL license name
+Content-Language: en-GB
+To: Gianmarco Lusvardi <glusvardi@posteo.net>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240213230544.930018-3-glusvardi@posteo.net>
+From: Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20240213230544.930018-3-glusvardi@posteo.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gU3rk2X2;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IhXF164r
-X-Spamd-Result: default: False [-0.48 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.18)[70.21%];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[google.com,linux-foundation.org,suse.com,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,gmail.com,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.48
-X-Rspamd-Queue-Id: 5D70A220DD
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
 
-On 2/13/24 03:08, Kent Overstreet wrote:
-> On Mon, Feb 12, 2024 at 04:31:14PM -0800, Kees Cook wrote:
->> On Mon, Feb 12, 2024 at 01:39:09PM -0800, Suren Baghdasaryan wrote:
->> > From: Kent Overstreet <kent.overstreet@linux.dev>
->> > 
->> > It seems we need to be more forceful with the compiler on this one.
->> 
->> Sure, but why?
+2024-02-13 23:07 UTC+0000 ~ Gianmarco Lusvardi <glusvardi@posteo.net>
+> The bpf_doc script refers to the GPL as the "GNU Privacy License".
+> I strongly suspect that the author wanted to refer to the GNU General
+> Public License, under which the Linux kernel is released, as, to the
+> best of my knowledge, there is no license named "GNU Privacy License".
 > 
-> Wasn't getting inlined without it, and that's one we do want inlined -
-> it's only called in one place.
+> This patch corrects the license name in the script accordingly.
+> 
+> Signed-off-by: Gianmarco Lusvardi <glusvardi@posteo.net>
+> ---
+>  scripts/bpf_doc.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index 61b7dddedc46..0669bac5e900 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -513,7 +513,7 @@ eBPF programs can have an associated license, passed along with the bytecode
+>  instructions to the kernel when the programs are loaded. The format for that
+>  string is identical to the one in use for kernel modules (Dual licenses, such
+>  as "Dual BSD/GPL", may be used). Some helper functions are only accessible to
+> -programs that are compatible with the GNU Privacy License (GPL).
+> +programs that are compatible with the GNU General Public License (GNU GPL).
+>  
+>  In order to use such helpers, the eBPF program must be loaded with the correct
+>  license string passed (via **attr**) to the **bpf**\\ () system call, and this
 
-It would be better to mention this in the changelog so it's clear this is
-for performance and not e.g. needed for the code tagging to work as expected.
+Not sure how I came up with that one. Thanks for the fix!
+
+Fixes: 56a092c89505 ("bpf: add script and prepare bpf.h for new helpers documentation")
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
