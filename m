@@ -1,198 +1,123 @@
-Return-Path: <linux-kernel+bounces-65030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8AC8546EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:14:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCDC08546EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:16:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B7FF1F28FE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:14:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1851C2472E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D01171D2;
-	Wed, 14 Feb 2024 10:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD353171C8;
+	Wed, 14 Feb 2024 10:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bfq05XKp"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="q7qYGDaS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xNFThNoj"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E6F1643A
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D6F168C4
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707905673; cv=none; b=PPisSZM8Y7OYqApl1ZNGhyAOE+NPPi5UFKHDD/6bbeCmVAhu3Mm5KKraOa0oiYfSVPwNDmTuKV3cGG/1dGwMA4eSgZZxbBXabvq+IezX3W4qLKBeS2HyX4+EuTrkMKSb8pDDIs6Lv5pJ0DEXddjO6iHfdkETaEbJPQv7aiJxZeU=
+	t=1707905774; cv=none; b=VjAgQBNYTvwAExcGgNkm2w5COIpFJDWrsugC0Rd/OrEvtn+kt60SSYfUnFb3cMWUfVKMzpsD/7vD/sz0GCErSreD1aLVLAT+LFXRCFRuAnYVO1U9IZUCRogAgTec3yL5CRtIozcTQcw7rK/mHzrJgCFoIawfZ7Ee/vE4XWLNgAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707905673; c=relaxed/simple;
-	bh=wH6ZUUDxzWcvM9A5J/M26EhQbNj8CDbgdD8EHHWlvfE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZKfHzZpBX2AfsOkNr4D++smERBUu6qS/eRQCLTSvikOotOiEc7sYHGLFUUSgO+nJCEr5CoWQXSsvar7Ak1bfoyWEjonk0hkV/6qj6am7co8yNZcfYFo2Kp9V8OlaobUuOz04eiuUa/IIdhi6siLme0xGhLezKijD7rjH+Qp9nXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bfq05XKp; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 18:14:20 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707905669;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sq2ZgsBArKU+/0ptSnLdA9Td8CjugpWxYMkYPjmxX1A=;
-	b=Bfq05XKp+zIQtFUrDOsAp5gfblgGsPGVIhQuL7AsMzfWvqCzE7E7SBWMXoVUa+8taAJaWV
-	UACiCI8iKWwXqHb3AXKU5gpyvIE1rqnFKkoiJVPdrooLT2TN4tnZE+1HNCPTxnzp055tv5
-	JtWgQkUDVvmgHGNoTem+qlMG4Cn9+VQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leo Yan <leo.yan@linux.dev>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH] perf tools: Fixup module symbol end address properly
-Message-ID: <20240214101420.GF81405@debian-dev>
-References: <20240212233322.1855161-1-namhyung@kernel.org>
- <20240213033954.GB81405@debian-dev>
- <CAM9d7ciTwYAgry-nW9z+_VMj+BJ7ZNZnkKH_t_AHvV5joNuWQQ@mail.gmail.com>
+	s=arc-20240116; t=1707905774; c=relaxed/simple;
+	bh=zuwCehDqvPwNY2pDhqnDiDPpipznxqF/iKxY8Zmzma0=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ItsjNHL02VuAyHB5dkML6zHxqt1Y9yPvwO60uvPYmwjX2fM0viu7hl07ykhJqxN7cRVoaWZPPY7J6oJW0wxrRU5xpaw7imQT0PlijzCMyHqPAkFlCoZ2xMle8dOTk7TflQSJaeyZgDnTLZ2EwgoCFhbAJKPTxXFmIeyy9+UMizo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=q7qYGDaS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xNFThNoj; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 250803200312;
+	Wed, 14 Feb 2024 05:16:11 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 05:16:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1707905770;
+	 x=1707992170; bh=i+j6Jypgho7pg7a8tVM8hLo4QkNUJm6rujup4OU8wt8=; b=
+	q7qYGDaSQIL13G2UWfKe/bnaIKMvPv7sZvyFCa2+HU8q3mTQm5ywQkD75xustvuk
+	vj7mg62gWUK3s3dZSb8Wy/V9T6EzHgIn/CZGFOf98dKl6bkCCF9RxCKyQdrUkFS0
+	bYB7CFU9b566Q+7oJrPrudAmDTjoI9lvK9dRROKKjFF5fEOd/RFjbYFKAPF6PzVA
+	MuhSbLlW4BSTssVju7Rv1fh8OV4EvrBq5yWLAMS9QEw3HEsDxEobGjTT1YdpCswQ
+	ohWp+vp4L4VzdLkX4XPqow1tIkWfCSKOa6JRXaVZHWH5EqKFMC1MKbxAp+1tWfD/
+	DPZZ5Qs0mbANFRR9ZK8YOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707905770; x=
+	1707992170; bh=i+j6Jypgho7pg7a8tVM8hLo4QkNUJm6rujup4OU8wt8=; b=x
+	NFThNojJ94AUpEjn1VHcxswHwW6hV/AiIw/M+dxGlsU7yMY8ZA2SsA4pvLpGeNeE
+	OHgYL+UvPCIeBaqD+P++1XYi81I/4XUVIQKyYLur4aZUkevlsnFUlVZHhUPcLqP2
+	j3TaDe6o8+hpqLNN+Z07WVTrXDiS+I4dfUMMVpBEhc8087mJYjjF3Ju4xIUZ7po2
+	2xcH537IcYk9HhGlmBrvsRsKUTILOSiILaVEwOJB+UneEsm4i6hM4IVxHP82OXfC
+	7J3Z+NyERO0VgGpuO3KbBCjLa72pTX9y5xjt2iaUeBLJGdS51O+fz8jsD0CwDw4V
+	l6xYZ9DlxnMhuQw3WmQsg==
+X-ME-Sender: <xms:6pLMZYWNDVpEMfd0S9wsVkKgH2TDKlOgYqEwFWbJWSrlKZPU1DJRKg>
+    <xme:6pLMZcnbfJmUSfXRUU526QU3H1zdwS5QGPVMK1rWiivEh2gpX6p2j0ibwYbtDvo2t
+    jzeRc5zwcQ8GT9a_IQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:6pLMZcaCTGqkNgNoJTFQK_2yTqt-dBHQjCconBo1SL4oLVosX6O3qw>
+    <xmx:6pLMZXX-fIcWAouiYFYXGvg7VxaCLLRuNHBBmKnBiX8-jgm2RFpfvw>
+    <xmx:6pLMZSk69UKXLbjcfv9U0k5KRm4NauJhiujkWh7AZzUlKONAHI8q3g>
+    <xmx:6pLMZekZXsGTOLO-XTW0N4LQCVsL9s7UMhsJoEks9hgusY-2TB1k5Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 49E4FB6008D; Wed, 14 Feb 2024 05:16:10 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciTwYAgry-nW9z+_VMj+BJ7ZNZnkKH_t_AHvV5joNuWQQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <42be4820-1e19-4782-b412-0b0269f7a696@app.fastmail.com>
+In-Reply-To: <f0b2b4dda91ef1342fc38540bf3d453366b943e9.camel@linux.intel.com>
+References: <20240213095719.454865-1-arnd@kernel.org>
+ <f0b2b4dda91ef1342fc38540bf3d453366b943e9.camel@linux.intel.com>
+Date: Wed, 14 Feb 2024 11:15:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ "Arnd Bergmann" <arnd@kernel.org>,
+ "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ "Oded Gabbay" <ogabbay@kernel.org>
+Cc: "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>, "Dave Airlie" <airlied@gmail.com>,
+ "Daniel Vetter" <daniel@ffwll.ch>, "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] drm/xe: avoid function cast warnings
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 10:48:53AM -0800, Namhyung Kim wrote:
-> Hi Leo,
-> 
-> Thanks for your review!
-> 
-> On Mon, Feb 12, 2024 at 7:40???PM Leo Yan <leo.yan@linux.dev> wrote:
-> >
-> > On Mon, Feb 12, 2024 at 03:33:22PM -0800, Namhyung Kim wrote:
-> > > I got a strange error on ARM to fail on processing FINISHED_ROUND
-> > > record.  It turned out that it was failing in symbol__alloc_hist()
-> > > because the symbol size is too big.
-> > >
-> > > When a sample is captured on a specific BPF program, it failed.  I've
-> > > added a debug code and found the end address of the symbol is from
-> > > the next module which is placed far way.
-> > >
-> > >   ffff800008795778-ffff80000879d6d8: bpf_prog_1bac53b8aac4bc58_netcg_sock    [bpf]
-> > >   ffff80000879d6d8-ffff80000ad656b4: bpf_prog_76867454b5944e15_netcg_getsockopt      [bpf]
-> > >   ffff80000ad656b4-ffffd69b7af74048: bpf_prog_1d50286d2eb1be85_hn_egress     [bpf]   <---------- here
-> > >   ffffd69b7af74048-ffffd69b7af74048: $x.5    [sha3_generic]
-> > >   ffffd69b7af74048-ffffd69b7af740b8: crypto_sha3_init        [sha3_generic]
-> > >   ffffd69b7af740b8-ffffd69b7af741e0: crypto_sha3_update      [sha3_generic]
-> > >
-> > > The logic in symbols__fixup_end() just uses curr->start to update the
-> > > prev->end.  But in this case, it won't work as it's too different.
-> > >
-> > > I think ARM has a different kernel memory layout for modules and BPF
-> > > than on x86.  Actually there's a logic to handle kernel and module
-> > > boundary.  Let's do the same for symbols between different modules.
-> >
-> > Even Arm32 and Arm64 kernel have different memory layout for modules
-> > and kernel image.
-> >
-> > eBPF program (JITed) should be allocated from the vmalloc region, for
-> > Arm64, see bpf_jit_alloc_exec() in arch/arm64/net/bpf_jit_comp.c.
-> 
-> Ok, so chances are they can fall out far away right?
+On Wed, Feb 14, 2024, at 11:10, Thomas Hellstr=C3=B6m wrote:
+> On Tue, 2024-02-13 at 10:56 +0100, Arnd Bergmann wrote:
+>> =C2=A0
+>> +static void xe_range_fence_free(struct xe_range_fence * rfence)
+>
+> There's a checkpatch.pl style error above: s/* rfence/*rfence/. I can
+> fix that up when pushing if it's ok with you.
 
-Yes, this is my understanding.
+Right, I saw the report. Please fix it up then so I don't have
+to resubmit. Thanks,
 
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/util/symbol.c | 21 +++++++++++++++++++--
-> > >  1 file changed, 19 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> > > index 35975189999b..9ebdb8e13c0b 100644
-> > > --- a/tools/perf/util/symbol.c
-> > > +++ b/tools/perf/util/symbol.c
-> > > @@ -248,14 +248,31 @@ void symbols__fixup_end(struct rb_root_cached *symbols, bool is_kallsyms)
-> > >                * segment is very big.  Therefore do not fill this gap and do
-> > >                * not assign it to the kernel dso map (kallsyms).
-> > >                *
-> > > +              * Also BPF code can be allocated separately from text segments
-> > > +              * and modules.  So the last entry in a module should not fill
-> > > +              * the gap too.
-> > > +              *
-> > >                * In kallsyms, it determines module symbols using '[' character
-> > >                * like in:
-> > >                *   ffffffffc1937000 T hdmi_driver_init  [snd_hda_codec_hdmi]
-> > >                */
-> > >               if (prev->end == prev->start) {
-> > > +                     const char *prev_mod;
-> > > +                     const char *curr_mod;
-> > > +
-> > > +                     if (!is_kallsyms) {
-> > > +                             prev->end = curr->start;
-> > > +                             continue;
-> > > +                     }
-> > > +
-> > > +                     prev_mod = strchr(prev->name, '[');
-> > > +                     curr_mod = strchr(curr->name, '[');
-> > > +
-> > >                       /* Last kernel/module symbol mapped to end of page */
-> > > -                     if (is_kallsyms && (!strchr(prev->name, '[') !=
-> > > -                                         !strchr(curr->name, '[')))
-> > > +                     if (!prev_mod != !curr_mod)
-> > > +                             prev->end = roundup(prev->end + 4096, 4096);
-> > > +                     /* Last symbol in the previous module */
-> > > +                     else if (prev_mod && strcmp(prev_mod, curr_mod))
-> >
-> > Should two consecutive moudles fall into this case? I think we need to assign
-> > 'prev->end = curr->start' for two two consecutive moudles.
-> 
-> Yeah I thought about that case but I believe they would be on
-> separate pages (hopefully there's a page gap between them).
-> So I think it should not overlap.  But if you really care we can
-> check it explicitly like this:
-> 
->     prev->end = min(roundup(...), curr->start);
-
-I am not concerned that to assign a bigger end value for the 'prev'
-symbol. With an exaggerate end region, it will not cause any
-difficulty for parsing symbols. On the other hand, I am a bit concern
-for a big function (e.g. its code size > 4KiB), we might fail to find
-symbols in this case with the change above.
-
-> > If so, we should use a specific checking for eBPF program, e.g.:
-> >
-> >                         else if (prev_mod && strcmp(prev_mod, curr_mod) &&
-> >                                  (!strcmp(prev->name, "bpf") ||
-> >                                   !strcmp(curr->name, "bpf")))
-> 
-> I suspect it can happen on any module boundary so better
-> to handle it in a more general way.
-
-I don't want to introduce over complexity at here. We can apply
-current patch as it is.
-
-A side topic, when I saw the code is hard coded for 4096 as the page
-size, this is not always true on Arm64 (the page size can be 4KiB,
-16KiB or 64KiB). We need to consider to extend the environment for
-recording the system's page size.
-
-Thanks,
-Leo
-
-> Thanks,
-> Namhyung
-> 
-> >
-> > >                               prev->end = roundup(prev->end + 4096, 4096);
-> > >                       else
-> > >                               prev->end = curr->start;
-> > > --
-> > > 2.43.0.687.g38aa6559b0-goog
-> > >
+    Arnd
 
