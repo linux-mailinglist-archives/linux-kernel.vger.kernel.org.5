@@ -1,160 +1,247 @@
-Return-Path: <linux-kernel+bounces-66069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B1CB855637
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:40:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8BD885563A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2305828C471
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:40:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FA59B25EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799202511E;
-	Wed, 14 Feb 2024 22:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB983126F3B;
+	Wed, 14 Feb 2024 22:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KOPzOypk"
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a/kGo7mB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D68182DF
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7278662D
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707950421; cv=none; b=RyTYbyZIjuG9vDO7gl+H07TNF2GcOmnInptGjzsw0dhb5BjVBRhVdi0JDn83dAEwtrMlUQgagFf1Ank2lkbL6GlB5tHb/4h/bGfBxZaa7RTVQFi3FoczwNDgaEV4CL31bXyrbgR1IHuz7ao5Wlc3cfrlKwrzWw1Bm8rTU+pbcr4=
+	t=1707950429; cv=none; b=oP1kBNbjMnLrE0RGj4PV9kDD35NmMDwgqk0QMVLpI2rH5uk9Jb+9dLmbDPcOHmwcrj0vSLOMTwF2oM7YBWGmtC7X1cQQqLk+bfMH9mZ7tvlBf4RuECb2QkIwr/5om7jdA+voSYdyZE6HA8TtbJhLmnUxGrsM16Y2bsepwXruvas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707950421; c=relaxed/simple;
-	bh=cANzLdZ69BXZUyjsl7ZwBQxdKLwR8JzDdiDwyOSPWKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r18MLaQyWHIBDyC4NNuu0l+940B5sLORm/iLIVE9NzmiFNWlkKv9y/j2J86AtnCrqRHqOnl347grwlx18fD9cWmzvFqGhtHX0PWXbNZQZUQkGmRuO7tg0OMBLUfX3KUM06+zzOjw8KzXx1qaxWzS8Oz1tCcW9RmLNMRyppi69Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KOPzOypk; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-59d7cbf1279so152061eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:40:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707950419; x=1708555219; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BKV6eQTwSUgCbVKAYzQ+RCk2l6zXw4xuEU/9A1u4Sz4=;
-        b=KOPzOypkUwv12r2mSM0+cVZZg5KFgzatJqHJVVJGLm0h/XEQJ8t1+tRY+PqnzX0Sjg
-         vM2nOfhFYiWgI05s22ScgFdT16VQDEHflhYaKiOIh/mVsVWTRIZ7n9zmEguQkKW34XEC
-         aR3QbVd9D/m06gCRUGwUyeJmVtx3oZ9Fe588Q=
+	s=arc-20240116; t=1707950429; c=relaxed/simple;
+	bh=upA9tJ3GC7rj0FK1TdY7IG6EAXSdXrj4LknP25+XJeo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JXWfb2cCsl0bgr9zqHI2Y52YESOusKNbO45fQ6QA1Ihay7pE0tNZMpqTtt+m/1F55O2FPdQRPbaDITrUJR2XKsPl7W1/W86xN2k1rY3YlcuU0v2YT2h+oDfwy2taoloN2WcOZyTUq6nQUxMz4YRpWoKpAORxxnp1KNbXrtZjCY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a/kGo7mB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707950427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=WN/1wnCbyZpZRJItW2gMIOPbx328LkZgbs4KqytUNcM=;
+	b=a/kGo7mBpHn2FS0aTMzD6AHQ7J3JS781U5iixLDExmR1VCDQ8/w2fL521TeiCeLqXtwoof
+	1oRZK4XHa4a6zBDpZ5TN+k07rY6wA/cJOyaBLTzzg0o1p9tnluR7P7rC4H6pro7Oc9mgJi
+	Pfui9BlUkTtLmcYpyLy4M6J4e5vWzpo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-695-VpMmLAWDNwyxlvbZBGbAbw-1; Wed, 14 Feb 2024 17:40:25 -0500
+X-MC-Unique: VpMmLAWDNwyxlvbZBGbAbw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4120a19da9dso1074195e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:40:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707950419; x=1708555219;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BKV6eQTwSUgCbVKAYzQ+RCk2l6zXw4xuEU/9A1u4Sz4=;
-        b=CaUE/PcYm1EAGJ3CC+nXuQclYhQkBUDBTKq/E8pRiF3lx0QuKXGVgM/YoAbLfn20YU
-         S3qJGvDVwWE9DCBP8WRZrpujA24k5wCkZvpmIqYm6BelYERh6riBWuGaZ49zPHj76Ui3
-         UMpr/rRMsj1fyxa0tEGl6j22gUdQlzgG3Ifx2XDgLJnryyQweMe6zeytKOPir7WeL5TZ
-         rbvrDeicQTl5DgnGwSAI/Jtnaj9E1/IvZ10F5tknEQsP3Ja6efojIaHH0YwgzNGmuMYt
-         skwH0atTu1hSFlPeuToPG6MQ7IFZM0a/0m1dw1DCouDxOCkw2FB1PwwETLbMIqECzgCw
-         cEyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMy3PXsWvcc5Q5NDvNQApraas/r/80ZO3DI+2oFpha3QjVZUCQBxsIxGT0GL87XznSsz+jUY5paiWTpunVSTzq+5AWtQW9zHjpbiJY
-X-Gm-Message-State: AOJu0YxVrOCD9VZwvkBnl2WlxHZFjPsQ1WFjOE5lgWT7Ahv0n8ZSkEbZ
-	d0Ro+8wpk/tw4BnuvWWVK2SyUFL6Svxcq2BiKpOFAMQYUk46AINzr/3G4zHjX/MkuQB1SDCy/EY
-	=
-X-Google-Smtp-Source: AGHT+IGcdrio1ldk5+vxaJFwF0luoiodDJsqYEknT7Yw0yQZLAaWvxePby1AUdnoF7c7Z1tLFhxtqA==
-X-Received: by 2002:a05:6358:3a15:b0:178:b7c0:323f with SMTP id g21-20020a0563583a1500b00178b7c0323fmr3714184rwe.19.1707950419171;
-        Wed, 14 Feb 2024 14:40:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXrvjO9kRybzFmkrE+j6y1WylSG4Yl9Nxy/NnfqTM85wBBNGCxsWlx4otJemAN01Dnozo2f8CEFdwODsT2t1t+a40dKRJwtBYywqwilIL40XNIKoaxVpuX7Nj+Ag/0x67uPLXeCkdGUmWYuZTIwtGOOPm13TJST93bBZKp4By+OxB5JFePRpMOXVeW09l1ZUa/gDvVrYWN4r+MDgPyBeaaiQRU2ODWk
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id v11-20020a056a00148b00b006e0334e3dd9sm9710190pfu.76.2024.02.14.14.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 14:40:18 -0800 (PST)
-Date: Wed, 14 Feb 2024 14:40:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Fangrui Song <maskray@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	Nathan Chancellor <nathan@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH] x86/build: Simplify patterns for unwanted section
-Message-ID: <202402141433.AC69F2A3@keescook>
-References: <20240214212929.3753766-1-maskray@google.com>
- <202402141405.0755DD4E5E@keescook>
- <CAFP8O3LWBHkbLwFJdmy7iSGD0cMSy1jczETo=N6oVapCgPY=sA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1707950424; x=1708555224;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WN/1wnCbyZpZRJItW2gMIOPbx328LkZgbs4KqytUNcM=;
+        b=bx2FlyBrCMjAd+B7uOkMLDaWuaINr4AAgbWcz/u28Q67UZIt69MrqhOhK1WS+MeBHj
+         mgQDxrMgTHfcPkHUJn/qnLD/NIpBfTbRnlx1EQKhplMdmnTgxNXuKEiij2awAwjfhJ/8
+         khCuxB/oqDEWjKxXSPHIgGYfQzNc2YHeCd3qa0uqlDW5m3RCCHlCdQbMCMAgw1ptS4A9
+         VqJfHkFy+VeVEeQw9eAwWX8p/KB6UcSnqP/B1rnWRavn8lPFexbpURE/b1qRPcn1lciw
+         lAGn5QWZqga6HrHjGG0hs/X+gdU/JNLYmS8nQ1xwUbcj5w47unqwSWuMBZmV88d3XIKW
+         TRWg==
+X-Gm-Message-State: AOJu0YzqvFXIlJGuxBR5TbHiwzo16nNd3kjTAAyLDHknbb5hQIp4vH+k
+	HiFF3s3R4XI5RLYp4WuCxgda7uIY1v7llwFTLVciXsAx8HA324t27o2YNK0RQVEkCKf9RoZfE5a
+	bDv0i2JMRaLjD78IMOb8TquayW/45Zb8hY+IWzLrUK3KKnhPqv77SNenlOJR2qfDw6RQrp/hxh4
+	QfvgQuPzJ71CjiDPL3vGXEGAzHKTxuQVjd/YS7rWlyVA==
+X-Received: by 2002:a05:600c:2805:b0:411:a5f9:26f5 with SMTP id m5-20020a05600c280500b00411a5f926f5mr10977wmb.38.1707950424370;
+        Wed, 14 Feb 2024 14:40:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJPxLWaIZx311unv4D5LeFL6QRVjrs/qethDlI9UQEHWlU/k8z7sxXPYEJCZWf9jK5YYpPQQ==
+X-Received: by 2002:a05:600c:2805:b0:411:a5f9:26f5 with SMTP id m5-20020a05600c280500b00411a5f926f5mr10943wmb.38.1707950423914;
+        Wed, 14 Feb 2024 14:40:23 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id w12-20020a05600c474c00b00410232ffb2csm43012wmo.25.2024.02.14.14.40.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 14:40:23 -0800 (PST)
+Message-ID: <13f296b8-e882-47fd-b939-c2141dc28717@redhat.com>
+Date: Wed, 14 Feb 2024 23:40:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFP8O3LWBHkbLwFJdmy7iSGD0cMSy1jczETo=N6oVapCgPY=sA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 12/15] mm/memory: pass PTE to copy_present_pte()
+Content-Language: en-US
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Ryan Roberts <ryan.roberts@arm.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240129124649.189745-1-david@redhat.com>
+ <20240129124649.189745-13-david@redhat.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240129124649.189745-13-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 02:13:01PM -0800, Fangrui Song wrote:
-> On Wed, Feb 14, 2024 at 2:07 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Wed, Feb 14, 2024 at 01:29:29PM -0800, Fangrui Song wrote:
-> > > A s390 patch modeling its --orphan-handling= after x86 [1] sparked my
-> > > motivation to simplify patterns. Commit 5354e84598f2 ("x86/build: Add
-> > > asserts for unwanted sections") added asserts that certain input
-> > > sections must be absent or empty. The patterns can be simplified.
-> > >
-> > > For dynamic relocations,
-> > >
-> > > *(.rela.*) is sufficient to match all dynamic relocations synthesized by
-> > > GNU ld and LLD. .rela_* is unnecessary. --emit-relocs may create .rela_*
-> > > sections for section names prefixed with _, but they are not matched by
-> > > linker scripts.
-> > >
-> > > .plt instead of .plt.* is sufficient to match synthesized PLT entries.
-> >
-> > Do you mean ".plt.foo" matches ".plt" ?
+On 29.01.24 13:46, David Hildenbrand wrote:
+> We already read it, let's just forward it.
 > 
-> I mean we just need .plt : { *(.plt) } , not .plt : { *(.plt) *(.plt.*) }.
-
-But then, for example, if it gets generated, .plt.got ends up being
-reported as an orphan...
-
+> This patch is based on work by Ryan Roberts.
 > 
-> The linker synthesized section for PLT entries is .plt, not suffixed.
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>   mm/memory.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> > > .igot and .igot.plt are for non-preemptible STT_GNU_IFUNC in GNU ld (LLD
-> > > just uses .got), which the kernel does not use. In addition, if .igot or
+> diff --git a/mm/memory.c b/mm/memory.c
+> index a3bdb25f4c8d..41b24da5be38 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -959,10 +959,9 @@ static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
+>    */
+>   static inline int
+>   copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> -		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+> -		 struct folio **prealloc)
+> +		 pte_t *dst_pte, pte_t *src_pte, pte_t pte, unsigned long addr,
+> +		 int *rss, struct folio **prealloc)
+>   {
+> -	pte_t pte = ptep_get(src_pte);
+>   	struct page *page;
+>   	struct folio *folio;
+>   
+> @@ -1103,7 +1102,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>   		}
+>   		/* copy_present_pte() will clear `*prealloc' if consumed */
+>   		ret = copy_present_pte(dst_vma, src_vma, dst_pte, src_pte,
+> -				       addr, rss, &prealloc);
+> +				       ptent, addr, rss, &prealloc);
+>   		/*
+>   		 * If we need a pre-allocated page for this pte, drop the
+>   		 * locks, allocate, and try again.
 
-Right, the issue has been getting totally weird sections emitted by the
-linker. If you're saying you'd rather those get reported as orphan
-sections instead of being validated for being zero sized, and that works
-for all the architectures, then okay.
+The following fixup for that device-exclusive thingy on top (fixing a hmm
+selftest I just discovered to be broken).
 
-> > > .igot.plt is ever non-empty, there will be .rela.* dynamic relocations
-> > > leading to an assert failure anyway.
-> >
-> > I think at the time I was dealing with avoid multiple warnings out of
-> > the linker, as I was getting orphan warnings in addition to the
-> > non-empty warnings.
-> >
-> > >
-> > > [1]: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-6-8a665b3346ab@kernel.org/
-> > >
-> > > Signed-off-by: Fangrui Song <maskray@google.com>
-> >
-> > Is anything harmed by leaving all of this as-is?
-> >
-> > -Kees
-> 
-> No harm. But ports adopting --orphan-handling= (like s390) may copy
-> the unneeded .rela_* .
-> When people read .rela_*, they might think whether the kernel does
-> anything special that
-> .rela_* needs to be matched.
 
-I added these because the were being generated. See commit d1c0272bc1c0
-("x86/boot/compressed: Remove, discard, or assert for unwanted sections")
+ From 8f9e44f25087dc71890b8d9bd680375691232e85 Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Wed, 14 Feb 2024 23:09:29 +0100
+Subject: [PATCH] fixup: mm/memory: pass PTE to copy_present_pte()
 
-I don't want to suddenly start generating warnings for older/broken
-linkers. (i.e. a change like this needs really careful testing, and that
-needs to be detailed in the commit log.)
+For device-exclusive nonswp entries (is_device_exclusive_entry()),
+copy_nonpresent_pte() can turn the PTEs into actual present PTEs while
+holding the page table lock.
 
--Kees
+We hae to re-read the PTE after that operation, such that we won't be
+working on the stale non-present PTE, assuming it would be present.
+
+This fixes the hmm "exclusive_cow" selftest.
+
+  ./run_vmtests.sh -t hmm
+  # #  RUN           hmm.hmm_device_private.exclusive_cow ...
+  # #            OK  hmm.hmm_device_private.exclusive_cow
+  # ok 23 hmm.hmm_device_private.exclusive_cow
+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+  mm/memory.c | 2 ++
+  1 file changed, 2 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 3b8e56eb08a3..29a75f38df7c 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1208,6 +1208,8 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+  				progress += 8;
+  				continue;
+  			}
++			ptent = ptep_get(src_pte);
++			VM_WARN_ON_ONCE(!pte_present(ptent));
+  
+  			/*
+  			 * Device exclusive entry restored, continue by copying
+-- 
+2.43.0
+
 
 -- 
-Kees Cook
+Cheers,
+
+David / dhildenb
+
 
