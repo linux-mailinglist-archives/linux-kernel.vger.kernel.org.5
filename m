@@ -1,302 +1,259 @@
-Return-Path: <linux-kernel+bounces-64749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D05E85425B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:29:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B4AC85425E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 853A81C22B6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:29:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E695CB274F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2A9D51B;
-	Wed, 14 Feb 2024 05:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3C1CA73;
+	Wed, 14 Feb 2024 05:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B+5aC3bN"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OOi8IsD0"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA5EAC147;
-	Wed, 14 Feb 2024 05:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0A811183;
+	Wed, 14 Feb 2024 05:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707888564; cv=none; b=YfHPsjIPGCEs1zczkZQY20vQMzHHcRznpbD0EJrBpAkMc4QPYMQLtlsRbFXNOpM+N5kpFrCvdrkCrjSVAxYenni8NWN0afO7tkg6cDlMjh+7mzcQS8Be2eI0p9/X+qOdxE43cAgcfeDL1SKZZc+D4vVi0s94ALETcAstMDWHCNM=
+	t=1707888645; cv=none; b=iphRUd73/7m/2wr7m8nlOKu5jo3KjI93JIZ7Y0jpqmrwHx2JUpbFW2WDfesJHhFC8pHyZkOttrIwk0zw9NnYIh83n1spQVJXvAsYJZhr+Dfil7HJsWeJIo5WA5dfG0XLwMSSlSY3DjYvCDbSReHXaMQT0Kx381NzqISGpPqr6cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707888564; c=relaxed/simple;
-	bh=e5MFXVDA99pVGosvPaTfbiU4tvvZtjOYEdi2onLkq+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Wagzm21afgJdZwL5DexbhQYFODm0QqvHwIAxLJscdJrSKnbvcHV/sUIwh43H07y4a9kw40c6zspfAYdumyT29lAISSu8iIdTPEezRahOPeG/wIYE4bdhf0/24L32Pc9g6R/SDFlzMXZEb15HXzHmmA05YOjRl8lGl2p18tb3Odo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B+5aC3bN; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E45xOe021314;
-	Wed, 14 Feb 2024 05:29:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=KjRtQkKMERuiUp95ugofOfndlSqcIPUZu7TkvxhOkDQ=; b=B+
-	5aC3bNtI7U9ueaOrfNOrs4dBF+NA2LR11RZJ3qshBG+DQN0SjaujGIGM4wNNc/cU
-	J8POo4VQFcyT6CbdnSq1bQ4IqIPzS9NWOWhsoI8wIZ3fYi18wTvPyUiLcCobzBle
-	C4ORXgGedh9COjS0qboTve+50DzMl5060M411ID524VbIFPCZ8FzISexNMHu7PoU
-	LEm5X9Riox5ooYGelaVQRXhDXaqMbpe6spUK6C5RJTmg7GeG0WjOPiovhmoZaJng
-	uNeA0D3K4Wi6oDTGHKRdeOQGKec09pmasAcZ7A8LGpQPBNcSP5Nu1LUBQCsK9Czj
-	/7ZvSpylIqKXpkRMfflw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8k9agbua-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 05:29:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E5TBGD015035
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 05:29:11 GMT
-Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
- 2024 21:29:05 -0800
-Message-ID: <6cb25cb0-9885-4b83-beb8-0270e21c978c@quicinc.com>
-Date: Wed, 14 Feb 2024 10:59:01 +0530
+	s=arc-20240116; t=1707888645; c=relaxed/simple;
+	bh=Dpo6g6sxK3vAauBoF3mHDOYKnH0CVdQFwl2a9oAlRUI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RGl+z62INSQ9cnByZEFIu0VlASNcsNXN0Fspd6PRxJtIudBawAYQipqt5A4ARvXS0J091notYr7W8UJjpG62IkXMW+BpvYednyswtbdKO4c0GwUckXsG/KGyKxFYCnfbzoV8EgWoHhhI9bVOP0i0zOz3Glm3rdRKrnXR17fra2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OOi8IsD0; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d73066880eso46650105ad.3;
+        Tue, 13 Feb 2024 21:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707888643; x=1708493443; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c/sbBk2n6W8ORZ7uhudihLLqVzHuUrsjy8h+SricNyE=;
+        b=OOi8IsD0OZuAUn/KY4NoADB25luspoF+oblrtWDyiQ8ew5HEqH6V6k0v3GxTx9zjrr
+         YhAn4kyzx9GTzNPV3sWRm4h8FMBfN0ajKCP6p8jaV51jrKq4SZdOrq8J52898xIQiybe
+         gIOAUzNLU1iUHTJSLE+RwDvDnZBiuPtV9yVC/H1b3kTVUv/vByp0lMbbWHxT5yCC7UZw
+         4bxflHE9XWnBnpJnHc4aLdrsd1AenNtb6yGXFRk/fG/F7Zrz387mBDeYvFLpwB0yx2Q8
+         wyOD4HMOx2CsbHOt16MTa7swQEoXmTRJQPM8GKqXhtdaYiscPwYtqk6TBwa9R0i9Ke5i
+         tSWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707888643; x=1708493443;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c/sbBk2n6W8ORZ7uhudihLLqVzHuUrsjy8h+SricNyE=;
+        b=AMhBnr8ddIvGdzunOKj7osjRKM3x+k/vV1whrSjYhL5HlJLHZXE8AxtFO15WR6h6Ow
+         zS3BtcaLeJpzSuE9vUbg7GCyDrHWpPXAeoLg0krR/Ms92VpcjJYNwgoRXgHV1412AdDh
+         21Uf1vUglDe+plEdHf2lOdI7q+MdOa+ss73zqD12Oj8UnvZxAWl0zHDHDt10sm+HY57x
+         RouKy7WSKoxceLtVEvYqIIJwPx+O08kU4Zfq92Zyh0Vdy2lA9eUROYhvWRp50SnFadQM
+         pkKUYhQ3eJWPmCiRvyuihxGT8jX+GP/HobKmSF2TnRES51OINhhJPaP9vgHFyWzC5oZL
+         praA==
+X-Forwarded-Encrypted: i=1; AJvYcCXQq/owylw5S170OrqKadsOXNPNZQS9fre+Srw6ldavZqAvRKXbPFmpNOmW8LSTf9U8YW95VlMQ+H2WDiRgCm0x0QzhOo96aDFrs4Hv
+X-Gm-Message-State: AOJu0YxNvHgeSgt0TPV28eviehedZ8jAAihliHni3s9m47Ud9BqUv0+p
+	qOZ38TCdGLtk8oaemPQ+TeVH2P3X5AHxo5JWlaSL9/Iudg+NAkwo
+X-Google-Smtp-Source: AGHT+IHSnJIoVPAnEUWf/FE05TMfN7Yvs/5N9ZhglJgInjg61rfGyt9zj8S4UjW5dD5MC4gt0U8tDQ==
+X-Received: by 2002:a17:903:183:b0:1d8:ee41:de89 with SMTP id z3-20020a170903018300b001d8ee41de89mr1954970plg.69.1707888642529;
+        Tue, 13 Feb 2024 21:30:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVVvyB7fcy9Fhfykt0RRukcrKwI7zTE91Tt8Tmoicvt5ndF7ZDWLDNv4seZGzgyPeHrU9RKCaXX6wAgVJ+B6phrDlfhr2HSbvdbYZ0gc3G2B8RiGXFNzn5DDNVG2jlC5Lm4EiKD33Pf8C2+v4S95K8xXFzJTRysLwUKZkSm1GKhs7eP5HZ7NqpCSkGAfzGQgJDdXf7qM4IoTZO7yX1Ck3ToIWbmUxf3TMel4NCrTdM3KsjmnJjilO3ceQFSUpJfkVxGfeXT05CmPQ==
+Received: from ares2-ThinkPad-L13-Yoga-Gen-2.. ([2400:2410:b9a0:8400:93ae:f463:289c:d6c5])
+        by smtp.googlemail.com with ESMTPSA id ll5-20020a170903090500b001da186aa72csm2921904plb.17.2024.02.13.21.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 21:30:42 -0800 (PST)
+From: Vishnu Sankar <vishnuocv@gmail.com>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mpearson-lenovo@squebb.ca,
+	vsankar@lenovo.com,
+	Vishnu Sankar <vishnuocv@gmail.com>,
+	Ilpo Jarvinen <ilpo.jarvinen@intel.com>
+Subject: [PATCH 1/2] platform/x86: thinkpad_acpi: Simplify thermal mode checking
+Date: Wed, 14 Feb 2024 14:29:58 +0900
+Message-Id: <20240214052959.8550-1-vishnuocv@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] clk: qcom: videocc-sm8550: Add support for SM8650
- videocc
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        Taniya Das <quic_tdas@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Ajit Pandey" <quic_ajipan@quicinc.com>
-References: <20240206113145.31096-1-quic_jkona@quicinc.com>
- <20240206113145.31096-3-quic_jkona@quicinc.com>
- <CAA8EJpqbKQS7Bp28xNZ0twu7BFLdOES9qS5xBvoonux8Ma4q6Q@mail.gmail.com>
- <e90522c1-7a2d-40ff-bf4e-c8f974722ddf@quicinc.com>
- <CAA8EJpqCDOE_5vg+4ew8H0HbhQM1w8reqU6Pu0MAYJtMw8zXUw@mail.gmail.com>
- <d88f0f42-c9ec-4638-8090-055bc4806574@quicinc.com>
- <CAA8EJpq9AE_B9rvXRa1Q803yWzmwZxwiF_hwokq8XJZgJy59PA@mail.gmail.com>
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <CAA8EJpq9AE_B9rvXRa1Q803yWzmwZxwiF_hwokq8XJZgJy59PA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MsbA6hO9HeUoQ6iC2JscR4_etaij4rnl
-X-Proofpoint-GUID: MsbA6hO9HeUoQ6iC2JscR4_etaij4rnl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- mlxscore=0 spamscore=0 malwarescore=0 phishscore=0 bulkscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402140041
+Content-Transfer-Encoding: 8bit
 
+Add a thermal_read_mode_check helper function to make the code
+simpler during init.
+This helps particularly when the new TPEC_12 mode is added in
+the next patch.
 
+Suggested-by: Ilpo Jarvinen <ilpo.jarvinen@intel.com>
+Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
+---
+ drivers/platform/x86/thinkpad_acpi.c | 136 +++++++++++++--------------
+ 1 file changed, 66 insertions(+), 70 deletions(-)
 
-On 2/12/2024 6:48 PM, Dmitry Baryshkov wrote:
-> On Mon, 12 Feb 2024 at 15:07, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>
->>
->>
->> On 2/7/2024 12:49 PM, Dmitry Baryshkov wrote:
->>> On Wed, 7 Feb 2024 at 08:59, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>
->>>>
->>>>
->>>> On 2/6/2024 5:24 PM, Dmitry Baryshkov wrote:
->>>>> On Tue, 6 Feb 2024 at 13:39, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>>>
->>>>>> Add support to the SM8650 video clock controller by extending the
->>>>>> SM8550 video clock controller, which is mostly identical but SM8650
->>>>>> has few additional clocks and minor differences.
->>>>>
->>>>> In the past we tried merging similar clock controllers. In the end
->>>>> this results in the ugly source code. Please consider submitting a
->>>>> separate driver.
->>>>>
->>>>
->>>> Thanks Dmitry for your review. SM8650 has only few clock additions and
->>>> minor changes compared to SM8550, so I believe it is better to reuse
->>>> this existing driver and extend it.
->>>
->>> I'd say, the final decision is on Bjorn and Konrad as maintainers.
->>>
->>>>
->>>>>>
->>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>> ---
->>>>>>     drivers/clk/qcom/videocc-sm8550.c | 160 +++++++++++++++++++++++++++++-
->>>>>>     1 file changed, 156 insertions(+), 4 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
->>>>>> index f3c9dfaee968..cdc08f5900fc 100644
->>>>>> --- a/drivers/clk/qcom/videocc-sm8550.c
->>>>>> +++ b/drivers/clk/qcom/videocc-sm8550.c
->>>>>> @@ -1,6 +1,6 @@
->>>>>>     // SPDX-License-Identifier: GPL-2.0-only
->>>>>>     /*
->>>>>> - * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->>>>>> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
->>>>>>      */
->>>>>>
->>>>>>     #include <linux/clk-provider.h>
->>>>>
->>>>> [skipping]
->>>>>
->>>>>>     static struct gdsc video_cc_mvs0c_gdsc = {
->>>>>>            .gdscr = 0x804c,
->>>>>>            .en_rest_wait_val = 0x2,
->>>>>> @@ -354,15 +481,20 @@ static struct clk_regmap *video_cc_sm8550_clocks[] = {
->>>>>>            [VIDEO_CC_MVS0_CLK] = &video_cc_mvs0_clk.clkr,
->>>>>>            [VIDEO_CC_MVS0_CLK_SRC] = &video_cc_mvs0_clk_src.clkr,
->>>>>>            [VIDEO_CC_MVS0_DIV_CLK_SRC] = &video_cc_mvs0_div_clk_src.clkr,
->>>>>> +       [VIDEO_CC_MVS0_SHIFT_CLK] = &video_cc_mvs0_shift_clk.clkr,
->>>>>>            [VIDEO_CC_MVS0C_CLK] = &video_cc_mvs0c_clk.clkr,
->>>>>>            [VIDEO_CC_MVS0C_DIV2_DIV_CLK_SRC] = &video_cc_mvs0c_div2_div_clk_src.clkr,
->>>>>> +       [VIDEO_CC_MVS0C_SHIFT_CLK] = &video_cc_mvs0c_shift_clk.clkr,
->>>>>>            [VIDEO_CC_MVS1_CLK] = &video_cc_mvs1_clk.clkr,
->>>>>>            [VIDEO_CC_MVS1_CLK_SRC] = &video_cc_mvs1_clk_src.clkr,
->>>>>>            [VIDEO_CC_MVS1_DIV_CLK_SRC] = &video_cc_mvs1_div_clk_src.clkr,
->>>>>> +       [VIDEO_CC_MVS1_SHIFT_CLK] = &video_cc_mvs1_shift_clk.clkr,
->>>>>>            [VIDEO_CC_MVS1C_CLK] = &video_cc_mvs1c_clk.clkr,
->>>>>>            [VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC] = &video_cc_mvs1c_div2_div_clk_src.clkr,
->>>>>> +       [VIDEO_CC_MVS1C_SHIFT_CLK] = &video_cc_mvs1c_shift_clk.clkr,
->>>>>>            [VIDEO_CC_PLL0] = &video_cc_pll0.clkr,
->>>>>>            [VIDEO_CC_PLL1] = &video_cc_pll1.clkr,
->>>>>> +       [VIDEO_CC_XO_CLK_SRC] = &video_cc_xo_clk_src.clkr,
->>>>>>     };
->>>>>>
->>>>>>     static struct gdsc *video_cc_sm8550_gdscs[] = {
->>>>>> @@ -380,6 +512,7 @@ static const struct qcom_reset_map video_cc_sm8550_resets[] = {
->>>>>>            [CVP_VIDEO_CC_MVS1C_BCR] = { 0x8074 },
->>>>>>            [VIDEO_CC_MVS0C_CLK_ARES] = { 0x8064, 2 },
->>>>>>            [VIDEO_CC_MVS1C_CLK_ARES] = { 0x8090, 2 },
->>>>>> +       [VIDEO_CC_XO_CLK_ARES] = { 0x8124, 2 },
->>>>>
->>>>> Is this reset applicable to videocc-sm8550?
->>>>>
->>>>
->>>> SM8550 also has above reset support in hardware, hence it is safe to
->>>> model above reset for both SM8550 and SM8650.
->>>
->>> Then, separate commit, Fixes tag.
->>>
->>
->> Sure, will separate and add Fixes tag in next series.
->>
->>>>
->>>>>>     };
->>>>>>
->>>>>>     static const struct regmap_config video_cc_sm8550_regmap_config = {
->>>>>> @@ -402,6 +535,7 @@ static struct qcom_cc_desc video_cc_sm8550_desc = {
->>>>>>
->>>>>>     static const struct of_device_id video_cc_sm8550_match_table[] = {
->>>>>>            { .compatible = "qcom,sm8550-videocc" },
->>>>>> +       { .compatible = "qcom,sm8650-videocc" },
->>>>>>            { }
->>>>>>     };
->>>>>>     MODULE_DEVICE_TABLE(of, video_cc_sm8550_match_table);
->>>>>> @@ -410,6 +544,7 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
->>>>>>     {
->>>>>>            struct regmap *regmap;
->>>>>>            int ret;
->>>>>> +       u32 offset;
->>>>>>
->>>>>>            ret = devm_pm_runtime_enable(&pdev->dev);
->>>>>>            if (ret)
->>>>>> @@ -425,6 +560,23 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
->>>>>>                    return PTR_ERR(regmap);
->>>>>>            }
->>>>>>
->>>>>> +       if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8550-videocc")) {
->>>>>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS0_SHIFT_CLK] = NULL;
->>>>>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS0C_SHIFT_CLK] = NULL;
->>>>>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS1_SHIFT_CLK] = NULL;
->>>>>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS1C_SHIFT_CLK] = NULL;
->>>>>> +               video_cc_sm8550_clocks[VIDEO_CC_XO_CLK_SRC] = NULL;
->>>>>
->>>>> Please invert the logic. Make video_cc_sm8550_clocks reflect SM8550
->>>>> and patch in new clocks in the SM8650-specific branch below.
->>>>>
->>>>
->>>> Sure, will add these clocks as NULL in video_cc_sm8550_clocks and patch
->>>> in new clocks here for SM8650. Then we can remove above check for SM8550.
->>>
->>> No need to set them to NULL, it is the default value. Just add them to
->>> the sm8650 branch.
->>>
->>
->> The video_cc_sm8550_clocks[] array size is fixed and has memory
->> allocated only for current sm8550 clocks. To be able to accommodate
->> sm8650 clocks in the same array, we need to initialize the clocks to
->> NULL as below snippet to increase the array size.
->>
->> static struct clk_regmap *video_cc_sm8550_clocks[] = {
->> .....
->>          [VIDEO_CC_XO_CLK_SRC] = NULL,
->> }
-> 
-> The question/comment was regarding video_cc_sm8550_probe() rather than
-> video_cc_sm8550_clocks.
-> 
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index c4895e9bc714..2428c8bd0fa2 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6147,6 +6147,71 @@ struct ibm_thermal_sensors_struct {
+ static enum thermal_access_mode thermal_read_mode;
+ static bool thermal_use_labels;
+ 
++/* Function to check thermal read mode */
++static enum thermal_access_mode thermal_read_mode_check(void)
++{
++	u8 t, ta1, ta2, ver = 0;
++	int i;
++
++	if (thinkpad_id.ec_model) {
++		/*
++		 * Direct EC access mode: sensors at registers
++		 * 0x78-0x7F, 0xC0-0xC7.  Registers return 0x00 for
++		 * non-implemented, thermal sensors return 0x80 when
++		 * not available
++		 * The above rule is unfortunately flawed. This has been seen with
++		 * 0xC2 (power supply ID) causing thermal control problems.
++		 * The EC version can be determined by offset 0xEF and at least for
++		 * version 3 the Lenovo firmware team confirmed that registers 0xC0-0xC7
++		 * are not thermal registers.
++		 */
++		if (!acpi_ec_read(TP_EC_FUNCREV, &ver))
++			pr_warn("Thinkpad ACPI EC unable to access EC version\n");
++
++		ta1 = ta2 = 0;
++		for (i = 0; i < 8; i++) {
++			if (acpi_ec_read(TP_EC_THERMAL_TMP0 + i, &t)) {
++				ta1 |= t;
++			} else {
++				ta1 = 0;
++				break;
++			}
++			if (ver < 3) {
++				if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
++					ta2 |= t;
++				} else {
++					ta1 = 0;
++					break;
++				}
++			}
++		}
++
++		if (ta1 == 0) {
++			pr_err("ThinkPad ACPI EC access misbehaving, disabling thermal sensors access\n");
++			return TPACPI_THERMAL_NONE;
++		}
++
++		if (ver >= 3) {
++			thermal_use_labels = true;
++			return TPACPI_THERMAL_TPEC_8;
++		}
++
++		return (ta2 != 0) ? TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC_8;
++	}
++
++	if (acpi_evalf(ec_handle, NULL, "TMP7", "qv")) {
++		if (tpacpi_is_ibm() &&
++		    acpi_evalf(ec_handle, NULL, "UPDT", "qv"))
++			/* 600e/x, 770e, 770x */
++			return TPACPI_THERMAL_ACPI_UPDT;
++		/* IBM/LENOVO DSDT EC.TMPx access, max 8 sensors */
++		return TPACPI_THERMAL_ACPI_TMP07;
++	}
++
++	/* temperatures not supported on 570, G4x, R30, R31, R32 */
++	return TPACPI_THERMAL_NONE;
++}
++
+ /* idx is zero-based */
+ static int thermal_get_sensor(int idx, s32 *value)
+ {
+@@ -6375,78 +6440,9 @@ static const struct attribute_group temp_label_attr_group = {
+ 
+ static int __init thermal_init(struct ibm_init_struct *iibm)
+ {
+-	u8 t, ta1, ta2, ver = 0;
+-	int i;
+-	int acpi_tmp7;
+-
+ 	vdbg_printk(TPACPI_DBG_INIT, "initializing thermal subdriver\n");
+ 
+-	acpi_tmp7 = acpi_evalf(ec_handle, NULL, "TMP7", "qv");
+-
+-	if (thinkpad_id.ec_model) {
+-		/*
+-		 * Direct EC access mode: sensors at registers
+-		 * 0x78-0x7F, 0xC0-0xC7.  Registers return 0x00 for
+-		 * non-implemented, thermal sensors return 0x80 when
+-		 * not available
+-		 * The above rule is unfortunately flawed. This has been seen with
+-		 * 0xC2 (power supply ID) causing thermal control problems.
+-		 * The EC version can be determined by offset 0xEF and at least for
+-		 * version 3 the Lenovo firmware team confirmed that registers 0xC0-0xC7
+-		 * are not thermal registers.
+-		 */
+-		if (!acpi_ec_read(TP_EC_FUNCREV, &ver))
+-			pr_warn("Thinkpad ACPI EC unable to access EC version\n");
+-
+-		ta1 = ta2 = 0;
+-		for (i = 0; i < 8; i++) {
+-			if (acpi_ec_read(TP_EC_THERMAL_TMP0 + i, &t)) {
+-				ta1 |= t;
+-			} else {
+-				ta1 = 0;
+-				break;
+-			}
+-			if (ver < 3) {
+-				if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
+-					ta2 |= t;
+-				} else {
+-					ta1 = 0;
+-					break;
+-				}
+-			}
+-		}
+-		if (ta1 == 0) {
+-			/* This is sheer paranoia, but we handle it anyway */
+-			if (acpi_tmp7) {
+-				pr_err("ThinkPad ACPI EC access misbehaving, falling back to ACPI TMPx access mode\n");
+-				thermal_read_mode = TPACPI_THERMAL_ACPI_TMP07;
+-			} else {
+-				pr_err("ThinkPad ACPI EC access misbehaving, disabling thermal sensors access\n");
+-				thermal_read_mode = TPACPI_THERMAL_NONE;
+-			}
+-		} else {
+-			if (ver >= 3) {
+-				thermal_read_mode = TPACPI_THERMAL_TPEC_8;
+-				thermal_use_labels = true;
+-			} else {
+-				thermal_read_mode =
+-					(ta2 != 0) ?
+-					TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC_8;
+-			}
+-		}
+-	} else if (acpi_tmp7) {
+-		if (tpacpi_is_ibm() &&
+-		    acpi_evalf(ec_handle, NULL, "UPDT", "qv")) {
+-			/* 600e/x, 770e, 770x */
+-			thermal_read_mode = TPACPI_THERMAL_ACPI_UPDT;
+-		} else {
+-			/* IBM/LENOVO DSDT EC.TMPx access, max 8 sensors */
+-			thermal_read_mode = TPACPI_THERMAL_ACPI_TMP07;
+-		}
+-	} else {
+-		/* temperatures not supported on 570, G4x, R30, R31, R32 */
+-		thermal_read_mode = TPACPI_THERMAL_NONE;
+-	}
++	thermal_read_mode = thermal_read_mode_check();
+ 
+ 	vdbg_printk(TPACPI_DBG_INIT, "thermal is %s, mode %d\n",
+ 		str_supported(thermal_read_mode != TPACPI_THERMAL_NONE),
+-- 
+2.34.1
 
-Ok thanks, will update the change as per above comments in next series.
-
-Thanks,
-Jagadeesh
-
->>>>
->>>>>> +               offset = 0x8140;
->>>>>> +       } else  if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8650-videocc")) {
->>>>>> +               video_cc_pll0_config.l = 0x1e;
->>>>>> +               video_cc_pll0_config.alpha = 0xa000;
->>>>>> +               video_cc_pll1_config.l = 0x2b;
->>>>>> +               video_cc_pll1_config.alpha = 0xc000;
->>>>>> +               video_cc_mvs0_clk_src.freq_tbl = ftbl_video_cc_mvs0_clk_src_sm8650;
->>>>>> +               video_cc_mvs1_clk_src.freq_tbl = ftbl_video_cc_mvs1_clk_src_sm8650;
->>>>>> +               offset = 0x8150;
->>>>>> +       }
->>>>>> +
->>>>>>            clk_lucid_ole_pll_configure(&video_cc_pll0, regmap, &video_cc_pll0_config);
->>>>>>            clk_lucid_ole_pll_configure(&video_cc_pll1, regmap, &video_cc_pll1_config);
->>>>>>
->>>>>> @@ -435,7 +587,7 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
->>>>>>             *      video_cc_xo_clk
->>>>>>             */
->>>>>>            regmap_update_bits(regmap, 0x80f4, BIT(0), BIT(0));
->>>>>> -       regmap_update_bits(regmap, 0x8140, BIT(0), BIT(0));
->>>>>> +       regmap_update_bits(regmap, offset, BIT(0), BIT(0));
->>>>>>            regmap_update_bits(regmap, 0x8124, BIT(0), BIT(0));
->>>>>>
->>>>>>            ret = qcom_cc_really_probe(pdev, &video_cc_sm8550_desc, regmap);
->>>>>> --
->>>>>> 2.43.0
->>>>>>
->>>>>>
->>>>>
->>>>>
->>>
->>>
->>>
-> 
-> 
-> 
 
