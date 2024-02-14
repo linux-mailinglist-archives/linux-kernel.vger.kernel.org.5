@@ -1,101 +1,152 @@
-Return-Path: <linux-kernel+bounces-64908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76146854487
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:03:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F778544B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32811285354
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2CD128D2BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF3210A35;
-	Wed, 14 Feb 2024 09:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73A810A35;
+	Wed, 14 Feb 2024 09:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="r3X8VTjj"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="CGcJ/42F"
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5184D79DF;
-	Wed, 14 Feb 2024 09:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F68379C0;
+	Wed, 14 Feb 2024 09:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901419; cv=none; b=WqMjEdmuMPcq1PpjAw8k75yavCIUOFfNkvk2fEf9I4vGcEQxnrJD9Gx5ndILIytuPbkur0197t/GVSzs2TqgwdA1OAD8Phbqki9Yz27a75K2cT3bV2icYDDg50nZ2sK38lTNkZEJR7d2yH+PmJPaCy1W9r1oP/YQDO+7hXR8MJw=
+	t=1707901840; cv=none; b=OFk2fKEaOpspfDYgCmE2jT1FcGQcIt2d3eHD6pvByCa/T/oUCmfpcMay8vA8elZ0TdXHEfeVI+tK72eqKxezIwLxdEUpVINcE68l+fPxCoU0NxyxIJKCToreH508Ohj9rel33CPF9G0UG25i+4Lu2q56yG8wzr9VaN90jFMh8f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901419; c=relaxed/simple;
-	bh=E4Fif1h9LAA837algbblMC/VbtR1NPcDBXt52yRm3WQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sCo0RwT3Bi80h5ycmX2BwrcJhJxe1c/DBTtgw6mI+xniqpKBbCumHcXrnQR9OjRTFr+0wIv3P4YTrSy9UqNhYrL4PTid/NLvYUBKMXSqw7jw4KsDBV+C4d/VErhoPgWIxm1eG0U9DU9HLnlTRAB9hxTlTvw6byXs1V/qfDXET3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=r3X8VTjj; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707901410;
-	bh=E4Fif1h9LAA837algbblMC/VbtR1NPcDBXt52yRm3WQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=r3X8VTjjoFJUcBdiXZ0v6uttY6TAs5Xt4/Ya0lWRAaqEmQ3u9e1RmD2eNiZ4I4h6m
-	 yB3BhPiRh3G1sOWARcawu3l8fQp/URU71ShBah7Bw44g7bT6W9rgYQmEW+X/i9RhHS
-	 r/q2AJYbvhP21Zx4Ci8vc9labXo96H8JIiFcCezw5zrf02EaN1ChS+dcHaG+g6RM2z
-	 EWWpUuWsxYPGZ9lFUKo4aGZWS2evYlR+WjcZ6a8kCeiyyRYlBkUtm8RDtpzuQCTor8
-	 7I3sd/byrRT5b/y98KLu0h5sjsofgI8wbGTcfMq33I6tzy8hPGGu4isOHSqkeydP6x
-	 axSIHwXWLwr8A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E01DA3782075;
-	Wed, 14 Feb 2024 09:03:28 +0000 (UTC)
-Message-ID: <c8878258-9f3b-4e2f-a022-3bd43bcfd02e@collabora.com>
-Date: Wed, 14 Feb 2024 10:03:28 +0100
+	s=arc-20240116; t=1707901840; c=relaxed/simple;
+	bh=fhaQc5uReQDosB0thOz5f3cBKN3ZqzcXRvj2QlSbfMg=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=K//Ye3DZoVUdzDNyJwGf21ybWbXfjuxsaBKpmAWIBf4tUxuRIh8kKsKCQMbFORcfXiSLhVPl1hLOU1a4oSWjLuSGYOJ8bax/JN6ULDxQ9NRXPwxED0NGS0QFHe+ySQ+hhIWVDc0zsmIZfBU50j+44VYGs/Nl/D/3AZx/Noo6zyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=CGcJ/42F; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id 76927115F000;
+	Wed, 14 Feb 2024 12:01:50 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 76927115F000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1707901310; bh=a5ajpumwk1I+jMeP7Lj73hpNOSeE7RGR+9+ywHTrOTo=;
+	h=From:To:CC:Subject:Date:From;
+	b=CGcJ/42FpqGYYm5ISrgn3MFoi4SQpwsdJWtP9fzPI4w1nPGztt3RpYS1DWWvFIVTO
+	 Ww32DsRQWnW/W9qNQA9aJ/gQEao6Bsplc3lP0HlMBfxrDHa1V1sX8INfHczCmngyGd
+	 6CJ1MUHNMC2lVw0/2NDflooZWE0NiGgt7jtsARrk=
+Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
+	by mx0.infotecs-nt (Postfix) with ESMTP id 72B92310CF51;
+	Wed, 14 Feb 2024 12:01:50 +0300 (MSK)
+From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To: Michal Ostrowski <mostrows@earthlink.net>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+	"syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com"
+	<syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com>
+Subject: [PATCH net] pppoe: Fix memory leak in pppoe_sendmsg()
+Thread-Topic: [PATCH net] pppoe: Fix memory leak in pppoe_sendmsg()
+Thread-Index: AQHaXyRy75DQaIgJRUS4Y1xFlKXgFA==
+Date: Wed, 14 Feb 2024 09:01:50 +0000
+Message-ID: <20240214085814.3894917-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] arm64: dts: mediatek: mt8186: Add missing clocks
- to ssusb power domains
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Chen-Yu Tsai <wenst@chromium.org>,
- Eugen Hristev <eugen.hristev@collabora.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>, kernel@collabora.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240213-mt8186-ssusb-domain-clk-fix-v2-0-1f981d35f3fd@collabora.com>
- <20240213-mt8186-ssusb-domain-clk-fix-v2-1-1f981d35f3fd@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240213-mt8186-ssusb-domain-clk-fix-v2-1-1f981d35f3fd@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2024/02/14 08:31:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/02/14 07:41:00 #23598261
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-Il 13/02/24 16:02, Nícolas F. R. A. Prado ha scritto:
-> The ssusb power domains currently don't list any clocks, despite
-> depending on some, and thus rely on the bootloader leaving the required
-> clocks on in order to work.
-> 
-> When booting with the upstream arm64 defconfig, the power domain
-> controller will defer probe until modules have loaded since it has an
-> indirect dependency on CONFIG_MTK_CMDQ, which is configured as a module.
-> However at the point where modules are loaded, unused clocks are also
-> disabled, causing the ssusb domains to fail to be enabled and
-> consequently the controller to fail probe:
-> 
-> mtk-power-controller 10006000.syscon:power-controller: /soc/syscon@10006000/power-controller/power-domain@4: failed to power on domain: -110
-> mtk-power-controller: probe of 10006000.syscon:power-controller failed with error -110
-> 
-> Add the missing clocks for the ssusb power domains so that they can
-> successfully probe without relying on the bootloader state.
-> 
-> Fixes: d9e43c1e7a38 ("arm64: dts: mt8186: Add power domains controller")
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+syzbot reports a memory leak in pppoe_sendmsg [1].
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+The problem is in the pppoe_recvmsg() function that handles errors
+in the wrong order. For the skb_recv_datagram() function, check
+the pointer to skb for NULL first, and then check the 'error' variable,
+because the skb_recv_datagram() function can set 'error'
+to -EAGAIN in a loop but return a correct pointer to socket buffer
+after a number of attempts, though 'error' remains set to -EAGAIN.
 
+skb_recv_datagram
+      __skb_recv_datagram          // Loop. if (err =3D=3D -EAGAIN) then
+                                   // go to the next loop iteration
+          __skb_try_recv_datagram  // if (skb !=3D NULL) then return 'skb'
+                                   // else if a signal is received then
+                                   // return -EAGAIN
+
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with Syzkaller.
+
+Link: https://syzkaller.appspot.com/bug?extid=3D6bdfd184eac7709e5cc9 [1]
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=3D6bdfd184eac7709e5cc9
+Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+---
+ drivers/net/ppp/pppoe.c | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+index 8e7238e97d0a..2ea4f4890d23 100644
+--- a/drivers/net/ppp/pppoe.c
++++ b/drivers/net/ppp/pppoe.c
+@@ -1007,26 +1007,21 @@ static int pppoe_recvmsg(struct socket *sock, struc=
+t msghdr *m,
+ 	struct sk_buff *skb;
+ 	int error =3D 0;
+=20
+-	if (sk->sk_state & PPPOX_BOUND) {
+-		error =3D -EIO;
+-		goto end;
+-	}
++	if (sk->sk_state & PPPOX_BOUND)
++		return -EIO;
+=20
+ 	skb =3D skb_recv_datagram(sk, flags, &error);
+-	if (error < 0)
+-		goto end;
++	if (!skb)
++		return error;
+=20
+-	if (skb) {
+-		total_len =3D min_t(size_t, total_len, skb->len);
+-		error =3D skb_copy_datagram_msg(skb, 0, m, total_len);
+-		if (error =3D=3D 0) {
+-			consume_skb(skb);
+-			return total_len;
+-		}
++	total_len =3D min_t(size_t, total_len, skb->len);
++	error =3D skb_copy_datagram_msg(skb, 0, m, total_len);
++	if (error =3D=3D 0) {
++		consume_skb(skb);
++		return total_len;
+ 	}
+=20
+ 	kfree_skb(skb);
+-end:
+ 	return error;
+ }
+=20
+--=20
+2.39.2
 
