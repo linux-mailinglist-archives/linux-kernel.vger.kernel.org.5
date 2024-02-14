@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-65744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B8B855195
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:09:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F2F85510F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D4CCB28E32
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 288F21F215A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8A712B162;
-	Wed, 14 Feb 2024 17:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2036612BE9D;
+	Wed, 14 Feb 2024 17:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjRQKQPg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIzJDL7c"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A152112AAD1;
-	Wed, 14 Feb 2024 17:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613EB12B165;
+	Wed, 14 Feb 2024 17:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933471; cv=none; b=IA4NPcn6cWhLMG630Uu39uehWWw2KMwqG+G0nBOwCvUo/E8SkW2Y9JwMAoWdH37m8/m80Np3ycoBEgTh7zTLb49+cYzPvx7q4JHgapwBiRZINN2sAwQj0ihH/Mnm9hNypf7OVnwE7i4liMckVLBXokvRdvtq69+PSd6AvwYpX2Y=
+	t=1707933472; cv=none; b=OduuTH/lY+6foo9fcMM425lGQFFW4E/xKWzF2KJdnQMEXwTgjB0jn3UC4D/DLEO2kLELBQWr8MMYOxsHjx4KNgzuilGPqz8wI1Qpuv8zy5Wp8WGyW7Q83zvIlY//AS1/nLsw0mboBbOLMP91Xwi8PugP7212Rd7WNG011FSTpKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933471; c=relaxed/simple;
-	bh=YFU+Ds8M53iZQg2SyYpOVSCKzY2zxmL4C/jaoOq3w3c=;
+	s=arc-20240116; t=1707933472; c=relaxed/simple;
+	bh=YaYzQS2TMZ6SbsI9/AZEoEa8PAU8fUZJpJZ6GY5gC74=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X0yWQc1t3e8Myt0vJAWmQWqXMOkdRGvewpZHKEdu5SJGXHeOgE0fKDvrlcRKJYNJks6vVA2kqxMuEKs6CtaP9ujncMl+G8JmQE/3cuLFV849cB2S4NCcngRhXwWAWW1zCgPzTCfZKt/XN1UZfNGbuBszmkz+S4+S3kmD0F1D6AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjRQKQPg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF68C433C7;
-	Wed, 14 Feb 2024 17:57:50 +0000 (UTC)
+	 MIME-Version:Content-Type; b=kU9oIQVr0zvw/cuPE7io61DHLaKvojS/9OZVzDK226tPIp/S/mdVQzORRrtB4ShSBSl2KJBVU76+1nqzkpMTySYDmVswXeNnVB/7cx58GJuVD5TghV2Lb6F2Q6E0DnEyy0KE5wGeKSqcFnqGLOKN24OTMipxAgVfAyF7CEw7dMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIzJDL7c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A27DC4166C;
+	Wed, 14 Feb 2024 17:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1707933471;
-	bh=YFU+Ds8M53iZQg2SyYpOVSCKzY2zxmL4C/jaoOq3w3c=;
+	bh=YaYzQS2TMZ6SbsI9/AZEoEa8PAU8fUZJpJZ6GY5gC74=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=AjRQKQPg2Br//eL6KJ/uKXmefnh82H0TtN5wmrYlR8A2wkG25TR8BC1J1THmd3m3V
-	 fxKxVujOpDH5+KEibnTUocBIYDLyGW7Mg+XuSvYVb2pYEciOJsIUpWSPXKigYyWxZs
-	 QNgQAkwzHqOrP0ibfovjEGEcuCE0aXRodM0avdr9xo+64VwrFi4jqJnhSFOZyYALmT
-	 SQTxNfRY5Ggvps6mGu4b9S0i815s8hJUD56ki4TiW+Sb3hN7XZPvjLhfXj5lAfoQfl
-	 LSFZzti51YBBLyZAAh2NxhY4b+cJqk9KNxlKb08iLcJRZhP8zF4Hkysf7FjaHKldwr
-	 H6MUL14IHxMcA==
+	b=MIzJDL7cgB89sOU8ga+FDy6gMGIcqgIuDHwD9mtoVIDwAC8eOfYNmriMsQnLQCc2L
+	 j/A74J6KAhCUMrFIx3LfCzTc0X4TibgSOUb+/7kejHRp10699du7jUBilpeBEAXlN8
+	 /u+62CWZMtgAEDi7FMOHJ3dGU18gXwXV2/h3ukzyNtIXeFnltD5ud9gWGIJQtNURDz
+	 N2Vp39BufViSwXN6ddcqiqX5r9analZJQ7feO2mZAqijMsqVAqDDG5Laj4RzgrxiUh
+	 gBXjCil45byeFaVBGlQN84XCgafsfGWFHBKb5h79roBKphaTVFrDt9wBr9ZbOr6qqv
+	 L0TvqvpfJjBFg==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 1/5] arm64: dts: sc8280xp: correct DMIC2 and DMIC3 pin config node names
-Date: Wed, 14 Feb 2024 11:57:25 -0600
-Message-ID: <170793345833.27225.8898510891460575893.b4-ty@kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: minor whitespace cleanup
+Date: Wed, 14 Feb 2024 11:57:26 -0600
+Message-ID: <170793345828.27225.126406196959593352.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240212172335.124845-1-krzysztof.kozlowski@linaro.org>
-References: <20240212172335.124845-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208105208.128706-1-krzysztof.kozlowski@linaro.org>
+References: <20240208105208.128706-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,25 +65,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 12 Feb 2024 18:23:31 +0100, Krzysztof Kozlowski wrote:
-> Correct the TLMM pin configuration and muxing node names used for DMIC2
-> and DMIC3 (dmic01 -> dmic23).  This has no functional impact, but
-> improves code readability and avoids any confusion when reading the DTS.
+On Thu, 08 Feb 2024 11:52:08 +0100, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before '{' and
+> around '=' characters.
 > 
 > 
 
 Applied, thanks!
 
-[1/5] arm64: dts: sc8280xp: correct DMIC2 and DMIC3 pin config node names
-      commit: 61474b18e762671a69b2df9665f3cec5c87a38af
-[2/5] arm64: dts: sm8450: correct DMIC2 and DMIC3 pin config node names
-      commit: 0d3eb7ff1f3a994a5b3e49a9bd48f0c2f3c80ef5
-[3/5] arm64: dts: sm8550: correct DMIC2 and DMIC3 pin config node names
-      commit: c6e5bf9278749eaa094dc944add747f10a15dceb
-[4/5] arm64: dts: sm8650: correct DMIC2 and DMIC3 pin config node names
-      commit: 94c312767160f0d527da035b9080ff5675d17f4c
-[5/5] arm64: dts: x1e80100: correct DMIC2 and DMIC3 pin config node names
-      commit: 8794916799d61f3593b87e946ed58338baebd097
+[1/1] arm64: dts: qcom: minor whitespace cleanup
+      commit: 77e7257a601743a1cd67fa474288389fffa8839e
 
 Best regards,
 -- 
