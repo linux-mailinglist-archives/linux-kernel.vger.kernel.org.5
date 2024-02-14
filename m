@@ -1,158 +1,541 @@
-Return-Path: <linux-kernel+bounces-64692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C882985418D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:29:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCD485418E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 072AE1C288D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B208F28EBD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29EF8F56;
-	Wed, 14 Feb 2024 02:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DE223BF;
+	Wed, 14 Feb 2024 02:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k+y8Hwll"
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w1m9e5Iq"
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86EC53BE
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D5F181
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707877754; cv=none; b=VhlovRR+ApPooAiQB+a65zWnsmW3VVZ5abNKd0V7TChtUFgJK1XwbuTx/sqzE7+/8da1mXT/OI9YsG2RpS/tNNloKBURdDwLVnPf1i7vMtTV2EzLe7p7zN6EhCrZTAUZiL0Y1t6euzD8t8VwpiYoC8pmw0Z+gZ1VpR95Amt5qIs=
+	t=1707877971; cv=none; b=YOIYCOFSd0PDw4TVkM+nJ04G3qURBnYfFYszED6Qd1v8Xo0/bDvnTyqa4udH2kXs3bpjlXxrYNp44//ssNGgOBmrF7XDB6dwL3iu79oNvgSlujPmYMZsCcr51P0RRyWakmpBWutvIprfeTa+6Tyt4VIhe3lve7noSMKxQ3oYvNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707877754; c=relaxed/simple;
-	bh=qnMXIzAsvwbg9RdPvS3yVDUsbE7YmK9K5gnzIv7DBfA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n/f/8lgRbaJEIb/G/GtUDA4W5NQgymJUtXaBOJ5jOWthHpymCfmsAVWvtKgdvCa1QIlPw9a/mI2bQDJpUWNczQ9XjV1V6Xx7aqgxiyEY0+289E7LQTK3aDfofW+fbm5n5tmNjI5LaghmKe3GYGQdEKUJlEWIYIFvosp2OmckuYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k+y8Hwll; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1707877971; c=relaxed/simple;
+	bh=CYxd5rvayFeIfJaUtwf3Hu5j05ggYoN7X86N/TMEUkU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eyRxSVVGECLA3AD8DnAJo8odAkhIf2ovDeFGTJhiyKjdkvYK8SRKBOprtun6yXECjpK0Pb3olcJplRdFb5XBP0JGUmhIfr2DSOBsmG+LbiwSu62rFuSwzP9uzEnvdcRLE/k1PaY4ktaIyDma36tljITUkXbAIiaM4uQ2kqmLBvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w1m9e5Iq; arc=none smtp.client-ip=91.218.175.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Feb 2024 21:28:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707877750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rh748CJKLC8xvLfwlnns4OR7wyB9t3Vax7RM1Ml7NJM=;
-	b=k+y8HwllTEJkXP1GNY0NZLbw388OpCwxLx7tXyNC7iE5VZmjzj1ISGEwkoehdqMz3OoPA9
-	jTAgAeuEymJPjQZ6ebnnRCkk6FEdfJo2YQ+LN7P8QuEdQ2n+E5y+zKV1vFWzlq42RMO5As
-	tjTHAIcg3kJ657Lhyb9cZ8V5BCW63eE=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707877967;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Q7F/Gkay+YXzeNupEkSWDnoQuQojQ9N7tE1k2rTAa4E=;
+	b=w1m9e5IqDyVgE2BQBQCUI8pT5N5XOqUeHIJZt0ASB6hHn5ZCiZXPd20YEqKmfmgXpXItPz
+	mrvfuYkmK82V+LVrq6a9t3L8mxBEawhN9cq0a+8l5LhlPSW87WAwLiXDIQEa2ma9VZR36o
+	N6dDe222MCZG3VllyTwGOGpnM/IF/wo=
 From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [GIT PULL] bcachefs stable updates for v6.7
-Message-ID: <jhwinzfpw2xjjdwsgqsrtjnzcqdbfoqev3qrm65oaxktua4c7m@mes2iwvk2yep>
-References: <6yl6zvu2pa3mz7irsaax5ivp6kh3dae5kaslvst7yafmg6672g@mskleu2vjfp2>
- <2024021307-reactive-woven-8543@gregkh>
- <2024021300-deck-duffel-5d2b@gregkh>
+To: linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	akpm@vger.kernel.org,
+	Kees Cook <kees@kernel.org>,
+	"Darrick J . Wong" <djwong@kernel.org>
+Subject: [PATCH] darray: lift from bcachefs
+Date: Tue, 13 Feb 2024 21:32:33 -0500
+Message-ID: <20240214023236.3996954-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021300-deck-duffel-5d2b@gregkh>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 13, 2024 at 03:44:25PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Feb 13, 2024 at 03:38:10PM +0100, Greg Kroah-Hartman wrote:
-> > On Thu, Feb 08, 2024 at 08:14:39PM -0500, Kent Overstreet wrote:
-> > > Hi Greg, few stable updates for you -
-> > > 
-> > > Cheers,
-> > > Kent
-> > > 
-> > > The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
-> > > 
-> > >   Linux 6.7 (2024-01-07 12:18:38 -0800)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >   https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-for-v6.7-stable-20240208
-> > > 
-> > > for you to fetch changes up to f1582f4774ac7c30c5460a8c7a6e5a82b9ce5a6a:
-> > > 
-> > >   bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-08 15:33:11 -0500)
-> > 
-> > This didn't work well :(
-> > 
-> > All of the original git commit ids are gone, and for me to look them up
-> > and add them back by hand is a pain.  I'll do it this time, but next
-> > time can you please include them in the commit somewhere (cherry-pick -x
-> > will do it automatically for you)
-> > 
-> > Let's see if I can figure it out...
-> 
-> I got all but 3 applied, can you please send an updated set of 3 patches
-> for the ones I couldn't just cherry-pick from Linus's tree?
+dynamic arrays - inspired from CCAN darrays, basically c++ stl vectors.
 
-New pull request work?
+Used by thread_with_stdio, which is also being lifted from bcachefs for
+xfs.
 
-The following changes since commit 0dd3ee31125508cd67f7e7172247f05b7fd1753a:
+this is in my for-next branch - this is underlying infrastructure for
+the thread-with-file stuff that darrick and I have been hacking on; but
+it's also something I use heavily in bcachefs and is a gap in our data
+structures.
 
-  Linux 6.7 (2024-01-07 12:18:38 -0800)
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ MAINTAINERS                             |  7 +++
+ fs/bcachefs/Makefile                    |  1 -
+ fs/bcachefs/btree_types.h               |  2 +-
+ fs/bcachefs/btree_update.c              |  2 +
+ fs/bcachefs/btree_write_buffer_types.h  |  2 +-
+ fs/bcachefs/fsck.c                      |  2 +-
+ fs/bcachefs/journal_io.h                |  2 +-
+ fs/bcachefs/journal_sb.c                |  2 +-
+ fs/bcachefs/sb-downgrade.c              |  3 +-
+ fs/bcachefs/sb-errors_types.h           |  2 +-
+ fs/bcachefs/sb-members.h                |  2 +-
+ fs/bcachefs/subvolume.h                 |  1 -
+ fs/bcachefs/subvolume_types.h           |  2 +-
+ fs/bcachefs/thread_with_file_types.h    |  2 +-
+ fs/bcachefs/util.h                      | 29 +-----------
+ {fs/bcachefs => include/linux}/darray.h | 59 ++++++++++++++++---------
+ include/linux/darray_types.h            | 22 +++++++++
+ lib/Makefile                            |  2 +-
+ {fs/bcachefs => lib}/darray.c           | 12 ++++-
+ 19 files changed, 94 insertions(+), 62 deletions(-)
+ rename {fs/bcachefs => include/linux}/darray.h (66%)
+ create mode 100644 include/linux/darray_types.h
+ rename {fs/bcachefs => lib}/darray.c (56%)
 
-are available in the Git repository at:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f2face46f365..cec0ca4e108e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5806,6 +5806,13 @@ F:	net/ax25/ax25_out.c
+ F:	net/ax25/ax25_timer.c
+ F:	net/ax25/sysctl_net_ax25.c
+ 
++DARRAY
++M:	Kent Overstreet <kent.overstreet@linux.dev>
++L:	linux-bcachefs@vger.kernel.org
++S:	Maintained
++F:	include/linux/darray.h
++F:	include/linux/darray_types.h
++
+ DATA ACCESS MONITOR
+ M:	SeongJae Park <sj@kernel.org>
+ L:	damon@lists.linux.dev
+diff --git a/fs/bcachefs/Makefile b/fs/bcachefs/Makefile
+index b11ba74b8ad4..bb17d146b090 100644
+--- a/fs/bcachefs/Makefile
++++ b/fs/bcachefs/Makefile
+@@ -27,7 +27,6 @@ bcachefs-y		:=	\
+ 	checksum.o		\
+ 	clock.o			\
+ 	compress.o		\
+-	darray.o		\
+ 	debug.o			\
+ 	dirent.o		\
+ 	disk_groups.o		\
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index 4a5a64499eb7..0d5eecbd3e9c 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -2,12 +2,12 @@
+ #ifndef _BCACHEFS_BTREE_TYPES_H
+ #define _BCACHEFS_BTREE_TYPES_H
+ 
++#include <linux/darray_types.h>
+ #include <linux/list.h>
+ #include <linux/rhashtable.h>
+ 
+ #include "btree_key_cache_types.h"
+ #include "buckets_types.h"
+-#include "darray.h"
+ #include "errcode.h"
+ #include "journal_types.h"
+ #include "replicas_types.h"
+diff --git a/fs/bcachefs/btree_update.c b/fs/bcachefs/btree_update.c
+index c3ff365acce9..e5193116b092 100644
+--- a/fs/bcachefs/btree_update.c
++++ b/fs/bcachefs/btree_update.c
+@@ -14,6 +14,8 @@
+ #include "snapshot.h"
+ #include "trace.h"
+ 
++#include <linux/darray.h>
++
+ static inline int btree_insert_entry_cmp(const struct btree_insert_entry *l,
+ 					 const struct btree_insert_entry *r)
+ {
+diff --git a/fs/bcachefs/btree_write_buffer_types.h b/fs/bcachefs/btree_write_buffer_types.h
+index 9b9433de9c36..5f248873087c 100644
+--- a/fs/bcachefs/btree_write_buffer_types.h
++++ b/fs/bcachefs/btree_write_buffer_types.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_BTREE_WRITE_BUFFER_TYPES_H
+ #define _BCACHEFS_BTREE_WRITE_BUFFER_TYPES_H
+ 
+-#include "darray.h"
++#include <linux/darray_types.h>
+ #include "journal_types.h"
+ 
+ #define BTREE_WRITE_BUFERED_VAL_U64s_MAX	4
+diff --git a/fs/bcachefs/fsck.c b/fs/bcachefs/fsck.c
+index 10d144c5a37a..a4b44c4f9bdc 100644
+--- a/fs/bcachefs/fsck.c
++++ b/fs/bcachefs/fsck.c
+@@ -5,7 +5,6 @@
+ #include "btree_cache.h"
+ #include "btree_update.h"
+ #include "buckets.h"
+-#include "darray.h"
+ #include "dirent.h"
+ #include "error.h"
+ #include "fs-common.h"
+@@ -18,6 +17,7 @@
+ #include "xattr.h"
+ 
+ #include <linux/bsearch.h>
++#include <linux/darray.h>
+ #include <linux/dcache.h> /* struct qstr */
+ 
+ /*
+diff --git a/fs/bcachefs/journal_io.h b/fs/bcachefs/journal_io.h
+index 1f395f43cf76..f18b90000cc5 100644
+--- a/fs/bcachefs/journal_io.h
++++ b/fs/bcachefs/journal_io.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_JOURNAL_IO_H
+ #define _BCACHEFS_JOURNAL_IO_H
+ 
+-#include "darray.h"
++#include <linux/darray_types.h>
+ 
+ struct journal_ptr {
+ 	bool		csum_good;
+diff --git a/fs/bcachefs/journal_sb.c b/fs/bcachefs/journal_sb.c
+index ae4fb8c3a2bc..156691c203be 100644
+--- a/fs/bcachefs/journal_sb.c
++++ b/fs/bcachefs/journal_sb.c
+@@ -2,8 +2,8 @@
+ 
+ #include "bcachefs.h"
+ #include "journal_sb.h"
+-#include "darray.h"
+ 
++#include <linux/darray.h>
+ #include <linux/sort.h>
+ 
+ /* BCH_SB_FIELD_journal: */
+diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
+index 441dcb1bf160..626eaaea5b01 100644
+--- a/fs/bcachefs/sb-downgrade.c
++++ b/fs/bcachefs/sb-downgrade.c
+@@ -6,12 +6,13 @@
+  */
+ 
+ #include "bcachefs.h"
+-#include "darray.h"
+ #include "recovery.h"
+ #include "sb-downgrade.h"
+ #include "sb-errors.h"
+ #include "super-io.h"
+ 
++#include <linux/darray.h>
++
+ #define RECOVERY_PASS_ALL_FSCK		BIT_ULL(63)
+ 
+ /*
+diff --git a/fs/bcachefs/sb-errors_types.h b/fs/bcachefs/sb-errors_types.h
+index dbfd91ab86cf..cadf12ce9173 100644
+--- a/fs/bcachefs/sb-errors_types.h
++++ b/fs/bcachefs/sb-errors_types.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_SB_ERRORS_TYPES_H
+ #define _BCACHEFS_SB_ERRORS_TYPES_H
+ 
+-#include "darray.h"
++#include <linux/darray_types.h>
+ 
+ #define BCH_SB_ERRS()							\
+ 	x(clean_but_journal_not_empty,				0)	\
+diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
+index be0a94183271..e4d4d842229a 100644
+--- a/fs/bcachefs/sb-members.h
++++ b/fs/bcachefs/sb-members.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_SB_MEMBERS_H
+ #define _BCACHEFS_SB_MEMBERS_H
+ 
+-#include "darray.h"
++#include <linux/darray.h>
+ 
+ extern char * const bch2_member_error_strs[];
+ 
+diff --git a/fs/bcachefs/subvolume.h b/fs/bcachefs/subvolume.h
+index a6f56f66e27c..3ca1d183369c 100644
+--- a/fs/bcachefs/subvolume.h
++++ b/fs/bcachefs/subvolume.h
+@@ -2,7 +2,6 @@
+ #ifndef _BCACHEFS_SUBVOLUME_H
+ #define _BCACHEFS_SUBVOLUME_H
+ 
+-#include "darray.h"
+ #include "subvolume_types.h"
+ 
+ enum bkey_invalid_flags;
+diff --git a/fs/bcachefs/subvolume_types.h b/fs/bcachefs/subvolume_types.h
+index ae644adfc391..40f16e3a6dd0 100644
+--- a/fs/bcachefs/subvolume_types.h
++++ b/fs/bcachefs/subvolume_types.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_SUBVOLUME_TYPES_H
+ #define _BCACHEFS_SUBVOLUME_TYPES_H
+ 
+-#include "darray.h"
++#include <linux/darray_types.h>
+ 
+ typedef DARRAY(u32) snapshot_id_list;
+ 
+diff --git a/fs/bcachefs/thread_with_file_types.h b/fs/bcachefs/thread_with_file_types.h
+index e0daf4eec341..41990756aa26 100644
+--- a/fs/bcachefs/thread_with_file_types.h
++++ b/fs/bcachefs/thread_with_file_types.h
+@@ -2,7 +2,7 @@
+ #ifndef _BCACHEFS_THREAD_WITH_FILE_TYPES_H
+ #define _BCACHEFS_THREAD_WITH_FILE_TYPES_H
+ 
+-#include "darray.h"
++#include <linux/darray_types.h>
+ 
+ struct stdio_buf {
+ 	spinlock_t		lock;
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index c4cd32a2aeb2..1b3aced8d83c 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -5,23 +5,22 @@
+ #include <linux/bio.h>
+ #include <linux/blkdev.h>
+ #include <linux/closure.h>
++#include <linux/darray.h>
+ #include <linux/errno.h>
+ #include <linux/freezer.h>
+ #include <linux/kernel.h>
+-#include <linux/sched/clock.h>
+ #include <linux/llist.h>
+ #include <linux/log2.h>
+ #include <linux/percpu.h>
+ #include <linux/preempt.h>
+ #include <linux/ratelimit.h>
++#include <linux/sched/clock.h>
+ #include <linux/slab.h>
+ #include <linux/time_stats.h>
+ #include <linux/vmalloc.h>
+ #include <linux/workqueue.h>
+ #include <linux/mean_and_variance.h>
+ 
+-#include "darray.h"
+-
+ struct closure;
+ 
+ #ifdef CONFIG_BCACHEFS_DEBUG
+@@ -630,30 +629,6 @@ static inline void memset_u64s_tail(void *s, int c, unsigned bytes)
+ 	memset(s + bytes, c, rem);
+ }
+ 
+-/* just the memmove, doesn't update @_nr */
+-#define __array_insert_item(_array, _nr, _pos)				\
+-	memmove(&(_array)[(_pos) + 1],					\
+-		&(_array)[(_pos)],					\
+-		sizeof((_array)[0]) * ((_nr) - (_pos)))
+-
+-#define array_insert_item(_array, _nr, _pos, _new_item)			\
+-do {									\
+-	__array_insert_item(_array, _nr, _pos);				\
+-	(_nr)++;							\
+-	(_array)[(_pos)] = (_new_item);					\
+-} while (0)
+-
+-#define array_remove_items(_array, _nr, _pos, _nr_to_remove)		\
+-do {									\
+-	(_nr) -= (_nr_to_remove);					\
+-	memmove(&(_array)[(_pos)],					\
+-		&(_array)[(_pos) + (_nr_to_remove)],			\
+-		sizeof((_array)[0]) * ((_nr) - (_pos)));		\
+-} while (0)
+-
+-#define array_remove_item(_array, _nr, _pos)				\
+-	array_remove_items(_array, _nr, _pos, 1)
+-
+ static inline void __move_gap(void *array, size_t element_size,
+ 			      size_t nr, size_t size,
+ 			      size_t old_gap, size_t new_gap)
+diff --git a/fs/bcachefs/darray.h b/include/linux/darray.h
+similarity index 66%
+rename from fs/bcachefs/darray.h
+rename to include/linux/darray.h
+index 4b340d13caac..ff167eb795f2 100644
+--- a/fs/bcachefs/darray.h
++++ b/include/linux/darray.h
+@@ -1,34 +1,26 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _BCACHEFS_DARRAY_H
+-#define _BCACHEFS_DARRAY_H
++/*
++ * (C) 2022-2024 Kent Overstreet <kent.overstreet@linux.dev>
++ */
++#ifndef _LINUX_DARRAY_H
++#define _LINUX_DARRAY_H
+ 
+ /*
+- * Dynamic arrays:
++ * Dynamic arrays
+  *
+  * Inspired by CCAN's darray
+  */
+ 
++#include <linux/darray_types.h>
+ #include <linux/slab.h>
+ 
+-#define DARRAY_PREALLOCATED(_type, _nr)					\
+-struct {								\
+-	size_t nr, size;						\
+-	_type *data;							\
+-	_type preallocated[_nr];					\
+-}
+-
+-#define DARRAY(_type) DARRAY_PREALLOCATED(_type, 0)
+-
+-typedef DARRAY(char)	darray_char;
+-typedef DARRAY(char *) darray_str;
+-
+-int __bch2_darray_resize(darray_char *, size_t, size_t, gfp_t);
++int __darray_resize_slowpath(darray_char *, size_t, size_t, gfp_t);
+ 
+ static inline int __darray_resize(darray_char *d, size_t element_size,
+ 				  size_t new_size, gfp_t gfp)
+ {
+ 	return unlikely(new_size > d->size)
+-		? __bch2_darray_resize(d, element_size, new_size, gfp)
++		? __darray_resize_slowpath(d, element_size, new_size, gfp)
+ 		: 0;
+ }
+ 
+@@ -69,6 +61,28 @@ static inline int __darray_make_room(darray_char *d, size_t t_size, size_t more,
+ #define darray_first(_d)	((_d).data[0])
+ #define darray_last(_d)		((_d).data[(_d).nr - 1])
+ 
++/* Insert/remove items into the middle of a darray: */
++
++#define array_insert_item(_array, _nr, _pos, _new_item)			\
++do {									\
++	memmove(&(_array)[(_pos) + 1],					\
++		&(_array)[(_pos)],					\
++		sizeof((_array)[0]) * ((_nr) - (_pos)));		\
++	(_nr)++;							\
++	(_array)[(_pos)] = (_new_item);					\
++} while (0)
++
++#define array_remove_items(_array, _nr, _pos, _nr_to_remove)		\
++do {									\
++	(_nr) -= (_nr_to_remove);					\
++	memmove(&(_array)[(_pos)],					\
++		&(_array)[(_pos) + (_nr_to_remove)],			\
++		sizeof((_array)[0]) * ((_nr) - (_pos)));		\
++} while (0)
++
++#define array_remove_item(_array, _nr, _pos)				\
++	array_remove_items(_array, _nr, _pos, 1)
++
+ #define darray_insert_item(_d, pos, _item)				\
+ ({									\
+ 	size_t _pos = (pos);						\
+@@ -79,10 +93,15 @@ static inline int __darray_make_room(darray_char *d, size_t t_size, size_t more,
+ 	_ret;								\
+ })
+ 
++#define darray_remove_items(_d, _pos, _nr_to_remove)			\
++	array_remove_items((_d)->data, (_d)->nr, (_pos) - (_d)->data, _nr_to_remove)
++
+ #define darray_remove_item(_d, _pos)					\
+-	array_remove_item((_d)->data, (_d)->nr, (_pos) - (_d)->data)
++	darray_remove_items(_d, _pos, 1)
++
++/* Iteration: */
+ 
+-#define __darray_for_each(_d, _i)						\
++#define __darray_for_each(_d, _i)					\
+ 	for ((_i) = (_d).data; _i < (_d).data + (_d).nr; _i++)
+ 
+ #define darray_for_each(_d, _i)						\
+@@ -106,4 +125,4 @@ do {									\
+ 	darray_init(_d);						\
+ } while (0)
+ 
+-#endif /* _BCACHEFS_DARRAY_H */
++#endif /* _LINUX_DARRAY_H */
+diff --git a/include/linux/darray_types.h b/include/linux/darray_types.h
+new file mode 100644
+index 000000000000..a400a0c3600d
+--- /dev/null
++++ b/include/linux/darray_types.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * (C) 2022-2024 Kent Overstreet <kent.overstreet@linux.dev>
++ */
++#ifndef _LINUX_DARRAY_TYpES_H
++#define _LINUX_DARRAY_TYpES_H
++
++#include <linux/types.h>
++
++#define DARRAY_PREALLOCATED(_type, _nr)					\
++struct {								\
++	size_t nr, size;						\
++	_type *data;							\
++	_type preallocated[_nr];					\
++}
++
++#define DARRAY(_type) DARRAY_PREALLOCATED(_type, 0)
++
++typedef DARRAY(char)	darray_char;
++typedef DARRAY(char *)	darray_str;
++
++#endif /* _LINUX_DARRAY_TYpES_H */
+diff --git a/lib/Makefile b/lib/Makefile
+index 57858997c87a..830907bb8fc8 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -48,7 +48,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+ 	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
+ 	 percpu-refcount.o rhashtable.o base64.o \
+ 	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
+-	 generic-radix-tree.o bitmap-str.o
++	 generic-radix-tree.o bitmap-str.o darray.o
+ obj-$(CONFIG_STRING_SELFTEST) += test_string.o
+ obj-y += string_helpers.o
+ obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
+diff --git a/fs/bcachefs/darray.c b/lib/darray.c
+similarity index 56%
+rename from fs/bcachefs/darray.c
+rename to lib/darray.c
+index ac35b8b705ae..7cb064f14b39 100644
+--- a/fs/bcachefs/darray.c
++++ b/lib/darray.c
+@@ -1,10 +1,14 @@
+ // SPDX-License-Identifier: GPL-2.0
++/*
++ * (C) 2022-2024 Kent Overstreet <kent.overstreet@linux.dev>
++ */
+ 
++#include <linux/darray.h>
+ #include <linux/log2.h>
++#include <linux/module.h>
+ #include <linux/slab.h>
+-#include "darray.h"
+ 
+-int __bch2_darray_resize(darray_char *d, size_t element_size, size_t new_size, gfp_t gfp)
++int __darray_resize_slowpath(darray_char *d, size_t element_size, size_t new_size, gfp_t gfp)
+ {
+ 	if (new_size > d->size) {
+ 		new_size = roundup_pow_of_two(new_size);
+@@ -22,3 +26,7 @@ int __bch2_darray_resize(darray_char *d, size_t element_size, size_t new_size, g
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(__darray_resize_slowpath);
++
++MODULE_AUTHOR("Kent Overstreet");
++MODULE_LICENSE("GPL");
+-- 
+2.43.0
 
-  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-6.7-stable-2024-02-13
-
-for you to fetch changes up to b291ceeb4faa9ee34d1704116fe393d66ff1f221:
-
-  bcachefs: time_stats: Check for last_event == 0 when updating freq stats (2024-02-13 21:22:41 -0500)
-
-----------------------------------------------------------------
-bcachefs fixes for 6.7 stable
-
-----------------------------------------------------------------
-Al Viro (2):
-      new helper: user_path_locked_at()
-      bch2_ioctl_subvolume_destroy(): fix locking
-
-Christoph Hellwig (1):
-      bcachefs: fix incorrect usage of REQ_OP_FLUSH
-
-Daniel Hill (1):
-      bcachefs: rebalance should wakeup on shutdown if disabled
-
-Guoyu Ou (1):
-      bcachefs: unlock parent dir if entry is not found in subvolume deletion
-
-Helge Deller (1):
-      bcachefs: Fix build on parisc by avoiding __multi3()
-
-Kent Overstreet (4):
-      bcachefs: Don't pass memcmp() as a pointer
-      bcachefs: Add missing bch2_moving_ctxt_flush_all()
-      bcachefs: bch2_kthread_io_clock_wait() no longer sleeps until full amount
-      bcachefs: time_stats: Check for last_event == 0 when updating freq stats
-
-Mathias Krause (1):
-      bcachefs: install fd later to avoid race with close
-
-Su Yue (2):
-      bcachefs: kvfree bch_fs::snapshots in bch2_fs_snapshots_exit
-      bcachefs: grab s_umount only if snapshotting
-
- fs/bcachefs/chardev.c           |  3 +--
- fs/bcachefs/clock.c             |  4 ++--
- fs/bcachefs/fs-io.c             |  2 +-
- fs/bcachefs/fs-ioctl.c          | 42 +++++++++++++++++++++--------------------
- fs/bcachefs/journal_io.c        |  3 ++-
- fs/bcachefs/mean_and_variance.h |  2 +-
- fs/bcachefs/move.c              |  2 +-
- fs/bcachefs/move.h              |  1 +
- fs/bcachefs/rebalance.c         | 13 +++++++++++--
- fs/bcachefs/replicas.c          | 10 ++++++++--
- fs/bcachefs/snapshot.c          |  2 +-
- fs/bcachefs/util.c              |  5 +++--
- fs/namei.c                      | 16 +++++++++++++---
- include/linux/namei.h           |  1 +
- 14 files changed, 68 insertions(+), 38 deletions(-)
 
