@@ -1,126 +1,123 @@
-Return-Path: <linux-kernel+bounces-66027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9273B85558E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:08:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7430A855590
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 345DDB25EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2968A282B03
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A125141991;
-	Wed, 14 Feb 2024 22:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79D114198D;
+	Wed, 14 Feb 2024 22:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="keCfEwEU"
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VWWp+3yv"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5235513EFFE
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3C91DDF1
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707948488; cv=none; b=uIwoA6zjUPEopTW3BhzAmMyOTaP/safMiUZQ7cnoENT3VCIxWOET23/fq9RB8kWYfpm+6zuntm9nFXwj9sB0DFekj5ND14JaHmsoBwzKqJkcsOq7m0YzuVqisqhl+52AU6rS3L4MBdEA14TqjnorsNv2ras95YZt5mltjeDXV58=
+	t=1707948577; cv=none; b=QqPOGQG+THYTZ2kkNfvdJqre6cHq2JIIvkVdWk45WlJoS4lYesKMvKjN5RUcNIeKLoFNU5Gid1qh8slGTPXIdROCVlyTm7ZQ/q+0qNbwjJcZAAGCLTR1ptidapl9tJejgIEtkt0MN13E1VubnnTJ1pr8ObWWSz4g4+IT6o73kD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707948488; c=relaxed/simple;
-	bh=kk0R2G/YjOd1hA/HNk8g9v7ksPlfTh04eDSOWoYDd4o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n/ZFw9sbB6SlPvwaC68lOl6HSdcMLV9wJlqTKeHihk+wNWiY7qgshOGHYA4WRZ7/7uBuPzBKm/pvAlmNV2NKEGZ3utIPtfrZ7AuxBVUpIyWUKOewhmVaN9S3jXy7M5FUSev3cFLmppuDIKUWzFRJbfVN/Nsg50b+yL7gwDgYrxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=keCfEwEU; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id 2FA24240027
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:08:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1707948483; bh=kk0R2G/YjOd1hA/HNk8g9v7ksPlfTh04eDSOWoYDd4o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:Content-Type:
-	 Content-Transfer-Encoding:From;
-	b=keCfEwEUTqi9U1Dca/BJAbvJ1nX7aqfiHGg0EGaORv53DgUimF6H73hNxPpc6zKcq
-	 g9PbWwK9+GJVrZWQ8LxgsBQGQ45xVFXrana687MEL6WkxN9GeAx/Pqxq6yOId5BPpZ
-	 5nI9CFoV+bQhL7ZtQgKZVjKueicY8NPzE20jUvmqPq/T+erdIUjGLZh3cgqFvLU9va
-	 Fmu3E249bcADfo/ueZ+Eay1xDOupsm3Qa5uNSSHD5WYJTWpxMyMOPEHksnGJbsrom8
-	 RQp1YKcaQ8liKkpVo1kZKLsrnR5f7fv8BhWAlyE6bZmCG/8n/ZHB7uUlcICjP8RivL
-	 Y7LsGWc6lRW8A==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TZsl33Bl6z9rxG;
-	Wed, 14 Feb 2024 23:07:59 +0100 (CET)
-Message-ID: <867da21e-7f30-4caf-9f78-260d426e4186@posteo.net>
-Date: Wed, 14 Feb 2024 22:07:58 +0000
+	s=arc-20240116; t=1707948577; c=relaxed/simple;
+	bh=VTAmMg+BgFLnXnjh2RFbOxx2A7QCbkF4jCDwOsg/fb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jIZt+8BHj/mZrKtqFYKGr1tx0QamFbDX+nW38Eqpht4kzTDbngx2CIJ/cYcHyCSJVWeX64xThHKSI4MjFBc8XEOYjtj43TZUsHVv2cUgiWLxmt2xBTYsVOCPlSUg5EbjzRkQ1zcCoRZVdbcHelHsc7c1ztQtCnk7XhztTFnnBO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VWWp+3yv; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-298fe09f851so29816a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707948575; x=1708553375; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKC90cK1z5oF1gcZg9hwRMmNU2RFG8t/vNnGjpX63Tw=;
+        b=VWWp+3yv7CVu4Ichuui2QgsbyitfZhwzs4yUF31iOb6W9cV+Zf5P83zejS5AzEhHsX
+         cDf+hgBQSi5BkgRRgsu3523uDnm0vY1PcoqYPBUcI3X36/BmdeUsrJRWQPwOcG2+fFhq
+         GQ6qsGltSotZho7dChjqnPcBLS0VJ6h+K2zQw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707948575; x=1708553375;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UKC90cK1z5oF1gcZg9hwRMmNU2RFG8t/vNnGjpX63Tw=;
+        b=YZ0cBD3ocqSCTDtlcqwDYQJEZ68pna5+eA7CCryhzlZgjSaprxbs71nnqNI50ZVwyr
+         hHU36qmZk6gfL9DBDTnu7s29lj+adYAU8v3jJ68vMiWRfyMw08PK3kYumRB22ddk2noL
+         9RM6cwuB1jAsiiDLTjFR5bc2J/sEFezOjXp54CM2bS1j/Wy4N5+3I5J+qdNZXfdyXpb8
+         OgkCn0zPQdN/fZ4+E1VZNK+2c+sqx/4RDLS2gpGrIai+V0BtKGx2nJ8GKa6u//HNJejn
+         XuS9tDUg8k86dLpv2QWy70lHODxb3/vHv4GWU43wZceNUXnMhK53Gl9FQNgRJlihwdiM
+         o37Q==
+X-Gm-Message-State: AOJu0Yx9yCL/eq4wyA7wl4Fyj3sYY4eZNZLGaCgcbB8ddu58wASZtrrl
+	JkoAv/yA0WwT9CQBBCUWoyQ8uHMW5YIwxEUnnaNVHMF916R3qgOxWesHJ7YO+A==
+X-Google-Smtp-Source: AGHT+IGTjHOYA94BG0K7UshyYHyh3FY0JkwVS/a2AcWoZcNN56CXDoJOkccas+6uzaul20xonyumwg==
+X-Received: by 2002:a17:90a:ce08:b0:295:ff5d:cb1d with SMTP id f8-20020a17090ace0800b00295ff5dcb1dmr47666pju.4.1707948575070;
+        Wed, 14 Feb 2024 14:09:35 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e4-20020a17090a728400b00297022db05dsm1872088pjg.40.2024.02.14.14.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 14:09:34 -0800 (PST)
+Date: Wed, 14 Feb 2024 14:09:34 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Michal Wajdeczko <michal.wajdeczko@intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH 1/2] wordpart.h: Helpers for making u16/u32/u64 values
+Message-ID: <202402141408.0E78D47@keescook>
+References: <20240214214654.1700-1-michal.wajdeczko@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] net: stmmac: xgmac: fix initializer element is not
- constant error
-To: Jacob Keller <jacob.e.keller@intel.com>, linux-kernel@vger.kernel.org
-Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240212154319.907447-1-shiftee@posteo.net>
- <44c29a45-86fa-4e41-b4b5-e69187f0712e@intel.com>
-Content-Language: en-US
-From: Mark O'Donovan <shiftee@posteo.net>
-In-Reply-To: <44c29a45-86fa-4e41-b4b5-e69187f0712e@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214214654.1700-1-michal.wajdeczko@intel.com>
 
-On 14/02/2024 20:31, Jacob Keller wrote:
+On Wed, Feb 14, 2024 at 10:46:53PM +0100, Michal Wajdeczko wrote:
+> It is quite common practice to make u16, u32 or u64 values from
+> smaller words.  Add simple helpers for that.
 > 
+> Signed-off-by: Michal Wajdeczko <michal.wajdeczko@intel.com>
+> ---
+> v2: new macro names due to conflict with crypto/aria.h
+>     explicit cast and truncation everywhere (Alexey)
+>     moved to wordpart.h (Andy)
+> ---
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Jani Nikula <jani.nikula@intel.com>
+> ---
+>  include/linux/wordpart.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
 > 
-> On 2/12/2024 7:43 AM, Mark O'Donovan wrote:
->> GCC prior to 8.x gives an "initializer element is not constant"
->> error for the uses of dpp_tx_err in dwxgmac3_dma_dpp_errors.
->> Newer compilers accept either version.
->>
->> More info here:
->> https://lore.kernel.org/all/20240103-fix-bq24190_charger-vbus_desc-non-const-v1-1-115ddf798c70@kernel.org
->>
->> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
->> ---
-> 
-> I'm not sure whether the Linux kernel project has an explicit cutoff for
-> what versions of GCC (or other compilers) are supported. GCC 8 was first
-> released in 2018.
-> 
-> The fix provided here is fairly straight forward, and while I do think
-> the benefit of using builtin types vs using the macros is nice, I don't
-> see that as a strong enough reason to hold up supporting the older compiler.
-> 
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> 
->>   drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
->> index 323c57f03c93..c02c035b81c0 100644
->> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
->> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
->> @@ -830,8 +830,8 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
->>   	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
->>   };
->>   
->> -static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
->> -static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
->> +#define dpp_rx_err "Read Rx Descriptor Parity checker Error"
->> +#define dpp_tx_err "Read Tx Descriptor Parity checker Error"
->>   static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
->>   	{ true, "TDPES0", dpp_tx_err },
->>   	{ true, "TDPES1", dpp_tx_err },
->>
->> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
+> diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
+> index f6f8f83b15b0..8c75a5355112 100644
+> --- a/include/linux/wordpart.h
+> +++ b/include/linux/wordpart.h
+> @@ -31,6 +31,38 @@
+>   */
+>  #define lower_16_bits(n) ((u16)((n) & 0xffff))
+>  
+> +/**
+> + * make_u16_from_u8 - make u16 value from two u8 values
+> + * @hi: value representing upper 8 bits
+> + * @lo: value representing lower 8 bits
+> + */
+> +#define make_u16_from_u8(hi, lo) ((u16)((u16)(u8)(hi) << 8 | (u8)(lo)))
 
-Thanks Jacob.
+Do we want to actually do type validation here? Right now it's just
+cast/truncating, which based on the version log is by design. Is silent
+truncation the right thing to do?
 
-The minimum versions for compilers and other tools are documented here:
-https://www.kernel.org/doc/html/latest/process/changes.html
-
-I am using a SLES 15 server to build, the first version of which came out in 2017.
-
-Mark
+-- 
+Kees Cook
 
