@@ -1,104 +1,209 @@
-Return-Path: <linux-kernel+bounces-65497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E757854DD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:13:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B35F854DD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AB962840E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:13:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3A911F229EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB1565FF07;
-	Wed, 14 Feb 2024 16:13:34 +0000 (UTC)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B9C5FF07;
+	Wed, 14 Feb 2024 16:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IF/oiU2m"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CC05FDC4;
-	Wed, 14 Feb 2024 16:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AA25C8FC;
+	Wed, 14 Feb 2024 16:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927214; cv=none; b=Pdh6z3gSNZFjf/+UcIATGX+jv29lQAmy7ecrNJzwBsFRjatwXMbyqHg9aVLPGkvnPhHQqWbx/3xxYlR60itv4fbviuY94AAPMhl6bFI7Tka0rK9dwjB/ekUhcGU9n4K9IhKiUzyzSC/6r+v1mOW8+7yO2BL4QWolIT3r1uOqLzQ=
+	t=1707927362; cv=none; b=TJnoWdWK8IulI8tn292FEPARPhabNy6r3X6vsKjyxQX8FjmFSnOkgY92DCtfX6HsHCTZKyOpQ4zO4HK8kKP6B9Qmtj+gyzFX8hgZx5T8Nd41ksWNzAZDFaERr8PPvcccofp+ZZPfL06rKraD2z19Ebq4acEMxmgRtTP6mNOEBfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927214; c=relaxed/simple;
-	bh=pq5EV8oxJSOVZB8A61RGJPHB3JKJ7OM4tzYYlyO/AlM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Up0UQcdelSmI5o+vEkhGqReTwzl0vJQUdjA/JH/FXTtuCAFOBpyJGrtWCI1GcqI+JfsOr7KwTBKd0tfAXtxaEQlxPyIBZuiRMhPUhWKEjd5J9Mnyr+znZvypuzezOAxnptA2BRjB247L0AwdkXL3ZRLNt/W8ojzX6J+rCXdaMCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so849932276.0;
-        Wed, 14 Feb 2024 08:13:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707927211; x=1708532011;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qJX/Lm4XzhsAxdNHBuMFaeGm0V4bRWUDjix9hm2Iqf0=;
-        b=NtTxCCVYX2TnTq0qgZFFIj2lydDzTbMYQZyFX+s58oSPJ1fk45DMmGO57oGaXrA67D
-         twmu9qit51q5VihGE+AJe09SPh11gZiZJK3TQOATrEK9XOYrtaPKi5N5A2mrg6w0fvvD
-         O63eDHIOB64whFRRZ85+01CruYSG27J8cZhPf1eeYlfg6Ct/fgGRtWQhmbzrS1jCUdVg
-         OkW0pK+ZKPGF3g5pdAJC8eQAsFgVaccUZz1GMBPGL7/sCoPMqrRO16lHwRbhN9oyPNLj
-         QVNDBD3Br2LGUC/DLdbpIGfWI/KQhFbLWYk/A+JxG5GNshk87/vY2dwOBoXvjzse4+wZ
-         j4mg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1cojM0eH3Ve1xO5kh5fGWzL2fkx+uLLDHPWSNGWWbZ7HuB3F6loh+1GHuVg8RKKsTD2PGYc+3HzcIwNjAfIHCuuooL065GiJ0DAD0
-X-Gm-Message-State: AOJu0YwkGLBuLybPfCczQD9UsZa9dV2hfsD/W6Ei+BuCny8bI6WGgfbo
-	CebfCAXsVMDRJXG4opcJB42RgL8+oCrC7fwOh3BfqcQdf8+5+u8Dv6/Jquc4UXI=
-X-Google-Smtp-Source: AGHT+IExe+e/xAWjak0joyKWnnfy1ZLwoTf/h/gjj6vqQb5UnetGWJPIVBln3Sp5O4t155VvWqsK2A==
-X-Received: by 2002:a0d:cb54:0:b0:5ff:ceed:10c7 with SMTP id n81-20020a0dcb54000000b005ffceed10c7mr2003636ywd.0.1707927209586;
-        Wed, 14 Feb 2024 08:13:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6rywe7hIvGFglStqVj1RWfZtUhuCCX54X/q0cSIsO2ief+IYsGKhqJhfbFWELcVpbDohLJe28xFLqvGkHs8NeBqBVwlJ4E1PXbRvg
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id m3-20020a0dfc03000000b00604198c3cafsm401762ywf.61.2024.02.14.08.13.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:13:28 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso862685276.0;
-        Wed, 14 Feb 2024 08:13:28 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXAVjm+UhUKfV53Ux9am401qflbvnEYhbiUWqOFt9wLhL+fR45dp7crHWe5hqoD2eZGT7TnQXDgXC0HFtf+SNrew/ZllepJVZaznZrd
-X-Received: by 2002:a25:dd45:0:b0:dc6:d513:cd3 with SMTP id
- u66-20020a25dd45000000b00dc6d5130cd3mr1722689ybg.31.1707927208715; Wed, 14
- Feb 2024 08:13:28 -0800 (PST)
+	s=arc-20240116; t=1707927362; c=relaxed/simple;
+	bh=1LEv6Ova+Z8khqle7qgHTwMJAqi9FazSaL1UQ9aqt4o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ash99T1gHATD+TvZeVwFuYojc9Ph08ZGStn5lxqklUcX8e289Sy+/p48PIUp3u1aEquBht8qBr824j0KnNpMB/VJIv9JoQXMFrwTuvCrtNrdCdQXZ7FTDqfWspcbPnTShorbVc+ibrKrahF7z5xCOf0Y3sCzXlti+6XI71XlWQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IF/oiU2m; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707927360; x=1739463360;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1LEv6Ova+Z8khqle7qgHTwMJAqi9FazSaL1UQ9aqt4o=;
+  b=IF/oiU2mPc6LFmtgy6syJW3B8L7Bn7fn5hL/o/MMz7R4qUJzMHz74IYA
+   SAwsed8droajK8RNDLrtmbTEbK8QxJpGSCJfljdxAFPsZC1K1ShuS25pU
+   XdtxXn+dTVSnGmtea8rZNXXLrYJEsqASem0RKCxNNGCJe+mlo5BHD1SBl
+   WZ9I+N4+IwbBrlmd4zJklzgBARg51P3qXqBaczgO8C+Nckl2rjIOxTk/9
+   DBfqKQgEDwPRrXgtHmcTOipvbHIs0AX37AB3aGjBkY3Axl5DUGZV95/a3
+   q8SRmL0fHXYowCa6/gJD8RhufkCd+Ypd0iRkHU75wUzXbn5UllGNECsmB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="27427899"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="27427899"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 08:15:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935617078"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="935617078"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Feb 2024 08:15:57 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id C3928204; Wed, 14 Feb 2024 18:15:56 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v1 1/1] serial: 8250_of: Drop quirk fot NPCM from 8250_port
+Date: Wed, 14 Feb 2024 18:14:23 +0200
+Message-ID: <20240214161423.3452705-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213220221.2380-8-wsa+renesas@sang-engineering.com> <20240213220221.2380-13-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20240213220221.2380-13-wsa+renesas@sang-engineering.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 17:13:17 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWy7cEXYs7nZjy1_zPQ_cKHHNkYX6-uwUKM43uE5Q_8rQ@mail.gmail.com>
-Message-ID: <CAMuHMdWy7cEXYs7nZjy1_zPQ_cKHHNkYX6-uwUKM43uE5Q_8rQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] mfd: tmio: Sanitize comments
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, Lee Jones <lee@kernel.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 11:07=E2=80=AFPM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> Reformat the comments to utilize the maximum line length and use single
-> line comments where appropriate. Remove superfluous comments, too.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Acked-by: Lee Jones <lee@kernel.org>
+We are not supposed to spread quirks in 8250_port module especially
+when we have a separate driver for the hardware in question.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Move quirk from generic module to the driver that uses it.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/serial/8250/8250_of.c   | 38 +++++++++++++++++++++++++++++
+ drivers/tty/serial/8250/8250_port.c | 24 ------------------
+ 2 files changed, 38 insertions(+), 24 deletions(-)
 
-                        Geert
+diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+index 34f17a9785e7..dc9792f919db 100644
+--- a/drivers/tty/serial/8250/8250_of.c
++++ b/drivers/tty/serial/8250/8250_of.c
+@@ -5,6 +5,7 @@
+  *    Copyright (C) 2006 Arnd Bergmann <arnd@arndb.de>, IBM Corp.
+  */
+ #include <linux/console.h>
++#include <linux/math.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/serial_core.h>
+@@ -25,6 +26,36 @@ struct of_serial_info {
+ 	int line;
+ };
+ 
++/* Nuvoton NPCM timeout register */
++#define UART_NPCM_TOR          7
++#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
++
++static int npcm_startup(struct uart_port *port)
++{
++	/*
++	 * Nuvoton calls the scratch register 'UART_TOR' (timeout
++	 * register). Enable it, and set TIOC (timeout interrupt
++	 * comparator) to be 0x20 for correct operation.
++	 */
++	serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
++
++	return serial8250_do_startup(port);
++}
++
++/* Nuvoton NPCM UARTs have a custom divisor calculation */
++static unsigned int npcm_get_divisor(struct uart_port *port, unsigned int baud,
++				     unsigned int *frac)
++{
++	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
++}
++
++static int npcm_setup(struct uart_port *port)
++{
++	port->get_divisor = npcm_get_divisor;
++	port->startup = npcm_startup;
++	return 0;
++}
++
+ /*
+  * Fill a struct uart_port for a given device node
+  */
+@@ -167,6 +198,13 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
+ 		if (ret)
+ 			goto err_pmruntime;
+ 		break;
++	case PORT_NPCM:
++		ret = npcm_setup(port);
++		if (ret)
++			goto err_pmruntime;
++		break;
++	default:
++		break;
+ 	}
+ 
+ 	if (IS_REACHABLE(CONFIG_SERIAL_8250_FSL) &&
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index d59dc219c899..1942e57089dd 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -38,10 +38,6 @@
+ 
+ #include "8250.h"
+ 
+-/* Nuvoton NPCM timeout register */
+-#define UART_NPCM_TOR          7
+-#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
+-
+ /*
+  * Debugging.
+  */
+@@ -2235,15 +2231,6 @@ int serial8250_do_startup(struct uart_port *port)
+ 				UART_DA830_PWREMU_MGMT_FREE);
+ 	}
+ 
+-	if (port->type == PORT_NPCM) {
+-		/*
+-		 * Nuvoton calls the scratch register 'UART_TOR' (timeout
+-		 * register). Enable it, and set TIOC (timeout interrupt
+-		 * comparator) to be 0x20 for correct operation.
+-		 */
+-		serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
+-	}
+-
+ #ifdef CONFIG_SERIAL_8250_RSA
+ 	/*
+ 	 * If this is an RSA port, see if we can kick it up to the
+@@ -2545,15 +2532,6 @@ static void serial8250_shutdown(struct uart_port *port)
+ 		serial8250_do_shutdown(port);
+ }
+ 
+-/* Nuvoton NPCM UARTs have a custom divisor calculation */
+-static unsigned int npcm_get_divisor(struct uart_8250_port *up,
+-		unsigned int baud)
+-{
+-	struct uart_port *port = &up->port;
+-
+-	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
+-}
+-
+ static unsigned int serial8250_do_get_divisor(struct uart_port *port,
+ 					      unsigned int baud,
+ 					      unsigned int *frac)
+@@ -2598,8 +2576,6 @@ static unsigned int serial8250_do_get_divisor(struct uart_port *port,
+ 		quot = 0x8001;
+ 	else if (magic_multiplier && baud >= port->uartclk / 12)
+ 		quot = 0x8002;
+-	else if (up->port.type == PORT_NPCM)
+-		quot = npcm_get_divisor(up, baud);
+ 	else
+ 		quot = uart_get_divisor(port, baud);
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
