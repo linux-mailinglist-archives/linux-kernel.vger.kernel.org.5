@@ -1,260 +1,329 @@
-Return-Path: <linux-kernel+bounces-65015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C0268546BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:59:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A71BC8546C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:01:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 129FD281AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:59:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F11EB22F49
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224EC168C4;
-	Wed, 14 Feb 2024 09:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFF717565;
+	Wed, 14 Feb 2024 10:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TT2rQ766"
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zt/NFtSo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A36168BC
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A97168D9
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904769; cv=none; b=cu7DPaBKGFWhGTABZkcQeC4Sdz2++Ut23aBu9BK/EDBl70peH/iBA/lN+eMiSKS7WAOS7kaqUZjYMAxVeoeYlDQCu2rOLlXB5AzFxjR/qqN5x+BoigOkdWrPHF0+Q3qjCzVl0kyI4lOxAV4jA5zrXgvRLZjVW8r6bx27+gTYXio=
+	t=1707904875; cv=none; b=D4Vesl29H0EIWJlTIn5JE1jeilWRGN+JXlEtAIZwN2EjDLbzsFDzf8/EPqJk5nPPcro94jN6dIqYc88ikX35hS5x+inJCOf+ieSDRk51vglj48YsoSJtM3JDqMm56st2cPPbTctK9m0bNZYafi/LpCA8hRJ41Ohc27xdBaCkmVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904769; c=relaxed/simple;
-	bh=gVm+T16jcvQM4Y1wUhuHUjRQ2X5j5IjaP/OVPSsMexc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jo+zA2t9arSvfDe7+HtpUScWrj8VdWYEDzlRM8n0PKMdmY0XniMV8DA/nacQr4Hu9rKvNYes6ggtpUXxP8AbhGdo6AResdV5j3l82qRNTV9pF1P7/vx6nDkeE+FCAT3RZZZYElEKWYGAbAGFkG0xP0fulW8+2/8X96HFf1LU4BE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TT2rQ766; arc=none smtp.client-ip=209.85.221.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4c0245cba99so522758e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707904766; x=1708509566; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lAHtwofM8Ywhu0ktwJwjy0wlIStiFxtTZO9UUIXRgew=;
-        b=TT2rQ766BQgCJOsROng2gsBS2n283OjAWMCIRK5Nk21V69JqocKZYRT/lkJSR4frtE
-         gtboYAv3xHp/3AqzZfDUMVb2p+e5jlqLcCYyp7EHlcsPFw2YyrEaW+9Hl/c5dzHNymt7
-         VuWXcvhwo0xtlqhi9Orp2A9S8LGhvL+W6jYUwd2b+YcSgFjJpFQfVhX7RWmJeqMomwfg
-         H+dony3Ycqn3Ev1TI6lLURIBFLznAsYc9FQ6h0UQyJ9P1fzD7hB+GxLFUSTkdet3z4yD
-         ualN8pEH0VdTbreOJ3fWidx/pmsXjcd9jQXG0sMz+nFEUOnHJcerqYvFSI3Z87tuQ78C
-         oIHQ==
+	s=arc-20240116; t=1707904875; c=relaxed/simple;
+	bh=ISNhoVAHE5ea59GMSp6fB/xzP9AMMIXNtq+7KToWy/g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HDg6RBL3DR8pFe2/dZp2SoXAyzZgGrd+m8WdG62BJzruBmnx0EwIfgjkOpIIetEnhhtwma12TEFRXQ76GBg2U/hVPwZ8+FdlgE2u+33L04lYLqMlr025NhqaHy1UN7m3qmvgbrDfyDqVX+M6dFXatuqfv7Xgm8pMj55T/zrQyPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zt/NFtSo; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707904871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SYtqzgv+BxOcacLu4368aIKcl3CwnG8tHFk8B9VUFvU=;
+	b=Zt/NFtSoz6le5JUH5GKFZSm48wlGJImoDcqyWoByxmVT+W+QjwX4J3n57C8EKYd7aiJ8EK
+	Pp5dA35il4ZVBqhIwhalKWDdniSjPPO9l9dqpZPLjeS5FvUjx0jNPAj9j9XRKw/xsOBGoI
+	5nnW4vQT/vAK6hfLVZMu8OcXg63eG4k=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-Lw3mjLBJPfu7eATPRNkKyg-1; Wed, 14 Feb 2024 05:01:08 -0500
+X-MC-Unique: Lw3mjLBJPfu7eATPRNkKyg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d0fba43533so25708561fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:01:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707904766; x=1708509566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lAHtwofM8Ywhu0ktwJwjy0wlIStiFxtTZO9UUIXRgew=;
-        b=Vr1VvbRSg4m+rXW7N25n49N2YAuOd37yXL1+cZuzNKcNtKQDDmXcyb8bHLGQGaBI8J
-         JCQyafqAm6PTMzixUv6tdM9V4xxj3m9eSGeE62URo34EbgzQFMwXjyea/LNY4cFZVYEL
-         YOt717d73CB6yWka127FG/pP2f1u9yaKQqIXWLbTMASDUZRZ2dZRHzOVgfk46Y+Fyn+Y
-         EZR6H+Yicn32Ixbsu5whovvcn43AVlbYGSpGXPaIlTNcHkkPu1O9icuvrFsgkgWMOdCz
-         K5IOI6fJ3xJ3jpCt5889plz7Nil25UHRticXWT4VjT9gcgcpSKcmQn4Ye84nnL1WgOAm
-         9ReA==
-X-Forwarded-Encrypted: i=1; AJvYcCXB1Jb6kHaiH5ES41EWjiZM5SbKgkz7IJsjim1Lyh0VLjjlbmQ+ECzm5XEaQ7udahttPdloP1o+q4poZpZ8tzsX7fc/GzYImPgVX+I7
-X-Gm-Message-State: AOJu0Yx4qwq+7yyzPfGD6sYCEKh6/QnvX6W6eImCkkanZRgkPu89llQU
-	exC9RwT6Vf0Vu3e2aC+acmkRWg1F7NwJTR/vtmQuBpqoXIDPgAR+Fa8XdY+SKkIh07SIR/RSQ5Y
-	7h5EwZDxaW+uCoNNdKYQ4CgkQif9pkfmDSDWXpA==
-X-Google-Smtp-Source: AGHT+IFBeVupttWDvF/dg4Ea3WjE172cD27Ig5hKgGkV3ufkWk1COS12cpNX0UcUAM1xEvEs6xqsQ5mtiODTpi5teZU=
-X-Received: by 2002:a1f:e602:0:b0:4c0:3621:7ab0 with SMTP id
- d2-20020a1fe602000000b004c036217ab0mr1996869vkh.15.1707904766341; Wed, 14 Feb
- 2024 01:59:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707904867; x=1708509667;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SYtqzgv+BxOcacLu4368aIKcl3CwnG8tHFk8B9VUFvU=;
+        b=o5sQIyx2Kzg+mGe+TcbLjJOeStadbhBJTmfB5qHFYnl+Sw06l1xxYxkgwuic/DotFh
+         8YjepZsBe1Q4krnSCUoO0ImUEMskV+dCZo5Bw6kXHmKzK+0S1rJm5rw2tZv5Mps2X6H1
+         bme2PgGM2rc6vCfrUbaOzdeOm89z7dfRgxSMkauR01HGr6i+yQXMZRnrPmThtdtPbgaG
+         NuVqSX7vVysj0YmBGI40VKGP0UOF3Tvxr903qZUGcr/S7sXrO6xhEuv+czxjVGkHIo/O
+         JXMbDZptmix0R3kIVQSVa1tvvHnKl12a4P7NFYBFKWAujmRVI/J7+pVVklJXEA3rdF1M
+         fCoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYafW9iMPyVgG6gvktRz2hnptjMzphFN2xZ+zc40+65aECW5R3hwyNZQvSJs90vui7wmgGnalPwfTIcDD2D3EOGLn0NClVE4uAAOxM
+X-Gm-Message-State: AOJu0YzKOlpwPGPJJUY0+Bmu/PBCxsU2rTK1U6s4tWWcnGppUUX6HUBf
+	C1RGXp1OnxakQGIAk3xFjrOHSaRWi4RNupmKS4iK2NvqYzW18gmraI0xf9MDInJWngy96dwGpoS
+	yNY96ExR4JgiDpTjwSw9IoBk7AjKe/FX8JcB+HL0chPgjq3/aAfFcnUn3ifEYEQ==
+X-Received: by 2002:a2e:bb85:0:b0:2d0:de72:9d47 with SMTP id y5-20020a2ebb85000000b002d0de729d47mr1387368lje.8.1707904866648;
+        Wed, 14 Feb 2024 02:01:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEeBVBeETe/HNpRyfxbiQ4zG7pHiUv6kqZUWoyq8jvv2EQfYHAzza7a6OSmZLJjmPb8OFOyjg==
+X-Received: by 2002:a2e:bb85:0:b0:2d0:de72:9d47 with SMTP id y5-20020a2ebb85000000b002d0de729d47mr1387286lje.8.1707904866113;
+        Wed, 14 Feb 2024 02:01:06 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id z21-20020a05600c221500b004101f27737asm1416372wml.29.2024.02.14.02.01.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 02:01:05 -0800 (PST)
+Message-ID: <d7d132ca-8d0d-497e-bf8d-3c275960aaf9@redhat.com>
+Date: Wed, 14 Feb 2024 11:01:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213171853.722912593@linuxfoundation.org>
-In-Reply-To: <20240213171853.722912593@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 14 Feb 2024 15:29:14 +0530
-Message-ID: <CA+G9fYupuO5kZm6ZWOUMSD8=RgeFiGQhZQ_Frfd+1V4X5q5EKw@mail.gmail.com>
-Subject: Re: [PATCH 6.7 000/124] 6.7.5-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+ Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, vbabka@suse.cz,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+ juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+ dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <a9b0440b-844e-4e45-a546-315d53322aad@redhat.com>
+ <xbehqbtjp5wi4z2ppzrbmlj6vfazd2w5flz3tgjbo37tlisexa@caq633gciggt>
+ <c842347d-5794-4925-9b95-e9966795b7e1@redhat.com>
+ <CAJuCfpFB-WimQoC1s-ZoiAx+t31KRu1Hd9HgH3JTMssnskdvNw@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAJuCfpFB-WimQoC1s-ZoiAx+t31KRu1Hd9HgH3JTMssnskdvNw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 13 Feb 2024 at 23:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.7.5 release.
-> There are 124 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.7.5-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 14.02.24 00:28, Suren Baghdasaryan wrote:
+> On Tue, Feb 13, 2024 at 3:22 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 14.02.24 00:12, Kent Overstreet wrote:
+>>> On Wed, Feb 14, 2024 at 12:02:30AM +0100, David Hildenbrand wrote:
+>>>> On 13.02.24 23:59, Suren Baghdasaryan wrote:
+>>>>> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
+>>>>> <kent.overstreet@linux.dev> wrote:
+>>>>>>
+>>>>>> On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+>>>>>>> On 13.02.24 23:30, Suren Baghdasaryan wrote:
+>>>>>>>> On Tue, Feb 13, 2024 at 2:17 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>>>
+>>>>>>>>> On 13.02.24 23:09, Kent Overstreet wrote:
+>>>>>>>>>> On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
+>>>>>>>>>>> On 13.02.24 22:58, Suren Baghdasaryan wrote:
+>>>>>>>>>>>> On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>> We're aiming to get this in the next merge window, for 6.9. The feedback
+>>>>>>>>>>>>>> we've gotten has been that even out of tree this patchset has already
+>>>>>>>>>>>>>> been useful, and there's a significant amount of other work gated on the
+>>>>>>>>>>>>>> code tagging functionality included in this patchset [2].
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I suspect it will not come as a surprise that I really dislike the
+>>>>>>>>>>>>> implementation proposed here. I will not repeat my arguments, I have
+>>>>>>>>>>>>> done so on several occasions already.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
+>>>>>>>>>>>>> this debugging feature will add a maintenance overhead for a very long
+>>>>>>>>>>>>> time. I can live with all the downsides of the proposed implementation
+>>>>>>>>>>>>> _as long as_ there is a wider agreement from the MM community as this is
+>>>>>>>>>>>>> where the maintenance cost will be payed. So far I have not seen (m)any
+>>>>>>>>>>>>> acks by MM developers so aiming into the next merge window is more than
+>>>>>>>>>>>>> little rushed.
+>>>>>>>>>>>>
+>>>>>>>>>>>> We tried other previously proposed approaches and all have their
+>>>>>>>>>>>> downsides without making maintenance much easier. Your position is
+>>>>>>>>>>>> understandable and I think it's fair. Let's see if others see more
+>>>>>>>>>>>> benefit than cost here.
+>>>>>>>>>>>
+>>>>>>>>>>> Would it make sense to discuss that at LSF/MM once again, especially
+>>>>>>>>>>> covering why proposed alternatives did not work out? LSF/MM is not "too far"
+>>>>>>>>>>> away (May).
+>>>>>>>>>>>
+>>>>>>>>>>> I recall that the last LSF/MM session on this topic was a bit unfortunate
+>>>>>>>>>>> (IMHO not as productive as it could have been). Maybe we can finally reach a
+>>>>>>>>>>> consensus on this.
+>>>>>>>>>>
+>>>>>>>>>> I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
+>>>>>>>>>> need to see a serious proposl - what we had at the last LSF was people
+>>>>>>>>>> jumping in with half baked alternative proposals that very much hadn't
+>>>>>>>>>> been thought through, and I see no need to repeat that.
+>>>>>>>>>>
+>>>>>>>>>> Like I mentioned, there's other work gated on this patchset; if people
+>>>>>>>>>> want to hold this up for more discussion they better be putting forth
+>>>>>>>>>> something to discuss.
+>>>>>>>>>
+>>>>>>>>> I'm thinking of ways on how to achieve Michal's request: "as long as
+>>>>>>>>> there is a wider agreement from the MM community". If we can achieve
+>>>>>>>>> that without LSF, great! (a bi-weekly MM meeting might also be an option)
+>>>>>>>>
+>>>>>>>> There will be a maintenance burden even with the cleanest proposed
+>>>>>>>> approach.
+>>>>>>>
+>>>>>>> Yes.
+>>>>>>>
+>>>>>>>> We worked hard to make the patchset as clean as possible and
+>>>>>>>> if benefits still don't outweigh the maintenance cost then we should
+>>>>>>>> probably stop trying.
+>>>>>>>
+>>>>>>> Indeed.
+>>>>>>>
+>>>>>>>> At LSF/MM I would rather discuss functonal
+>>>>>>>> issues/requirements/improvements than alternative approaches to
+>>>>>>>> instrument allocators.
+>>>>>>>> I'm happy to arrange a separate meeting with MM folks if that would
+>>>>>>>> help to progress on the cost/benefit decision.
+>>>>>>> Note that I am only proposing ways forward.
+>>>>>>>
+>>>>>>> If you think you can easily achieve what Michal requested without all that,
+>>>>>>> good.
+>>>>>>
+>>>>>> He requested something?
+>>>>>
+>>>>> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+>>>>> possible until the compiler feature is developed and deployed. And it
+>>>>> still would require changes to the headers, so don't think it's worth
+>>>>> delaying the feature for years.
+>>>>>
+>>>>
+>>>> I was talking about this: "I can live with all the downsides of the proposed
+>>>> implementationas long as there is a wider agreement from the MM community as
+>>>> this is where the maintenance cost will be payed. So far I have not seen
+>>>> (m)any acks by MM developers".
+>>>>
+>>>> I certainly cannot be motivated at this point to review and ack this,
+>>>> unfortunately too much negative energy around here.
+>>>
+>>> David, this kind of reaction is exactly why I was telling Andrew I was
+>>> going to submit this as a direct pull request to Linus.
+>>>
+>>> This is an important feature; if we can't stay focused ot the technical
+>>> and get it done that's what I'll do.
+>>
+>> Kent, I started this with "Would it make sense" in an attempt to help
+>> Suren and you to finally make progress with this, one way or the other.
+>> I know that there were ways in the past to get the MM community to agree
+>> on such things.
+>>
+>> I tried to be helpful, finding ways *not having to* bypass the MM
+>> community to get MM stuff merged.
+>>
+>> The reply I got is mostly negative energy.
+>>
+>> So you don't need my help here, understood.
+>>
+>> But I will fight against any attempts to bypass the MM community.
+> 
+> Well, I'm definitely not trying to bypass the MM community, that's why
+> this patchset is posted. Not sure why people can't voice their opinion
+> on the benefit/cost balance of the patchset over the email... But if a
+> meeting would be more productive I'm happy to set it up.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+If you can get the acks without any additional meetings, great. The 
+replies from Pasha and Johannes are encouraging, let's hope core 
+memory-allocator people will voice their opinion here.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+If you come to the conclusion that another meeting would help getting 
+maintainers's attention and sorting out some of the remaining concerns, 
+feel free to schedule a meeting with Dave R. I suspect only the slot 
+next week is already taken. In the past, we also had "special" meetings 
+just for things to make progress faster.
 
-## Build
-* kernel: 6.7.5-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.7.y
-* git commit: 93a4df567f730b1297234a01ec53517a02cbe64e
-* git describe: v6.7.4-125-g93a4df567f73
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.7.4=
--125-g93a4df567f73
+If you're looking for ideas on what the agenda of such a meeting could 
+look like, I'll happily discuss that with you off-list.
 
-## Test Regressions (compared to v6.7.4)
+v2 was more than 3 months ago. If it's really about minor details here, 
+waiting another 3 months for LSF/MM is indeed not reasonable.
 
-## Metric Regressions (compared to v6.7.4)
+Myself, I'll be happy not having to sit through another LSF/MM session 
+of that kind. The level of drama is exceptional and I'm hoping it won't 
+be the new norm in the MM space.
 
-## Test Fixes (compared to v6.7.4)
+Good luck!
 
-## Metric Fixes (compared to v6.7.4)
+-- 
+Cheers,
 
-## Test result summary
-total: 146978, pass: 127001, fail: 2214, skip: 17594, xfail: 169
+David / dhildenb
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 129 passed, 16 failed
-* arm64: 52 total, 46 passed, 6 failed
-* i386: 41 total, 40 passed, 1 failed
-* mips: 26 total, 25 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 33 passed, 3 failed
-* riscv: 18 total, 18 passed, 0 failed
-* s390: 13 total, 12 passed, 1 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 45 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* timesync-off
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
