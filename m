@@ -1,134 +1,122 @@
-Return-Path: <linux-kernel+bounces-65047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 377F585471F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:27:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19FDC8546E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB59228F00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:27:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0241C26333
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66CF1758B;
-	Wed, 14 Feb 2024 10:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F8017552;
+	Wed, 14 Feb 2024 10:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xYbt46DM"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="dfPOhhPg"
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A9D17552;
-	Wed, 14 Feb 2024 10:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C574171A6;
+	Wed, 14 Feb 2024 10:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707906424; cv=none; b=Ams0B8oBmPgO2rnvolk8waIu15R1WFWDYZSiZ9qaWO/8sZYKmy70AiI5n7d2JPW2gE2yoTsLmllAivivWLK2k1z8Aq1RNybOZTBrfHSFe6OoF69C0xu+4qKkfhB/AQiIGyyJE0oW58ZGdJ+BNT9UNFAeflSRbSZPFnY9dvuyDLY=
+	t=1707905623; cv=none; b=BqDovX10X5svJk+3lz03aoGQB+Ehep4aMPlq+sy69mJVhPCmFiE5A7Fz6OErCpa++8XQtdCTqOQaDZ7hLwz0oczT78PEwX8+hGun1SyQGocWynIFos0qbefTzAikcfvQiUjadPjoFWrZgvAcoH0n+1sJUazkc4GW9ZEtb2BX03M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707906424; c=relaxed/simple;
-	bh=teavYKWn7MDa4qq3Bv2CSJ8svQxWFPEc08FKfKtL2t4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jyHL93BO+AiKVnZL7XBEa5UxUIzfpfQmdU4bg5GI/UG8/+88LJ4tugaf+UxXUtupYlzWjXUwwURLFU48OWFCtU17z99aqTCljtTFhyqvBt2FuD42T5Seig+uMZ6t1ttrMkGib3JwazyWFX+LZBZ1VgMqXOpcC9qgRdtguRjro+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xYbt46DM; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41EADKCM016860;
-	Wed, 14 Feb 2024 04:13:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707905600;
-	bh=bjdfTlC774uUXe81o8dxQeT0S9fWJO5KRJ77upIQLhw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=xYbt46DMd6hV74O0FIblr0PzoNOwGjn7b02vohYGYnOBU1mhYG2GGZbuaEBBpHG/u
-	 wiqWqKxINFFO09tnbKYECGksGXeECOctfnIXqJ6uT5cCUYxBsuUvyTaBeH+Lx6inHd
-	 nzWU4l62KFwqxE2hh42ZsJqh462dZRbF7faY9API=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41EADJbK075785
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 14 Feb 2024 04:13:19 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
- Feb 2024 04:13:19 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 14 Feb 2024 04:13:19 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41EADFtd012758;
-	Wed, 14 Feb 2024 04:13:16 -0600
-Message-ID: <4f122f5d-e430-4299-b6c5-bbe778aad736@ti.com>
-Date: Wed, 14 Feb 2024 15:43:15 +0530
+	s=arc-20240116; t=1707905623; c=relaxed/simple;
+	bh=zrB91wqBVkDC4s3OV3Y4T12bjoCXJSwWKQnWpDHyY1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HpmSzEWpIlkB1VVBIrZRs3SS2JMFay+tw5RW4WMjDYlDm0tiUe5fW1WUFEnJ5zfttVO5DkwZ52EJEB+K4rTcyXCiYLFGdJzmTM3QLoPw97uhZ2M3jiZk/eVqsdVmyhPWOAFpUxyVPnHDmVMaksf1LArAVPv/dkl6pw4581A5Lrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=dfPOhhPg; arc=none smtp.client-ip=80.241.56.161
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4TZYtn2Pyrz9t7V;
+	Wed, 14 Feb 2024 11:13:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1707905617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tukJiiXHxlnAZSRWrSKvYIrOKtvtQgT2kcRjC7iKjgc=;
+	b=dfPOhhPgpRh5rz/wIjBRF7DEF9ooEVW/TGmRGGvvJ4bRRbD9VBVGgWZsqHQyL2FAeBmbXr
+	5kbQJlEP3G/FafnxH5LXfzU27cCWvRQFUhqCoBvFjv82vo9jted1y5DLLtdMLy7a2uD+z3
+	1jYQfuGoLgxe5uVOZYbI0bpXYXls+9eNl/QUhBYcSyYp+6niCpZ9wxx0XPbW7vwaa7K5Q5
+	9jPcNdvmGXtVYZftGaVdO3XyKKJ2Lu7hM8lC8/PA3CZpyUm97CwfMUJOBI+O5lXl+1OADF
+	rnMpXX0+1KTzd851/9R0okrIHkxPOvxcbgEcr+oGS1AVeyAkn7cOpTKoFm8lxg==
+Date: Wed, 14 Feb 2024 11:13:31 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org, 
+	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
+	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org
+Subject: Re: [RFC v2 03/14] filemap: use mapping_min_order while allocating
+ folios
+Message-ID: <n7v4b4q6kyhwvbm66x4xvg7r6ttdqegikc7thf4o35vcff6mew@kjjh5db7tnc4>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-4-kernel@pankajraghav.com>
+ <ZcvnlfyaBRhWaIzD@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/7] arm64: dts: ti: iot2050: Factor out arduino
- connector bits
-Content-Language: en-US
-To: Jan Kiszka <jan.kiszka@siemens.com>, Nishanth Menon <nm@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Bao Cheng Su <baocheng.su@siemens.com>
-References: <cover.1707463401.git.jan.kiszka@siemens.com>
- <3366367dc9f190c9e21027b9a810886791e99245.1707463401.git.jan.kiszka@siemens.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <3366367dc9f190c9e21027b9a810886791e99245.1707463401.git.jan.kiszka@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcvnlfyaBRhWaIzD@dread.disaster.area>
+X-Rspamd-Queue-Id: 4TZYtn2Pyrz9t7V
 
-
-
-On 09/02/24 12:53, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
+> > +++ b/mm/filemap.c
+> > @@ -127,6 +127,7 @@
+> >  static void page_cache_delete(struct address_space *mapping,
+> >  				   struct folio *folio, void *shadow)
+> >  {
+> > +	unsigned int min_order = mapping_min_folio_order(mapping);
+> >  	XA_STATE(xas, &mapping->i_pages, folio->index);
+> >  	long nr = 1;
+> >  
+> > @@ -135,6 +136,7 @@ static void page_cache_delete(struct address_space *mapping,
+> >  	xas_set_order(&xas, folio->index, folio_order(folio));
+> >  	nr = folio_nr_pages(folio);
+> >  
+> > +	VM_BUG_ON_FOLIO(folio_order(folio) < min_order, folio);
+> >  	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
 > 
-> A new variant is to be added which will not have a arduino connector
-> like the existing ones. Factor out all bits that are specific to this
-> connector.
+> If you are only using min_order in the VM_BUG_ON_FOLIO() macro, then
+> please just do:
 > 
-> The split is not perfect because wkup_gpio0 is defined based on what is
-> common to all variants having the connector, thus containing also
-> connector-unrelated information. But this is still cleaner than
-> replicating this node into all 4 variants.
+> 	VM_BUG_ON_FOLIO(folio_order(folio) < mapping_min_folio_order(mapping),
+> 			folio);
 > 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> ---
->  .../ti/k3-am65-iot2050-arduino-connector.dtsi | 768 ++++++++++++++++++
->  .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 753 -----------------
->  .../ti/k3-am6528-iot2050-basic-common.dtsi    |   1 +
->  .../dts/ti/k3-am6548-iot2050-advanced-m2.dts  |   1 +
->  .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts |   1 +
->  .../dts/ti/k3-am6548-iot2050-advanced.dts     |   1 +
->  6 files changed, 772 insertions(+), 753 deletions(-)
->  create mode 100644 
-> arch/arm64/boot/dts/ti/k3-am65-iot2050-arduino-connector.dtsi
+> There is no need to clutter up the function with variables that are
+> only used in one debug-only check.
 > 
-> diff --git 
-> a/arch/arm64/boot/dts/ti/k3-am65-iot2050-arduino-connector.dtsi 
-> b/arch/arm64/boot/dts/ti/k3-am65-iot2050-arduino-connector.dtsi
-> new file mode 100644
-> index 000000000000..cd86f412b837
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-arduino-connector.dtsi
-> @@ -0,0 +1,768 @@
-> +// SPDX-License-Identifier: GPL-2.0
+Got it. I will fold it in.
 
-This and elsewhere in the series should be
+> > @@ -1847,6 +1853,10 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
+> >  		fgf_t fgp_flags, gfp_t gfp)
+> >  {
+> >  	struct folio *folio;
+> > +	unsigned int min_order = mapping_min_folio_order(mapping);
+> > +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
+> > +
+> > +	index = round_down(index, min_nrpages);
+> 
+> 	index = mapping_align_start_index(mapping, index);
 
-// SPDX-License-Identifier: GPL-2.0-only
+I will add this helper. Makes the intent more clear. Thanks.
 
-as fixed up by Nishanth in [0]. I can fix that locally, let me know.
-
-[0] https://lore.kernel.org/r/20240122145539.194512-16-nm@ti.com
-
--- 
-Regards
-Vignesh
+> 
+> The rest of the function only cares about min_order, not
+> min_nrpages....
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
 
