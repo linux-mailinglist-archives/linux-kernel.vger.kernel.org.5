@@ -1,132 +1,84 @@
-Return-Path: <linux-kernel+bounces-65297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5662E854AC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:53:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4DE854ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69991F23C99
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 322861F289E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC054BE9;
-	Wed, 14 Feb 2024 13:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14C854BDF;
+	Wed, 14 Feb 2024 13:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="JMRxzCjz"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="glOf6NWf"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC22252F85;
-	Wed, 14 Feb 2024 13:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D172A54BC9;
+	Wed, 14 Feb 2024 13:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707918804; cv=none; b=m4T1DdWIF1eSZHHGPWtVu/Tt8Hyw82QtRvIyejxbOHINJR9mvQjag4vNjt25WQhxTug+poznS4E3kP/hgHoyNmd+4NFLczC87/KRY/uLHof3VNQUQGIQJgZ6a2ZvR/Fxgy/jNJJtTUzx/mWm7d9+wNxnz1txAl47s+YlNUfM1yk=
+	t=1707918898; cv=none; b=AEcSumaAUlLy84KZ6JHDX/CTzdR8dDVqwYVzaM6e51ksPRrGiOUfccEZ/I18MtCOS6JkVTyDTdZH4FqKTVtnpPzlIDY49s1fRnleMr64GEmoskooBsBNtkXFFeohEtV4l8je2onraP8iS1Wt8i5VKR5xUvbCXZZCddjp5Omu8ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707918804; c=relaxed/simple;
-	bh=YpA7bONSsZgNbBAnV91WbZ8toW2ppPhIUw4IaPbutb4=;
+	s=arc-20240116; t=1707918898; c=relaxed/simple;
+	bh=R2GYoNLZ4RTpO70AujPg/1RrzI1BJGVw3w2HYNt5j9U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SiGhhizU1ysnzJC0xASof8agpjSM32UfqpvCKzZBFjlhAa6kJH/DzjtNu4Bkc9aFvohoVzwKpex2PNy64wpVLjn0XPIADNB86WC/nt3AKf04RK5tykLFXWP5yrjxfmkbXBdlrW0y3Ib5/QZrZCjW3uEWu37fDllVH3DSXi+iAiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=JMRxzCjz; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TZfm92ClQz9sSV;
-	Wed, 14 Feb 2024 14:53:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1707918793;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PgaJ49BhAMCLOE6dIaBl/wo8RSey7cGj+RjgTwSx7ZY=;
-	b=JMRxzCjz3aXN4ygkKy0nGgnkoH+yYQGcDxiFsx6+ZU9TQNe6YG58EpL5ItS32oE3HuW2ki
-	EZk7Eqy9sEIyTczO8ML6OSm8Sb310sk6+0k6CdzDKeLJ5l3Ht1bu95DGVWkk+hRnOtPIMR
-	dk+v88kLjoovJGwIuGZjw2d2lNCzXIc/rOrJxPPwIIwyOPSZVEdbCyzYMscEV0cJKmUoqg
-	SZBtTVLIu9uqxQwlezn8uEOKshKoYxPhPBGSfW9hu+uOVpu61tG8d5fRYTMCn4yafcYoJP
-	YrIcTEpu5EtVONCwsJOYGA/U0ACNBTnwi1W77P63U6mpSOyFytpGDhx06QVnvg==
-Date: Wed, 14 Feb 2024 14:53:04 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org, 
-	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
-	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org
-Subject: Re: [RFC v2 04/14] readahead: set file_ra_state->ra_pages to be at
- least mapping_min_order
-Message-ID: <npesqtrkkaslbebsnycnvjuoh6znq5lddxau3v3b7ce5ocnd22@ncosz6mtqsz7>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-5-kernel@pankajraghav.com>
- <ZcvosYG9F0ImM9OS@dread.disaster.area>
- <c7fkrrjybapcf3h5sks3skb2ynv7hw4qpplw4kaimjkfas2nls@v522lehxqxqm>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uhWdd+2ykCTpAJVWeYxAZL4txm26yokDvTZ8iYn4G7wgBucRKpay7iNivaRwS5ZEjUBZwpyd2/6CvyZU6hlZUc79oMm92HO++a+M3rRBRTILe7sv5LBTR7JIgvFum0RooPalLeYLfSTUpBJF2hKXMVWdeMXQeiKQXiJ3roKPLUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=glOf6NWf; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=dgXYrhLbpWQPlz5UKTX6bJxUhxWWR7lyTKdm0QhL0HM=; b=gl
+	Of6NWfNtO/v+zOuzpBcd/d/doAHpd6qkP8hgGN5M5asLoGEuLZRZsb37vZcCaRbC8zMc5fNzHDeRw
+	+t86ZZJGL2JdMELzf4Ol/7VA8ged38QGneBC1ZljseePDoZIh51B9b5Oi0WOFaIHVzRFp4QGQR0oz
+	ZV/fldP0XIeio88=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raFix-007n5X-Pr; Wed, 14 Feb 2024 14:54:55 +0100
+Date: Wed, 14 Feb 2024 14:54:55 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>
+Cc: Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Jonathan McDowell <noodles@earth.li>
+Subject: Re: [PATCH v2 1/2] ARM: dts: imx6dl-yapp4: Fix typo in the QCA
+ switch register address
+Message-ID: <8c765a36-4718-4f5f-a8d0-3763ac97ab7b@lunn.ch>
+References: <1707901408-17084-1-git-send-email-michal.vokac@ysoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c7fkrrjybapcf3h5sks3skb2ynv7hw4qpplw4kaimjkfas2nls@v522lehxqxqm>
-X-Rspamd-Queue-Id: 4TZfm92ClQz9sSV
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1707901408-17084-1-git-send-email-michal.vokac@ysoft.com>
 
-On Wed, Feb 14, 2024 at 02:32:20PM +0100, Pankaj Raghav (Samsung) wrote:
-> On Wed, Feb 14, 2024 at 09:09:53AM +1100, Dave Chinner wrote:
-> > On Tue, Feb 13, 2024 at 10:37:03AM +0100, Pankaj Raghav (Samsung) wrote:
-> > > From: Luis Chamberlain <mcgrof@kernel.org>
-> > > 
-> > > Set the file_ra_state->ra_pages in file_ra_state_init() to be at least
-> > > mapping_min_order of pages if the bdi->ra_pages is less than that.
-> > > 
-> > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > ---
-> > >  mm/readahead.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/mm/readahead.c b/mm/readahead.c
-> > > index 2648ec4f0494..4fa7d0e65706 100644
-> > > --- a/mm/readahead.c
-> > > +++ b/mm/readahead.c
-> > > @@ -138,7 +138,12 @@
-> > >  void
-> > >  file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
-> > >  {
-> > > +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
-> > > +	unsigned int max_pages = inode_to_bdi(mapping->host)->io_pages;
-> > > +
-> > >  	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
-> > > +	if (ra->ra_pages < min_nrpages && min_nrpages < max_pages)
-> > > +		ra->ra_pages = min_nrpages;
-> > 
-> > Why do we want to clamp readahead in this case to io_pages?
-> > 
-> > We're still going to be allocating a min_order folio in the page
-> > cache, but it is far more efficient to initialise the entire folio
-> > all in a single readahead pass than it is to only partially fill it
-> > with data here and then have to issue and wait for more IO to bring
-> > the folio fully up to date before we can read out data out of it,
-> > right?
-
-I think I misunderstood your question. I got more context after seeing
-your next response.
-
-You are right, I will remove the clamp to io_pages. So a single FSB
-might be split into multiple IOs if the underlying block device has
-io_pages < min_nrpages.
-
+On Wed, Feb 14, 2024 at 10:03:27AM +0100, Michal Vokáč wrote:
+> This change does not have any functional effect. The switch works just
+> fine without this patch as it has full access to all the addresses
+> on the bus. This is simply a clean-up to set the node name address
+> and reg address to the same value.
 > 
-> We are not clamping it to io_pages. ra_pages is set to min_nrpages if
-> bdi->ra_pages is less than the min_nrpages. The io_pages parameter is
-> used as a sanity check so that min_nrpages does not go beyond it.
-> 
-> So maybe, this is not the right place to check if we can at least send
-> min_nrpages to the backing device but instead do it during mount?
-> 
-> > 
-> > -Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
+> Fixes: 15b43e497ffd ("ARM: dts: imx6dl-yapp4: Use correct pseudo PHY address for the switch")
+> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
 
