@@ -1,119 +1,159 @@
-Return-Path: <linux-kernel+bounces-65997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60908855508
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:41:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B93D85550B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:42:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE76286954
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:41:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 409451C222D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:42:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F401D13EFF6;
-	Wed, 14 Feb 2024 21:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726E813F015;
+	Wed, 14 Feb 2024 21:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d+mtiC78"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R6uHT5gz"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1721DDC1
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEB113EFED
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707946900; cv=none; b=okjWDzQzkrgqXr5F9oPgD+nvoKfNkpQFH0WSxQZbZEpruHTpsWVZOwNuPC+SfOqZEVVs31ZLGriqjAVwlAjL63uSA9JMsmT1QVzH1Xl4h79vyzLwue5ufKwcQ4fNEV9z3c7yhtnb27cDXuY58xRKMlAWKUe+XKiPIW/ooOIHRt4=
+	t=1707946943; cv=none; b=ssvS7iNuQNI13wxVYcwaQ134EDSX86I9ZxKjrj9UOdqpsJ8OLI964stWt4yBKflOLRnCpU07N+0chlP86lTQ7uMk3sMDCOoFq2ZokLmEOOUO1b4hyKsIlTAumowhKbO3+5nK4sIPprGIbAcHBQl6eZyyFyprW3VpgHdLNkGlosM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707946900; c=relaxed/simple;
-	bh=EHfWJjPiWn88jq5xGGDBdva+KaTyzMMLFJA93x+8IeQ=;
+	s=arc-20240116; t=1707946943; c=relaxed/simple;
+	bh=3c2GIuuOcUIlF/1ZcnXuHB65jZ0swkmR0K4YPD0mw0M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ud7eEDU2IHXH7506y6riTAZS2WrwJocJWseh09LeekQppz/kRBN7ObETHxD8SOe0l7vxP0IRcsTYL9VtjLzKEBxZUj5QpyzK4G3iCyiZubJOr0UTuFaW9oiWc2Ij/hDu8Z62LGPLLt7vJUzzr/U/685zyupRwDnI1y746eAMcbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d+mtiC78; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0d95e8133so2145341fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:41:38 -0800 (PST)
+	 To:Cc:Content-Type; b=mr4fR6CcD4GlV3ldHXFHk5YI6G4RRJ7uk5bVLYHri1uvo3l6FA1RthzOtes549phgzjeWyNMcCM7YH/QfCfvsFxPAx4Amg93xlxo7TCOOG+yJ4rjm7w/ByUdXbK1vhs1SsBTBjY+FN4ykE34yXotg/rMcpb3boul9v4fRC+N9rE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R6uHT5gz; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1db35934648so7205ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:42:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707946894; x=1708551694; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1707946940; x=1708551740; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fnjm8I32cDhuopRTHQD8F4ipS3W9vZirc7u9Gsk+x7w=;
-        b=d+mtiC786jX1xQBH3qwif368FWu5+51EF9dl0o3uxk/DTKHA3fdNeHz/pstFP+QExf
-         QMc+WRuTJWGrlObPrqmygoykA4h69zq9kFOj5NlD/KxLIQ+0iHrEmxx6yzsWSj5pRcrA
-         jfRyGZRZaw5R7bqSWfMcUR3X2JxH/hmIdyaf0=
+        bh=YSPUubyM84iE4if7k7+oIKp95nXKMAdaOOfobzF3zB0=;
+        b=R6uHT5gzBOPIvhY3BIQChUvPniZgQLgKUpwTFUCoIl3oB8tNk/I8MRw7xEotb/zX0Q
+         mkCKfJvW6/CkNOr6ro5+yNc/3XkVUWwgLoZz1S34kpvmABHW++0L18t4pnFs/c3J0436
+         LGw3hg5+bzkpTOU3yxnjtOD/YSOBwG9oujJTsjs36QtHPu1c2nfGLQPLPzDBkwgSIcxy
+         T/sv5YRoHIsci8PFiw972IlTW7CImJiBemDGZAqi5n1zbXgh9y/PBQqHhAXQlxx9GmnL
+         DCdBnD0peYQBYSuVYkIdiS6equEuFxJrSrPY9AFEAcSw8YDrxOUq5vXNzdPO7X8pECXf
+         DEgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707946894; x=1708551694;
+        d=1e100.net; s=20230601; t=1707946940; x=1708551740;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fnjm8I32cDhuopRTHQD8F4ipS3W9vZirc7u9Gsk+x7w=;
-        b=ZRNS+Rf5jh6xywAMeE0XSHrcN5aMPFFtHRSpEL1OIOdjJDPA/3V/61OWY48vFbd79l
-         Gdr+0NLLZAsUMT7hAR8Xjmlr9Ww3KplmSgl03AiIFzKh7nuxJ/jzEMzkMaRBV0qDX2vh
-         Pdg2ZW7KVue7KKovVI9+CHXTK6n/gIThfX00rnRhpIEpatGEPS0anyOOrp0b5kUm7tLv
-         rGPjB4smENzI9Yrd2UbK4aVMsTM5e5yAWM6Ev/EHE6V/5YHryhZMXdmAN9itu4yoFIhj
-         FHfWg5J/Y1Fglt0+NPEbdeejtjJAiGSdjSLr4gxgGArbOaijhB78UqCxqIe/ldGlH7It
-         RWxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRna4TXgMUaMf5nb19cZcXjNHn7PljIHPHbsSN+XTevt7Zsxe7qMy3G6vRFr1/tDZPce13BUWpmXFc2Khgix1dBnlNNdNhyxGww7zf
-X-Gm-Message-State: AOJu0Yzpm9/74/+oHSUyYBUWg2+YCo3UQHIi+UCVZQMcwheyeD65oEu2
-	SDqmXWW9uAFpOc23rprkXA/D4N0983M52pywl1FbMONdvylwA/yIGJa53hjNKYby+hXb0WWvcLl
-	46x0S
-X-Google-Smtp-Source: AGHT+IFelYPnBwSVaBVMJWCeYNeLginQ5XMTq8ehEmhOYB1wH7NkC8vrCEc7iwl5t5TRz2l6qs5nKQ==
-X-Received: by 2002:a05:651c:483:b0:2d0:9b1c:649e with SMTP id s3-20020a05651c048300b002d09b1c649emr2418724ljc.31.1707946894499;
-        Wed, 14 Feb 2024 13:41:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXI6Ehii6DQRA30v9J+7vBTjJbNW0IfqjgIQkw+fnU67ylvN+jPaKBqZd9k7VRxK1aA61REQK9rgwmo677ZPCrjv3D497USuBIYhS7E
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id x63-20020a50bac5000000b0056368be8a58sm899555ede.27.2024.02.14.13.41.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 13:41:33 -0800 (PST)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56101dee221so735a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:41:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUIyJNv5rxFcaBRM3mlRmtZhTBluRcXKiI7PJkvStO7J9r+syufEB8Q2zwP2QRqjkmTqYoYL5/7GU9SbtG+cMJICV/u5TcsmHSoL2cR
-X-Received: by 2002:a50:9f08:0:b0:561:e7d8:50a8 with SMTP id
- b8-20020a509f08000000b00561e7d850a8mr369992edf.0.1707946893039; Wed, 14 Feb
- 2024 13:41:33 -0800 (PST)
+        bh=YSPUubyM84iE4if7k7+oIKp95nXKMAdaOOfobzF3zB0=;
+        b=lLt2cttQVKAqN7hLpNRPF/Yyl4SiBeSr9E9Bdv2U2IafBC9EzscgeCUBx2mYRZ80p7
+         9NlK8MJXuZf3JoaqNBFZ8sENIPBhNqcsHU6t19zvAiw7TQ7vd6VdEPMLnUUxJzikonFB
+         d/GqgoxLd8R+2wz2u4f+SV9sQI+gjaCPgsQNU1wDucRHVaftm0zXjLyuWIn3bvRsfM22
+         YkGDomBymusqOG7gYzSMaVJVRIweBQsq7Fse0P/GOgIU5QksrzwO07YGI5C8LDDYghjz
+         Ca4lWOrge8Kc2cV+ttcFm3sQrrOWwIWecJFcHg+GJ/hcN6BYncxOoZIGImKrvmfg+kMN
+         YRMg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+/85yuOQIdPVHlyLG0nWNaHIvyym0Gp37t+LVFa/W3GWxTYsStMLGVRkYKvaLCh4UlcHDw9KTdXSU9c6Gcg3Wb0unbaqRbGXwSYX9
+X-Gm-Message-State: AOJu0YyobCjPbwoUT2ss1hCXniZYFbvq9xHH/wbN17TQxBCis6J8RyuX
+	3rRK2h74qKL0PuyaMCYGgdlXcytTgbH2AcUvQtOab+BDccu5re3/5NqRk33v0cpurm5imE0g0Rv
+	vCsR12xnpuT4fNsRe17kGDfRYszoeB/zIHbTF
+X-Google-Smtp-Source: AGHT+IFs8GCOC1Z1vNjMOHZlsyycKXE6lDJY0f+bDQxt7tw86T7dQdf0yTj1R5o+IbfIUHdOmfrLkolaVuy4fv1aNEY=
+X-Received: by 2002:a17:902:7b94:b0:1d8:d90d:c9ae with SMTP id
+ w20-20020a1709027b9400b001d8d90dc9aemr335917pll.1.1707946940434; Wed, 14 Feb
+ 2024 13:42:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214072435.1496536-2-hsinyi@chromium.org>
-In-Reply-To: <20240214072435.1496536-2-hsinyi@chromium.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 14 Feb 2024 13:41:16 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VmDZvWVJ+DKN5bMPvJaLouNq26=Qyd4N9O+a0FeWCJpA@mail.gmail.com>
-Message-ID: <CAD=FV=VmDZvWVJ+DKN5bMPvJaLouNq26=Qyd4N9O+a0FeWCJpA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "drm/panel-edp: Add auo_b116xa3_mode"
-To: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-3-irogers@google.com>
+ <Zcz3iSt5k3_74O4J@x1> <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
+ <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com> <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
+In-Reply-To: <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 14 Feb 2024 13:42:09 -0800
+Message-ID: <CAP-5=fUP-Ss1UNKWUwzSpWAO1trCdXNMkey1gYnpZPODn+Gn-Q@mail.gmail.com>
+Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Feb 13, 2024 at 11:24=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org>=
- wrote:
+On Wed, Feb 14, 2024 at 1:36=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
 >
-> This reverts commit 70e0d5550f5cec301ad116703b840a539fe985dc.
+> On Wed, Feb 14, 2024 at 1:15=E2=80=AFPM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > On Wed, Feb 14, 2024 at 10:27=E2=80=AFAM Ian Rogers <irogers@google.com=
+> wrote:
+> > >
+> > > On Wed, Feb 14, 2024 at 9:25=E2=80=AFAM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > >
+> > > > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
+> > > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
+> > > > > threads") made the iteration of thread tids unordered. The perf t=
+race
+> > > > > --summary output sorts and prints each hash bucket, rather than a=
+ll
+> > > > > threads globally. Change this behavior by turn all threads into a
+> > > > > list, sort the list by number of trace events then by tids, final=
+ly
+> > > > > print the list. This also allows the rbtree in threads to be not
+> > > > > accessed outside of machine.
+> > > >
+> > > > Can you please provide a refresh of the output that is changed by y=
+our patch?
+> > >
+> > > Hmm.. looks like perf trace record has broken and doesn't produce
+> > > output in newer perfs. It works on 6.5 and so a bisect is necessary.
+> >
+> > Bisect result:
+> > ```
+> > 9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
+> > commit 9925495d96efc14d885ba66c5696f664fe0e663c
+> > Author: Ian Rogers <irogers@google.com>
+> > Date:   Thu Sep 14 14:19:45 2023 -0700
+> >
+> >    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+> > ...
+> > https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
+> > ```
+> >
+> > Now to do the bisect with BUILD_BPF_SKEL=3D1 on each make.
 >
-> The overridden mode fixes the panel glitching issue on mt8186 chromebook.
-> However, it causes the internal display not working on mt8173 chromebook.
-> Revert the overridden mode for now to let mt8173 have a functional displa=
-y.
+> This looks better (how could I be at fault :-) ):
+> ```
+> 1836480429d173c01664a633b61e525b13d41a2a is the first bad commit
+> commit 1836480429d173c01664a633b61e525b13d41a2a
+> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Date:   Wed Aug 16 13:53:26 2023 -0300
 >
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 19 ++-----------------
->  1 file changed, 2 insertions(+), 17 deletions(-)
+>    perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter
+> using &=3D sizeof(saddr)
+> ...
+>    Cc: Adrian Hunter <adrian.hunter@intel.com>
+>    Cc: Ian Rogers <irogers@google.com>
+>    Cc: Jiri Olsa <jolsa@kernel.org>
+>    Cc: Namhyung Kim <namhyung@kernel.org>
+>    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ```
+> No LKML link.
 
-Given that the breakage for affected mt8173 Chromebooks is pretty bad
-(black screen), I'll plan to just wait an extra day for any screams
-and then I'll apply to drm-misc-fixes.
+Hmm.. basically that change fixed the BPF program to verify and so the
+problem has been long standing with the BPF code. Maybe perf trace
+record never worked with BPF.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks,
+Ian
 
