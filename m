@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-65962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC01C855472
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:58:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902EC85547D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9A11F23E7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B3D9286BAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11C713EFE7;
-	Wed, 14 Feb 2024 20:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ED713EFF1;
+	Wed, 14 Feb 2024 21:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aSGvgHdB"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qfvu4z1g"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75D854649;
-	Wed, 14 Feb 2024 20:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398D855E44
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707944310; cv=none; b=uZBi7/L7LzaGCWm9ukgQufklJ5Hf/JVAAEbeyBkLiv/wfxSEDtSpZw1KXn0sU1y+u4YtENu4+j1NHpLA+itbG21BIDVjngYVnLi2pPRCtIE/PJSutdMWjpviqfnJ32DzTKwa+L3zdT0PeJnfa29RfbKES4ozEa8YKqJZvxQlh78=
+	t=1707944783; cv=none; b=Jh1dYm2YU6JeosZgJUKnUDSx3o+gsObKQrPCZe5OeB+xPEZ1r7Xi7dZFOKwTye1HukbkVGWQCHqOZMv+jCxAOuUwgSPoM1Z6tvUPDTXPaadH6VL7TKJRNdoYXW7T6TItK7kCv8CrOnJVciDDmvutRS/SCmltFZsB2LnRpaqulC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707944310; c=relaxed/simple;
-	bh=XQj8poqrg4+CfO5snNegLfdzlb6jX7sbVrbQUXh9Bv0=;
+	s=arc-20240116; t=1707944783; c=relaxed/simple;
+	bh=c+0UADNx4KkHHaeDm/qEDcDyoYmLg07y339g5RmUM14=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lGY1tS2oItNKUj0cXWu6rhJnSzdg/LAKCpb9dwlIIR6GNwqHK4fn/SXGGB9azb5IUDM8/Fc6wfXHewSkPZULb1Tu2p2XjYQ3xWDY7xsUdDmA0S7H2sHu39mL6jgcQgy1AceSe0hS2q1sxVSeUhOWP0nt44vZyLB65nvYML8eEnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aSGvgHdB; arc=none smtp.client-ip=91.218.175.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=JmLOqPdwp0JzfqQDvwCZl5h6Wv2VQLVFvdJ+XAtCeyOO0DdHNyylB/gFYvZ3o1cwgsxSF02HAZSN6jnIidDElFQiNdBQaioLPvk73zJmVQ9RrB29VRm8XVcAuVlV/TT3apE8E51zEXJd6fV3kkIkXMCim7yt185Re4wtO6dn0tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qfvu4z1g; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 12:58:21 -0800
+Date: Wed, 14 Feb 2024 13:06:12 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707944306;
+	t=1707944780;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VZ7qxsgvekArPpn3g43oSJoyx4+B3LXb9434aIWbmSc=;
-	b=aSGvgHdBczCTABLRPiix5khxX8WLiPNatU8bn9sZZLpBSXxJna9ftCOa2ZGZy1BKnWG2ep
-	5NJY6K4lNBc+PfA1DLtYBm0Zh7J7mrtEGONm1UEYEoiWLvhQATu2r/85aA441cfA5z6+UH
-	MPabeqy+u1MzQYXgzxCRFaF8s5EgzL4=
+	bh=uO6O9l/7u1FoWCDVNDPi12vidxMFWsbJFIEI+vbkcWI=;
+	b=Qfvu4z1ghH0eYQfo4WtcCs4NQnZnhnvCd/kiESIbOVEsb4Pk2KCeGoA7CpjxaUK3cNiCp/
+	N2IyDNCKrNA+pQoYJQOq+41kBXGMbfNasmhZgR/nS1tiefS9VwosW55GVWHiB7mKM1HoQQ
+	xT6DRaSpb0uF7ELaP9CtEQsQKIUfdHc=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Oliver Upton <oliver.upton@linux.dev>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
- Neoverse N2 errata
-Message-ID: <Zc0pbaa0mnQta-mw@linux.dev>
-References: <20240214175522.2457857-1-eahariha@linux.microsoft.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
+ interacting with an ITS
+Message-ID: <Zc0rRFLRhLfLshpm@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+ <20240213094114.3961683-1-oliver.upton@linux.dev>
+ <86zfw33qae.wl-maz@kernel.org>
+ <Zc0NsFm40nIqTmRf@linux.dev>
+ <86v86q4xkf.wl-maz@kernel.org>
+ <Zc0orzU-CeKEyx3j@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,20 +64,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214175522.2457857-1-eahariha@linux.microsoft.com>
+In-Reply-To: <Zc0orzU-CeKEyx3j@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 05:55:18PM +0000, Easwar Hariharan wrote:
-> Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
-> implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
-> suffers from all the same errata.
+On Wed, Feb 14, 2024 at 12:55:11PM -0800, Oliver Upton wrote:
+> On Wed, Feb 14, 2024 at 08:09:52PM +0000, Marc Zyngier wrote:
+> > > If the order of restore from userspace is CBASER, CWRITER, CREADR then
+> > > we **wind up replaying the entire command queue**. While insane, I'm
+> > > pretty sure it is legal for the guest to write garbage after the read
+> > > pointer has moved past a particular command index.
+> > > 
+> > > Fsck!!!
+> > 
+> > This is documented Documentation/virt/kvm/devices/arm-vgic-its.rst to
+> > some extent, and it is allowed for the guest to crap itself on behalf
+> > of userspace if the ordering isn't respected.
 > 
-> CC: stable@vger.kernel.org # 5.15+
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> Ah, fair, I missed the documentation here. If we require userspace to
+> write CTLR last then we _should_ be fine, but damn is this a tricky set
+> of expectations.
+> 
+> > > So, how about we do this:
+> > > 
+> > >  - Provide a uaccess hook for CWRITER that changes the write-pointer
+> > >    without processing any commands
+> > > 
+> > >  - Assert an invariant that at any time CWRITER or CREADR are read from
+> > >    userspace that CREADR == CWRITER. Fail the ioctl and scream if that
+> > >    isn't the case, so that way we never need to worry about processing
+> > >    'in-flight' commands at the destination.
+> > 
+> > Are we guaranteed that we cannot ever see CWRITER != CREADR at VM
+> > dumping time? I'm not convinced that we cannot preempt the vcpu thread
+> > at the right spot, specially given that you can have an arbitrary
+> > large batch of commands to execute.
+> > 
+> > Just add a page-fault to the mix, and a signal pending. Pronto, you
+> > see a guest exit and you should be able to start dumping things
+> > without the ITS having processed much. I haven't tried, but that
+> > doesn't seem totally unlikely.
+> 
+> Well, we would need to run all userspace reads and writes through the
+> cmd_lock in this case, which is what we already do for the CREADR
+> uaccess hook. To me the 'racy' queue accessors only make sense for guest
+> accesses, since the driver is expecting to poll for completion in that
+> case.
 
-Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+My proposed invariant cannot be maintained, of course, since userspace
+can do whatever it pleases on the cmdq pointers.
 
--- 
-Thanks,
-Oliver
+> Otherwise we decide the existing rules for restoring the ITS are fine
+> and I get to keep my funky driver :)
+> 
+> -- 
+> Thanks,
+> Oliver
+> 
 
