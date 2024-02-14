@@ -1,71 +1,106 @@
-Return-Path: <linux-kernel+bounces-65442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E13854D21
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:42:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B28A3854D27
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98D201C20927
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E9E71F21DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3263E5EE65;
-	Wed, 14 Feb 2024 15:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163085D8F9;
+	Wed, 14 Feb 2024 15:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T05Rg1GL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B848B5DF05;
-	Wed, 14 Feb 2024 15:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552C45D49E;
+	Wed, 14 Feb 2024 15:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925319; cv=none; b=gPC1t2AdIwhEs6ymuEWdP8ShUjU1fPzGYokAWJSD+Nh2qJkoHQuRV9KSk5UOanjGmpMpwjWJihu5LfuGWxbKFEj2rErK23ZzhhyruSEgBpAJdDP3PVTS66A+qc2Y7dRnkq9itxi3IjtwPGO/tn29gLheDiWypfHlI+0CwOzAiro=
+	t=1707925462; cv=none; b=SPe29K+NyPXTbReDFmySuZc+mHHgZYzh6NjXogjqUdtrSxGCiGCfheuvbbnHLMpI3B23UpmGV9efy7KF80LMSDoUJIVZX0XLX3VYUaGW2nHLZ4QJuZIQWz3rUrhF80LXTT6sLSTNCO1Gw5OCLFWW1eywxqQN02PFWeI9zmBishU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925319; c=relaxed/simple;
-	bh=EQJqgCbsIzF1hi7yDHjrJ52K4ATuJYMSNA7gnDd1vY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sPaPLS6nXUwlW+tjkZKqIqIaqDcJzVrVBrKWKQobxZHRwHI8FbryhezhAY53DargEGK2lSKF1Kez0BYinZ+MUu7TH1U43ctKGwavJxAOLP9EhkhJRRlKixpAqs+nvIwbBztFzEoaDM6fFn5E721Ik7T0XWzkLAvjvA0aRfGf9aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CBB0C433F1;
-	Wed, 14 Feb 2024 15:41:58 +0000 (UTC)
-Date: Wed, 14 Feb 2024 10:43:29 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: regressions@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Jeff Johnson
- <quic_jjohnson@quicinc.com>
-Subject: Re: [regression] tracing: kmemleak warning in
- allocate_cmdlines_buffer()
-Message-ID: <20240214104329.56a19586@gandalf.local.home>
-In-Reply-To: <87mss3njvj.fsf@kernel.org>
-References: <87r0hfnr9r.fsf@kernel.org>
-	<20240214094617.1e6ec684@gandalf.local.home>
-	<87mss3njvj.fsf@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707925462; c=relaxed/simple;
+	bh=dMNrclhA7uStPGoba5K2BJ7MHHMLO2MgIpz/A5BhoRY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Z+GBSl2ocHhmCNDn9nW2pcjTA4s3z+bhXjDGaELyJIXnNLQSdHQbXSDGwDi9W08LRrteXvewz3EvlVYMNbXvqOPtHWq92Iy8jEZguyHVkMHEmsFp6NaB3oHl+OeULN7ESYT9+0h6t0nW4A1VisbrhB8N4shUTzWUjCPRoDDrHu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T05Rg1GL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D6DC433F1;
+	Wed, 14 Feb 2024 15:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707925461;
+	bh=dMNrclhA7uStPGoba5K2BJ7MHHMLO2MgIpz/A5BhoRY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=T05Rg1GLSAp+sVabhLsKjdzy1fP1Pl2BFJTZKoDrtwXS3CIpP4rvkaQYtnR6LJoZs
+	 iWB8tOSqjv7kVZr1LcpWqUV1jr5FTYAkzxwPlUAqT8VcGE81a0DlH1h3QFacVYmgoK
+	 OeZv5G4V5y5h+TjztNgUoGGmOMfFgQDvM3jg0nqugDDVn+Qpz5Ofsca8Twk5Lh7W0X
+	 /FSZ6OaorQkmvfY2gLbuyBKqeQQbHyeQAebpUz6e31eL1wo+Vnq/o+9MZBH8ZkBLz3
+	 e31ulQSxelpSjoVK2RtuY/CwqvrhCCM+9d+drFp99lvayYQrkMfIjdc+Mg4209Mr59
+	 H+tSPKTWR1xfw==
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, 
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Bard Liao <yung-chuan.liao@linux.intel.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
+ Daniel Baluta <daniel.baluta@nxp.com>, 
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <5593d147-058c-4de3-a6f5-540ecb96f6f8@moroto.mountain>
+References: <5593d147-058c-4de3-a6f5-540ecb96f6f8@moroto.mountain>
+Subject: Re: [PATCH] ASoC: SOF: Add some bounds checking to firmware data
+Message-Id: <170792545901.151568.1454091420100022542.b4-ty@kernel.org>
+Date: Wed, 14 Feb 2024 15:44:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-On Wed, 14 Feb 2024 17:30:40 +0200
-Kalle Valo <kvalo@kernel.org> wrote:
-
-> Although the patch didn't apply for me as in my tree the functions are
-> in kernel/trace/trace.c. I don't know what happened so as a quick hack I
-> just manually added the three lines to my version of trace.c. Let me
-> know if there's a git tree or branch you would like me to test, I can do
-> that easily.
+On Fri, 09 Feb 2024 16:02:16 +0300, Dan Carpenter wrote:
+> Smatch complains about "head->full_size - head->header_size" can
+> underflow.  To some extent, we're always going to have to trust the
+> firmware a bit.  However, it's easy enough to add a check for negatives,
+> and let's add a upper bounds check as well.
+> 
 > 
 
-Oops, I was in a middle of rebasing a patch series I was reviewing and
-forgot there was some changes to the code around it. Anyway, that should be
-the fix. I'll add your tested-by.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
--- Steve
+[1/1] ASoC: SOF: Add some bounds checking to firmware data
+      commit: 98f681b0f84cfc3a1d83287b77697679e0398306
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
