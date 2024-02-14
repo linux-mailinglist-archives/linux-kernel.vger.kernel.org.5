@@ -1,142 +1,162 @@
-Return-Path: <linux-kernel+bounces-65473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D49C854D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:58:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65D12854D87
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BF421F252B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:58:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79897B2332E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7B65FDDE;
-	Wed, 14 Feb 2024 15:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F20E5F865;
+	Wed, 14 Feb 2024 16:01:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FpaHQ+hM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QAk/HqLg"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A92F5C906;
-	Wed, 14 Feb 2024 15:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222195D918
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926312; cv=none; b=cZiyFgFgX02BBJviCN0HtnoK+SPPEoB8aGclJhcaMT19kK9u9VSqr96XDFiWvaxfFnIkNjjQZ4XUuFH0Fie7sY1mK5ft6V+mNke7bEfZj6L5GzQMiiABKqI80+aySAEQOBqFpEUKd8P+p+GDmk+XKwgu6w3Shs0QDM9MCBLuqEQ=
+	t=1707926494; cv=none; b=m2gY6yRcImqjJG4yEgx7Q3XPCIgYWmWoA37nkKbao2AUPAPZzzgVldyrQldt78Rvom6ZQ4zvwQwQBGjl6xWRgGCdK9aPyXTlR9gcPdolDRyxsnDSedjjtBk346d0R37DNrvXMCxpmyP0oQKok0PJiiqlu4YdFtGGe6uhQJT8c7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926312; c=relaxed/simple;
-	bh=oB7y26cHY18BFwgZZYSp49BaRjDmeMewAnXDzdUPdTA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NFeXwlZcmNqKU3httILwdiFPqtPUk2h4Ux+0JMzhw0otiwIkzA5wHBLQK9jp+uTnwZPFVjJLcwdf2LWmSJ681HfW3Mvdwlmo4a9rChGnT/JM6gzK4yXxw/B5acHblLy3GRV5CiRslvq3AMeEe0g//mCJNN1Ll1osbItD8UMaqQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FpaHQ+hM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E9AC43399;
-	Wed, 14 Feb 2024 15:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707926311;
-	bh=oB7y26cHY18BFwgZZYSp49BaRjDmeMewAnXDzdUPdTA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FpaHQ+hM3RyU71YtYb3zG+Iy0dU0hLDJhcN31jc3o7Z0ulTmns1wxJoJ7dmiPzR2S
-	 r7U2vTqHBkhTXOO7SnHsXdZixs/BZXuQqdiggP7yL/o8QvSWV6Yb1n6iRTvANTRVzj
-	 2N+pD9miPRBsxvz9RJvqtJf6kX5ExqkVB3wlyDMpKwOlZp45E5ZsZlKeS+fZ7N5GUg
-	 nel46MQoIfCX8K8DR4xXUbKOyh0NC4pvssM0Qt75YuvXeGfbHSrxo/9PLugiRhDSyo
-	 rMYJH6okEofdyKOF5vuGyIFUVZ6i0d1kJR4tVE53jtkqC4NLbGHQvLQkf0ofUbH0NW
-	 bMqXcc8vjmLnA==
-Date: Wed, 14 Feb 2024 15:58:27 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Support Opensource <support.opensource@diasemi.com>,
-	Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Steve Twiss <stwiss.opensource@diasemi.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mfd: dlg,da9063: Make #interrupt-cells
- required
-Message-ID: <20240214-divorcee-backside-3a3767d054e9@spud>
-References: <2212567f4c17251011e5e0bfa4ea0126d9815d39.1707922672.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1707926494; c=relaxed/simple;
+	bh=mG2aiDwQBefPaMNK+Pn14SJya/ggnAhZnM5ZfZrJYyQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=m2SaYLHe6LTYGF+m6NAox64G8Vm3Rbj+wrjtR3Tce0m/k/cCVo0JJxLyejqpnzo9PLXxylSlOlpuWEhD6QlpTuCvn3+qvz+4s8yxdsID9mnt2/uElwK7r7bwcYVFwGODI4lPfxYHL6d8lyHlrm1CbETtCiWv5yOjSROdaQDkZOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QAk/HqLg; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1d950445c0bso66990395ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:01:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707926492; x=1708531292; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vDhKhdgpExvnvihe9iHfOSKknaCWEhikPiTvyAPPe10=;
+        b=QAk/HqLgYjvy6Jd8ZrrIpX6BQReMTR4BJ8VfS2KyGocywH12mm9VdOhAw2qDL75zrB
+         INDry1X9/zQMf/DG3o8l1hIO1MW4M5Gleiv3DQsvUVg+MTsoft9wvAN/sY1iZIpgtGbB
+         95pjxJWCoVYDFlRjblZsJGDfI2iQb/lb7KKQMcOzp2obWq5n7sul+XXos3e4ttoWhynb
+         LvyPWLC6SWMEanMLdRIIq6v65kWPKhHWWoC8rsx/cgFh0k83Nskf5/0YBLDeTlLlbFU/
+         pobeXxvQKcElKVjofGXavU2MLDzIuTFNV7NwBi7YA8n23gjqZcQbzrkqT+ohGlAGfVWw
+         whLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707926492; x=1708531292;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vDhKhdgpExvnvihe9iHfOSKknaCWEhikPiTvyAPPe10=;
+        b=aKaQpd5Ht8R3jDXZnUkNQ2Yaxe/ZxgfhMwQ+Z8jQ1wB3iRGENH7Li8DZwNQwrqdqrC
+         O3CV/EL6MOzAdXngl/zrE3MVwgRMV+GjEd3xOS+gXAJuq9a3zuGnFQyesgZzOdoLCgE1
+         cn3vOCRifIBjdlaRNipJoaKvYtCQF36jqgCzZaB4MkKu6WDtfPZt4UatUA6NoscqoDP1
+         PHGITUfVKST/KtlJYqkjc5jQa0OQ7FHVfAZYR8r0OvSfTqYnHHiKykP/wlQVQED/28ip
+         UKvPYvkaCiH+H4CYlZV8jhbwyqZKXAW2blWWLMp5xHRUB6sxhJnOJC/GVgSkpVGhguil
+         gwag==
+X-Forwarded-Encrypted: i=1; AJvYcCWFdZ98tDHOTWUs9QC0T5JmJD5u6dCrm1n9q7kOP+WRkKlqr6sF7tzP5I0U7LgbgF9e85VbiiF+NTHPnsVlpf1DUoBk8kwaIWr26s16
+X-Gm-Message-State: AOJu0Yx8rUnzVua1c0W26jWdu+zuXfgZZDUZEMR5EZFnEIpxrAEI+15X
+	JLsbxJkkS7KX8GrUyccFgOMFNFkwEguxTj6Y9/42t0uHUVhOGNsAjvECNV7U+Ukza54ZiIC5lYX
+	XvQ==
+X-Google-Smtp-Source: AGHT+IEN5+ID23PuzUqCy4d+vfh2sapVveap2dWxTrMhCE/ZUr1g7/fVADAe/6OhrogxAp4oYhMwc7tWtgg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:b90a:b0:1d9:f334:d9c5 with SMTP id
+ bf10-20020a170902b90a00b001d9f334d9c5mr8303plb.10.1707926492284; Wed, 14 Feb
+ 2024 08:01:32 -0800 (PST)
+Date: Wed, 14 Feb 2024 08:01:30 -0800
+In-Reply-To: <7c31e31d0f0ad3f40619f8e0ecf67f1e3d3eef5f.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DGn9G3gGimok5V3Z"
-Content-Disposition: inline
-In-Reply-To: <2212567f4c17251011e5e0bfa4ea0126d9815d39.1707922672.git.geert+renesas@glider.be>
-
-
---DGn9G3gGimok5V3Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+References: <20240115125707.1183-1-paul@xen.org> <20240115125707.1183-9-paul@xen.org>
+ <ZcMBDP6H5PRo5C2d@google.com> <7c31e31d0f0ad3f40619f8e0ecf67f1e3d3eef5f.camel@infradead.org>
+Message-ID: <Zczj2vDCasKcBcjn@google.com>
+Subject: Re: [PATCH v12 08/20] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Paul Durrant <paul@xen.org>, Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hey,
-
-On Wed, Feb 14, 2024 at 04:03:42PM +0100, Geert Uytterhoeven wrote:
-> '#interrupt-cells' is a required property for interrupt providers, hence
-> make it required.
-
-I actually meant to send this patch yesterday but I forgot, thanks for
-doing it - the only riscv violation of what Rob reported was also a
-da9063..
-
-> While at it, move '#interrupt-cells' in the example to match common sort
-> order.
+On Tue, Feb 06, 2024, David Woodhouse wrote:
+> On Tue, 2024-02-06 at 20:03 -0800, Sean Christopherson wrote:
+> > +s390 folks (question on kvm_is_error_gpa() for ya)
+> >=20
+> > On Mon, Jan 15, 2024, Paul Durrant wrote:
+> > > @@ -1398,7 +1414,9 @@ void kvm_gpc_deactivate(struct gfn_to_pfn_cache=
+ *gpc);
+> > > =C2=A0 static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache =
+*gpc)
+> > > =C2=A0 {
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0lockdep_assert_held(&=
+gpc->lock);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mark_page_dirty_in_slot(gp=
+c->kvm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (gpc->gpa !=3D KVM_XEN_=
+INVALID_GPA)
+> >=20
+> > KVM_XEN_INVALID_GPA absolutely doesn't belong in common code.=C2=A0 Not=
+ to mention
+> > that it will break when Paolo (rightly) moves it to an x86 header.
+> >=20
+> > https://lore.kernel.org/all/20240131233056.10845-3-pbonzini@redhat.com
 >=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-I think:
-Fixes: 361104b05684 ("dt-bindings: mfd: Convert da9063 to yaml")
-
-and
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/mfd/dlg,da9063.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> We can use plain INVALID_GPA for that, I think. ISTR the reason we have
+> a separate KVM_XEN_INVALID_GPA is because that's a userspace API.
 >=20
-> diff --git a/Documentation/devicetree/bindings/mfd/dlg,da9063.yaml b/Docu=
-mentation/devicetree/bindings/mfd/dlg,da9063.yaml
-> index c5a7e10d7d80e8d7..e5ccc2708f0bb0f8 100644
-> --- a/Documentation/devicetree/bindings/mfd/dlg,da9063.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/dlg,da9063.yaml
-> @@ -87,6 +87,7 @@ required:
->    - reg
->    - interrupts
->    - interrupt-controller
-> +  - '#interrupt-cells'
-> =20
->  additionalProperties: false
-> =20
-> @@ -99,10 +100,10 @@ examples:
->        pmic@58 {
->          compatible =3D "dlg,da9063";
->          reg =3D <0x58>;
-> -        #interrupt-cells =3D <2>;
->          interrupt-parent =3D <&gpio6>;
->          interrupts =3D <11 IRQ_TYPE_LEVEL_LOW>;
->          interrupt-controller;
-> +        #interrupt-cells =3D <2>;
-> =20
->          rtc {
->            compatible =3D "dlg,da9063-rtc";
-> --=20
-> 2.34.1
+> ...
 >=20
+> > But!  kvm_is_error_gpa() already exists, and it very, very sneakily
+> > does a memslot lookup and checks for a valid HVA.
+>=20
+> Hm, that doesn't sound as fast as simple comparison. We also can't do
+> it from kvm_gpc_check(), can we?
 
---DGn9G3gGimok5V3Z
-Content-Type: application/pgp-signature; name="signature.asc"
+You snipped the part where I suggested renaming the existing kvm_is_error_g=
+pa().
 
------BEGIN PGP SIGNATURE-----
+I am suggesting we do the below (and obviously rename the s390 usage, too),=
+ and
+then the gpc code can use use kvm_is_error_gpa().
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZczjIwAKCRB4tDGHoIJi
-0ls2AP9kHzeiP4ColiDDTjA9ec9ni5ouN6qt1khCu44ICoTLAwD/RZ8bWYVG4fFL
-TJb0YDw6dvhg1LWXJ9QRXE7GUtt6zgM=
-=7Kaf
------END PGP SIGNATURE-----
-
---DGn9G3gGimok5V3Z--
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index bbfefd7e612f..e1df988e4d57 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -148,6 +148,11 @@ static inline bool kvm_is_error_hva(unsigned long addr=
+)
+=20
+ #endif
+=20
++static inline bool kvm_is_error_gpa(gpa_t gpa)
++{
++       return gpa =3D=3D INVALID_GPA;
++}
++
+ #define KVM_ERR_PTR_BAD_PAGE   (ERR_PTR(-ENOENT))
+=20
+ static inline bool is_error_page(struct page *page)
+@@ -1787,7 +1792,7 @@ static inline hpa_t pfn_to_hpa(kvm_pfn_t pfn)
+        return (hpa_t)pfn << PAGE_SHIFT;
+ }
+=20
+-static inline bool kvm_is_error_gpa(struct kvm *kvm, gpa_t gpa)
++static inline bool kvm_gpa_is_in_memslot(struct kvm *kvm, gpa_t gpa)
+ {
+        unsigned long hva =3D gfn_to_hva(kvm, gpa_to_gfn(gpa));
+=20
 
