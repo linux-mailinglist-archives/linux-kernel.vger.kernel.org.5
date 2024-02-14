@@ -1,101 +1,196 @@
-Return-Path: <linux-kernel+bounces-65408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD27854C84
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:19:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B7F854C8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:21:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A9831F29CB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:19:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20E6F1C283D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E675D729;
-	Wed, 14 Feb 2024 15:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D285D72C;
+	Wed, 14 Feb 2024 15:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="2hEG41fZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cedw4qI+"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38AC65D471;
-	Wed, 14 Feb 2024 15:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE221E862;
+	Wed, 14 Feb 2024 15:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923980; cv=none; b=NfMo+HPHtXuL7wM7HpYYHtyur0dbEW7xKU2yglqwVh37G8OFRvhJg+PUJ1V0WgZa7XtLabOBv96ZGbu2/etOeX7ii5IQfS49uu9IQc/ItPuZVPpp3DhJGBDY+mPrD0jVR8cgheJV3OSmfljaV2fNJkxHy/THg1cGzRocDViGS8w=
+	t=1707924084; cv=none; b=m6VdrxH37hFSvX1cD+C1zoF9zLF3FdEIUFxB++k3FMMSfFQbgd+ZGeW3gVMeSm3ARYMKTVaeHNexaU3aSgmwMTftDN+GpHywCTq2yDeCArQTI0zq2mkyZkT9TUCQQb960CHgtecY41WRYbKBKYLT8Kr0oaWkdKqhekAYnN+1mhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923980; c=relaxed/simple;
-	bh=rZnMjB7GTkAm89uF/LbKJcHyP/SinVsqT/qoZ+4bkGU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=TPKjdCPU0kAK12/sTvGccUGgtpF1goq4+LVz3v9BPPplPw4+HaQC0gU/e28UXZrGnwe/dlXZzAQ/aBiuja/zRPnx/dR/ddn/0ZL+UjGnZ4yOn3zUNsmxMKFyiBGJCC7+YyDXY4sfmZLc0qvowFFOfTJSGEKkAINwK4MA9YdTAvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=2hEG41fZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AFFC433C7;
-	Wed, 14 Feb 2024 15:19:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707923979;
-	bh=rZnMjB7GTkAm89uF/LbKJcHyP/SinVsqT/qoZ+4bkGU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=2hEG41fZ3VNDsyykWpeUdthDACFf9OegnoOKsk+a+NIDZ5yW/Zvj8Ra9RJRJgidco
-	 hrpdaWN5EeHcHM/q8FlVQz+2MXmHBPgIR4ivW4zXWihWaiBSBaKZXQAu/MZU+65Kyw
-	 5Azr31P4/P6s1NF40XUftLHkQMP2dMqjeD6Ic7bc=
-Date: Wed, 14 Feb 2024 07:19:38 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Oscar Salvador <osalvador@suse.de>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-Id: <20240214071938.f8ca072c08e618b483bae1c7@linux-foundation.org>
-In-Reply-To: <20240214145719.1cc4f320@canb.auug.org.au>
-References: <20240214145719.1cc4f320@canb.auug.org.au>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707924084; c=relaxed/simple;
+	bh=hoHcVDk16XAJElysZKBwoYlEivbmMy1dE57Ck84C2fY=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BFELBUCHcJ/vItHlyt55AedWcAhf/xLkovkDkI13rHV4alXh18srDaU38Yix0cEjQ/fh087KvIapuoXe/9S3yD14gTP06qPVQLkF+NaxQQBHu+m03uZkcNR88ZQm2eSm5uSah2iMkoCoa+Vdv1eG2wN+luJjf5Z2QpmYRwwGWv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cedw4qI+; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0a4e1789cso66529611fa.3;
+        Wed, 14 Feb 2024 07:21:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707924080; x=1708528880; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Pr15UxaRNNmkvqK+He+wlb2GgZLfbS3fJbzNeeMrFQ=;
+        b=cedw4qI+pTV6/2u6nNlddaxvBCwMndE1abicqsDpqwgDkcNJvPMeXckqG6wS2U/Fmb
+         QxyAy+tYAfwNq6NqqYWb6j/x1es52tcJ1lknv2RWHF/BdlJ22Y1Y0CNg8BywuKmARtg3
+         juVGU/t/bduVg6Ul4vRNwu4PbJnjgyMMsWQtAK8BQm+IQ9xVzUpOvjmy6zeQ31dX2Yl0
+         pSonwhSnU4Qmj67oB9oWf57WX85R3KG+zBDm7xXuC3fVkNfSKxHxHgLdH8MXbK0nbVvy
+         /FnLIkxjlK947XLfB5NrgOYam1b6tz277yv9NOFi9H0ilPAoNaQnTyNrp255HQ27cKJ0
+         alBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707924080; x=1708528880;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Pr15UxaRNNmkvqK+He+wlb2GgZLfbS3fJbzNeeMrFQ=;
+        b=HBImv+qgFty8oRwiy/Myk+HybFl144jejQfaqwrVEST4CUhGmgXquCy+onfZ7sacNu
+         KgWyH8bJQtVCS5iK6TSrrDK2PigavI4I7eHQHbZKu87omgrMuz+h+/1T/V6BN9PVjDi5
+         Daoc8jWA32PZFqYbQrDD2d2GttIDlua3NIS7kVUBwdSBWH8M0RffSvph0VcosS8/+e5f
+         tm674TCHZOPV+SeqE3CAC3brsoRvJSDpjZAkOOFB5I8H5fkaZj6RXxgp4acx4oIolSFp
+         A57YZLlOP0LRgfEVnqBCxK9OtaqAWGHGQHJVl/zwmZEHHUog/j+aRtMrAzEQ3lAezwFT
+         tm5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXW2UyVt2is1EWvPlTbJeU9JTrWWLI14xdCVBLibJG9iC9kusjO2exC0UStPbervngam97zYPSDBSTe2jf/9mVHzvZtDXlcrocDqcWl8WVgzqq/XxJYXPy7nd/izbqGqigdSN1aSvSpLsokhDfhcNKGJrI8dwkjzt/a1xIjXKlajlOKjawY9wejYFsZncBX0rZhyJcVQqpXRQYSvRH0
+X-Gm-Message-State: AOJu0YxBhOUOGIX9nDAiAx69/M7m0VIac6fJfCk34DkhAOCeqyJtMl1C
+	Ruc1l+akn6kfMCjVYGmsPZj733nsiFnWBNPrn2CQyzdcANBG757W
+X-Google-Smtp-Source: AGHT+IGyFvg5S9HPImDh5w5FpK3WH8gvrbyC8vFLmQHTmP4kfMQigz825zz60Doo7wJpkiWUKGEexg==
+X-Received: by 2002:a2e:8e2f:0:b0:2d0:de6f:c697 with SMTP id r15-20020a2e8e2f000000b002d0de6fc697mr1935294ljk.13.1707924080107;
+        Wed, 14 Feb 2024 07:21:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXYkWebjCqp/wgBMia5PRqUrydyGf0lABVvAFxLoYzDh2jHWoGMdGQPUx/hgj5ZoaURRwfe6Bnf2mXKW6VGoxFmwkGX4UyM39Tgiv3q/Rlwt9QyIX/IqJrB5i5hpCPCgnNlnX3Mu76l7E/02LH2Ldiu5lid9/QC019gSdpZ/39RwEWVD4oAZ0rLcuEVpMD/DVAy1LQvB1qfoL0sAPhprVzIxL8ybnPlP2Z7XNxpgz/nbDw387JFIV7tVElLB+BvAZlYPqwRpQcSQ0o9YaybYu1LYiN4wQ4gNFRT8MLPIWkBvx4BIXkzMmPhDUOIwP9QXDXhkiVG2Ct9QCwM6BHjAKx+R2+Wd3nF9GtHHt2ylF0LFDTjOsX+NgD+FbIHFgdrHCfOcU79Rcg9vJJjagYB0P0+X8GHfgwlY68kBAI7NaT7WUQRX23O0izOo/hvZKdreLG6rOyvT2AEij6CM8ahfMbn7MTnnpR0Rzq3YN3N6NCexJ7Ma9DLj5ojuSaWn7mv/x5hRV0hgQamerAsV6XnYYKz0XNlsJadLiIsidYD8VRzsQ==
+Received: from [192.168.11.205] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05600c2d4400b00411d3a414c6sm2165101wmg.47.2024.02.14.07.21.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 07:21:19 -0800 (PST)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <9c542f39-959e-4ab1-94a5-39e049a30743@xen.org>
+Date: Wed, 14 Feb 2024 15:21:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v12 08/20] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>
+References: <20240115125707.1183-1-paul@xen.org>
+ <20240115125707.1183-9-paul@xen.org> <ZcMBDP6H5PRo5C2d@google.com>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <ZcMBDP6H5PRo5C2d@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Wed, 14 Feb 2024 14:57:19 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> After merging the mm tree, today's linux-next build (sparc defconfig)
-> failed like this:
+On 07/02/2024 04:03, Sean Christopherson wrote:
+> +s390 folks (question on kvm_is_error_gpa() for ya)
 > 
-> In file included from include/linux/page_ext.h:7,
->                  from include/linux/mm.h:22,
->                  from fs/sysfs/file.c:18:
-> include/linux/stackdepot.h:59:39: error: 'CONFIG_STACKDEPOT_MAX_FRAMES' undeclared here (not in a function)
->    59 |                 unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];    /* Frames */
->       |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> On Mon, Jan 15, 2024, Paul Durrant wrote:
+>> @@ -1398,7 +1414,9 @@ void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc);
+>>   static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
+>>   {
+>>   	lockdep_assert_held(&gpc->lock);
+>> -	mark_page_dirty_in_slot(gpc->kvm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
+>> +
+>> +	if (gpc->gpa != KVM_XEN_INVALID_GPA)
 > 
-> (and many more)
+> KVM_XEN_INVALID_GPA absolutely doesn't belong in common code.  Not to mention
+> that it will break when Paolo (rightly) moves it to an x86 header.
 > 
-> Caused by commit
+> https://lore.kernel.org/all/20240131233056.10845-3-pbonzini@redhat.com
 > 
->   18d4230bb372 ("lib/stackdepot: move stack_record struct definition into the header")
+>> +		mark_page_dirty_in_slot(gpc->kvm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
+>>   }
+>>   
+>>   void kvm_sigset_activate(struct kvm_vcpu *vcpu);
+>> diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
+>> index 97eec8ee3449..ae822bff812f 100644
+>> --- a/virt/kvm/pfncache.c
+>> +++ b/virt/kvm/pfncache.c
+>> @@ -48,7 +48,10 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
+>>   	if (!gpc->active)
+>>   		return false;
+>>   
+>> -	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
+>> +	if (gpc->gpa != KVM_XEN_INVALID_GPA && gpc->generation != slots->generation)
+> 
+> This needs a comment.  I know what it's doing, but it wasn't obvious at first
+> glance, and it definitely won't be intuitive for readers that aren't intimately
+> familiar with memslots.
+> 
+>> +		return false;
+>> +
+>> +	if (kvm_is_error_hva(gpc->uhva))
+>>   		return false;
+>>   
+>>   	if (offset_in_page(gpc->uhva) + len > PAGE_SIZE)
+>> @@ -209,11 +212,13 @@ static kvm_pfn_t hva_to_pfn_retry(struct gfn_to_pfn_cache *gpc)
+>>   	return -EFAULT;
+>>   }
+>>   
+>> -static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
+>> +static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa, unsigned long uhva,
+>>   			     unsigned long len)
+>>   {
+>>   	struct kvm_memslots *slots = kvm_memslots(gpc->kvm);
+>> -	unsigned long page_offset = offset_in_page(gpa);
+>> +	unsigned long page_offset = (gpa != KVM_XEN_INVALID_GPA) ?
+>> +		offset_in_page(gpa) :
+>> +		offset_in_page(uhva);
+> 
+> This formatting is funky.  I also think it would be worth adding a helper to pair
+> with kvm_is_error_hva().
+> 
+> But!  kvm_is_error_gpa() already exists, and it very, very sneakily does a memslot
+> lookup and checks for a valid HVA.
+> 
+> s390 people, any objection to renaming kvm_is_error_gpa() to something like
+> kvm_gpa_has_memslot() or kvm_gpa_is_in_memslot()?  s390 is the only code that
+> uses the existing helper.
+> 
+> That would both to free up the name to pair with kvm_is_error_hva(), and would
+> make it obvious what the helper does; I was quite surprised that "error" means
+> "is covered by a valid memslot".
+> 
 
-Thanks, I'll try this.
+Seemingly no response to this; I'll define a local helper rather than 
+re-working the open-coded tests to check against INVALID_GPA. This can 
+then be trivially replaced if need be.
 
+> Back to this code, then we can have a slightly cleaner:
+> 
+> 	unsigned long page_offset = kvm_is_error_gpa(gpa) ? offset_in_page(gpa) :
+> 							    offset_in_page(uhva);
+> 
+> 
+> And I think it's worth asserting that exactly _one_ of GPA or HVA is valid, e.g.
+> to ensure KVM doesn't end up with botched offsets, and to make it a bit more
+> clear what's going on.
+> 
+> 
+> 	if (WARN_ON_ONCE(kvm_is_error_gpa(gpa) == kvm_is_error_hva(uhva))
+> 		return -EINVAL;
 
---- a/include/linux/stackdepot.h~lib-stackdepot-move-stack_record-struct-definition-into-the-header-fix
-+++ a/include/linux/stackdepot.h
-@@ -39,6 +39,7 @@ typedef u32 depot_stack_handle_t;
- #define DEPOT_POOL_INDEX_BITS (DEPOT_HANDLE_BITS - DEPOT_OFFSET_BITS - \
- 			       STACK_DEPOT_EXTRA_BITS)
- 
-+#ifdef CONFIG_STACKDEPOT
- /* Compact structure that stores a reference to a stack. */
- union handle_parts {
- 	depot_stack_handle_t handle;
-@@ -73,6 +74,7 @@ struct stack_record {
- 		};
- 	};
- };
-+#endif
- 
- typedef u32 depot_flags_t;
- 
-_
+Sure.
 
 
