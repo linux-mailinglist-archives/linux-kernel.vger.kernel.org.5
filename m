@@ -1,153 +1,110 @@
-Return-Path: <linux-kernel+bounces-64761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4372785428E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:57:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA93D85428F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:58:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46AF51C22EAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:57:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75AA9282C6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D78F10A13;
-	Wed, 14 Feb 2024 05:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE0310971;
+	Wed, 14 Feb 2024 05:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R1SuX3Sf"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ajwHwaZG"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF9410A01;
-	Wed, 14 Feb 2024 05:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2130BD310
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707890234; cv=none; b=WQ7yNmoT/VM3Jr0+9eZGzK5YTr3V1IETr8zM4n1WLtZEoUTTKagnF2sTfpneeKj+ui5eGR0CP1o0kbJcY+zyz5B+yxYAMD1PrgdtUNiUEjQtD/wvnZpKh3qRsoTK6U6B03swlhH1PyV0F7HQQaUiKuYyN1NyawGr+ICk7+HR88c=
+	t=1707890323; cv=none; b=csKYweMJbpY5zWzMIJf6MAbsbONKvP6o58L0zmn9r+LqtaR3J0/WTu591eiOhB6/y7+sCwOliR9RYNK0W+UVOTgGh3hRupxajQUyqQ08KHiU/q8ndqzP1W6JjTunQT9VKybGe64YaYE8fbviu/v584BSGlrXSLPveVljTyBO4kY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707890234; c=relaxed/simple;
-	bh=6SDXUXlfPjx8eiB5vMETjU0fSxFRT+10FuXj/UbTsx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uEx73yvmgdb3GqhvQBtHnYltpBIqU1MCsFp3jhquW1NfPhuFXBYSLshWyoWVdNqcDeFMAsdaDPbpEgV6IDPQZDch98TvA6A8MjxwgpKiupx7fV+J7SN0VsugwxViQBNNzOwzlxdwb7QYxHz6HtaHpyT8zcxxAonRRQcuf9ynaXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R1SuX3Sf; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E5OHdx010014;
-	Wed, 14 Feb 2024 05:57:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=w8ISlZMV1zhNjIcMsRsxLGRvBcIZv75kpuqKibeytG0=; b=R1
-	SuX3SfAoZoaedqYn0nsqf/4YpmM4dvvAc6HCQCaSF2FrHJk6zIVx7SaBvChxxMCL
-	7+TV3+bO3T+0l0Krxfy2BDY6VWfS0m3vvqldZdrqNMVP58vwrmp30khtbkDl9yDr
-	8OyBt/Suns4cYelDQx4q+lyhyKqDVZbK9O/WCckTIzoy5XB02dcwE2Gg5MXoLe6g
-	gD417D6GKEUhkbuSV9LVgsmlSTEL05Z70GI5B8HvsSzCcAkZR65cHVTXbKZKli/N
-	bXxrbpEShz5lpvmqgw5Pfp2v1t9OCL/hEm5WHdPnkAUXoXzqusBoKvPN3OsZCl9/
-	liWE7AqIYFJNG7055B0A==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8nt4060p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 05:57:07 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E5v6SY019237
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 05:57:06 GMT
-Received: from [10.214.18.146] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
- 2024 21:57:04 -0800
-Message-ID: <38e6cf32-78fc-4a5a-a98c-18b126bdf50f@quicinc.com>
-Date: Wed, 14 Feb 2024 11:27:01 +0530
+	s=arc-20240116; t=1707890323; c=relaxed/simple;
+	bh=ZcqxcjQxDebT5CbvXKPEB85P6WxkC7BjuKlGqRqGBgw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VF/eCg7XuBY5owOzcl5hxA4YdoSrZMAuT+5UfwrX4lNwhAWkmVfehzOounxgx6kr6mN5DoGHtwszKlOd/MzEfaoftBOtbPmuCttI1sQVwpZSgTNUj/5llqfRTcfQWlk96dHxmdN/PYFf0bP6t+S0zvrGCCS6fZqypV5TGBO5NlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ajwHwaZG; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d932f6ccfaso37189775ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 21:58:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707890318; x=1708495118; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nY08EkkPJUeVUObPeyFdb1hWJ0D/OitTX82rprubt28=;
+        b=ajwHwaZGRnD1R1TRE5y+xDZRjsEL+pzXFov9xrE6MTtgnaRCZJu5b1fE6z72nUswqm
+         AvMl3e2mmw/Qc3q8O9gvH4kwGMtaiyPKKxCckSBzXv71zNyuIXKmMIVRxnlCCwPc5Qrb
+         HbM4kGh3F5Zj8DLLYNLwlYlPlV2MCU4vihola5vRSNVCvlc1RaT02ti71j2ehFXbeefr
+         LAijiDfL0uGG0ZIaxHEogMgPG/ddX8LxYGbIHcDeoA8z3j1oRB4FkXvu+PQQEnve3SL9
+         TEe7gvsg1t1XW0JxdoYokKhs6gr2gWgSNa2TtmEqYpJ+uOgANM+QstoHbgLvdGdL99IV
+         cDOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707890318; x=1708495118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nY08EkkPJUeVUObPeyFdb1hWJ0D/OitTX82rprubt28=;
+        b=LkD9YhDuqPmlOdEvML6Qw6IwL5/V5b3dGjOTxp4IY3taVZuCdtxn1ptaqSObM36g6w
+         Ep0qQqAVp/ipir8pxEHE/HmJpyJRY7sZ8myBp3/I3PPa7b27ZTH0eobX5zKU89xrS/SI
+         Yija/lXGm0ubJ/uiVKxMwVRZm9gIDzW8d2Emg1dwn3qLVrdCiZSJKzxFQFnvRDNFIvah
+         rCmNpZcVvaSj09VXIl9qJ1qou3yRwV0tHVDo7FW7xkY2l9fLCs0hRUE0IFxrlNF8W4zs
+         BIozY8TaKNPhxaxNiFO3WdJ036yHVccf1ZFRm3xmb3P+R1TnNDywQ+Q90KuNxfC2DG0f
+         J74A==
+X-Forwarded-Encrypted: i=1; AJvYcCUn2zbjGMZsA2nuZIQ7ZXVq+WxJeMvS19ZFyR7rU/lSiR1/i8asNs7IDzTHbp94MLXP267eKKWFLD6f65msmYIID3kqiXPjNcM4MYx4
+X-Gm-Message-State: AOJu0YyTn4XHKW5orMZjo3s1DbHnHT3uf7z4EScjzJE0R9aMY6b/9tD3
+	+rXp3Cm3veO6aGk5cgsncy0oN9zhD8sr14mptcHBLEwCRzZcErihUM/GxHwiTek=
+X-Google-Smtp-Source: AGHT+IGhQ7H2Zp/0O/Pg0ufvkyGVHSn7dTBcgVXoYEUm94RfKCVKGGx5r5Tk819uhm7fp8LAAnNK2A==
+X-Received: by 2002:a17:902:708c:b0:1d8:f071:5067 with SMTP id z12-20020a170902708c00b001d8f0715067mr1822353plk.35.1707890318439;
+        Tue, 13 Feb 2024 21:58:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUiv7v0g/VUOGhVZtdAvl5qwTiaKnmJDlU0BzdcWc+GYFLjbNOKuuavSx1zq806FNjT0Zzka810dkxtLaZqvb2fLatR1+EYjNH9LAsE+txrDrs96kKtbwN97fDiH4oex5XGySkqeA==
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id jk5-20020a170903330500b001db4f25b168sm859730plb.255.2024.02.13.21.58.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 21:58:37 -0800 (PST)
+Date: Wed, 14 Feb 2024 11:28:36 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: drivers/opp/debugfs.c:48:54: warning: '%d' directive output may
+ be truncated writing between 1 and 11 bytes into a region of size 8
+Message-ID: <20240214055836.c5i3zmkhdllldwon@vireshk-i7>
+References: <202402141313.81ltVF5g-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] soc: qcom: mdt_loader: Add Upperbounds check for
- program header access
-Content-Language: en-US
-To: Bjorn Andersson <andersson@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20240213080010.16924-1-quic_audityab@quicinc.com>
- <y6em73mzbh47fzpgfvfsrypw5ktgt6zaqfujscaxkjuqivlxcr@vcke7w4omq7b>
-From: Auditya Bhattaram <quic_audityab@quicinc.com>
-In-Reply-To: <y6em73mzbh47fzpgfvfsrypw5ktgt6zaqfujscaxkjuqivlxcr@vcke7w4omq7b>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: MYPfwjGipRs2ALcjACeImYEJQAGuB-AA
-X-Proofpoint-ORIG-GUID: MYPfwjGipRs2ALcjACeImYEJQAGuB-AA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
- impostorscore=0 adultscore=0 malwarescore=0 phishscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402140044
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202402141313.81ltVF5g-lkp@intel.com>
 
-
-
-On 2/14/2024 11:12 AM, Bjorn Andersson wrote:
-> On Tue, Feb 13, 2024 at 01:30:10PM +0530, Auditya Bhattaram wrote:
->> hash_index is evaluated by looping phdrs till QCOM_MDT_TYPE_HASH
->> is found. Add an upperbound check to phdrs to access within elf size.
->>
+On 14-02-24, 13:43, kernel test robot wrote:
+> Hi Viresh,
 > 
-> How is this compatible with what is being observed on SM8450 and
-> implemented in commit 8bd42e2341a7 ("soc: qcom: mdt_loader: Allow hash
-> segment to be split out"?
+> FYI, the error/warning still remains.
 > 
-> Regards,
-> Bjorn
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   7e90b5c295ec1e47c8ad865429f046970c549a66
+> commit: 46f48aca2e5aef3f430e95d1a5fb68227ec8ec85 OPP: Fix missing debugfs supply directory for OPPs
+> date:   5 years ago
+> config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20240214/202402141313.81ltVF5g-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402141313.81ltVF5g-lkp@intel.com/reproduce)
 > 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202402141313.81ltVF5g-lkp@intel.com/
 
-Calculating hash_index is introduced with this commit 8bd42e2341a7 
-("soc: qcom: mdt_loader: Allow hash segment to be split out"
+I have informed this earlier too, this report is incorrect and applies
+to a very old commit.
 
-     for (i = 1; i < ehdr->e_phnum; i++) {
-  	if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) ...
-
-I'm trying to add an upper bound for this access "phdrs[i]"
-
->> Fixes: 64fb5eb87d58 ("soc: qcom: mdt_loader: Allow hash to reside in any segment")
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Auditya Bhattaram <quic_audityab@quicinc.com>
->> Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
->> ---
->> Changes in v4:
->>   - Added additional prints incase of Invalid access.
->> Link to v3 https://lore.kernel.org/stable/1c91c653-cebe-4407-bdd6-cfc73b64c0fb@quicinc.com
->> Link to v2 https://lore.kernel.org/linux-arm-msm/9773d189-c896-d5c5-804c-e086c24987b4@quicinc.com/T/#t
->> Link to v1 https://lore.kernel.org/linux-arm-msm/5d7a3b97-d840-4863-91a0-32c1d8e7532f@linaro.org/T/#t
->> ---
->>   drivers/soc/qcom/mdt_loader.c | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
->> index 6f177e46fa0f..1a79a7bba468 100644
->> --- a/drivers/soc/qcom/mdt_loader.c
->> +++ b/drivers/soc/qcom/mdt_loader.c
->> @@ -145,6 +143,13 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len,
->>   	if (phdrs[0].p_type == PT_LOAD)
->>   		return ERR_PTR(-EINVAL);
->>
->> +	if (((size_t)(phdrs + ehdr->e_phnum)) > ((size_t)ehdr + fw->size)) {
->> +		dev_err(dev,
->> +			"Invalid phdrs access for fw: %s, e_phnum: %u, fw->size: %zu\n",
->> +			fw_name, ehdr->e_phnum, fw->size);
->> +		return ERR_PTR(-EINVAL);
->> +	}
->> +
->>   	for (i = 1; i < ehdr->e_phnum; i++) {
->>   		if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH) {
->>   			hash_segment = i;
->> --
->> 2.17.1
->>
+-- 
+viresh
 
