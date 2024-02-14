@@ -1,117 +1,124 @@
-Return-Path: <linux-kernel+bounces-65830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A856A855293
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:47:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562B8855299
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:48:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB1E41C22293
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:47:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E17931F2D00A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614601384A0;
-	Wed, 14 Feb 2024 18:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Ka6xeXbs"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F221384A0;
+	Wed, 14 Feb 2024 18:48:27 +0000 (UTC)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18EB32189;
-	Wed, 14 Feb 2024 18:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA175C605
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936441; cv=none; b=TXzw6JdLaHrJyIcbzB3DOkqFP27HYZtppe+NKzbLNRdsKel+fZM7uPihJFJuaIF4vuNCz0tWF4rulAFYGi7aW0PTTOIdnEr/vebi+c/OU5J0fNAMB60zIYk4+Pmh4ni85UT5Rkzyd3l3kPfp+Imuc05Atv/BeCj2VU84WqF9q/Q=
+	t=1707936507; cv=none; b=DZfN2hBONpoYvDsIEH6S13pHdS+HdTOMdyQUNssetqE0shSASAqVEa33JQIGvpxwIal+UGJPhQYIBlCf7+2ANDEuDpZw1EjisreOH+NIg1JozcL4+n3Uz3zn5y/eZsp2vQ4IN2cZqXd3B2mDUo441t8BsxrfTa+Q4HKt5RSeJ60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936441; c=relaxed/simple;
-	bh=NIm3IgEloLvGBvBH4Zaebzho0OXqos2EvaBHzn4DpFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eWhmW/JvkpFAz6nw/WW2hfxbMjLtMICeYQ5MMlvw3DISxj5QUxi6CD8nXnMNxuIEj8uC53uEFvfhUCIoCoJkB2YMpivPaoELh48CbbO9amOp286K8h2sX236b1G1cY4Vts+fkUoBRWd+IlzHbp13W0zpYvTnzyb3gU9052Blwvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Ka6xeXbs; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9521840E0192;
-	Wed, 14 Feb 2024 18:47:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id uDEVClmVslPA; Wed, 14 Feb 2024 18:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707936435; bh=GXB5NuZcN+0hs/uqer3xg1+8nRfnzlvMrvLEydd0vfc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ka6xeXbsBZvqA0MO+I0wjdoS12yKludbo+NrYYxB9HDpt/5av4wXvEsyhmLlmdgOt
-	 SXRxtwGy3gfHiqKWka2mocfRj3kwhp1fE3f4tWpMVDlJmQHXo0IDRLJO+xQL9T/sGm
-	 b95ToRa699l+GXzanSQdx2zmbkEuOS50yurvk0rfCfMFS6uf3kQkeQN9Kg6TaQHypD
-	 Cjz7eJYiCGJjZQqC6m2Lm4OXQTMK80x3NjJGBFGH1l4yiy/uU3iIlrRJVdgkakbGN5
-	 P1JWtlBnMHw1kntNbz8OC518mxEkrPZBcfnNiukfzhkGqac9bTTzjw9khloEkB1lGr
-	 kEL1xlvZSLcSgun1qNTZAWzuq6PrDHwGxmqEQ48cA5U64pYJwFKbX/LDPjVuUX3GAp
-	 zYtA6zEqAeTr3N2rfC7q77FtcHO/Jl6FGoWahjEuXecW+CYSvyN43DsVK0rEu2KRbE
-	 9rM2ugaws6jE9kxFyeeSP77UFGXU0ZEobf9RCGWvuNaWDY/yys4z+EoJmI2dri/E68
-	 h2knqFGX74hCwqKXsUT5nR6vA3sNcmR7v0BfXoxgh4AYzeaDnSCH+t+YlFIERaEl7U
-	 7t8+GNwWdXWOf9bqgU+FhhKctXihTasO2Z+dQlcWaLTAw6QHd8YjBckbibxa/hIOjw
-	 MHMGxS2Og5XvBwYbeZsQon4E=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7331840E016C;
-	Wed, 14 Feb 2024 18:47:06 +0000 (UTC)
-Date: Wed, 14 Feb 2024 19:47:05 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214184705.GOZc0KqTyCJEBD-B0i@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1707936507; c=relaxed/simple;
+	bh=ffzC+GT1XkMW9JLINw9Rvta5c4VPLZnJJBasvRXjLBA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OfYsZPe61FWaMpU8yW4Z4g6TSweawW9wy+v+jIyyr59dCMNwSyf6LHqrLIhiRGgsm0Cjz98f8x2SmgGDPJ1HysEETSgYJyAiWLjXsSI1zpupIU+zTAs0Q+g8Y5lgenQBHR7Br0YzOY12EUzFDeoro0sYJz0MmTydjvSwfXwDMmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60779014458so941587b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:48:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707936503; x=1708541303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IQAt50T9c7g+J3x/tLQdiBHqHkoy0RbrOV9gm6BoB4s=;
+        b=vkHy5SgAqvUC1pdthMW8ZBsAQcBqvg3rE1UI8udSu/brcJ8C54bDiI2REuDJZIPgvx
+         E4Gt+vF1MNn9lq11No/yuhDKY/G6zuUZliDRu8ISzPYqYVzu1hjx37JupAz3X5LQUoBx
+         8UiyyUBGeE6aVHPSTxwVJmPLQZT6W9Hqt6ZybW9svN4VGnVAM4WIVzKKMO/lIOxIECgm
+         u3kKpLOZbX7YiXho885D0U5zrfjrMHzquhW/DaZjXZzDCznRjNZ3RuITtuvvDYyeSJQc
+         Zi26Tm3o9gkf48kVzaVnrK9I2pzKowtSL3Bc3igznxolLn7t2/80njziR8YZaEzNjzee
+         EwBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWDyafx/0nJrmaP1NQah/Ro1aZPaE6leN1WZL4lJTfn9T/kxgvy7BaDBzoIqRYjymFdK6mmkHL3q1LDEOWD8g/qTIfSk+SJv5pdbBxX
+X-Gm-Message-State: AOJu0YwnNCLpYRIa+COEheVOm4pWbDb6ZYm4q4okVTkTj8gQ2iUyzXLx
+	XLh57ijCOToJPsS/ZzCjXcVVHPHeAIcjaFtf2JJq4vjVHO0mOyopEl8R5DSdmYA=
+X-Google-Smtp-Source: AGHT+IHWG/ONlwbUxbxNLJn5JiOaDLDU1AggFfiVCiwK2UB9LlquhxgO7a+c48UPXU2lvlaEEakxLA==
+X-Received: by 2002:a0d:d788:0:b0:607:7c26:7e14 with SMTP id z130-20020a0dd788000000b006077c267e14mr3718749ywd.34.1707936503402;
+        Wed, 14 Feb 2024 10:48:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUWZpjMVvXLMReIogMY5LDWruONNDlqOh5DgK7JFBoRLW8lWbYFW/IWtb6xZc7h+4NtsgxTPo0Sw6Oy3DoDQFfzQoQ4wor921j3a64+
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id k82-20020a816f55000000b006046bd562a5sm2304911ywc.128.2024.02.14.10.48.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 10:48:23 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4342047276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:48:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVHhxvuUL3qDhWhbdcbOt36ngyZMf+ganibESG09JvC/2PK6mp5Z/as8rF9JUaYhw/R4MbiXRPrBI3ok5m+SSiseMaWn8aDQaGwEyzF
+X-Received: by 2002:a25:d3ca:0:b0:dc7:43fe:e124 with SMTP id
+ e193-20020a25d3ca000000b00dc743fee124mr3440358ybf.11.1707936502887; Wed, 14
+ Feb 2024 10:48:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
+References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
+ <20240212132515.2660837-4-andriy.shevchenko@linux.intel.com>
+ <Zcoe9axtLXxB7Jeo@smile.fi.intel.com> <CAMuHMdUJ4gSGo4A0BVGkieWvNyqa9Dv_rQVMFj9N8GWYoKCZVg@mail.gmail.com>
+ <CANiq72muoZHzX+qNKabYWnH738okKqrfAruUOpY-4WUJBLP=Yw@mail.gmail.com>
+ <Zcz7Cfc5XSM2MtKV@smile.fi.intel.com> <CANiq72ntYrPyybUDavPuT+anrwfjPb27P8VbL+toMvyp8K293w@mail.gmail.com>
+ <Zcz9WNXpRzv8THKW@smile.fi.intel.com>
+In-Reply-To: <Zcz9WNXpRzv8THKW@smile.fi.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 14 Feb 2024 19:48:11 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVpf_cuGaoE_9y5wf7yS_XbgcstcgJM8NAgRpCHirr4_A@mail.gmail.com>
+Message-ID: <CAMuHMdVpf_cuGaoE_9y5wf7yS_XbgcstcgJM8NAgRpCHirr4_A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] auxdisplay: Move cfag12864b.h to the subsystem folder
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
-> +static bool same_fpd(struct cper_fru_poison_desc *old, struct cper_fru_poison_desc *new)
+Hi Andy,
 
-The usual convention in the kernel is:
+On Wed, Feb 14, 2024 at 6:50=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Wed, Feb 14, 2024 at 06:42:56PM +0100, Miguel Ojeda wrote:
+> > On Wed, Feb 14, 2024 at 6:40=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > I don't want to rebase, esp. taking into account the proposal below.
+> >
+> > Why do you not want to rebase?
+>
+> It's a standard practice in the Linux kernel development.
+> If it's not a so critical issue, why should we rebase?
+>
+> rebasing will break SHA sums and it's not appreciated especially at the l=
+ate
+> rcX weeks. Linus can even refuse to accept a PR based on this fact.
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index 643c36b6dc9c..e50f11fb90a4 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -220,7 +220,7 @@ static bool rec_has_valid_entries(struct fru_rec *rec)
- 	return true;
- }
- 
--static bool same_fpd(struct cper_fru_poison_desc *old, struct cper_fru_poison_desc *new)
-+static bool fpds_equal(struct cper_fru_poison_desc *old, struct cper_fru_poison_desc *new)
- {
- 	/*
- 	 * Ignore timestamp field.
-@@ -250,7 +250,7 @@ static bool rec_has_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *fpd)
- 	for (i = 0; i < rec->fmp.nr_entries; i++) {
- 		struct cper_fru_poison_desc *fpd_i = &rec->entries[i];
- 
--		if (same_fpd(fpd_i, fpd)) {
-+		if (fpds_equal(fpd_i, fpd)) {
- 			pr_debug("Found duplicate record");
- 			return true;
- 		}
+Come on, we're only at rc4.
+Given the (lack of a) gazillion of auxdisplay users, I doubt anyone is
+basing a tree to be pulled in some other subsystem on your auxdisplay
+tree.
 
+Gr{oetje,eeting}s,
 
--- 
-Regards/Gruss,
-    Boris.
+                        Geert
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
