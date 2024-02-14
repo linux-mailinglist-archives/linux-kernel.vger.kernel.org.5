@@ -1,160 +1,99 @@
-Return-Path: <linux-kernel+bounces-64974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7845B854554
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:32:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B9F854557
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9E48B23506
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:32:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B3B292147
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D9312E5E;
-	Wed, 14 Feb 2024 09:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E05F12B9E;
+	Wed, 14 Feb 2024 09:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MwFEjeGN"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nU6797v1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469B817581
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1798A14A93;
+	Wed, 14 Feb 2024 09:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903121; cv=none; b=l9bNUMbH2gRWnT12usiDdsBQd61JwzfKTZE0hWhJXPTzU6TNRt1rfAPRyl2SHI8/gu18oMPyurJwvPBVuTXOEJhtK9Q0pp6UA5ivCqT7PDnc9W+Hh98Sjm0bHRDUkeB+h5BzbqsPV0n9kqpHwGYU5/a9bk4svkLdqiHWsWmhHYQ=
+	t=1707903152; cv=none; b=sdMBuY9OUiv2n555OUEoLTrZMyDmJhAm3r2CbuikOafkZPdPGFuIiwClf8UUbmBETpnXDNFbgLjTCnJNShwV3htbTia87qQm458lZ9F8FhYL3JZhs6MN9bkWN8RA782bX84ePKCwz5gA2i4Okw+mSvoTj2+SxjoXz0Bu2GdbZuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903121; c=relaxed/simple;
-	bh=PNBPQQfDhnyfFmsyjofTq3seA50s+CQGQT4eK1YzTfw=;
+	s=arc-20240116; t=1707903152; c=relaxed/simple;
+	bh=sgHsCHxDoO5MTtQjA5HZm+TAMiYkv40VOYSxH54M9zo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s5LRvjr7rm3XGoDUDiEja+c4AKjCmB0sSflWGFWzxJKjlQ2I69ypk1BbFfLH1u6KLcdGUyTNp85BG50xbiLq18jUZctyr++3kgK6MR092TJzoYsvUegMm/qb03wPogXGgmoBR38XXSUo8CtAipQ5hNZ7pIFowauVyS4PfinJQUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MwFEjeGN; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso799289766b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1707903117; x=1708507917; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fPkMEDM6CGcLhgxC9XLiOvcJXbRVQx7jQnt9AcMiATE=;
-        b=MwFEjeGNTfviwU3z3OsO+WJR2gpQmzoeKVd97dxqNzmWGg8KSYJ3clKaYNL9k/ILOG
-         rCDi4usOSJvpAuXQ5aFq2m4AYibeIBfNX6KiuQYeE2X7TyjrXJAxQdRzXeXE5cJoz+Um
-         r/hhw+JSHec9FJcc0giF6axs3Evn9dV6401tMFZLCHnlRY2B/pb7y6WUp/Qbx44Q4GJY
-         apJd1kema6Hxzn1kb0zdBklmeDrrEwQ9uznzLXGtRh94Ky8lgsDqHL7fnftLNpPQw1dP
-         EfMYvdO8wnPzNeODPQ9OkmIr6d/N0xYcmzxLi1TtOEoQZVfBkeO12eXekHPAfXmjhAav
-         Kw8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707903117; x=1708507917;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fPkMEDM6CGcLhgxC9XLiOvcJXbRVQx7jQnt9AcMiATE=;
-        b=l8giJCXESXsuzKFvcT1UbbcBE3Xj6c2DFMY99q4nahkyAUt6rohz+xGYY/n3HELYAP
-         2DSSidIjw77zEJEqvoE55X5cd0JZ3bhRkxonwP3ooFyjKC/U99XNm1/Kyd3YUaWm9gUo
-         TdqXxLx91A1gmY8bmfiePEQw/wgXifI0Ds1Oju8x6Sv9cYoZ+vMWe6N5DNoQso90pQGy
-         7KqSRKRXNTB3oeFQe4L6OG8nw+ISJ/mtKVwjRidiIN/UIUe/lAKK2ZM1iZfI9HzTzJKw
-         gSFw0p0+2PvkORdqsdKLczKQxyWY3n6yFFUnXubgEbnj6vDNfvhgrmH/I3KZ/H1zwVvG
-         Ep3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVjBu0zkySuNCd20GFOI0/2UExMR714kF5+vss//+G6A4fQODEjivV2ofqKm/1QAeNoFyhvb7pblIQH4LwtJDBla8w2AEqaKV/ZxMi8
-X-Gm-Message-State: AOJu0YwsMfjPEkUG6vrjvZ5I1OlszPGaI0WjGjitsDnAIdnIlG78YfxU
-	6JhCISXEdR85DMR+Wq2dHHitLJLhe7a4vya8dv4elEP1FMwSQBxemTJUp1EizLv+gsYieZSrrzX
-	F
-X-Google-Smtp-Source: AGHT+IF8kkzFen/v5G4itl1C1HxmRqShxMaO5flZTd2cApaQ6jUtGYGLvIPncX0tBNHzcsWS6KEBiQ==
-X-Received: by 2002:a17:906:d95:b0:a3c:91aa:6a6d with SMTP id m21-20020a1709060d9500b00a3c91aa6a6dmr1312354eji.25.1707903117523;
-        Wed, 14 Feb 2024 01:31:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW7O3+pEWeOpRvppTPJpkXv4A5Ltp/JnGt6+2P5pT/x0xR9RuZLv8Gy989tdZvcv3xHAwpfieRgOQ+EPPYUAZYSsh03LMkAwRDCkGELLOgkAQWDXlUi6KduTUXZ6j8wOPJHI0MgUYiMy2Htt5IohkYM6YieH09GFUw+Qy3TtIcbizGWxxFJNI6TuGVsHmZwOk8HrRXtyEQfpo5qgQJdsXK/rDn/WJ/znwaVOF0usc7I+kU7/0ZLEY9xd+DfI33dUooQdJon9CUUpvZjZSWqaPeZS/QWmNS1kpc5QXVjkfoDnDrJVIb4XOuZxe7cqSFo9X2Edp3IBk7aVJSRg32ua5aGnqBCxWja9WT4zDEvWj2IhQ5TgEO3a/FHw64wXcq4A4JrilIEb8oILy5rPw==
-Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id i18-20020a170906115200b00a3d310a2684sm665364eja.158.2024.02.14.01.31.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 01:31:57 -0800 (PST)
-Date: Wed, 14 Feb 2024 10:31:56 +0100
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Tero Kristo <kristo@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Santosh Shilimkar <ssantosh@kernel.org>, Andrew Davis <afd@ti.com>, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add nvmem-cells
-Message-ID: <z56fiu2jpokp57sjvnrdcbfy7brpq2ag4yxpektqlhtidecx4n@vc7dsurhxorb>
-References: <20240206143711.2410135-1-msp@baylibre.com>
- <20240206143711.2410135-3-msp@baylibre.com>
- <20240206184305.GA1875492-robh@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tGsy30tp2JyrByWb1KjZbDPW5VgJ0QN35ge/IX2WllcmItoFCfOfJGVMkmySEV70RndalWiP8rhoqownFGVa8u35vBkAaOIDnoeqa5JUjbBj77znlg4vJNWqidmMTbZcNpZQuEU8iNkKpUYon8PwD6mQf9AA6aYSoLJpoIe2Ous=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nU6797v1; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707903150; x=1739439150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sgHsCHxDoO5MTtQjA5HZm+TAMiYkv40VOYSxH54M9zo=;
+  b=nU6797v17Rn6J/S4CVT0fMXk0cVMUCBHqbnM1OBU9KDlrEjcoKWfVHF8
+   UH1S1Ijxb/+iLC+LtjeSbRHGdpVP4IOn5q6irVIC2SRgQwOcVg/wnatZF
+   waOlaz7CiEeMSHplGuEndRCx76mTi8KEEsipwgQ1/O7Dz/IcbJDesoKcE
+   vA0kVfM2TKOxtV4ZYQPrdt86fwYO765yu819pjeWQnau7eR3R2n+SuBn4
+   zxAEFVkdRf44FbtHsUCScO8JbnUKP9xM/1CppEkDX6AyIj8nwVbIOT948
+   6f9rUAsH4LsM7JbkjhRfY1l52xjznzQ+boZboIj8YVK1b3XH2urkXzRa4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2303707"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="2303707"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 01:32:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935606727"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="935606727"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 01:32:27 -0800
+Date: Wed, 14 Feb 2024 11:32:24 +0200
+From: Raag Jadav <raag.jadav@intel.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: u.kleine-koenig@pengutronix.de, mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] pwm: lpss: drop redundant runtime PM handles
+Message-ID: <ZcyIqEFufO39WMqn@black.fi.intel.com>
+References: <20240212061037.4271-1-raag.jadav@intel.com>
+ <20240212061037.4271-3-raag.jadav@intel.com>
+ <91bbea2c-b6f7-48cf-b540-83c73750d1d2@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240206184305.GA1875492-robh@kernel.org>
+In-Reply-To: <91bbea2c-b6f7-48cf-b540-83c73750d1d2@linux.intel.com>
 
-Hi Rob,
-
-On Tue, Feb 06, 2024 at 06:43:05PM +0000, Rob Herring wrote:
-> On Tue, Feb 06, 2024 at 03:37:09PM +0100, Markus Schneider-Pargmann wrote:
-> > The information k3-socinfo requires is stored in an efuse area. This
-> > area is required by other devices/drivers as well, so using nvmem-cells
-> > can be a cleaner way to describe which information are used.
+On Wed, Feb 14, 2024 at 09:04:09AM +0200, Jarkko Nikula wrote:
+> On 2/12/24 08:10, Raag Jadav wrote:
+> > We no longer need empty runtime PM handles for PCI devices after commit
+> > c5eb1190074c ("PCI / PM: Allow runtime PM without callback functions").
+> > Drop them and let PCI core take care of power state transitions.
 > > 
-> > If nvmem-cells are supplied, the address range is not required.
-> > Cells chipvariant, chippartno and chipmanufacturer are introduced to
-> > cover all required information.
-> > 
-> > Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> > Reviewed-by: Andrew Davis <afd@ti.com>
+> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > > ---
-> >  .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
-> >  1 file changed, 22 insertions(+), 1 deletion(-)
+> >   drivers/pwm/pwm-lpss-pci.c | 22 ----------------------
+> >   1 file changed, 22 deletions(-)
 > > 
-> > diff --git a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> > index dada28b47ea0..f085b7275b7d 100644
-> > --- a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> > +++ b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> > @@ -26,9 +26,24 @@ properties:
-> >    reg:
-> >      maxItems: 1
-> >  
-> > +  nvmem-cells:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +
-> > +  nvmem-cell-names:
-> > +    items:
-> > +      - const: chipvariant
-> > +      - const: chippartno
-> > +      - const: chipmanufacturer
-> > +
-> >  required:
-> >    - compatible
-> > -  - reg
-> > +
-> > +oneOf:
-> > +  - required:
-> > +      - reg
-> > +  - required:
-> > +      - nvmem-cells
-> > +      - nvmem-cell-names
-> >  
-> >  additionalProperties: false
-> >  
-> > @@ -38,3 +53,9 @@ examples:
-> >          compatible = "ti,am654-chipid";
-> >          reg = <0x43000014 0x4>;
-> >      };
-> > +  - |
-> > +    chipid: chipid@14 {
-> > +        compatible = "ti,am654-chipid";
+> Will this patch cause a regression if applied without your another patch to
+> the drivers/pci/pci-driver.c?
 > 
-> This isn't compatible if you have a completely different way to access 
-> it. 
+> https://lore.kernel.org/linux-pci/20240212063233.5599-1-raag.jadav@intel.com/
 
-Thanks, it is not entirely clear to me how I could go forward with this?
-Are you suggesting to use a different compatible? Or is it something
-else I could do to proceed with this conversion?
+Yes, I'll send out a v2 with updated commit message after the PCI
+one is accepted.
 
-Thank you!
-
-Best,
-Markus
+Raag
 
