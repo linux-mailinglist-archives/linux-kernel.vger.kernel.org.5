@@ -1,116 +1,114 @@
-Return-Path: <linux-kernel+bounces-65775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229938551AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:11:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B0D8551B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47CA11C21B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:11:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE931C20B12
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:11:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBE2128368;
-	Wed, 14 Feb 2024 18:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679A812EBD9;
+	Wed, 14 Feb 2024 18:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="h6yOHeqR"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ciKuD/+/"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0458127B43;
-	Wed, 14 Feb 2024 18:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C33129A79
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933920; cv=none; b=Ot1zvxuvOKDTD09QAyyGpuKst5E6ZqceJx/uNAuqwfYTFdLvvYiyEk2m3GRgarW0rY7eSk6pzmvK7gj8VZ9Z7WtAZFsVIP8G8C+3h294Z/iVBystLqhNYAR7fYvqGyHD6gs8i1d3b82sinFIW8K5Bs3q5rylXry6pcVf0GftaGQ=
+	t=1707933952; cv=none; b=Xaz/zFfdzaa7RPURnzNvl7JGlXCLLU/HHY/QJZO1u2HIb9KlPRAwemUTImQjg2EXAOBeHn9atSfm4kIgAmWAhlh8RJpbln+TawUK2XwPH3ej3HDfywwj6WC73osnhcI9u/52o9hmvGZow27RVIjSsHAKlDcFjD3taUpVOfk1Jng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933920; c=relaxed/simple;
-	bh=Xd4BEhdZCHi6lxYbCBeevCVswnWw5V1/9wwhFgLobf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qqlbFk4Ret9zjM8BKHN0SIiKFoUUTjpIL8yN8IuETH14XOuQznTeAq+memijM52/nqt+8AmBUkr1pzDFqIFO9Eq5qcIXIr5lYhIXLYkgyP9Cu5ozlIdgUBhI8mnx/EBitW9UEJNayUgbHV50bzbEGZy9zgnLVQRAFeWefTjfIPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=h6yOHeqR; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CE52040E023B;
-	Wed, 14 Feb 2024 18:05:15 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Tff3Nbi6-IIF; Wed, 14 Feb 2024 18:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707933913; bh=lmJxXy7nb8sBnacq9D2cKP7cWPkayFurWJxqWo9+RgY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h6yOHeqRnaAEHK3JtmRuYoo9YfodlTuyuB570X3JbX01A+w9GSdSqtnbRvS+TFGF0
-	 zbffrLevx0GR78XMRV3MMPUsD0ah0bOBTopu8uhZ62GrpghLl4PEfKoDe1OJKK9lm/
-	 xu7Xn5BOMgET0cmof14X8VSJBwAKjUJWDQ9oS/HbR+H7oJqpy972TclPcBCM3fI8p4
-	 OgdpngcKk5nkXEfFyUG4sTNrw8vhxV5J9g6MaQY/rbjTrsHL1DB4+ESkWSyLS5F6i/
-	 Q15rP6t9IJyqEgsu1NoaXIZnJq9P9YUuVlItq1adzCzTKuxZ4yzM/sY8ZZDV7C+qKJ
-	 A2dmiJbvN1gCttvjCiwy4Oa2RAVDk14vkNGf52pd4fYCBPVuecnSnOItI389dKVGYl
-	 WXSFCNcC44AAvvckfa5lgyehKl/jBYy0Ft7xxr2Sm2ba/mXLJbfiE3sNyLeATEJhZr
-	 y9NsPzPSRfYqHr0hqplYSJ6tR/8+LbqRQeMMXezWv+FGdcL5t4sXH/ebOyI2DTNq/d
-	 ikwSCCqRA3+V1vieSD+LoKsaxYE4OWaPQc2i9ux5tHikGhqCWp47QUm0kbTNBE480b
-	 sSY1rBPlatSPOWLFr+Au3fuGdlQqjkLxykQslXYvZZh48/net5HsQ7Kjmbj0QyYnSh
-	 M5HA4pQ+ngSa4mVNI+ULUDMQ=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79BAE40E01A9;
-	Wed, 14 Feb 2024 18:05:04 +0000 (UTC)
-Date: Wed, 14 Feb 2024 19:04:59 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214180459.GLZc0AywYypIVV1IQ7@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214102926.GCZcyWBuEBe7WRXWYO@fat_crate.local>
- <2a83026c-ea36-44ca-a101-74a8b3a2ea89@amd.com>
+	s=arc-20240116; t=1707933952; c=relaxed/simple;
+	bh=AwVbXaFBlYV5w6g5LE/04GL9OTsTqYN4NTJVHwEHaoU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Ae4VM/3Nkdl8mEa+lw2dFaxLcdgLtZyDLfCgYvj6sS69dPK6SaVkn6wtXFuneYhs0JbAMahJYdfhXDq2Qj6BEJ5lS2Tca5X6YQNEBvpuZ3XxLRuJbdULVHqjG9nehUZokPtHeSE4J1E62jRNOOIRAnieEg8l4r36e1GWvBOc4ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ciKuD/+/; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so4035835276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:05:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707933950; x=1708538750; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ArtE4zOnpIf0P01rQhXMtK9cH9/K2c3IZaOGScbal4w=;
+        b=ciKuD/+/Zb99whorLKxcxHcDYKMjVnliLGl4B3x1UQvu4Vz+TDLc/yHhJOgxUVbNLg
+         6G4/WytOGomdjMh8kCLDAsQWi42z4gJDihR5RHaPgTi4XwpgULB+V0LGJtXngk8ss4JU
+         R1l1kyTi+h4xs7srn9DPQasYyccMCFUupTR9ix0CjiA/xK+8ZfxK43WncOwilcYID+bW
+         xL6GcHMkxjJCTI6C20MrsEbc949mDzMzKV3tF32x/fViYS5DuTtYJowuM92UwsKKeCgO
+         6j9z27ip3ujJMQUu3n8/ALlRCGFqKKca+ps79QNIZ9vdPk0O0Vn8fukEIoUo9asuf1yP
+         cuOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707933950; x=1708538750;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ArtE4zOnpIf0P01rQhXMtK9cH9/K2c3IZaOGScbal4w=;
+        b=DTBmaMMs7a59cEza6gJYbkQUXj2rFTwNNY1ATqeAEJNHYPpNoSAvXSPsiKtVcViVqP
+         2+WiOZ8gWdraVbg3nZjyxQJcjMRYFuDaDr/O7KEZbajq9zl/Sw3qwdt+Jy29lXI88koi
+         VOyOMIkLwEGLzePxnMlpc7bPwNIz13lm85fiD8Lr7R1Bn5ItxUWjsWPRc9BsSzNWnDai
+         KRjX0gEYQyMPAGU49lgP9fYXkF1aY6htyfnGhpau9khIJKnnn32aJp6k/PAnIioZDzdN
+         kliXOqje8bMeKRQBShA2KHxSS2l1x2KS2OWNIKrax+/nXLoP32wadQB25WOrca7C8X56
+         LmQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhluHkmXo1SBwr6I98s7eticIwp6rJO0QN0t4/Ukvnm1CQBfQ17Sm2KBlB2VE+YqPVavbbZZMcFlUHtNe1IJTb+Ww8wOLGjsnKqmRo
+X-Gm-Message-State: AOJu0Yw6v/XH7sBiM0q88KxNGTUvg3Yuy/hEHVCXSVC60HHdRu72iWVT
+	Z7USriVryY4iih1IWh0TxX9fngVKPkDZfG/fulZ9YjGOwg+hiSd17bUXMeBHIdX16bFxk3OiaJO
+	a0g==
+X-Google-Smtp-Source: AGHT+IEC4vgJ4kb2o+P7AcYnlgforBsvYsuwZp8pUOr/KeyBfZgInskg/4q1DnpbHkls7YzSjPBV67rGqJ4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8011:0:b0:dc6:cafd:dce5 with SMTP id
+ m17-20020a258011000000b00dc6cafddce5mr722903ybk.12.1707933950309; Wed, 14 Feb
+ 2024 10:05:50 -0800 (PST)
+Date: Wed, 14 Feb 2024 10:05:47 -0800
+In-Reply-To: <CABgObfbQqVOsH0imHWc938n48TdkD8xFPO4CnwS0EM4oQZAxog@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2a83026c-ea36-44ca-a101-74a8b3a2ea89@amd.com>
+Mime-Version: 1.0
+References: <20240213005710.672448-1-seanjc@google.com> <CABgObfbQqVOsH0imHWc938n48TdkD8xFPO4CnwS0EM4oQZAxog@mail.gmail.com>
+Message-ID: <Zc0A--vYHG77-dYn@google.com>
+Subject: Re: [GIT PULL (sort of)] KVM: x86: fixes and selftests fixes/cleanups
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 09:45:14AM -0500, Yazen Ghannam wrote:
-> Yes, we keep a local copy of the records within the module. That way
-> we just need to update the local copy and write it down to the
-> platform. This saves time and avoids interrupting the platform to do
-> an extra read.
+On Wed, Feb 14, 2024, Paolo Bonzini wrote:
+> On Tue, Feb 13, 2024 at 1:57=E2=80=AFAM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > I have two pull requests for 6.8, but I goofed (or maybe raced with you
+> > pushing to kvm/master), and based everything on 6.8-rc2 instead of 6.8-=
+rc1 as
+> > you did.  And so of course the pull requests would bring in waaaaay mor=
+e than
+> > just the intended KVM changes.
+> >
+> > Can I bribe you to do a back merge of 6.8-rc2, so that my pull requests=
+ don't
+> > make me look like a complete idiot?
+>=20
+> Ignoring the fact that kvm/master is currently a subset of Linus's
+> tree (so I can just fast forward to -rc4 before merging your stuff),
+> that's absolutely not a problem and it happens all the time during the
+> merge window. The way to handle that is to forge the diffstat in the
+> pull request, replacing it with the diffstat of the test merge commit
+> that I do anyway. It's a known issue with git-request-pull and pretty
+> much all maintainers do it.
 
-I guess this:
+Heh, I did that locally, but sending out a forged diffstat felt dirty.  Tho=
+ugh I
+guess it all works out, so long as I make it clear that the base isn't kvm/=
+master.
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index 901a1f0018fc..99499a37e9d5 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -142,8 +142,9 @@ static unsigned int max_nr_fru;
- static size_t max_rec_len;
- 
- /*
-- * Protect the local cache and prevent concurrent writes to storage.
-- * This is only needed after init once notifier block registration is done.
-+ * Protect the local records cache in fru_records and prevent concurrent
-+ * writes to storage. This is only needed after init once notifier block
-+ * registration is done.
-  */
- static DEFINE_MUTEX(fmpm_update_mutex);
- 
-I'm still don't like the module param...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks!
 
