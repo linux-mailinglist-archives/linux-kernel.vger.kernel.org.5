@@ -1,188 +1,126 @@
-Return-Path: <linux-kernel+bounces-66026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E45FF85558B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:07:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9273B85558E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B70828397B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:07:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 345DDB25EBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A2714198A;
-	Wed, 14 Feb 2024 22:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A125141991;
+	Wed, 14 Feb 2024 22:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WPacOA76"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="keCfEwEU"
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDC0141987
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5235513EFFE
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707948447; cv=none; b=BPlGC9cV/qoySxXOYoiAGaTSW5zsLbrQTaoyZmqmEGCfmMq4SaaViVtBBfcZSW2bJvI8umYyo7P9I+cxKNui5gUMxJTet47IFL8Laxoy9A95prfwXTXlc6foKLjtsAVnN4O7o5vh2l961GYNT8kJddtcKuIepc4kZQziZqK36Ys=
+	t=1707948488; cv=none; b=uIwoA6zjUPEopTW3BhzAmMyOTaP/safMiUZQ7cnoENT3VCIxWOET23/fq9RB8kWYfpm+6zuntm9nFXwj9sB0DFekj5ND14JaHmsoBwzKqJkcsOq7m0YzuVqisqhl+52AU6rS3L4MBdEA14TqjnorsNv2ras95YZt5mltjeDXV58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707948447; c=relaxed/simple;
-	bh=K6cDHnzAl4sLP14OKUvfd5jdUMhZX1ctJ8TVWJBz+yQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=REq7GqRA660gz6PPrQ/nKO0kQexAtvWwY00iUDQTRsBfyXDKMhB0c7mqT2rRKaNF8zD6rsc5pT2UGjQxxFX8PmMrj3y5UMoyS1LtuiLYWr6WyOz7UXwcG+yg6NdUpJnKcMGINQVfwVsbsLpyg0VEga2qYk4k9kALd0ZA41Ymhjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WPacOA76; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5961a2726aaso139245eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:07:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707948445; x=1708553245; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sleFKn1PUH2Rkn/xzX8cOIwI1bd0b7EDvB+KCcYyKCs=;
-        b=WPacOA76FkFbypMPCyvHfhvPba1UdRyaa15FARcSy7n69jN7bRReH2lhsesnGYEy2d
-         oIMKW7WbxDXiIH3FTLpO8IPsLR05+JKeI6KN7abkdMK7Dqqkr2SiQvKantN453aURbfy
-         r2t/TWvTks3PxURBRoRyFMs9S4ZQMLDPJgOZw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707948445; x=1708553245;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sleFKn1PUH2Rkn/xzX8cOIwI1bd0b7EDvB+KCcYyKCs=;
-        b=CNpklxYRPeS14pxrliwDo6EWMpuRszHPdc+xEcbHWeaBtrSUadosDGQlms7N5L7QWc
-         CY36GVGtgpmfEJg2vcDVcaZ3N39vyxe+kVTf80DllTMdMNCFeaEGP++CtHV70LtEGr89
-         rZy97QQjQUVl7O/slYp/nryyZuGZGGc68zyjHTvrrQnOta5TtIOMRPm2hH4r+oQDYsCF
-         O5gNwgYaZOCJ4khrbTbr4htNS/2VPiMxZWZ+7pjymevdOhHGfwvL3VZiT7pk+m+qLD+5
-         eP8rCHcCiehfHfu0HNyh4R7fJlTGXsGQSpuB74La5CUNJZriZ7zquYtFsOy4m3wLfLeX
-         lVLw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjjw8wdzoXpMs/2FPVBqPRmekmWMjMknxiW4bu3x3cE704d8PbgOfzHlmUqLLJ5OhT4/dgFGs3e/twrUJwMHYAIOTx0ff+OrWA0iin
-X-Gm-Message-State: AOJu0YxMdaDu4CotMrGhNwDTqkmrrbP05DsCxb7LOAzI2x+EwJM0ehnJ
-	AfhYkXR0FXwgW18OkSuc2FxGlRml0C2x+Kltm6yHnHKhALWDnb7nt4iRCIXK7A==
-X-Google-Smtp-Source: AGHT+IGz/ssrchHiTuyzilMpWL/T9c2lkPAOgkUgzUcy8sr4eYzKQF2LdNDAK5B6bwMdevqCle4AAg==
-X-Received: by 2002:a05:6358:648c:b0:176:5a5e:4bfc with SMTP id g12-20020a056358648c00b001765a5e4bfcmr4080166rwh.3.1707948444846;
-        Wed, 14 Feb 2024 14:07:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUchfZsRVKTfQebs+X7kNrW9fUdJ8LZ5XMtaiqhqSXF9jSBU2WtwT1FdJEBgg8UhbKxDiD19wrmGnhaTWs59a91wXO5Kovz00uoPU/4CfRLF8heeZP0m1YGhUECswc9oh85gMjXAYRZjnbhhHHNsuQ4pEubyqNI0rS4LsK6K8PTCLihcN7EOIvmbO7xgwIHPg1c6bEX9brNmiYx+dLwDJA7pfMqyVMo
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j191-20020a638bc8000000b005cfbdf71baasm4819711pge.47.2024.02.14.14.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 14:07:24 -0800 (PST)
-Date: Wed, 14 Feb 2024 14:07:23 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Fangrui Song <maskray@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	Nathan Chancellor <nathan@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH] x86/build: Simplify patterns for unwanted section
-Message-ID: <202402141405.0755DD4E5E@keescook>
-References: <20240214212929.3753766-1-maskray@google.com>
+	s=arc-20240116; t=1707948488; c=relaxed/simple;
+	bh=kk0R2G/YjOd1hA/HNk8g9v7ksPlfTh04eDSOWoYDd4o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n/ZFw9sbB6SlPvwaC68lOl6HSdcMLV9wJlqTKeHihk+wNWiY7qgshOGHYA4WRZ7/7uBuPzBKm/pvAlmNV2NKEGZ3utIPtfrZ7AuxBVUpIyWUKOewhmVaN9S3jXy7M5FUSev3cFLmppuDIKUWzFRJbfVN/Nsg50b+yL7gwDgYrxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=keCfEwEU; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 2FA24240027
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:08:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1707948483; bh=kk0R2G/YjOd1hA/HNk8g9v7ksPlfTh04eDSOWoYDd4o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=keCfEwEUTqi9U1Dca/BJAbvJ1nX7aqfiHGg0EGaORv53DgUimF6H73hNxPpc6zKcq
+	 g9PbWwK9+GJVrZWQ8LxgsBQGQ45xVFXrana687MEL6WkxN9GeAx/Pqxq6yOId5BPpZ
+	 5nI9CFoV+bQhL7ZtQgKZVjKueicY8NPzE20jUvmqPq/T+erdIUjGLZh3cgqFvLU9va
+	 Fmu3E249bcADfo/ueZ+Eay1xDOupsm3Qa5uNSSHD5WYJTWpxMyMOPEHksnGJbsrom8
+	 RQp1YKcaQ8liKkpVo1kZKLsrnR5f7fv8BhWAlyE6bZmCG/8n/ZHB7uUlcICjP8RivL
+	 Y7LsGWc6lRW8A==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4TZsl33Bl6z9rxG;
+	Wed, 14 Feb 2024 23:07:59 +0100 (CET)
+Message-ID: <867da21e-7f30-4caf-9f78-260d426e4186@posteo.net>
+Date: Wed, 14 Feb 2024 22:07:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214212929.3753766-1-maskray@google.com>
+Subject: Re: [PATCH] net: stmmac: xgmac: fix initializer element is not
+ constant error
+To: Jacob Keller <jacob.e.keller@intel.com>, linux-kernel@vger.kernel.org
+Cc: alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20240212154319.907447-1-shiftee@posteo.net>
+ <44c29a45-86fa-4e41-b4b5-e69187f0712e@intel.com>
+Content-Language: en-US
+From: Mark O'Donovan <shiftee@posteo.net>
+In-Reply-To: <44c29a45-86fa-4e41-b4b5-e69187f0712e@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 01:29:29PM -0800, Fangrui Song wrote:
-> A s390 patch modeling its --orphan-handling= after x86 [1] sparked my
-> motivation to simplify patterns. Commit 5354e84598f2 ("x86/build: Add
-> asserts for unwanted sections") added asserts that certain input
-> sections must be absent or empty. The patterns can be simplified.
+On 14/02/2024 20:31, Jacob Keller wrote:
 > 
-> For dynamic relocations,
 > 
-> *(.rela.*) is sufficient to match all dynamic relocations synthesized by
-> GNU ld and LLD. .rela_* is unnecessary. --emit-relocs may create .rela_*
-> sections for section names prefixed with _, but they are not matched by
-> linker scripts.
+> On 2/12/2024 7:43 AM, Mark O'Donovan wrote:
+>> GCC prior to 8.x gives an "initializer element is not constant"
+>> error for the uses of dpp_tx_err in dwxgmac3_dma_dpp_errors.
+>> Newer compilers accept either version.
+>>
+>> More info here:
+>> https://lore.kernel.org/all/20240103-fix-bq24190_charger-vbus_desc-non-const-v1-1-115ddf798c70@kernel.org
+>>
+>> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+>> ---
 > 
-> .plt instead of .plt.* is sufficient to match synthesized PLT entries.
-
-Do you mean ".plt.foo" matches ".plt" ?
-
-> .igot and .igot.plt are for non-preemptible STT_GNU_IFUNC in GNU ld (LLD
-> just uses .got), which the kernel does not use. In addition, if .igot or
-> .igot.plt is ever non-empty, there will be .rela.* dynamic relocations
-> leading to an assert failure anyway.
-
-I think at the time I was dealing with avoid multiple warnings out of
-the linker, as I was getting orphan warnings in addition to the
-non-empty warnings.
-
+> I'm not sure whether the Linux kernel project has an explicit cutoff for
+> what versions of GCC (or other compilers) are supported. GCC 8 was first
+> released in 2018.
 > 
-> [1]: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-6-8a665b3346ab@kernel.org/
+> The fix provided here is fairly straight forward, and while I do think
+> the benefit of using builtin types vs using the macros is nice, I don't
+> see that as a strong enough reason to hold up supporting the older compiler.
 > 
-> Signed-off-by: Fangrui Song <maskray@google.com>
-
-Is anything harmed by leaving all of this as-is?
-
--Kees
-
-> ---
->  arch/x86/boot/compressed/vmlinux.lds.S | 6 +++---
->  arch/x86/kernel/vmlinux.lds.S          | 8 ++++----
->  2 files changed, 7 insertions(+), 7 deletions(-)
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 > 
-> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> index 083ec6d7722a..9f288f67972a 100644
-> --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> @@ -104,17 +104,17 @@ SECTIONS
->  	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
->  
->  	.plt : {
-> -		*(.plt) *(.plt.*)
-> +		*(.plt)
->  	}
->  	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
->  
->  	.rel.dyn : {
-> -		*(.rel.*) *(.rel_*)
-> +		*(.rel.*)
->  	}
->  	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
->  
->  	.rela.dyn : {
-> -		*(.rela.*) *(.rela_*)
-> +		*(.rela.*)
->  	}
->  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
->  }
-> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-> index a349dbfc6d5a..b3da7b81d2b3 100644
-> --- a/arch/x86/kernel/vmlinux.lds.S
-> +++ b/arch/x86/kernel/vmlinux.lds.S
-> @@ -463,22 +463,22 @@ SECTIONS
->  	 * explicitly check instead of blindly discarding.
->  	 */
->  	.got : {
-> -		*(.got) *(.igot.*)
-> +		*(.got)
->  	}
->  	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
->  
->  	.plt : {
-> -		*(.plt) *(.plt.*) *(.iplt)
-> +		*(.plt)
->  	}
->  	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
->  
->  	.rel.dyn : {
-> -		*(.rel.*) *(.rel_*)
-> +		*(.rel.*)
->  	}
->  	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
->  
->  	.rela.dyn : {
-> -		*(.rela.*) *(.rela_*)
-> +		*(.rela.*)
->  	}
->  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
->  }
-> -- 
-> 2.43.0.687.g38aa6559b0-goog
-> 
+>>   drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+>> index 323c57f03c93..c02c035b81c0 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+>> @@ -830,8 +830,8 @@ static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
+>>   	{ false, "UNKNOWN", "Unknown Error" }, /* 31 */
+>>   };
+>>   
+>> -static const char * const dpp_rx_err = "Read Rx Descriptor Parity checker Error";
+>> -static const char * const dpp_tx_err = "Read Tx Descriptor Parity checker Error";
+>> +#define dpp_rx_err "Read Rx Descriptor Parity checker Error"
+>> +#define dpp_tx_err "Read Tx Descriptor Parity checker Error"
+>>   static const struct dwxgmac3_error_desc dwxgmac3_dma_dpp_errors[32] = {
+>>   	{ true, "TDPES0", dpp_tx_err },
+>>   	{ true, "TDPES1", dpp_tx_err },
+>>
+>> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
 
--- 
-Kees Cook
+Thanks Jacob.
+
+The minimum versions for compilers and other tools are documented here:
+https://www.kernel.org/doc/html/latest/process/changes.html
+
+I am using a SLES 15 server to build, the first version of which came out in 2017.
+
+Mark
 
