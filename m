@@ -1,163 +1,143 @@
-Return-Path: <linux-kernel+bounces-65709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892CC8550AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:45:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74BFA8550AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EB1B1F22AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:45:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5742B27BE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA631272A4;
-	Wed, 14 Feb 2024 17:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PuvqwQxT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17456126F39;
+	Wed, 14 Feb 2024 17:46:07 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71AC7E0EA;
-	Wed, 14 Feb 2024 17:45:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78508662C
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707932746; cv=none; b=JfFLV25QOp9oZmjq3GZFDaw6v+k9Ogm/wAT4zEvFT8Dgnoa4EmWlq8hbfy1xHYsjTpNUmgBBjnVd3O+A//uRK//e9+hi03owgievEs7WYxplB6rJl2k+YowNaCQ84sFf1n26ykTQJ7y75vkCZ4fuXcaaq7ys5dzULURntyU6nnE=
+	t=1707932766; cv=none; b=JlKBqloQB2WyMFPriCQzks3dIIRUsbJqycaqH7HpzwR3/KTtbFHEKjWNzKd6PQ5afzJM8SDPc0OLiJOxzPCb8pgllMKGf3EMinfkBdDwNRzmFp2/K09KMDIz93dtq1hK29EuJwbjft/+S5gjpRUTtCAhr5CTDtdqTFXlveiPbXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707932746; c=relaxed/simple;
-	bh=CdALU6kimwQEEEZPNowgMiQLVRcl3vVQkRejqTYl/M0=;
+	s=arc-20240116; t=1707932766; c=relaxed/simple;
+	bh=sI5Swyne6817j98cVC6PUtEHxqQJW9HXZohQNNTszDk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R8S5NfQCL9X5XliFxftwXIEe38aisRsGI9boj5KBiplqbX1VUqKtq1RQ9UCsuHbxQNxsmMBVly5RRPE7xovXTKNnrKTinLmN+5MZFv0RV7pzlfMRu1cnGXV8RTfVNDfukkv9wZtPaDoJf2ppozh/gQ7ULpAICg47m5hriEPefxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PuvqwQxT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97808C433C7;
-	Wed, 14 Feb 2024 17:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707932745;
-	bh=CdALU6kimwQEEEZPNowgMiQLVRcl3vVQkRejqTYl/M0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PuvqwQxT0yFuLg3JYi6SkC7s+zUcf33bKQRfnYeCAZ10S6ltzefsp0+Hzl6BuKFjW
-	 OJ8jfP8gsi2kx3IxnVlK37hYwBNgylkWcXrRMGiwaLUgGWZOGHbwsyybxrmHlkapjb
-	 jYmUV5JiBVLa7ySZf0yfdcpqwQC3NXcNNz6UYhKr3aIVAghsxjdRTtLyu5uKQDIJCL
-	 StTr3DUVC/B0CoczHNHep0vIRY7tb0UI/f07FbTqHAwFldcUszfPmKzqZ3pqPLsqsa
-	 s+eEHwXsr9opdqw8dsbArVTr5Fj94VRaKXZsHO/y/SDJwcOFyjHoV/sQUx7tJfNgwk
-	 XtKZTEMvo8MDQ==
-Date: Wed, 14 Feb 2024 17:45:39 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Kevin Hilman <khilman@kernel.org>
-Cc: Bhargav Raviprakash <bhargav.r@ltts.com>, arnd@arndb.de,
-	broonie@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org, jpanis@baylibre.com, kristo@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
-	lgirdwood@gmail.com, linus.walleij@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com, nm@ti.com,
-	robh+dt@kernel.org, vigneshr@ti.com
-Subject: Re: [RESEND PATCH v1 03/13] dt-bindings: mfd: ti,tps6594: Add TI
- TPS65224 PMIC
-Message-ID: <20240214-depraved-unfunded-3f0b3d6bf3e2@spud>
-References: <20240209-blitz-fidgety-78469aa80d6d@spud>
- <20240214093106.86483-1-bhargav.r@ltts.com>
- <20240214-galley-dweller-1e9872229d80@spud>
- <7hil2r5556.fsf@baylibre.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MfPIm0lGrwGRXJoGxb7KUwv4nD4GHeAH1j/LEptwSFKap9gmiIV0koYiYuA5AyagNIk282cs3Az/D+edwHmY758BQNWOrchgPeyakesFVLh13TeRnC2VUU0f97qZzZzGB/Ly67UpOVTc3ktp91dspqfDH9yFn9VEflZgj+btC8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raJKP-0007ib-KX; Wed, 14 Feb 2024 18:45:49 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raJKO-000jXN-Ha; Wed, 14 Feb 2024 18:45:48 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raJKO-004sB0-1T;
+	Wed, 14 Feb 2024 18:45:48 +0100
+Date: Wed, 14 Feb 2024 18:45:48 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
+Message-ID: <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
+References: <20240208070529.28562-1-raag.jadav@intel.com>
+ <20240208070529.28562-2-raag.jadav@intel.com>
+ <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
+ <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="v1AS/JdF6e6MzIix"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xw3rpekb24aqhuyq"
 Content-Disposition: inline
-In-Reply-To: <7hil2r5556.fsf@baylibre.com>
+In-Reply-To: <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
---v1AS/JdF6e6MzIix
-Content-Type: text/plain; charset=utf-8
+--xw3rpekb24aqhuyq
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 09:26:13AM -0800, Kevin Hilman wrote:
-> Conor Dooley <conor@kernel.org> writes:
-> > On Wed, Feb 14, 2024 at 03:01:06PM +0530, Bhargav Raviprakash wrote:
-> >> On Fri 2/9/2024 10:41 PM, Conor Dooley wrote:
-> >> > On Thu, Feb 08, 2024 at 04:23:33PM +0530, Bhargav Raviprakash wrote:
-> >> > > TPS65224 is a Power Management IC with 4 Buck regulators and 3 LDO
-> >> > > regulators, it includes additional features like GPIOs, watchdog, =
-ESMs
-> >> > > (Error Signal Monitor), and PFSM (Pre-configurable Finite State Ma=
-chine)
-> >> > > managing the state of the device.
-> >> >=20
-> >> > > TPS6594 and TPS65224 have significant functional overlap.
-> >> >=20
-> >> > What does "significant functional overlap" mean? Does one implement a
-> >> > compatible subset of the other? I assume the answer is no, given the=
-re
-> >> > seems to be some core looking registers at different addresses.
-> >>=20
-> >> The intention behind =E2=80=9Csignificant functional overlap=E2=80=9D =
-was meant to
-> >> indicate a lot of the features between TPS6594 and TPS65224 overlap,
-> >> while there are some features specific to TPS65224.
-> >> There is compatibility between the PMIC register maps, I2C, PFSM,
-> >> and other drivers even though there are some core registers at
-> >> different addresses.
-> >>=20
-> >> Would it be more appropriate to say the 2 devices are compatible and h=
-ave
-> >> sufficient feature overlap rather than significant functional overlap?
-> >
-> > If core registers are at different addresses, then it is unlikely that
-> > these devices are compatible.
->=20
-> That's not necessarily true.  Hardware designers can sometimes be
-> creative. :)
+Hello Andy,
 
-Hence "unlikely" in my mail :)
-
-> > In this context, compatible means that existing software intended for
-> > the 6594 would run without modification on the 65224, although maybe
-> > only supporting a subset of features.  If that's not the case, then
-> > the devices are not compatible.
+On Thu, Feb 08, 2024 at 07:04:33PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 08, 2024 at 08:46:44AM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Feb 08, 2024 at 12:35:25PM +0530, Raag Jadav wrote:
+> > > pcim_iomap_table() fails only if pcim_iomap_regions() fails. No need =
+to
+> > > check for failure if the latter is already successful.
+> >=20
+> > Is this really true? pcim_iomap_table() calls devres_alloc_node() which
+> > might fail if the allocation fails. (Yes, I know
+> > https://lwn.net/Articles/627419/, but the rule is still to check for
+> > errors, right?)
 >=20
-> Compatible is a fuzzy term... so we need to get into the gray area.
+> We do not add a dead code to the kernel, right?
 >=20
-> What's going on here is that this new part is derivative in many
-> signifcant (but not all) ways from an existing similar part.  When
-> writing drivers for new, derivative parts, there's always a choice
-> between 1) extending the existing driver (using a new compatible string
-> & match table for the diffs) or 2) creating a new driver which will have
-> a bunch of duplicated code.
+> > What am I missing?
 >=20
-> The first verion of this series[1] took the 2nd approach, but due to the
-> significant functional (and feature) overlap, the recommendation was
-> instead to take the "reuse" path to avoid signficant amounts of
-> duplicated code.
+> Mysterious ways of the twisted PCI devres code.
+> Read the above commit message again :-)
 >=20
-> Of course, it's possible that while going down the "reuse" path, there
-> may be a point where creating a separate driver for some aspects might
-> make sense, but that needs to be justified.  Based on a quick glance of
-> what I see in this series so far (I have not done a detailed review),
-> the differences with the new device look to me like they can be handled
-> with chip-specific data in a match table.
+> For your convenience I can elaborate. pcim_iomap_table() calls _first_
+> devres_find() which _will_ succeed if the pcim_iomap_regions() previously
+> succeeded. Does it help to understand how it designed?
 
-This is all nice information, but not really relevant here - this is a
-binding patch, not a driver one & the conversation stemmed from me
-making sure that a fallback compatible was not suitable. Whether or not
-there are multiple drivers or not is someone else's problem!
+I assume you're saying that after pcim_iomap_regions() succeeded it's
+already known that pcim_iomap_table() succeeds (because the former
+already called the latter).
 
-Thanks,
-Conor.
+I'm still concerned here. I agree that error checking might be skipped
+if it's clear that no error can happen (the device cannot disappear
+between these two calls, can it?), but for me as an uninitiated pci code
+reader, I wonder about
 
---v1AS/JdF6e6MzIix
+	dwc->base =3D pcim_iomap_table(pci)[0];
+
+without error checking. (OTOH, if pcim_iomap_table() returned NULL, the
+"[0]" part is already problematic.)
+
+I'd like to have a code comment here saying that pcim_iomap_table()
+won't return NULL.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xw3rpekb24aqhuyq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcz8QwAKCRB4tDGHoIJi
-0opXAP9Dzoxnv9sksP1u0YCoiAGJJzhIzB+7PIP4EvpF9S2//AEAhmgjJMls9n0T
-M1W2/BJjVKqm2mghYoQMHLkZ7ElrNAI=
-=6W+V
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXM/EsACgkQj4D7WH0S
+/k78egf/dDn9nn4BLih6G055QGhLbqDuDxNiv8SEOCeMKpkcP2uehRRw7OMYry/Y
+dLo438AkmXBbING2wUOJp9LTKmVfbAGqF92dc03Bf7lSwujnBFbMQtmfWCHxbIq9
+nVswyqoHhpC/regHzygPz0mud93LnMq62fvyhPQjy/21K39zKdqFEAClMlGM3EHY
+Fa6Zmfz772eJUik2/YKlIvodH+hozuJKgTFCjU8AHbIMY7pf24EiDgpizNlXcb0i
+n8nH2qSyr2iGcUSa/s9OHRa6wC6aZXLRP/FKwTn75v0Dyn9Qfs30FNke089e9v+T
+EbAfarE9oFybsMXsxXLq58cYceVeMw==
+=099/
 -----END PGP SIGNATURE-----
 
---v1AS/JdF6e6MzIix--
+--xw3rpekb24aqhuyq--
 
