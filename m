@@ -1,113 +1,175 @@
-Return-Path: <linux-kernel+bounces-65533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F97E854E57
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:29:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27834854E5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B221C20FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:29:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F3428C88E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9024C69D2A;
-	Wed, 14 Feb 2024 16:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="g2lyUSu4"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DA5612E7;
-	Wed, 14 Feb 2024 16:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5C961685;
+	Wed, 14 Feb 2024 16:25:14 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8496A013;
+	Wed, 14 Feb 2024 16:25:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927905; cv=none; b=XT1FZ0hQJuZh+OTMI6ol/C72FmWEYGzP+HesOveQyirRWRtQqBoUPdvHTBDg6JWVH2UmBOy44cAVz5CuTjgmhlZIqMMskCszoX5SU0g1WSzOZA7WfkdOs/m8zC7smvFtOKMNrcb0VI0ulFXmg6SQke6k5w9Tf9BD9RUe93nyJlo=
+	t=1707927914; cv=none; b=iLdAsyJ1LmlfSM9LsBVw/OuRaOkrW+DuBE/hs5gpU1K37+xd5V3SNclI9o84bCSgHOnIExOIp1TaCq4zaKFX6eO/em1DnHMiRw65x76vRehwjwC7pBiHlLmWqUM+LTCg01k2+p0ovlqn7jDAX2ra9Ivu8FnLIUsn7aF64pDSZNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927905; c=relaxed/simple;
-	bh=ScH3ISK4xEVrupm84aSwwMYB/pi5IA9PUdSxzmGFguU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QM56PqvjwClM9+PuiSKoLrhbQWNcR6SlKjGuXCzhoH64vAgL6G14mJURn8rgo0jZ/RKgeO2elrRAm0rHQMIN+jfSaKmkGqxVozKIdBnN/P0BGeKZF9rxx6/AGiHeLQcIrpmhQE9uh57aCey/WmvmZ2WpwXfVbYZqIQC0JnsL12E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=g2lyUSu4; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 549FA60011;
-	Wed, 14 Feb 2024 16:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707927901;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cvpgZwi39A8c9IIwUG5REki+jOi12VpmEmI6+/qQDOw=;
-	b=g2lyUSu4/3Y5kQJR25v1y+cYvvgnSYGTA93RU//D5Jqh2k4nbPsknVcIMV/Nb8BCEdSjeM
-	eAYjfYYa/cP/8ZoFZ41SdFV2eolxBeFTZrU45h/YApDC1oa/ZiARquV9QOvJe4p/mGFQBF
-	AO69+gzKyzwL3qewSkVYsymbz6c24nikGHZdGEe5NareGrZOOikLhoWTDRX9NM3MH9Z0FA
-	O6CjZA+uy2Ir8IpEe+5o+wk8eDCJ2T0fZQCMX/hMjGM5YqCwd3YKNQ+V4nKXu2ZhS2CzFz
-	l7FzstXYxhKJ0RFEqMkCfCudbAoQniiks9djICyNX9Z1CvudSTZ9OoPIaNLLZQ==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 14 Feb 2024 17:24:16 +0100
-Subject: [PATCH 23/23] MIPS: mobileye: eyeq5: map GPIOs to pins using
- gpio-ranges
+	s=arc-20240116; t=1707927914; c=relaxed/simple;
+	bh=Iz4EgZOSFR1zigQnY5oEHTIwS7VOPzZ8Ty+S62gU0GM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HSp3LTGlL9/0OBaMaOgeXSM2e6lLzO37ktcoxVoCHqyutk07E6wayDHgowDOIkRAPuZq0Q0akK7YR6syHtT1QhE4l5+Ci2A5PHqZVPrzTyn+ckbwdPekKA8q3sZoL0ugixZGJnmVqE/D5JwVHrQ+jUpkc6AjIvVR3wy/0eX65AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4018E1FB;
+	Wed, 14 Feb 2024 08:25:52 -0800 (PST)
+Received: from [10.57.64.120] (unknown [10.57.64.120])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFAD03F762;
+	Wed, 14 Feb 2024 08:25:08 -0800 (PST)
+Message-ID: <48e15a5a-b8e8-4ed7-91df-049f5525f648@arm.com>
+Date: Wed, 14 Feb 2024 16:25:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240214-mbly-gpio-v1-23-f88c0ccf372b@bootlin.com>
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
-In-Reply-To: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: theo.lebrun@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/7] mm: truncate: split huge page cache page to a
+ non-zero order if possible.
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-7-zi.yan@sent.com>
+ <cbb1d6a0-66dd-47d0-8733-f836fe050374@arm.com>
+ <1C274CBB-C809-442E-9575-858460C0F62D@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <1C274CBB-C809-442E-9575-858460C0F62D@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Create a mapping between the GPIO controllers and the pin controllers.
-GPIO is handled in a one-instance-per-bank manner while pinctrl is done
-with a single instance for both pin banks.
+On 14/02/2024 16:19, Zi Yan wrote:
+> On 14 Feb 2024, at 5:43, Ryan Roberts wrote:
+> 
+>> On 13/02/2024 21:55, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> To minimize the number of pages after a huge page truncation, we do not
+>>> need to split it all the way down to order-0. The huge page has at most
+>>> three parts, the part before offset, the part to be truncated, the part
+>>> remaining at the end. Find the greatest common divisor of them to
+>>> calculate the new page order from it, so we can split the huge
+>>> page to this order and keep the remaining pages as large and as few as
+>>> possible.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>  mm/truncate.c | 21 +++++++++++++++++++--
+>>>  1 file changed, 19 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/truncate.c b/mm/truncate.c
+>>> index 725b150e47ac..49ddbbf7a617 100644
+>>> --- a/mm/truncate.c
+>>> +++ b/mm/truncate.c
+>>> @@ -21,6 +21,7 @@
+>>>  #include <linux/task_io_accounting_ops.h>
+>>>  #include <linux/shmem_fs.h>
+>>>  #include <linux/rmap.h>
+>>> +#include <linux/gcd.h>
+>>>  #include "internal.h"
+>>>
+>>>  /*
+>>> @@ -210,7 +211,8 @@ int truncate_inode_folio(struct address_space *mapping, struct folio *folio)
+>>>  bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
+>>>  {
+>>>  	loff_t pos = folio_pos(folio);
+>>> -	unsigned int offset, length;
+>>> +	unsigned int offset, length, remaining;
+>>> +	unsigned int new_order = folio_order(folio);
+>>>
+>>>  	if (pos < start)
+>>>  		offset = start - pos;
+>>> @@ -221,6 +223,7 @@ bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
+>>>  		length = length - offset;
+>>>  	else
+>>>  		length = end + 1 - pos - offset;
+>>> +	remaining = folio_size(folio) - offset - length;
+>>>
+>>>  	folio_wait_writeback(folio);
+>>>  	if (length == folio_size(folio)) {
+>>> @@ -235,11 +238,25 @@ bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
+>>>  	 */
+>>>  	folio_zero_range(folio, offset, length);
+>>>
+>>> +	/*
+>>> +	 * Use the greatest common divisor of offset, length, and remaining
+>>> +	 * as the smallest page size and compute the new order from it. So we
+>>> +	 * can truncate a subpage as large as possible. Round up gcd to
+>>> +	 * PAGE_SIZE, otherwise ilog2 can give -1 when gcd/PAGE_SIZE is 0.
+>>> +	 */
+>>> +	new_order = ilog2(round_up(gcd(gcd(offset, length), remaining),
+>>> +				   PAGE_SIZE) / PAGE_SIZE);
+>>
+>> Given you have up to 2 regions remaining, isn't it possible that you want a
+>> different order for both those regions (or even multiple orders within the same
+>> region)? I guess you just choose gcd for simplicity?
+> 
+> Right. You raise the same concern as Hugh[1]. I am minimizing the call of
+> split_huge_page_to_list_to_order() and you and Hugh want to minimize the
+> number of folios after the split. Yours will give better outcome after split,
+> but requires either multiple calls or a more sophisticated implementation
+> of page split[2]. We probably can revisit this once splitting to any order
+> gets wider use.
 
-See gpio-ranges documentation:
-Documentation/devicetree/bindings/gpio/gpio.txt
+Yeah, fair enough. Sorry hadn't read Hugh's original feedback.
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 5f00d129c057..68f6c81331d7 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -168,6 +168,7 @@ gpio0: gpio@1400000 {
- 			interrupts = <GIC_SHARED 14 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl 0 0 29>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			resets = <&reset 0 26>;
-@@ -182,6 +183,7 @@ gpio1: gpio@1500000 {
- 			interrupts = <GIC_SHARED 14 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl 0 29 23>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			resets = <&reset 0 26>;
-
--- 
-2.43.1
+> 
+>>> +
+>>> +	/* order-1 THP not supported, downgrade to order-0 */
+>>> +	if (new_order == 1)
+>>> +		new_order = 0;
+>>
+>> I guess this would need to change if supporting order-1 file folios?
+> 
+> Right.
+> 
+>>> +
+>>> +
+>>>  	if (folio_has_private(folio))
+>>>  		folio_invalidate(folio, offset, length);
+>>>  	if (!folio_test_large(folio))
+>>>  		return true;
+>>> -	if (split_folio(folio) == 0)
+>>> +	if (split_huge_page_to_list_to_order(&folio->page, NULL, new_order) == 0)
+>>
+>> I know you are discussing removing this patch, but since you created
+>> split_folio_to_order() wouldn't that be better here?
+> 
+> Sure. Will change the patch locally.
+> 
+> [1] https://lore.kernel.org/linux-mm/9dd96da-efa2-5123-20d4-4992136ef3ad@google.com/
+> [2] https://lore.kernel.org/linux-mm/0AC0520E-1BD2-497E-A7ED-05394400BFC9@nvidia.com/
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
 
