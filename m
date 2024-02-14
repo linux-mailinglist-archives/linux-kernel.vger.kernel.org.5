@@ -1,124 +1,209 @@
-Return-Path: <linux-kernel+bounces-65623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E083854F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:11:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 347BA854F8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:12:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF0E91F29DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:11:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E076D28E2E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19E6612EE;
-	Wed, 14 Feb 2024 17:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1654F63129;
+	Wed, 14 Feb 2024 17:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lwVTDd3L"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSBuA6CN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6ED60DD7;
-	Wed, 14 Feb 2024 17:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273726087D;
+	Wed, 14 Feb 2024 17:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930657; cv=none; b=dmfXkG4c8Bijn7QRZbR0OQ/QIpA5CU+slWN4fUksXnQbi3Iyg4wzSad9B4OT2rr+CMjOBgkVQPfw1cKpICXZMD9CAlGtTT2mMU1iMKh7f+ZatKVurgvR9MWykwCpSY3i4ioI83V2GBxLUyxEXqmPjp0OByMtaisrSx2eJVN947I=
+	t=1707930661; cv=none; b=F2hrDwDkUewkKUDB4oYFur6ik3MG/73VsPGz5QMfItIZw8BQ2EOQoWad7J2PjR1wflukDN957KtJS1Q/JkP/LzfSz+kT9KYIZQqHPKopMIBR2hha523SIH4XZAf7a+0uhPtMBxnB990GegEzutmprpkJxcmQxnF94t5pdYtOMX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930657; c=relaxed/simple;
-	bh=cWneu4cGadnP43AtfM005VSnasQf0LJKmBQueS3iyM0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VDCX1cReGgi/JWzaJe7xWgi03QFNdWcsQS7FHoiQZC2SH6J5NW/9EJTAlPTsqYakc0gF2ZvkLipcANqmsimWkBU5tyQMsaqDVs/fYAFKPFOmcjhTCVeM1Ps+XBvGX+Un/nSot+AXyXeZPuum5s6JIHCGZdYjrO3ox3loQzeP3DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lwVTDd3L; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707930656; x=1739466656;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cWneu4cGadnP43AtfM005VSnasQf0LJKmBQueS3iyM0=;
-  b=lwVTDd3L01cP5pIsqSOlhggcwtfyQMNKyN3xpayznZXYpx5n4kw/Y9go
-   6ly/VQnMNlX28+bSrtYZuwUTxgRDYGRZ4XeLp4fo5b9CxL48Ub0einC1M
-   GNKp6kVEvqhd3JNmcD2BuRQrjy+Kd6SdCAt7NPkRB4kORcF+6/Z1VRCxN
-   kMgf5Jd4fa4hOn8ItgWIeDqpn4wWp0jrdSlkye6kpUY3QREl5+bBLJFLz
-   bMW9fmqQsLikGMC9XSbtEcuKK9kDYdHc7bP5poG3N4KqlHqdmYGOM6I4g
-   98oFO4M69YBBrvrrpunOoPfbFX2iRUQ4K+CjG9XRRBfySonqbWw6w0MMy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="24458033"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="24458033"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:10:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935617219"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="935617219"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Feb 2024 09:10:52 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id CF7E9338; Wed, 14 Feb 2024 19:10:48 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 5/5] serial: 8250_exar: Don't use "proxy" headers
-Date: Wed, 14 Feb 2024 19:09:38 +0200
-Message-ID: <20240214171044.3551032-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240214171044.3551032-1-andriy.shevchenko@linux.intel.com>
-References: <20240214171044.3551032-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1707930661; c=relaxed/simple;
+	bh=A6NbyRZQhC46qPsrT0BBp6me28szmBiiUUjKG4u5PT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GIbKYlWp6IWUo5/wx1S+PqyZCFZTPgiNKjpnn4jriiqHctDBrXQQI1pOyKyZqoKW9ON7eLvhT61gy0kj7+85qhMGKbuuXDHBqiA83j0CbMSoqcw6j/fyAR4KbI8HgZp+Iqa4Ymll8GqJ7gd/8gD0yJqs5C6ECshRULzkrmsM27Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSBuA6CN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FB4C43601;
+	Wed, 14 Feb 2024 17:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707930659;
+	bh=A6NbyRZQhC46qPsrT0BBp6me28szmBiiUUjKG4u5PT4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uSBuA6CNHXE7KeWvUxHCv8XUEy7YyEQ9KOnw8syeKd65PeMoml6JLITOjmUgZL1h1
+	 1r/o39U9gpoI3eLY8Dy+Woi+y2ZESnI1lE0i+utAPjHGI2JOJfpUv4gUM+FnhHuFyA
+	 zTlD9IzT08eFSfjrV5UL97Niv7ZvXsoZ5Ui+8RwkDpYJGYK3Y0m9RafBu49bD0sw0t
+	 C6fuAet39YnNfFNzXtxtklDO2ougI34VJtKJQAOComG2377YMWV0j9zWwZ80adERtr
+	 BCGw8R1eM03m1UsEQL47IXzebdDou5lyWiZn3IX0XiOOsVpvyX40iQXi/fkUi1FIYE
+	 /UqfYUDMIBHYA==
+Date: Wed, 14 Feb 2024 18:10:51 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+Message-ID: <e6ipl34ajoprzskvjuvdnlw5ak4sjwplh75qqboi2v572byrbm@z4d5ntl27ojp>
+References: <20240209-hid-bpf-sleepable-v1-0-4cc895b5adbd@kernel.org>
+ <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+ <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk>
+ <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+ <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+ <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+On Feb 13 2024, Kumar Kartikeya Dwivedi wrote:
+> On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> wrote:
+> >
+> > On Feb 12 2024, Alexei Starovoitov wrote:
+> > > On Mon, Feb 12, 2024 at 10:21 AM Benjamin Tissoires
+> > > <benjamin.tissoires@redhat.com> wrote:
+> > > >
+> > > > On Mon, Feb 12, 2024 at 6:46 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> > > > >
+> > > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+> > > > >
+> > [...]
+> > > I agree that workqueue delegation fits into the bpf_timer concept and
+> > > a lot of code can and should be shared.
+> >
+> > Thanks Alexei for the detailed answer. I've given it an attempt but still can not
+> > figure it out entirely.
+> >
+> > > All the lessons(bugs) learned with bpf_timer don't need to be re-discovered :)
+> > > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+> > > so we need a new kfunc to set a sleepable callback.
+> > > Maybe
+> > > bpf_timer_set_sleepable_cb() ?
+> >
+> > OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini() flag?
+> >
+> > > The verifier will set is_async_cb = true for it (like it does for regular cb-s).
+> > > And since prog->aux->sleepable is kinda "global" we need another
+> > > per subprog flag:
+> > > bool is_sleepable: 1;
+> >
+> > done (in push_callback_call())
+> >
+> > >
+> > > We can factor out a check "if (prog->aux->sleepable)" into a helper
+> > > that will check that "global" flag and another env->cur_state->in_sleepable
+> > > flag that will work similar to active_rcu_lock.
+> >
+> > done (I think), cf patch 2 below
+> >
+> > > Once the verifier starts processing subprog->is_sleepable
+> > > it will set cur_state->in_sleepable = true;
+> > > to make all subprogs called from that cb to be recognized as sleepable too.
+> >
+> > That's the point I don't know where to put the new code.
+> >
+> 
+> I think that would go in the already existing special case for
+> push_async_cb where you get the verifier state of the async callback.
+> You can make setting the boolean in that verifier state conditional on
+> whether it's your kfunc/helper you're processing taking a sleepable
+> callback.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_exar.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+Hehe, thanks a lot. Indeed, it was a simple fix. I tried to put this
+everywhere but here, and with your help got it working in 2 mins :)
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 3913b8a99161..0afd33a9cf0d 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -6,20 +6,24 @@
-  *
-  *  Copyright (C) 2017 Sudip Mukherjee, All Rights Reserved.
-  */
-+#include <linux/bits.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
- #include <linux/dmi.h>
-+#include <linux/interrupt.h>
- #include <linux/io.h>
--#include <linux/kernel.h>
-+#include <linux/math.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/property.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+
-+#include <linux/serial_8250.h>
- #include <linux/serial_core.h>
- #include <linux/serial_reg.h>
--#include <linux/slab.h>
--#include <linux/string.h>
--#include <linux/tty.h>
--#include <linux/delay.h>
- 
- #include <asm/byteorder.h>
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+> 
+> > It seems the best place would be in do_check(), but I am under the impression
+> > that the code of the callback is added at the end of the instruction list, meaning
+> > that I do not know where it starts, and which subprog index it corresponds to.
+> >
+> > >
+> > > A bit of a challenge is what to do with global subprogs,
+> > > since they're verified lazily. They can be called from
+> > > sleepable and non-sleepable contex. Should be solvable.
+> >
+> > I must confess this is way over me (and given that I didn't even managed to make
+> > the "easy" case working, that might explain things a little :-P )
+> >
+> 
+> I think it will be solvable but made somewhat difficult by the fact
+> that even if we mark subprog_info of some global_func A as
+> in_sleepable, so that we explore it as sleepable during its
+> verification, we might encounter later another global_func that calls
+> a global func, already explored as non-sleepable, in sleepable
+> context. In this case I think we need to redo the verification of that
+> global func as sleepable once again. It could be that it is called
+> from both non-sleepable and sleepable contexts, so both paths
+> (in_sleepable = true, and in_sleepable = false) need to be explored,
+> or we could reject such cases, but it might be a little restrictive.
+> 
+> Some common helper global func unrelated to caller context doing some
+> auxiliary work, called from sleepable timer callback and normal main
+> subprog might be an example where rejection will be prohibitive.
+> 
+> An approach might be to explore main and global subprogs once as we do
+> now, and then keep a list of global subprogs that need to be revisited
+> as in_sleepable (due to being called from a sleepable context) and
+> trigger do_check_common for them again, this might have to be repeated
+> as the list grows on each iteration, but eventually we will have
+> explored all of them as in_sleepable if need be, and the loop will
+> end. Surely, this trades off logical simplicity of verifier code with
+> redoing verification of global subprogs again.
+> 
+> To add items to such a list, for each global subprog we encounter that
+> needs to be analyzed as in_sleepable, we will also collect all its
+> callee global subprogs by walking its instructions (a bit like
+> check_max_stack_depth does).
 
+FWIW, this (or Alexei's suggestion) is still not implemented in v2
+
+> 
+> > >
+> > > Overall I think this feature is needed urgently,
+> > > so if you don't have cycles to work on this soon,
+> > > I can prioritize it right after bpf_arena work.
+> >
+> > I can try to spare a few cycles on it. Even if your instructions were on
+> > spot, I still can't make the subprogs recognized as sleepable.
+> >
+> > For reference, this is where I am (probably bogus, but seems to be
+> > working when timer_set_sleepable_cb() is called from a sleepable context
+> > as mentioned by Toke):
+> >
+> 
+> I just skimmed the patch but I think it's already 90% there. The only
+> other change I would suggest is switching from helper to kfunc, as
+> originally proposed by Alexei.
+
+the kfunc was a rabbit hole:
+- I needed to teach the verifier about BPF_TIMER in kfunc
+- I needed to teach the verifier about the kfunc itself
+- I'm failing at calling the callback :(
+
+Anyway, I'm about to send a second RFC so we can discuss on the code and
+see where my monkey patching capabilities are reaching their limits.
+
+Cheers,
+Benjamin
 
