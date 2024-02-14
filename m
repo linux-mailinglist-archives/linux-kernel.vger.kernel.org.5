@@ -1,53 +1,52 @@
-Return-Path: <linux-kernel+bounces-64693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FCD485418E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:33:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0991A854190
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 03:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B208F28EBD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:32:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E8E32843AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DE223BF;
-	Wed, 14 Feb 2024 02:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0EC23BE;
+	Wed, 14 Feb 2024 02:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w1m9e5Iq"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Op3CotVH"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D5F181
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A04E19B
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707877971; cv=none; b=YOIYCOFSd0PDw4TVkM+nJ04G3qURBnYfFYszED6Qd1v8Xo0/bDvnTyqa4udH2kXs3bpjlXxrYNp44//ssNGgOBmrF7XDB6dwL3iu79oNvgSlujPmYMZsCcr51P0RRyWakmpBWutvIprfeTa+6Tyt4VIhe3lve7noSMKxQ3oYvNU=
+	t=1707878402; cv=none; b=X0MrSZGPqjLAVDJn0kb/PShRRKjf+70IgX0DZ86SMIPIEwIoFvKFfLFsOtMo6Z4fRYnUs2EOV+zfVJUu86nvgKWPQhsb2gtbenvNTGrxeAwmyC6mDHxYWWIAba9t5zuuYeMEKZnMbR94jAwQ+rrX7X+lgGmnuxfXPYWcF8dBDjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707877971; c=relaxed/simple;
+	s=arc-20240116; t=1707878402; c=relaxed/simple;
 	bh=CYxd5rvayFeIfJaUtwf3Hu5j05ggYoN7X86N/TMEUkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eyRxSVVGECLA3AD8DnAJo8odAkhIf2ovDeFGTJhiyKjdkvYK8SRKBOprtun6yXECjpK0Pb3olcJplRdFb5XBP0JGUmhIfr2DSOBsmG+LbiwSu62rFuSwzP9uzEnvdcRLE/k1PaY4ktaIyDma36tljITUkXbAIiaM4uQ2kqmLBvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w1m9e5Iq; arc=none smtp.client-ip=91.218.175.187
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r7J+U5TCLd11q0UUEdHCjBVb2LnIZOMbT3NHxo8x6Wn9ejlRbRLvfhqDaFQ537UWuZI9dAlTL1XHRvT4fuPXUVCvp8eoxbALc5F9Q/0iHnsuB8g0KhblsFsU+BQj7zl1iC8nH4cXqswduGDI3n2+p2JeupoutkzI3RkN3Ovk+VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Op3CotVH; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707877967;
+	t=1707878397;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
 	bh=Q7F/Gkay+YXzeNupEkSWDnoQuQojQ9N7tE1k2rTAa4E=;
-	b=w1m9e5IqDyVgE2BQBQCUI8pT5N5XOqUeHIJZt0ASB6hHn5ZCiZXPd20YEqKmfmgXpXItPz
-	mrvfuYkmK82V+LVrq6a9t3L8mxBEawhN9cq0a+8l5LhlPSW87WAwLiXDIQEa2ma9VZR36o
-	N6dDe222MCZG3VllyTwGOGpnM/IF/wo=
+	b=Op3CotVHCC4KBCh4pI4Z6tJJsLgxkVeSzVxU98Dg8KB9L2ED5yuZaC3m/9hNo2ICSgxUnT
+	JPwM/EXmPHvXXpRtsGhl6hygDtUU0QPmYXUC4dqvl9P7yZX7m97qlWrxVzOhN4x7iPbIiS
+	exqeAPxnMRdQwX05+znY/xGjVrdStM4=
 From: Kent Overstreet <kent.overstreet@linux.dev>
 To: linux-kernel@vger.kernel.org
 Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	akpm@vger.kernel.org,
-	Kees Cook <kees@kernel.org>,
+	Andrew Morton Kees Cook <"akpm@linux-foundation.orgkees"@kernel.org>,
 	"Darrick J . Wong" <djwong@kernel.org>
 Subject: [PATCH] darray: lift from bcachefs
-Date: Tue, 13 Feb 2024 21:32:33 -0500
-Message-ID: <20240214023236.3996954-1-kent.overstreet@linux.dev>
+Date: Tue, 13 Feb 2024 21:39:47 -0500
+Message-ID: <20240214023949.3997464-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
