@@ -1,188 +1,132 @@
-Return-Path: <linux-kernel+bounces-65629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67079854F9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:14:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0843854FA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B6D31F2A9F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:14:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D28441C28EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796B77C084;
-	Wed, 14 Feb 2024 17:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750657D40B;
+	Wed, 14 Feb 2024 17:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="PXUo5k7T"
-Received: from pb-smtp2.pobox.com (pb-smtp2.pobox.com [64.147.108.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Nfzj2FGl"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384E57AE72;
-	Wed, 14 Feb 2024 17:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.108.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17547C080
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930851; cv=none; b=FLZUxMii9lQjyCTASUpFb5o/UR2czEyvZFLz/KNcdvccM45XEQYUyn4SoKU1SKmOYswTOm+hsUGZoa3cvqcRRct87KnaSoDmqWOrYVKarqXhSZdRThPu07NSOEgq0go/uHPE7y0/LOf8c8Db93bDLtz7dxwYTr5dgwN0gUVAorU=
+	t=1707930887; cv=none; b=sq+w1JsoZKsSI/2FF1kypPWAW870C8J6Qo4pIF8UdFBKeO8zODuZMo0HE76zPFFKLjHe4EhwmGW1JmIsp3ILfrBFtq8IGAbITjhFlqxwgkwloKCzhzJBK1W2lhFRqeRRFTkFz62Fv4rcU7eP4gl+kBJNjvLbY3HXmUo1oYEy0Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930851; c=relaxed/simple;
-	bh=rtNqnQMrhTZoVIcurqvh/n552z2fKUMA1DuDPbo13Yk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q1bl4j2I+zM5+aKl8spxx51rdh6wXssWE72C/xb/u/+ea5jJPqz5W0eWMqBOIZ4IXqMnXkLfJlWV2TeJ/Px48MrSuQdl5WNncJGtDmoZp+gvimTih5XjenDDBqlvW0tHzoBXV1KSle/mfbU0ZrjEAQEA4ZQ3ZHP3EW7ryHO+Pug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com; spf=pass smtp.mailfrom=pobox.com; dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b=PXUo5k7T; arc=none smtp.client-ip=64.147.108.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pobox.com
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-	by pb-smtp2.pobox.com (Postfix) with ESMTP id D205C1D370E;
-	Wed, 14 Feb 2024 12:14:08 -0500 (EST)
-	(envelope-from junio@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=from:to:cc
-	:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding; s=sasl; bh=rtNqnQMrhTZoVIcurqvh/n552
-	z2fKUMA1DuDPbo13Yk=; b=PXUo5k7TZBmhJb6JeLAN9wUBia9bsfVsbWk97C25M
-	K947zuLB7J0SreD74x8gLFkZKw+FyXMExGus2QmNlonijF2mDKRYS1tq1WGTIUYC
-	F3Gw1XRQdMRkvlBhEq3ZZzfPGzie/zQm7MxAKPkJg1+TovyNwVRRJwpAQclPEwCL
-	g0=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-	by pb-smtp2.pobox.com (Postfix) with ESMTP id B68591D370D;
-	Wed, 14 Feb 2024 12:14:08 -0500 (EST)
-	(envelope-from junio@pobox.com)
-Received: from pobox.com (unknown [34.125.165.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by pb-smtp2.pobox.com (Postfix) with ESMTPSA id C49991D370C;
-	Wed, 14 Feb 2024 12:14:07 -0500 (EST)
-	(envelope-from junio@pobox.com)
-From: Junio C Hamano <gitster@pobox.com>
-To: git@vger.kernel.org
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>,
-    git-packagers@googlegroups.com
-Subject: [ANNOUNCE] Git v2.43.2
-Date: Wed, 14 Feb 2024 09:14:06 -0800
-Message-ID: <xmqqo7cjvuht.fsf@gitster.g>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707930887; c=relaxed/simple;
+	bh=8ou5WjqaFbf0d6dlT4/+7co77L0bUTMJQFMyMq7YuMo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jkqlfGeoE06wt7B/BKPr/K9BGQicJ3vxA4wrFKWlTANFyfrl6ax/1eFYCsjSO74o5DIfN1T70AK6/UCkEMt1d1akx/0w9BKBf7JPsn1FXECQQ3UXFgK76AeqA8+kxCj5DF+wwum9Nt4FYnGLRyfawkaTb/QAKMRd6IlP0mUOD/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Nfzj2FGl; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso4557276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:14:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707930885; x=1708535685; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ou5WjqaFbf0d6dlT4/+7co77L0bUTMJQFMyMq7YuMo=;
+        b=Nfzj2FGlgB96dAxnYVux5aTYI24Jx6lVlPdgWAzkHqNSad+efPitOrmSSQ7ZeKvZDk
+         GXRiW+A5T8Q/UaFzJaeCcE7juGM+T4QBxF2aCsi+eJ2Q4qBk9SuEjq8ynudjOKhSrndJ
+         8sInBIBP/WLRxbkxbwOiryYviQUYrv0H15f7yO/Kx47EGAXXDWKCE7puN1zuo1A3cUmK
+         mKXFztD9Nc9mkmNZl6O7yCYUb77+yf6BLfFzQb6Ail9dX+pkdX2IxyNq9DYqdHGgUX0P
+         PbY5+1UDOYA5gxwsFQ2+52lSDPQxgivhCoMuTFNqqOn7OnsZ85UcGVzxf9jr6bhPFFA8
+         BwMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707930885; x=1708535685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8ou5WjqaFbf0d6dlT4/+7co77L0bUTMJQFMyMq7YuMo=;
+        b=aJfF3KhsVaWhmwkxIMHdlkiB7ILAtrTqeKM8Y2R/k/gtqGKqoRkOgPYjonsAwd/Ktw
+         a+suQWLDj0Tbo23OJJ5DiN/2IQbPUUmPz3AY2XWrQsRr6lyLIP8bGgY+EA1KeTGohG0s
+         XPZP1JouZvh4mkGGtLWg+R8ovHuZoeB/RIisK8QAXoVx4G5lmLDPCXDdIeFQoVNLHQJw
+         2MjqXl9T610OzG1+dYwyXezIThop4AbhzeLI/S5158sYMs837x6baextnAbt7+RreFrb
+         U5az9jk1gk+O2dFyJAOizeeaQt3il68kB57kyHehH6PKxJYT+FH114+BZzeVM48lv7GP
+         hKJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXZJUiG6b2YM53EmcbwQBQ+pXydZoij+AmwacKY6X+C1A7CqHLxfpbp3dNbNarWvqliqCgnHczUb2tYj/HAZbT8ChCeGJLfafa9l24I
+X-Gm-Message-State: AOJu0Ywj0OFDQ5Wfc6KZpX0S8mvMlbu2Bo91WM4p1N/RMG46wRNQvZJq
+	RD4B12E61eu6NRD3c50j9/I1Fww5Y8t9ghhqjrLQr388cj5R8L5G/TOEprUwILQi5sCNvBVRXpx
+	Viv7yGEBeXiDD3GprRBxJy9mgxxEW6+PztG3D
+X-Google-Smtp-Source: AGHT+IEklcDkHwhJJTRfE00RVqD2YD9tPurIlvkQmweXW1ROZAgTvoBmd93LGr06RSN2meH7bqCAE1CDi8ShYu3HlN0=
+X-Received: by 2002:a25:4b84:0:b0:dbe:d2ec:e31 with SMTP id
+ y126-20020a254b84000000b00dbed2ec0e31mr1980533yba.27.1707930884496; Wed, 14
+ Feb 2024 09:14:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Pobox-Relay-ID:
- 7672AF90-CB5C-11EE-935A-25B3960A682E-77302942!pb-smtp2.pobox.com
+References: <20240212213922.783301-1-surenb@google.com> <20240214062020.GA989328@cmpxchg.org>
+ <ZczSSZOWMlqfvDg8@tiehlicka> <ifz44lao4dbvvpzt7zha3ho7xnddcdxgp4fkeacqleu5lo43bn@f3dbrmcuticz>
+ <ZczkFH1dxUmx6TM3@tiehlicka> <udgv2gndh4leah734rfp7ydfy5dv65kbqutse6siaewizoooyw@pdd3tcji5yld>
+ <Zczq02jdZa9L0VKj@tiehlicka>
+In-Reply-To: <Zczq02jdZa9L0VKj@tiehlicka>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 14 Feb 2024 09:14:30 -0800
+Message-ID: <CAJuCfpFR85w5_8sX0uLfi4SsVb8Yr6DDu=VTA25PB-3SgC=5UA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: Michal Hocko <mhocko@suse.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev, 
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The latest maintenance release Git v2.43.2 is now available at
-the usual places.
+On Wed, Feb 14, 2024 at 8:31=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Wed 14-02-24 11:17:20, Kent Overstreet wrote:
+> [...]
+> > You gotta stop with this this derailing garbage.
+>
+> It is always pleasure talking to you Kent, but let me give you advice
+> (free of charge of course). Let Suren talk, chances for civilized
+> and productive discussion are much higher!
 
-The tarballs are found at:
+Every time I wake up to a new drama... Sorry I won't follow up on this
+one not to feed the fire.
 
-    https://www.kernel.org/pub/software/scm/git/
 
-The following public repositories all have a copy of the 'v2.43.2'
-tag and the 'maint' branch that the tag points at:
-
-  url =3D https://git.kernel.org/pub/scm/git/git
-  url =3D https://kernel.googlesource.com/pub/scm/git/git
-  url =3D git://repo.or.cz/alt-git.git
-  url =3D https://github.com/gitster/git
-
-----------------------------------------------------------------
-
-Git 2.43.2 Release Notes
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Relative to Git 2.43.1, this release has two important fixes to allow
-"git imap-send" to be built with NO_CURL defined, and to restore the
-forced flushing behaviour when GIT_FLUSH=3D1 is set.  It also contains
-other, unexciting, fixes that have already been merged to the 'master'
-branch of the development towards the next major release.
-
-Fixes since Git 2.43.1
-----------------------
-
- * Update to a new feature recently added, "git show-ref --exists".
-
- * Rename detection logic ignored the final line of a file if it is an
-   incomplete line.
-
- * "git diff --no-rename A B" did not disable rename detection but did
-   not trigger an error from the command line parser.
-
- * "git diff --no-index file1 file2" segfaulted while invoking the
-   external diff driver, which has been corrected.
-
- * Rewrite //-comments to /* comments */ in files whose comments
-   prevalently use the latter.
-
- * A failed "git tag -s" did not necessarily result in an error
-   depending on the crypto backend, which has been corrected.
-
- * "git stash" sometimes was silent even when it failed due to
-   unwritable index file, which has been corrected.
-
- * Recent conversion to allow more than 0/1 in GIT_FLUSH broke the
-   mechanism by flipping what yes/no means by mistake, which has been
-   corrected.
-
-Also contains documentation updates, code clean-ups and minor fixups.
-
-----------------------------------------------------------------
-
-Changes since v2.43.1 are as follows:
-
-Elijah Newren (1):
-      diffcore-delta: avoid ignoring final 'line' of file
-
-James Touton (1):
-      git-p4: use raw string literals for regular expressions
-
-Jeff King (1):
-      diff: handle NULL meta-info when spawning external diff
-
-Johannes Schindelin (1):
-      win32: special-case `ENOSPC` when writing to a pipe
-
-Junio C Hamano (11):
-      Docs: majordomo@vger.kernel.org has been decomissioned
-      CoC: whitespace fix
-      builtin/worktree: comment style fixes
-      merge-ort.c: comment style fix
-      reftable/pq_test: comment style fix
-      tag: fix sign_buffer() call to create a signed tag
-      bisect: document "terms" subcommand more fully
-      bisect: document command line arguments for "bisect start"
-      ssh signing: signal an error with a negative return value
-      write-or-die: fix the polarity of GIT_FLUSH environment variable
-      Git 2.43.2
-
-Linus Arver (1):
-      strvec: use correct member name in comments
-
-Nikolay Borisov (1):
-      rebase: fix documentation about used shell in -x
-
-Nikolay Edigaryev (1):
-      rev-list-options: fix off-by-one in '--filter=3Dblob:limit=3D<n>' e=
-xplainer
-
-Patrick Steinhardt (1):
-      builtin/stash: report failure to write to index
-
-Philippe Blain (2):
-      imap-send: add missing "strbuf.h" include under NO_CURL
-      .github/PULL_REQUEST_TEMPLATE.md: add a note about single-commit PR=
-s
-
-Ren=C3=A9 Scharfe (2):
-      parse-options: fully disable option abbreviation with PARSE_OPT_KEE=
-P_UNKNOWN
-      parse-options: simplify positivation handling
-
-Sam Delmerico (1):
-      push: region_leave trace for negotiate_using_fetch
-
-Taylor Blau (1):
-      pack-bitmap: drop unused `reuse_objects`
-
-Toon Claes (1):
-      builtin/show-ref: treat directory as non-existing in --exists
-
+>
+> I do not have much more to add to the discussion. My point stays, find a
+> support of the MM community if you want to proceed with this work.
+> --
+> Michal Hocko
+> SUSE Labs
 
