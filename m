@@ -1,138 +1,154 @@
-Return-Path: <linux-kernel+bounces-65459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D986854D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BF1854D60
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90F5D1C2842E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:51:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B791A1C28B2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA1FA5EE8C;
-	Wed, 14 Feb 2024 15:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134AE5FBAB;
+	Wed, 14 Feb 2024 15:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="oJgKmevx"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="egfMvVmC"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A125C615;
-	Wed, 14 Feb 2024 15:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9965D90F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925893; cv=none; b=EpM/6hQ6m+BDddHDOepKmlcY+/aNo0PgSpDk1PpibvPV5prI1rigGSu00cxkxuOIVF2aWw1OusZ5IB9Crr/UmQJFDvsUKZQqFbG2gZC977Leto7AxqutQ7TQG3JGOUxec7JDcKkQgpQWQuTDn6gCab5Vszh00ZS/EvJZX7iBX9s=
+	t=1707925894; cv=none; b=STJiJvmPoavCQykC/VqA8HtoOY5nGWwMtldDIFVJPGD2UuBdKS3ks26BONAYKNHWMybBYy1kVN3786767SIfUao6vs6ZJIVCei0e31+UUC16d28m5BxlLNXENpBs5keOV23PRZSw/k5gPXzOp1Lm8rIbxUHRBRntduV2bdlT/No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925893; c=relaxed/simple;
-	bh=bRaUsM+Uzf09nnHuj5/m679j6WW4bIQ9LC1jJ0hClJo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uO/uX8IJGXNg+BxwTri+7dMySgXLrw8wsGkbVK2ramTJ2IU0HhCsZsvbryzAwaSBJfXQ6pVvIPs7yyjCAFoocNM7oU8vL03BTceqYBpUBwo2sVA5zc+q8eIX4VkM4gWXVguiwskYq/xXf7gqwRYTpB/GmmDWb5JrW02RuZW7FwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=oJgKmevx; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TZjNZ5Zyjz9sZZ;
-	Wed, 14 Feb 2024 16:51:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1707925886;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uvRxRUirHGWYGjoW5odKQxfL8aAW2NExn/9k0sqlsuY=;
-	b=oJgKmevxuE6YOihKJil5WtpmnnL/lRWqZVwijXduz8jb+QWVrPdGzO5ngbvtLp+WXXMwEu
-	NpxC3Zfg1ABJsNEgxncesLhI3dWYoLPhegT8D/FHjc3+5TquElV7jzzw7sbvfcFO9OBe7X
-	XqIpdaIRlR0PpWsIvJdQNn7UoDyuwXzAb1UQVeaEd5qwdvlTDZ0EDjNKBLu9ihP8I/3U/T
-	mQVY7dtXXTAOVF2omkKDbwIwT/aFGM6shr7XuPd8qSj7gjae7cQ12mvGH2ERjRTON5+wW7
-	VJSCo+ClN6RbgWei3lr/BJZsL2aXFWMQRiv38m7CnG0YyKXz4yYflriN8N8VrQ==
-Date: Wed, 14 Feb 2024 16:51:22 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, mcgrof@kernel.org, gost.dev@samsung.com, 
-	akpm@linux-foundation.org, kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
-	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org
-Subject: Re: [RFC v2 12/14] xfs: make the calculation generic in
- xfs_sb_validate_fsb_count()
-Message-ID: <2h5ikaxcij2rpekaenf2fnlh4dquwpnkjy7eaqfwk75tbkkmuw@ehbfsjjumgdp>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-13-kernel@pankajraghav.com>
- <20240213162611.GP6184@frogsfrogsfrogs>
- <loupixsa7jfjuhry2vm7o6j4k3qsdq6yvupcrbbum2m3hpuxau@5n72zpj5vrjh>
- <Zcvw1rrE4CiVzkmc@dread.disaster.area>
+	s=arc-20240116; t=1707925894; c=relaxed/simple;
+	bh=hqo2GevEBm5pyLsgR6cwWD6Si222BK7J5bWCR3AUBRg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hIvDFqlFtbZUBU79WPwZ9Hv1T51iIj9b+diaKlBRcOzU8d/otEDlWGIGLIFPSWOw8Vk9M9lzLYkIRW91dWJydU8Nzh8uhUKJrnhFu39DgKMcpDMrvBus0Qxjp2g+1DCBoM3OjWiJagA0r4bXbFXzxzq6gnqYNE0UhgORot4QDOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=egfMvVmC; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33ce8cbf465so407857f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707925889; x=1708530689; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ckkUsVwgCVmMoCiQoUiMKNTCmR3exiIWp1NLASK9lUQ=;
+        b=egfMvVmCnmRlf82UsFf38F9fQVI325kqptKHrXu5T6BE5yIpUbtRnLVXNn3LoVfmLi
+         cVWaK0fAroF+Fzzg6Z0AoMzsyYLbSteEDEL7bQeFfsDY+x+olFFZpgZCcHAivUhpO9jp
+         sjg5/BOD5xp5hkqZa+gfoe/7zxIi67yyeP07dgzI3XmTpWCJcJFNxNvmhJkyU+D6u2bj
+         DJbXEQ7l/H1+ZiW7PqsfJG0Jjpjx3Tq2qYYQHFZvZAICJF5zo8upgGvxh+g1QtYO0ZAr
+         8TnRBOI7kVQHRVOAmOUnFcL/xulMBvpDfzDPk/FnolHoCr+hr8imtbkX4VOo9KpxOAwm
+         w1Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707925889; x=1708530689;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ckkUsVwgCVmMoCiQoUiMKNTCmR3exiIWp1NLASK9lUQ=;
+        b=MQ0jJO2Duwn3d7Ht5AMdGADXnn4EcF/kH9uzv53tvFiiA14eyEs0yVpEg4pewzEgeQ
+         uBMniQPJiy12ENVHuTp/nE7OmbF8eulZ3lphjkknBG+TlnLVZ2UACmKgXDzD0KhM3BXL
+         iwjdM54hZNc6dzWbtAAyzIekxgI3H4uan7kRDzyH402NkE7+7baAE567guaObkG0Jyv5
+         buzzwdAxaHtPSXpost4BQZ67JvvXDZek5+vLLZme5IH3Og8RjF5+0qh+bF8v4bB6MxMq
+         BUs9QX6t3NZvTroISbBfBMPxxVQTO6Yquaxd3fDfKqHFKpw+27GQpPOIL6WHf23C4DYl
+         vrdA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvr9qZDRfDJ96lfdnDOgLKn1BWB6FG0QJK3EgyHtgPfcBD6WYxf8TTLrCXo2Hc8XMZg0n4rLCyWRD536S9ZwGRrYTVQPp6lvWuv11S
+X-Gm-Message-State: AOJu0YxP3yYJeOc4W2l58eKQp17LRg+9roTn2P8I0m6Hdun+agxIeMW5
+	rimd4Ij4vMBUGfH0CkZ2DZizdnl3irJlcT0/c3+qrwkKpOD7D96p+EOkj0YY8JA=
+X-Google-Smtp-Source: AGHT+IE9Cb8bmY4/kHxXZzGixDvo0x/U8XvyY7LuYDD1kDdiV0/3lxBXysSXRpjKZPIsHEagKZLGLA==
+X-Received: by 2002:adf:f70d:0:b0:33b:3ec9:bac8 with SMTP id r13-20020adff70d000000b0033b3ec9bac8mr1966513wrp.26.1707925889382;
+        Wed, 14 Feb 2024 07:51:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUyY0+8ebFKZ6vQKw16tiiOdkDZpQDTJBSOjatwe3jxEdnAuofYJ2PCOuE8XmQlDlvvL3Gj1zRxJo/LJZNPg/cRVp5s6A/DnmrKCebT2gpXvg3tic8GhZLLQdTHX1GlNLLgbX8ahGxgs4buMpIRig7he1Xdv8LJthIYOVc7R5FGgW+Znrm1256Cqz2yOB6s7HYfJoH0IbVTO0hZgZsU2DZZ8FyZKp6r9yAetG8TJZrCJa6lrKUTqEx+VZmpq+t5E14H+CDOJH5LbVGrkyO9Au2hnePWXrq7icl1So4GQSfbJomV7Xix/GYeutOCPCdPsqwvXx2/uGzBPf3VX8A4bBXyU0XZFi8onlhMMaBm0SBrVRhfM8d3kDn2HBXAwW/iZH19U2j3iRHjsbnffDXndcJARGW6DdMlDruwGZ4nlQCeXo3iLQu599+aO0aOJNUSbUqFfAvEI08Sj6Y6ylslkXOab4NSGmj5h31UbaByeWSivNRkmno+pXRZN6jewUmvfUOEc4VW3Cg1Ll4VOehbnUUANmPxq68za+9ktokskoVGcLMNxxGSvQzY
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id g7-20020a5d5407000000b003392206c808sm12694287wrv.105.2024.02.14.07.51.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 07:51:28 -0800 (PST)
+Message-ID: <497c4fb6-1ea1-4e14-bd43-ce4a4441694e@tuxon.dev>
+Date: Wed, 14 Feb 2024 17:51:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zcvw1rrE4CiVzkmc@dread.disaster.area>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/9] watchdog: rzg2l_wdt: Make the driver depend on PM
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com,
+ biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240208105817.2619703-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208105817.2619703-3-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdV+CryvbFkcFGthk2VM0j7m13rQJ_0GtumPg2f-hpuMvA@mail.gmail.com>
+ <fea4f538-b3c2-4299-9af1-5e2b61d06ce4@tuxon.dev>
+ <CAMuHMdU8iJhXWFTrVqr8W-ov2D=oSUbsyDP1kfs6mC3rBcLxzQ@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdU8iJhXWFTrVqr8W-ov2D=oSUbsyDP1kfs6mC3rBcLxzQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> > I was thinking of possibility of an overflow but at the moment the 
-> > blocklog is capped at 16 (65536 bytes) right? mkfs refuses any block
-> > sizes more than 64k. And we have check for this in xfs_validate_sb_common()
-> > in the kernel, which will catch it before this happens?
-> 
-> The sb_blocklog is checked in the superblock verifier when we first read in the
-> superblock:
-> 
-> 	    sbp->sb_blocksize < XFS_MIN_BLOCKSIZE                       ||
->             sbp->sb_blocksize > XFS_MAX_BLOCKSIZE                       ||
->             sbp->sb_blocklog < XFS_MIN_BLOCKSIZE_LOG                    ||
->             sbp->sb_blocklog > XFS_MAX_BLOCKSIZE_LOG                    ||
->             sbp->sb_blocksize != (1 << sbp->sb_blocklog)                ||
-> 
-> #define XFS_MAX_BLOCKSIZE_LOG 16
-> 
-> However, we pass mp->m_sb.sb_dblocks or m_sb.sb_rblocks to this
-> function, and they are validated by the same verifier as invalid
-> if:
-> 
-> 	    sbp->sb_dblocks > XFS_MAX_DBLOCKS(sbp)
-> 
-> #define XFS_MAX_DBLOCKS(s) ((xfs_rfsblock_t)(s)->sb_agcount *
->                                              (s)->sb_agblocks)
-> 
-> Which means as long as someone can corrupt some combination of
-> sb_dblocks, sb_agcount and sb_agblocks that allows sb_dblocks to be
-> greater than 2^48 on a 64kB fsb fs, then that the above code:
-> 
-> 	uint64_t bytes = nblocks << sbp->sb_blocklog;
-> 
-> will overflow.
-> 
-> I also suspect that we can feed a huge rtdev to this new code
-> and have it overflow without needing to corrupt the superblock in
-> any way....
+Hi, Geert,
 
-So we could use the check_mul_overflow to detect these cases:
+On 14.02.2024 17:26, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> On Fri, Feb 9, 2024 at 1:25 PM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
+>> On 08.02.2024 14:53, Geert Uytterhoeven wrote:
+>>> On Thu, Feb 8, 2024 at 1:26 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>
+>>>> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=y (e.g. the
+>>>> clocks are enabled though pm_runtime_* specific APIs). To avoid building
+>>>> a driver that doesn't work make explicit the dependency on CONFIG_PM.
+>>>>
+>>>> Suggested-by: Guenter Roeck <linux@roeck-us.net>
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>
+>>>> Changes in v6:
+>>>> - update patch description
+>>>> - fixed the dependency on COMPILE_TEST previously introduced
+>>>
+>>> Thanks for the update!
+>>>
+>>>> --- a/drivers/watchdog/Kconfig
+>>>> +++ b/drivers/watchdog/Kconfig
+>>>> @@ -911,6 +911,7 @@ config RENESAS_RZN1WDT
+>>>>  config RENESAS_RZG2LWDT
+>>>>         tristate "Renesas RZ/G2L WDT Watchdog"
+>>>>         depends on ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST
+>>>> +       depends on PM
+>>>
+>>> depends on PM || COMPILE_TEST
+>>
+>> Isn't "depends on PM" enough? As of [1] ("If multiple dependencies are
+>> defined, they are connected with '&&'") the above:
+>>
+>> depends on ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST
+>> depends on PM
+>>
+>> are translated into:
+>> depends on (ARCH_RZG2L || ARCH_R9A09G011 || COMPILE_TEST) && PM
+>>
+>> Please let me know if I'm wrong.
+> 
+> That is correct.  But you still can compile-test this driver when
+> compiling for a different platform, and CONFIG_PM is disabled.
 
-diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-index 596aa2cdefbc..23faa993fb80 100644
---- a/fs/xfs/xfs_mount.c
-+++ b/fs/xfs/xfs_mount.c
-@@ -132,8 +132,12 @@ xfs_sb_validate_fsb_count(
-        uint64_t        nblocks)
- {
-        ASSERT(sbp->sb_blocklog >= BBSHIFT);
--       unsigned long mapping_count;
--       uint64_t bytes = nblocks << sbp->sb_blocklog;
-+       uint64_t mapping_count;
-+       uint64_t bytes;
-+
-+       if (check_mul_overflow(nblocks, (1 << sbp->sb_blocklog), &bytes))
-+               return -EFBIG;
- 
-        if (!IS_ENABLED(CONFIG_XFS_LBS))
-                ASSERT(PAGE_SHIFT >= sbp->sb_blocklog);
+Ok, I see, thank you!
 
 > 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
