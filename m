@@ -1,39 +1,51 @@
-Return-Path: <linux-kernel+bounces-65779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303588551BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:12:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3B58551C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D683D1F23CB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:12:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0534D1C21F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9F712A173;
-	Wed, 14 Feb 2024 18:09:14 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E3812A156;
-	Wed, 14 Feb 2024 18:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD81C12AAE0;
+	Wed, 14 Feb 2024 18:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0SpdxzaY"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB76812A154
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707934154; cv=none; b=Ga9exVhHHxPqrPeh+3ai6BdP/gBwgQQmLSGoRBCYJmsiezdSkkFiXqiK1cxiUG9i1r+Kbcc7dzEjRPgWBwpWoaee/VfaEt69tXUOy8cvTOmnkqApq2XpgY1kN5If0DlKLd9c+Y4gZ/F3VrwzW7ESXyfX0driN983gYD9+OMnls0=
+	t=1707934154; cv=none; b=XstySqEc0Ed0XfW8EdsF2k49Wxt9XoAZ0sO6B8A8zbJubsF7LaJCSTwYZoboSegcXgt0WL/kAaNk2Qvrn8hUqt3omB7q0f+MPtv7q17MfnJQj0QvvfQToeTjByEwI5volQH4TU76kxxf+bAs1aYLWIqJltMdarsKMwBbWyUoB24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707934154; c=relaxed/simple;
-	bh=xJfgsHzx/81y0EEpfzs/vdStj/XBLTzhMIkOKysBaGc=;
+	bh=igfMvEZGLTS+1WsnQQCYCia30RltHib/bWawTo+VSTk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eJQk82nmTFWvG93VIZ76eNLnAf71crmFvqiYqytTpx9XKpRw4vVXXwa+s+sD2S1D2MvuJ972OiAUEqGJLtgreOfXw2Gr+JF3iBgLKnPnBzizafy+e3bcTruTl1EAtkRSLBZjObhcHWh2hE9NjMJ1NHkLJfJ+WGx+gDNQHxpZSBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CBAE1FB;
-	Wed, 14 Feb 2024 10:09:53 -0800 (PST)
-Received: from [10.57.47.86] (unknown [10.57.47.86])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A7453F7B4;
-	Wed, 14 Feb 2024 10:09:09 -0800 (PST)
-Message-ID: <fba9018d-3783-4d3c-8948-409d7d5258d5@arm.com>
-Date: Wed, 14 Feb 2024 18:09:08 +0000
+	 In-Reply-To:Content-Type; b=FhSJiPyU7PNgUmALMKakIRjc4bM0qSc0ctp8v/fZl48E6LzSVAMt8WBfgUmUmO4FJwFlhr5cySMmHX0XksJUGn68mgHhyX4yUcuq1R9/VM9T2C4jK6XvWVY2Gcl6uWvEhREg5LpzAF67PMu9dUVqegtg5NjVUbdV22HN8JX7aos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0SpdxzaY; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=ZugzDEBZhrkjmLBI0RiloC/ti6l8aNWxtJdo3x/XM4M=; b=0SpdxzaYqSdCHA+xBEbr7belHM
+	7W9Sra9ahCpI7VYCNtau+EWZRe2D+WFWdRrX/Xt38JYky6AKBetfIihpXvQ4/S/GQCLBCyS2AhvUe
+	doe6Rgim1E0QQLDS1gxf+Q1Vwi1GiDGhuTl3gyZyqcLK0o08uGP28ujFDZ9yqR2kVkTNEoq6imAxc
+	pj/zRzyUA9hxCVNDdQifVmyimfbX31Tx2nqneASZjEoCPev8UwLCBm0sN7mBdL3+Dg4IOqlB6TztD
+	VD7nEDbuF7Av/weAUSK/qVk/LnjsNLb6ucjovGD4W1dKqFnf9xkPttwu0+v+Xkb8alpUTdQs2kc1u
+	Yfu1OlZA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raJh1-0000000DsKu-1sWc;
+	Wed, 14 Feb 2024 18:09:11 +0000
+Message-ID: <9cba3b78-1020-4337-a1f9-5857a297aee4@infradead.org>
+Date: Wed, 14 Feb 2024 10:09:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,39 +53,135 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 1/7] dma: compile-out DMA sync op calls when
- not used
-Content-Language: en-GB
-To: Alexander Lobakin <aleksander.lobakin@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
- <20240214162201.4168778-2-aleksander.lobakin@intel.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240214162201.4168778-2-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v1 1/1] kernel.h: Move upper_*_bits() and lower_*_bits()
+ to wordpath.h
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-kernel@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+ Michal Wajdeczko <michal.wajdeczko@intel.com>
+References: <20240214172752.3605073-1-andriy.shevchenko@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240214172752.3605073-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
-[...]
-> +static inline bool dma_skip_sync(const struct device *dev)
-> +{
-> +	return !IS_ENABLED(CONFIG_DMA_NEED_SYNC);
-> +}
 
-One more thing, could we please also make this conditional on 
-!CONFIG_DMA_API_DEBUG so that that doesn't lose coverage for validating 
-syncs?
 
-Thanks,
-Robin.
+On 2/14/24 09:26, Andy Shevchenko wrote:
+> The wordpart.h header is collecting APIs related to the handling
+> parts of the word (usually in byte granularity). The upper_*_bits()
+> and lower_*_bits() are good candidates to be moved to there.
+> 
+> This helps to clean up header dependency hell with regard to kernel.h
+> as the latter gathers completely unrelated stuff together and slows
+> down compilation (especially when it's included into other header).
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> 
+> Kees, since wordpart.h is now only in your tree, this is supposed
+> to go there as well.
+
+after someone corrects the Subject (wordpath -> wordpart).
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> 
+>  include/linux/kernel.h   | 30 ++----------------------------
+>  include/linux/wordpart.h | 29 +++++++++++++++++++++++++++++
+>  2 files changed, 31 insertions(+), 28 deletions(-)
+> 
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 5f74733391ed..d718fbec72dd 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -33,6 +33,8 @@
+>  #include <linux/sprintf.h>
+>  #include <linux/static_call_types.h>
+>  #include <linux/instruction_pointer.h>
+> +#include <linux/wordpart.h>
+> +
+>  #include <asm/byteorder.h>
+>  
+>  #include <uapi/linux/kernel.h>
+> @@ -52,34 +54,6 @@
+>  }					\
+>  )
+>  
+> -/**
+> - * upper_32_bits - return bits 32-63 of a number
+> - * @n: the number we're accessing
+> - *
+> - * A basic shift-right of a 64- or 32-bit quantity.  Use this to suppress
+> - * the "right shift count >= width of type" warning when that quantity is
+> - * 32-bits.
+> - */
+> -#define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
+> -
+> -/**
+> - * lower_32_bits - return bits 0-31 of a number
+> - * @n: the number we're accessing
+> - */
+> -#define lower_32_bits(n) ((u32)((n) & 0xffffffff))
+> -
+> -/**
+> - * upper_16_bits - return bits 16-31 of a number
+> - * @n: the number we're accessing
+> - */
+> -#define upper_16_bits(n) ((u16)((n) >> 16))
+> -
+> -/**
+> - * lower_16_bits - return bits 0-15 of a number
+> - * @n: the number we're accessing
+> - */
+> -#define lower_16_bits(n) ((u16)((n) & 0xffff))
+> -
+>  struct completion;
+>  struct user;
+>  
+> diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
+> index c9e6bd773ebd..f6f8f83b15b0 100644
+> --- a/include/linux/wordpart.h
+> +++ b/include/linux/wordpart.h
+> @@ -2,6 +2,35 @@
+>  
+>  #ifndef _LINUX_WORDPART_H
+>  #define _LINUX_WORDPART_H
+> +
+> +/**
+> + * upper_32_bits - return bits 32-63 of a number
+> + * @n: the number we're accessing
+> + *
+> + * A basic shift-right of a 64- or 32-bit quantity.  Use this to suppress
+> + * the "right shift count >= width of type" warning when that quantity is
+> + * 32-bits.
+> + */
+> +#define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
+> +
+> +/**
+> + * lower_32_bits - return bits 0-31 of a number
+> + * @n: the number we're accessing
+> + */
+> +#define lower_32_bits(n) ((u32)((n) & 0xffffffff))
+> +
+> +/**
+> + * upper_16_bits - return bits 16-31 of a number
+> + * @n: the number we're accessing
+> + */
+> +#define upper_16_bits(n) ((u16)((n) >> 16))
+> +
+> +/**
+> + * lower_16_bits - return bits 0-15 of a number
+> + * @n: the number we're accessing
+> + */
+> +#define lower_16_bits(n) ((u16)((n) & 0xffff))
+> +
+>  /**
+>   * REPEAT_BYTE - repeat the value @x multiple times as an unsigned long value
+>   * @x: value to repeat
+
+-- 
+#Randy
 
