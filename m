@@ -1,164 +1,211 @@
-Return-Path: <linux-kernel+bounces-64931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 817BC8544CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:14:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC3F8544CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF131F23F8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9026E1F26775
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057F012B99;
-	Wed, 14 Feb 2024 09:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70F7125C2;
+	Wed, 14 Feb 2024 09:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Kb9fd5bo"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BUZ2+EVG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9EF12B88
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B7DCA73
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902062; cv=none; b=ZiX+V10DHZm9JwKVT0KLXtSNBAdzcLZAxguDsBtj8PzgXsEd/kMbxwsFg0rwDP15F8GBUTDDVSahwCFf22JcxIRyfS8agxXe+3nnCtbuQrMsZ82+LNwPNhqOZvMuvkSb29rCR0aCNp9fZO+K7RbUwXPqX08nc597B+RafEI0/I0=
+	t=1707902054; cv=none; b=atlLecb3YMzhdMw/wpwHZWx1h73WoO7DxbXE25yHv79K8imG3IyM+ndKjPCFx63WZlHGofWLRESvOAq/jgf29hDRm34vsYnCrMhaUQBuLftuhTNpS0SYvobOutlmy4elF63S41H+GaEy+h4h9bUMhD0/GO0IphO/rZThl9rVnz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902062; c=relaxed/simple;
-	bh=FCqel5Ig8UY5Wl9vfQwDc+Lv9aJAAZMTCLf1omkhISg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=huVBexyEzHmHMr1WVK3refvl9r2memWh9YQskXUjsvuLcJM77QIB3keD0EYAysuaeysSemWepweXHJKmMWCJiPasQ3Y+xUYx6TOqM65HEna9436Fe1OXLNb4JYL/oyKUcR6oJK0fDC0ZB8Zd2CsTlFRZb8kNJUd6IccWpeuoSVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Kb9fd5bo; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E7kSMi028193;
-	Wed, 14 Feb 2024 09:14:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=mN6QB+qDuCSV/tY61bkNRVg4z8putKLkJFG2Mvkny5M=; b=Kb
-	9fd5bo2LCELAUvCC2dMtIKu8WOhnVzzOGlCZF2AxK31lD5l4YZgBUHYnph6ILhgo
-	5KLOEcq994bDOXAY76NZ6a3Uq65AQ1Tkfea3KnIzVPcYgFiF0c6OQiPWOFkVtm7k
-	hs9DnMOqglx6HBTrXVy7MJUfGCJ4h0LHNot9k8jJK9mGbNzaVkWS5tLO9FPkhtud
-	2lBSsT7kW/CFQvcY2gF8hY6uGhwElYOISpBMXZQPEkPEI+E6hNZT9cj3k5UKf4tH
-	ODbKiCDpkqko6ph5inxL0MT4HnqlaPW8bp0M9kopNFhcY+McVOVTxnIsPzBDpsiA
-	lNFecHMe22795e7gQV9Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8nt40ftc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 09:14:06 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E9E43C018123
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 09:14:04 GMT
-Received: from [10.214.66.164] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
- 2024 01:14:00 -0800
-Message-ID: <64ed46f4-459c-63b0-a69e-81353e9fcbc9@quicinc.com>
-Date: Wed, 14 Feb 2024 14:43:57 +0530
+	s=arc-20240116; t=1707902054; c=relaxed/simple;
+	bh=vtR61y4sN+L/+ao7o/NIKSd9KRV2BjPDABQwHbHGFmw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tFGN6RbCYxYOl2M8I31Y+X/zAQs0sTwlD2OAd8xwvawPZNDmHXo1scPgPjg2izITVoA9C8ZQkvugrR0Ou4bx4kVYN5JuYWi2tIMAYdE3gtswkGRaW1QWJrf88gs0KCdvUGlt2pSsQcpKB8QMlt3jipUv77FiuT6fgSO0WSQqM88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BUZ2+EVG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707902052;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yF6KCGZ2SgAsNegJkudNmU2sSgptrONfebjoagaAkcY=;
+	b=BUZ2+EVGqQBgF1YdkZLG8lcFKbmyQ0oWMmIyne/BpcfvOXQS08eYnDxbQBugwGJqtcpVSH
+	xmgD/DjtoYPA6ZsZl9a5SZhaxSwLFWdjgDwPWUXGiH+k3sKh9MIrdZPAkrzZg121xJxT8t
+	2h6SXZegMEDwWDsf0zo5EwBnsr2+E4I=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-88-4YDtbKnbO9umFC5iDUBYjg-1; Wed, 14 Feb 2024 04:14:10 -0500
+X-MC-Unique: 4YDtbKnbO9umFC5iDUBYjg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ceca744d9so224104f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:14:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707902049; x=1708506849;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yF6KCGZ2SgAsNegJkudNmU2sSgptrONfebjoagaAkcY=;
+        b=IU79jlGIwYtXhdkHVDJITF2MmyBKcIsvD0hXOcG93fgoLMjP4m6CEi21fBVGqh27qr
+         5PZ9omyzlpOuUn2XxjSM9tGKHiHucoz2vTzhYMQvsNiGaR9hF5ZjUKTTnQ/BwFdGz94p
+         dYig5V5g2GwPMHAW5o/u0DUrOm2Q7LD74VMagb/l6qeVmOuQWGfsYPFZDvKTLekn5ADb
+         gze1CVZItLJoWpGbBv8anrDuE7KOTwCDGlTnbKwaN433B2t2SoIoGYBO/rLuCNgApv8a
+         uHytfCOSMaE/nW4iq0B0E+lsnqFGUm+5cpgnBSOWMw1t+p42ww/83FM7TSF0HZMEEDW9
+         xygQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJjFsee9DdBo0OIkTbXJ7ljtv3pgxdFqcOlC1I0A847kkV17t+b/+Z6pD+j1lRNpzY89mRGCbJ+QCwMFd/M4yo3+3PZHbmMhLUi3vH
+X-Gm-Message-State: AOJu0YzXCfMEO+nsoz8CYATsPwFxbSYMUDoo7XQfIW/ir2xKWjfmnXcL
+	ocQpO2Hsaz7mSxYOa7YhYKxF/1uS0FaSVYdLFcUTRQ7HsZpKwGar+mo/x3Th30uUMqPmtX39O1w
+	cYc7jq8pv5GqG3Bqw/vKnzdqXew3sIw75KrEi+Cu1jk+yPJ+/Ro1GY5otKEwz/Q==
+X-Received: by 2002:a5d:4fce:0:b0:33b:6267:c594 with SMTP id h14-20020a5d4fce000000b0033b6267c594mr1349246wrw.10.1707902049470;
+        Wed, 14 Feb 2024 01:14:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGARvO3alTod/7fEEMprPUww3ZuSO77uKkZhZPmv4kYJGvEw1gD2bI2kkXnpmfnuumVCc9x5A==
+X-Received: by 2002:a5d:4fce:0:b0:33b:6267:c594 with SMTP id h14-20020a5d4fce000000b0033b6267c594mr1349234wrw.10.1707902049108;
+        Wed, 14 Feb 2024 01:14:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWfC+oqcJxekVmFZDfLL8+ZEkSTIXEf0lqJvPGIBIVEVQ3syv9iqUCzwHg0ersrQawhtBD4SoAjeOdOyGZxchiiMbSPfcQkmp8Lkb1py99Fl8CwLLw4zwbDKHXNLcZmA72adapBLeJBSj7hXAYZ75xbFJO5YLYfLB3SHdp97YSPcFyttsoI4ko6QMTQsQ5mDFtHMYFbHaFPqhGPgPgtR7sHUOE8i1oBE76PF7kU3zVO8CTSjKyD4KBoxRT9VGpeuVp3C3tkmaevIEkn1hIjoAOLq4YkO5cC8zEGOzh3akZiGQPMoIKgqfKsNId7O58APBOpme8vVxN/DKSO3+FZZJHHgekMZmKesWCDvK0g2euaEbFmI5ZaN0g8PKMyKBSjYAgWfh2ymj6RPjSj1+FYQq2hyr4hISaPr60P+TtVMSD7JBC1mIXV/41d+Pij/p0ZQQS7xDXnRZUlGJvh3pGY62qofsJuWd5eYQh9Ar+0apfS9VIhHu5rGOLnfls4PAa9rZiwom31N1x7RZ8Xi+ouPl7h0z8xVHhR2hMujQP/46dTjHU32siECcuwoaNipbdkTu+4
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id g9-20020a5d5409000000b0033cf0f5a01fsm504394wrv.33.2024.02.14.01.14.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:14:08 -0800 (PST)
+Message-ID: <73b550a1-05f2-46b2-a0bc-574fabe8460a@redhat.com>
+Date: Wed, 14 Feb 2024 10:14:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V7 2/2] mm: shmem: implement POSIX_FADV_[WILL|DONT]NEED
- for shmem
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/7] mm/page_owner: use order instead of nr in
+ split_page_owner()
 Content-Language: en-US
-From: Charan Teja Kalla <quic_charante@quicinc.com>
-To: Hugh Dickins <hughd@google.com>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <markhemm@googlemail.com>, <rientjes@google.com>, <surenb@google.com>,
-        <shakeelb@google.com>, <fvdl@google.com>, <quic_pkondeti@quicinc.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Minchan Kim
-	<minchan@kernel.org>
-References: <cover.1676378702.git.quic_charante@quicinc.com>
- <631e42b6dffdcc4b4b24f5be715c37f78bf903db.1676378702.git.quic_charante@quicinc.com>
- <2d56e1dd-68b5-c99e-522f-f8dadf6ad69e@google.com>
- <eeeba374-9247-96fd-c9f5-8cba8761f1b9@quicinc.com>
- <aa4352d8-a549-32e5-874f-1cfee2a5b3e@google.com>
- <e8e85d7d-edf1-7a8b-8cfe-9976dd9cfb0b@quicinc.com>
-In-Reply-To: <e8e85d7d-edf1-7a8b-8cfe-9976dd9cfb0b@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uBZl48d6zItMtwy452DnHye9QeYlVuuc
-X-Proofpoint-ORIG-GUID: uBZl48d6zItMtwy452DnHye9QeYlVuuc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_02,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1011 priorityscore=1501 bulkscore=0
- impostorscore=0 adultscore=0 malwarescore=0 phishscore=0 spamscore=0
- mlxlogscore=471 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402140071
+To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>, linux-mm@kvack.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-3-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240213215520.1048625-3-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello Hugh,
-
-Based on offline discussion with some folks in the list, it seems that
-this syscall can be helpful. This patch might have forgotten and I hope
-this ping helps in resurrecting this thread.
-
-On 5/18/2023 6:16 PM, Charan Teja Kalla wrote:
-> On 5/17/2023 5:02 PM, Hugh Dickins wrote:
->>> Sure, will include those range calculations for shmem pages too.
->> Oh, I forgot this issue, you would have liked me to look at V8 by now,
->> to see whether I agree with your resolution there.  Sorry, no, I've
->> not been able to divert my concentration to it yet.
->>
->> And it's quite likely that I shall disagree, because I've a history of
->> disagreeing even with myself on such range widening/narrowing issues -
->> reconciling conflicting precedents is difficult 🙁
->>
-> If you can at least help by commenting which part of the patch you
-> disagree with, I can try hard to convince you there:) .
+On 13.02.24 22:55, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
->>> Please let me know if I'm missing something where I should be counting
->>> these as NR_ISOLATED.
->> Please grep for NR_ISOLATED, to see where and how they get manipulated
->> already, and follow the existing examples.  The case that sticks in my
->> mind is in mm/mempolicy.c, where the migrate_pages() syscall can build
->> up a gigantic quantity of transiently isolated pages: your syscall can
->> do the same, so should account for itself in the same way.
+> We do not have non power of two pages, using nr is error prone if nr
+> is not power-of-two. Use page order instead.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   include/linux/page_owner.h | 8 ++++----
+>   mm/huge_memory.c           | 2 +-
+>   mm/page_alloc.c            | 4 ++--
+>   mm/page_owner.c            | 3 ++-
+>   4 files changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
+> index 119a0c9d2a8b..d7878523adfc 100644
+> --- a/include/linux/page_owner.h
+> +++ b/include/linux/page_owner.h
+> @@ -11,7 +11,7 @@ extern struct page_ext_operations page_owner_ops;
+>   extern void __reset_page_owner(struct page *page, unsigned short order);
+>   extern void __set_page_owner(struct page *page,
+>   			unsigned short order, gfp_t gfp_mask);
+> -extern void __split_page_owner(struct page *page, unsigned int nr);
+> +extern void __split_page_owner(struct page *page, int order);
+>   extern void __folio_copy_owner(struct folio *newfolio, struct folio *old);
+>   extern void __set_page_owner_migrate_reason(struct page *page, int reason);
+>   extern void __dump_page_owner(const struct page *page);
+> @@ -31,10 +31,10 @@ static inline void set_page_owner(struct page *page,
+>   		__set_page_owner(page, order, gfp_mask);
+>   }
+>   
+> -static inline void split_page_owner(struct page *page, unsigned int nr)
+> +static inline void split_page_owner(struct page *page, int order)
+>   {
+>   	if (static_branch_unlikely(&page_owner_inited))
+> -		__split_page_owner(page, nr);
+> +		__split_page_owner(page, order);
+>   }
+>   static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
+>   {
+> @@ -60,7 +60,7 @@ static inline void set_page_owner(struct page *page,
+>   {
+>   }
+>   static inline void split_page_owner(struct page *page,
+> -			unsigned short order)
+> +			int order)
 
-Based on the grep, it seems almost all the call stacks that isolates the
-folios is for migrating the pages where after migration the NR_ISOLATED
-is decremented (in migrate_folio_done()). The call paths are(compaction,
-memory hotplug, mempolicy).
+I assume this will fit into a single line now.
 
-The another call path is reclaim where we isolate 'nr' pages belongs to
-a pgdat, account/unaccount them in NR_ISOLATED across the reclaim.
 
-I think it is easy to account for the above call paths as we know "which
-folio corresponds to which pgdat".
 
-Where as in this patch, we are isolating a set of folios(can corresponds
-to different nodes) and relying on the reclaim_pages() to do the swap
-out. It is straightforward to account NR_ISOLATED while isolating, but
-it requires unaccounting changes in the shrink_folio_list() where folio
-is being freed after swap out.  Doing so requires changes in all the
-code places(eg: shrink_inactive_list()), where it now requires to
-account NR_ISOLATED while isolating and the shrink_folio_list()
-unaccounts it.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-So, accounting NR_ISOLATED requires changes in other code places where
-this patch has not touched.
+-- 
+Cheers,
 
-If isolating a large amount of pages and not being recorded in
-NR_ISOLATED is really a problem, then may I please know your opinion on
-isolating(with out accounting) and reclaiming in small batches? The
-batch size can be considered as SWAP_CLUSTER_MAX of pages.
+David / dhildenb
 
-> I had a V8 posted without this into accounting. Let me make the changes
-> to account for the NR_ISOLATED too.
-
-Thanks,
-Charan
 
