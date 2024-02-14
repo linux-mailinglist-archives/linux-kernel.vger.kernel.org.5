@@ -1,62 +1,81 @@
-Return-Path: <linux-kernel+bounces-64943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7F38544F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:20:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083D38544EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C615B21EEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:20:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 873E51F2BAB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A55CB14015;
-	Wed, 14 Feb 2024 09:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF39912B82;
+	Wed, 14 Feb 2024 09:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HUxMlD7v"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q0fEL7wE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B9F12B7B;
-	Wed, 14 Feb 2024 09:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7E4125BD
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902405; cv=none; b=V36/r+zuuGLQuecs7K+h7Ykci7agRy4u2jx8MqrUG6sh7br5s0bVql4HEpUjTLy76eVur4N979bBgWOAVQji0naC0Y7P+TMp5WxfaFbkR/wSCI0E/ZU86tQMhUM70X3fcPDcSLxRMEXPBAYVYgvTiqaZqrpHaytAck+cCuLIpww=
+	t=1707902402; cv=none; b=TUnYzqZsINaIx+C8mQsFwqOT27CU1GCG8xPE36wsSisoDNxSqvOlZwhKU4/Iyh6mrnP3Knd/Y9ocwI0EB8QlWFl7oQz51Qdxq3alpRGbDO6QJWYARvtPP+ShotHxQZC3c9tPByfEfQO4HfchbvlyT0NxEVVdemCtMTHUaAHshmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902405; c=relaxed/simple;
-	bh=2fMXcYcvWxaz1npIo1pKnK5llUMcCFybitnqrZX3Ang=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Bg3TggqnIQzHfXIaozk+6ZufROki9jdJKauLbJMjfQY6Wazs5NhKUtGbHhl3Lq5b07bZPhMQI5iiXrNIfI3U4Xwsmj6VXF5Yox3G8pw1V5TD14CkZFRJepkIqoWkbJ2saZsCn4ynX7I8BHj45rJUJTihS+xbgUAt7K9DwlppyNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HUxMlD7v; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E7kG5f024087;
-	Wed, 14 Feb 2024 09:19:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Rmqg+vYr2399W1bV/8QxckiS9s0iEj0WPITAUROA/Tk=; b=HU
-	xMlD7vkMY5bV3o13nV3teuOeBqdIDgzH4WnJaEGBOdHlzRP66cjto+G7tpDDbQm7
-	kxX3NqRwAVBaXotKNmSbh+AIPRRBfAPOYgTHIzcaQ3wzg5bn3TiIGYFWAnp2tTAH
-	lI2BTZrv9AwIBBeB0xtofUV4EvdvUB4Fii5GCIUdPlITWrStD00D+42Aog7HBwpk
-	oPN4QOuTHxOpBB0diGmaLDIRfs7HgLkU6RwOpHvBO/i1At64WX935yL3o/8mEF2v
-	ZcLkl16LqcyB3DV0vtl55vOsKhk80nOSW+hqw9wHhR9a9r8PY6SLE8XkKj2U+2mj
-	xYVK59hD+1bgsPVOSoHA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8jrj8rfh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 09:19:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E9JorD026448
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 09:19:50 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
- 2024 01:19:44 -0800
-Message-ID: <11fda059-3d8d-4030-922a-8fef16349a65@quicinc.com>
-Date: Wed, 14 Feb 2024 14:49:41 +0530
+	s=arc-20240116; t=1707902402; c=relaxed/simple;
+	bh=JttM7pWiMdZp6KWHnTVYllrfplU6h2dEhA/eAiM7F0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HHbkYQux0l4DmLld1pWOUuIrfluwj9w43k+II8D8bqTDGbRgrxTWWFpjH3tXzjjotQSrMtiwWs2wUiYMg6Asos6G8CjjFwO2g3ceOGKKmEwCObZ71qlRJK4LVmNP1x0+DeVxLEOA8THTTHItnKrV8cCdsOYTJG8hedH6msl6vNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q0fEL7wE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707902399;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bHq3K7VCRkjLofJOm0plsMOTBizMDzjuCqAhJEDYdQE=;
+	b=Q0fEL7wEf4VvirNVAo1aanr3e+/eTj/J/1gVeUisNNAHb/EIq3utBQwrlvo3yW2LD0HJZ/
+	c+6PhnKgWE0TxOBRlDKj9lEwbTEWTPYozzPDiS0Hs4hxUuKTo0nEBAk5Ur9JBsha9JdYLO
+	VGZFvPhjmhp8CS6QFmJBRR05ZeqFpYs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-556-rmzLo-wtO2qscuX3PRo9ZQ-1; Wed, 14 Feb 2024 04:19:58 -0500
+X-MC-Unique: rmzLo-wtO2qscuX3PRo9ZQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33cf0130b21so159787f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:19:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707902397; x=1708507197;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bHq3K7VCRkjLofJOm0plsMOTBizMDzjuCqAhJEDYdQE=;
+        b=Cou59x8dY5tUQkROLHNw0UK9ua7o/26QaTOCiLWNWZ1MQcIQzgejp6t29GiAU3vnKW
+         CUnK4q4k10K64j6v83eF/W4PaMElno35oKkOJSXxAFP6QyCzMvWDqmwCPNp7PlS9fZuD
+         TBHZGuLtBNALF01KPjZkVC3m0Y//DyBIRIHaew6OIB+oyVQlEG3HeveNyoGGoXZBLsI+
+         WrVDi0R2uV8NxC6v/9i9v7GNbh0wgbbDbT846yqXs8KMnQjITlsqnsamAgT9V5pKs+IY
+         Q+OAaIS9hOyv9Hp465dYnZIs0AsAjfnGaSam3tKzCRUPbHTWK/HvcS6VbkKKEO6HuUeQ
+         x2pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWeQjj0dk/Gn2K0C8EkraYNwG06kGavuP4N7vwkiarkado9x2kM2TWM+jZYCC13s4mP6cOaWw4tiI5BbHmvCw4KHkZW5sgPvU0JxCho
+X-Gm-Message-State: AOJu0YycCGjeD1z/SZ8+5J0GrdjxrNG9HiypLvTYl36S4zn2SPStOdv+
+	u9HM3zLvY8x3I/z4u9z2miCxipQnQb7W3yzz/J/ZuZRA9oodumWGyXORiyXS2rsSAPnmO7lufTt
+	xboGQ2Ph0s4eLLzNHCOjGgIEkNhw7NPW67+KcrxbHIdEDnfiB/l0PjQ7xi5FkCg==
+X-Received: by 2002:adf:eac5:0:b0:33b:2153:b0f3 with SMTP id o5-20020adfeac5000000b0033b2153b0f3mr1385054wrn.29.1707902396953;
+        Wed, 14 Feb 2024 01:19:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7u4R95UWK5JICK9JeUR18Sa1YTFb32Dm+FsKJFJVjyvLsLwJdWxBIBp70yvOC5cgN3itCNQ==
+X-Received: by 2002:adf:eac5:0:b0:33b:2153:b0f3 with SMTP id o5-20020adfeac5000000b0033b2153b0f3mr1385027wrn.29.1707902396601;
+        Wed, 14 Feb 2024 01:19:56 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXZDqHXEOWIwF6EX5vKEWuGcLSrBezsYxPwj3QQyxsUFzBM3U3WkZlz1VrP6yy4LW1hO8/kggmvLEGsGecX893d99h1hofrnyb5D7yyZSjDMXNU4ui11Z9z7yFGLMxZfz5zzaLuwh9+RHsPKuJyleKtSwQQMRIoxGgR2qTKwPZPHVTeG27rDs8O0t8AU/QY59u3PqImKOSkaJC+5Ka1/I5zY++0KWMyyMQbr34ZAijocedaeEO4ebW0GPQbMhoSkmpHuFWliBjiEv5HR92vBBToVwhr4XGq6tqh44XF3PzuLVJT/md2m8WINh8BQLxqaa89ljTNpNQkbjVwcqouThQ/4tv3l8qVMoke37V5+xLVJRwNncf22tJWBiNWEuBt/j5jtzZOBTXsRQFU9Wr2fwaAChihqx6OaBkAuRDVtjIP3kRxLYRkBnZcn2eutj4Ec/kHSlknI6D3B3QmM51uV2hypXJ8wgftfWNdGZ/TMJot2iNcz510QIaifZ1LyQmCVuoSUDoioAGYnk/Fj+bForCE9KxlnfMZ7/9Xx8B1Ubeq5Cj2BazFCcD0t7n0Q7rOIfED
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id c18-20020adfef52000000b0033af3a43e91sm11742691wrp.46.2024.02.14.01.19.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:19:56 -0800 (PST)
+Message-ID: <114da9e0-c7f4-4c3b-ab2f-f030466efedc@redhat.com>
+Date: Wed, 14 Feb 2024 10:19:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,97 +83,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/8] clk: qcom: ipq5332: enable few nssnoc clocks in
- driver probe
+Subject: Re: [PATCH v4 3/7] mm: memcg: make memcg huge page split support any
+ order split.
 Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Catalin
- Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20240122-ipq5332-nsscc-v4-0-19fa30019770@quicinc.com>
- <20240122-ipq5332-nsscc-v4-2-19fa30019770@quicinc.com>
- <7a69a68d-44c2-4589-b286-466d2f2a0809@lunn.ch>
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <7a69a68d-44c2-4589-b286-466d2f2a0809@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>, linux-mm@kvack.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-4-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240213215520.1048625-4-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: YNUVd4LGqR4M-i4n7A4gWk_p2qnpAhr4
-X-Proofpoint-ORIG-GUID: YNUVd4LGqR4M-i4n7A4gWk_p2qnpAhr4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_02,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 impostorscore=0 bulkscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=734 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402140071
 
-
-
-On 1/26/2024 1:35 AM, Andrew Lunn wrote:
-> On Mon, Jan 22, 2024 at 11:26:58AM +0530, Kathiravan Thirumoorthy wrote:
->> gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, gcc_nssnoc_nsscc_clk are
->> enabled by default and it's RCG is properly configured by bootloader.
+On 13.02.24 22:55, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> Which bootloader? Mainline barebox?
-
-
-Thanks for taking time to review the patches. I couldn't get time to 
-respond back, sorry for the delay.
-
-I was referring to the U-boot which is delivered as part of the QSDK. I 
-will call it out explicitly in the next patch.
-
+> It sets memcg information for the pages after the split. A new parameter
+> new_order is added to tell the order of subpages in the new page, always 0
+> for now. It prepares for upcoming changes to support split huge page to
+> any lower order.
 > 
->> Some of the NSS clocks needs these clocks to be enabled. To avoid
->> these clocks being disabled by clock framework, drop these entries
->> from the clock table and enable it in the driver probe itself.
-> 
-> If they are critical clocks, i would expect a device to reference
-> them. The CCF only disabled unused clocks in late_initcall_sync(),
-> which means all drivers should of probed and taken a reference on any
-> clocks they require.
-
-
-Some of the NSSCC clocks are enabled by bootloaders and CCF disables the 
-same (because currently there are no consumers for these clocks 
-available in the tree. These clocks are consumed by the Networking 
-drivers which are being upstreamed). To access the NSSCC clocks, 
-gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, gcc_nssnoc_nsscc_clk clocks 
-needs to be enabled, else system is going to reboot. To prevent this, I 
-enabled it in probe.
-
-However looking back, gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, 
-gcc_nssnoc_nsscc_clk are consumed by the networking drivers only. So is 
-it okay to drop these clocks from the GCC driver and add it back once 
-the actual consumer needs it? So that we don't have to enable it in probe.
-
-Please let me know your thoughts.
-
-
-> 
-> Please correctly describe the clock tree in device tree, not hide
-> clocks because your DT description is not complete.
-> 
->      Andrew
-> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
 > ---
-> pw-bot: cr
+
+Nothing jumped at me.
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
