@@ -1,142 +1,159 @@
-Return-Path: <linux-kernel+bounces-64834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F9B4854369
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:29:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E5B185436B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28278B2449F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99ED01C22302
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98ACC11715;
-	Wed, 14 Feb 2024 07:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60DA125A4;
+	Wed, 14 Feb 2024 07:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Rtmp5M2K"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uYP0N+9w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D599E10A2C;
-	Wed, 14 Feb 2024 07:28:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294E311731;
+	Wed, 14 Feb 2024 07:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707895733; cv=none; b=KsXLmxIoGZdVGCYPxZKvPfOAIxfnFxq71mUltGfDgeWqNOpBX0wOkxHh2LgUY1ok0rkfdThLzXRS4uogjUDXoQOW8Lwh3rHG44iPsc+mogSihr4pMgcYpTV4nfXiy1vFFTKnX5uO/NJWxkGS7lZhnIM8YzkR4bzhpG9jPYZlT/k=
+	t=1707895735; cv=none; b=iirkwHxLWzNIMICHrlIu60Z7sriL4KYhaepY285aabKAE/x9mHQ7dyhCupiatqk7g90GeloQR8T3Uio05F8XT7ruDKfGYnmRnfIoXul8oXoO19bv2WpzM5dTvFSZgw/L7/vYRSMQpz65wUKDrJGXqYCX5PcWmQzH9PNOO+VgFTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707895733; c=relaxed/simple;
-	bh=Klz922SY6zwP9fd4HzSeoQUo+HDErk4CymP3J/L/94Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=PeqZt0a8B75+UqxIFrrrmJyf7/W3EbvUVSOxBG0EXWley+EE/ETYZGUPD3Eql54J+1dV6vdhpwiYnRhMATCbQtci/TEm/bbgH3rkbi6RJgFfm84bYpCo5I+so+YJIBpoeji/ekc0yVVpGNUrB/WVQ8XG0JIj5Dn1cveghZP1Btg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Rtmp5M2K; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41E7Sgp6108947;
-	Wed, 14 Feb 2024 01:28:42 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707895722;
-	bh=jvcicBHwXOpS6B6qPvZL9c7TT+K2R2aQ/1U8VreJT+E=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Rtmp5M2KdOVzTIry6egMKufcbb7zt5JcfBSbB0iFrtbEY3DbztVjiTN8+i2fBtMJb
-	 vI9laGaaqJ3irWYWi2Be30SVXV0lX2WwyrVgj/StINt9minYfsVkB2+KQT25SMggGR
-	 tkB8HYaQjtuegKipogcbPbpViWmrqHroHLA2oQYU=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41E7SgI3027586
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 14 Feb 2024 01:28:42 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
- Feb 2024 01:28:42 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 14 Feb 2024 01:28:42 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41E7ScpE009345;
-	Wed, 14 Feb 2024 01:28:39 -0600
-Message-ID: <2c1da868-0295-4398-8811-6367c589df52@ti.com>
-Date: Wed, 14 Feb 2024 12:58:38 +0530
+	s=arc-20240116; t=1707895735; c=relaxed/simple;
+	bh=193v/W9i2ERfHNUMgfSABTMbWEw8kJdYQvvqGCxRdl0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VU5z7pTNuOVqm+cRwZT6IB7dDqSYgg6ye2hXTsBDK8/C9y1F8TRhSfbyaHllgbYpqaWLZzH1dX6iEjuZQbPNYZ4N7aBduylQD91eH97LPE+CBF4AMqc8BzWG6p3sTaFhKV+l2u0l/U69WxMgyYkAE0SZMJOBJ2WVtKP0zA3mVPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uYP0N+9w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8CBC43601;
+	Wed, 14 Feb 2024 07:28:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707895734;
+	bh=193v/W9i2ERfHNUMgfSABTMbWEw8kJdYQvvqGCxRdl0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=uYP0N+9wBwi/1g/8CtcqR4KmpTKXE7wAa+NSqQoOiXCZ4T2v/xCqqT+BK3SaQC3pX
+	 VpyR898Vg3HqW7VzkohGBgCi7O/IkL0OaNHr2DZFXrsU0j/Q5V0WKTU6wuVsGuGAkN
+	 ON5dzOd5STH1PkweByWFMGTnu28Yjn+shjv1f9+z6yDalZpE0fvX1MSm9AJTPZM7ta
+	 u0HdyZzZE+boIF5AwcJ9WjKBH8yexnmoQc2hSxEMSpCLNoN4tI6XVjYwbKl514rlZz
+	 MEtSAZXvuA2KIijq64oGhmzy1g6Z75dFTGK4qAeKWvzBPR7AphdXRITvAlvRfcWmFd
+	 3qikjoF2JQV0g==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d0cd9871b3so3956941fa.1;
+        Tue, 13 Feb 2024 23:28:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXppXOyhZstcJceFofxLRWnW2QIqHNMjarjVEwjs+FqbCgUldm8Y7tA5TXw3wOtHyyFjRc/ojO/0aOGriDpIuWs7+gQnNmdEgHjvbUzEYUkOGqO+0AAA7CKd8KwXZGHWsB7V7POTjZUgA==
+X-Gm-Message-State: AOJu0YzBFXkTbvjtlYU+RTR7BWaiuX4iXFTSJfkqsrsvVYvf8vXugqwa
+	hZqKBGlB9sFcZvgCrUrnfO4x1y4MxJdaWakAJRpzZAztGxuqupmIzypgDRCdPbTLNG8XHmkt044
+	aQe2VbPkplgAzGeu+NPU8WUz8p0I=
+X-Google-Smtp-Source: AGHT+IEqt4BKQ9Y/nYdGfYCcllEmArSxZqjfK/gjK0QYvvSclBfPOgFcv1FCWgqasjjJ/YUMyF8T/FNuzwzM8YrBMq8=
+X-Received: by 2002:a19:655e:0:b0:511:9f53:3974 with SMTP id
+ c30-20020a19655e000000b005119f533974mr373057lfj.2.1707895732786; Tue, 13 Feb
+ 2024 23:28:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v2 1/4] arm64: dts: ti: k3-j7200-common-proc-board:
- Modify Pinmux for wkup_uart0 and mcu_uart0
-Content-Language: en-US
-To: Bhavya Kapoor <b-kapoor@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20240212104417.1058993-1-b-kapoor@ti.com>
- <20240212104417.1058993-2-b-kapoor@ti.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20240212104417.1058993-2-b-kapoor@ti.com>
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-14-ardb+git@google.com> <20240213200553.GYZcvLoYUNJOPGxoid@fat_crate.local>
+ <CAMj1kXG4rSGaB8Q2qFcgOH=dqS0yvR8Ofur=h5C-jq_TqiFzVg@mail.gmail.com>
+In-Reply-To: <CAMj1kXG4rSGaB8Q2qFcgOH=dqS0yvR8Ofur=h5C-jq_TqiFzVg@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 14 Feb 2024 08:28:41 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFdUD_kCh0h1HcpOVoQJNcP11OHB+FJ-=HGfP3RRdy81w@mail.gmail.com>
+Message-ID: <CAMj1kXFdUD_kCh0h1HcpOVoQJNcP11OHB+FJ-=HGfP3RRdy81w@mail.gmail.com>
+Subject: Re: [PATCH v4 01/11] x86/startup_64: Simplify global variable
+ accesses in GDT/IDT programming
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+
+On Tue, 13 Feb 2024 at 22:53, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Tue, 13 Feb 2024 at 21:06, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 01:41:45PM +0100, Ard Biesheuvel wrote:
+> > > @@ -632,5 +616,5 @@ void __head startup_64_setup_env(unsigned long physbase)
+> > >                    "movl %%eax, %%ss\n"
+> > >                    "movl %%eax, %%es\n" : : "a"(__KERNEL_DS) : "memory");
+> > >
+> > > -     startup_64_load_idt(physbase);
+> > > +     startup_64_load_idt(&RIP_REL_REF(vc_no_ghcb));
+> >
+> > It took me a while to figure out that even if we pass in one of the two
+> > GHCB handler pointers, we only set it if CONFIG_AMD_MEM_ENCRYPT.
+> >
+> > I think this ontop of yours is a bit more readable as it makes it
+> > perfectly clear *when* the pointer is valid.
+> >
+>
+> Looks fine to me.
+>
+> > Yeah, if handler is set, we set it for the X86_TRAP_VC vector
+> > unconditionally but that can be changed later, if really needed.
+> >
+>
+> We might call the parameter 'vc_handler' to make this clearer.
+
+Actually, we can merge set_bringup_idt_handler() into its caller as well:
+
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index aee99cfda4eb..804ba9a2214f 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -501,30 +501,22 @@ void __init __noreturn
+x86_64_start_reservations(char *real_mode_data)
+  */
+ static gate_desc bringup_idt_table[NUM_EXCEPTION_VECTORS] __page_aligned_data;
+
+-static void __head set_bringup_idt_handler(gate_desc *idt, int n,
+void *handler)
+-{
+-#ifdef CONFIG_AMD_MEM_ENCRYPT
+-       struct idt_data data;
+-       gate_desc desc;
+-
+-       init_idt_data(&data, n, handler);
+-       idt_init_desc(&desc, &data);
+-       native_write_idt_entry(idt, n, &desc);
+-#endif
+-}
+-
+ /* This may run while still in the direct mapping */
+-static void __head startup_64_load_idt(void *handler)
++static void __head startup_64_load_idt(void *vc_handler)
+ {
+        struct desc_ptr desc = {
+                .address        = (unsigned
+long)&RIP_REL_REF(bringup_idt_table),
+                .size           = sizeof(bringup_idt_table) - 1,
+        };
+-       gate_desc *idt = (gate_desc *)desc.address;
++       struct idt_data data;
++       gate_desc idt_desc;
+
+-       if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
+-               /* VMM Communication Exception */
+-               set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
++       if (vc_handler) {
++               init_idt_data(&data, X86_TRAP_VC, vc_handler);
++               idt_init_desc(&idt_desc, &data);
++               native_write_idt_entry((gate_desc *)desc.address,
++                                      X86_TRAP_VC, &idt_desc);
++       }
+
+        native_load_idt(&desc);
+ }
 
 
-
-On 12/02/24 16:14, Bhavya Kapoor wrote:
-> WKUP_PADCONFIG registers for wkup_uart0 and mcu_uart0 lies
-> under wkup_pmx2 for J7200. Thus, modify pinmux for both
-> of them.
-> 
-> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
-> ---
-
-
-This warrants a Fixes: tag. Can you provide one here? I can fix it up
-when merging.
-
->  .../boot/dts/ti/k3-j7200-common-proc-board.dts  | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> index 1d8bddcae90e..160580a0584a 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-> @@ -119,24 +119,25 @@ transceiver3: can-phy3 {
->  };
->  
->  &wkup_pmx0 {
-> +};
-> +
-> +&wkup_pmx2 {
->  	mcu_uart0_pins_default: mcu-uart0-default-pins {
->  		pinctrl-single,pins = <
-> -			J721E_WKUP_IOPAD(0xf4, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
-> -			J721E_WKUP_IOPAD(0xf0, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
-> -			J721E_WKUP_IOPAD(0xf8, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
-> -			J721E_WKUP_IOPAD(0xfc, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
-> +			J721E_WKUP_IOPAD(0x90, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
-> +			J721E_WKUP_IOPAD(0x94, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
-> +			J721E_WKUP_IOPAD(0x8c, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
-> +			J721E_WKUP_IOPAD(0x88, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
->  		>;
->  	};
->  
->  	wkup_uart0_pins_default: wkup-uart0-default-pins {
->  		pinctrl-single,pins = <
-> -			J721E_WKUP_IOPAD(0xb0, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
-> -			J721E_WKUP_IOPAD(0xb4, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
-> +			J721E_WKUP_IOPAD(0x48, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
-> +			J721E_WKUP_IOPAD(0x4c, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
->  		>;
->  	};
-> -};
->  
-> -&wkup_pmx2 {
->  	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
->  		pinctrl-single,pins = <
->  			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_RGMII1_TX_CTL */
-
--- 
-Regards
-Vignesh
+(^^^ plus your changes boot tested on SEV-SNP)
 
