@@ -1,167 +1,131 @@
-Return-Path: <linux-kernel+bounces-65909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E51855399
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DA185539A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FE3D1C276A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2291C28E86
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FF713DB8D;
-	Wed, 14 Feb 2024 20:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA8E13DBA0;
+	Wed, 14 Feb 2024 20:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V0Dtva7q"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TabFiwUh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB57813DB8A
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF121E4B7;
+	Wed, 14 Feb 2024 20:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707940830; cv=none; b=bO14oa86pBgglrR1F6TtrhnWAJ8I1iroWLXaFCHKdXuviU0l86GRFS0gmyBTCnB7CjeJd/reuq+F31A0DiN9yMvlPMickIhTeC4/9jblxRFbSuq8vN8x/PWq9MJIDsjJDgmaNo++oycWeDRqQNQ1ujOrWa2cV8n/4bKGRAOzJFk=
+	t=1707940883; cv=none; b=E+m6blLONlBHtKvJXJVVbeQtmEFwwc0ABjP6t5acN+X5u5F8QV7YGSdI2BlVuFwE8qnnhIuH+qfw9PBUaPJPOfLz+O1SUyHNWYwvxS2wpZGC8tect6wnoV7bNp0wEK7cWMYxXjgq+IlCrwx6QXsmEEcDwxTopSi+uUi5k+W55lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707940830; c=relaxed/simple;
-	bh=sG1eMeXm6V7HoOMCkcfIrnxVJDrJycSjo8dnKLtS7so=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MCtzN1b863GxrVUAJ34dALCed6igDnjlUabQIxRFxGntMsxxhbz7yDzKx8gHfmyWEkyL4J1ajio/GVr6/y75woe4U2LyrzhkY4WrlE+KudH6ivV2GHrifxcmXeMdd9p58WIEl0V8GgkYx4LfDBkRjt5wrTO3JVnx0kBa72YrmNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V0Dtva7q; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 15:00:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707940826;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pf30Mbuh5b/kObn023v7ccfUflKK/+7eCEEfg4Q4/Xo=;
-	b=V0Dtva7qS2reHkZJi6PJ+HEovBCR0hF1cHRtyU3vqEVbBd8vXfQIrh8jm2X0ifBBI4P+IO
-	H5vrvDEyaz0upotCLVyuYanif0dGbMLFqnWADl59CQ4rEdihhMwhzsvSw9R6sR/elwVruF
-	7JlRVAQ9ZPkvUkS27LLag/qy7F3NQ4g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, axboe@kernel.dk, 
-	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, 
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <stxem77cvysbfllp46dtgsgawzdtkr662ymw3jgo564ekssna3@t7iw7azgyqvy>
-References: <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
- <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
- <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
- <20240214085548.d3608627739269459480d86e@linux-foundation.org>
- <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
- <CAJuCfpGi6g3rG8aVmXveSxKvXnfm+5gLKS=Q4ouQBDaTxSuhww@mail.gmail.com>
+	s=arc-20240116; t=1707940883; c=relaxed/simple;
+	bh=5K2WUn7NWr2ouERBIwh/bkIaCWPjJwbZxQ4mhPJU38M=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CdUcp/APOY72Pf5+OoP6iAhYDRS+opwN7lDnSAppeLmhEFzncZY4zf4iauJ69Os41DdX4ZXXfYl/PXKfT5/KavJDTucIhnAfq0xvMHU14h0ajkv/R3qmj0ixVA9cle/TCuojZzW6PGXS+P3vrWUYPbzchbFfK32YvYAS9nHSpWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TabFiwUh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A529C433F1;
+	Wed, 14 Feb 2024 20:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707940883;
+	bh=5K2WUn7NWr2ouERBIwh/bkIaCWPjJwbZxQ4mhPJU38M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TabFiwUhrpgZtkQqgIS6buAF5wO7edIU7TzZN7bwb53XohYw2ZyyKROMmVrcCOb+d
+	 zPlFl+GCAj0Kg1k8Lc3rnbHbA/7izh8EHK0bcOIoslFyt/j8s0g0cbyIP58dtCfDBp
+	 yc11Wbtle+tQ08MjwC+XDB9usxyDR6Z4b6bZ0QmRutoZunwpOALIbHaPno3x+mdh/B
+	 /8GxDBlsctQJ1dRarDaVe2frX8y0XeZl5aREMGPa+N084xWR6V98dnf21hk7405ULN
+	 VOeGCZwDu0uNEs79kGxqF00BoCs6f5oObRWVH404vEPyaqFrtsuQLvJ049M2Iy4u9q
+	 NEVYGbLijFbzA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raLRZ-003GBr-15;
+	Wed, 14 Feb 2024 20:01:21 +0000
+Date: Wed, 14 Feb 2024 20:01:19 +0000
+Message-ID: <86wmr64xyo.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/23] KVM: arm64: vgic: Use atomics to count LPIs
+In-Reply-To: <Zc0HIorNZG9KG5Mg@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<20240213093250.3960069-8-oliver.upton@linux.dev>
+	<861q9f56x6.wl-maz@kernel.org>
+	<Zc0HIorNZG9KG5Mg@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpGi6g3rG8aVmXveSxKvXnfm+5gLKS=Q4ouQBDaTxSuhww@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, Feb 14, 2024 at 11:24:23AM -0800, Suren Baghdasaryan wrote:
-> On Wed, Feb 14, 2024 at 9:52 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Wed, Feb 14, 2024 at 08:55:48AM -0800, Andrew Morton wrote:
-> > > On Tue, 13 Feb 2024 14:59:11 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > > > > If you think you can easily achieve what Michal requested without all that,
-> > > > > > good.
-> > > > >
-> > > > > He requested something?
-> > > >
-> > > > Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
-> > > > possible until the compiler feature is developed and deployed. And it
-> > > > still would require changes to the headers, so don't think it's worth
-> > > > delaying the feature for years.
-> > >
-> > > Can we please be told much more about this compiler feature?
-> > > Description of what it is, what it does, how it will affect this kernel
-> > > feature, etc.
-> > >
-> > > Who is developing it and when can we expect it to become available?
-> > >
-> > > Will we be able to migrate to it without back-compatibility concerns?
-> > > (I think "you need quite recent gcc for memory profiling" is
-> > > reasonable).
-> > >
-> > >
-> > >
-> > > Because: if the maintainability issues which Michel describes will be
-> > > significantly addressed with the gcc support then we're kinda reviewing
-> > > the wrong patchset.  Yes, it may be a maintenance burden initially, but
-> > > at some (yet to be revealed) time in the future, this will be addressed
-> > > with the gcc support?
-> >
-> > Even if we had compiler magic, after considering it more I don't think
-> > the patchset would be improved by it - I would still prefer to stick
-> > with the macro approach.
-> >
-> > There's also a lot of unresolved questions about whether the compiler
-> > approach would even end being what we need; we need macro expansion to
-> > happen in the caller of the allocation function
+On Wed, 14 Feb 2024 18:32:02 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
 > 
-> For the record, that's what this attribute will be doing. So it should
-> cover our usecase.
+> Hey,
+> 
+> On Wed, Feb 14, 2024 at 04:47:49PM +0000, Marc Zyngier wrote:
+> > I'd like to propose an alternative approach here. I've always hated
+> > this "copy a bunch of INTIDs" thing,
+> 
+> Agree. 
+> 
+> > and the only purpose of this
+> > silly counter is to dimension the resulting array.
+> 
+> Well, we also use it to trivially print the number of LPIs for a
+> particular vgic in the debug interface.
 
-That wasn't clear in the meeting we had the other day; all that was
-discussed there was the attribute syntax, as I recall.
+I think we can get survive this... ;-)
 
-So say that does work out (and I don't think that's a given; if I were a
-compiler person I don't think I'd be interested in this strange half
-macro, half inline function beast); all that has accomplished is to get
-rid of the need for the renaming - the _noprof() versions of functions.
+> 
+> > Could we instead rely on an xarray marking a bunch of entries (the
+> > ones we want to 'copy'), and get the reader to clear these marks once
+> > done?
+> 
+> I think that'd work. I'm trying to convince myself we don't have bugs
+> lurking in some of the existing usage of vgic_copy_lpi_list()...
+> 
+> > Of course, we only have 3 marks, so that's a bit restrictive from a
+> > concurrency perspective, but since most callers hold a lock, it should
+> > be OK.
+> 
+> They all hold *a* lock, but maybe not the same one! :)
 
-So then how do you distinguish where in the callstack the accounting
-happens?
+Indeed. But as long as there isn't more than 3 locks (and that the
+xarray is OK being concurrently updated with marks), we're good!
 
-If you say "it happens at the outermost wrapper", then what happens is
+> Maybe we should serialize the use of markers on the LPI list on the
+> config_lock. A slight misuse, but we need a mutex since we're poking at
+> guest memory. Then we can go through the whole N-dimensional locking
+> puzzle and convince ourselves it is still correct.
 
- - Extra overhead for all the inner wrapper invocations, where they have
-   to now check "actually, we already have an alloc tag, don't do
-   anything". That's a cost, and given how much time we spent shaving
-   cycles and branches during development it's not one we want.
+Maybe. This thing is already seeing so many abuses that one more may
+not matter much. Need to see how it fits in the whole hierarchy of
+GIC-related locks...
 
- - Inner allocations that shouldn't be accounted to the outer context
-   are now a major problem, because they silently will be accounted
-   there and never noticed.
+Thanks,
 
-   With our approach, inner allocations are by default (i.e. when we
-   haven't switched them to the _noprof() variant) accounted to their
-   own alloc tag; that way, when we're reading the /proc/allocinfo
-   output, we can examine them and check if they should be collapsed to
-   the outer context. With this approach they won't be seen.
+	M.
 
-So no, we still don't want the compiler approach.
+-- 
+Without deviation from the norm, progress is not possible.
 
