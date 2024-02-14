@@ -1,152 +1,101 @@
-Return-Path: <linux-kernel+bounces-64923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F778544B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:10:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC959854492
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2CD128D2BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:10:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A7171F2AD66
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73A810A35;
-	Wed, 14 Feb 2024 09:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8F410A31;
+	Wed, 14 Feb 2024 09:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="CGcJ/42F"
-Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+	dkim=pass (1024-bit key) header.d=ysoft.com header.i=@ysoft.com header.b="Me3G5LOv"
+Received: from uho.ysoft.cz (uho.ysoft.cz [81.19.3.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F68379C0;
-	Wed, 14 Feb 2024 09:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ECD12B69;
+	Wed, 14 Feb 2024 09:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.3.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901840; cv=none; b=OFk2fKEaOpspfDYgCmE2jT1FcGQcIt2d3eHD6pvByCa/T/oUCmfpcMay8vA8elZ0TdXHEfeVI+tK72eqKxezIwLxdEUpVINcE68l+fPxCoU0NxyxIJKCToreH508Ohj9rel33CPF9G0UG25i+4Lu2q56yG8wzr9VaN90jFMh8f4=
+	t=1707901472; cv=none; b=AamBg39XB3B7IzuZtuzYzfdywZVgYBH2olN3ZebdV7plY+RYjB52DPPCfaVyGz5zk4rX07OHWSC7Z7zrEFfakg8rywDDXPEeb6tjch40eZWapakV0Z0kTG2ghA59LnWG38Irv4DAgkcbERXznRTVopqzEvwUsMQ7Qtd1t0uyf0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901840; c=relaxed/simple;
-	bh=fhaQc5uReQDosB0thOz5f3cBKN3ZqzcXRvj2QlSbfMg=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=K//Ye3DZoVUdzDNyJwGf21ybWbXfjuxsaBKpmAWIBf4tUxuRIh8kKsKCQMbFORcfXiSLhVPl1hLOU1a4oSWjLuSGYOJ8bax/JN6ULDxQ9NRXPwxED0NGS0QFHe+ySQ+hhIWVDc0zsmIZfBU50j+44VYGs/Nl/D/3AZx/Noo6zyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=CGcJ/42F; arc=none smtp.client-ip=91.244.183.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
-Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-	by mx0.infotecs.ru (Postfix) with ESMTP id 76927115F000;
-	Wed, 14 Feb 2024 12:01:50 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 76927115F000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-	t=1707901310; bh=a5ajpumwk1I+jMeP7Lj73hpNOSeE7RGR+9+ywHTrOTo=;
-	h=From:To:CC:Subject:Date:From;
-	b=CGcJ/42FpqGYYm5ISrgn3MFoi4SQpwsdJWtP9fzPI4w1nPGztt3RpYS1DWWvFIVTO
-	 Ww32DsRQWnW/W9qNQA9aJ/gQEao6Bsplc3lP0HlMBfxrDHa1V1sX8INfHczCmngyGd
-	 6CJ1MUHNMC2lVw0/2NDflooZWE0NiGgt7jtsARrk=
-Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
-	by mx0.infotecs-nt (Postfix) with ESMTP id 72B92310CF51;
-	Wed, 14 Feb 2024 12:01:50 +0300 (MSK)
-From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-To: Michal Ostrowski <mostrows@earthlink.net>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-	"syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com"
-	<syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com>
-Subject: [PATCH net] pppoe: Fix memory leak in pppoe_sendmsg()
-Thread-Topic: [PATCH net] pppoe: Fix memory leak in pppoe_sendmsg()
-Thread-Index: AQHaXyRy75DQaIgJRUS4Y1xFlKXgFA==
-Date: Wed, 14 Feb 2024 09:01:50 +0000
-Message-ID: <20240214085814.3894917-1-Ilia.Gavrilov@infotecs.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1707901472; c=relaxed/simple;
+	bh=k2Ua0BUioff6yVOPjfAMB6cmw2YUod1OM6YS1kOR0l4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CGggJpKcILq4W/+0XDX+wrs8TrTz5h6v51/sOCStl7L1M+B8L7CKRdAm8jkOSJjn7/7Wp9WKYJAQ9VQOp+mApvotHk4b99EAU2ciiuOO5GqxdMSXZEeePsKeC/OxlarWNPgh1qXDSPXTJKtoUuyjHTd2K6p63Dlx4OS9GDStV+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ysoft.com; spf=pass smtp.mailfrom=ysoft.com; dkim=pass (1024-bit key) header.d=ysoft.com header.i=@ysoft.com header.b=Me3G5LOv; arc=none smtp.client-ip=81.19.3.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ysoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ysoft.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+	s=20160406-ysoft-com; t=1707901463;
+	bh=dSH5M/hZskQhXXQ7gwJpwqRlm8EjLoGmoPzajteF/A0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Me3G5LOv5e06zvpXVriQkwtce2FQXZ0w1IDjqmddlNTBwsjouxNcwNECTkKbFzPkZ
+	 DPeZhgN6CginrzcnJTvfX/VVVBVed23FAVUJC6NlNhLcbh+PXktTI3i1wYiuL3ULxr
+	 S7rbRmuUrL0R26Vq8FjRqLeg4bHgoFsN89H1AnFg=
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+	by uho.ysoft.cz (Postfix) with ESMTP id 2A610A01B3;
+	Wed, 14 Feb 2024 10:04:23 +0100 (CET)
+From: =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To: Shawn Guo <shawnguo@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Jonathan McDowell <noodles@earth.li>,
+	=?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH v2 1/2] ARM: dts: imx6dl-yapp4: Fix typo in the QCA switch register address
+Date: Wed, 14 Feb 2024 10:03:27 +0100
+Message-Id: <1707901408-17084-1-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KLMS-Rule-ID: 5
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2024/02/14 08:31:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/02/14 07:41:00 #23598261
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-syzbot reports a memory leak in pppoe_sendmsg [1].
+This change does not have any functional effect. The switch works just
+fine without this patch as it has full access to all the addresses
+on the bus. This is simply a clean-up to set the node name address
+and reg address to the same value.
 
-The problem is in the pppoe_recvmsg() function that handles errors
-in the wrong order. For the skb_recv_datagram() function, check
-the pointer to skb for NULL first, and then check the 'error' variable,
-because the skb_recv_datagram() function can set 'error'
-to -EAGAIN in a loop but return a correct pointer to socket buffer
-after a number of attempts, though 'error' remains set to -EAGAIN.
-
-skb_recv_datagram
-      __skb_recv_datagram          // Loop. if (err =3D=3D -EAGAIN) then
-                                   // go to the next loop iteration
-          __skb_try_recv_datagram  // if (skb !=3D NULL) then return 'skb'
-                                   // else if a signal is received then
-                                   // return -EAGAIN
-
-Found by InfoTeCS on behalf of Linux Verification Center
-(linuxtesting.org) with Syzkaller.
-
-Link: https://syzkaller.appspot.com/bug?extid=3D6bdfd184eac7709e5cc9 [1]
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=3D6bdfd184eac7709e5cc9
-Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+Fixes: 15b43e497ffd ("ARM: dts: imx6dl-yapp4: Use correct pseudo PHY address for the switch")
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 ---
- drivers/net/ppp/pppoe.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+changes in v2:
+- Reword the commit message so it is clear that this patch does not
+  fix a functional problem.
 
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index 8e7238e97d0a..2ea4f4890d23 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -1007,26 +1007,21 @@ static int pppoe_recvmsg(struct socket *sock, struc=
-t msghdr *m,
- 	struct sk_buff *skb;
- 	int error =3D 0;
-=20
--	if (sk->sk_state & PPPOX_BOUND) {
--		error =3D -EIO;
--		goto end;
--	}
-+	if (sk->sk_state & PPPOX_BOUND)
-+		return -EIO;
-=20
- 	skb =3D skb_recv_datagram(sk, flags, &error);
--	if (error < 0)
--		goto end;
-+	if (!skb)
-+		return error;
-=20
--	if (skb) {
--		total_len =3D min_t(size_t, total_len, skb->len);
--		error =3D skb_copy_datagram_msg(skb, 0, m, total_len);
--		if (error =3D=3D 0) {
--			consume_skb(skb);
--			return total_len;
--		}
-+	total_len =3D min_t(size_t, total_len, skb->len);
-+	error =3D skb_copy_datagram_msg(skb, 0, m, total_len);
-+	if (error =3D=3D 0) {
-+		consume_skb(skb);
-+		return total_len;
- 	}
-=20
- 	kfree_skb(skb);
--end:
- 	return error;
- }
-=20
---=20
-2.39.2
+ arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
+index cfb0fc924b42..5763f8253d51 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
+@@ -143,7 +143,7 @@
+ 
+ 		switch@10 {
+ 			compatible = "qca,qca8334";
+-			reg = <10>;
++			reg = <0x10>;
+ 			reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+ 
+ 			switch_ports: ports {
+-- 
+2.1.4
+
 
