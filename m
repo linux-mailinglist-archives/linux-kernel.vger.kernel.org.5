@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-65103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A6E38547D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:11:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC5898547E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB57529086C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:11:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68AC11F248C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE06E1946B;
-	Wed, 14 Feb 2024 11:11:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF1F18E28;
-	Wed, 14 Feb 2024 11:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2F01B59B;
+	Wed, 14 Feb 2024 11:14:46 +0000 (UTC)
+Received: from gepdcl09.sg.gdce.sony.com.sg (unknown [121.100.38.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE94618E2F;
+	Wed, 14 Feb 2024 11:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=121.100.38.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707909085; cv=none; b=OPfil/lJ7dRJ94XHc5fbqCT11vhnaIT8+ty9yCty6MVv1DY4EUQZ685AbVC9v2k7mEam6/lY4MQRD3OK3GO4SMINVsURjlhkLqbxxZDZHOn8hHttDsKG9tZBj1x5zDevNxDz0hZIbz7FBZ0W064lBZvCRDBhzVUAR5FC6TtN7WU=
+	t=1707909286; cv=none; b=VbFS34wa9CKuM1Gkn/dum9kSxzK3TtLPZAYpPFI49WwWDEQVr9/jqocbXlObkVWegpN77VTYbvbeqU6o/oRlYhhc7Vf6p056Umt5dRR169bU445zP+gAyC4MgEhPvt7aSbgViivrchYuewQ4bNFTiQNnnUNbYgDFEHuBg0ftOOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707909085; c=relaxed/simple;
-	bh=HsZd4cCR70HE0iyjlUKYCOohLKrz8PN3AKztuMP3OWc=;
+	s=arc-20240116; t=1707909286; c=relaxed/simple;
+	bh=l+i0yIxLpwQsUo4QfGAzTGFABUordW6G5AbZmrrcfq4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=la3AL3Czfumqllwr7wFA3ndGh8aHuM7sbAlnyVsZ73KiZxHx3y5/4NFSn3gMPJ9xUNmOqMU4TCHyP1dqIEJHZ6BauqPJPv+L4VpbPMSyPctXnqRP8Sz1Q4SBMCmU96zfshqH3iv+fC4eVzYjBfBkEw+nCmJ3iAHaz31HCsVmnPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC7D61FB;
-	Wed, 14 Feb 2024 03:12:03 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.64.145])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 957893F766;
-	Wed, 14 Feb 2024 03:11:20 -0800 (PST)
-Date: Wed, 14 Feb 2024 11:11:14 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Rob Herring <robh@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>,
-	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
- Neoverse N2 errata
-Message-ID: <Zcyf0oIJe7ukH0si@FVFF77S0Q05N>
-References: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
- <ZcqtUxhqUbYoRH-G@linux.dev>
- <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hcgqxpawrug8kr1AdCwrUKFOZ2tVHoGLRopOwcOGHPNI/9D2wKD8+kPRKS0UAkYORTkBSWjxuu9q+o1UE/2CFbS39bnxPu0JLCxevwKhL5n4Nn52VdyDNuivIPHaL+bkHfPlqx4L+gstNcoRiEeOQV12YQb6AcyHQBjMVhbZ/ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; arc=none smtp.client-ip=121.100.38.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
+Received: from gepdcl02.s.gdce.sony.com.sg (SGGDCSE1NS07.sony.com.sg [146.215.123.196])
+	by gepdcl09.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EBE4g3027632;
+	Wed, 14 Feb 2024 19:14:16 +0800
+Received: from mail.sony.com ([43.88.80.246])
+	by gepdcl02.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EBE2jV014297;
+	Wed, 14 Feb 2024 19:14:02 +0800
+Received: by mail.sony.com (Postfix, from userid 1000)
+	id 6BA9420C089E; Wed, 14 Feb 2024 16:42:36 +0530 (IST)
+Date: Wed, 14 Feb 2024 16:42:36 +0530
+From: Sreenath Vijayan <sreenath.vijayan@sony.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: john.ogness@linutronix.de, corbet@lwn.net, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        taichi.shimoyashiki@sony.com, daniel.palmer@sony.com,
+        anandakumar.balasubramaniam@sony.com, sreenath.vijayan@sony.com
+Subject: Re: [PATCH v4 2/2] tty/sysrq: Dump printk ring buffer messages via
+ sysrq
+Message-ID: <ZcygJOj9TaHZUKd-@sony.com>
+References: <cover.1706772349.git.sreenath.vijayan@sony.com>
+ <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
+ <ZcOdLrOPiPJmCec5@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,45 +59,117 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
+In-Reply-To: <ZcOdLrOPiPJmCec5@alley>
 
-On Tue, Feb 13, 2024 at 04:19:08PM -0800, Easwar Hariharan wrote:
-> >> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> >> index 7c7493cb571f..a632a7514e55 100644
-> >> --- a/arch/arm64/include/asm/cputype.h
-> >> +++ b/arch/arm64/include/asm/cputype.h
-> >> @@ -61,6 +61,7 @@
-> >>  #define ARM_CPU_IMP_HISI		0x48
-> >>  #define ARM_CPU_IMP_APPLE		0x61
-> >>  #define ARM_CPU_IMP_AMPERE		0xC0
-> >> +#define ARM_CPU_IMP_MICROSOFT		0x6D
-> >>  
-> >>  #define ARM_CPU_PART_AEM_V8		0xD0F
-> >>  #define ARM_CPU_PART_FOUNDATION		0xD00
-> >> @@ -135,6 +136,8 @@
-> >>  
-> >>  #define AMPERE_CPU_PART_AMPERE1		0xAC3
-> >>  
-> >> +#define MSFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
-> >> +
-> >>  #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
-> >>  #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
-> >>  #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
-> >> @@ -193,6 +196,7 @@
-> >>  #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
-> >>  #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
-> >>  #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
-> >> +#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MSFT_CPU_PART_AZURE_COBALT_100)
-> > 
-> > nitpick: consistently use the abbreviated 'MSFT' for all the definitions
-> > you're adding.
+On Wed, Feb 07, 2024 at 04:09:34PM +0100, Petr Mladek wrote:
+> On Thu 2024-02-01 13:12:41, Sreenath Vijayan wrote:
+> > When terminal is unresponsive, one cannot use dmesg to view printk
+> > ring buffer messages. Also, syslog services may be disabled,
+> > to check the messages after a reboot, especially on embedded systems.
+> > In this scenario, dump the printk ring buffer messages via sysrq
+> > by pressing sysrq+D.
 > 
-> I was rather hoping to use Microsoft throughout, but I chose MSFT for the CPU_PART* to align columns
-> with the other defines. :) If consistency is of a higher priority than column alignment, I can change it
-> to MICROSOFT rather than MSFT throughout.
+> I would use sysrq-R and say that it replays the kernel log on
+> consoles.
+> 
+> The word "dump" is ambiguous. People might thing that it calls
+> dmesg dumpers.
+>
 
-Consistency across the definitions is more important than alignmen; please
-choose either "MSFT" or "MICROSOFT" and use that consistently.
+Ok noted. We proposed sysrq-D as it is an alternative to dmesg
+command and might be easier to remember.
+ 
+> Also the messages would be shown on the terminal only when
+> console_loglevel is set to show all messages. This is done
+> in __handle_sysrq(). But it is not done in the workqueue
+> context.
+>
 
-Mark.
+Yes, the initial implementation was using write() of consoles
+so the messages would be shown irrespective of the console log
+level. The current implementation depends on the console log
+level but many other sysrq keys dump the messages at KERN_INFO
+level. In my understanding, __handle_sysrq() dumps only the
+sysrq header at the manipulated loglevel. It restores original
+loglevel before calling callback function for the key.
+If console_loglevel is set to show KERN_INFO messages, it would
+dump most of the important printk messages in our case. Also the
+loglevel can be modified using sysrq itself now.
+ 
+> Finally, the commit message should explain why workqueues are used
+> and what are the limitations. Something like:
+> 
+> <add>
+> The log is replayed using workqueues. The reason is that it has to
+> be done a safe way (in compare with panic context).
+> 
+> This also means that the sysrq won't have the desired effect
+> when the system is in so bad state that workqueues do not
+> make any progress.
+> </add>
+> 
+> Another reason might be that we do not want to do it in
+> an interrupt context. But this reason is questionable.
+> Many other sysrq commands do a complicate work and
+> print many messages as well.
+>
+
+Noted. Will add this if we proceed with workqueue implementation.
+ 
+> Another reason is that the function need to use console_lock()
+> which can't be called in IRQ context. Maybe, we should use
+> console_trylock() instead.
+> 
+> The function would replay the messages only when console_trylock()
+> succeeds. Users could repeat the sysrq when it fails.
+> 
+> Idea:
+> 
+> Using console_trylock() actually might be more reliable than
+> workqueues. console_trylock() might fail repeatably when:
+> 
+>     + the console_lock() owner is stuck. But workqueues would fail
+>       in this case as well.
+> 
+>     + there is a flood of messages. In this case, replaying
+>       the log would not help much.
+> 
+> Another advantage is that the consoles would be flushed
+> in sysrq context with the manipulated console_loglevel.
+> 
+> Best Regards,
+> Petr
+
+Yes, this seems to work well from interrupt context when the
+console lock owner is not stuck. We can also manipulate
+the console_loglevel. Something like this:
+
+//in printk.c
+void console_replay_all(void)
+{
+       if (console_trylock()) {
+               __console_rewind_all();
+               console_unlock();
+       }
+}
+
+//in sysrq.c
+static void sysrq_handle_dmesg_dump(u8 key)
+{
+       int orig_log_level = console_loglevel;
+       console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
+       console_replay_all();
+       console_loglevel = orig_log_level;
+}
+
+
+The downside I see is that the user may have to hit the
+key multiple times or give up trying if the console lock
+owner is busy at the time of key press. This information
+should probably be updated in the documentation.
+
+Please let me know your opinion.
+
+Regards,
+Sreenath
 
