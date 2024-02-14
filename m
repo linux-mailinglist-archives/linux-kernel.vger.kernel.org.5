@@ -1,264 +1,160 @@
-Return-Path: <linux-kernel+bounces-64772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E96558542A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:09:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ED128542A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61C51B2830A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:08:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A59A282C80
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A446F10A36;
-	Wed, 14 Feb 2024 06:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B214010A1B;
+	Wed, 14 Feb 2024 06:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="liPVWZFh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ri5UEm/a"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33B310A24;
-	Wed, 14 Feb 2024 06:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707890926; cv=none; b=XFlSfXAaTIS493bATDGSBBeZ0JkqzLYkaGshueUHEvfEbsU35uOotW7+B07s88R98WTwqqaZ4Qxwv1VWNAbJmyChcHjR+J+PtH+PPKDX+/nFD2Zjw7CuaPKmQ719gXrc6qHQdmrjTnPBZLQCZYsWjZfEh8K/X4xTUaw/xX4Xbwc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707890926; c=relaxed/simple;
-	bh=26qLiOXzYeED5IFqKrSHmZtbA31FiyeXrlDpVXVqkyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jVKhwRHtnQXYQiWLDPAxcjn+BjWbzilH+ViiRS82aEJy1gkfSgNMwDVo73+/nrVCWSlSlK5/TP1rpuUL9IuWWQNiZCE+aacYzGIQE38JQJKl5LGw2Sly/FJ07aYUquplol/Bo/2tiKiAVJcf2WFVBfvJZLJ7w93NgcCXWmIQs2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=liPVWZFh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F4A0C433F1;
-	Wed, 14 Feb 2024 06:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707890926;
-	bh=26qLiOXzYeED5IFqKrSHmZtbA31FiyeXrlDpVXVqkyE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=liPVWZFhHJpyNajvbqJtbbY+aBqy8k6HWFKYVurNV/BUVIybLsxhd2RwvJTkxIEK5
-	 xUoevEOXM5Lr4uEoHoBjNGF8di97/+LePaaGwCQuvEaCbtdpIFKKG+rPkLYosMPu0P
-	 fT+4dRxSjEeD5YkeVT1J0LbjFhKBXFGhh17HEEYyT69/sjgG1WtG8djQ6uqWU+vWrN
-	 pN/OdyErb6W4/PcxTYdqiVrwvETH/4y/irRCofAsQdSpl/IE3akjlgaSzpFRymohgJ
-	 V+1DovqQuiw3Q98kVJXqqphCXKw01RpyFAY2W45C9PkYE3Yr3r756nhUkJDM4zZy/h
-	 BHY2bXVWMIhkg==
-Date: Wed, 14 Feb 2024 00:08:43 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Maulik Shah <quic_mkshah@quicinc.com>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, quic_eberman@quicinc.com, 
-	quic_collinsd@quicinc.com, quic_lsrao@quicinc.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3] soc: qcom: rpmh-rsc: Enhance check for VRM in-flight
- request
-Message-ID: <sizizst7xkexl3dd26sssgxtjhk7mcrawswbs76vdutsxsm6qh@mvilvzwydjpm>
-References: <20240212-rpmh-rsc-fixes-v3-1-1be0d705dbb5@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2603010A01
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 06:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707890979; cv=fail; b=eDNFgYOHe3TtzXiRB4Cv9Pvopscrh0l6mYiGuwgvsTc5qquceUUHxNOPSX+j0CSiYBSm1f0UBvyAj4OEBbv2HJ0Jp7dY2c+WfGQdvTPh5S44x4xD3QyIe6Km9jJf14v0Vco0UKTpUJ1YkIfdRROdevhSTBwy0zUYz6raRDG7o9A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707890979; c=relaxed/simple;
+	bh=9nKIFXtHunPpeD0cID7+kDUxSbbhKRryumP1MhN2ABI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nflm3pMXuTzMQYRG45xB10SMskK60Xir0rsKjRYx6YOnLcf2r5k66iqLJZgJSTYx8tGRjwjRrJrrlRwOp7UIo+lKj8+dkfthM6+iR1H3UgHM+PfVJQPFyXnoeRCzc3LIJWe0XWtABHydJUdq1BKJxIPihtMF0buoL+gitDPxP/4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ri5UEm/a; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k+0Z93BSNOfOoq0Gvi7zIAMabtOiSkI7syXWFneDRswzi3hSuCaNfs4O4oZsLPSMGnYGKAcizGJaaP6q99PzQ8zjR2wKbRk303WlU0vHcV2YwqIhqcvhN4OgHS2gR6e0iie7leW2rOj2Ce+F2TS8P8/pgO3mcBSNDNeSfGGoFEgSCmhb81yQSVvLPzlHSQAxOsOuw0ZKCxVsAHLN2ADsMQ+HbukmPYz0kbQJse4nhed0llZtgGYZ8BX7EiRdgI8jyqtId4iSUtOZRxAmAE2em+QfysZFOyIjB+52bgxv3XgLpepLL8RoRllQ41Ya5Zs2SrQD44rJGcDHxXHf25lMDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jNE6boFDHoljvD3VXPHTGXxDgM70hmBWyy5AXkD1HFs=;
+ b=cXhzIJ9vQlLP2LDwzRRU2+Slld1UBJENlcdzBtVvLBdb4O/p54cK0VUV43qemiWumhzRIKhDSVXjofmbjmjKmPQ8Ddd3HxwOu6k7heQFB1G1wVrcpYeb/NLuipHRnmp2VsentLbRWlZQ0a75do+gqKGDc6QTeGd7OcviwAfYXaLVqO1Jp1buQul0Wz3g6KdjX3v8ztAe8Ce+DRS8xeYIoG7B5aLnaViB8ZpQGgqr+PCdy1Z4Mva8fqagqV5uJSkyU8dpLAN6YmHMnJipJ5i4pR/xEgwEDxfqowH/iq/WJ5hZiioMjPYuYHzcUSeMt5WkMuiluUfHcolmuNoOeFct6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jNE6boFDHoljvD3VXPHTGXxDgM70hmBWyy5AXkD1HFs=;
+ b=Ri5UEm/aMYHexi9jW7/f5IVYR38yWHxbsZwIbtBEpyHzg0qVZ347ug7vQIsZUcZF75iHaG2DBczMSYr7lx1nT52gxFC55J6cL0rl0wk6Pc6QW0eEDkjEWKdPBp32jUac6++ty01RdTtIaRCzL8fKG6C5uurgFIWJTX1ronp8ivuI2WR9dBk4v30sRUTGYJrl9hsapRS1TldI4pYf4V7i26ZL9VYYuyhsZ6/x7XF/cD+CgPxEVLr11eekqFtP9DDR0SB/ykUm+JDaZHo6ztp7EV96X2gFS8+CugWjau9wWW8qdky7H4iNfySryPyFjsTTWH+gKaJAcVLOjQwkwdonAg==
+Received: from MW4P221CA0018.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::23)
+ by DS0PR12MB8043.namprd12.prod.outlook.com (2603:10b6:8:14d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Wed, 14 Feb
+ 2024 06:09:34 +0000
+Received: from MWH0EPF000971E9.namprd02.prod.outlook.com
+ (2603:10b6:303:8b:cafe::61) by MW4P221CA0018.outlook.office365.com
+ (2603:10b6:303:8b::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.40 via Frontend
+ Transport; Wed, 14 Feb 2024 06:09:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ MWH0EPF000971E9.mail.protection.outlook.com (10.167.243.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.25 via Frontend Transport; Wed, 14 Feb 2024 06:09:34 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 13 Feb
+ 2024 22:09:22 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.12; Tue, 13 Feb 2024 22:09:21 -0800
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
+ Transport; Tue, 13 Feb 2024 22:09:21 -0800
+Date: Tue, 13 Feb 2024 22:09:19 -0800
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: Keith Busch <kbusch@kernel.org>
+CC: <sagi@grimberg.me>, <hch@lst.de>, <axboe@kernel.dk>, <will@kernel.org>,
+	<joro@8bytes.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>,
+	<linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<iommu@lists.linux.dev>, <murphyt7@tcd.ie>, <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH v1 2/2] nvme-pci: Fix iommu map (via swiotlb) failures
+ when PAGE_SIZE=64KB
+Message-ID: <ZcxZD2GXmR5+vC/k@Asurada-Nvidia>
+References: <cover.1707851466.git.nicolinc@nvidia.com>
+ <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
+ <Zcv7uI6VrMc2EuGT@kbusch-mbp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240212-rpmh-rsc-fixes-v3-1-1be0d705dbb5@quicinc.com>
+In-Reply-To: <Zcv7uI6VrMc2EuGT@kbusch-mbp>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E9:EE_|DS0PR12MB8043:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca0eb04f-75d9-40f8-9dc7-08dc2d238415
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	WrfDVmzEqGcn8eKt44tMbccA2drpHTKovplIu6tGh+kB2YQaD0f4j2GelOXJJGbJtNb1AqoJOcJPBGwwyqx91Yg7nQRvFix9aGkYMiE4LcP0KgQvP7csQO8PLN6/jcGAqe6P7OumtvtS9TIZFOVyDJAvv0A5zwibOd5jOWMwDfIUx8Jm2lvchVPf94vn1Ztv1tyHtnn9CIMkXU/A/7yDIVTklCYmX7fhum85LS2dLPfSn94shxn9Y5daJTovWzIszR4pHG+UKzG/nIZsbB6xad+zqJvi3haM/mMa6s3wn/ukxBmfVbMyygCjJDi6Vx/kWTGk3PQxzgPOBFh5jvhJKnWLTWTa8PJSCG+1W5gJ4i6XAjLR51Dop7O37ZtDfISjDf73sLYBGCwKLivtSHAuglg2pHOh3U1mYKXE2KKgQc7/JYEs9vilbjW3L9/+ssMNz0GbJ2xZKcqyZx9QQwDK13LGzPBiZtqHrQcoddZxwE9dsgiAQ50Hp9aucEX6uLKMjFoWm6GWzvFQjSDVQ7m1BDpceonN4Ovz5ZhMT3Hp5xT7MMVc9G+CWOjFgrVv38yDwcY9YU01+8nHQ2AaVgCltdhJU51SWuim/JG+XuHPTsQ=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(396003)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(82310400011)(36840700001)(40470700004)(46966006)(426003)(478600001)(26005)(336012)(55016003)(9686003)(86362001)(70586007)(4326008)(6916009)(8936002)(54906003)(7636003)(82740400003)(70206006)(8676002)(316002)(356005)(7416002)(41300700001)(33716001)(2906002)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 06:09:34.1944
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca0eb04f-75d9-40f8-9dc7-08dc2d238415
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E9.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8043
 
-On Mon, Feb 12, 2024 at 10:18:08AM +0530, Maulik Shah wrote:
-> Each RPMh VRM accelerator resource has 3 or 4 contiguous 4-byte aligned
-> addresses associated with it. These control voltage, enable state, mode,
-> and in legacy targets, voltage headroom. The current in-flight request
-> checking logic looks for exact address matches. Requests for different
-> addresses of the same RPMh resource as thus not detected as in-flight.
+On Tue, Feb 13, 2024 at 04:31:04PM -0700, Keith Busch wrote:
+> On Tue, Feb 13, 2024 at 01:53:57PM -0800, Nicolin Chen wrote:
+> > @@ -2967,7 +2967,7 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+> >               dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+> >       else
+> >               dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+> > -     dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
+> > +     dma_set_min_align_mask(&pdev->dev, PAGE_SIZE - 1);
+> >       dma_set_max_seg_size(&pdev->dev, 0xffffffff);
 > 
-> Add new cmd-db API cmd_db_match_resource_addr() to enhance the in-flight
-> request check for VRM requests by ignoring the address offset.
-> 
-> This ensures that only one request is allowed to be in-flight for a given
-> VRM resource. This is needed to avoid scenarios where request commands are
-> carried out by RPMh hardware out-of-order leading to LDO regulator
-> over-current protection triggering.
-> 
-> Fixes: 658628e7ef78 ("drivers: qcom: rpmh-rsc: add RPMH controller for QCOM SoCs")
-> cc: stable@vger.kernel.org
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> I recall we had to do this for POWER because they have 64k pages, but
+> page aligned addresses IOMMU map to 4k, so we needed to allow the lower
+> dma alignment to efficiently use it.
 
-This says, "Elliot first certified the origin of the patch, then Maulik
-took and certified the origin of the patch". But according to the From:
-the author of the patch is you, Maulik.
+Thanks for the input!
 
-How was Elliot able to certify the patch's origin before you, when
-you're the author?
+In that case, we might have to rely on iovad->granule from the
+attached iommu_domain:
 
-If the two of you collaborated, also add Co-developed-by: Elliot above
-his s-o-b.
++static size_t iommu_dma_max_mapping_size(struct device *dev)
++{
++       struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
++
++       if (!domain || !is_swiotlb_active(dev) || !dev_is_untrusted(dev))
++               return SIZE_MAX;
++       return ALIGN_DOWN(swiotlb_max_mapping_size(dev),
++                         domain->iova_cookie->iovad.granule);
++}
 
-> ---
-> Changes in v3:
-> - Fix s-o-b chain
-> - Add cmd-db API to compare addresses
-> - Reuse already defined resource types in cmd-db
-> - Add Fixes tag and Cc to stable
-> - Retain Reviewed-by tag of v2
-> - Link to v2: https://lore.kernel.org/r/20240119-rpmh-rsc-fixes-v2-1-e42c0a9e36f0@quicinc.com
-> Changes in v2:
-> - Use GENMASK() and FIELD_GET()
-> - Link to v1: https://lore.kernel.org/r/20240117-rpmh-rsc-fixes-v1-1-71ee4f8f72a4@quicinc.com
-> ---
->  drivers/soc/qcom/cmd-db.c   | 41 +++++++++++++++++++++++++++++++++++------
->  drivers/soc/qcom/rpmh-rsc.c |  3 ++-
->  include/soc/qcom/cmd-db.h   | 10 +++++++++-
->  3 files changed, 46 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
-> index a5fd68411bed..e87682b9755e 100644
-> --- a/drivers/soc/qcom/cmd-db.c
-> +++ b/drivers/soc/qcom/cmd-db.c
-> @@ -1,6 +1,10 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/* Copyright (c) 2016-2018, 2020, The Linux Foundation. All rights reserved. */
-> +/*
-> + * Copyright (c) 2016-2018, 2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/debugfs.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> @@ -15,8 +19,8 @@
->  
->  #define NUM_PRIORITY		2
->  #define MAX_SLV_ID		8
-> -#define SLAVE_ID_MASK		0x7
-> -#define SLAVE_ID_SHIFT		16
-> +#define SLAVE_ID(addr)		FIELD_GET(GENMASK(19, 16), addr)
-> +#define VRM_ADDR(addr)		FIELD_GET(GENMASK(19, 4), addr)
->  
->  /**
->   * struct entry_header: header for each entry in cmddb
-> @@ -221,9 +225,34 @@ const void *cmd_db_read_aux_data(const char *id, size_t *len)
->  EXPORT_SYMBOL_GPL(cmd_db_read_aux_data);
->  
->  /**
-> - * cmd_db_read_slave_id - Get the slave ID for a given resource address
-> + * cmd_db_match_resource_addr - Compare if both Resource addresses are same
+With this in PATCH-1, we can drop PATCH-2.
 
-() after the function name, please.
-
-> + *
-> + * @addr1: Resource address to compare
-> + * @addr2: Resource address to compare
-> + *
-> + * Return: true on matching addresses, false otherwise
-
-"Return: true if the two addresses refer to the same resource"
-
-> + */
-> +bool cmd_db_match_resource_addr(u32 addr1, u32 addr2)
-> +{
-> +	/*
-> +	 * Each RPMh VRM accelerator resource has 3 or 4 contiguous 4-byte
-> +	 * aligned addresses associated with it. Ignore the offset to check
-> +	 * for VRM requests.
-> +	 */
-> +	if (SLAVE_ID(addr1) == CMD_DB_HW_VRM
-> +	    && VRM_ADDR(addr1) == VRM_ADDR(addr2))
-
-One line please, it's just 83 characters.
-
-> +		return true;
-> +	else if (addr1 == addr2)
-> +		return true;
-> +	else
-> +		return false;
-> +}
-> +EXPORT_SYMBOL_GPL(cmd_db_match_resource_addr);
-> +
-> +/**
-> + * cmd_db_read_slave_id - Get the slave ID for a given resource name
->   *
-> - * @id: Resource id to query the DB for version
-> + * @id: Resource id to query the DB for slave id
-
-Although trivial, it's unrelated to the newly introduced logic. Please
-submit a separate patch. Please also then add the () after the function
-name.
-
-Regards,
-Bjorn
-
->   *
->   * Return: cmd_db_hw_type enum on success, CMD_DB_HW_INVALID on error
->   */
-> @@ -238,7 +267,7 @@ enum cmd_db_hw_type cmd_db_read_slave_id(const char *id)
->  		return CMD_DB_HW_INVALID;
->  
->  	addr = le32_to_cpu(ent->addr);
-> -	return (addr >> SLAVE_ID_SHIFT) & SLAVE_ID_MASK;
-> +	return SLAVE_ID(addr);
->  }
->  EXPORT_SYMBOL_GPL(cmd_db_read_slave_id);
->  
-> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-> index a021dc71807b..daf64be966fe 100644
-> --- a/drivers/soc/qcom/rpmh-rsc.c
-> +++ b/drivers/soc/qcom/rpmh-rsc.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->  
->  #define pr_fmt(fmt) "%s " fmt, KBUILD_MODNAME
-> @@ -557,7 +558,7 @@ static int check_for_req_inflight(struct rsc_drv *drv, struct tcs_group *tcs,
->  		for_each_set_bit(j, &curr_enabled, MAX_CMDS_PER_TCS) {
->  			addr = read_tcs_cmd(drv, drv->regs[RSC_DRV_CMD_ADDR], i, j);
->  			for (k = 0; k < msg->num_cmds; k++) {
-> -				if (addr == msg->cmds[k].addr)
-> +				if (cmd_db_match_resource_addr(msg->cmds[k].addr, addr))
->  					return -EBUSY;
->  			}
->  		}
-> diff --git a/include/soc/qcom/cmd-db.h b/include/soc/qcom/cmd-db.h
-> index c8bb56e6852a..47a6cab75e63 100644
-> --- a/include/soc/qcom/cmd-db.h
-> +++ b/include/soc/qcom/cmd-db.h
-> @@ -1,5 +1,8 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -/* Copyright (c) 2016-2018, The Linux Foundation. All rights reserved. */
-> +/*
-> + * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
->  
->  #ifndef __QCOM_COMMAND_DB_H__
->  #define __QCOM_COMMAND_DB_H__
-> @@ -21,6 +24,8 @@ u32 cmd_db_read_addr(const char *resource_id);
->  
->  const void *cmd_db_read_aux_data(const char *resource_id, size_t *len);
->  
-> +bool cmd_db_match_resource_addr(u32 addr1, u32 addr2);
-> +
->  enum cmd_db_hw_type cmd_db_read_slave_id(const char *resource_id);
->  
->  int cmd_db_ready(void);
-> @@ -31,6 +36,9 @@ static inline u32 cmd_db_read_addr(const char *resource_id)
->  static inline const void *cmd_db_read_aux_data(const char *resource_id, size_t *len)
->  { return ERR_PTR(-ENODEV); }
->  
-> +static inline bool cmd_db_match_resource_addr(u32 addr1, u32 addr2)
-> +{ return false; }
-> +
->  static inline enum cmd_db_hw_type cmd_db_read_slave_id(const char *resource_id)
->  { return -ENODEV; }
->  
-> 
-> ---
-> base-commit: 615d300648869c774bd1fe54b4627bb0c20faed4
-> change-id: 20240210-rpmh-rsc-fixes-372a79ab364b
-> 
-> Best regards,
-> -- 
-> Maulik Shah <quic_mkshah@quicinc.com>
-> 
+Thanks
+Nicolin
 
