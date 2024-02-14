@@ -1,195 +1,124 @@
-Return-Path: <linux-kernel+bounces-64863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DCBC8543F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:19:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D1D8543F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B257C1C220EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:19:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3EA2C283A76
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05940125AD;
-	Wed, 14 Feb 2024 08:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N4HEVpZA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Tf4VzyG5";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N4HEVpZA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Tf4VzyG5"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA7C125B1;
+	Wed, 14 Feb 2024 08:22:15 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F200125A2
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ADC125A2
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707898788; cv=none; b=eZuUk6JuK+FSFmxQevtR6a/mZ9eKe+IjzQRQ01z38Fi9do67LTYnQ6Cxb8+xAFX8/0m/JqVDRypF6sHAdejVj794H35q3WNBSSiT0LpCia2/WyCRJKFrXr1GFH6Kai5OIqYTLYOyAlspq9LmkmM0+JlBBc0AREMoJhrlhjlL3d8=
+	t=1707898935; cv=none; b=E1/swvE4axrR3kRi2CiicDZYZsVNFht3ZRIMfcEzD3cmtjrLbkZCgHjmLOk4B8NcUZheOeC/tHpsji8mi4IYpxcOU8YB0rIHihh6wrzFyi5lKdBC9JwE9KeKKbOAt5oyqzyA0APrhu8FARA05akGITcASQ+aAqZLO5PD6tZXJ6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707898788; c=relaxed/simple;
-	bh=kim4oXXDFQgeMb6+elDw89X6zv9m/NmjMHNMZHlDFPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lq9YZwD7ZdYR4P3DwIWQmQ9XYoP6D8WpDzFWC6h+KV6eU7x7CJCI+3fpsPKwz0hsjUkQ2qVQOBEoToxwDnYuKmbshRUhz0213imT1Rd88DhcXqtaNusC4fACJXBxZUmFoERMfWm5LNkSZ2WsUdOVBnH4itH0Lexps9bWjESG9so=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N4HEVpZA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Tf4VzyG5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N4HEVpZA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Tf4VzyG5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 606331F7E6;
-	Wed, 14 Feb 2024 08:19:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707898784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aA5f7ggNHWMTJ6KErm2u4TZReewmf5jev0AIcYNDBPw=;
-	b=N4HEVpZA2Nvs/8/vStSVwzYRVDcMyhJLyBb5fQvSlhu0ejHc0Yd/xLzcHJPTI8Nprs/JY/
-	tF7m5BYGSGIGq2uXmqU0KMtEB/yPeSmZEkSXokgb9tsWlTRWCjs84VAUmDaAcE5x/TMRn/
-	Fo+tRMSIC5gTQPG4BOvCFufdw4OnNQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707898784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aA5f7ggNHWMTJ6KErm2u4TZReewmf5jev0AIcYNDBPw=;
-	b=Tf4VzyG5GMr1z8vhCJGW9UHBsjuzbN3C413EjPXO+Zeix/wjdEnoyLtsBDwtk9456S+NRK
-	WOBs9kdd8GF3BrBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707898784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aA5f7ggNHWMTJ6KErm2u4TZReewmf5jev0AIcYNDBPw=;
-	b=N4HEVpZA2Nvs/8/vStSVwzYRVDcMyhJLyBb5fQvSlhu0ejHc0Yd/xLzcHJPTI8Nprs/JY/
-	tF7m5BYGSGIGq2uXmqU0KMtEB/yPeSmZEkSXokgb9tsWlTRWCjs84VAUmDaAcE5x/TMRn/
-	Fo+tRMSIC5gTQPG4BOvCFufdw4OnNQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707898784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aA5f7ggNHWMTJ6KErm2u4TZReewmf5jev0AIcYNDBPw=;
-	b=Tf4VzyG5GMr1z8vhCJGW9UHBsjuzbN3C413EjPXO+Zeix/wjdEnoyLtsBDwtk9456S+NRK
-	WOBs9kdd8GF3BrBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 437A913A0B;
-	Wed, 14 Feb 2024 08:19:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id oVQND6B3zGX6NwAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Wed, 14 Feb 2024 08:19:44 +0000
-Message-ID: <c8e0fbab-5d20-4d28-ba52-73cd7fa46473@suse.de>
-Date: Wed, 14 Feb 2024 09:19:43 +0100
+	s=arc-20240116; t=1707898935; c=relaxed/simple;
+	bh=OSOwBo1YUkCvjrsEBarilZ2Aa5ss4bNmUvwLSaUilR0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jN2vbVeur9Qz80pjFByeJUR2hDexOc2Ndo520/6tryL/PdlBJ9JIpqc9xbzmfL8YKzOAkFpThfXbYbEd+87ND7OeyQiG8ku/6V8oF6pTLAR7Rz4/ZroXEkdQYKqW6Igr7P9Gv5j5l1gb3WLir8yD5VZsT9RGjtrsQ8NANykYjOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 41E8L77H041246;
+	Wed, 14 Feb 2024 16:21:07 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TZWNZ0PVCz2K9fjq;
+	Wed, 14 Feb 2024 16:20:46 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 14 Feb 2024 16:21:05 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli
+	<juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [Resend PATCH 1/1] sched: make cpu_util_cfs formally visible
+Date: Wed, 14 Feb 2024 16:20:55 +0800
+Message-ID: <20240214082055.277572-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] iosys-map: fix typo
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-References: <20240213224219.10644-1-rdunlap@infradead.org>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240213224219.10644-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-1.97 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-1.88)[94.30%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.97
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 41E8L77H041246
 
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
+As RT, DL, IRQ time could be deemed as lost time of CFS's task, some
+timing value(eg. algorithm's cost which can't disable preemption)
+want to know the distribution of how these timing spread approximately
+by using utilization account value (nivcsw is not enough
+sometimes), OR evaluate how heavily the preemption is. However,
+cpu_util_cfs is not formally visible as not in include/sched.h.
 
-Am 13.02.24 um 23:42 schrieb Randy Dunlap:
-> Correct a spello/typo in comments.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: dri-devel@lists.freedesktop.org
+eg.
+Effective part of A = Total_time * cpu_util_cfs / sched_cpu_util
 
-Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+Task's Timing value A
+Timing start
+|
+|
+preempted by RT, DL or IRQ
+|\
+| This period time is nonvoluntary CPU give up, need to know how long
+|/
+sched in again
+|
+|
+|
+Timing end
 
-Thanks. I'll add the patch to our tree.
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ include/linux/sched.h | 1 +
+ kernel/sched/sched.h  | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-> ---
-> v2: don't change "set up" to "setup" (Thomas)
->
->   include/linux/iosys-map.h |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff -- a/include/linux/iosys-map.h b/include/linux/iosys-map.h
-> --- a/include/linux/iosys-map.h
-> +++ b/include/linux/iosys-map.h
-> @@ -34,7 +34,7 @@
->    * the same driver for allocation, read and write operations.
->    *
->    * Open-coding access to :c:type:`struct iosys_map <iosys_map>` is considered
-> - * bad style. Rather then accessing its fields directly, use one of the provided
-> + * bad style. Rather than accessing its fields directly, use one of the provided
->    * helper functions, or implement your own. For example, instances of
->    * :c:type:`struct iosys_map <iosys_map>` can be initialized statically with
->    * IOSYS_MAP_INIT_VADDR(), or at runtime with iosys_map_set_vaddr(). These
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 77f01ac385f7..56953626526f 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2318,6 +2318,7 @@ static inline bool owner_on_cpu(struct task_struct *owner)
+ 
+ /* Returns effective CPU energy utilization, as seen by the scheduler */
+ unsigned long sched_cpu_util(int cpu);
++unsigned long cpu_util_cfs(int cpu);
+ #endif /* CONFIG_SMP */
+ 
+ #ifdef CONFIG_RSEQ
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 04846272409c..46110409e0f3 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3027,7 +3027,6 @@ static inline unsigned long cpu_util_dl(struct rq *rq)
+ }
+ 
+ 
+-extern unsigned long cpu_util_cfs(int cpu);
+ extern unsigned long cpu_util_cfs_boost(int cpu);
+ 
+ static inline unsigned long cpu_util_rt(struct rq *rq)
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+2.25.1
 
 
