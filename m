@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B64F85487E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:36:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27ADA854882
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0658F1F21D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:36:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7F01C229C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332161B5B2;
-	Wed, 14 Feb 2024 11:36:16 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74001A58B;
+	Wed, 14 Feb 2024 11:36:41 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966771B5AA;
-	Wed, 14 Feb 2024 11:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CAE1947D;
+	Wed, 14 Feb 2024 11:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910575; cv=none; b=Z4xw6xzdYi1TKIJtGkqW+cGLLEne7/D+OYPoIiJk9A1Rq+sIDEKqPJJHLajwCYtPJPwEyNDhpJbC6HPObwOtr40qXY85mpBOmZ1wwXLLKGJTMIDb3vrVdf4IbxaPAvLI+olwSOrIhSspZaCchTKh3vi9F5JuPy/hpUVU16J5tr0=
+	t=1707910601; cv=none; b=fljmPV3xI5SNNLgR8/Y8lLh4kH78J99sICC3+5vUSQDgdesVgiBuiKySkG1hA2lzrNh5KSpnr1qDjJuO9xqPlhsEEY/C5DfPyoPLGf3/o0LENN2vI9QTkdkjnMVK7zSsqfPB13H+zO9ZOHpqXJBLOWYW7N/ZGIdZWPThg2mgAC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910575; c=relaxed/simple;
-	bh=BhUpmPPCX9aFET6nbzIg0SSMZ201vmY12lSaJWzujcQ=;
+	s=arc-20240116; t=1707910601; c=relaxed/simple;
+	bh=XX4ZJh1efWO1B3rAxShAcHfODcw783OuO5HzO8Mr6W0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Gp9xTl8yvutEr8RaMNMsuiZqs9IIZGCEG5BAOSmcYvOUYdJQmXMHzWLRfzLPDoi9cAuGfoyQcsA0eKQYErmk0Sm0vwR22C7VdoB3grJ3HRdI3b0b4C2gk5amrE/eEFxKMq4hpC2ef+C0uUkfIeRKdArDNcCPyNmnvIlitqN3V+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+	 MIME-Version; b=qcY6syD3Vex2ffc1j1zVH7wfAsoZUbENiGnI3tOxk0Ono7z6pwGuDQ9aA+8tL3twnka6hm0bmsVsLWt2a71C5JK/4oau2xOOHZ/LLAyvEdj0pMjrixkF/gTtqhJPFoM6ZUj63aUXmvYIBU8VAoxMWYAVP/qwAOaqGtTHTWJo8Js=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TZbHz5GM5z9yLnN;
-	Wed, 14 Feb 2024 19:17:03 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TZbNw1Yybz9xrtH;
+	Wed, 14 Feb 2024 19:21:20 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id A0B5B1400DA;
-	Wed, 14 Feb 2024 19:36:10 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id B516014066B;
+	Wed, 14 Feb 2024 19:36:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S4;
-	Wed, 14 Feb 2024 12:36:10 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S5;
+	Wed, 14 Feb 2024 12:36:25 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -71,9 +71,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	petr@tesarici.cz,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 2/8] sbm: x86: execute target function on sandbox mode stack
-Date: Wed, 14 Feb 2024 12:35:10 +0100
-Message-Id: <20240214113516.2307-3-petrtesarik@huaweicloud.com>
+Subject: [PATCH v1 3/8] sbm: x86: map system data structures into the sandbox
+Date: Wed, 14 Feb 2024 12:35:11 +0100
+Message-Id: <20240214113516.2307-4-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
 References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
@@ -84,12 +84,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4rJFW3Cw18Xr1kAF48Crg_yoW7GF45pr
-	9rAFn3GF40gasav3sxJr18ury5Zws2ka1fGF9rGFy5Ja4jv3yUJr1v939Fqr4rX3ykGa4r
-	KF4ruF1vkw4UJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFWDtrykCFy7Cr43Ar4Utwb_yoWrGr47pF
+	nxCF1kKFW7K343uwn3Cr40yr15Zws2k3W7Kry2kryrZF17t3W5Ars2g3yDtFW8GFWvga4F
+	qFW3tF4rGa1DZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
@@ -100,174 +100,141 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4rJFW3Cw18Xr1kAF48Crg_yoW7GF45pr
 	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
 	AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1l
 	IxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-	1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
-	CTnIWIevJa73UjIFyTuYvjfUn3kuUUUUU
+	1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
+	CTnIWIevJa73UjIFyTuYvjfUnPEfUUUUU
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Allocate and map a separate stack for sandbox mode in arch_sbm_init().
-Switch to this stack in arch_sbm_exec(). Store the address of the stack as
-arch-specific state.
+Map CPU system data structures (GDT, TSS, IDT) read-only into every sandbox
+instance. Map interrupt stacks read-write.
 
-On X86_64, RSP is never used to locate thread-specific data, so it is safe
-to change its value. If the sandbox is preempted by an interrupt, RSP is
-saved by switch_to() and restored when the sandbox task is scheduled
-again. The original kernel stack pointer is restored when the sandbox
-function returns.
-
-Since the stack switch mechanism is implemented only for 64-bit, make
-CONFIG_HAVE_ARCH_SBM depend on X86_64 for now. Leave it under "config X86",
-because it would be possible to implement a 32-bit variant.
+The TSS mappings may look confusing. The trick is that TSS pages are mapped
+twice in the kernel address space: once read-only and once read-write. The
+GDT entry for the TR register uses the read-only address, but since __pa()
+does not work for virtual addresses in this range (cpu_entry_area), use the
+read-write mapping to get TSS physical address.
 
 Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 ---
- arch/x86/Kconfig              |  2 +-
- arch/x86/include/asm/sbm.h    |  2 ++
- arch/x86/kernel/sbm/Makefile  |  6 ++++++
- arch/x86/kernel/sbm/call_64.S | 40 +++++++++++++++++++++++++++++++++++
- arch/x86/kernel/sbm/core.c    | 17 ++++++++++++++-
- 5 files changed, 65 insertions(+), 2 deletions(-)
- create mode 100644 arch/x86/kernel/sbm/call_64.S
+ arch/x86/include/asm/page_64_types.h |  1 +
+ arch/x86/kernel/sbm/core.c           | 74 ++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 41fa4ab84c15..090d46c7ee7c 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -188,7 +188,7 @@ config X86
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if MMU && COMPAT
- 	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
- 	select HAVE_ARCH_PREL32_RELOCATIONS
--	select HAVE_ARCH_SBM
-+	select HAVE_ARCH_SBM			if X86_64
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
- 	select HAVE_ARCH_STACKLEAK
-diff --git a/arch/x86/include/asm/sbm.h b/arch/x86/include/asm/sbm.h
-index 01c8d357550b..ed214c17af06 100644
---- a/arch/x86/include/asm/sbm.h
-+++ b/arch/x86/include/asm/sbm.h
-@@ -16,12 +16,14 @@
- /**
-  * struct x86_sbm_state - Run-time state of the environment.
-  * @pgd:         Sandbox mode page global directory.
-+ * @stack:       Sandbox mode stack.
-  *
-  * One instance of this union is allocated for each sandbox and stored as SBM
-  * instance private data.
-  */
- struct x86_sbm_state {
- 	pgd_t *pgd;
-+	unsigned long stack;
- };
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 06ef25411d62..62f6e40b3361 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -29,6 +29,7 @@
+ #define	IST_INDEX_DB		2
+ #define	IST_INDEX_MCE		3
+ #define	IST_INDEX_VC		4
++#define	IST_INDEX_NUM		7
  
- #endif /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
-diff --git a/arch/x86/kernel/sbm/Makefile b/arch/x86/kernel/sbm/Makefile
-index 92d368b526cd..62c3e85c14a4 100644
---- a/arch/x86/kernel/sbm/Makefile
-+++ b/arch/x86/kernel/sbm/Makefile
-@@ -8,3 +8,9 @@
- #
- 
- obj-y := core.o
-+
-+###
-+# 64 bit specific files
-+ifeq ($(CONFIG_X86_64),y)
-+	obj-y += call_64.o
-+endif
-diff --git a/arch/x86/kernel/sbm/call_64.S b/arch/x86/kernel/sbm/call_64.S
-new file mode 100644
-index 000000000000..245d0dddce73
---- /dev/null
-+++ b/arch/x86/kernel/sbm/call_64.S
-@@ -0,0 +1,40 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-+ *
-+ * SandBox Mode (SBM) low-level x86_64 assembly.
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/nospec-branch.h>
-+
-+.code64
-+.section .entry.text, "ax"
-+
-+/*
-+ * arguments:
-+ * rdi  .. SBM state (kernel address)
-+ * rsi  .. func
-+ * rdx  .. args
-+ * rcx  .. top of sandbox stack
-+ */
-+SYM_FUNC_START(x86_sbm_exec)
-+	/*
-+	 * Set up the sandbox stack:
-+	 * 1. Store the old stack pointer at the top of the sandbox stack,
-+	 *    where various unwinders can find it and link back to the
-+	 *    kernel stack.
-+	 */
-+	sub	$8, %rcx
-+	mov	%rsp, (%rcx)
-+	mov	%rcx, %rsp
-+
-+	mov	%rdx, %rdi	/* args */
-+	CALL_NOSPEC rsi
-+
-+	pop	%rsp
-+
-+	RET
-+SYM_FUNC_END(x86_sbm_exec)
+ /*
+  * Set __PAGE_OFFSET to the most negative possible address +
 diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
-index b775e3b387b1..de6986801148 100644
+index de6986801148..f3a123d64afc 100644
 --- a/arch/x86/kernel/sbm/core.c
 +++ b/arch/x86/kernel/sbm/core.c
-@@ -17,6 +17,9 @@
- #define GFP_SBM_PGTABLE	(GFP_KERNEL | __GFP_ZERO)
- #define PGD_ORDER	get_order(sizeof(pgd_t) * PTRS_PER_PGD)
+@@ -7,9 +7,13 @@
+  * SandBox Mode (SBM) implementation for the x86 architecture.
+  */
  
-+asmlinkage int x86_sbm_exec(struct x86_sbm_state *state, sbm_func func,
-+			    void *args, unsigned long sbm_tos);
++#include <asm/cpu_entry_area.h>
++#include <asm/desc.h>
+ #include <asm/pgtable.h>
++#include <asm/page.h>
+ #include <asm/sbm.h>
+ #include <asm/sections.h>
++#include <linux/cpumask.h>
+ #include <linux/mm.h>
+ #include <linux/sbm.h>
+ #include <linux/sched/task_stack.h>
+@@ -155,6 +159,72 @@ static int map_kernel(struct x86_sbm_state *state)
+ 	return 0;
+ }
+ 
++/** map_cpu_data() - map CPU system data structures into a sandbox instance
++ * @sbm:  Target sandbox instance.
++ *
++ * Create sandbox page tables for:
++ * * Global Descriptor Table (GDT)
++ * * Task State Segment (TSS)
++ * * Interrupt Descriptor Table (IDT).
++ *
++ * Return: Zero on success, negative error code on failure.
++ */
++static int map_cpu_data(struct x86_sbm_state *state)
++{
++	unsigned long off;
++	phys_addr_t paddr;
++	unsigned int ist;
++	void *vaddr;
++	int cpu;
++	int err;
 +
- static inline phys_addr_t page_to_ptval(struct page *page)
++	for_each_possible_cpu(cpu) {
++		struct cpu_entry_area *cea;
++		struct tss_struct *tss;
++
++		err = map_page(state, (unsigned long)get_cpu_gdt_ro(cpu),
++			       PHYS_PFN(get_cpu_gdt_paddr(cpu)),
++			       PAGE_KERNEL_RO);
++		if (err)
++			return err;
++
++		cea = get_cpu_entry_area(cpu);
++
++		tss = &cea->tss;
++		paddr = __pa(&per_cpu(cpu_tss_rw, cpu));
++		for (off = 0; off < sizeof(cpu_tss_rw); off += PAGE_SIZE) {
++			err = map_page(state, (unsigned long)tss + off,
++				       PHYS_PFN(paddr + off), PAGE_KERNEL_RO);
++			if (err)
++				return err;
++		}
++
++		paddr = slow_virt_to_phys(&cea->entry_stack_page);
++		err = map_page(state, (unsigned long)&cea->entry_stack_page,
++			       PHYS_PFN(paddr), PAGE_KERNEL);
++		if (err)
++			return err;
++
++		for (ist = 0; ist < IST_INDEX_NUM; ++ist) {
++			vaddr = (void *)tss->x86_tss.ist[ist];
++			if (!vaddr)
++				continue;
++
++			for (off = EXCEPTION_STKSZ; off; off -= PAGE_SIZE) {
++				paddr = slow_virt_to_phys(vaddr - off);
++				err = map_page(state, (unsigned long)vaddr - off,
++					       PHYS_PFN(paddr), PAGE_KERNEL);
++				if (err)
++					return err;
++			}
++		}
++	}
++
++	paddr = slow_virt_to_phys((void *)CPU_ENTRY_AREA_RO_IDT);
++	return map_page(state, CPU_ENTRY_AREA_RO_IDT, PHYS_PFN(paddr),
++			PAGE_KERNEL_RO);
++}
++
+ int arch_sbm_init(struct sbm *sbm)
  {
- 	return PFN_PHYS(page_to_pfn(page)) | _PAGE_TABLE;
-@@ -182,6 +185,15 @@ int arch_sbm_init(struct sbm *sbm)
+ 	struct x86_sbm_state *state;
+@@ -194,6 +264,10 @@ int arch_sbm_init(struct sbm *sbm)
  	if (err)
  		return err;
  
-+	state->stack = __get_free_pages(GFP_KERNEL, THREAD_SIZE_ORDER);
-+	if (!state->stack)
-+		return -ENOMEM;
-+
-+	err = map_range(state, state->stack, state->stack + THREAD_SIZE,
-+			PAGE_SHARED);
++	err = map_cpu_data(state);
 +	if (err)
 +		return err;
 +
  	return 0;
  }
  
-@@ -238,11 +250,14 @@ void arch_sbm_destroy(struct sbm *sbm)
- 		free_pgd(state->pgd);
- 		free_pages((unsigned long)state->pgd, PGD_ORDER);
- 	}
-+	free_pages(state->stack, THREAD_SIZE_ORDER);
- 	free_page((unsigned long)state);
- 	sbm->private = NULL;
- }
- 
- int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
- {
--	return func(args);
-+	struct x86_sbm_state *state = sbm->private;
-+
-+	return x86_sbm_exec(state, func, args, state->stack + THREAD_SIZE);
- }
 -- 
 2.34.1
 
