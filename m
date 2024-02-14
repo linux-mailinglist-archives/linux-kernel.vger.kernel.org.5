@@ -1,295 +1,117 @@
-Return-Path: <linux-kernel+bounces-65451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5811B854D3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:48:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA39854D43
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6801C27A45
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:48:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF3B1F23D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381115D8F8;
-	Wed, 14 Feb 2024 15:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0405D8FA;
+	Wed, 14 Feb 2024 15:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jugqqVoC"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fJErqcrb"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B535D463;
-	Wed, 14 Feb 2024 15:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0963B5D757
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925672; cv=none; b=lD8eeNDHVavuzQilfMJ6rYnnsMRTOrszKK7OQb4WFvkfjAlSL8+APdJ+QHS/8e1REQKHUfRF9iak7aebubSA9mbgvneXD9tTEjTVaV69tzaVuFV5uZetKDir2vJiYF9U+zRHOV8PMTnzxr42gpMkza9mnYliokKmGMDTMGmcKjs=
+	t=1707925682; cv=none; b=l2XkzelD0AVW79HC2YU7ASKfd2B4dLPBbAXM9bAp7M9UzDxZXezTdJxvf5gZZixvubDLCwd4wwOyzclHJ4Ic/w1I2hUzgbKq6k3RXMQ4TXFEvrobtfxaAB0C4cw2Pis79bga7dGtUtzYDTagzfENY3Lo8YbAphGkEXQ9yz/W0D4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925672; c=relaxed/simple;
-	bh=+3p8aCcaMIzczD0Sp/wH5oFAdSV/eWhqmd1tX646IV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Qt+YHxC/rcoOqc0EgBhTcdXxF3zvUSD+cr4MtoF/3dsbTJmLt6reiOvHyh3RxN5u9WEZjaWM42azqpzJK0moPV7w4cqyos7pD+z63WemY9BerAlW4WRHa1ueTTCkJmWsWu8/jvzXqM1cgO1EkLZ7pwkQgSNm6f/2cYJNpOuVJJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jugqqVoC; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41EFlJKq059688;
-	Wed, 14 Feb 2024 09:47:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707925639;
-	bh=42OOgF4IEsciCzy4HGPu7+BcjYJ3RR40X6NYVnnz8qE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=jugqqVoCuwykHtv+V+RHovowjbVT0dMBwGRm75SNMdD8jr/39Jk9z52BxcXTPTCG7
-	 j/CS8ikCqgCT3FdvlaY4OKVFgwIHquVY/xQp4U/yOyuNmZCMuj9pNsqSxOBnMPhxAz
-	 JJ1RPu6S1Eim6LTEggNcUv7QF/XRruh4koR4lNg8=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41EFlJtg030857
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 14 Feb 2024 09:47:19 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
- Feb 2024 09:47:19 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 14 Feb 2024 09:47:19 -0600
-Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41EFlC25046625;
-	Wed, 14 Feb 2024 09:47:13 -0600
-Message-ID: <2f4cf2a7-ce7a-bb34-f722-7e66ea41def7@ti.com>
-Date: Wed, 14 Feb 2024 21:17:12 +0530
+	s=arc-20240116; t=1707925682; c=relaxed/simple;
+	bh=OXo9CJObNilBsOGumalkvDIP0Qjf2R+AA2nb7vEMJFg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=dedNYVi1S0X5x9c69wDD3JE1M5nW5KnE2Kq3whU5Whoe2272zdkaxToxHTSU1pHYy8SgFYlUXp8ygZrNyCAsgdnaq9IP4oHKL4QeVVtf2vk+MQlq408IArRFH//aTkmKS43gKoidX9ugRmJoAqqb0SUXHqsUXphnqJyqStxFp3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fJErqcrb; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so7715680a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:48:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707925679; x=1708530479; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=McuX+46GCJMWVVIeDmGS2EesDa+qgN6dZa0RniqPfYY=;
+        b=fJErqcrbwLtPl4rojjxpSNTwlp5EjJvRQrN08CpPv1JBvWA2oanw+uDYAbgMX4ECAo
+         C3OQNoLLD7D6q7TO6n37fxA3hMVT0djzuy8Mrf096l2/KCHRY5xXIaTb4PZkM3duU9Ur
+         NTk/a61jafgQFUxwpuaP2Ha968HOpCgnJuSkF941+WGl/N/VT6qFCoI0rRVEgtdgtQAi
+         ntBgREnSfRpjnMkO7id5IuMcwqm55ZTCCfuqDsyzfb6ddBKEHV3yrlAW/1e3jqYHBOyn
+         x5odjTG+Jwtal1dHoHO+ZVdmE/MZJ8Nzc4AtQCEN3SvHS/hKagj6p+FXiCOlBZc3Hd2k
+         R2oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707925679; x=1708530479;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=McuX+46GCJMWVVIeDmGS2EesDa+qgN6dZa0RniqPfYY=;
+        b=O4z/tp16yMC+lAMQ9R9u5EFLN6dhDqypxpRyMvhSm0zJ/H9WfD7p6xc0kM+gyx+/X2
+         9JKJnEdcL3a3n+hbjjYOzW7+g4OUi4AcoCXnymmR+Y0kQYSOBqXKuWyH5ob6XI6CnRTJ
+         wcbx9iBU75BkZBMBeebJQrfRkfZb2EBFpjiDix0unytIoM1t4nBZxIl8VZ6czWGBIpvT
+         wLENYKPpDrEO/VQvEVLyC0jQ0iMTOqFjJZYNN+YMjV/T27eCP4s4PQF0cgpnBx5Z6Wv+
+         ieRc0Bzvw9xmnWaJ/1U4PwWQzMNHRq2McuAMBXP2KKSH3rJV29Q3j8/f5h1g8SXUyWZQ
+         t4rg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQZStqmOsjA2pMYY2+nh5mdcVjl/69If3SwBnfbInekm/sLliCiDaGuS3pXuyJTZYgBdpa1ITZkcGgZDum+zvg6v5IIa+HdcnuS+R0
+X-Gm-Message-State: AOJu0YwPmkV34Ug0k9LRCLEKrjavl8oY/X9UQztgHnV+4x5gxljhmF3P
+	Fxkv3jhloVQVw9sOhJwcMC25GS1qbxx22ljj0pcTXJQztpq5qbhAgE7KE2/cXRo=
+X-Google-Smtp-Source: AGHT+IGvFxgX5xtNHTBtY0C7eJHL1+eIyCwo+5PZLWqptHy/PaLq5avuplbL8is2vdZyJDDISqW3aw==
+X-Received: by 2002:aa7:d752:0:b0:562:10a7:9ebc with SMTP id a18-20020aa7d752000000b0056210a79ebcmr2286734eds.18.1707925679279;
+        Wed, 14 Feb 2024 07:47:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUUz6FmQmF5wn3+zPS6iPau8SZ/a9b4GG47ZBDtTcZsdbARlczj3X3HDZ7VCr4lYdZgGmw0O3qjxKmLBU+SNQqg8cyJdgFpE0goL9yS3+Y/ch/8yobscE2JRBajb8iw24jXUFK9bhYBAdnPuNh9swYTi4+1tpo92mLZHrijTpWPJ08TKi7hOFrH0ZqpnQfJ/NdP7xUsW/VCJIuzQKq5zQk1jtQ2nrNmh7mgbD+jjI5bY3KC5AAlPttLPp9vcGJS7Sfcneb8xquWCn+DNrDMJm3QnmWo0secBSBTV7X29e25Otd4DfnXTlGt1JMjL0lTUGahkBeXTx5UjIOPiRCQsMhFM/VF31zzl5c31y48nNt1ocIGfTKGZgwM
+Received: from [127.0.1.1] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id p2-20020a056402044200b0056200715130sm1424435edw.54.2024.02.14.07.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 07:47:58 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Christoph Winklhofer <cj.winklhofer@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-serial@vger.kernel.org, linux-doc@vger.kernel.org
+In-Reply-To: <20240214-w1-uart-v7-3-6e21fa24e066@gmail.com>
+References: <20240214-w1-uart-v7-0-6e21fa24e066@gmail.com>
+ <20240214-w1-uart-v7-3-6e21fa24e066@gmail.com>
+Subject: Re: (subset) [PATCH v7 3/3] w1: add UART w1 bus driver
+Message-Id: <170792567823.152954.6100416373090677412.b4-ty@linaro.org>
+Date: Wed, 14 Feb 2024 16:47:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC PATCH 2/3] drm/tidss: Add support for display sharing
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-CC: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <praneeth@ti.com>, <a-bhatia1@ti.com>,
-        <j-luthra@ti.com>
-References: <20240116134142.2092483-1-devarsht@ti.com>
- <20240116134142.2092483-3-devarsht@ti.com>
- <vgfzhamtiwkpdyk5ndagsb63subclinotoe6tsi3wu6z7454ec@igxfzjc5gyqm>
- <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
- <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
-From: Devarsh Thakkar <devarsht@ti.com>
-In-Reply-To: <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Mailer: b4 0.12.4
 
-Hi Maxime,
 
-Thanks for the quick reply.
-
-On 13/02/24 19:34, Maxime Ripard wrote:
-> Hi Devarsh,
+On Wed, 14 Feb 2024 07:36:15 +0100, Christoph Winklhofer wrote:
+> Add a UART 1-Wire bus driver. The driver utilizes the UART interface via
+> the Serial Device Bus to create the 1-Wire timing patterns. The driver
+> was tested on a "Raspberry Pi 3B" with a DS18B20 and on a "Variscite
+> DART-6UL" with a DS18S20 temperature sensor.
 > 
-> On Thu, Feb 08, 2024 at 06:26:17PM +0530, Devarsh Thakkar wrote:
->> Hi Maxime,
->>
->> Thanks a lot for checking on this.
->>
->> On 26/01/24 17:45, Maxime Ripard wrote:
->>> Hi,
->>>
->>> Thanks a lot for working on that.
->>>
->>> On Tue, Jan 16, 2024 at 07:11:41PM +0530, Devarsh Thakkar wrote:
->>>> Display subsystem present in TI Keystone family of devices supports sharing
->>>> of display between multiple hosts as it provides separate register space
->>>> (common* region) for each host to programming display controller and also a
->>>> unique interrupt line for each host.
->>>>
->>>> This adds support for display sharing, by allowing partitioning of
->>>> resources either at video port level or at video plane level as
->>>> described below :
->>>>
->>>> 1) Linux can own (i.e have write access) completely one or more of video
->>>> ports along with corresponding resources (viz. overlay managers,
->>>> video planes) used by Linux in context of those video ports.
->>>> Even if Linux is owning
->>>> these video ports it can still share this video port with a remote core
->>>> which can own one or more video planes associated with this video port.
->>>>
->>>> 2) Linux owns one or more of the video planes with video port
->>>> (along with corresponding overlay manager) associated with these planes
->>>> being owned and controlled by a remote core. Linux still has read-only
->>>> access to the associated video port and overlay managers so that it can
->>>> parse the settings made by remote core.
->>>
->>> So, just to make sure we're on the same page. 1) means Linux drives the
->>> whole display engine, but can lend planes to the R5? How does that work,
->>> is Linux aware of the workload being there (plane size, format, etc) ?
->>>
->>
->> Well, there is no dynamic procedure being followed for lending. The
->> partitioning scheme is decided and known before hand, and the remote
->> core firmware updated and compiled accordingly, and similarly the
->> device-tree overlay for Linux is also updated with partitioning
->> information before bootup.
->>
->> What would happen here is that Linux will know before-hand this
->> partitioning information via device-tree properties and won't enumerate
->> the plane owned by RTOS, but it will enumerate the rest of the display
->> components and initialize the DSS, after which user can load the DSS
->> firmware on remote core and this firmware will only have control of
->> plane as it was compiled with that configuration.
+> The 1-Wire timing pattern and the corresponding UART baud-rate with the
+> interpretation of the transferred bytes are described in the document:
 > 
-> Right. If the RTOS is in control of a single plane, how it is expected
-> to deal with Linux shutting the CRTC down, or enforcing a configuration
-> that isn't compatible with what the RTOS expects (like a plane with a
-> higher zpos masking its plane), what is the mechanism to reconcile it?
-> 
+> [...]
 
-Just for the note, for this "RTOS control single plane" mode, we don't have a
-firmware available to test (right now we are only supporting example for "RTOS
-controlling the display mode" as shared here [1]) and hence this is not
-validated but the idea was to keep dt-bindings generic enough to support them
-in future and that's why I referred to it here.
+Applied, thanks!
 
-Coming back to your questions, with the current scheme the Linux (tidss) would
-be expected to make sure the CRTC being shared with RTOS is never shutdown and
-the RTOS plane should never gets masked.
+[3/3] w1: add UART w1 bus driver
+      https://git.kernel.org/krzk/linux-w1/c/178cf9db9e6d8fb0c026098c8f2d1fd92ae3d79b
 
-I think the IPC based scheme would have been mainly needed for the case where
-you have a single entity controlling the display for e.g you have a single
-display controller register space and a single IRQ but you have multiple
-planes and say you want to divide these planes to different host processors.
-In that case you want a single entity to act as a main entity and be in
-control of DSS and rest of the processors communicate with the "main entity"
-to request display resources and plane updates and main entity also programs
-dss on their behalf.
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-But unlike above, TI DSS7 is designed to support static partitioning of
-display resources among multiple hosts, where each host can program the
-display hardware independently using separate register space and having a
-separate irq and without requirement of any communication between the hosts.
-Now as this feature is unique to TI DSS7 we want to support this feature in
-tidss driver. The DSS resource partitioning feature is described in detail
-here [2]
-
->>> And 2) would mean that the display engine is under the R5 control and
->>> Linux only gets to fill the plane and let the firmware know of what it
->>> wants?
->>>
->>
->> Here too the partitioning information is pre-decided and remote core
->> firmware and device-tree overlay for Linux updated accordingly. But in
->> this case as remote core firmware owns the display (minus the plane
->> owned by Linux) it is started and initialized during the bootloader
->> phase itself where it initializes the DSS and starts rendering using the
->> plane owned by it and Linux just latches to the DSS without
->> re-initializing it, with write access only to the plane that is owned by
->> Linux. You can refer [1] for more details on this.
->>
->>> If so, do we even need the tidss driver in the second case? We could
->>> just write a fwkms driver of some sorts that could be used by multiple
->>> implementations of the same "defer to firmware" logic.
->>>
->>
->> This feature of static partitioning of DSS resources is specific to DSS7
->> hardware (which is controlled by tidss driver) which supports dedicated
->> register space and interrupt line for each of the hosts [0], so that
->> multiple hosts can drive the display controller simultaneously as  per
->> the desired static partitioning of resources, and so I don't think a
->> separate driver is required here and tidss seems the right place to
->> support this, where using this device-tree approach different resource
->> partitioning schemas can be achieved as described here [1]. This was
->> also aligned with Tomi too where we discussed that tidss is the right
->> place to support this as we are simply leveraging the DSS hardware
->> capabilities of static partitioning here.
-> 
-> If the only thing tidss does in the "owned by RTOS" is forwarding KMS
-> atomic states to the RTOS, then I'm still not sure why we need to
-> involve tidss at all.
-> 
-
-I think maybe here is the point of misunderstanding. We are not forwarding
-atomic states to RTOS here. Linux (tidss) is infact, accessing the display
-register space assigned to it (common1 assigned to Linux, commmon0 assigned to
-RTOS) and also writing to DSS plane registers for the plane assigned to it
-(say VID assigned to Linux and VIDL assigned to RTOS).
-
-> It's not just about interrupts, it's also about how your arbitrate
-> between what Linux wants and what the RTOS wants. Like if the RTOS still
-> wants to output something but Linux wants to disable it, how do you
-> reconcile the two?
-> 
-
-The scheme involves static partitioning of display resource which are assigned
-compile-time to RTOS and Linux. Here the RTOS firmware is compiled with
-specific ownership/display resources as desired by user and this assignment
-stays intact.
-
-If there is a more complex use-case which requires dynamic
-assignment/arbitration of resources then I agree those require some sort of
-IPC scheme but this is not what we target with these series. This series is
-simply to support static partitioning feature (separate register space,
-separate irq, firewalling support etc) of TI DSS hardware across the multiple
-hosts and there are use-cases too for which this scheme suffices.
-
-> You have to have something that reconciles both, and typically for
-> firmware-based setup this will be the firmware's job.
-> 
-> That's very similar to what the RaspberryPi did with fkms, and I believe
-> that having a generic KMS-on-remoteproc driver when the firmware has
-> control over the display is the path forward.
-> 
-
-The kms-on-remoteproc scheme is different and maybe more useful for those
-processors not supporting this static partitioning hardware feature. On the
-other hand, I believe there are still use-cases where this unique static
-partitioning hardware feature of TI DSS will suffice without any requirement
-of IPC. And it makes the firmware simpler (and the job of RTOS developer
-easier too) as no IPC is required.
-
-I am curious to understand Rpi DSS hardware and take a look at fkms and it's
-firmware code though if it is public ?
-
->>>> For both the cases, the resources used in context of processing core
->>>> running Linux along with ownership information are exposed by user as
->>>> part of device-tree blob and driver uses an updated feature list tailored
->>>> for this shared mode accordingly. The driver also auto-populates
->>>> matching overlay managers and output types from shared video
->>>> port list provided in device-tree blob.
->>>> In dispc_feature struct remove const access specfier for output_type
->>>> array as it is required to be updated dynamically in run-time for shared
->>>> mode.
->>>
->>> I'm also not entirely sure that the device tree is the right path there.
->>> Surely the firmware capabilities will evolve over time, while the device
->>> tree won't. Is there some way to make it discoverable at probe time by
->>> the driver?
->>
->> I think the main highlight of the sharing feature is the hardware
->> capability where each host is provided separate irq and register space
->> to program display for their display context independently
-> 
-> Wait, what do you mean by display context here?
-> 
-
-By context I mean to what that specific host wants to display. For e.g. if
-RTOS is owning a plane, then it can update it's framebuffer and update plane
-registers independently.
-
-[1]
-https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/system/Demo_User_Guides/Display_Cluster_User_Guide.html
-[2] https://www.ti.com/lit/zip/spruj52 ((Section 12.6.3.14 DISPC Resources
-Sharing))
-
-Regards
-Devarsh
-
-> Maxime
 
