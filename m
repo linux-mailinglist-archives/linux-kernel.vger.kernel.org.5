@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BF3854884
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:37:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07679854888
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220E21F21FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 115721C22681
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAAF1B801;
-	Wed, 14 Feb 2024 11:36:55 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 413221AAC4;
+	Wed, 14 Feb 2024 11:37:11 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34D51B5AA;
-	Wed, 14 Feb 2024 11:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB431AACE;
+	Wed, 14 Feb 2024 11:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910614; cv=none; b=pWNf9XAyfPYrXv5H9tPtDOHROvAHmNgncvjmDSyy0sKoRO9Xl8mrds0GzHtY5nisZu4fUYxs0Pw6K8JkfsRDRymdmm2FMwvPQZ04KMYVdpSa0q6uZQ0vAqf5tlXU7o2AqOUWrTx0ZMjxnbZwLQrHZJOFZVYBjUVtm8pbbCqI3uo=
+	t=1707910630; cv=none; b=plMhWzxq3sYYcPCA8+3dJBmyDr4dZb+CLDIGv1KnQ/skUDjujokH9+o2/0rLEKkIan/Qsfa9Z2RtmyNpML6cDPnCSs/VTvYUSf452UHybc3KFq/X8Y5md+9HhuEnhIMrfGCDrka0FpIbioEgPFpw5gWzX61LisMWw3QfKoe+V4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910614; c=relaxed/simple;
-	bh=mFrRekuBTReiOEFHzPYdRM8Hp3OlzszAWd9vJqfTtwo=;
+	s=arc-20240116; t=1707910630; c=relaxed/simple;
+	bh=a2vh6qq7VHsS7NIXK2cTE7729KXe3Z0csZimJkYwPdw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ICJ8vlGkCPKGpQVdUi0eM9/ajAQ1P7bKszSvYh1R2wP21ezJCOT7myfZphdf1DnS1d743K9drOOiMw4Sty5kOxmFs6CjMmlLCSfvtL7JzIuDDpEd9u4SGXx7SpHos0srh9iLlC7hu81kiO11kuS80gLocHMvg3moxxo2ipxg+fU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+	 MIME-Version; b=gW16qYIr0U4wFn2yXViwS1+YlxsB8Yf8W3yaCCzeph21xP1HK/fwDhte/OBy8NjuInL3eB9l5nswJcxBm6cQLqnAmoq9ZJiKHiT1MHu8Qgqy7XfB5zc8xkFt2fIDNGPhAWMmdh0Zal9pbxLcrKRNP9UugLapWCadeliI/PKWFvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TZbPC5Fjhz9yMLZ;
-	Wed, 14 Feb 2024 19:21:35 +0800 (CST)
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TZbPT2J9nz9ynSS;
+	Wed, 14 Feb 2024 19:21:49 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id C3545140661;
-	Wed, 14 Feb 2024 19:36:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id DB5521405A2;
+	Wed, 14 Feb 2024 19:36:55 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S6;
-	Wed, 14 Feb 2024 12:36:40 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S7;
+	Wed, 14 Feb 2024 12:36:55 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -71,9 +71,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	petr@tesarici.cz,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 4/8] sbm: x86: allocate and map an exception stack
-Date: Wed, 14 Feb 2024 12:35:12 +0100
-Message-Id: <20240214113516.2307-5-petrtesarik@huaweicloud.com>
+Subject: [PATCH v1 5/8] sbm: x86: handle sandbox mode faults
+Date: Wed, 14 Feb 2024 12:35:13 +0100
+Message-Id: <20240214113516.2307-6-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
 References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
@@ -84,10 +84,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48Gw47KFW8KFWxCF45Jrb_yoW7uw4rpF
-	WDA3WkKF4Y9as3Zr9rJr4vvr9xZr4v9r43GF9rK345ZF1Utw15Xrn7KF9Fqr45ZrZ8Ga1Y
-	qFWFqr4DCan8JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S7
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48KFW8Jr4DKFy5JFyrWFg_yoWDGryxpF
+	9rAFn5GFZxWa4SvF9xAr4vvrW3Aws5Kw1YkF9rKry5Z3W2q345Xr4v9w1qqr4kZ395W3WY
+	gFW5Zrn5uan8Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUml14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -106,173 +106,317 @@ X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Sandbox mode should run with CPL 3. It is treated as user mode by the CPU,
-so non-IST interrupts will load RSP from TSS. This is the trampoline stack
-and that one is fine. However, the interrupt entry code then moves to the
-thread stack, assuming that it cannot be currently in use, since the task
-was executing in user mode. This assumption is not valid for sandbox mode,
-because the code was originally called from kernel mode, and the thread
-stack contains precious data of the sandbox mode callers.
+Provide a fault handler for sandbox mode. Set the sandbox mode instance
+error code, abort the sandbox and return to the caller. To allow graceful
+return from a fatal fault, save all callee-saved registers (including the
+stack pointer) just before passing control to the target function.
 
-Allocate a separate exception stack for sandbox and use it instead of the
-thread stack in interrupt handlers while sandbox mode is active. To find
-the sandbox exception stack from interrupt entry, store a pointer to the
-state page in struct thread_info. This pointer is non-NULL if the current
-task is running in sandbox mode. It is also non-NULL during the transition
-from/to sandbox mode. The sandbox exception stack is valid in either case.
+Modify the handlers for #PF and #DF CPU exceptions to call this handler if
+coming from sandbox mode. The check is based on the saved CS register,
+which should be modified in the entry path to a value that is otherwise not
+possible (__SBM_CS).
+
+For the page fault handler, make sure that sandbox mode check is placed
+before do_kern_addr_fault(). That function calls spurious_kernel_fault(),
+which implements lazy TLB invalidation of kernel pages and it assumes that
+the faulting instruction ran with kernel-mode page tables; it would produce
+false positives for sandbox mode.
 
 Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 ---
- arch/x86/include/asm/sbm.h         | 24 ++++++++++++++++++++++++
- arch/x86/include/asm/thread_info.h |  3 +++
- arch/x86/kernel/sbm/call_64.S      |  1 +
- arch/x86/kernel/sbm/core.c         | 21 ++++++++++++++++++++-
- arch/x86/kernel/traps.c            |  3 ++-
- 5 files changed, 50 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/ptrace.h  | 21 +++++++++++++++++++++
+ arch/x86/include/asm/sbm.h     | 24 ++++++++++++++++++++++++
+ arch/x86/include/asm/segment.h |  7 +++++++
+ arch/x86/kernel/asm-offsets.c  |  5 +++++
+ arch/x86/kernel/sbm/call_64.S  | 21 +++++++++++++++++++++
+ arch/x86/kernel/sbm/core.c     | 26 ++++++++++++++++++++++++++
+ arch/x86/kernel/traps.c        | 11 +++++++++++
+ arch/x86/mm/fault.c            |  6 ++++++
+ 8 files changed, 121 insertions(+)
 
+diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
+index f4db78b09c8f..f66f16f037b0 100644
+--- a/arch/x86/include/asm/ptrace.h
++++ b/arch/x86/include/asm/ptrace.h
+@@ -164,6 +164,27 @@ static inline bool user_64bit_mode(struct pt_regs *regs)
+ #endif
+ }
+ 
++/*
++ * sandbox_mode() - did a register set come from SandBox Mode?
++ * @regs:  register set
++ */
++static inline bool sandbox_mode(struct pt_regs *regs)
++{
++#ifdef CONFIG_X86_64
++#ifdef CONFIG_SANDBOX_MODE
++	/*
++	 * SandBox Mode always runs in 64-bit and it is not implemented
++	 * on paravirt systems, so this is the only possible value.
++	 */
++	return regs->cs == __SBM_CS;
++#else /* !CONFIG_SANDBOX_MODE */
++	return false;
++#endif
++#else /* !CONFIG_X86_64 */
++	return false;
++#endif
++}
++
+ /*
+  * Determine whether the register set came from any context that is running in
+  * 64-bit mode.
 diff --git a/arch/x86/include/asm/sbm.h b/arch/x86/include/asm/sbm.h
-index ed214c17af06..ca4741b449e8 100644
+index ca4741b449e8..229b1ac3bbd4 100644
 --- a/arch/x86/include/asm/sbm.h
 +++ b/arch/x86/include/asm/sbm.h
-@@ -9,6 +9,8 @@
- #ifndef __ASM_SBM_H
- #define __ASM_SBM_H
+@@ -11,23 +11,29 @@
  
-+#include <asm/processor.h>
+ #include <asm/processor.h>
+ 
++struct pt_regs;
 +
  #if defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE)
  
  #include <asm/pgtable_types.h>
-@@ -17,6 +19,7 @@
+ 
+ /**
   * struct x86_sbm_state - Run-time state of the environment.
++ * @sbm:         Link back to the SBM instance.
   * @pgd:         Sandbox mode page global directory.
   * @stack:       Sandbox mode stack.
-+ * @exc_stack:   Exception and IRQ stack.
+  * @exc_stack:   Exception and IRQ stack.
++ * @return_sp:   Stack pointer for returning to kernel mode.
   *
   * One instance of this union is allocated for each sandbox and stored as SBM
   * instance private data.
-@@ -24,8 +27,29 @@
+  */
  struct x86_sbm_state {
++	struct sbm *sbm;
  	pgd_t *pgd;
  	unsigned long stack;
-+	unsigned long exc_stack;
+ 	unsigned long exc_stack;
++	unsigned long return_sp;
  };
  
+ /**
+@@ -43,6 +49,18 @@ static inline unsigned long top_of_intr_stack(void)
+ 	return current_top_of_stack();
+ }
+ 
 +/**
-+ * top_of_intr_stack() - Get address interrupt stack.
++ * handle_sbm_fault() - Handle a CPU fault in sandbox mode.
++ * @regs:       Saved registers at fault.
++ * @error_code: CPU error code.
++ * @address:    Fault address (CR2 register).
 + *
++ * Handle a sandbox mode fault. The caller should use sandbox_mode() to
++ * check that @regs came from sandbox mode before calling this function.
 + */
-+static inline unsigned long top_of_intr_stack(void)
++void handle_sbm_fault(struct pt_regs *regs, unsigned long error_code,
++		      unsigned long address);
++
+ #else /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
+ 
+ static inline unsigned long top_of_intr_stack(void)
+@@ -50,6 +68,12 @@ static inline unsigned long top_of_intr_stack(void)
+ 	return current_top_of_stack();
+ }
+ 
++static inline void handle_sbm_fault(struct pt_regs *regs,
++				    unsigned long error_code,
++				    unsigned long address)
 +{
-+	struct x86_sbm_state *sbm = current_thread_info()->sbm_state;
-+
-+	if (sbm)
-+		return sbm->exc_stack + EXCEPTION_STKSZ;
-+	return current_top_of_stack();
-+}
-+
-+#else /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
-+
-+static inline unsigned long top_of_intr_stack(void)
-+{
-+	return current_top_of_stack();
 +}
 +
  #endif /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
  
  #endif /* __ASM_SBM_H */
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index d63b02940747..95b1acffb78a 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -60,6 +60,9 @@ struct thread_info {
- #ifdef CONFIG_SMP
- 	u32			cpu;		/* current CPU */
+diff --git a/arch/x86/include/asm/segment.h b/arch/x86/include/asm/segment.h
+index 9d6411c65920..966831385d18 100644
+--- a/arch/x86/include/asm/segment.h
++++ b/arch/x86/include/asm/segment.h
+@@ -217,6 +217,13 @@
+ #define __USER_CS			(GDT_ENTRY_DEFAULT_USER_CS*8 + 3)
+ #define __CPUNODE_SEG			(GDT_ENTRY_CPUNODE*8 + 3)
+ 
++/*
++ * Sandbox runs with __USER_CS, but the interrupt entry code sets the RPL
++ * in the saved selector to zero to avoid user-mode processing (FPU, signal
++ * delivery, etc.). This is the resulting pseudo-CS.
++ */
++#define __SBM_CS			(GDT_ENTRY_DEFAULT_USER_CS*8)
++
  #endif
-+#ifdef CONFIG_SANDBOX_MODE
-+	struct x86_sbm_state	*sbm_state;	/* SandBox mode state page */
-+#endif
- };
  
- #define INIT_THREAD_INFO(tsk)			\
-diff --git a/arch/x86/kernel/sbm/call_64.S b/arch/x86/kernel/sbm/call_64.S
-index 245d0dddce73..1b232c8d15b7 100644
---- a/arch/x86/kernel/sbm/call_64.S
-+++ b/arch/x86/kernel/sbm/call_64.S
-@@ -9,6 +9,7 @@
- 
- #include <linux/linkage.h>
- #include <asm/nospec-branch.h>
-+#include <asm/percpu.h>
- 
- .code64
- .section .entry.text, "ax"
-diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
-index f3a123d64afc..81f1b0093537 100644
---- a/arch/x86/kernel/sbm/core.c
-+++ b/arch/x86/kernel/sbm/core.c
-@@ -264,6 +264,14 @@ int arch_sbm_init(struct sbm *sbm)
- 	if (err)
- 		return err;
- 
-+	state->exc_stack = __get_free_pages(GFP_KERNEL, EXCEPTION_STACK_ORDER);
-+	if (err)
-+		return err;
-+	err = map_range(state, state->exc_stack,
-+			state->exc_stack + EXCEPTION_STKSZ, PAGE_KERNEL);
-+	if (err)
-+		return err;
-+
- 	err = map_cpu_data(state);
- 	if (err)
- 		return err;
-@@ -324,6 +332,7 @@ void arch_sbm_destroy(struct sbm *sbm)
- 		free_pgd(state->pgd);
- 		free_pages((unsigned long)state->pgd, PGD_ORDER);
- 	}
-+	free_pages(state->exc_stack, EXCEPTION_STACK_ORDER);
- 	free_pages(state->stack, THREAD_SIZE_ORDER);
- 	free_page((unsigned long)state);
- 	sbm->private = NULL;
-@@ -332,6 +341,16 @@ void arch_sbm_destroy(struct sbm *sbm)
- int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
- {
- 	struct x86_sbm_state *state = sbm->private;
-+	int err;
-+
-+	/* let interrupt handlers use the sandbox state page */
-+	barrier();
-+	WRITE_ONCE(current_thread_info()->sbm_state, state);
-+
-+	err = x86_sbm_exec(state, func, args, state->stack + THREAD_SIZE);
-+
-+	/* NULLify the state page pointer before it becomes stale */
-+	WRITE_ONCE(current_thread_info()->sbm_state, NULL);
- 
--	return x86_sbm_exec(state, func, args, state->stack + THREAD_SIZE);
-+	return err;
- }
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index c3b2f863acf0..b9c9c74314e7 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -66,6 +66,7 @@
- #include <asm/vdso.h>
+ #define IDT_ENTRIES			256
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index 6913b372ccf7..44d4f0a0cb19 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -20,6 +20,7 @@
+ #include <asm/suspend.h>
+ #include <asm/tlbflush.h>
  #include <asm/tdx.h>
- #include <asm/cfi.h>
 +#include <asm/sbm.h>
  
- #ifdef CONFIG_X86_64
- #include <asm/x86_init.h>
-@@ -773,7 +774,7 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ #ifdef CONFIG_XEN
+ #include <xen/interface/xen.h>
+@@ -120,4 +121,8 @@ static void __used common(void)
+ 	OFFSET(ARIA_CTX_rounds, aria_ctx, rounds);
+ #endif
+ 
++#if defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE)
++	COMMENT("SandBox Mode");
++	OFFSET(SBM_return_sp, x86_sbm_state, return_sp);
++#endif
+ }
+diff --git a/arch/x86/kernel/sbm/call_64.S b/arch/x86/kernel/sbm/call_64.S
+index 1b232c8d15b7..6a615b4f6047 100644
+--- a/arch/x86/kernel/sbm/call_64.S
++++ b/arch/x86/kernel/sbm/call_64.S
+@@ -22,6 +22,17 @@
+  * rcx  .. top of sandbox stack
   */
- asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
+ SYM_FUNC_START(x86_sbm_exec)
++	/* save all callee-saved registers */
++	push	%rbp
++	push	%rbx
++	push	%r12
++	push	%r13
++	push	%r14
++	push	%r15
++
++	/* to be used by sandbox abort */
++	mov	%rsp, SBM_return_sp(%rdi)
++
+ 	/*
+ 	 * Set up the sandbox stack:
+ 	 * 1. Store the old stack pointer at the top of the sandbox stack,
+@@ -37,5 +48,15 @@ SYM_FUNC_START(x86_sbm_exec)
+ 
+ 	pop	%rsp
+ 
++SYM_INNER_LABEL(x86_sbm_return, SYM_L_GLOBAL)
++	ANNOTATE_NOENDBR	// IRET target via x86_sbm_fault()
++
++	/* restore callee-saved registers and return */
++	pop	%r15
++	pop	%r14
++	pop	%r13
++	pop	%r12
++	pop	%rbx
++	pop	%rbp
+ 	RET
+ SYM_FUNC_END(x86_sbm_exec)
+diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
+index 81f1b0093537..d4c378847e93 100644
+--- a/arch/x86/kernel/sbm/core.c
++++ b/arch/x86/kernel/sbm/core.c
+@@ -13,6 +13,8 @@
+ #include <asm/page.h>
+ #include <asm/sbm.h>
+ #include <asm/sections.h>
++#include <asm/segment.h>
++#include <asm/trap_pf.h>
+ #include <linux/cpumask.h>
+ #include <linux/mm.h>
+ #include <linux/sbm.h>
+@@ -23,6 +25,7 @@
+ 
+ asmlinkage int x86_sbm_exec(struct x86_sbm_state *state, sbm_func func,
+ 			    void *args, unsigned long sbm_tos);
++extern char x86_sbm_return[];
+ 
+ static inline phys_addr_t page_to_ptval(struct page *page)
  {
--	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(pcpu_hot.top_of_stack) - 1;
-+	struct pt_regs *regs = (struct pt_regs *)top_of_intr_stack() - 1;
- 	if (regs != eregs)
- 		*regs = *eregs;
- 	return regs;
+@@ -343,6 +346,8 @@ int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
+ 	struct x86_sbm_state *state = sbm->private;
+ 	int err;
+ 
++	state->sbm = sbm;
++
+ 	/* let interrupt handlers use the sandbox state page */
+ 	barrier();
+ 	WRITE_ONCE(current_thread_info()->sbm_state, state);
+@@ -354,3 +359,24 @@ int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
+ 
+ 	return err;
+ }
++
++void handle_sbm_fault(struct pt_regs *regs, unsigned long error_code,
++		      unsigned long address)
++{
++	struct x86_sbm_state *state = current_thread_info()->sbm_state;
++
++	/*
++	 * Force -EFAULT unless the fault was due to a user-mode instruction
++	 * fetch from the designated return address.
++	 */
++	if (error_code != (X86_PF_PROT | X86_PF_USER | X86_PF_INSTR) ||
++	    address != (unsigned long)x86_sbm_return)
++		state->sbm->error = -EFAULT;
++
++	/* modify IRET frame to exit from sandbox */
++	regs->ip = (unsigned long)x86_sbm_return;
++	regs->cs = __KERNEL_CS;
++	regs->flags = X86_EFLAGS_IF;
++	regs->sp = state->return_sp;
++	regs->ss = __KERNEL_DS;
++}
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index b9c9c74314e7..8fc5b17b8fb4 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -416,6 +416,12 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 
+ 	irqentry_nmi_enter(regs);
+ 	instrumentation_begin();
++
++	if (sandbox_mode(regs)) {
++		handle_sbm_fault(regs, error_code, 0);
++		return;
++	}
++
+ 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+ 
+ 	tsk->thread.error_code = error_code;
+@@ -675,6 +681,11 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+ 		goto exit;
+ 	}
+ 
++	if (sandbox_mode(regs)) {
++		handle_sbm_fault(regs, error_code, 0);
++		return;
++	}
++
+ 	if (gp_try_fixup_and_notify(regs, X86_TRAP_GP, error_code, desc, 0))
+ 		goto exit;
+ 
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 679b09cfe241..f223b258e53f 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -34,6 +34,7 @@
+ #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
+ #include <asm/vdso.h>			/* fixup_vdso_exception()	*/
+ #include <asm/irq_stack.h>
++#include <asm/sbm.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <asm/trace/exceptions.h>
+@@ -1500,6 +1501,11 @@ handle_page_fault(struct pt_regs *regs, unsigned long error_code,
+ 	if (unlikely(kmmio_fault(regs, address)))
+ 		return;
+ 
++	if (sandbox_mode(regs)) {
++		handle_sbm_fault(regs, error_code, address);
++		return;
++	}
++
+ 	/* Was the fault on kernel-controlled part of the address space? */
+ 	if (unlikely(fault_in_kernel_space(address))) {
+ 		do_kern_addr_fault(regs, error_code, address);
 -- 
 2.34.1
 
