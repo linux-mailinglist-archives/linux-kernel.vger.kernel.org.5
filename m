@@ -1,105 +1,123 @@
-Return-Path: <linux-kernel+bounces-65484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694BC854DA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:06:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A470B854DA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 210CF28C549
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:06:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D72901C28AE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 586F25FF0D;
-	Wed, 14 Feb 2024 16:05:57 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3BC5FB90;
+	Wed, 14 Feb 2024 16:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="vEnP7+eA";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KpKSvEUN"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CB05FDDE;
-	Wed, 14 Feb 2024 16:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDFEC5F865;
+	Wed, 14 Feb 2024 16:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926756; cv=none; b=tqwP7DGvIUH5eQLbdC+sxTgMD3NrowJef5z1RGVUILHcMgmy7UoBuX6JJInOeTkaPHpyvDu9xvNc99DhiBnS9FffdldZ7wdK8DK2izi39jiiithPb1aH7iCciwBB5bRNpKLkPZrizKBFwFrfBVP6aObGh4/V3uhySAERLJTF/RQ=
+	t=1707926814; cv=none; b=FTK00fIjGhHlvXlXe/VsqcKwuEXzGkVTCb/o213J0uDfvGzE9SQ8BpVTNIU9nC8qURDmAzDh6NOH+SOtFqNGBIBPzxoBtU35/7zjX6/IIGk1eU/Y5nqX/jBzYgP9H5JVzJ07O9oaDO75TZ4DRosNI3zOIqCaeVayk5kehd6vQHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926756; c=relaxed/simple;
-	bh=2rPdZu7j7a65QckXuLVe7Tw9x0DknKBAnl3TOA/vyEI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lYc9HqC9MYN1g++ZJQyejEMuslOAt40NxS85hLa4lONRLbu+wLpP86g/STqi8YhXgHTmov3GMR7RyXlJvEcKw9lGX6zzJrGV83ptqLWdsNlEsunytS0C/RBNEF+DN7+Av1QKr4dEeUdpaUhLWiO5njRm//ALiFD/JsYh8qLnBGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60777be1a1bso26494257b3.1;
-        Wed, 14 Feb 2024 08:05:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707926754; x=1708531554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2CabsuXF5OsJBAOKe4fS3bqwNItwV3UGEGIvYWeFLkY=;
-        b=pvAlbqRnSRmwZvpE1cRfwjaw6v2OL4lHB3OYG1G+CKgKshI02nI/pbN0rZ2PEgmhpE
-         KYIEO9z7LY2ZfpOJN3qo7Y9RWTrjQW8zo9RnhyGyipBmZGYMaEG5lcXvhTp5TlXouWGl
-         J9VRULcXd5rosd2Hkqz+9jH8ABiGbGGlv8IBKrwDBe5MRLJ/jZTu+PfHtdsUAmKozmlo
-         zo6fd8/LIvYtUeaSGBjMHgGRArgXG3EKC6YXLz4WLXnuMLFYm9MeGDv2suJQxVY9Mv8I
-         mKLzsqpsUNXPjz2IKBfX08PT4Uv4K+Q7YSrIVKDJ1ImiD3KqHJ2AtpgFNC1EA+l+RbNF
-         +bGg==
-X-Forwarded-Encrypted: i=1; AJvYcCVK5i38L5yVfH1y2YWR0QVqytaZQyXUGnSv48bgCrUoj6+cZW8QM6xyG5R2YaMafEH40xjn3eEyPLkaQ4i+gK9vBB70X22p4bjKMeJL
-X-Gm-Message-State: AOJu0YwPKak3bqt9pUq5LBvL1fRI43lNfiwEM9yRJdIFOGzIKbFFnNN1
-	OKZIyNwFtKD1yK1dxldykRD5iCZqMx7olvP6XI5dtW9u98X6wdaA8F8uyI7PeQ0=
-X-Google-Smtp-Source: AGHT+IF/A380KUzwUdhbgQ+XbHwKHgR/JtswBXQnw2vkqHauImf7Jsyj2nae5D0/0ptVMs+YZr42wQ==
-X-Received: by 2002:a0d:e254:0:b0:607:8393:384f with SMTP id l81-20020a0de254000000b006078393384fmr2569343ywe.29.1707926752323;
-        Wed, 14 Feb 2024 08:05:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUK3/AG7DyBlJeZdgw9XY7XJ/ymoQ0f2KeRF/RBrDANbg/xEqTC7H+D20ff7fuayeTpj2+vddL8kilab28Ly6XidZz6ljdAAMLPnaPi
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id o9-20020a81de49000000b00607c2ab443dsm25247ywl.130.2024.02.14.08.05.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:05:51 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso3010750276.2;
-        Wed, 14 Feb 2024 08:05:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCURxGVOc7vDUxwUw8FcP5Bzyd4KgLF1syfuw43vOj8vWUSLWQVYeJgfyIQ8XyVf5VfbGky6i08+nWF7+0Ws+GKUIFbAs9AqsYdtJ0vY
-X-Received: by 2002:a25:ad94:0:b0:dc6:7247:5d94 with SMTP id
- z20-20020a25ad94000000b00dc672475d94mr2218889ybi.55.1707926751399; Wed, 14
- Feb 2024 08:05:51 -0800 (PST)
+	s=arc-20240116; t=1707926814; c=relaxed/simple;
+	bh=laNZL1qkr6vvHLZ55G/iXz2T7t7aplhdDjaSRRekAhk=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=WAf+FiFcOujOzbuFCwEzKdmCVAcYCLQJlazZa40gHOxBD5WPj7N3B+p4+7gEbfBw6iv2qzYsuN+XMby/ajW3vN/mbTJyoonYDOtT8LxPa4hD3eTIDLPDELift2SjeyVLWGHkrS77WOwzuQZN7TbUzGp5XIJiaMeC1IfVTOC7hq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=vEnP7+eA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KpKSvEUN; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 4305D18000F7;
+	Wed, 14 Feb 2024 11:06:51 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 11:06:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707926810; x=1708013210; bh=deSom4GjuR
+	klhwqg007ZgFkO+lEEC7ONrawL97ILwOQ=; b=vEnP7+eADkhKOnCPeDLox5/IMC
+	nb0fu+Li12ouTj865pq6esKkpuOO9UQ/7HahJEvAhC3kMh885juyINjg4RiHuS9N
+	tl/re3nT1PpA8Sgf5/h7fnJ68aBKFoWHaylxphth07ALzlFP/NgrxW6u9oksU4ii
+	jIgNgAev62dW31T0RGPGMSxPpsDZKWINKapOsq/JtP2L9LHBUTkJUZRSkI4+p5Oo
+	TVlcEV3SSuLsdpl03T1g3EHCDs+B6hVHCEcGRO5yXxSrVwMy2rQBME/C2lKFSeMK
+	hif1IAETobwM7uZ6xBdhEL7KjfZsdX9iUFEa2OY6KHsItdGgF89hGlmLMofA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707926810; x=1708013210; bh=deSom4GjuRklhwqg007ZgFkO+lEE
+	C7ONrawL97ILwOQ=; b=KpKSvEUNINZk4o4OUI82TxqluNWpmkoyyrBtl+QRI9a8
+	K84NeOGNwuBiR6hn8J+BBKaRd2UV2Phd98cK4oMmyj3c+a7eIDS8a8DiIAuR/8cJ
+	vdIOuZ+/LMipAvGNu+Vp2MWifn1BH8oqAWqtrd1IvtaBMzPgMJMzS+ARuBbNA/o2
+	AllUID/iRXrToShz+zyTcmpPP0BMbvjQxcDODYcgaKJRuSpoJY43RILRwYn4n1KX
+	hCaqtvB5wM4oV4vuf/YdU4zXqkw3+l/mhG8wV/jYNXhw3ksWSFfWuQAO5tj5lwkX
+	0yg9oYCjz5KIPMioZLCJvCHzxWRklb9cHNxC1MSy0Q==
+X-ME-Sender: <xms:GeXMZad6vEzx9l6MOHVMmIG2Zs_UA9-G1qowd8O8ZzP-XsbEvcXIfQ>
+    <xme:GeXMZUNfXC5_3FxzZNJArnLHx9yPZK1FbjoH5EEChnSZyfJNq3wz5ZxLG3Vlv1GmR
+    ugGT3SOCeVbR-fe3H4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:GuXMZbgZD57qyDNDopse154lgj_bstb6PI9rWR-y2QAURa01u4wl6g>
+    <xmx:GuXMZX-vDGh35pQlAWAwb88hH3m79Sud1hwC6R4WhEG75TYmgo0TPQ>
+    <xmx:GuXMZWuXatqYasoqXnwDeAVXGEJgSnDc8M6Fwyf2SJh9QQ0-cF_BFw>
+    <xmx:GuXMZT9A-LpEBg3xhL3rRRA71p7GJYGRXFD37JXY5CL3VMsS5mlgF_vhmiQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id DF83BB6008D; Wed, 14 Feb 2024 11:06:49 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213220221.2380-8-wsa+renesas@sang-engineering.com> <20240213220221.2380-9-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20240213220221.2380-9-wsa+renesas@sang-engineering.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 17:05:39 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUmz47Kaj9U_VWeT_LR8LM=qgqcRecx9aEAQxcTeCK4qQ@mail.gmail.com>
-Message-ID: <CAMuHMdUmz47Kaj9U_VWeT_LR8LM=qgqcRecx9aEAQxcTeCK4qQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mfd: tmio: Remove obsolete platform_data
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, Lee Jones <lee@kernel.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <c6e55baf-4f0c-4342-971a-713ed55f5a51@app.fastmail.com>
+In-Reply-To: <867cj75q52.wl-maz@kernel.org>
+References: <20240213225619.11726-1-rdunlap@infradead.org>
+ <867cj75q52.wl-maz@kernel.org>
+Date: Wed, 14 Feb 2024 17:06:06 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Marc Zyngier" <maz@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Rob Herring" <robh@kernel.org>, "Philipp Zabel" <p.zabel@pengutronix.de>,
+ "Peter Rosin" <peda@axentia.se>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] of: OF_IRQ: select IRQ_DOMAIN instead of depending on it
+Content-Type: text/plain
 
-On Tue, Feb 13, 2024 at 11:05=E2=80=AFPM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> With commit 8971bb812e3c ("mfd: remove toshiba tmio drivers"), all users
-> of platform data for NAND and framebuffers are gone. So, remove
-> definitions from the header, too.
+On Wed, Feb 14, 2024, at 10:52, Marc Zyngier wrote:
+> On Tue, 13 Feb 2024 22:56:19 +0000, Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> diff -- a/drivers/of/Kconfig b/drivers/of/Kconfig
+>> --- a/drivers/of/Kconfig
+>> +++ b/drivers/of/Kconfig
+>> @@ -80,7 +80,8 @@ config OF_ADDRESS
+>>  
+>>  config OF_IRQ
+>>  	def_bool y
+>> -	depends on !SPARC && IRQ_DOMAIN
+>> +	depends on !SPARC
+>> +	select IRQ_DOMAIN
+> 
 >
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Acked-by: Lee Jones <lee@kernel.org>
+> This seems to be moving is the right direction.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Can we move the 'select IRQ_DOMAIN' under CONFIG_IRQCHIP
+then and remove the individual selects from the irqchip
+drivers? It looks like CONFIG_OF (other than sparc) now
+unconditionally enables OF_IRQ and IRQCHIP anyway.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+     Arnd
 
