@@ -1,107 +1,183 @@
-Return-Path: <linux-kernel+bounces-64948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 439BD854508
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:23:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 791B185450B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD7971F2C5BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29852282613
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A83412B6A;
-	Wed, 14 Feb 2024 09:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E5125DD;
+	Wed, 14 Feb 2024 09:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sXREtOAL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="d2oZ0m8B"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1B012B60;
-	Wed, 14 Feb 2024 09:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A3212E6C;
+	Wed, 14 Feb 2024 09:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902575; cv=none; b=RVmyo+hje+3GTDlAGmhwQ3/bcSsiWvBKqDA9hADVUG6HAxMFpqHzmFNCyGTYAtjTTgHkv8WtNQYbPIXWNlgqxwCc6genKZbiANWsfZ7xN5Cj7bRJ9Lk8AWHZZuSmyQPYxTZmSwJU9ITTQVQnK4qYJxalAnLP+ViDBfPXpNPAfNE=
+	t=1707902593; cv=none; b=KICD4oTnS4jrtLYf0DpCKyRg/kWittm1b0Aa9En+x7kzxYgtLkm2ZD74Rc1ViGKVLWqQKx45QKKD7ZMjfOMjQMhDHziVBfW2HK4cO7IM+qBpWtCsSHIEe8ukjb3zsED4xGFAAlDmaTBboOjZSg0GzjkByBdEeGxIyx+NmqO+rRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902575; c=relaxed/simple;
-	bh=WCHyzEMYsmkXeKhRjOyGsH4SWHf2Zvhc93CpPJCsZ70=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=sb7fNq3ci6+/8x7F3trFoAopuLkFL06uG/rWRjABHGBwNtdf1zTYtdHfHMhuRsHPYdYe0wTSuaeZ4OlPm+NXVlo3b9XWVx/9bX5/7QqsxyNHYgumq8s/BBZHE69P1y2eOedXMnu7tJ8uq1AZbrdOxcJojirC798QVrVbUJgu9hA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sXREtOAL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B94F1C433C7;
-	Wed, 14 Feb 2024 09:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707902575;
-	bh=WCHyzEMYsmkXeKhRjOyGsH4SWHf2Zvhc93CpPJCsZ70=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=sXREtOALLSk9HLU/IAkBc01Hi9HoDS6Or5Sv/JMYpiKFgjkf4xdspqPQGqomiYxx5
-	 sxP35EhvKauE8uaveXi5cS95yAP+lYX9o6/0qZTE+6tJO9q/t+yDkCi/VAluBT2zWV
-	 cCrcJ2ODMKPizw3HZ2OhChXVBvhxP3PpQor4m1akf9gHQ68SftBeCa/1txMmLcx4Uc
-	 FsxTu5hCf/edc1IXOClP9fmCJgRiiCzRhjpvoTgjeuuIShtxgS3/j7nX/nbN1CorHs
-	 VldjhSBRZRuJVzQhmponH0NXjJ8r3p0Km2t4aDMLZ0QigKFVT2JEj4DcpiFLaS6vuG
-	 yR1WPHXGFGKJg==
-Date: Wed, 14 Feb 2024 03:22:53 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1707902593; c=relaxed/simple;
+	bh=BzXd7RuiwCTqBRO3TrKhE8xbVkPb0y7sK2NROp8pCZo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PoJWS+6J0KY8DCafbki9/TAvnwtWoW6ONpDX80lxI1HFGM0nigQ43hgnp313Iu6l1x6lkbI2T4a//XGn0wavQU4LY/25irRWlMx/hPL/HhGL/fQNN881b1Uh/IECsfle/xy4w0qYN2u5X5UuJyNIweh3On95E/ujyFQ6Cd6Q3VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=d2oZ0m8B; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 62DEB673;
+	Wed, 14 Feb 2024 10:23:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1707902586;
+	bh=BzXd7RuiwCTqBRO3TrKhE8xbVkPb0y7sK2NROp8pCZo=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=d2oZ0m8Bhk2IB/H2j5z6rKeUnA1tftzalI8uarCo30Bsq4XiRVAv6lFroGxGJIDYb
+	 1ILjo5z1NnlFOC/nFHkXLCuFPyWMMg9PWQXgfy2htLK/ShBui/5FOqIPvfd/r3z7Hh
+	 c02gDS7di1d7lTCdSoZ0s6hOWAa7GMGL1HqE1ijg=
+Message-ID: <839d6de4-b396-4799-8a62-9249727b6dcc@ideasonboard.com>
+Date: Wed, 14 Feb 2024 11:23:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Balakrishnan Sambath <balakrishnan.s@microchip.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, alsa-devel@alsa-project.org, 
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, 
- linux-arm-kernel@lists.infradead.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Mark Brown <broonie@kernel.org>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- linux-sound@vger.kernel.org
-In-Reply-To: <20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com>
-References: <20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com>
-Message-Id: <170790257251.233964.609546720299928474.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: sound:atmel-at91sam9g20ek: convert
- bindings to json-schema
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: display: ti,am65x-dss: Add support for
+ common1 region
+Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+To: Devarsh Thakkar <devarsht@ti.com>, conor+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
+Cc: praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
+ j-luthra@ti.com, kristo@kernel.org, jyri.sarha@iki.fi, airlied@gmail.com,
+ daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240115125716.560363-1-devarsht@ti.com>
+ <20240115125716.560363-2-devarsht@ti.com>
+ <f8cc383e-1150-45d2-8325-a8dd69969300@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <f8cc383e-1150-45d2-8325-a8dd69969300@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-On Wed, 14 Feb 2024 12:10:06 +0530, Balakrishnan Sambath wrote:
-> Convert atmel-at91sam9g20ek-wm8731-audio DT binding to yaml
-> based json-schema.Change file name to match json-scheme naming.
+On 14/02/2024 11:10, Tomi Valkeinen wrote:
+> Hi,
 > 
-> Signed-off-by: Balakrishnan Sambath <balakrishnan.s@microchip.com>
-> ---
->  .../bindings/sound/atmel,at91sam9g20ek-wm8731.yaml | 60 ++++++++++++++++++++++
->  .../sound/atmel-at91sam9g20ek-wm8731-audio.txt     | 26 ----------
->  2 files changed, 60 insertions(+), 26 deletions(-)
+> On 15/01/2024 14:57, Devarsh Thakkar wrote:
+>> TI keystone display subsystem present in AM65 and other SoCs such as AM62
+>> support two separate register spaces namely "common" and "common1" which
+>> can be used by two separate hosts to program the display controller as
+>> described in respective Technical Reference Manuals [1].
+>>
+>> The common1 register space has similar set of configuration registers as
+>> supported in common register space except the global configuration
+>> registers which are exclusive to common region.
+>>
+>> This adds binding for "common1" register region too as supported by the
+>> hardware.
+>>
+>> [1]:
+>> AM62x TRM:
+>> https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
+>>
+>> AM65x TRM:
+>> https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
+>>
+>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>> ---
+>>   .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git 
+>> a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml 
+>> b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> index b6767ef0d24d..55e3e490d0e6 100644
+>> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+>> @@ -37,6 +37,7 @@ properties:
+>>         - description: OVR2 overlay manager for vp2
+>>         - description: VP1 video port 1
+>>         - description: VP2 video port 2
+>> +      - description: common1 DSS register area
+>>     reg-names:
+>>       items:
+>> @@ -47,6 +48,7 @@ properties:
+>>         - const: ovr2
+>>         - const: vp1
+>>         - const: vp2
+>> +      - const: common1
+>>     clocks:
+>>       items:
+>> @@ -147,9 +149,10 @@ examples:
+>>                       <0x04a07000 0x1000>, /* ovr1 */
+>>                       <0x04a08000 0x1000>, /* ovr2 */
+>>                       <0x04a0a000 0x1000>, /* vp1 */
+>> -                    <0x04a0b000 0x1000>; /* vp2 */
+>> +                    <0x04a0b000 0x1000>, /* vp2 */
+>> +                    <0x04a01000 0x1000>; /* common1 */
+>>               reg-names = "common", "vidl1", "vid",
+>> -                    "ovr1", "ovr2", "vp1", "vp2";
+>> +                    "ovr1", "ovr2", "vp1", "vp2", "common1";
+>>               ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
+>>               power-domains = <&k3_pds 67 TI_SCI_PD_EXCLUSIVE>;
+>>               clocks =        <&k3_clks 67 1>,
 > 
+> Looks fine to me, I'll apply to drm-misc-next.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Hmm, now thinking about this, doesn't this cause dtb checks to start 
+failing, as the dtbs are missing one entry? Is it better to merge these 
+kind of changes with the dts changes? Or does it matter?
 
-yamllint warnings/errors:
-/Documentation/devicetree/bindings/sound/atmel,at91sam9g20ek-wm8731.yaml:26:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
-/Documentation/devicetree/bindings/sound/atmel,at91sam9g20ek-wm8731.yaml:27:11: [error] string value is redundantly quoted with any quotes (quoted-strings)
-
-dtschema/dtc warnings/errors:
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+  Tomi
 
 
