@@ -1,76 +1,86 @@
-Return-Path: <linux-kernel+bounces-65502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F73A854DEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 245E0854DEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD4E1C21DFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C0AC28C206
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F25160268;
-	Wed, 14 Feb 2024 16:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BE95FF03;
+	Wed, 14 Feb 2024 16:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="If7KvAk3"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dYRUISY/"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3965FF00;
-	Wed, 14 Feb 2024 16:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0065FDD4
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927455; cv=none; b=ew5yX8J5xqwOuHZEA74X9PBjwc0G3Ss1S+IoHOGcVm5kyrVyD7J7Ca6SN+i38iGJB1qY+nSQwdbiQ3raSuo2AHq0s6MgYdwov+l+N0Db6uNeOO8C77FPNKOvv2pETWGHes897w9muqmseKEqXX3TF/xUk3DUK/RrFKRL2K9t9Z8=
+	t=1707927494; cv=none; b=sxeG7XTKX8ZHnbwdxKjNtbt7ohmoN8kWVet3wsq4Epo/baw5u5Llzd/jjOdENmKY3CrqlzQvKZzBIf4yOESGF6XI3RxltBi0T/hCGZc38hT9uoacVWD7PrVLhVE9tffHVTBzRL3aeTdE1vCOuJMKihmwZDViJochxrpNyTDZGDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927455; c=relaxed/simple;
-	bh=BMkf3NLk/iLQr+WYsIcfjcR7/4kHgrAc/NsrN13AxP8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fKlo8vDAfWeUikhWaH5kZlzTKliONVxkZcuvbn8Ce3rI7nttKlxKEdq/wmg118x/toqnYJSyfX9S1M30ScS1sTFdFzjtM38S5w7ddKjjbUD6229yoRszvFOu5nLNf7Lx616bmz97Th3MKAXpb7n0BnGUG5S8B1GJGAHld4lBeEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=If7KvAk3; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 11:17:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707927450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WvW8w5yUCB+T24tws0BE+nRUAXqLznpxXzLB9RssHjE=;
-	b=If7KvAk3S44JHt8xTRFRLZGFB9HhXr9yTjM5WxyEi5xNjIqcYGBYlgszfmKzpB+BaRdtGZ
-	n3N+YeR7XUwHyIMey1lTARWNjfYN024v3AgKYdiCjuLtH6AdMtTaqstAHFyfDaYzOPE5KS
-	nEweGtuqjPMrA6xlO/8Dh+ORbNs02fU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, 
-	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, vbabka@suse.cz, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
-	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <udgv2gndh4leah734rfp7ydfy5dv65kbqutse6siaewizoooyw@pdd3tcji5yld>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240214062020.GA989328@cmpxchg.org>
- <ZczSSZOWMlqfvDg8@tiehlicka>
- <ifz44lao4dbvvpzt7zha3ho7xnddcdxgp4fkeacqleu5lo43bn@f3dbrmcuticz>
- <ZczkFH1dxUmx6TM3@tiehlicka>
+	s=arc-20240116; t=1707927494; c=relaxed/simple;
+	bh=nQhGmT4uvDWbAT1gRu+pj7ax6f9ZnZmTz13m1J8P4S4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MJ8CV8wHak28TdfBnMpDb1l/8y/Eh4Rf2mtUShLcvnuNoX9NM8h5UuNczsECeMRbjvY1Rbe0tlrFn/QlTN8vjxRyA6wpMDkOgfn1BqLgG+WAKjFRxFhPHZIakWxMhUz/E4YlTl567nNiy5yZ93GTDTKXHH0NSVAlsl2UPPhSvw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dYRUISY/; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-781753f52afso294664485a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:18:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1707927492; x=1708532292; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Zy8FkrT33RAdAZpiy7nWjgoV1yHp0TI4JUKOAfcr3Q=;
+        b=dYRUISY/QGo3HPF35pvzFVRMLQhp2IH8Q0HYrBDJEuEieSzI+N8VSKVTvkS93hbEcq
+         IN+fAxSVZt3RfoUR59ysqD02HUIquw5Wq+B0oJBrQpfmSMmeRshKO600NjcrFlTlsw4b
+         /oDKE7+/L4xBMUr0jyDAq1S9F6ycPNBeyi8VA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707927492; x=1708532292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Zy8FkrT33RAdAZpiy7nWjgoV1yHp0TI4JUKOAfcr3Q=;
+        b=qRV2J6ry8sYjEUYp+qBPI+Kf8UbHbjn/vuPaM9bFPty8xfYy1ZDdmFsR2h6mbDo23j
+         ntZ9QFu2fZdsVN0j6jnfEY5yvACDIXOnLmcMfgdEznm+u6uSNthiGljHPfmL35tRPSVn
+         +bgh+8XdpUqbhCtyakxLjuMnFNt7EtsRObgK6Y1u/fbf3v8HFhFP3o7UYxzX8dJIr+Zu
+         nWo56YHNVUDLQf2AX7EzaxourHXadIn8uVOwstzHXb/KsY7VTSQI47s9QbXSXjtVnB1Y
+         woELqgpT02g2+IA8ptXzkVf/q6oZfxAZZMVzwlZu//TuCi9t4ESutKv7u0xbVu/oU2Ln
+         2uvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPC36RXNWBKwNxyu/jg7d9H84g8fxZna4bO5lPMwDptb1g4qJDe0CNAFqrGNC9JT6XCJgpPPU/Vw78qAiNQSD+JH8Rzpz1N2gCgbrO
+X-Gm-Message-State: AOJu0Yx3CTwRfPF0DGH7+a28lC9GhiVxBV6jbfN4VQozJ0enLeGpIR01
+	mRAtsTqQJWBpuZeeC21qrn1oWE87ECf4I/ixzLpwIUeeMvZmCqQLTv1auUNYzw==
+X-Google-Smtp-Source: AGHT+IEwpP1HbvczrkCb/9VE1aa9iY2oyn1CllXTa9Ts5qCljUBQyO69tK4ro9S/fv+gzvEgRURL2Q==
+X-Received: by 2002:a05:620a:5584:b0:787:23f6:874e with SMTP id vq4-20020a05620a558400b0078723f6874emr3475242qkn.3.1707927492015;
+        Wed, 14 Feb 2024 08:18:12 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUxCNP1/4IiCZdCkWvzj9TE61oinsYbt8/C6JjvHSWZYRFx4eKippLGey5qk6SvsEsJysoG2dGmbW1PI6pTSE0f4h+gbQ95Kot3yFJLgkfsybggZKXtGDNwq0qc9C2qha+11DHLXQbgWsox3wUugU14dNB+9XF60tjcdwzYqz1WtdcWUm9McErX69Vl47+2JB/asqJldebKg+OAngz99xFxwBOj++DxEzCVkszyEbVykikX9+y4ibQK3COHYZDVcfYr/nAt+im6VYZ0KxwGnRTFSpwmN/huy7lCDZO1M6IsHez2VWXJrRJaC0kZ4ugNys2tR+Y+Z+SYDypY+O5ocQQFpkf9djh56VvWKexd5jmWaSGWYoGFTij8y5z7BmFxvUukM14HzXvAoRAkLDf7YsTaVSPHUaF+CyWUMvcSOAseYthHzxR/
+Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id or14-20020a05620a618e00b007872affb7d9sm592171qkn.45.2024.02.14.08.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 08:18:11 -0800 (PST)
+From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
+Date: Wed, 14 Feb 2024 11:17:58 -0500
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	David Ahern <dsahern@kernel.org>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <ZczntnbWpxUFLxjp@C02YVCJELVCG.dhcp.broadcom.net>
+References: <20240207072435.14182-1-saeed@kernel.org>
+ <Zcx53N8lQjkpEu94@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,52 +89,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZczkFH1dxUmx6TM3@tiehlicka>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <Zcx53N8lQjkpEu94@infradead.org>
 
-On Wed, Feb 14, 2024 at 05:02:28PM +0100, Michal Hocko wrote:
-> On Wed 14-02-24 10:01:14, Kent Overstreet wrote:
-> > On Wed, Feb 14, 2024 at 03:46:33PM +0100, Michal Hocko wrote:
-> > > On Wed 14-02-24 01:20:20, Johannes Weiner wrote:
-> > > [...]
-> > > > I agree we should discuss how the annotations are implemented on a
-> > > > technical basis, but my take is that we need something like this.
-> > > 
-> > > I do not think there is any disagreement on usefulness of a better
-> > > memory allocation tracking. At least for me the primary problem is the
-> > > implementation. At LFSMM last year we have heard that existing tracing
-> > > infrastructure hasn't really been explored much. Cover letter doesn't
-> > > really talk much about those alternatives so it is really hard to
-> > > evaluate whether the proposed solution is indeed our best way to
-> > > approach this.
-> > 
-> > Michal, we covered this before.
+On Wed, Feb 14, 2024 at 12:29:16AM -0800, Christoph Hellwig wrote:
+> Chmining in late after a vacation last week, but I really do not
+> understand the discussion this cause.
 > 
-> It is a good practice to summarize previous discussions in the cover
-> letter. Especially when there are different approaches discussed over a
-> longer time period or when the topic is controversial.
+> Complex devices need diagnostics, and mlx5ctl and the (free software)
+> userspace tool provide that.  Given how it is a complex multi-subsystem
+> driver that exports at least RDMA, ethernet, nvme and virtio_blk
+> interfaces this functionality by definition can't fit into a single
+> subsystem.
 > 
-> I do not see anything like that here. Neither for the existing tracing
-> infrastructure, page owner nor performance concerns discussed before
-> etc. Look, I do not want to nit pick or insist on formalisms but having
-> those data points layed out would make any further discussion much more
-> smooth.
+> So with my nvme co-maintainer hat on:
+> 
+> Acked-by: Christoph Hellwig <hch@lst.de>
+> 
+> to th concept (which is not a full code review!).
 
-You don't want to nitpick???
+I've been trying to figure out how to respond correctly to this over the
+last few days, but I share your sentiment.  It's probably time to have
+something like this upstream for more devices.  My initial concerns with
+something that allows direct access to hardware to send messages to FW
+or read/write registers over BARs were:
 
-Look, you've been consistently sidestepping the technical discussion; it
-seems all you want to talk about is process or "your nack".
+1.  How someone working at a distro would be able to help/understand if
+a tool like this was run and may have programmed their hardware
+differently than a default driver or FW.  There now exists a chance for
+identical systems running identical drivers and FW to behave differently
+due to out-of-band configuration.  One thought I had was some sort of
+journal to note that config happened from outside, but I'm not sure
+there is much value there.  With the ability to dump regs with
+devlink health it's possible to know that values may have changed, so I'm not
+concerned about this since that infra exists.
 
-If we're going to have a technical discussion, it's incumbent upon all
-of us to /keep the focus on the technical/; that is everyone's
-responsibility.
+2.  If one can make configuration changes to hardware without kernel
+APIs (devlink et al), will people still develop new kernel APIs?  I
+think the answer to this is 'yes' as realistically using default tools
+is much better than using vendor tools for regular configuration.  Even
+if vendors provide shortcuts to program hardware for eval/testing/debug
+my experience is that these are not acceptable long-term.  Requests are always
+made to include this type of changes in future releases.  So I'm not too
+concerned about the ossification of kernel APIs due to this being included.
 
-I'm not going to write a 20 page cover letter and recap every dead end
-that was proposed. That would be a lot of useless crap for eveyone to
-wade through. I'm going to summarize the important stuff, and keep the
-focus on what we're doing and documenting it. If you want to take part
-in a discussion, it's your responsibility to be reading with
-comprehension and finding useful things to say.
+So if there is general agreement that this is acceptable (especially
+compared to other out-of-tree drivers, I think a few who find this
+useful should sync on the best way forward; I'm not sure a separate
+driver for each vendor is the right approach.
 
-You gotta stop with this this derailing garbage.
+If upstream (and therefore distros) are going to accept this we probably
+owe it to them to not have misc drivers for every different flavor of
+hardware out there when it might be possible to add a generic driver
+that can connect to a PCI device via new (auxiliary bus?) API.
+
 
