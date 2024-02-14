@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-64615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD1E8540E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:49:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E298540E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CA5928AA7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:49:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D44AB23BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7079F801;
-	Wed, 14 Feb 2024 00:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A6A566D;
+	Wed, 14 Feb 2024 00:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KEsCu6C7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GgUr3yJ4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B247F;
-	Wed, 14 Feb 2024 00:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C889833EA;
+	Wed, 14 Feb 2024 00:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707871741; cv=none; b=Y4X4h0f2lWaDBgc3sat7tGS3JSe1xeYhjQXO1pFWgP742aHOdDLCKqiNmfD9yfAfpzXoJoPXZOWmEiL3J9UsGEt/EipnJRDX5a/6w6sBONUf0cidQAPTb8NcyEPJOCzKQz6W8PGp64H+ajt2NqA+T7gv3PSS+/0Q7PNWA87iTw4=
+	t=1707871743; cv=none; b=qz3axP9D8z/16vVYA/5+Tqi8/8EnmutkpPE1mmbwUAjDXUvyQsClgOVBEV3TduW6CVydgrpCpbGFzo/JG8yM3ALuvyA95+5hlfdCZtNhnOOYiatX+dVWlLfscqS28Ng9HZTU6+VixbczDlSdxmRakdcPbUAq5ldntD0+9pJGZQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707871741; c=relaxed/simple;
-	bh=skhRkO7Uxedf6QXw1VE3CGUkjfOGv90B45ezzdW27i8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=oJOfixCPmAhvzzGPG89+oq6ylzX59tbmPICnwi3d+yAuvdc/Vo9206U9qNhIoZTYwub9WUYWY/BcDCDVr2/ZfMVuMoyNlpL2pdm9OqlJENqv9kNyM7YzxlGKFN6qDe2rMiT2kYU9GwxkMZfNXIXN+2G/mgdtTN8xMVFNzelciiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KEsCu6C7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5829CC433C7;
-	Wed, 14 Feb 2024 00:48:59 +0000 (UTC)
+	s=arc-20240116; t=1707871743; c=relaxed/simple;
+	bh=bqe9jQrUoDdk/Q2n/ceHUg/SnRN77bKJ73bZuPyGZYU=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=YdpVq/YtskjoJJPXmWfsWsRa/i/oVI5+4lF0J4OAn3RqUrJ9VGxlc1cNgYENXa1bf8p6MxqXFOi5HMkBrGJKsoMjOjsxb18KTyp9N5+zJjltwAyzkwvh+X+fe5byB5FHO7ZCn9cYWZ3VoXh8V1hyXHtB5tcewnJMZRN1a2cyrCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GgUr3yJ4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1592C43390;
+	Wed, 14 Feb 2024 00:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707871741;
-	bh=skhRkO7Uxedf6QXw1VE3CGUkjfOGv90B45ezzdW27i8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KEsCu6C7n5FsKmERkVh90tkAZ+hICu0JUarOA5kI2oFSV+HuPT81zP+bKzRmbNa+R
-	 BCuX/grdeBd7VsZflmy4+6LUnk1L7ogUlFzMQOwRgWwsjN1YLsLkVToMjystqIZfEs
-	 3naLHLd5T+6clrX0dBYOwWWt1B2mzsfVcvwkFJ7FySdhLnBcTnOy1NQW+uQ2DUqNcj
-	 x1hDBaL4EMeWRKKJNDTaGW5ejmkEIH0mw89rWqdt3KTHq3DyiqSGl42UjGBoIBXcvE
-	 /cbxGPm90ihDmyg6L/jDdqMMN+h8H/4bpM8Jml1fCShPcenEpq87npboI3my9kolk5
-	 pNoC3d7jmE9Ng==
+	s=k20201202; t=1707871743;
+	bh=bqe9jQrUoDdk/Q2n/ceHUg/SnRN77bKJ73bZuPyGZYU=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=GgUr3yJ4U6Hmjwoil6RyQf+rgVx/R3N/7iDECVMYOWiENhN54v49OWckW219dPWl/
+	 /RILUeunWgxy1r+MkkNotg5ItqmqdhbvTW5wcAcXGeDZgCw59cX1n5Vo0Gkqk+NqRi
+	 6UPGwVbMmYAA/wQ5hUKOndl5f/8mPQPpu4KJgGdKDkiEjq0iqLh/N06UQC+vNz9f4Y
+	 k1Ow0EunL5uS1NM6CoXQLSX3o0na4XT/fDRMBuXzdhJzyu9tX8EP8fpD2KP9MMdmmx
+	 7d/CZC8sMN95fg6fQmekagrNwPaQC+MelMt40Q2/Mp8W8JscWuxz2NQV3BRTrpJr8F
+	 SWiZPvs4N0WbQ==
 From: Mark Brown <broonie@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- neil.armstrong@linaro.org
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
  linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240203-topic-sm8x50-upstream-va-macro-npl-v2-1-f2db82ae3359@linaro.org>
-References: <20240203-topic-sm8x50-upstream-va-macro-npl-v2-1-f2db82ae3359@linaro.org>
-Subject: Re: [PATCH v2] ASoC: codecs: va-macro: add npl clk
-Message-Id: <170787173909.1088332.13543091218086927386.b4-ty@kernel.org>
-Date: Wed, 14 Feb 2024 00:48:59 +0000
+In-Reply-To: <20240202154134.66967-1-krzysztof.kozlowski@linaro.org>
+References: <20240202154134.66967-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 0/3] ASoC: codecs: qcom: tx-macro: minor cleanups
+Message-Id: <170787174139.1088332.990817006837500918.b4-ty@kernel.org>
+Date: Wed, 14 Feb 2024 00:49:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,13 +62,14 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Sat, 03 Feb 2024 21:43:05 +0100, neil.armstrong@linaro.org wrote:
-> New versions of VA Macro has soundwire integrated, so handle the soundwire npl
-> clock correctly in the codec driver.
+On Fri, 02 Feb 2024 16:41:31 +0100, Krzysztof Kozlowski wrote:
+> Few minor cleanups.  The series will conflict with my series:
+> https://lore.kernel.org/alsa-devel/20240129143534.109196-1-krzysztof.kozlowski@linaro.org/T/#t
 > 
-> Introduce has_npl_clk and handle the sm8550 case separately because
-> it has soundwire integrated but doesn't have an npl clock.
+> Depending what will come in first, I will rebase the other patchset.
 > 
+> Best regards,
+> Krzysztof
 > 
 > [...]
 
@@ -79,8 +79,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: va-macro: add npl clk
-      commit: a6eb64e7e32c7a6a502a19c20e3f04818091c2dc
+[1/3] ASoC: codecs: tx-macro: Drop unimplemented DMIC clock divider
+      commit: 58cef044e6ec88eef6f10565df8257138e2085ec
+[2/3] ASoC: codecs: tx-macro: Mark AMIC control registers as volatile
+      commit: b396071681ca65e66f2a8fce240cde26a6db5931
+[3/3] ASoC: codecs: tx-macro: Simplify setting AMIC control
+      commit: fd236653ab60bf64fde341ed9c940c04a542483a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
