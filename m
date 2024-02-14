@@ -1,188 +1,160 @@
-Return-Path: <linux-kernel+bounces-65723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 598278550D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:52:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0A008550DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:53:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E08428AA66
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36F331F21846
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B261272D0;
-	Wed, 14 Feb 2024 17:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DEB31272B9;
+	Wed, 14 Feb 2024 17:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahkMHS9i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IUp0RzOj"
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E735C86644;
-	Wed, 14 Feb 2024 17:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17A385945
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933108; cv=none; b=L8fWs24f6vvQGOP5+/mFIZVvFnnq1wdsCS7HGkU2O+t/kShpndJJv9PUdbN/mRcJ6IkAVfKkf4LNclfT0sneU2GCieYaAnxqDtpN2CTMPWOnAh3bS73dL7+EAX9tt+3V2kPm3D1G40KoO5OdrSAIm/wHldyAPXgG+Ti/hi0tGXo=
+	t=1707933158; cv=none; b=Tg7eOWbtLNlkx5qWsr5AhYGIeVPATP0zcIjL2Z5A9BFufxvZBNp2DOWY++sH09Rldas2p7eqg+91PZiReEim/5gw2WLfAJduSrjJravofdcP1ioX+htqgF62DzLAUv5APhURXhAx+/S6KJzzDnXvlRJEnFBn8wi0ipsE63qCyss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933108; c=relaxed/simple;
-	bh=D7ZXt13m5wJPpJvRrcstm/rrc9ZCgmeDjwqMNKdG5Fo=;
+	s=arc-20240116; t=1707933158; c=relaxed/simple;
+	bh=ludUKPauweTDD8POxHffFJwhelusk8jo87YHW7heVtY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dSWxIsrRwgKb7/P7BvXZBTMsc5Wp6hCsdelfx4FQ9y+N6QFhsa30aJqRw4JFabBE+fSQzAAco8SYZN6Lyb7w9XGSRIAvr2AWNLsUG/ww59c8Li0NVZ9VdxHUaYqGoDaU3HYs3nq4QZurLsocd6F5xiRc/MbkXMmK0ecRltPUDd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahkMHS9i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40CC2C433C7;
-	Wed, 14 Feb 2024 17:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933107;
-	bh=D7ZXt13m5wJPpJvRrcstm/rrc9ZCgmeDjwqMNKdG5Fo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ahkMHS9ijn3AOUwmUoMW3wlEWdyMxVbH9TLN+XkqI5eeIyTjFSfBImfBE2bTu0tpb
-	 cK5eaPRpNrlMfTkBGwElJ4NTH/RNgRb1Esv+Q7W/UCpP4tg+3ThrEUcrOziDh4vZ0L
-	 nGTG5OTAkjUD1lzDSikFwETwDskjISvEpAvzZXzil+smSPJfbQzOP61NTGFn/sOT3w
-	 6OrDGL0/5j9XaKnk1iiA2KRvYnOZKMjbq8DveY+cfcQwNWvFWPP6oa0sXkZ1E622Lv
-	 9gn20wp84DndxoCcaC6i0hvrGui9Pia81RNqOURAB+iVDdEX/LJV39geTzZXvyekQf
-	 kNjMWxjBfHkbg==
-Date: Wed, 14 Feb 2024 17:51:42 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, mazziesaccount@gmail.com,
-	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: hwmon: tda38640: Add interrupt &
- regulator properties
-Message-ID: <20240214-trinity-delouse-6dcd0b046895@spud>
-References: <20240214092504.1237402-1-naresh.solanki@9elements.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fQeGze7oHpNv73v5fAP9LY86d4SZyTaizsJW+mjMGPC2vIPo8yUAZG8ZvJYWBjzCgBXbODfQBhbQECAy0910kCPviFy4gE98BsRcRe0pIBzlMAppBTCCx+a4PsB+6pHyFPqPExSACySTboazKgaXPyr7PVtxx/CNvY+iETakqeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IUp0RzOj; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 12:52:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707933154;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=leY9N3alrQ22C+fXPazgCJacTsU7ND5Lt0yRBT6Nl7E=;
+	b=IUp0RzOjGR+ggmt5QyQRdV5SyNmk5BeYvtJPmMdFZ/0gdArxfBF61ir/qJD7o6ZZlPI1fa
+	T++b6tnGr9lt+Pc8uqq9a0m6P/fzXGm/Y4Z0gDlSz3GfalRNyLUnqF6AUPN+VvXSj2JW0v
+	2fUSwnZl9xW1aSObJLfJA6MLK5YNJzA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, 
+	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, axboe@kernel.dk, 
+	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, 
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
+References: <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <20240214085548.d3608627739269459480d86e@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nhWZ/akHVA7OeoZg"
-Content-Disposition: inline
-In-Reply-To: <20240214092504.1237402-1-naresh.solanki@9elements.com>
-
-
---nhWZ/akHVA7OeoZg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240214085548.d3608627739269459480d86e@linux-foundation.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 02:55:03PM +0530, Naresh Solanki wrote:
-> Add properties for interrupt & regulator.
-> Also update example.
+On Wed, Feb 14, 2024 at 08:55:48AM -0800, Andrew Morton wrote:
+> On Tue, 13 Feb 2024 14:59:11 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+> 
+> > > > If you think you can easily achieve what Michal requested without all that,
+> > > > good.
+> > >
+> > > He requested something?
+> > 
+> > Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+> > possible until the compiler feature is developed and deployed. And it
+> > still would require changes to the headers, so don't think it's worth
+> > delaying the feature for years.
+> 
+> Can we please be told much more about this compiler feature? 
+> Description of what it is, what it does, how it will affect this kernel
+> feature, etc.
+> 
+> Who is developing it and when can we expect it to become available?
+> 
+> Will we be able to migrate to it without back-compatibility concerns? 
+> (I think "you need quite recent gcc for memory profiling" is
+> reasonable).
+> 
+> 
+> 
+> Because: if the maintainability issues which Michel describes will be
+> significantly addressed with the gcc support then we're kinda reviewing
+> the wrong patchset.  Yes, it may be a maintenance burden initially, but
+> at some (yet to be revealed) time in the future, this will be addressed
+> with the gcc support?
 
-I feel like a broken record. Your patches need to explain _why_ you're
-doing what you're doing. I can read the diff and see this, but I do not
-know what the justification for it is.
+Even if we had compiler magic, after considering it more I don't think
+the patchset would be improved by it - I would still prefer to stick
+with the macro approach.
 
-/30 seconds later
-I really am a broken record, to quote from v1:
-| Feeling like a broken record, given I am leaving the same comments on
-| multiple patches. The commit message needs to explain why you're doing
-| something. I can read the diff and see what you did!
+There's also a lot of unresolved questions about whether the compiler
+approach would even end being what we need; we need macro expansion to
+happen in the caller of the allocation function, and that's another
+level of hooking that I don't think the compiler people are even
+considering yet, since cpp runs before the main part of the compiler; if
+C macros worked and were implemented more like Rust macros I'm sure it
+could be done - in fact, I think this could all be done in Rust
+_without_ any new compiler support - but in C, this is a lot to ask.
 
-https://lore.kernel.org/all/20240126-fleshed-subdued-36bae813e2ba@spud/
+Let's look at the instrumentation again. There's two steps:
 
-The patch itself does look better than the v1, with one minor comment
-below.
+- Renaming the original function to _noprof
+- Adding a hooked version of the original function.
 
-Thanks,
-Conor.
+We need to do the renaming regardless of what approach we take in order
+to correctly handle allocations that happen inside the context of an
+existing alloc tag hook but should not be accounted to the outer
+context; we do that by selecting the alloc_foo() or alloc_foo_noprof()
+version as appropriate.
 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
->=20
-> ---
-> Changes in v2:
-> 1. Remove TEST=3D..
-> 2. Update regulator subnode property as vout0
-> 3. Restore commented line in example
-> 4. blank line after interrupts property in example.
-> ---
->  .../hwmon/pmbus/infineon,tda38640.yaml        | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38=
-640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.=
-yaml
-> index ded1c115764b..a93b3f86ee87 100644
-> --- a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
-> @@ -30,6 +30,23 @@ properties:
->        unconnected(has internal pull-down).
->      type: boolean
-> =20
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  regulators:
-> +    type: object
-> +    description:
-> +      list of regulators provided by this controller.
-> +
-> +    properties:
-> +      vout0:
+It's important to get this right; consider slab object extension
+vectors or the slab allocator allocating pages from the page allocator.
 
-Why "vout0" if there's only one output? Is it called that in the
-documentation? I had a quick check but only saw it called "vout".
-Are there other related devices that would have multiple regulators
-that might end up sharing the binding?
+Second step, adding a hooked version of the original function. We do
+that with
 
-Thanks,
-Conor.
+#define alloc_foo(...) alloc_hooks(alloc_foo_noprof(__VA_ARGS__))
 
-> +        $ref: /schemas/regulator/regulator.yaml#
-> +        type: object
-> +
-> +        unevaluatedProperties: false
-> +
-> +    additionalProperties: false
-> +
->  required:
->    - compatible
->    - reg
-> @@ -38,6 +55,7 @@ additionalProperties: false
-> =20
->  examples:
->    - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
->      i2c {
->          #address-cells =3D <1>;
->          #size-cells =3D <0>;
-> @@ -45,5 +63,15 @@ examples:
->          tda38640@40 {
->              compatible =3D "infineon,tda38640";
->              reg =3D <0x40>;
-> +
-> +            interrupt-parent =3D <&smb_pex_cpu0_event>;
-> +            interrupts =3D <10 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +            regulators {
-> +                pvnn_main_cpu0: vout0 {
-> +                    regulator-name =3D "pvnn_main_cpu0";
-> +                    regulator-enable-ramp-delay =3D <200>;
-> +                };
-> +            };
->          };
->      };
->=20
-> base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
-> --=20
-> 2.42.0
->=20
+That's pretty clean, if you ask me. The only way to make it more succint
+be if it were possible for a C macro to define a new macro, then it
+could be just
 
---nhWZ/akHVA7OeoZg
-Content-Type: application/pgp-signature; name="signature.asc"
+alloc_fn(alloc_foo);
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcz9rgAKCRB4tDGHoIJi
-0gTzAQDjf5WWpV+Bz95OQla4FHrvbaTxNWagjMktSpIKUlPZwQD9HWA+ph4V+CXu
-mI9iji9Fzt36AlQa4omQh4iJlu5A7A0=
-=t3wm
------END PGP SIGNATURE-----
-
---nhWZ/akHVA7OeoZg--
+But honestly, the former is probably preferable anyways from a ctags/cscope POV.
 
