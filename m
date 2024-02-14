@@ -1,100 +1,58 @@
-Return-Path: <linux-kernel+bounces-65394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5800F854C49
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:12:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8A57854C50
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB74BB28A71
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:12:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92172286138
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172C35D901;
-	Wed, 14 Feb 2024 15:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GSJ759Xu"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884DF5C601
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C245D72C;
+	Wed, 14 Feb 2024 15:12:57 +0000 (UTC)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30675D461;
+	Wed, 14 Feb 2024 15:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923515; cv=none; b=KB18qPlqqWIasPnB6iqhtA5snXo/RiGOtFkXA5Kjfn0Rb26Pn8AmlrgjtEjh0ZwQv83+kTpu4UTK9/6dPBbi85D9ZPg7fpk7g8HuW6KhK5iI2dqc3xslKfoAqJBfyNS7Ov0nacnXUB+xEzXY08Tqjti2jEpXlYZhB0Bc7yc8BeM=
+	t=1707923576; cv=none; b=WMv0exIe3+qH2dx3vKXKnM4Qmwx0w7FhMef0zPSEo/AUO6IjS4Oy/87KazvTkBlrFBRU1kJe9nsfKg4FxOwH/XgdQFabdsjQDR0PbgFCEz/W8/U7+W8wRnPNt6EljeMMpBDy7jkhtYlmFpBgrfCnheBwMiZ7hD7GEF+g0fggHfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923515; c=relaxed/simple;
-	bh=VWiq2FOmAhYjvTFVuJsVVTmsLD+Tnb2HxXwGKlfTSIY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CpyNiPCFxWVKOGKZz12FUGLkozsdmqvmidxGZqDl/6i5K7SV5P45P6IBWC/FU4yP/RPrkM1aDBUy9lj/fdEZx0pr8Q7ztgsFQxWegRda0Thx6L88FYka2OJzUZXsLygLPPTGPL2uCKL0q7E7PDRZBgoWADpOGZ5BAR4zJQDSqOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GSJ759Xu; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d8b519e438so1727383a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707923512; x=1708528312; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y5sNZFr8z9VEp4WVx32gOwAtbq3+vupIHe5X9JYQqqc=;
-        b=GSJ759Xuuu6QZ4HdikGvNl4BJtJs5PESdAGsug6L2D8gL75tuqxThERuVlw3jv4S6V
-         hSAAv1UoCZzfC5NXqhgQtpbjHUqfv8MkYtfB4n3mSHjU+LmC8bEZipnKcSpjslsnsEQ8
-         e9vnOEitzZ1awpFWq4Ib4MMTDSsbJUo6tPLAM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707923512; x=1708528312;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y5sNZFr8z9VEp4WVx32gOwAtbq3+vupIHe5X9JYQqqc=;
-        b=nWz5sZnt2mXUT9CgBgJNFaWS/OthKIYQ+SPOxiNtt75Kzl8X6k7rrSsgCEGh+Z9Puq
-         S+39p6NTXc3/jiuDfW+pizHaMlodV9xCRpJr/3nCJmCVnbF90vCqZQnq4EVjr776SnQy
-         PcLT/+lhsphKWek4y31MYmFPxdPwPQxkTHyNXcwjWoaahq6FfeUNsBvPT9i7CHMiRqq8
-         dPi+fdJnMkju/86HMKHjnoqMdM7E9dkbpQTEElL92cUOwtBo8yu2A5CSqsM8WccytqHw
-         EZrTkzmFFEs2EgKOmrn7l8vZAHuFUj8JpTt5DIhD+ZoqiKy20wu4mqpYeY7JWzT7g8p3
-         R/WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWci4vvpchSX5PsaAqBk66zQyrgGWjk8PUSc6a8uYz8jZQ0iuWS1j01Y0ELDkSkNYl/ESTWEV+pIbJuB2PMaVM6zbbyq2umO4QL6tBQ
-X-Gm-Message-State: AOJu0YyXmMeUJMkjEHCzIzAMNgtgYw/jLbNZhtyMmiX1fuptF0jGhDM8
-	rqOLzie9xL+D6u0nXXXD6n9ATFU4c+A0VWX2STjXKr0hlueIOXX3jM/pMrK0Og==
-X-Google-Smtp-Source: AGHT+IGw/2iJFSNB+XBsDL0tTAZQGHLwT4xBO7JRp6ZPaklZpgbNnJvX1X54WiydiYxAB7rEkh2t9w==
-X-Received: by 2002:a17:90b:4b8e:b0:298:bc6a:784f with SMTP id lr14-20020a17090b4b8e00b00298bc6a784fmr2863835pjb.20.1707923511687;
-        Wed, 14 Feb 2024 07:11:51 -0800 (PST)
-Received: from localhost (56.72.82.34.bc.googleusercontent.com. [34.82.72.56])
-        by smtp.gmail.com with UTF8SMTPSA id sc7-20020a17090b510700b00296fcb4e668sm1524496pjb.25.2024.02.14.07.11.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 07:11:51 -0800 (PST)
-From: jeffxu@chromium.org
-To: akpm@linux-foundation.org,
-	keescook@chromium.org,
-	jannh@google.com,
-	sroettger@google.com,
-	willy@infradead.org,
-	gregkh@linuxfoundation.org,
-	torvalds@linux-foundation.org,
-	usama.anjum@collabora.com,
-	corbet@lwn.net,
-	Liam.Howlett@oracle.com,
-	surenb@google.com,
-	merimus@google.com,
-	rdunlap@infradead.org
-Cc: jeffxu@google.com,
-	jorgelo@chromium.org,
-	groeck@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	pedro.falcato@gmail.com,
-	dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org,
-	deraadt@openbsd.org,
-	=David.Laight@aculab.com,
-	Jeff Xu <jeffxu@chromium.org>
-Subject: [PATCH v9 5/5] selftest mm/mseal read-only elf memory segment
-Date: Wed, 14 Feb 2024 15:11:29 +0000
-Message-ID: <20240214151130.616240-6-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-In-Reply-To: <20240214151130.616240-1-jeffxu@chromium.org>
-References: <20240214151130.616240-1-jeffxu@chromium.org>
+	s=arc-20240116; t=1707923576; c=relaxed/simple;
+	bh=Fm4f8S9D3dClviZZAq026dnWtTRMEFW8SuKQ8DQrHI4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G9G7Zb590v3xxPYQq5rsa8eHP0GPnBp1mDEEIpoPKZnU5jwFG17yRhARuMqJ9WHq6VE7yf7WkRNL5czMV9udZTq7e+HrvTXTygAlUc92Zq2GfxNhGBZwk0q3BYas7zGPzExdkXQb/DY4WvSBFql4kZkEnuoaC8J+h6zhztMCat4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.06,159,1705330800"; 
+   d="scan'208";a="193932772"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 15 Feb 2024 00:12:46 +0900
+Received: from renesas-deb12.cephei.uk (unknown [10.226.93.104])
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4785B4005460;
+	Thu, 15 Feb 2024 00:12:41 +0900 (JST)
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Nikita Yushchenko <nikita.yoush@cogentembedded.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v3] net: ravb: Count packets instead of descriptors in GbEth RX path
+Date: Wed, 14 Feb 2024 15:12:04 +0000
+Message-Id: <20240214151204.2976-1-paul.barker.ct@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,229 +61,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jeff Xu <jeffxu@chromium.org>
+The units of "work done" in the RX path should be packets instead of
+descriptors, as large packets can be spread over multiple descriptors.
 
-Sealing read-only of elf mapping so it can't be changed by mprotect.
-
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
+Fixes: 1c59eb678cbd ("ravb: Fillup ravb_rx_gbeth() stub")
+Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 ---
- tools/testing/selftests/mm/.gitignore |   1 +
- tools/testing/selftests/mm/Makefile   |   1 +
- tools/testing/selftests/mm/seal_elf.c | 183 ++++++++++++++++++++++++++
- 3 files changed, 185 insertions(+)
- create mode 100644 tools/testing/selftests/mm/seal_elf.c
+This patch has been broken out from my previous series "Improve GbEth
+performance on Renesas RZ/G2L and related SoCs" and submitted as a
+bugfix as requested by Sergey. I've labeled it as 'v3' so the ordering
+is clear. Remaining patches from the series will follow once we've done
+gPTP testing.
 
-diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
-index 76474c51c786..eff280b17a6e 100644
---- a/tools/testing/selftests/mm/.gitignore
-+++ b/tools/testing/selftests/mm/.gitignore
-@@ -47,3 +47,4 @@ mkdirty
- va_high_addr_switch
- hugetlb_fault_after_madv
- mseal_test
-+seal_elf
-diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-index ba36a5c2b1fc..a0a12626cd19 100644
---- a/tools/testing/selftests/mm/Makefile
-+++ b/tools/testing/selftests/mm/Makefile
-@@ -60,6 +60,7 @@ TEST_GEN_FILES += mrelease_test
- TEST_GEN_FILES += mremap_dontunmap
- TEST_GEN_FILES += mremap_test
- TEST_GEN_FILES += mseal_test
-+TEST_GEN_FILES += seal_elf
- TEST_GEN_FILES += on-fault-limit
- TEST_GEN_FILES += pagemap_ioctl
- TEST_GEN_FILES += thuge-gen
-diff --git a/tools/testing/selftests/mm/seal_elf.c b/tools/testing/selftests/mm/seal_elf.c
-new file mode 100644
-index 000000000000..61a2f1c94e02
---- /dev/null
-+++ b/tools/testing/selftests/mm/seal_elf.c
-@@ -0,0 +1,183 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <sys/mman.h>
-+#include <stdint.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <stdbool.h>
-+#include "../kselftest.h"
-+#include <syscall.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <assert.h>
-+#include <fcntl.h>
-+#include <assert.h>
-+#include <sys/ioctl.h>
-+#include <sys/vfs.h>
-+#include <sys/stat.h>
-+
-+/*
-+ * need those definition for manually build using gcc.
-+ * gcc -I ../../../../usr/include   -DDEBUG -O3  -DDEBUG -O3 seal_elf.c -o seal_elf
-+ */
-+#define FAIL_TEST_IF_FALSE(c) do {\
-+		if (!(c)) {\
-+			ksft_test_result_fail("%s, line:%d\n", __func__, __LINE__);\
-+			goto test_end;\
-+		} \
-+	} \
-+	while (0)
-+
-+#define SKIP_TEST_IF_FALSE(c) do {\
-+		if (!(c)) {\
-+			ksft_test_result_skip("%s, line:%d\n", __func__, __LINE__);\
-+			goto test_end;\
-+		} \
-+	} \
-+	while (0)
-+
-+
-+#define TEST_END_CHECK() {\
-+		ksft_test_result_pass("%s\n", __func__);\
-+		return;\
-+test_end:\
-+		return;\
-+}
-+
-+#ifndef u64
-+#define u64 unsigned long long
-+#endif
-+
-+/*
-+ * define sys_xyx to call syscall directly.
-+ */
-+static int sys_mseal(void *start, size_t len)
-+{
-+	int sret;
-+
-+	errno = 0;
-+	sret = syscall(__NR_mseal, start, len, 0);
-+	return sret;
-+}
-+
-+static void *sys_mmap(void *addr, unsigned long len, unsigned long prot,
-+	unsigned long flags, unsigned long fd, unsigned long offset)
-+{
-+	void *sret;
-+
-+	errno = 0;
-+	sret = (void *) syscall(__NR_mmap, addr, len, prot,
-+		flags, fd, offset);
-+	return sret;
-+}
-+
-+inline int sys_mprotect(void *ptr, size_t size, unsigned long prot)
-+{
-+	int sret;
-+
-+	errno = 0;
-+	sret = syscall(__NR_mprotect, ptr, size, prot);
-+	return sret;
-+}
-+
-+static bool seal_support(void)
-+{
-+	int ret;
-+	void *ptr;
-+	unsigned long page_size = getpagesize();
-+
-+	ptr = sys_mmap(NULL, page_size, PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	if (ptr == (void *) -1)
-+		return false;
-+
-+	ret = sys_mseal(ptr, page_size);
-+	if (ret < 0)
-+		return false;
-+
-+	return true;
-+}
-+
-+const char somestr[4096] = {"READONLY"};
-+
-+static void test_seal_elf(void)
-+{
-+	int ret;
-+	FILE *maps;
-+	char line[512];
-+	int size = 0;
-+	uintptr_t  addr_start, addr_end;
-+	char prot[5];
-+	char filename[256];
-+	unsigned long page_size = getpagesize();
-+	unsigned long long ptr = (unsigned long long) somestr;
-+	char *somestr2 = (char *)somestr;
-+
-+	/*
-+	 * Modify the protection of readonly somestr
-+	 */
-+	if (((unsigned long long)ptr % page_size) != 0)
-+		ptr = (unsigned long long)ptr & ~(page_size - 1);
-+
-+	ksft_print_msg("somestr = %s\n", somestr);
-+	ksft_print_msg("change protection to rw\n");
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ|PROT_WRITE);
-+	FAIL_TEST_IF_FALSE(!ret);
-+	*somestr2 = 'A';
-+	ksft_print_msg("somestr is modified to: %s\n", somestr);
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ);
-+	FAIL_TEST_IF_FALSE(!ret);
-+
-+	maps = fopen("/proc/self/maps", "r");
-+	FAIL_TEST_IF_FALSE(maps);
-+
-+	/*
-+	 * apply sealing to elf binary
-+	 */
-+	while (fgets(line, sizeof(line), maps)) {
-+		if (sscanf(line, "%lx-%lx %4s %*x %*x:%*x %*u %255[^\n]",
-+			&addr_start, &addr_end, &prot, &filename) == 4) {
-+			if (strlen(filename)) {
-+				/*
-+				 * seal the mapping if read only.
-+				 */
-+				if (strstr(prot, "r-")) {
-+					ret = sys_mseal((void *)addr_start, addr_end - addr_start);
-+					FAIL_TEST_IF_FALSE(!ret);
-+					ksft_print_msg("sealed: %lx-%lx %s %s\n",
-+						addr_start, addr_end, prot, filename);
-+					if ((uintptr_t) somestr >= addr_start &&
-+						(uintptr_t) somestr <= addr_end)
-+						ksft_print_msg("mapping for somestr found\n");
-+				}
-+			}
-+		}
-+	}
-+	fclose(maps);
-+
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ | PROT_WRITE);
-+	FAIL_TEST_IF_FALSE(ret < 0);
-+	ksft_print_msg("somestr is sealed, mprotect is rejected\n");
-+
-+	TEST_END_CHECK();
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	bool test_seal = seal_support();
-+
-+	ksft_print_header();
-+	ksft_print_msg("pid=%d\n", getpid());
-+
-+	if (!test_seal)
-+		ksft_exit_skip("sealing not supported, check CONFIG_64BIT\n");
-+
-+	ksft_set_plan(1);
-+
-+	test_seal_elf();
-+
-+	ksft_finished();
-+	return 0;
-+}
+ drivers/net/ethernet/renesas/ravb_main.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 0e3731f50fc2..f7566cfa45ca 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -772,29 +772,25 @@ static bool ravb_rx_gbeth(struct net_device *ndev, int *quota, int q)
+ 	struct ravb_rx_desc *desc;
+ 	struct sk_buff *skb;
+ 	dma_addr_t dma_addr;
++	int rx_packets = 0;
+ 	u8  desc_status;
+-	int boguscnt;
+ 	u16 pkt_len;
+ 	u8  die_dt;
+ 	int entry;
+ 	int limit;
++	int i;
+ 
+ 	entry = priv->cur_rx[q] % priv->num_rx_ring[q];
+-	boguscnt = priv->dirty_rx[q] + priv->num_rx_ring[q] - priv->cur_rx[q];
++	limit = priv->dirty_rx[q] + priv->num_rx_ring[q] - priv->cur_rx[q];
+ 	stats = &priv->stats[q];
+ 
+-	boguscnt = min(boguscnt, *quota);
+-	limit = boguscnt;
+ 	desc = &priv->gbeth_rx_ring[entry];
+-	while (desc->die_dt != DT_FEMPTY) {
++	for (i = 0; i < limit && rx_packets < *quota && desc->die_dt != DT_FEMPTY; i++) {
+ 		/* Descriptor type must be checked before all other reads */
+ 		dma_rmb();
+ 		desc_status = desc->msc;
+ 		pkt_len = le16_to_cpu(desc->ds_cc) & RX_DS;
+ 
+-		if (--boguscnt < 0)
+-			break;
+-
+ 		/* We use 0-byte descriptors to mark the DMA mapping errors */
+ 		if (!pkt_len)
+ 			continue;
+@@ -820,7 +816,7 @@ static bool ravb_rx_gbeth(struct net_device *ndev, int *quota, int q)
+ 				skb_put(skb, pkt_len);
+ 				skb->protocol = eth_type_trans(skb, ndev);
+ 				napi_gro_receive(&priv->napi[q], skb);
+-				stats->rx_packets++;
++				rx_packets++;
+ 				stats->rx_bytes += pkt_len;
+ 				break;
+ 			case DT_FSTART:
+@@ -848,7 +844,7 @@ static bool ravb_rx_gbeth(struct net_device *ndev, int *quota, int q)
+ 					eth_type_trans(priv->rx_1st_skb, ndev);
+ 				napi_gro_receive(&priv->napi[q],
+ 						 priv->rx_1st_skb);
+-				stats->rx_packets++;
++				rx_packets++;
+ 				stats->rx_bytes += pkt_len;
+ 				break;
+ 			}
+@@ -887,9 +883,9 @@ static bool ravb_rx_gbeth(struct net_device *ndev, int *quota, int q)
+ 		desc->die_dt = DT_FEMPTY;
+ 	}
+ 
+-	*quota -= limit - (++boguscnt);
+-
+-	return boguscnt <= 0;
++	stats->rx_packets += rx_packets;
++	*quota -= rx_packets;
++	return *quota == 0;
+ }
+ 
+ /* Packet receive function for Ethernet AVB */
 -- 
-2.43.0.687.g38aa6559b0-goog
+2.43.1
 
 
