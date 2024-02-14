@@ -1,106 +1,98 @@
-Return-Path: <linux-kernel+bounces-64764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49EB9854296
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:00:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71276854299
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:02:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE0321F24E82
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:00:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D97D28C22D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E5C1119E;
-	Wed, 14 Feb 2024 06:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9119610A13;
+	Wed, 14 Feb 2024 06:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GR/iwEXy"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="hcTaoN1n"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39D311183;
-	Wed, 14 Feb 2024 05:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A6AC126;
+	Wed, 14 Feb 2024 06:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707890404; cv=none; b=VH2ABI5vMcv4UhOAEJSoFDmGYT5FdytnzRfiWy/W7JI7+F9vyMSF+8Eyho5y6e+DVX/Gs83jhLnOEkkbaa48i8jy3Vx9fL4XZgnD98nEoatSilqg4hMdXjZgbCyqzpdjyQnvz2XgBx01hZLtBkHrLKfRG6zKjfD/l2vp6qYYG3s=
+	t=1707890564; cv=none; b=GDC1b3cf39LX7IPt07VNZzbFWMHFyRbqa5TvEy/t/R7DReynE7cJbkANksJ5JqT+JVCRx0H4GMcXq6msVPpL/+5qy4OcvBMtNq1fZfxV2tTfNQ8Af0wo08W2eSJPgMU2JbHBrXDLRitvTRvsArYCoaF9Ejkjf8OUbTKsBUskp3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707890404; c=relaxed/simple;
-	bh=S89Yy0TSquu1IiarqlR9c1HsKj9O0OkiKkRYen5KW0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RHNeNcVyohwcwSMo/tASQYvXpPqEo7KSqgWiYKcPZnang+0N++GEcFP49oYCnsAmDHAFQQJr/U9SecjPUAZkcStrOHTgxi+5UIKOnUz2Z/rveYCLTiARFuP9OLXfdubqfA8c81CGcLy5ck2hv2A8b0pe12HOSxq+Sfx52Et8Bao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GR/iwEXy; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=lSQHVkEuXKOPPFhQR3VnljNy6UO4HmXBWr18LMiSUi8=; b=GR/iwEXyD3tLBMpeUjYZ/keMtD
-	1gezL/isRmv679++C+NKYivKmw/E4HaXYqdnPhg67vttt50+knRd/2L/ban+wu1fhB4RAMO5xaUWK
-	2O3ubxl+kZqJlV3ZLbfNjWQladoeRCO8nPXNZO9zg8xpNiBx290nlCOCJz2f4inHWZ2BQQE++QSCc
-	fg9meOrd4gQ0FFYaoFBoZ/2netUVM6ThtydYF8g/48cGLNDpvpKHcVjaNCp0XyOsNa+488UvgREby
-	3wLBw+KRNseHMMYWEVnKzG4yxQUlrFEfYTLy5ATnaxuDkFqTD7+lOtlUO4kyGBrpwx7AyUBurt2pN
-	KljKQVaQ==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ra8JH-0000000BurM-27Cl;
-	Wed, 14 Feb 2024 05:59:55 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	kernel test robot <lkp@intel.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] scsi: jazz_esp: only build if SCSI core is builtin
-Date: Tue, 13 Feb 2024 21:59:53 -0800
-Message-ID: <20240214055953.9612-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1707890564; c=relaxed/simple;
+	bh=rNhahkQxaw8giaBJ+cD4PMrgcK6khgr+AoCBGGG5LNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tkelwzZDcfRQCr71MswBBWFAfgf141wWBEgFxmQhO0Yje6QomJ/kQwHwHzQOSiT4Aw5nRvUSepuQvYBgwYX5l+LEfIVxHpCyRZ1F9R/85TDBsYDRTXad25DfP5qsuEjur29IwWbMXshJck9MkhX89ZkaBjRW4jqz+bIX0lnRIeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=hcTaoN1n; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 9468C60476;
+	Wed, 14 Feb 2024 06:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1707890562;
+	bh=rNhahkQxaw8giaBJ+cD4PMrgcK6khgr+AoCBGGG5LNg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hcTaoN1nq7n8ne6/VqKBVelBcyf8/z3VCwBKoO27gDWv34bj6jVqnjXWIKOAIg5j1
+	 C2tg3WJwREQmDJW+nVJJkrdsUCM5Yko5rlpUOxw1kIx+QI+LaE/HMHZcINvxgg4p+B
+	 ndPIPcIaMlNVKfc3S+AznYmMHbT1953YlqxeTch8ivdEPf+uA2yaM1P7Em61+jlwUW
+	 dIhOtsFAGubz/cgWSfcsKPn/bp3OkUlzQxXy1w/pWW0myykg4hk/HC3op3Y0xL62KQ
+	 QKnB9w0himQfc0pTg3XaPMZLATXH5QMgE8KB7VMgHkRCMWP08At6v1UMSQ866jc0YY
+	 9oCDJejw99vGA==
+Date: Wed, 14 Feb 2024 08:02:09 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Dhruva Gole <d-gole@ti.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Johan Hovold <johan@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] serial: core: Add support for DEVNAME:0.0 style
+ naming for kernel console
+Message-ID: <20240214060209.GM52537@atomide.com>
+References: <20240213084545.40617-1-tony@atomide.com>
+ <20240213084545.40617-5-tony@atomide.com>
+ <ZcuQc3frV99SKkXd@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcuQc3frV99SKkXd@smile.fi.intel.com>
 
-JAZZ_ESP is a bool kconfig symbol that selects SCSI_SPI_ATTRS.
-When CONFIG_SCSI=m, this results in SCSI_SPI_ATTRS=m while
-JAZZ_ESP=y, which causes many undefined symbol linker errors.
+* Andy Shevchenko <andriy.shevchenko@linux.intel.com> [240213 15:53]:
+> On Tue, Feb 13, 2024 at 10:45:11AM +0200, Tony Lindgren wrote:
+> > +int serial_base_add_preferred_console(struct uart_driver *drv,
+> > +				      struct uart_port *port)
+> > +{
+> > +	const char *port_match __free(kfree);
+> 
+> = NULL
+> 
+> > +	int ret;
+> > +
+> > +	ret = serial_base_add_prefcon(drv->dev_name, port->line);
+> > +	if (ret)
+> 
+> Otherwise here might be a problem.
 
-Fix this by only offering to build this driver when CONFIG_SCSI=y.
+Yes thanks for noticing it.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402112222.Gl0udKyU-lkp@intel.com/
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/scsi/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
 
-diff -- a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
---- a/drivers/scsi/Kconfig
-+++ b/drivers/scsi/Kconfig
-@@ -1279,7 +1279,7 @@ source "drivers/scsi/arm/Kconfig"
- 
- config JAZZ_ESP
- 	bool "MIPS JAZZ FAS216 SCSI support"
--	depends on MACH_JAZZ && SCSI
-+	depends on MACH_JAZZ && SCSI=y
- 	select SCSI_SPI_ATTRS
- 	help
- 	  This is the driver for the onboard SCSI host adapter of MIPS Magnum
+Tony
 
