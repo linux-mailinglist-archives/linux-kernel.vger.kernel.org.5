@@ -1,359 +1,376 @@
-Return-Path: <linux-kernel+bounces-65146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3B385488F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:38:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 015B7854886
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 322B01F21465
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:38:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B40AB27103
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B235B1BC5C;
-	Wed, 14 Feb 2024 11:37:46 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF89199BA;
+	Wed, 14 Feb 2024 11:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lOxmPwcF"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD72C1BC31;
-	Wed, 14 Feb 2024 11:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42C41B814;
+	Wed, 14 Feb 2024 11:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910666; cv=none; b=BUFovqR8c1NeIYQwTsXWB7UjSkSroyKMETMFUlCYmyn9SflD0eCYGW63e3sKG/CQISQS0z7IVCGGhH9lNjvpv6mXieBRh09KJ5JxJOqDVCC+3ed8NGN0jMHkj40P5odllbpa5iK1SawhKmzqRYmi/NZcNq2QzASb4KFbaTErXfs=
+	t=1707910618; cv=none; b=uzPwX7VVudFKDONjiHtyYZg53GxXZOeyY7AMX43qBypgqiXQRGmUH/bqjRdMEijRLncABMh01oAR1AokQWJ1heLReWp8qP3PUNoTL1wy5wNgG38i8LnrWuDQvfiW2ad4hNnAkAcIjyM7PHCFSPHVSWhUwRGUKFiJ+7jaS0Rusc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910666; c=relaxed/simple;
-	bh=/uyNfbbAGyBoNGO8quoCKc4b5P7cnfMZAnnYhYkf9As=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eMbKBAH2Doy3r7ctZUGQHVJSZQIoXcHKAy149xNy8ItVLvk4dnRUCG3loYsYFCLAjBF2LwIoLPbtGeEjDVSZiEx2sSOeTcNXMx5AgSUV4QEJBsnqbyUkmzeVHE8fXDQ8YXh8eI1B+ChwvdowzbytftzYq6a7bGeBmBxCfwdsXoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TZbQC00hnz9yMLR;
-	Wed, 14 Feb 2024 19:22:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 2CCD3140427;
-	Wed, 14 Feb 2024 19:37:41 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S10;
-	Wed, 14 Feb 2024 12:37:40 +0100 (CET)
-From: Petr Tesarik <petrtesarik@huaweicloud.com>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Xin Li <xin3.li@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Pengfei Xu <pengfei.xu@intel.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ze Gao <zegao2021@gmail.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Kai Huang <kai.huang@intel.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Brian Gerst <brgerst@gmail.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Joerg Roedel <jroedel@suse.de>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Tina Zhang <tina.zhang@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	petr@tesarici.cz,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 8/8] sbm: x86: lazy TLB flushing
-Date: Wed, 14 Feb 2024 12:35:16 +0100
-Message-Id: <20240214113516.2307-9-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
-References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
+	s=arc-20240116; t=1707910618; c=relaxed/simple;
+	bh=T2WqLz2CjW9RPWZ0uth+/4gEHhoWLi0lbC1jmZPBsTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sxnsxBEZo7SGKtL70AGGXpbEfFGsF5wr5KtCtrIasEiEp3w4Pih083VMneAN9HV3xlRoSab3Yss95nOEMgZbBbjNCXdg8n1rJXPOQN8joAhnvnatlDNuoJVU/93/afh5XIePNEgqqprZJ1PDaqvcnGI45Z3Py10DC45qy00n3ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lOxmPwcF; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B037440E0192;
+	Wed, 14 Feb 2024 11:36:47 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id id0nTapW-7z7; Wed, 14 Feb 2024 11:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707910605; bh=rOr6deuDvMexUVv1eZg26bnq02kxdFci8fGUtHaJovs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lOxmPwcFp5f8VWJePTlH0iOrnDP+Sfpnj47A4WrOBel8yYmXsn4u6WZC+GecDzv1V
+	 BrdqZNwHWpKrnwtM7uwVOUgtNTDMcjYatar8tHD+twZFp8z9DdB2HhW5QQ8bRjNaqs
+	 UU5ZTeABC2PmdpbD83S/eRwGCzcuyNN4zp0YU4HXRla7JCAXYLPhwGCDvmaKquPbui
+	 g2b8c9YI40WyQwZ6Z+L12+/vqrmwjQVpLDrykuYaoT2fqZGFw/V8cumiTxaoWMKgS2
+	 J/wkK9sY9pq4j1ETbm9LLznlCj2KwdDI1dHwcyNcsPvirzxlT4/j3jOVVzav4MBfPu
+	 Pvcgpp5TMnj1SCuz95TLJFBwnTMVGpebNwfI7PhjvGgRX0JOKyEyT6kUnJcVYx7pIK
+	 E7493WhztPtNpxzERyLyAliyKiK81a6hpaPKsM6j8d4FqBgoLbIeMJ784D1PZ+o2mE
+	 jCT8pSBUw/WMhWeU0jYj0cAXyaOR2OqDj1bnzKAgoMf7UotUy0OtBHSob15P0/bgiL
+	 urhACpwjyunsOHZrEKmVHklUCbmUD+Ev1D3XsReW+1rU38Q7SWzPJvCdOYS8VzwkKQ
+	 tq3uux3C6RQa0VOG4+nRsClx0xlghZK7DC8brhXcmL8bxmzaaN0k8080gwI2BWD6Mh
+	 giRZ0ex00HvPW98mYr22mFRM=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7120C40E0254;
+	Wed, 14 Feb 2024 11:36:36 +0000 (UTC)
+Date: Wed, 14 Feb 2024 12:36:30 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214113630.GIZcylvp6-m-FNNE7H@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S10
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw45Ar4fAFyrZr43XFW8WFg_yoW3Jry3pF
-	n7Ga4kGFs7X34Syws7Xrs5AFn8Za1Dta15JasrKryfZa45Xw45Xr4jkw42qFWrZr95W3Wx
-	KF4avFs5Cwn8Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmm14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_
-	GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-	x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-	JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-	ka0xkIwI1lc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-	CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5
-	JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr
-	0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
-	YxBIdaVFxhVjvjDU0xZFpf9x0JU3EfOUUUUU=
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
 
-From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
+> +static void update_fru_record(struct fru_rec *rec, struct mce *m)
+> +{
+> +	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
+> +	struct cper_fru_poison_desc fpd;
+> +	u32 entry = 0;
+> +
+> +	mutex_lock(&fmpm_update_mutex);
+> +
+> +	init_fpd(&fpd, m);
+> +
+> +	/* This is the first entry, so just save it. */
+> +	if (!has_valid_entries(fmp->validation_bits))
+> +		goto save_fpd;
 
-Implement lazy TLB flushing in sandbox mode and keep CR4.PGE enabled.
+Not needed - if it is the first entry, it'll get saved there.
 
-For the transition from sandbox mode to kernel mode:
+> +	/* Ignore already recorded errors. */
+> +	if (is_dup_fpd(rec, &fpd))
+> +		goto out_unlock;
+> +
+> +	if (fmp->nr_entries >= max_nr_entries) {
+> +		pr_warn("Exceeded number of entries for FRU 0x%016llx", fmp->fru_id);
+> +		goto out_unlock;
+> +	}
+> +
+> +	entry = fmp->nr_entries;
 
-1. All user page translations (sandbox code and data) are flushed from the
-   TLB, because their page protection bits do not include _PAGE_GLOBAL.
+..
 
-2. Any kernel page translations remain valid after the transition. The SBM
-   state page is an exception; map it without _PAGE_GLOBAL.
+> +static void retire_dram_row(u64 addr, u64 id, u32 cpu)
+> +{
+> +	struct atl_err a_err;
 
-For the transition from kernel mode to sandbox mode:
+Yap, exactly, this should use atl_err and not struct mce.
 
-1. Kernel page translations become stale. However, any access by code
-   running in sandbox mode (with CPL 3) causes a protection violation.
-   Handle the spurious page faults from such accesses, lazily replacing
-   entries in the TLB.
+> +
+> +	memset(&a_err, 0, sizeof(struct atl_err));
+> +
+> +	a_err.addr = addr;
+> +	a_err.ipid = id;
+> +	a_err.cpu  = cpu;
+> +
+> +	amd_retire_dram_row(&a_err);
+> +}
+> +
+> +static int fru_mem_poison_handler(struct notifier_block *nb, unsigned long val, void *data)
+> +{
+> +	struct mce *m = (struct mce *)data;
+> +	struct fru_rec *rec;
+> +
+> +	if (!mce_is_memory_error(m))
+> +		return NOTIFY_DONE;
+> +
+> +	retire_dram_row(m->addr, m->ipid, m->extcpu);
+> +
+> +	/*
+> +	 * This should not happen on real errors. But it could happen from
 
-2. If the TLB contains any user page translations before the switch to
-   sandbox mode, they are flushed, because their page protection bits do
-   not include _PAGE_GLOBAL. This ensures that sandbox mode cannot access
-   user mode pages.
+What exactly is "This" here?
 
-Note that the TLB may keep kernel page translations for addresses which are
-never accessed by sandbox mode. They remain valid after returning to kernel
-mode.
+> +	 * software error injection, etc.
+> +	 */
+> +	rec = get_fru_record(m->ppin);
+> +	if (!rec)
+> +		return NOTIFY_DONE;
+> +
+> +	update_fru_record(rec, m);
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static struct notifier_block fru_mem_poison_nb = {
+> +	.notifier_call  = fru_mem_poison_handler,
+> +	.priority	= MCE_PRIO_LOWEST,
+> +};
+> +
+> +static u32 get_cpu_from_fru_id(u64 fru_id)
 
-Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
----
- arch/x86/entry/entry_64.S     |  17 +-----
- arch/x86/kernel/sbm/call_64.S |   5 +-
- arch/x86/kernel/sbm/core.c    | 100 +++++++++++++++++++++++++++++++++-
- 3 files changed, 102 insertions(+), 20 deletions(-)
+Fold into the single callsite.
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index e1364115408a..4ba3eea38102 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -632,10 +632,8 @@ SYM_INNER_LABEL(restore_regs_and_return_to_kernel, SYM_L_GLOBAL)
- 	movq	PER_CPU_VAR(pcpu_hot + X86_current_task), %rcx
- 	movq	TASK_sbm_state(%rcx), %rcx
- 	movq	SBM_sbm_cr3(%rcx), %rcx
--	movq	%cr4, %rax
--	andb	$~X86_CR4_PGE, %al
--	movq	%rax, %cr4
- 	movq	%rcx, %cr3
-+	invlpg	x86_sbm_state
- 	orb	$3, CS(%rsp)
- #endif
- 
-@@ -897,9 +895,6 @@ SYM_CODE_START(paranoid_entry)
- 
- 	movq	%cr3, %r14
- 	andb	$~3, CS+8(%rsp)
--	movq	%cr4, %rax
--	orb	$X86_CR4_PGE, %al
--	movq	%rax, %cr4
- 	movq	%rcx, %cr3
- 	jmp	.Lparanoid_gsbase
- #endif
-@@ -1073,9 +1068,6 @@ SYM_CODE_START(error_entry)
- 	jrcxz	.Lerror_swapgs
- 
- 	andb	$~3, CS+8(%rsp)
--	movq	%cr4, %rax
--	orb	$X86_CR4_PGE, %al
--	movq	%rax, %cr4
- 	movq	%rcx, %cr3
- 	jmp	.Lerror_entry_done_lfence
- #endif
-@@ -1281,9 +1273,6 @@ SYM_CODE_START(asm_exc_nmi)
- 	 * stack. The code is similar to NMI from user mode.
- 	 */
- 	andb	$~3, CS-RIP+8(%rsp)
--	movq	%cr4, %rdx
--	orb	$X86_CR4_PGE, %dl
--	movq	%rdx, %cr4
- 	movq	x86_sbm_state + SBM_kernel_cr3, %rdx
- 	movq	%rdx, %cr3
- 
-@@ -1533,10 +1522,8 @@ end_repeat_nmi:
- 	movq	TASK_sbm_state(%rcx), %rcx
- 	jrcxz	nmi_no_sbm
- 
--	movq	%cr4, %rax
--	andb	$~X86_CR4_PGE, %al
--	movq	%rax, %cr4
- 	movq	%r14, %cr3
-+	invlpg	x86_sbm_state
- #endif
- 
- nmi_no_sbm:
-diff --git a/arch/x86/kernel/sbm/call_64.S b/arch/x86/kernel/sbm/call_64.S
-index 8b2b524c5b46..21edce5666bc 100644
---- a/arch/x86/kernel/sbm/call_64.S
-+++ b/arch/x86/kernel/sbm/call_64.S
-@@ -10,7 +10,6 @@
- #include <linux/linkage.h>
- #include <asm/nospec-branch.h>
- #include <asm/percpu.h>
--#include <asm/processor-flags.h>
- #include <asm/segment.h>
- 
- .code64
-@@ -75,12 +74,10 @@ SYM_FUNC_START(x86_sbm_exec)
- 	 * The NMI handler takes extra care to restore CR3 and CR4.
- 	 */
- 	mov	SBM_sbm_cr3(%rdi), %r11
--	mov	%cr4, %rax
--	and	$~X86_CR4_PGE, %al
- 	mov	%rdx, %rdi	/* args */
- 	cli
--	mov	%rax, %cr4
- 	mov	%r11, %cr3
-+	invlpg	x86_sbm_state
- 	iretq
- 
- SYM_INNER_LABEL(x86_sbm_return, SYM_L_GLOBAL)
-diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
-index 0ea193550a83..296f1fde3c22 100644
---- a/arch/x86/kernel/sbm/core.c
-+++ b/arch/x86/kernel/sbm/core.c
-@@ -33,6 +33,11 @@ union {
- 	char page[PAGE_SIZE];
- } x86_sbm_state __page_aligned_bss;
- 
-+static inline pgprot_t pgprot_nonglobal(pgprot_t prot)
-+{
-+	return __pgprot(pgprot_val(prot) & ~_PAGE_GLOBAL);
-+}
-+
- static inline phys_addr_t page_to_ptval(struct page *page)
- {
- 	return PFN_PHYS(page_to_pfn(page)) | _PAGE_TABLE;
-@@ -287,7 +292,7 @@ int arch_sbm_init(struct sbm *sbm)
- 
- 	BUILD_BUG_ON(sizeof(x86_sbm_state) != PAGE_SIZE);
- 	err = map_page(state, (unsigned long)&x86_sbm_state,
--		       PHYS_PFN(__pa(state)), PAGE_KERNEL);
-+		       PHYS_PFN(__pa(state)), pgprot_nonglobal(PAGE_KERNEL));
- 	if (err < 0)
- 		return err;
- 
-@@ -379,11 +384,104 @@ int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
- 	return err;
- }
- 
-+static bool spurious_sbm_fault_check(unsigned long error_code, pte_t *pte)
-+{
-+	if ((error_code & X86_PF_WRITE) && !pte_write(*pte))
-+		return false;
-+
-+	if ((error_code & X86_PF_INSTR) && !pte_exec(*pte))
-+		return false;
-+
-+	return true;
-+}
-+
-+/*
-+ * Handle a spurious fault caused by a stale TLB entry.
-+ *
-+ * This allows us to lazily refresh the TLB when increasing the
-+ * permissions of a kernel page (RO -> RW or NX -> X).  Doing it
-+ * eagerly is very expensive since that implies doing a full
-+ * cross-processor TLB flush, even if no stale TLB entries exist
-+ * on other processors.
-+ *
-+ * Spurious faults may only occur if the TLB contains an entry with
-+ * fewer permission than the page table entry.  Non-present (P = 0)
-+ * and reserved bit (R = 1) faults are never spurious.
-+ *
-+ * There are no security implications to leaving a stale TLB when
-+ * increasing the permissions on a page.
-+ *
-+ * Returns true if a spurious fault was handled, false otherwise.
-+ *
-+ * See Intel Developer's Manual Vol 3 Section 4.10.4.3, bullet 3
-+ * (Optional Invalidation).
-+ */
-+static bool
-+spurious_sbm_fault(struct x86_sbm_state *state, unsigned long error_code,
-+		   unsigned long address)
-+{
-+	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pmd_t *pmd;
-+	pte_t *pte;
-+	bool ret;
-+
-+	if ((error_code & ~(X86_PF_WRITE | X86_PF_INSTR)) !=
-+	    (X86_PF_USER | X86_PF_PROT))
-+		return false;
-+
-+	pgd = __va(state->sbm_cr3 & CR3_ADDR_MASK) + pgd_index(address);
-+	if (!pgd_present(*pgd))
-+		return false;
-+
-+	p4d = p4d_offset(pgd, address);
-+	if (!p4d_present(*p4d))
-+		return false;
-+
-+	if (p4d_large(*p4d))
-+		return spurious_sbm_fault_check(error_code, (pte_t *)p4d);
-+
-+	pud = pud_offset(p4d, address);
-+	if (!pud_present(*pud))
-+		return false;
-+
-+	if (pud_large(*pud))
-+		return spurious_sbm_fault_check(error_code, (pte_t *)pud);
-+
-+	pmd = pmd_offset(pud, address);
-+	if (!pmd_present(*pmd))
-+		return false;
-+
-+	if (pmd_large(*pmd))
-+		return spurious_sbm_fault_check(error_code, (pte_t *)pmd);
-+
-+	pte = pte_offset_kernel(pmd, address);
-+	if (!pte_present(*pte))
-+		return false;
-+
-+	ret = spurious_sbm_fault_check(error_code, pte);
-+	if (!ret)
-+		return false;
-+
-+	/*
-+	 * Make sure we have permissions in PMD.
-+	 * If not, then there's a bug in the page tables:
-+	 */
-+	ret = spurious_sbm_fault_check(error_code, (pte_t *)pmd);
-+	WARN_ONCE(!ret, "PMD has incorrect permission bits\n");
-+
-+	return ret;
-+}
-+
- void handle_sbm_fault(struct pt_regs *regs, unsigned long error_code,
- 		      unsigned long address)
- {
- 	struct x86_sbm_state *state = current_thread_info()->sbm_state;
- 
-+	if (spurious_sbm_fault(state, error_code, address))
-+		return;
-+
- 	/*
- 	 * Force -EFAULT unless the fault was due to a user-mode instruction
- 	 * fetch from the designated return address.
+> +{
+> +	unsigned int cpu = 0;
+> +
+> +	/* Should there be more robust error handling if none found? */
+> +	for_each_online_cpu(cpu) {
+> +		if (topology_ppin(cpu) == fru_id)
+> +			break;
+> +	}
+> +
+> +	return cpu;
+> +}
+> +
+> +static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries, u32 cpu)
+> +{
+> +	struct cper_fru_poison_desc *fpd;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr_entries; i++) {
+> +		fpd = get_fpd(rec, i);
+> +
+> +		if (fpd->hw_id_type != FPD_HW_ID_TYPE_MCA_IPID)
+> +			continue;
+> +
+> +		if (fpd->addr_type != FPD_ADDR_TYPE_MCA_ADDR)
+> +			continue;
+> +
+> +		retire_dram_row(fpd->addr, fpd->hw_id, cpu);
+> +	}
+> +}
+> +
+> +static void retire_mem_records(void)
+> +{
+> +	struct cper_sec_fru_mem_poison *fmp;
+> +	struct fru_rec *rec;
+> +	unsigned int i;
+> +	u32 cpu;
+> +
+> +	for_each_fru(i, rec) {
+> +		fmp = get_fmp(rec);
+> +
+> +		if (!has_valid_entries(fmp->validation_bits))
+> +			continue;
+> +
+> +		cpu = get_cpu_from_fru_id(fmp->fru_id);
+
+Pass in that fmp thing into retire_dram_row() so that you can delay
+that get_cpu_from_fru_id() call until the moment you actually need it.
+
+> +static int save_new_records(void)
+> +{
+> +	struct fru_rec *rec;
+> +	unsigned int i;
+> +	int ret = 0;
+> +
+> +	for_each_fru(i, rec) {
+> +		/* Skip restored records. Should these be fixed up? */
+
+I don't understand that question.
+
+> +		if (rec->hdr.record_length)
+> +			continue;
+> +
+> +		set_rec_fields(rec);
+> +
+> +		ret = update_record_on_storage(rec);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static bool is_valid_fmp(struct fru_rec *rec)
+
+fmp_is_valid()
+
+> +{
+> +	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
+> +	u32 len = get_fmp_len(rec);
+> +
+> +	if (!fmp)
+> +		return false;
+> +
+> +	if (!len)
+> +		return false;
+> +
+> +	/* Checksum must sum to zero for the entire section. */
+> +	if (do_fmp_checksum(fmp, len))
+> +		return false;
+> +
+> +	if (!(fmp->validation_bits & FMP_VALID_ARCH_TYPE))
+> +		return false;
+> +
+> +	if (fmp->fru_arch_type != FMP_ARCH_TYPE_X86_CPUID_1_EAX)
+> +		return false;
+> +
+> +	if (!(fmp->validation_bits & FMP_VALID_ARCH))
+> +		return false;
+> +
+> +	if (fmp->fru_arch != cpuid_eax(1))
+> +		return false;
+> +
+> +	if (!(fmp->validation_bits & FMP_VALID_ID_TYPE))
+> +		return false;
+> +
+> +	if (fmp->fru_id_type != FMP_ID_TYPE_X86_PPIN)
+> +		return false;
+> +
+> +	if (!(fmp->validation_bits & FMP_VALID_ID))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static void restore_record(struct fru_rec *new, struct fru_rec *old)
+> +{
+> +	/* Records larger than max_rec_len were skipped earlier. */
+> +	size_t len = min(max_rec_len, old->hdr.record_length);
+> +
+> +	memcpy(new, old, len);
+> +}
+
+Fold into the single call site.
+
+> +
+> +static bool valid_record(struct fru_rec *old)
+> +{
+> +	struct fru_rec *new;
+> +
+> +	if (!is_valid_fmp(old)) {
+> +		pr_debug("Ignoring invalid record");
+> +		return false;
+> +	}
+> +
+> +	new = get_fru_record(old->fmp.fru_id);
+> +	if (!new) {
+> +		pr_debug("Ignoring record for absent FRU");
+> +		return false;
+> +	}
+> +
+> +	/* What if ERST has duplicate FRU entries? */
+> +	restore_record(new, old);
+> +
+> +	return true;
+> +}
+> +
+> +/*
+> + * Fetch saved records from persistent storage.
+> + *
+> + * For each found record:
+> + * - If it was not created by this module, then ignore it.
+> + * - If it is valid, then copy its data to the local cache.
+> + * - If it is not valid, then erase it.
+> + */
+> +static int get_saved_records(void)
+> +{
+> +	struct fru_rec *old;
+> +	u64 record_id;
+> +	int ret, pos;
+> +	ssize_t len;
+> +
+> +	/*
+> +	 * Assume saved records match current max size.
+> +	 *
+> +	 * However, this may not be true depending on module parameters.
+
+This must work with module parameters, though. Or, as said and
+preferrably, there should not be any module parameters at all.
+
+> +	 */
+> +	old = kmalloc(max_rec_len, GFP_KERNEL);
+> +	if (!old) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	ret = erst_get_record_id_begin(&pos);
+> +	if (ret < 0)
+> +		goto out_end;
+> +
+> +	while (!erst_get_record_id_next(&pos, &record_id)) {
+> +		/*
+> +		 * Make sure to clear temporary buffer between reads to avoid
+> +		 * leftover data from records of various sizes.
+> +		 */
+> +		memset(old, 0, max_rec_len);
+> +
+> +		len = erst_read_record(record_id, &old->hdr, max_rec_len,
+> +				       sizeof(struct fru_rec), &CPER_CREATOR_FMP);
+> +
+> +		/* Should this be retried if the temporary buffer is too small? */
+
+Only when it turns out that it is necessary.
+
+> +		if (len < 0)
+> +			continue;
+> +
+> +		if (!valid_record(old))
+> +			erst_clear(record_id);
+
+Where is the check which ignores the record not created by this module?
+
+Because this clears all records it deems not valid and that thing needs
+to be really careful here and be sure what exactly it clears...
+
+Thx.
+
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
