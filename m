@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-65719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9C18550CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:51:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FB478550C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:51:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3597B1F24F95
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:51:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 513F8B217AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2111272D3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E09012836C;
 	Wed, 14 Feb 2024 17:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PxLYqSpw"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="gVENyiOr"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AD284FCB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEDA1272CD;
 	Wed, 14 Feb 2024 17:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933058; cv=none; b=swJiM2wC3pFuB7lttPvPINuDWqWN+KRZJlzBc2NUr8LwZ05jMi1OUpDRUALpV3zgFpYXbmr9AH+BOEgj42eWWOaa5DkA5Pgyu5R5cJABHA3LPP2PwfLoXksssY46cHOLpNnCpWqGH8j2m+ssNq1QaP8jPCqR2zILP1Bjt5cFDn0=
+	t=1707933058; cv=none; b=dl1nLdwr2bvsA6jjILXLSG4SHAAoATtcKOBCuXHPPRGStgUWVOore7ya5j/OOajafegBZTxhH0NFfoUPXrPJuM4efoMVJgu8uhrRkOf+btFFZ/aXNbTRmGrp9Q2C3+MyUOAVNIiSny+ny9AHOr5qI6XyxHRMGAxPgNdmP9FZDmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707933058; c=relaxed/simple;
-	bh=eh7Znbuws0FpzTqXB/htjVXzfh7M7J0jPIJS1UmMUDU=;
+	bh=GOTOl32tyEUqyiUqhLrtlUNFRb2MzjMvHRjHDbTATds=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N9RTAKSYU0evUQNdaKxlVXp3NtU0L/KnOu42YnJ+atV4rA8z4lWOV4RZYRsvmJxo7139p0p+ieHKCzFq8h7aY1XFrR4CA20PfGsHuuwh66hO9a530iqwzwTBnqUvDuyjwoz7tW24MvjiDoMWLRyU8vm8m7GF0a6BQV5SznSOhSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PxLYqSpw; arc=none smtp.client-ip=13.77.154.182
+	 MIME-Version; b=R28Cgutl5ekkq3aLn7NJ225WQW/+otQVycYQfPIegh67/3AWXozSsYFDWO6eCr7x/f7ZgsK5hUhhznH/TXqFw+G6/+jwquPgW1UOaZUuv39d8EhhtSAvGHbYsurXBJAPw2FQzgazCtevvYooX68/iD42tRBlT53uTPiEKYEqFKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=gVENyiOr; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from localhost.localdomain (unknown [4.155.48.117])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 2703D20B2002;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4047720B2003;
 	Wed, 14 Feb 2024 09:50:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2703D20B2002
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4047720B2003
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1707933056;
-	bh=rCUIa9r7RCQbT2ME+ULhEAx0/ULy4rYNOneRGyRu2VM=;
+	bh=KUDMkr8RLsAYmhZAS3vUhiwE/jC9o4CeWLT+JtE+tIA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PxLYqSpw5JdpvlocHypm61AscLQdzr7hR8SkFvoeFd8lSUrYXe4sknikoPsSdw0jy
-	 yi5IDnjbtW6SfSme1niNXYr0rcpO0WnPnND3/wB0LlV9RH0dak8LulychTMBc1vjS4
-	 JNvmi6/SRZsaC431v2DaPocDKPH2XMxJtsHeE/Sg=
+	b=gVENyiOrjYlmF2qT+1crlHDeN0fp2G9pX29HMYxt/sPGR1WHI9BxyFEV7U2ikRuiN
+	 w8jLFyWmmSKCJnfMj5K60PfsHFJkv0hJVnHkkPqK4SYPmnccMhyauAGNa2MmJ5nBEe
+	 K8shV3qMFgSVLuAiSDvTwfdEbqmTY6X1dVDi3PxI=
 From: Beau Belgrave <beaub@linux.microsoft.com>
 To: rostedt@goodmis.org,
 	mhiramat@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	mathieu.desnoyers@efficios.com
-Subject: [PATCH v3 2/4] tracing/user_events: Introduce multi-format events
-Date: Wed, 14 Feb 2024 17:50:44 +0000
-Message-Id: <20240214175046.240-3-beaub@linux.microsoft.com>
+Subject: [PATCH v3 3/4] selftests/user_events: Test multi-format events
+Date: Wed, 14 Feb 2024 17:50:45 +0000
+Message-Id: <20240214175046.240-4-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214175046.240-1-beaub@linux.microsoft.com>
 References: <20240214175046.240-1-beaub@linux.microsoft.com>
@@ -59,335 +59,186 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently user_events supports 1 event with the same name and must have
-the exact same format when referenced by multiple programs. This opens
-an opportunity for malicous or poorly thought through programs to
-create events that others use with different formats. Another scenario
-is user programs wishing to use the same event name but add more fields
-later when the software updates. Various versions of a program may be
-running side-by-side, which is prevented by the current single format
-requirement.
+User_events now has multi-format events which allow for the same
+register name, but with different formats. When this occurs, different
+tracepoints are created with unique names.
 
-Add a new register flag (USER_EVENT_REG_MULTI_FORMAT) which indicates
-the user program wishes to use the same user_event name, but may have
-several different formats of the event in the future. When this flag is
-used, create the underlying tracepoint backing the user_event with a
-unique name per-version of the format. It's important that existing ABI
-users do not get this logic automatically, even if one of the multi
-format events matches the format. This ensures existing programs that
-create events and assume the tracepoint name will match exactly continue
-to work as expected. Add logic to only check multi-format events with
-other multi-format events and single-format events to only check
-single-format events during find.
-
-Change system name of the multi-format event tracepoint to ensure that
-multi-format events are isolated completely from single-format events.
-This prevents single-format names from conflicting with multi-format
-events if they end with the same suffix as the multi-format events.
-
-Add a register_name (reg_name) to the user_event struct which allows for
-split naming of events. We now have the name that was used to register
-within user_events as well as the unique name for the tracepoint. Upon
-registering events ensure matches based on first the reg_name, followed
-by the fields and format of the event. This allows for multiple events
-with the same registered name to have different formats. The underlying
-tracepoint will have a unique name in the format of {reg_name}.{unique_id}.
-
-For example, if both "test u32 value" and "test u64 value" are used with
-the USER_EVENT_REG_MULTI_FORMAT the system would have 2 unique
-tracepoints. The dynamic_events file would then show the following:
-  u:test u64 count
-  u:test u32 count
-
-The actual tracepoint names look like this:
-  test.0
-  test.1
-
-Both would be under the new user_events_multi system name to prevent the
-older ABI from being used to squat on multi-formatted events and block
-their use.
-
-Deleting events via "!u:test u64 count" would only delete the first
-tracepoint that matched that format. When the delete ABI is used all
-events with the same name will be attempted to be deleted. If
-per-version deletion is required, user programs should either not use
-persistent events or delete them via dynamic_events.
+Add a new test that ensures the same name can be used for two different
+formats. Ensure they are isolated from each other and that name and arg
+matching still works if yet another register comes in with the same
+format as one of the two.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- include/uapi/linux/user_events.h |   6 +-
- kernel/trace/trace_events_user.c | 118 +++++++++++++++++++++++++++----
- 2 files changed, 111 insertions(+), 13 deletions(-)
+ .../testing/selftests/user_events/abi_test.c  | 134 ++++++++++++++++++
+ 1 file changed, 134 insertions(+)
 
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-index f74f3aedd49c..a03de03dccbc 100644
---- a/include/uapi/linux/user_events.h
-+++ b/include/uapi/linux/user_events.h
-@@ -12,6 +12,7 @@
- #include <linux/ioctl.h>
+diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
+index cef1ff1af223..7288a05136ba 100644
+--- a/tools/testing/selftests/user_events/abi_test.c
++++ b/tools/testing/selftests/user_events/abi_test.c
+@@ -16,6 +16,8 @@
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
++#include <glob.h>
++#include <string.h>
+ #include <asm/unistd.h>
  
- #define USER_EVENTS_SYSTEM "user_events"
-+#define USER_EVENTS_MULTI_SYSTEM "user_events_multi"
- #define USER_EVENTS_PREFIX "u:"
+ #include "../kselftest_harness.h"
+@@ -23,6 +25,62 @@
  
- /* Create dynamic location entry within a 32-bit value */
-@@ -22,8 +23,11 @@ enum user_reg_flag {
- 	/* Event will not delete upon last reference closing */
- 	USER_EVENT_REG_PERSIST		= 1U << 0,
- 
-+	/* Event will be allowed to have multiple formats */
-+	USER_EVENT_REG_MULTI_FORMAT	= 1U << 1,
+ const char *data_file = "/sys/kernel/tracing/user_events_data";
+ const char *enable_file = "/sys/kernel/tracing/events/user_events/__abi_event/enable";
++const char *multi_dir_glob = "/sys/kernel/tracing/events/user_events_multi/__abi_event.*";
 +
- 	/* This value or above is currently non-ABI */
--	USER_EVENT_REG_MAX		= 1U << 1,
-+	USER_EVENT_REG_MAX		= 1U << 2,
- };
- 
- /*
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index dda58681247e..53980982a575 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -34,7 +34,8 @@
- 
- /* Limit how long of an event name plus args within the subsystem. */
- #define MAX_EVENT_DESC 512
--#define EVENT_NAME(user_event) ((user_event)->tracepoint.name)
-+#define EVENT_NAME(user_event) ((user_event)->reg_name)
-+#define EVENT_TP_NAME(user_event) ((user_event)->tracepoint.name)
- #define MAX_FIELD_ARRAY_SIZE 1024
- 
- /*
-@@ -54,10 +55,13 @@
-  * allows isolation for events by various means.
-  */
- struct user_event_group {
--	char		*system_name;
--	struct		hlist_node node;
--	struct		mutex reg_mutex;
-+	char			*system_name;
-+	char			*system_multi_name;
-+	struct hlist_node	node;
-+	struct mutex		reg_mutex;
- 	DECLARE_HASHTABLE(register_table, 8);
-+	/* ID that moves forward within the group for multi-event names */
-+	u64			multi_id;
- };
- 
- /* Group for init_user_ns mapping, top-most group */
-@@ -78,6 +82,7 @@ static unsigned int current_user_events;
-  */
- struct user_event {
- 	struct user_event_group		*group;
-+	char				*reg_name;
- 	struct tracepoint		tracepoint;
- 	struct trace_event_call		call;
- 	struct trace_event_class	class;
-@@ -127,6 +132,8 @@ struct user_event_enabler {
- 
- #define ENABLE_BIT(e) ((int)((e)->values & ENABLE_VAL_BIT_MASK))
- 
-+#define EVENT_MULTI_FORMAT(f) ((f) & USER_EVENT_REG_MULTI_FORMAT)
-+
- /* Used for asynchronous faulting in of pages */
- struct user_event_enabler_fault {
- 	struct work_struct		work;
-@@ -330,6 +337,7 @@ static void user_event_put(struct user_event *user, bool locked)
- static void user_event_group_destroy(struct user_event_group *group)
- {
- 	kfree(group->system_name);
-+	kfree(group->system_multi_name);
- 	kfree(group);
- }
- 
-@@ -348,6 +356,21 @@ static char *user_event_group_system_name(void)
- 	return system_name;
- }
- 
-+static char *user_event_group_system_multi_name(void)
++static int wait_for_delete(char *dir)
 +{
-+	char *system_name;
-+	int len = sizeof(USER_EVENTS_MULTI_SYSTEM) + 1;
++	struct stat buf;
++	int i;
 +
-+	system_name = kmalloc(len, GFP_KERNEL);
++	for (i = 0; i < 10000; ++i) {
++		if (stat(dir, &buf) == -1 && errno == ENOENT)
++			return 0;
 +
-+	if (!system_name)
-+		return NULL;
-+
-+	snprintf(system_name, len, "%s", USER_EVENTS_MULTI_SYSTEM);
-+
-+	return system_name;
-+}
-+
- static struct user_event_group *current_user_event_group(void)
- {
- 	return init_group;
-@@ -367,6 +390,11 @@ static struct user_event_group *user_event_group_create(void)
- 	if (!group->system_name)
- 		goto error;
- 
-+	group->system_multi_name = user_event_group_system_multi_name();
-+
-+	if (!group->system_multi_name)
-+		goto error;
-+
- 	mutex_init(&group->reg_mutex);
- 	hash_init(group->register_table);
- 
-@@ -1482,6 +1510,11 @@ static int destroy_user_event(struct user_event *user)
- 	hash_del(&user->node);
- 
- 	user_event_destroy_validators(user);
-+
-+	/* If we have different names, both must be freed */
-+	if (EVENT_NAME(user) != EVENT_TP_NAME(user))
-+		kfree(EVENT_TP_NAME(user));
-+
- 	kfree(user->call.print_fmt);
- 	kfree(EVENT_NAME(user));
- 	kfree(user);
-@@ -1504,12 +1537,24 @@ static struct user_event *find_user_event(struct user_event_group *group,
- 	*outkey = key;
- 
- 	hash_for_each_possible(group->register_table, user, node, key) {
-+		/*
-+		 * Single-format events shouldn't return multi-format
-+		 * events. Callers expect the underlying tracepoint to match
-+		 * the name exactly in these cases. Only check like-formats.
-+		 */
-+		if (EVENT_MULTI_FORMAT(flags) != EVENT_MULTI_FORMAT(user->reg_flags))
-+			continue;
-+
- 		if (strcmp(EVENT_NAME(user), name))
- 			continue;
- 
- 		if (user_fields_match(user, argc, argv))
- 			return user_event_get(user);
- 
-+		/* Scan others if this is a multi-format event */
-+		if (EVENT_MULTI_FORMAT(flags))
-+			continue;
-+
- 		return ERR_PTR(-EADDRINUSE);
- 	}
- 
-@@ -1889,8 +1934,12 @@ static bool user_event_match(const char *system, const char *event,
- 	struct user_event *user = container_of(ev, struct user_event, devent);
- 	bool match;
- 
--	match = strcmp(EVENT_NAME(user), event) == 0 &&
--		(!system || strcmp(system, USER_EVENTS_SYSTEM) == 0);
-+	match = strcmp(EVENT_NAME(user), event) == 0;
-+
-+	if (match && system) {
-+		match = strcmp(system, user->group->system_name) == 0 ||
-+			strcmp(system, user->group->system_multi_name) == 0;
-+	}
- 
- 	if (match)
- 		match = user_fields_match(user, argc, argv);
-@@ -1923,6 +1972,39 @@ static int user_event_trace_register(struct user_event *user)
- 	return ret;
- }
- 
-+static int user_event_set_tp_name(struct user_event *user)
-+{
-+	lockdep_assert_held(&user->group->reg_mutex);
-+
-+	if (EVENT_MULTI_FORMAT(user->reg_flags)) {
-+		char *multi_name;
-+		int len;
-+
-+		len = snprintf(NULL, 0, "%s.%llx", user->reg_name,
-+			       user->group->multi_id) + 1;
-+
-+		multi_name = kzalloc(len, GFP_KERNEL_ACCOUNT);
-+
-+		if (!multi_name)
-+			return -ENOMEM;
-+
-+		snprintf(multi_name, len, "%s.%llx", user->reg_name,
-+			 user->group->multi_id);
-+
-+		user->call.name = multi_name;
-+		user->tracepoint.name = multi_name;
-+
-+		/* Inc to ensure unique multi-event name next time */
-+		user->group->multi_id++;
-+	} else {
-+		/* Non Multi-format uses register name */
-+		user->call.name = user->reg_name;
-+		user->tracepoint.name = user->reg_name;
++		usleep(1000);
 +	}
 +
-+	return 0;
++	return -1;
 +}
 +
- /*
-  * Parses the event name, arguments and flags then registers if successful.
-  * The name buffer lifetime is owned by this method for success cases only.
-@@ -1985,7 +2067,13 @@ static int user_event_parse(struct user_event_group *group, char *name,
- 	INIT_LIST_HEAD(&user->validators);
- 
- 	user->group = group;
--	user->tracepoint.name = name;
-+	user->reg_name = name;
-+	user->reg_flags = reg_flags;
++static int find_multi_event_dir(char *unique_field, char *out_dir, int dir_len)
++{
++	char path[256];
++	glob_t buf;
++	int i, ret;
 +
-+	ret = user_event_set_tp_name(user);
++	ret = glob(multi_dir_glob, GLOB_ONLYDIR, NULL, &buf);
 +
 +	if (ret)
-+		goto put_user;
- 
- 	ret = user_event_parse_fields(user, args);
- 
-@@ -1999,11 +2087,14 @@ static int user_event_parse(struct user_event_group *group, char *name,
- 
- 	user->call.data = user;
- 	user->call.class = &user->class;
--	user->call.name = name;
- 	user->call.flags = TRACE_EVENT_FL_TRACEPOINT;
- 	user->call.tp = &user->tracepoint;
- 	user->call.event.funcs = &user_event_funcs;
--	user->class.system = group->system_name;
++		return -1;
 +
-+	if (EVENT_MULTI_FORMAT(user->reg_flags))
-+		user->class.system = group->system_multi_name;
-+	else
-+		user->class.system = group->system_name;
- 
- 	user->class.fields_array = user_event_fields_array;
- 	user->class.get_fields = user_event_get_fields;
-@@ -2025,8 +2116,6 @@ static int user_event_parse(struct user_event_group *group, char *name,
- 	if (ret)
- 		goto put_user_lock;
- 
--	user->reg_flags = reg_flags;
--
- 	if (user->reg_flags & USER_EVENT_REG_PERSIST) {
- 		/* Ensure we track self ref and caller ref (2) */
- 		refcount_set(&user->refcnt, 2);
-@@ -2050,6 +2139,11 @@ static int user_event_parse(struct user_event_group *group, char *name,
- 	user_event_destroy_fields(user);
- 	user_event_destroy_validators(user);
- 	kfree(user->call.print_fmt);
++	ret = -1;
 +
-+	/* Caller frees reg_name on error, but not multi-name */
-+	if (EVENT_NAME(user) != EVENT_TP_NAME(user))
-+		kfree(EVENT_TP_NAME(user));
++	for (i = 0; i < buf.gl_pathc; ++i) {
++		FILE *fp;
 +
- 	kfree(user);
++		snprintf(path, sizeof(path), "%s/format", buf.gl_pathv[i]);
++		fp = fopen(path, "r");
++
++		if (!fp)
++			continue;
++
++		while (fgets(path, sizeof(path), fp) != NULL) {
++			if (strstr(path, unique_field)) {
++				fclose(fp);
++				/* strscpy is not available, use snprintf */
++				snprintf(out_dir, dir_len, "%s", buf.gl_pathv[i]);
++				ret = 0;
++				goto out;
++			}
++		}
++
++		fclose(fp);
++	}
++out:
++	globfree(&buf);
++
++	return ret;
++}
+ 
+ static bool event_exists(void)
+ {
+@@ -74,6 +132,39 @@ static int event_delete(void)
  	return ret;
  }
-@@ -2641,7 +2735,7 @@ static int user_seq_show(struct seq_file *m, void *p)
- 	hash_for_each(group->register_table, i, user, node) {
- 		status = user->status;
  
--		seq_printf(m, "%s", EVENT_NAME(user));
-+		seq_printf(m, "%s", EVENT_TP_NAME(user));
++static int reg_enable_multi(void *enable, int size, int bit, int flags,
++			    char *args)
++{
++	struct user_reg reg = {0};
++	char full_args[512] = {0};
++	int fd = open(data_file, O_RDWR);
++	int len;
++	int ret;
++
++	if (fd < 0)
++		return -1;
++
++	len = snprintf(full_args, sizeof(full_args), "__abi_event %s", args);
++
++	if (len > sizeof(full_args)) {
++		ret = -E2BIG;
++		goto out;
++	}
++
++	reg.size = sizeof(reg);
++	reg.name_args = (__u64)full_args;
++	reg.flags = USER_EVENT_REG_MULTI_FORMAT | flags;
++	reg.enable_bit = bit;
++	reg.enable_addr = (__u64)enable;
++	reg.enable_size = size;
++
++	ret = ioctl(fd, DIAG_IOCSREG, &reg);
++out:
++	close(fd);
++
++	return ret;
++}
++
+ static int reg_enable_flags(void *enable, int size, int bit, int flags)
+ {
+ 	struct user_reg reg = {0};
+@@ -207,6 +298,49 @@ TEST_F(user, bit_sizes) {
+ 	ASSERT_NE(0, reg_enable(&self->check, 128, 0));
+ }
  
- 		if (status != 0)
- 			seq_puts(m, " #");
++TEST_F(user, multi_format) {
++	char first_dir[256];
++	char second_dir[256];
++	struct stat buf;
++
++	/* Multiple formats for the same name should work */
++	ASSERT_EQ(0, reg_enable_multi(&self->check, sizeof(int), 0,
++				      0, "u32 multi_first"));
++
++	ASSERT_EQ(0, reg_enable_multi(&self->check, sizeof(int), 1,
++				      0, "u64 multi_second"));
++
++	/* Same name with same format should also work */
++	ASSERT_EQ(0, reg_enable_multi(&self->check, sizeof(int), 2,
++				      0, "u64 multi_second"));
++
++	ASSERT_EQ(0, find_multi_event_dir("multi_first",
++					  first_dir, sizeof(first_dir)));
++
++	ASSERT_EQ(0, find_multi_event_dir("multi_second",
++					  second_dir, sizeof(second_dir)));
++
++	/* Should not be found in the same dir */
++	ASSERT_NE(0, strcmp(first_dir, second_dir));
++
++	/* First dir should still exist */
++	ASSERT_EQ(0, stat(first_dir, &buf));
++
++	/* Disabling first register should remove first dir */
++	ASSERT_EQ(0, reg_disable(&self->check, 0));
++	ASSERT_EQ(0, wait_for_delete(first_dir));
++
++	/* Second dir should still exist */
++	ASSERT_EQ(0, stat(second_dir, &buf));
++
++	/* Disabling second register should remove second dir */
++	ASSERT_EQ(0, reg_disable(&self->check, 1));
++	/* Ensure bit 1 and 2 are tied together, should not delete yet */
++	ASSERT_EQ(0, stat(second_dir, &buf));
++	ASSERT_EQ(0, reg_disable(&self->check, 2));
++	ASSERT_EQ(0, wait_for_delete(second_dir));
++}
++
+ TEST_F(user, forks) {
+ 	int i;
+ 
 -- 
 2.34.1
 
