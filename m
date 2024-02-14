@@ -1,135 +1,113 @@
-Return-Path: <linux-kernel+bounces-65236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04328549D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:58:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B428549D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 414FFB28D8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:58:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10871282918
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E1252F86;
-	Wed, 14 Feb 2024 12:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCA052F95;
+	Wed, 14 Feb 2024 12:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GlAK+298"
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1B7k+ZW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011E22C862
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A834C52F65;
+	Wed, 14 Feb 2024 12:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915503; cv=none; b=o5QIUxCI+86ydE8k+FTK4PLIvh+l+Q2isbZCglzL+FlxHyvJQ+L2FQMmABrPcMgQWZE/ZwfHrFH0SD9W0bEG8L0a7ol+yQYYAeBSgXF+Rh7/3+07jvZ29BcnTtMQ5/E1i+Ihy/EFxIC1jxcOVL4Mrk013eSC7D3mVUb0bCJloQg=
+	t=1707915535; cv=none; b=It55N63yZ/orNvlf98N5upGjsdltNNhQ8JGbTgfuEkfQamqP3YCTMyEyyPSE9tvA7JqyImwDwlxMtUDo6YoKvrH/9+58eA5fkOxD7GUNEb6t9idxr9AFPgKS2p57qaBDO0RxPe1/DiFpdc9g7eXNa6PhH28RsQQPAn8nWK3vVrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915503; c=relaxed/simple;
-	bh=APx2E3fvp48dROhXirvbfoT7BMcdWI18I17pXx4JJhg=;
+	s=arc-20240116; t=1707915535; c=relaxed/simple;
+	bh=pfBCiDW/HUqg87yPhC+EEiL6OaPUWEyVoSibStQrFzg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WwrjW2fhpkj/0dtmcqxgrEUQsPUbFmuLIdgtrJFB00GnoUvc0o8mP9sMnHJ/lKfrjkyAFsIdwijmQijtBYBFs46Vg3kokEiDR/4GzSxuhG3/VacNq6T0rH8666PAt5zhziyLdCF4xxve6jCT0uzy8cEnCo+M4g/WvexjaSUohdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GlAK+298; arc=none smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c1333b0974so65218b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1707915501; x=1708520301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BshCFmZRTopNtWYiAcH887NjvRSn30bZAm3GwAPRNi4=;
-        b=GlAK+298HN5lcnFubFDlk9ZIfThijASikbhoNdp9D4vNgy4IrU3+jODMBg1ckKKO48
-         qlzPmOziP09rA9p6NVWp48qFejqKNoRgn+XsftArxVMIG4OgkJTei5CzHS50I7ym/5RE
-         7AW/CYXhsE4//xDT6yb4YxYmJgFhW++hiUTKGvPe32y5aUujmr8OIRvxFhejZMpd1or7
-         rT/gAYMxi9RF4mkGR8TSD1ZC++r1SPnc0pNVY1eLSDt8YoGPHdGHbgQfZouyGTycumTW
-         DtoYGBuwUt8h9VkAF0wY/5eOkKpWOV8p71Gwag7UEsRDlKiAvZeY14oK4k820asILR0S
-         9J5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707915501; x=1708520301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BshCFmZRTopNtWYiAcH887NjvRSn30bZAm3GwAPRNi4=;
-        b=uuLyisvuk3Syy9uM8xdTzY2z9itszgujZJOSkfipFPBF/euv1rui+KI5BLsS1ls1OV
-         pQ3bnVTbwzGJh0r4bDDjsHZEYELgRRyP1OlkExBaM98GZ7+vQTRqYrLTDOLtux8LXglE
-         ULW2SpX0+jvccrolylxhpK4Ol3+D0QzQ2ZSYEevu4WxeG4PEXVk3cZ3IlS1pkN2gZoDA
-         QUIrVjsISRrfkJwrFz8+WcqFZD9WVc6E6yNmM40B0/jEgmm8YknEqTLzySKzVXuiFA4z
-         P/Bsfe3KwhZlfIprwyq6ssHknls2mTYSd0Tx6WVqjwXeE1uSoAbmN4jncn5SlRwR+Vv+
-         fxcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7CmCKJyiJYqLXUxpN8pE6/PI3qXW22jkcf5eRu36DMXw7K+D2DT8RKsGZVguHeQanwi8DDpQYD9ERsYJvnOqQXetuEjVkqcY5Ob0m
-X-Gm-Message-State: AOJu0YzUnz1gJOZoJECVyjIaW/B7pjb84+VBiME8IeMNtymiKjGJXzs/
-	1nZwYzJ6N2vV7tpJgc2NBSdAgL7F4OlVhS4HlgWvuS9Tq4BaKnc+mN8+aqpMfXc=
-X-Google-Smtp-Source: AGHT+IESNQrgHfg5JgyaHpHE+qWwetm/jueQiitOJitnpPoqM/W2YOs3iN/UgpbRKLLVU/CAztYjgw==
-X-Received: by 2002:a05:6808:3987:b0:3c0:40f0:7985 with SMTP id gq7-20020a056808398700b003c040f07985mr3316077oib.55.1707915500870;
-        Wed, 14 Feb 2024 04:58:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUaM4shHxQPZNY2W7OsOMIR0XxdEA1Z6eic/XG0Pn660Nqds49rj4683zF/wT0Y5mn7KrPql2LcGLFYOhDDnqtnm0Nhdzh846p/obNRHtUueM0j/v8HpRyRL6fVBsYSxC1UDm95m2DC6e1PHgh1FFGvBWk6p69FCTONJbdqHokwgOJcOC0j70P8JtoYqJK7xKP55TZXMEuU+iHSauhgojL/vs1XozbQyCoiPBC2v5Bi79kmSR3k1AR6q7R3xXmDgpceDF1ajy/sK7Xpt98GNpUe0Laar02lZ+UrEbF5eZZibLrleK7ilgX8tuMuSwx5IoRqCio49mnwJGFtErgu478iMwhEJPxtUL33HGVPACVZilMRLBdWElcG5wbZaCtvwgfcEn1ApwKksQGEy8fxHEDVdW3+FLMMo5dV5cZ6ArimIBUpAwM7hQPBmE7ahj86IfajfCZk7VPGD5j3aXhKzSi2IdWR82LcFJwfM3OBD/3y92S3Z2zzN6Go7QpaTDKdHeaZgTxb016H6bwSVerGegkg7Ez2G6wg4NPutwP86Q==
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id ok5-20020a0562143c8500b0068f057ec7b9sm334991qvb.131.2024.02.14.04.58.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 04:58:20 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1raEqB-00AhZD-Qh;
-	Wed, 14 Feb 2024 08:58:19 -0400
-Date: Wed, 14 Feb 2024 08:58:19 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>,
-	Shivaprasad G Bhat <sbhat@linux.ibm.com>, iommu@lists.linux.dev,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	npiggin@gmail.com, christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com,
-	jroedel@suse.de, tpearson@raptorengineering.com, aik@amd.com,
-	bgray@linux.ibm.com, gregkh@linuxfoundation.org,
-	gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com
-Subject: Re: [PATCH] powerpc/iommu: Fix the missing iommu_group_put() during
- platform domain attach
-Message-ID: <20240214125819.GA1299735@ziepe.ca>
-References: <170784021983.6249.10039296655906636112.stgit@linux.ibm.com>
- <20240213172128.GM765010@ziepe.ca>
- <4f5e638d-30a2-4207-b515-d07c20b0fb47@linux.vnet.ibm.com>
- <87le7n6wcf.fsf@mail.lhotse>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dGGcFRfspFtKGYs1TsXLeCs5/5am6oWlWWrESUDOmrkYvv6corotPRFc4OuJ5ldT9LIWjd7oROXf0xWcnkpl+qYKltkQDIVoSWmQPv/4UdIoBAYeI4m9AfJOUeTmEx5Rm1x9p3jKalSCxiUjaIMndAhMWyKjjg6bzuMcXXMVpvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1B7k+ZW; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707915533; x=1739451533;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=pfBCiDW/HUqg87yPhC+EEiL6OaPUWEyVoSibStQrFzg=;
+  b=b1B7k+ZWA3fEfbvlY+l69dbxb2FXauZcDMdqHbeuUx28B/2A7j874+Ht
+   r4KNOKhRgB6ey2xykx0v/RaNNRc5OkcHt3FHMqq8PIckxv6P03HksPfSr
+   MpxP4qN6qmfOp815GnmJdfUkTF5iQRlWg6ii2W+xCbgSC3HwbYQnaPiYn
+   rHVjhWZFPqd8teJrzfwQoku0oO6veR341zR2mToA/1eI41z31A+scxg5Q
+   rGGKfevxn8aoaH9JrpgHvymRjq4UbNVhO60vvh+JsqtVZbJdAfwPgURRh
+   QFWK/ZoNxWnqTweVMA4iRAo8MnWCWJeKBqn7IKeKBXZXI5D3xlBADWD4D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1810306"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="1810306"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 04:58:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="912084094"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="912084094"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 04:58:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1raEqe-00000004Uen-35NU;
+	Wed, 14 Feb 2024 14:58:48 +0200
+Date: Wed, 14 Feb 2024 14:58:48 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Rengarajan S <rengarajan.s@microchip.com>,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>
+Subject: Re: [PATCH v1 1/1] serial: 8250_pci1xxxx: Don't use "proxy" headers
+Message-ID: <Zcy5CI6FfpyZNb4e@smile.fi.intel.com>
+References: <20240213193827.3207353-1-andriy.shevchenko@linux.intel.com>
+ <faf36cd9-00c3-4f47-acb7-64881f25d6d9@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87le7n6wcf.fsf@mail.lhotse>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <faf36cd9-00c3-4f47-acb7-64881f25d6d9@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 14, 2024 at 11:53:20PM +1100, Michael Ellerman wrote:
-> Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com> writes:
-> > Thanks for the patch. Applied this patch and verified and issue is fixed.
-> >
-> > This issue way originally reported in the below mail.
-> >
-> > https://marc.info/?l=linux-kernel&m=170737160630106&w=2
+On Wed, Feb 14, 2024 at 10:15:10AM +0100, Jiri Slaby wrote:
+> On 13. 02. 24, 20:38, Andy Shevchenko wrote:
+> > Update header inclusions to follow IWYU (Include What You Use)
+> > principle.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Please use lore for links, in this case:
+> Looks good, but hard to tell if it is correct :P.
 > 
-> https://lore.kernel.org/all/274e0d2b-b5cc-475e-94e6-8427e88e271d@linux.vnet.ibm.com/
+> I like this qt-creator feature: "this header is not directly used, remove?".
+> Maybe we could extend it to the kernel somehow (as it uses clang to decide,
+> I suppose). As was shown recently, removing the inclusion hell can decrease
+> the build time significantly…
 
-Also if you are respinning you may prefer this
+Yes, that's what Ingo's gigantic patch series targeted, but seems no-one is
+interested enough to get it through. clang people also wanted to have a tool
+like checkpatch for the inclusions or even like coccinelle to just fix the
+code, but it's a project with no deadline or milestones AFAIK.
 
-@@ -1285,14 +1285,15 @@ spapr_tce_platform_iommu_attach_dev(struct iommu_domain *platform_domain,
-                                    struct device *dev)
- {
-        struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
--       struct iommu_group *grp = iommu_group_get(dev);
-        struct iommu_table_group *table_group;
-+       struct iommu_group *grp;
-        int ret = -EINVAL;
- 
-        /* At first attach the ownership is already set */
-        if (!domain)
-                return 0;
- 
-+       grp = iommu_group_get(dev);
-        if (!grp)
-                return -ENODEV;
+> Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-Which is sort of why this happened in the first place :)
+Thank you!
 
-Jason
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
