@@ -1,190 +1,155 @@
-Return-Path: <linux-kernel+bounces-64734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC6785421C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:43:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5FE985421D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 601EE1C26658
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:43:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FFD928C2C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1C6C126;
-	Wed, 14 Feb 2024 04:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F313BE7D;
+	Wed, 14 Feb 2024 04:52:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ES6AY3cI"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Nu/CrzEj"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD3B3D72;
-	Wed, 14 Feb 2024 04:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D3710A0F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707885793; cv=none; b=el95PVpbDQLXDpDQwqlctaNlQPWh6zIB9MC/ljrAqMSMGZ7NhAoLMSSP2piLz8SH3bn2wqXIxhEazzrJraXZd2wIJywnCQnuxss89JoqBzHP00MnCY5EPN8v8NwrGCS4eGbEgHD7zDpLjw2Nl7bcERqpiCC6nlG4qHjvHZu0jv4=
+	t=1707886340; cv=none; b=FEmJp3Ktp3Ya+QWqKS0kVQLoojO4mgj3FZ8JQKQm0msElLry76FyYb+u3dvLbOU95NRelmnhrys0cLoA3lQhmUkqrckZF9cavohrorDusDTOrUOTgPq+jNN+YZron06I1I0jldgodMuZnMYawwA2IvOUln6AvaPNArvmjOynO6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707885793; c=relaxed/simple;
-	bh=RdhqHGC3OuB7dWbMuYy8MMrSYo1ZehDKl3DCLHtGNo8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mKBibWfPKM0T+isVEIHzDSpUOLm5S+P4jAdLdye/Z6lr5JF2lEJD4HX2l11dFxa6aH0gD5S+ADZNsWh4hBYE/IWp1dvDg/jCrm/s/bC5L2AVxRrpssjauozvxmqTKCTRRrRVPYLpYGvvQDdfe2Ab5QiQ84dK3AiKyj1dJYANIrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ES6AY3cI; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41E45LfS014253;
-	Wed, 14 Feb 2024 04:42:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=2o2TN/WjoUkcBabvDoZhXwABCTSWpYGTGQprEg4COwc=;
- b=ES6AY3cIlKeogGzLtJ+D8X97LKqNOGVClOkzW8FE1pCviqzCLgLhV5VZLOwTaOpVi1zI
- YkcEVQpPp4qOvv6qoKns/c9QtXjppGCozZGcVNCqM11I0YQBY7aUV8gu46VeTwrVG4q4
- C+vM1xH8pF/+r/eRILhcQ6/Z/VPRl5lSjFJnu0KOsK894XIAoUX36W+s0afLiKM7T5Bq
- tHFhUu4nDIe/zrjwKlZEzoW7zMb5FheN3Pfh7E46PmcSoFifNFVVwUQY3b0Q0sW46kXa
- 9aps8VQw5GkorSclgJnkRr6AURXf8A/b5lGOYSqKCzeMjJ8vpQ0bVmpxJIlJNa1rvajY +A== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8p64r1kq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 04:42:59 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41E3oeKN013874;
-	Wed, 14 Feb 2024 04:42:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apb4pbs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 04:42:58 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41E4gv3P002968;
-	Wed, 14 Feb 2024 04:42:58 GMT
-Received: from pkannoju-vm.us.oracle.com (dhcp-10-166-169-72.vpn.oracle.com [10.166.169.72])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w6apb4p92-1;
-	Wed, 14 Feb 2024 04:42:57 +0000
-From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-To: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-        manjunath.b.patil@oracle.com,
-        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Subject: [PATCH RFC] bonding: rate-limit bonding driver inspect messages
-Date: Wed, 14 Feb 2024 10:12:45 +0530
-Message-Id: <20240214044245.33170-1-praveen.kannoju@oracle.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1707886340; c=relaxed/simple;
+	bh=PFUgXz8ct68KZJ5vFMzy6RkzeKCtmazpm9FVQ9KKOdk=;
+	h=Mime-Version:Subject:From:To:CC:Message-ID:Date:Content-Type:
+	 References; b=c8ItOinif+imDhTtmaYvtuZKzk5tsucCr24vi4pVNdbTZ+DJI8YMyAUnch5T5unsEwaa8RakEH9ZC/0Pe47QFDb3Gxi0wZxLtStP9hA+OdL6Gw7sCudBpTj/gwF8APXQf65ot4WQHu7yF3QlLGRp/tV2DHY4jMlm0tfHzJk6Z14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Nu/CrzEj; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240214045215epoutp022d0250dd80ee487f3d19417a7d86fff0~zoZLRDaul1362713627epoutp02W
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:52:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240214045215epoutp022d0250dd80ee487f3d19417a7d86fff0~zoZLRDaul1362713627epoutp02W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707886335;
+	bh=nSvBImm0z35kzVe3ZgLeWjkV2Pt4Ri5HJ6q+F34gkW8=;
+	h=Subject:Reply-To:From:To:CC:Date:References:From;
+	b=Nu/CrzEjQBSsP5ngoHzw41z2OH2uuAgsty4ZnhK2YXBfVGJMC/622/gQ+O+vBEohf
+	 vP/p/sNIKgvR2IgSolzdBUZTtQS6Lo50SN3FGxCDuner6r0fcrLet2D6vVu0ux7+6G
+	 RgBCU2wtL3XZWt2xfrzbz4iZFh6vqkExCwNMAO38=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+	20240214045215epcas2p422724170d640ab4e1676ee1b485ae724~zoZKtilBu0418904189epcas2p4U;
+	Wed, 14 Feb 2024 04:52:15 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.92]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4TZQly3JKQz4x9Px; Wed, 14 Feb
+	2024 04:52:14 +0000 (GMT)
+X-AuditID: b6c32a48-963ff70000002587-71-65cc46feebea
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+	epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+	24.FF.09607.EF64CC56; Wed, 14 Feb 2024 13:52:14 +0900 (KST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402140034
-X-Proofpoint-ORIG-GUID: t9v5Z0uoXaaXemWmQ2pSpt_TZEQRN0Oj
-X-Proofpoint-GUID: t9v5Z0uoXaaXemWmQ2pSpt_TZEQRN0Oj
+Mime-Version: 1.0
+Subject: [PATCH] perf: CXL: fix CPMU filter value mask length
+Reply-To: hj96.nam@samsung.com
+Sender: Hojin Nam <hj96.nam@samsung.com>
+From: Hojin Nam <hj96.nam@samsung.com>
+To: "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"jonathan.cameron@huawei.com" <jonathan.cameron@huawei.com>
+CC: Wonjae Lee <wj28.lee@samsung.com>, KyungSan Kim
+	<ks0204.kim@samsung.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "will@kernel.org" <will@kernel.org>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b@epcms2p8>
+Date: Wed, 14 Feb 2024 13:52:14 +0900
+X-CMS-MailID: 20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdljTQvef25lUg3mNwharFl5jszi6h8Ni
+	0+NrrBbnZ51isbi8aw6bxdLrF5ksWu6YWmy8/47NgcNjzbw1jB4tR96yemxa1cnmsXlJvUff
+	llWMHp83yQWwRWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE
+	6Lpl5gBdo6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMC/QK07MLS7NS9fLSy2x
+	MjQwMDIFKkzIzpiwybrgEl/FtJVTWBsYv3N1MXJwSAiYSOx7otLFyMUhJLCDUeJl51wWkDiv
+	gKDE3x3CXYycHMICthI7Ds5nBrGFBOQk9pw4zwIR15BY+/0wO4jNJqAmsfD+JbAaEYEqievv
+	nzKBzGQW2MYk8ffhUkaQhIQAr8SM9qcsELa0xPblW6HiGhI/lvUyQ9iiEjdXv2WHsd8fmw9V
+	IyLReu8sVI2gxIOfu6HiUhKf7m6CihdLzN6/DCpeILHixyKoXfoSjdffs0H85Stx7bI/SJhF
+	QFViyYtOVogSF4lvM9aB2cwC8hLb385hBilnFtCUWL9LHxJSyhJHbrFAVPBJdBz+yw7z1I55
+	T5ggbCWJ/R2tUMdISNw5cRnqGA+Jm20rWCAhGCjx8Nh7xgmMCrMQ4TwLyd5ZCHsXMDKvYhRL
+	LSjOTU8tNiowgUdscn7uJkZwotTy2ME4++0HvUOMTByMhxglOJiVRHgvzTiRKsSbklhZlVqU
+	H19UmpNafIjRFOjjicxSosn5wFSdVxJvaGJpYGJmZmhuZGpgriTOe691boqQQHpiSWp2ampB
+	ahFMHxMHp1QD04QjF7lnLg8V93XNMfIW70xiytO4dCfBt6b82dd7d7MqQnuiQx5Olt41ReLY
+	Rm2dly+KBKW72nfcOnuvXW7WZ6v/heoJrPVHtX63rHKyvH1/1g/WU6Icko+TPv1zU9+rMKfj
+	g46A9iS+TSvLu365f+HYuT9rZVNgjfJKrQ2+RXNldkVpC98TqSzlZ9+VeOL1rtcVmW88WPb/
+	2vpcVrPWc6bunJzO1cdbvSKcf/Nk3c2oqssMv27pNHPu5/2LFpiunxDy6tG//PLoKhapsNi5
+	YYKlShyuTYJCRmp/bln08/z1t1fnNbtg+PF4u0bOtGk/ispiWk8Jr1tUNmuHnXrpLM/rB07H
+	iS32n3NvdWGAEktxRqKhFnNRcSIAgqannR0EAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b
+References: <CGME20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b@epcms2p8>
 
-Rate limit bond driver log messages, to prevent a log flood in a run-away
-situation, e.g couldn't get rtnl lock. Message flood leads to instability
-of system and loss of other crucial messages.
+CPMU filter value is described as 4B length in CXL r3.0 8.2.7.2.2.
+However, it is used as 2B length in code and comments.
 
-Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Fixes: 5d7107c72796 ("perf: CXL Performance Monitoring Unit driver")
+Signed-off-by: Hojin Nam
 ---
- drivers/net/bonding/bond_main.c | 34 +++++++++++++++++++---------------
- include/net/bonding.h           | 11 +++++++++++
- 2 files changed, 30 insertions(+), 15 deletions(-)
+ drivers/perf/cxl_pmu.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 4e0600c..32098dd 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2610,12 +2610,13 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			commit++;
- 			slave->delay = bond->params.downdelay;
- 			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
--					   (BOND_MODE(bond) ==
--					    BOND_MODE_ACTIVEBACKUP) ?
--					    (bond_is_active_slave(slave) ?
-+				bond_info_rl(bond->dev, slave->dev,
-+					     "link status down for %sinterface, disabling it in %d ms\n",
-+					     (BOND_MODE(bond) ==
-+					     BOND_MODE_ACTIVEBACKUP) ?
-+					     (bond_is_active_slave(slave) ?
- 					     "active " : "backup ") : "",
--					   bond->params.downdelay * bond->params.miimon);
-+					     bond->params.downdelay * bond->params.miimon);
- 			}
- 			fallthrough;
- 		case BOND_LINK_FAIL:
-@@ -2623,9 +2624,10 @@ static int bond_miimon_inspect(struct bonding *bond)
- 				/* recovered before downdelay expired */
- 				bond_propose_link_state(slave, BOND_LINK_UP);
- 				slave->last_link_up = jiffies;
--				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
--					   (bond->params.downdelay - slave->delay) *
--					   bond->params.miimon);
-+				bond_info_rl(bond->dev, slave->dev,
-+					     "link status up again after %d ms\n",
-+					     (bond->params.downdelay - slave->delay) *
-+					     bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-@@ -2648,18 +2650,20 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			slave->delay = bond->params.updelay;
- 
- 			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
--					   ignore_updelay ? 0 :
--					   bond->params.updelay *
--					   bond->params.miimon);
-+				bond_info_rl(bond->dev, slave->dev,
-+					     "link status up, enabling it in %d ms\n",
-+					     ignore_updelay ? 0 :
-+					     bond->params.updelay *
-+					     bond->params.miimon);
- 			}
- 			fallthrough;
- 		case BOND_LINK_BACK:
- 			if (!link_state) {
- 				bond_propose_link_state(slave, BOND_LINK_DOWN);
--				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
--					   (bond->params.updelay - slave->delay) *
--					   bond->params.miimon);
-+				bond_info_rl(bond->dev, slave->dev,
-+					     "link status down again after %d ms\n",
-+					     (bond->params.updelay - slave->delay) *
-+					     bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index 5b8b1b6..ebdfaf0 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -39,8 +39,19 @@
- #define __long_aligned __attribute__((aligned((sizeof(long)))))
- #endif
- 
-+DEFINE_RATELIMIT_STATE(bond_rs, DEFAULT_RATELIMIT_INTERVAL,
-+		       DEFAULT_RATELIMIT_BURST);
-+
-+#define bond_ratelimited_function(function, ...)	\
-+do {							\
-+	if (__ratelimit(&bond_rs))		\
-+		function(__VA_ARGS__);			\
-+} while (0)
-+
- #define slave_info(bond_dev, slave_dev, fmt, ...) \
- 	netdev_info(bond_dev, "(slave %s): " fmt, (slave_dev)->name, ##__VA_ARGS__)
-+#define bond_info_rl(bond_dev, slave_dev, fmt, ...) \
-+	bond_ratelimited_function(slave_info, fmt, ##__VA_ARGS__)
- #define slave_warn(bond_dev, slave_dev, fmt, ...) \
- 	netdev_warn(bond_dev, "(slave %s): " fmt, (slave_dev)->name, ##__VA_ARGS__)
- #define slave_dbg(bond_dev, slave_dev, fmt, ...) \
--- 
-1.8.3.1
+diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
+index 365d964b0f6a..ca5e92f28b4a 100644
+--- a/drivers/perf/cxl_pmu.c
++++ b/drivers/perf/cxl_pmu.c
+@@ -59,7 +59,7 @@
+ #define   CXL_PMU_COUNTER_CFG_EVENT_GRP_ID_IDX_MSK     GENMASK_ULL(63, 59)
 
+ #define CXL_PMU_FILTER_CFG_REG(n, f)   (0x400 + 4 * ((f) + (n) * 8))
+-#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(15, 0)
++#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(31, 0)
+
+ #define CXL_PMU_COUNTER_REG(n)         (0xc00 + 8 * (n))
+
+@@ -314,9 +314,9 @@ static bool cxl_pmu_config1_get_edge(struct perf_event *event)
+ }
+
+ /*
+- * CPMU specification allows for 8 filters, each with a 16 bit value...
+- * So we need to find 8x16bits to store it in.
+- * As the value used for disable is 0xffff, a separate enable switch
++ * CPMU specification allows for 8 filters, each with a 32 bit value...
++ * So we need to find 8x32bits to store it in.
++ * As the value used for disable is 0xffff_ffff, a separate enable switch
+  * is needed.
+  */
+
+@@ -642,7 +642,7 @@ static void cxl_pmu_event_start(struct perf_event *event, int flags)
+                if (cxl_pmu_config1_hdm_filter_en(event))
+                        cfg = cxl_pmu_config2_get_hdm_decoder(event);
+                else
+-                       cfg = GENMASK(15, 0); /* No filtering if 0xFFFF_FFFF */
++                       cfg = GENMASK(31, 0); /* No filtering if 0xFFFF_FFFF */
+                writeq(cfg, base + CXL_PMU_FILTER_CFG_REG(hwc->idx, 0));
+        }
+
+--
+2.34.1
 
