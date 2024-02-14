@@ -1,106 +1,113 @@
-Return-Path: <linux-kernel+bounces-65324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281D3854B2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:13:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FD7D854B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77D41B26ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:13:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7256D1C21BCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F085256B98;
-	Wed, 14 Feb 2024 14:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6048655C04;
+	Wed, 14 Feb 2024 14:18:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tnyLrP5u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MxzaA5Ac"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EDF5644D;
-	Wed, 14 Feb 2024 14:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8242445C15;
+	Wed, 14 Feb 2024 14:18:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707919997; cv=none; b=hiTRNW8IF/LvBENc+3SOPH6dmFU38krdI4y2sdjsI8Ok5XvKLXDbtFB9h6pTSKGQG6dxRCANLL/xoitN17qnNQ+JG3rarnQIAo7aTRSyuuzgp/rMmJRZAkcv5+eNBfrcQxAMekJG2M7HojVoN8cS662TGyJft5XUJepknHoI/T0=
+	t=1707920298; cv=none; b=loV4XX4JpSkVmVhTTKSTZc96Q9Q3o0Bh1ZLd1tdlT8VeW1f1f68SUUk+kXym6m4ekn9svcO80Sxo1yYxkS504PJB4+MABc+TUXvCu0mhxakJNr8LuAS37dDZicNoXc8VlOnJvwVd92ZTjW0Mx3Ql1GVrpG7m8FjbtNVfQW5OK98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707919997; c=relaxed/simple;
-	bh=qKI0Mq/4mMW7dk4aVLjXDj9clhixJedgDgBhRCMhH4I=;
+	s=arc-20240116; t=1707920298; c=relaxed/simple;
+	bh=F/m7H9XcLg+gnuaRo9ZLUMqLmFCPe8stNoV8lxI9SqQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FOqZ3+dcqBI14MXh+zidrma0JG0B27/NSglYTJeNUv+KhwOXA2tNBgjAwaB/vpyFf9JGTnqgIHn0GNiE1W4wv5wR2AX1bzMbCkwp1lmRCrZPUnbrSOu7aieuK1qHJmU9dkxq74cr5I05ECJ+XcCw8NNZi0HIqFyENr71EP0XYY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tnyLrP5u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D4CC433C7;
-	Wed, 14 Feb 2024 14:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707919996;
-	bh=qKI0Mq/4mMW7dk4aVLjXDj9clhixJedgDgBhRCMhH4I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tnyLrP5uyM2E/dBXZaUe+qjhiXIzutbb3XiPxok0lcmQbIWnAHst5J3FpTEhhBy6s
-	 PaH2lSF/mjNKCVii2Qgy7EgbY9XouzyMIMEJNXsbza1jAzVWpFrLl//6P8q0TbbNue
-	 +ivnnvnkJUkRxp1OzPixGjRJD+ZRBEoZjLSuOD3DmohhQpbmGMSTxdUJZyR4DyQrZe
-	 jel/SygS69q0TNhti5wgulYC4EP201J883AchgyfHK9Kmp0YiPbqb+K7Db9cxJzhNS
-	 utgcHL3T+hX8y+MpRXERqiHXALiOuDH0YV5uxbdH6daup457bB+FnVLSJvFT5+mUeO
-	 scFi2/1f/Lv+Q==
-Date: Wed, 14 Feb 2024 14:13:11 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, lgirdwood@gmail.com,
-	quic_fenglinw@quicinc.com, quic_collinsd@quicinc.com,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
- voltage
-Message-ID: <dcce3fa9-ecf3-42be-adf6-ca653a79ba2e@sirena.org.uk>
-References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
- <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
- <f38468b4-8b16-4180-9738-0a2b557651a1@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b+yD/wIaI0Z+fEyPkxqmvaSNhdWWs54PihAXwJmFHL0lH1twtOR/0IlaaGzTphvpcso9fpr6FEqAg6t2xLVHRl6OyS5MZ/iE0cbkmessRVoqHrQnzjboi+b0BhaOonwoQXIokro9pg5FGC4axHh+mAX37W9troc+F2jHR1uumZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MxzaA5Ac; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=xx3kjMO2T22FWPmvqpk/qy733P8AnnIkS7R4fayZqCM=; b=MxzaA5AcaLprG4OZFJelwSCpVl
+	VR59HG6x3rHCUPUh4IeHN6nmNeHGfGZ8AeDXxtphOXVRyW/P1G9+d0RpmzVy44NDKhBF4OgXYJscc
+	K4X1ca5yntHy6vsl+SdfVS5zh4IvS/uJIiz05g/PqYC8erwhhkrbQn6OXkGmfdhlo1XBZus7y3/7n
+	WMVlEdDgIHTc0KJ8y8Qsb/VAyWDnrLZXwcseM0cQ019hUBHpzQPqSq0VgY0usNmgMMsipWROoYNXw
+	OF8zErOzwDJk1IJj9/uc4yD0mpLk0tVBQBMNtAiVSysZUaRvOELZaE4jKrqN5ePPxmju/ptfpYRcY
+	HZoj9xEQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raG5Q-0000000Gn3y-2ZrO;
+	Wed, 14 Feb 2024 14:18:08 +0000
+Date: Wed, 14 Feb 2024 14:18:08 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: David Hildenbrand <david@redhat.com>, gregkh@linuxfoundation.org,
+	akpm@linux-foundation.org, vbabka@suse.cz, dhowells@redhat.com,
+	surenb@google.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	# see patch description <stable@vger.kernel.org>
+Subject: Re: [PATCH] mm/huge_memory: fix swap entry values of tail pages of
+ THP
+Message-ID: <ZczLoOqdpMJpkO5N@casper.infradead.org>
+References: <1707814102-22682-1-git-send-email-quic_charante@quicinc.com>
+ <a683e199-ce8a-4534-a21e-65f2528415a6@redhat.com>
+ <8620c1a0-e091-46e9-418a-db66e621b9c4@quicinc.com>
+ <845ca78f-913b-4a92-8b40-ff772a7ad333@redhat.com>
+ <bc1a5e36-1983-1a39-4d06-8062993a4ca4@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vLUCGveXzK8CcVf7"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f38468b4-8b16-4180-9738-0a2b557651a1@linaro.org>
-X-Cookie: Available while quantities last.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bc1a5e36-1983-1a39-4d06-8062993a4ca4@quicinc.com>
 
+On Wed, Feb 14, 2024 at 12:04:10PM +0530, Charan Teja Kalla wrote:
+> > 1) Is it broken in 5.15? Did you actually try to reproduce or is this
+> >    just a guess?
+> > 
+> 
+> We didn't run the tests with THP enabled on 5.15, __so we didn't
+> encounter this issue__ on older to 6.1 kernels.
+> 
+> I mentioned that issue exists is based on my understanding after code
+> walk through. To be specific, I just looked to the
+> migrate_pages()->..->migrate_page_move_mapping() &
+> __split_huge_page_tail() where the ->private field of thp sub-pages is
+> not filled with swap entry. If it could have set, I think these are the
+> only places where it would have done, per my understanding. CMIW.
 
---vLUCGveXzK8CcVf7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think you have a misunderstanding.  David's patch cfeed8ffe55b (part
+of 6.6) _stopped_ us using the tail ->private entries.  So in 6.1, these
+tail pages should already have page->private set, and I don't understand
+what you're fixing.
 
-On Wed, Feb 14, 2024 at 02:07:13PM +0000, Bryan O'Donoghue wrote:
-> On 14/02/2024 13:25, Mark Brown wrote:
-> > On Wed, Feb 14, 2024 at 12:16:14PM +0000, Bryan O'Donoghue wrote:
-
-> > >   	.voltage_ranges = (struct linear_range[]) {
-> > > -		REGULATOR_LINEAR_RANGE(1800000, 0,  2,  200000),
-> > > +		REGULATOR_LINEAR_RANGE(1808000, 0,  2,  200000),
-
-> > This will also offset all other voltages that get set, is that expected
-> > and desired?
-
-> Yep, looks typo in the original submission.
-
-> ldo3, ldo4 and ldo6 should all be 1.808.
-
-Not just that but also note that every voltage step in the range will
-have the 8mV offset added.
-
---vLUCGveXzK8CcVf7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXMynYACgkQJNaLcl1U
-h9DLuQf/Z0YYpkjqyW5+exh6l/SA5rqqrxawOT0BgtGEljrdTuxUknHpS4UAuWTb
-KAQNpzO5dh9HNHFjUbeaRb5H1Dqqmr8WohegUr1+sntz1aj3VSk29SOSMiQKgYWi
-18R6b8hPxOyWUT0Bzg67PxYaXFLpOguH/0R3ZKrTWOWemGT/m5xxvuq84OVWHyHM
-5TC6CrqiACcEVSsiJM832GZzkEpSXjkXMZRRTrmgscDNEpp1qjVIpJ5Jb92IGmrb
-QSk8cq4koap9Ex/+ctmUCBvS59c8tpPL/Jum51UawfChocAoRnC2oTzMWPm2OkkK
-bCxeJZsiXiiV5yxGJJNZBCwfZqBJIg==
-=0gZW
------END PGP SIGNATURE-----
-
---vLUCGveXzK8CcVf7--
+> > 2) How did you come up with 417013e0d18 ("mm/migrate: Add
+> >    folio_migrate_mapping()")
+> OOPS, I mean it is Fixes: 3417013e0d18 ("mm/migrate: Add
+> folio_migrate_mapping()").
+> 
+> My understanding is that it a miss in folio_migrate_mapping() where the
+> sub-pages should've the ->private set. But this is just a
+> reimplementation of migrate_page_move_mapping()(where also the issue
+> exists, tmk).
+> 
+> commit 3417013e0d183be9b42d794082eec0ec1c5b5f15
+> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Date:   Fri May 7 07:28:40 2021 -0400
+> 
+>     mm/migrate: Add folio_migrate_mapping()
+> 
+>     Reimplement migrate_page_move_mapping() as a wrapper around
+>     folio_migrate_mapping().  Saves 193 bytes of kernel text.
+> 
+> Thanks.
+> 
 
