@@ -1,116 +1,109 @@
-Return-Path: <linux-kernel+bounces-65241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E8368549ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B96828549F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B6C82843A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:01:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 763E028D6F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4211053399;
-	Wed, 14 Feb 2024 13:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1A853373;
+	Wed, 14 Feb 2024 13:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WgiA1xJc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="T3LIOYRE"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3183352F6E;
-	Wed, 14 Feb 2024 13:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FC252F9F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915698; cv=none; b=gERNn1oOqm/EiDoVoE6m8PXiHv5VkdTjzsbbXwwp0UrPUiguUx1XXDsmkCbPbmwBxMPYNUSbeCMq616AhOtjTvSCo0O7iIXIE8TwVe80ey3YerNIBQS/EuvwdcXN9HHsNyMirDZpRMyVisZEbNywdUD10V53X08xIE58SKX8pVw=
+	t=1707915733; cv=none; b=gYuAGdZHhjAjDpBOyJVazfsULnzMYb/oPU5ikQIqFdYjZufXNpo47nE3P2jr1YR+qjK9AUaTEP+bXIJ9ApjE8KFCjTHuExVBCgyZjUveP2uPgQjWUF0T8LE83ScVU5yvPlR011AkThQd+GwZdeocsyU4k3/KrMIRE+K9gfLFhzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915698; c=relaxed/simple;
-	bh=UTA/0dr5RgWO2sHiI40Q/d9Q5m5+NjUgM/xZY5lfqcA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AJJ+X/6AgClrTPVxll1rZobgee2iGzlYhDybnBbl0yJnNt82v+4Goo9QSH8auJxHlf85ldOFSG2jvXnqn5XuyoW02MUhVhNIKtnsYoff04V8qN3f/i+cSy/wZ+EqPYp56PaBmhe5Oe5JjdsnBTGfJddjx1ZJ5GvR+CiiIHYBSWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WgiA1xJc; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707915697; x=1739451697;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UTA/0dr5RgWO2sHiI40Q/d9Q5m5+NjUgM/xZY5lfqcA=;
-  b=WgiA1xJcU1VtS51r8hAt2p84H4fEbCz+8FwtheEKCttQPNXpm3kCXXft
-   UQ2wmcndvZGdHyRB1GjpNtVL8GddFzPTCj6U5W6+GRSODpsxVfmlXEOze
-   sEV9CJU2uinr5zopiK0Zgpo+gRB42XGHZiM38kwRlCw71/gCEqI7YbDFS
-   VcRvvsRwVCEbo0JMf6Y1tTU7Jjql6ct2ll/lvqaqyGXS9pbDDyxoAgCiB
-   /Lngyft+pKmNbdnmuGhIXHmmoJ4bwlYkAw4M/CoebxR/+yPJH4X09VEeX
-   Wd82loC61qEA0fh0YY1hJ33mWrt8kwOCSrjD+e759JCoQB0QAV139N/aK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1810745"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="1810745"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 05:01:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="912084251"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="912084251"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 05:01:32 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raEtG-00000004Ui2-0nGZ;
-	Wed, 14 Feb 2024 15:01:30 +0200
-Date: Wed, 14 Feb 2024 15:01:29 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
-	jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-	stanislaw.gruszka@linux.intel.com, lukas@wunner.de,
-	rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-	sashal@kernel.org
-Subject: Re: [PATCH v1] PCI / PM: Really allow runtime PM without callback
- functions
-Message-ID: <Zcy5qZ4rEbpY7ouC@smile.fi.intel.com>
-References: <20240212063233.5599-1-raag.jadav@intel.com>
- <20240213200648.GA1219964@bhelgaas>
- <ZcyZV2q1_QoK43vz@black.fi.intel.com>
+	s=arc-20240116; t=1707915733; c=relaxed/simple;
+	bh=VD7zYtGMmHeVlAM2fz9royx2rl1vyec+KkY4i/Lv32M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bgcvVKfCSG6XzZlBUS7VHEjoWDpCy9rG577amNyH1xWuGL4HapaKkqQJT/TAQQuZ6v3fi+gvJV6eM9ETEIEsUe45+lRNYTcZ7PaXdcIP6/r8/RVLasKVPNzShp22yNvRaEE6BNNUfgsy4YqnDQMENAXRCRQ690Xm4Cobq8/vmiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=T3LIOYRE; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c03d6e5e56so2596015b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:02:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707915731; x=1708520531; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VD7zYtGMmHeVlAM2fz9royx2rl1vyec+KkY4i/Lv32M=;
+        b=T3LIOYREjjNZSkhudnUc5Cr4UyY+hLGHLjAPM9mrvs3CFwxeayXomb8FVFfjZEFrVt
+         Na+cHElgMJ02oY299tfhzSt9SnjmZdAIg5Dk1c3uy2WDJOXemFg4QMeDPuqujD+T4zkj
+         r5ZN8hIOAAfePnS6dM1Vy9W8LP6o6qhtKjrZViAFX1tsQn/HrGi+fYDFCqISRVU17DYs
+         lfp5UpoMuDUqXsd1a3k6CUa/G/ifp00UU24x9Ce+vR+8t5y7V9SRd7eTVLTflYuFonmA
+         JScHAQl+iq11/hWIrzr5j7kuZ3CLlFwVky7tXRF+eubpUP/Pfo1pB/qticJoYLXoHv+K
+         Eapg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707915731; x=1708520531;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VD7zYtGMmHeVlAM2fz9royx2rl1vyec+KkY4i/Lv32M=;
+        b=Ck/vnKOIxklA2geUh6PwdWCmkze/pDUEmTwSgbiLQBlyUIvh5da7DraBSOJFeGiPYB
+         edG+B/5Zy4WXoI22I2z3e55QK/yHjXgujBB+pggHNTVJA+YtFaHwJVeXvZ4RrrAxCM4G
+         hOUKeyEOQL1jAichvjyARW84ss0u5oZRQVnsE13eVn5DaKGRZTJdM0zGKmjU6eTwHMVg
+         Cn8kAgZPr9wmgihHdwANQnoS8Y0syGR4/o8ilnz6gYB1dZ8eLTzlEtqOF/1Ipl4Tgg8F
+         gVzDgXp4TMhh8HODDy+PrVtowwHm5SSURyoqzOJlEC9mz4MA2sKm4BJ5McEUiXTu5dhl
+         ecyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXHKHW+O4/1VMs3ESIWZiIRSnG1EsZbxVHt1q3V2W2xNq2+W7G1RwEgMkmpHgbbYUJ6xDNXu4Zpy0LQT+irgsw+QjJO16VuR3IkqQTh
+X-Gm-Message-State: AOJu0Yys4A5kKeBxliwZOvh37t1UmwR1rc7aMnljXAJyePMOaYBZOy86
+	c9ptKAf+YaO1huH/3ReMQUAuda+KBVUIvmUofoa69fs8Q4H/ZZTrkmJlXj2iq/qfNzcnvMydg2z
+	S4avv6ynN2O+wWkVqvMVMQuBn3Cn1MvUocuRaRg==
+X-Google-Smtp-Source: AGHT+IEPS0V7YxUt0NBYw5QwuJGgE84saTNGAvFGJmdlkhRRd7Wdt4ChLS0y0QPWhBAUYffuH/+tg+hgttliVf3NB1A=
+X-Received: by 2002:a05:6808:1a2a:b0:3c0:4838:a490 with SMTP id
+ bk42-20020a0568081a2a00b003c04838a490mr2808794oib.30.1707915730831; Wed, 14
+ Feb 2024 05:02:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcyZV2q1_QoK43vz@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240214084419.6194-1-brgl@bgdev.pl> <Zcy3voO1yTPHo88T@smile.fi.intel.com>
+In-Reply-To: <Zcy3voO1yTPHo88T@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 14 Feb 2024 14:02:00 +0100
+Message-ID: <CAMRc=Mcbsz6DbxV2uO+wf73g364eoqDKetxNNDHFJ94AMvUr+A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] gpio: fix SRCU bugs
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
+	Alex Elder <elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, Mark Brown <broonie@kernel.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 12:43:35PM +0200, Raag Jadav wrote:
-> On Tue, Feb 13, 2024 at 02:06:48PM -0600, Bjorn Helgaas wrote:
-> > On Mon, Feb 12, 2024 at 12:02:33PM +0530, Raag Jadav wrote:
+On Wed, Feb 14, 2024 at 1:53=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Feb 14, 2024 at 09:44:15AM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Here are four fixes to some bugs in recent SRCU changes. The first one =
+fixes
+> > an actual race condition. The other three just make lockdep happy.
+>
+> Same comment here, can we simply redo this work so we won't have tons of =
+fixes
+> on top of the nice RCU rework?
+>
 
-..
+The rework is clearly a new development - not meant for backporting. I
+don't see any benefit from rebasing. These are normal fixes for a big
+rework.
 
-> > >  0)               |  pm_runtime_work() {
-> > >  0)               |    rpm_idle() {
-> > >  0)               |      rpm_check_suspend_allowed() {
-> > >  0)   1.500 us    |        __dev_pm_qos_resume_latency(); /* = 0x7fffffff */
-> > >  0)   4.840 us    |      } /* rpm_check_suspend_allowed = 0x0 */
-> > >  0)   1.550 us    |      __rpm_get_callback(); /* = 0xffffffffb4bc84f0 */
-> > >  0)   1.800 us    |      pci_pm_runtime_idle(); /* = -38 */
-> > >  0) + 17.070 us   |    } /* rpm_idle = -38 */
-> > >  0) + 22.450 us   |  } /* pm_runtime_work = -38 */
-> > 
-> > What is this timing information telling me?
-> 
-> It's a raw ftrace dump.
-
-(Told ya that people would be surprised with this without seeing how you get
- this and what fields mean)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Bart
 
