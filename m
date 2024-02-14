@@ -1,112 +1,188 @@
-Return-Path: <linux-kernel+bounces-66025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A93085558A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:07:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E45FF85558B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD4DA1C20B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:07:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B70828397B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD95141993;
-	Wed, 14 Feb 2024 22:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A2714198A;
+	Wed, 14 Feb 2024 22:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="btJEAflX"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WPacOA76"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB9613EFFE;
-	Wed, 14 Feb 2024 22:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDC0141987
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707948425; cv=none; b=tO1sN1g3RDOfZU56s7XLr0uj2l1owcvDAtoJxFY3w5OWzqd0DjJdKtKFCppIonk4yNf95ppDqyOaNH8BGBl2tH11dH3aJqzgjnpeQ/idaBwL5Qo8bq0gS9vizoTa6kl9rtKzPRIKfIz3rcYJ8UHIna68zTssXSY02EO7D51siYA=
+	t=1707948447; cv=none; b=BPlGC9cV/qoySxXOYoiAGaTSW5zsLbrQTaoyZmqmEGCfmMq4SaaViVtBBfcZSW2bJvI8umYyo7P9I+cxKNui5gUMxJTet47IFL8Laxoy9A95prfwXTXlc6foKLjtsAVnN4O7o5vh2l961GYNT8kJddtcKuIepc4kZQziZqK36Ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707948425; c=relaxed/simple;
-	bh=aix0FqqDegJfqcNO9XdPVBl5grLqx3B0T2kNMQA0DFw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=p/e5dwGVl9AZc1CwJzKWbO94zS36pb65CW0TK7AssPOlcf86no/3KsxeapJLcCgrmV7uzON68sEQcwE4ooLZ7bK49LI20nNqrTpEBuuXS96DngyUn4vR2DDpv0xGkk/p1C6cYTtqD6RgCBCTBYJpkomS1XiTqx1/6hAt8Br8ZLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=btJEAflX; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6E01742A45
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1707948417; bh=aix0FqqDegJfqcNO9XdPVBl5grLqx3B0T2kNMQA0DFw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=btJEAflXWsVdFlM1rBcmrSGNyYw1KQKJl1Z3VRcjZgbPQKfaET71njsfQC92EoCtx
-	 tXtCNeOr4KZxVotQRbXMBYSNp/vdURLGapdKsl8+iEUEu89FBq8lj5OlzEV+08cY5l
-	 yPIhBTh41svqSp0ioORWG2/ae/ybiYU75zbcoX6Op9vo0X0BxYtodCwd9gDEJlTGKD
-	 SWe2nBj0gDq7+jjPRBhLu1H8KnJOfm3LHhFAS9JPDIDHLqpjCduXBg+7u7WS2wMjdN
-	 d02vMko2CSPDayIUtlzNBhQTyHh7i1OCWb8qUE9U48fr+5OCIIaXhQgrynqEdh/aqz
-	 KYps049pOiPeA==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625:67c:16ff:fe81:5f9b])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 6E01742A45;
-	Wed, 14 Feb 2024 22:06:57 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Trilok Soni <quic_tsoni@quicinc.com>, Carlos Bilbao
- <carlos.bilbao@amd.com>, Greg KH <gregkh@linuxfoundation.org>, Jeffrey
- Hugo <quic_jhugo@quicinc.com>
-Cc: avadhut.naik@amd.com, alexs@kernel.org, iyanteng@loongson.cn,
- 2023002089@link.tyut.edu.cn, quic_bjorande@quicinc.com,
- linux-arm-msm@vger.kernel.org, workflows@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: embargoed-hardware-issues.rst: Fix
- Trilok's email
-In-Reply-To: <4d36cb5f-141b-5e01-783e-47059d0d5083@quicinc.com>
-References: <20240202164119.4090703-1-quic_jhugo@quicinc.com>
- <2024020223-eskimo-armoire-a517@gregkh>
- <78af3df9-693f-49a5-b6bd-02a146506e7e@amd.com>
- <4d36cb5f-141b-5e01-783e-47059d0d5083@quicinc.com>
-Date: Wed, 14 Feb 2024 15:06:56 -0700
-Message-ID: <87plwyzon3.fsf@meer.lwn.net>
+	s=arc-20240116; t=1707948447; c=relaxed/simple;
+	bh=K6cDHnzAl4sLP14OKUvfd5jdUMhZX1ctJ8TVWJBz+yQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=REq7GqRA660gz6PPrQ/nKO0kQexAtvWwY00iUDQTRsBfyXDKMhB0c7mqT2rRKaNF8zD6rsc5pT2UGjQxxFX8PmMrj3y5UMoyS1LtuiLYWr6WyOz7UXwcG+yg6NdUpJnKcMGINQVfwVsbsLpyg0VEga2qYk4k9kALd0ZA41Ymhjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WPacOA76; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5961a2726aaso139245eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:07:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707948445; x=1708553245; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sleFKn1PUH2Rkn/xzX8cOIwI1bd0b7EDvB+KCcYyKCs=;
+        b=WPacOA76FkFbypMPCyvHfhvPba1UdRyaa15FARcSy7n69jN7bRReH2lhsesnGYEy2d
+         oIMKW7WbxDXiIH3FTLpO8IPsLR05+JKeI6KN7abkdMK7Dqqkr2SiQvKantN453aURbfy
+         r2t/TWvTks3PxURBRoRyFMs9S4ZQMLDPJgOZw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707948445; x=1708553245;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sleFKn1PUH2Rkn/xzX8cOIwI1bd0b7EDvB+KCcYyKCs=;
+        b=CNpklxYRPeS14pxrliwDo6EWMpuRszHPdc+xEcbHWeaBtrSUadosDGQlms7N5L7QWc
+         CY36GVGtgpmfEJg2vcDVcaZ3N39vyxe+kVTf80DllTMdMNCFeaEGP++CtHV70LtEGr89
+         rZy97QQjQUVl7O/slYp/nryyZuGZGGc68zyjHTvrrQnOta5TtIOMRPm2hH4r+oQDYsCF
+         O5gNwgYaZOCJ4khrbTbr4htNS/2VPiMxZWZ+7pjymevdOhHGfwvL3VZiT7pk+m+qLD+5
+         eP8rCHcCiehfHfu0HNyh4R7fJlTGXsGQSpuB74La5CUNJZriZ7zquYtFsOy4m3wLfLeX
+         lVLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjjw8wdzoXpMs/2FPVBqPRmekmWMjMknxiW4bu3x3cE704d8PbgOfzHlmUqLLJ5OhT4/dgFGs3e/twrUJwMHYAIOTx0ff+OrWA0iin
+X-Gm-Message-State: AOJu0YxMdaDu4CotMrGhNwDTqkmrrbP05DsCxb7LOAzI2x+EwJM0ehnJ
+	AfhYkXR0FXwgW18OkSuc2FxGlRml0C2x+Kltm6yHnHKhALWDnb7nt4iRCIXK7A==
+X-Google-Smtp-Source: AGHT+IGz/ssrchHiTuyzilMpWL/T9c2lkPAOgkUgzUcy8sr4eYzKQF2LdNDAK5B6bwMdevqCle4AAg==
+X-Received: by 2002:a05:6358:648c:b0:176:5a5e:4bfc with SMTP id g12-20020a056358648c00b001765a5e4bfcmr4080166rwh.3.1707948444846;
+        Wed, 14 Feb 2024 14:07:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUchfZsRVKTfQebs+X7kNrW9fUdJ8LZ5XMtaiqhqSXF9jSBU2WtwT1FdJEBgg8UhbKxDiD19wrmGnhaTWs59a91wXO5Kovz00uoPU/4CfRLF8heeZP0m1YGhUECswc9oh85gMjXAYRZjnbhhHHNsuQ4pEubyqNI0rS4LsK6K8PTCLihcN7EOIvmbO7xgwIHPg1c6bEX9brNmiYx+dLwDJA7pfMqyVMo
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j191-20020a638bc8000000b005cfbdf71baasm4819711pge.47.2024.02.14.14.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 14:07:24 -0800 (PST)
+Date: Wed, 14 Feb 2024 14:07:23 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Fangrui Song <maskray@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	Nathan Chancellor <nathan@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH] x86/build: Simplify patterns for unwanted section
+Message-ID: <202402141405.0755DD4E5E@keescook>
+References: <20240214212929.3753766-1-maskray@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214212929.3753766-1-maskray@google.com>
 
-Trilok Soni <quic_tsoni@quicinc.com> writes:
+On Wed, Feb 14, 2024 at 01:29:29PM -0800, Fangrui Song wrote:
+> A s390 patch modeling its --orphan-handling= after x86 [1] sparked my
+> motivation to simplify patterns. Commit 5354e84598f2 ("x86/build: Add
+> asserts for unwanted sections") added asserts that certain input
+> sections must be absent or empty. The patterns can be simplified.
+> 
+> For dynamic relocations,
+> 
+> *(.rela.*) is sufficient to match all dynamic relocations synthesized by
+> GNU ld and LLD. .rela_* is unnecessary. --emit-relocs may create .rela_*
+> sections for section names prefixed with _, but they are not matched by
+> linker scripts.
+> 
+> .plt instead of .plt.* is sufficient to match synthesized PLT entries.
 
-> On 2/2/2024 9:06 AM, Carlos Bilbao wrote:
->> On 2/2/24 10:48, Greg KH wrote:
->>> On Fri, Feb 02, 2024 at 09:41:19AM -0700, Jeffrey Hugo wrote:
->>>> The servers for the @codeaurora domain have long been retired and any
->>>> messages addressed to @codeaurora will bounce.
->>>>
->>>> Trilok has an entry in .mailmap, but the raw documentation files still
->>>> list an old @codeaurora address.=C2=A0 Update the address in the
->>>> documentation files for anyone reading them.
->>>>
->>>> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
->>>> ---
->>>> =C2=A0 Documentation/process/embargoed-hardware-issues.rst=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 2 +-
->>>> =C2=A0 .../translations/sp_SP/process/embargoed-hardware-issues.rst=C2=
-=A0=C2=A0=C2=A0 | 2 +-
->>>> =C2=A0 .../translations/zh_CN/process/embargoed-hardware-issues.rst=C2=
-=A0=C2=A0=C2=A0 | 2 +-
->>>> =C2=A0 .../translations/zh_TW/process/embargoed-hardware-issues.rst=C2=
-=A0=C2=A0=C2=A0 | 2 +-
->>>> =C2=A0 4 files changed, 4 insertions(+), 4 deletions(-)
->>>
->>> I think we need an ack from Trilok for this :)
->>=20
->> Assuming ack from Trilok, regarding the Spanish documentation,
->>=20
->> Reviewed-by: Carlos Bilbao <carlos.bilbao@amd.com>
->
-> Looks good to me. Thank you.
->
-> Reviewed-by: Trilok Soni <quic_tsoni@quicinc.com>=20
+Do you mean ".plt.foo" matches ".plt" ?
 
-Applied, thanks.
+> .igot and .igot.plt are for non-preemptible STT_GNU_IFUNC in GNU ld (LLD
+> just uses .got), which the kernel does not use. In addition, if .igot or
+> .igot.plt is ever non-empty, there will be .rela.* dynamic relocations
+> leading to an assert failure anyway.
 
-jon
+I think at the time I was dealing with avoid multiple warnings out of
+the linker, as I was getting orphan warnings in addition to the
+non-empty warnings.
+
+> 
+> [1]: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-v1-6-8a665b3346ab@kernel.org/
+> 
+> Signed-off-by: Fangrui Song <maskray@google.com>
+
+Is anything harmed by leaving all of this as-is?
+
+-Kees
+
+> ---
+>  arch/x86/boot/compressed/vmlinux.lds.S | 6 +++---
+>  arch/x86/kernel/vmlinux.lds.S          | 8 ++++----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> index 083ec6d7722a..9f288f67972a 100644
+> --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> @@ -104,17 +104,17 @@ SECTIONS
+>  	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
+>  
+>  	.plt : {
+> -		*(.plt) *(.plt.*)
+> +		*(.plt)
+>  	}
+>  	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
+>  
+>  	.rel.dyn : {
+> -		*(.rel.*) *(.rel_*)
+> +		*(.rel.*)
+>  	}
+>  	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
+>  
+>  	.rela.dyn : {
+> -		*(.rela.*) *(.rela_*)
+> +		*(.rela.*)
+>  	}
+>  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
+>  }
+> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+> index a349dbfc6d5a..b3da7b81d2b3 100644
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -463,22 +463,22 @@ SECTIONS
+>  	 * explicitly check instead of blindly discarding.
+>  	 */
+>  	.got : {
+> -		*(.got) *(.igot.*)
+> +		*(.got)
+>  	}
+>  	ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
+>  
+>  	.plt : {
+> -		*(.plt) *(.plt.*) *(.iplt)
+> +		*(.plt)
+>  	}
+>  	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
+>  
+>  	.rel.dyn : {
+> -		*(.rel.*) *(.rel_*)
+> +		*(.rel.*)
+>  	}
+>  	ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
+>  
+>  	.rela.dyn : {
+> -		*(.rela.*) *(.rela_*)
+> +		*(.rela.*)
+>  	}
+>  	ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
+>  }
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
+> 
+
+-- 
+Kees Cook
 
