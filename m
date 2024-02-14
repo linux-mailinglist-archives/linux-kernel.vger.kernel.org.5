@@ -1,133 +1,170 @@
-Return-Path: <linux-kernel+bounces-65096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278A78547B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:05:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 554828547B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:06:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 206A9B2501E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:05:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCE2CB24F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424E218EAD;
-	Wed, 14 Feb 2024 11:05:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315C618E2E;
+	Wed, 14 Feb 2024 11:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bu55+Q1N"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fdS+gbDD"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F06418638;
-	Wed, 14 Feb 2024 11:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C61018E10;
+	Wed, 14 Feb 2024 11:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707908724; cv=none; b=HYv+jvHjueF9+7CzBkG9zNroX3Mlt/r1WPLgOQ8bPuIDHqqY4Vs5PBvom3NxmMM2D+KcjJqNY/ngaT5QJiWN6rgKFpcocalKO+49Ur9rxT57ybj2zsa3RdLfxEBzvJPnqGhILC2vb7Xd0amNDlngfocJVCeB85CF1eSqaaAUnC4=
+	t=1707908762; cv=none; b=rHkx4rcyLbv1zm+xygjpCmiMs2evJB6FFexDIY/EbsisVVPdhLdkwTGcma6/AsQn2bTnd8mZaE/ujSH9wHpP85qY+jEggFVDv/ALZq21r4/clyQyID1E5VLNwNwgOIniUIRgTomz6yuyIuojF4SZh3ipK5muqwCtTiiRZ15bYFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707908724; c=relaxed/simple;
-	bh=leNWJYh69CV7bQ1lqnd7BjWIi97NaiPuvMnUCm+KwVA=;
+	s=arc-20240116; t=1707908762; c=relaxed/simple;
+	bh=yfyMflBKNtVGtU2ImfDEona8nwijQRrVLRbwSrI2atQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LPlN5BFsvfg+jRYsdZv47oXuIjFHiOPjE/pBiZbckzg+0AZUldiG3NnOJumbv8MQx/++tWm9ASrWy0JoqxH7mEXz1oB+wr9nC09mt7tjHTKb2/SWO6M5KpKFIKF1wGfBL087/akDTYC/i3CVLliEneYrlJpEPezaIym9fCLwCys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bu55+Q1N; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707908723; x=1739444723;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=leNWJYh69CV7bQ1lqnd7BjWIi97NaiPuvMnUCm+KwVA=;
-  b=Bu55+Q1NxFgFJ5W5IAcJVrZ9trvJowb9yIqCwri1xY3wHVAU/AfArXgf
-   pahKP8AKmz6yTSPY6FcQRwG3T9th+hD6KLvCrgtUU+8aNFUKk0XaFbIVu
-   yfT8mrP9KAb95cSpv8vLv+Tgfgxi+QP54qdvBQizVrf5FNIyMZt2Tr6uL
-   eYzOnEkd+jCOsNylOrKEeY6+KHSFBg7/oj4IRLAg4uKH3iZGqizVXgOb3
-   3cADWHw55biaFjlYNe2VoC5egNE+6th0Dkdc6bNER8LG3SROnlpqmiu6q
-   4tVDhV5Lns7TH+7jNZNfluYLPYZ5JE3habUnQ6UjBoWeFgCkXVel8s+vn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2069860"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="2069860"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:05:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="3511208"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:05:20 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id ECCE111F86A;
-	Wed, 14 Feb 2024 13:05:16 +0200 (EET)
-Date: Wed, 14 Feb 2024 11:05:16 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Youssef Quaisse <yquaisse@gmail.com>
-Cc: bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-	gregkh@linuxfoundation.org, skhan@linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-media@vger.kernel.org
-Subject: Re: [PATCH] Fix three warnings when running `make htmldocs`
-Message-ID: <ZcyebKY86sAJDhr4@kekkonen.localdomain>
-References: <20240210221451.27769-1-yquaisse@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3LAIT3nd18xqPJEVAYJ/ckhvM1zHfCi5PI6CK3vMZrue0V28wKz9DiLm3JVwbOM8ZqL+3ASuR6cj0SuHlhfsCSqMr44wIRBoaPDykXff32IpSbgJqNPkCSFNRZi0WFppK3A4Niq5maNAVe5JM6EX6LpMgcAryDVbf64SM42hiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=fdS+gbDD; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7B0A040E023B;
+	Wed, 14 Feb 2024 11:05:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4oMTBDzLIK7G; Wed, 14 Feb 2024 11:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707908755; bh=RFhzM1mdJMfnEuHgaoIgi2HNPVK8ohL6VlPzvvVhHBg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fdS+gbDDk820q13tmn01nLrKge4DftiKKp4/vca/XB0m67UKxVrQlna6EuNVHkqZG
+	 QRHOEZtUKD5KRVHctmRzXcN3XIJ75Ss5td7yTZJeAsZv8atbGS3mxgte+9Ob/gtWzH
+	 Tj604yrwrEvshmu96Mmc+mElqecvIgDpas6LwPDZXjgAdAZGux6dmVvm+x17hGZrKF
+	 r8BN340NUkcRr4j/YYPnMMTkgW+yVFbXr4X3doLigfGUPEwyKUa1d95ay1tSQU0/pD
+	 cbNT7aF+4iDnE3XagjMpWHtsy6fvG9BviKvGrOSq9MB5Kqqvlrt/lSRmZ9aggRRgOp
+	 LZyH/iU7Z5UZsQA9hcPaklUVbYukJSNvfPEytv+1Wz/clbFgPGyXL4TitGQqU+kmDh
+	 g7OZFJVJcUlRRsbDVUEE7TwTCng9lA+tQBVqekrXlIIOFRZRNhmm4ADhr54MQuDwVW
+	 DKbhjuSf35EY9+ZUjDVGlvC0jgbo4s2nkoQ7nynu5Dze4nQlX3Ts3vNLc+8CntFcls
+	 /znaiguEzz3koFjtVu09lkZ897d6BiZ4jvmegjXAP0rF0kwYGMg34e0cms431oE+vj
+	 C+fQKVZ/qQS9WuVsmHd0XgHyHO62wvx7DjIMLqVuIod1jPdEfbaw26BWS+kbLhlH/9
+	 u1Twhe1dSJUaUm8kWc1yVTeY=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 26B6C40E0192;
+	Wed, 14 Feb 2024 11:05:46 +0000 (UTC)
+Date: Wed, 14 Feb 2024 12:05:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214110541.GFZcyehY44eSSYsW2l@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240210221451.27769-1-yquaisse@gmail.com>
+In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
 
-Hi Youssef,
+On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
+> +static inline struct cper_fru_poison_desc *get_fpd(struct fru_rec *rec, u32 entry)
+> +{
+> +	return &rec->entries[entry];
+> +}
 
-On Sat, Feb 10, 2024 at 10:14:38PM +0000, Youssef Quaisse wrote:
-> Running `make htmldocs` generates warnings for file
-> drivers/staging/media/ipu3/include/uapi/intel-ipu3.h.
-> 
-> Fix was to remove the "excess" definitions.
-> 
-> Warnings in question:
-> 
-> ```
-> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved1' description in 'ipu3_uapi_acc_param'
-> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved2' description in 'ipu3_uapi_acc_param'
-> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2778: warning: Excess struct member '__acc_osys' description in 'ipu3_uapi_flags'
-> ```
-> 
-> Signed-off-by: Youssef Quaisse <yquaisse@gmail.com>
+This one needs to go too.
 
-Thanks for the patch. These have been already addressed by commit
-dcef3ed5b0d79f89018e31d55cf09f2c2f81392b .
+> +static inline u32 get_fmp_len(struct fru_rec *rec)
+> +{
+> +	return rec->sec_desc.section_length - sizeof(struct cper_section_descriptor);
+> +}
 
-> ---
->  drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> index caa358e0bae4..4aa2797f5e3c 100644
-> --- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> +++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> @@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
->   *		&ipu3_uapi_yuvp1_y_ee_nr_config
->   * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
->   * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
-> - * @reserved1: reserved
->   * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
->   * @tcc:	total color correction config as defined in struct
->   *		&ipu3_uapi_yuvp2_tcc_static_config
-> - * @reserved2: reserved
->   * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
->   * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
->   * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
-> @@ -2724,7 +2722,6 @@ struct ipu3_uapi_obgrid_param {
->   * @acc_ae: 0 = no update, 1 = update.
->   * @acc_af: 0 = no update, 1 = update.
->   * @acc_awb: 0 = no update, 1 = update.
-> - * @__acc_osys: 0 = no update, 1 = update.
->   * @reserved3: Not used.
->   * @lin_vmem_params: 0 = no update, 1 = update.
->   * @tnr3_vmem_params: 0 = no update, 1 = update.
+Oh well, I guess we can keep that one.
+
+> +/* Calculate a new checksum. */
+> +static u32 get_fmp_checksum(struct fru_rec *rec)
+> +{
+> +	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
+> +	u32 len, checksum;
+> +
+> +	len = get_fmp_len(rec);
+> +
+> +	/* Get the current total. */
+> +	checksum = do_fmp_checksum(fmp, len);
+> +
+> +	/* Subtract the current checksum from total. */
+> +	checksum -= fmp->checksum;
+> +
+> +	/* Return the compliment value. */
+> +	return 0 - checksum;
+> +}
+
+Let's get rid of that one.
+
+Also, I think it is called *complement* value and you simply do
+
+        /* Use the complement value. */
+        rec->fmp.checksum = -checksum;
+
+I'd say.
+
+---
+
+diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
+index 9eaf892e35b9..f8799beddcc4 100644
+--- a/drivers/ras/amd/fmpm.c
++++ b/drivers/ras/amd/fmpm.c
+@@ -195,11 +195,12 @@ static u32 do_fmp_checksum(struct cper_sec_fru_mem_poison *fmp, u32 len)
+ 	return checksum;
+ }
+ 
+-/* Calculate a new checksum. */
+-static u32 get_fmp_checksum(struct fru_rec *rec)
++static int update_record_on_storage(struct fru_rec *rec)
+ {
+ 	u32 len, checksum;
++	int ret;
+ 
++	/* Calculate a new checksum. */
+ 	len = get_fmp_len(rec);
+ 
+ 	/* Get the current total. */
+@@ -208,15 +209,8 @@ static u32 get_fmp_checksum(struct fru_rec *rec)
+ 	/* Subtract the current checksum from total. */
+ 	checksum -= rec->fmp.checksum;
+ 
+-	/* Return the compliment value. */
+-	return 0 - checksum;
+-}
+-
+-static int update_record_on_storage(struct fru_rec *rec)
+-{
+-	int ret;
+-
+-	rec->fmp.checksum = get_fmp_checksum(rec);
++	/* Use the complement value. */
++	rec->fmp.checksum = -checksum;
+ 
+ 	pr_debug("Writing to storage");
+ 
 
 -- 
-Kind regards,
+Regards/Gruss,
+    Boris.
 
-Sakari Ailus
+https://people.kernel.org/tglx/notes-about-netiquette
 
