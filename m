@@ -1,93 +1,134 @@
-Return-Path: <linux-kernel+bounces-64888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B61854456
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E70854454
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F910285CFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:52:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1CAD2856C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575C279CC;
-	Wed, 14 Feb 2024 08:52:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1748D79D2;
+	Wed, 14 Feb 2024 08:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="I+0PK/P4"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Gk3z30vZ"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC59BE48;
-	Wed, 14 Feb 2024 08:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D6C6FDC;
+	Wed, 14 Feb 2024 08:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707900733; cv=none; b=c6KT6M0loMsYqmYbIpruGocCBQdcw91/Xfk2rWiIdGHWoqQ2RdQ4dbQ174ynpDchNmyuxsB/NUwFxHZaj/fjMwgWR/bWCQNXcvW1bLqHd9HolCMWndBqUtJ3QgMiZOxhqRd+TZK4G3pprtMtLeE2pP1PRzGw79n7sK9+h3yyRL8=
+	t=1707900711; cv=none; b=IpC8qCds4n9Okgq/KCEjHTcp0eZc8EzkZmLVPEA4PeYOTdBidEuSWxuHUsENHtBmtBwCZprOidW1SJm8la4Z9iwLY/vzOiwP8tiNFmTrYOrgmauKgP9pP+s28qxUEvJ44KMAiNFoMvOhbFWziquRsJlPHjjq8E2SVkRnhMYDzpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707900733; c=relaxed/simple;
-	bh=nEHFJ8FOb7Ym987IDiDvA7rd7Tjxqoe8bFUXqLzY7gk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HRTfJRbZ2uQjFLRJR5qIPmt4kqDqHWgRDMKo4fJkLF1XkOWyR9se5F6igeCQiMfAv5fU9LkYrIcms6/zdfH1FOEf/gpk0DpvG5ihBa2wlHufo5iF/wkTmh1CwxRpE2grIZgBokJuVbz7W0WvV3yfLiqWaOb+xIkNN0mz6AAxVlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=I+0PK/P4; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 32AF060434;
-	Wed, 14 Feb 2024 08:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1707900731;
-	bh=nEHFJ8FOb7Ym987IDiDvA7rd7Tjxqoe8bFUXqLzY7gk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I+0PK/P4QPFHY+jV3JTyXLnyJTtiSxWGr8KHfDeHreN8UDXCZ0ZCl1domDzbcpLqC
-	 UbhHwJ94K0S2GRhH+ovvGpcadwLBeE7ZotcRIgFK9qGjvE4ddtF3ehU6RzFsYMVyvG
-	 JrO3aRBZhkPYDDZ240g50Bd5CyMzAZVkq86yQdUTe1Rpu9thjwrSSm+WW2BAJ3dCB2
-	 HbH93XpXunWk4VCxwperPjszAzv2qZiyexF7uxIqEPU9tPlm5dHq+ayZ2+SLQFNCEJ
-	 mGqlQ2kreN9uNQSpvkUo9QZwoHF2cx0XVbuFcIlpMbwaZD/vJijXwKxN/6/pEuHjGm
-	 yN6CPSA6uio/A==
-Date: Wed, 14 Feb 2024 10:51:38 +0200
-From: Tony Lindgren <tony@atomide.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Dhruva Gole <d-gole@ti.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Johan Hovold <johan@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v6 1/6] printk: Save console options for
- add_preferred_console_match()
-Message-ID: <20240214085138.GQ52537@atomide.com>
-References: <20240213084545.40617-1-tony@atomide.com>
- <20240213084545.40617-2-tony@atomide.com>
- <Zcub1bQrDqHE0Mkt@smile.fi.intel.com>
- <20240214084905.GP52537@atomide.com>
+	s=arc-20240116; t=1707900711; c=relaxed/simple;
+	bh=enSiykOQ8N3JlqyINcLjzoJCOx2xCmGKN0l6xtncU0o=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=mpRvsdDfk5XszVRTlKynpqlTEz7X5l3dnnvKWRzGn3zMzcTDjZJ3382mciC16RLH1Y2jbwhUktDf8eoltHrGriFm2yyAhIuTIRLm4hRpfW8AVyM4O0mdS5RN0PN0XHnxJ+AmtWeBjubDe+fE9aCmLBjZ3W4sizpdlDTOvfb1Aw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Gk3z30vZ; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D5D5C240004;
+	Wed, 14 Feb 2024 08:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707900701;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NcaJN4aL+1eJm0OAqfQB+wrvwEsb6ZrlXGfdnsmoM24=;
+	b=Gk3z30vZS7hg+4gIAjFYUXRTnEpVba7F1suW7XDIu4o9drbR/2KGTQUh0A417M0t4tCbkr
+	BTXiBZ+F8/PLo5VSjB2VANa2mr1TUl+fUqh9vhgghygSCoWz3vVahTkP1YDqTg5GdC8Pqo
+	YtORhz66HW8NSOsUiyOAGCIWsahjiqQCm+pHgfhku3m/SeILR+FJ7dz4MjA6tIFUpCx38l
+	zazB1gRVa/RnASjnzMDf/F+zfFMBQnLRF/ZcMAg4XWslMoSEYh1cGB4hiZo6f8wP6vjVu5
+	BI/nlmAa516e+5OqvvfxmqMDM2t78tQhM+d1sYAuxB1WB9TEOWTnotAw5YnEFQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214084905.GP52537@atomide.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 14 Feb 2024 09:51:40 +0100
+Message-Id: <CZ4O9QACM45B.2HA0L2O4QL5PL@bootlin.com>
+Cc: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Dhruva
+ Gole" <d-gole@ti.com>, "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+ "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Mark Brown"
+ <broonie@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH] spi: spi-mem: add statistics support to ->exec_op()
+ calls
+X-Mailer: aerc 0.15.2
+References: <20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com>
+ <b0844e5a-ee4b-4608-99a1-877660e01d57@linaro.org>
+ <CZ41HDHS7WX6.6MJL1O2PBVW1@bootlin.com>
+ <7b3c08b0-80ed-4409-96d4-d55b938df6f4@linaro.org>
+In-Reply-To: <7b3c08b0-80ed-4409-96d4-d55b938df6f4@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-* Tony Lindgren <tony@atomide.com> [240214 10:49]:
-> * Andy Shevchenko <andriy.shevchenko@linux.intel.com> [240213 16:42]:
-> > 		strscpy(con->name, str, namelen);
-> > 		strscpy(con->opt, opt, optlen); // not sure if emptying opt is okay
-> 
-> The strings above now get terminated too sort with the + 1 removed,
-> I suggest we use what we already do for brl_opt:
-> 
-> 		strscpy(con->name, str, CONSOLE_NAME_MAX);
-> 		strscpy(con->opt, opt, CONSOLE_OPT_MAX);
-> 
+Hello,
 
-Heh but that won't work for str and CONSOLE_NAME_MAX..
+On Wed Feb 14, 2024 at 9:00 AM CET, Tudor Ambarus wrote:
+> On 2/13/24 15:00, Th=C3=A9o Lebrun wrote:
+> > On Tue Feb 13, 2024 at 1:39 PM CET, Tudor Ambarus wrote:
+> >>>  /**
+> >>>   * spi_mem_exec_op() - Execute a memory operation
+> >>>   * @mem: the SPI memory
+> >>> @@ -339,8 +383,12 @@ int spi_mem_exec_op(struct spi_mem *mem, const s=
+truct spi_mem_op *op)
+> >>>  		 * read path) and expect the core to use the regular SPI
+> >>>  		 * interface in other cases.
+> >>>  		 */
+> >>> -		if (!ret || ret !=3D -ENOTSUPP || ret !=3D -EOPNOTSUPP)
+> >>> +		if (!ret || ret !=3D -ENOTSUPP || ret !=3D -EOPNOTSUPP) {
+> >>> +			spi_mem_add_op_stats(ctlr->pcpu_statistics, op, ret);
+> >>> +			spi_mem_add_op_stats(mem->spi->pcpu_statistics, op, ret);
+> >>> +
+> >>
+> >> Would be good to be able to opt out the statistics if one wants it.
+> >>
+> >> SPI NORs can write with a single write op maximum page_size bytes, whi=
+ch
+> >> is typically 256 bytes. And since there are SPI NORs that can run at 4=
+00
+> >> MHz, I guess some performance penalty shouldn't be excluded.
+> >=20
+> > I did my testing on a 40 MHz octal SPI NOR with most reads being much
+> > bigger than 256 bytes, so I probably didn't have the fastest setup
+> > indeed.
+>
+> yeah, reads are bigger, the entire flash can be read with a single read o=
+p.
+>
+> >=20
+> > What shape would that take? A spi-mem DT prop? New field in the SPI
+> > statistics sysfs directory?
+> >=20
+>
+> I think I'd go with a sysfs entry, it provides flexibility. But I guess
+> we can worry about this if we have some numbers, and I don't have, so
+> you're fine even without the opt-out option.
 
-Tony
+Some ftrace numbers:
+- 48002 calls to spi_mem_add_op_stats();
+- min 1.053000=C2=B5s;
+- avg 1.175652=C2=B5s;
+- max 16.272000=C2=B5s.
+
+Platform is Mobileye EyeQ5. Cores are Imagine Technologies I6500-F. I
+don't know the precision of our timer but we might be getting close to
+what is measurable.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
