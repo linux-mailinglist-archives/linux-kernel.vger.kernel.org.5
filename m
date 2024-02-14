@@ -1,138 +1,102 @@
-Return-Path: <linux-kernel+bounces-65589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03AE854F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:51:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD7A854F1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2CFE1C29134
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB891F2384F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E4E60BBA;
-	Wed, 14 Feb 2024 16:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="K6yR/XmM"
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219B3605C1;
+	Wed, 14 Feb 2024 16:51:00 +0000 (UTC)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64CB60B82;
-	Wed, 14 Feb 2024 16:51:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B155C5EA;
+	Wed, 14 Feb 2024 16:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707929464; cv=none; b=Pl3wISyN+aJKDyIkWiyYKZxAxrck3XjjWt/NN02/D0ZrJPNwd2qyz2qxBhx42+O0LEheWe40qFphqfplaTyytO3K+TbxLlrgHiwJcrn/vs9etGDreMk6V/WsUFSAkBiPk84ZXdkjXf6Eqev8kTD1pkXoqzz+ODY+SgdZWgYQFc8=
+	t=1707929459; cv=none; b=OixhP7uhMuS0zFMGygJkno3Ih6SY2CCLQ7ATlb9YJtpEbAZjP+Xaerg7YG31szdYm484/EDyBYxegvXnMH8z87kWpnNQBov5i7u2S6av4sV2Rw4dOATjC1w5hxRDK5qPSIJvUHdgQUdouGlNJmDCpwZrTbAUjaIM71v2H8WjfSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707929464; c=relaxed/simple;
-	bh=7c/2k+DP/jX8b7hwRgJMRjMXKnwQ37+q3s+m74p7ssg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mxsVgU9ZPzcLBymWGoD/8M4sLa5RBRCE3iK8vztAoM1BvQjeQ4/7c0sJej6P34zrfT7MU6MX3bjLFrWygj2Q8XN5LiNqSarS7COEehl0vwiGkwoqJmYuFKLODuz/qsIob5YE7iJ+EMv6Ko6eXPRvLuUbEAHYv5jBNLCQ9YHLliY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=K6yR/XmM; arc=none smtp.client-ip=148.163.143.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EGhQ0F015745;
-	Wed, 14 Feb 2024 16:50:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pps0720;
- bh=G0H3Ukg4sOEmcUSwLhLyPtT8HbW50emICiCcGmN4ZT0=;
- b=K6yR/XmMrkX2+i/CQNojUZ/l4OjvN932lexEGi8G0Y/2vOJhHVLGpcyjzKk0pqmPM7Vl
- uF823K9sQveWxWmCPCfc1mFadZGhzmVYY3EOxpQbqBteN44i+bprx7nLrV4aTToskE+N
- qyeJDyGILB+q0HojmIEC8bVwyf/abhkwZW+zT9JmcuHRUQOcI9cQhbE3z4O9czXU0zfT
- u+xfdbI0217oClx3+r6Fi25WjigQBZ/dndAZ9Eo8dumKjDv08ol0J/WFrU6pqAGQrOWk
- sEnk/kx9KOjVdn6xGJWOegleY5+XoMt64h7rfyatwRl2Qm6pExtIEX3dCWYIECqTRoeK cw== 
-Received: from p1lg14878.it.hpe.com ([16.230.97.204])
-	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3w919u02kv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 16:50:46 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14878.it.hpe.com (Postfix) with ESMTPS id CC8BA2D870;
-	Wed, 14 Feb 2024 16:49:55 +0000 (UTC)
-Received: from anatevka.americas.hpqcorp.net (unknown [16.231.227.36])
-	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id E3401805AE3;
-	Wed, 14 Feb 2024 16:49:47 +0000 (UTC)
-From: Jerry Hoemann <jerry.hoemann@hpe.com>
-To: linux@roeck-us.net
-Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jerry Hoemann <jerry.hoemann@hpe.com>
-Subject: [PATCH v2 1/1] watchdog/hpwdt: Support Suspend and Resume
-Date: Wed, 14 Feb 2024 09:49:40 -0700
-Message-ID: <20240214164941.630775-2-jerry.hoemann@hpe.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240214164941.630775-1-jerry.hoemann@hpe.com>
-References: <20240214164941.630775-1-jerry.hoemann@hpe.com>
+	s=arc-20240116; t=1707929459; c=relaxed/simple;
+	bh=S42bjmD60jSOOw1MRkNUdJ295mrK6xebOQrF+1Ej8Xc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Iz6KiRMaGm4kMPIPEnLJduz2uv141/Lis5h3qBYfKTch4SJEra+ZFn6fcEVbx8VD1im42GW/3ZnKH88ZC+VcwWvme4eLI6Di0uJfU4LqVRyO3cYIBlq6B+jMVia5X7dD4Yv+UPXG2XRwx4UUZsnCUi4/SC/KvLm9u5d4Hda34eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id A3C842F20258; Wed, 14 Feb 2024 16:50:54 +0000 (UTC)
+X-Spam-Level: 
+Received: from [192.168.0.103] (unknown [178.76.204.78])
+	by air.basealt.ru (Postfix) with ESMTPSA id 0D23F2F20256;
+	Wed, 14 Feb 2024 16:50:52 +0000 (UTC)
+Message-ID: <6cbbecf1-eba1-f3e1-259a-24df71f44785@basealt.ru>
+Date: Wed, 14 Feb 2024 19:50:51 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: mBZqTb82VOkFUPfuDfW_9BFt8X35y5Az
-X-Proofpoint-ORIG-GUID: mBZqTb82VOkFUPfuDfW_9BFt8X35y5Az
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_09,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0 clxscore=1015
- mlxlogscore=944 impostorscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402140131
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 1/1] gtp: fix use-after-free and null-ptr-deref in
+ gtp_genl_dump_pdp()
+Content-Language: en-US
+To: Eric Dumazet <edumazet@google.com>
+Cc: pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, osmocom-net-gprs@lists.osmocom.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nickel@altlinux.org,
+ oficerovas@altlinux.org, dutyrok@altlinux.org
+References: <20240124101404.161655-1-kovalev@altlinux.org>
+ <20240124101404.161655-2-kovalev@altlinux.org>
+ <CANn89iLKc8-hwvSBE=aSTRg=52Pn9B0HmFDneGCe6PMawPFCnQ@mail.gmail.com>
+ <1144600e-52f1-4c1a-4854-c53e05af5b45@basealt.ru>
+ <CANn89iKb+NQPOuZ9wdovQYVOwC=1fUMMdWd5VrEU=EsxTH7nFg@mail.gmail.com>
+ <d602ebc3-f0e7-171c-7d76-e2f9bb4c2db6@basealt.ru>
+ <CANn89iJ4hVyRHiZXWTiW9ftyN8PFDaWiZnzE7GVAzu1dT78Daw@mail.gmail.com>
+From: kovalev@altlinux.org
+In-Reply-To: <CANn89iJ4hVyRHiZXWTiW9ftyN8PFDaWiZnzE7GVAzu1dT78Daw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add call backs to support suspend and resume.
+09.02.2024 22:21, Eric Dumazet wrote:
 
-Signed-off-by: Jerry Hoemann <jerry.hoemann@hpe.com>
----
- drivers/watchdog/hpwdt.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> Maybe, but the patch is not good, I think I and Pablo gave feedback on this ?
+>
+> Please trace __netlink_dump_start() content of control->module
+>
+> gtp_genl_family.module should be set, and we should get it.
+>
+> Otherwise, if the bug is in the core, we would need a dozen of 'work
+> arounds because it is better than nothing'
+>
+> Thank you.
 
-diff --git a/drivers/watchdog/hpwdt.c b/drivers/watchdog/hpwdt.c
-index 138dc8d8ca3d..ae30e394d176 100644
---- a/drivers/watchdog/hpwdt.c
-+++ b/drivers/watchdog/hpwdt.c
-@@ -378,11 +378,36 @@ static void hpwdt_exit(struct pci_dev *dev)
- 	pci_disable_device(dev);
- }
- 
-+static int hpwdt_suspend(struct device *dev)
-+{
-+	if (watchdog_active(&hpwdt_dev))
-+		hpwdt_stop();
-+
-+	return 0;
-+}
-+
-+static int hpwdt_resume(struct device *dev)
-+{
-+	if (watchdog_active(&hpwdt_dev))
-+		hpwdt_start(&hpwdt_dev);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops hpwdt_pm_ops = {
-+	LATE_SYSTEM_SLEEP_PM_OPS(hpwdt_suspend, hpwdt_resume)
-+};
-+
- static struct pci_driver hpwdt_driver = {
- 	.name = "hpwdt",
- 	.id_table = hpwdt_devices,
- 	.probe = hpwdt_init_one,
- 	.remove = hpwdt_exit,
-+
-+	.driver = {
-+		.name = "hpwdt",
-+		.pm = &hpwdt_pm_ops,
-+	}
- };
- 
- MODULE_AUTHOR("Tom Mingarelli");
+Thanks.
+
+I tracked the moment when the __netlink_dump_start() function was 
+called, it turned out that in the gtp_init() initialization function 
+before registering pernet subsystem (gtp_net_ops), therefore, outdated 
+data is used, which leads to a crash.
+
+The documentation says that ops structure must be assigned before 
+registering a generic netlink family [1].
+
+I have fixed and sent a new patch [2].
+
+[1] 
+https://elixir.bootlin.com/linux/v6.8-rc4/source/net/netlink/genetlink.c#L773
+
+[2] 
+https://lore.kernel.org/netdev/20240214162733.34214-1-kovalev@altlinux.org/T/#u
+
 -- 
-2.43.0
+Regards,
+Vasiliy Kovalev
 
 
