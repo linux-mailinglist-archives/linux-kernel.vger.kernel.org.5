@@ -1,118 +1,173 @@
-Return-Path: <linux-kernel+bounces-65327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EFC7854B3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:19:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50740854B3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:19:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 719C41C22347
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:19:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9FAEB22481
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A5056462;
-	Wed, 14 Feb 2024 14:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381345730B;
+	Wed, 14 Feb 2024 14:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ev1Inafa"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="jeMUyY42";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="In9lxJI2"
+Received: from wflow8-smtp.messagingengine.com (wflow8-smtp.messagingengine.com [64.147.123.143])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3D455E4A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE7B29437;
 	Wed, 14 Feb 2024 14:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.143
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707920338; cv=none; b=oM1P4cUyMV6tzSnIqmYeh/23kbfYiwkO49sTd5w+ILbSjtVDSUfju7wwJ/7tRThbzP61qmodm+JlwWlIprikfTW+VKuIvL7Pj22dfla8A5Bkq7QwReqaykH5G9CU/e/A6CjmSavKNooXjEdVBuGh6pZw7LQBtghSjYsorMAfaIw=
+	t=1707920338; cv=none; b=EJGlMsb/fSP6Txs8NAMb5rkSHUdCFplrU46vaFKjAQgzR8FJ36TpvXSl46FRaEk3Fmgr91yKkPVrUzTJOILSUfEmT85YaH+tiYOf8bMjafjIMxy0TxU6KnRMqesFXx1wNJMCcz86hvfF+rhvjbqcBYaxvNYcM1fpKsPehjr8sbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707920338; c=relaxed/simple;
-	bh=HiiTvNUDYA1r/R0rq42qY+EHfh4dR8d3IE1TQ/xRp88=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jbwRPAT9rDCfhV39WC2L/+u/xKiAgWiXWbh0yxHC+wlSZeDwUnR/UgpsEePVt7W9lImR7yQdNsthNnavNRGHpQpN1HQTFm/qyLNdwfH7etUS1fb3q8nrjxQynTOKs3Yvf8IXcmBjhWMj7a9Z3F13i6kfa2oboDEYpX4lmz6PrT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ev1Inafa; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707920337; x=1739456337;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=HiiTvNUDYA1r/R0rq42qY+EHfh4dR8d3IE1TQ/xRp88=;
-  b=ev1InafafGcw1IoUFWp5P44nnt3mqde2UkFbw1Fujh0ooIDnaBPahn6W
-   h55Th1Pl0exbqO9WlJGz5m+5C0yU6aIaK9LbXsGA7PaM4KqmkFPmUnbQf
-   MEcqwQOuh3ZLjemWMQvTj/xGqymNxiAnXz5CD7WLdgplJ7fwBXwAKYOa3
-   E5Xd4aFr8LmEuz6W3DRV16xsY6OkBSGZUEbm2EXryNqF1v8i25l7ZT4pw
-   xDNaHRTZG6dMiwUw5449VrMmoJUFezoUSfXdgJOWJ7h8Lcm4f6CQQPrZw
-   EcNCkNr6lJX+7VcILwbGXJdSMMX+NhekrQlGij4zvDbbYbPp+CSmE+naq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13058909"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="13058909"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 06:18:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="7830830"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.229])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 06:18:52 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 14 Feb 2024 16:18:38 +0200 (EET)
-To: mhklinux@outlook.com
-cc: haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, 
-    lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, bhelgaas@google.com, 
-    linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: hv: Fix ring buffer size calculation
-In-Reply-To: <20240213061910.782060-1-mhklinux@outlook.com>
-Message-ID: <73f6e93d-bbb3-cf3a-1311-d80b7b6512c1@linux.intel.com>
-References: <20240213061910.782060-1-mhklinux@outlook.com>
+	bh=nTl1e8UEmACUyenLLW2iCRqE5C4RtIPrVYx7Rhm8IDk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SEtCKKf6DcQvut6YNr6RnKbKnIJbc/WZP/hZ7f4kMdF+uLyUuIsnbsbq6vQq+a514QEZu9RF6uOPtdUFihatddk62+I17mkQ2TSbiEjn2d+ie325TpaHojexm5cVsckBI08Qo6dlZqfH2Vco27oAnBYtn8QOT8l+D7aRcUhZOWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=jeMUyY42; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=In9lxJI2; arc=none smtp.client-ip=64.147.123.143
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.west.internal (Postfix) with ESMTP id 03A492CC02D0;
+	Wed, 14 Feb 2024 09:18:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 09:18:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707920332; x=1707927532; bh=6RsiVidSCw
+	BrjsulM6iUvKUYTy+Y7E6NKV1i3zA5qpU=; b=jeMUyY42CXSJw46CT9NQVglyCM
+	E7RLRhEzcLYi1I8QeUo183E55xwmzqBHWAv4NLTpkqHNnt65+FgnK83oq4qcxz6k
+	q9tCfccKFZgtS5/NeIVLN6QvdeUUo5/r0ZdTWn7KZDtKJpHlq/vo+N/ObHUeLd8P
+	8WgWL3cwf64GiEdFu7CF/ZCKAf6vELZb8F2CbItzzqIRsO1/IylxcMnb3aI7xy/U
+	2aoWiUu++SvPfgrwlWr23pu8ZFEhUkmYBtS93SGtb066xY9VYgr1HqvZEPXnT7vZ
+	N0+s2Ykx0GdRHBfceSPdQ+2LIVyEwcbe/qOjhjOJy85ic4Sh2gvFo6yyO2Pw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707920332; x=1707927532; bh=6RsiVidSCwBrjsulM6iUvKUYTy+Y
+	7E6NKV1i3zA5qpU=; b=In9lxJI2/qikc/OHPx4USykX8W8PIUIKmbagu2mBdOhB
+	4bwb/STZdV1WcVFEaHvE8eXeK1uebqXZPyMGrvJeNAtpT592uy6MXOtqk4gEWBVL
+	VdIdDBt0epBzO/tVVljh81LxSYUx8w8VWBFx1eqPyaarXJhGRZt9YL+qMP16VIu5
+	YjN/q8aPybrdpW8ZJ3KERsmf1jjH3Pq+Z7vKaorOr9uDI5r94YqamyEQBpOTCMAP
+	VntQkstFmpps4gOR/5CnvUV3bss09HnuNFilvIEgId4CTeDN65gowCVrNm+65KUI
+	Iu5nwSVHeudYda0tjSht/962gXyfcTdrufrsfurCww==
+X-ME-Sender: <xms:y8vMZYrEu3ZKpzC-ur-lUClxdnSXcACjD27_Oi1Qv8UuggyMOM2uNQ>
+    <xme:y8vMZerGtGPjK4YqJTlMNUA0OmYNsTDOl-dIcQ5bBVHKhm4nkFOU77JXHcPAy6KTr
+    PSaW4YYeRJRbKVmuXY>
+X-ME-Received: <xmr:y8vMZdNFxyFZUJVEXRyDcP5mMXZBuqQ17FNSXetFbVa94R9P8PTbbfTkLDnkP5F7QiYZABHo13otPbRvwo2RfeSwOtrO>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdeifecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
+    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hthigthhhosehthigthhhordhpihiiiigr
+X-ME-Proxy: <xmx:y8vMZf64-wd7mz4pF2zxJRbMXrrp25fV54ch5xt5FEsg63gNDa-uxg>
+    <xmx:y8vMZX68zZhXPUHy5CeWIXe5a2jsJHZH7e5eaZPC_yDQqlbERPQuRg>
+    <xmx:y8vMZfgRAXCu25PXsPQr41w9J6C7WjwHBQgBFUdnYrbfNwoxvVkZUA>
+    <xmx:zMvMZV7ibGkEuF3toxvX4kD4YGPjYOBvZ4dLdyJ-EK3yZvJICdZlywQBlax07Xqq>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 14 Feb 2024 09:18:50 -0500 (EST)
+Date: Wed, 14 Feb 2024 07:18:48 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: coverity-bot <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Peng Zhang <zhangpeng.00@bytedance.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Tycho Andersen <tandersen@netflix.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: Coverity: __do_sys_pidfd_send_signal(): UNINIT
+Message-ID: <ZczLyDCN+zG6imTd@tycho.pizza>
+References: <202402131559.B76A34B@keescook>
+ <ZcwGua3a9Z8nJXVq@tycho.pizza>
+ <20240214090332.GA14017@redhat.com>
+ <20240214090640.GB14017@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214090640.GB14017@redhat.com>
 
-On Mon, 12 Feb 2024, mhkelley58@gmail.com wrote:
-
-> From: Michael Kelley <mhklinux@outlook.com>
+On Wed, Feb 14, 2024 at 10:06:41AM +0100, Oleg Nesterov wrote:
+> On 02/14, Oleg Nesterov wrote:
+> >
+> > On 02/13, Tycho Andersen wrote:
+> > >
+> > > I think this is a false positive, we have:
+> >
+> > Agreed,
+> >
+> > > That said, a default case wouldn't hurt, and we should fix the first
+> > > comment anyways, since now we have extensions.
+> > >
+> > > I'm happy to send a patch or maybe it's better for Christian to fix it
+> > > in-tree.
+> >
+> > I leave this to you and Christian, whatever you prefer. But perhaps we
+> > can simplify these checks? Something like below.
 > 
-> For a physical PCI device that is passed through to a Hyper-V guest VM,
-> current code specifies the VMBus ring buffer size as 4 pages.  But this
-> is an inappropriate dependency, since the amount of ring buffer space
-> needed is unrelated to PAGE_SIZE. For example, on x86 the ring buffer
-> size ends up as 16 Kbytes, while on ARM64 with 64 Kbyte pages, the ring
-> size bloats to 256 Kbytes. The ring buffer for PCI pass-thru devices
-> is used for only a few messages during device setup and removal, so any
-> space above a few Kbytes is wasted.
+> forgot about -EINVAL ...
 > 
-> Fix this by declaring the ring buffer size to be a fixed 16 Kbytes.
-> Furthermore, use the VMBUS_RING_SIZE() macro so that the ring buffer
-> header is properly accounted for, and so the size is rounded up to a
-> page boundary, using the page size for which the kernel is built. While
-> w/64 Kbyte pages this results in a 64 Kbyte ring buffer header plus a
-> 64 Kbyte ring buffer, that's the smallest possible with that page size.
-> It's still 128 Kbytes better than the current code.
+> Oleg.
 > 
-> Cc: <stable@vger.kernel.org> # 5.15.x
-> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> ---
->  drivers/pci/controller/pci-hyperv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 1eaffff40b8d..5f22ad38bb98 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -465,7 +465,7 @@ struct pci_eject_response {
->  	u32 status;
->  } __packed;
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -3876,10 +3876,6 @@ static struct pid *pidfd_to_pid(const struct file *file)
+>  	return tgid_pidfd_to_pid(file);
+>  }
 >  
-> -static int pci_ring_size = (4 * PAGE_SIZE);
-> +static int pci_ring_size = VMBUS_RING_SIZE(16 * 1024);
+> -#define PIDFD_SEND_SIGNAL_FLAGS                            \
+> -	(PIDFD_SIGNAL_THREAD | PIDFD_SIGNAL_THREAD_GROUP | \
+> -	 PIDFD_SIGNAL_PROCESS_GROUP)
+> -
+>  /**
+>   * sys_pidfd_send_signal - Signal a process through a pidfd
+>   * @pidfd:  file descriptor of the process
+> @@ -3903,13 +3899,23 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
+>  	kernel_siginfo_t kinfo;
+>  	enum pid_type type;
+>  
+> -	/* Enforce flags be set to 0 until we add an extension. */
+> -	if (flags & ~PIDFD_SEND_SIGNAL_FLAGS)
+> -		return -EINVAL;
+> -
+> -	/* Ensure that only a single signal scope determining flag is set. */
+> -	if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
+> +	switch (flags) {
+> +	case 0:
+> +		/* but see the PIDFD_THREAD check below */
 
-SZ_16K (and add the relevant #include if needed).
+Why not put that bit inline? But I guess the hweight and flags mask
+are intended to be future proofness for flags that don't fit into this
+switch. That said, your patch reads better than the way it is in the
+tree and is what I was thinking.
 
--- 
- i.
-
+Tycho
 
