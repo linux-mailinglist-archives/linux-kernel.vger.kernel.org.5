@@ -1,147 +1,170 @@
-Return-Path: <linux-kernel+bounces-65886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC73485534A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:39:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C8E855352
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C1BC1F28991
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:39:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C0121F2893E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1007113B7A8;
-	Wed, 14 Feb 2024 19:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5007213B7A9;
+	Wed, 14 Feb 2024 19:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QxM9v6zF"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AT3tkeG+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD8113B7A6
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3F486649
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707939540; cv=none; b=XeLDU7D7TeVTd0Vf4Rp9j7KESm1+gfoH1sNXZTI004bZp361ToS5JyAuGkZP8BLaq7c+anYYfIs/hlbgJglEwF6QMieOHe+HQjVSdgS4Q38hExSj1poAFE0yF/L9SQkVLGJ0G4/XwmiKZTJx6decb68PuCVWVUofPyKmom3oXa4=
+	t=1707939612; cv=none; b=FG+kO11jauHsztaaF3zueNfzvG4cqNRIVc2nzh+B/o/YF1UQ9taFK7QBj2VlNM0aWHjTS9EIZTwWmJhs674Q+V8UQXiNJ+0LQAhv4+9XjOpXPEtRcQo1fyPjlbVWgPJqspLatvHrMV2qhBsPYygUlEdg6/OstIviqQ8glkwXLUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707939540; c=relaxed/simple;
-	bh=uK/uiC9xQoMrRYzHaj/0K7lprzw7OLm3ONfyrd3XA2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pzGdTRBggd03NbnTR0rrbS6yzJq4ozdIk0kJieF3e42prf2f0LGbrfxnLGBXO88cJlKpmvDjwnvaG1b8BALU31BMxkLvRtFPlFaWNaVNl7yrMeMZM3EgBsPnC0qt6TDnR9sr6DXbQayub68/ZqaanTRmqHF0X+WmFMSRwY99Q+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QxM9v6zF; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d918008b99so723835ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707939538; x=1708544338; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rQz56FZw2RH2/D+KmiOQoX2U0utfpN1YnKl4r/zwck=;
-        b=QxM9v6zFd4CGlpP3G4ukKltcjkvOQ8xSHSrHg0swTj9iUB5/6Xuew6PhfbKmSEjemO
-         rmbQ5k3cQKhBBtSGo9AotZuisZc/3O1TQusMIze18dDAjV+1yrl9Mb+6dh1otJfMGIqE
-         m04HzeKvsGg3tnDojam64hV1atXqLANR6yqBI=
+	s=arc-20240116; t=1707939612; c=relaxed/simple;
+	bh=Nh/RPEGQMLbipsQ873OI9l7WmsakJphI8B81DlzeqAk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c4KV9g2qE+NufRUBlZwacyry60NuCmZRDjQBbiZ0RgbhQayeEnqY3Iktqvslq/XLN80NefRQYnbLLmHoKq0B69HFV2zDo/o5V6fg2/K0XIyKdqcPYwEe2oWmu2ioh1xRxYCfTS3EtKAoLCnREpfiKiei7JuHFyLpFnhC0OXx32g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AT3tkeG+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707939609;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=40AE8jzoctMs/4UQVB3kZWi/SrcTMf7FmeAg9I90IS4=;
+	b=AT3tkeG+jjFPvc8dernrQwOXbnwzl4BQTMhFQpwqM3tsi4fq/03/KGE+KjHvIn3pzs7fhh
+	HOHNw4NaAoWoDSC1sT+ekcBY+ZAp9ekwrS2p/pcWb6qWodcXBTiaXWlfXcLZpsf6wQN8Nz
+	rW8k1vYcdduQBh04sW/e7fM9mNJ0KpA=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-272-SlEEiGEUMhWzA4KHLeK65g-1; Wed, 14 Feb 2024 14:40:08 -0500
+X-MC-Unique: SlEEiGEUMhWzA4KHLeK65g-1
+Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-dc64f63d768so49557276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:40:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707939538; x=1708544338;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rQz56FZw2RH2/D+KmiOQoX2U0utfpN1YnKl4r/zwck=;
-        b=MhXjnPdTsiGYmq/ulIlO3/w9ZxEX+0g2wMTKvZN+aKx73JjTWhOFLKmkeGunNRHADW
-         Vi0JAO4cSDUeZN+wIkZutzOk8+OHHi2SU5H2RDve/nfPLsYG5VCA04sH/ErMcEX7QUk/
-         W6WXZ9Mlo/enYvWaxy2uqz/9LXhMNImB0s+wk6YN+lCQTwjPIDwg22A2drVzO6wBLru1
-         bQc6wlRvtsfwppycIHEf/esj4R96C8yQXDzy2Y56Nz+uw7dmUeQGDbajL5yuHG5QzDuE
-         uLoCbp+bTR3PFvEKmAbRSP5WAFuWX67mD5PCy4pWKzpXdNRWhaxQ1YfT1GkXnKGeTgN9
-         a+XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrdQ0IT+DZZ7Y5BZBIsv93av+SKmQxYLuyreV3y1Ug3JullgS6HW2Gz2Ho4QNFBjpV6gXtXW3TYZAw7tiQUeLZ448M0+qZj/RtIFXi
-X-Gm-Message-State: AOJu0YwGzDF/h54A6Ky99l8aYoygrPrXC3c3qLlGl6zzwZiesYBrrnKU
-	S538tH+BLdV0k21xoPFdVa5v3JdZ7/H1Vj0z98NrGBKWau9bU5cSAJAJ1DtF8w==
-X-Google-Smtp-Source: AGHT+IFeLbM4q9oE3yTdnPC3ZKFeX7ALUUgaZIz9TQ5M0+/49eUCHnVui91o6qgIZaw5T42/8VQ34A==
-X-Received: by 2002:a17:90b:605:b0:296:2057:28c with SMTP id gb5-20020a17090b060500b002962057028cmr3614823pjb.31.1707939538082;
-        Wed, 14 Feb 2024 11:38:58 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h15-20020a17090a604f00b00298cc4c56cdsm1795818pjm.22.2024.02.14.11.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 11:38:57 -0800 (PST)
-Date: Wed, 14 Feb 2024 11:38:57 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Andy Shevchenko <andy@kernel.org>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org,
-	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-	Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] overflow: Adjust check_*_overflow() kern-doc to
- reflect results
-Message-ID: <202402141136.6B12D6E6@keescook>
-References: <20240213220844.it.345-kees@kernel.org>
- <20240213221100.3556356-1-keescook@chromium.org>
- <ZcyqqN3wVrKwkzrs@FVFF77S0Q05N>
+        d=1e100.net; s=20230601; t=1707939607; x=1708544407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=40AE8jzoctMs/4UQVB3kZWi/SrcTMf7FmeAg9I90IS4=;
+        b=KlepsUShQyagJGjBLAaIiBCotFCEL5VcriJmsq5Pg77zreUG7MxZ7yrO6KkNeYIM4X
+         13S0VLIoZ2YffAodBJp5ajlmvqwZNiN/u9ANjLWUr5jvpA2L3JGNw0OZZJg54wYLTzVg
+         Ds6au99mIMCF9PlF88ay+bKo++kajiPtHmI69/Dp1zj8fdTd8OBoksx6WzMSVncYm9Ej
+         bIZqqwfxh+thUxG2g+DTuhoHXVD6sXp2+HCJRyB1mMH97BwU1TDezx+8PXJmZ1Pb4Xvm
+         aZGZap3SGHfkWysdYoq6l20KckiJzo/gfpQZEW0Pm5RN7Kvk6cMCzYOsU/qJaHVkR1A3
+         IstA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdrByEoOlKSVIAwTOi72uPYXw6FJ7MeUY9wE2vbG5HWrI0j5UX0n2WOHiexTgpPu4Uwz3k+NU44zaNlzCE0SycZ1xMFxbglI8g89wP
+X-Gm-Message-State: AOJu0YzXCSmi+zJS973wAJ7Wb8Cu0jRA8CW5FFfPPVQZcTKw6GHzWkzX
+	MO07mGuje7o6Q5gQq39ZqxDmlNJ+f58NXPuQfbJEPZklAljmz0mQ509LTPfOBKXdY6MLxhLF55K
+	RvDRfe8B45ivPPDx/KHCgQiGKkR0pBlg/EEIZ5H+EK+yeOM6FGzJZPTf2bLZ68xcNNGiRDRLpRm
+	bg8H1wfdb8uRtFqqOqd4llIg9b/8snpULUuu1l
+X-Received: by 2002:a25:8391:0:b0:dcd:59e4:620c with SMTP id t17-20020a258391000000b00dcd59e4620cmr3543767ybk.49.1707939607709;
+        Wed, 14 Feb 2024 11:40:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFfRe7gS1Br3szsmeSRIaV1Vjr5iFP1u6aZ0i0V5KCMfqQ0Ntu2jtH9k8bI7ZqOnZmqvInJwB/MFN0YZ80FzeY=
+X-Received: by 2002:a25:8391:0:b0:dcd:59e4:620c with SMTP id
+ t17-20020a258391000000b00dcd59e4620cmr3543755ybk.49.1707939607473; Wed, 14
+ Feb 2024 11:40:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcyqqN3wVrKwkzrs@FVFF77S0Q05N>
+References: <1707758174-142161-1-git-send-email-steven.sistare@oracle.com>
+ <1707758174-142161-4-git-send-email-steven.sistare@oracle.com>
+ <CAJaqyWfYHqf2=8BMo5ReKEB137fxGZR4XEJ2d4imXOOXAX2wHQ@mail.gmail.com> <e1b80fee-30df-4733-9072-ce67e3edc72f@oracle.com>
+In-Reply-To: <e1b80fee-30df-4733-9072-ce67e3edc72f@oracle.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Wed, 14 Feb 2024 20:39:31 +0100
+Message-ID: <CAJaqyWe1=eQ4eQyv+wOqbr3pfZst6gmss2SrDZSNkY_ZVXcf=Q@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] vdpa_sim: flush workers on suspend
+To: Steven Sistare <steven.sistare@oracle.com>
+Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
+	Xie Yongji <xieyongji@bytedance.com>, Stefano Garzarella <sgarzare@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 11:57:28AM +0000, Mark Rutland wrote:
-> On Tue, Feb 13, 2024 at 02:10:57PM -0800, Kees Cook wrote:
-> > The check_*_overflow() helpers will return results with potentially
-> > wrapped-around values. These values have always been checked by the
-> > selftests, so avoid the confusing language in the kern-doc. The idea of
-> > "safe for use" was relative to the expectation of whether or not the
-> > caller wants a wrapped value -- the calculation itself will always follow
-> > arithmetic wrapping rules.
-> > 
-> > Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/overflow.h | 18 ++++++------------
-> >  1 file changed, 6 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> > index 7b5cf4a5cd19..4e741ebb8005 100644
-> > --- a/include/linux/overflow.h
-> > +++ b/include/linux/overflow.h
-> > @@ -57,11 +57,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
-> >   * @b: second addend
-> >   * @d: pointer to store sum
-> >   *
-> > - * Returns 0 on success.
-> > + * Returns 0 on success, 1 on wrap-around.
-> 
-> Sorry for the last minute bikeshedding, but could we clarify 'success' here?
-> e.g. I think it'd be clearer to say:
-> 
->   Returns true on wrap-around, false otherwise.
-> 
-> Note that also uses true/false since these all return bool (as do the
-> underlying __builtin_*_overflow() functions).
+On Wed, Feb 14, 2024 at 6:50=E2=80=AFPM Steven Sistare
+<steven.sistare@oracle.com> wrote:
+>
+> On 2/13/2024 11:10 AM, Eugenio Perez Martin wrote:
+> > On Mon, Feb 12, 2024 at 6:16=E2=80=AFPM Steve Sistare <steven.sistare@o=
+racle.com> wrote:
+> >>
+> >> Flush to guarantee no workers are running when suspend returns.
+> >>
+> >> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> >> ---
+> >>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 13 +++++++++++++
+> >>  1 file changed, 13 insertions(+)
+> >>
+> >> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/=
+vdpa_sim.c
+> >> index be2925d0d283..a662b90357c3 100644
+> >> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> >> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> >> @@ -74,6 +74,17 @@ static void vdpasim_worker_change_mm_sync(struct vd=
+pasim *vdpasim,
+> >>         kthread_flush_work(work);
+> >>  }
+> >>
+> >> +static void flush_work_fn(struct kthread_work *work) {}
+> >> +
+> >> +static void vdpasim_flush_work(struct vdpasim *vdpasim)
+> >> +{
+> >> +       struct kthread_work work;
+> >> +
+> >> +       kthread_init_work(&work, flush_work_fn);
+> >
+> > If the work is already queued, doesn't it break the linked list
+> > because of the memset in kthread_init_work?
+>
+> work is a local variable.  It completes before vdpasim_flush_work returns=
+,
+> thus is never already queued on entry to vdpasim_flush_work.
+> Am I missing your point?
+>
 
-Yeah, that's a good point. I'll update this.
+No, sorry, I was the one missing that. Thanks for explaining it :)!
 
-> >   *
-> > - * *@d holds the results of the attempted addition, but is not considered
-> > - * "safe for use" on a non-zero return value, which indicates that the
-> > - * sum has overflowed or been truncated.
-> > + * *@d holds the results of the attempted addition, which may wrap-around.
-> 
-> How about:
-> 
->   @d holds the results of the attempted addition, regardless of whether
->   wrap-around occurred.
-> 
-> ... and likewise for the others below?
+I'm not so used to the kthread queue, but why not calling
+kthread_flush_work on vdpasim->work directly?
 
-Yeah, that's more clear. Thanks!
+> >> +       kthread_queue_work(vdpasim->worker, &work);
+> >> +       kthread_flush_work(&work);
+> >> +}
+> >> +
+> >>  static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
+> >>  {
+> >>         return container_of(vdpa, struct vdpasim, vdpa);
+> >> @@ -511,6 +522,8 @@ static int vdpasim_suspend(struct vdpa_device *vdp=
+a)
+> >>         vdpasim->running =3D false;
+> >>         mutex_unlock(&vdpasim->mutex);
+> >>
+> >> +       vdpasim_flush_work(vdpasim);
+> >
+> > Do we need to protect the case where vdpasim_kick_vq and
+> > vdpasim_suspend are called "at the same time"? Correct userland should
+> > not be doing it but buggy or mailious could be. Just calling
+> > vdpasim_flush_work with the mutex acquired would solve the issue,
+> > doesn't it?
+>
+> Good catch.  I need to serialize access to vdpasim->running plus the work=
+er queue
+> in these two functions.  vdpasim_kick_vq currently takes no locks. In cas=
+e it is called
+> from non-task contexts, I should define a new spinlock to be acquired in =
+both functions.
+>
+> - Steve
+>
 
--Kees
-
--- 
-Kees Cook
 
