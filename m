@@ -1,209 +1,115 @@
-Return-Path: <linux-kernel+bounces-65498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B35F854DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:16:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED24D854DDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3A911F229EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:16:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A94FB28621A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B9C5FF07;
-	Wed, 14 Feb 2024 16:16:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238D9604A8;
+	Wed, 14 Feb 2024 16:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IF/oiU2m"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jQ+iCbuM"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99AA25C8FC;
-	Wed, 14 Feb 2024 16:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA065FDD9
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927362; cv=none; b=TJnoWdWK8IulI8tn292FEPARPhabNy6r3X6vsKjyxQX8FjmFSnOkgY92DCtfX6HsHCTZKyOpQ4zO4HK8kKP6B9Qmtj+gyzFX8hgZx5T8Nd41ksWNzAZDFaERr8PPvcccofp+ZZPfL06rKraD2z19Ebq4acEMxmgRtTP6mNOEBfU=
+	t=1707927402; cv=none; b=n6T7KeBABzwb3lgb2DFI94Sgk85KY8NH8LNQ3OanXllUNQMvzj308ZImVLTz0NcjQ2iWbeBEuDW6EKh0k79oJFbuoGg+CuOPOiUwq2IffNEsnRpoocesKF/OL3/kqcOhn1Wi+SOSFIy2DhjQpdpchTihSaQlR+kdBFlutu+l+2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927362; c=relaxed/simple;
-	bh=1LEv6Ova+Z8khqle7qgHTwMJAqi9FazSaL1UQ9aqt4o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ash99T1gHATD+TvZeVwFuYojc9Ph08ZGStn5lxqklUcX8e289Sy+/p48PIUp3u1aEquBht8qBr824j0KnNpMB/VJIv9JoQXMFrwTuvCrtNrdCdQXZ7FTDqfWspcbPnTShorbVc+ibrKrahF7z5xCOf0Y3sCzXlti+6XI71XlWQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IF/oiU2m; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707927360; x=1739463360;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1LEv6Ova+Z8khqle7qgHTwMJAqi9FazSaL1UQ9aqt4o=;
-  b=IF/oiU2mPc6LFmtgy6syJW3B8L7Bn7fn5hL/o/MMz7R4qUJzMHz74IYA
-   SAwsed8droajK8RNDLrtmbTEbK8QxJpGSCJfljdxAFPsZC1K1ShuS25pU
-   XdtxXn+dTVSnGmtea8rZNXXLrYJEsqASem0RKCxNNGCJe+mlo5BHD1SBl
-   WZ9I+N4+IwbBrlmd4zJklzgBARg51P3qXqBaczgO8C+Nckl2rjIOxTk/9
-   DBfqKQgEDwPRrXgtHmcTOipvbHIs0AX37AB3aGjBkY3Axl5DUGZV95/a3
-   q8SRmL0fHXYowCa6/gJD8RhufkCd+Ypd0iRkHU75wUzXbn5UllGNECsmB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="27427899"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="27427899"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 08:15:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935617078"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="935617078"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Feb 2024 08:15:57 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C3928204; Wed, 14 Feb 2024 18:15:56 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v1 1/1] serial: 8250_of: Drop quirk fot NPCM from 8250_port
-Date: Wed, 14 Feb 2024 18:14:23 +0200
-Message-ID: <20240214161423.3452705-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1707927402; c=relaxed/simple;
+	bh=3Lb+cs6MZyEbSuIsnGR/lDtPPDEXeFotj9ffl8+8h2E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eexFkTm4ZyZRRK8UmnvRaiy+T/bk/n6CMfDliuY8LtTHJX64b9hI93CQV9bP4PBOwCC9RIvqdh3EVi9UTCm+AjGzQeseWnsWIa4+Z7ti+WYIkC8tZa/Ad52Pmqc72sxG/nnnn2CDDtuPsjNw21pI0dwjJdxW90rc/GTloI8dGAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jQ+iCbuM; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so1293559276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:16:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707927400; x=1708532200; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Lb+cs6MZyEbSuIsnGR/lDtPPDEXeFotj9ffl8+8h2E=;
+        b=jQ+iCbuMrZAiwtm9/t4D470IdQTpks8keGFfflbIGkU9FErMW2vjqmEqL9kLW5jxVF
+         wllvm4+7fk9N5DbKP6cIt0sdiofAjlWZ8cGe0gG1FAOEoXZz43yCP7OtR12UfDr6QWs3
+         K6tGr9uY8F4xpyBmbA8Et1RYuEYHNrcu6w7yZzUQcuqUCm/WcrNMapomB06GfFuceSSk
+         D71aeisgGFSDhLEgQmAIHpz21BMLVKcQ5uKXKnlm33aE47tq5tiMIxDVPTqQAq3FyDpC
+         j1IUBak0n8IzhUHLk4b0xexYl+Z/eSC4InzelJu2/WdA4DcXVPEGJDHv74zb3aoFnr+l
+         nqQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707927400; x=1708532200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3Lb+cs6MZyEbSuIsnGR/lDtPPDEXeFotj9ffl8+8h2E=;
+        b=ZCcNuFSWHZnZCeqJ4TeUu+XOXNWeei/vwG9I+DViOrlKDY4f7fNx5f5A0iHFsGSsNl
+         5pf75qdmp4FFCpgryn+i7shvGGLBN/rcE4Yxl/blr3+I+il8+AJWErb2ChGup9cAsj4P
+         CecR+q2kp0i3I4Gdqo9SFudxaY+9zz7tJVQQCaoQLBy5mPpng4m6C/t/B2WTP+jS93pt
+         aKzSh7kdgY9UvI1ggMUfhXXx0/JxlKFdN8NnT4kIXsl1/F/fFtczjpBJlJzz458TAIA+
+         n8sPLyHO1tgl/h1lT+ycfqI1zgSXJZbBdPv9XLCkKJQlRTRf5F7aNxlIiZqHB+AJSCKG
+         6bNA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+WLLWv3lBwOk061XC0nMi+xgVr7g1K9GnicYXX+ELubmAspcEiiWqUUWLoNGBLpfVeYHUMV5Cn0obEr4b+LCo3QN6wav9L+hBOLK5
+X-Gm-Message-State: AOJu0YwIM8pe7lPsExEv31fscKzn2WR/14MolDG9zsF78sqZvViaevbN
+	LJ4OjByRh5Ml5gmgb9PvJOLEsKS3GA8DWDpGE57MHOo9JoOPLmvqfOivQ+2qDmvGHCfztwlOwyE
+	i4qpocLeks6OHusgzsFNj6qR16yYh76dAyGgsDA==
+X-Google-Smtp-Source: AGHT+IGn8WJgL4pwbaWyNz9ITyW0zrOMdOl935ZSB7EE4cCvDmWqKp+zf3U3pgJx+qr14OZqt1gsE/zbikNXg1FdfO4=
+X-Received: by 2002:a25:9c82:0:b0:dcd:1d44:f6c1 with SMTP id
+ y2-20020a259c82000000b00dcd1d44f6c1mr2763883ybo.16.1707927399794; Wed, 14 Feb
+ 2024 08:16:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240214092438.10785-1-brgl@bgdev.pl>
+In-Reply-To: <20240214092438.10785-1-brgl@bgdev.pl>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 14 Feb 2024 17:16:28 +0100
+Message-ID: <CACRpkdbULXPDDtXcBDrme54yYxKOSaAzwZPyT_H+gfyUPNXRMw@mail.gmail.com>
+Subject: Re: [PATCH] serial: st-asc: don't get/put GPIOs in atomic context
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We are not supposed to spread quirks in 8250_port module especially
-when we have a separate driver for the hardware in question.
+On Wed, Feb 14, 2024 at 10:24=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 
-Move quirk from generic module to the driver that uses it.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Since commit 1f2bcb8c8ccd ("gpio: protect the descriptor label with
+> SRCU") gpiod_set_consumer_name() calls synchronize_srcu() which led to
+> a "sleeping in atomic context" smatch warning.
+>
+> This function (along with gpiod_get/put() and all other GPIO APIs apart
+> from gpiod_get/set_value() and gpiod_direction_input/output()) should
+> have never been called with a spinlock taken. We're only fixing this now
+> as GPIOLIB has been rebuilt to use SRCU for access serialization which
+> uncovered this problem.
+>
+> Move the calls to gpiod_get/put() outside the spinlock critical section.
+>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/deee1438-efc1-47c4-8d80-0ab2cf=
+01d60a@moroto.mountain/
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_of.c   | 38 +++++++++++++++++++++++++++++
- drivers/tty/serial/8250/8250_port.c | 24 ------------------
- 2 files changed, 38 insertions(+), 24 deletions(-)
+Good find!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
-index 34f17a9785e7..dc9792f919db 100644
---- a/drivers/tty/serial/8250/8250_of.c
-+++ b/drivers/tty/serial/8250/8250_of.c
-@@ -5,6 +5,7 @@
-  *    Copyright (C) 2006 Arnd Bergmann <arnd@arndb.de>, IBM Corp.
-  */
- #include <linux/console.h>
-+#include <linux/math.h>
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/serial_core.h>
-@@ -25,6 +26,36 @@ struct of_serial_info {
- 	int line;
- };
- 
-+/* Nuvoton NPCM timeout register */
-+#define UART_NPCM_TOR          7
-+#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
-+
-+static int npcm_startup(struct uart_port *port)
-+{
-+	/*
-+	 * Nuvoton calls the scratch register 'UART_TOR' (timeout
-+	 * register). Enable it, and set TIOC (timeout interrupt
-+	 * comparator) to be 0x20 for correct operation.
-+	 */
-+	serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
-+
-+	return serial8250_do_startup(port);
-+}
-+
-+/* Nuvoton NPCM UARTs have a custom divisor calculation */
-+static unsigned int npcm_get_divisor(struct uart_port *port, unsigned int baud,
-+				     unsigned int *frac)
-+{
-+	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
-+}
-+
-+static int npcm_setup(struct uart_port *port)
-+{
-+	port->get_divisor = npcm_get_divisor;
-+	port->startup = npcm_startup;
-+	return 0;
-+}
-+
- /*
-  * Fill a struct uart_port for a given device node
-  */
-@@ -167,6 +198,13 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 		if (ret)
- 			goto err_pmruntime;
- 		break;
-+	case PORT_NPCM:
-+		ret = npcm_setup(port);
-+		if (ret)
-+			goto err_pmruntime;
-+		break;
-+	default:
-+		break;
- 	}
- 
- 	if (IS_REACHABLE(CONFIG_SERIAL_8250_FSL) &&
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index d59dc219c899..1942e57089dd 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -38,10 +38,6 @@
- 
- #include "8250.h"
- 
--/* Nuvoton NPCM timeout register */
--#define UART_NPCM_TOR          7
--#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
--
- /*
-  * Debugging.
-  */
-@@ -2235,15 +2231,6 @@ int serial8250_do_startup(struct uart_port *port)
- 				UART_DA830_PWREMU_MGMT_FREE);
- 	}
- 
--	if (port->type == PORT_NPCM) {
--		/*
--		 * Nuvoton calls the scratch register 'UART_TOR' (timeout
--		 * register). Enable it, and set TIOC (timeout interrupt
--		 * comparator) to be 0x20 for correct operation.
--		 */
--		serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
--	}
--
- #ifdef CONFIG_SERIAL_8250_RSA
- 	/*
- 	 * If this is an RSA port, see if we can kick it up to the
-@@ -2545,15 +2532,6 @@ static void serial8250_shutdown(struct uart_port *port)
- 		serial8250_do_shutdown(port);
- }
- 
--/* Nuvoton NPCM UARTs have a custom divisor calculation */
--static unsigned int npcm_get_divisor(struct uart_8250_port *up,
--		unsigned int baud)
--{
--	struct uart_port *port = &up->port;
--
--	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
--}
--
- static unsigned int serial8250_do_get_divisor(struct uart_port *port,
- 					      unsigned int baud,
- 					      unsigned int *frac)
-@@ -2598,8 +2576,6 @@ static unsigned int serial8250_do_get_divisor(struct uart_port *port,
- 		quot = 0x8001;
- 	else if (magic_multiplier && baud >= port->uartclk / 12)
- 		quot = 0x8002;
--	else if (up->port.type == PORT_NPCM)
--		quot = npcm_get_divisor(up, baud);
- 	else
- 		quot = uart_get_divisor(port, baud);
- 
--- 
-2.43.0.rc1.1.gbec44491f096
-
+Yours,
+Linus Walleij
 
