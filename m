@@ -1,71 +1,96 @@
-Return-Path: <linux-kernel+bounces-65509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A03E854DFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:21:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218C4854DFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7C3CB27668
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:21:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C29291F22487
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8D16025A;
-	Wed, 14 Feb 2024 16:20:56 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6111C60256;
+	Wed, 14 Feb 2024 16:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IT0uJOoj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01395FF03;
-	Wed, 14 Feb 2024 16:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456BC60240
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927655; cv=none; b=BTITpPxAkqGfwD2lg9S3nvtxWPovPwF8iJWfZxFIJ2I90T4eGNxDQDMtZdk9jLT7LwmEMdmEKahplagJOZd7JHuTNiaVIwKXbDRT92RSaAUUeM8RpOGfv2xB6Ko8GM9Z/xEF9sdVXV5Cq0vUdG3/fQ3sxxFO8m++4fN2UC7sINU=
+	t=1707927756; cv=none; b=bxuuxHhbc2uzP1augq3S3lUjS18j2aEw9WA62GEGnDb7ld5Y7OAo52bvgN0Xg0UXeP8OVfVsaNIzqyOdrXutW5wgLBnPhNOiA/xDK9QNg9Qw3aVIUQVYMFsJpvNneLp1V/QG+8go6bpFaBdwmTD7s9ttBp+0/fb+iO6yXcFwm7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927655; c=relaxed/simple;
-	bh=UYB+HoT6dXR3Q4alz/s7RxFLW6sCTSYU0ADxHCZfdsQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AeFoqRhWwIVkectvoks089USgU81wtzebWXap0eU0nxo1+jG13MQVKryeMaArN1cQuoqyIXPOyHqawQbMrylFJBnFqxOMxr6QUi90XTF2OKGvYPJFeKk1+4ic2NzVmnFGj0eDL+RFCNlkZRJiyZHskJkzOIRA1Ws/8NSkc6i9ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F0D7C433C7;
-	Wed, 14 Feb 2024 16:20:54 +0000 (UTC)
-Date: Wed, 14 Feb 2024 11:22:25 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: regressions@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Jeff Johnson
- <quic_jjohnson@quicinc.com>
-Subject: Re: [regression] tracing: kmemleak warning in
- allocate_cmdlines_buffer()
-Message-ID: <20240214112225.088484da@gandalf.local.home>
-In-Reply-To: <87mss3njvj.fsf@kernel.org>
-References: <87r0hfnr9r.fsf@kernel.org>
-	<20240214094617.1e6ec684@gandalf.local.home>
-	<87mss3njvj.fsf@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707927756; c=relaxed/simple;
+	bh=r+hrK0VyQhwY8SaSExIiwc5DAi+rqAsbqKOce/Igzs8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PXmAMq1ADX3yyt68tjSANrsyJKAfq/jxG65mhXNswKwyYcx6HRZ+EsbwCwhP6STMztDVVAw0YmqPmbqLnZMPFMqbSLe8ncVvO4LjxA1lAg/xVJs2aU3S5n+7dsyy+4Ruvr07HNw5VDL4T+GCo0n+enJCI4RutFcZbYOInDeqrTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IT0uJOoj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707927753;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r+hrK0VyQhwY8SaSExIiwc5DAi+rqAsbqKOce/Igzs8=;
+	b=IT0uJOojlkeKzQ5QJw7EKT1IoVmMPTVxsjLDg9EAcZizZxlUSwdf6rWo8QZdr2WJbQPdNs
+	r1Qd6BehEbqNfE3se+TDHCYNYis3n7bsh1qbW8j7VnEPA4myHp1G8brqSEGSHfMo1vnA1b
+	FIKcUKdVc+01X6sR3iTckxzahQkAnbw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-269-XxW0vQoiNEOUGy1KFytB7g-1; Wed, 14 Feb 2024 11:22:32 -0500
+X-MC-Unique: XxW0vQoiNEOUGy1KFytB7g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 483408828E7;
+	Wed, 14 Feb 2024 16:22:31 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.50])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E64A72166B5E;
+	Wed, 14 Feb 2024 16:22:30 +0000 (UTC)
+From: Cornelia Huck <cohuck@redhat.com>
+To: Harald Mommer <Harald.Mommer@opensynergy.com>,
+ virtio-dev@lists.oasis-open.org, Haixu Cui <quic_haixcui@quicinc.com>,
+ Mark Brown <broonie@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_ztu@quicinc.com, Matti Moell <Matti.Moell@opensynergy.com>, Mikhail
+ Golubev <Mikhail.Golubev@opensynergy.com>
+Subject: Re: [virtio-dev] [RFC PATCH v3 0/3] Virtio SPI Linux driver
+ compliant to draft spec V10
+In-Reply-To: <20240213135350.5878-1-Harald.Mommer@opensynergy.com>
+Organization: "Red Hat GmbH, Sitz: Werner-von-Siemens-Ring 12, D-85630
+ Grasbrunn, Handelsregister: Amtsgericht =?utf-8?Q?M=C3=BCnchen=2C?= HRB
+ 153243,
+ =?utf-8?Q?Gesch=C3=A4ftsf=C3=BChrer=3A?= Ryan Barnhart, Charles Cachera,
+ Michael O'Neill, Amy
+ Ross"
+References: <20240213135350.5878-1-Harald.Mommer@opensynergy.com>
+User-Agent: Notmuch/0.37 (https://notmuchmail.org)
+Date: Wed, 14 Feb 2024 17:22:28 +0100
+Message-ID: <87v86rf22j.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Wed, 14 Feb 2024 17:30:40 +0200
-Kalle Valo <kvalo@kernel.org> wrote:
+On Tue, Feb 13 2024, Harald Mommer <Harald.Mommer@opensynergy.com> wrote:
 
-> Although the patch didn't apply for me as in my tree the functions are
-> in kernel/trace/trace.c. I don't know what happened so as a quick hack I
-> just manually added the three lines to my version of trace.c. Let me
-> know if there's a git tree or branch you would like me to test, I can do
-> that easily.
+> This is the 3rd RFC version of a virtio SPI Linux driver which is
+> intended to be compliant with the proposed virtio SPI draft
+> specification V10.
 
-I sent out a v2 that should apply and I added your Tested-by tag. But you
-may want to verify that it does indeed still work, as I decided to swap the
-order of adding kmemleak_alloc() with the memset(), so it's not exactly the
-same.
+FWIW: this version of the SPI spec has been voted in for virtio 1.4 (and
+is consequently available on the virtio-1.4 branch of the virtio spec.)
+For all intents and purposes, this makes this spec final (modulo
+possible future extensions).
 
-Thanks,
-
--- Steve
 
