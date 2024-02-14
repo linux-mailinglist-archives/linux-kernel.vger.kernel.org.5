@@ -1,205 +1,116 @@
-Return-Path: <linux-kernel+bounces-65256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8EF854A35
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:13:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22126854A36
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843BF1C20A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:13:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F041F2B061
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:13:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD240535D7;
-	Wed, 14 Feb 2024 13:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D68F53E22;
+	Wed, 14 Feb 2024 13:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="o+R85huF"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Jov0nDTC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8FD53E0D;
-	Wed, 14 Feb 2024 13:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDAA53E15;
+	Wed, 14 Feb 2024 13:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707916400; cv=none; b=jJ4220bsZQkjdnBb+w0WxDkrfqQIvWzWCIXor6sBMqmSlCRgtC66v8+AUdK3uigJtr/n3uvzpGgc2T0BvFmnil1yyNvVoSDSWJ/FO7sYZb46l8mQNxykTa9Di8Eys1RMk6vsqRNHdfARhYXhsu9xD8w02s6YI4en+GpRV0rbcD0=
+	t=1707916404; cv=none; b=OxODUT6HhnANBUR370T5jJ9gyF3ZhJ5VNms/4XYiu4R7O5gJWOPy0UJFjTBLW1Nm54ocSVDAlXQJ71EJIqzVEJ02c2+eomBC8NmSbmY3/Rf7xfB7KcAonAHNmy3A/mpVxoJlFOXHII+aVmzB5jCGTKlOx8m6ghw/K+JD9jtW/v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707916400; c=relaxed/simple;
-	bh=trNel9DGiBM9izEKSSd/SarU5GGAHEjWvzZ33PVmI/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dtEWuum6EOl0TO95RcezLdMoLYZc+ekG3J6Xl7k7P9y23ElbZUsQu9XjuFx4NHPatW1wOO52tl7Dilyf3DAG8elJ5nmqQRJQp2IX2d1yZIbtF/QWPxXYzsF89saAVvpWETiuevN2cik+ibjnR1yTT4T8+HLmrYK9M+OlzsH+Q9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=o+R85huF; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A93444000B;
-	Wed, 14 Feb 2024 13:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707916395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yoAjEMlVwFZdXBa82MjfrxBFsO3UeSV1bx1OSrRYZw8=;
-	b=o+R85huFFD6K3kjeRghvtDXOyBJKIWQiti408PeQ5wsVaLIvqUe0c4Vv65+MF5zU9e0XAQ
-	7t89FsKLZJtQ023ajRy/DL+B0cX7Rz5llmD+XPpwCXAdXNfasJ0c7pHwURc8qgnnMXwqMx
-	5fhB6aWU39RpEpN5+7Qyeysk91SVaCiAXHHBBRuu1PpS1plXq+P1S8FrEuEy0PsoLSG63S
-	Ca9qyl9dmi/rn/3ekkj9GF1/szixWhVHVRjcr9JxPbpWEqE8fUmWU7JI8tPkw5hVMRka9G
-	YBjwBrB6HF8wkQrxn41t7SlM9l98Wh1m/xypGctR1b/GKmo3oHhSgdhgcSb58A==
-Date: Wed, 14 Feb 2024 14:13:10 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
- Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 10/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240214141310.119364c4@kmaincent-XPS-13-7390>
-In-Reply-To: <20240209144349.GA3678044-robh@kernel.org>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
-	<20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
-	<20240209144349.GA3678044-robh@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707916404; c=relaxed/simple;
+	bh=sZBOA2K/u66V/tbP9HOyBgE9XI4OGN3S5NIS3T5GN5g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lM0WZDYrAfEzlrnvkla+H8pQ/44mCdLsNqD7/01/SbsEYasTB4fhEaCy8bHSZkfavEoxy/b3vRBiC+mzBXXPy59q+uTLZvlg0MhbVSPbgpsCu7r56mk3TBM/kpez4OU31ox5aw5oclPuntWamu0fcga5yPKjByKbj713iUY5GxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Jov0nDTC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AEFC43394;
+	Wed, 14 Feb 2024 13:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707916404;
+	bh=sZBOA2K/u66V/tbP9HOyBgE9XI4OGN3S5NIS3T5GN5g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jov0nDTC+IaV3ySziMHJxDbaEwAjK+KwUjGV5Yci6dSIT2loUJvrzZlJwc+8mayWl
+	 hW9Cyrw81K1CGu1jyG7VZHRnhSHN9LhZBr/OpPN8QpUJ+ySzwRvcI9PjPnn7UE7R+8
+	 sweWlqPwSGHeYu80lf6QP1JwXyBEhwt2I1x4mCWw=
+Date: Wed, 14 Feb 2024 14:13:21 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+Cc: tern@rowland.harvard.edu, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Subject: Re: [PATCH] usb-storage: Add US_FL_FIX_INQUIRY quirk for Intenso
+ Twist Line USB 3.2
+Message-ID: <2024021402-slit-duke-7761@gregkh>
+References: <20240214111721.18346-1-quic_selvaras@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214111721.18346-1-quic_selvaras@quicinc.com>
 
-Hello Rob,
+On Wed, Feb 14, 2024 at 03:17:21AM -0800, Selvarasu Ganesan wrote:
+> The Intenso Twist Line USB 3.2 flash drive fails to respond to the
+> INQUIRY data stage request for a 36 bulk in request from the host. This
+> commit adds the US_FL_FIX_INQUIRY flag to fake the INQUIRY command for
+> this device, preventing a storage enumeration failure.
+> 
+> USBMON log:
+> ffffff8a3ee06a00 3192811972 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+> ffffff8a3ee06a00 3192862051 C Ci:2:009:0 -2 0
+> ffffff8a3ee06a00 3192862185 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+> ffffff8a3ee06a00 3192912299 C Ci:2:009:0 -2 0
+> ffffff8a3ee06e00 3193040068 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> ffffff8a3ee06e00 3193040214 C Ci:2:003:0 0 4 = 880b0700
+> ffffff8a3ee06e00 3193040279 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+> ffffff8a3ee06e00 3193040427 C Ci:2:002:0 0 4 = 00010000
+> ffffff8a3ee06e00 3193040470 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+> ffffff8a3ee06e00 3193040672 C Ci:2:002:0 0 4 = 03050000
+> ffffff892b309500 3193824092 S Ci:2:009:0 s a1 fe 0000 0000 0001 1 <
+> ffffff892b309500 3193824715 C Ci:2:009:0 0 1 = 00
+> ffffff892b309500 3193825060 S Bo:2:009:2 -115 31 = 55534243 01000000 24000000 80000612 00000024 00000000 00000000 000000
+> ffffff892b309500 3193825150 C Bo:2:009:2 0 31 >
+> ffffff8b8419d400 3193825737 S Bi:2:009:1 -115 36 <
+> ffffff8a3ee06400 3194040175 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> ffffff8a3ee06400 3194040372 C Ci:2:003:0 0 4 = 880b0700
+> ffffff89bee5b100 3194040591 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+> ffffff89bee5b100 3194040681 C Ci:2:002:0 0 4 = 00010000
+> ffffff89bee5b100 3194040999 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+> ffffff89bee5b100 3194041083 C Ci:2:002:0 0 4 = 03050000
+> ffffff8a3ee06a00 3195040349 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> 
+> Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+> ---
+>  drivers/usb/storage/unusual_devs.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
+> index fd68204374f2..7285287ca379 100644
+> --- a/drivers/usb/storage/unusual_devs.h
+> +++ b/drivers/usb/storage/unusual_devs.h
+> @@ -784,6 +784,13 @@ UNUSUAL_DEV(  0x058f, 0x6387, 0x0141, 0x0141,
+>  		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+>  		US_FL_MAX_SECTORS_64 ),
+>  
+> +/* Selvarasu Ganesan <quic_selvaras@quicinc.com> */
+> +UNUSUAL_DEV(  0x058f, 0x6387, 0x0002, 0x0002,
+> +		"Intenso",
+> +		"Flash drive",
+> +		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+> +		US_FL_FIX_INQUIRY),
+> +
 
-Thanks for your review!
+Shouldn't this be up an entry to keep them in sorted order?
 
-On Fri, 9 Feb 2024 14:43:49 +0000
-Rob Herring <robh@kernel.org> wrote:
+thanks,
 
-> On Thu, Feb 08, 2024 at 02:08:47PM +0100, Kory Maincent wrote:
-> > Before hand we set "#pse-cell" to 1 to define a PSE controller with =20
->=20
-> #pse-cells
->=20
-> > several PIs (Power Interface). The drawback of this was that we could n=
-ot
-> > have any information on the PI except its number. =20
->=20
-> Then increase it to what you need. The whole point of #foo-cells is that=
-=20
-> it is variable depending on what the provider needs.=20
->=20
-> > Add support for pse_pis and pse_pi node to be able to have more informa=
-tion
-> > on the PI like the number of pairset used and the pairset pinout. =20
->=20
-> Please explain the problem you are trying to solve, not your solution. I=
-=20
-> don't understand what the problem is to provide any useful suggestions=20
-> on the design.
-
-Please see Oleksij's reply.
-Thank you Oleksij, for the documentation!!
-
-> >=20
-> > Sponsored-by: Dent Project <dentproject@linuxfoundation.org> =20
->=20
-> Is this a recognized tag? First I've seen it.
-
-This is not a standard tag but it has been used several times in the past.
-
-> > =20
-> > -required:
-> > -  - "#pse-cells"
-> > +  pse_pis:
-> > +    $ref: "#/$defs/pse_pis"
-> > +
-> > +$defs: =20
->=20
-> $defs is for when you need multiple copies of the same thing. I don't=20
-> see that here.
-
-I made this choice for better readability but indeed it is used only once.
-I will remove it then.
-
-> > +  pse_pis:
-> > +    type: object
-> > +    description:
-> > +      Kind of a matrix to identify the concordance between a PSE Power
-> > +      Interface and one or two (PoE4) physical ports.
-> > +
-> > +    properties:
-> > +      "#address-cells":
-> > +        const: 1
-> > +
-> > +      "#size-cells":
-> > +        const: 0
-> > +
-> > +    patternProperties:
-> > +      "^pse_pi@[0-9]+$": =20
->=20
-> Unit-addresses are hex.
-
-Oops sorry for the mistake.
-
->=20
-> > +        $ref: "#/$defs/pse_pi"
-> > +
-> > +    required:
-> > +      - "#address-cells"
-> > +      - "#size-cells"
-> > +
-> > +  pse_pi:
-> > +    description:
-> > +      PSE PI device for power delivery via pairsets, compliant with IE=
-EE
-> > +      802.3-2022, Section 145.2.4. Each pairset comprises a positive a=
-nd a
-> > +      negative VPSE pair, adhering to the pinout configurations detail=
-ed in
-> > +      the standard.
-> > +    type: object
-> > +    properties:
-> > +      reg:
-> > +        maxItems: 1 =20
->=20
-> As you are defining the addressing here, you need to define what the=20
-> "addresses" are.
-
-Yes I will add some documentation in next version.
-
-> > +          values are "alternative-a" and "alternative-b". Each name sh=
-ould
-> > +          correspond to a phandle in the 'pairset' property pointing t=
-o the
-> > +          power supply for that pairset.
-> > +        $ref: /schemas/types.yaml#/definitions/string-array
-> > +        minItems: 1
-> > +        maxItems: 2
-> > +        items:
-> > +          - enum:
-> > +            - "alternative-a"
-> > +            - "alternative-b" =20
->=20
-> This leaves the 2nd entry undefined. You need the dictionary form of=20
-> 'items' rather than a list. IOW, Drop the '-' under items.
-
-Oh thanks! That is what I was looking for. I was struggling using the right
-description.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+greg k-h
 
