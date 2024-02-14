@@ -1,140 +1,104 @@
-Return-Path: <linux-kernel+bounces-65102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C9A8547CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:11:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6E38547D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD87E1F2146E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:11:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB57529086C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72F3199D9;
-	Wed, 14 Feb 2024 11:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="D6+DyW5y"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C77718EA2;
-	Wed, 14 Feb 2024 11:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE06E1946B;
+	Wed, 14 Feb 2024 11:11:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF1F18E28;
+	Wed, 14 Feb 2024 11:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707909049; cv=none; b=UdgfTf/5a9wyLnEVGYzVuAQJV3cyKtRsljoHQcvbvAdEXW2Vs+vnZQsHfkhv5mctC/WMbZG4gG2OasA8jiW6cMuSLp780BYQSAEA8mgSW8O9wce4/wkuUl/7kwHfboOgrqhYIv+XfB+nqh0usXHmK6KtE8/E4vEbTASDZ2PquYs=
+	t=1707909085; cv=none; b=OPfil/lJ7dRJ94XHc5fbqCT11vhnaIT8+ty9yCty6MVv1DY4EUQZ685AbVC9v2k7mEam6/lY4MQRD3OK3GO4SMINVsURjlhkLqbxxZDZHOn8hHttDsKG9tZBj1x5zDevNxDz0hZIbz7FBZ0W064lBZvCRDBhzVUAR5FC6TtN7WU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707909049; c=relaxed/simple;
-	bh=TJq9COw6PDecnjnk1YApAb3gGy01Mt/c9IxmMSaHGGM=;
+	s=arc-20240116; t=1707909085; c=relaxed/simple;
+	bh=HsZd4cCR70HE0iyjlUKYCOohLKrz8PN3AKztuMP3OWc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WUr2ZxqbxXyZClmfltTkECJC4xeIkZcxMsDX8cMPpVdw4KYO2x79SbjGtNcUTX8eQ3qMUFhSTU/sx3coYCQ6aFyr/+fKecmfWVTEvas+KMowUV6DpLtJ+Im7WaiL2BX1BsI6aEvj1vqTUjBE0oZVeJQIYbGCmmvzJx9+4srSPAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=D6+DyW5y; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DE6CD40E01A9;
-	Wed, 14 Feb 2024 11:10:44 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Q-TUVYAXG5nX; Wed, 14 Feb 2024 11:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707909042; bh=u8DgBZxZUU4PAy3YQROt3KGRvRieHIBBxlz3D9L7msU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D6+DyW5yeFF1Vckp55kkzEB2cOf+/5BNIsy+igBgyL2W4f8rtjHNGfqKfrlr5QUQY
-	 FlfFp0R4FcXeBMQgjDlJqRCdW3xNZglwUXpnrbt/JnlsmqVXMnCXIzVvKC7IA+el6T
-	 SmbL5+eE/CU9NCdVG9Tx52rG3Xhsrbn80ys3L19TYJmuOtDyu1sJYDPSBsMc1ghybr
-	 GDbdofdYcIwy7PpCkWb1xb9LYcieIReu5rAbI5m84i4IKXE0XRh8tTPn8wJIQ3qFSB
-	 IRq5gsPsThTrhQA+hpWNwg2ai+KROQcnRdJuJ4HpB5V/r2A97V6BS6YaY6qDJLmapN
-	 DDPFL5i5zgWslYQVGNuPeoGQK2OfabdCxY8ZwPEySbHIU2akpVTMPLNOLodXXydsxY
-	 vbdO7rP10CfhM2K8VTn9VlP1E6R+bycQZ6FWaooJB4DIgv4DZJvTLS+s/mFbGLQMbu
-	 WAmVl/5FYzg1er8njJat8XaaS2DfIlzWoGZTp2O8ZObrk4diT4lS9O4LWpX6/+Cy0V
-	 GO1Xqr8EnpXkSVgKBjJ9KvrsYT3Xi69xTiUZaoudVQ6HemLKSXpLdKTSuC2FUD/Zr6
-	 TrNicAs5BQMNBFeCK2DrbM7WmD51s8vu5UZFIs1dg9+9W7yt7VpnABHq5xZ2/aGYND
-	 OeGurmdexLQDCeBIRrKObYR4=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9750940E016C;
-	Wed, 14 Feb 2024 11:10:33 +0000 (UTC)
-Date: Wed, 14 Feb 2024 12:10:32 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214111032.GGZcyfqFqsW0j4Yy3a@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=la3AL3Czfumqllwr7wFA3ndGh8aHuM7sbAlnyVsZ73KiZxHx3y5/4NFSn3gMPJ9xUNmOqMU4TCHyP1dqIEJHZ6BauqPJPv+L4VpbPMSyPctXnqRP8Sz1Q4SBMCmU96zfshqH3iv+fC4eVzYjBfBkEw+nCmJ3iAHaz31HCsVmnPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC7D61FB;
+	Wed, 14 Feb 2024 03:12:03 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.64.145])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 957893F766;
+	Wed, 14 Feb 2024 03:11:20 -0800 (PST)
+Date: Wed, 14 Feb 2024 11:11:14 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Marc Zyngier <maz@kernel.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Rob Herring <robh@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>,
+	"moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" <linux-arm-kernel@lists.infradead.org>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
+ Neoverse N2 errata
+Message-ID: <Zcyf0oIJe7ukH0si@FVFF77S0Q05N>
+References: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
+ <ZcqtUxhqUbYoRH-G@linux.dev>
+ <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
+In-Reply-To: <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
 
-On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
-> +static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
-> +{
-> +	memset(fpd, 0, sizeof(struct cper_fru_poison_desc));
-> +
-> +	fpd->timestamp	= m->time;
-> +	fpd->hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
-> +	fpd->hw_id	= m->ipid;
-> +	fpd->addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
-> +	fpd->addr	= m->addr;
-> +}
+On Tue, Feb 13, 2024 at 04:19:08PM -0800, Easwar Hariharan wrote:
+> >> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+> >> index 7c7493cb571f..a632a7514e55 100644
+> >> --- a/arch/arm64/include/asm/cputype.h
+> >> +++ b/arch/arm64/include/asm/cputype.h
+> >> @@ -61,6 +61,7 @@
+> >>  #define ARM_CPU_IMP_HISI		0x48
+> >>  #define ARM_CPU_IMP_APPLE		0x61
+> >>  #define ARM_CPU_IMP_AMPERE		0xC0
+> >> +#define ARM_CPU_IMP_MICROSOFT		0x6D
+> >>  
+> >>  #define ARM_CPU_PART_AEM_V8		0xD0F
+> >>  #define ARM_CPU_PART_FOUNDATION		0xD00
+> >> @@ -135,6 +136,8 @@
+> >>  
+> >>  #define AMPERE_CPU_PART_AMPERE1		0xAC3
+> >>  
+> >> +#define MSFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
+> >> +
+> >>  #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
+> >>  #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
+> >>  #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
+> >> @@ -193,6 +196,7 @@
+> >>  #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
+> >>  #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
+> >>  #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
+> >> +#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MSFT_CPU_PART_AZURE_COBALT_100)
+> > 
+> > nitpick: consistently use the abbreviated 'MSFT' for all the definitions
+> > you're adding.
+> 
+> I was rather hoping to use Microsoft throughout, but I chose MSFT for the CPU_PART* to align columns
+> with the other defines. :) If consistency is of a higher priority than column alignment, I can change it
+> to MICROSOFT rather than MSFT throughout.
 
-Get rid of that one:
+Consistency across the definitions is more important than alignmen; please
+choose either "MSFT" or "MICROSOFT" and use that consistently.
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index f8799beddcc4..090b60d269e7 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -221,17 +221,6 @@ static int update_record_on_storage(struct fru_rec *rec)
- 	return ret;
- }
- 
--static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
--{
--	memset(fpd, 0, sizeof(struct cper_fru_poison_desc));
--
--	fpd->timestamp	= m->time;
--	fpd->hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
--	fpd->hw_id	= m->ipid;
--	fpd->addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
--	fpd->addr	= m->addr;
--}
--
- static bool has_valid_entries(struct fru_rec *rec)
- {
- 	if (!(rec->fmp.validation_bits & FMP_VALID_LIST_ENTRIES))
-@@ -288,7 +277,13 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
- 
- 	mutex_lock(&fmpm_update_mutex);
- 
--	init_fpd(&fpd, m);
-+	memset(&fpd, 0, sizeof(struct cper_fru_poison_desc));
-+
-+	fpd.timestamp	= m->time;
-+	fpd.hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
-+	fpd.hw_id	= m->ipid;
-+	fpd.addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
-+	fpd.addr	= m->addr;
- 
- 	/* This is the first entry, so just save it. */
- 	if (!has_valid_entries(rec))
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Mark.
 
