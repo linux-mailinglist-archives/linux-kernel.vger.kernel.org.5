@@ -1,159 +1,96 @@
-Return-Path: <linux-kernel+bounces-64912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10BD5854493
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:04:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9E8B85448F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E72C2B22572
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:04:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DA451F2A91A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C1C125A2;
-	Wed, 14 Feb 2024 09:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F070F101C1;
+	Wed, 14 Feb 2024 09:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ysoft.com header.i=@ysoft.com header.b="L7PteXqc"
-Received: from uho.ysoft.cz (uho.ysoft.cz [81.19.3.130])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="EtEA/X/K"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B351679D2;
-	Wed, 14 Feb 2024 09:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.3.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B457B8473;
+	Wed, 14 Feb 2024 09:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901473; cv=none; b=tMf5lBoLNUC8l/MIcxkqHrtGFnrQ9IahtvPQHUXo5uGvRzwz2AO+ZmZLIk4GbcYBI0FYAWpbMIFumgaqa0w1n7BL5bOTyLMAQK4HeBX0eIn4EiC2e33mXqRPPTBSVLOw8sxxjl00QXrlGeGYx2J9VQnGXtaMm2DTmRT9L+g8Whg=
+	t=1707901454; cv=none; b=Vx6m8AMU92KSp/GwH3Ch1Bw8GGs7YO937vqYah/sHTKITxLnn+T/WjG6/YgzaVsvCsU9fQ8pE/0vnsQDlFAsOLg2e4NNIhVc9/OH4IE7nqQIeIb++ZAfCvKKfUM3hdpwaLPwip12STEPAPIC7zIud3m/hCs/Eukuq/ck6nY02RU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901473; c=relaxed/simple;
-	bh=NabSFMAj7QEe5/xa7bW5tvQsHBXSCoMhb1gIoOGlJ8w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kAv9f+B7HLy3eMfs4hLXSz/WmSj8gB49OMM5t73LoDB4hdy7margtWOSalORdR2Goju29NOFDPqtPfc88R6KHR0R8AOMhnJr3g+wCc5Tj+fA4ieZBEHT4rpsfsIFeHd2OxcNkeDfDC8mQGsPlPGFbVPPaDxUJXtpfUwVQsTwCxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ysoft.com; spf=pass smtp.mailfrom=ysoft.com; dkim=pass (1024-bit key) header.d=ysoft.com header.i=@ysoft.com header.b=L7PteXqc; arc=none smtp.client-ip=81.19.3.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ysoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ysoft.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-	s=20160406-ysoft-com; t=1707901463;
-	bh=De7gtKQUI6kPNqgDef3IVCXJrTn70XyIKQzykcjjq/E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L7PteXqcQIxxQVD0d9+WyBdF7XK0uUHG7ot4YTRj0L1DTzu6M8zK8NQFogNsVsrX7
-	 9sfuhUaGjSyRsBy2B/IuzKh2IfHWyQibTUo8RTGBqZANgw7xCcS/7JoUo1rmB9jtjX
-	 UURSFCo5hYzbKYk6GMwA3frj5zr5JVmry8dm3MnM=
-Received: from iota-build.ysoft.local (unknown [10.1.5.151])
-	by uho.ysoft.cz (Postfix) with ESMTP id 6D6E3A0336;
-	Wed, 14 Feb 2024 10:04:23 +0100 (CET)
-From: =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To: Shawn Guo <shawnguo@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan McDowell <noodles@earth.li>,
-	=?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-Subject: [PATCH v2 2/2] ARM: dts: imx6dl-yapp4: Move the internal switch PHYs under the switch node
-Date: Wed, 14 Feb 2024 10:03:28 +0100
-Message-Id: <1707901408-17084-2-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.1.4
-In-Reply-To: <1707901408-17084-1-git-send-email-michal.vokac@ysoft.com>
-References: <1707901408-17084-1-git-send-email-michal.vokac@ysoft.com>
+	s=arc-20240116; t=1707901454; c=relaxed/simple;
+	bh=vuhdcyX9bdUXLdOFBo7MVnrhvcQRIzTGTAMuBGPXqzw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2EgUMaH6y5x7YGitj+6p+0R1yNKu2DksbWZQGATCjNBvQm1+WnCB9IkaB+gWxChmdPTNtfoS2C4HLZYnmfE7Go0lYf04LLd5CR6kbQXwMcFQ0XHLy/Rr1xAv1FrEiWvEIOqU99Qu8JQqlkWI5qHFhfpg1Yl0CJ5tcPd5Y0QEuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=EtEA/X/K; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 93C0960434;
+	Wed, 14 Feb 2024 09:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1707901451;
+	bh=vuhdcyX9bdUXLdOFBo7MVnrhvcQRIzTGTAMuBGPXqzw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EtEA/X/KaGOLt0Dcxqqk6BkYl7IAPJDT+yjncICRRWCMauQ5Vy6n3uxvw1TRyyNqp
+	 FVChJ5DY6p/gbhfImT/ARj2n81ay/15F/VOyKugtqlOLYjVM505iPpngN7Mawvi2Ij
+	 xw0SCEebj7xj3oXYKJcZCHLZvtT+4uJfJGxTIH7VQ2UIA796eb7y1Nic/18LbNQnQV
+	 oKoze+/XZWn1LIEuL5RJIcoJpnzaftwif21JobW8M0KxvODhq2zkUD/Y/K5glNlVRt
+	 cV+rPkSfazfB8djLJ4GUKp0uscWJ4Y8BzZ1Z4b1+OuKaUxLdmM7WHUYx6FJB+mYi3d
+	 kA6cbtkDKBaiQ==
+Date: Wed, 14 Feb 2024 11:03:30 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>, lkp@intel.com,
+	oe-kbuild-all@lists.linux.dev,
+	"David S . Miller" <davem@davemloft.net>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Johan Hovold <johan@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] serial: core: Add support for DEVNAME:0.0 style
+ naming for kernel console
+Message-ID: <20240214090330.GR52537@atomide.com>
+References: <20240213084545.40617-5-tony@atomide.com>
+ <aa4b1b2e-50b8-419c-bf0d-526711f1aaea@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa4b1b2e-50b8-419c-bf0d-526711f1aaea@moroto.mountain>
 
-We identified that the PHYs actually do not work since commit 7da7b84fee58
-("ARM: dts: imx6dl-yapp4: Move phy reset into switch node") as
-a coincidence of several circumstances.
+* Dan Carpenter <dan.carpenter@linaro.org> [240214 09:00]:
+> a2020a9ccacd63 Tony Lindgren 2024-02-13  252  int serial_base_add_preferred_console(struct uart_driver *drv,
+> a2020a9ccacd63 Tony Lindgren 2024-02-13  253  				      struct uart_port *port)
+> a2020a9ccacd63 Tony Lindgren 2024-02-13  254  {
+> a2020a9ccacd63 Tony Lindgren 2024-02-13 @255  	const char *port_match __free(kfree);
 
-The reset signal is kept asserted by a pull-down resistor on the board
-unless it is deasserted by GPIO from the SoC. This is to keep the switch
-dead until it is configured properly by the kernel and user space.
+Thanks also noted by Andy.
 
-Prior to the referenced commit the switch was reset by the FEC driver
-and the reset GPIO was actively deasserted. The mdio-bus was scanned
-and the attached switch and its PHYs were found and configured.
+> Someone should add this to checkpatch.  These always need to be
+> initialized to NULL.
 
-With the referenced commit the switch is reset by the qca8k driver.
-Because of another bug in the qca8k driver, functionality of the reset
-pin depends on its pre-kernel configuration. See commit c44fc98f0a8f
-("net: dsa: qca8k: fix illegal usage of GPIO")
+Yes good idea. These are easy to miss especially if the code path changes
+for whatever reason.
 
-The problem did not appear until we removed support for the switch
-and configuration of its reset pin from the bootloader.
+Regards,
 
-To fix that, properly describe the internal mdio-bus configuration of
-the qca8334 switch. The PHYs are internal to the switch and sit on its
-internal mdio-bus.
-
-Fixes: 7da7b84fee58 ("ARM: dts: imx6dl-yapp4: Move phy reset into switch node")
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
-changes in v2:
-- none
-
- arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi | 23 ++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-index 5763f8253d51..eec1f9092572 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-+++ b/arch/arm/boot/dts/nxp/imx/imx6dl-yapp4-common.dtsi
-@@ -133,14 +133,6 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		phy_port2: phy@1 {
--			reg = <1>;
--		};
--
--		phy_port3: phy@2 {
--			reg = <2>;
--		};
--
- 		switch@10 {
- 			compatible = "qca,qca8334";
- 			reg = <0x10>;
-@@ -165,15 +157,30 @@
- 				eth2: port@2 {
- 					reg = <2>;
- 					label = "eth2";
-+					phy-mode = "internal";
- 					phy-handle = <&phy_port2>;
- 				};
- 
- 				eth1: port@3 {
- 					reg = <3>;
- 					label = "eth1";
-+					phy-mode = "internal";
- 					phy-handle = <&phy_port3>;
- 				};
- 			};
-+
-+			mdio {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				phy_port2: ethernet-phy@1 {
-+					reg = <1>;
-+				};
-+
-+				phy_port3: ethernet-phy@2 {
-+					reg = <2>;
-+				};
-+			};
- 		};
- 	};
- };
--- 
-2.1.4
-
+Tony
 
