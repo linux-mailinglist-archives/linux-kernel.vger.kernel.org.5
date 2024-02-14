@@ -1,64 +1,54 @@
-Return-Path: <linux-kernel+bounces-65265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9DD854A5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:22:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C35C6854A5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4F10B2134F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:22:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7246128E75D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4810354745;
-	Wed, 14 Feb 2024 13:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828A254729;
+	Wed, 14 Feb 2024 13:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sX/UcCP3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bIP2z1ZO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA8854677;
-	Wed, 14 Feb 2024 13:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F4654670;
+	Wed, 14 Feb 2024 13:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707916928; cv=none; b=FxYNFdvb7RVMcvVDQ3P6TNE79wd3lqLWyB9XlCBzOPpvNvn3QNIqkM+oAPR3bta28LVdkblCRWR5+DyoQCxjP8Lfu3aicuaZl+WiMkfQzedxamZvbJITYwACh8sdnJHzevAnZPhK4M5lIOaeWb8LCYwLD+vdEBUlBMZ0tP6KYbg=
+	t=1707916938; cv=none; b=AwrpfOA+BZv/ArCWE3qNyIFcDbv0nFyIJRBFnYU6SRJ5Ce6s8flvAdC4TmQm7FW3tBy29wx4oBbnfg8GUCgM6ZDNyC7Uw++o6j6XO2ZkKWRBkshu9TBklP/mAAovKO3ymDPsle/fOh+M7byjs/VDPsjYysQvdz9dnWs3QT0xiJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707916928; c=relaxed/simple;
-	bh=3BhU0aZnn35CAZKdM6PG56ZetB26JCBoUcsKfsvxGTk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=En1i5SMv8g7EsX9DZ8/RLxNTgQsDSOQYKM5+Svw6a5izv1iqw81JaAh0zPB2lOqWomgeNJqbLzfkCDm+DhS+pf/Sv/GhhyW/323UV0fr418hkzJKVBPbg7oNK6XAPJx1oRmXkY1Sa+zA7AbbXBkMT+vnNNt+HEeK24qneBjWLlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sX/UcCP3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF6E5C43390;
-	Wed, 14 Feb 2024 13:22:04 +0000 (UTC)
+	s=arc-20240116; t=1707916938; c=relaxed/simple;
+	bh=bBRoDlO2YKY1ltZI6iH4y3v5GP17SnYkawVDUuqF5FA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bzL3w++1NrRKjC0m3w9HjT5PYsEDQVh1XML4ACuww11aCxgmpvhjAJdDX/3bEafeJywVCBZcTe95qBuH3AO/xAcbZ2I2/U2Wq6Z49Ca39llDUG1RVDJqMe5aHdS1mKZEdzsgOxnwFUZxKOCASB0uTN9AQHYltU1qKSgjS+9jgnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bIP2z1ZO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E154C433C7;
+	Wed, 14 Feb 2024 13:22:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707916928;
-	bh=3BhU0aZnn35CAZKdM6PG56ZetB26JCBoUcsKfsvxGTk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sX/UcCP3s3y2QCF0191UjJyD2CJK84+XSRUiI1nfqhs8x6EgXD4u/hDmD6bigwF0/
-	 j4AjeSgE3JEtXKxEFmPBtkU8LZVYahLjimx/yREgHv32imHWfpSwWWpju+eb1e06kd
-	 0f5MrjyH0sPnMVLVopaWMcRaet7EWXbGXir6Vi4F1W+jyDvOUE7z4uF2BpAN9JxIUe
-	 iux4t/Hw7uSnQzEdn2E37Z0Nf5bJUGDU0uyQb1vVPmQGo/5OW7xy2xejDh9ixeJnrI
-	 U2CE6YqI+unaEX68jDwd/JNsVxnsOHKrkBbcsNSwIGwOkG0xbFae2+1zSCxzB0hXD9
-	 b73jVOR6qSvnA==
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Kevin Hilman <khilman@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- Nathan Chancellor <nathan@kernel.org>, 
- Nick Desaulniers <ndesaulniers@google.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-In-Reply-To: <20240213215807.3326688-1-jbrunet@baylibre.com>
-References: <20240213215807.3326688-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH v2 0/2] ASoC: meson: aiu: fix function pointer type
- mismatch
-Message-Id: <170791692451.143237.6316282376548391909.b4-ty@kernel.org>
-Date: Wed, 14 Feb 2024 13:22:04 +0000
+	s=k20201202; t=1707916938;
+	bh=bBRoDlO2YKY1ltZI6iH4y3v5GP17SnYkawVDUuqF5FA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bIP2z1ZOkTF1YgpwaFaEpnlpasFryQboSHsOUKZGk+dpmRsNq/FL6pBiOb66gZG8W
+	 9YlM2MnLYEc9jkznARRMQ+2qH9r9320YErVQbCDMrAFuMSNNNKu+AlMKdskS+UysSq
+	 4R+Qz3YH46sDlXaYwtpaAdmp3kCxpHp9NcDtg/32luoxIygIo3gDQ1x5dT4pRYO8El
+	 0N5Lb/Z7K+UY5WbGLsDeiHUdqoaDmHeJffYQUCPZsVB/pYb+rAJz16hivsB4UrCk+O
+	 lnCqd38DXsd+rE7l0KhAWEcaPtvAeHzZW5xDLZT2gMoPVCZH0ZOM67imDLSpjdYc7N
+	 P5lxb0eQRIy0A==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: linux-trace-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>,
+	mhiramat@kernel.org
+Subject: [PATCH RFC 0/5] tracing/probes: Support function parameter access from return probe
+Date: Wed, 14 Feb 2024 22:22:14 +0900
+Message-Id: <170791693437.389532.6816883363982512874.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,48 +56,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Transfer-Encoding: 8bit
 
-On Tue, 13 Feb 2024 22:58:02 +0100, Jerome Brunet wrote:
-> This patchset fixes 2 -Wcast-function-type-strict warning in amlogic
-> audio drivers with clang 16.
-> 
-> Changes since v1: [0]
-> * use devm_clk_get_enabled() instead of adding a dedicated helper in each
->   driver.
-> * Split the patch, 1 per fixed commit to make it easier for stable.
-> 
-> [...]
+Hi,
 
-Applied to
+Here is a series of patches to support accessing function entry data from
+function *return* probes (including kretprobe and fprobe-exit event).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+This allows us to access the results of some functions, which returns the
+error code and its results are passed via function parameter, such as an
+structure-initialization function.
 
-Thanks!
+For example, vfs_open() will link the file structure to the inode and update
+mode. Thus we can trace that changes.
 
-[1/2] ASoC: meson: aiu: fix function pointer type mismatch
-      commit: 98ac85a00f31d2e9d5452b825a9ed0153d934043
-[2/2] ASoC: meson: t9015: fix function pointer type mismatch
-      commit: 5ad992c71b6a8e8a547954addc7af9fbde6ca10a
+ # echo 'f vfs_open mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events
+ # echo 'f vfs_open%return mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events 
+ # echo 1 > events/fprobes/enable 
+ # cat trace
+              sh-131     [006] ...1.  1945.714346: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x2 inode=0x0
+              sh-131     [006] ...1.  1945.714358: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4d801e inode=0xffff888008470168
+             cat-143     [007] ...1.  1945.717949: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.717956: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4a801d inode=0xffff888005f78d28
+             cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+So as you can see those fields are initialized at exit.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+TODO:
+ - update README file
+ - add/update ftracetest
+ - update documents
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thank you,
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+---
 
-Thanks,
-Mark
+Masami Hiramatsu (Google) (5):
+      tracing/probes: Fix to search structure fields correctly
+      tracing/fprobe-event: cleanup: Fix a wrong comment in fprobe event
+      tracing/probes: Cleanup probe argument parser
+      tracing/probes: cleanup: Set trace_probe::nr_args at trace_probe_init
+      tracing/probes: Support $argN in return probe (kprobe and fprobe)
 
+
+ kernel/trace/trace_btf.c        |    4 
+ kernel/trace/trace_eprobe.c     |    8 -
+ kernel/trace/trace_fprobe.c     |   59 ++++--
+ kernel/trace/trace_kprobe.c     |   58 ++++-
+ kernel/trace/trace_probe.c      |  417 ++++++++++++++++++++++++++++-----------
+ kernel/trace/trace_probe.h      |   30 +++
+ kernel/trace/trace_probe_tmpl.h |   10 -
+ kernel/trace/trace_uprobe.c     |   14 +
+ 8 files changed, 433 insertions(+), 167 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
