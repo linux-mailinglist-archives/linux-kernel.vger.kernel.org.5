@@ -1,126 +1,112 @@
-Return-Path: <linux-kernel+bounces-65851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B185A8552D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:58:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A018552D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E8CE291020
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:58:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A1591C2712F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0831913A862;
-	Wed, 14 Feb 2024 18:58:30 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DB713A864;
+	Wed, 14 Feb 2024 19:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X/1nET5W"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B072134738;
-	Wed, 14 Feb 2024 18:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4178913A264
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707937109; cv=none; b=r2ZTEtir8FUEgQ7iUOqLWGDeVJzTYqIbPjy8AcahrPiJ0qpUPj3hGnAr27QuNFGFvm69ugPLrLCWvIhqvtsVyuOaTCsPAuc1N+SifXtmpJ8ogDz4LBgoW/c0M2dMWjeD3KjS/kbGBFK1e3aOTPb0hFBa4Y3V7z1KYGawJbwawBU=
+	t=1707937209; cv=none; b=YIVeJcyzB1jbJX2mlu6L0Ngg6jscSXJ54F+FjHFLfxWDf5FbQft4R92SSft0Hk8Azi1kFze2MxzuuqzHai8js4+ZFEFHFFKtdxdvU5zhc7PQkYoM88NhBfRh2jwfI+U/CojaUx2XY3JxLo9XAANiENbWrWANN55R1uqr21zt23w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707937109; c=relaxed/simple;
-	bh=NJ0teznko9avctRgXsk9CYac2kHQHkkdyHoR2QZxcIc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j0jdL/FrbYLgZn25ECWlmfDgpeQwSZ+WRpzPVe7X8ByGyxB0u46EQvNKxQTR+Pvnp72K+59m43lXKsqKNmTyKwksuWS80e/31B9FYqwZBs3V/f7znguRD6+EfVX3J0t9P7jfLuHxIGlMEZ0MYO5anChRw3CB6mJv6cj4TxPiQqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478F5C433C7;
-	Wed, 14 Feb 2024 18:58:27 +0000 (UTC)
-Date: Wed, 14 Feb 2024 13:59:58 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 19/36] function_graph: Implement
- fgraph_reserve_data() and fgraph_retrieve_data()
-Message-ID: <20240214135958.23ed55e1@gandalf.local.home>
-In-Reply-To: <170723226123.502590.4924916690354403889.stgit@devnote2>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723226123.502590.4924916690354403889.stgit@devnote2>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707937209; c=relaxed/simple;
+	bh=UjVHdWRKxR1wWlwd6TPzyXgOHZ46hNGBZS4G23VAcsg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uk+WSiPAwfkoTo0qzVrzAUCSSCWggVdRtwot0Cmlkw3Fj1A8reckTX1l+xURLEFJoE0nW2JWDlsM5vEOBU2FqWgBoEDVkeIgxbVCV6ey0eikjgqjoQbbrtyZ9MO2MxT8hSLKc96XQ2/vfk5KaYlJyCY9VWjoCDto7RK2vkW6E6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X/1nET5W; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 11:00:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707937206;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4P041HuvLQ7qtWSEmdckANvsaD0Z2miUICFdYufhm48=;
+	b=X/1nET5WtPtVfcZtVet1QEGDzDL7K064t5P+ZUnZ8xbF7EWyqkGtFsTHy1iBUXEx21LNXr
+	SqhzO+L68HlVXmUP4J6fLej7uI3fLYtv63jfC9iKchwWjhLfOJbDkVRt2A67PT8ZGO5MDB
+	2B37z9Zrxg8evl211A+GeQGjgfQUc2g=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Marc Zyngier <maz@kernel.org>
+Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
+ interacting with an ITS
+Message-ID: <Zc0NsFm40nIqTmRf@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+ <20240213094114.3961683-1-oliver.upton@linux.dev>
+ <86zfw33qae.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86zfw33qae.wl-maz@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed,  7 Feb 2024 00:11:01 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On Wed, Feb 14, 2024 at 05:32:25PM +0000, Marc Zyngier wrote:
+> On Tue, 13 Feb 2024 09:41:14 +0000,
+> Oliver Upton <oliver.upton@linux.dev> wrote:
+> > 
+> > A prerequisite of testing LPI injection performance is of course
+> > instantiating an ITS for the guest. Add a small library for creating an
+> > ITS and interacting with it *from userspace*.
+> > 
+> > Yep, you read that right. KVM unintentionally allows userspace to send
+> > commands to the virtual ITS via the command queue. Besides adding test
+> > coverage for an elusive UAPI, interacting with the ITS in userspace
+> > simplifies the handling of commands that need to allocate memory, like a
+> > MAPD command with an ITT.
+> 
+> I don't mean to derail the party, but I really think we should plug
+> this hole. Either that, or we make it an official interface for state
+> restore. And don't we all love to have multiple interfaces to do the
+> same thing?
 
-> From: Ste
-> +/**
-> + * fgraph_reserve_data - Reserve storage on the task's ret_stack
-> + * @idx:	The index of fgraph_array
-> + * @size_bytes: The size in bytes to reserve
-> + *
-> + * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-> + * task's ret_stack shadow stack, for a given fgraph_ops during
-> + * the entryfunc() call. If entryfunc() returns zero, the storage
-> + * is discarded. An entryfunc() can only call this once per iteration.
-> + * The fgraph_ops retfunc() can retrieve this stored data with
-> + * fgraph_retrieve_data().
-> + *
-> + * Returns: On success, a pointer to the data on the stack.
-> + *   Otherwise, NULL if there's not enough space left on the
-> + *   ret_stack for the data, or if fgraph_reserve_data() was called
-> + *   more than once for a single entryfunc() call.
-> + */
-> +void *fgraph_reserve_data(int idx, int size_bytes)
-> +{
-> +	unsigned long val;
-> +	void *data;
-> +	int curr_ret_stack = current->curr_ret_stack;
-> +	int data_size;
-> +
-> +	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-> +		return NULL;
-> +
-> +	/* Convert to number of longs + data word */
-> +	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
+Ok, I've thought about it a bit more and I'm fully convinced we need to
+shut the door on this stupidity.
 
-Hmm, the above is a fast path. I wonder if we should add a patch to make that into:
+We expect CREADR == CWRITER at the time userspace saves the ITS
+registers, but we have a *hideous* ordering issue on the restore path.
 
-	if (unlikely(size_bytes & (sizeof(long) - 1)))
-		data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
-	else
-		data_size = size_bytes >> (sizeof(long) == 4 ? 2 : 3);
+If the order of restore from userspace is CBASER, CWRITER, CREADR then
+we **wind up replaying the entire command queue**. While insane, I'm
+pretty sure it is legal for the guest to write garbage after the read
+pointer has moved past a particular command index.
 
-to keep from doing the division.
+Fsck!!!
 
--- Steve
+So, how about we do this:
 
-> +
-> +	val = get_fgraph_entry(current, curr_ret_stack - 1);
-> +	data = &current->ret_stack[curr_ret_stack];
-> +
-> +	curr_ret_stack += data_size + 1;
-> +	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-> +		return NULL;
-> +
-> +	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
-> +
-> +	/* Set the last word to be reserved */
-> +	current->ret_stack[curr_ret_stack - 1] = val;
-> +
-> +	/* Make sure interrupts see this */
-> +	barrier();
-> +	current->curr_ret_stack = curr_ret_stack;
-> +	/* Again sync with interrupts, and reset reserve */
-> +	current->ret_stack[curr_ret_stack - 1] = val;
-> +
-> +	return data;
-> +}
-> +
+ - Provide a uaccess hook for CWRITER that changes the write-pointer
+   without processing any commands
+
+ - Assert an invariant that at any time CWRITER or CREADR are read from
+   userspace that CREADR == CWRITER. Fail the ioctl and scream if that
+   isn't the case, so that way we never need to worry about processing
+   'in-flight' commands at the destination.
+
+-- 
+Thanks,
+Oliver
 
