@@ -1,902 +1,212 @@
-Return-Path: <linux-kernel+bounces-65273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F35ED854A6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:24:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2366854A72
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 122A2B27443
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:24:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 006151C22336
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA69054F82;
-	Wed, 14 Feb 2024 13:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDA45467A;
+	Wed, 14 Feb 2024 13:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqqs+zDN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QIjP+FW0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OBUSsdFQ"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D589A55E76;
-	Wed, 14 Feb 2024 13:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FD053E3C;
+	Wed, 14 Feb 2024 13:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707916982; cv=none; b=c26bKkbbPseb756LcF4wJlzaD6CTNhVtaG7o9/DcZFwRmxszSjJykHpp9GwCgOllXz7PVQ9cNPC57jV9rxlMc5wUhDGwD7Yvk+3hHPyrnFet2Ue8L+LqS5F4FFBtuu0maV9cYllNThBB2vM+qTY5K+T917Dozt8sdu7irJNVnlg=
+	t=1707917018; cv=none; b=AiTGgEax5k9syfobuixqE/rDkXY5NvVqc9EGEBtUfR6LoqyIwbLSw/RBIe86KFpZ2mWRgyHp9ncYqf/akZdd8to7hRzPh/WF/8VfSSc3zZ0vr7EPPmiOAYb2EeytQzQyohc3ci6XNLmel/0jCEl+egI6GfEIYApDMadZzlv8TFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707916982; c=relaxed/simple;
-	bh=FDPgDrP7asz0MGZoulDuu+P0H73dqHEiTDVSSMNjD6Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KQf44KuOe8boORT2SndVWVWcng9mah0aih4O+z3GHhmuAQPRXSW8QMYkZxK/EZKMpTwWHYgW1Pk13ac9N6DQ+5ZUO33ZZwS6Bex+7/koWVylsCAl2SfNRcwqJrdCIqCnqo9iI+gJl9I35hZ8GSUZ+0szbyTSLdqKWfP2G9GTGdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqqs+zDN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67B2AC433C7;
-	Wed, 14 Feb 2024 13:23:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707916982;
-	bh=FDPgDrP7asz0MGZoulDuu+P0H73dqHEiTDVSSMNjD6Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dqqs+zDNSRDfjjypHgNF0yspqJaAE6nKpDCBiT9nLZ14/lxMV0eTkC0FABz667yn8
-	 bc5uiATEt4ZB7OHuGF4O4atyzUXwveuek5ZBsoRXQGNimJ3PUxOFZtMKtm2pciINib
-	 1zuCQ6j6OJMb2q/LnRp/uHUvnVG0zmvS/DZsFFX9f/rbN+kJBjNOi6pVCdfwFVZXoX
-	 Rmeyf9btADHbIZAwv/b/CNkrE089Y6XVvx4WR1qsqn2i4AnS3n6gVEnliIxHmWdz+9
-	 bNAw1111/Yt/dfpgfSatnsuoSDUPBHJo+UMUQxxMJlNvnM1cWT0jBRuguR/yB5OdgB
-	 XJP07EVFnr9fA==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: linux-trace-kernel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	mhiramat@kernel.org
-Subject: [PATCH RFC 5/5] tracing/probes: Support $argN in return probe (kprobe and fprobe)
-Date: Wed, 14 Feb 2024 22:22:59 +0900
-Message-Id: <170791697908.389532.3792948642072992979.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170791693437.389532.6816883363982512874.stgit@devnote2>
-References: <170791693437.389532.6816883363982512874.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1707917018; c=relaxed/simple;
+	bh=sY0l/MGP0ifFOugFFWAqZ7Hx7MbEo7MwiddTrEtgeQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wndm2RlOuT47VvZYnYwB1NqV7VhuEMW/h+dvb61v9IibeuHKXtRAXy8pV6hU5xwZ64qg7aWdurfQmke0InA1og+AyS+zIjZCNkQUScvqV5BNPcFK+eGcIUoXN4OcaLCQNOkGiJLXq0D3dqEr8kk2Cdpi3frJzGoPoQQyRH7W4SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QIjP+FW0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OBUSsdFQ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D31DF1F805;
+	Wed, 14 Feb 2024 13:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707917015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRJr10qi9dh6XG3cKWhF0aOO8OAegvJYwUfC6v4k4/c=;
+	b=QIjP+FW0aJkhheVbf//vZhksU2INykO7/VOPppfdDhlA8ab8RELtSf6gqTd+z5hBz+cImh
+	Ag2WHlhQPZ7ipV7H+3rxUDaRunemOqRJYdbe+SFp68BRkmSDMmmTuO66EPnKF235szRR0M
+	6+MEPV4zNbKf6fX6JKzfxnlJ9udu5jw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707917014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRJr10qi9dh6XG3cKWhF0aOO8OAegvJYwUfC6v4k4/c=;
+	b=OBUSsdFQY6/ONFq+SLJJgV5pbl7Y3+GUbhOdsQryZFyzRxPfavV+WWownngLZMDVoUdtvl
+	mMFT3Y4YdP8ZMxzDVLuXUAjuYpnODYwyabYbRa6y3dXx4Ssf6YdRjpvaSzGdhyT9F9amUo
+	SYxHabq46Dmuft16HAcTuJYIQ1qgEYo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EEC513A6D;
+	Wed, 14 Feb 2024 13:23:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 13hAJta+zGWQeAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 14 Feb 2024 13:23:34 +0000
+Date: Wed, 14 Feb 2024 14:23:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, axboe@kernel.dk,
+	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <Zcy-1nScrEI_q0w7@tiehlicka>
+References: <20240212213922.783301-1-surenb@google.com>
+ <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[73];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux.dev,redhat.com,linux-foundation.org,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Tue 13-02-24 14:59:11, Suren Baghdasaryan wrote:
+> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+[...]
+> > > If you think you can easily achieve what Michal requested without all that,
+> > > good.
+> >
+> > He requested something?
+> 
+> Yes, a cleaner instrumentation.
 
-Support accessing $argN in the return probe events. This will help users to
-record entry data in function return (exit) event for simplfing the function
-entry/exit information in one event, and record the result values (e.g.
-allocated object/initialized object) at function exit.
+Nope, not really. You have indicated you want to target this version for the
+_next_ merge window without any acks, really. If you want to go
+forward with this then you should gain a support from the MM community
+at least. Why? Because the whole macro layering is adding maintenance
+cost for MM people.
 
-For example, if we have a function `int init_foo(struct foo *obj, int param)`
-sometimes we want to check how `obj` is initialized. In such case, we can
-define a new return event like below;
+I have expressed why I absolutely hate the additional macro layer. We
+have been through similar layers of macros in other areas (not to
+mention page allocator interface itself) and it has _always_ turned out
+a bad idea long term. I do not see why this case should be any
+different.
 
- # echo 'r init_foo retval=$retval param=$arg2 field1=+0($arg1)' >> kprobe_events
+The whole kernel is moving to a dynamic tracing realm and now we
+are going to build a statically macro based tracing infrastructure which
+will need tweaking anytime real memory consumers are one layer up the
+existing macro infrastructure (do not forget quite a lot of allocations
+are in library functions) and/or we need to modify the allocator API
+in some way. Call me unimpressed!
 
-Thus it records the function parameter `param` and its result `obj->field1`
-(the dereference will be done in the function exit timing) value at once.
+Now, I fully recognize that the solution doesn't really have to be
+perfect in order to be useful. Hence I never NAKed it even though I really
+_dislike_ the approach. I have expected you will grow the community
+support over time if this is indeed the only feasible approach but that
+is not reflected in the series posted here. If you find a support I will
+not stand in the way.
 
-This also support fprobe, BTF args and'$arg*'. So if CONFIG_DEBUG_INFO_BTF
-is enabled, we can trace both function parameters and the return value
-by following command.
+> Unfortunately the cleanest one is not
+> possible until the compiler feature is developed and deployed. And it
+> still would require changes to the headers, so don't think it's worth
+> delaying the feature for years.
 
- # echo 'f target_function%return $arg* $retval' >> dynamic_events
+I am pretty sure you have invested a non-trivial time into evaluating
+other ways, yet your cover letter is rather modest about any details:
+:  - looked at alternate hooking methods.
+:    There were suggestions on alternate methods (compiler attribute,
+:    trampolines), but they wouldn't have made the patchset any cleaner
+:    (we still need to have different function versions for accounting vs. no
+:    accounting to control at which point in a call chain the accounting
+:    happens), and they would have added a dependency on toolchain
+:    support.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- kernel/trace/trace_eprobe.c     |    6 +
- kernel/trace/trace_fprobe.c     |   57 +++++++++----
- kernel/trace/trace_kprobe.c     |   58 ++++++++++---
- kernel/trace/trace_probe.c      |  177 ++++++++++++++++++++++++++++++++++-----
- kernel/trace/trace_probe.h      |   28 ++++++
- kernel/trace/trace_probe_tmpl.h |   10 +-
- kernel/trace/trace_uprobe.c     |   12 +--
- 7 files changed, 284 insertions(+), 64 deletions(-)
+First immediate question would be: What about page_owner? I do remember
+the runtime overhead being discussed but I do not really remember any
+actual numbers outside of artificial workloads. Has this been
+investigated? Is our stack unwinder the problem? Etc.
 
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index eb72def7410f..b0e0ec85912e 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -390,8 +390,8 @@ static int get_eprobe_size(struct trace_probe *tp, void *rec)
- 
- /* Note that we don't verify it, since the code does not come from user space */
- static int
--process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
--		   void *base)
-+process_fetch_insn(struct fetch_insn *code, void *rec, void *edata,
-+		   void *dest, void *base)
- {
- 	unsigned long val;
- 	int ret;
-@@ -438,7 +438,7 @@ __eprobe_trace_func(struct eprobe_data *edata, void *rec)
- 		return;
- 
- 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
--	store_trace_args(&entry[1], &edata->ep->tp, rec, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &edata->ep->tp, rec, NULL, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 3ccef4d82235..4f4280815522 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2022 Google LLC.
-  */
- #define pr_fmt(fmt)	"trace_fprobe: " fmt
-+#include <asm/ptrace.h>
- 
- #include <linux/fprobe.h>
- #include <linux/module.h>
-@@ -129,8 +130,8 @@ static bool trace_fprobe_is_registered(struct trace_fprobe *tf)
-  * from user space.
-  */
- static int
--process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
--		   void *base)
-+process_fetch_insn(struct fetch_insn *code, void *rec, void *edata,
-+		   void *dest, void *base)
- {
- 	struct pt_regs *regs = rec;
- 	unsigned long val;
-@@ -152,6 +153,9 @@ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
- 	case FETCH_OP_ARG:
- 		val = regs_get_kernel_argument(regs, code->param);
- 		break;
-+	case FETCH_OP_EDATA:
-+		val = *(unsigned long *)((unsigned long)edata + code->offset);
-+		break;
- #endif
- 	case FETCH_NOP_SYMBOL:	/* Ignore a place holder */
- 		code++;
-@@ -184,7 +188,7 @@ __fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	dsize = __get_data_size(&tf->tp, regs);
-+	dsize = __get_data_size(&tf->tp, regs, NULL);
- 
- 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
- 					   sizeof(*entry) + tf->tp.size + dsize);
-@@ -194,7 +198,7 @@ __fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	fbuffer.regs = regs;
- 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
- 	entry->ip = entry_ip;
--	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tf->tp, regs, NULL, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
-@@ -211,10 +215,23 @@ fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- NOKPROBE_SYMBOL(fentry_trace_func);
- 
- /* function exit handler */
-+static int trace_fprobe_entry_handler(struct fprobe *fp, unsigned long entry_ip,
-+				unsigned long ret_ip, struct pt_regs *regs,
-+				void *entry_data)
-+{
-+	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
-+
-+	if (tf->tp.entry_arg)
-+		store_trace_entry_data(entry_data, &tf->tp, regs);
-+
-+	return 0;
-+}
-+NOKPROBE_SYMBOL(trace_fprobe_entry_handler)
-+
- static nokprobe_inline void
- __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 		   unsigned long ret_ip, struct pt_regs *regs,
--		   struct trace_event_file *trace_file)
-+		   void *entry_data, struct trace_event_file *trace_file)
- {
- 	struct fexit_trace_entry_head *entry;
- 	struct trace_event_buffer fbuffer;
-@@ -227,7 +244,7 @@ __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	dsize = __get_data_size(&tf->tp, regs);
-+	dsize = __get_data_size(&tf->tp, regs, entry_data);
- 
- 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
- 					   sizeof(*entry) + tf->tp.size + dsize);
-@@ -238,19 +255,19 @@ __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
- 	entry->func = entry_ip;
- 	entry->ret_ip = ret_ip;
--	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tf->tp, regs, entry_data, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
- 
- static void
- fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
--		 unsigned long ret_ip, struct pt_regs *regs)
-+		 unsigned long ret_ip, struct pt_regs *regs, void *entry_data)
- {
- 	struct event_file_link *link;
- 
- 	trace_probe_for_each_link_rcu(link, &tf->tp)
--		__fexit_trace_func(tf, entry_ip, ret_ip, regs, link->file);
-+		__fexit_trace_func(tf, entry_ip, ret_ip, regs, entry_data, link->file);
- }
- NOKPROBE_SYMBOL(fexit_trace_func);
- 
-@@ -269,7 +286,7 @@ static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	if (hlist_empty(head))
- 		return 0;
- 
--	dsize = __get_data_size(&tf->tp, regs);
-+	dsize = __get_data_size(&tf->tp, regs, NULL);
- 	__size = sizeof(*entry) + tf->tp.size + dsize;
- 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
- 	size -= sizeof(u32);
-@@ -280,7 +297,7 @@ static int fentry_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 
- 	entry->ip = entry_ip;
- 	memset(&entry[1], 0, dsize);
--	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tf->tp, regs, NULL, sizeof(*entry), dsize);
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
- 	return 0;
-@@ -289,7 +306,8 @@ NOKPROBE_SYMBOL(fentry_perf_func);
- 
- static void
- fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
--		unsigned long ret_ip, struct pt_regs *regs)
-+		unsigned long ret_ip, struct pt_regs *regs,
-+		void *entry_data)
- {
- 	struct trace_event_call *call = trace_probe_event_call(&tf->tp);
- 	struct fexit_trace_entry_head *entry;
-@@ -301,7 +319,7 @@ fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 	if (hlist_empty(head))
- 		return;
- 
--	dsize = __get_data_size(&tf->tp, regs);
-+	dsize = __get_data_size(&tf->tp, regs, entry_data);
- 	__size = sizeof(*entry) + tf->tp.size + dsize;
- 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
- 	size -= sizeof(u32);
-@@ -312,7 +330,7 @@ fexit_perf_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 
- 	entry->func = entry_ip;
- 	entry->ret_ip = ret_ip;
--	store_trace_args(&entry[1], &tf->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tf->tp, regs, entry_data, sizeof(*entry), dsize);
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
- }
-@@ -343,10 +361,10 @@ static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
- 	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
- 
- 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
--		fexit_trace_func(tf, entry_ip, ret_ip, regs);
-+		fexit_trace_func(tf, entry_ip, ret_ip, regs, entry_data);
- #ifdef CONFIG_PERF_EVENTS
- 	if (trace_probe_test_flag(&tf->tp, TP_FLAG_PROFILE))
--		fexit_perf_func(tf, entry_ip, ret_ip, regs);
-+		fexit_perf_func(tf, entry_ip, ret_ip, regs, entry_data);
- #endif
- }
- NOKPROBE_SYMBOL(fexit_dispatcher);
-@@ -389,7 +407,7 @@ static struct trace_fprobe *alloc_trace_fprobe(const char *group,
- 	tf->tpoint = tpoint;
- 	tf->fp.nr_maxactive = maxactive;
- 
--	ret = trace_probe_init(&tf->tp, event, group, false);
-+	ret = trace_probe_init(&tf->tp, event, group, false, nargs);
- 	if (ret < 0)
- 		goto error;
- 
-@@ -1109,6 +1127,11 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 			goto error;	/* This can be -ENOMEM */
- 	}
- 
-+	if (is_return && tf->tp.entry_arg) {
-+		tf->fp.entry_handler = trace_fprobe_entry_handler;
-+		tf->fp.entry_data_size = traceprobe_get_entry_data_size(&tf->tp);
-+	}
-+
- 	ret = traceprobe_set_print_fmt(&tf->tp,
- 			is_return ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL);
- 	if (ret < 0)
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 52f8b537dd0a..32c617123f37 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -290,7 +290,7 @@ static struct trace_kprobe *alloc_trace_kprobe(const char *group,
- 	INIT_HLIST_NODE(&tk->rp.kp.hlist);
- 	INIT_LIST_HEAD(&tk->rp.kp.list);
- 
--	ret = trace_probe_init(&tk->tp, event, group, false);
-+	ret = trace_probe_init(&tk->tp, event, group, false, nargs);
- 	if (ret < 0)
- 		goto error;
- 
-@@ -740,6 +740,9 @@ static unsigned int number_of_same_symbols(char *func_name)
- 	return ctx.count;
- }
- 
-+static int trace_kprobe_entry_handler(struct kretprobe_instance *ri,
-+				      struct pt_regs *regs);
-+
- static int __trace_kprobe_create(int argc, const char *argv[])
- {
- 	/*
-@@ -948,6 +951,11 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 		if (ret)
- 			goto error;	/* This can be -ENOMEM */
- 	}
-+	/* entry handler for kretprobe */
-+	if (is_return && tk->tp.entry_arg) {
-+		tk->rp.entry_handler = trace_kprobe_entry_handler;
-+		tk->rp.data_size = traceprobe_get_entry_data_size(&tk->tp);
-+	}
- 
- 	ptype = is_return ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
- 	ret = traceprobe_set_print_fmt(&tk->tp, ptype);
-@@ -1303,8 +1311,8 @@ static const struct file_operations kprobe_profile_ops = {
- 
- /* Note that we don't verify it, since the code does not come from user space */
- static int
--process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
--		   void *base)
-+process_fetch_insn(struct fetch_insn *code, void *rec, void *edata,
-+		   void *dest, void *base)
- {
- 	struct pt_regs *regs = rec;
- 	unsigned long val;
-@@ -1329,6 +1337,9 @@ process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
- 	case FETCH_OP_ARG:
- 		val = regs_get_kernel_argument(regs, code->param);
- 		break;
-+	case FETCH_OP_EDATA:
-+		val = *(unsigned long *)((unsigned long)edata + code->offset);
-+		break;
- #endif
- 	case FETCH_NOP_SYMBOL:	/* Ignore a place holder */
- 		code++;
-@@ -1359,7 +1370,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	dsize = __get_data_size(&tk->tp, regs);
-+	dsize = __get_data_size(&tk->tp, regs, NULL);
- 
- 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
- 					   sizeof(*entry) + tk->tp.size + dsize);
-@@ -1368,7 +1379,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
- 
- 	fbuffer.regs = regs;
- 	entry->ip = (unsigned long)tk->rp.kp.addr;
--	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tk->tp, regs, NULL, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
-@@ -1384,6 +1395,31 @@ kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs)
- NOKPROBE_SYMBOL(kprobe_trace_func);
- 
- /* Kretprobe handler */
-+
-+static int trace_kprobe_entry_handler(struct kretprobe_instance *ri,
-+				      struct pt_regs *regs)
-+{
-+	struct kretprobe *rp = get_kretprobe(ri);
-+	struct trace_kprobe *tk;
-+
-+	/*
-+	 * There is a small chance that get_kretprobe(ri) returns NULL when
-+	 * the kretprobe is unregister on another CPU between kretprobe's
-+	 * trampoline_handler and this function.
-+	 */
-+	if (unlikely(!rp))
-+		return -ENOENT;
-+
-+	tk = container_of(rp, struct trace_kprobe, rp);
-+
-+	/* store argument values into ri->data as entry data */
-+	if (tk->tp.entry_arg)
-+		store_trace_entry_data(ri->data, &tk->tp, regs);
-+
-+	return 0;
-+}
-+
-+
- static nokprobe_inline void
- __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 		       struct pt_regs *regs,
-@@ -1399,7 +1435,7 @@ __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	dsize = __get_data_size(&tk->tp, regs);
-+	dsize = __get_data_size(&tk->tp, regs, ri->data);
- 
- 	entry = trace_event_buffer_reserve(&fbuffer, trace_file,
- 					   sizeof(*entry) + tk->tp.size + dsize);
-@@ -1409,7 +1445,7 @@ __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	fbuffer.regs = regs;
- 	entry->func = (unsigned long)tk->rp.kp.addr;
- 	entry->ret_ip = get_kretprobe_retaddr(ri);
--	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tk->tp, regs, ri->data, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
-@@ -1557,7 +1593,7 @@ kprobe_perf_func(struct trace_kprobe *tk, struct pt_regs *regs)
- 	if (hlist_empty(head))
- 		return 0;
- 
--	dsize = __get_data_size(&tk->tp, regs);
-+	dsize = __get_data_size(&tk->tp, regs, NULL);
- 	__size = sizeof(*entry) + tk->tp.size + dsize;
- 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
- 	size -= sizeof(u32);
-@@ -1568,7 +1604,7 @@ kprobe_perf_func(struct trace_kprobe *tk, struct pt_regs *regs)
- 
- 	entry->ip = (unsigned long)tk->rp.kp.addr;
- 	memset(&entry[1], 0, dsize);
--	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tk->tp, regs, NULL, sizeof(*entry), dsize);
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
- 	return 0;
-@@ -1593,7 +1629,7 @@ kretprobe_perf_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	if (hlist_empty(head))
- 		return;
- 
--	dsize = __get_data_size(&tk->tp, regs);
-+	dsize = __get_data_size(&tk->tp, regs, ri->data);
- 	__size = sizeof(*entry) + tk->tp.size + dsize;
- 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
- 	size -= sizeof(u32);
-@@ -1604,7 +1640,7 @@ kretprobe_perf_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 
- 	entry->func = (unsigned long)tk->rp.kp.addr;
- 	entry->ret_ip = get_kretprobe_retaddr(ri);
--	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
-+	store_trace_args(&entry[1], &tk->tp, regs, ri->data, sizeof(*entry), dsize);
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
- }
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 93f36f8a108e..217169de0920 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -594,6 +594,8 @@ static int parse_btf_field(char *fieldname, const struct btf_type *type,
- 	return 0;
- }
- 
-+static int __store_entry_arg(struct trace_probe *tp, int argnum);
-+
- static int parse_btf_arg(char *varname,
- 			 struct fetch_insn **pcode, struct fetch_insn *end,
- 			 struct traceprobe_parse_context *ctx)
-@@ -618,11 +620,7 @@ static int parse_btf_arg(char *varname,
- 		return -EOPNOTSUPP;
- 	}
- 
--	if (ctx->flags & TPARG_FL_RETURN) {
--		if (strcmp(varname, "$retval") != 0) {
--			trace_probe_log_err(ctx->offset, NO_BTFARG);
--			return -ENOENT;
--		}
-+	if (ctx->flags & TPARG_FL_RETURN && !strcmp(varname, "$retval")) {
- 		code->op = FETCH_OP_RETVAL;
- 		/* Check whether the function return type is not void */
- 		if (query_btf_context(ctx) == 0) {
-@@ -654,11 +652,21 @@ static int parse_btf_arg(char *varname,
- 		const char *name = btf_name_by_offset(ctx->btf, params[i].name_off);
- 
- 		if (name && !strcmp(name, varname)) {
--			code->op = FETCH_OP_ARG;
--			if (ctx->flags & TPARG_FL_TPOINT)
--				code->param = i + 1;
--			else
--				code->param = i;
-+			if (tparg_is_function_entry(ctx->flags)) {
-+				code->op = FETCH_OP_ARG;
-+				if (ctx->flags & TPARG_FL_TPOINT)
-+					code->param = i + 1;
-+				else
-+					code->param = i;
-+			} else if (tparg_is_function_return(ctx->flags)) {
-+				code->op = FETCH_OP_EDATA;
-+				ret = __store_entry_arg(ctx->tp, i);
-+				if (ret < 0) {
-+					/* internal error */
-+					return ret;
-+				}
-+				code->offset = ret;
-+			}
- 			tid = params[i].type;
- 			goto found;
- 		}
-@@ -755,6 +763,110 @@ static int check_prepare_btf_string_fetch(char *typename,
- 
- #endif
- 
-+#ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
-+
-+static int __store_entry_arg(struct trace_probe *tp, int argnum)
-+{
-+	struct probe_entry_arg *earg = tp->entry_arg;
-+	bool match = false;
-+	int i, offset;
-+
-+	if (!earg) {
-+		earg = kzalloc(sizeof(*tp->entry_arg), GFP_KERNEL);
-+		if (!earg)
-+			return -ENOMEM;
-+		earg->size = 2 * tp->nr_args + 1;
-+		earg->code = kcalloc(earg->size, sizeof(struct fetch_insn),
-+				     GFP_KERNEL);
-+		if (!earg->code) {
-+			kfree(earg);
-+			return -ENOMEM;
-+		}
-+		/* Fill the code buffer with 'end' to simplify it */
-+		for (i = 0; i < earg->size; i++)
-+			earg->code[i].op = FETCH_OP_END;
-+		tp->entry_arg = earg;
-+	}
-+
-+	offset = 0;
-+	for (i = 0; i < earg->size - 1; i++) {
-+		switch (earg->code[i].op) {
-+		case FETCH_OP_END:
-+			earg->code[i].op = FETCH_OP_ARG;
-+			earg->code[i].param = argnum;
-+			earg->code[i + 1].op = FETCH_OP_ST_EDATA;
-+			earg->code[i + 1].offset = offset;
-+			return offset;
-+		case FETCH_OP_ARG:
-+			match = (earg->code[i].param == argnum);
-+			break;
-+		case FETCH_OP_ST_EDATA:
-+			offset = earg->code[i].offset;
-+			if (match)
-+				return offset;
-+			offset += sizeof(unsigned long);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+	return -ENOSPC;
-+}
-+
-+int traceprobe_get_entry_data_size(struct trace_probe *tp)
-+{
-+	struct probe_entry_arg *earg = tp->entry_arg;
-+	int i, size = 0;
-+
-+	if (!earg)
-+		return 0;
-+
-+	for (i = 0; i < earg->size; i++) {
-+		switch (earg->code[i].op) {
-+		case FETCH_OP_END:
-+			goto out;
-+		case FETCH_OP_ST_EDATA:
-+			size = earg->code[i].offset + sizeof(unsigned long);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+out:
-+	return size;
-+}
-+
-+void store_trace_entry_data(void *edata, struct trace_probe *tp, struct pt_regs *regs)
-+{
-+	struct probe_entry_arg *earg = tp->entry_arg;
-+	unsigned long val;
-+	int i;
-+
-+	if (!earg)
-+		return;
-+
-+	for (i = 0; i < earg->size; i++) {
-+		struct fetch_insn *code = &earg->code[i];
-+
-+		switch (code->op) {
-+		case FETCH_OP_ARG:
-+			val = regs_get_kernel_argument(regs, code->param);
-+			break;
-+		case FETCH_OP_ST_EDATA:
-+			*(unsigned long *)((unsigned long)edata + code->offset) = val;
-+			break;
-+		case FETCH_OP_END:
-+			goto end;
-+		default:
-+			break;
-+		}
-+	}
-+end:
-+	return;
-+}
-+NOKPROBE_SYMBOL(store_trace_entry_data)
-+#endif
-+
- #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
- 
- /* Parse $vars. @orig_arg points '$', which syncs to @ctx->offset */
-@@ -830,7 +942,7 @@ static int parse_probe_vars(char *orig_arg, const struct fetch_type *t,
- 
- #ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
- 	len = str_has_prefix(arg, "arg");
--	if (len && tparg_is_function_entry(ctx->flags)) {
-+	if (len) {
- 		ret = kstrtoul(arg + len, 10, &param);
- 		if (ret)
- 			goto inval;
-@@ -839,15 +951,29 @@ static int parse_probe_vars(char *orig_arg, const struct fetch_type *t,
- 			err = TP_ERR_BAD_ARG_NUM;
- 			goto inval;
- 		}
-+		param--; /* argN starts from 1, but internal arg[N] starts from 0 */
- 
--		code->op = FETCH_OP_ARG;
--		code->param = (unsigned int)param - 1;
--		/*
--		 * The tracepoint probe will probe a stub function, and the
--		 * first parameter of the stub is a dummy and should be ignored.
--		 */
--		if (ctx->flags & TPARG_FL_TPOINT)
--			code->param++;
-+		if (tparg_is_function_entry(ctx->flags)) {
-+			code->op = FETCH_OP_ARG;
-+			code->param = (unsigned int)param;
-+			/*
-+			 * The tracepoint probe will probe a stub function, and the
-+			 * first parameter of the stub is a dummy and should be ignored.
-+			 */
-+			if (ctx->flags & TPARG_FL_TPOINT)
-+				code->param++;
-+		} else if (tparg_is_function_return(ctx->flags)) {
-+			/* function entry argument access from return probe */
-+			ret = __store_entry_arg(ctx->tp, param);
-+			if (ret < 0)	/* This error should be an internal error */
-+				return ret;
-+
-+			code->op = FETCH_OP_EDATA;
-+			code->offset = ret;
-+		} else {
-+			err = TP_ERR_NOFENTRY_ARGS;
-+			goto inval;
-+		}
- 		return 0;
- 	}
- #endif
-@@ -1037,7 +1163,8 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
- 		break;
- 	default:
- 		if (isalpha(arg[0]) || arg[0] == '_') {	/* BTF variable */
--			if (!tparg_is_function_entry(ctx->flags)) {
-+			if (!tparg_is_function_entry(ctx->flags) &&
-+			    !tparg_is_function_return(ctx->flags)) {
- 				trace_probe_log_err(ctx->offset, NOSUP_BTFARG);
- 				return -EINVAL;
- 			}
-@@ -1423,6 +1550,7 @@ int traceprobe_parse_probe_arg(struct trace_probe *tp, int i, const char *arg,
- 	struct probe_arg *parg = &tp->args[i];
- 	const char *body;
- 
-+	ctx->tp = tp;
- 	body = strchr(arg, '=');
- 	if (body) {
- 		if (body - arg > MAX_ARG_NAME_LEN) {
-@@ -1479,7 +1607,8 @@ static int argv_has_var_arg(int argc, const char *argv[], int *args_idx,
- 		if (str_has_prefix(argv[i], "$arg")) {
- 			trace_probe_log_set_index(i + 2);
- 
--			if (!tparg_is_function_entry(ctx->flags)) {
-+			if (!tparg_is_function_entry(ctx->flags) &&
-+			    !tparg_is_function_return(ctx->flags)) {
- 				trace_probe_log_err(0, NOFENTRY_ARGS);
- 				return -EINVAL;
- 			}
-@@ -1802,6 +1931,12 @@ void trace_probe_cleanup(struct trace_probe *tp)
- 	for (i = 0; i < tp->nr_args; i++)
- 		traceprobe_free_probe_arg(&tp->args[i]);
- 
-+	if (tp->entry_arg) {
-+		kfree(tp->entry_arg->code);
-+		kfree(tp->entry_arg);
-+		tp->entry_arg = NULL;
-+	}
-+
- 	if (tp->event)
- 		trace_probe_unlink(tp);
- }
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index ed8d1052f8a7..cef3a50628a3 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -92,6 +92,7 @@ enum fetch_op {
- 	FETCH_OP_ARG,		/* Function argument : .param */
- 	FETCH_OP_FOFFS,		/* File offset: .immediate */
- 	FETCH_OP_DATA,		/* Allocated data: .data */
-+	FETCH_OP_EDATA,		/* Entry data: .offset */
- 	// Stage 2 (dereference) op
- 	FETCH_OP_DEREF,		/* Dereference: .offset */
- 	FETCH_OP_UDEREF,	/* User-space Dereference: .offset */
-@@ -102,6 +103,7 @@ enum fetch_op {
- 	FETCH_OP_ST_STRING,	/* String: .offset, .size */
- 	FETCH_OP_ST_USTRING,	/* User String: .offset, .size */
- 	FETCH_OP_ST_SYMSTR,	/* Kernel Symbol String: .offset, .size */
-+	FETCH_OP_ST_EDATA,	/* Store Entry Data: .offset */
- 	// Stage 4 (modify) op
- 	FETCH_OP_MOD_BF,	/* Bitfield: .basesize, .lshift, .rshift */
- 	// Stage 5 (loop) op
-@@ -232,6 +234,11 @@ struct probe_arg {
- 	const struct fetch_type	*type;	/* Type of this argument */
- };
- 
-+struct probe_entry_arg {
-+	struct fetch_insn	*code;
-+	unsigned int		size;	/* The entry data size */
-+};
-+
- struct trace_uprobe_filter {
- 	rwlock_t		rwlock;
- 	int			nr_systemwide;
-@@ -253,6 +260,7 @@ struct trace_probe {
- 	struct trace_probe_event	*event;
- 	ssize_t				size;	/* trace entry size */
- 	unsigned int			nr_args;
-+	struct probe_entry_arg		*entry_arg;	/* This is only for return probe */
- 	struct probe_arg		args[];
- };
- 
-@@ -355,6 +363,18 @@ int trace_probe_create(const char *raw_command, int (*createfn)(int, const char
- int trace_probe_print_args(struct trace_seq *s, struct probe_arg *args, int nr_args,
- 		 u8 *data, void *field);
- 
-+#ifdef CONFIG_HAVE_FUNCTION_ARG_ACCESS_API
-+int traceprobe_get_entry_data_size(struct trace_probe *tp);
-+/* This is a runtime function to store entry data */
-+void store_trace_entry_data(void *edata, struct trace_probe *tp, struct pt_regs *regs);
-+#else /* !CONFIG_HAVE_FUNCTION_ARG_ACCESS_API */
-+static inline int traceprobe_get_entry_data_size(struct trace_probe *tp)
-+{
-+	return 0;
-+}
-+#define store_trace_entry_data(edata, tp, regs) do { } while (0)
-+#endif
-+
- #define trace_probe_for_each_link(pos, tp)	\
- 	list_for_each_entry(pos, &(tp)->event->files, list)
- #define trace_probe_for_each_link_rcu(pos, tp)	\
-@@ -381,6 +401,11 @@ static inline bool tparg_is_function_entry(unsigned int flags)
- 	return (flags & TPARG_FL_LOC_MASK) == (TPARG_FL_KERNEL | TPARG_FL_FENTRY);
- }
- 
-+static inline bool tparg_is_function_return(unsigned int flags)
-+{
-+	return (flags & TPARG_FL_LOC_MASK) == (TPARG_FL_KERNEL | TPARG_FL_RETURN);
-+}
-+
- struct traceprobe_parse_context {
- 	struct trace_event_call *event;
- 	/* BTF related parameters */
-@@ -392,6 +417,7 @@ struct traceprobe_parse_context {
- 	const struct btf_type *last_type;	/* Saved type */
- 	u32 last_bitoffs;		/* Saved bitoffs */
- 	u32 last_bitsize;		/* Saved bitsize */
-+	struct trace_probe *tp;
- 	unsigned int flags;
- 	int offset;
- };
-@@ -506,7 +532,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
- 	C(NO_BTFARG,		"This variable is not found at this probe point"),\
- 	C(NO_BTF_ENTRY,		"No BTF entry for this probe point"),	\
- 	C(BAD_VAR_ARGS,		"$arg* must be an independent parameter without name etc."),\
--	C(NOFENTRY_ARGS,	"$arg* can be used only on function entry"),	\
-+	C(NOFENTRY_ARGS,	"$arg* can be used only on function entry or exit"),	\
- 	C(DOUBLE_ARGS,		"$arg* can be used only once in the parameters"),	\
- 	C(ARGS_2LONG,		"$arg* failed because the argument list is too long"),	\
- 	C(ARGIDX_2BIG,		"$argN index is too big"),		\
-diff --git a/kernel/trace/trace_probe_tmpl.h b/kernel/trace/trace_probe_tmpl.h
-index 3935b347f874..2caf0d2afb32 100644
---- a/kernel/trace/trace_probe_tmpl.h
-+++ b/kernel/trace/trace_probe_tmpl.h
-@@ -54,7 +54,7 @@ fetch_apply_bitfield(struct fetch_insn *code, void *buf)
-  * If dest is NULL, don't store result and return required dynamic data size.
-  */
- static int
--process_fetch_insn(struct fetch_insn *code, void *rec,
-+process_fetch_insn(struct fetch_insn *code, void *rec, void *edata,
- 		   void *dest, void *base);
- static nokprobe_inline int fetch_store_strlen(unsigned long addr);
- static nokprobe_inline int
-@@ -232,7 +232,7 @@ process_fetch_insn_bottom(struct fetch_insn *code, unsigned long val,
- 
- /* Sum up total data length for dynamic arrays (strings) */
- static nokprobe_inline int
--__get_data_size(struct trace_probe *tp, struct pt_regs *regs)
-+__get_data_size(struct trace_probe *tp, struct pt_regs *regs, void *edata)
- {
- 	struct probe_arg *arg;
- 	int i, len, ret = 0;
-@@ -240,7 +240,7 @@ __get_data_size(struct trace_probe *tp, struct pt_regs *regs)
- 	for (i = 0; i < tp->nr_args; i++) {
- 		arg = tp->args + i;
- 		if (unlikely(arg->dynamic)) {
--			len = process_fetch_insn(arg->code, regs, NULL, NULL);
-+			len = process_fetch_insn(arg->code, regs, edata, NULL, NULL);
- 			if (len > 0)
- 				ret += len;
- 		}
-@@ -251,7 +251,7 @@ __get_data_size(struct trace_probe *tp, struct pt_regs *regs)
- 
- /* Store the value of each argument */
- static nokprobe_inline void
--store_trace_args(void *data, struct trace_probe *tp, void *rec,
-+store_trace_args(void *data, struct trace_probe *tp, void *rec, void *edata,
- 		 int header_size, int maxlen)
- {
- 	struct probe_arg *arg;
-@@ -266,7 +266,7 @@ store_trace_args(void *data, struct trace_probe *tp, void *rec,
- 		/* Point the dynamic data area if needed */
- 		if (unlikely(arg->dynamic))
- 			*dl = make_data_loc(maxlen, dyndata - base);
--		ret = process_fetch_insn(arg->code, rec, dl, base);
-+		ret = process_fetch_insn(arg->code, rec, edata, dl, base);
- 		if (arg->dynamic && likely(ret > 0)) {
- 			dyndata += ret;
- 			maxlen -= ret;
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 49d9af6d446e..78d76d74f45b 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -211,8 +211,8 @@ static unsigned long translate_user_vaddr(unsigned long file_offset)
- 
- /* Note that we don't verify it, since the code does not come from user space */
- static int
--process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
--		   void *base)
-+process_fetch_insn(struct fetch_insn *code, void *rec, void *edata,
-+		   void *dest, void *base)
- {
- 	struct pt_regs *regs = rec;
- 	unsigned long val;
-@@ -1490,11 +1490,11 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
- 	if (WARN_ON_ONCE(!uprobe_cpu_buffer))
- 		return 0;
- 
--	dsize = __get_data_size(&tu->tp, regs);
-+	dsize = __get_data_size(&tu->tp, regs, NULL);
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
- 
- 	ucb = uprobe_buffer_get();
--	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
-+	store_trace_args(ucb->buf, &tu->tp, regs, NULL, esize, dsize);
- 
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_TRACE))
- 		ret |= uprobe_trace_func(tu, regs, ucb, dsize);
-@@ -1525,11 +1525,11 @@ static int uretprobe_dispatcher(struct uprobe_consumer *con,
- 	if (WARN_ON_ONCE(!uprobe_cpu_buffer))
- 		return 0;
- 
--	dsize = __get_data_size(&tu->tp, regs);
-+	dsize = __get_data_size(&tu->tp, regs, NULL);
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
- 
- 	ucb = uprobe_buffer_get();
--	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
-+	store_trace_args(ucb->buf, &tu->tp, regs, NULL, esize, dsize);
- 
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_TRACE))
- 		uretprobe_trace_func(tu, func, regs, ucb, dsize);
-
+Also what are the biggest obstacles to efficiently track allocations via
+our tracing infrastructure? Has this been investigated? What were conclusions?
+-- 
+Michal Hocko
+SUSE Labs
 
