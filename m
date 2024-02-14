@@ -1,78 +1,80 @@
-Return-Path: <linux-kernel+bounces-66056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5DC855603
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:36:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F80855606
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B47991F217C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:36:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5C6A1C283C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1865A250F6;
-	Wed, 14 Feb 2024 22:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2442145352;
+	Wed, 14 Feb 2024 22:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PORiuqgN"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YrF1ny+C"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EC326291
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F162E629
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707950051; cv=none; b=mJnecn0RVB4h2TjedeieaVU3lGwZAoEcOGXIMSHzfhx6W/sOLWJiev0Oa4b9NKOIUgvs9gXnPVoKQSXYY9mF+hXEKya61cujWTc1X4rGcPP1iOsCg2ytThTr0NUDBdu6gCG0D5OTuY3FQVkJ0NqAoRxuOURCnWOW3DV3P3jcWNM=
+	t=1707950052; cv=none; b=abdzzJ/0jGu8nlRtritZxvmui8RjY7fNmhR7QSk5Z4gs/80G7wY8C+/pIOzeSrMQUmnSEg0z3r12Mol0UgyQ6ObiyQ83+tFRxFfRrZcoj2/Ef1iipyOD2mEknaMruSbdZnJ7GksTpd08PfnQuLVE9FVLcGM8daSMXA57NM3JnI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707950051; c=relaxed/simple;
-	bh=92FzybQ0k/QQSRZIXOZq2u6SesnBUJmYVfIEOiul8QU=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=FZBPfw1Etzcrpq63+w6T6WlpdvkKGoKCIe6x5pTbW4HIMOnk5Hs9NhLl+5/uQuQ3Cx9O3BcFDk2tCBP0Lurx77DLRwbZZj46t4+vCdta2Lg8KYVT/wziktg+GJ4eb1ZTitfEkSR5EjpB5okznbMKC0sLZOUXYtVrbVM9pnHli5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PORiuqgN; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1707950052; c=relaxed/simple;
+	bh=leH3pMjjZZlhwesnoi+WanMfgfX5sx1qPhM1PONSqZM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=V2cETILpOOuznw1m1DaDXDcR2H0J23dCT/6gdn7DYneArrlnIZM8ifPLffui9isx8L/ByAoiqQDbLho9EeKDBK70FVu+7bg9Lq7B87cNh+POA2Bv801+hoYlR+SGqHCuMHDnxpC4SA/BCUAfGsMFeAR9GDqdwWQZYFvnNgjHcsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YrF1ny+C; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-607838c0800so15841147b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:34:08 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26783b4so328345276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:34:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707950047; x=1708554847; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0cbBOEAdMKtHU21rqPFfqL7h7M//5Xm4Ynv7hO4s8OY=;
-        b=PORiuqgN3YpORj0iB3mss/O3GREJn/8JAup3hW5Ar1YheIU/lKh6mQ4OdrfdIcWtCW
-         r+x4SicyAcNiJwRhONgr6/uw5A4DU+5AaublgXqc1j5WlNnLZk6/adCh4X7BuFKJuhh9
-         Z5uaBJoRTXMycgh51i9+agg1/wZpW107E+qdHe/yStmrpQcaCJCtuiJpaIw/bKLYeE/q
-         5RsPS1d7OvwL4n8tGbaEwOf6ruyLiU167CD1bShhTSPESbTiPC0KNH9Vjl8qQBKj/QPb
-         F+vx7brNzdjiGYM1YS9fDYSaJbasHtxlOgZRz363XnORSmNRHA3ci80kMDSWEw7TPdAl
-         UmtQ==
+        d=google.com; s=20230601; t=1707950050; x=1708554850; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ODLPgmrC2GnAqjAqHk0mi7EspXfDsuvboDPS66T9iTs=;
+        b=YrF1ny+CtmOwFPVMMerAqymwxfndKW1ll0ksnnT9yFezpEgEFrB6p1IN5rvCV04Ycq
+         1ESeisaVaG3Fs3h+YbEDiCTpqPi2f1AXLImHpBDH1iONH31YckW6kqnOWET6lKPkSig2
+         ZlfOayTdwT2nVIJL5dT8mKRj9aqPTLHs0dSzRIfPNmEEAF4hz7pp60bW/X+ZxM8wM9+t
+         06Iwc8Idy2T3FieeadJLFsVTtdzHj2mF21Np1pDf3k7v/i9rzGqPDhdERHwJLtUAteVN
+         w+4+XGWotFR4zlKN1jDGnwjb269j32hiI5VUaJCDzD/qVwOnJReVrnb/eXf8PfQd+uYo
+         2ACA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707950047; x=1708554847;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0cbBOEAdMKtHU21rqPFfqL7h7M//5Xm4Ynv7hO4s8OY=;
-        b=U+QpLlPQ4SjUkEQrLQfQ/4MpUM9zJjnI38fBzBpY/z8e4gFYfoeDTVFHqUS6Xyba8t
-         9ADoJk1sJrIxKxqdScI8s6e+7jR0qOlHBvdl4P9pEKZc8mzlSDv448spO1mYnzejs8n2
-         MlCAVm7hJ026AgrvvDUZHy/n9FUrhJ+Jf/BWwKbNz8fhhw+x4MIswozA2OwE8E4rb/Sd
-         wDfGrpdupEIIDO/yA4a5crmdyJUzHLEtMYXVS683tFy1XW7fOYoxUUsxVK9eqnyfX1br
-         ZnXzZ0+q3Bdd2YUhc6lfbcC2LKJCMj6WmCi5mSWQ6l4t0SIjQbU0W9QV/PbThADIm16H
-         +q7g==
-X-Gm-Message-State: AOJu0YyUlkxPq3nXqE+oPAkRKaYXvqvd+XpOwbxxqgacwjjdVCqxMg5y
-	EQBWUTlAUCKmilffPND088+Q3P5LQ0ob2gfx3iVZPpFgdcG8WiD3+LUs2qqL7dzmefuFfg2MKEI
-	TyN95JK8EFpoNQP4e9QqzOPPJxRjc/i0I+PyPo2THQQrYYYxjuEbFiuHz5RyA17OrGxLyJ/yco1
-	3ZTqjPBrc8raD9ehwhOzjP5hBLjqu5M51XTcYgGfyEKjaAS0OS8o2bBq243z4hn4oRLzs=
-X-Google-Smtp-Source: AGHT+IEOSORb6qxpucbb7XFNLoqJ4v4xQQfWM1UzuHlSCt/LPMOKzRv0czrYkhgLen57vRBQVrdmEA6kMTh9iErNeQ==
+        d=1e100.net; s=20230601; t=1707950050; x=1708554850;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ODLPgmrC2GnAqjAqHk0mi7EspXfDsuvboDPS66T9iTs=;
+        b=ghvX/rMxD3JYpjLu3te131lro+kLRkkZlf3Z7AcmZoKAH84eta6iicqXU2WZx2GXXm
+         9h0eJAEjMHJfurICQiJZekhnTwsnRzvn1BQ9fBR4dmkbpDhCBe6v5iuIKpVgm0NYmOy7
+         FJkvd7sJRT6fV8oENNgcp4yAkZ4TD2cIxYdZ1aPrDTZQhJ7/iGryqncB39gS8wDAf5Me
+         QztUv5uYcNfwPlaR0zjcggt8UqkkQJ/xdkagPqvwdXuAVDoQvBDBeQCwlRcGSFrFPpeH
+         HVVx5IsYNtR5JvX/qH8idOEwgVpis0NBVO2bHZrMaWgtPsyapB33LBqBGPgQ6GrZEiiD
+         +gGg==
+X-Gm-Message-State: AOJu0YyowfRCdPPkZ5ORQoGNTL8II24DBWuksbnuawezQKhlZlCeFgeu
+	b1KyBlIejFK6EcHnRgPmY84pr4dl+bhY1tpnUVwK1srzx4gvvfbq8qXep6z4BHwnOzSvNRr8ox1
+	i2FXkJdv1dQM4rBGK79o2zBVCLTBoh3iZLXdgnHDnSZo7OjWSXWabxu0HbPeUaEdlL3ch3BQwTY
+	Fo59cDCtbdM+QSBI6BgYuadoRAHSP1hpKxwu+CyE4mMxOAtkXLo/j4K2jmWGfTtknePFo=
+X-Google-Smtp-Source: AGHT+IEdxuewwN8eca4ATiY9sKLns3Dxbq83VjZOnNMu8/lDGLoOd7qXkUWYU4F4N7m610kudwxHYWFgyVyvRObzuQ==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:e4bb:b13c:bc16:afe5])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:f0d:b0:dc6:deca:8122 with
- SMTP id et13-20020a0569020f0d00b00dc6deca8122mr588946ybb.5.1707950047502;
- Wed, 14 Feb 2024 14:34:07 -0800 (PST)
-Date: Wed, 14 Feb 2024 14:34:01 -0800
+ (user=almasrymina job=sendgmr) by 2002:a05:6902:10c3:b0:dc6:ebd4:cca2 with
+ SMTP id w3-20020a05690210c300b00dc6ebd4cca2mr97605ybu.11.1707950049630; Wed,
+ 14 Feb 2024 14:34:09 -0800 (PST)
+Date: Wed, 14 Feb 2024 14:34:02 -0800
+In-Reply-To: <20240214223405.1972973-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240214223405.1972973-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240214223405.1972973-1-almasrymina@google.com>
-Subject: [PATCH net-next v8 0/2] Abstract page from net stack
+Message-ID: <20240214223405.1972973-2-almasrymina@google.com>
+Subject: [PATCH net-next v8 1/2] net: introduce abstraction for network memory
 From: Mina Almasry <almasrymina@google.com>
 To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
@@ -81,109 +83,136 @@ Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.ne
 	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, 
 	Yunsheng Lin <linyunsheng@huawei.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Changes in v8:
-- Moved back skb_add_rx_frag_netmem to .c file (Paolo).
-- Applied Paolo's Acked-by.
+Add the netmem_ref type, an abstraction for network memory.
 
------------
+To add support for new memory types to the net stack, we must first
+abstract the current memory type. Currently parts of the net stack
+use struct page directly:
 
-Changes in v7;
-- Addressed comments from Paolo.
-  - Moved skb_add_rx_frag* to header file.
-  - Moved kcmsock.c check.
-
------------
-
-Changes in v6:
-- Non-RFC as net-next opened.
-- static_assert skb_frag_t compatibility with bio_vec.
-
------------
-
-Changes in RFC v5:
-- RFC due to merge window
-- Changed netmem to __bitwise unsigned long.
-
------------
-
-Changes in v4:
-- Forked off the trivial fixes to skb_frag_t field access to their own
-  patches and changed this to RFC that depends on these fixes:
-
-https://lore.kernel.org/netdev/20240102205905.793738-1-almasrymina@google.c=
-om/T/#u
-https://lore.kernel.org/netdev/20240102205959.794513-1-almasrymina@google.c=
-om/T/#u
-
-- Use an empty struct for netmem instead of void* __bitwise as that's
-  not a correct use of __bitwise.
-
------------
-
-Changes in v3:
-
-- Replaced the struct netmem union with an opaque netmem_ref type.
-- Added func docs to the netmem helpers and type.
-- Renamed the skb_frag_t fields since it's no longer a bio_vec
-
------------
-
-Changes in v2:
-- Reverted changes to the page_pool. The page pool now retains the same
-  API, so that we don't have to touch many existing drivers. The devmem
-  TCP series will include the changes to the page pool.
-
-- Addressed comments.
-
-This series is a prerequisite to the devmem TCP series. For a full
-snapshot of the code which includes these changes, feel free to check:
-
-https://github.com/mina/linux/commits/tcpdevmem-rfcv5/
-
------------
-
-Currently these components in the net stack use the struct page
-directly:
-
-1. Drivers.
-2. Page pool.
-3. skb_frag_t.
-
-To add support for new (non struct page) memory types to the net stack, we
-must first abstract the current memory type.
+- page_pool
+- drivers
+- skb_frag_t
 
 Originally the plan was to reuse struct page* for the new memory types,
 and to set the LSB on the page* to indicate it's not really a page.
-However, for safe compiler type checking we need to introduce a new type.
+However, for compiler type checking we need to introduce a new type.
 
-struct netmem is introduced to abstract the underlying memory type.
-Currently it's a no-op abstraction that is always a struct page underneath.
-In parallel there is an undergoing effort to add support for devmem to the
-net stack:
+netmem_ref is introduced to abstract the underlying memory type.
+Currently it's a no-op abstraction that is always a struct page
+underneath. In parallel there is an undergoing effort to add support
+for devmem to the net stack:
 
-https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.=
-com/
+https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
 
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+netmem_ref can be pointers to different underlying memory types, and the
+low bits are set to indicate the memory type. Helpers are provided
+to convert netmem pointers to the underlying memory type (currently only
+struct page). In the devmem series helpers are provided so that calling
+code can use netmem without worrying about the underlying memory type
+unless absolutely necessary.
 
-Mina Almasry (2):
-  net: introduce abstraction for network memory
-  net: add netmem to skb_frag_t
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Mina Almasry <almasrymina@google.com>
 
- include/linux/skbuff.h | 100 +++++++++++++++++++++++++++++------------
- include/net/netmem.h   |  41 +++++++++++++++++
- net/core/skbuff.c      |  34 +++++++++++---
- net/kcm/kcmsock.c      |   7 +--
- 4 files changed, 143 insertions(+), 39 deletions(-)
+---
+
+v7:
+- Fix netmem_ref kdoc.
+
+v6:
+- Applied Reviewed-by from Shakeel.
+
+rfc v5:
+- RFC due to merge window.
+- Change to 'typedef unsigned long __bitwise netmem_ref;'
+- Fixed commit message (Shakeel).
+- Did not apply Shakeel's reviewed-by since the code changed
+  significantly.
+
+v4:
+- use 'struct netmem;' instead of 'typedef void *__bitwise netmem_ref;'
+
+  Using __bitwise with a non-integer type was wrong and triggered many
+  patchwork bot errors/warnings.
+
+  Using an integer type causes the compiler to warn when casting NULL to
+  the integer type.
+
+  Attempt to use an empty struct for our opaque network memory.
+
+v3:
+
+- Modify struct netmem from a union of struct page + new types to an opaque
+  netmem_ref type.  I went with:
+
+  +typedef void *__bitwise netmem_ref;
+
+  rather than this that Jakub recommended:
+
+  +typedef unsigned long __bitwise netmem_ref;
+
+  Because with the latter the compiler issues warnings to cast NULL to
+  netmem_ref. I hope that's ok.
+
+- Add some function docs.
+
+v2:
+
+- Use container_of instead of a type cast (David).
+---
+ include/net/netmem.h | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
  create mode 100644 include/net/netmem.h
 
---=20
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+new file mode 100644
+index 000000000000..d8b810245c1d
+--- /dev/null
++++ b/include/net/netmem.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ *	Network memory
++ *
++ *	Author:	Mina Almasry <almasrymina@google.com>
++ */
++
++#ifndef _NET_NETMEM_H
++#define _NET_NETMEM_H
++
++/**
++ * typedef netmem_ref - a nonexistent type marking a reference to generic
++ * network memory.
++ *
++ * A netmem_ref currently is always a reference to a struct page. This
++ * abstraction is introduced so support for new memory types can be added.
++ *
++ * Use the supplied helpers to obtain the underlying memory pointer and fields.
++ */
++typedef unsigned long __bitwise netmem_ref;
++
++/* This conversion fails (returns NULL) if the netmem_ref is not struct page
++ * backed.
++ *
++ * Currently struct page is the only possible netmem, and this helper never
++ * fails.
++ */
++static inline struct page *netmem_to_page(netmem_ref netmem)
++{
++	return (__force struct page *)netmem;
++}
++
++/* Converting from page to netmem is always safe, because a page can always be
++ * a netmem.
++ */
++static inline netmem_ref page_to_netmem(struct page *page)
++{
++	return (__force netmem_ref)page;
++}
++
++#endif /* _NET_NETMEM_H */
+-- 
 2.43.0.687.g38aa6559b0-goog
 
 
