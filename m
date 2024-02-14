@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-65820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322AC855264
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:41:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A04F6855271
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 572171C22593
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:41:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 131D71F29FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448C4134CD8;
-	Wed, 14 Feb 2024 18:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F5012F598;
+	Wed, 14 Feb 2024 18:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BMJ8Xz5R"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RUtsmiu9"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5479012FB1A
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5138013472B
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936078; cv=none; b=MJvWPADMeTS5rSUU4TE1vwYsTdgCMYEpQa3jJ6dSOBHnAt2zwGX5gU98LHTXmZDfS6LuqNVEvnUFKlU/lYtCcXWhlKIjyu1aUrpof1L1TgokJZAIwRT/SB0L4jQvNrs+lxIq9jY3/pKAB5I1mZfyvQdJ96RSMqDxC2+Mk5g0n5Q=
+	t=1707936104; cv=none; b=XZYleqS5Rd7/0Wi4X2XQXd3HWZBhvk3bNFoqr6cHooRRl/7v86sS4hGypHCVjufsU6DA8xLeBXeO66bitNVpy56Q0eZyPuW0dp/dUuxbaHlDtePcQPRf736J0ZOJF3v+jYg+4eE4CFolpP4N0rQb4++6EwA3j9Ioobn550UI0ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936078; c=relaxed/simple;
-	bh=KzP/z6fq5WhQHd2DtmAkBXWsTSgXg+N3IMP9afhWgxQ=;
+	s=arc-20240116; t=1707936104; c=relaxed/simple;
+	bh=hjNl7LgoR4ikAP5w24Np/iQb84mJIFPQfXr/JNYq18o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DmkSMxWZiJYqIViwcfYsytTMroMNtY81S/W98x+rpRdYrmilsDRZ9U/yFgeA80ZCciLX4SObMvDV6U5EK62qBQOxIQS7G94Cwhax/vvjV2FglaDr8YLKRcOSzRBSibanKS57MSDElVN/ZFCLheCQftmrrlGpDdimrqJDLeSEXpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=BMJ8Xz5R; arc=none smtp.client-ip=209.85.222.173
+	 In-Reply-To:Content-Type; b=Ms+Q0NNMi+WF+RpyawySd+HhKSoe7uJRxSCYbFZkySM6RO9ry2RvDYDtpzxZHmu/b9NP7qKzyGD1t5V9hHLCyU5CiFxH3i99IiCjnJ7uN+u98Wx+dTiPo4vyttyCXeH5TYjJy/hhjw+JO86ROY/GNGwUfwLNPDUh8HyhHbjm9SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RUtsmiu9; arc=none smtp.client-ip=209.85.222.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-785d57056b0so4275585a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:41:16 -0800 (PST)
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-781753f52afso3406285a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:41:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1707936075; x=1708540875; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1707936098; x=1708540898; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DvBhtJKu6VUjawPszpkeN5qbXBX2tTSABFXD2YovTSI=;
-        b=BMJ8Xz5RBuDxIq6tpopyOlV1x+mzPhkBdUNHcrWCJyfBtpFAYSEy1EvSo5a6ny1g+K
-         UF5eC4ZMivviRkircxDh8JmADD/auOa/XNG4rwo+4qYuekkuldAWczGmxvvAHGSNXWdj
-         UuO6zuKN9cm0BGVZpOZBynT5dJhwLONJVfEQs=
+        bh=dZTwYoETp2BMeX1spwJVawLTL3+ulCtAXV2BvMLkq88=;
+        b=RUtsmiu9b38jv/HvwHUOvxMXufq7fyk5YOC7CGQ843RYAtgDR7NbgRQQQueoayGl23
+         v4FN8aabvoweV28JqToLHo4pZNoj3D7Crqkq45VKuSVE/76HE17IRsypQ5b9dQs4MAj9
+         o2TZ1gKRLxP4mBGH62kgjxSaonQPYHMVNOhbE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707936075; x=1708540875;
+        d=1e100.net; s=20230601; t=1707936098; x=1708540898;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=DvBhtJKu6VUjawPszpkeN5qbXBX2tTSABFXD2YovTSI=;
-        b=kpUUc9KmfjQaq1c8GnXYOD/6KhzW3HA+eek+oQ3qXFBXxGb6Z+8llbTMKeLnpt64pP
-         nDwqDemfsahM6B+6MECqq8vUQ41BqSBkNdC/KEaXJ9CK+To0Y0So2x0h7d3O5iEG+cbK
-         OjSGVv7edPYjTKe0dj8Y0uNsCysNt+DtJ3NndLxoUm6fsky4H6UL3C85sUW08D1etTM8
-         xlNivr3plWuA17h9XUjLa6J3gfU+87WnOUIKNUzDCHqIVSasEuHjBmJ6OBOZHNG1BNL9
-         FLHn9t6DVaKACLFoLOLTefbJOicqPHI4xHW8GwKiyL6xTBDAqafapjN7jyJhu9DwwmVe
-         3olQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXox0usvfkKHtb68X67s8/slm5GR2CEUC6AWz0Jk524w0IfqKzKwrcj/szr5Ect4keHnpY4lEXI9GMm11e+5Fnt7xp+RTpWVbyPNh0M
-X-Gm-Message-State: AOJu0Yxo2f78Zd9XnneXXL8GWHOhcCeDbluMgxs03Q2WPtudos5xGvBf
-	26TefqWSluNExzMvsHDFiCxajX0drocMOjg84ApYmIrBiHlQReVpdwLsxNxjMw==
-X-Google-Smtp-Source: AGHT+IGG9vamkxVTyKtk3A1Fy5G5Pfea0uIk6/fO7rl9o+F/wLbdrSOhlQqyC/jaEbCyIJhr665oZg==
-X-Received: by 2002:a05:620a:e1e:b0:786:89d9:b165 with SMTP id y30-20020a05620a0e1e00b0078689d9b165mr3574025qkm.5.1707936075179;
-        Wed, 14 Feb 2024 10:41:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXLsGALexbWo+Wwv7IKKdp0UuYgRpj6ylGwciCwRcVb9Gx9ATMB6YXHVdvIXn1K1rF8tqdkx52P52CaXmOnepxY87ZO6tWS9GLpFdjf99M24KkzEFu9ydkPtHhutb7UzCLsJoGk2HWGhyRM08eU5+XcsVQ3FTxQmJtttM6QsZX0uikrTuZ8kxZsZ8nnnzEER75etbcJqDwYtcZTEAaxgTv4qSHByIjk4eRsBmaKpbNfI5/ByzWLKUaIvFpWy5luhq2mnDAxM9EMUCrnt8343EGOTFxa3wSKgV3Mh+2DseGQg3WUTsurP7SCU+foj4RicGKVkpQ6hj2EpofKHyEA7Cx96JOtmaO2eswPNyLdBhFawjPzsWKE2j3HmwrIN/OE/ME+miukC2cMhvnnGUzsenlW3Qu1VpW5RVCW08nFCwEXTF1wphAXVb9YA6jNI/L0ICMbCxIu/cJ6aXDyzQtOVVNMVy0HDvtu5fn7KJvH7UWyrstnepNetXZkwX6QTmRw0JCcd4vrtIIk8gnIrCUMu5MaVnFBsdUsh1p63WeQNkaqkA3EsxfSnvOma+v1YhAUBsBYegyjFxU2bHeKUkXij0SAwG/tGCv04TdaXZ8Ac1uXVysmzUdT69ghmvUTQ8Q5hQYMl2et9VlbMPS9EO3SpIUbYYvjrNWqhcy952LTS7JcNL3be7bWoP8CUmJ7U+tbwR/pZskudPaCckep7ihMqRxtWl88otZE3bur5VdmqluHSByerT8VP9ZNwQb9bqYtE8r9dsbhk5YNpBa8MDDA2qzrUPAzbrUU8f+quuWYpYlhCYIFfNCoqEP+YgtEB4F0GKhGfMsa3gGlbqhIty2/TRhnk8+FBf6RSez2zCy4aLEw8wCSae5HtW9lybnZ/6xMzkMTz5tSL6IDXtUi8BUhCSY7gpnkCgzn0rh1kHHINFuKui7rcHO8c5YWH1wPK840n8ODPr
- 0kdWXHzkSxzqcND4cmnYZ7X/VpeIKbS1prKW/li2eQ9llraQasD4Y9JxmWfzSWro69T4KJ9Xu5mgGGtMjLmGFx+wOX4WAw0FoBzMzRaeKMr288r2nWlaR+JvU3uOXHjJ9oqdkvL8yTXcN83uCZQC47VQWQ67lo8dzix2ss3d+zNEY72O4/exexeOuKNQDHyErLhCRfQ/IaQd8/DA0wkghfReL3b9UPplLRhBznx7p1jpUKy6iugm/AI35PVv/BP8LmT9xyylbv1AGk9cVVphy/lzD2iuT8pIl5L2Dst7P7dhY5R+NmJQvCbgE6meEWd2V0lJQk9oE0YBHLtCb4BlAUhRGkVXTUw3f/QLslzI/ulvK9vuuVP2lEWFc9GazDhckwAcamBgOu4ATy8h1MBZtnyrg6Z3MkcPJPCvcCl4T9jhOBBGoPN0jF2pTR1KQz15Wqb207iXc+5MpgFGJXyQUMCGksCCmEJ9USNswmog91d13Rfl2ELqy3KNB4DvFLuYhPVeLrOfRj8bIcpoSneYFdLBvhvaNIcFgJsDjfgF7Cr8MA7rqf7v4RfuwjrjIfWnOX+QuxjRj56PTYOyzhAZ5aPQlBsWO9AuIyhJm2AbRYyjZy5CE9BBwTbzPiJZGIMA3UGJlMz7fWkTkVTBYDNIzVg3CMzUiTW38wRq84YM5afwq3XZV/smCVCHHvsegm6cVHLClzA6ChKNtvzMmGoL+XbrUI2OIo+utM8GQhgJ2letftzQ==
+        bh=dZTwYoETp2BMeX1spwJVawLTL3+ulCtAXV2BvMLkq88=;
+        b=cgJTPXFd13iXUemjrlRAQ8lhnDb2lVDbFlGVjfFK7AgwYHMMlOL4hPpOJSZ5J1Eu+z
+         vJ9MIyoCgsM8xZuIF02N78t8ISEb9oLn+6vwskR4L08jAXIac4q+MACdHtm3x4bLH2Sy
+         2TPYkeVHTrpMOIkTYOGECcKYM+xUIY88Za4A+svZxUjzxr2Kast0RluzCk7UA2mpmqku
+         x1Eg8CrRwzjFvb5ENa+Kn8bxFhNRZ0Ljn0ESpUdQvQhUvN0OaONiTbIuHBmVkY8ySUf0
+         aZnCIR1YTAaLD/DnEve8ZrYQ50eby4dmZpg0iQHdQoHPLJCrSYOHjRO1nQF4xycPzQY3
+         NAjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/BPzGEHEUnYwPNbJMoTz+a0CtuIVcgnKhHkv7eRDMq4uZyBUiqGOPC41MEs3fWEslf2FIWJT5nMYzQYfcWWcT/t2t0RYChik7/0Z/
+X-Gm-Message-State: AOJu0YxdsPa4TGt5swvCxKy11PCjFfVD39P2rn+iOha3iXBeuZ1yfP9E
+	19Fclxes9B9ol3CNfKIvEv7BU8S6gkfKEjK9pq6JUpXJKkfw/ETuEU/KKkIcyw==
+X-Google-Smtp-Source: AGHT+IFEy1VX7wNMXcFOuNhPKmHMqNsWsnMLFP52fxFzst1Rzx+LVNlLP9b65ohJPh0/O0HpYib4tQ==
+X-Received: by 2002:a05:620a:16c2:b0:785:dacb:926f with SMTP id a2-20020a05620a16c200b00785dacb926fmr3434642qkn.50.1707936098184;
+        Wed, 14 Feb 2024 10:41:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUUiIP3PWPScHvR957qCW/A95ZmD0ghpLOc2bjznDUHKO5l81M8S3W1KEY4LLNjO+SBhNeedGEONhCK7KNfrkQXdOy3uV6vdcGO9ukbG8Ds1Q3kzWYWGb0Vv1vLrxsAiyQbrq+0kaUQ1VO57cTQMr188ccWTx+9HH/EIlKWkg6htjxyuXoYBUD53UCc4fo3g5Jw51ljxaJjmTd6Qid29JjvkBUG5+8xNteg5Wvlup0A1wmEtjYtdEUZJe8Mts+YL2E1j6yTW6uNVR2/AqHNdD8WVvKTpyKZ5sZOC9SEQ8U/90bwgNJUarqLPvu0GK5ZMn9kowOUb1U6HmL4JGcACcV7B1BD4vDUHaLnwMcL0iFpQVa4W7AHskw3JTbM39Jphoel5t2qGRvKNl09RAgYsdxSKsbDIBkMNJ7nQPq9xL/C/pLY2zVdE3WgfZ7YXrCoH4z1G7c/Mrm739C+eKsgKZL7geQBdXtZEpw/WrPGFih0V/RmSmm6AoWE1G35mzYS8NDeTAD+E3SaugTWhofwoQHiGxacJDim93L8o4/x24egZryzPVTLnBjVyIF+vOXkyNKwxdn4jtePbQzzAuya664+6OaL86saGMZEn7NMFtgUaWgpT4cN2kcMJOfb8UO9x576dVWEB0Bxg4CaKAd/4FvcsWTdR/lAwlAUsUSu4Izldi/2RkmPL2IuUJz/3Wan2QvifbGsK7rLAoV/50hpeDkUNkcTApNnpjP7058636P9MgL+zWhxs4nKda2w4pKQrHEx/ChYGSnQej2IGGEdzTKTZz1zCbvq18SZBqT1X5hsF5tM944FrJFMBdV3ZqJf9ktoE+vL1V3DvEtIwBPa/lWKKZqRBggTDjpz5XX+uMIav2JwJTq1M62gwFWeuI9ZNQIhTw9Dk9HcZarT8S9t1sjuXZ1nt9JtreRZmk3iGTe5NBnTG4HYeOFVePMGH5ahoZXJPX
+ gbVGd6hfxbLFQOuwF/leQY74tvv0qZduYZxMUUB2qlPXiWo+/EVRzZj6mF5S8CAXL6pBnD9mIu6ZZ092b5F3GY6+o9L2Uf8SI9PJD9h6WJUOpgk77GBlhJtFiIzAj+sE41Kj4PjcWMA5fPRIdv4zlsga9gyd92jO5SHr0kcL75BIQSmySV1sOq2KMt73Jo1z5PSpfTFof/drvhPq/l4O87Eg33Z/hWk+esVn+b4Q+GkRuumTWS/WWvGQG+F8vFvXKwJwRFlMtlBlUvb91M+AMdIxaYM9kl3f+ONy1CcTcgqr7jPcZN+2NUZID/W5OWo/PNLXTQ9l5CzfJm0XDj3L9JyZjtoZxwQayN+Z3fyKXJsqwyyyu0wkb8UaBZvmLJG6nUf/bxbiJx5zicJ18m7//KvOyjMkCglar6WaGTAmTgEBTLTt5plk3bYtBt4ahfVTDBcLcMBzBTh8BOHQpsRino6D06nQ4Mi7PCupkrRD00oNQJTEkrf6inKznOh30Garr+sCy7zg3XoSdgWBYA5GAXV7DU4kXzk1sPGuuMpAL9VKrK2X9DYLxJan74Jy79puGHazbdRHkCMtk4MwDRLiDtdM0PDQlS93gxYq8XhP37GWz/WTQXvaOMGFdnd+RQMO29DZIC0M6C58IrcbhGfUt23E4eQWY73SL1EwQmdtPj99LJbxfDurrX89gtyyc67EGLgunR1WcUoZvSbQFt4EEmBFyfB0xNPC7H54ta+LStfouxUw==
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t8-20020a05620a004800b0078718e1f581sm1810522qkt.68.2024.02.14.10.41.09
+        by smtp.gmail.com with ESMTPSA id t8-20020a05620a004800b0078718e1f581sm1810522qkt.68.2024.02.14.10.41.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 10:41:14 -0800 (PST)
-Message-ID: <43d80fa7-4f11-44ee-9a79-7f76fd9ffcc7@broadcom.com>
-Date: Wed, 14 Feb 2024 10:41:08 -0800
+        Wed, 14 Feb 2024 10:41:37 -0800 (PST)
+Message-ID: <af372c4a-0b7b-45b6-a3bf-3f17ba2eb3a5@broadcom.com>
+Date: Wed, 14 Feb 2024 10:41:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] arm: dts: Fix dtc interrupt_provider warnings
+Subject: Re: [PATCH 3/6] arm64: dts: Fix dtc interrupt_provider warnings
 To: Rob Herring <robh@kernel.org>, soc@kernel.org,
  Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
@@ -112,7 +112,7 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, linux-kbuild@vger.kernel.org
 References: <20240213-arm-dt-cleanups-v1-0-f2dee1292525@kernel.org>
- <20240213-arm-dt-cleanups-v1-2-f2dee1292525@kernel.org>
+ <20240213-arm-dt-cleanups-v1-3-f2dee1292525@kernel.org>
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -146,11 +146,11 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240213-arm-dt-cleanups-v1-2-f2dee1292525@kernel.org>
+In-Reply-To: <20240213-arm-dt-cleanups-v1-3-f2dee1292525@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000001445fa06115bdb83"
+	boundary="00000000000073a1d906115bdc54"
 
---0000000000001445fa06115bdb83
+--00000000000073a1d906115bdc54
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -162,16 +162,15 @@ On 2/13/24 11:34, Rob Herring wrote:
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
 
->   arch/arm/boot/dts/broadcom/bcm-cygnus.dtsi             |  3 +++
->   arch/arm/boot/dts/broadcom/bcm-hr2.dtsi                |  1 +
->   arch/arm/boot/dts/broadcom/bcm-nsp.dtsi                |  2 ++
+>   arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi    | 1 +
+>   arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi | 1 +
 
 Acked-by: Florian Fainelli <florian.fainelli@broadcom.com> #Broadcom
 -- 
 Florian
 
 
---0000000000001445fa06115bdb83
+--00000000000073a1d906115bdc54
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -242,15 +241,15 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPtbWpyNL0PH+MQR
-UqsmyQA6Bc5Z96zEqhgYpgnMNeBeMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDIxNDE4NDExNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIK8OgoswcO0rvKzC
+/Bji7gH65uuKRcqBj30f4D9ez+jKMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDIxNDE4NDEzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQD18ENx9WjUnvfZWLxeo2yAGUKHUhWnuzAj
-N7mfaCxZV9s5wZ/56BrO5t+5U6MwjQi7dEliXy1s8pmB/VjJwZFeUll5RqYvJl3xiLfpyK6Rx34a
-aJUd/Zl3bHp16uUymdY+Gk7s6MZdlLauiysbVv6ZuJJRjwaohxGfjHrCvqoWUo4d7CrZYqTuiJdY
-iaKSsE6EscA6GiiTqlsavTFtwQhCAioT7ggE4qrHa2eUSZ2q4l4F61K6Mc9GLgmdVdopSjTcqxmk
-XwvdRJV5xFT0h0AbPG5K6VM6MA39aV90H5wrbD3CUsB6ufsCspeO//g/GKQJsJS3BJWuIchRiLS0
-f+wy
---0000000000001445fa06115bdb83--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCqeMKNizrxHLOK+ATX3vyPameOolEEeiVm
+Y3f1GaJhGFUcChr+6+ekolxyS+u3kReRK4DC3jXOfBN3mjcLs1lZVXbP1zNn4cTLC5b4abGc0Qmv
+GAIppUdbJBL8vKAXumhC0QWrDTFavKB4JioTHz1J5NVcIwYmLZMkJ31so7sno/00fwp/5LzM9KN1
+RNtFt+773bdcH8qq3qa5EGde7z7vM+yfbZGBQdgxvsnMGYMUkQm9VBajvJsknI+hxKe66wU2+EZu
+q+CICqqnkpcUKW9MzD/TwbcSV7au5063wVsg8bsTmUawvRjX6Op9ixrMhzUN7AAIC47Xjemj6SE1
+8uFy
+--00000000000073a1d906115bdc54--
 
