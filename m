@@ -1,287 +1,112 @@
-Return-Path: <linux-kernel+bounces-64979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C2B0854566
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:34:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EED2854572
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E053F1F2E08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:34:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C36C5B21655
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D84C134A3;
-	Wed, 14 Feb 2024 09:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B8314F8C;
+	Wed, 14 Feb 2024 09:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M0DyIO7r"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5212171A3
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b="lSbVWGEu"
+Received: from mail.katalix.com (mail.katalix.com [3.9.82.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7BB171A6;
+	Wed, 14 Feb 2024 09:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.9.82.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903259; cv=none; b=B91Pour7l3j2EwwtvTXEA7pOsAPGsb7mZ79luKQtHSbzWHxHvLHaoysuDkma2QO7dd5SsLF9Um1r6dgMtEvQ9ZaKu2BNmZl4N5PlKZIY3KLf+B6mUhLOjXEZo53vv60LVeFQUp6mpu90xfT/TU+/f1JRPkixJ8bl1goitWhgTl4=
+	t=1707903260; cv=none; b=NrQeno+nXXlNITwioAmEo6+0OcLp/z639jumEoshMhdQOvmrIIa2I8ldcixcHQCW+fkySVSXp3KwIImSqlxkHI8HrrEjN2/odAAVaAd+QReoGwYqzwK8KM6tMbWG3n+0pgMh2CCEEKjyZFFj6DSztKD+lp2d3fILiy2d7+5oRMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903259; c=relaxed/simple;
-	bh=FxSgUwsnEmLismW7KZS+woIOBL3X3s8QTre4gaV0ORU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hGg7DhKpb8zCh/hU3PV3uz9Em6QYwCw6FRY/FLXdqMw6uPLBjAUuL8rLSM1LVPk7rcSoFY0tDrKAIwXQgcL7FHhOBNNSyKDU2eWUIpgneMl1WJexofeQkkbivhSp744CdzT2JWCiwazssP4C/VkcE+fdK3AFPgmhGwBtPVaXj1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M0DyIO7r; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707903256;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
-	b=M0DyIO7r/QF5NP7xbpaHT6hEkfiN9C6ZsBmye3RF3lK/xJkfXgkDTmPpJDsosMbhQbvBu6
-	6HXQ5EPdieZFNtwjk4WyV0BOC/Zk/05kx0E8w7+M0QMcA/6BMjEaKIZWqnjJMfVaaHloV2
-	9rcAixnBI/FGqCjqslm0JfXu8AItUYo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-fTWhq_m7NYq_ytjafe4aGg-1; Wed, 14 Feb 2024 04:34:14 -0500
-X-MC-Unique: fTWhq_m7NYq_ytjafe4aGg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b1ad7dfe1so2525445f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:34:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707903253; x=1708508053;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
-        b=ldOgtUa/5w47k5IAcdrYD7J23G0wPZzmsmgEnsxDEtx9KEBT/66+zViSv8l+Laqx69
-         qZBOGi35uGpPTzrxmV6zDHHlO/4bUEqzJx6I7FH0kttbVfhWf+Glx1qTV2scGUX0HmrE
-         GyYL3toL9L8Dw2HaIgdKXuxgv8tp4NEj2TQT7GaAvJgSkNonQ08XPq253k5RABy9xPCk
-         vkr/R/sw/G4g6SaEM5Ql42SvGrYpZ1y7m8Ej9LLphXlQQmEJ6ffZ5KcPh5YG4WwVKeXl
-         bIsdPAvE0er6fvSg8P4RIuUsbBORbS8M+eYL/KVOqCE4b6ZoLvrEnhTEKlxvKqVqDWFd
-         9k2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUHqWg8ttbQXNudKI5rm8myZF+1jJdqFfSSO07QunuWZ7utoPkIIrbWVsY/GUrCdJz0Gr3/EA0vyWPZAlDPWnCIM7KS2veWpBjeFfDN
-X-Gm-Message-State: AOJu0Yz+3oXJZIOopIdJhyHgbZhnSho/KsP0appuyYUMwkJop/qKC3ZF
-	N371GANDwd/r1UANrBYVL7arMkrhAY2Ap0EzMdUODhh3LVhIbtFMXk0D88pbv3u577nrV9ik7R3
-	7uXfJo2J33/1L38RQhcpsjvyFAVJKuzTpTvtlT6LiY9ATiAEX5Jt5/x9DphHDBg==
-X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241991wrt.42.1707903253640;
-        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHTKmko1G9G/pee2ZiIe9NSxdTOYkWa8OLYM08WwbRBQZV9vdrjk9NQvxiRYAK2xGkX0Z9PEw==
-X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241961wrt.42.1707903253189;
-        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVOVgPexUBHiz71w0Ncw2wb5WblHGZcjzqljN+RKJvXEV26t3QZyu3Q/2CF52LOfzIlIVzJz9WuCDV9iTj0/AXsUvkibhf190GgJnJqKyUyJQ8HyxoHcv8u0nr/9FggrkpZaTADQ4zuu/P4D0hfOhBJoASA1J3dZkqNQTP3g6YoLm/RQxx4Yd2OCL6K1zX856PT46s1Pr4P0awOpzSDed6PhBTCYbs8hROATCFL5jlXXdsrS0/QWhNgM48wX1SS9TsGGuuUta/5t4X3CWSP4cI6vkA3/KCyZlPp3bSq1dHsw+3eDE7EGgvMoAJbq0TEHL9trc+jpZxe+AK6z+kOixjfRG2KSr/kcaD0wjVKqHFyRvXrnpj5KuvLhIIfafwwBgUUKhWl0LhM4IgAcX0XqUJLXkw5SkA6cNKtTQIX/sJuB0GEh3ETe5fX4jfXnUBwPhYOpczYXJ1BXODwfx8efnnz3FakvU6i9wuXseIea6Mf2BARrbDnsvflq7h7xAA5rnXJtjkFYJG0UYMXLyF8JQsP9yScItNqdrAWx9AY4sQscsz/TyCzKwcvZoweCe8+cy32
-Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id bj5-20020a0560001e0500b0033b2799815csm12156827wrb.86.2024.02.14.01.34.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 01:34:12 -0800 (PST)
-Message-ID: <48219ffc-62dc-430a-8055-6fb9ab533e7f@redhat.com>
-Date: Wed, 14 Feb 2024 10:34:11 +0100
+	s=arc-20240116; t=1707903260; c=relaxed/simple;
+	bh=N32bS7Dr+HbXZpA1Y+5OXodrXUlj45EuuQ2+2Y27jS8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FWq0Yi0Q09kxa9/bb/7saLZctAEIpx/9dxn8i6epXC4GD5bLEk0i+QeP2hIrhMcNXWvINHzS+zz5wJUfetBkvRNqjMP7Plw/BUNSNXMLKUPMkpnSAzKTD1ydt3hwy0yHTMIS/vcApx2Jo5OfADm5xvwJLTE/+nKRXJIdOYGqJGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com; spf=pass smtp.mailfrom=katalix.com; dkim=pass (2048-bit key) header.d=katalix.com header.i=@katalix.com header.b=lSbVWGEu; arc=none smtp.client-ip=3.9.82.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=katalix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=katalix.com
+Received: from localhost (unknown [IPv6:2a02:8012:909b:0:c389:e482:863d:6bfb])
+	(Authenticated sender: tom)
+	by mail.katalix.com (Postfix) with ESMTPSA id D2F2C7D4A4;
+	Wed, 14 Feb 2024 09:34:11 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=katalix.com; s=mail;
+	t=1707903251; bh=N32bS7Dr+HbXZpA1Y+5OXodrXUlj45EuuQ2+2Y27jS8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Disposition:In-Reply-To:From;
+	z=Date:=20Wed,=2014=20Feb=202024=2009:34:11=20+0000|From:=20Tom=20P
+	 arkin=20<tparkin@katalix.com>|To:=20Samuel=20Thibault=20<samuel.th
+	 ibault@ens-lyon.org>,=0D=0A=09James=20Chapman=20<jchapman@katalix.
+	 com>,=20edumazet@google.com,=0D=0A=09gnault@redhat.com,=20davem@da
+	 vemloft.net,=20kuba@kernel.org,=0D=0A=09pabeni@redhat.com,=20corbe
+	 t@lwn.net,=20netdev@vger.kernel.org,=0D=0A=09linux-doc@vger.kernel
+	 .org,=20linux-kernel@vger.kernel.org|Subject:=20Re:=20[PATCHv5]=20
+	 PPPoL2TP:=20Add=20more=20code=20snippets|Message-ID:=20<ZcyJE4oCaw
+	 Z6aBAW@katalix.com>|References:=20<20240214012102.dsdgcdgvwgfabzdi
+	 @begin>|MIME-Version:=201.0|Content-Disposition:=20inline|In-Reply
+	 -To:=20<20240214012102.dsdgcdgvwgfabzdi@begin>;
+	b=lSbVWGEufWRdvURg6uQdMzU4FIa75J+x4MVyK57MuSdnbx81Jy9/Fcg2k5yF87nex
+	 UtyOZbjUoCp/FlW25AtfP0F335ZFI76lbO9RcUjeICNRh84mAwV5sCbe6vM2zGQSYq
+	 VveXXWQY6xLqdysi6+VzSXu5ta27pOeAg6Hstf0wDo0k27qbZbDUKAKMNZIY1wYHjU
+	 rS4BYSpsvcMd0Gi6xPE4cdsHN+1WmxxRTvdmMr5goWDvYjY1uh4U3371VaIQD0xtES
+	 zuvZzEP9FE/F0w5F/lvw8kVA/4NQEl4hN8gcYm8RDGxaCuLNf2qo2FBHqaDxEHZTUZ
+	 pIOuoD4bpYv3w==
+Date: Wed, 14 Feb 2024 09:34:11 +0000
+From: Tom Parkin <tparkin@katalix.com>
+To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	James Chapman <jchapman@katalix.com>, edumazet@google.com,
+	gnault@redhat.com, davem@davemloft.net, kuba@kernel.org,
+	pabeni@redhat.com, corbet@lwn.net, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv5] PPPoL2TP: Add more code snippets
+Message-ID: <ZcyJE4oCawZ6aBAW@katalix.com>
+References: <20240214012102.dsdgcdgvwgfabzdi@begin>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/7] mm: page_owner: add support for splitting to any
- order in split page_owner.
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <20240213215520.1048625-5-zi.yan@sent.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240213215520.1048625-5-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="GNCEsAiJMMSTxwir"
+Content-Disposition: inline
+In-Reply-To: <20240214012102.dsdgcdgvwgfabzdi@begin>
 
-On 13.02.24 22:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It adds a new_order parameter to set new page order in page owner.
-> It prepares for upcoming changes to support split huge page to any
-> lower order.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->   include/linux/page_owner.h | 10 +++++-----
->   mm/huge_memory.c           |  2 +-
->   mm/page_alloc.c            |  4 ++--
->   mm/page_owner.c            |  9 +++++----
->   4 files changed, 13 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> index d7878523adfc..a784ba69f67f 100644
-> --- a/include/linux/page_owner.h
-> +++ b/include/linux/page_owner.h
-> @@ -11,7 +11,7 @@ extern struct page_ext_operations page_owner_ops;
->   extern void __reset_page_owner(struct page *page, unsigned short order);
->   extern void __set_page_owner(struct page *page,
->   			unsigned short order, gfp_t gfp_mask);
-> -extern void __split_page_owner(struct page *page, int order);
-> +extern void __split_page_owner(struct page *page, int old_order, int new_order);
->   extern void __folio_copy_owner(struct folio *newfolio, struct folio *old);
->   extern void __set_page_owner_migrate_reason(struct page *page, int reason);
->   extern void __dump_page_owner(const struct page *page);
-> @@ -31,10 +31,10 @@ static inline void set_page_owner(struct page *page,
->   		__set_page_owner(page, order, gfp_mask);
->   }
->   
-> -static inline void split_page_owner(struct page *page, int order)
-> +static inline void split_page_owner(struct page *page, int old_order, int new_order)
->   {
->   	if (static_branch_unlikely(&page_owner_inited))
-> -		__split_page_owner(page, order);
-> +		__split_page_owner(page, old_order, new_order);
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
->   {
-> @@ -56,11 +56,11 @@ static inline void reset_page_owner(struct page *page, unsigned short order)
->   {
->   }
->   static inline void set_page_owner(struct page *page,
-> -			unsigned int order, gfp_t gfp_mask)
-> +			unsigned short order, gfp_t gfp_mask)
->   {
->   }
->   static inline void split_page_owner(struct page *page,
-> -			int order)
-> +			int old_order, int new_order)
->   {
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *folio)
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 3d30eccd3a7f..ad7133c97428 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2919,7 +2919,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->   	unlock_page_lruvec(lruvec);
->   	/* Caller disabled irqs, so they are still disabled here */
->   
-> -	split_page_owner(head, order);
-> +	split_page_owner(head, order, 0);
->   
->   	/* See comment in __split_huge_page_tail() */
->   	if (PageAnon(head)) {
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 9d4dd41d0647..e0f107b21c98 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2652,7 +2652,7 @@ void split_page(struct page *page, unsigned int order)
->   
->   	for (i = 1; i < (1 << order); i++)
->   		set_page_refcounted(page + i);
-> -	split_page_owner(page, order);
-> +	split_page_owner(page, order, 0);
->   	split_page_memcg(page, order, 0);
->   }
->   EXPORT_SYMBOL_GPL(split_page);
-> @@ -4837,7 +4837,7 @@ static void *make_alloc_exact(unsigned long addr, unsigned int order,
->   		struct page *page = virt_to_page((void *)addr);
->   		struct page *last = page + nr;
->   
-> -		split_page_owner(page, order);
-> +		split_page_owner(page, order, 0);
->   		split_page_memcg(page, order, 0);
->   		while (page < --last)
->   			set_page_refcounted(last);
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 1319e402c2cf..ebbffa0501db 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -292,19 +292,20 @@ void __set_page_owner_migrate_reason(struct page *page, int reason)
->   	page_ext_put(page_ext);
->   }
->   
-> -void __split_page_owner(struct page *page, int order)
-> +void __split_page_owner(struct page *page, int old_order, int new_order)
->   {
->   	int i;
->   	struct page_ext *page_ext = page_ext_get(page);
->   	struct page_owner *page_owner;
-> -	unsigned int nr = 1 << order;
-> +	unsigned int old_nr = 1 << old_order;
-> +	unsigned int new_nr = 1 << new_order;
->   
->   	if (unlikely(!page_ext))
->   		return;
->   
-> -	for (i = 0; i < nr; i++) {
-> +	for (i = 0; i < old_nr; i += new_nr) {
->   		page_owner = get_page_owner(page_ext);
-> -		page_owner->order = 0;
-> +		page_owner->order = new_order;
->   		page_ext = page_ext_next(page_ext);
 
-Staring at __set_page_owner_handle(), we do set all 1<<order page_exts 
-(corresponding to 1<<order "struct page"s) to have ->order set.
+--GNCEsAiJMMSTxwir
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Wouldn't you have to do the same here?
+On  Wed, Feb 14, 2024 at 02:21:02 +0100, Samuel Thibault wrote:
+> The existing documentation was not telling that one has to create a PPP
+> channel and a PPP interface to get PPPoL2TP data offloading working.
+>=20
+> Also, tunnel switching was not mentioned, so that people were thinking
+> it was not supported, while it actually is.
+>=20
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-for (i = 0; i < 1 << old_order; i++) {
-	page_owner = get_page_owner(page_ext);
-	page_owner->order = new_order;
-	page_ext = page_ext_next(page_ext);
-}
+LGTM.  Thanks again Samuel :-)
 
--- 
-Cheers,
+Acked-by: Tom Parkin <tparkin@katalix.com>
 
-David / dhildenb
+--GNCEsAiJMMSTxwir
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmXMiQsACgkQlIwGZQq6
+i9Ao5wf+J5uZNWOxNgn6cWGD/gEB7ACloBRqvi19EMh5YAkOnxLWw0QaKkC040MC
+gi6iwXzInBqcDa6nBI4MfMM4GOd5buOp5lG8dsEfKrWzqxrDxDwX/RyBVFEGcmOV
+0TQ41ybnjeoXyfUCNIepd0T0hNqy3/jSi/1hXJwIzbEUjx3vURHDnucRzm+Uq0Ot
+kqg1OpifXRbu4Wj3Ldn2fgQT8iqUjEKuDCac3rHrqSGkK15D2W3IsUr1eNKIrvS2
+7aAzwXG9V3dtW9NS35RERZyHZ3ebI3gqT4hT1V9U0Ywivj0+gg5LZE0lAOYdspN/
+56unm+WW9DlengWgam6Z45dNjVmM8Q==
+=4qhT
+-----END PGP SIGNATURE-----
+
+--GNCEsAiJMMSTxwir--
 
