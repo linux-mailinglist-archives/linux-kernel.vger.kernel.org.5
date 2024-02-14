@@ -1,223 +1,175 @@
-Return-Path: <linux-kernel+bounces-65095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5058547B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 79340854856
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:29:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79651F252DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:03:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15EB71F2812D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F36F18E2E;
-	Wed, 14 Feb 2024 11:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="K/XwVZ/f"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73FF1A28C;
+	Wed, 14 Feb 2024 11:29:42 +0000 (UTC)
+Received: from gepdcl09.sg.gdce.sony.com.sg (unknown [121.100.38.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFAC1643A;
-	Wed, 14 Feb 2024 11:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D70171A3;
+	Wed, 14 Feb 2024 11:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=121.100.38.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707908601; cv=none; b=kbs/3jlbdOUCKbRu/EcdvOGC+ISm1hzv0AH8JtMSUa3j/YCxN0/Y2yPv36dca343fpwTfByy337L1DQbUG5T8G8xM+8HYAkLDHcNyu8hzJxrjAuIwVc8t7b5U2W6wnb2qsGu7hbbOXD+uBuB3Q97x7hvvuvwymIX6HXFpscELow=
+	t=1707910182; cv=none; b=N9KURrlt9xo+kDgJditJbIeBtE8qKV3EtEVDDlfIpw4h5c3U5dTkOYxIVzan4lb63opmaOXCCwePCY04XErp63Q8067BuxlPwc0phEXptYfL6kGlsnawIntXLCb0+G8N3l182fWqTjxR2XTmbjCtKcH+8NIN9RQCaDuFhejOW0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707908601; c=relaxed/simple;
-	bh=PtSNdfznwWbqhoQQFKH7/wNCSFcUYs/wTcLDeBDVllI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tZMgZf/R9Ibw6o3JXeRcpMTHmlp/XadqIYYUrftaVHh3SS3n3KCo47lRcbxCboXQYwDud+fF9ONqWQfrU3TYIL4JZLai5rfRd5EylLxldda+bhFXT4jaGVucowQaKBNFiXF2/xhwVmX/GcmkkTOieYZSVpfyr/9tgFeIG10Zgto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=K/XwVZ/f; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B86DFF80B;
-	Wed, 14 Feb 2024 11:03:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707908597;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JbA2a2kIur1xwjNXnDhSYrVB1/GrR0EMUnG/VimlxgE=;
-	b=K/XwVZ/fB4w4yax/6+s7vgiB6S4qHn0RubxBy/oW9XrM2CGyyhllgvgGkRshU3bL+UjvrU
-	Hd1BcPEOPEchireGDLgD7pCdrPN5VH8yopOav4qSn3pT00s+yIaoFkjJN+YZdSKcbJWayO
-	Z/JyRVg8klPka2AIsb/mrit5xkBihPAT9tl3v7cq7Z0+UvtqVK8bwNWDSPu+nmnrbRyWLu
-	2kxaSg1+aMIis6xWCNKufUi/C1T2IBMgsDFayKGwrxd2q69lwfJymy/+B/Wq0jDgfIOXnV
-	H7K1C+GV2A7zExwsO+PhlYMSyBsHYAEwR7zcxA/SndS/4USUzzKC0y9x2LMqKQ==
-Message-ID: <912f4e56-bd30-48c1-bf24-dd728188b1c5@bootlin.com>
-Date: Wed, 14 Feb 2024 12:03:15 +0100
+	s=arc-20240116; t=1707910182; c=relaxed/simple;
+	bh=3t2GII+GFBiCVO0yfeqLOOLESh/DgusqChhhZZZl7tk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R3lq81YZeNR2jWn28OxDcXUBoftpmrZzRYP9Iq483kclCtqp84c2/Qz4cKURMTdsSm/1KeXrKT5QZEqSIkMC+xPYxyoHgONmbRVAa7UDBZEgTjsNf+kTjcx0jl3UbXZ/GNaKbRVPQgiMBoPvh5/qtYh2TFBh2EiNnR9CbnKk3T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; arc=none smtp.client-ip=121.100.38.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
+Received: from gepdcl04.s.gdce.sony.com.sg (SGGDCSE1NS08.sony.com.sg [146.215.123.198])
+	by gepdcl09.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EAgcpk007668;
+	Wed, 14 Feb 2024 18:44:09 +0800
+Received: from mail.sony.com ([43.88.80.246])
+	by gepdcl04.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EAg5SS002885;
+	Wed, 14 Feb 2024 18:42:05 +0800
+Received: by mail.sony.com (Postfix, from userid 1000)
+	id 367FD20C089D; Wed, 14 Feb 2024 16:10:39 +0530 (IST)
+Date: Wed, 14 Feb 2024 16:10:39 +0530
+From: Sreenath Vijayan <sreenath.vijayan@sony.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: john.ogness@linutronix.de, corbet@lwn.net, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        taichi.shimoyashiki@sony.com, daniel.palmer@sony.com,
+        anandakumar.balasubramaniam@sony.com
+Subject: Re: [PATCH v4 2/2] tty/sysrq: Dump printk ring buffer messages via
+ sysrq
+Message-ID: <ZcyYp4eZsrrrunFj@sony.com>
+References: <cover.1706772349.git.sreenath.vijayan@sony.com>
+ <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
+ <ZcOdLrOPiPJmCec5@alley>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: drivers/net/wireless/microchip/wilc1000/cfg80211.c:361:42:
- sparse: sparse: incorrect type in assignment (different base types)
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@kernel.org>,
- kernel test robot <lkp@intel.com>
-Cc: Ajay Singh <ajay.kathat@microchip.com>, oe-kbuild-all@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <202308290615.lUTIgqUl-lkp@intel.com> <877cpev0pn.fsf@kernel.org>
- <87a5uatfl1.fsf@kernel.org>
- <09eeb7d4-c922-45ee-a1ac-59942153dbce@bootlin.com>
- <e9501c13be127b8b9d0c769a27d8d38636875f0f.camel@sipsolutions.net>
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-In-Reply-To: <e9501c13be127b8b9d0c769a27d8d38636875f0f.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZcOdLrOPiPJmCec5@alley>
 
-On 2/14/24 10:29, Johannes Berg wrote:
-> Hi,
+On Wed, Feb 07, 2024 at 04:09:34PM +0100, Petr Mladek wrote:
+> On Thu 2024-02-01 13:12:41, Sreenath Vijayan wrote:
+> > When terminal is unresponsive, one cannot use dmesg to view printk
+> > ring buffer messages. Also, syslog services may be disabled,
+> > to check the messages after a reboot, especially on embedded systems.
+> > In this scenario, dump the printk ring buffer messages via sysrq
+> > by pressing sysrq+D.
 > 
->>> For reference here's the old discussion:
->>>
->>> https://patchwork.kernel.org/project/linux-wireless/patch/20220720160302.231516-1-ajay.kathat@microchip.com/
->>>
->>> Any volunteers to help fix this? I would prefers fixes for issues like
->>> this compared to questionable random cleanups we always get.
->>
->> I'm bumping this old thread because it looks like the sparse warning is still
->> present in WILC driver, and I would gladly help getting rid of it, but since
->> there's already been a fair amount of discussions around it, I am not sure what
->> is expected/what should be done. Here is my understanding so far:
->> - Ajay has proposed a patch ([1]) which indeed fixes the warning but involves
->> many casts
->> - Johannes and Jouni then gave details about the original issue leading to those
->> casts ([2]): wpa_supplicant somehow forces the AKM suites values to be be32 at
->> some point, while it should be treated in host endianness
->> - as pointed by Ajay, the corresponding fix has been made since then by Jouni in
->> wpa_supplicant ([3]). The fix make sure to handle key_mgmt_suite in host
->> endianness AND to keep compatibility with current drivers having the be32 fix. -
+> I would use sysrq-R and say that it replays the kernel log on
+> consoles.
 > 
-> Am I confused, or is the change [3] in the other direction?
-> 
-> From what I see, the code there (now changed again, btw) is about
-> reading the value *from the driver*.
+> The word "dump" is ambiguous. People might thing that it calls
+> dmesg dumpers.
+>
 
-Ah, you are right, so [3] is rather about supporting drivers sending values with
-host endianness, while interface historically expects big endian :/
-> 
-> The driver change is about getting the value *from the supplicant*.
-> 
-> And the _outgoing_ code (sending it to the driver) from the supplicant
-> has - as far as I can tell - been putting it into the attribute in host
-> byte order forever? See commit cfaab58007b4 ("nl80211: Connect API
-> support").
-> 
-> 
-> Aha! So, I'm not _completely_ confused, 
-
-So I am the one confused :) Thanks for the clarification. I did not dig enough,
-and since the cast is done right at connect message reception, I assumed wrongly
-that the issue was on the supplicant->driver path.
-
-> however, the only use of this value in this driver is sending it back to the supplicant!> Which seems entirely wrong, since the supplicant assumes basically anything
-will be
-> handled?
-
-Not sure to fully understand why its wrong (supplicant seems to expect AKM
-suites to be provided) , but I may be lacking more general understanding about
-the external auth process.
-Or do you mean that AKM suites should be enforced to RSN_AUTH_KEY_MGMT_SAE only
-in this driver->supplicant call (and so, not forward any possible value ?)
-
-> (But - the firmware also has a parameter key_mgmt_suites [in struct
-> wilc_external_auth_param] which is never even set in
-> wilc_set_external_auth_param??)
-> 
-> 
-> Also note that the supplicant will *only* read RSN_AUTH_KEY_MGMT_SAE in
-> big endian, so you've already lost here pretty much?
-
-So we have to keep some big endian conversion on the driver/nl80211 ->
-supplicant path, IIUC
-
-
->>  - It could have allowed to simply get rid of the all casts on AKM suites in
->> wilc driver ([4]), but then new kernel/drivers would break with existing
->> userspace, so it is not an option
-> 
-> I am wondering if it works at all ...
-> 
->> Now, I see multiple options to fix the sparse warning:
->> - apply the same fix as for wpa_supplicant ([3]) in wilc driver (so basically,
->> become compatible with both endianness)
-> 
-> But this cannot be done! On input to the driver, the value is in host
-> byte order always. The question is on output - and there you cannot
-> detect it.
-
-Yeah, this suggestion is wrong because of the misunderstanding clarified above.
-
->> - apply the same fix as for wpa_supplicant ([3]), not in wilc but in nl80211
->> (may need to update not only wilc but any driver having trailing be32 cast on
->> AKM suites)
-
-So to fix my initial suggestion, it is not "doing the same fix" but rather "move
-the be conversion from the driver to nl80211 layer". Which matches in fact what
-you are suggesting below.
-
-> That might even work? Well, not the same fix, since again input vs.
-> output, but something like this:
-> 
-> --- a/net/wireless/nl80211.c
-> +++ b/net/wireless/nl80211.c
-> @@ -20136,9 +20136,27 @@ int cfg80211_external_auth_request(struct net_device *dev,
->  	if (!hdr)
->  		goto nla_put_failure;
->  
-> +	/*
-> +	 * Some drivers and due to that userspace (wpa_supplicant) were
-> +	 * in the past interpreting this value as a big-endian value,
-> +	 * at a time where only WLAN_AKM_SUITE_SAE was used. This is now
-> +	 * fixed, but for the benefit of older wpa_supplicant versions,
-> +	 * send this particular value in big-endian. Note that newer
-> +	 * wpa_supplicant will also detect this particular value in big
-> +	 * endian still, so it all continues to work.
-> +	 */
-> +	if (params->key_mgmt_suite == WLAN_AKM_SUITE_SAE) {
-> +		if (nla_put_be32(msg, NL80211_ATTR_AKM_SUITES,
-> +				 cpu_to_be32(WLAN_AKM_SUITE_SAE))
-> +			goto nla_put_failure;
-> +	} else {
-> +		if (nla_put_u32(msg, NL80211_ATTR_AKM_SUITES,
-> +				params->key_mgmt_suite)))
-> +			goto nla_put_failure;
-> +	}
-> +
->  	if (nla_put_u32(msg, NL80211_ATTR_WIPHY, rdev->wiphy_idx) ||
->  	    nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex) ||
-> -	    nla_put_u32(msg, NL80211_ATTR_AKM_SUITES, params->key_mgmt_suite) ||
->  	    nla_put_u32(msg, NL80211_ATTR_EXTERNAL_AUTH_ACTION,
->  			params->action) ||
->  	    nla_put(msg, NL80211_ATTR_BSSID, ETH_ALEN, params->bssid)
-> ||
-
-If this kind of fix is ok in nl80211, I can do some tests with it, see how it
-would affect other drivers ( I think there's only Quantenna driver which would
-be affected)
-
-Thanks,
-
-Alexis
-
->> - take the initial quick but not-so-nice double cast fix and call it a day
-> 
-> but that doesn't actually work for anything other than
-> WLAN_AKM_SUITE_SAE...
-
-
-> 
-> johannes
+Ok noted. We proposed sysrq-D as it is an alternative to dmesg
+command and might be easier to remember.
+ 
+> Also the messages would be shown on the terminal only when
+> console_loglevel is set to show all messages. This is done
+> in __handle_sysrq(). But it is not done in the workqueue
+> context.
 > 
 
--- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yes, the initial implementation was using write() of consoles
+so the messages would be shown irrespective of the console log
+level. The current implementation depends on the console log
+level but many other sysrq keys dump the messages at KERN_INFO
+level. In my understanding, __handle_sysrq() dumps only the
+sysrq header at the manipulated loglevel. It restores original
+loglevel before calling callback function for the key.
+If console_loglevel is set to show KERN_INFO messages, it would
+dump most of the important printk messages in our case. Also the
+loglevel can be modified using sysrq itself now.
 
+> Finally, the commit message should explain why workqueues are used
+> and what are the limitations. Something like:
+> 
+> <add>
+> The log is replayed using workqueues. The reason is that it has to
+> be done a safe way (in compare with panic context).
+> 
+> This also means that the sysrq won't have the desired effect
+> when the system is in so bad state that workqueues do not
+> make any progress.
+> </add>
+> 
+> Another reason might be that we do not want to do it in
+> an interrupt context. But this reason is questionable.
+> Many other sysrq commands do a complicate work and
+> print many messages as well.
+>
+
+Noted. Will add this if we proceed with workqueue implementation.
+ 
+> Another reason is that the function need to use console_lock()
+> which can't be called in IRQ context. Maybe, we should use
+> console_trylock() instead.
+> 
+> The function would replay the messages only when console_trylock()
+> succeeds. Users could repeat the sysrq when it fails.
+> 
+> Idea:
+> 
+> Using console_trylock() actually might be more reliable than
+> workqueues. console_trylock() might fail repeatably when:
+> 
+>     + the console_lock() owner is stuck. But workqueues would fail
+>       in this case as well.
+> 
+>     + there is a flood of messages. In this case, replaying
+>       the log would not help much.
+> 
+> Another advantage is that the consoles would be flushed
+> in sysrq context with the manipulated console_loglevel.
+> 
+> Best Regards,
+> Petr
+
+Yes, this seems to work well from interrupt context when the
+console lock owner is not stuck. We can also manipulate
+the console_loglevel. Something like this:
+
+//in printk.c
+void console_replay_all(void)
+{
+       if (console_trylock()) {
+               __console_rewind_all();
+               console_unlock();
+       }
+}
+
+//in sysrq.c
+static void sysrq_handle_dmesg_dump(u8 key)
+{
+       int orig_log_level = console_loglevel;
+       console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
+       console_replay_all();
+       console_loglevel = orig_log_level;
+}
+
+
+The downside I see is that the user may have to hit the
+key multiple times or give up trying if the console lock
+owner is busy at the time of key press. This information
+should probably be updated in the documentation.
+
+Please let me know your opinion.
+
+Regards,
+Sreenath
 
