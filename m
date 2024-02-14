@@ -1,208 +1,127 @@
-Return-Path: <linux-kernel+bounces-64604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6BC8540C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:18:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB3A8540CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BA881C2684F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:18:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 526DD1F2B05A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:19:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D197800;
-	Wed, 14 Feb 2024 00:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10767E2;
+	Wed, 14 Feb 2024 00:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="YBHSZrOm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="T9PAm2m+"
-Received: from wflow7-smtp.messagingengine.com (wflow7-smtp.messagingengine.com [64.147.123.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D55A191;
-	Wed, 14 Feb 2024 00:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.142
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ViEHfV3o"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FED87F;
+	Wed, 14 Feb 2024 00:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869892; cv=none; b=gLQemPv5Yn3JBSqvhFGHW15Uh57fDWTXGiRB0b3NcyDrVmYSYpdkzAoO3UmCRMCcdGVMrnqa4ADcDBM6q3x/nUkPS37YeZedsZdIEMA6SZuYw0g0PqaqA6BpaKEsscDisQYuDdMKfwuJacZw0Ai0Uln1n8l9OkufQ6UdbWca6ao=
+	t=1707869959; cv=none; b=E05m+9gn5/BkUQFAjmlzVEmZsjkgUZ55i7GtogbCe3ieJWbdr9qsBYOT8LdNk+zK2BHdqziag8xJm+01IsDVvhamWF0t2CifRH7jJg2dBH5qAhSdVkCTMgkwFguc+0wGcscwVguF//BqFHAdEbXCAz5M6pw+XXTHTh9wxkuns0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869892; c=relaxed/simple;
-	bh=gEf+mkmtwOGXura5Rt/DicCA9CrNFAQFmPRLVIIUT6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TMw8DpqyVOCtXz3SwU7ewK1VibLBuswjuJ1qNPf/HDQxjt5DVPTXXjqUKdBe3cCYnDpqjjTTKFmNaLS6QZlPoCWKkmTw0t0gW7sUF9hCjMXqavimeDVuso3lo0FszgJM5ovAptE3zTTqPjMgnp0WgljOTC0Fec1yc1LRWRczLr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=YBHSZrOm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=T9PAm2m+; arc=none smtp.client-ip=64.147.123.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailflow.west.internal (Postfix) with ESMTP id 951832CC0489;
-	Tue, 13 Feb 2024 19:18:07 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 13 Feb 2024 19:18:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707869887; x=1707877087; bh=+YWq+i5wkg
-	LUyMl08epmILv+GcdTX//gtb/mupi/CfA=; b=YBHSZrOmvx6+CcLrFo4GSsKEJp
-	gYRIU2YOOAfK/RfQBK+Kq1R4BpofODQ108VkVwJ/LJJ93gRD2uJN7K7t+/Msrtgk
-	0gKVBbqs1YHRKhCO/5q3KUR3c/kb5eZX1QusyUcT9Q6eWBks5zO2VdDmG0cSZusA
-	yBguFhzrl2F4aLgWWB9IsEA7A/nsQLuCs4zwXhK/hhGNiNBoDXEuayy2dGEGs0g+
-	BFMqutX51g3c/HM/9+/nsuZKMOhnKVF11/aWTc6I59D3/UpkCx9HBF/LtCCElZ9M
-	xnDLZoSq4HPd2x0rx6NWlrpOFZp7+CQmcyU7ilnTWmjLMQXmsRd4dnDweesg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707869887; x=1707877087; bh=+YWq+i5wkgLUyMl08epmILv+GcdT
-	X//gtb/mupi/CfA=; b=T9PAm2m+adehj020mz5sR7uTZydpYbiI9iATyNzY6cza
-	C7vQTlD+UX6kCZ6AThUb4IWG76SVdZc/R5/XZGvzwFEld85CYyym/z96V/ds/Qt9
-	0S64IbLTUlhGjP9O4W/N25OqXApifx3e+SbIaRvA73sBUO1S8vp4F/V27kety90B
-	ko27YzD8y3NW9IMxkdrnJ5RKTIG6HTzX588wURXkZmje57NPjGaDIDZHyY8eJnx6
-	jcXogG7sueI8rr/6CUJYd5ko9SFM8CIbTTQqVQFGaJ+UKokNZUYbHCWTOh+w6yzd
-	ascXflD6S2c6EpbY8XeolsZdm55i5R23HS5sBLY8/A==
-X-ME-Sender: <xms:vgbMZch1IAdnL0dgQHNZ6-1lqe3RRsMXCgzMcsww43kfPpdea__EjA>
-    <xme:vgbMZVDy-X5mJwkQKPc4_DOjT0Z-08ZIm45yIUYajYmm9c4urwxzNBAQWCwE2Yf-6
-    cBchoc0YUkZ3qg1eug>
-X-ME-Received: <xmr:vgbMZUFkQFkX2qI5cHyFpgMCo-L1K82uLQc_9scDZScAR77CV-JNLXxaDcs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeigddvudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeevkefhudeffeetgeeggfevvdeuueefueegueeghffffedulefggfetieel
-    iedutdenucffohhmrghinheptghovhgvrhhithihrdgtohhmnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhi
-    iiiirg
-X-ME-Proxy: <xmx:vgbMZdSBTOmiwn0hCO6_Hs260tMk7exTnodgg9C5_qJ4ZvRybYAxyA>
-    <xmx:vgbMZZyD69W23Gk2t7gGfQs_6TN4CXt92brQq9raeY766Ffmtw5fGw>
-    <xmx:vgbMZb7NO8pU7mdSO1WWghxEqzVcZeOwirIgHT7Ad0SOSQOjwJQ0gQ>
-    <xmx:vwbMZez0Lzk2Vsjvp2O799s8CEOzPlAvzX0sE9cEulMWVQu_gk7km4K-zzV3zzTx>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Feb 2024 19:18:03 -0500 (EST)
-Date: Tue, 13 Feb 2024 17:18:01 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: coverity-bot <keescook@chromium.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Christian Brauner <brauner@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Peng Zhang <zhangpeng.00@bytedance.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: Coverity: __do_sys_pidfd_send_signal(): UNINIT
-Message-ID: <ZcwGua3a9Z8nJXVq@tycho.pizza>
-References: <202402131559.B76A34B@keescook>
+	s=arc-20240116; t=1707869959; c=relaxed/simple;
+	bh=QAN7hZYSM3BJP81M/eLzNlJdF60Jewpg46NuJgdpOG0=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=kt+yUnUgbs3GIQof+AU3VOWVyK1ZjL1sFvC9RFiCZhtwJA7BXoshpYNb5sj0f+XpTlxbUqzlBnIj1ttXFjmSiv8QemZnwQySxsUgK7xLMkHuQFFAjm5XiDlZzftTPonkbCjLT+vLENomaa5X4ARYPbiLQo+W6Ab7hdvgZ7jOpCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ViEHfV3o; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.232.238] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 16E3E20B2000;
+	Tue, 13 Feb 2024 16:19:10 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16E3E20B2000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1707869951;
+	bh=H/WOKYyDPl6rQRUKTgqiCkym15mdTfioSDzSyvm7rqA=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=ViEHfV3oyxygjlUGYt/LLeSl96uQs8jUhmk++Wv0C8TJztCa2gsJu2BznCSuDKBMD
+	 Y2/gocRsP3+tPKr+v1ioILaBAZgaNkFZ/7Csq8saVZ9Rnve6jLiSBiiFTH8NEc9DQP
+	 WJK+8Ydb2sCZPAKXYfMdgk3C8JBWvZjSK4I6Ar0M=
+Message-ID: <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
+Date: Tue, 13 Feb 2024 16:19:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402131559.B76A34B@keescook>
+User-Agent: Mozilla Thunderbird
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: Re: [PATCH] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
+ Neoverse N2 errata
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
+ Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh@kernel.org>,
+ Zenghui Yu <yuzenghui@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
+ "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)"
+ <linux-arm-kernel@lists.infradead.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, stable@vger.kernel.org
+References: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
+ <ZcqtUxhqUbYoRH-G@linux.dev>
+Content-Language: en-US
+In-Reply-To: <ZcqtUxhqUbYoRH-G@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13, 2024 at 03:59:37PM -0800, coverity-bot wrote:
-> Hello!
+On 2/12/2024 3:44 PM, Oliver Upton wrote:
+> Hi Easwar,
 > 
-> This is an experimental semi-automated report about issues detected by
-> Coverity from a scan of next-20240213 as part of the linux-next scan project:
-> https://scan.coverity.com/projects/linux-next-weekly-scan
+> On Mon, Feb 12, 2024 at 11:29:06PM +0000, Easwar Hariharan wrote:
+>> Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
+>> implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
+>> suffers from all the same errata.
 > 
-> You're getting this email because you were associated with the identified
-> lines of code (noted below) that were touched by commits:
+> Can you comment at all on where one might find this MIDR? That is, does
+> your hypervisor report the native MIDR of the implementation or does it
+> repaint it as an Arm Neoverse N2 (0x410FD490)?
+
+We will check on the Microsoft hypervisor's plans, and get back to you.
+
+Notwithstanding that, we do have baremetal use cases for Microsoft Azure Cobalt 100
+as well where this MIDR value will show through.
+
 > 
->   Sat Feb 10 22:37:25 2024 +0100
->     3f643cd23510 ("pidfd: allow to override signal scope in pidfd_send_signal()")
->   Sat Feb 10 22:37:23 2024 +0100
->     81b9d8ac0640 ("pidfd: change pidfd_send_signal() to respect PIDFD_THREAD")
+>> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+>> index 7c7493cb571f..a632a7514e55 100644
+>> --- a/arch/arm64/include/asm/cputype.h
+>> +++ b/arch/arm64/include/asm/cputype.h
+>> @@ -61,6 +61,7 @@
+>>  #define ARM_CPU_IMP_HISI		0x48
+>>  #define ARM_CPU_IMP_APPLE		0x61
+>>  #define ARM_CPU_IMP_AMPERE		0xC0
+>> +#define ARM_CPU_IMP_MICROSOFT		0x6D
+>>  
+>>  #define ARM_CPU_PART_AEM_V8		0xD0F
+>>  #define ARM_CPU_PART_FOUNDATION		0xD00
+>> @@ -135,6 +136,8 @@
+>>  
+>>  #define AMPERE_CPU_PART_AMPERE1		0xAC3
+>>  
+>> +#define MSFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
+>> +
+>>  #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
+>>  #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
+>>  #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
+>> @@ -193,6 +196,7 @@
+>>  #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
+>>  #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
+>>  #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
+>> +#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MSFT_CPU_PART_AZURE_COBALT_100)
 > 
-> Coverity reported the following:
+> nitpick: consistently use the abbreviated 'MSFT' for all the definitions
+> you're adding.
 > 
-> *** CID 1583637:    (UNINIT)
-> kernel/signal.c:3963 in __do_sys_pidfd_send_signal()
-> 3957     		/* Only allow sending arbitrary signals to yourself. */
-> 3958     		ret = -EPERM;
-> 3959     		if ((task_pid(current) != pid) &&
-> 3960     		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
-> 3961     			goto err;
-> 3962     	} else {
-> vvv     CID 1583637:    (UNINIT)
-> vvv     Using uninitialized value "type" when calling "prepare_kill_siginfo".
-> 3963     		prepare_kill_siginfo(sig, &kinfo, type);
-> 3964     	}
-> 3965
-> 3966     	if (type == PIDTYPE_PGID)
-> 3967     		ret = kill_pgrp_info(sig, &kinfo, pid);
-> 3968     	else
-> kernel/signal.c:3966 in __do_sys_pidfd_send_signal()
-> 3960     		    (kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL))
-> 3961     			goto err;
-> 3962     	} else {
-> 3963     		prepare_kill_siginfo(sig, &kinfo, type);
-> 3964     	}
-> 3965
-> vvv     CID 1583637:    (UNINIT)
-> vvv     Using uninitialized value "type".
-> 3966     	if (type == PIDTYPE_PGID)
-> 3967     		ret = kill_pgrp_info(sig, &kinfo, pid);
-> 3968     	else
-> 3969     		ret = kill_pid_info_type(sig, &kinfo, pid, type);
-> 3970     err:
-> 3971     	fdput(f);
-> 
-> If this is a false positive, please let us know so we can mark it as
-> such, or teach the Coverity rules to be smarter. If not, please make
-> sure fixes get into linux-next. :) For patches fixing this, please
-> include these lines (but double-check the "Fixes" first):
 
-I think this is a false positive, we have:
+I was rather hoping to use Microsoft throughout, but I chose MSFT for the CPU_PART* to align columns
+with the other defines. :) If consistency is of a higher priority than column alignment, I can change it
+to MICROSOFT rather than MSFT throughout.
 
-        /* Enforce flags be set to 0 until we add an extension. */
-        if (flags & ~PIDFD_SEND_SIGNAL_FLAGS)
-                return -EINVAL;
+Thanks,
+Easwar
 
-        /* Ensure that only a single signal scope determining flag is set. */
-        if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
-                return -EINVAL;
-
-which should enforce that at most one bit is set, and there's a case
-statement for each of these bits in the later switch,
-
-        switch (flags) {
-        case 0:
-                /* Infer scope from the type of pidfd. */
-                if (f.file->f_flags & PIDFD_THREAD)
-                        type = PIDTYPE_PID;
-                else
-                        type = PIDTYPE_TGID;
-                break;
-        case PIDFD_SIGNAL_THREAD:
-                type = PIDTYPE_PID;
-                break;
-        case PIDFD_SIGNAL_THREAD_GROUP:
-                type = PIDTYPE_TGID;
-                break;
-        case PIDFD_SIGNAL_PROCESS_GROUP:
-                type = PIDTYPE_PGID;
-                break;
-        }
-
-That said, a default case wouldn't hurt, and we should fix the first
-comment anyways, since now we have extensions.
-
-I'm happy to send a patch or maybe it's better for Christian to fix it
-in-tree.
-
-Tycho
 
