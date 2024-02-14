@@ -1,374 +1,190 @@
-Return-Path: <linux-kernel+bounces-65646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988DB854FEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:21:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53765855000
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 075BB1F2A48B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:21:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775AD1C29386
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A160D83A1E;
-	Wed, 14 Feb 2024 17:19:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9549B8662D;
-	Wed, 14 Feb 2024 17:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAB284FAE;
+	Wed, 14 Feb 2024 17:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bz2viO5C"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A258128368
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931172; cv=none; b=M8QYFruQKWEofvJoVcQabUrcPEAFS1n7c3Rx2bk4i3AFbx007RbCoKkJi6IZxw0a7iEtiXI6kN682OkxNzbe0/QAeinSBfCOFv3NVYlr5xrFMpbxkpnPY6daYBMPqXN13f/moGFjTiO/zYS+IK5XnHL9aaBNpFLd6jdP2n6Havk=
+	t=1707931189; cv=none; b=De3nasGWuAmkE7v8JIOsGAYbbIcpC77Bs22K8rq/YQu6dqfLzyZrgQ/I+L+0DkfeQKqfNmzXctTaEA6cz4zhRQvCkDSW3Pmr1tRwjJJhHobMiZeO6fWy6wbm/D/6izi8dwpty3QQOOas7TyVyxCH0/7qrA/LVKW1VsQXVJ92ffA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931172; c=relaxed/simple;
-	bh=1Ufz1L53OWf7h8/HiX4mayVIa34dEKUVMvnJozBg2w8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iqkiHXc1AFjzuJrYE5d7LpqxBUlQwl8Xc6i6SvKYGNlk+mEbA6hMcPqVdRMPROeLH9yzafxBP2IYF1cocgYrX8IXRSnBAWgcawMBAjwVwSeHeVsyH36MTnTzQNQt07YBGBAitilrluMKH+G0UHIg/GKN4qA0LUBvbUlgAXeX5MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B77B31FB;
-	Wed, 14 Feb 2024 09:20:09 -0800 (PST)
-Received: from [10.57.64.120] (unknown [10.57.64.120])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83F643F766;
-	Wed, 14 Feb 2024 09:19:27 -0800 (PST)
-Message-ID: <0c3182ae-885c-4156-980b-e35d825fe72e@arm.com>
-Date: Wed, 14 Feb 2024 17:19:25 +0000
+	s=arc-20240116; t=1707931189; c=relaxed/simple;
+	bh=Yku4QTzDRgKI/i8hKOFaa1PxharxpUPm5kuh1Z3KMas=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CPDFKrQS5ItEIuYOt9xCXtx/ZG49fNoQ0d+cz5giIZzMFnoBIj/rdkLXx5pmKEPuXc4eT753H0f2F7Ev6FxgX2ai3LQ76cPQbR8IwCh6BqX8daT1o3WC7EC+uvxnzRMb56NLUlS1yleNszbqKg6eTZlDZ3erFotGbgIBVgB+/X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bz2viO5C; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7232dcb3eso42959435ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:19:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707931187; x=1708535987; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kQJxYiPtkKunXHr1tWOWmm3RzE0fHMgYFU5N+FoanzQ=;
+        b=bz2viO5CXR43zHcNBPXSQpr8axEtMcy6ugW9CYGG1Dg3Ei1haWIZcwbHlbyoVQDMQ4
+         0jObCmRQs5ZYIbbHCKY/pVWw3MAdFFG+bU6GBKz5T1CaqR1veJY2i6RMqyA+cmOvBObq
+         UNfXg5sw3jDh1HpblzSn2ZKpUWwXmdbmWE4KtydlQylNrklVKXO2S0jq+0tn+rRZpxbn
+         OlIbro1TGzQwJLqrDh4txKaz52dlkrhX+Oqb50tGky4eJ1EKzIopcBTMKtzsiVUsv+dv
+         HKbLsM0cIzS+gIrtXfMjuhW7rppLJsCZ5fZ0TfTibyLLYvsmTcRNCgGn3eG7YTbUnvnB
+         36+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707931187; x=1708535987;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kQJxYiPtkKunXHr1tWOWmm3RzE0fHMgYFU5N+FoanzQ=;
+        b=sOcEgs2CEbT2OLXmb9TwmlaN7DtDLDuMAatfffJo+G9feWVCJ5YZpth0NW8VQutqA3
+         3fY0M10LWvTOEUfG2bokpHSsFyeV3B59zq4ZkDHdBscXa4ErxA8R6/Po3hOXKy5JKNIW
+         +B4yAsXX1zHhHEcFpy2Fe2j/Wl0vxwgBCmrbOVqE4tGkWp0yL8bsTsYJOZTQ6+5z6nbD
+         E4hRRDBeRHZzYSTmM6PbvyFER1nIea8XTBxXzAGYWk7czBphZLm/grGerAOYzcQFpODV
+         qr+23jKAOheeEndBRmr4H58zYyNzaq/lxY7DTpxclJT3XmK8fL5XQ+PpSL9catqmZj5R
+         xXGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUPmoxiLS9LJfD5DQqMkgPY76pACLhbMKFOTnGn6qZQ3w7I0NiJbdZrlhTDsdC0Qc5hKx+xXeVOx5s0m0rLxmiHnbBusuY3TgOAJqUH
+X-Gm-Message-State: AOJu0YypquPlZjbZ79L+1O4dK4rF0IMvwr/41AUXDS/8LaU58EZeXW2J
+	x8rVODh90qVT9ymEhj3oxFuN2bBnYP24mmMIESplrqSoTkriynyFaitMaKjolhHuH2TQ3GMKnuk
+	1W+AfNHOXzMcxTH1CPPhkCcosEpoABUecU0jKXw==
+X-Google-Smtp-Source: AGHT+IE/4Jb60J8umLNZe6538ribl0j0RPOFasDoPpDRIFX5AjneBXpKfyUvuFsnp7LDN4A0Ix05qgk5V9Wx9geOoCA=
+X-Received: by 2002:a17:90b:351:b0:298:ba30:789b with SMTP id
+ fh17-20020a17090b035100b00298ba30789bmr3088028pjb.32.1707931187327; Wed, 14
+ Feb 2024 09:19:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/12] selftests/mm: thp_settings: conform to TAP
- format output
-Content-Language: en-GB
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Aishwarya TCV <Aishwarya.TCV@arm.com>
-References: <20240202113119.2047740-1-usama.anjum@collabora.com>
- <20240202113119.2047740-10-usama.anjum@collabora.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240202113119.2047740-10-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240114183600.135316-1-vincent.guittot@linaro.org> <6ec54a8f-a602-4f33-96ce-0204f07046e1@nvidia.com>
+In-Reply-To: <6ec54a8f-a602-4f33-96ce-0204f07046e1@nvidia.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 14 Feb 2024 18:19:35 +0100
+Message-ID: <CAKfTPtAR-yWG8odEv-b8XoZQa05OiYd3PLn56MA+AqPb4h=NJA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix frequency selection for non invariant case
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, wkarny@gmail.com, 
+	torvalds@linux-foundation.org, qyousef@layalina.io, tglx@linutronix.de, 
+	rafael@kernel.org, viresh.kumar@linaro.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org, 
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Thierry Reding <treding@nvidia.com>, 
+	Sasha Levin <sashal@nvidia.com>, Laxman Dewangan <ldewangan@nvidia.com>, 
+	Shardar Mohammed <smohammed@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 02/02/2024 11:31, Muhammad Usama Anjum wrote:
-> Conform the layout, informational and status messages to TAP. No
-> functional change is intended other than the layout of output messages.
-> 
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->  tools/testing/selftests/mm/khugepaged.c   |   3 +-
->  tools/testing/selftests/mm/thp_settings.c | 123 ++++++++--------------
->  tools/testing/selftests/mm/thp_settings.h |   4 +-
->  3 files changed, 47 insertions(+), 83 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/mm/khugepaged.c b/tools/testing/selftests/mm/khugepaged.c
-> index d51fdaee7dc6a..3f202da0867c5 100644
-> --- a/tools/testing/selftests/mm/khugepaged.c
-> +++ b/tools/testing/selftests/mm/khugepaged.c
-> @@ -152,8 +152,7 @@ static void get_finfo(const char *dir)
->  		     major(path_stat.st_dev), minor(path_stat.st_dev)) >= sizeof(path))
->  		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->  
-> -	if (read_file(path, buf, sizeof(buf)) < 0)
-> -		ksft_exit_fail_msg("read_file(read_num): %s\n", strerror(errno));
-> +	read_file(path, buf, sizeof(buf));
->  
->  	if (strstr(buf, "DEVTYPE=disk")) {
->  		/* Found it */
-> diff --git a/tools/testing/selftests/mm/thp_settings.c b/tools/testing/selftests/mm/thp_settings.c
-> index a4163438108ec..273a95d025285 100644
-> --- a/tools/testing/selftests/mm/thp_settings.c
-> +++ b/tools/testing/selftests/mm/thp_settings.c
-> @@ -5,7 +5,9 @@
->  #include <stdlib.h>
->  #include <string.h>
->  #include <unistd.h>
-> +#include <errno.h>
->  
-> +#include "../kselftest.h"
->  #include "thp_settings.h"
->  
->  #define THP_SYSFS "/sys/kernel/mm/transparent_hugepage/"
-> @@ -42,58 +44,45 @@ static const char * const shmem_enabled_strings[] = {
->  	NULL
->  };
->  
-> -int read_file(const char *path, char *buf, size_t buflen)
-> +void read_file(const char *path, char *buf, size_t buflen)
->  {
->  	int fd;
->  	ssize_t numread;
->  
->  	fd = open(path, O_RDONLY);
->  	if (fd == -1)
-> -		return 0;
-> +		ksft_exit_fail_msg("%s open failed: %s\n", path, strerror(errno));
+Hi John,
 
-Hi,
+On Wed, 14 Feb 2024 at 18:12, Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+> Hi Vincent,
+>
+> On 14/01/2024 18:36, Vincent Guittot wrote:
+> > When frequency invariance is not enabled, get_capacity_ref_freq(policy)
+> > returns the current frequency and the performance margin applied by
+> > map_util_perf(), enabled the utilization to go above the maximum compute
+> > capacity and to select a higher frequency than the current one.
+> >
+> > The performance margin is now applied earlier in the path to take into
+> > account some utilization clampings and we can't get an utilization higher
+> > than the maximum compute capacity.
+> >
+> > We must use a frequency above the current frequency to get a chance to
+> > select a higher OPP when the current one becomes fully used. Apply
+> > the same margin and returns a frequency 25% higher than the current one in
+> > order to switch to the next OPP before we fully use the cpu at the current
+> > one.
+> >
+> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Closes: https://lore.kernel.org/lkml/CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com/
+> > Reported-by: Wyes Karny <wkarny@gmail.com>
+> > Closes: https://lore.kernel.org/lkml/20240114091240.xzdvqk75ifgfj5yx@wyes-pc/
+> > Fixes: 9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > Tested-by: Wyes Karny <wkarny@gmail.com>
+> > ---
+> >   kernel/sched/cpufreq_schedutil.c | 6 +++++-
+> >   1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> > index 95c3c097083e..d12e95d30e2e 100644
+> > --- a/kernel/sched/cpufreq_schedutil.c
+> > +++ b/kernel/sched/cpufreq_schedutil.c
+> > @@ -133,7 +133,11 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
+> >       if (arch_scale_freq_invariant())
+> >               return policy->cpuinfo.max_freq;
+> >
+> > -     return policy->cur;
+> > +     /*
+> > +      * Apply a 25% margin so that we select a higher frequency than
+> > +      * the current one before the CPU is full busy
+> > +      */
+> > +     return policy->cur + (policy->cur >> 2);
+> >   }
+> >
+> >   /**
+>
+>
+> We have also observed a performance degradation on our Tegra platforms
+> with v6.8-rc1. Unfortunately, the above change does not fix the problem
+> for us and we are still seeing a performance issue with v6.8-rc4. For
+> example, running Dhrystone on Tegra234 I am seeing the following ...
+>
+> Linux v6.7:
+> [ 2216.301949] CPU0: Dhrystones per Second: 31976326 (18199 DMIPS)
+> [ 2220.993877] CPU1: Dhrystones per Second: 49568123 (28211 DMIPS)
+> [ 2225.685280] CPU2: Dhrystones per Second: 49568123 (28211 DMIPS)
+> [ 2230.364423] CPU3: Dhrystones per Second: 49632220 (28248 DMIPS)
+>
+> Linux v6.8-rc4:
+> [   44.661686] CPU0: Dhrystones per Second: 16068483 (9145 DMIPS)
+> [   51.895107] CPU1: Dhrystones per Second: 16077457 (9150 DMIPS)
+> [   59.105410] CPU2: Dhrystones per Second: 16095436 (9160 DMIPS)
+> [   66.333297] CPU3: Dhrystones per Second: 16064000 (9142 DMIPS)
+>
+> If I revert this change and the following ...
+>
+>   b3edde44e5d4 ("cpufreq/schedutil: Use a fixed reference frequency")
+>   f12560779f9d ("sched/cpufreq: Rework iowait boost")
+>   9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor
+>
+> ... then the perf is similar to where it was ...
+>
+> Linux v6.8-rc4 plus reverts:
+> [   31.768189] CPU0: Dhrystones per Second: 48421678 (27559 DMIPS)
+> [   36.556838] CPU1: Dhrystones per Second: 48401324 (27547 DMIPS)
+> [   41.343343] CPU2: Dhrystones per Second: 48421678 (27559 DMIPS)
+> [   46.163347] CPU3: Dhrystones per Second: 47679814 (27137 DMIPS)
+>
+> All CPUs are running with the schedutil CPUFREQ governor. We have not
+> looked any further but wanted to report this in case you have any more
+> thoughts or suggestions for us to try.
 
-This change has broken back compat. It's no longer possible to run cow and
-khugepaged tests against older kernels.
+Have you tried this :
+https://lore.kernel.org/lkml/20240117190545.596057-1-vincent.guittot@linaro.org/
 
-This function, as well as others in this file are intended to return 0 to
-indicate the file could not be accessed (e.g. doesn't exist or don't have
-permission, etc). Then higher level code can decide how to handle that. For
-example, thp_supported_orders() determines which THP orders are supported by the
-system based on the existence of certain files in sysfs. Then cow decides which
-test variants to run based on the supported orders. With your change, it all
-goes bang on the first probe and the whole test suite gets failed without
-running any tests.
+It's in driver-core-linus' branch and should be sent to Linus soon
 
-I've no problem with improving the TAP output from tests, but this must only be
-done at the test level, where it makes sense to do so. You can just call
-ksft_exit_fail_msg() from deep within a utility function.
+Vincent
 
-Please can we remove this from mm-unstable.
-
-Thanks,
-Ryan
-
-
->  
->  	numread = read(fd, buf, buflen - 1);
->  	if (numread < 1) {
->  		close(fd);
-> -		return 0;
-> +		ksft_exit_fail_msg("No data read\n");
->  	}
->  
->  	buf[numread] = '\0';
->  	close(fd);
-> -
-> -	return (unsigned int) numread;
->  }
->  
-> -int write_file(const char *path, const char *buf, size_t buflen)
-> +void write_file(const char *path, const char *buf, size_t buflen)
->  {
->  	int fd;
->  	ssize_t numwritten;
->  
->  	fd = open(path, O_WRONLY);
-> -	if (fd == -1) {
-> -		printf("open(%s)\n", path);
-> -		exit(EXIT_FAILURE);
-> -		return 0;
-> -	}
-> +	if (fd == -1)
-> +		ksft_exit_fail_msg("%s open failed\n", path);
->  
->  	numwritten = write(fd, buf, buflen - 1);
->  	close(fd);
-> -	if (numwritten < 1) {
-> -		printf("write(%s)\n", buf);
-> -		exit(EXIT_FAILURE);
-> -		return 0;
-> -	}
-> -
-> -	return (unsigned int) numwritten;
-> +	if (numwritten < 1)
-> +		ksft_exit_fail_msg("write failed (%s)\n", buf);
->  }
->  
->  const unsigned long read_num(const char *path)
->  {
->  	char buf[21];
->  
-> -	if (read_file(path, buf, sizeof(buf)) < 0) {
-> -		perror("read_file()");
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	read_file(path, buf, sizeof(buf));
->  
->  	return strtoul(buf, NULL, 10);
->  }
-> @@ -103,10 +92,7 @@ void write_num(const char *path, unsigned long num)
->  	char buf[21];
->  
->  	sprintf(buf, "%ld", num);
-> -	if (!write_file(path, buf, strlen(buf) + 1)) {
-> -		perror(path);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	write_file(path, buf, strlen(buf) + 1);
->  }
->  
->  int thp_read_string(const char *name, const char * const strings[])
-> @@ -117,30 +103,22 @@ int thp_read_string(const char *name, const char * const strings[])
->  	int ret;
->  
->  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
-> -	if (ret >= PATH_MAX) {
-> -		printf("%s: Pathname is too long\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (ret >= PATH_MAX)
-> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->  
-> -	if (!read_file(path, buf, sizeof(buf))) {
-> -		perror(path);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	read_file(path, buf, sizeof(buf));
->  
->  	c = strchr(buf, '[');
-> -	if (!c) {
-> -		printf("%s: Parse failure\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (!c)
-> +		ksft_exit_fail_msg("%s: Parse failure\n", __func__);
->  
->  	c++;
->  	memmove(buf, c, sizeof(buf) - (c - buf));
->  
->  	c = strchr(buf, ']');
-> -	if (!c) {
-> -		printf("%s: Parse failure\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (!c)
-> +		ksft_exit_fail_msg("%s: Parse failure\n", __func__);
-> +
->  	*c = '\0';
->  
->  	ret = 0;
-> @@ -150,8 +128,8 @@ int thp_read_string(const char *name, const char * const strings[])
->  		ret++;
->  	}
->  
-> -	printf("Failed to parse %s\n", name);
-> -	exit(EXIT_FAILURE);
-> +	ksft_exit_fail_msg("Failed to parse %s\n", name);
-> +	return -1;
->  }
->  
->  void thp_write_string(const char *name, const char *val)
-> @@ -160,15 +138,10 @@ void thp_write_string(const char *name, const char *val)
->  	int ret;
->  
->  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
-> -	if (ret >= PATH_MAX) {
-> -		printf("%s: Pathname is too long\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (ret >= PATH_MAX)
-> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->  
-> -	if (!write_file(path, val, strlen(val) + 1)) {
-> -		perror(path);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	write_file(path, val, strlen(val) + 1);
->  }
->  
->  const unsigned long thp_read_num(const char *name)
-> @@ -177,10 +150,9 @@ const unsigned long thp_read_num(const char *name)
->  	int ret;
->  
->  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
-> -	if (ret >= PATH_MAX) {
-> -		printf("%s: Pathname is too long\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (ret >= PATH_MAX)
-> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
-> +
->  	return read_num(path);
->  }
->  
-> @@ -190,10 +162,9 @@ void thp_write_num(const char *name, unsigned long num)
->  	int ret;
->  
->  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
-> -	if (ret >= PATH_MAX) {
-> -		printf("%s: Pathname is too long\n", __func__);
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (ret >= PATH_MAX)
-> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
-> +
->  	write_num(path, num);
->  }
->  
-> @@ -275,29 +246,26 @@ void thp_write_settings(struct thp_settings *settings)
->  
->  struct thp_settings *thp_current_settings(void)
->  {
-> -	if (!settings_index) {
-> -		printf("Fail: No settings set");
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (!settings_index)
-> +		ksft_exit_fail_msg("Fail: No settings set\n");
-> +
->  	return settings_stack + settings_index - 1;
->  }
->  
->  void thp_push_settings(struct thp_settings *settings)
->  {
-> -	if (settings_index >= MAX_SETTINGS_DEPTH) {
-> -		printf("Fail: Settings stack exceeded");
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (settings_index >= MAX_SETTINGS_DEPTH)
-> +		ksft_exit_fail_msg("Fail: Settings stack exceeded\n");
-> +
->  	settings_stack[settings_index++] = *settings;
->  	thp_write_settings(thp_current_settings());
->  }
->  
->  void thp_pop_settings(void)
->  {
-> -	if (settings_index <= 0) {
-> -		printf("Fail: Settings stack empty");
-> -		exit(EXIT_FAILURE);
-> -	}
-> +	if (settings_index <= 0)
-> +		ksft_exit_fail_msg("Fail: Settings stack empty\n");
-> +
->  	--settings_index;
->  	thp_write_settings(thp_current_settings());
->  }
-> @@ -335,14 +303,11 @@ unsigned long thp_supported_orders(void)
->  	for (i = 0; i < NR_ORDERS; i++) {
->  		ret = snprintf(path, PATH_MAX, THP_SYSFS "hugepages-%ukB/enabled",
->  			(getpagesize() >> 10) << i);
-> -		if (ret >= PATH_MAX) {
-> -			printf("%s: Pathname is too long\n", __func__);
-> -			exit(EXIT_FAILURE);
-> -		}
-> +		if (ret >= PATH_MAX)
-> +			ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->  
-> -		ret = read_file(path, buf, sizeof(buf));
-> -		if (ret)
-> -			orders |= 1UL << i;
-> +		read_file(path, buf, sizeof(buf));
-> +		orders |= 1UL << i;
->  	}
->  
->  	return orders;
-> diff --git a/tools/testing/selftests/mm/thp_settings.h b/tools/testing/selftests/mm/thp_settings.h
-> index 71cbff05f4c7f..04a6a7bbd08f8 100644
-> --- a/tools/testing/selftests/mm/thp_settings.h
-> +++ b/tools/testing/selftests/mm/thp_settings.h
-> @@ -56,8 +56,8 @@ struct thp_settings {
->  	struct hugepages_settings hugepages[NR_ORDERS];
->  };
->  
-> -int read_file(const char *path, char *buf, size_t buflen);
-> -int write_file(const char *path, const char *buf, size_t buflen);
-> +void read_file(const char *path, char *buf, size_t buflen);
-> +void write_file(const char *path, const char *buf, size_t buflen);
->  const unsigned long read_num(const char *path);
->  void write_num(const char *path, unsigned long num);
->  
-
+>
+> Thanks
+> Jon
+>
+> --
+> nvpublic
 
