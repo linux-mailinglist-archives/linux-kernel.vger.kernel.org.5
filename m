@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-66002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526D8855518
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:44:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D68D85551B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:44:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763C81C224FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 902931F2BA1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195EA141982;
-	Wed, 14 Feb 2024 21:43:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC241420B5;
+	Wed, 14 Feb 2024 21:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ibq/1/om"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WhJ/BGlR"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8621DDC1
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC09141992
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707947031; cv=none; b=qklAMrgwX1y0MikbnEkBRIZ0u8/GM1nWR/IpXbNf1a33T+X3rwgXziVafb8QRlg4fXAlzXHpxYRz9EuxcbH/i0Oc1F4lojLSRPSwSwwfgqirnVcHfJR5B+EBZemRtM2BGjwt9/IA/0cpv2YFgh2fcfcdkRGsmMaK9lpVGWvSLso=
+	t=1707947035; cv=none; b=uji1gIG2YBomgEEo5TUtuVVmTQa+SghXMnjA96gc1DhaTG3c+8YR6a5F8RshGLuENqyAWM/qpDDhW6CCekpOSEhoQj7P9RGK8z9OzcsN9lrOGrTodQb0+VQkLqHDVjC0tqQP2LWMnkvtxLRpC2RYXthrj9TFc3I7jnCIsLX7qnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707947031; c=relaxed/simple;
-	bh=jzDKArta05/SueeyHjcOmqtwh2NVrtwFbWx9We1YttA=;
+	s=arc-20240116; t=1707947035; c=relaxed/simple;
+	bh=u/x3T5HDqGeZWo77Dpcyc92umvyPgChrrclu/5H3d/8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=op3ijijmfIJW6iJZY463CQ8StK9MifSoAR21wOzO3Wx48w58//ioSm7iQd9pNMIRK36wDtf0wqcny1VYMkYdsyLuAFOpA47R2RGGtINXV4f8AccceNJ5pJPU3u/Zija8CV9timVW1G4k0zN9g7rJRMJI9NowfA4Npyt6Oacsjo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ibq/1/om; arc=none smtp.client-ip=209.85.218.45
+	 In-Reply-To:Content-Type; b=f+SA7HmBs0eeGDYXVkSo5n9tjvaPjAX7E0aUlEEnwX1v39PgWjSAyeNUvkQca2hbOlr8eB0D0BtiURCo75suBz+qfmv5vQnyN5HWetVzpg8LKxHYAdB4xEirdBlvhuRu4S+7leOB4vdjtYUaIVvZ44vFpFBI9z7O8Cw/y6Ak6Rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WhJ/BGlR; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3cb228b90bso15785066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:43:47 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a293f2280c7so24131966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707947026; x=1708551826; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707947032; x=1708551832; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=FH2C7vn8hDWw4rS59jrNqZ5mvcTJOw6OI/RhdHm4JoE=;
-        b=Ibq/1/om0fxcRKJ5GRlcXUOArldx4Ov6HsknYQ1nQa+vM8h8Xr5+zWaMjnCKnGFA17
-         ZolXRYC80/v85fUu6Rgpj7UT1ukAK0SfNI4xEUSfXOJxcw98rHlj2G54pgqOIryHpgu5
-         t8ZCipLIVph47u2qyPGHaqsLZdA8zi/lcBDutDRaH3GoQMDn3VZpUK5nQZkm2K/hKl5p
-         V+NHV5L+dxXHi27mQ7tHcnYOV2jsfivVeOB/hJtUURZXd0+nMtFr/B1e/i+Xpn5TuW7I
-         uSHGc4ZYrWeDQUckNAUf5rrV1KdBSR7t7DK+X1w7LxJNp8EcwfDLmolakEC1ABA2AhCK
-         4d0Q==
+        bh=xPL/vERAXks4ai7t6/eyxOnWTcRhge6asVqZD2S4Ris=;
+        b=WhJ/BGlReMNNksVybE/TPiO+r2bE2MZ4LtwIh1OILJy0FZwSJBuiv0BFGuiO0cxdcL
+         osf9fNyCqkR4KfhY61Z4vZE7XjBhPVFQBhKZrPBxIpkeiNbRUeb8bnn+F0N2ylPJVaIe
+         +Hb53DB4UXQ0n7IWdCdL5qhYClYoHUhwObCSNIAZ0FABY+G1H2QRtnkGW57eX8osV7M/
+         W7VyJhuMRds5qHMUIfAddYK4fypR3VlX7KkHaIPZ/p/CYoLZ41/4SehwdGZXF4nReA9L
+         yodToMuUQjZWK+Wv4+KE6gJnL4cRytlQkxnBJlCGlXVzYb0aWdc4GCeAMlFOibCiUuNE
+         ksMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707947026; x=1708551826;
+        d=1e100.net; s=20230601; t=1707947032; x=1708551832;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FH2C7vn8hDWw4rS59jrNqZ5mvcTJOw6OI/RhdHm4JoE=;
-        b=W6ffujdsHsKZCX31hNfFTsD5VWti4jz5WDz344aA5eJtiYJtbWwzwxq7kIYjVgwUXg
-         8ecZLqrAStEO0ugtWSj5uSs/5KxoTIbMGUYPAJpqEhP4NFaeFTr1UOCHUjLN6HV1YAR8
-         14fSMXRY9NdeCemSibKeZSlqXTKR8P35BL4mdZLPc7y5sLrYVW5RGR0CAG4L3TjS/TrN
-         TeElBkoOiRc3u9cYcj5oBdjQRfATrjuif6uw7jHOFgLBsmZQmrY1r4/T7uhzd3WKMMU4
-         xP+DFIQp+M/lKF8CNnuInoPOk2PX66u1LhemMEueXQiV9+QxSjALQbEC2BZzrWgMIIEM
-         sZSw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6gXitSxoXagWaP2zH+2+cT62Ee7gYPw80UK/55jPlLRrztjbPiDulTT4jqAHiiY69IjB3f9+QlADHSQhPlTNHFTacLr5xh6lk1uQ9
-X-Gm-Message-State: AOJu0YyBPLpaxFuWcX5XoG0uETWg+CcOB0ymld3vi/92r4qX5B3jyCBm
-	WeeTXVehueRz0Zkfgc4RX0673Xz0Alqg5yerw6u5pS5/hdhkvrHXd5L921KXl0s=
-X-Google-Smtp-Source: AGHT+IG7UQyEyDms50ny2v6l+WwpJ0LwBFQwJp87OYPcEEuRnmhBvrC48Jo9frT13TADGjAKcjdmrQ==
-X-Received: by 2002:a17:906:1cd0:b0:a3d:5932:7f59 with SMTP id i16-20020a1709061cd000b00a3d59327f59mr1945165ejh.71.1707947025935;
-        Wed, 14 Feb 2024 13:43:45 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX+n+tcGDQQCOX21+nPmBrawzYkshOo9vWPljGBds4b7g2q8cM5IFouMZRoU+qnitU3L5Rbe3hXEEo5qfQcMJW9Yq50F1TwKjXqNt1GjVn0txnn7BH8JwJSU7hoFBwSrrw76BjuZYkHCbJ0WhNWjyEpnVzl4xh7vxHB7h5ytWaI9B1roXRtp8hdoiDojN6/6hxORYbHXIYfW+n+ZkPIysJ+R+Iua0A1qOonW3n19IDDhMC4FmC4BuYKTPtGxptu/+JxSJ8vIsIMgCcH+sNh+8jXdLrDlpPUhgMtbosP64grS5AeqNkJ7HOuc7vNRFHWKOEgwWVQRASjEfnKJ00s/pJJ1dckpg68xpWtmVHVtwNFs69iybWa7UAPeEt02b4nRg9Y1qx4QZ1qwPC32haGw90HI/B2kHLlaQjG0m53c4X7NpaANOuG3SzwS63F5Si8touyQG8kkD9fWg075wrUfLh2oFRVTlSpjmjXa3vX9i5MzeyEDZguO/w5IisoGBYezFEjuKXVn6Ss0A3sLjSlZXFsqGqLLq+mG6KlKkkvlO0ubAU3uXbRs0sfrkyPA5Fc8a2On/VMcdjb4eEQ1CB1llaIDNylVi222BLPiWFL1tOWDismznKU4I3bEMrKuXX0mlFrr47QQIAOxqQYvJsHLHrYkROFsxY+HKXSYh311+HSdeGnb+wZqP2rD5nYJe0Y7TpGPu8SOSw16Wz6ZWPX7t8t7eWhwQIv549wd2y3XDv4x4NOMm+A6YSPB+5fYG1nCTzR38h4EykOLrnCVGtWz0iL2NReuzZ+7DYURshGxC89RYM0zlm2rpZM477m
+        bh=xPL/vERAXks4ai7t6/eyxOnWTcRhge6asVqZD2S4Ris=;
+        b=EI0dQqExkecM/F90EWF8D/yw4rsgygacUu2voki1zlkW32zVLIy3iz2HaMKIrV7z1Q
+         brb+MtdHp699rkb9xVLzqUD5WxtDSHx9vAwcql3QGYEoR6SQlpEn0NDUHZ4p3uED/RDi
+         t4SCMCBwAQFn513pbaBe1UNUbd3izAfZ+imgygN3jmc5faiaWIR2Rt7tVUB3OmT+YGSY
+         2XL990VJeLhgv2ceRNSEM5hSEAy+5k7/dTUPNVmgOD3Mc6HrVmw4THgiKli+mD07LPFa
+         qoR6+A07DDo83/F8xfik7nEhxel/kOhI5MICAbq6tqFgpT10NNwHEEveDqWBb2LU6/5/
+         A92Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXvMwDbHyu2vnoC/qDy+D8aXVh5DGWeC2p0bpz/M9MbFOtuljfUWjPzraSPza3R7eojKiKhG4QuX2P7AqXFkRXXppnepkGKAHP2GEcT
+X-Gm-Message-State: AOJu0YyhvNsKmD0kvJ0clLSmkItgosMhlPcug9czF8oDgDAzPH+uv8qo
+	dgorJjmCzMK0HEdUzTU87CTsOyrdXbDkZnAiDm54IUspdnu506C2X7gaazAu1Fs=
+X-Google-Smtp-Source: AGHT+IGoPy+AaXTuJ9UIMaCXSUGA1XorD3ESHxHmJJDwKEX2Z+1e++bp3q68rQW7XBG2rN29vJ5Vkg==
+X-Received: by 2002:a17:906:3591:b0:a3c:ed94:7672 with SMTP id o17-20020a170906359100b00a3ced947672mr3035179ejb.64.1707947032051;
+        Wed, 14 Feb 2024 13:43:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU1R7Q+NOhjaTkmTechEyQDazukoMviKX5j8inP/2YZzCeaS1hcXtEq1SwLoFKaird3WsifruzvZEh+3WupZoU478ReNQxxvCLLU6dW6p/z6bF9HsET0D8aOaR1aY4z/N6p6pOEQuOj0xWB87Ql/B5yRqypaXEdKUEUj+Ta534nNNrrxXwqJ6kyXCcoV9OJSfZJu03wy367SL195hjh7CFB4GF9pQWOu6Uck09LCywkbEWHngNjIZzN5DMn74GNjAS4AUfFbMohmUTwcodB7c6gnzTwOilGpJWmUDvItbRT3Hf6anjEn4GDht1jm0m2X9oG0VYCGyn0RfnrWv8q9MlccHVyGBaXwCbtC8Y+KR8qYJdNpucPD1yzJ1JCdW9hdHXofomjVcjKVT7H+Y9kNwANfZwNH2Us5RfegGCwaA4CrjppWnhE0IHnCzESDktYWA4hlxSALtZE9egFCPyXN0AwE5sba93bLd3VlwI=
 Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id sa4-20020a1709076d0400b00a3d841e627bsm51757ejc.58.2024.02.14.13.43.44
+        by smtp.gmail.com with ESMTPSA id sa4-20020a1709076d0400b00a3d841e627bsm51757ejc.58.2024.02.14.13.43.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 13:43:45 -0800 (PST)
-Message-ID: <13d65685-b306-43ad-b9ca-a799f2cf73e5@linaro.org>
-Date: Wed, 14 Feb 2024 22:43:43 +0100
+        Wed, 14 Feb 2024 13:43:51 -0800 (PST)
+Message-ID: <c6b0f119-237e-4493-8cd9-831252ad074e@linaro.org>
+Date: Wed, 14 Feb 2024 22:43:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,28 +76,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] drm: msm: add support for A750 GPU
+Subject: Re: [PATCH v2 00/20] Venus cleanups
 Content-Language: en-US
-To: neil.armstrong@linaro.org, Rob Clark <robdclark@gmail.com>,
- Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- iommu@lists.linux.dev
-References: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org>
- <20240212-topic-sm8650-gpu-v1-3-708a40b747b5@linaro.org>
- <b5d76a25-045a-4acd-ad20-d28855b40222@linaro.org>
- <bcad544c-7ca2-4b4f-805b-4ccaedbd091c@linaro.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <c12ce98f-d5af-4c54-a453-2416b85b4a5d@linaro.org>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -134,154 +128,24 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <bcad544c-7ca2-4b4f-805b-4ccaedbd091c@linaro.org>
+In-Reply-To: <c12ce98f-d5af-4c54-a453-2416b85b4a5d@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 12.02.2024 15:45, Neil Armstrong wrote:
-> On 12/02/2024 11:46, Konrad Dybcio wrote:
->> On 12.02.2024 11:37, Neil Armstrong wrote:
->>> Add support for the A750 GPU found on the SM8650 platform
->>>
->>> Unlike the the very close A740 GPU on the SM8550 SoC, the A750 GPU
->>> doesn't have an HWCFG block but a separate register set.
->>>
->>> The missing registers are added in the a6xx.xml.h file that would
->>> require a subsequent sync and the non-existent hwcfg is handled
->>> in a6xx_set_hwcg().
+On 14.02.2024 13:56, Bryan O'Donoghue wrote:
+> On 09/02/2024 21:09, Konrad Dybcio wrote:
+>> Definitely needs testing on:
 >>
->> These should also be submitted to mesa to make sure the next header sync
->> doesn't wipe them
+>> - SDM845 with old bindings
+>> - SDM845 with new bindings or 7180
 > 
-> Ack submitting them right now: https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/27576
+> I can do 8916 for you but, I think we have these boards available remotely on qc.lab.
+> 
+> Could you test those boards out remotely yourself ?
 
-Thanks
-
-> 
->>
->> [...]
->>
->>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
->>> @@ -958,10 +958,11 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
->>>       struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->>>       struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
->>>       const struct adreno_reglist *reg;
->>> +    bool skip_programming = !(adreno_gpu->info->hwcg || adreno_is_a7xx(adreno_gpu));
->>
->> is_a750?
-> 
-> OK right, I was thinking of the next gpu which will probably also miss an hwcfg
-> 
->>
->>>       unsigned int i;
->>>       u32 val, clock_cntl_on, cgc_mode;
->>>   -    if (!adreno_gpu->info->hwcg)
->>> +    if (skip_programming)
->>>           return;
->>>         if (adreno_is_a630(adreno_gpu))
->>> @@ -982,6 +983,25 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
->>>                 state ? 0x5555 : 0);
->>>       }
->>>   +    if (!adreno_gpu->info->hwcg) {
->>
->> I don't think this block of code is reachable now, no?
-> 
-> It is because we didn't skip when adreno_is_a7xx(adreno_gpu)
-
-Ahh I misread the brackets within the assignment
-
-> 
->>
->> Maybe remove the skip_programming and if_a750 here?
-> This would require:
->>> -    if (!adreno_gpu->info->hwcg || )
->>> +    if (!(adreno_gpu->info->hwcg || adreno_is_a750(adreno_gpu)))
-> 
-> and:
-> 
->>> +    if (adreno_is_a750(adreno_gpu)) {
-> 
-> But if the next gpu also doesn't have an hwcfg, we will need to use
-> the current design...
-> 
-> I just tried with:
-> ====================><===============================
-> @@ -961,7 +961,7 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
->         unsigned int i;
->         u32 val, clock_cntl_on, cgc_mode;
-> 
-> -       if (!adreno_gpu->info->hwcg)
-> +       if (!(adreno_gpu->info->hwcg || adreno_is_a750(adreno_gpu)))
->                 return;
-> 
->         if (adreno_is_a630(adreno_gpu))
-> @@ -982,6 +982,25 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
->                           state ? 0x5555 : 0);
->         }
-> 
-> +       if (adreno_is_a750(adreno_gpu)) {
-> +               gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 1);
-> +               gpu_write(gpu, REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD, state ? 1 : 0);
-> +
-> +               if (state) {
-> +                       gpu_write(gpu, REG_A7XX_RBBM_CGC_P2S_TRIG_CMD, 1);
-> +
-> +                       if (gpu_poll_timeout(gpu, REG_A7XX_RBBM_CGC_P2S_STATUS, val,
-> +                                            val & A7XX_RBBM_CGC_P2S_STATUS_TXDONE, 1, 10)) {
-> +                               dev_err(&gpu->pdev->dev, "RBBM_CGC_P2S_STATUS TXDONE Poll failed\n");
-> +                               return;
-> +                       }
-> +
-> +                       gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 0);
-> +               }
-> +
-> +               return;
-> +       }
-> +
->         val = gpu_read(gpu, REG_A6XX_RBBM_CLOCK_CNTL);
-> 
->         /* Don't re-program the registers if they are already correct */
-> ====================><===============================
-> 
-> And it works fine, does it work it for you ?
-
-Let's keep it as-is in the original submission, as I've mentioned, I had
-misread the code
+As I mentioned in the cover letter, I am not sure if anybody cares about
+this breaking or not.. But I'm willing to test not-deprecated-bindings 845/
+7180.
 
 Konrad
-
-> 
->>
->>> +        gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 1);
->>> +        gpu_write(gpu, REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD, state ? 1 : 0);
->>> +
->>> +        if (state) {
->>> +            gpu_write(gpu, REG_A7XX_RBBM_CGC_P2S_TRIG_CMD, 1);
->>> +
->>> +            if (gpu_poll_timeout(gpu, REG_A7XX_RBBM_CGC_P2S_STATUS, val,
->>> +                         val & BIT(0), 1, 10)) {
->>
->> We should define that bit name (the err suggests it's
->> REG_A7XX_RBBM_GCC_P2S_STATUS_TXDONE or so)
->>
->> [...]
->>
->>> +static inline int adreno_is_a750(struct adreno_gpu *gpu)
->>> +{
->>> +    return gpu->info->chip_ids[0] == 0x43051401;
->>> +}
->>> +
->>>   /* Placeholder to make future diffs smaller */
->>
->> Please also remove this comment now that it's invalid
-> 
-> Ack
-> 
->>
->> Konrad
-> 
-> Thanks,
-> Neil
-> 
 
