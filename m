@@ -1,205 +1,271 @@
-Return-Path: <linux-kernel+bounces-64777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38208542B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:14:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF7C18542B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 691CA1F24846
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:14:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AC21B28924
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E285125BC;
-	Wed, 14 Feb 2024 06:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3279511190;
+	Wed, 14 Feb 2024 06:14:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DqBXR9n0"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xw7/W+tV"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730F01170F;
-	Wed, 14 Feb 2024 06:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32BFD10A25
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 06:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707891203; cv=none; b=L3lgx8dR02QkFKKxkujZgLT+Yw0k5dvq+fE9r/6oNxg6oRQfvsrhcB8SKGbDg4UR17Z6CnPcQ7W38rcjwF0TURK0IqHCY/tjEDfEiMdLZnL2+ZrvlvDfwrbcaA9H1EJM6gS8lpobodBRl11c8ZeLpkMSluwm8PAIEb6CHlMaN+k=
+	t=1707891263; cv=none; b=FNVJKQm2Gi7WH9bCKS9gj4PhksYXB8tgN42MX0FntNUHIzokE1vebgtlnKkX4r860lEbRG9ZoATEgznmGEkzlLuG9DepHxYU13fWRqrhalw62vCmiNUbDBqJAmhCtmFi3ZShRvgkagTqLezCrBOSM/ojmBgjdkYscNWSXahOUR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707891203; c=relaxed/simple;
-	bh=LgpLA72Yy2DgXq7fM3U+hFO1U9oOC9qFq5Ar4+afhHM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CtADk41/jbdbby1oCAkuTFDXqkme58D+BB+Dx0BoqEvGp9gwSySQSHFt0Ncn0j8bR6g68tjJQkJ6Q3IhZPKu3sRvRrWP3+4LAXpEfXXSfeftR08J+4h6Ymn1Uf6XsOJ/ET48AJnMVdNhoAysdivBv/F6eYm/QNHpAoIqZMSEU1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DqBXR9n0; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3cf64f33b3so183967166b.3;
-        Tue, 13 Feb 2024 22:13:21 -0800 (PST)
+	s=arc-20240116; t=1707891263; c=relaxed/simple;
+	bh=wzr+kLlknr1luythVXCJluevwdFGrIq8/RzBWxobG6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ObaJrVufAjtXMcrLocCRKphOP/tFPNPTS9Eqcr+WvH7Duo6ZyqOW/pJmLZiTS/w7g651Y6zzIDo2KRITpjprPZoP5NNKhWfS/zv+lC4pYfFwzAYDF/PjyRudhOeMVCXIzu37KMVdLlQhblKJcPx6jLxgwHTUFx8uJzKqeLUauwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xw7/W+tV; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e10ac45684so194566b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 22:14:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707891199; x=1708495999; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0EDbWqws9cGFaTSgQ7d/JTeQtcU5zOGhJZiE31yQ40s=;
-        b=DqBXR9n0CAqjQowmqGaMPYUUWDChm7x04czGafI75QcwuOVxVid8cx4KnRoHfor+zy
-         PQix2J1Dlb1a7o4qwJlgJjE6qPXqBCJDybD8CwMp8ru/T+HBvTiMbZDpSvuhyq+t4tkD
-         /RQ+Ht/O/v6z3fNwxviLv4osIq+I8X3ui4/UikdFFOuts6pPyRaFzW0db6sbEMoVAVQX
-         piy3vhpT2wBi4wsgY7gZSK1ZQiprCz1oM/4OLTSSl9GIDNoF9gxN80IA+tpNBE+zPzyO
-         fGR51GGVHvNQp9kRc9LssGUO4bCK2IbDKZwjeoENDQHoo1uxY4dqQrwi61cMBf5wwRv/
-         rlFg==
+        d=linaro.org; s=google; t=1707891258; x=1708496058; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rEAtaGDufDWhtM/apq9lA9fVfmRBlWSvuuyTiSpPBN8=;
+        b=Xw7/W+tVn8tz15TyiDSxyuzY4yirc23V07bRiZp+cXe/AjFkdy0RNggkAWlZQV1hy6
+         E5qkwPt54YMs7jNZBZcn3sAXCinEFMJkcHOhFCMPRayTQhHMELXmwJh7SX0w7kVKrcv1
+         qdwFVZiuxMVUgfcJTd1fuSq7t3KATMqlZjmRAPKRirOCWcxNBCovdUmP00l8CUKcIg/0
+         T+/8JZmIcg+knHVHgQBSEazqsnpqiPuhL+eIhIzu9dXudJ1u728qeM0d2m3WHI5roje3
+         TmkcmZbJsBQPorJNVMy2PruO/A3whSHoXyeL1cxVi2N4whYEbaHpHLoPnm4wHeuwmwA4
+         YpIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707891199; x=1708495999;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0EDbWqws9cGFaTSgQ7d/JTeQtcU5zOGhJZiE31yQ40s=;
-        b=fZqTWlagEEATziC/OcwHd1rxQ+VO9EDpFOpuETYwy+nLRWIOsBWjE6DwDY8KkkI6Y0
-         NkmBOBfQd3BLRefKaIzN8AfNxV3P50nJtfiltXr+TmW+hHYCbP0NHXXokTvW3IEYg+0y
-         dWb3tf3sYtgfYv4+F+Ekzq0wmYXCbhMfs/Xottx0hf/7G966Tn86aL7Ydo8wNuYAKiUQ
-         52BaTDj8GC+JVmrEaf4tG4x2eIZz3mH8T7cTndCTXWhwjxNvX4Ja34EQAcH9sD66BOAb
-         mkOeQq43C3+S56tdjI0ylQ9Np7ThOWn5vTHW0Yb2/QN+aYcHA/iSmPxfs+17rlpj4r1F
-         CzdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUoO1NtVEhLxSYK/OGKonqN6Fc0nRNh/enGbCewMilFQBsVumuye2Wsqvv1Qz+yBFdUfNScwaaTDbzD9+HeIuTt2IQ6FFoPfM2z4ZocJRd6mTvR5L53mfMB5ETeEX+S2mAB2O0Xc8UXvE4WG1nTfxUqSJfiJurubT22hjwFLQwHHmIhVw==
-X-Gm-Message-State: AOJu0YwfN/jkyA2kituIqHulfBUqVyd6BeL0eLiXsylvoEb7mkLf4xyU
-	NELvOZFCR5o9pppiFGVMppi2e7zr6Ru8pXj0WF3StXmBi7uTw0e1
-X-Google-Smtp-Source: AGHT+IGcdc9MhMF2QCYXKDqgHAb2iQpgiSM62KSdnvoJCUvMTwnehra+UAazTEfsrpPrGHVZ7N5lZg==
-X-Received: by 2002:a17:906:4a8e:b0:a3d:4dec:26f7 with SMTP id x14-20020a1709064a8e00b00a3d4dec26f7mr338386eju.6.1707891199525;
-        Tue, 13 Feb 2024 22:13:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWyN8G4qtIV202cD4o9ZwYJxigXomwvuwD44sYYENvf/P+NZwmHwC+mlVJd32ng0LnLOo9xX0nuFr/NU8vNqFrz1ovgcR8wX1qhe7TG0oBhaDIMxI72PveuU+FovLjBEjxV3p7D6LjZUGfZAOIJIQIPEu8V/Wnz6UiXHisSL5JdnwfTAWPeVR5p2K9YINIb6WWGS5OzzSRTBVmp6ss8jeiU17vEeY/gOX3eDR7DitLuGjk6NTbvX0dp8Mfz81Yy3mPEnBvnboRjx64eSXmpoB+euFmIldHnVa/qec9QCz6iZFrKRjAEWaOTMdRzTqDazEH5WhWuNxCUq9sFDPr6JWBdYcjY9dwaGRMViSQ9zfWsIo6BFWJY9iTUk9asxQuaKIvajlRHSiGuMbit17oxV64VTTIIQA64qPVNvfJzERtbiVXb/lg/rELNSmEr6XH6z7I0Fc3ceJOGl2CnlbCg4jGyjQhXih9QZn+YCd89S3vkyDOicm/XoFyHiPWvYhm/x3ARWvFaGc/0c5cJGlzD3xiGTlV3MhM6SgOkrGTB63eTTeZ2byCN5NMiG5/XH/28JI891Gy4FBixopGm17QS0EgZ1mMH/wFkjY/h
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id ca23-20020a170906a3d700b00a3caccb8f66sm1980163ejb.44.2024.02.13.22.13.18
+        d=1e100.net; s=20230601; t=1707891258; x=1708496058;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rEAtaGDufDWhtM/apq9lA9fVfmRBlWSvuuyTiSpPBN8=;
+        b=JQe4WHmw1utMsEw0AMbyNwf6pu8rfaxXd8R/g5hJeLbdH/+mPe5ERE8sNn+3Ld9Boe
+         CoW62eofCw76200fFP/DqVGyzRiiiuQs3kiwxF9wghqGHjGwm/1UZq4/ZyTiGyKmM1ev
+         aGSSD0Ne+sg7DFa9PdnR5c+mvqXuDYXe2Is1/J6jKV05Y9P/DjlhM1rvgNN0Ol5rXh5L
+         dLrlb+fVuPx+4T9FMCj0GSLN06xndp+vDGFTYinMqXLLOL7n7smHKfs+5Xzer8AdCaBs
+         9I7Nb97n7jodl9apQZ8LYGSSUlkGyml2dIz4nx/Dx8sf6NgI1qSvXNywoMAKUXFlvLVH
+         wofA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcGcj3WkaNpmncVyI5gq35Rts8AmuO9xdGShWuymBem/RLkRqc9cS1B76p4HIYU7r7H4NwTa/DFoR/E/H+eJWQHC2t9fQB0YUiWG7c
+X-Gm-Message-State: AOJu0Yx2cf/NNByV/8ezcJ69Io7BnWahPHcfScWnVVcqqrsaSqPklNPH
+	+/P+DuQ3QkdgweMrWdNNiph/fkV0cNlj0kXeHeAltxVuShX/kREofVdTqUtB5w==
+X-Google-Smtp-Source: AGHT+IHH8BKMmvWEAPzi0hPOk/HvNEBJyCiOUf4JLgbW6hCkwVsGkA/J5ewFI76o82rIsRzpH229/A==
+X-Received: by 2002:a05:6a00:4588:b0:6e0:4e85:54f0 with SMTP id it8-20020a056a00458800b006e04e8554f0mr1429326pfb.28.1707891258180;
+        Tue, 13 Feb 2024 22:14:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWVw7tJYklSfjZdOK6xrlMPX/1pq0rFvKiLd5xqumFKql4taN9YfYfNDhokaiWsduAa/gKNFasJjotO82HBEWszENDUapy3J7KUH26QCAdtyrzwCV4itAMMLDHRu1FkYxYrN8RuUeRxCy5ENCKBaLFuoT6IRO46KlcObp1M8rhY9/2XgZ6qGIXhbLscBbzQrRN4qOFUVSEJuJ/JumDqLECGBuMrds4DjIJrjXfiDP3sI1B0OE8GW6V02kjaUh9P0M9ylsT9jkBfETYVcfsWuh0RwHhXNf3UsyGgsni+SnG4D7hlJjMgAMh3HBkHiZVFz53cTqfJ1IDezavyOkYqwPuTTFNwFUUtfSS5o2y8mdNeh4t3cDrsNflJEk9QBObslHK6u5k6ZMt3QZSjGd78SRWsn5B0BFdOqvnYq5k2FlTsP2GV98ZC74GqYYIwU2sIWq0=
+Received: from thinkpad ([103.28.246.149])
+        by smtp.gmail.com with ESMTPSA id ko19-20020a056a00461300b006ddc75edd55sm8314448pfb.152.2024.02.13.22.14.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 22:13:19 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh@kernel.org>,
+        Tue, 13 Feb 2024 22:14:17 -0800 (PST)
+Date: Wed, 14 Feb 2024 11:44:12 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Frank Li <Frank.li@nxp.com>, Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH V4 3/3] dt-bindings: clock: mediatek: convert SSUSBSYS to the json-schema clock
-Date: Wed, 14 Feb 2024 07:12:33 +0100
-Message-Id: <20240214061233.24645-4-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240214061233.24645-1-zajec5@gmail.com>
-References: <20240214061233.24645-1-zajec5@gmail.com>
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] dt-bindings: PCI: dwc: Add 'msg' register region
+Message-ID: <20240214061412.GB4618@thinkpad>
+References: <20240202-pme_msg-v3-0-ff2af57a02ad@nxp.com>
+ <20240202-pme_msg-v3-5-ff2af57a02ad@nxp.com>
+ <eg7wrjp5ebz43g37fvebr44nwkoh4rptbtyu76nalbmgbbnqke@4zugpgwesyqd>
+ <20240205183048.GA3818249-robh@kernel.org>
+ <ZcEzYdZKotBJlR5i@lizhi-Precision-Tower-5810>
+ <ZcK2/tmLG9O7CBEH@lizhi-Precision-Tower-5810>
+ <luk5hswq4wnk5p7axml73qih35hio3y3pfnklctbn6rwres62s@mumnvygjh5ch>
+ <ZcOpehO3rzCfAwXf@lizhi-Precision-Tower-5810>
+ <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Feb 09, 2024 at 12:52:52PM +0300, Serge Semin wrote:
+> On Wed, Feb 07, 2024 at 11:02:02AM -0500, Frank Li wrote:
+> > On Wed, Feb 07, 2024 at 03:37:30PM +0300, Serge Semin wrote:
+> > > On Tue, Feb 06, 2024 at 05:47:26PM -0500, Frank Li wrote:
+> > > > On Mon, Feb 05, 2024 at 02:13:37PM -0500, Frank Li wrote:
+> > > > > On Mon, Feb 05, 2024 at 06:30:48PM +0000, Rob Herring wrote:
+> > > > > > On Sat, Feb 03, 2024 at 01:44:31AM +0300, Serge Semin wrote:
+> > > > > > > On Fri, Feb 02, 2024 at 10:11:27AM -0500, Frank Li wrote:
+> > > > > > > > Add an outbound iATU-capable memory-region which will be used to send PCIe
+> > > > > > > > message (such as PME_Turn_Off) to peripheral. So all platforms can use
+> > > > > > > > common method to send out PME_Turn_Off message by using one outbound iATU.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > > ---
+> > > > > > > >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml | 4 ++++
+> > > > > > > >  1 file changed, 4 insertions(+)
+> > > > > > > > 
+> > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > index 022055edbf9e6..25a5420a9ce1e 100644
+> > > > > > > > --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > @@ -101,6 +101,10 @@ properties:
+> > > > > > > 
+> > > > > > > >              Outbound iATU-capable memory-region which will be used to access
+> > > > > > > >              the peripheral PCIe devices configuration space.
+> > > > > > > >            const: config
+> > > > > > > > +        - description:
+> > > > > > > > +            Outbound iATU-capable memory-region which will be used to send
+> > > > > > > > +            PCIe message (such as PME_Turn_Off) to peripheral.
+> > > > > > > > +          const: msg
+> > > > > > > 
+> > > > > > > Note there is a good chance Rob won't like this change. AFAIR he
+> > > > > > > already expressed a concern regarding having the "config" reg-name
+> > > > > > > describing a memory space within the outbound iATU memory which is
+> > > > > > > normally defined by the "ranges" property. Adding a new reg-entry with
+> > > > > > > similar semantics I guess won't receive warm welcome.
+> > > > > > 
+> > > > > > I do think it is a bit questionable. Ideally, the driver could 
+> > > > > > just configure this on its own. However, since we don't describe all of 
+> > > > > > the CPU address space (that's input to the iATU) already, that's not 
+> > > > > > going to be possible. I suppose we could fix that, but then config space 
+> > > > > > would have to be handled differently too.
+> > > > > 
+> > > > > Sorry, I have not understand what your means. Do you means, you want
+> > > > > a "cpu-space", for example, 0x8000000 - 0x9000000 for all ATU. 
+> > > > > 
+> > > > > Then allocated some space to 'config', 'io', 'memory' and this 'msg'.
+> > > > 
+> > > > @rob:
+> > > > 
+> > > >     So far, I think "msg" is feasilbe solution. Or give me some little
+> > > > detail direction?
+> > > 
+> > > Found the Rob' note about the iATU-space chunks utilized in the reg
+> > > property:
+> > > https://lore.kernel.org/linux-pci/CAL_JsqLp7QVgxrAZkW=z38iB7SV5VeWH1O6s+DVCm9p338Czdw@mail.gmail.com/
+> > > 
+> > > So basically Rob meant back then that
+> > > either originally we should have defined a new reg-name like "atu-out"
+> > > with the entire outbound iATU CPU-space specified and unpin the
+> > > regions like "config"/"ecam"/"msg"/etc from there in the driver
+> > > or, well, stick to the chunking further. The later path was chosen
+> > > after the patch with the "ecam" reg-name was accepted (see the link
+> > > above).
+> > > 
+> > > Really ECAM/config space access, custom TLP messages, legacy interrupt
+> > > TLPs, etc are all application-specific features. Each of them is
+> > > implemented based on a bit specific but basically the same outbound
+> > > iATU engine setup. Thus from the "DT is a hardware description" point
+> > > of view it would have been enough to describe the entire outbound iATU
+> > > CPU address space and then let the software do the space
+> > > reconfiguration in runtime based on it' application needs.
+> > 
+> > There are "addr_space" in EP mode, which useful map out outbound iatu
+> > region. We can reuse this name.
+> > 
+> > To keep compatiblity, cut hole from 'config' and 'ranges'. If there are
+> > not 'config', we can alloc a 1M(default) from top for 'config', then, 4K
+> > (default) for msg, 64K( for IO if not IO region in 'ranges'), left is
+> > mem region. We can config each region size by module parameter or drvdata.
+> > 
+> > So we can deprecate 'config', even 'ranges'
+> 
+> Not sure I fully understand what you mean. In anyway the "config" reg
+> name is highly utilized by the DW PCIe IP-core instances. We can't
+> deprecate it that easily. At least the backwards compatibility must be
+> preserved. Moreover "addr_space" is also just a single value reg which
+> won't solve a problem with the disjoint DW PCIe outbound iATU memory
+> regions.
+> 
+> The "ranges" property is a part of the DT specification.  The
+> PCI-specific way of the property-based mapping is de-facto a standard
+> too. So this can't be deprecated.
+> 
+> > 
+> > > 
+> > > * Rob, correct me if am wrong.
+> > > 
+> > > On the other hand it's possible to have more than one disjoint CPU
+> > > address region handled by the outbound iATU (especially if there is no
+> > > AXI-bridge enabled, see XALI - application transmit client interfaces
+> > > in HW manual). Thus having a single reg-property might get to be
+> > > inapplicable in some cases. Thinking about that got me to an idea.
+> > > What about just extending the PCIe "ranges" property flags
+> > > (IORESOURCE_TYPE_BITS) with the new ones in this case indicating the
+> > > TLP Msg mapping? Thus we can avoid creating app-specific reg-names and
+> > > use the flag to define a custom memory range for the TLP messages
+> > > generation. At some point it can be also utilized for the config-space
+> > > mapping. What do you think?
+> > 
+> 
+> > IORESOURCE_TYPE_BITS is 1f, Only 5bit. If extend IORESOURCE_TYPE_BITS, 
+> > all IORESOURCE_* bit need move. And it is actual MEMORY regain. 
+> 
+> No. The lowest four bits aren't flags but the actual value. They are
+> retrieved from the PCI-specific memory ranges mapping:
+> https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
+> https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_64.c#L141
+> https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_32.c#L78
+> Currently only first four out of _sixteen_ values have been defined so
+> far. So we can freely use some of the free values for custom TLPs,
+> etc. Note the config-space is already defined by the ranges property
+> having the 0x0 space code (see the first link above), but it isn't
+> currently supported by the PCI subsystem. So at least that option can
+> be considered as a ready-to-implement replacement for the "config"
+> reg-name.
+> 
 
-This helps validating DTS files. Introduced changes:
-1. Documented "reg" property
-2. Dropped "syscon" as it was incorrectly used
-3. Adjusted nodename, "compatible" and "reg" in example
+Agree. But still, the driver has to support both options: "config" reg name and
+"ranges", since ammending the binding would be an ABI break.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- .../arm/mediatek/mediatek,ssusbsys.txt        | 25 -----------
- .../clock/mediatek,mt7622-ssusbsys.yaml       | 45 +++++++++++++++++++
- 2 files changed, 45 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
+> > 
+> > Or we can use IORESOURCE_BITS (0xff)
+> > 
+> > /* PCI ROM control bits (IORESOURCE_BITS) */
+> > #define IORESOURCE_ROM_ENABLE		(1<<0)	/* ROM is enabled, same as PCI_ROM_ADDRESS_ENABLE */
+> > #define IORESOURCE_ROM_SHADOW		(1<<1)	/* Use RAM image, not ROM BAR */
+> > 
+> > /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+> > #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+> > #define IORESOURCE_PCI_EA_BEI		(1<<5)	/* BAR Equivalent Indicator */
+> > 
+> > we can add
+> > 
+> > IORESOURCE_PRIV_WINDOWS			(1<<6)
+> > 
+> > I think previous method was more extendable. How do you think?
+> 
+> IMO extending the PCIe "ranges" property semantics looks more
+> promising, more flexible and more portable across various PCIe
+> controllers. But the most importantly is what Rob and Bjorn think
+> about that, not me.
+> 
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt b/Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
-deleted file mode 100644
-index 7cb02c930613..000000000000
---- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,ssusbsys.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--MediaTek SSUSBSYS controller
--============================
--
--The MediaTek SSUSBSYS controller provides various clocks to the system.
--
--Required Properties:
--
--- compatible: Should be:
--	- "mediatek,mt7622-ssusbsys", "syscon"
--	- "mediatek,mt7629-ssusbsys", "syscon"
--- #clock-cells: Must be 1
--- #reset-cells: Must be 1
--
--The SSUSBSYS controller uses the common clk binding from
--Documentation/devicetree/bindings/clock/clock-bindings.txt
--The available clocks are defined in dt-bindings/clock/mt*-clk.h.
--
--Example:
--
--ssusbsys: ssusbsys@1a000000 {
--	compatible = "mediatek,mt7622-ssusbsys", "syscon";
--	reg = <0 0x1a000000 0 0x1000>;
--	#clock-cells = <1>;
--	#reset-cells = <1>;
--};
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
-new file mode 100644
-index 000000000000..da93eccdcfc1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mediatek,mt7622-ssusbsys.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/mediatek,mt7622-ssusbsys.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek SSUSBSYS clock and reset controller
-+
-+description:
-+  The MediaTek SSUSBSYS controller provides various clocks to the system.
-+
-+maintainers:
-+  - Matthias Brugger <matthias.bgg@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mediatek,mt7622-ssusbsys
-+      - mediatek,mt7629-ssusbsys
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    const: 1
-+    description: The available clocks are defined in dt-bindings/clock/mt*-clk.h
-+
-+  "#reset-cells":
-+    const: 1
-+
-+required:
-+  - reg
-+  - "#clock-cells"
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    clock-controller@1a000000 {
-+        compatible = "mediatek,mt7622-ssusbsys";
-+        reg = <0x1a000000 0x1000>;
-+        #clock-cells = <1>;
-+        #reset-cells = <1>;
-+    };
+IMO, using the "ranges" property to allocate arbitrary memory region should be
+the way forward, since it has almost all the info needed by the drivers to
+allocate the memory regions.
+
+But for the sake of DT backwards compatiblity, we have to keep supporting the
+existing reg entries (addr_space, et al.), because "ranges" is not a required
+property for EP controllers.
+
+- Mani
+
 -- 
-2.35.3
-
+மணிவண்ணன் சதாசிவம்
 
