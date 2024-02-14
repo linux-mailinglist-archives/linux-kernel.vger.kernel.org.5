@@ -1,238 +1,142 @@
-Return-Path: <linux-kernel+bounces-65890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A12855368
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:44:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A4085536B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A727284EC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:44:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C763A1F22198
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B5213B7BB;
-	Wed, 14 Feb 2024 19:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28BC13DB8C;
+	Wed, 14 Feb 2024 19:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AOTxkfEP"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="D8xuBx7I"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E521E13A26C;
-	Wed, 14 Feb 2024 19:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC98F7E767
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707939892; cv=none; b=P2wpnqXOKvsrMC28fhY4iZyUFPcy9cmw/TIVrdA7+8lNC/PbjX7bCr0+GehrxImZo/iJl+FIC+tzo0LXRytayxw0B4M7XXXxJ+K6R6Bq/lbMfvKtyo9lbJgJBWrizgSsiFNowf7hmHUd9zkmZJdI8Smr+/L3qZUMteLDFOAnqoY=
+	t=1707939969; cv=none; b=ckcy5KLpRLHP9unlRNDEnQQ3WMAxdQ+j7YZ0wzDevG26DHe0uefltw8IppE2HoEZUaZvrR3Tj6mISVAJIxQ5o5FiB8vnx4ltoMVuP54J/1wtD7md/1KsHxkCdvH/9snlqNvbOgRTReC3uQQ2NAjpYFpEFEKJSv//JyvQCeYVark=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707939892; c=relaxed/simple;
-	bh=BZPqiBFNggsLuV63nhHoEmeUkaGZnU0OIcQ97gfnPvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nXesXWJ0Hqyr9zVPChfmGqLFj9nCQ5OtA4s3X0G7TKd549d3ad89Vb9m/fkxv1RfrVLP5lfk2x29+dGMTt4N2ItqChBn8Fa+udzE2J746mOCJzal2w/j/XRmKQIFHRzF/dXTQrHZzYZR6gp+9cUtd87VXdvoZ+Y/c9DlPJT8g/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AOTxkfEP; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B83AD40E01A9;
-	Wed, 14 Feb 2024 19:44:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id m-80sX-7yTap; Wed, 14 Feb 2024 19:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707939884; bh=LOrbkDutgTY89nsP3CR1ZAUaY3za83ltlqWwp3QISus=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AOTxkfEPENL/Of8oEUaxD587SyqmDPww6pQLYq7Eh4PerKZ37KOh1PHzBmh8HcVkg
-	 PId17adD0B9Gyfe/FgCdNOXUqCWC2s2qhAjYzghn25QQuHahzfE4xOg7z3VCJOorpw
-	 tH+Iao/1mlZBWQQAaqOY7BAJfo4pLhJfD2V59hjbKWgK7yCAzUpqd7Mab20yvrSCvE
-	 JWylprl9NyJnaBD2gziphxO9EKKxO3gaNJC1AO3E7/GDmkPoxiB6DO0VbtW+9q9Tva
-	 GVAka+91rQYUIxTTA4XpFAYHYI4JsfS40IqmBrGbxI6XAkZbJh2H5Md46rNCULMKzm
-	 oq9Hx9eqslrpD6Ia2+s/2t7IpQeXCVY9QgWmzLzQJj38z2J3jfg+cYL4cwdgXMn6I0
-	 12P78hE3GscEKS8KmvZwB4J9/gb1WkK2yTcB4Pp22am1k9PsphNQVNebasqLW860Nj
-	 v5yDSEI2wLvXdQPQboBYrvmk96vS5KvAoBXoVONM84M8Jj1ppy0pF5kiCAWdaeYfhL
-	 O1QWepe9OOSTxz+lXMzxQ1C60cjhNFTkkBHE3KteLKuY000RLIc8+kGhgVYeTHDwSr
-	 bweBlfmglrqiTCl/xJDhW8wxVDy/UFbwij/7/vnvt2rLo/3iXKOrEM7aAkEbNXJFng
-	 udNaDJucuZqFihQa8Vzqs5aM=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8EA1940E00B2;
-	Wed, 14 Feb 2024 19:44:35 +0000 (UTC)
-Date: Wed, 14 Feb 2024 20:44:27 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214194427.GPZc0YG1e_6QWbGUQQ@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214113630.GIZcylvp6-m-FNNE7H@fat_crate.local>
- <4096ae55-62bb-4705-94dc-ccf90ee64988@amd.com>
+	s=arc-20240116; t=1707939969; c=relaxed/simple;
+	bh=uQwFw+Mvb5FS+5R3O7Kh53oqRz4mjeatqrTjC8hEZtQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FAZqtf708+4OoO2DGQUN4EjR686qE/99g7SqJ3IYBcuULOIYworQAq+20zwb6S/6nbjoSFc1y1YmaQwN7NY1b8Pc1eiBg4OYrrEKNKII6KmSvS2a1gwXfHTRoDbOXHRKJnDFOrAdCDSaS1R4gcMsEvNE12zSvaUbPlESDv6PA5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=D8xuBx7I; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-296e8c8d218so130903a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:46:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707939966; x=1708544766; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQAKDqTR0lInodj89i/VDK6/vi1P72VYaaN3v1N7SL0=;
+        b=D8xuBx7I48V/7OH6w4xZnEVtQbXRC3j0733USZL7WMhODA5jIUVts65t01IL2BY1YW
+         Oewqdf+mEgrWBtiA7ENKCnz7Q9HXYiWYsMgDneRW3PaKjOnA+Rm4DkkuqieGSBcdEcqA
+         AELFNBNXNt59AARNxYSfIkNgOTxholfTyljuI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707939966; x=1708544766;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RQAKDqTR0lInodj89i/VDK6/vi1P72VYaaN3v1N7SL0=;
+        b=enZMwA82/Oo0B/F6A/p3hoqpEQI50LbfG/jCSC8UemgDHASnpRVEB1trVYgZfGiz76
+         5h+VLSOhHfF4Rni2tC/Us1gnLYyUy16/kfjfYdmjcXsZjW8SfWgjAMJTxwxbCMRHh5FH
+         mMVOEVEuYaAloqT6S0hFw6L6mmryHw3gkAMjM5dNOsEqAXmrblemnRogtm+nUuMa4rsI
+         uGIEVL29NsA/v98yPE/ID9IxMWHdmq/g/h8W6c+9caTmhVwdE/eFAfejibXnDuV6mpxP
+         nqU+pYV1fnLjPb26rfGvqNPXJGTnGLOeXF0EvTvKa/zNj9DVTk6b3HqyC2UZieKwbR3f
+         DkHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSBFz79410uonoaqqH3R3lVej542pmGKmNA86saeD1VEw6aBfQuTBGlKixjVAU/TfQNF/MuX1D2J0LlF8yzeUJYZ4F/o3kViMfU12u
+X-Gm-Message-State: AOJu0YwraUVRbqyVcvxmQwI6ua6sJOkPibgMHtnzhTNoHxK3qBkoXWRS
+	Br+SawdfoZmvdrDki+J37xILGgww922c2z0bNacg9LKsP3Dd6lh35Xuf1F1qsw==
+X-Google-Smtp-Source: AGHT+IF9qlzQklsSyZNtmLwxche6bOfOb3xCXDfoNNolp4ROMfcVflxY1nID27Av2N8l3L+CYXzzZg==
+X-Received: by 2002:a17:90a:c204:b0:296:e2bf:3936 with SMTP id e4-20020a17090ac20400b00296e2bf3936mr3585859pjt.36.1707939966221;
+        Wed, 14 Feb 2024 11:46:06 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id m6-20020a17090a34c600b00298b9f662ccsm2035619pjf.1.2024.02.14.11.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 11:46:05 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Marco Elver <elver@google.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v7 0/3] overflow: Introduce wrapping helpers
+Date: Wed, 14 Feb 2024 11:46:00 -0800
+Message-Id: <20240214194432.makes.837-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4096ae55-62bb-4705-94dc-ccf90ee64988@amd.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1708; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=uQwFw+Mvb5FS+5R3O7Kh53oqRz4mjeatqrTjC8hEZtQ=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlzRh7JItobawvLT4rE2d1cpdHERzHGwXC9I9xs
+ qRALXG1AQSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc0YewAKCRCJcvTf3G3A
+ JhrrEACQsJK01x9xNqIWqiN+g7wsA5PyZYBoCWe2XUFapCLB759/GdDKBEKBcOJLG45k2wkbClT
+ ImuFShGbsHTl146bYDt+tB05yrXftONqA2LJ4PO88nB+0Y8vhYjobHFU41qPz0ga5E5Dcv/7RpB
+ 1Rl0vZ5gNzI50wj0G8/f2sb1MYCn+b2zcFbbL2mowb87QmXk8GYNsGxVxWkX4QpDWIx+5hwtUeD
+ JQ6heHQ4X1MtO5XLu3c755Wc/OhRBR1ery6Gj4fjZVX2+up4rv9Jjqzz9Bil9M00+rBUjjMS9CS
+ bjSX0twnUU3vicu5H/18FPuYE0hoG5t0UMtabOtaKWFfl5P63QS1aJwR6tjh7vi9dOuz7zYkrdy
+ Ylrnr2sRbU+XlvilOVJiC45SNabbgBIugLp+3tVTt5WARekcIEKEzG9y2klvWErdKSQneNaIqOL
+ D2RVGimkB1Pcc95fKDWRN0J9xiChzvjy4GS/dLpcIT/uD6TfGnc1Dg+AaHcdhYIDQXsSNKLe8WW
+ DmsGg5ISbmZrIDEhxttKAjxG5eheHZ5SPW67FSXFiAcahYfV1uwvu7HnZb6KFivGz/PZNTUmNbp
+ nwxqFLc52D28c6stg0+IbBh8zrtIAWOLkSjrU5mMSIexoPyujbeatubSBQKbeStf9oZ2JJhCvt7
+ vFL0ycE knLSqdrg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 10:26:41AM -0500, Yazen Ghannam wrote:
-> > > +	/* This is the first entry, so just save it. */
-> > > +	if (!has_valid_entries(fmp->validation_bits))
-> > > +		goto save_fpd;
-> > 
-> > Not needed - if it is the first entry, it'll get saved there.
-> > 
-> 
-> Get saved where?
-> 
-> For brand new records, the module will allocate them with the headers
-> and no descriptor entries (empty list).
+v7: - further kern-doc cleanups (Mark)
+v6: https://lore.kernel.org/all/20240213220844.it.345-kees@kernel.org/
+v5: https://lore.kernel.org/all/20240207152317.do.560-kees@kernel.org/
+v4: https://lore.kernel.org/all/20240206102354.make.081-kees@kernel.org/
+v3: https://lore.kernel.org/all/20240205090854.make.507-kees@kernel.org/
+v2: https://lore.kernel.org/all/20240130220218.it.154-kees@kernel.org/
+v1: https://lore.kernel.org/all/20240129182845.work.694-kees@kernel.org/
 
-As discussed offlist, let's stick to checking validation_bits even if
-->nr_entries should be 0 when rec doesn't have valid entries yet.
+Hi,
 
-So lemme readd it.
+In preparation for gaining instrumentation for signed[1], unsigned[2], and
+pointer[3] wrap-around, expand the overflow header to include wrap-around
+helpers that can be used to annotate arithmetic where wrapped calculations
+are expected (e.g. atomics).
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index e50f11fb90a4..daab7f58505a 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -275,6 +275,10 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
- 	fpd.addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
- 	fpd.addr	= m->addr;
- 
-+	/* This is the first entry, so just save it. */
-+	if (!rec_has_valid_entries(rec))
-+		goto save_fpd;
-+
- 	/* Ignore already recorded errors. */
- 	if (rec_has_fpd(rec, &fpd))
- 		goto out_unlock;
-@@ -287,6 +291,7 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
- 	entry	  = fmp->nr_entries;
- 	fpd_dest  = &rec->entries[entry];
- 
-+save_fpd:
- 	memcpy(fpd_dest, &fpd, sizeof(struct cper_fru_poison_desc));
- 
- 	fmp->nr_entries		 = entry + 1;
+After spending time getting the unsigned integer wrap-around sanitizer
+running warning-free on a basic x86_64 boot[4], I think the add/sub/mul
+helpers first argument being the output type makes the most sense (as
+suggested by Rasmus).
+
+-Kees
+
+Link: https://github.com/KSPP/linux/issues/26 [1]
+Link: https://github.com/KSPP/linux/issues/27 [2]
+Link: https://github.com/KSPP/linux/issues/344 [3]
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=devel/overflow/enable-unsigned-sanitizer [4]
 
 
-> > Yap, exactly, this should use atl_err and not struct mce.
-> > 
-> 
-> Yes, tried to do *some* things generic.
+Kees Cook (3):
+  overflow: Adjust check_*_overflow() kern-doc to reflect results
+  overflow: Introduce wrapping_add(), wrapping_sub(), and wrapping_mul()
+  overflow: Introduce wrapping_assign_add() and wrapping_assign_sub()
 
-Right.
+ include/linux/overflow.h | 101 ++++++++++++++++++++++++++++++++++-----
+ lib/overflow_kunit.c     |  67 ++++++++++++++++++++++++--
+ 2 files changed, 152 insertions(+), 16 deletions(-)
 
-> > > +	 * This should not happen on real errors. But it could happen from
-> > 
-> > What exactly is "This" here?
-> > 
-> 
-> Ah right. The module should have created, or restored, a record for each FRU
-> in the system during module init. So the runtime handler should always find
-> a valid record for a FRU. The only exception I could think of, besides bugs,
-> is if the user does software error injection and a valid FRU ID doesn't get
-> set.
-
-Changed to:
-
-        /*
-         * An invalid FRU ID should not happen on real errors. But it
-         * could happen from software error injection, etc.
-         */
-        rec = get_fru_record(m->ppin);
-
-> > Pass in that fmp thing into retire_dram_row() so that you can delay
-> > that get_cpu_from_fru_id() call until the moment you actually need it.
-
-IOW, this:
-
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index a314598186a0..c2dc83a4e82a 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -47,6 +47,7 @@
- 
- #include <linux/cper.h>
- #include <linux/ras.h>
-+#include <linux/cpu.h>
- 
- #include <acpi/apei.h>
- 
-@@ -347,21 +348,10 @@ static struct notifier_block fru_mem_poison_nb = {
- 	.priority	= MCE_PRIO_LOWEST,
- };
- 
--static u32 get_cpu_from_fru_id(u64 fru_id)
--{
--	unsigned int cpu = 0;
--
--	/* Should there be more robust error handling if none found? */
--	for_each_online_cpu(cpu) {
--		if (topology_ppin(cpu) == fru_id)
--			break;
--	}
--
--	return cpu;
--}
--
--static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries, u32 cpu)
-+static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries)
- {
-+	struct cper_sec_fru_mem_poison *fmp = &rec->fmp;
-+	unsigned int cpu, err_cpu = -1;
- 	unsigned int i;
- 
- 	for (i = 0; i < nr_entries; i++) {
-@@ -373,7 +363,16 @@ static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries, u32 cpu)
- 		if (fpd->addr_type != FPD_ADDR_TYPE_MCA_ADDR)
- 			continue;
- 
--		retire_dram_row(fpd->addr, fpd->hw_id, cpu);
-+		cpus_read_lock();
-+		for_each_online_cpu(cpu) {
-+			if (topology_ppin(cpu) == fmp->fru_id) {
-+				err_cpu = cpu;
-+				break;
-+			}
-+		}
-+		cpus_read_unlock();
-+
-+		retire_dram_row(fpd->addr, fpd->hw_id, err_cpu);
- 	}
- }
- 
-@@ -382,7 +381,6 @@ static void retire_mem_records(void)
- 	struct cper_sec_fru_mem_poison *fmp;
- 	struct fru_rec *rec;
- 	unsigned int i;
--	u32 cpu;
- 
- 	for_each_fru(i, rec) {
- 		fmp = &rec->fmp;
-@@ -390,9 +388,7 @@ static void retire_mem_records(void)
- 		if (!rec_has_valid_entries(rec))
- 			continue;
- 
--		cpu = get_cpu_from_fru_id(fmp->fru_id);
--
--		retire_mem_fmp(rec, fmp->nr_entries, cpu);
-+		retire_mem_fmp(rec, fmp->nr_entries);
- 	}
- }
- 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
