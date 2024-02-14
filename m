@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27ADA854882
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:36:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97BF3854884
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:37:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B7F01C229C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:36:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 220E21F21FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74001A58B;
-	Wed, 14 Feb 2024 11:36:41 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAAF1B801;
+	Wed, 14 Feb 2024 11:36:55 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CAE1947D;
-	Wed, 14 Feb 2024 11:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34D51B5AA;
+	Wed, 14 Feb 2024 11:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910601; cv=none; b=fljmPV3xI5SNNLgR8/Y8lLh4kH78J99sICC3+5vUSQDgdesVgiBuiKySkG1hA2lzrNh5KSpnr1qDjJuO9xqPlhsEEY/C5DfPyoPLGf3/o0LENN2vI9QTkdkjnMVK7zSsqfPB13H+zO9ZOHpqXJBLOWYW7N/ZGIdZWPThg2mgAC0=
+	t=1707910614; cv=none; b=pWNf9XAyfPYrXv5H9tPtDOHROvAHmNgncvjmDSyy0sKoRO9Xl8mrds0GzHtY5nisZu4fUYxs0Pw6K8JkfsRDRymdmm2FMwvPQZ04KMYVdpSa0q6uZQ0vAqf5tlXU7o2AqOUWrTx0ZMjxnbZwLQrHZJOFZVYBjUVtm8pbbCqI3uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910601; c=relaxed/simple;
-	bh=XX4ZJh1efWO1B3rAxShAcHfODcw783OuO5HzO8Mr6W0=;
+	s=arc-20240116; t=1707910614; c=relaxed/simple;
+	bh=mFrRekuBTReiOEFHzPYdRM8Hp3OlzszAWd9vJqfTtwo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qcY6syD3Vex2ffc1j1zVH7wfAsoZUbENiGnI3tOxk0Ono7z6pwGuDQ9aA+8tL3twnka6hm0bmsVsLWt2a71C5JK/4oau2xOOHZ/LLAyvEdj0pMjrixkF/gTtqhJPFoM6ZUj63aUXmvYIBU8VAoxMWYAVP/qwAOaqGtTHTWJo8Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+	 MIME-Version; b=ICJ8vlGkCPKGpQVdUi0eM9/ajAQ1P7bKszSvYh1R2wP21ezJCOT7myfZphdf1DnS1d743K9drOOiMw4Sty5kOxmFs6CjMmlLCSfvtL7JzIuDDpEd9u4SGXx7SpHos0srh9iLlC7hu81kiO11kuS80gLocHMvg3moxxo2ipxg+fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TZbNw1Yybz9xrtH;
-	Wed, 14 Feb 2024 19:21:20 +0800 (CST)
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TZbPC5Fjhz9yMLZ;
+	Wed, 14 Feb 2024 19:21:35 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id B516014066B;
-	Wed, 14 Feb 2024 19:36:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id C3545140661;
+	Wed, 14 Feb 2024 19:36:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S5;
-	Wed, 14 Feb 2024 12:36:25 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwAHshp7pcxlDJx9Ag--.51624S6;
+	Wed, 14 Feb 2024 12:36:40 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -71,9 +71,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	petr@tesarici.cz,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 3/8] sbm: x86: map system data structures into the sandbox
-Date: Wed, 14 Feb 2024 12:35:11 +0100
-Message-Id: <20240214113516.2307-4-petrtesarik@huaweicloud.com>
+Subject: [PATCH v1 4/8] sbm: x86: allocate and map an exception stack
+Date: Wed, 14 Feb 2024 12:35:12 +0100
+Message-Id: <20240214113516.2307-5-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
 References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
@@ -84,157 +84,195 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFWDtrykCFy7Cr43Ar4Utwb_yoWrGr47pF
-	nxCF1kKFW7K343uwn3Cr40yr15Zws2k3W7Kry2kryrZF17t3W5Ars2g3yDtFW8GFWvga4F
-	qFW3tF4rGa1DZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
-	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-	v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-	IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1l
-	IxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-	1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIY
-	CTnIWIevJa73UjIFyTuYvjfUnPEfUUUUU
+X-CM-TRANSID:LxC2BwAHshp7pcxlDJx9Ag--.51624S6
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48Gw47KFW8KFWxCF45Jrb_yoW7uw4rpF
+	WDA3WkKF4Y9as3Zr9rJr4vvr9xZr4v9r43GF9rK345ZF1Utw15Xrn7KF9Fqr45ZrZ8Ga1Y
+	qFWFqr4DCan8JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUml14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+	z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+	4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_
+	Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x
+	IIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_
+	Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
+	xan2IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE
+	7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+	8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_
+	Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r
+	1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4U
+	JbIYCTnIWIevJa73UjIFyTuYvjfUnzVbDUUUU
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Map CPU system data structures (GDT, TSS, IDT) read-only into every sandbox
-instance. Map interrupt stacks read-write.
+Sandbox mode should run with CPL 3. It is treated as user mode by the CPU,
+so non-IST interrupts will load RSP from TSS. This is the trampoline stack
+and that one is fine. However, the interrupt entry code then moves to the
+thread stack, assuming that it cannot be currently in use, since the task
+was executing in user mode. This assumption is not valid for sandbox mode,
+because the code was originally called from kernel mode, and the thread
+stack contains precious data of the sandbox mode callers.
 
-The TSS mappings may look confusing. The trick is that TSS pages are mapped
-twice in the kernel address space: once read-only and once read-write. The
-GDT entry for the TR register uses the read-only address, but since __pa()
-does not work for virtual addresses in this range (cpu_entry_area), use the
-read-write mapping to get TSS physical address.
+Allocate a separate exception stack for sandbox and use it instead of the
+thread stack in interrupt handlers while sandbox mode is active. To find
+the sandbox exception stack from interrupt entry, store a pointer to the
+state page in struct thread_info. This pointer is non-NULL if the current
+task is running in sandbox mode. It is also non-NULL during the transition
+from/to sandbox mode. The sandbox exception stack is valid in either case.
 
 Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 ---
- arch/x86/include/asm/page_64_types.h |  1 +
- arch/x86/kernel/sbm/core.c           | 74 ++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+)
+ arch/x86/include/asm/sbm.h         | 24 ++++++++++++++++++++++++
+ arch/x86/include/asm/thread_info.h |  3 +++
+ arch/x86/kernel/sbm/call_64.S      |  1 +
+ arch/x86/kernel/sbm/core.c         | 21 ++++++++++++++++++++-
+ arch/x86/kernel/traps.c            |  3 ++-
+ 5 files changed, 50 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
-index 06ef25411d62..62f6e40b3361 100644
---- a/arch/x86/include/asm/page_64_types.h
-+++ b/arch/x86/include/asm/page_64_types.h
-@@ -29,6 +29,7 @@
- #define	IST_INDEX_DB		2
- #define	IST_INDEX_MCE		3
- #define	IST_INDEX_VC		4
-+#define	IST_INDEX_NUM		7
+diff --git a/arch/x86/include/asm/sbm.h b/arch/x86/include/asm/sbm.h
+index ed214c17af06..ca4741b449e8 100644
+--- a/arch/x86/include/asm/sbm.h
++++ b/arch/x86/include/asm/sbm.h
+@@ -9,6 +9,8 @@
+ #ifndef __ASM_SBM_H
+ #define __ASM_SBM_H
  
- /*
-  * Set __PAGE_OFFSET to the most negative possible address +
-diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
-index de6986801148..f3a123d64afc 100644
---- a/arch/x86/kernel/sbm/core.c
-+++ b/arch/x86/kernel/sbm/core.c
-@@ -7,9 +7,13 @@
-  * SandBox Mode (SBM) implementation for the x86 architecture.
-  */
++#include <asm/processor.h>
++
+ #if defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE)
  
-+#include <asm/cpu_entry_area.h>
-+#include <asm/desc.h>
- #include <asm/pgtable.h>
-+#include <asm/page.h>
- #include <asm/sbm.h>
- #include <asm/sections.h>
-+#include <linux/cpumask.h>
- #include <linux/mm.h>
- #include <linux/sbm.h>
- #include <linux/sched/task_stack.h>
-@@ -155,6 +159,72 @@ static int map_kernel(struct x86_sbm_state *state)
- 	return 0;
- }
+ #include <asm/pgtable_types.h>
+@@ -17,6 +19,7 @@
+  * struct x86_sbm_state - Run-time state of the environment.
+  * @pgd:         Sandbox mode page global directory.
+  * @stack:       Sandbox mode stack.
++ * @exc_stack:   Exception and IRQ stack.
+  *
+  * One instance of this union is allocated for each sandbox and stored as SBM
+  * instance private data.
+@@ -24,8 +27,29 @@
+ struct x86_sbm_state {
+ 	pgd_t *pgd;
+ 	unsigned long stack;
++	unsigned long exc_stack;
+ };
  
-+/** map_cpu_data() - map CPU system data structures into a sandbox instance
-+ * @sbm:  Target sandbox instance.
++/**
++ * top_of_intr_stack() - Get address interrupt stack.
 + *
-+ * Create sandbox page tables for:
-+ * * Global Descriptor Table (GDT)
-+ * * Task State Segment (TSS)
-+ * * Interrupt Descriptor Table (IDT).
-+ *
-+ * Return: Zero on success, negative error code on failure.
 + */
-+static int map_cpu_data(struct x86_sbm_state *state)
++static inline unsigned long top_of_intr_stack(void)
 +{
-+	unsigned long off;
-+	phys_addr_t paddr;
-+	unsigned int ist;
-+	void *vaddr;
-+	int cpu;
-+	int err;
++	struct x86_sbm_state *sbm = current_thread_info()->sbm_state;
 +
-+	for_each_possible_cpu(cpu) {
-+		struct cpu_entry_area *cea;
-+		struct tss_struct *tss;
-+
-+		err = map_page(state, (unsigned long)get_cpu_gdt_ro(cpu),
-+			       PHYS_PFN(get_cpu_gdt_paddr(cpu)),
-+			       PAGE_KERNEL_RO);
-+		if (err)
-+			return err;
-+
-+		cea = get_cpu_entry_area(cpu);
-+
-+		tss = &cea->tss;
-+		paddr = __pa(&per_cpu(cpu_tss_rw, cpu));
-+		for (off = 0; off < sizeof(cpu_tss_rw); off += PAGE_SIZE) {
-+			err = map_page(state, (unsigned long)tss + off,
-+				       PHYS_PFN(paddr + off), PAGE_KERNEL_RO);
-+			if (err)
-+				return err;
-+		}
-+
-+		paddr = slow_virt_to_phys(&cea->entry_stack_page);
-+		err = map_page(state, (unsigned long)&cea->entry_stack_page,
-+			       PHYS_PFN(paddr), PAGE_KERNEL);
-+		if (err)
-+			return err;
-+
-+		for (ist = 0; ist < IST_INDEX_NUM; ++ist) {
-+			vaddr = (void *)tss->x86_tss.ist[ist];
-+			if (!vaddr)
-+				continue;
-+
-+			for (off = EXCEPTION_STKSZ; off; off -= PAGE_SIZE) {
-+				paddr = slow_virt_to_phys(vaddr - off);
-+				err = map_page(state, (unsigned long)vaddr - off,
-+					       PHYS_PFN(paddr), PAGE_KERNEL);
-+				if (err)
-+					return err;
-+			}
-+		}
-+	}
-+
-+	paddr = slow_virt_to_phys((void *)CPU_ENTRY_AREA_RO_IDT);
-+	return map_page(state, CPU_ENTRY_AREA_RO_IDT, PHYS_PFN(paddr),
-+			PAGE_KERNEL_RO);
++	if (sbm)
++		return sbm->exc_stack + EXCEPTION_STKSZ;
++	return current_top_of_stack();
 +}
 +
- int arch_sbm_init(struct sbm *sbm)
- {
- 	struct x86_sbm_state *state;
-@@ -194,6 +264,10 @@ int arch_sbm_init(struct sbm *sbm)
++#else /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
++
++static inline unsigned long top_of_intr_stack(void)
++{
++	return current_top_of_stack();
++}
++
+ #endif /* defined(CONFIG_HAVE_ARCH_SBM) && defined(CONFIG_SANDBOX_MODE) */
+ 
+ #endif /* __ASM_SBM_H */
+diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+index d63b02940747..95b1acffb78a 100644
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -60,6 +60,9 @@ struct thread_info {
+ #ifdef CONFIG_SMP
+ 	u32			cpu;		/* current CPU */
+ #endif
++#ifdef CONFIG_SANDBOX_MODE
++	struct x86_sbm_state	*sbm_state;	/* SandBox mode state page */
++#endif
+ };
+ 
+ #define INIT_THREAD_INFO(tsk)			\
+diff --git a/arch/x86/kernel/sbm/call_64.S b/arch/x86/kernel/sbm/call_64.S
+index 245d0dddce73..1b232c8d15b7 100644
+--- a/arch/x86/kernel/sbm/call_64.S
++++ b/arch/x86/kernel/sbm/call_64.S
+@@ -9,6 +9,7 @@
+ 
+ #include <linux/linkage.h>
+ #include <asm/nospec-branch.h>
++#include <asm/percpu.h>
+ 
+ .code64
+ .section .entry.text, "ax"
+diff --git a/arch/x86/kernel/sbm/core.c b/arch/x86/kernel/sbm/core.c
+index f3a123d64afc..81f1b0093537 100644
+--- a/arch/x86/kernel/sbm/core.c
++++ b/arch/x86/kernel/sbm/core.c
+@@ -264,6 +264,14 @@ int arch_sbm_init(struct sbm *sbm)
  	if (err)
  		return err;
  
-+	err = map_cpu_data(state);
++	state->exc_stack = __get_free_pages(GFP_KERNEL, EXCEPTION_STACK_ORDER);
++	if (err)
++		return err;
++	err = map_range(state, state->exc_stack,
++			state->exc_stack + EXCEPTION_STKSZ, PAGE_KERNEL);
 +	if (err)
 +		return err;
 +
- 	return 0;
- }
+ 	err = map_cpu_data(state);
+ 	if (err)
+ 		return err;
+@@ -324,6 +332,7 @@ void arch_sbm_destroy(struct sbm *sbm)
+ 		free_pgd(state->pgd);
+ 		free_pages((unsigned long)state->pgd, PGD_ORDER);
+ 	}
++	free_pages(state->exc_stack, EXCEPTION_STACK_ORDER);
+ 	free_pages(state->stack, THREAD_SIZE_ORDER);
+ 	free_page((unsigned long)state);
+ 	sbm->private = NULL;
+@@ -332,6 +341,16 @@ void arch_sbm_destroy(struct sbm *sbm)
+ int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *args)
+ {
+ 	struct x86_sbm_state *state = sbm->private;
++	int err;
++
++	/* let interrupt handlers use the sandbox state page */
++	barrier();
++	WRITE_ONCE(current_thread_info()->sbm_state, state);
++
++	err = x86_sbm_exec(state, func, args, state->stack + THREAD_SIZE);
++
++	/* NULLify the state page pointer before it becomes stale */
++	WRITE_ONCE(current_thread_info()->sbm_state, NULL);
  
+-	return x86_sbm_exec(state, func, args, state->stack + THREAD_SIZE);
++	return err;
+ }
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index c3b2f863acf0..b9c9c74314e7 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -66,6 +66,7 @@
+ #include <asm/vdso.h>
+ #include <asm/tdx.h>
+ #include <asm/cfi.h>
++#include <asm/sbm.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <asm/x86_init.h>
+@@ -773,7 +774,7 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+  */
+ asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
+ {
+-	struct pt_regs *regs = (struct pt_regs *)this_cpu_read(pcpu_hot.top_of_stack) - 1;
++	struct pt_regs *regs = (struct pt_regs *)top_of_intr_stack() - 1;
+ 	if (regs != eregs)
+ 		*regs = *eregs;
+ 	return regs;
 -- 
 2.34.1
 
