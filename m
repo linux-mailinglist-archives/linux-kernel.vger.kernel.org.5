@@ -1,273 +1,190 @@
-Return-Path: <linux-kernel+bounces-64732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36C26854217
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:34:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC6785421C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DF41B242A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:34:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 601EE1C26658
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CF910A1B;
-	Wed, 14 Feb 2024 04:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1C6C126;
+	Wed, 14 Feb 2024 04:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qkaE9YpO"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ES6AY3cI"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD94101FA
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD3B3D72;
+	Wed, 14 Feb 2024 04:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707885232; cv=none; b=Js44ZuOoef8F4k7nxOCf3wq/o7SVPpsnVT2jg/bY/9SQBqJr+p29pKbM02EsvVcLt+sWKM1AyrhKGEewWR/oX17fYklQ7fqAO5ZubglkmF6XW9V1JpkezacGMiCN0aP4mmX+45XWhDqhI4ZLCee0OHQS1aZzqANz69Qi1NT/vQY=
+	t=1707885793; cv=none; b=el95PVpbDQLXDpDQwqlctaNlQPWh6zIB9MC/ljrAqMSMGZ7NhAoLMSSP2piLz8SH3bn2wqXIxhEazzrJraXZd2wIJywnCQnuxss89JoqBzHP00MnCY5EPN8v8NwrGCS4eGbEgHD7zDpLjw2Nl7bcERqpiCC6nlG4qHjvHZu0jv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707885232; c=relaxed/simple;
-	bh=DX3lmGDBGmX8QNS+MI9SZDn/w2KNnJD/ve+KtVqRpSM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nVOoN+nJatm57grrLM0OpSImiOB44TGD4IKOCWMDvNrjaBsGD6GjnHO50HQNUd+4jJ6R36AsXhJ60I9B5VUcLfD+AifdzTtujK1C2agApSszUbB/qmUndOKBS6ngVInxQXA109AciuBQcZMFTHbkAYC1ZTSnf+GhJrJTgOhzRVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qkaE9YpO; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-363c3f7dc20so201215ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 20:33:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707885230; x=1708490030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9oppXsRfOgsmX9oD1pmO95Yc48JACNQM6Q192XVNGNI=;
-        b=qkaE9YpOcm+eHukKKBqWSCRnIr14ubuKZtxX6thnAcmO3aH2tlmThzRGeCVrRpUkAc
-         5E+fFPgg4U24+y4HZk9cRdLMvJUvAS0c7BTqjSkGGO8uEoq0pIfQam0a+DnlNKE7UIzy
-         VaiWCM0+oeiO5f5/UxAAXuoR2+98+34WCVL265Hr5yAHQgmTFv53UULQ2D/q1Wk/FNZV
-         XTvMLKzj3CdBQpaiehWR7IQdGQu6BkRgw8zjKCG9hyx6SO6wQevfUsmzk43uoGS/tlgf
-         47MzXdMDREwxCu2QzgkEAWuAr/lxUSExvN+2GdjnKQSaneweOxsBZCZNiIMMqOF30Pz/
-         jRvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707885230; x=1708490030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9oppXsRfOgsmX9oD1pmO95Yc48JACNQM6Q192XVNGNI=;
-        b=O67q2dBYM1hSAah5p0IzB72ES5QoutCRIarnX20HFifAq2t/wYfSc1olr4kzt1uOM0
-         L7Y3PekUlqzp3o7UNuBIa2lwFcI++Mw/NsA8FZBTbH6ETsx0A6z+UvZvFiIB/2i2LRcl
-         6P1PMIWovIvPDA3BSiOdtIcFw+sbuQn1pvmkbh3kqLY2kwt0yPMszIRBi1sivEVotlL7
-         8SWCPBoDOljtf9g4MPjwNEMifufyNoNLlHiX3RdVdHxwuAPFERBVl7CEWpbVVH0IZpeu
-         A3+anmPBXLcFSQXKVr2kP5/BC6xdQPDMGJjrxTutMJ5e1RFuJE/ZExrOzwC3UllQIbuR
-         iLSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW9sLCzUpJl4FZc+ahrAb4pdmXR7PL/xc/N3v5Evk5SeryznWLjTqjX3086Qesp38jjAbu/CAioRPrAXb/OKv2GsYZRlvp3oNL/H9rw
-X-Gm-Message-State: AOJu0YyF6YItkRjeW7o9MwON/K3jCCtQQXSqjGJYqQ5Wv1H2h2oUbrrE
-	G27heDL0kwokTqB/b9OBDWn30zSR6qnKjdSiLT+8jSNNGKzBCK4CjOWvljSK9DJ8FBmZhz89htj
-	KbtqxaFTwDQT6xvsV01llyFe35pFglp0TjSrY
-X-Google-Smtp-Source: AGHT+IFF4sQ90BX6vXnzz+zK6nk1Zg73NqW7rnSxvkA0GiMkhzqgWqoPBXgIMVJtaHp3xX1Rk+fC4/V5LzMr1uz4zC0=
-X-Received: by 2002:a05:6e02:3d08:b0:363:bad1:b8d6 with SMTP id
- db8-20020a056e023d0800b00363bad1b8d6mr121340ilb.1.1707885229858; Tue, 13 Feb
- 2024 20:33:49 -0800 (PST)
+	s=arc-20240116; t=1707885793; c=relaxed/simple;
+	bh=RdhqHGC3OuB7dWbMuYy8MMrSYo1ZehDKl3DCLHtGNo8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mKBibWfPKM0T+isVEIHzDSpUOLm5S+P4jAdLdye/Z6lr5JF2lEJD4HX2l11dFxa6aH0gD5S+ADZNsWh4hBYE/IWp1dvDg/jCrm/s/bC5L2AVxRrpssjauozvxmqTKCTRRrRVPYLpYGvvQDdfe2Ab5QiQ84dK3AiKyj1dJYANIrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ES6AY3cI; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41E45LfS014253;
+	Wed, 14 Feb 2024 04:42:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=2o2TN/WjoUkcBabvDoZhXwABCTSWpYGTGQprEg4COwc=;
+ b=ES6AY3cIlKeogGzLtJ+D8X97LKqNOGVClOkzW8FE1pCviqzCLgLhV5VZLOwTaOpVi1zI
+ YkcEVQpPp4qOvv6qoKns/c9QtXjppGCozZGcVNCqM11I0YQBY7aUV8gu46VeTwrVG4q4
+ C+vM1xH8pF/+r/eRILhcQ6/Z/VPRl5lSjFJnu0KOsK894XIAoUX36W+s0afLiKM7T5Bq
+ tHFhUu4nDIe/zrjwKlZEzoW7zMb5FheN3Pfh7E46PmcSoFifNFVVwUQY3b0Q0sW46kXa
+ 9aps8VQw5GkorSclgJnkRr6AURXf8A/b5lGOYSqKCzeMjJ8vpQ0bVmpxJIlJNa1rvajY +A== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8p64r1kq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Feb 2024 04:42:59 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41E3oeKN013874;
+	Wed, 14 Feb 2024 04:42:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apb4pbs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Feb 2024 04:42:58 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41E4gv3P002968;
+	Wed, 14 Feb 2024 04:42:58 GMT
+Received: from pkannoju-vm.us.oracle.com (dhcp-10-166-169-72.vpn.oracle.com [10.166.169.72])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w6apb4p92-1;
+	Wed, 14 Feb 2024 04:42:57 +0000
+From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+To: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
+        manjunath.b.patil@oracle.com,
+        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+Subject: [PATCH RFC] bonding: rate-limit bonding driver inspect messages
+Date: Wed, 14 Feb 2024 10:12:45 +0530
+Message-Id: <20240214044245.33170-1-praveen.kannoju@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212185858.68189-1-irogers@google.com> <20240212185858.68189-9-irogers@google.com>
- <CAM9d7chcdJ7zsOEWLo1q-U25YyvP=22+GGxcMEbdkQbW_csoyg@mail.gmail.com>
-In-Reply-To: <CAM9d7chcdJ7zsOEWLo1q-U25YyvP=22+GGxcMEbdkQbW_csoyg@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 13 Feb 2024 20:33:35 -0800
-Message-ID: <CAP-5=fXnY9zUH-u2X3w5pn+9ZWoamg+h_nR84YhNVU3+VnWfQg@mail.gmail.com>
-Subject: Re: [PATCH v3 8/8] perf tests: Add option to run tests in parallel
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, James Clark <james.clark@arm.com>, 
-	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402140034
+X-Proofpoint-ORIG-GUID: t9v5Z0uoXaaXemWmQ2pSpt_TZEQRN0Oj
+X-Proofpoint-GUID: t9v5Z0uoXaaXemWmQ2pSpt_TZEQRN0Oj
 
-On Tue, Feb 13, 2024 at 5:14=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Mon, Feb 12, 2024 at 10:59=E2=80=AFAM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > By default tests are forked, add an option (-p or --parallel) so that
-> > the forked tests are all started in parallel and then their output
-> > gathered serially. This is opt-in as running in parallel can cause
-> > test flakes.
-> >
-> > Rather than fork within the code, the start_command/finish_command
-> > from libsubcmd are used. This changes how stderr and stdout are
-> > handled. The child stderr and stdout are always read to avoid the
-> > child blocking. If verbose is 1 (-v) then if the test fails the child
-> > stdout and stderr are displayed. If the verbose is >1 (e.g. -vv) then
-> > the stdout and stderr from the child are immediately displayed.
-> >
-> > An unscientific test on my laptop shows the wall clock time for perf
-> > test without parallel being 5 minutes 21 seconds and with parallel
-> > (-p) being 1 minute 50 seconds.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> > v1 of this code had a bug where stdout/stderr weren't read fully. This
-> > and additional issues/improvements are dealt with in v2.
-> > ---
-> [SNIP]
-> >  static int __cmd_test(int argc, const char *argv[], struct intlist *sk=
-iplist)
-> >  {
-> >         struct test_suite *t;
-> >         unsigned int j, k;
-> >         int i =3D 0;
-> >         int width =3D 0;
-> > +       size_t num_tests =3D 0;
-> > +       struct child_test **child_tests;
-> > +       int child_test_num =3D 0;
-> >
-> >         for_each_test(j, k, t) {
-> >                 int len =3D strlen(test_description(t, -1));
-> >
-> >                 if (width < len)
-> >                         width =3D len;
-> > +
-> > +               if (has_subtests(t)) {
-> > +                       for (int l =3D 0, subn =3D num_subtests(t); l <=
- subn; l++) {
-> > +                               len =3D strlen(test_description(t, -1))=
-;
->
-> Shouldn't it be strlen(test_description(t, i)) ?  Looks like it has len
-> of parent test already.
->
-> Thanks,
-> Namhyung
+Rate limit bond driver log messages, to prevent a log flood in a run-away
+situation, e.g couldn't get rtnl lock. Message flood leads to instability
+of system and loss of other crucial messages.
 
-Thanks Namhyung, will fix in v4.
+Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
+---
+ drivers/net/bonding/bond_main.c | 34 +++++++++++++++++++---------------
+ include/net/bonding.h           | 11 +++++++++++
+ 2 files changed, 30 insertions(+), 15 deletions(-)
 
-Ian
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 4e0600c..32098dd 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -2610,12 +2610,13 @@ static int bond_miimon_inspect(struct bonding *bond)
+ 			commit++;
+ 			slave->delay = bond->params.downdelay;
+ 			if (slave->delay) {
+-				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
+-					   (BOND_MODE(bond) ==
+-					    BOND_MODE_ACTIVEBACKUP) ?
+-					    (bond_is_active_slave(slave) ?
++				bond_info_rl(bond->dev, slave->dev,
++					     "link status down for %sinterface, disabling it in %d ms\n",
++					     (BOND_MODE(bond) ==
++					     BOND_MODE_ACTIVEBACKUP) ?
++					     (bond_is_active_slave(slave) ?
+ 					     "active " : "backup ") : "",
+-					   bond->params.downdelay * bond->params.miimon);
++					     bond->params.downdelay * bond->params.miimon);
+ 			}
+ 			fallthrough;
+ 		case BOND_LINK_FAIL:
+@@ -2623,9 +2624,10 @@ static int bond_miimon_inspect(struct bonding *bond)
+ 				/* recovered before downdelay expired */
+ 				bond_propose_link_state(slave, BOND_LINK_UP);
+ 				slave->last_link_up = jiffies;
+-				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
+-					   (bond->params.downdelay - slave->delay) *
+-					   bond->params.miimon);
++				bond_info_rl(bond->dev, slave->dev,
++					     "link status up again after %d ms\n",
++					     (bond->params.downdelay - slave->delay) *
++					     bond->params.miimon);
+ 				commit++;
+ 				continue;
+ 			}
+@@ -2648,18 +2650,20 @@ static int bond_miimon_inspect(struct bonding *bond)
+ 			slave->delay = bond->params.updelay;
+ 
+ 			if (slave->delay) {
+-				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
+-					   ignore_updelay ? 0 :
+-					   bond->params.updelay *
+-					   bond->params.miimon);
++				bond_info_rl(bond->dev, slave->dev,
++					     "link status up, enabling it in %d ms\n",
++					     ignore_updelay ? 0 :
++					     bond->params.updelay *
++					     bond->params.miimon);
+ 			}
+ 			fallthrough;
+ 		case BOND_LINK_BACK:
+ 			if (!link_state) {
+ 				bond_propose_link_state(slave, BOND_LINK_DOWN);
+-				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
+-					   (bond->params.updelay - slave->delay) *
+-					   bond->params.miimon);
++				bond_info_rl(bond->dev, slave->dev,
++					     "link status down again after %d ms\n",
++					     (bond->params.updelay - slave->delay) *
++					     bond->params.miimon);
+ 				commit++;
+ 				continue;
+ 			}
+diff --git a/include/net/bonding.h b/include/net/bonding.h
+index 5b8b1b6..ebdfaf0 100644
+--- a/include/net/bonding.h
++++ b/include/net/bonding.h
+@@ -39,8 +39,19 @@
+ #define __long_aligned __attribute__((aligned((sizeof(long)))))
+ #endif
+ 
++DEFINE_RATELIMIT_STATE(bond_rs, DEFAULT_RATELIMIT_INTERVAL,
++		       DEFAULT_RATELIMIT_BURST);
++
++#define bond_ratelimited_function(function, ...)	\
++do {							\
++	if (__ratelimit(&bond_rs))		\
++		function(__VA_ARGS__);			\
++} while (0)
++
+ #define slave_info(bond_dev, slave_dev, fmt, ...) \
+ 	netdev_info(bond_dev, "(slave %s): " fmt, (slave_dev)->name, ##__VA_ARGS__)
++#define bond_info_rl(bond_dev, slave_dev, fmt, ...) \
++	bond_ratelimited_function(slave_info, fmt, ##__VA_ARGS__)
+ #define slave_warn(bond_dev, slave_dev, fmt, ...) \
+ 	netdev_warn(bond_dev, "(slave %s): " fmt, (slave_dev)->name, ##__VA_ARGS__)
+ #define slave_dbg(bond_dev, slave_dev, fmt, ...) \
+-- 
+1.8.3.1
 
-> > +                               if (width < len)
-> > +                                       width =3D len;
-> > +                               num_tests++;
-> > +                       }
-> > +               } else
-> > +                       num_tests++;
-> >         }
-> > +       child_tests =3D calloc(num_tests, sizeof(*child_tests));
-> > +       if (!child_tests)
-> > +               return -ENOMEM;
-> >
-> >         for_each_test(j, k, t) {
-> >                 int curr =3D i++;
-> > @@ -334,52 +458,47 @@ static int __cmd_test(int argc, const char *argv[=
-], struct intlist *skiplist)
-> >                                 continue;
-> >                 }
-> >
-> > -               pr_info("%3d: %-*s:", i, width, test_description(t, -1)=
-);
-> > -
-> >                 if (intlist__find(skiplist, i)) {
-> > +                       pr_info("%3d: %-*s:", curr + 1, width, test_des=
-cription(t, -1));
-> >                         color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip=
- (user override)\n");
-> >                         continue;
-> >                 }
-> >
-> >                 if (!has_subtests(t)) {
-> > -                       test_and_print(t, -1);
-> > +                       int err =3D start_test(t, curr, -1, &child_test=
-s[child_test_num++], width);
-> > +
-> > +                       if (err) {
-> > +                               /* TODO: if parallel waitpid the alread=
-y forked children. */
-> > +                               free(child_tests);
-> > +                               return err;
-> > +                       }
-> >                 } else {
-> >                         int subn =3D num_subtests(t);
-> > -                       /*
-> > -                        * minus 2 to align with normal testcases.
-> > -                        * For subtest we print additional '.x' in numb=
-er.
-> > -                        * for example:
-> > -                        *
-> > -                        * 35: Test LLVM searching and compiling       =
-                 :
-> > -                        * 35.1: Basic BPF llvm compiling test         =
-                 : Ok
-> > -                        */
-> > -                       int subw =3D width > 2 ? width - 2 : width;
-> > -
-> > -                       if (subn <=3D 0) {
-> > -                               color_fprintf(stderr, PERF_COLOR_YELLOW=
-,
-> > -                                             " Skip (not compiled in)\=
-n");
-> > -                               continue;
-> > -                       }
-> > -                       pr_info("\n");
-> >
-> >                         for (subi =3D 0; subi < subn; subi++) {
-> > -                               int len =3D strlen(test_description(t, =
-subi));
-> > +                               int err;
-> >
-> > -                               if (subw < len)
-> > -                                       subw =3D len;
-> > -                       }
-> > -
-> > -                       for (subi =3D 0; subi < subn; subi++) {
-> >                                 if (!perf_test__matches(test_descriptio=
-n(t, subi),
-> >                                                         curr, argc, arg=
-v))
-> >                                         continue;
-> >
-> > -                               pr_info("%3d.%1d: %-*s:", i, subi + 1, =
-subw,
-> > -                                       test_description(t, subi));
-> > -                               test_and_print(t, subi);
-> > +                               err =3D start_test(t, curr, subi, &chil=
-d_tests[child_test_num++],
-> > +                                                width);
-> > +                               if (err)
-> > +                                       return err;
-> >                         }
-> >                 }
-> >         }
-> > +       for (i =3D 0; i < child_test_num; i++) {
-> > +               if (parallel) {
-> > +                       int ret  =3D finish_test(child_tests[i], width)=
-;
-> > +
-> > +                       if (ret)
-> > +                               return ret;
-> > +               }
-> > +               free(child_tests[i]);
-> > +       }
-> > +       free(child_tests);
-> >         return 0;
-> >  }
-> >
-> > @@ -447,6 +566,8 @@ int cmd_test(int argc, const char **argv)
-> >                     "be more verbose (show symbol address, etc)"),
-> >         OPT_BOOLEAN('F', "dont-fork", &dont_fork,
-> >                     "Do not fork for testcase"),
-> > +       OPT_BOOLEAN('p', "parallel", &parallel,
-> > +                   "Run the tests altogether in parallel"),
-> >         OPT_STRING('w', "workload", &workload, "work", "workload to run=
- for testing"),
-> >         OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
-> >         OPT_STRING(0, "objdump", &test_objdump_path, "path",
-> > --
-> > 2.43.0.687.g38aa6559b0-goog
-> >
 
