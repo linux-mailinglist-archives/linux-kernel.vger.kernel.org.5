@@ -1,215 +1,103 @@
-Return-Path: <linux-kernel+bounces-65425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB4E854CC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:31:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 189FC854CCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93B2E1C28888
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:31:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A92E41F24D83
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1D060BBE;
-	Wed, 14 Feb 2024 15:29:27 +0000 (UTC)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2CA5DF13;
+	Wed, 14 Feb 2024 15:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="KsOG9DPa"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F6B60B9C;
-	Wed, 14 Feb 2024 15:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A5D5A0FB;
+	Wed, 14 Feb 2024 15:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707924567; cv=none; b=SEiY1ip8jL8gRWsWAEr6JfqYXf2oC4sUWHtcJKCyGnwtj3jItScQ1Ygh4wfzyA9NNSc2BML/XqAE3oizA7gVpMqfLONfTxiT2ycXi85X+c5WYjGnzs91nELj6P95//gv+9nRMcXHjPQ5pyJc6KKyQi2t203IEj3IfDWH7NfRMQk=
+	t=1707924619; cv=none; b=YguTHZpgQinPXTp4pg7B07vj5mMGn6ysILPcoFDuyl00+jUL3OasPQmfyUlmHmjUZFdvca7mz9UN68kwig3ZnFzlDTC12AIguzHZ6bmisyPyyhQhfVjv/cXwePfLnpMStYSqY/j0/vmnf5vdTrYEr40F8H1n8uvIgXz1EVYG5T0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707924567; c=relaxed/simple;
-	bh=eBmfDmsPjhH+X5o8K2+TeEVZvEw2hmlxQGjrllmBphM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D5Q+ePyLvO146JfH24gQ7+ZY2SIekZ9qWcRVNj830z/hxd9DOVLHiNOgNaXr1VTxtPKxPJOdjETafjeTiCk6+6IAW5PCeZfgtBufi06fUUPZALOot50HX0a4Wy0VitUL4p8JKJyEoMcRKh1KIpUfTnrUACA3yG9zQmiI9CTfjtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5620f15c3e5so1922661a12.2;
-        Wed, 14 Feb 2024 07:29:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707924562; x=1708529362;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BE18yVmAwBaKs7mnnBm3VQecjIpWZcprNzlYBID58iw=;
-        b=Cbbd6jTA+tW33/huLvvQ4vU1wnBjY/eCXz+MWuOmODuEtbeCiiN2l6Q3orPgWALFOL
-         JhaJiEWCWjmbBYUJnO+B7GJu0xcCxg5zkp15x7hnuBY/M32kJDAeu3b8UKuINOKgrnvZ
-         n0v1q0NwsVGlHW/4Bev738hOaDhlCOOtBUpo4mYA+MMmr3Ku+HoWPk45duVHWBUi2rJD
-         qlkXtuDQNkVqFU227SaoZbjbL7c3kt1UIQMIeHZtSdWKJL0QEh7APOy7WLTkkD+qgu6Y
-         UNrZ6wOQh+NcWfwcnwoB7Cl+pIYXrdEWjDMJGP3qAuhtbjHj71M/Ippn7LI2jDHZN/0E
-         9cyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAsmjKX8dw6rwVXbsLYjsQt//XUNAlCclyQm4CfG0YwLfeToREjsRBu3hNGcSllwRD8WPAgGETkSdOCo1YSd3AupOOm2SKFWssZejG
-X-Gm-Message-State: AOJu0YzQ2EtCdM+jvKMJ60D5LCKe8CJy9Yqblgw0Dl2KsKEqAWL2MJXD
-	e09/pXwnQ83BWywDUU0rzm0I7eRRovBn2MHFDLjXk30WVz+y+XJdLMHuVulL
-X-Google-Smtp-Source: AGHT+IFT59hPClPRPX7AtQUNrs2AJ5o6U/9OyGYMPUv6dmUlFmZDmbglTJDWcMmY+ZRVEjkt5K9A1g==
-X-Received: by 2002:a05:6402:3088:b0:562:1dcb:a856 with SMTP id de8-20020a056402308800b005621dcba856mr1826807edb.33.1707924562635;
-        Wed, 14 Feb 2024 07:29:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVcBTj8mDiQnBt5AbeKlpzkWnbDg00rpWmCxXlyJWFl4x5LoA8iUxKMfHgyemi5t45C1A9ywb9vfaDlvGMXIJA8VLBeb8lfMONhRpv4sSU84kMzde47///5gtsdg8NP/gYPjTPYECzzh3IHiA9AT9WVrrt8vybsvi/O0pXHSWYmxlphT3paPDX7LNmCnX6tD1CXsvXc6A1NVi+xxtlerxwlNx8bqcdxyNgEfKPaytHbXrz3DOUQzCU=
-Received: from localhost (fwdproxy-lla-118.fbsv.net. [2a03:2880:30ff:76::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ew4-20020a056402538400b0055fe5a611f2sm4732804edb.20.2024.02.14.07.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 07:29:22 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	Michael Grzeschik <m.grzeschik@pengutronix.de>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org
-Subject: [PATCH net v2 7/7] net: fill in MODULE_DESCRIPTION()s for missing arcnet
-Date: Wed, 14 Feb 2024 07:27:41 -0800
-Message-Id: <20240214152741.670178-8-leitao@debian.org>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240214152741.670178-1-leitao@debian.org>
-References: <20240214152741.670178-1-leitao@debian.org>
+	s=arc-20240116; t=1707924619; c=relaxed/simple;
+	bh=LNiQsxwpb6KqaUIrwzAIc1YaPde2cuUFEm8Lin9I+4c=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=YlwpW7QEF7ZJn89WRfEN/Ew3IKc86m15qPKkfgJpkf25pA0atcmKD/wjeIMyr7TZUuAdQRxVIlGsrk15PcORNpI8IQHNeOJU/RE3mF7xQnddjOBcaVE8Bmi01aUc+AgOIU8RgYy9qrm5gwdqOzYI5v99rJ2uNWUVGBtaarq8vtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=KsOG9DPa; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41EFScet1331064
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 14 Feb 2024 07:28:38 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41EFScet1331064
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1707924521;
+	bh=rk9njXpf6hzFHY17pEhUqSZF9wRgLnS+p3Equ70uV9g=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=KsOG9DPaw5ir6qEJCooeMQWJQMCKKXsB2ez4BpMq4njCXB/iMypn6kRHAYmoAYIIf
+	 bI2i7x7i9vd/OUg3t6q9x1O7qGE96Ypb/3YMNpACt0umzVvoeS2BMGQTXT/SGKUJfi
+	 Jb0GaAPO9/6YSB+JBbfT4UZkfZbg5wfA11KuWqoPUgfDi/TBxsUVGzbf3Joa5RmXtW
+	 Do14EBY5W+LnmVF10jBXuD09SgEe/1Lr8vOu1xubrGFtdkWjDBrTgWFhJUwnlmKAl+
+	 JeqS9Se6UTcm9/mW0OJ/aCaWPUbnSHpsCQvPZcWRGuggLm/w0mgmieUCXUJk1knukA
+	 F2gD2n6NiHfiA==
+Date: Wed, 14 Feb 2024 07:28:35 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Dave Hansen <dave.hansen@intel.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
+        Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC: Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH v1 0/8] x86_64 SandBox Mode arch hooks
+User-Agent: K-9 Mail for Android
+In-Reply-To: <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
+References: <20240214113516.2307-1-petrtesarik@huaweicloud.com> <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
+Message-ID: <34B19756-91D3-4DA1-BE76-BD3122C16E95@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the ARC modules.
+On February 14, 2024 6:52:53 AM PST, Dave Hansen <dave=2Ehansen@intel=2Ecom=
+> wrote:
+>On 2/14/24 03:35, Petr Tesarik wrote:
+>> This patch series implements x86_64 arch hooks for the generic SandBox
+>> Mode infrastructure=2E
+>
+>I think I'm missing a bit of context here=2E  What does one _do_ with
+>SandBox Mode?  Why is it useful?
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/arcnet/arc-rawmode.c  | 1 +
- drivers/net/arcnet/arc-rimi.c     | 1 +
- drivers/net/arcnet/capmode.c      | 1 +
- drivers/net/arcnet/com20020-pci.c | 1 +
- drivers/net/arcnet/com20020.c     | 1 +
- drivers/net/arcnet/com20020_cs.c  | 1 +
- drivers/net/arcnet/com90io.c      | 1 +
- drivers/net/arcnet/com90xx.c      | 1 +
- drivers/net/arcnet/rfc1051.c      | 1 +
- drivers/net/arcnet/rfc1201.c      | 1 +
- 10 files changed, 10 insertions(+)
-
-diff --git a/drivers/net/arcnet/arc-rawmode.c b/drivers/net/arcnet/arc-rawmode.c
-index 8c651fdee039..57f1729066f2 100644
---- a/drivers/net/arcnet/arc-rawmode.c
-+++ b/drivers/net/arcnet/arc-rawmode.c
-@@ -186,4 +186,5 @@ static void __exit arcnet_raw_exit(void)
- module_init(arcnet_raw_init);
- module_exit(arcnet_raw_exit);
- 
-+MODULE_DESCRIPTION("ARCnet raw mode packet interface module");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/net/arcnet/arc-rimi.c b/drivers/net/arcnet/arc-rimi.c
-index 8c3ccc7c83cd..53d10a04d1bd 100644
---- a/drivers/net/arcnet/arc-rimi.c
-+++ b/drivers/net/arcnet/arc-rimi.c
-@@ -312,6 +312,7 @@ module_param(node, int, 0);
- module_param(io, int, 0);
- module_param(irq, int, 0);
- module_param_string(device, device, sizeof(device), 0);
-+MODULE_DESCRIPTION("ARCnet COM90xx RIM I chipset driver");
- MODULE_LICENSE("GPL");
- 
- static struct net_device *my_dev;
-diff --git a/drivers/net/arcnet/capmode.c b/drivers/net/arcnet/capmode.c
-index c09b567845e1..7a0a79973769 100644
---- a/drivers/net/arcnet/capmode.c
-+++ b/drivers/net/arcnet/capmode.c
-@@ -265,4 +265,5 @@ static void __exit capmode_module_exit(void)
- module_init(capmode_module_init);
- module_exit(capmode_module_exit);
- 
-+MODULE_DESCRIPTION("ARCnet CAP mode packet interface module");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/net/arcnet/com20020-pci.c b/drivers/net/arcnet/com20020-pci.c
-index 7b5c8bb02f11..c5e571ec94c9 100644
---- a/drivers/net/arcnet/com20020-pci.c
-+++ b/drivers/net/arcnet/com20020-pci.c
-@@ -61,6 +61,7 @@ module_param(timeout, int, 0);
- module_param(backplane, int, 0);
- module_param(clockp, int, 0);
- module_param(clockm, int, 0);
-+MODULE_DESCRIPTION("ARCnet COM20020 chipset PCI driver");
- MODULE_LICENSE("GPL");
- 
- static void led_tx_set(struct led_classdev *led_cdev,
-diff --git a/drivers/net/arcnet/com20020.c b/drivers/net/arcnet/com20020.c
-index 06e1651b594b..a0053e3992a3 100644
---- a/drivers/net/arcnet/com20020.c
-+++ b/drivers/net/arcnet/com20020.c
-@@ -399,6 +399,7 @@ EXPORT_SYMBOL(com20020_found);
- EXPORT_SYMBOL(com20020_netdev_ops);
- #endif
- 
-+MODULE_DESCRIPTION("ARCnet COM20020 chipset core driver");
- MODULE_LICENSE("GPL");
- 
- #ifdef MODULE
-diff --git a/drivers/net/arcnet/com20020_cs.c b/drivers/net/arcnet/com20020_cs.c
-index dc3253b318da..75f08aa7528b 100644
---- a/drivers/net/arcnet/com20020_cs.c
-+++ b/drivers/net/arcnet/com20020_cs.c
-@@ -97,6 +97,7 @@ module_param(backplane, int, 0);
- module_param(clockp, int, 0);
- module_param(clockm, int, 0);
- 
-+MODULE_DESCRIPTION("ARCnet COM20020 chipset PCMCIA driver");
- MODULE_LICENSE("GPL");
- 
- /*====================================================================*/
-diff --git a/drivers/net/arcnet/com90io.c b/drivers/net/arcnet/com90io.c
-index 37b47749fc8b..3b463fbc6402 100644
---- a/drivers/net/arcnet/com90io.c
-+++ b/drivers/net/arcnet/com90io.c
-@@ -350,6 +350,7 @@ static char device[9];		/* use eg. device=arc1 to change name */
- module_param_hw(io, int, ioport, 0);
- module_param_hw(irq, int, irq, 0);
- module_param_string(device, device, sizeof(device), 0);
-+MODULE_DESCRIPTION("ARCnet COM90xx IO mapped chipset driver");
- MODULE_LICENSE("GPL");
- 
- #ifndef MODULE
-diff --git a/drivers/net/arcnet/com90xx.c b/drivers/net/arcnet/com90xx.c
-index f49dae194284..b3b287c16561 100644
---- a/drivers/net/arcnet/com90xx.c
-+++ b/drivers/net/arcnet/com90xx.c
-@@ -645,6 +645,7 @@ static void com90xx_copy_from_card(struct net_device *dev, int bufnum,
- 	TIME(dev, "memcpy_fromio", count, memcpy_fromio(buf, memaddr, count));
- }
- 
-+MODULE_DESCRIPTION("ARCnet COM90xx normal chipset driver");
- MODULE_LICENSE("GPL");
- 
- static int __init com90xx_init(void)
-diff --git a/drivers/net/arcnet/rfc1051.c b/drivers/net/arcnet/rfc1051.c
-index a7752a5b647f..46519ca63a0a 100644
---- a/drivers/net/arcnet/rfc1051.c
-+++ b/drivers/net/arcnet/rfc1051.c
-@@ -78,6 +78,7 @@ static void __exit arcnet_rfc1051_exit(void)
- module_init(arcnet_rfc1051_init);
- module_exit(arcnet_rfc1051_exit);
- 
-+MODULE_DESCRIPTION("ARCNet packet format (RFC 1051) module");
- MODULE_LICENSE("GPL");
- 
- /* Determine a packet's protocol ID.
-diff --git a/drivers/net/arcnet/rfc1201.c b/drivers/net/arcnet/rfc1201.c
-index a4c856282674..0edf35d971c5 100644
---- a/drivers/net/arcnet/rfc1201.c
-+++ b/drivers/net/arcnet/rfc1201.c
-@@ -35,6 +35,7 @@
- 
- #include "arcdevice.h"
- 
-+MODULE_DESCRIPTION("ARCNet packet format (RFC 1201) module");
- MODULE_LICENSE("GPL");
- 
- static __be16 type_trans(struct sk_buff *skb, struct net_device *dev);
--- 
-2.39.3
-
+Seriously=2E On the surface it looks like a really bad idea =E2=80=93 basi=
+cally an ad hoc, *more* privileged version of user shave=2E
 
