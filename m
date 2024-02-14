@@ -1,488 +1,169 @@
-Return-Path: <linux-kernel+bounces-66086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27642855669
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:58:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A42485566E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:58:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77374B26FB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:58:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67401F226AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E752A134740;
-	Wed, 14 Feb 2024 22:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330301419B3;
+	Wed, 14 Feb 2024 22:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IbsttpFv"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="b0TWz7o/"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15952F844
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D6057872;
+	Wed, 14 Feb 2024 22:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707951467; cv=none; b=BEhjQZcd08Ycy5dYI+PQ3PtizQ9rdKYLRMBgEeU+n61DjZzvTXv283Ew119fWfCAcx2/QEFe5TzvUDoQuD3YT/6vHZBE93XCyX4Ltp+cA+xIJY88MB3SD0JUesZD+93y/r0gKVlK01/RT+kc2H2IGKTNtRzvo+tdHixAVieWt20=
+	t=1707951498; cv=none; b=EhLKQ3AFOWmfqNF9W+iMZ9FAlRCrjfcKbEC+p7Jv9S5qB9CXG/XRrkJC2QbsmwhZqBg9wFtHr63Jyh6RYT84vHICzPywPdNihAvVMxnNyqzkzFP2x5u3sS4zhsy1WflKmGHKwR7DTnhvy/yaSLefNf/Zyrpj3KZPmS/79/sCgSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707951467; c=relaxed/simple;
-	bh=kbtJCrLlhHVECID8NBGdSAcQMBS+XyWBHxYsW4s/5e8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Content-Type; b=o/mYtwPL+Wj7cddXPM8M3VxkXgZIIq7McIc5tl/BiBJc8NnpQ2ZDRMtsh2JMF2pNfXvhhHsFmuLuIeD+gnqsfgGpnCpTaTuehZRe1xBhAC+gxMxTuAUUKvOMiSl/QbjJuVsFF4G7hrXxs+sLcuQqUC2wNQ2oqb8/fuNiEzC9LL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--souravpanda.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IbsttpFv; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--souravpanda.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so346231276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:57:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707951465; x=1708556265; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q5tuMVa23w+EN0Z93Q/a58TxZA4V65w3/v12kr+XirU=;
-        b=IbsttpFv5WCHjZTcLHqjakQ2MCNFrZNac7PsnewsCPUxBtcKp07wp+R+IBzKzi/3jo
-         yIeFCvyTRSE0d6aqAqZYqvulmLeWYPiPJ8cRHVgFNXYH310/ERcvibT9fmThihFv/XkX
-         0Xj7m4cxGWtVtY62TPHa0cbvavtxNbyJHPcjE1pSQCLQeuTT6DgwvNIeyCh1Dy6eVNNe
-         +d4CywtKekFzMGHvhmb8iDdYIpwiXb95v7nJLUFA1U3HxzQ6RerwxTNyvk0Xy1I5NaDi
-         dOl2n/jH1qk3np5vVqCJNbLnUtdxFztmq9SRJMhtT5xoeHqvJH1/kJ7yaLbKZJMnFLqU
-         OwVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707951465; x=1708556265;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q5tuMVa23w+EN0Z93Q/a58TxZA4V65w3/v12kr+XirU=;
-        b=oaGOO9/Czuf3jw0nm15psAn0XTnkHLscI6S5kKUYrIuTRboM43u+7DfZHulTT2BEC5
-         yXz+xOTm6hKWX7tHIF27eB/4NJ+0SbXecnlgB4hfQtzCBSUwhfVK4CsrTlKuwkrqqY31
-         VxwyoUt3xjeNvTCo4/w/S7D10so6X5YaQyrCK7hNQRpN6AUlfw30dthiDuv6qkU51NTp
-         Oy5wtxvsSQeAdD9y3VOG+6Avws5TmrYkJNBTu3KsPgsHtGi4Gj8a9s/0xxWjBIObcMOf
-         m7TAja9w1Ah5ohFGLjGM3znd38o/e6uKspqYxQ8UV9JWsZPg1HYGo383i/ol4u9vr1RO
-         XU0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWTJkK6qTOI1nihFY4iXtVN4vagdCM3kcbNg01a1/vo6r7v023Z7F4+ar7wGOipMx73tM2yT83hmyoGbEVzOly0zw1XaX2+x80cvYsg
-X-Gm-Message-State: AOJu0YxtqzyPqrAEU7IECsE1YKbLwjnxlwof9IH7YxgKlYvaRL07+Dt5
-	B5sWlVjtcH9ER1hPeA2o8GppiQ02e153leVmGJRKZlPgsAFc4Je0lsYmLoJIqwVKvrBC0Ax2v5a
-	OkpuSciPTna4KhjuIFYpMKw==
-X-Google-Smtp-Source: AGHT+IEe5ab+3yqvyznupIwZkYyYXYgMVwwLCB3zCk2/lLKCBQL54ziix1gXQB1B5slIsWyY0E20Q5+wvSGqRTa3kw==
-X-Received: from souravpanda.svl.corp.google.com ([2620:15c:2a3:200:b4ba:86fe:7d36:2fb0])
- (user=souravpanda job=sendgmr) by 2002:a25:cec3:0:b0:dc7:48ce:d17f with SMTP
- id x186-20020a25cec3000000b00dc748ced17fmr843388ybe.10.1707951464722; Wed, 14
- Feb 2024 14:57:44 -0800 (PST)
-Date: Wed, 14 Feb 2024 14:57:40 -0800
-In-Reply-To: <20240214225741.403783-1-souravpanda@google.com>
+	s=arc-20240116; t=1707951498; c=relaxed/simple;
+	bh=gSUvTrZr3rXl9rxa9h+n04kX3glePcNe2dBEl2CvPt4=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=hp+7g7h6SbsZIvaxzzznNjUZL49xFkTxqQXf5PwzCOm0gclBd7pmrkFyRFGbMUZwl0L5bljuFbNpSB/yI1ZdRRC158GEUm/Ea1rFaZKFFK+HCHC8+KKaCuW9clj/h7Q1k5nzOl/fTzqDsXlAQAx0lMV4BZC+wj2240soanIQBfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=b0TWz7o/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41ELrHsR010715;
+	Wed, 14 Feb 2024 22:57:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:from:subject:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=P3WE3lMB3U1jVjyqfIrkGAFwODySyS5IO0j1eUTCPyk=; b=b0
+	TWz7o/x3N8/AZ1opgEr/avUwTe6jB8c4OuL3f6079KX9ut38Qho6sMnDxX0/NXRl
+	HF9luXKQE71ywu7/88LW1oFOxyhL4GgW3w37hUAn8grY5IK6NIxHgxtQkCcIcGvB
+	/ROTjG1H+NIDuw05+h5w8TL+iMduX8yzNMv1Dcxhtf0CGb0n7QzBMnl+V2i2GnTu
+	bGgQGVYb/vt9h8ydnmspVOxAbq5g3dcVhRW/397fx3YS2Cy23oRZvFKIaNBNlAiR
+	XeWUvyRouBn57ifET7HUpot6IpyddxUxOylXbX5DTuwTJKoJ4uDgDZdUuDUV9ccf
+	q4lMtWv3KqmsFRiSHLzQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w92fxghd3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 22:57:52 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41EMvpng005245
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 22:57:51 GMT
+Received: from [10.71.114.103] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
+ 2024 14:57:50 -0800
+Message-ID: <f2952acb-4f9e-9283-a5bc-1b62164df9bc@quicinc.com>
+Date: Wed, 14 Feb 2024 14:57:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240214225741.403783-1-souravpanda@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240214225741.403783-2-souravpanda@google.com>
-Subject: [PATCH v8 1/1] mm: report per-page metadata information
-From: Sourav Panda <souravpanda@google.com>
-To: corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org, 
-	akpm@linux-foundation.org, mike.kravetz@oracle.com, muchun.song@linux.dev, 
-	rppt@kernel.org, david@redhat.com, rdunlap@infradead.org, 
-	chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, souravpanda@google.com, 
-	tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, hannes@cmpxchg.org, 
-	shakeelb@google.com, kirill.shutemov@linux.intel.com, 
-	wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz, 
-	Liam.Howlett@Oracle.com, surenb@google.com, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	willy@infradead.org, weixugc@google.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: Re: [PATCH v15 39/50] ASoC: Introduce SND kcontrols to select sound
+ card and PCM device
+To: Takashi Iwai <tiwai@suse.de>
+CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
+ <20240213005422.3121-40-quic_wcheng@quicinc.com>
+ <87y1boy6ps.wl-tiwai@suse.de>
+Content-Language: en-US
+In-Reply-To: <87y1boy6ps.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iiFOt1LHNH-vK7dJGiW2u-pqhV-t6b_L
+X-Proofpoint-ORIG-GUID: iiFOt1LHNH-vK7dJGiW2u-pqhV-t6b_L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_14,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402140174
 
-Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
-to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
-to /proc/meminfo. This information can be used by users to see how
-much memory is being used by per-page metadata, which can vary
-depending on build configuration, machine architecture, and system
-use.
+Hi Takashi,
 
-Per-page metadata is the amount of memory that Linux needs in order to
-manage memory at the page granularity. The majority of such memory is
-used by "struct page" and "page_ext" data structures. In contrast to
-most other memory consumption statistics, per-page metadata might not
-be included in MemTotal. For example, MemTotal does not include memblock
-allocations but includes buddy allocations. In this patch, exported
-field nr_memmap in /sys/devices/system/node/nodeN/vmstat would
-exclusively track buddy allocations while nr_memmap_boot would
-exclusively track memblock allocations. Furthermore, Memmap in
-/proc/meminfo would exclusively track buddy allocations allowing it to
-be compared against MemTotal.
+On 2/13/2024 2:54 AM, Takashi Iwai wrote:
+> On Tue, 13 Feb 2024 01:54:11 +0100,
+> Wesley Cheng wrote:
+>>
+>> +static int soc_usb_get_offload_dev(struct snd_kcontrol *kcontrol,
+>> +				   struct snd_ctl_elem_value *ucontrol)
+>> +{
+>> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+>> +	struct snd_soc_usb *ctx = snd_soc_usb_find_priv_data(component->dev);
+>> +	int ret = 0;
+>> +
+>> +	mutex_lock(&ctx_mutex);
+>> +	if (ctx && ctx->get_offload_dev)
+>> +		ret = ctx->get_offload_dev(kcontrol, ucontrol);
+>> +	mutex_unlock(&ctx_mutex);
+> 
+> It might be safer to initialize the values with -1 in case when the
+> callback isn't available?
+> 
 
-This memory depends on build configurations, machine architectures, and
-the way system is used:
+Make sense, will do.
 
-Build configuration may include extra fields into "struct page",
-and enable / disable "page_ext"
-Machine architecture defines base page sizes. For example 4K x86,
-8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
-overhead is smaller on machines with larger page sizes.
-System use can change per-page overhead by using vmemmap
-optimizations with hugetlb pages, and emulated pmem devdax pages.
-Also, boot parameters can determine whether page_ext is needed
-to be allocated. This memory can be part of MemTotal or be outside
-MemTotal depending on whether the memory was hot-plugged, booted with,
-or hugetlb memory was returned back to the system.
+>>   /**
+>>    * snd_soc_usb_get_components_tag() - Retrieve SOC USB component tag
+>>    * @playback: direction of audio stream
+>> @@ -157,6 +218,12 @@ EXPORT_SYMBOL_GPL(snd_soc_usb_free_port);
+>>    */
+>>   int snd_soc_usb_add_port(struct snd_soc_usb *usb)
+>>   {
+>> +	int ret;
+>> +
+>> +	ret = snd_soc_usb_control_init(usb->component);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>>   	mutex_lock(&ctx_mutex);
+>>   	list_add_tail(&usb->list, &usb_ctx_list);
+>>   	mutex_unlock(&ctx_mutex);
+> 
+> We may need to remove the control element upon the driver removal,
+> too?  In theory, you can unload the offload stuff while snd-usb-audio
+> is still active.
+> 
 
-Utility for userspace:
+This is managing the control for the ASoC platform card that supports 
+offloading.  If we compile the different kernel entities as modules, we 
+see that the soc_usb layer has the following users:
 
-Application Optimization: Depending on the kernel version and command
-line options, the kernel would relinquish a different number of pages
-(that contain struct pages) when a hugetlb page is reserved (e.g., 0, 6
-or 7 for a 2MB hugepage). The userspace application would want to know
-the exact savings achieved through page metadata deallocation without
-dealing with the intricacies of the kernel.
+soc_usb 16384 3 q6usb,snd_usb_audio_qmi,snd_soc_qcom_offload_utils
 
-Observability: Struct page overhead can only be calculated on-paper at
-boot time (e.g., 1.5% machine capacity). Beyond boot once hugepages are
-reserved or memory is hotplugged, the computation becomes complex.
-Per-page metrics will help explain part of the system memory overhead,
-which shall help guide memory optimizations and memory cgroup sizing.
+So we'd need to remove all these modules before we can unload soc_usb. 
+The entity which would be related to the kcontrols created for the ASoC 
+sound card would be the q6usb module.  Since the q6usb module is tightly 
+coupled with the platform soundcard itself in our design, for the q6usb 
+module to be removed, we have to remove the entire ASoC sound card. (in 
+which the kcontrols will also be removed)
 
-Debugging: Tracking the changes or absolute value in struct pages can
-help detect anomalies as they can be correlated with other metrics in
-the machine (e.g., memtotal, number of huge pages, etc).
+However, that might not always be the case...so its a good idea to just 
+manually remove the kcontrols in soc-usb as you guided.
 
-page_ext overheads: Some kernel features such as page_owner
-page_table_check that use page_ext can be optionally enabled via kernel
-parameters. Having the total per-page metadata information helps users
-precisely measure impact.
-
-Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Signed-off-by: Sourav Panda <souravpanda@google.com>
----
- Documentation/filesystems/proc.rst |  3 +++
- fs/proc/meminfo.c                  |  4 ++++
- include/linux/mmzone.h             |  4 ++++
- include/linux/vmstat.h             |  4 ++++
- mm/hugetlb_vmemmap.c               | 17 ++++++++++++----
- mm/mm_init.c                       |  3 +++
- mm/page_alloc.c                    |  1 +
- mm/page_ext.c                      | 32 +++++++++++++++++++++---------
- mm/sparse-vmemmap.c                |  8 ++++++++
- mm/sparse.c                        |  7 ++++++-
- mm/vmstat.c                        | 26 +++++++++++++++++++++++-
- 11 files changed, 94 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 104c6d047d9b..c9b4de65f162 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -993,6 +993,7 @@ Example output. You may not have all of these fields.
-     AnonPages:       4654780 kB
-     Mapped:           266244 kB
-     Shmem:              9976 kB
-+    Memmap:	       513419 kB
-     KReclaimable:     517708 kB
-     Slab:             660044 kB
-     SReclaimable:     517708 kB
-@@ -1095,6 +1096,8 @@ Mapped
-               files which have been mmapped, such as libraries
- Shmem
-               Total memory used by shared memory (shmem) and tmpfs
-+Memmap
-+              Memory used for per-page metadata
- KReclaimable
-               Kernel allocations that the kernel will attempt to reclaim
-               under memory pressure. Includes SReclaimable (below), and other
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 45af9a989d40..b81103527f1e 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -39,6 +39,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	long available;
- 	unsigned long pages[NR_LRU_LISTS];
- 	unsigned long sreclaimable, sunreclaim;
-+	unsigned long nr_memmap;
- 	int lru;
- 
- 	si_meminfo(&i);
-@@ -57,6 +58,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
- 	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
- 
-+	nr_memmap = global_node_page_state_pages(NR_MEMMAP);
-+
- 	show_val_kb(m, "MemTotal:       ", i.totalram);
- 	show_val_kb(m, "MemFree:        ", i.freeram);
- 	show_val_kb(m, "MemAvailable:   ", available);
-@@ -104,6 +107,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "Mapped:         ",
- 		    global_node_page_state(NR_FILE_MAPPED));
- 	show_val_kb(m, "Shmem:          ", i.sharedram);
-+	show_val_kb(m, "Memmap:		", nr_memmap);
- 	show_val_kb(m, "KReclaimable:   ", sreclaimable +
- 		    global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
- 	show_val_kb(m, "Slab:           ", sreclaimable + sunreclaim);
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a497f189d988..59b244092325 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -214,6 +214,10 @@ enum node_stat_item {
- 	PGDEMOTE_KSWAPD,
- 	PGDEMOTE_DIRECT,
- 	PGDEMOTE_KHUGEPAGED,
-+	NR_MEMMAP,		/* Page metadata size (struct page and page_ext)
-+				 * in pages
-+				 */
-+	NR_MEMMAP_BOOT,		/* NR_MEMMAP for bootmem */
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 343906a98d6e..c3785fdd3668 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -632,4 +632,8 @@ static inline void lruvec_stat_sub_folio(struct folio *folio,
- {
- 	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
- }
-+
-+void __meminit mod_node_early_perpage_metadata(int nid, long delta);
-+void __meminit store_early_perpage_metadata(void);
-+
- #endif /* _LINUX_VMSTAT_H */
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index da177e49d956..2da8689aeb93 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -184,10 +184,13 @@ static int vmemmap_remap_range(unsigned long start, unsigned long end,
-  */
- static inline void free_vmemmap_page(struct page *page)
- {
--	if (PageReserved(page))
-+	if (PageReserved(page)) {
- 		free_bootmem_page(page);
--	else
-+		mod_node_page_state(page_pgdat(page), NR_MEMMAP_BOOT, -1);
-+	} else {
- 		__free_page(page);
-+		mod_node_page_state(page_pgdat(page), NR_MEMMAP, -1);
-+	}
- }
- 
- /* Free a list of the vmemmap pages */
-@@ -338,6 +341,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
- 		copy_page(page_to_virt(walk.reuse_page),
- 			  (void *)walk.reuse_addr);
- 		list_add(&walk.reuse_page->lru, vmemmap_pages);
-+		mod_node_page_state(NODE_DATA(nid), NR_MEMMAP, 1);
- 	}
- 
- 	/*
-@@ -384,14 +388,19 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
- 	unsigned long nr_pages = (end - start) >> PAGE_SHIFT;
- 	int nid = page_to_nid((struct page *)start);
- 	struct page *page, *next;
-+	int i;
- 
--	while (nr_pages--) {
-+	for (i = 0; i < nr_pages; i++) {
- 		page = alloc_pages_node(nid, gfp_mask, 0);
--		if (!page)
-+		if (!page) {
-+			mod_node_page_state(NODE_DATA(nid), NR_MEMMAP, i);
- 			goto out;
-+		}
- 		list_add(&page->lru, list);
- 	}
- 
-+	mod_node_page_state(NODE_DATA(nid), NR_MEMMAP, nr_pages);
-+
- 	return 0;
- out:
- 	list_for_each_entry_safe(page, next, list, lru)
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 2c19f5515e36..b61372431b7d 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -27,6 +27,7 @@
- #include <linux/swap.h>
- #include <linux/cma.h>
- #include <linux/crash_dump.h>
-+#include <linux/vmstat.h>
- #include "internal.h"
- #include "slab.h"
- #include "shuffle.h"
-@@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct pglist_data *pgdat)
- 		panic("Failed to allocate %ld bytes for node %d memory map\n",
- 		      size, pgdat->node_id);
- 	pgdat->node_mem_map = map + offset;
-+	mod_node_early_perpage_metadata(pgdat->node_id,
-+					DIV_ROUND_UP(size, PAGE_SIZE));
- 	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
- 		 __func__, pgdat->node_id, (unsigned long)pgdat,
- 		 (unsigned long)pgdat->node_mem_map);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 150d4f23b010..236cfdf5a8fa 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5635,6 +5635,7 @@ void __init setup_per_cpu_pageset(void)
- 	for_each_online_pgdat(pgdat)
- 		pgdat->per_cpu_nodestats =
- 			alloc_percpu(struct per_cpu_nodestat);
-+	store_early_perpage_metadata();
- }
- 
- __meminit void zone_pcp_init(struct zone *zone)
-diff --git a/mm/page_ext.c b/mm/page_ext.c
-index 4548fcc66d74..c1e324a1427e 100644
---- a/mm/page_ext.c
-+++ b/mm/page_ext.c
-@@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
- 		return -ENOMEM;
- 	NODE_DATA(nid)->node_page_ext = base;
- 	total_usage += table_size;
-+	mod_node_page_state(NODE_DATA(nid), NR_MEMMAP_BOOT,
-+			    DIV_ROUND_UP(table_size, PAGE_SIZE));
- 	return 0;
- }
- 
-@@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t size, int nid)
- 	void *addr = NULL;
- 
- 	addr = alloc_pages_exact_nid(nid, size, flags);
--	if (addr) {
-+	if (addr)
- 		kmemleak_alloc(addr, size, 1, flags);
--		return addr;
--	}
-+	else
-+		addr = vzalloc_node(size, nid);
- 
--	addr = vzalloc_node(size, nid);
-+	if (addr) {
-+		mod_node_page_state(NODE_DATA(nid), NR_MEMMAP,
-+				    DIV_ROUND_UP(size, PAGE_SIZE));
-+	}
- 
- 	return addr;
- }
-@@ -303,18 +308,27 @@ static int __meminit init_section_page_ext(unsigned long pfn, int nid)
- 
- static void free_page_ext(void *addr)
- {
-+	size_t table_size;
-+	struct page *page;
-+	struct pglist_data *pgdat;
-+
-+	table_size = page_ext_size * PAGES_PER_SECTION;
-+
- 	if (is_vmalloc_addr(addr)) {
-+		page = vmalloc_to_page(addr);
-+		pgdat = page_pgdat(page);
- 		vfree(addr);
- 	} else {
--		struct page *page = virt_to_page(addr);
--		size_t table_size;
--
--		table_size = page_ext_size * PAGES_PER_SECTION;
--
-+		page = virt_to_page(addr);
-+		pgdat = page_pgdat(page);
- 		BUG_ON(PageReserved(page));
- 		kmemleak_free(addr);
- 		free_pages_exact(addr, table_size);
- 	}
-+
-+	mod_node_page_state(pgdat, NR_MEMMAP,
-+			    -1L * (DIV_ROUND_UP(table_size, PAGE_SIZE)));
-+
- }
- 
- static void __free_page_ext(unsigned long pfn)
-diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-index a2cbe44c48e1..1dda6c53370b 100644
---- a/mm/sparse-vmemmap.c
-+++ b/mm/sparse-vmemmap.c
-@@ -469,5 +469,13 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
- 	if (r < 0)
- 		return NULL;
- 
-+	if (system_state == SYSTEM_BOOTING) {
-+		mod_node_early_perpage_metadata(nid, DIV_ROUND_UP(end - start,
-+								  PAGE_SIZE));
-+	} else {
-+		mod_node_page_state(NODE_DATA(nid), NR_MEMMAP,
-+				    DIV_ROUND_UP(end - start, PAGE_SIZE));
-+	}
-+
- 	return pfn_to_page(pfn);
- }
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 338cf946dee8..eb2aeb4e226b 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -14,7 +14,7 @@
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <linux/bootmem_info.h>
--
-+#include <linux/vmstat.h>
- #include "internal.h"
- #include <asm/dma.h>
- 
-@@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned long size, int nid)
- 	 */
- 	sparsemap_buf = memmap_alloc(size, section_map_size(), addr, nid, true);
- 	sparsemap_buf_end = sparsemap_buf + size;
-+#ifndef CONFIG_SPARSEMEM_VMEMMAP
-+	mod_node_early_perpage_metadata(nid, DIV_ROUND_UP(size, PAGE_SIZE));
-+#endif
- }
- 
- static void __init sparse_buffer_fini(void)
-@@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned long pfn, unsigned long nr_pages,
- 	unsigned long start = (unsigned long) pfn_to_page(pfn);
- 	unsigned long end = start + nr_pages * sizeof(struct page);
- 
-+	mod_node_page_state(page_pgdat(pfn_to_page(pfn)), NR_MEMMAP,
-+			    -1L * (DIV_ROUND_UP(end - start, PAGE_SIZE)));
- 	vmemmap_free(start, end, altmap);
- }
- static void free_map_bootmem(struct page *memmap)
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index db79935e4a54..79466450040e 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1252,7 +1252,8 @@ const char * const vmstat_text[] = {
- 	"pgdemote_kswapd",
- 	"pgdemote_direct",
- 	"pgdemote_khugepaged",
--
-+	"nr_memmap",
-+	"nr_memmap_boot",
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
- 	"nr_dirty_background_threshold",
-@@ -2279,4 +2280,27 @@ static int __init extfrag_debug_init(void)
- }
- 
- module_init(extfrag_debug_init);
-+
- #endif
-+
-+/*
-+ * Page metadata size (struct page and page_ext) in pages
-+ */
-+static unsigned long early_perpage_metadata[MAX_NUMNODES] __meminitdata;
-+
-+void __meminit mod_node_early_perpage_metadata(int nid, long delta)
-+{
-+	early_perpage_metadata[nid] += delta;
-+}
-+
-+void __meminit store_early_perpage_metadata(void)
-+{
-+	int nid;
-+	struct pglist_data *pgdat;
-+
-+	for_each_online_pgdat(pgdat) {
-+		nid = pgdat->node_id;
-+		mod_node_page_state(NODE_DATA(nid), NR_MEMMAP_BOOT,
-+				    early_perpage_metadata[nid]);
-+	}
-+}
--- 
-2.43.0.687.g38aa6559b0-goog
+Thanks
+Wesley Cheng
 
 
