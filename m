@@ -1,153 +1,287 @@
-Return-Path: <linux-kernel+bounces-64983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B53C85462F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:36:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C2B0854566
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:34:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41E0E1C214F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:36:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E053F1F2E08C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70EA12E76;
-	Wed, 14 Feb 2024 09:35:27 +0000 (UTC)
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DA411CA9
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D84C134A3;
+	Wed, 14 Feb 2024 09:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M0DyIO7r"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5212171A3
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903327; cv=none; b=CeNhuoOn6FRYu0yoXtyAU+liWe/UAQ88T21OnMDqSGEyVA/qB56xzFcWV3OPZKJqyl/zdbCveRpco+p2ownH0JtEMUJL9E7ZYzjP4BMV4AFIwTFE0Y7ZYfp3xmBPWIllU4HUj0QdZGq2bWQ78yQ1U92sF3naNisZJuKfFpG5yjM=
+	t=1707903259; cv=none; b=B91Pour7l3j2EwwtvTXEA7pOsAPGsb7mZ79luKQtHSbzWHxHvLHaoysuDkma2QO7dd5SsLF9Um1r6dgMtEvQ9ZaKu2BNmZl4N5PlKZIY3KLf+B6mUhLOjXEZo53vv60LVeFQUp6mpu90xfT/TU+/f1JRPkixJ8bl1goitWhgTl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903327; c=relaxed/simple;
-	bh=BhPisRloYBOp5JHEYXaJkZ4QaiijqmCKzndK4WLH23A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s3stkZEVtbUwHtta6RX9MgeVIGTDj4rpzEei3VYhPI147Y4s4/5KPhZIqrNG3L9BabvNr1AFVLb5Xz9A1AJmULErEzrd0FMCj9SmWxAL06/3fncDwxJOV9f0D0eS1IWu8s7oNo1LsqBb40Y+5hxBGoDpucygMVvbPbq8Kdq5w3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 41E9YACA010558;
-	Wed, 14 Feb 2024 03:34:10 -0600
-Received: (from greg@localhost)
-	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 41E9Y9d2010555;
-	Wed, 14 Feb 2024 03:34:09 -0600
-Date: Wed, 14 Feb 2024 03:34:09 -0600
-From: "Dr. Greg" <greg@enjellic.com>
-To: Nikolay Borisov <nik.borisov@suse.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Dan Williams <dan.j.williams@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-Message-ID: <20240214093409.GA10124@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20240202153927.GA119530@mit.edu> <Zb4RlTzq_LV7AzsH@zx2c4.com> <CAHmME9owdbHzfb66xisoWmvWeT_-hkxCu7tR2=Rbye_ik1JgQQ@mail.gmail.com> <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com> <20240212163236.GA444708@mit.edu> <65cb1a1fe2dda_29b1294e@dwillia2-mobl3.amr.corp.intel.com.notmuch> <20240213231341.GB394352@mit.edu> <65cc0ef2c7be_29b12948d@dwillia2-mobl3.amr.corp.intel.com.notmuch> <20240214043245.GC394352@mit.edu> <b786185e-fc57-4d4a-b0aa-741b92de0c5c@suse.com>
+	s=arc-20240116; t=1707903259; c=relaxed/simple;
+	bh=FxSgUwsnEmLismW7KZS+woIOBL3X3s8QTre4gaV0ORU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hGg7DhKpb8zCh/hU3PV3uz9Em6QYwCw6FRY/FLXdqMw6uPLBjAUuL8rLSM1LVPk7rcSoFY0tDrKAIwXQgcL7FHhOBNNSyKDU2eWUIpgneMl1WJexofeQkkbivhSp744CdzT2JWCiwazssP4C/VkcE+fdK3AFPgmhGwBtPVaXj1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M0DyIO7r; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707903256;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
+	b=M0DyIO7r/QF5NP7xbpaHT6hEkfiN9C6ZsBmye3RF3lK/xJkfXgkDTmPpJDsosMbhQbvBu6
+	6HXQ5EPdieZFNtwjk4WyV0BOC/Zk/05kx0E8w7+M0QMcA/6BMjEaKIZWqnjJMfVaaHloV2
+	9rcAixnBI/FGqCjqslm0JfXu8AItUYo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-fTWhq_m7NYq_ytjafe4aGg-1; Wed, 14 Feb 2024 04:34:14 -0500
+X-MC-Unique: fTWhq_m7NYq_ytjafe4aGg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b1ad7dfe1so2525445f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:34:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707903253; x=1708508053;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
+        b=ldOgtUa/5w47k5IAcdrYD7J23G0wPZzmsmgEnsxDEtx9KEBT/66+zViSv8l+Laqx69
+         qZBOGi35uGpPTzrxmV6zDHHlO/4bUEqzJx6I7FH0kttbVfhWf+Glx1qTV2scGUX0HmrE
+         GyYL3toL9L8Dw2HaIgdKXuxgv8tp4NEj2TQT7GaAvJgSkNonQ08XPq253k5RABy9xPCk
+         vkr/R/sw/G4g6SaEM5Ql42SvGrYpZ1y7m8Ej9LLphXlQQmEJ6ffZ5KcPh5YG4WwVKeXl
+         bIsdPAvE0er6fvSg8P4RIuUsbBORbS8M+eYL/KVOqCE4b6ZoLvrEnhTEKlxvKqVqDWFd
+         9k2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUHqWg8ttbQXNudKI5rm8myZF+1jJdqFfSSO07QunuWZ7utoPkIIrbWVsY/GUrCdJz0Gr3/EA0vyWPZAlDPWnCIM7KS2veWpBjeFfDN
+X-Gm-Message-State: AOJu0Yz+3oXJZIOopIdJhyHgbZhnSho/KsP0appuyYUMwkJop/qKC3ZF
+	N371GANDwd/r1UANrBYVL7arMkrhAY2Ap0EzMdUODhh3LVhIbtFMXk0D88pbv3u577nrV9ik7R3
+	7uXfJo2J33/1L38RQhcpsjvyFAVJKuzTpTvtlT6LiY9ATiAEX5Jt5/x9DphHDBg==
+X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241991wrt.42.1707903253640;
+        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHTKmko1G9G/pee2ZiIe9NSxdTOYkWa8OLYM08WwbRBQZV9vdrjk9NQvxiRYAK2xGkX0Z9PEw==
+X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241961wrt.42.1707903253189;
+        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVOVgPexUBHiz71w0Ncw2wb5WblHGZcjzqljN+RKJvXEV26t3QZyu3Q/2CF52LOfzIlIVzJz9WuCDV9iTj0/AXsUvkibhf190GgJnJqKyUyJQ8HyxoHcv8u0nr/9FggrkpZaTADQ4zuu/P4D0hfOhBJoASA1J3dZkqNQTP3g6YoLm/RQxx4Yd2OCL6K1zX856PT46s1Pr4P0awOpzSDed6PhBTCYbs8hROATCFL5jlXXdsrS0/QWhNgM48wX1SS9TsGGuuUta/5t4X3CWSP4cI6vkA3/KCyZlPp3bSq1dHsw+3eDE7EGgvMoAJbq0TEHL9trc+jpZxe+AK6z+kOixjfRG2KSr/kcaD0wjVKqHFyRvXrnpj5KuvLhIIfafwwBgUUKhWl0LhM4IgAcX0XqUJLXkw5SkA6cNKtTQIX/sJuB0GEh3ETe5fX4jfXnUBwPhYOpczYXJ1BXODwfx8efnnz3FakvU6i9wuXseIea6Mf2BARrbDnsvflq7h7xAA5rnXJtjkFYJG0UYMXLyF8JQsP9yScItNqdrAWx9AY4sQscsz/TyCzKwcvZoweCe8+cy32
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id bj5-20020a0560001e0500b0033b2799815csm12156827wrb.86.2024.02.14.01.34.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:34:12 -0800 (PST)
+Message-ID: <48219ffc-62dc-430a-8055-6fb9ab533e7f@redhat.com>
+Date: Wed, 14 Feb 2024 10:34:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b786185e-fc57-4d4a-b0aa-741b92de0c5c@suse.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 14 Feb 2024 03:34:10 -0600 (CST)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/7] mm: page_owner: add support for splitting to any
+ order in split page_owner.
+Content-Language: en-US
+To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>, linux-mm@kvack.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-5-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240213215520.1048625-5-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 10:34:48AM +0200, Nikolay Borisov wrote:
+On 13.02.24 22:55, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> It adds a new_order parameter to set new page order in page owner.
+> It prepares for upcoming changes to support split huge page to any
+> lower order.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   include/linux/page_owner.h | 10 +++++-----
+>   mm/huge_memory.c           |  2 +-
+>   mm/page_alloc.c            |  4 ++--
+>   mm/page_owner.c            |  9 +++++----
+>   4 files changed, 13 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
+> index d7878523adfc..a784ba69f67f 100644
+> --- a/include/linux/page_owner.h
+> +++ b/include/linux/page_owner.h
+> @@ -11,7 +11,7 @@ extern struct page_ext_operations page_owner_ops;
+>   extern void __reset_page_owner(struct page *page, unsigned short order);
+>   extern void __set_page_owner(struct page *page,
+>   			unsigned short order, gfp_t gfp_mask);
+> -extern void __split_page_owner(struct page *page, int order);
+> +extern void __split_page_owner(struct page *page, int old_order, int new_order);
+>   extern void __folio_copy_owner(struct folio *newfolio, struct folio *old);
+>   extern void __set_page_owner_migrate_reason(struct page *page, int reason);
+>   extern void __dump_page_owner(const struct page *page);
+> @@ -31,10 +31,10 @@ static inline void set_page_owner(struct page *page,
+>   		__set_page_owner(page, order, gfp_mask);
+>   }
+>   
+> -static inline void split_page_owner(struct page *page, int order)
+> +static inline void split_page_owner(struct page *page, int old_order, int new_order)
+>   {
+>   	if (static_branch_unlikely(&page_owner_inited))
+> -		__split_page_owner(page, order);
+> +		__split_page_owner(page, old_order, new_order);
+>   }
+>   static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
+>   {
+> @@ -56,11 +56,11 @@ static inline void reset_page_owner(struct page *page, unsigned short order)
+>   {
+>   }
+>   static inline void set_page_owner(struct page *page,
+> -			unsigned int order, gfp_t gfp_mask)
+> +			unsigned short order, gfp_t gfp_mask)
+>   {
+>   }
+>   static inline void split_page_owner(struct page *page,
+> -			int order)
+> +			int old_order, int new_order)
+>   {
+>   }
+>   static inline void folio_copy_owner(struct folio *newfolio, struct folio *folio)
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 3d30eccd3a7f..ad7133c97428 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2919,7 +2919,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   	unlock_page_lruvec(lruvec);
+>   	/* Caller disabled irqs, so they are still disabled here */
+>   
+> -	split_page_owner(head, order);
+> +	split_page_owner(head, order, 0);
+>   
+>   	/* See comment in __split_huge_page_tail() */
+>   	if (PageAnon(head)) {
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 9d4dd41d0647..e0f107b21c98 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2652,7 +2652,7 @@ void split_page(struct page *page, unsigned int order)
+>   
+>   	for (i = 1; i < (1 << order); i++)
+>   		set_page_refcounted(page + i);
+> -	split_page_owner(page, order);
+> +	split_page_owner(page, order, 0);
+>   	split_page_memcg(page, order, 0);
+>   }
+>   EXPORT_SYMBOL_GPL(split_page);
+> @@ -4837,7 +4837,7 @@ static void *make_alloc_exact(unsigned long addr, unsigned int order,
+>   		struct page *page = virt_to_page((void *)addr);
+>   		struct page *last = page + nr;
+>   
+> -		split_page_owner(page, order);
+> +		split_page_owner(page, order, 0);
+>   		split_page_memcg(page, order, 0);
+>   		while (page < --last)
+>   			set_page_refcounted(last);
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 1319e402c2cf..ebbffa0501db 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -292,19 +292,20 @@ void __set_page_owner_migrate_reason(struct page *page, int reason)
+>   	page_ext_put(page_ext);
+>   }
+>   
+> -void __split_page_owner(struct page *page, int order)
+> +void __split_page_owner(struct page *page, int old_order, int new_order)
+>   {
+>   	int i;
+>   	struct page_ext *page_ext = page_ext_get(page);
+>   	struct page_owner *page_owner;
+> -	unsigned int nr = 1 << order;
+> +	unsigned int old_nr = 1 << old_order;
+> +	unsigned int new_nr = 1 << new_order;
+>   
+>   	if (unlikely(!page_ext))
+>   		return;
+>   
+> -	for (i = 0; i < nr; i++) {
+> +	for (i = 0; i < old_nr; i += new_nr) {
+>   		page_owner = get_page_owner(page_ext);
+> -		page_owner->order = 0;
+> +		page_owner->order = new_order;
+>   		page_ext = page_ext_next(page_ext);
 
-Hi, I hope the week is going well for everyone.
+Staring at __set_page_owner_handle(), we do set all 1<<order page_exts 
+(corresponding to 1<<order "struct page"s) to have ->order set.
 
-> On 14.02.24 ??. 6:32 ??., Theodore Ts'o wrote:
-> >On Tue, Feb 13, 2024 at 04:53:06PM -0800, Dan Williams wrote:
-> >>
-> >>Indeed it is. Typically when you have x86, riscv, arm, and s390 folks
-> >>all show up at a Linux Plumbers session [1] to talk about their approach
-> >>to handling a new platform paradigm, that is a decent indication that
-> >>the technology is more real than not. Point taken that it is not here
-> >>today, but it is also not multiple hardware generations away as the
-> >>Plumbers participation indicated.
-> >
-> >My big concerns with TDISP which make me believe it may not be a
-> >silver bullet is that (a) it's hyper-complex (although to be fair
-> >Confidential Compute isn't exactly simple, and (b) it's one thing to
-> >digitally sign software so you know that it comes from a trusted
-> >source; but it's a **lot** harder to prove that hardware hasn't been
-> >tampered with --- a digital siganture can't tell you much about
-> >whether or not the hardware is in an as-built state coming from the
-> >factory --- this requires things like wrapping the device with
-> >resistive wire in multiple directions with a whetstone bridge to
-> >detect if the wire has gotten cut or shorted, then dunking the whole
-> >thing in epoxy, so that any attempt to tamper with the hardware will
-> >result it self-destructing (via a thermite charge or equivalent :-)
+Wouldn't you have to do the same here?
 
-> This really reminds me of the engineering that goes into the
-> omnipresent POS terminals ate every store, since they store
-> certificates from the card (Visa/Master) operators. So I wonder if
-> at somepoint we'll have a pos-like device (by merit of its
-> engineering) in every server....
+for (i = 0; i < 1 << old_order; i++) {
+	page_owner = get_page_owner(page_ext);
+	page_owner->order = new_order;
+	page_ext = page_ext_next(page_ext);
+}
 
-It already exists.  CoCo, at least the Intel implementation, is
-dependent on what amounts to this concept.
+-- 
+Cheers,
 
-> >Remember, the whole conceit of Confidential Compute is that you don't
-> >trust the cloud provider --- but if that entity controls the PCI cards
-> >installed in their servers, and and that entity has the ability to
-> >*modify* the PCI cards in the server, all of the digital signatures
-> >and fancy-schmancy TDISP complexity isn't necessarily going to save
-> >you.
+David / dhildenb
 
-> Can't the same argument go for the CPU, though it's a lot more
-> "integrated" into the silicong substrate, yet we somehow believe
-> CoCo ascertains that a vm is running on trusted hardware? But
-> ultimately the CPU is still a part that comes from the untrusted
-> CSP.
-
-The attestation model for TDX is largely built on top of SGX.
-
-The Intel predicate with respect to SGX/TDX is that you have to trust
-the CPU silicon implementation, if you can't entertain that level of
-trust, it is game over for security.
-
-To support that security model, Intel provides infrastructure that
-proves that the software is running on a 'Genuine Intel' CPU.
-
-Roughly, a root key is burned into the silicon that is used as the
-basis for additional derived keys.  The key access and derivation
-processes can only occur when the process is running software with a
-known signature in a protected region of memory (enclave).
-
-The model is to fill a structure with data that defines the
-hardware/software state.  A keyed checksum is run over the structure
-that allows a relying party to verify that the data structure contents
-could have only been generated on a valid Intel CPU.
-
-This process verifies that the CPU is from a known vendor, which is of
-course only the initial starting point for verifying that something
-like a VM is running in a known and trusted state.  But, if you can't
-start with that predicate you have nothing to build on.
-
-The actual implementation nowadays is a bit more complex, given that
-all of this has to happen on multi-socket systems which involve more
-than one CPU, but the concept is the same.
-
-Have a good day.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
-              https://github.com/Quixote-Project
 
