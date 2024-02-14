@@ -1,189 +1,143 @@
-Return-Path: <linux-kernel+bounces-65582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74300854F2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:54:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC20854F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DF7FB2A425
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:46:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808B01F22101
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07A860867;
-	Wed, 14 Feb 2024 16:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC6C604BA;
+	Wed, 14 Feb 2024 16:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PgkUDikR"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIO2g2/C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE3B604A7;
-	Wed, 14 Feb 2024 16:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1C95D49C;
+	Wed, 14 Feb 2024 16:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707929197; cv=none; b=VHpopRm+Zk8Ce/Mr+nKyT9Fmg+1xQWVKW5jnPmKYkCEHlZeepR8iqQE/NPzZp+5ktKOyEc2VcQ2Q635iM9QzVJTXUkU557KAGJi3zAyO4DM2ZEMnJWfKfFlKmgGDDPo5sh+Z5kx98e9gEi7HypX/c+3gW00djcb4AEH+ZptbFfI=
+	t=1707929273; cv=none; b=QIqEOVBaqNR0lueOLhVlMQ05URW7PssWCwp/O2pOG0R8WaZUtEOGJNWvChqIFyBpsl7lpwJXPScpc96oZpQ0aJ9r6hpCTJp+cQiEK/9wX7DiRP77W11+P6NEX6q2g0wMkLIuZTqZN0Yadt5cRrDO47dF4ii3t6pXrzaJQWypE50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707929197; c=relaxed/simple;
-	bh=yn5SllOUHmTKd7QRKLP+uTGbxLc0Lgu7inDoJtTRlXQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZZIHpBU1p3mbOuljrYCaaVGmEScGEseRUysW62ku4T1AFnAA/0w+RGrGB0NiKwWiYQ/tWO7dX9y4DW8siHvbf7pmXObf/FbEUPq4cJlngEYJ0+GOxG5NEeLRcbLmTlfzRXnUWWQ/zbr7NiF6Guu5l7y+jFoV8I89uKqhE1rAMkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PgkUDikR; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EGHqX8020289;
-	Wed, 14 Feb 2024 16:46:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CnFd8ajdxH/cc7VfH42WSgZbWCF+UOq3S7aRofknueM=;
- b=PgkUDikRjBI7x1XiMVyE0fJUYWDpQqAWw6+G4Pyiqbl2T2I1RZ86XjhckO6udra17/M/
- xO6IN7AaFdVFfYDaD3qsrszVlpVR/aziLc5CaLvEERwTPALyRVkd9nVcorjDUXbt8hic
- 7mpJuJLmIXxNZfDufey4LX1BFiPGUpQ85e4c+oQUr257ca3vtBjXxjNZ7bzDOPneA7Vc
- GJS8TwZ/4AxlNh+LWmx2BgZSXyiv9+HVpQ0Q+MY8moz6+xX7KENbXsR252mx9jP33rh8
- BqACwl6rJ1QuUcogFxmLXF7onc+wibvex1Zq1CvzKCWTn7P+iNymsZbuB2qFLibyMzsa eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w90wp0t8d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 16:46:05 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41EGJgtK025776;
-	Wed, 14 Feb 2024 16:46:04 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w90wp0t7p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 16:46:04 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41EFVq07032572;
-	Wed, 14 Feb 2024 16:46:03 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kftq9yq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 16:46:03 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41EGk0Oh5047142
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 16:46:02 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 568CF58068;
-	Wed, 14 Feb 2024 16:46:00 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8692558059;
-	Wed, 14 Feb 2024 16:45:52 +0000 (GMT)
-Received: from [9.171.46.73] (unknown [9.171.46.73])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 14 Feb 2024 16:45:52 +0000 (GMT)
-Message-ID: <1b4d5860-8044-4a1f-a801-1c69327076c1@linux.ibm.com>
-Date: Wed, 14 Feb 2024 22:15:50 +0530
+	s=arc-20240116; t=1707929273; c=relaxed/simple;
+	bh=DnnQl04MGaYTNcKzbKois0ch8l8Y5ji0lievz5/HVOI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C1J5aMzmrKsPtzT1ZqFR4fc5JAggB1jJEdRFQKJlv0jEPpP3RZCa/ve2b2F0IP+F8rwPi57hpr3RzAEfqVN3JzWrp+K/FJHX1+aJEdoluLyW9YuW60yxd8TOoblW6PI9D8/RpYHHtlm6b+HkesKKlEVOxY3LAN8DkLDeiQg1vws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIO2g2/C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9A96C433C7;
+	Wed, 14 Feb 2024 16:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707929272;
+	bh=DnnQl04MGaYTNcKzbKois0ch8l8Y5ji0lievz5/HVOI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AIO2g2/CDd7ZJszKQwdaQI7N/ZVQqYEXaj7zK110O6TotyGDGa+gwxyWgxlUb4XJ4
+	 byojqWaanu5+ALMOkbJLvbhNOl2xVtQXjz5gIa9fHlAN0Skn78r83EiIG4TOdyLPFQ
+	 n/K9uLUzdsSHPGhUhCB0aHxgL241tEhKbpSrTEMkifCOK3Z6CNCDqerE60rxKmMknS
+	 rNUGE6IsJ+X0o+0OU1ZDWt8YcZi6zxXzqAoFIbG8uHgdpC1VusHBcqhes93cnvbiv8
+	 bGvjU+V8TKUo7yaXVqz1gYjM1EYZaLiqOtNAFmAr70RH18B42zvQdLUm7GhyZucL+9
+	 Uns4wZXQtTCZg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raIQI-003Cnr-D8;
+	Wed, 14 Feb 2024 16:47:50 +0000
+Date: Wed, 14 Feb 2024 16:47:49 +0000
+Message-ID: <861q9f56x6.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/23] KVM: arm64: vgic: Use atomics to count LPIs
+In-Reply-To: <20240213093250.3960069-8-oliver.upton@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<20240213093250.3960069-8-oliver.upton@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/15] nvme: Support atomic writes
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>
-Cc: alan.adamson@oracle.com, axboe@kernel.dk, brauner@kernel.org,
-        bvanassche@acm.org, dchinner@redhat.com, djwong@kernel.org, hch@lst.de,
-        jack@suse.cz, jbongio@google.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org, martin.petersen@oracle.com,
-        ming.lei@redhat.com, ojaswin@linux.ibm.com, sagi@grimberg.me,
-        tytso@mit.edu, viro@zeniv.linux.org.uk
-References: <20240124113841.31824-15-john.g.garry@oracle.com>
- <20240214122719.184946-1-nilay@linux.ibm.com>
- <8332ea29-ac17-4b1a-8ed9-e566d03fd220@oracle.com>
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <8332ea29-ac17-4b1a-8ed9-e566d03fd220@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xU5wfFpy2PP06fiDP3H7bm7SCO6PKL-V
-X-Proofpoint-ORIG-GUID: BUhw35l4XwdwCK0voJZlxVR65GvJzXIC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_09,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402140130
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+On Tue, 13 Feb 2024 09:32:44 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> Switch to using atomics for LPI accounting, allowing vgic_irq references
+> to be dropped in parallel.
+> 
+> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+> ---
+>  arch/arm64/kvm/vgic/vgic-debug.c | 2 +-
+>  arch/arm64/kvm/vgic/vgic-its.c   | 4 ++--
+>  arch/arm64/kvm/vgic/vgic.c       | 2 +-
+>  include/kvm/arm_vgic.h           | 4 ++--
+>  4 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-debug.c b/arch/arm64/kvm/vgic/vgic-debug.c
+> index 85606a531dc3..389025ce7749 100644
+> --- a/arch/arm64/kvm/vgic/vgic-debug.c
+> +++ b/arch/arm64/kvm/vgic/vgic-debug.c
+> @@ -149,7 +149,7 @@ static void print_dist_state(struct seq_file *s, struct vgic_dist *dist)
+>  	seq_printf(s, "vgic_model:\t%s\n", v3 ? "GICv3" : "GICv2");
+>  	seq_printf(s, "nr_spis:\t%d\n", dist->nr_spis);
+>  	if (v3)
+> -		seq_printf(s, "nr_lpis:\t%d\n", dist->lpi_list_count);
+> +		seq_printf(s, "nr_lpis:\t%d\n", atomic_read(&dist->lpi_count));
+>  	seq_printf(s, "enabled:\t%d\n", dist->enabled);
+>  	seq_printf(s, "\n");
+>  
+> diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+> index c68164d6cba0..048226812974 100644
+> --- a/arch/arm64/kvm/vgic/vgic-its.c
+> +++ b/arch/arm64/kvm/vgic/vgic-its.c
+> @@ -97,7 +97,7 @@ static struct vgic_irq *vgic_add_lpi(struct kvm *kvm, u32 intid,
+>  		goto out_unlock;
+>  	}
+>  
+> -	dist->lpi_list_count++;
+> +	atomic_inc(&dist->lpi_count);
+>  
+>  out_unlock:
+>  	if (ret)
+> @@ -345,7 +345,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+>  	 * command). If coming from another path (such as enabling LPIs),
+>  	 * we must be careful not to overrun the array.
+>  	 */
+> -	irq_count = READ_ONCE(dist->lpi_list_count);
+> +	irq_count = atomic_read(&dist->lpi_count);
 
+I'd like to propose an alternative approach here. I've always hated
+this "copy a bunch of INTIDs" thing, and the only purpose of this
+silly counter is to dimension the resulting array.
 
-On 2/14/24 18:32, John Garry wrote:
-> On 14/02/2024 12:27, Nilay Shroff wrote:
->>
->>
->>
->>> Use following method to calculate limits:
->>
->>> atomic_write_max_bytes = flp2(NAWUPF ?: AWUPF)
->>
-> 
-> You still need to fix that mail client to not add extra blank lines.
-Yes, I am working on it. I hope it's solved now. 
-> 
->>> atomic_write_unit_min = logical_block_size
->>
->>> atomic_write_unit_max = flp2(NAWUPF ?: AWUPF)
->>
->>> atomic_write_boundary = NABSPF
->>
->>
->>
->> In case the device doesn't support namespace atomic boundary size (i.e. NABSPF
->>
->> is zero) then while merging atomic block-IO we should allow merge.
->>
->>  
->> For example, while front/back merging the atomic block IO, we check whether
->>
->> boundary is defined or not. In case if boundary is not-defined (i.e. it's zero)
->>
->> then we simply reject merging ateempt (as implemented in
->>
->> rq_straddles_atomic_write_boundary()).
-> 
-> Are you sure about that? In rq_straddles_atomic_write_boundary(), if boundary == 0, then we return false, i.e. there is no boundary, so we can never be crossing it.
-> 
-> static bool rq_straddles_atomic_write_boundary(struct request *rq,
-> unsigned int front,
-> unsigned int back)
-> {
->     unsigned int boundary = queue_atomic_write_boundary_bytes(rq->q);
->     unsigned int mask, imask;
->     loff_t start, end;
-> 
->     if (!boundary)
->         return false;
-> 
->     ...
-> }
-> 
-> And then will not reject a merge for that reason, like:
-> 
-> int ll_back_merge_fn(struct request *req, struct bio *bio, unsigned int nr_segs)
-> {
->     ...
-> 
->     if (req->cmd_flags & REQ_ATOMIC) {
->         if (rq_straddles_atomic_write_boundary(req,
->             0, bio->bi_iter.bi_size)) {
->             return 0;
->         }
->     }
-> 
->     return ll_new_hw_segment(req, bio, nr_segs);
-> }
-> 
-> 
-Aargh, you are right. I see that if rq_straddles_atomic_write_boundary() returns true then we avoid merge otherwise the merge is attempted. My bad...
+Could we instead rely on an xarray marking a bunch of entries (the
+ones we want to 'copy'), and get the reader to clear these marks once
+done?
 
-Thanks,
---Nilay
+Of course, we only have 3 marks, so that's a bit restrictive from a
+concurrency perspective, but since most callers hold a lock, it should
+be OK.
+
+What do you think?
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
