@@ -1,128 +1,84 @@
-Return-Path: <linux-kernel+bounces-65772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F0E85521C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:31:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCB68551AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 677E3B2FEBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:10:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70971F23F1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45B212CDB6;
-	Wed, 14 Feb 2024 18:04:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F6712D777;
+	Wed, 14 Feb 2024 18:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o10FIg7E"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Hhy+CkfP"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2466D12CD95;
-	Wed, 14 Feb 2024 18:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B53D1292DB;
+	Wed, 14 Feb 2024 18:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933864; cv=none; b=IZMiKjECO07raR4s4Qg3dXU34X34yOoDGHOoS4m2X+YXGaGhBNvwTehhOZXMr1gCx3GVLVjFgBgeCn9hOkAXPNuBANlxEDQZG+RHFaIq7PXbOgBc5+yQ1u9Jyyst2eMeVkcJYYS8pqqsAxO9tg8J5Ega23l6jci5D+uI3q3qcdo=
+	t=1707933884; cv=none; b=aT4Nfp5sU8I1IcKjGnusvEsHSjHfnQSP8RM4MxBR4lWb/lcSTVT3IshemNOP8/jCoa+SNYzPXFtKaW01xB4NanChnqKxvo9QqWlALxxtIoOGC4ERw8Na7fLLCxLyPt4vsJ4aK6JSKjF5PwFZW9ckyLT5+tlpn9FgSu+UZu8qc78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933864; c=relaxed/simple;
-	bh=IDeUiMyZPUnEfKxpDIXHipIIOqaWatBhHTQI+AiVf+M=;
+	s=arc-20240116; t=1707933884; c=relaxed/simple;
+	bh=tp9WBVv4tk8bpCmaDHshpr73lQEddgNoO5Q4jQr2A9U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KF3AtYMU68HY2Hnm4Ta2vb4I7iHP9yPzUuKGBeBRv+nNseI6KTudYCcfaLA9xnOiLKXVM705LYYbN3Vi0XeBQvQrSRy8aDmbEYmJ4xE023+lAwTUHmbcaLeyDNuMwl6yBvXtdm41/D14xXCEXDf1yO8c6uMTdUuGkrcyNddvpfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o10FIg7E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9BBDC43394;
-	Wed, 14 Feb 2024 18:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933862;
-	bh=IDeUiMyZPUnEfKxpDIXHipIIOqaWatBhHTQI+AiVf+M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o10FIg7EJ8HGW+DA+b7COwvaLG9skhdRVdxvVBUwfoHXJyJcPCpun0NVQAw9S0TTq
-	 /EEUVEdBeeg3crTDamwO6b24lTxcreqNUYhQDy8zKYZfuOgwzPP2oYJeNzWi/eMP0l
-	 uQR7Qy6t4BD7YGwctYT8kQOoy084lAB/h5jugVYXmFAazffTpNdzoooBmgONDZ/LNS
-	 Igm9bk6oD/X21OLL0s/XL3MhjbX2ptQROaECd6cR+4yurV+i4qNeR/oEumeAXBOrhQ
-	 SZR7/oZ1BCALnNwb57auPvIzVfa28KqGbFWM0FNo9epA1xEHFPDxtTMfxhbKmah8hC
-	 p8JvUHvwqC4HQ==
-Date: Wed, 14 Feb 2024 18:04:17 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Balakrishnan Sambath <balakrishnan.s@microchip.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] dt-bindings: mfd: Convert atmel-flexcom to json-schema
-Message-ID: <20240214-vagueness-voice-15fb82c56bfb@spud>
-References: <20240214-sama5d2-flexcom-yaml-v1-1-5dedd0eba08e@microchip.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OZxxOfDvzRkciUt9m38PGzDbmKyaB6O826/pn9f+OBMaAALGPUb/3V6dkU6np7kd+JSR7gVA2W4NkoWpjjFH5UQvKqPvsmYHl/1xx0DbD8c8fUIQ9qCm3T1ROy+1wcx3/Um7Ooy971JYdh8/D3KIgQRo2UF8ldE+HsdmOSEgWWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Hhy+CkfP; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=asjQTJ1uTvWYrDDXb91A7DvAB5RkaQAzani0ICferZo=; b=Hhy+CkfP9/tE8VikwnH77iK+Od
+	+5MVECwCQMsHwEWGCRWu/299CEaWjr16LDuw/KnLeRUSmNu6SUsCnPp6XVaCbere563/JkYRO0Jjg
+	EUpGxqzTLuGpioOJ6izUSlMEXZFvj7iXwYUy/MxRJ6V1D7CkUg1Iy2xoOFWpbBoHsoWw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raJck-007oXp-BD; Wed, 14 Feb 2024 19:04:46 +0100
+Date: Wed, 14 Feb 2024 19:04:46 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH] net: phy: aquantia: add AQR111 and AQR111B0 PHY
+ ID
+Message-ID: <e1b02bfc-0e84-4b4d-804a-3db2ce546e3a@lunn.ch>
+References: <20240213133558.1836-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wQNHLYaQdvjLT5wU"
-Content-Disposition: inline
-In-Reply-To: <20240214-sama5d2-flexcom-yaml-v1-1-5dedd0eba08e@microchip.com>
-
-
---wQNHLYaQdvjLT5wU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240213133558.1836-1-ansuelsmth@gmail.com>
 
-On Wed, Feb 14, 2024 at 11:13:43AM +0530, Balakrishnan Sambath wrote:
-> From: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
->=20
-> Convert the Atmel flexcom device tree bindings to json schema.
->=20
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Balakrishnan Sambath <balakrishnan.s@microchip.com>
-> ---
-> The yaml DT bindings for the atmel-flexcom driver were submitted
-> upstream in a separate patch series in 2022 [1] which was Acked-by
-> Krzysztof Kozlowski. However, it has been observed recently that the
-> patch has not been merged into the mainline codebase.When attempting to
-> apply the patch to the latest upstream kernel,a conflict arose due to a
-> recent addition to the original device tree binding in text format. The
-> conflict has now been resolved and we are sending a updated version of
-> the patch.=20
+On Tue, Feb 13, 2024 at 02:35:51PM +0100, Christian Marangi wrote:
+> Add Aquantia AQR111 and AQR111B0 PHY ID. These PHY advertise 10G speed
+> but actually supports up to 5G speed, hence some manual fixup is needed.
+> 
+> The Aquantia AQR111B0 PHY is just a variant of the AQR111 with smaller
+> chip size.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-I don't think you actually resolved this conflict:
+The discussion around provisioning should not prevent this being
+merged.
 
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,sama5d2-flexcom
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-> -- compatible:		Should be "atmel,sama5d2-flexcom"
-
-> -			or "microchip,sam9x7-flexcom", "atmel,sama5d2-flexcom"
-
-This line here is the "recent addition", but this is not in the new yaml
-binding.
-
-Please fix!
-
-Thanks,
-Conor.
-
---wQNHLYaQdvjLT5wU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc0AoQAKCRB4tDGHoIJi
-0tIEAQC/q08UAG37AzdYes9SCpdwGsOdCtlrsF3TYziiNJHCgAD+K3uUQBf7BsKM
-ujNCelvDidii75c7qh66+xespxlJuwA=
-=DBLx
------END PGP SIGNATURE-----
-
---wQNHLYaQdvjLT5wU--
+    Andrew
 
