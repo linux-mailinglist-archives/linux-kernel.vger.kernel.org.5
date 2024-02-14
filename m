@@ -1,159 +1,126 @@
-Return-Path: <linux-kernel+bounces-65467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B124B854D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:55:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38EF2854D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBA36B27649
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:55:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5A01F2BE24
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53BD55EE7E;
-	Wed, 14 Feb 2024 15:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDRU0t6i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F225B5DB;
-	Wed, 14 Feb 2024 15:55:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD12D5D916;
+	Wed, 14 Feb 2024 15:56:00 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0DF5B5DB
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926137; cv=none; b=VFw7sMwUku4NU0Z/84X5AGgNbDTs+0ol1bxaZGe9VniBHnehB6fmgzV/iE55Z1flcyyBHBzTAyXMxOO4rF4fQKWHsNgr4Z1OSNEFeVT37zNYI+PfUbqXlWyqW9MIZwtOD8TrYbjihqXat4krFRb7e4mbyDjoBwJkSFqdqqy9zQ4=
+	t=1707926160; cv=none; b=sToOmL6Rg8zVtS9Sz0etO0k5Y5BYHqSKRW/nPZ+b1kP/MREG+AbuUK07qqrH6nAWXLldiDz8CxSS9rJ1Xl1tj+7A4uRttxO3XNQf1U7R/9XKX3dWvKBhwvhCP+8JViuVGLrZ3yWMKF4MhaCEgwojGZ8BVA/43hpcJgkejaoymqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926137; c=relaxed/simple;
-	bh=3nBeVvDzPWSYkBUuAMGRboAigFEsz79F7jZ+9eTr11k=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KFKJ17cZAaVM/gTWUOBPLe8fPwmNe2kfmgL9JWoOPgDYk3lPUFxz43YOJUe7rzUr0dtlQabeArETjW+aImSsWqdnXSr9bQYBDeXac49v50gjwQDiHDyshkq/mNoJW8HfIYS16kPbIvaUN2qUl2ebtTw5klRC6CYv0USAC0qL0gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PDRU0t6i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E806C433C7;
-	Wed, 14 Feb 2024 15:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707926137;
-	bh=3nBeVvDzPWSYkBUuAMGRboAigFEsz79F7jZ+9eTr11k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PDRU0t6iSS5gndYGuN7noRJU4+3sY22cJUlXpmJS0WbshlislZBuL+WOH78XbW4OQ
-	 2HKYlgz29AjLMgMt4FOTHonoqy8kkblX0mhaatZ9fv/L+oQVLhKBzwrpBJ/Y/Jhg30
-	 RBuNY8YlFdnOkIDmTia/G9nIEcEhf2d6lY+0AXhgYoP/wdpiiA5Br5RLbFIKk2m7ba
-	 Tf8k+tDS3NtMvxyIPx0MOOpZhuZNQ15yAFqkinuJlS89qseh9P1Dun2l9HiXRiNwgq
-	 dYQ2zD7ixKYVA5cVGgZRcxe8Omw/gJ6ZEKCbhYvGEv4usmNE5Ie8sH02Fx/wSTnwmN
-	 fSNtoIgjBWg1Q==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1raHbi-003Bjv-UN;
-	Wed, 14 Feb 2024 15:55:35 +0000
-Date: Wed, 14 Feb 2024 15:55:33 +0000
-Message-ID: <864jeb59ca.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/23] KVM: arm64: Add tracepoints + stats for LPI cache effectiveness
-In-Reply-To: <20240213093250.3960069-2-oliver.upton@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
-	<20240213093250.3960069-2-oliver.upton@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707926160; c=relaxed/simple;
+	bh=GYlOf0ZLZBjDUzNZHnjjcXz77os/gke35De2B3RvlBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UbSEZjQeFbsnpecZ7WrhdsMpDYh9TjVbvTKAUktIrMOxZzBAALrZ5Nk57ziAwJvn+YHT5BBxjQ9SOkh+MBjbw2L0YYLy4CMDBUHGD/AFbPOs6ka3jHM1H5FUSA9QFkBRaWp/za9ZCZqikpY1Dz14TQmH3vy7pOozoiXHpMkzKVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by mail.home.local (8.17.1/8.17.1/Submit) id 41EFtj2x006798;
+	Wed, 14 Feb 2024 16:55:45 +0100
+Date: Wed, 14 Feb 2024 16:55:45 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Rodrigo Campos <rodrigo@sdfg.com.ar>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] tools/nolibc: Fix strlcpy() return code and size
+ usage
+Message-ID: <ZczigTyNa5dqtKRy@1wt.eu>
+References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
+ <20240129141516.198636-4-rodrigo@sdfg.com.ar>
+ <20240211110814.GB19364@1wt.eu>
+ <cc997fd5-1478-43fc-8ba0-aba5e7b3bfdc@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc997fd5-1478-43fc-8ba0-aba5e7b3bfdc@sdfg.com.ar>
 
-On Tue, 13 Feb 2024 09:32:38 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
+On Wed, Feb 14, 2024 at 12:50:53PM -0300, Rodrigo Campos wrote:
+> On 2/11/24 12:08, Willy Tarreau wrote:
+> > Hi Rodrigo,
+> > 
+> > It's good, but for the same reason as the previous one, I'm getting
+> > smaller code by doing less in the loop. Also calling strlen() here
+> > looks expensive, I'm seeing that the compiler inlined it nevertheless
+> > and did it in a dep-optimized way due to the asm statement. That
+> > results in 67 bytes total while a simpler version gives 47.
+> > 
+> > If I explicitly mark strlen() __attribute__((noinline)) that prevents
+> > it from doing so starting with gcc-10, where it correctly places a jump
+> > from strlcpy() to strlen() and ends up with 50 bytes (vs 44 for the alt
+> > one). The other one I can propose is directly derived from the other
+> > strlcat() variant, which first performs the copy and starts to count:
+> > 
+> > size_t strlcpy(char *dst, const char *src, size_t size)
+> > {
+> >          size_t len;
+> > 
+> >          for (len = 0; len < size; len++) {
+> >                  if (!(dst[len] = src[len]))
+> >                          return len;
+> >          }
+> > 
+> >          /* end of src not found before size */
+> >          if (size)
+> >                  dst[size - 1] = '\0';
+> > 
+> >          while (src[len])
+> >                  len++;
+> > 
+> >          return len;
+> > }
+> > 
+> > Just let me know what you think.
 > 
-> LPI translation and injection has been shown to have a significant
-> impact on the performance of VM workloads, so it probably makes sense to
-> add some signals in this area.
+> This is one is very nice, thanks!
 > 
-> Introduce the concept of a KVM tracepoint that associates with a VM
-> stat and use it for the LPI translation cache tracepoints. It isn't too
-> uncommon for a kernel hacker to attach to tracepoints, while at the same
-> time userspace may open a 'binary stats' FD to peek at the corresponding
-> VM stats.
+> Sorry I didn't think about the size at all when writing the functions :)
+
+Never be sorry, low-level user code like this is never trivial and
+that's the goal of the nolibc-test in the first place ;-)
+
+> We can change the loop to be:
 > 
-> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
-> ---
->  arch/arm64/include/asm/kvm_host.h |  3 ++
->  arch/arm64/kvm/guest.c            |  5 ++-
->  arch/arm64/kvm/vgic/trace.h       | 66 +++++++++++++++++++++++++++++++
->  arch/arm64/kvm/vgic/vgic-its.c    | 14 ++++++-
->  include/linux/kvm_host.h          |  4 ++
->  5 files changed, 89 insertions(+), 3 deletions(-)
+>         for (len = 0; len < size; len++) {
+>                 dst[len] = src[len];
+>                 if (!dst[len])
+>                         break;
+>         }
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 21c57b812569..6f88b76373a5 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -966,6 +966,9 @@ static inline bool __vcpu_write_sys_reg_to_cpu(u64 val, int reg)
->  
->  struct kvm_vm_stat {
->  	struct kvm_vm_stat_generic generic;
-> +	u64 vgic_its_trans_cache_hit;
-> +	u64 vgic_its_trans_cache_miss;
-> +	u64 vgic_its_trans_cache_victim;
->  };
->  
->  struct kvm_vcpu_stat {
-> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-> index aaf1d4939739..354d67251fc2 100644
-> --- a/arch/arm64/kvm/guest.c
-> +++ b/arch/arm64/kvm/guest.c
-> @@ -30,7 +30,10 @@
->  #include "trace.h"
->  
->  const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
-> -	KVM_GENERIC_VM_STATS()
-> +	KVM_GENERIC_VM_STATS(),
-> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_hit),
-> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_miss),
-> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_victim)
->  };
+> That IMHO it is slightly more readable and makes it only 2 bytes longer
+> here.
 
-We've talked about this offline, but I thought I'd make my position
-public on these.
+It's not exactly the same, it will always write a zero at dst[size-1]
+due to the break statement. As much as I hate returns in the middle,
+this one made sense for this case. A goto to the final return statement
+is fine as well.
 
-I've very concerned that exposing these statistic, however useful they
-may be at a given point in time, will eventually become all wrong
-and/or misleading.
+> What do you think? I'm fine with both, of course.
 
-Case in point, our discussion about this very series, where we landed
-on a potential reimplementation of the translation cache as a per-ITS
-xarray. If this comes to fruition, these stats will probably be
-totally useless (hit monotonically increasing at the rate of 1 per
-interrupt, miss being 0 or 1, victim being stuck to 0).
+I'm fine with the more readable part (I also prefer it) but not the use
+of break here.
 
-I'm *not* saying that such stats are totally useless. Just that they
-are, by definition, tied to a kernel-side implementation choice, which
-will evolve. The trouble is that they create an ABI that we need to
-support forever.
+> If I resend, shall I add a suggested-by or directly you as the author?
 
-I wish we could work on something that would allow such statistics to
-be *extracted* (as opposed to published). Something like this as a
-discussion subject for a future KVM Forum or LPC uConf would get my
-full backing (and I'm pretty sure the networking folks have solved
-that problem a long time ago).
+No need for either, it's your work, my part was just a review and an
+addictive temptation to look at asm code ;-)
 
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Cheers,
+Willy
 
