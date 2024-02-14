@@ -1,155 +1,254 @@
-Return-Path: <linux-kernel+bounces-65232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD4B8549C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FB68549CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:57:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13305B21A5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E50E1C237A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F5353386;
-	Wed, 14 Feb 2024 12:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6624452F9D;
+	Wed, 14 Feb 2024 12:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HLFZf1YE"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YzMaoC2B"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E07524B2;
-	Wed, 14 Feb 2024 12:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A909E524CF
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915384; cv=none; b=FA51TUZu4B1uYJIXz3f4M5u+OV8ep3shfSt+l2qILFjBeVlpAfjZQCEd2EWIyUHJ/Eh/p9VXI4rx++NxpIfQXT4g9WSLjxMQwb83o8kNi76vBivcJ/wvOmD5KwLK1URwZ5SGF2KPZs/5Z3ezP3DipgfoxUSHDoVLgFCGrkGiAWc=
+	t=1707915396; cv=none; b=mv+VrDWGZg0BssKbipIgqWrOLEWV19oY7gzNI8rI5cnqlg4FkhnmuEQoLlBpUquyddZAczal1JA8lac9uPMLQ+UAcz9sBtnDefLc4CarVSGph0cWCNVN8kvu3zcacCA3poewMeYtsQfiSCeAzn3aM4+Ve0vNRkERaHFNipuYEpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915384; c=relaxed/simple;
-	bh=BvZiBFtd1/yR2YlF7wcWOokDKadIUElG7972GToHNVo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=R5jDeWJPQW9alww/MUetu5PZll9oo59daNByCvEkvdLjMi57vTF2fCI5N+qaezjLIpvXxvwB1vblFJKDWl8rXNRrqV2J8QEVDRp01I2DrlKkmY7czKbnWJATqJs0XPcuLQsCMPpsR+p8w7+HxiRRPwbVIGcE/YmRynlpTWt3Ca0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HLFZf1YE; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7d2e16b552dso2845702241.1;
-        Wed, 14 Feb 2024 04:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707915382; x=1708520182; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5XHZsoNoLoEFnlnV78+Lk34bmjhSEU006PIr8jhyp/4=;
-        b=HLFZf1YEhhbQPgrCkVhhXBYj4uPF03NCN8w4Ee9prwU07wsoIHi+MmyInxQbnfeC4i
-         y0NkKPPuR48dj49CM689n0wKuH+RFCwCxOYIxv3Jy9qK5CHpzlmHpO5YMNdhFXCZeizf
-         ZV+9BaP3gFwAk5FdGupIAEy2g2AmLrsOL9OgLFzdT+nf3jJfD9Iwq5aAkgzw2XXHEVx6
-         eGMLCID13kLiH9aP0wojEpGl4tv9+iAgjikkRLFjvYxdnxL6U00pYR6jGy2U6up+V2kq
-         IWAcTimOmKvdy8N6Nipv39s/O6xGkb1fYltWAXJcpPYOK3NRDggF/Tjla249C+RdCI2J
-         K/JQ==
+	s=arc-20240116; t=1707915396; c=relaxed/simple;
+	bh=FJp37iTRPYPRDJyHF81G0HZwGNHWM28gXJ/LmpRlD1c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=t97YMzWbQysl+ffetY/B5lPSthsVwuzDAuY3QvkePZ1XkrlEe1ING1djmiXexGG9dFAzbH7nFpLbhCbCLvjyhHiyYm5lrnjq8LcQaH0g+5KNzI4mr508dkAo0M7K4DM3+SgC29U8ngn7qQQSh7xNX94HpcVpxcUJCQqZgDSrgu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YzMaoC2B; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707915393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FJp37iTRPYPRDJyHF81G0HZwGNHWM28gXJ/LmpRlD1c=;
+	b=YzMaoC2BsRjV+QxtjJUieTSlQzt0jlhZ35SDci2FTNzFMefvYMst/s+5xTUPEynb1P6Phg
+	3xPXwcsZ4IJX/b4IITU/Vk0igcyYsvbJSDgT/iZSohGd2atUnWDFjHyC1ee0gLh8YpHGda
+	mmxpfjgZo2erCgoJiMwdmtTDqGD6WH0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-537-SlWRdl4aPsW4hWfSWB_jpQ-1; Wed, 14 Feb 2024 07:56:32 -0500
+X-MC-Unique: SlWRdl4aPsW4hWfSWB_jpQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3d481c7d8cso32941166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:56:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707915382; x=1708520182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707915391; x=1708520191;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5XHZsoNoLoEFnlnV78+Lk34bmjhSEU006PIr8jhyp/4=;
-        b=MEz6s50T0MdkrndBijlhsR7vCZ2fo4BgwKJxMeT0+0FgnIP2lipspHe8aoYMBMrXKJ
-         +vtwVlFXZuyaJhn0+CVANsKOhzENF2yR7BFIuyfLGJTlBlIUsk16D3unqmdPrVpv6DdS
-         hHQEPGGkG2geVrWcO1zElgywiMRAzD//8t8rl3jDKsD1LRxVK5pO//5CrEIda+wrYX9i
-         +Bn8bQJZU3hbXSrYKyT/UvAWTrHoHO4imCr97mFI3EbhbcBIEykyRy5J90AmAjudcZcE
-         y4/yOWxdd9XyDRhrlVNpRCRJ6oJrkrRkh0upEkU7MfAO1Y7ZfRQyUH8NDlqqQILyQQ2U
-         e4Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6piNWLm5jbB82HgCnwAGtcCL8lfufJtlQcdGpbcqlCCwvUZcRTXtTp6scuQySX7bedpnNIRISD0QwJ4oZ12lRivyF8invbv9Y+4FV
-X-Gm-Message-State: AOJu0YxlM62V5raFBXKS37pzzrvJ1dUYXmQBEE/4Xw25mA+kik9lqE+t
-	Gn0/luZIW/0F6CMrMn2NXDDZg+fEeKeXf1hJk4PuO4nzlz+gdd5YTvfMgfVtXdEl/4B6Cfji5K3
-	s2ICmQ0v7EgNew2zhoJLJ4HlPJAk=
-X-Google-Smtp-Source: AGHT+IHFduVz+Cu6aMTUgwJZ7KlSTtydgd57+6W1PCptyTCAmb/MDIqrhFLH/CK/s4uBTPBfRUcgdghDDJ60fi08ffA=
-X-Received: by 2002:a05:6102:942:b0:46e:c78e:380c with SMTP id
- a2-20020a056102094200b0046ec78e380cmr3224519vsi.1.1707915381929; Wed, 14 Feb
- 2024 04:56:21 -0800 (PST)
+        bh=FJp37iTRPYPRDJyHF81G0HZwGNHWM28gXJ/LmpRlD1c=;
+        b=CqGH1RHUjU9m2U5b2FZqtKnaq7Ty1PpcIHKYlQafcZbBZyUKe2hwYJSAz4EmHnQ4Y0
+         SpZopzc0WcO67qbf6f8WEFsVJq0ZPPlXEWwEUidW0JZVSWLqbgu9fFWeN0cJ6hjto+2A
+         RAnmF5zH7a/aulo32p568LRzJ65HUaHjaK4D14gKOx6fjTMjAwXLfXY+sIscCjNo+JrJ
+         rVY8wAEdHA1OU9xxiExSSWMs2sbdrx133g9rJDGhhV41sNnHNcGbX72H8atADvO3cVhV
+         0KomEoxQrBojdLBo0t8tlUnEoOi0mSKGGkIDeeCL0ZokyHeN5KLOItAIVTKqncxk09e1
+         T0lg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLODLbrg+tHr8GH6u7MClv5QxIy0vtssBdSkF3vc4DoRnuOeM9fQnh3a8gjIQjf1lY0qLV/Kd44Zmoe+jBM8OmjOlhO7rwq3RsJ25k
+X-Gm-Message-State: AOJu0Ywb8uoYNFc8DbQdpLCrCbveP9kotny0WH/EjUz4cGGw2GRfKuHx
+	vQy+d/SI4tz+jPSY29bCqoeJwfgf49XmrYDOiuKOs0hBC5zUwb3oy5QPnqr0arPlK+979OOnjJc
+	gIQxWPe2SuBYwPCHJNuJqXF0TDlHN+a6TCArPDZS6a5WfghrTVkXzFKm9TOg7Xw==
+X-Received: by 2002:a17:906:f8cf:b0:a3d:2422:ee73 with SMTP id lh15-20020a170906f8cf00b00a3d2422ee73mr1559811ejb.77.1707915391124;
+        Wed, 14 Feb 2024 04:56:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEtC4RmVIKd3BfBmk6nYmZIZiM8phFHfpA/m86d7qk4SVIPJZDEl1BVx7eVsmIDBaNUG11aPw==
+X-Received: by 2002:a17:906:f8cf:b0:a3d:2422:ee73 with SMTP id lh15-20020a170906f8cf00b00a3d2422ee73mr1559778ejb.77.1707915390722;
+        Wed, 14 Feb 2024 04:56:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXeVT566eawAqV4mSiYIM54RSXg8KcFzFeTfM3lTaqYUMHBIUCXS/1t/A3OUh7PJjPlqfAuhmCDkluKHV5tDkoxAwbqEWcsb9OHKXszu9xt1+XsHDsqQR/Gt6oMAJQxj44Rtg1OIEF+AcFruNXTnueqhOSsty1y8hMHV/Q0Hy+vXJQpN0xBV3ghNG/4nguQ2hrqJJDM8MZHSY6bIj5ts1xFNA5MQpgsHrvI1Em0gVn7Y2389Jy3RsiAL7THwe00c2TzV7T7EyOWYKihiAu5o+rtxRs8uXtR/8gGy9RDXg28p1fPZJIaYFZR1R9IsZYukb84tHI0pSYWTJNbTvxqu+j6oHcO43pcoCf5hxkqfgFDAJYr0ELb4pmAHgPMPEFoJrJLDNiCLG16PPatmNBKy1MNPwrf/YGrGwcacXGEO19Jn8Suusnc+ODFM+fkSY0zIFsLdG799C9+nD4ryXbDWIt+ojfqV8NyG0IJdWyrRLa3cNG4+hmXhFUq3zif8GB1EA/FMNM7pf8JVk4YNRjHpH32s+cpFXVMNmhubaIYqYaL8uDYxGAF20wM0VY6oYtaO5GfSYOZhvG4Fuyz/XALrhx2z6Z7dsYB2dG2bUYSeLI8tCQ1YzLYVj6dKMcM3F9nDqm3Ur2Xrh8lMjGM0WTj7OwrpTIo9R78b+zsq8Yv9X+UDIL64djWOPfW1itQBIqU6VQ=
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id vb1-20020a170907d04100b00a3cfe376116sm1673172ejc.57.2024.02.14.04.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 04:56:30 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id CF25D10F578E; Wed, 14 Feb 2024 13:56:29 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Benjamin Tissoires
+ <bentiss@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, Jonathan Corbet
+ <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, bpf
+ <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "open list:HID
+ CORE LAYER" <linux-input@vger.kernel.org>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/9] allow HID-BPF to do device IOs
+In-Reply-To: <b2k6rlzu5vgpouedwjbsigoteo43nwfk6qeeb2pc7c3r4ejnm6@nml66ds6wbeo>
+References: <87bk8pve2z.fsf@toke.dk>
+ <CAO-hwJ+UeaBydN9deA8KBbgBiC_UCt6oXX-wGnNuSr8fhUrkXw@mail.gmail.com>
+ <875xyxva9u.fsf@toke.dk>
+ <CAO-hwJLvEGNRXc8G2PR+AQ6kJg+k5YqSt3F7LCSc0zWnmFfe5g@mail.gmail.com>
+ <87r0hhfudh.fsf@toke.dk>
+ <CAO-hwJLxkt=THKBjxDA6KZsC5h52rCXZ-2RNKPCiYMHNjhQJNg@mail.gmail.com>
+ <CAADnVQKt7zu2OY0xHCkTb=KSXO33Xj8H4vVYMqP51ZJ_Kj1sZA@mail.gmail.com>
+ <zybv26nmqtmyghakbebwxanzgzsfm6brvi7qw3ljoh4dijbjki@ub7atnumzuhy>
+ <CAP01T75Giw_5j0RXaaxX0rDzCcXXZgmHrw7QZ_Ayib8rHgunBQ@mail.gmail.com>
+ <877cj8f8ht.fsf@toke.dk>
+ <b2k6rlzu5vgpouedwjbsigoteo43nwfk6qeeb2pc7c3r4ejnm6@nml66ds6wbeo>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 14 Feb 2024 13:56:29 +0100
+Message-ID: <874jebfblu.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213220331.239031-1-paweldembicki@gmail.com>
- <20240213220331.239031-3-paweldembicki@gmail.com> <6db0fd10-556d-47ec-b15a-d03e805b2621@gmail.com>
-In-Reply-To: <6db0fd10-556d-47ec-b15a-d03e805b2621@gmail.com>
-From: =?UTF-8?Q?Pawe=C5=82_Dembicki?= <paweldembicki@gmail.com>
-Date: Wed, 14 Feb 2024 13:56:10 +0100
-Message-ID: <CAJN1Kkz9NPMuoKsm4XdmGS=Y9=SkYM-_EZhqxBojfGZycegtjw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 02/15] net: dsa: vsc73xx: convert to PHYLINK
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: netdev@vger.kernel.org, linus.walleij@linaro.org, 
-	Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Claudiu Manoil <claudiu.manoil@nxp.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-=C5=9Br., 14 lut 2024 o 00:19 Florian Fainelli <f.fainelli@gmail.com> napis=
-a=C5=82(a):
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Tue, Feb 13, 2024 at 08:51:26PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>>=20
+>> > On Tue, 13 Feb 2024 at 18:46, Benjamin Tissoires <bentiss@kernel.org> =
+wrote:
+>> >>
+>> >> On Feb 12 2024, Alexei Starovoitov wrote:
+>> >> > On Mon, Feb 12, 2024 at 10:21=E2=80=AFAM Benjamin Tissoires
+>> >> > <benjamin.tissoires@redhat.com> wrote:
+>> >> > >
+>> >> > > On Mon, Feb 12, 2024 at 6:46=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8=
+rgensen <toke@redhat.com> wrote:
+>> >> > > >
+>> >> > > > Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+>> >> > > >
+>> >> [...]
+>> >> > I agree that workqueue delegation fits into the bpf_timer concept a=
+nd
+>> >> > a lot of code can and should be shared.
+>> >>
+>> >> Thanks Alexei for the detailed answer. I've given it an attempt but s=
+till can not
+>> >> figure it out entirely.
+>> >>
+>> >> > All the lessons(bugs) learned with bpf_timer don't need to be re-di=
+scovered :)
+>> >> > Too bad, bpf_timer_set_callback() doesn't have a flag argument,
+>> >> > so we need a new kfunc to set a sleepable callback.
+>> >> > Maybe
+>> >> > bpf_timer_set_sleepable_cb() ?
+>> >>
+>> >> OK. So I guess I should drop Toke's suggestion with the bpf_timer_ini=
+() flag?
+>> >>
+>> >> > The verifier will set is_async_cb =3D true for it (like it does for=
+ regular cb-s).
+>> >> > And since prog->aux->sleepable is kinda "global" we need another
+>> >> > per subprog flag:
+>> >> > bool is_sleepable: 1;
+>> >>
+>> >> done (in push_callback_call())
+>> >>
+>> >> >
+>> >> > We can factor out a check "if (prog->aux->sleepable)" into a helper
+>> >> > that will check that "global" flag and another env->cur_state->in_s=
+leepable
+>> >> > flag that will work similar to active_rcu_lock.
+>> >>
+>> >> done (I think), cf patch 2 below
+>> >>
+>> >> > Once the verifier starts processing subprog->is_sleepable
+>> >> > it will set cur_state->in_sleepable =3D true;
+>> >> > to make all subprogs called from that cb to be recognized as sleepa=
+ble too.
+>> >>
+>> >> That's the point I don't know where to put the new code.
+>> >>
+>> >
+>> > I think that would go in the already existing special case for
+>> > push_async_cb where you get the verifier state of the async callback.
+>> > You can make setting the boolean in that verifier state conditional on
+>> > whether it's your kfunc/helper you're processing taking a sleepable
+>> > callback.
+>> >
+>> >> It seems the best place would be in do_check(), but I am under the im=
+pression
+>> >> that the code of the callback is added at the end of the instruction =
+list, meaning
+>> >> that I do not know where it starts, and which subprog index it corres=
+ponds to.
+>> >>
+>> >> >
+>> >> > A bit of a challenge is what to do with global subprogs,
+>> >> > since they're verified lazily. They can be called from
+>> >> > sleepable and non-sleepable contex. Should be solvable.
+>> >>
+>> >> I must confess this is way over me (and given that I didn't even mana=
+ged to make
+>> >> the "easy" case working, that might explain things a little :-P )
+>> >>
+>> >
+>> > I think it will be solvable but made somewhat difficult by the fact
+>> > that even if we mark subprog_info of some global_func A as
+>> > in_sleepable, so that we explore it as sleepable during its
+>> > verification, we might encounter later another global_func that calls
+>> > a global func, already explored as non-sleepable, in sleepable
+>> > context. In this case I think we need to redo the verification of that
+>> > global func as sleepable once again. It could be that it is called
+>> > from both non-sleepable and sleepable contexts, so both paths
+>> > (in_sleepable =3D true, and in_sleepable =3D false) need to be explore=
+d,
+>> > or we could reject such cases, but it might be a little restrictive.
+>> >
+>> > Some common helper global func unrelated to caller context doing some
+>> > auxiliary work, called from sleepable timer callback and normal main
+>> > subprog might be an example where rejection will be prohibitive.
+>> >
+>> > An approach might be to explore main and global subprogs once as we do
+>> > now, and then keep a list of global subprogs that need to be revisited
+>> > as in_sleepable (due to being called from a sleepable context) and
+>> > trigger do_check_common for them again, this might have to be repeated
+>> > as the list grows on each iteration, but eventually we will have
+>> > explored all of them as in_sleepable if need be, and the loop will
+>> > end. Surely, this trades off logical simplicity of verifier code with
+>> > redoing verification of global subprogs again.
+>> >
+>> > To add items to such a list, for each global subprog we encounter that
+>> > needs to be analyzed as in_sleepable, we will also collect all its
+>> > callee global subprogs by walking its instructions (a bit like
+>> > check_max_stack_depth does).
+>>=20
+>> Sorry if I'm being dense, but why is all this needed if it's already
+>> possible to just define the timer callback from a program type that
+>> allows sleeping, and then set the actual timeout from a different
+>> program that is not sleepable? Isn't the set_sleepable_cb() kfunc just a
+>> convenience then? Or did I misunderstand and it's not actually possible
+>> to mix callback/timer arming from different program types?
 >
-> On 2/13/24 14:03, Pawel Dembicki wrote:
-> > This patch replaces the adjust_link api with the phylink apis that prov=
-ide
-> > equivalent functionality.
-> >
-> > The remaining functionality from the adjust_link is now covered in the
-> > phylink_mac_link_* and phylink_mac_config.
-> >
-> > Removes:
-> > .adjust_link
-> > Adds:
-> > .phylink_mac_config
-> > .phylink_mac_link_up
-> > .phylink_mac_link_down
->
-> The implementation of phylink_mac_link_down() strictly mimics what had
-> been done by adjust_link() in the phydev->link =3D=3D 0 case, but it real=
-ly
-> makes me wonder whether some bits do not logically belong to
-> phylink_mac_link_up(), like "Accept packets again" for instance.
->
-> Are we certain there was not an assumption before that we would get
-> adjust_link() called first with phydev->link =3D 0, and then phydev->link
-> =3D1 and that this specific sequence would program things just the way we
-> want?
+> More than just convience.
+> bpf_set_sleepable_cb() might need to be called from non-sleepable and
+> there could be no way to hack it around with fake sleepable entry.
+> bpf_timer_cancel() clears callback_fn.
+> So if prog wants to bpf_timer_start() and later bpf_timer_cancel()
+> it would need to bpf_set_sleepable_cb() every time before bpf_timer_start=
+().
+> And at that time it might be in non-sleepable ctx.
 
-Yes, it was the simplest conversion possible, without any improvements.
+Ah, right, makes sense; didn't think about bpf_timer_cancel(). Thanks
+for the explanation :)
 
-Some part is implementation of datasheet (description of ARBEMPTY register)=
-:
+-Toke
 
-        /* Discard packets */
-        vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ARBITER, 0,
-                            VSC73XX_ARBDISC, BIT(port), BIT(port));
-
-        /* Wait until queue is empty */
-        ret =3D read_poll_timeout(vsc73xx_read, err, err < 0 || (val & BIT(=
-port)),
-                                1000, 10000, false, vsc, VSC73XX_BLOCK_ARBI=
-TER,
-                                0, VSC73XX_ARBEMPTY, &val);
-        if (ret)
-                dev_err(vsc->dev,
-                        "timeout waiting for block arbiter\n");
-        else if (err < 0)
-                dev_err(vsc->dev, "error reading arbiter\n");
-
-        /* Put this port into reset */
-        vsc73xx_write(vsc, VSC73XX_BLOCK_MAC, port, VSC73XX_MAC_CFG,
-                      VSC73XX_MAC_CFG_RESET);
-
-
-I agree that VSC73XX_ARBDISC should be moved to phylink_mac_link_up.
-Other things could be optimised and it needs more care. (eg. This
-implementation doesn't disable phy when the interface goes down.) I
-plan to tweak it after the driver becomes usable. Please let me know
-if it should be fixed in this patch.
-
---=20
-Best Regards,
-Pawel Dembicki
 
