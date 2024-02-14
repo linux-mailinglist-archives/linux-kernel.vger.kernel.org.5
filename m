@@ -1,173 +1,149 @@
-Return-Path: <linux-kernel+bounces-65676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A4885504D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D4C855051
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3A181F2416C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:30:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7977A1F23121
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE1A8565A;
-	Wed, 14 Feb 2024 17:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m02q2Qlg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEEA8594F;
+	Wed, 14 Feb 2024 17:26:18 +0000 (UTC)
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8080B60DFD;
-	Wed, 14 Feb 2024 17:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC2183A1D
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931533; cv=none; b=FaFLcUySzFO6VUFavtO4ZfEtXWrELpxY9Dnjvw7ypxQyi+AHK0tjbm78/30EWt6ca2nNH6h35jWUFTQjgVODPeBtc0VADaHaxoWt4VLJYGoRwmFe2bx5LXWlvWMDIqEFLCStqq1ZVMPWoKP3+4mAZ+KpY7pLu1mRH34JmKHHCDA=
+	t=1707931577; cv=none; b=RIUpE4AGjWb+w/jiMD7eB1U1OBKnVyFBUcDwS5Q1y07qIEDt8bfitrLPz9V8yUUv6H9h5o4AIOp0k33R3+UxriW3wiP81JS50aopw6Jl01wqM1f5JDxMeOJCvIWJgVfPiekamDhVtV5usAmubMEBE+yaRe3USNZmvtj2iDwHYLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931533; c=relaxed/simple;
-	bh=XWEFbPr3J4TJPSoFM3I3qh9skPV1hkdSIaXZRC1c4Ac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fcCqiMhKuCIn8Ep1kSToH+ElI34RY+evCp6nAJ5vsNc4MdOaDdqf+dEdyY38yzMiipZ3wx1d3BUa2nzggxULDOB08vlJhGM7heeDFEbsdybVq5AlC0O9xl/cftjnbRSj3VdhB1VgntORH0RNhqkVa4jYsnSThamu+0Im91pZFsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m02q2Qlg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD530C433F1;
-	Wed, 14 Feb 2024 17:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707931533;
-	bh=XWEFbPr3J4TJPSoFM3I3qh9skPV1hkdSIaXZRC1c4Ac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m02q2QlgKjdzyutCzXk+eewAb85EmUrqwr7cxV5Xoonu4S0xNmB0UlYxIxdI3rDGc
-	 wyOqsaIbacDYUpDXaEf0ncUaye3wphukiNkpgrbwWhjVT8gFyxWX0WtZj1jcviI5X8
-	 KS4ChAmdJjHQyoLWWGm8wfHr1KYHs9rtkUmIQsDK8nxem4hOjV+l0j/vmZ2yRjKGMl
-	 wVFjbQbIduJTeKwHyfbc+Wf0k2Hjh/WQsxx26dtZnKH5fYkBzT7qp+EVXv/e0p6YcK
-	 bEfHCSv9vz3udz8INexjzm8BXmmzbTE881lwryqJCu/8R3D/dv6WIRAFuXFUsWKh+l
-	 K3RfXye7hK7YA==
-Date: Wed, 14 Feb 2024 14:25:29 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
-Message-ID: <Zcz3iSt5k3_74O4J@x1>
-References: <20240214063708.972376-1-irogers@google.com>
- <20240214063708.972376-3-irogers@google.com>
+	s=arc-20240116; t=1707931577; c=relaxed/simple;
+	bh=ZR999QFWhlwj9sKHPcpMJZ/et7mMOxmwea2xvciFQIA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Y1RoEDzCtcHtIE6oNw1m+gMRblbhAlcXgBEcAoq1GcAKwoojDKdQKthj0/hu9kF0KXpOjg+UO+iRXb5a/FfnslT9Oe0bATXcbEd/WDes+7yYKeKho3IJK4tC5SdpZAEFKPvbVKvIVAPA1PFDtWoLo4p/YSyqAiZ1G2bvjnYtw7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=baylibre.com; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e09ea155c5so14576b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:26:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707931576; x=1708536376;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sfbN9O+KSahrVus1iQChDGWhup0O3IlmcoxDUZEy1yg=;
+        b=EfDuw+ZYT0/whc7YFYcmxGgwvnNJRGkEJTAjpGfOzVLOqcanA+8MTB6qPlt4seOCWo
+         mzfnvoI3NqNJ4ZaRjwRroCkMk55WHS/BrRBdFs8C6I7x88XQ5tEwCGaOAloz/l/W90o5
+         g0SdE6+ZYhFSDJPcUifhoXXkaWfEhsabGjkLbJSbU77Ek/td2Be8h+S6J6i8dWSNyUSQ
+         FacsfAaGfIgoq9ZK4z4sbiJDjcHBYEZ1YVEZqOpSiorp1LcH12Jx1UKyPx/lER+vUSl+
+         o0bb86W0Nc9D9rM4+PMFwcFBGwIdKaZ2j68N2sEB8VpiAaM3le/fe338e5DWJw4CBYzA
+         Ok3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXj/Fw8ioCu49L/x5eikWLfB6q248c6lEefhmORORYM+f++bAzSsOI/6np3ExwySAn84tY/7WdpHqgFfK05Hvj7rXhrbMg6qZnB1f8M
+X-Gm-Message-State: AOJu0YxFHrKYm0r8/dPoRC2hkKiN/N3TAOwxBfpKy4onvqn/AytpP4UY
+	/IPlqXCQFy10PTwOEwrr6e+b1iPdTsVEAaBKHnIWGHih1VfrKduVYSuWQzKrh1E=
+X-Google-Smtp-Source: AGHT+IEkFlKlG9gHgg2wzSvoNAPS5Zw/ktf2OAya/unVNoKw8naljYOACbtnXrXICCJfzELhiJY0rg==
+X-Received: by 2002:aa7:9804:0:b0:6e0:4059:f420 with SMTP id e4-20020aa79804000000b006e04059f420mr2887975pfl.17.1707931574240;
+        Wed, 14 Feb 2024 09:26:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUwyH1bLgA5qBX1E7dX91URD4FYPUKmb98cON51ONK278Bgr0eCnGJwptBzBaV9kwVbG2ZeJNuDUrp3H16Pc7tRlbKt7n/gLq5V/XbGaXpJFGxYnJRcN7J9cBpoiE/TefwKO1jx9clCMgdsiYGmivKaNFH72uokn5nGFMr8dpSrmXTspWH0oq/l2yTddVhqiVF43kYOT87ZmQEFCMi0pB+FMi9lFlbnOGrt8d1g0qYlbhoN1PMSSPSHdHUP9xvqYKUg2vZlBIf3QFRjNyaIcMrY6/P7sQddPFlvflupOKhKdIDalQiblJQN74OIvgmjZljzxZMgODXuDo0A7/wLi2ulAK6t2fsbmCDWYfiyskex/q32KrtGe7uThgBkLeMpvAJ4dc+rE6Jdko6G1DssfudEdqVGD6A5RTNlTv65bDDgNaaKZgTu98rUHsT7cNe0ETJvXPErYIK5zdLjJpimoz+yBeLXK8q8noDVK7Ni38Y2Oei0Agto+ewch5bf2XxDPXIqSotjZN6IcjVaG4RC6VT4lABFD2yMXoL51RsxQuiflRAvg4AaRZ13tID9YWBGdTbMBvGvCgMfvSFAWfZWHCi/
+Received: from localhost (71-212-63-227.tukw.qwest.net. [71.212.63.227])
+        by smtp.gmail.com with ESMTPSA id y26-20020aa793da000000b006e04c3b3b5asm9738938pff.175.2024.02.14.09.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 09:26:13 -0800 (PST)
+From: Kevin Hilman <khilman@kernel.org>
+To: Conor Dooley <conor@kernel.org>, Bhargav Raviprakash <bhargav.r@ltts.com>
+Cc: arnd@arndb.de, broonie@kernel.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, gregkh@linuxfoundation.org,
+ jpanis@baylibre.com, kristo@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ lee@kernel.org, lgirdwood@gmail.com, linus.walleij@linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com, nm@ti.com,
+ robh+dt@kernel.org, vigneshr@ti.com
+Subject: Re: [RESEND PATCH v1 03/13] dt-bindings: mfd: ti,tps6594: Add TI
+ TPS65224 PMIC
+In-Reply-To: <20240214-galley-dweller-1e9872229d80@spud>
+References: <20240209-blitz-fidgety-78469aa80d6d@spud>
+ <20240214093106.86483-1-bhargav.r@ltts.com>
+ <20240214-galley-dweller-1e9872229d80@spud>
+Date: Wed, 14 Feb 2024 09:26:13 -0800
+Message-ID: <7hil2r5556.fsf@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214063708.972376-3-irogers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
-> Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> threads") made the iteration of thread tids unordered. The perf trace
-> --summary output sorts and prints each hash bucket, rather than all
-> threads globally. Change this behavior by turn all threads into a
-> list, sort the list by number of trace events then by tids, finally
-> print the list. This also allows the rbtree in threads to be not
-> accessed outside of machine.
+Conor Dooley <conor@kernel.org> writes:
 
-Can you please provide a refresh of the output that is changed by your patch?
+> On Wed, Feb 14, 2024 at 03:01:06PM +0530, Bhargav Raviprakash wrote:
+>> Hi Conor,
+>>=20
+>> On Fri 2/9/2024 10:41 PM, Conor Dooley wrote:
+>> > On Thu, Feb 08, 2024 at 04:23:33PM +0530, Bhargav Raviprakash wrote:
+>> > > TPS65224 is a Power Management IC with 4 Buck regulators and 3 LDO
+>> > > regulators, it includes additional features like GPIOs, watchdog, ES=
+Ms
+>> > > (Error Signal Monitor), and PFSM (Pre-configurable Finite State Mach=
+ine)
+>> > > managing the state of the device.
+>> >=20
+>> > > TPS6594 and TPS65224 have significant functional overlap.
+>> >=20
+>> > What does "significant functional overlap" mean? Does one implement a
+>> > compatible subset of the other? I assume the answer is no, given there
+>> > seems to be some core looking registers at different addresses.
+>>=20
+>> The intention behind =E2=80=9Csignificant functional overlap=E2=80=9D wa=
+s meant to
+>> indicate a lot of the features between TPS6594 and TPS65224 overlap,
+>> while there are some features specific to TPS65224.
+>> There is compatibility between the PMIC register maps, I2C, PFSM,
+>> and other drivers even though there are some core registers at
+>> different addresses.
+>>=20
+>> Would it be more appropriate to say the 2 devices are compatible and have
+>> sufficient feature overlap rather than significant functional overlap?
+>
+> If core registers are at different addresses, then it is unlikely that
+> these devices are compatible.
 
-- Arnaldo
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-trace.c  | 41 +++++++++++++++++++++----------------
->  tools/perf/util/rb_resort.h |  5 -----
->  2 files changed, 23 insertions(+), 23 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 109b8e64fe69..90eaff8c0f6e 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -74,6 +74,7 @@
->  #include <linux/err.h>
->  #include <linux/filter.h>
->  #include <linux/kernel.h>
-> +#include <linux/list_sort.h>
->  #include <linux/random.h>
->  #include <linux/stringify.h>
->  #include <linux/time64.h>
-> @@ -4312,34 +4313,38 @@ static unsigned long thread__nr_events(struct thread_trace *ttrace)
->  	return ttrace ? ttrace->nr_events : 0;
->  }
->  
-> -DEFINE_RESORT_RB(threads,
-> -		(thread__nr_events(thread__priv(a->thread)) <
-> -		 thread__nr_events(thread__priv(b->thread))),
-> -	struct thread *thread;
-> -)
-> +static int trace_nr_events_cmp(void *priv __maybe_unused,
-> +			       const struct list_head *la,
-> +			       const struct list_head *lb)
->  {
-> -	entry->thread = rb_entry(nd, struct thread_rb_node, rb_node)->thread;
-> +	struct thread_list *a = list_entry(la, struct thread_list, list);
-> +	struct thread_list *b = list_entry(lb, struct thread_list, list);
-> +	unsigned long a_nr_events = thread__nr_events(thread__priv(a->thread));
-> +	unsigned long b_nr_events = thread__nr_events(thread__priv(b->thread));
-> +
-> +	if (a_nr_events != b_nr_events)
-> +		return a_nr_events < b_nr_events ? -1 : 1;
-> +
-> +	/* Identical number of threads, place smaller tids first. */
-> +	return thread__tid(a->thread) < thread__tid(b->thread)
-> +		? -1
-> +		: (thread__tid(a->thread) > thread__tid(b->thread) ? 1 : 0);
->  }
->  
->  static size_t trace__fprintf_thread_summary(struct trace *trace, FILE *fp)
->  {
->  	size_t printed = trace__fprintf_threads_header(fp);
-> -	struct rb_node *nd;
-> -	int i;
-> -
-> -	for (i = 0; i < THREADS__TABLE_SIZE; i++) {
-> -		DECLARE_RESORT_RB_MACHINE_THREADS(threads, trace->host, i);
-> +	LIST_HEAD(threads);
->  
-> -		if (threads == NULL) {
-> -			fprintf(fp, "%s", "Error sorting output by nr_events!\n");
-> -			return 0;
-> -		}
-> +	if (machine__thread_list(trace->host, &threads) == 0) {
-> +		struct thread_list *pos;
->  
-> -		resort_rb__for_each_entry(nd, threads)
-> -			printed += trace__fprintf_thread(fp, threads_entry->thread, trace);
-> +		list_sort(NULL, &threads, trace_nr_events_cmp);
->  
-> -		resort_rb__delete(threads);
-> +		list_for_each_entry(pos, &threads, list)
-> +			printed += trace__fprintf_thread(fp, pos->thread, trace);
->  	}
-> +	thread_list__delete(&threads);
->  	return printed;
->  }
->  
-> diff --git a/tools/perf/util/rb_resort.h b/tools/perf/util/rb_resort.h
-> index 376e86cb4c3c..d927a0d25052 100644
-> --- a/tools/perf/util/rb_resort.h
-> +++ b/tools/perf/util/rb_resort.h
-> @@ -143,9 +143,4 @@ struct __name##_sorted *__name = __name##_sorted__new
->  	DECLARE_RESORT_RB(__name)(&__ilist->rblist.entries.rb_root,		\
->  				  __ilist->rblist.nr_entries)
->  
-> -/* For 'struct machine->threads' */
-> -#define DECLARE_RESORT_RB_MACHINE_THREADS(__name, __machine, hash_bucket)    \
-> - DECLARE_RESORT_RB(__name)(&__machine->threads[hash_bucket].entries.rb_root, \
-> -			   __machine->threads[hash_bucket].nr)
-> -
->  #endif /* _PERF_RESORT_RB_H_ */
-> -- 
-> 2.43.0.687.g38aa6559b0-goog
+That's not necessarily true.  Hardware designers can sometimes be
+creative. :)
+
+> In this context, compatible means that existing software intended for
+> the 6594 would run without modification on the 65224, although maybe
+> only supporting a subset of features.  If that's not the case, then
+> the devices are not compatible.
+
+Compatible is a fuzzy term... so we need to get into the gray area.
+
+What's going on here is that this new part is derivative in many
+signifcant (but not all) ways from an existing similar part.  When
+writing drivers for new, derivative parts, there's always a choice
+between 1) extending the existing driver (using a new compatible string
+& match table for the diffs) or 2) creating a new driver which will have
+a bunch of duplicated code.
+
+The first verion of this series[1] took the 2nd approach, but due to the
+significant functional (and feature) overlap, the recommendation was
+instead to take the "reuse" path to avoid signficant amounts of
+duplicated code.
+
+Of course, it's possible that while going down the "reuse" path, there
+may be a point where creating a separate driver for some aspects might
+make sense, but that needs to be justified.  Based on a quick glance of
+what I see in this series so far (I have not done a detailed review),
+the differences with the new device look to me like they can be handled
+with chip-specific data in a match table.
+
+Kevin
+
+[1] https://lore.kernel.org/lkml/20231026133226.290040-1-sirisha.gairuboina=
+@Ltts.com/
 
