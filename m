@@ -1,85 +1,100 @@
-Return-Path: <linux-kernel+bounces-65352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7A9854BAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:39:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BAA2854BBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A63F0286C57
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:39:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A9ED1F232F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7795A7B6;
-	Wed, 14 Feb 2024 14:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7705A7A9;
+	Wed, 14 Feb 2024 14:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kPQ83hme"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b="OYlFujES"
+Received: from nbd.name (nbd.name [46.4.11.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8799A5A785;
-	Wed, 14 Feb 2024 14:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6311F1CA80;
+	Wed, 14 Feb 2024 14:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.11.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707921532; cv=none; b=uzt2kvpJPchsxfImi+fzVQVu8DHRFGVdCi3wTw+b7eBClF6H1qipPEQ2TA07zHh8rdvSl0IxJO7FHi+kzkEi+j+cSWIZjKCkHM0SnLOrU2a5u5TAa45Sqpj5UeEqA979uwhp+rrcMLcvSzXwlkA1e7C1sv+xFCkEfHr0OFpiiaE=
+	t=1707921780; cv=none; b=HL7NSpIwhzvtf/yLWOAoJhPOSrot+ShN8ckTK2pH1ZEXm5RA+LskjtKsXPbq/swThwMLLdsmjipHbVqabBTv14ENBtdg0B57D6WgLfsa9p1n3q6gNKFH5KAaS63wc3oUM6aIPTMdWnAjw+SRm/jTRydqBBKRZeGiIQHa0SkbemM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707921532; c=relaxed/simple;
-	bh=S6Fhlyr3vl3t8eUwo3i08OkSMViPLX7U1fbJ4aaU4mo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=VvgrK1LvRjY6GL9xMECAwyNUfpVJzpsISZtZex0dx8Dzx6DcR0d6gYpxXSSc3KgnqfSRZ7FGMtYCOt9vDnhAnPKpW2OlDZ4tslJvFDkAnzxvo+tzxPbwMTSr1NOylY9jdHxRCm/YRtpTVK0Y52uRk9RBoMLZCPJMlKpLdBB1gHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kPQ83hme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E58C433C7;
-	Wed, 14 Feb 2024 14:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707921532;
-	bh=S6Fhlyr3vl3t8eUwo3i08OkSMViPLX7U1fbJ4aaU4mo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=kPQ83hmeCkWWeW4CNrp5thqZd44u3GjKf9xqVcVMeEZzszWVdCW2Jod4D8muSZhWe
-	 qI72JCQPYu8D/4t4Zta0ggVdE6aduXJeDhADboTV9+t20N9Sxo8KR/h3Mpk1blcWsH
-	 DfqQtOpEPg9SIahtlQko9ydVd5YK9OTR0JIEdnHJyGfp7CY4HMauWnMBAdjrtEzPWi
-	 A42Y0kTXyYtfkcgyhlGNL/eaaheOuOgdeoDdc9nNyN7/d/x8RBLZ0V/ZMPL7Kl9pcX
-	 U27nL24rCUuJNSx1Lt5NfjOyDnZbxN6ajJRbaoz52U0afSjIdEkTOIipD57eXLXOY3
-	 5i7v/lXuk2ULQ==
-Date: Wed, 14 Feb 2024 15:38:52 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, security@kernel.org, 
-    Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>, 
-    Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE
- process
-In-Reply-To: <2024021459-trimness-bolt-7185@gregkh>
-Message-ID: <nycvar.YFH.7.76.2402141535380.21798@cbobk.fhfr.pm>
-References: <2024021430-blanching-spotter-c7c8@gregkh> <nycvar.YFH.7.76.2402141433560.21798@cbobk.fhfr.pm> <2024021459-trimness-bolt-7185@gregkh>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1707921780; c=relaxed/simple;
+	bh=4kfKQXMjrSswVfEs9TFm2VCVbnaJe/UZ/yq2Vn1p9nU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qiNicJXrQUXfLRxGUNWokD+7C5Qar9UMDIqhJU1/AHboosyJbT72V6sackLB+iIeKLhoGJTdfVi3AHgHMjxD1T23MB7CHazafu0XiSh6Q6jbP1BNgVXhPhgWMbIu/hkFxohjJl3Zg0EnqZfeAIy/yUbo/fn8woPLxfA4lWv7ykU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name; spf=none smtp.mailfrom=nbd.name; dkim=pass (1024-bit key) header.d=nbd.name header.i=@nbd.name header.b=OYlFujES; arc=none smtp.client-ip=46.4.11.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nbd.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nbd.name
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+	s=20160729; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=rvZNAKQ9eQwBSXPdNcyqhFwbwKHStEKZIKN+cfFuE3Q=; b=OYlFujESUs6qcMYm3TB0qsFgH1
+	4qwjrAoWPYH/dciAjcE6Hn6fX9jwiXsP4sUOf48wlY6/jsjHulI23+vBNjLybhqQWx1/weYpDoIav
+	DoWZJukCKVywIlASoeoUj0CX+z2WznqrOnb/UfFyqJYsBRfGW7VaVXYEmT1Nj/UE5Kk0=;
+Received: from p54ae9e7b.dip0.t-ipconnect.de ([84.174.158.123] helo=localhost.localdomain)
+	by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+	(Exim 4.94.2)
+	(envelope-from <nbd@nbd.name>)
+	id 1raGT6-00DWlk-Ky; Wed, 14 Feb 2024 15:42:36 +0100
+From: Felix Fietkau <nbd@nbd.name>
+To: netdev@vger.kernel.org,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Vlad Buslov <vladbu@nvidia.com>
+Cc: Daniel Golle <daniel@makrotopia.org>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net] netfilter: nf_tables: fix bidirectional offload regression
+Date: Wed, 14 Feb 2024 15:42:35 +0100
+Message-ID: <20240214144235.70341-1-nbd@nbd.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Wed, 14 Feb 2024, Greg Kroah-Hartman wrote:
+Commit 8f84780b84d6 ("netfilter: flowtable: allow unidirectional rules")
+made unidirectional flow offload possible, while completely ignoring (and
+breaking) bidirectional flow offload for nftables.
+Add the missing flag that was left out as an exercise for the reader :)
 
-> The people that make up the current team, Lee, Sasha, and I, have a LONG
-> history of fixing and triaging and managing security bugs for the
-> kernel, in the community and in corporate environments.  We know how to
-> do this as we have been doing it for decades already.  
+Cc: Vlad Buslov <vladbu@nvidia.com>
+Fixes: 8f84780b84d6 ("netfilter: flowtable: allow unidirectional rules")
+Reported-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+---
+ net/netfilter/nft_flow_offload.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for clarifying. Maybe the wording could use some more verbosity 
-then; one of my potential readings of it was "everything that gets picked 
-for -stable will get a CVE assigned".
-
-> If you or anyone else wishes to help us out with this classification, we 
-> can gladly use the help.
-
-Thanks, but no, thanks, I want to stay away from the CVE tragedy as far as 
-possible :)
-
+diff --git a/net/netfilter/nft_flow_offload.c b/net/netfilter/nft_flow_offload.c
+index 397351fa4d5f..ab9576098701 100644
+--- a/net/netfilter/nft_flow_offload.c
++++ b/net/netfilter/nft_flow_offload.c
+@@ -361,6 +361,7 @@ static void nft_flow_offload_eval(const struct nft_expr *expr,
+ 		ct->proto.tcp.seen[1].flags |= IP_CT_TCP_FLAG_BE_LIBERAL;
+ 	}
+ 
++	__set_bit(NF_FLOW_HW_BIDIRECTIONAL, &flow->flags);
+ 	ret = flow_offload_add(flowtable, flow);
+ 	if (ret < 0)
+ 		goto err_flow_add;
 -- 
-Jiri Kosina
-SUSE Labs
+2.43.0
 
 
