@@ -1,56 +1,54 @@
-Return-Path: <linux-kernel+bounces-64755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69205854274
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:35:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13CC185427D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B821F24CA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:35:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478F31C2435D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C117810A34;
-	Wed, 14 Feb 2024 05:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6332B10799;
+	Wed, 14 Feb 2024 05:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l5g9znEn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="olwoA2tA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E087811184;
-	Wed, 14 Feb 2024 05:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9726133EA;
+	Wed, 14 Feb 2024 05:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707888910; cv=none; b=qQPTk3TbmJsxkeFnb/QyfPbnOwhLglAE41VPcjz7ssuvdLDGSYmSowRnLDDl7aT0l0dFmjR73du3QveQsS/tWTQZMzoczStSc0mcFahEH8vNQUMwpKv4pM+TeFyQXJeKX0Xq8/TY7qTdVEZkNlEc/6gJ19udD9+FfGb0TFDEWKE=
+	t=1707889339; cv=none; b=uvJgiwzfmKUZk0bajge/l32k9ZUAFzTyB4If8lHFzGURlEAoXfXEio77pkR40wjKNRH+lunAQKZ4EiY+v47mYjIxHGnr3MiMLChG4QC9CBBofvm3rh9YdgaPLZM6LFjtGW3doyjpGZr32ai/BGOggc0AOPB1DolW23Gbatjdohg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707888910; c=relaxed/simple;
-	bh=m1GBJXdml05m+ZQGwL9I84ENjQ47pwGxOdhJnLCsWjg=;
+	s=arc-20240116; t=1707889339; c=relaxed/simple;
+	bh=4mDh0LX7kjicHsC+/bogzJBPJ1vYaIpsGeKF5S23PFQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XymJOThSppQ0Dl881x/2QDoSz6R7dLz+QOc0JN2PoNxqPjkvgOpMVfChiGctD7OSUqeY5XC3agt+hQq58mMjIJJH6ver13j9E7uZdVsDyFmMJCeMji04Kvt136IHavHeTScdYeyZ4w2AXXWz4tIrFfdM/eAco0Aw+CCfkWvQSeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l5g9znEn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BDEC43394;
-	Wed, 14 Feb 2024 05:35:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=kJisoaT1frzfWLKRuXUkMbUA3b/HXpd9QLgPf7XmDQxSUj/jB/e/lYwsOGAKaqtszfK7BZvYTtZSJnEh9Xlk1Jy+2Rr/F1yQFTL0SYkTdP7vTE9tqcMg3vHrzt15vm0jwecLjf7MfNq0ehnis0uyqocxuVKUYSKSx89Eq1tKNfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=olwoA2tA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D31C433F1;
+	Wed, 14 Feb 2024 05:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707888909;
-	bh=m1GBJXdml05m+ZQGwL9I84ENjQ47pwGxOdhJnLCsWjg=;
+	s=k20201202; t=1707889339;
+	bh=4mDh0LX7kjicHsC+/bogzJBPJ1vYaIpsGeKF5S23PFQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l5g9znEnbJEjSemVk9BYdVONj5AnSZzmHN6IIaN6v3ahmNsBNLG3znOX7vSYQe6KB
-	 zzaxhrKI6ElmQajiZ0cyp57X3oWz6Dfgg2O7yv2ncvt5Oo48kZvY/whlFiv8iWnhfp
-	 OKvC8A2TbBGCtGVQwWNhk51iH8/4i47XyYP6ze86o2QzbNXEy78Talhuyk5DyQoEHB
-	 yVo1/QZ+PuwVnnnk8woiRtNrJbkKZHKvsr1/sxStx6E2c6hhl3lIHOUzxNsVHzRaQm
-	 jpnLrqfqurzI4HLS677g9RvpW61kDaqLJWWtwP1Js3ASAAkAF7PrPL8gHOHCHyKW+P
-	 58FsOyyMffHxQ==
-Date: Tue, 13 Feb 2024 23:35:06 -0600
+	b=olwoA2tAvRitfGmHoVY0DqilINYX9nwBfOyF7olEZcMqx33n0FtBZWIgYQgJCaGxl
+	 exJUOUaJzi7Ssc3LMxh6CGIgOZyDtszGRinH1/oD7VING9JhKh5Demig9tCgV4UzH+
+	 6+zVBaL5wt/3ZYigGrAXeJK7TmLZVHv1VNwolH+c9VTX4CIXpWjP1nuhifk5Ky0UZJ
+	 rVujQVWmBoxY6gKOblG88WN2ZJDYWzP2EbFD7aZCpT9N0UVV4sv9e+tSkE0ToAY1vq
+	 rx0sNpYOF3pIBRiE9ULnQUmEXcdCsOCZe5VCseayKDQckiijX/y6Axxe20LQg6uNd3
+	 MEDY2FUHMijAg==
+Date: Tue, 13 Feb 2024 23:42:16 -0600
 From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Johan Hovold <johan+linaro@kernel.org>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Konrad Dybcio <konrad.dybcio@somainline.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH RFT v2 0/3] Fix up SC8280XP idle states
-Message-ID: <k7v2qov3m43q7vniqu3w6q64277ea5mf7gvt6fzgj4e3a5uagt@fcsmuu24cfqr>
-References: <20230619-topic-sc8280xp-idle-v2-0-cde50bf02f3c@linaro.org>
+To: Auditya Bhattaram <quic_audityab@quicinc.com>
+Cc: konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4] soc: qcom: mdt_loader: Add Upperbounds check for
+ program header access
+Message-ID: <y6em73mzbh47fzpgfvfsrypw5ktgt6zaqfujscaxkjuqivlxcr@vcke7w4omq7b>
+References: <20240213080010.16924-1-quic_audityab@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,56 +57,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230619-topic-sc8280xp-idle-v2-0-cde50bf02f3c@linaro.org>
+In-Reply-To: <20240213080010.16924-1-quic_audityab@quicinc.com>
 
-On Wed, Dec 20, 2023 at 11:12:53PM +0100, Konrad Dybcio wrote:
-> Comparing the data available in the downstream sources with what's there
-> upstream, it was easy to spot some differences. This series aligns what
-> we have upstream with what is there on the vendor kernel.
+On Tue, Feb 13, 2024 at 01:30:10PM +0530, Auditya Bhattaram wrote:
+> hash_index is evaluated by looping phdrs till QCOM_MDT_TYPE_HASH
+> is found. Add an upperbound check to phdrs to access within elf size.
 > 
-> The big asterisk there is that the downstream sources for SC8280XP can't
-> always be trusted. A simple test shows that the lower idle states that
-> were previously missing are implemented in the firmware (Linux reports no
-> errors and enters them).
-> 
-> HOWEVER
-> 
-> The only cluster idle state that's been present until now (the deepest
-> one) is now barely used if at all, as the scheduler seems to deem it
-> inefficient or so.
-> 
-> Hence, a request for testing and comments, especially from those who
-> use the X13s daily or have reliable setup to measure the power usage.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-What did we conclude on this one? Does the extra state make sense?
-The last patch looks useful...
+How is this compatible with what is being observed on SM8450 and
+implemented in commit 8bd42e2341a7 ("soc: qcom: mdt_loader: Allow hash
+segment to be split out"?
 
 Regards,
 Bjorn
 
+> Fixes: 64fb5eb87d58 ("soc: qcom: mdt_loader: Allow hash to reside in any segment")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Auditya Bhattaram <quic_audityab@quicinc.com>
+> Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
 > ---
-> Changes in v2:
-> - Rename the idle states
-> - Drop RFC, confirmed with Qualcomm
-> - Rebase
-> - Link to v1: https://lore.kernel.org/r/20230619-topic-sc8280xp-idle-v1-0-35a8b98451d0@linaro.org
-> 
+> Changes in v4:
+>  - Added additional prints incase of Invalid access.
+> Link to v3 https://lore.kernel.org/stable/1c91c653-cebe-4407-bdd6-cfc73b64c0fb@quicinc.com
+> Link to v2 https://lore.kernel.org/linux-arm-msm/9773d189-c896-d5c5-804c-e086c24987b4@quicinc.com/T/#t
+> Link to v1 https://lore.kernel.org/linux-arm-msm/5d7a3b97-d840-4863-91a0-32c1d8e7532f@linaro.org/T/#t
 > ---
-> Konrad Dybcio (3):
->       arm64: dts: qcom: sc8280xp: Add lower cluster idle states
->       arm64: dts: qcom: sc8280xp: Add missing CPU idle states
->       arm64: dts: qcom: sc8280xp: Fix up idle state periods
+>  drivers/soc/qcom/mdt_loader.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
->  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 72 +++++++++++++++++++++++++---------
->  1 file changed, 54 insertions(+), 18 deletions(-)
-> ---
-> base-commit: 20d857259d7d10cd0d5e8b60608455986167cfad
-> change-id: 20230619-topic-sc8280xp-idle-00fc007234c8
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 6f177e46fa0f..1a79a7bba468 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -145,6 +143,13 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len,
+>  	if (phdrs[0].p_type == PT_LOAD)
+>  		return ERR_PTR(-EINVAL);
 > 
-> Best regards,
-> -- 
-> Konrad Dybcio <konrad.dybcio@linaro.org>
+> +	if (((size_t)(phdrs + ehdr->e_phnum)) > ((size_t)ehdr + fw->size)) {
+> +		dev_err(dev,
+> +			"Invalid phdrs access for fw: %s, e_phnum: %u, fw->size: %zu\n",
+> +			fw_name, ehdr->e_phnum, fw->size);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+>  	for (i = 1; i < ehdr->e_phnum; i++) {
+>  		if ((phdrs[i].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH) {
+>  			hash_segment = i;
+> --
+> 2.17.1
 > 
 
