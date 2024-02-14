@@ -1,112 +1,115 @@
-Return-Path: <linux-kernel+bounces-65799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D693855202
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:22:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E29F855208
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5899E28BB9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:22:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03C341F25A1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBBE12837B;
-	Wed, 14 Feb 2024 18:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46785128370;
+	Wed, 14 Feb 2024 18:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="geaqp6/G"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JaWBn2NC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6436C127B74;
-	Wed, 14 Feb 2024 18:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8447B84FC8;
+	Wed, 14 Feb 2024 18:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707934943; cv=none; b=ssmjPiXj8eVw/w+dLT12sbZwUgAicatgYgb/ePU8301LjGJKaEkK9RVljFgITEWCLQL8BWViWh/3u/aBByyVVBQ4s7MuGsAZM/VCkDHAOwmz83Ph1Y60FH8vV52y68/ro+FZY6ulftk3Z5wslIT3VDRWYG7GOcm70XyI4Z9krFg=
+	t=1707935117; cv=none; b=CoyDD5bh3PP4R+SkpNGi2as4I1bSDoQopeoWVDSd0SFmS75z09URGkUWAiWNdvg2vIZxwP2zDKcrJqBRqUZ3rY8dJYdzna0t5frHYYlFwat1cK2SgkHshJ3YlwxUOyCjcmqLCaXB0Z1xWHWkIvKtQe/gIgHuGe0EXbls7igdsxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707934943; c=relaxed/simple;
-	bh=cxi0K/MaHmKgVzvoFzOwJIVgRtJ/p17H3LH1t03e15I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lSRQlEbR5NTUi3vvaWhEyTRsWNpR2IWkRJogUjjONquSl1+vGijyb36PNQvbwFBY+Qz5eit6Xt0/4JsEQdoVxtXoffd/d9ZjbvzUjuThqhkkMtjy+5pTmwxcHJB8AyKfHbSpkwQ4D2dHJEBU/ap8niGjrhsyU6irubVoFQnkAjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=geaqp6/G; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 8E7BB1A18DE;
-	Wed, 14 Feb 2024 19:22:15 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1707934936; bh=tJbAk1tSLxXQwFrYiEG2aQGZJ0OdusHW11rdVdqo1Ws=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=geaqp6/G7md2TmsavAUsI4+sweFqr6tph+mLkunwt57KrfLl0l568VIoLZ9J+8WXV
-	 Sc2MZPHxcQtHU4LJ59amKoBviPzCyL0uooAgStwFy4O1YVaPHHLFlOiiLKWDEhpEcb
-	 6U5bYPKSmDK+DNlwiOhlj2LU3wtqYTGKBCtC/2Nqq792MwBFNTAxgHTr96AOFJn8nf
-	 7pvC5kRnqVKzePShzkggY4ysSROZofcgpLj+RZY2dy+x/kD2XILZ41ruwGyuh8Y4bt
-	 aexbTONqgfDbUQ869P8q3MFkHDwjs5zZYZxWUurYEX+T0tdrfV+jM8fU8fh+xtS4ha
-	 YDQ5Oy4dwvbHg==
-Date: Wed, 14 Feb 2024 19:22:14 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
- 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
- <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>, Kees Cook <keescook@chromium.org>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
- <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
- <zegao2021@gmail.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
- (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 0/8] x86_64 SandBox Mode arch hooks
-Message-ID: <20240214192214.78734652@meshulam.tesarici.cz>
-In-Reply-To: <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
-References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
-	<c424618c-d6c6-430a-8975-8851a617204e@intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1707935117; c=relaxed/simple;
+	bh=Y7PdrERFt1ce10KdRlpn2u/7lalza48LMXp38SV9IhY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pBleN/ytPMCyeHvNcwOcYRD6Sbkffl635kMJsGEQmmFfI2Ig5rdJHNTdu8HHFrOC0ZLJzHc0fuqoCf+N0lAeSzHjxTbAIth+c49NP4aYP0u1QXxh2T6XESLt2jRWhfsiO7f+BNTYnUXOINq228BujR7nGsfCNrI6TFs5YRYier0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JaWBn2NC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 313A7C433C7;
+	Wed, 14 Feb 2024 18:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707935117;
+	bh=Y7PdrERFt1ce10KdRlpn2u/7lalza48LMXp38SV9IhY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JaWBn2NClRT7Mryz5xOM5khcCJqqsnYqtbPR5X3QUsu7hmTp+nt0tV6dRuaGOojDL
+	 ruaQBk9tVE+iSjdPxG6ms412Z6Ryo8h6ZWSBhSOVTnGXCQWhd4s3GZUBcShBObFn9K
+	 qrUFdXfAbFF9zKSn+2/6xEVv3FZamlPyOLBzndP9QeUS5vU/mnB7c2yjJJPqbGBLuC
+	 SvSd3gQ4vzsQPCkMkMxWA+wKs/iQbtr8iLQpe3DDqOG3igkKhntrv3YUfpJi/w9rSH
+	 wFiJMWPGx6AVKyrjmDaIX8rT93SM+ReuY6NgWe1HhabkMBRJIHdskpqdNqZjlHiOj0
+	 JNEs75+0TIeKA==
+Date: Wed, 14 Feb 2024 18:25:11 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Heiko Stuebner <heiko@sntech.de>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Frank Wang <frank.wang@rock-chips.com>,
+	Kever Yang <kever.yang@rock-chips.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v2 03/12] dt-bindings: phy: add rockchip usbdp combo phy
+ document
+Message-ID: <20240214-duckbill-nimbly-4ca5ac491ec7@spud>
+References: <20240213163609.44930-1-sebastian.reichel@collabora.com>
+ <20240213163609.44930-4-sebastian.reichel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nv81Ai6y9fSmboA+"
+Content-Disposition: inline
+In-Reply-To: <20240213163609.44930-4-sebastian.reichel@collabora.com>
 
-On Wed, 14 Feb 2024 06:52:53 -0800
-Dave Hansen <dave.hansen@intel.com> wrote:
 
-> On 2/14/24 03:35, Petr Tesarik wrote:
-> > This patch series implements x86_64 arch hooks for the generic SandBox
-> > Mode infrastructure.  
-> 
-> I think I'm missing a bit of context here.  What does one _do_ with
-> SandBox Mode?  Why is it useful?
+--nv81Ai6y9fSmboA+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I see, I split the patch series into the base infrastructure and the
-x86_64 implementation, but I forgot to merge the two recipient lists.
-:-(
+On Tue, Feb 13, 2024 at 05:32:37PM +0100, Sebastian Reichel wrote:
+> +  rockchip,dp-lane-mux:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 2
+> +    maxItems: 4
+> +    description:
+> +      An array of physical Type-C lanes indexes. Position of an entry
+> +      determines the DisplayPort (DP) lane index, while the value of an entry
+> +      indicates physical Type-C lane. The supported DP lanes number are 2 or 4.
+> +      e.g. for 2 lanes DP lanes map, we could have "rockchip,dp-lane-mux = <2,
+> +      3>;", assuming DP lane0 on Type-C phy lane2, DP lane1 on Type-C phy
+> +      lane3. For 4 lanes DP lanes map, we could have "rockchip,dp-lane-mux =
+> +      <0, 1, 2, 3>;", assuming DP lane0 on Type-C phy lane0, DP lane1 on Type-C
+> +      phy lane1, DP lane2 on Type-C phy lane2, DP lane3 on Type-C phy lane3.
 
-Anyway, in the long term I would like to work on gradual decomposition
-of the kernel into a core part and many self-contained components.
-Sandbox mode is a useful tool to enforce isolation.
+>        If
+> +      DP lane map by DisplayPort Alt mode, this property is not need.
 
-In its current form, sandbox mode is too limited for that, but I'm
-trying to find some balance between "publish early" and reaching a
-feature level where some concrete examples can be shown. I'd rather
-fail fast than maintain hundreds of patches in an out-of-tree branch
-before submitting (and failing anyway).
+You missed one of the nits I pointed out on the previous version:
+"If DP lanes are mapped by" "not needed."
 
-Petr T
+Otherwise, I think this looks okay to me..
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--nv81Ai6y9fSmboA+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc0FhwAKCRB4tDGHoIJi
+0sOaAQDG8SsiQC7A5wr9bBBtBeBRIE8CtJgwfUKHyk2yVM5X6QEAguBGxJnbN2ef
+vgyOk8oVaHzWaTJEN2h/FuMQnQB49gM=
+=McaL
+-----END PGP SIGNATURE-----
+
+--nv81Ai6y9fSmboA+--
 
