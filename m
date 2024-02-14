@@ -1,164 +1,214 @@
-Return-Path: <linux-kernel+bounces-64884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D2285443F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F183F854442
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A0C61C25E10
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:49:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2271A1C20B8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B8012B6C;
-	Wed, 14 Feb 2024 08:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FEB79EE;
+	Wed, 14 Feb 2024 08:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z0eRummk"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WNAL7XDr"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A8BB676
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1836FD1
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707900517; cv=none; b=fBkxAd5qOB1zO1e8TIotPg3hqafNkoBFlc/Yw3vUCglPY6i32PgioY0a9NYV6N7kwvucwJ0w0wkP5Eo+LpQuAxwOBMivlgFs5JUEjt0/NekWXmP5NchxcIEPlALoRC3Ne3EdjXuSsPTU01OzDdZ88xy11UonvQybcYVlVoz4EyU=
+	t=1707900532; cv=none; b=uCQ7KGbAL6i2PMsI0tJXwF/ZNBJnNtCr1fU8Gz5zPs34yX1SL0FMaIxRAAwZTDycQCSFFROBNHa+YzYOkMBPyF6SFk07LegRhyGnz0pUNs9RoiahotrNV7LIo8QUCm02crc9ghyris6OP1SMgWRq2SK3Sy0/xMAuvYvKR7f7m50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707900517; c=relaxed/simple;
-	bh=qi5Bs7Cf2a/XS99tp48PJPpELPUcFcpZoHc9zokTEC4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UhPbeYRfc6JnZ12pGjsMtz0g0MZ4HqkDtUMsjQOfO2LnR76F9/E/BW9NXYKtA0QaTQwBdWhHUJaKt/B0dsy0FJHZMeDMPH1eiP91WQ34ZhWpH8rFI1OYi995qQYlesjiNxYKazWJbyZR2da0eyPJYYkUxz2p61Vh5T+5vqNZIXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z0eRummk; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edumazet.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64f63d768so9763821276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:48:36 -0800 (PST)
+	s=arc-20240116; t=1707900532; c=relaxed/simple;
+	bh=TwT82vyqx3budLWaWyEGG1wI/RIEzRBWQO73BeFdsz4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=QWyXesspDz8g2Eh7KgV0ho+5zWn1bqrczYcwU+92R2dWuQtXrWcUiLaXp36QpEfx+Cz0FZORCrWpc42QhNMXio4scpPPSOaObc4HDut2dthAQyWyme2lkKlZIIkShzKfEzIi1DLZ/e1DBEFcS5Slm7dJLeTJ37RM0CVp5vA8uvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WNAL7XDr; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c02b993a5aso3082385b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707900515; x=1708505315; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vgH6jFYJlZcCO1muBwFlEgXGTqXSIAVOsixhgGigIv4=;
-        b=Z0eRummkMIUk2E9fnjJZQdU8B79u2qa/JnVHPOhX4Qehn04035XMfLPxHE0hQgeGzq
-         tTQi0UZfPFR9+kEM70ivoty+G6oh6RG1iGTzIxXOd1IPe8/KjBnvcVrSaGtNbChUr/FE
-         90Iud7KZX586YdIUFMmOPrv3e8NNYf26LnXBmPyGm/Lksu09nIH9JFtq2WQYlzDCAyCW
-         8N2x1IeU3H/igMm+hcbs02EDF314naiAo7OKSI1SV+XgUEOM1ZcCEm6hwBlUGt6Sh5UE
-         iZB1EvB4i5H3rF/5h8y/ckxrMCO0SDVPgGfx6+04wLYlTpEIRzUkaLareE6fv6OuSoa0
-         Pw7w==
+        d=linaro.org; s=google; t=1707900528; x=1708505328; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H2QsMDmGqJoWMPmHJHJyeqK54LlDoNHzofHmtYahPTk=;
+        b=WNAL7XDr0EYyQF9RrSavbFEOgP8Uo2Y207vifbvDUW1idYVmnH/5MMCWd/1rfD0TBl
+         UoRDorjqHFHqkgc8zAwD+2QguVwv0+8iZ3tn057/wc8fkG3MLIsUfSACVYoST6kfWA/s
+         tOq7+mGT1PGkSdkt+eSBab/2S4dpFNoQbrnN2ZGstV7rByE1WRYx91bKxFZESxuRgsIo
+         S2VAjk3sgptQStGoFRS9G18YH7UQy5r2s4HFG9Mu7C/8eh8QEfYz08g4fMnRhJOpgyPT
+         l0Xbc7S/ONqETidFlrOjSmB0WDGOpvw90WPo05xlzVeN9/Wm3s6+6AwS9dm/osofGYz/
+         rSxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707900515; x=1708505315;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vgH6jFYJlZcCO1muBwFlEgXGTqXSIAVOsixhgGigIv4=;
-        b=T+RR69J0DKxFfDRS2ClYLauK3crIVIACiNSR29o9bqnyHiwQAIuSNBxGLtBAMRyChQ
-         RLFRdwJZX9IBCOUrHR8xXH/rFqqFvj/TvSpXPoyp2q/b8mZj+RbAteAJR9KefTlp0eok
-         Ti5bXN7RwOlhmlV8I8QOP36hxMllUhBYc5BhO9/nGcaeAaoRNj4mOUudp4nkm3NnXu6r
-         82LAFQk2dnMTagDCUGCnTv1BLYQJfbkCCEHmxZPfmzasNCgK2c4LstQW+NBLlrLVgNrT
-         0airFi0NNWQVhlnbN9O5G8OlNBN05WakJcoCIWARjU4X75re0NUdB92CmMet4c5vweFY
-         5WCA==
-X-Gm-Message-State: AOJu0YxEdpcweONgEypYSYmN+dC8Kj/LoNLDugxmEjHFsW23qZo4Hl0m
-	/7mLdKwC8GJ6HXuAXx0bqL7XTx2A2yXYoD0WHyOSlTbHhsHPnU+efIfE9n+l9DCXCW55f3qQgy1
-	5nI6B98kbkw==
-X-Google-Smtp-Source: AGHT+IELTMuQWEVV+IdSL9R1xizsS+OgXyKRcKJaDe+k6pK9UnxJHdzgSNBBRhcMXnwspNDYDODWTVgTed52oA==
-X-Received: from edumazet1.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:395a])
- (user=edumazet job=sendgmr) by 2002:a05:6902:70b:b0:dc6:dfd9:d431 with SMTP
- id k11-20020a056902070b00b00dc6dfd9d431mr391163ybt.1.1707900515291; Wed, 14
- Feb 2024 00:48:35 -0800 (PST)
-Date: Wed, 14 Feb 2024 08:48:29 +0000
-In-Reply-To: <20240214084829.684541-1-edumazet@google.com>
+        d=1e100.net; s=20230601; t=1707900528; x=1708505328;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H2QsMDmGqJoWMPmHJHJyeqK54LlDoNHzofHmtYahPTk=;
+        b=ZWsCHVwHBO9nNak5rFdDs36Lrv7jQuq3KAWvt8Q1hgUjmRPAIgLXlcXnC1Ux9eK/ak
+         7KDY2vMAiwRarqj4508jdF6Ms39TM+fqVUdU/IlcM1tcyatUgqnFwgRA0FR6/i9AI9DN
+         5MWI8nvF59RQ7kFYeIF2Wh0yMJGNdg65BYDWEgLjzMw7Aad8lGyVFzNMHfYSHTtr47Yo
+         fA27zrSgJglbrRUBod3H3e8NDd7AqyN0ODQMzqdcHU4A6wzMPLITQGgNkSstt8PrjUUz
+         KycphOVjRldMEPJmWLOH6nM2kEcWJMPQZpAj6aJHzTOLAxgYJHsrONIu4EjXeaoWVXyv
+         snzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXybidwYA99348hl3xmQ3rV1QCveqlF5vvHq1rCaeeoQb8kcaIpR/uuWIQHKoowZv3Yelbqd9y0No5L+WzaSk5OHI0crGv8UZA0GQAr
+X-Gm-Message-State: AOJu0YwGalO54dyrEaTLuMXtBas6bQXuiKwEhExEgm1xE4voKBYId8va
+	zHN31d/VgSy0HhlWktgZnzA4+AV2yxwmUFEw+rG5ey+pdui1kYWddsCmmQfBmg==
+X-Google-Smtp-Source: AGHT+IFwjTGyw6+J8VkJeGhXkMVcUp3EjQE3wIXUE+lfEWHEM6SNVtQiA4t/Nz+7yUvWhM1KHJa6Ig==
+X-Received: by 2002:a05:6808:2f08:b0:3c0:32ad:7427 with SMTP id gu8-20020a0568082f0800b003c032ad7427mr3257111oib.2.1707900528270;
+        Wed, 14 Feb 2024 00:48:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVtvfKVRwyS0Hzu7uI50q1HD48nWKnoDs88DD2wvLSKCnsi/CquqM0RS7EJlq437jjmd05CPo51+1g84uFgM61mIlSywO9KVPcp1Z5VpBBPJLIvj/JVoTJWAI7IAEbK6moui2VbziQcVSxu/lkwe/FN40VVjcvkBq9IREsDeGENGGqByzg/iUgWyD/29KGFF3KI8heebzu7TXjMF4Jnf1fa0IFRFk94CKGbsncDA15t2EPojhYG3RYrkCEnJtLDADHoC2xeskXMPjHvUYOpl1z9Vm06SfcWQGEZlihNaC5v9s6LT2QDsqXF1ovCitP01GY3Yf+GYE3GZarGZ1JCjsBTBBo6zbca8iiuq/8E8/BSy0Vf1UYr9ZIK7RFS2NG3nAnbNw1WFiqwJDnVMqmgUFkfdQlag9kG169/iXaXIsXohWE4X52XsgszBA==
+Received: from [127.0.1.1] ([103.28.246.124])
+        by smtp.gmail.com with ESMTPSA id s67-20020a625e46000000b006dda103efe6sm6083930pfb.167.2024.02.14.00.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 00:48:47 -0800 (PST)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Wed, 14 Feb 2024 14:18:31 +0530
+Subject: [PATCH v2] PCI: Add D3 support for PCI bridges in DT based
+ platforms
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240214084829.684541-1-edumazet@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240214084829.684541-3-edumazet@google.com>
-Subject: [PATCH 2/2] kobject: reduce uevent_sock_mutex scope
-From: Eric Dumazet <edumazet@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, netdev@vger.kernel.org, 
-	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Eric Dumazet <eric.dumazet@gmail.com>, Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240214-pcie-qcom-bridge-v2-1-9dd6dbb1b817@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAF5+zGUC/3WNQQ6CMBBFr0K6tmbaIgVX3sOwaMsAkyjF1hAN4
+ e4WdOFCl+9P3puZRQyEkR2zmQWcKJIfEshdxlxvhg45NYmZBJmDUIKPjpDfnL9yG6hJd1uUIE2
+ lNRjFkjYGbOmxJc914p7i3Yfn9mES6/qOSfgRmwQH3iLqStvWHkCfLjSY4Pc+dGv8Y8o/Zl40W
+ pdVqQoH32a9LMsL2QkzsesAAAA=
+To: Bjorn Helgaas <bhelgaas@google.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>
+Cc: Lukas Wunner <lukas@wunner.de>, 
+ Mika Westerberg <mika.westerberg@linux.intel.com>, quic_krichai@quicinc.com, 
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3621;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=TwT82vyqx3budLWaWyEGG1wI/RIEzRBWQO73BeFdsz4=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlzH5sGhjF7J1FtVOKJx9eRXLfbFkb5+6yag7MX
+ OOkW60PAhyJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZcx+bAAKCRBVnxHm/pHO
+ 9VuIB/98qb1C2T1l8XOGquybgU2brNTm+9pRP8Vxy5BH8+tiSMtGprtKXvWLjFtQPDdar3OgpL0
+ 5qarp886xtZHtNGk9lOxayzaJG5tbD8KfHBvehbn469Qqg8s+vlW0qlDFLMPiPjd1Ek5uPU0BAK
+ gpqf7A0dIMciJps7ig/5DS0rZWv8KXw0nXl6zPZhpOx+FVkHsw6QUb8AM1N52yg3aU9IsSRI3O+
+ NTfNw4WW8IyfPddqXUpM0kZZ2iflPZw2KSnRqj7e2h/iM+wrnaLoB+xuOu42m5L/fXoCUSvrSKk
+ NOXPIhckauJNyaPkTwptDaLWAxiAnmmZhwrzlTClBzzMKdor
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-This is a followup of commit a3498436b3a0 ("netns: restrict uevents")
+Currently, PCI core will enable D3 support for PCI bridges only when the
+following conditions are met:
 
-- uevent_sock_mutex no longer protects uevent_seqnum thanks
-  to prior patch in the series.
+1. Platform is ACPI based
+2. Thunderbolt controller is used
+3. pcie_port_pm=force passed in cmdline
 
-- uevent_net_broadcast() can run without holding uevent_sock_mutex.
+While options 1 and 2 do not apply to most of the DT based platforms,
+option 3 will make the life harder for distro maintainers. Due to this,
+runtime PM is also not getting enabled for the bridges.
 
-- Instead of grabbing uevent_sock_mutex before calling
-  kobject_uevent_net_broadcast(), we can move the
-  mutex_lock(&uevent_sock_mutex) to the place we iterate over
-  uevent_sock_list : uevent_net_broadcast_untagged().
+To fix this, let's make use of the "supports-d3" property [1] in the bridge
+DT nodes to enable D3 support for the capable bridges. This will also allow
+the capable bridges to support runtime PM, thereby conserving power.
 
-After this patch, typical netdevice creations and destructions
-calling uevent_net_broadcast_tagged() no longer need to acquire
-uevent_sock_mutex.
+Ideally, D3 support should be enabled by default for the more recent PCI
+bridges, but we do not have a sane way to detect them.
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christian Brauner <brauner@kernel.org>
+[1] https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/pci/pci-pci-bridge.yaml#L31
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- lib/kobject_uevent.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+This patch is tested on Qcom SM8450 based development board with an out-of-tree
+DT patch.
 
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 9cb1a7fdaeba4fc5c698fbe84f359fb305345be1..03b427e2707e357ab12abeb9da234432c4bc0fb3 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -42,10 +42,9 @@ struct uevent_sock {
- 
- #ifdef CONFIG_NET
- static LIST_HEAD(uevent_sock_list);
--#endif
--
- /* This lock protects uevent_sock_list */
- static DEFINE_MUTEX(uevent_sock_mutex);
-+#endif
- 
- /* the strings here must match the enum in include/linux/kobject.h */
- static const char *kobject_actions[] = {
-@@ -315,6 +314,7 @@ static int uevent_net_broadcast_untagged(struct kobj_uevent_env *env,
- 	int retval = 0;
- 
- 	/* send netlink message */
-+	mutex_lock(&uevent_sock_mutex);
- 	list_for_each_entry(ue_sk, &uevent_sock_list, list) {
- 		struct sock *uevent_sock = ue_sk->sk;
- 
-@@ -334,6 +334,7 @@ static int uevent_net_broadcast_untagged(struct kobj_uevent_env *env,
- 		if (retval == -ENOBUFS || retval == -ESRCH)
- 			retval = 0;
- 	}
-+	mutex_unlock(&uevent_sock_mutex);
- 	consume_skb(skb);
- 
- 	return retval;
-@@ -589,10 +590,8 @@ int kobject_uevent_env(struct kobject *kobj, enum kobject_action action,
- 	if (retval)
- 		goto exit;
- 
--	mutex_lock(&uevent_sock_mutex);
- 	retval = kobject_uevent_net_broadcast(kobj, env, action_string,
- 					      devpath);
--	mutex_unlock(&uevent_sock_mutex);
- 
- #ifdef CONFIG_UEVENT_HELPER
- 	/* call uevent_helper, usually only enabled during early boot */
-@@ -743,9 +742,7 @@ static int uevent_net_rcv_skb(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		return -EPERM;
- 	}
- 
--	mutex_lock(&uevent_sock_mutex);
- 	ret = uevent_net_broadcast(net->uevent_sock->sk, skb, extack);
--	mutex_unlock(&uevent_sock_mutex);
- 
- 	return ret;
+NOTE: I will submit the DT patches adding this property for applicable bridges
+in Qcom SoCs separately.
+
+Changes in v2:
+- Switched to DT based approach as suggested by Lukas.
+- Link to v1: https://lore.kernel.org/r/20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org
+---
+ drivers/pci/of.c  | 12 ++++++++++++
+ drivers/pci/pci.c |  3 +++
+ drivers/pci/pci.h |  6 ++++++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+index 51e3dd0ea5ab..77dc14a3c91d 100644
+--- a/drivers/pci/of.c
++++ b/drivers/pci/of.c
+@@ -786,3 +786,15 @@ u32 of_pci_get_slot_power_limit(struct device_node *node,
+ 	return slot_power_limit_mw;
  }
+ EXPORT_SYMBOL_GPL(of_pci_get_slot_power_limit);
++
++/**
++ * of_pci_bridge_d3 - Check if the bridge is supporting D3 states or not
++ *
++ * @node: device tree node of the bridge
++ *
++ * Return: True if the bridge is supporting D3 states, False otherwise.
++ */
++bool of_pci_bridge_d3(struct device_node *node)
++{
++	return of_property_read_bool(node, "supports-d3");
++}
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index d8f11a078924..3309c45b656c 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1142,6 +1142,9 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+ 	if (pci_use_mid_pm())
+ 		return false;
+ 
++	if (dev->dev.of_node)
++		return of_pci_bridge_d3(dev->dev.of_node);
++
+ 	return acpi_pci_bridge_d3(dev);
+ }
+ 
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 2336a8d1edab..10387461b1fe 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -635,6 +635,7 @@ int of_pci_get_max_link_speed(struct device_node *node);
+ u32 of_pci_get_slot_power_limit(struct device_node *node,
+ 				u8 *slot_power_limit_value,
+ 				u8 *slot_power_limit_scale);
++bool of_pci_bridge_d3(struct device_node *node);
+ int pci_set_of_node(struct pci_dev *dev);
+ void pci_release_of_node(struct pci_dev *dev);
+ void pci_set_bus_of_node(struct pci_bus *bus);
+@@ -673,6 +674,11 @@ of_pci_get_slot_power_limit(struct device_node *node,
+ 	return 0;
+ }
+ 
++static inline bool of_pci_bridge_d3(struct device_node *node)
++{
++	return false;
++}
++
+ static inline int pci_set_of_node(struct pci_dev *dev) { return 0; }
+ static inline void pci_release_of_node(struct pci_dev *dev) { }
+ static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240131-pcie-qcom-bridge-b6802a9770a3
+
+Best regards,
 -- 
-2.43.0.687.g38aa6559b0-goog
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 
