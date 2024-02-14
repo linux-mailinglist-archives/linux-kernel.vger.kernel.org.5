@@ -1,108 +1,260 @@
-Return-Path: <linux-kernel+bounces-65446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC238854D2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89862854D33
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 773A2B23B52
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4085A2889C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D996F5D8FB;
-	Wed, 14 Feb 2024 15:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB70E5FF00;
+	Wed, 14 Feb 2024 15:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="M3p3yJ55"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGO7lM4H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952375D8E7
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B555D913;
+	Wed, 14 Feb 2024 15:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925478; cv=none; b=fDpOeP31JcGtkBgE6RNMF8UsVduksYgUiD+vRxxQXV4naAJXDK4ZsaHJ42/uAPvl9IVD/ldSkjZcpiN9osJOCR8dlyMFh5oOfaBZk08XS6pjhStcJ9aZrGU1XMnNxPgknUhwzpbRmtBxqcYY/VuLXc1/JqL7RTJkAZBmRbXyL8I=
+	t=1707925509; cv=none; b=qdOHyvLFkJfD+ImEn3VKA9Dps36Fu2W6yijZw/2R1SK6JkY6Ls0E5efYskD8gBqyL8LtvZFe7h3T9T1863Aoz0P9SW8SXWJQtPuQzwbbRWi4o6DDpkMG8IYY8hjgOUfdougcMjbG6ANpMorjboBbJLar0tA1n6kgDGGhZfctg34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925478; c=relaxed/simple;
-	bh=fKoiCadkZo1au3t1rE9BOBoK9f42Dey8D80vTpAGoKA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=RSJM+IcmOgdVgKSKtbULAbvhmgbqwsLPCZB3zPOAJus6FFclRkvPHXfqcz7At48YjlHQTDkq3OHuS3JKGpYPbF8SPK4tmdSpahNWsVZ4D2V3JJKWu56sncmvCEQTipVR0QISTd6kv5XnepAnZAXQKkkRdARsPGIBlQjaUk3KVmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=M3p3yJ55; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7bfe5aa702fso214051139f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:44:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1707925475; x=1708530275; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8H+tRUVl6VTTJ+I26hI6HADTZ0Un+fCkMERAMbKsgaY=;
-        b=M3p3yJ55stQA8f9zc1eTSHcJ4QjhoZNUbYdIseibVUIYaSBmTS91+4e5+iwQdH+1vb
-         XlQCeJJkbMG23+ipWdqY8yAP06aNZarDw83HvvYT7kH9eVH0yWmTdKaK+w1lJuZg40RL
-         zXWwduGsE9rU7QwvqV24qc2N1OiZaobd32DPbwpocKv5zPc/imnUeNqIgio98sHXazs0
-         6WnSflEQBW1rcorWadlj1ipHpxYx8K0rokvXeZdCZR7pzQ3CUyj7sYXCYm9yYRPge9rS
-         z0IOMooHA3aRPP3K3A2wkKfrfltBE0ZmjF+HIxAs9Wxg9XarL3QMwyidDyIit2VF3Fdv
-         SPtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707925475; x=1708530275;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8H+tRUVl6VTTJ+I26hI6HADTZ0Un+fCkMERAMbKsgaY=;
-        b=k23XJi41nb9SQLvldymzUhRvELWW3ZN6e4XnTgpIctxiWkrWTYKXLah4lkT8B/2RcU
-         6VuYE6fjIZLGcX2fUeMTbASBF3CjzSOcOWXtXesfJP15ZoSV122Js46WhBZRs7Xc26Qy
-         2UQanr6VLdkNEPxtg1lzZuuVz7V9VzbX2V5Y9upZjfJFdNQOtpExyhm1d9Ff7Zs7oz/Z
-         D26d77CGpPFIPccRn4YXxaWB8W6PKG8d6YkQexBa+sL10ui/hrj994Vm1N1iSSuUCJht
-         8vlzKS3v4Au4Gt8xKjgv6KzyHi/SY9TeKBqEocGuIhpkRF8c0oH+Jk5YCfwl/9vgqFhz
-         1N9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW6ZlTHTv6iR9cGnNTrm29SVwOhJ6G6AD7Y1mOXsDwufslT9hTrhpq2YrLFSzoUxG6pFSPuRUQH/RMsw2Lo+vlrnmkd3Hf2guSq+66E
-X-Gm-Message-State: AOJu0YxytGePGScAGuaHzwxzj/s5W7FxYsOao2vkDwzkDafr86p8D2IN
-	+wQ1xRmNbWdhGY8ZyvYKwxX+V/nnIL9pmVncPtAOlKJFLZZO2zebbr4boGSVXKc=
-X-Google-Smtp-Source: AGHT+IFSYvJVra1vjtWRcKFPj8EVyDWmX9NPiOhHx5QSIIUGMlUmsQm/kaGm5mHv2EhcHDI6PNBp7Q==
-X-Received: by 2002:a05:6602:5c2:b0:7c4:6b0f:ee7 with SMTP id w2-20020a05660205c200b007c46b0f0ee7mr3689037iox.7.1707925475720;
-        Wed, 14 Feb 2024 07:44:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVppKyfQx+1K0Z9etHaCtXFjcZ0ltuX51rMZRw8r7Hn3rqRCqUQHSe34BMQK/vibc3EGnEXzCUDXX4aJ4y12fqw+eikFKbJZP5ND+IEH7dP2qbcptphPDaBqWt6hz5g9bUIJV9GCWSVWJQfbnnJCnu+LWiS+SRarXPQRnWJTg09a0MPqcpWI1tHAeJJhPB9tsBX2LLa5o0Ei26c6kfq9Z/xqc6LTR/9BVl/cNEVsrCWD6pzUEwyt1h8UvE1LbIBZ3ZLy4AoX8qKzUhS5qD94rXCEkllJmhGAkmWyzjq/AkRUe6mlU60S889xjiUSdlaavBP8ScOM07xOKaOA9kzG7a5an3KUfuaOFIjoK/zPTvrWtL54g==
-Received: from localhost (c-98-32-39-159.hsd1.nm.comcast.net. [98.32.39.159])
-        by smtp.gmail.com with ESMTPSA id a26-20020a02ac1a000000b0047133a05f33sm2484253jao.49.2024.02.14.07.44.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 07:44:35 -0800 (PST)
-Date: Wed, 14 Feb 2024 07:44:33 -0800 (PST)
-From: Paul Walmsley <paul.walmsley@sifive.com>
-To: Palmer Dabbelt <palmer@rivosinc.com>
-cc: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>, 
-    jirislaby@kernel.org, Atish Patra <atishp@rivosinc.com>, 
-    ajones@ventanamicro.com, apatel@ventanamicro.com, 
-    linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-    linux-serial@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>
-Subject: Re: [PATCH] tty: hvc: Don't enable the RISC-V SBI console by
- default
-In-Reply-To: <20240214153429.16484-2-palmer@rivosinc.com>
-Message-ID: <0e41108b-2a64-2144-34f1-e7c0f1ec952f@sifive.com>
-References: <20240214153429.16484-2-palmer@rivosinc.com>
+	s=arc-20240116; t=1707925509; c=relaxed/simple;
+	bh=y/YseAlbFStfyC5/x6Wgpk62mLEvMymc9X6KcW4hIOw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eYyIR/rHdoRYUqAS0RZFq6cRiQJpvlcqd/0axHGxsAupNAtufzC+Rdg6xjclVh61LnIU4idt1K/jDzbDz9bnEud6ER02lqJxCTswTBDpQGHHMbNno5923868XwSRtPYpBN5JyLpI2BvUqonU30ttz5He/TQHcJrXtw2XvC+Uz/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGO7lM4H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D17EC43143;
+	Wed, 14 Feb 2024 15:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707925508;
+	bh=y/YseAlbFStfyC5/x6Wgpk62mLEvMymc9X6KcW4hIOw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hGO7lM4HYIa8cn2K3wKk/CHlq2nsziMAabXo3waBUr7MQX3DOAiajg0VIoxhaxVDR
+	 csl4f1qWAujqSn+Eq2zBJCz+PVJJziHKft9zP3l2edQ0CQJ6hIhMEwe0Bwq1MakQjR
+	 hjqJlrIxTIotjY54yXy0DQY8iJABzelES80mR1Cv3gy5vQuaHJhryMDWm3eC3QghQ/
+	 6AeuSztOx7UJg/IBoI4emcH0dWDRZFejVoXeoxJmWDVB7JvWns3tSS8FicLwnj/OQQ
+	 XmAre7hG1iacDCAFsl5DcLUj982K7QW+ExniW7MTBdkzOgENVXmWB76ZGfU6beN/a1
+	 Pt1gVLKj+2hng==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-511ac32fe38so757227e87.1;
+        Wed, 14 Feb 2024 07:45:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVMrnD0xjrVX3errYrweibljLg1htCLtoorwc91s4ACvOvHH5iT1QM5Yjmk0CEniF1w3WVENmN1mJQ71mrjGIRhK1QpAn3rtJtsCQ==
+X-Gm-Message-State: AOJu0YzcJxcjjorHhI4Ntko9YlLCIPWQAEGwbXxHRdmBRRKtmexFul9u
+	AfN8QHLP8qjFyNlLRiEaB+FdOr9khb0Osch6w8dT6Q1PVI3olAgcwG3XYB2Ua/6cqSqR4Y/4pb6
+	8jmXOPk7dilVppJYNCkiKwBgoIJY=
+X-Google-Smtp-Source: AGHT+IFgkzGYGretm1q6sj2tBMKJFCtgJ8NhF6XJ5u57pkikzLAtk8J3sLWu/ENM5H2iuY+jZjwJgXJ2njlB8etgBk8=
+X-Received: by 2002:a05:6512:53a:b0:511:5994:2c92 with SMTP id
+ o26-20020a056512053a00b0051159942c92mr2327562lfc.7.1707925506771; Wed, 14 Feb
+ 2024 07:45:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-24-ardb+git@google.com> <CAMzpN2jt3nTmDJ4y6zRFJMSGTcD8eQJY_MjbsnJ7my3hH8d9HA@mail.gmail.com>
+In-Reply-To: <CAMzpN2jt3nTmDJ4y6zRFJMSGTcD8eQJY_MjbsnJ7my3hH8d9HA@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 14 Feb 2024 16:44:55 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG6sYAVkKMA9EJk7+NmsbrDBL82xYpMon1WEeB_34SRuA@mail.gmail.com>
+Message-ID: <CAMj1kXG6sYAVkKMA9EJk7+NmsbrDBL82xYpMon1WEeB_34SRuA@mail.gmail.com>
+Subject: Re: [PATCH v4 11/11] x86/startup_64: Drop global variables keeping
+ track of LA57 state
+To: Brian Gerst <brgerst@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 Feb 2024, Palmer Dabbelt wrote:
+On Wed, 14 Feb 2024 at 16:24, Brian Gerst <brgerst@gmail.com> wrote:
+>
+> On Tue, Feb 13, 2024 at 7:42=E2=80=AFAM Ard Biesheuvel <ardb+git@google.c=
+om> wrote:
+> >
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > On x86_64, the core kernel is entered in long mode, which implies that
+> > paging is enabled. This means that the CR4.LA57 control bit is
+> > guaranteed to be in sync with the number of paging levels used by the
+> > kernel, and there is no need to store this in a variable.
+> >
+> > There is also no need to use variables for storing the calculations of
+> > pgdir_shift and ptrs_per_p4d, as they are easily determined on the fly.
+> >
+> > This removes the need for two different sources of truth for determinin=
+g
+> > whether 5-level paging is in use: CR4.LA57 always reflects the actual
+> > state, and never changes from the point of view of the 64-bit core
+> > kernel. The only potential concern is the cost of CR4 accesses, which
+> > can be mitigated using alternatives patching based on feature detection=
+.
+> >
+> > Note that even the decompressor does not manipulate any page tables
+> > before updating CR4.LA57, so it can also avoid the associated global
+> > variables entirely. However, as it does not implement alternatives
+> > patching, the associated ELF sections need to be discarded.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  arch/x86/boot/compressed/misc.h         |  4 --
+> >  arch/x86/boot/compressed/pgtable_64.c   | 12 ----
+> >  arch/x86/boot/compressed/vmlinux.lds.S  |  1 +
+> >  arch/x86/include/asm/pgtable_64_types.h | 58 ++++++++------------
+> >  arch/x86/kernel/cpu/common.c            |  2 -
+> >  arch/x86/kernel/head64.c                | 33 +----------
+> >  arch/x86/mm/kasan_init_64.c             |  3 -
+> >  arch/x86/mm/mem_encrypt_identity.c      |  9 ---
+> >  8 files changed, 27 insertions(+), 95 deletions(-)
+> >
+> > diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed=
+/misc.h
+> > index bc2f0f17fb90..2b15ddd0e177 100644
+> > --- a/arch/x86/boot/compressed/misc.h
+> > +++ b/arch/x86/boot/compressed/misc.h
+> > @@ -16,9 +16,6 @@
+> >
+> >  #define __NO_FORTIFY
+> >
+> > -/* cpu_feature_enabled() cannot be used this early */
+> > -#define USE_EARLY_PGTABLE_L5
+> > -
+> >  /*
+> >   * Boot stub deals with identity mappings, physical and virtual addres=
+ses are
+> >   * the same, so override these defines.
+> > @@ -178,7 +175,6 @@ static inline int count_immovable_mem_regions(void)=
+ { return 0; }
+> >  #endif
+> >
+> >  /* ident_map_64.c */
+> > -extern unsigned int __pgtable_l5_enabled, pgdir_shift, ptrs_per_p4d;
+> >  extern void kernel_add_identity_map(unsigned long start, unsigned long=
+ end);
+> >
+> >  /* Used by PAGE_KERN* macros: */
+> > diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/comp=
+ressed/pgtable_64.c
+> > index 51f957b24ba7..ae72f53f5e77 100644
+> > --- a/arch/x86/boot/compressed/pgtable_64.c
+> > +++ b/arch/x86/boot/compressed/pgtable_64.c
+> > @@ -9,13 +9,6 @@
+> >  #define BIOS_START_MIN         0x20000U        /* 128K, less than this=
+ is insane */
+> >  #define BIOS_START_MAX         0x9f000U        /* 640K, absolute maxim=
+um */
+> >
+> > -#ifdef CONFIG_X86_5LEVEL
+> > -/* __pgtable_l5_enabled needs to be in .data to avoid being cleared al=
+ong with .bss */
+> > -unsigned int __section(".data") __pgtable_l5_enabled;
+> > -unsigned int __section(".data") pgdir_shift =3D 39;
+> > -unsigned int __section(".data") ptrs_per_p4d =3D 1;
+> > -#endif
+> > -
+> >  /* Buffer to preserve trampoline memory */
+> >  static char trampoline_save[TRAMPOLINE_32BIT_SIZE];
+> >
+> > @@ -125,11 +118,6 @@ asmlinkage void configure_5level_paging(struct boo=
+t_params *bp, void *pgtable)
+> >                         native_cpuid_eax(0) >=3D 7 &&
+> >                         (native_cpuid_ecx(7) & (1 << (X86_FEATURE_LA57 =
+& 31)))) {
+> >                 l5_required =3D true;
+> > -
+> > -               /* Initialize variables for 5-level paging */
+> > -               __pgtable_l5_enabled =3D 1;
+> > -               pgdir_shift =3D 48;
+> > -               ptrs_per_p4d =3D 512;
+> >         }
+> >
+> >         /*
+> > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/com=
+pressed/vmlinux.lds.S
+> > index 083ec6d7722a..06358bb067fe 100644
+> > --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> > @@ -81,6 +81,7 @@ SECTIONS
+> >                 *(.dynamic) *(.dynsym) *(.dynstr) *(.dynbss)
+> >                 *(.hash) *(.gnu.hash)
+> >                 *(.note.*)
+> > +               *(.altinstructions .altinstr_replacement)
+> >         }
+> >
+> >         .got.plt (INFO) : {
+> > diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include=
+/asm/pgtable_64_types.h
+> > index 38b54b992f32..6a57bfdff52b 100644
+> > --- a/arch/x86/include/asm/pgtable_64_types.h
+> > +++ b/arch/x86/include/asm/pgtable_64_types.h
+> > @@ -6,7 +6,10 @@
+> >
+> >  #ifndef __ASSEMBLY__
+> >  #include <linux/types.h>
+> > +#include <asm/alternative.h>
+> > +#include <asm/cpufeatures.h>
+> >  #include <asm/kaslr.h>
+> > +#include <asm/processor-flags.h>
+> >
+> >  /*
+> >   * These are used to make use of C type-checking..
+> > @@ -21,63 +24,50 @@ typedef unsigned long       pgprotval_t;
+> >  typedef struct { pteval_t pte; } pte_t;
+> >  typedef struct { pmdval_t pmd; } pmd_t;
+> >
+> > -#ifdef CONFIG_X86_5LEVEL
+> > -extern unsigned int __pgtable_l5_enabled;
+> > -
+> > -#ifdef USE_EARLY_PGTABLE_L5
+> > -/*
+> > - * cpu_feature_enabled() is not available in early boot code.
+> > - * Use variable instead.
+> > - */
+> > -static inline bool pgtable_l5_enabled(void)
+> > +static __always_inline __pure bool pgtable_l5_enabled(void)
+> >  {
+> > -       return __pgtable_l5_enabled;
+> > -}
+> > -#else
+> > -#define pgtable_l5_enabled() cpu_feature_enabled(X86_FEATURE_LA57)
+> > -#endif /* USE_EARLY_PGTABLE_L5 */
+> > +       unsigned long r;
+> > +       bool ret;
+> >
+> > -#else
+> > -#define pgtable_l5_enabled() 0
+> > -#endif /* CONFIG_X86_5LEVEL */
+> > +       if (!IS_ENABLED(CONFIG_X86_5LEVEL))
+> > +               return false;
+> > +
+> > +       asm(ALTERNATIVE_TERNARY(
+> > +               "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c=
+),
+> > +               %P[feat], "stc", "clc")
+> > +               : [reg] "=3D&r" (r), CC_OUT(c) (ret)
+> > +               : [feat] "i"  (X86_FEATURE_LA57),
+> > +                 [la57] "i"  (X86_CR4_LA57_BIT)
+> > +               : "cc");
+>
+> This should be more like _static_cpu_has(), where the runtime test is
+> out of line in a discardable section, and the inline part is just a
+> JMP or NOP.
+>
 
-> From: Palmer Dabbelt <palmer@rivosinc.com>
-> 
-> The new SBI console has the same problem as the old one: there's only
-> one shared backing hardware and no synchronization, so the two drivers
-> end up stepping on each other.  This was the same issue the old SBI-0.1
-> console drivers had, but that was disabled by default when SBI-0.1 was.
-> 
-> So just mark the new driver as nonportable.
-> 
-> Reported-by: Emil Renner Berthing <kernel@esmil.dk>
-> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI driver")
-> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Why exactly? It matters very little in terms of space, a cross-section
+jump is 5 bytes, and movq+btl is 7 bytes.
 
-Reviewed-by: Paul Walmsley <paul.walmsley@sifive.com>
-
-
-- Paul
+If you are referring to the use of the C flag: this way, it is left up
+to the compiler to decide whether a branch or a conditional move is
+more suitable, rather than forcing the use of a branch in one of the
+two cases.
 
