@@ -1,294 +1,248 @@
-Return-Path: <linux-kernel+bounces-64627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928BF854104
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:13:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083C2854106
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08BEBB27448
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:13:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CAE21C2659A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A9F4683;
-	Wed, 14 Feb 2024 01:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ETcEgzvH"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0DD4683;
+	Wed, 14 Feb 2024 01:14:30 +0000 (UTC)
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791C565C;
-	Wed, 14 Feb 2024 01:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33AD7E2;
+	Wed, 14 Feb 2024 01:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707873196; cv=none; b=EN9BL+CK5QaEdeEtsQS0WDlvq9cyLEhKt8xwMKzHDbd1rei1M9HBJX8zzggyLIbd9dA5LQ+sa06aPVfKaIJ8aIhIpItpwU38ysb3ZN/v0qXtVU578khsiDHm8FLS/JL07mFoibVFfKbVckfBMVr4LpwD/qa647VvzeGD7ZsI3Zo=
+	t=1707873269; cv=none; b=WcNwJ+aMAJtT6DeuydhmsGmhliwsEidU4XKefKdAYwHZuUIgMPinXTAUWPmYpKvC4mnCjZVT4wwW+3dDRObBLksVgBVWfSD3rSZs6ka7YOngrlgA2cI5PwxPO96S5SsOMvri9Iz1LVAZHYe3bZ/DDOF8oPj6K1lFkpW4lOZnBzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707873196; c=relaxed/simple;
-	bh=IU2OyFsQSVkAVr6UneiocCkeAITKZ3ZEmhwNcNy7hFQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=aQZE4o32MvYgoKlQJPYLK+wQuTKy8ieTSjzEB2TrWLfefj6S1mP6ENOoZpFg721soaASvWWfESlLeedGWuz6fd9G6K3/R4ReR1esV0BkxpMQJjw9AHfM3sOHCpJR1vlqUeQdVUTnOX6vJrqXobU292MzIoKOPtWPfsFRfNr79TA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ETcEgzvH; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=/wMGEfoDa+2xdWbURYcG40lcr0z9t7tTiyBtN2BKVpU=; b=ETcEgzvH0k7Uj7GCd+90TYaDFo
-	pUXj2sRb2o08kjMHhb2m8ZuOzz9rpX+y6ZmICED6qp5cvzotnClUdKn7NhwN+WR1qpwgOHntHmpTO
-	yZ8/cldY/aQ9OATNcOiWnKiW8c64jq/1Ffn8knWKuXk6LYFD4u8dWYy2vMHQS6jiohCGcH1DEvfcc
-	GZKTXEfgmXSw1LW/rv31gDepBIl9HHLCLxsYW3RATGtT74rKtoHEDGewncNJYb5FwosgB5mEVwEE0
-	q8vncAtOd4e5aXWQZcK+OT2Ss6rMUYAdhlnzIKLw+8u0Q72iGFMY9fD4TCHNsKQZfiuM6YrvyQP8H
-	GJMFfEpw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ra3pp-0000000BQ1J-3eYZ;
-	Wed, 14 Feb 2024 01:13:13 +0000
-Message-ID: <6076dba6-496e-4cae-be76-a30e006d3b77@infradead.org>
-Date: Tue, 13 Feb 2024 17:13:13 -0800
+	s=arc-20240116; t=1707873269; c=relaxed/simple;
+	bh=uaCmhwOn8mw1USdD5pf5zdexUd38umclcqM6RnhK7bY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bQFwU2BsYON+8302czLQqPfzJm+i7pUqCgxVtnveEOu+EJss+UNsNTjRd28lVN52SeQUu5oheJ0NptH5CSfki0dR7jRS4DrxTwSyXU+daAh/hR9cTb2uXXqd/cuid9Xnaa38+W7j7CBPs+QKfO2jIXfAAnradgmzohLOVspnZw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-296c562ac70so3744100a91.2;
+        Tue, 13 Feb 2024 17:14:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707873267; x=1708478067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qiVVTshxLf488JtQvB4freL8sn2VgHj3EfM+SItvhFw=;
+        b=Yol66MnO5G2RnB+rbrpkAztmT/8kPAwBboIx5TPG6cdhuQJzJtnitp0Ii8yPZaDIeV
+         v6wjK78bn06e6dyCYU9ua3scjGXxw4YmIuHlvAzCujL5JM2dZxeegNJL82Q/xQ5d/0fy
+         f/2BnvY6fiK/v80B3sd+XYS11rrMHYpSsTH2QldrB7jXDbVYk4OHDSeoWy8hfwNinmnN
+         oEs+jXogFo8Lx05YE5xZEaj+51YGvAOpkZJUlXVR2Q0dkJls9kAJTFz83XuIzqPf0BM3
+         hFbeOgMOCt7QGVNEjCvK0W5GNIKhJNneWU0VgAylQBz6uXowvxSBpK7yiiY830pVVtyk
+         Ptgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWqyJfJOPdJzR/iLva4/xA8d5jn/NKEEtfC67rUfPnvaHaaOSQLFqCMCAEC6Dt7sbewuusvAZEec2jrux9MEMFLb46bzE3pMH1AEQLdJlXrxjqUtzJGDuJmaX//LnOVKoQaulV3iioLX+VEuJLpHw==
+X-Gm-Message-State: AOJu0YxfZMgwO4un0W1jjAP2yQXyqFxDvxkymqg6bTdegCM/dT7QbmXH
+	etDn2nOwoWyTjqF4CrLc7RvSdcboJ6wE4Q1PWLB5OOVaahzaeEeZK+Wk07shPfbfw/qpPE1Ukmr
+	ymBaYfZvEGC6ux5zKHlyonE2/91w=
+X-Google-Smtp-Source: AGHT+IErwkMc01Tf/azIdIDCC7FFkLqYU5zAjx8RMnonJ7nwDnz2JckEoxZsVS70HQzcgO7U5pDHLBjJ+/QXjxztTZ0=
+X-Received: by 2002:a17:90b:1054:b0:297:17b0:34e2 with SMTP id
+ gq20-20020a17090b105400b0029717b034e2mr1278414pjb.48.1707873267048; Tue, 13
+ Feb 2024 17:14:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] docs: iio: add documentation for device buffers
-Content-Language: en-US
-To: Ramona Gradinariu <ramona.gradinariu@analog.com>, corbet@lwn.net,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, jic23@kernel.org,
- nuno.sa@analog.com, linux-iio@vger.kernel.org
-References: <20240213081720.17549-1-ramona.gradinariu@analog.com>
- <20240213081720.17549-3-ramona.gradinariu@analog.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240213081720.17549-3-ramona.gradinariu@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240212185858.68189-1-irogers@google.com> <20240212185858.68189-9-irogers@google.com>
+In-Reply-To: <20240212185858.68189-9-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 13 Feb 2024 17:14:15 -0800
+Message-ID: <CAM9d7chcdJ7zsOEWLo1q-U25YyvP=22+GGxcMEbdkQbW_csoyg@mail.gmail.com>
+Subject: Re: [PATCH v3 8/8] perf tests: Add option to run tests in parallel
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, James Clark <james.clark@arm.com>, 
+	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2/13/24 00:17, Ramona Gradinariu wrote:
-> Add documentation for IIO device buffers describing buffer
-> attributes and how data is structured in buffers using
-> scan elements.
-> 
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+On Mon, Feb 12, 2024 at 10:59=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> By default tests are forked, add an option (-p or --parallel) so that
+> the forked tests are all started in parallel and then their output
+> gathered serially. This is opt-in as running in parallel can cause
+> test flakes.
+>
+> Rather than fork within the code, the start_command/finish_command
+> from libsubcmd are used. This changes how stderr and stdout are
+> handled. The child stderr and stdout are always read to avoid the
+> child blocking. If verbose is 1 (-v) then if the test fails the child
+> stdout and stderr are displayed. If the verbose is >1 (e.g. -vv) then
+> the stdout and stderr from the child are immediately displayed.
+>
+> An unscientific test on my laptop shows the wall clock time for perf
+> test without parallel being 5 minutes 21 seconds and with parallel
+> (-p) being 1 minute 50 seconds.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-> changes in v4:
->  - documented multiple buffer support
->  - reworked scan elements section
->  - added reference to ABI docs
->  Documentation/iio/iio_devbuf.rst | 125 +++++++++++++++++++++++++++++++
->  Documentation/iio/index.rst      |   1 +
->  2 files changed, 126 insertions(+)
->  create mode 100644 Documentation/iio/iio_devbuf.rst
-> 
-> diff --git a/Documentation/iio/iio_devbuf.rst b/Documentation/iio/iio_devbuf.rst
-> new file mode 100644
-> index 000000000000..e99143efb4d7
-> --- /dev/null
-> +++ b/Documentation/iio/iio_devbuf.rst
-> @@ -0,0 +1,125 @@
-> +.. SPDX-License-Identifier: GPL-2.0
+> v1 of this code had a bug where stdout/stderr weren't read fully. This
+> and additional issues/improvements are dealt with in v2.
+> ---
+[SNIP]
+>  static int __cmd_test(int argc, const char *argv[], struct intlist *skip=
+list)
+>  {
+>         struct test_suite *t;
+>         unsigned int j, k;
+>         int i =3D 0;
+>         int width =3D 0;
+> +       size_t num_tests =3D 0;
+> +       struct child_test **child_tests;
+> +       int child_test_num =3D 0;
+>
+>         for_each_test(j, k, t) {
+>                 int len =3D strlen(test_description(t, -1));
+>
+>                 if (width < len)
+>                         width =3D len;
 > +
-> +=============================
-> +Industrial IIO device buffers
-> +=============================
+> +               if (has_subtests(t)) {
+> +                       for (int l =3D 0, subn =3D num_subtests(t); l < s=
+ubn; l++) {
+> +                               len =3D strlen(test_description(t, -1));
+
+Shouldn't it be strlen(test_description(t, i)) ?  Looks like it has len
+of parent test already.
+
+Thanks,
+Namhyung
+
+
+> +                               if (width < len)
+> +                                       width =3D len;
+> +                               num_tests++;
+> +                       }
+> +               } else
+> +                       num_tests++;
+>         }
+> +       child_tests =3D calloc(num_tests, sizeof(*child_tests));
+> +       if (!child_tests)
+> +               return -ENOMEM;
+>
+>         for_each_test(j, k, t) {
+>                 int curr =3D i++;
+> @@ -334,52 +458,47 @@ static int __cmd_test(int argc, const char *argv[],=
+ struct intlist *skiplist)
+>                                 continue;
+>                 }
+>
+> -               pr_info("%3d: %-*s:", i, width, test_description(t, -1));
+> -
+>                 if (intlist__find(skiplist, i)) {
+> +                       pr_info("%3d: %-*s:", curr + 1, width, test_descr=
+iption(t, -1));
+>                         color_fprintf(stderr, PERF_COLOR_YELLOW, " Skip (=
+user override)\n");
+>                         continue;
+>                 }
+>
+>                 if (!has_subtests(t)) {
+> -                       test_and_print(t, -1);
+> +                       int err =3D start_test(t, curr, -1, &child_tests[=
+child_test_num++], width);
 > +
-> +1. Overview
-> +===========
+> +                       if (err) {
+> +                               /* TODO: if parallel waitpid the already =
+forked children. */
+> +                               free(child_tests);
+> +                               return err;
+> +                       }
+>                 } else {
+>                         int subn =3D num_subtests(t);
+> -                       /*
+> -                        * minus 2 to align with normal testcases.
+> -                        * For subtest we print additional '.x' in number=
+.
+> -                        * for example:
+> -                        *
+> -                        * 35: Test LLVM searching and compiling         =
+               :
+> -                        * 35.1: Basic BPF llvm compiling test           =
+               : Ok
+> -                        */
+> -                       int subw =3D width > 2 ? width - 2 : width;
+> -
+> -                       if (subn <=3D 0) {
+> -                               color_fprintf(stderr, PERF_COLOR_YELLOW,
+> -                                             " Skip (not compiled in)\n"=
+);
+> -                               continue;
+> -                       }
+> -                       pr_info("\n");
+>
+>                         for (subi =3D 0; subi < subn; subi++) {
+> -                               int len =3D strlen(test_description(t, su=
+bi));
+> +                               int err;
+>
+> -                               if (subw < len)
+> -                                       subw =3D len;
+> -                       }
+> -
+> -                       for (subi =3D 0; subi < subn; subi++) {
+>                                 if (!perf_test__matches(test_description(=
+t, subi),
+>                                                         curr, argc, argv)=
+)
+>                                         continue;
+>
+> -                               pr_info("%3d.%1d: %-*s:", i, subi + 1, su=
+bw,
+> -                                       test_description(t, subi));
+> -                               test_and_print(t, subi);
+> +                               err =3D start_test(t, curr, subi, &child_=
+tests[child_test_num++],
+> +                                                width);
+> +                               if (err)
+> +                                       return err;
+>                         }
+>                 }
+>         }
+> +       for (i =3D 0; i < child_test_num; i++) {
+> +               if (parallel) {
+> +                       int ret  =3D finish_test(child_tests[i], width);
 > +
-> +The Industrial I/O core offers a way for continuous data capture based on a
-> +trigger source. Multiple data channels can be read at once from
-> +/dev/iio:deviceX character device node, thus reducing the CPU load.
-> +
-> +Devices with buffer support feature an additional sub-folder in the
-
-folder or directory?
-
-> +/sys/bus/iio/devices/deviceX/ folder hierarchy, called bufferY, where Y defaults
-
-folder or directory?
-
-> +to 0, for devices with a single buffer.
-> +
-> +2. Buffer attributes
-> +====================
-> +
-> +An IIO buffer has an associated attributes directory under
-
-directory or folder?
-
-Just be consistent, please.
-
-> +/sys/bus/iio/iio:deviceX/bufferY/. The attributes are described below.
-> +
-
-What are the corresponding attribute names?
-
-> +Length
-> +------
-> +
-> +Read / Write attribute which states the total number of data samples (capacity)
-> +that can be stored by the buffer.
-> +
-> +Enable
-> +------
-> +
-> +Read / Write attribute which starts / stops the buffer capture. This file should
-> +be written last, after length and selection of scan elements.
-> +
-> +Watermark
-> +---------
-> +
-> +Read / Write positive integer attribute specifying the maximum number of scan
-> +elements to wait for.
-> +
-> +Poll will block until the watermark is reached.
-> +
-> +Blocking read will wait until the minimum between the requested read amount or
-> +the low water mark is available.
-
-           watermark
-> +
-> +Non-blocking read will retrieve the available samples from the buffer even if
-> +there are less samples then watermark level. This allows the application to
-
-                          than the
-
-> +block on poll with a timeout and read the available samples after the timeout
-> +expires and thus have a maximum delay guarantee.
-> +
-> +Data available
-> +--------------
-> +
-> +Read-only attribute indicating the bytes of data available in the buffer. In the
-> +case of an output buffer, this indicates the amount of empty space available to
-> +write data to. In the case of an input buffer, this indicates the amount of data
-> +available for reading.
-> +
-> +Scan elements
-> +-------------
-> +
-> +The meta information associated with a channel reading placed in a buffer is
-
-That line gives me -ENOPARSE. Can it be improved?
-
-> +called a scan element. The scan elements are configurable per buffer, thus they
-> +are exposed to userspace applications via the /sys/bus/iio/iio:deviceX/bufferY/
-> +directory. The scan elements attributes are presented below.
-> +
-> +**_en**
-> +
-> +Read/ Write attribute used for enabling a channel. If and only if its value
-> +is non zero, then a triggered capture will contain data samples for this
-
-      non-zero,
-
-> +channel.
-> +
-> +**_index**
-> +
-> +Read-only positive integer attribute specifying the position of the channel in
-> +the buffer. Note these are not dependent on what is enabled and may not be
-> +contiguous. Thus for user-space to establish the full layout these must be used
-
-                        userspace
-as above.
-
-> +in conjunction with all _en attributes to establish which channels are present,
-> +and the relevant _type attributes to establish the data storage format.
-> +
-> +**_type**
-> +
-> +Read-only attribute containing the description of the scan element data storage
-> +within the buffer and hence the form in which it is read from user space. Format
-> +is [be|le]:[s|u]bits/storagebits[Xrepeat][>>shift], where:
-> +
-> +- **be** or **le** specifies big or little endian.
-> +- **s** or **u**, specifies if signed (2's complement) or unsigned.
-
-         no comma  ^
-
-> +- **bits**, is the number of valid data bits.
-
-    no comma ^
-
-> +- **storagebits**, is the number of bits (after padding) that it occupies in the
-
-      no comma      ^
-
-> +  buffer.
-> +- **repeat**, specifies the number of bits/storagebits repetitions. When the
-
-  no comma     ^
-
-> +  repeat element is 0 or 1, then the repeat value is omitted.
-> +- **shift**, if specified, is the shift that needs to be applied prior to
-
-  no comma    ^
-
-> +  masking out unused bits.
-> +
-> +For example, a driver for a 3-axis accelerometer with 12 bit resolution where
-
-                                                         12-bit
-
-> +data is stored in two 8-bits registers as follows:
-
-                         8-bit            is as follows:
-
-> +
-> +.. code-block:: bash
-> +
-> +          7   6   5   4   3   2   1   0
-> +        +---+---+---+---+---+---+---+---+
-> +        |D3 |D2 |D1 |D0 | X | X | X | X | (LOW byte, address 0x06)
-> +        +---+---+---+---+---+---+---+---+
-> +
-> +          7   6   5   4   3   2   1   0
-> +        +---+---+---+---+---+---+---+---+
-> +        |D11|D10|D9 |D8 |D7 |D6 |D5 |D4 | (HIGH byte, address 0x07)
-> +        +---+---+---+---+---+---+---+---+
-> +
-> +will have the following scan element type for each axis:
-> +
-> +.. code-block:: bash
-> +
-> +        $ cat /sys/bus/iio/devices/iio:device0/buffer0/in_accel_y_type
-> +        le:s12/16>>4
-> +
-> +A user space application will interpret data samples read from the buffer as two
-
-     userspace
-for consistency.
-                                                                             as two-
-
-> +byte little endian signed data, that needs a 4 bits right shift before masking
-
-        little-endian
-
-> +out the 12 valid bits of data.
-> +
-> +Please see Documentation/ABI/testing/sysfs-bus-iio for a complete description of
-> +the attributes.
-> diff --git a/Documentation/iio/index.rst b/Documentation/iio/index.rst
-> index db341b45397f..206a0aff5ca1 100644
-> --- a/Documentation/iio/index.rst
-> +++ b/Documentation/iio/index.rst
-> @@ -8,6 +8,7 @@ Industrial I/O
->     :maxdepth: 1
-> 
->     iio_configfs
-> +   iio_devbuf
-> 
->  Industrial I/O Kernel Drivers
->  =============================
+> +                       if (ret)
+> +                               return ret;
+> +               }
+> +               free(child_tests[i]);
+> +       }
+> +       free(child_tests);
+>         return 0;
+>  }
+>
+> @@ -447,6 +566,8 @@ int cmd_test(int argc, const char **argv)
+>                     "be more verbose (show symbol address, etc)"),
+>         OPT_BOOLEAN('F', "dont-fork", &dont_fork,
+>                     "Do not fork for testcase"),
+> +       OPT_BOOLEAN('p', "parallel", &parallel,
+> +                   "Run the tests altogether in parallel"),
+>         OPT_STRING('w', "workload", &workload, "work", "workload to run f=
+or testing"),
+>         OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
+>         OPT_STRING(0, "objdump", &test_objdump_path, "path",
 > --
-> 2.34.1
-> 
-> 
-
--- 
-#Randy
+> 2.43.0.687.g38aa6559b0-goog
+>
 
