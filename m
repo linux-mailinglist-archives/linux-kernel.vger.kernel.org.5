@@ -1,151 +1,148 @@
-Return-Path: <linux-kernel+bounces-66096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8C58556D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:03:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 214588556CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B3D8B2956C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:03:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1B8D282451
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DC61420B8;
-	Wed, 14 Feb 2024 23:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6121419A6;
+	Wed, 14 Feb 2024 23:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cNlDOk92"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gt5CNsqr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC731250F6;
-	Wed, 14 Feb 2024 23:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F164250F6
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707951762; cv=none; b=McMhktluIeqMVhhQKgnYO+y1HRnv9HuaIcskTqtHfDN6kPApjWdJTXkT6IvhteNTPYx/2LOT49hiEEZrRstfyYx1DXWT6fTGFZoUHXFijKdMz6JDdKjBq5dl22fpgLPX8DHx9zf3GS2tjlyeCzxnLSff2wIq6Ks94vNW5vXoW3I=
+	t=1707951754; cv=none; b=iXnaROj0DXKqt132c6E0Cf6BZNnUV3HGFFeN54UK0qNXwKhbiSuj5pTPLZuAtsYVg0cI3/IetZHuop6/TCJZbPEQWX2rTfg8l28yWUre7HEUrfsU8fCnrQogyZUnbyP/ffV9fmT5HQAItqzXffZL/LdqL2AslWHcBc5qoF2ZrFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707951762; c=relaxed/simple;
-	bh=02cTatai7GPs5v344TM5mzOOIQyekqpuUW+YGxDlxWc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=LvrKsYYvItPA7P/T+FCUC+Q6ISLyIvj9O5Van/8CJI3AbslHWqF0dtiY1g8tVcdLXnLzGbbpW/kl8AqjVpcJcreQkOfptKf6qvXPRujcU+Zz38FnqCGGRx4Lk/umTXT6IY70ZDCxW8xHutwGZ1U4gUMuMyRivBAuGt6Uk5hzPwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cNlDOk92; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41EMgIAO019540;
-	Wed, 14 Feb 2024 23:02:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=1GW05LxH0VvnJ9ProNTCf0P2xyJXWnAWLMy2YLNh4qY=; b=cN
-	lDOk92LIR99xrpamA8sz0N5ArCaopS2VM6101BwkMQV9VtFEtMk+439Pv0GJdjCn
-	5EnGX2PuyNMBj49ZAtlAXWT0bpje8q6kPF1jL4obmzPLTnGaoYsVS6lPQSXGaRUO
-	R5Hu3aiL7396cMOxq+Pj/unHa3ODbvd3KoO3JnPTylLQCrKy5yJElTkhgkghUODB
-	oEZwZER9tOwAup7MjL/Ukrv+iXiIE4oGNJ6cVIsWAxIWsh9Rt1vStwaGRa0wv49n
-	a7pASPZdkHGKvE1vgu6v1Ht2QH6Gy109tjOjjFtCy89RkmzqsfAzbW30KhZsNaLq
-	eGatDCHoqL67tKyOPhKg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8kkrjet8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 23:02:21 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41EN2KvH011166
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 23:02:20 GMT
-Received: from [10.71.114.103] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
- 2024 15:02:19 -0800
-Message-ID: <afccaa50-74a4-d7e9-2aa5-e5c3c1d55bff@quicinc.com>
-Date: Wed, 14 Feb 2024 15:02:19 -0800
+	s=arc-20240116; t=1707951754; c=relaxed/simple;
+	bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kPwVxpVyiQ/DwEja3zAl0Ua/bvOXzJjduyaQVKgRNXZhePwEVG/1XjhOeeCZIJH9Du6+Ts7hG3eTkCMWjMy+ZNYUA8wLOWZNr0mhywV4/rF6+t8Bcu3Isqfp7bdM8Rlw61DAdcOWMh4dNb5hC8uEAITPL+t8XZQn4uyJUP/+mZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gt5CNsqr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707951750;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
+	b=Gt5CNsqrMA2KY6/kegyD6QHn77uRRDIV+ofhJz5maBjFozUud2flJ6uH4rtrYGob/CrQY0
+	LvgPs0PRwalRcKBIflMW8FDoXe7HSv5AERw3aB3pTT1hNRkfMJU+GWYZ7GaKYWSwcAQJw5
+	QleoQY2RF+AcBVeo4axekgIam8SX0OA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-JAZlSDMtNUqp4tx5VH4h6w-1; Wed, 14 Feb 2024 18:02:29 -0500
+X-MC-Unique: JAZlSDMtNUqp4tx5VH4h6w-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3d4608fa21so7889466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:02:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707951748; x=1708556548;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
+        b=H48KlpdQ088ilooCYVYi8t4udqZ+zZMSVqlyxI9Cu4H1YlnhRX9Em9oQr4S9/ln10x
+         q//1TPtPabLhbUY9eRuPtdmaqvJI96c3vqpyB7vTK8B2uQKZchyYnpByzbE37RD0MYKi
+         +NPvsFdYA0a1NNVsmEudH8oVBs+tXlVjqRtZGL6yF+rFA2R7ExmdUUN0QD8uOVdWX4qO
+         MGAFjDxjaq3XpYTTyTPCmfP0r3K74Ft4lALruAV3r++jB4Y+1MGXQqA9Fdn3p3IdSdwv
+         2yKHbRkvtu4mHFSsm2AuURzir5EleRKY5X1GtfIRyiDwA3fes2G6FNGsvBVI0cunPQk4
+         F92A==
+X-Forwarded-Encrypted: i=1; AJvYcCWhrPVZ73N9Ombw0afIL3n4A/xFZVXLL85YPgED+5Ab8shL8G2dMLGV8hH+OimGWkYMcglGCohd7VTjgLDWsL9TjTqE34PRIgO0UeBL
+X-Gm-Message-State: AOJu0YwfXMENKNgp3VNfddeEreVDq9gvh3JMRjNCTOUDcm0doDZ8X2MQ
+	jOVCiOmDszOYsSw9yPuxeuMT5Xfts9K3hnuZ+y7rrHWSHwl2I/9QxWrHldvg2YUSIX5rRZ+nYkO
+	9LwNVMdNf0MhHkxFDC7aUOV1Z5V/Eiyx0sncPMYhITy2sIbSOvDfSNdRooPypOA==
+X-Received: by 2002:aa7:d952:0:b0:561:ced:4093 with SMTP id l18-20020aa7d952000000b005610ced4093mr22859eds.36.1707951748116;
+        Wed, 14 Feb 2024 15:02:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGwAbv0p8XEb5CZdU5nMo7RDOF7CDGsdXTO6nSa/5ofpKs9OFHHVE7UovDzYvqv85RDWD1I6A==
+X-Received: by 2002:aa7:d952:0:b0:561:ced:4093 with SMTP id l18-20020aa7d952000000b005610ced4093mr22849eds.36.1707951747837;
+        Wed, 14 Feb 2024 15:02:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWfRik3tmJcJzfVLZR6jJMe8DjlZAARqkTe6s9rFnew4TeesqnMQI7SKcYnc+489yEQ+47mclWuRfTvyjJ2qhtRz9XjmQMpyNpxiG/KOrikjIJmvs/tb8ON0jVFmdLUGdoR/E38cMmNcI+woJxddxG/r0VSibLUsEpBh6YNmv7Npoo+BXO/y+Nrz5xlei8Mo3ETAqGPocxvL01Tn1xJyb8T6guNzM3qComNvvjdwG6iZCcHQD/TI53QRL9xXaK3R+SDTrvHM0lLnMj25yL5+VbaG0CXlH0n9KbHgLZRrCr83aImuRMkjzF1erFFbrJv1RrhNtf+YssD
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id c37-20020a509fa8000000b005639c8b6922sm333804edf.52.2024.02.14.15.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 15:02:27 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 1630A10F586A; Thu, 15 Feb 2024 00:02:27 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Jakub Kicinski <kuba@kernel.org>, Maciej
+ Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf/test_run: increase Page Pool's ptr_ring
+ size in live frames mode
+In-Reply-To: <87cyszdnrz.fsf@toke.dk>
+References: <20240214153838.4159970-1-aleksander.lobakin@intel.com>
+ <87cyszdnrz.fsf@toke.dk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 15 Feb 2024 00:02:27 +0100
+Message-ID: <87y1bmd4zg.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v15 46/50] ALSA: usb-audio: Add USB offloading capable
- kcontrol
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
-References: <20240213005422.3121-1-quic_wcheng@quicinc.com>
- <20240213005422.3121-47-quic_wcheng@quicinc.com>
- <87o7cky2va.wl-tiwai@suse.de>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <87o7cky2va.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WGJlsDvBg2gCWujv_N8iCh27crL-0SHj
-X-Proofpoint-ORIG-GUID: WGJlsDvBg2gCWujv_N8iCh27crL-0SHj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_14,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 adultscore=0 bulkscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 suspectscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402140174
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
 
-On 2/13/2024 4:18 AM, Takashi Iwai wrote:
-> On Tue, 13 Feb 2024 01:54:18 +0100,
-> Wesley Cheng wrote:
+> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+>
+>> Currently, when running xdp-trafficgen, test_run creates page_pools with
+>> the ptr_ring size of %NAPI_POLL_WEIGHT (64).
+>> This might work fine if XDP Tx queues are polled with the budget
+>> limitation. However, we often clear them with no limitation to ensure
+>> maximum free space when sending.
+>> For example, in ice and idpf (upcoming), we use "lazy" cleaning, i.e. we
+>> clean XDP Tx queue only when the free space there is less than 1/4 of
+>> the queue size. Let's take the ring size of 512 just as an example. 3/4
+>> of the ring is 384 and often times, when we're entering the cleaning
+>> function, we have this whole amount ready (or 256 or 192, doesn't
+>> matter).
+>> Then we're calling xdp_return_frame_bulk() and after 64th frame,
+>> page_pool_put_page_bulk() starts returning pages to the page allocator
+>> due to that the ptr_ring is already full. put_page(), alloc_page() et at
+>> starts consuming a ton of CPU time and leading the board of the perf top
+>> output.
 >>
->> --- a/sound/usb/Makefile
->> +++ b/sound/usb/Makefile
->> @@ -22,6 +22,7 @@ snd-usb-audio-objs := 	card.o \
->>   			stream.o \
->>   			validate.o
->>   
->> +snd-usb-audio-$(CONFIG_SND_USB_OFFLOAD_MIXER) += mixer_usb_offload.o
->>   snd-usb-audio-$(CONFIG_SND_USB_AUDIO_MIDI_V2) += midi2.o
->>   snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
-> 
-> This puts the code into snd-usb-audio driver, and that causes a
-> dependency mess, since...
-> 
+>> Let's not limit ptr_ring to 64 for no real reason and allow more pages
+>> to be recycled. Just don't put anything to page_pool_params::size and
+>> let the Page Pool core pick the default of 1024 entries (I don't believe
+>> there are real use cases to clean more than that amount of descriptors).
+>> After the change, the MM layer disappears from the perf top output and
+>> all pages get recycled to the PP. On my test setup on idpf with the
+>> default ring size (512), this gives +80% of Tx performance with no
+>> visible memory consumption increase.
+>>
+>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+>
+> Hmm, so my original idea with keeping this low was to avoid having a lot
+> of large rings lying around if it is used by multiple processes at once.
+> But we need to move away from the per-syscall allocation anyway, and
+> with Lorenzo's patches introducing a global system page pool we have an
+> avenue for that. So in the meantime, I have no objection to this...
+>
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-I see what you mean after moving some things into modules, etc... Will 
-fix this accordingly.
+Actually, since Lorenzo's patches already landed in net-next, let's just
+move to using those straight away. I'll send a patch for this tomorrow :)
 
->> +snd_usb_offload_available_get(struct snd_kcontrol *kcontrol,
->> +		      struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct device *sysdev = snd_kcontrol_chip(kcontrol);
->> +	int ret;
->> +
->> +	ret = snd_soc_usb_device_offload_available(sysdev);
-> 
-> ... here you call snd_soc_usb_*() stuff that belongs to snd-soc-usb.
-> That is, with this patch, snd-usb-audio driver will depend on
-> snd-soc-usb, while snd-soc-usb also depends on snd-usb-audio for its
-> helpers again.
-> 
-> I believe the better way would be to move this whole miser_usb_offload
-> code into sound/usb/qcom/.  You need only usb_device and snd_card
-> objects at the creation, and you can get them in qcom driver side,
-> too.
-> 
+-Toke
 
-Yes, plan is just to compile this as part of the overall offload module 
-if the config is enabled.
-
-Thanks
-Wesley Cheng
 
