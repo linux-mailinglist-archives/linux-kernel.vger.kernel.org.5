@@ -1,142 +1,96 @@
-Return-Path: <linux-kernel+bounces-65277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F1C4854A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:26:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A25854A76
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:25:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 022DB28A873
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:26:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B771F24CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E89D5467A;
-	Wed, 14 Feb 2024 13:25:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819587499
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA72054F90;
+	Wed, 14 Feb 2024 13:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DP3MvIKC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F129054F82;
+	Wed, 14 Feb 2024 13:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707917151; cv=none; b=Z6EqRUfz3rDlswYB3TyebOqm5kig9xpnL+soKiSZLo3OU6tGE6H9NZo1KZAT0QY5hVeOh7KRnAQRdE5SmZQ0c2QAdjBAHSAUQG+4yHh3WOMZiYXQn4y8RfyZTrWSVR65bNx6538mCU57oVu8p7Lc4yuX6heZRA6k/y+Df2ezt80=
+	t=1707917144; cv=none; b=YrLoPmi88KOriWJoH53lgCC1W+yI1q7Z0+IlVraomW1OK8JzOqykmbIIgR/7yZkCnGBR9kaOChQGGa066scWSkv7FwTF/5FnSxrG49lpbZEY6V18HBlTtQkMqZWQF+ocMn8vq6+tQlCned8UXp5PxSRYE3st8wclfsK55vS3AWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707917151; c=relaxed/simple;
-	bh=hRdhPklLiRJFunCmr63f+3rRwn2AAXUVqCCfSHmiAcQ=;
+	s=arc-20240116; t=1707917144; c=relaxed/simple;
+	bh=ec+5pA6eqCefVv3bkSMVygeKg7lBf5lDJ6Av8fyMLTg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UFEQ/jp2++IIxJacxdgnVfyita6Klv7MK/1GB8xLf/WauLX5K8oTVAZeOhMy7ga25tujZvqm7tg2O68EnBHcOQbTk+pUvdTZle8axqIJAB9oruOMrircktjknr0vp4yrPvhYvbX81zO+xABHdvhtYN/831SjkXme+vuHF+ySIoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C058F1FB;
-	Wed, 14 Feb 2024 05:26:22 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.64.145])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 935313F5A1;
-	Wed, 14 Feb 2024 05:25:36 -0800 (PST)
-Date: Wed, 14 Feb 2024 13:25:32 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, paulmck@kernel.org,
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
-	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com
-Subject: Re: [PATCH 17/30] x86/thread_info: define TIF_NEED_RESCHED_LAZY
-Message-ID: <Zcy_TJt9L0EXcsVM@FVFF77S0Q05N>
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-18-ankur.a.arora@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MEJkP7pzL2UsjEnUrGpCZHfsmbbjasSXhNaPA9tzXxwl8xFWqQrs310E+1NTVDqEHPY2irXT7Lypo4RkbepCJGnjhb71Rx7dwsb7B27qicaRcH+T3/1JS7+Cy2ID+t1Br3MZBx1fWnWX3a/elblsV1IUIUtZALUj+WSuPPCSUyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DP3MvIKC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F6E2C43390;
+	Wed, 14 Feb 2024 13:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707917143;
+	bh=ec+5pA6eqCefVv3bkSMVygeKg7lBf5lDJ6Av8fyMLTg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DP3MvIKCuo1Pr1XASVT1JXs3+SvLI0Psszrd3OtQZiTFZlpRSG8a2JS4Nz8iDyfrT
+	 sXCVdn4DAKtmGawXHrpee6kIUuighT7+OVU5D5rmkJ6+pyvVQuccDFDDCdi1hSw5Ub
+	 6//K4ggZqmdq9itvGeE/r/amV4ZZPaQpGuJQszfyiPm9U0UYXc8oGBWGiR9zqQBEEM
+	 aWyT0Siatl9hHYaai08e4QylaxtLDo2kucJNeSUsuUIIucOCk7IMX4Kaowhxf9oiL9
+	 ng7gr69pKkw5iYgXxTt/Pw8Bwg1wp5KNjWeof16+KzxDGjw9XGFf55XCuCdKGGIeY0
+	 GrDrFhM7FAAmg==
+Date: Wed, 14 Feb 2024 13:25:38 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc: bryan.odonoghue@nexus-software.ie, andersson@kernel.org,
+	konrad.dybcio@linaro.org, lgirdwood@gmail.com,
+	quic_fenglinw@quicinc.com, quic_collinsd@quicinc.com,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
+ voltage
+Message-ID: <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
+References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="r17f06/4YKIVk7Q3"
+Content-Disposition: inline
+In-Reply-To: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
+X-Cookie: Available while quantities last.
+
+
+--r17f06/4YKIVk7Q3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240213055554.1802415-18-ankur.a.arora@oracle.com>
 
-Hi Ankur,
+On Wed, Feb 14, 2024 at 12:16:14PM +0000, Bryan O'Donoghue wrote:
 
-On Mon, Feb 12, 2024 at 09:55:41PM -0800, Ankur Arora wrote:
-> Define TIF_NEED_RESCHED_LAZY which, with TIF_NEED_RESCHED provides the
-> scheduler with two kinds of rescheduling intent: TIF_NEED_RESCHED,
-> for the usual rescheduling at the next safe preemption point;
-> TIF_NEED_RESCHED_LAZY expressing an intent to reschedule at some
-> time in the future while allowing the current task to run to
-> completion.
-> 
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Originally-by: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> ---
->  arch/x86/Kconfig                   |  1 +
->  arch/x86/include/asm/thread_info.h | 10 ++++++++--
->  2 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 5edec175b9bf..ab58558068a4 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -275,6 +275,7 @@ config X86
->  	select HAVE_STATIC_CALL
->  	select HAVE_STATIC_CALL_INLINE		if HAVE_OBJTOOL
->  	select HAVE_PREEMPT_DYNAMIC_CALL
-> +	select HAVE_PREEMPT_AUTO
->  	select HAVE_RSEQ
->  	select HAVE_RUST			if X86_64
->  	select HAVE_SYSCALL_TRACEPOINTS
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index d63b02940747..88c1802185fc 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -81,8 +81,11 @@ struct thread_info {
->  #define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
->  #define TIF_SIGPENDING		2	/* signal pending */
->  #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
-> -#define TIF_SINGLESTEP		4	/* reenable singlestep on user return*/
-> -#define TIF_SSBD		5	/* Speculative store bypass disable */
-> +#ifdef CONFIG_PREEMPT_AUTO
-> +#define TIF_NEED_RESCHED_LAZY	4	/* Lazy rescheduling */
-> +#endif
-> +#define TIF_SINGLESTEP		5	/* reenable singlestep on user return*/
-> +#define TIF_SSBD		6	/* Speculative store bypass disable */
+>  	.voltage_ranges = (struct linear_range[]) {
+> -		REGULATOR_LINEAR_RANGE(1800000, 0,  2,  200000),
+> +		REGULATOR_LINEAR_RANGE(1808000, 0,  2,  200000),
 
-It's a bit awkward/ugly to conditionally define the TIF_* bits in arch code,
-and we don't do that for other bits that are only used in some configurations
-(e.g. TIF_UPROBE). That's not just for aesthetics -- for example, on arm64 we
-try to keep the TIF_WORK_MASK bits contiguous, which is difficult if a bit in
-the middle doesn't exist in some configurations.
+This will also offset all other voltages that get set, is that expected
+and desired?
 
-Is it painful to organise the common code so that arch code can define
-TIF_NEED_RESCHED_LAZY regardless of whether CONFIG_PREEMPT_AUTO is selected?
+--r17f06/4YKIVk7Q3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Mark.
+-----BEGIN PGP SIGNATURE-----
 
->  #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
->  #define TIF_SPEC_L1D_FLUSH	10	/* Flush L1D on mm switches (processes) */
->  #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
-> @@ -104,6 +107,9 @@ struct thread_info {
->  #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
->  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
->  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
-> +#ifdef CONFIG_PREEMPT_AUTO
-> +#define _TIF_NEED_RESCHED_LAZY	(1 << TIF_NEED_RESCHED_LAZY)
-> +#endif
->  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
->  #define _TIF_SSBD		(1 << TIF_SSBD)
->  #define _TIF_SPEC_IB		(1 << TIF_SPEC_IB)
-> -- 
-> 2.31.1
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXMv1EACgkQJNaLcl1U
+h9AzXgf8CaXLf67yXq6uJFdCGGwbgcmiAVIqD2Erqmp+1IEn4fPWevmkyc3SkMkg
+0rY7VgauEFF1PePaW0out7P5ac2lMZVol33GLXfp9e8infEQzZhZBd4Tpm2foNHu
+qwv/RIpRgFRSB2k5B9EnDFMSAe1gcwwiKlA9EpSK5ir+D4w0vb3s3+vMc0US3HCz
+glXtAvMzoenWyTtfcifytMmmEi3N1DP6+s3uhpAkO2sNRnQdztxysz5+C8mHxjJ5
+c03ntS+0echMzNJ/IgPoT6mdlwqx7iwEjGVJDDhXOljOcP6DxbqMjR8DYrTrd5vn
+terqQg9GgTt1tbobzrKqxJHn52MjSg==
+=PNfk
+-----END PGP SIGNATURE-----
+
+--r17f06/4YKIVk7Q3--
 
