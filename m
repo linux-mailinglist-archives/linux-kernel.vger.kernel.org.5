@@ -1,132 +1,295 @@
-Return-Path: <linux-kernel+bounces-65450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D279854D3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:46:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5811B854D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:48:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C68B24FB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6801C27A45
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4602E5D913;
-	Wed, 14 Feb 2024 15:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381115D8F8;
+	Wed, 14 Feb 2024 15:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="CB5dhkms"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jugqqVoC"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FA05D728
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B535D463;
+	Wed, 14 Feb 2024 15:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925598; cv=none; b=n9i/ECmjQc7c6vYLYlkVL8fSHfju+ZMszCdMJ39mrjZOMKhVdRt+wL2sc8ybME3uNFO74BvlVAQUW6d1/q+L3pkl0/KNlzcpR7J+bzK5TpI8PXiHkugS4knLPKLt5CEkalAYblpw8aYkHsdlZY6rS4a3CHLiyCiyurlT5qxuSGM=
+	t=1707925672; cv=none; b=lD8eeNDHVavuzQilfMJ6rYnnsMRTOrszKK7OQb4WFvkfjAlSL8+APdJ+QHS/8e1REQKHUfRF9iak7aebubSA9mbgvneXD9tTEjTVaV69tzaVuFV5uZetKDir2vJiYF9U+zRHOV8PMTnzxr42gpMkza9mnYliokKmGMDTMGmcKjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925598; c=relaxed/simple;
-	bh=nXt2NydxVPyI52wKlorJbsmqB3Y1sW0XBLcflaBdxWI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RkQGD35oGVr5W2IrFYysURyshNQYWs1claSrr3AnXADEq360t71MtLLCP3zi4lyHBfsS/7pT/kWH9NOsPN0neDAWe2/M0m0BtSpWFg36J0oR+pIGA7sXcesKRhb87v4WI06UGVC1XBAe6AVOk7V0BhIyW8ivNARDjebJngl66qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=CB5dhkms; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2193ccbb885so2347543fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:46:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707925596; x=1708530396; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=43U0prLBEviHcCJ3pSlb1u8y9sUlYBpSR6dl+zr/IL8=;
-        b=CB5dhkms/IoQIZ0SSZkK9qtAUj1aDMxKzE8xM4f9PrWezhuGOsacgz4YP2KGzuisXO
-         Yypudkqr2k/5n1+E6iTB/wf13I60X7EiEeAI9wGRgBQAZPlD/uCwJbX1D0iDVI3HsFku
-         WHDw1EOiOjFemrSSQqb1dYtDtyaYwhNkkM3EC5LG7g7BwmT6wg0ca8BoQ4iY7PpUL8SN
-         GQM6o8+LDI/wjkx0bLASEhFzVRujNmkyye7gHLbAzAL6saIlLtv6sjYsrwK/mWKDh+NA
-         CqQtQWYZQLEis8ERh3yCubqJPDzxDkdSrwt2WwlXUdnisDvZxgYMMoIS+ZFsMk7wOnKS
-         ScUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707925596; x=1708530396;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=43U0prLBEviHcCJ3pSlb1u8y9sUlYBpSR6dl+zr/IL8=;
-        b=gC+krUn/VTzo+b+XRl0zFexgqTXYZiQDWo8B81n3siwN26JqLs1SJLrVpEeIO54wpJ
-         wL9kmcR3351ldL40eFZGBbYSRZ6Tejp5KiU6RmPBJH4HlWNV8jAZYVzFLCuNmNjL61OP
-         /dkDPvxFtb3p/AtEtRqeViGW2GZuCZnBaCndAY5ctaBqADR1VEDBPg4oBbY/mkl49RuX
-         WubFNJnT2mjZ/3rlYuOjdyt/5zogYc97zx5I0fwYvQKFTqj3UyBO4FDOEwbcaS/Fe4oz
-         gx4Bckz8/voXb/mRYXwo0Z0XO80OQZS+QeH/9/ne+hLCnWaswdj5G9IbLrvEY9w2ZQTX
-         HNeg==
-X-Forwarded-Encrypted: i=1; AJvYcCX76jA5G+QsOCT+rBYlNWgumGr+7CKqgK2bLUoq1QbyYJuiPeaYs1ZcN/ratC6AhC7QSuFEwNbtj/y/9b4SKpzeS7eHqmibANSCAql7
-X-Gm-Message-State: AOJu0YxuhVDZBHJktMf0Xp7sSw86CDhhcSkFXigJlulnCDzb1LoizkPM
-	SmgGzZnZq7f8Fe0jqyDMYDCwCtmW6kLsxGlF+2kPK6C0ZXHjj+IwWqsHB6hrx9EYE2FKUxoK4Lf
-	wyeT8ZGxSZlcRdyeFYpnkvK9i06KvRmYuFwU0/A==
-X-Google-Smtp-Source: AGHT+IGq/FPDHURxZuXkT8EEMfyOBxQIWZRGOM045VqtAvTD1CETCELK38VG/mvuBgw8UVUij5Aehjzrk5JxYSrtPyI=
-X-Received: by 2002:a05:6871:551:b0:218:55c9:bb20 with SMTP id
- t17-20020a056871055100b0021855c9bb20mr3419259oal.21.1707925596168; Wed, 14
- Feb 2024 07:46:36 -0800 (PST)
+	s=arc-20240116; t=1707925672; c=relaxed/simple;
+	bh=+3p8aCcaMIzczD0Sp/wH5oFAdSV/eWhqmd1tX646IV4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Qt+YHxC/rcoOqc0EgBhTcdXxF3zvUSD+cr4MtoF/3dsbTJmLt6reiOvHyh3RxN5u9WEZjaWM42azqpzJK0moPV7w4cqyos7pD+z63WemY9BerAlW4WRHa1ueTTCkJmWsWu8/jvzXqM1cgO1EkLZ7pwkQgSNm6f/2cYJNpOuVJJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jugqqVoC; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41EFlJKq059688;
+	Wed, 14 Feb 2024 09:47:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707925639;
+	bh=42OOgF4IEsciCzy4HGPu7+BcjYJ3RR40X6NYVnnz8qE=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=jugqqVoCuwykHtv+V+RHovowjbVT0dMBwGRm75SNMdD8jr/39Jk9z52BxcXTPTCG7
+	 j/CS8ikCqgCT3FdvlaY4OKVFgwIHquVY/xQp4U/yOyuNmZCMuj9pNsqSxOBnMPhxAz
+	 JJ1RPu6S1Eim6LTEggNcUv7QF/XRruh4koR4lNg8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41EFlJtg030857
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 14 Feb 2024 09:47:19 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
+ Feb 2024 09:47:19 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 14 Feb 2024 09:47:19 -0600
+Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41EFlC25046625;
+	Wed, 14 Feb 2024 09:47:13 -0600
+Message-ID: <2f4cf2a7-ce7a-bb34-f722-7e66ea41def7@ti.com>
+Date: Wed, 14 Feb 2024 21:17:12 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-9-brgl@bgdev.pl>
- <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
-In-Reply-To: <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 14 Feb 2024 16:46:25 +0100
-Message-ID: <CAMRc=MeM_ys7_Rk2=yhEVL6pe1bWQXqS8r_Y7P-SMQ_cTCMebA@mail.gmail.com>
-Subject: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-pci@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC PATCH 2/3] drm/tidss: Add support for display sharing
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>
+CC: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <praneeth@ti.com>, <a-bhatia1@ti.com>,
+        <j-luthra@ti.com>
+References: <20240116134142.2092483-1-devarsht@ti.com>
+ <20240116134142.2092483-3-devarsht@ti.com>
+ <vgfzhamtiwkpdyk5ndagsb63subclinotoe6tsi3wu6z7454ec@igxfzjc5gyqm>
+ <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
+ <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
+From: Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Feb 2, 2024 at 4:53=E2=80=AFAM Bjorn Andersson <andersson@kernel.or=
-g> wrote:
->
+Hi Maxime,
 
-[snip]
+Thanks for the quick reply.
 
->
-> > +             break;
-> > +     case BUS_NOTIFY_BOUND_DRIVER:
-> > +             pwrctl->link =3D device_link_add(dev, pwrctl->dev,
-> > +                                            DL_FLAG_AUTOREMOVE_CONSUME=
-R);
-> > +             if (!pwrctl->link)
-> > +                     dev_err(pwrctl->dev, "Failed to add device link\n=
-");
-> > +             break;
-> > +     case BUS_NOTIFY_UNBOUND_DRIVER:
-> > +             device_link_del(pwrctl->link);
->
-> This might however become a NULL-pointer dereference, if dev was bound
-> to its driver before the pci_pwrctl_notify() was registered for the
-> pwrctl and then the PCI device is unbound.
->
+On 13/02/24 19:34, Maxime Ripard wrote:
+> Hi Devarsh,
+> 
+> On Thu, Feb 08, 2024 at 06:26:17PM +0530, Devarsh Thakkar wrote:
+>> Hi Maxime,
+>>
+>> Thanks a lot for checking on this.
+>>
+>> On 26/01/24 17:45, Maxime Ripard wrote:
+>>> Hi,
+>>>
+>>> Thanks a lot for working on that.
+>>>
+>>> On Tue, Jan 16, 2024 at 07:11:41PM +0530, Devarsh Thakkar wrote:
+>>>> Display subsystem present in TI Keystone family of devices supports sharing
+>>>> of display between multiple hosts as it provides separate register space
+>>>> (common* region) for each host to programming display controller and also a
+>>>> unique interrupt line for each host.
+>>>>
+>>>> This adds support for display sharing, by allowing partitioning of
+>>>> resources either at video port level or at video plane level as
+>>>> described below :
+>>>>
+>>>> 1) Linux can own (i.e have write access) completely one or more of video
+>>>> ports along with corresponding resources (viz. overlay managers,
+>>>> video planes) used by Linux in context of those video ports.
+>>>> Even if Linux is owning
+>>>> these video ports it can still share this video port with a remote core
+>>>> which can own one or more video planes associated with this video port.
+>>>>
+>>>> 2) Linux owns one or more of the video planes with video port
+>>>> (along with corresponding overlay manager) associated with these planes
+>>>> being owned and controlled by a remote core. Linux still has read-only
+>>>> access to the associated video port and overlay managers so that it can
+>>>> parse the settings made by remote core.
+>>>
+>>> So, just to make sure we're on the same page. 1) means Linux drives the
+>>> whole display engine, but can lend planes to the R5? How does that work,
+>>> is Linux aware of the workload being there (plane size, format, etc) ?
+>>>
+>>
+>> Well, there is no dynamic procedure being followed for lending. The
+>> partitioning scheme is decided and known before hand, and the remote
+>> core firmware updated and compiled accordingly, and similarly the
+>> device-tree overlay for Linux is also updated with partitioning
+>> information before bootup.
+>>
+>> What would happen here is that Linux will know before-hand this
+>> partitioning information via device-tree properties and won't enumerate
+>> the plane owned by RTOS, but it will enumerate the rest of the display
+>> components and initialize the DSS, after which user can load the DSS
+>> firmware on remote core and this firmware will only have control of
+>> plane as it was compiled with that configuration.
+> 
+> Right. If the RTOS is in control of a single plane, how it is expected
+> to deal with Linux shutting the CRTC down, or enforcing a configuration
+> that isn't compatible with what the RTOS expects (like a plane with a
+> higher zpos masking its plane), what is the mechanism to reconcile it?
+> 
 
-Right. And it also makes me think that right after registering with
-the notifier, we should iterate over the PCI bus devices and see if
-the relevant one is already there.
+Just for the note, for this "RTOS control single plane" mode, we don't have a
+firmware available to test (right now we are only supporting example for "RTOS
+controlling the display mode" as shared here [1]) and hence this is not
+validated but the idea was to keep dt-bindings generic enough to support them
+in future and that's why I referred to it here.
 
-> This would also happen if device_link_add() failed when the PCI device
-> was bound...
->
+Coming back to your questions, with the current scheme the Linux (tidss) would
+be expected to make sure the CRTC being shared with RTOS is never shutdown and
+the RTOS plane should never gets masked.
 
-Right.
+I think the IPC based scheme would have been mainly needed for the case where
+you have a single entity controlling the display for e.g you have a single
+display controller register space and a single IRQ but you have multiple
+planes and say you want to divide these planes to different host processors.
+In that case you want a single entity to act as a main entity and be in
+control of DSS and rest of the processors communicate with the "main entity"
+to request display resources and plane updates and main entity also programs
+dss on their behalf.
 
-Bart
+But unlike above, TI DSS7 is designed to support static partitioning of
+display resources among multiple hosts, where each host can program the
+display hardware independently using separate register space and having a
+separate irq and without requirement of any communication between the hosts.
+Now as this feature is unique to TI DSS7 we want to support this feature in
+tidss driver. The DSS resource partitioning feature is described in detail
+here [2]
 
-[snip]
+>>> And 2) would mean that the display engine is under the R5 control and
+>>> Linux only gets to fill the plane and let the firmware know of what it
+>>> wants?
+>>>
+>>
+>> Here too the partitioning information is pre-decided and remote core
+>> firmware and device-tree overlay for Linux updated accordingly. But in
+>> this case as remote core firmware owns the display (minus the plane
+>> owned by Linux) it is started and initialized during the bootloader
+>> phase itself where it initializes the DSS and starts rendering using the
+>> plane owned by it and Linux just latches to the DSS without
+>> re-initializing it, with write access only to the plane that is owned by
+>> Linux. You can refer [1] for more details on this.
+>>
+>>> If so, do we even need the tidss driver in the second case? We could
+>>> just write a fwkms driver of some sorts that could be used by multiple
+>>> implementations of the same "defer to firmware" logic.
+>>>
+>>
+>> This feature of static partitioning of DSS resources is specific to DSS7
+>> hardware (which is controlled by tidss driver) which supports dedicated
+>> register space and interrupt line for each of the hosts [0], so that
+>> multiple hosts can drive the display controller simultaneously as  per
+>> the desired static partitioning of resources, and so I don't think a
+>> separate driver is required here and tidss seems the right place to
+>> support this, where using this device-tree approach different resource
+>> partitioning schemas can be achieved as described here [1]. This was
+>> also aligned with Tomi too where we discussed that tidss is the right
+>> place to support this as we are simply leveraging the DSS hardware
+>> capabilities of static partitioning here.
+> 
+> If the only thing tidss does in the "owned by RTOS" is forwarding KMS
+> atomic states to the RTOS, then I'm still not sure why we need to
+> involve tidss at all.
+> 
+
+I think maybe here is the point of misunderstanding. We are not forwarding
+atomic states to RTOS here. Linux (tidss) is infact, accessing the display
+register space assigned to it (common1 assigned to Linux, commmon0 assigned to
+RTOS) and also writing to DSS plane registers for the plane assigned to it
+(say VID assigned to Linux and VIDL assigned to RTOS).
+
+> It's not just about interrupts, it's also about how your arbitrate
+> between what Linux wants and what the RTOS wants. Like if the RTOS still
+> wants to output something but Linux wants to disable it, how do you
+> reconcile the two?
+> 
+
+The scheme involves static partitioning of display resource which are assigned
+compile-time to RTOS and Linux. Here the RTOS firmware is compiled with
+specific ownership/display resources as desired by user and this assignment
+stays intact.
+
+If there is a more complex use-case which requires dynamic
+assignment/arbitration of resources then I agree those require some sort of
+IPC scheme but this is not what we target with these series. This series is
+simply to support static partitioning feature (separate register space,
+separate irq, firewalling support etc) of TI DSS hardware across the multiple
+hosts and there are use-cases too for which this scheme suffices.
+
+> You have to have something that reconciles both, and typically for
+> firmware-based setup this will be the firmware's job.
+> 
+> That's very similar to what the RaspberryPi did with fkms, and I believe
+> that having a generic KMS-on-remoteproc driver when the firmware has
+> control over the display is the path forward.
+> 
+
+The kms-on-remoteproc scheme is different and maybe more useful for those
+processors not supporting this static partitioning hardware feature. On the
+other hand, I believe there are still use-cases where this unique static
+partitioning hardware feature of TI DSS will suffice without any requirement
+of IPC. And it makes the firmware simpler (and the job of RTOS developer
+easier too) as no IPC is required.
+
+I am curious to understand Rpi DSS hardware and take a look at fkms and it's
+firmware code though if it is public ?
+
+>>>> For both the cases, the resources used in context of processing core
+>>>> running Linux along with ownership information are exposed by user as
+>>>> part of device-tree blob and driver uses an updated feature list tailored
+>>>> for this shared mode accordingly. The driver also auto-populates
+>>>> matching overlay managers and output types from shared video
+>>>> port list provided in device-tree blob.
+>>>> In dispc_feature struct remove const access specfier for output_type
+>>>> array as it is required to be updated dynamically in run-time for shared
+>>>> mode.
+>>>
+>>> I'm also not entirely sure that the device tree is the right path there.
+>>> Surely the firmware capabilities will evolve over time, while the device
+>>> tree won't. Is there some way to make it discoverable at probe time by
+>>> the driver?
+>>
+>> I think the main highlight of the sharing feature is the hardware
+>> capability where each host is provided separate irq and register space
+>> to program display for their display context independently
+> 
+> Wait, what do you mean by display context here?
+> 
+
+By context I mean to what that specific host wants to display. For e.g. if
+RTOS is owning a plane, then it can update it's framebuffer and update plane
+registers independently.
+
+[1]
+https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/system/Demo_User_Guides/Display_Cluster_User_Guide.html
+[2] https://www.ti.com/lit/zip/spruj52 ((Section 12.6.3.14 DISPC Resources
+Sharing))
+
+Regards
+Devarsh
+
+> Maxime
 
