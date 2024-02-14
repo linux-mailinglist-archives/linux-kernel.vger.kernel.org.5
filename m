@@ -1,155 +1,105 @@
-Return-Path: <linux-kernel+bounces-64906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799AB854483
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D58C854485
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E1B6285170
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:02:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D922850FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F7F125BC;
-	Wed, 14 Feb 2024 09:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0432AD4B;
+	Wed, 14 Feb 2024 09:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="CISgWuk1"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="X5rdKeXP"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDEEB645
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774626FB6;
+	Wed, 14 Feb 2024 09:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901332; cv=none; b=G0GPYBtYZMq/+HcgNuZKycP2UIMrPE49CzClgqE2XgfS1CRa25S314o3aSY4ocskcf2Laxa7r1qP6vSDyfHklY+7ggZHtiC070dg3UECDqxeyLUl5tuRZNtOpumtxJCp7IcnmaWmDbbEMCCGT/2Y5PXD0Bpl8gkbF2tFR9tcxbg=
+	t=1707901418; cv=none; b=qxnl1pOodvfl91DBZmopDP5jZDn5OMvSYGYI3JkjvM0O5stImot1UgCYyyhNguvQfCyBt3P1THfdQdCRDu999qQIs6y93lAmO2epfcglwhdbzaBFC1X30l3o7D2Jb0eCOGsYmAb7lOKvflUB28YTy7aAfYQsmeyUKyvHRzxhtz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901332; c=relaxed/simple;
-	bh=MfcAXUCHb2E1/+tWEyK5zhlte6BwjTT4yiXkFWjcBoI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=I56D1rujwBrWi7ELRLhkAWmaTS1aLTwERv74b+CCcWUkZ7/cqFVw33T1Mie9z3EKzGWKhMPjmTbDD6ovd71vyVggLteMYCNQGiU01vOVboF9oyyjoPcM3a4LPqRU7/GVMdvdNbR0ofP9S9AOUxgXiMh+GstnPLMfU2XmlwUnfek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=CISgWuk1; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e09493eb8eso464740b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1707901330; x=1708506130; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PPRsJ6g4sGjHYOROeqaGh/pr9ekDnpVi90clFxCUkAg=;
-        b=CISgWuk1/rbOKV2EdoWpaODq3ELivfPw1Mg9iVc+qnhrS7ZA8KHhT3VeIUjwiFVILe
-         kuhok7KbFPm8UmUvGpMq8G01o4Y9zfFFNqv2WbXguBozSTjIf2zK+JnBfIEF0rTasyBL
-         FfICzQRZOWIqMJlJixXaDGpXDMs+/+n+izwL8XMtLaOnvetvqIbwd3dwRn0/awzvJ0ki
-         BrN2W3LO3gE6V6OZS84OAMDmkQC4fINJ7A03Emf3yqmUjkt9e4z9NEA91HdyCUJG4Sng
-         vWfRWJMTGU693hHSX8rc/RJFhxbN97c5Uat2ZnkjDPab+VeAy8fRHs2dJHB35OeeD6ih
-         7k3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707901330; x=1708506130;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PPRsJ6g4sGjHYOROeqaGh/pr9ekDnpVi90clFxCUkAg=;
-        b=FpYwZ3nff+azja5/cwZpLa5HtOk4fOFNRP21WP4qnhhm0FpWyX+MD2Z6/lrPWNcoXM
-         shvQdFZuaF+zaQYw+Oski85n/WTgaPs5ncrz1nPTJc+rNzcY1EBeJIfIrtibItsTvgYQ
-         lF1Daf3qJh0c7CJCjmcCnT/TiAda3IZHz3365GljyC/B++UQowlFPW4huSbZX3bv7gTM
-         VWwl1vYC4rSU075dUtYuHNPIDAoQL7XiKWVKF6jOFZpH4lTRAk1YP58i2UEDOYOwJNyy
-         Ir2WujTMLgNq8RviGJWJz6Q2sPrFMw7/w6QEwMM7yGbugyS9VsK+LEIDz1tSw7PmkpFj
-         Ux3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUTUMYj6Mbob234o6DVkvzgdfcee6xQnFWptSYffagJMi1onPluc5MIgjQ6BKEnHl1P1kMVcoth6n4tU1YljZiWRn7STpH6ZhSvKCx+
-X-Gm-Message-State: AOJu0Ywk2leSXEYkwiQmcEt0ALc52iIdfCjrTWN5uCCVna7mn1kloqrB
-	PrNXL53cJeVcbXErxpAMaggxi+MEwXyIZ87e1pZwyXn2DNioDnY7RObYIm7x72I=
-X-Google-Smtp-Source: AGHT+IHy/Pj3hWoJS2WkBJmfY13iMBvhueyDKJ5A/yQfFVGdLE2c2qKte/Hxj8onksRoyE5sotknkQ==
-X-Received: by 2002:a05:6a20:d487:b0:19e:4c37:8737 with SMTP id im7-20020a056a20d48700b0019e4c378737mr2014592pzb.5.1707901330438;
-        Wed, 14 Feb 2024 01:02:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVBa/niUfhaptGFm9lpsC7zFdtIR2IEOBXSB0tdcyp6YZbUOgFtfbI/clENDxQCc8TCx8cnV0UJM0uPePynqx9jmQ7hY4b5ASPHIgiC4ZfxONgs2/Bri+S7wIUid9Bd0gcGYFrdshm5ssWW0rX7DOV8ZmKL6m+ulTzguKOnSdLt5I/uYehmsE75yEXVwh5SFONe5K6zDtg+cMtGVcnmC/zs52MkLQukmDPBDfZPnewiiQR2bVV8CVafM5Yknt5+zeqr1cvS7wKO
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id m25-20020a638c19000000b005d7994a08dcsm2476681pgd.36.2024.02.14.01.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 01:02:10 -0800 (PST)
-From: Samuel Holland <samuel.holland@sifive.com>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	linux-kernel@vger.kernel.org,
-	Conor Dooley <conor@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	Stefan O'Rear <sorear@fastmail.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	stable@vger.kernel.org
-Subject: [PATCH -fixes v3 2/2] riscv: Save/restore envcfg CSR during CPU suspend
-Date: Wed, 14 Feb 2024 01:01:57 -0800
-Message-ID: <20240214090206.195754-3-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240214090206.195754-1-samuel.holland@sifive.com>
-References: <20240214090206.195754-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1707901418; c=relaxed/simple;
+	bh=IkMSx2GMsosJsuqeMCf9O8BI8a8CA/8JrvnoKOrX2hY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nVRGTHRoV3ABdAazCmBlF96NKMtM2n42QpZ+TnthQGIC9ZKlGlrHGpF78T5Kw1tBPoA9bUbK8JwV4yhClRztrqCajc+GsLjBgVdoZ39oX/fi6dVg6MaRXsWeBsokyAr1Ofm1iSE/3X9PDRniZFvUE190oUQZzQr9TzJqoxCEG0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=X5rdKeXP; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707901408;
+	bh=IkMSx2GMsosJsuqeMCf9O8BI8a8CA/8JrvnoKOrX2hY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=X5rdKeXPeqAiyx6zTZSRHE9cio2suhjrDXXa3EKLg6fs5OJQQBTxzSS4xVRRG6kUi
+	 aSxL96RzvvF3u+Vyol2XGDkzF78R8k/EJrtlevDmoMA0zn+pOk1En1CTs25BEfz0c+
+	 JoPYq+x/n5GY4mghF7Pyj1kjwntdmBGgwix/7PAQ8uyBJj/GP5D3+5thYaKdD0JheH
+	 NxNfsZoqCccbX3RoaTE3jEEs1AiSM7LFKEaBPHw/10X2oKX5eiWIdrx22jdLxBa+hK
+	 UcPmIx++Zet9sP1+n2z8xElSAp85RldV5zKM4z1f0h3jxj1mdvXQEJH02010efGkmL
+	 hEQhqPHsLEdPQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A26113781FD9;
+	Wed, 14 Feb 2024 09:03:27 +0000 (UTC)
+Message-ID: <6fea6cd3-031b-4d5a-8bba-f01f6afa12b3@collabora.com>
+Date: Wed, 14 Feb 2024 10:03:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: mt8186: Add missing xhci
+ clock to usb controllers
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Chen-Yu Tsai <wenst@chromium.org>,
+ Eugen Hristev <eugen.hristev@collabora.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>, kernel@collabora.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240213-mt8186-ssusb-domain-clk-fix-v2-0-1f981d35f3fd@collabora.com>
+ <20240213-mt8186-ssusb-domain-clk-fix-v2-2-1f981d35f3fd@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240213-mt8186-ssusb-domain-clk-fix-v2-2-1f981d35f3fd@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The value of the [ms]envcfg CSR is lost when entering a nonretentive
-idle state, so the CSR must be rewritten when resuming the CPU.
+Il 13/02/24 16:02, Nícolas F. R. A. Prado ha scritto:
+> The mtu3 usb controllers don't list the xhci clock, though they require
+> it, and thus rely on the bootloader leaving it on in order to work.
+> 
+> When booting with the upstream arm64 defconfig, the usb controllers will
+> defer probe until modules have loaded since they have an indirect
+> dependency on CONFIG_MTK_CMDQ, which is configured as a module. However
+> at the point where modules are loaded, unused clocks are also disabled,
+> causing the usb controllers to probe without the xhci clock enabled and
+> fail to probe:
+> 
+> mtu3 11201000.usb: clks of sts1 are not stable!
+> mtu3 11201000.usb: device enable failed -110
+> mtu3 11201000.usb: mtu3 hw init failed:-110
+> mtu3 11201000.usb: failed to initialize gadget
+> mtu3: probe of 11201000.usb failed with error -110
+> 
+> (and same for the one at 11281000)
+> 
+> Add the missing clock for the usb controllers so that they can
+> successfully probe without relying on the bootloader state.
+> 
+> Fixes: f6c3e61c5486 ("arm64: dts: mediatek: mt8186: Add MTU3 nodes")
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-The [ms]envcfg CSR was added in version 1.12 of the privileged ISA, and
-is used by extensions other than Zicboz. However, the kernel currenly
-has no way to determine the privileged ISA version. Since Zicboz is the
-only in-kernel user of this CSR so far, use it as a proxy for
-determining if the CSR is implemented.
-
-Cc: <stable@vger.kernel.org> # v6.7+
-Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
-
-Changes in v3:
- - Check for Zicboz instead of the privileged ISA version
-
-Changes in v2:
- - Check for privileged ISA v1.12 instead of the specific CSR
- - Use riscv_has_extension_likely() instead of new ALTERNATIVE()s
-
- arch/riscv/include/asm/suspend.h | 1 +
- arch/riscv/kernel/suspend.c      | 4 ++++
- 2 files changed, 5 insertions(+)
-
-diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
-index 02f87867389a..491296a335d0 100644
---- a/arch/riscv/include/asm/suspend.h
-+++ b/arch/riscv/include/asm/suspend.h
-@@ -14,6 +14,7 @@ struct suspend_context {
- 	struct pt_regs regs;
- 	/* Saved and restored by high-level functions */
- 	unsigned long scratch;
-+	unsigned long envcfg;
- 	unsigned long tvec;
- 	unsigned long ie;
- #ifdef CONFIG_MMU
-diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
-index 239509367e42..28166006688e 100644
---- a/arch/riscv/kernel/suspend.c
-+++ b/arch/riscv/kernel/suspend.c
-@@ -15,6 +15,8 @@
- void suspend_save_csrs(struct suspend_context *context)
- {
- 	context->scratch = csr_read(CSR_SCRATCH);
-+	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_ZICBOZ))
-+		context->envcfg = csr_read(CSR_ENVCFG);
- 	context->tvec = csr_read(CSR_TVEC);
- 	context->ie = csr_read(CSR_IE);
- 
-@@ -36,6 +38,8 @@ void suspend_save_csrs(struct suspend_context *context)
- void suspend_restore_csrs(struct suspend_context *context)
- {
- 	csr_write(CSR_SCRATCH, context->scratch);
-+	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_ZICBOZ))
-+		csr_write(CSR_ENVCFG, context->envcfg);
- 	csr_write(CSR_TVEC, context->tvec);
- 	csr_write(CSR_IE, context->ie);
- 
--- 
-2.43.0
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
