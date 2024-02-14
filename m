@@ -1,122 +1,134 @@
-Return-Path: <linux-kernel+bounces-65828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0210D85528B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:45:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94D185528D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B269C2833C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:45:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DEFB1F2C9F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4271139572;
-	Wed, 14 Feb 2024 18:45:18 +0000 (UTC)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B5A139561;
+	Wed, 14 Feb 2024 18:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hp.com header.i=@hp.com header.b="HazIUWUD"
+Received: from us-smtp-delivery-162.mimecast.com (us-smtp-delivery-162.mimecast.com [170.10.133.162])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C96212F37B;
-	Wed, 14 Feb 2024 18:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6F112F594
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936318; cv=none; b=eT+cL2rIK0I81q4NRw/2pQrHCL6H9KtlApJe5EQLYxwnjT4qR4ReL1tR+6/D+9Lr9hfeULZZAV9b6dkmTkjX2AV0ysKG2jquLuncOIklXzuimPjP9dwLlJrDOG1DOUlqWMTxZ4Kat8bFF7PH7e3u/LGHwFpYNrsxrwJRmAYNGGw=
+	t=1707936341; cv=none; b=riyPZLyRDF4gebxl1XdLfvzqlo2E5EkFqnstFsh8p7NP5JYsWiXH07QRzQ9CFwHtSCuGdzvy0BySV0+R0PSRS9Cu+bZFy3cO5R1KNzF3p6FACMdSA50GdxeJH0jOB1wB+qDPF9lb5KrK+xniKm6PV/IQy0OjRuWzNlKPj6OVjGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936318; c=relaxed/simple;
-	bh=72TJF+26+fq4Cy7W5PwGo5iflp019HlrHyv4DywiD1Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JzC2uJfem8wR8rqvGqEj0aW0+lxOCn89wP9uJiThNh63IgPLV2ktGSUm9UuNgV4hJTQ7Lfj3KR1rBZ9jiTjj4zBsR9HEV4QoMSdykmlCGKMsv6iarIYMLmLuA/ShdR2ixivPg2Uw6scKHfNm55z5ext7kLkvwmXJmdaQ6ISLu4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso2093833276.1;
-        Wed, 14 Feb 2024 10:45:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707936315; x=1708541115;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1+f5n/cHsYg/dWsN7rUTzZMxuPCFn8WGXbxLXF+ZxZY=;
-        b=I9dyuIg3/2TBmc5Q2ChFz0AuY8eHOvsWfn8ncLd8aPL4RTNfwj0FfkAcZLUwQiBssA
-         o4VmgxuTfhAbl6wuLx2c6BmIGW3SlypdiRUMbDOCx8UBb/O8lNxCxyvhetSe91cZX87f
-         cxxTJcX6UuanlLlS5jERFirwehKGqDhIGX34VIYK4TrfEiAhvpmVFbMxG865rTZYJYcV
-         UuvQlMfr5sJ5nXlO1fIoEyTU6H51Vlwv/ybaaKsUH/3EM3d3x8DSt6hxeFUf62zfFhKU
-         7zai0PmHrk6jvi8H55AwbXSZgtziAUGC1WtMb7tyFSm6ttZoJKhFFt5LHmXbBtJq94rY
-         34yw==
-X-Forwarded-Encrypted: i=1; AJvYcCXONdOUABuPXit8OuyhIr6hWhLLi8QQGHNrzQsRLMfyJj7znB9fuY2PC+yqY92mk7AShKTujnWDtrEKO+YxX9RP3gBfhe20KIHVgnaJ
-X-Gm-Message-State: AOJu0YxsxvkDHsNBN0hdmb9FaAu5UEoDfuTMS6uPnsldQP4h+SIVD16j
-	92CjEAGoe8cug3SavxOA31MdI+CB+LJfmN0We7TMU1ogIuUaLFUaej8acynFw2w=
-X-Google-Smtp-Source: AGHT+IEcFCGaoxjNmlFfZDbNl+tXD7kgsivDXL+O5LPV3WLykTBz6OwLPoQxlSDPAXOxH9gFMQWmTw==
-X-Received: by 2002:a25:b206:0:b0:dbe:a688:8ab8 with SMTP id i6-20020a25b206000000b00dbea6888ab8mr3386480ybj.0.1707936314849;
-        Wed, 14 Feb 2024 10:45:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWw+LzLNn5tZtDYVTBOE2FEioJOV4/ZoElxTuva+VsjopzXVRNUH2XUo2EdvbkLM854GIl/Mho71X2nCHbUK02RW/zqQHIVSylBbQi6
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id 132-20020a25008a000000b00dc7496891f1sm2274926yba.54.2024.02.14.10.45.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 10:45:14 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso2093809276.1;
-        Wed, 14 Feb 2024 10:45:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUmScRVLXi2XTraxVjasA0LTbTJvbGcnxyxshed9zsIzZbcVEQdvAlWp1KdRwDLywZVCnICN8Ab51+EyHGquv7mLQdW4PccL2+L+lSD
-X-Received: by 2002:a25:2902:0:b0:dcd:5187:a032 with SMTP id
- p2-20020a252902000000b00dcd5187a032mr2984857ybp.43.1707936313923; Wed, 14 Feb
- 2024 10:45:13 -0800 (PST)
+	s=arc-20240116; t=1707936341; c=relaxed/simple;
+	bh=f+Ss+Vy5U6cHed6RvKSyVpq8OJxkSd2PHhtjh/PmpPk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=qwglcsYTml4JRYmzcL5V+plsiNdLCVXa5V14u/1w18rjfVgfmp+egREZKKZGGFTU1TsQgo0ElQhOIqBJDQabFW/ZKroKwOco/PAjnE1uG7OgZVfRvV8HGeUopUJ1J6W35A7JWPGTm2/4LGEV6OIJWNt0xaoJuDPNR7Zcl3QfXcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hp.com; spf=pass smtp.mailfrom=hp.com; dkim=pass (1024-bit key) header.d=hp.com header.i=@hp.com header.b=HazIUWUD; arc=none smtp.client-ip=170.10.133.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hp.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
+	t=1707936338;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=f+Ss+Vy5U6cHed6RvKSyVpq8OJxkSd2PHhtjh/PmpPk=;
+	b=HazIUWUDqyGqt7E6KTC3CzbsbOCKwRnpLQ21TJSChwD4yhtnmHI/oqjgrzeu9UxfH062nQ
+	mS+HTgQjmiH9Yl3HFXi43tTVnLdAvRA1bUqLkcKJtUIg8d1WtUHaXxLDSJ8JuLHkyIIzXz
+	4LKJStQwBmGJW53POAUOMsu3GV8r9T4=
+Received: from g8t01559s.inc.hp.com (g8t01559s.inc.hp.com [15.72.64.153]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-qdKEUu9zPUieSwWbA3Rg_w-1; Wed, 14 Feb 2024 13:45:37 -0500
+X-MC-Unique: qdKEUu9zPUieSwWbA3Rg_w-1
+Received: from g7t14407g.inc.hpicorp.net (g7t14407g.inc.hpicorp.net [15.63.19.131])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by g8t01559s.inc.hp.com (Postfix) with ESMTPS id E75CF2056B;
+	Wed, 14 Feb 2024 18:45:35 +0000 (UTC)
+Received: from localhost.localdomain (unknown [15.53.255.151])
+	by g7t14407g.inc.hpicorp.net (Postfix) with ESMTP id A5C7917;
+	Wed, 14 Feb 2024 18:45:33 +0000 (UTC)
+From: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
+To: linux-sound@vger.kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org,
+	eniac-xw.zhang@hp.com,
+	Eniac Zhang <eniacz@gmail.com>,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Alexandru Gagniuc <alexandru.gagniuc@hp.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LED For HP mt645
+Date: Wed, 14 Feb 2024 18:45:07 +0000
+Message-Id: <20240214184507.777349-1-alexandru.gagniuc@hp.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <Zcz--YJmWLm0ikUT@smile.fi.intel.com>
-In-Reply-To: <Zcz--YJmWLm0ikUT@smile.fi.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 19:45:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW5nwtuZpTyf+_41bcHeR+MA6Ko2++JiC8Xz6u1tDNQ_Q@mail.gmail.com>
-Message-ID: <CAMuHMdW5nwtuZpTyf+_41bcHeR+MA6Ko2++JiC8Xz6u1tDNQ_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] auxdisplay: linedisp: Clean up and add new driver
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hp.com
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=WINDOWS-1252; x-default=true
 
-Hi Andy,
+From: Eniac Zhang <eniacz@gmail.com>
 
-On Wed, Feb 14, 2024 at 6:57=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Mon, Feb 12, 2024 at 07:01:33PM +0200, Andy Shevchenko wrote:
-> > Add a new initial driver for Maxim MAX6958/6959 chips.
-> > While developing that driver I realised that there is a lot
-> > of duplication between ht16k33 and a new one. Hence set of
-> > cleanups and refactorings.
-> >
-> > Note, the new driver has minimum support of the hardware and
-> > I have plans to cover more features in the future.
-> >
-> > In v2:
-> > - updated DT bindings to follow specifications and requirements (Krzysz=
-tof)
-> > - unified return code variable (err everywhere)
-> > - left patches 10 and 13 untouched, we may amend later on (Robin)
->
-> Geert, I would like to apply at least the first 13 patches.
-> Do you have any comments or even possibility to perform a regression test=
-?
+The HP mt645 G7 Thin Client uses an ALC236 codec and needs the
+ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk to make the mute and
+micmute LEDs work.
 
-I'll try to give it a try on my Adafruit Quad 14-segment display tomorrow..=
-.
+There are two variants of the USB-C PD chip on this device. Each uses
+a different BIOS and board ID, hence the two entries.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Signed-off-by: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
+Cc: <stable@vger.kernel.org>
+---
+ sound/pci/hda/patch_realtek.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-                        Geert
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6994c4c5073c..c837470ef5b8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9928,6 +9928,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
+=3D {
+ =09SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS=
+35L41_SPI_2_HP_GPIO_LED),
+ =09SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC"=
+, ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ =09SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC"=
+, ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++=09SND_PCI_QUIRK(0x103c, 0x8b0f, "HP Elite mt645 G7 Mobile Thin Client U81=
+", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ =09SND_PCI_QUIRK(0x103c, 0x8b2f, "HP 255 15.6 inch G10 Notebook PC", ALC23=
+6_FIXUP_HP_MUTE_LED_COEFBIT2),
+ =09SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
+LED),
+ =09SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
+LED),
+@@ -9935,6 +9936,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
+=3D {
+ =09SND_PCI_QUIRK(0x103c, 0x8b45, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
+LED),
+ =09SND_PCI_QUIRK(0x103c, 0x8b46, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
+LED),
+ =09SND_PCI_QUIRK(0x103c, 0x8b47, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
+LED),
++=09SND_PCI_QUIRK(0x103c, 0x8b59, "HP Elite mt645 G7 Mobile Thin Client U89=
+", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ =09SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VR=
+EF),
+ =09SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VR=
+EF),
+ =09SND_PCI_QUIRK(0x103c, 0x8b63, "HP Elite Dragonfly 13.5 inch G4", ALC245=
+_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
 --=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+2.42.0
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
