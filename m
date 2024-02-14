@@ -1,241 +1,127 @@
-Return-Path: <linux-kernel+bounces-65080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46B585478C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:51:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FDF085478F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 302EDB21E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:51:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E94F41F21175
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507D91863F;
-	Wed, 14 Feb 2024 10:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC4218E10;
+	Wed, 14 Feb 2024 10:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="bBrhAc9I"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zrXgyHlF"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 071D318EA5;
-	Wed, 14 Feb 2024 10:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBDA18638
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907887; cv=none; b=mP4KiYMGyJ3W6UnSkq3I5820nxC2/JIRuYyLawTJlqETrHvySh+16yFkYZVG/6EVESOAUO76bB4iNFyd5ya0Jy8dkhOEr1IwgifbdrykUMSSmCfX952q+it/bIuILtYn+EfsTbMwTasmlWe3xA4/TU2t7jUUq0cotUnwlgRG0og=
+	t=1707907911; cv=none; b=s5PNLH2VGBG/1/CRj2AjxynYwHJGJB6pLwZh/v4+kzBfgNS3kvRty8YA/PYqOpTlzqCGp+37RCszZL41VUaTVmmf8ppizUGYsdqcGui97L7N29heYlTcYi4DrjzAA2q/d0MA5rdhoepOIaDOUoNrNzgQ9+AwJx6cq2BRKDBXyQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907887; c=relaxed/simple;
-	bh=VBOjT9PbPH/2fllTgNRpjqHT9x/jVLbcfon0jVzyn5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m76rAcJvDAy+HfRAspduSEymT0/oFjpOdhBsuv75u9TLH3SnaVOAR0aI2r1EfV3UiujMfhjAaJrT3Dzb2tBw1sTL+kj3QV+C3I85uEaCUYsVe9jujml0IQvPL3rV6cVUO0qeShpD8/eTOjCyQvPm+8rxR6s/n+1y5CBAzCWAtGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=bBrhAc9I; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0DCD840E0192;
-	Wed, 14 Feb 2024 10:51:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id t_5Xw0DbR89L; Wed, 14 Feb 2024 10:51:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707907880; bh=rxGQY0MUeKmQh+xTDLGcVVfLxOjh73vp550f/1FpQj4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bBrhAc9IpVb+UNBjskRb3a+KXVM9RyRBKoCmOiwtEL1TAGvJ2baymYXc7o5/mH7ok
-	 L3atJ4kl8HZdRaJn/rSS9Dp1/rZ/5FdIgYamUtGdfFGo4MqTDWsAVsOZWaVUT9Asdf
-	 IV9cQNq6VmMyDcB1Jrzz4xqNfibUJ3tJEtlA2BVH/x85hi6EQLJIjsCnmTINxxL9kW
-	 QwIwAwHegeUsoxFleqZ4gw9n9eH7H/pbaJtGwt6cYiAhrgbYLGfXiDOnGkHDw+MXnF
-	 5HmOgGe7tapt2O2Rjhbxk4uadcxvvkCkNyBIwQTZA51Fm93on0CWz27TAVsb4VP7p0
-	 EV1FRRHmlddjG9Rk3w85JgtJEkkx2yOmeLIy8MwRQ0HT3Rrg6iIOBPJqhSNJNN1oC0
-	 fdnVr+oTcc+ksjdNu4F5Fl4qgkClv+FBnCjRbS3YwoV+dO/zOrzTHomYZR96CEMqh/
-	 S3vTM1x1R7rUkJU7uZeqgzCdTWpYOrhnXAnLokU3xdNMyrI7aidpXJCybOp/dnIwQz
-	 MSr6EDBAgJC+UIKwz04+vVXSGFvpeM7uJxOn11vNu+K29miM1FObydOin2UuqRsMHS
-	 5+MMoniZq4z2Ka9fe5F/I1zLNwfHIrlh19Iaz3kJEEosONwFhLgw7hlojDOZ/3YlLh
-	 Zq/6EmLUMisV++u7ws26raVs=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C29F340E00B2;
-	Wed, 14 Feb 2024 10:51:11 +0000 (UTC)
-Date: Wed, 14 Feb 2024 11:51:06 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214105106.GEZcybGu7TkvKzutol@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1707907911; c=relaxed/simple;
+	bh=FngIp4KBxf0vqziz3+ArzSp7oe/urJZKigfldVYi13c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XC2WgpAyKmkf3//s7C+tqxR/utSwEotQXbdfCZ6hOyPdVtHpi9hn7TYadOG9HIPE8aGI1xR+nMP5JgArtnD+cCeot00fGxaS570+r6RLRbaZ5YqjETiqi/a9nPO3m7BoRWrOrRJqSRILMTeSVD7wzBY9GRRLv/e0Dt2RbtqFmpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zrXgyHlF; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so1945810241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:51:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707907908; x=1708512708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2g1mQizjkEn3VxHNfnwCGd5SJVNpMNtdqZQAgI51wCU=;
+        b=zrXgyHlFKZAdxlGFAEhVc9G81FYr3RYeNYuShQ4yP8E8rC3aopZPA22zrXy5aZs3en
+         nUYJUIBjDB0Tcr9doCutUstpxGclzvX4hZItLoP4gP4oCl3pQcHC8oGr/2xsVpeelTN/
+         U3HFwWh3k2v7Dd4bcbmGubl9Dtq84ZF7ipGEj1ZJ+gIgB1/gsNVcg+IlbV0n/gWVZRKh
+         wV3FqGfEELI4OtgBCKAbk1D8b//XX4v4xK7h0nUnYJtvUyvdmHdWZSZH4CyOJB0D7DCl
+         rcEGCecR94nZCDr6lzS8WkdIT0Auh4eO8VNEBo760wtu/P1Y4HM0UEe4qqGfqOWIw0JR
+         F9Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707907908; x=1708512708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2g1mQizjkEn3VxHNfnwCGd5SJVNpMNtdqZQAgI51wCU=;
+        b=I/lZeKr8YfGuNq7OgA0ncKfKHb7Ac/ZBkibndLjHtPK7ZQwDCc9dZ6eFyRALyKxmLL
+         zSiE74fGWGZLOSbfiqYoYz9WBC0KmR3OZwVclcepi3BQMG5htAaHxdrduUZ1MQuFzZ9v
+         y7Sznt9MJ5PXSZHN9bYtBIQOgzjt1P5iXlPZVJRe3fMGXP10Re8BVeR6K18KY81oFJrK
+         qGKOnEHN0M2gzU8qhGOiInuktIRRkyqXlzWXz9BLe5/tHdhyB2jguBD/PPO1YGo4gbvS
+         MiedMzr/qAOouUgoUDiNUkYZZLB/wyh65h6oYGB1kyOjedrfeyh4pt5Ss92wvySnA4AP
+         if5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX6DbWSdBKlEpVJxLPZ6sy7hbOKLbAqvGkgh0HKlKuEdAbaoQ1kQ0Vd0oCfVIBBt/OmEDKSOsfnvjJFjhhDEymjOv/jk6N9pqij9z7u
+X-Gm-Message-State: AOJu0YzwTJv0WH52XIQeAQs43R9+BKVEF56WY6kE10sUwSKTKqsf87t1
+	5M0HduFIajharYpnssl6VpOaPJps2F8hEGE+Ue2iWlGY3L/u6zOAj8XegYq7N0y7hIjTymxdHfC
+	1Qa8iSpvcxzDtvrLJZC6ITne3OF765n6XXMUn
+X-Google-Smtp-Source: AGHT+IExci4zElcZtqMQOuT6NK38iGJAdkqnfcCqnUfNn0vIoBFYe9CwwBiX3ybhUh7K3qqNBm1b+K7r0Iz04LypLPw=
+X-Received: by 2002:a1f:e084:0:b0:4c0:2a9f:d3ec with SMTP id
+ x126-20020a1fe084000000b004c02a9fd3ecmr2466287vkg.6.1707907908067; Wed, 14
+ Feb 2024 02:51:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+ <20240208-alice-mm-v2-2-d821250204a6@google.com> <202402091606.A181673F0A@keescook>
+In-Reply-To: <202402091606.A181673F0A@keescook>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Wed, 14 Feb 2024 11:51:36 +0100
+Message-ID: <CAH5fLggZc_Fxi1gjx9jxGDgyYOj1NLz5MYxzRxEja6vV0WffGg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] uaccess: always export _copy_[from|to]_user with CONFIG_RUST
+To: Kees Cook <keescook@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
-> +static inline struct cper_sec_fru_mem_poison *get_fmp(struct fru_rec *rec)
-> +{
-> +	return &rec->fmp;
-> +}
+On Sat, Feb 10, 2024 at 1:15=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Thu, Feb 08, 2024 at 03:47:52PM +0000, Alice Ryhl wrote:
+> >       unsigned long res =3D n;
+> >       might_fault();
+> >       if (!should_fail_usercopy() && likely(access_ok(from, n))) {
+> > +             /*
+> > +              * Ensure that bad access_ok() speculation will not
+> > +              * lead to nasty side effects *after* the copy is
+> > +              * finished:
+> > +              */
+> > +             barrier_nospec();
+>
+> This means all callers just gained this barrier. That's a behavioral
+> change -- is it intentional here? I don't see it mentioned in the commit
+> log.
+>
+> Also did this get tested with the CONFIG_TEST_USER_COPY tests? I would
+> expect it to be fine, but better to check and mention it in the commit
+> log.
 
-Let's get rid of those silly helpers, diff for this one below.
+I just ran this with CONFIG_TEST_USER_COPY on x86 using the Android
+cuttlefish emulator and it passed there. I also verified that it fails
+if I remove the access_ok check. However, the tests succeed even if
+the barrier_nospec() call is removed.
 
-The logic is, you pass around struct fru_rec *rec and inside the
-functions you deref what you need.
+That said, it seems like it fails to compile on some other platforms.
+It seems like we need to add #include <linux/nospec.h> to uaccess.h to
+fix it.
 
-Thx.
-
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index 0246b13b5ba1..9eaf892e35b9 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -153,11 +153,6 @@ static DEFINE_MUTEX(fmpm_update_mutex);
- #define for_each_fru(i, rec) \
- 	for (i = 0; rec = fru_records[i], i < max_nr_fru; i++)
- 
--static inline struct cper_sec_fru_mem_poison *get_fmp(struct fru_rec *rec)
--{
--	return &rec->fmp;
--}
--
- static inline struct cper_fru_poison_desc *get_fpd(struct fru_rec *rec, u32 entry)
- {
- 	return &rec->entries[entry];
-@@ -174,7 +169,7 @@ static struct fru_rec *get_fru_record(u64 fru_id)
- 	unsigned int i;
- 
- 	for_each_fru(i, rec) {
--		if (get_fmp(rec)->fru_id == fru_id)
-+		if (rec->fmp.fru_id == fru_id)
- 			return rec;
- 	}
- 
-@@ -203,16 +198,15 @@ static u32 do_fmp_checksum(struct cper_sec_fru_mem_poison *fmp, u32 len)
- /* Calculate a new checksum. */
- static u32 get_fmp_checksum(struct fru_rec *rec)
- {
--	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
- 	u32 len, checksum;
- 
- 	len = get_fmp_len(rec);
- 
- 	/* Get the current total. */
--	checksum = do_fmp_checksum(fmp, len);
-+	checksum = do_fmp_checksum(&rec->fmp, len);
- 
- 	/* Subtract the current checksum from total. */
--	checksum -= fmp->checksum;
-+	checksum -= rec->fmp.checksum;
- 
- 	/* Return the compliment value. */
- 	return 0 - checksum;
-@@ -244,12 +238,12 @@ static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
- 	fpd->addr	= m->addr;
- }
- 
--static bool has_valid_entries(u64 valid_bits)
-+static bool has_valid_entries(struct fru_rec *rec)
- {
--	if (!(valid_bits & FMP_VALID_LIST_ENTRIES))
-+	if (!(rec->fmp.validation_bits & FMP_VALID_LIST_ENTRIES))
- 		return false;
- 
--	if (!(valid_bits & FMP_VALID_LIST))
-+	if (!(rec->fmp.validation_bits & FMP_VALID_LIST))
- 		return false;
- 
- 	return true;
-@@ -282,7 +276,7 @@ static bool is_dup_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *new)
- {
- 	unsigned int i;
- 
--	for (i = 0; i < get_fmp(rec)->nr_entries; i++) {
-+	for (i = 0; i < rec->fmp.nr_entries; i++) {
- 		if (same_fpd(get_fpd(rec, i), new)) {
- 			pr_debug("Found duplicate record");
- 			return true;
-@@ -294,7 +288,7 @@ static bool is_dup_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *new)
- 
- static void update_fru_record(struct fru_rec *rec, struct mce *m)
- {
--	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
-+	struct cper_sec_fru_mem_poison *fmp = &rec->fmp;
- 	struct cper_fru_poison_desc fpd;
- 	u32 entry = 0;
- 
-@@ -303,15 +297,15 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
- 	init_fpd(&fpd, m);
- 
- 	/* This is the first entry, so just save it. */
--	if (!has_valid_entries(fmp->validation_bits))
-+	if (!has_valid_entries(rec))
- 		goto save_fpd;
- 
- 	/* Ignore already recorded errors. */
- 	if (is_dup_fpd(rec, &fpd))
- 		goto out_unlock;
- 
--	if (fmp->nr_entries >= max_nr_entries) {
--		pr_warn("Exceeded number of entries for FRU 0x%016llx", fmp->fru_id);
-+	if (rec->fmp.nr_entries >= max_nr_entries) {
-+		pr_warn("Exceeded number of entries for FRU 0x%016llx", rec->fmp.fru_id);
- 		goto out_unlock;
- 	}
- 
-@@ -412,9 +406,9 @@ static void retire_mem_records(void)
- 	u32 cpu;
- 
- 	for_each_fru(i, rec) {
--		fmp = get_fmp(rec);
-+		fmp = &rec->fmp;
- 
--		if (!has_valid_entries(fmp->validation_bits))
-+		if (!has_valid_entries(rec))
- 			continue;
- 
- 		cpu = get_cpu_from_fru_id(fmp->fru_id);
-@@ -481,7 +475,7 @@ static int save_new_records(void)
- 
- static bool is_valid_fmp(struct fru_rec *rec)
- {
--	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
-+	struct cper_sec_fru_mem_poison *fmp = &rec->fmp;
- 	u32 len = get_fmp_len(rec);
- 
- 	if (!fmp)
-@@ -602,8 +596,10 @@ static int get_saved_records(void)
- 	return ret;
- }
- 
--static void set_fmp_fields(struct cper_sec_fru_mem_poison *fmp, unsigned int cpu)
-+static void set_fmp_fields(struct fru_rec *rec, unsigned int cpu)
- {
-+	struct cper_sec_fru_mem_poison *fmp = &rec->fmp;
-+
- 	fmp->fru_arch_type    = FMP_ARCH_TYPE_X86_CPUID_1_EAX;
- 	fmp->validation_bits |= FMP_VALID_ARCH_TYPE;
- 
-@@ -638,7 +634,7 @@ static void init_fmps(void)
- 
- 	for_each_fru(i, rec) {
- 		cpu = get_cpu_for_fru_num(i);
--		set_fmp_fields(get_fmp(rec), cpu);
-+		set_fmp_fields(rec, cpu);
- 	}
- }
- 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Alice
 
