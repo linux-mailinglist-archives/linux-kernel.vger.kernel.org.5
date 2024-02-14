@@ -1,194 +1,194 @@
-Return-Path: <linux-kernel+bounces-65876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48E2F855327
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:20:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB6D855330
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C47151F217F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:20:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90CC61C20C03
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D776113AA5E;
-	Wed, 14 Feb 2024 19:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF95613B7B4;
+	Wed, 14 Feb 2024 19:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pmaS6Mdf"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UwsuHlGc"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A680134738
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB2C13A875
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707938447; cv=none; b=l9fVAnpDLP/8C0kt4DxYEnU0oyGdQYeuU6w6Ut59Ynbt+b+iqZ+7xmDspcGHb2K5IMgtA7rsEzxuiPh8a50TV13eMnVHSRE6HUbTSvdH4HKAmH3K5RG1dUo9G5tEp3IxVWB+znAlxGPpesGqk8Sh8ALXCpgHcV3SFTiFIPufU1I=
+	t=1707938678; cv=none; b=leUTMiDi3Dh6cRnU1a12kGIpW03lLSk4W3m8eCeICPlwooaVWShpb0ckTt6pwGaBGKDMezwEMAtNifGcxoIQ1j5FdOyilA+R1Xj1rxrVakW0jY0/ip6+i1LLZwS7knGIxCWJghnWfZFDS5PctZabileA2kfyi122ab0PifOGIaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707938447; c=relaxed/simple;
-	bh=mLhKSThWNBsAgqj+wm1xVzGaoOhMAV4m0QcyCJ1ZIfo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=XACXWrdQv+eh+j6vdICVbO1JrMO8et0EVXDJmMDKOJdx2HGxWBM+kb397D9TxXOQ1MqXkOfWltu+rNG+62FfUtpq0phd82lfCFkPaQkosS4vLzlQa1L4+lI2c3c4EkIPtNA0LPpqt8+IBwfmLOU+Vcf6+De6akrxDJ8pJuZvDe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pmaS6Mdf; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1707938678; c=relaxed/simple;
+	bh=S0A1kfhRzOuiQ1TlmH8X2A+T0pY8dnMRCMj0SI+jFYY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RDyjYoM4gWr4LCA6ljvzLamjCiqth1l6hFef2qsNnMZLbFC0sM3Or2BYPk9jNBAPEC4FmJbtMzMQjzOPrNbDckpOGyQpanv2xWsWmBO0Pcck7JxTdEhCfKPHKeB3rJ1JZD1bV6M/H0Jm+sgEE8XZtypDSN/zRvkZq2aP3RjLANk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UwsuHlGc; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso10815276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:20:45 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so9032276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:24:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707938444; x=1708543244; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAjX6cjzXezxso5mboiYm7K+A2aJaJqFnNgHNs+0SmU=;
-        b=pmaS6Mdf97ZzDJjLSu+DcN4xGnruIzrFd3Nq/FrzWx36ELYuwxrUema976y0wDzPd1
-         vKaJXddH24xlyyoNUV5ZyVMReim3u4IcUcU8EyZnvHxTsX2jVdVwQv1/O2TqG59TiXCH
-         nSDkmQV9Yay/bvHAhs5xTyo0KZD8DhsG++B/IKcNoc6Uy0RKLlFzn+g+B/nH+qFokOu+
-         6tANi835bSf3zGvqwsQdRTvf574795S0R3+ah7d58SJeM1A4qkHZjHrewPwuLMvZt9Rv
-         Gn40bUQvsYyYkoAZteNFjlIHCwvVgtX6zl+51HkyK/zGbBVgfX/38r0AHyAywFNiV5yw
-         ZKQg==
+        d=google.com; s=20230601; t=1707938675; x=1708543475; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QCBYE/AD/BvL6op5scnwP5wjSjqsrmapht1Ra223I1c=;
+        b=UwsuHlGcrhXjhdyz7FsaHAoTBX0zVMz5qXtPM2OUj55wrNZvLqHXFw+eWmQICcNqD2
+         mkRIzvQEt/wyfA87b6KzFPbtednd9Wmn4PYhx1ZSYaIQ3a9tTgY/ASdL/7qnbOlWxf+c
+         DeW0BYZFVxVxzLKtQqgf5JqXwApgR9aXf6eXe00HuM3qIUBz3mMid3IyuF5oqOk9dxEA
+         aWxa6nX0QA3VPyIIH1G820sazWtnbnvG3QIr2VkjFBstjRyavNejipQ18gjPiU6Xq8YY
+         Ow4V+/UvoV9CFC+8Ocfs3i8DP341meEB5WlQU0bq6ogkSqOXE3P/pDdaXHBawmv36DDf
+         zcZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707938444; x=1708543244;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAjX6cjzXezxso5mboiYm7K+A2aJaJqFnNgHNs+0SmU=;
-        b=RGLdm8RP+sSTq9P7XAzNsEzGzQPtQvJrrnq8xKO/l7g2ElsXAdpNFYrgMDSxuwRtqL
-         AOH7xBfz+/iwLCfNdn0G+JbsBDekUXFGlR1QWAPWlasETKfHuWZYFGEbYoqdU08RxSmv
-         U/9aoZvrlao9zvUUAMYen3/18xociZVIzlOtwZ8PH4chXjmNrZwbhGKLonKxLIg3xK9m
-         MHM9EfitqcjCmzFZiDhOwhZGwV9yjjxxYN0/U+UZHkctSJ6AG0iNIWy7FV8wtXftfxkv
-         R2d7c67fEGvvj2WTBItMoFtG31s9GQ1ncvWkiIC/LPuz1Afreiu9I2123/2NfWOYnvcK
-         GMSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNUHb499Dhhd4AALPqT0hJiFB6nefJ8hGerAB/wvac6HHIAM3ZBPqPamlvlv90atCoqx8gEsf62J8ybCXYCiunpH+l5dyDilXV9ovy
-X-Gm-Message-State: AOJu0Yz+SoY6oR4BgAel2SPZIJs9L+M13nPZVx/ukhc+xuEGQmBQVH5F
-	mHDFKLVF3xEUyTo4jzvv8xf2AGzoLyPG+VGnCxioKusYfkCmDIH750GBBB1M7TMHB53lWcX0iwy
-	d9c9lJkyzbaugqQAwAQ==
-X-Google-Smtp-Source: AGHT+IG4cf16vGGDe/S2yO28fy0rp6cQJ+6K4Ey93242LRfpUYLtWyDQrpE/+vrDqxsVt0h8q4aXCwbewraQ2c04
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1894:b0:dc6:d233:ffdd with
- SMTP id cj20-20020a056902189400b00dc6d233ffddmr751295ybb.0.1707938444372;
- Wed, 14 Feb 2024 11:20:44 -0800 (PST)
-Date: Wed, 14 Feb 2024 19:20:42 +0000
-In-Reply-To: <20240210-zswap-global-lru-v2-1-fbee3b11a62e@bytedance.com>
+        d=1e100.net; s=20230601; t=1707938675; x=1708543475;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QCBYE/AD/BvL6op5scnwP5wjSjqsrmapht1Ra223I1c=;
+        b=gDvnN9qhlwXo0L11sOczYeDlYE+5c+DfC1vOvNtsijJbXUqStq4QMdzTOxnIozOawa
+         Rx0UBKeDEq77enO9iyC6WLqsU3HloX0rnjA/QmQkZYbq0rQb5gInRWJ8p+utZffV38dw
+         MMlHP75GV8bflWnrkBNl/QoSczBjqpIs7RUnSpNI1xWIJCKpQEVjViIZo/D5ETU41ayg
+         9Av/NPTYMy7vLxECYiY2RBl0kTwHWR3P5wXjU2nlqG3V3/1Ih6GYYjz5kGKArwidNYva
+         fxUY7ECw0XaVHj0svCPuWq4kcjDd9XOWLzjtoZI/olDuhTp5CONZCTg4R1rJBbfnEy1u
+         4A0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUZX/y6qmpYPlk+q7084rgogEguVXXPyHO5ky8jWx/huv1fy1gCXYs4j6Ewdn5YDioEJJVYN2waI0SJRud2nOdHyiKXMbBGxin50vw1
+X-Gm-Message-State: AOJu0Yxfm2CyUy3cMnATsrd+hFuoUqoRQKP6xCfu/w8F/UdFzcBFSIvD
+	B/POBGsoTSBVrJqA1Refodph6S4r1MGm+KRGo6Pzj4cTXMKAAlTc83fhukdy6vbO2NMYKWj3RDX
+	+rsd9HnTXyXbJJkGqKEpNqr8kjCqrbzjgUtQr
+X-Google-Smtp-Source: AGHT+IEHeftxzGg3B5Z0Zkp/sdZtFFtkyDYYBmhmOt9OEJce/O9D422LSeKSHbRCNIcYUksKiHgnsjkqT91cBPG3844=
+X-Received: by 2002:a05:6902:143:b0:dcb:cdce:3902 with SMTP id
+ p3-20020a056902014300b00dcbcdce3902mr3406955ybh.55.1707938674882; Wed, 14 Feb
+ 2024 11:24:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240210-zswap-global-lru-v2-0-fbee3b11a62e@bytedance.com> <20240210-zswap-global-lru-v2-1-fbee3b11a62e@bytedance.com>
-Message-ID: <Zc0Silj_TKkUBRBF@google.com>
-Subject: Re: [PATCH v2 1/2] mm/zswap: global lru and shrinker shared by all zswap_pools
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <Zctfa2DvmlTYSfe8@tiehlicka> <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com> <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com> <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com> <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <20240214085548.d3608627739269459480d86e@linux-foundation.org> <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
+In-Reply-To: <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 14 Feb 2024 11:24:23 -0800
+Message-ID: <CAJuCfpGi6g3rG8aVmXveSxKvXnfm+5gLKS=Q4ouQBDaTxSuhww@mail.gmail.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Michal Hocko <mhocko@suse.com>, vbabka@suse.cz, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
+	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 08:54:37AM +0000, Chengming Zhou wrote:
-> Dynamic zswap_pool creation may create/reuse to have multiple
-> zswap_pools in a list, only the first will be current used.
-> 
-> Each zswap_pool has its own lru and shrinker, which is not
-> necessary and has its problem:
-> 
-> 1. When memory has pressure, all shrinker of zswap_pools will
->    try to shrink its own lru, there is no order between them.
-> 
-> 2. When zswap limit hit, only the last zswap_pool's shrink_work
->    will try to shrink its lru, which is inefficient.
+On Wed, Feb 14, 2024 at 9:52=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Wed, Feb 14, 2024 at 08:55:48AM -0800, Andrew Morton wrote:
+> > On Tue, 13 Feb 2024 14:59:11 -0800 Suren Baghdasaryan <surenb@google.co=
+m> wrote:
+> >
+> > > > > If you think you can easily achieve what Michal requested without=
+ all that,
+> > > > > good.
+> > > >
+> > > > He requested something?
+> > >
+> > > Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+> > > possible until the compiler feature is developed and deployed. And it
+> > > still would require changes to the headers, so don't think it's worth
+> > > delaying the feature for years.
+> >
+> > Can we please be told much more about this compiler feature?
+> > Description of what it is, what it does, how it will affect this kernel
+> > feature, etc.
+> >
+> > Who is developing it and when can we expect it to become available?
+> >
+> > Will we be able to migrate to it without back-compatibility concerns?
+> > (I think "you need quite recent gcc for memory profiling" is
+> > reasonable).
+> >
+> >
+> >
+> > Because: if the maintainability issues which Michel describes will be
+> > significantly addressed with the gcc support then we're kinda reviewing
+> > the wrong patchset.  Yes, it may be a maintenance burden initially, but
+> > at some (yet to be revealed) time in the future, this will be addressed
+> > with the gcc support?
+>
+> Even if we had compiler magic, after considering it more I don't think
+> the patchset would be improved by it - I would still prefer to stick
+> with the macro approach.
+>
+> There's also a lot of unresolved questions about whether the compiler
+> approach would even end being what we need; we need macro expansion to
+> happen in the caller of the allocation function
 
-I think the rationale here was to try and empty the old pool first so
-that we can completely drop it. However, since we only support exclusive
-loads now, the LRU ordering should be entirely decided by the order of
-stores, so I think the oldest entries on the LRU will naturally be the
-from the oldest pool, right?
+For the record, that's what this attribute will be doing. So it should
+cover our usecase.
 
-Probably worth stating this.
-
-> 
-> Anyway, having a global lru and shrinker shared by all zswap_pools
-> is better and efficient.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-
-LGTM with a few comments, with those:
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-
-> ---
->  mm/zswap.c | 170 +++++++++++++++++++++++--------------------------------------
->  1 file changed, 65 insertions(+), 105 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 62fe307521c9..dbff67d7e1c7 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -176,14 +176,18 @@ struct zswap_pool {
->  	struct kref kref;
->  	struct list_head list;
->  	struct work_struct release_work;
-> -	struct work_struct shrink_work;
->  	struct hlist_node node;
->  	char tfm_name[CRYPTO_MAX_ALG_NAME];
-> +};
-> +
-> +static struct {
->  	struct list_lru list_lru;
-> -	struct mem_cgroup *next_shrink;
-> -	struct shrinker *shrinker;
->  	atomic_t nr_stored;
-> -};
-> +	struct shrinker *shrinker;
-> +	struct work_struct shrink_work;
-> +	struct mem_cgroup *next_shrink;
-> +	spinlock_t shrink_lock;
-
-The lock is exclusively protecting next_shrink, right? Perhaps we should
-rename it to next_shrink_lock or at least document this.
-
-> +} zswap;
->  
->  /*
->   * struct zswap_entry
-> @@ -301,9 +305,6 @@ static void zswap_update_total_size(void)
->  * pool functions
->  **********************************/
->  
-> -static void zswap_alloc_shrinker(struct zswap_pool *pool);
-> -static void shrink_worker(struct work_struct *w);
-> -
->  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->  {
->  	int i;
-> @@ -353,30 +354,16 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->  	if (ret)
->  		goto error;
->  
-> -	zswap_alloc_shrinker(pool);
-> -	if (!pool->shrinker)
-> -		goto error;
-> -
-> -	pr_debug("using %s compressor\n", pool->tfm_name);
-
-nit: the next patch introduces a new failure case between this debug
-print and zswap_pool_debug() below, so it will become possible again
-that we get one and not the other. Not a big deal though.
-
-> -
->  	/* being the current pool takes 1 ref; this func expects the
->  	 * caller to always add the new pool as the current pool
->  	 */
->  	kref_init(&pool->kref);
->  	INIT_LIST_HEAD(&pool->list);
-> -	if (list_lru_init_memcg(&pool->list_lru, pool->shrinker))
-> -		goto lru_fail;
-> -	shrinker_register(pool->shrinker);
-> -	INIT_WORK(&pool->shrink_work, shrink_worker);
-> -	atomic_set(&pool->nr_stored, 0);
->  
->  	zswap_pool_debug("created", pool);
->  
->  	return pool;
->  
-> -lru_fail:
-> -	list_lru_destroy(&pool->list_lru);
-> -	shrinker_free(pool->shrinker);
->  error:
->  	if (pool->acomp_ctx)
->  		free_percpu(pool->acomp_ctx);
+> , and that's another
+> level of hooking that I don't think the compiler people are even
+> considering yet, since cpp runs before the main part of the compiler; if
+> C macros worked and were implemented more like Rust macros I'm sure it
+> could be done - in fact, I think this could all be done in Rust
+> _without_ any new compiler support - but in C, this is a lot to ask.
+>
+> Let's look at the instrumentation again. There's two steps:
+>
+> - Renaming the original function to _noprof
+> - Adding a hooked version of the original function.
+>
+> We need to do the renaming regardless of what approach we take in order
+> to correctly handle allocations that happen inside the context of an
+> existing alloc tag hook but should not be accounted to the outer
+> context; we do that by selecting the alloc_foo() or alloc_foo_noprof()
+> version as appropriate.
+>
+> It's important to get this right; consider slab object extension
+> vectors or the slab allocator allocating pages from the page allocator.
+>
+> Second step, adding a hooked version of the original function. We do
+> that with
+>
+> #define alloc_foo(...) alloc_hooks(alloc_foo_noprof(__VA_ARGS__))
+>
+> That's pretty clean, if you ask me. The only way to make it more succint
+> be if it were possible for a C macro to define a new macro, then it
+> could be just
+>
+> alloc_fn(alloc_foo);
+>
+> But honestly, the former is probably preferable anyways from a ctags/csco=
+pe POV.
 
