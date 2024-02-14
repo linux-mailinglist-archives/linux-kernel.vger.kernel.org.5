@@ -1,274 +1,132 @@
-Return-Path: <linux-kernel+bounces-66014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7A4855567
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:59:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B05855577
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:01:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12C032876C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:59:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E599F28E607
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0462114533F;
-	Wed, 14 Feb 2024 21:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902EE1419A9;
+	Wed, 14 Feb 2024 22:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wJYsqY42"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2084.outbound.protection.outlook.com [40.107.220.84])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lvcYhFnA"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D49141997;
-	Wed, 14 Feb 2024 21:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707947914; cv=fail; b=RivKu2byIfNyMQPG0qJinankpMdXq8shdL0B5lx0f3vb2aDg/90lB21sDBKhLL6izn2DyPdgP/vp87r9iTjGSpu4unfxG4rh+7W9cxt+we44vLDOkbXCCuNtWTRqkd6JI/iKkBkmghXL+XY9WDBNCgu4cOt9Ea8WqrrrpYCd7uA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707947914; c=relaxed/simple;
-	bh=VM5DK3a5DkYNLuL518lf+jCXrbZRw4nA/ki/l996tJw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aKzOkPLap/O8tCUzoDAs75BdqoYiL4PM886teStB8NGFLIQ0pa9Ylussr7gvn9zBjotWEQEjcg88ZdW+ZT5T9jZ+4ye3E4KgKdrHt8bmz/DlN9CeDIHtExNIbdyvzjK6RAT+tkbVniJaDSHBzyKRF/bETF6z1PMz/H/pzsymwcA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wJYsqY42; arc=fail smtp.client-ip=40.107.220.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wk3+d/A8Wpzme7kQAJIO+XoLG7Xu3be19ezWQr6xK9a7gg/5AZ84w3wSCEpGxG1VKf1sJLrFZzruS1oB7A0Cccd8YdT1R5JcpkJO/HqfgQo2RntgBwGEPkBpKVzecHhj66dxo80WkJm3w9/5MC4hsWGRnrjJfIMIsRH/PYlZMnU1/JRRZdx9a8z5SqB07IZY8hYgJ5kEfRZQrwHFejHOXyycjmGrEriHhVhDbLDWJQK1moMSRv33bHcRIIlnXVq0tXEMIPzTK4gyB2LW/0CDLewxnh6YSrYHqAnFgWLZqWgkBVOl//TLYJYwj38YuLS/eXdE/aYWL+OIp7Lzdq23Cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mp0M3qgQ+UH8u3Fzym1meKBbPuuWeEsx8opzMEJNl3A=;
- b=h6NR39qTZrSjQdTvQ8tn/KxEY0340XSggVn4vJXB+BHm2DXZ7Tir1h0IEcY0eQJv0U3CBVH3+lzzEH/zwTwwJp/du1U4dDkEdbw0O9+xF9PY7BrY2w4joHmOxvX55rEmUOyJJHxolJ3QgOaQnAKXyc/bFPvnQ5IsEQerUljs+O0r0VSz+abLQyFnx9bS6OrW9v2j2AJuLJIORMUyLVLTKxBBAayGxsUdsADlh1fBjvo6iRo4Mni1e6oSGNFLDTZtqy0dNMIBN/wgHxbM+czABdker/9tZiAewi+bsCxopWXesjfl90875TbhGU1P37PQlSYZQbvuSqtsqsLLp3QQCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mp0M3qgQ+UH8u3Fzym1meKBbPuuWeEsx8opzMEJNl3A=;
- b=wJYsqY42uITuR/fGmS0zCq8F6a1uzcLZiZ6vDBtRpfupBrtAlo3LNtqHE6COaQmS4GpfV4JldplrhTHTekqjerj22TANaMqLliedo7JKmSqtgjLZbzjDOPA0SWCEV53yFntUHZwoXftBex4ZrRGj0KIAuXISq4r9lYWT1ftzBR0=
-Received: from BL0PR1501CA0017.namprd15.prod.outlook.com
- (2603:10b6:207:17::30) by DS0PR12MB7511.namprd12.prod.outlook.com
- (2603:10b6:8:139::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Wed, 14 Feb
- 2024 21:58:30 +0000
-Received: from MN1PEPF0000ECD9.namprd02.prod.outlook.com
- (2603:10b6:207:17:cafe::b3) by BL0PR1501CA0017.outlook.office365.com
- (2603:10b6:207:17::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
- Transport; Wed, 14 Feb 2024 21:58:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000ECD9.mail.protection.outlook.com (10.167.242.138) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Wed, 14 Feb 2024 21:58:30 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 15:58:29 -0600
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: Daniel Vetter <daniel@ffwll.ch>, Jani Nikula
-	<jani.nikula@linux.intel.com>, Alex Deucher <alexander.deucher@amd.com>,
-	"Hans de Goede" <hdegoede@redhat.com>, "open list:DRM DRIVERS"
-	<dri-devel@lists.freedesktop.org>
-CC: <amd-gfx@lists.freedesktop.org>, "open list:USB SUBSYSTEM"
-	<linux-usb@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
-	<nouveau@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
-	<platform-driver-x86@vger.kernel.org>, <intel-xe@lists.freedesktop.org>,
-	<linux-renesas-soc@vger.kernel.org>, "open list:ACPI"
-	<linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>, Mark Pearson <mpearson-lenovo@squebb.ca>,
-	Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH v6 5/5] drm/nouveau: Use drm_edid_read_acpi() helper
-Date: Wed, 14 Feb 2024 15:57:56 -0600
-Message-ID: <20240214215756.6530-6-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240214215756.6530-1-mario.limonciello@amd.com>
-References: <20240214215756.6530-1-mario.limonciello@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23ED813EFE3
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707948096; cv=none; b=AgbiAHVcatQ4YLqKGQ5SpQ4gEO4M6w/PYq11ByqQRyc3nxqcpzAyq6i0H/WyN76kVvivlSFloybt8wQPb3Q6boVfkCAJz5o2eVPbd4nLPvRqNx20x3J4MIQvCgNNpArRrtFeUf/++/857DUdpZ4GNEawnKJqnFGJ1ZekzXdemao=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707948096; c=relaxed/simple;
+	bh=pizdAD3OJdRSZaEjPLGRyqSE6Y2Tq1Sdi/I+Em97CK4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rSfpw9oq+Z/sajnq5vWjqhyVxm+fKF9rqhve4pwxtm34hMbHDP9k3vDv7S2ek3gruXYViKbH4SVdayHfFCAZSVto1Sye1M3RTz2pXbwwCd1vTHAPhO5CIVJyY8UEsK8nFeQI5cIoBVUALu8Bmdyhjq2VbdjCtss6jPyk1CfAtik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lvcYhFnA; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-411ef179d2eso1617035e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:01:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707948093; x=1708552893; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n0ESyyBcqjsDVYShCT0eHRNmp20GSZgnSy4/io1Ynu0=;
+        b=lvcYhFnAshbTvMk2u7Fre8jBYFYaEB1ISoJmMC7cZDp2wa+oYsC6nysIb5husFn7KT
+         HhWyzSA3AXUdaqVigkPctFl+be9pAd8XuKa8t8/mGsg7RSuxWsTqF1jKLl99o+fXpBBp
+         hj0TeL4yB3sUGF9g3YufV51w4W6IizoZAL/pRmHokBIVrPzP2l9JNeIwmYkXk3c9xFVp
+         qjNqTIeaNA5iKIsW+MJXZOyfNMmAAi1JgBvRmplqhhMAZ7KJkcrG+E8SDonoAhWatcW5
+         Wi70rDcvNsb2PHpMXhImazkGEPDnG1SEwmIVcN92tWhi8Dxa+mjkqVAhDu0vleDA5Gsi
+         64JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707948093; x=1708552893;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n0ESyyBcqjsDVYShCT0eHRNmp20GSZgnSy4/io1Ynu0=;
+        b=eUDQJkHaPlGLfV1d8lSulKf8a9IeIidwO8VbKPtdMwvGFfTx3K4kLo/FOmUrBSkzt5
+         Id0t+1x6V4mhZV18SSoMOYJw11ZH7C4WdUI1xyyQfnAweIGwHxrhq20QC+F921jFHVqk
+         KtjOMe1lxUu+UFEKSfpPvHjfQshWvtba6q6M4qfN+fLO+CI3F95fC9c8MSMji3YNl1Vn
+         7yETNycYx+jREpf5ZKDUzqdpb4800uzQ9x7N0sOw+GK9MQgkRMr2UQB8+KbvCGXfJA0P
+         bxim8BXJ5PnDRcqyVFz16pKI0KFdoqfzKczXJKJqOwDwsd0UM5D7SoNgTL1lfHABir4w
+         b+5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUvd7OwOESnxFeduVudoRpWIOaAN4RLbUKZ50Vl2it7bHUCRHtOIVKaryrN/eYlh/yhIknKjEasFtQZHtLXykpabN/GeyqFyTK8XzYv
+X-Gm-Message-State: AOJu0YyioacSDyZgKmms/bOoD+Oc8JUGl9k6EGoOIyIyrNfzKs7w75lY
+	9K1HQKyi1J8sNy9cX/1MCUuMRbVVo9bBmVdWN2KqvTKFQvAw8RNX07i/qyI2//aCD0N1h36WkyM
+	kXLclTSI2R8gAq/NkI33aA1k952g=
+X-Google-Smtp-Source: AGHT+IFVzfw569hUDx3aEGZmf2QM21gRW/L8FFiZEN9rpMdOg4TZxk0pq9lMUeHQk6a6R5C03bkl27cUK358GE3TAAQ=
+X-Received: by 2002:a5d:4a8b:0:b0:33b:1577:a2d1 with SMTP id
+ o11-20020a5d4a8b000000b0033b1577a2d1mr2765986wrq.1.1707948093094; Wed, 14 Feb
+ 2024 14:01:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD9:EE_|DS0PR12MB7511:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6f03c3d6-49f2-45bd-1b22-08dc2da814ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aU4Dnc+/pdRyBBJP93PgXymR5ZU2ZAhQZDmRLaklig1bH1Z1TyOiaTXREm6SVLi7VeBcUeoyzQU49oQ0Y/E/2avYtqGA1gwq7bJwaWHkehrAj38yY+5dfEi+br+GjqQzZweNcY5is6iEJz0WEy/WXo1Bvoz/cD37H+6a/px+ROWwcBCG2DdbHvAahGtobeocZnJiDjwm6g5zSCSW+3QfaM73/5S2gjRbSpV2xYCBaqUf63ORUDgYrQwnJKKDZUVm037yMtGBdbzDKuH+cqMr8gpPeDrElAM6A8e8mL0HEuKw1koomSab+EtzYAFnhxT6lGk4HTw3tmM0x5F6xN8R8alwi75rTZkWgGLPUbmVQuv1YyoEKlLhw2B3UN0AXgTJJe7WHVPTkiACOrm7jYH5fdPyy/2LN7sLP2xxYQOjs5gi/8EZJP8doJZrh3F1OvkoL6id9xiNYM8JoR+kex1VnWr1Bvotmx1kGB0nxU/S73ooCa1vMBt0AwuduI9czFFBnOb+e9vjM6pkmeL55LwWphJyZXouqjJLJqSv+Zzw5RRzadtPvITv8p/YMjBQtv1JEmxIF5F01yDmJ/bHPZ+0rGhHXc3x85IhBYTFpUv0OwrlIUllbd252eB/6sF63H8J11SJ6MxjP3cXuGzKZFQpAFmoYarx1iU3o9kwuxRfC5Q=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(82310400011)(36860700004)(451199024)(1800799012)(64100799003)(186009)(40470700004)(46966006)(8936002)(8676002)(81166007)(5660300002)(83380400001)(82740400003)(2906002)(4326008)(356005)(44832011)(70206006)(70586007)(7416002)(41300700001)(1076003)(426003)(336012)(16526019)(26005)(2616005)(6666004)(54906003)(478600001)(7696005)(316002)(110136005)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 21:58:30.8269
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f03c3d6-49f2-45bd-1b22-08dc2da814ef
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7511
+References: <20240212111609.869266-1-arnd@kernel.org>
+In-Reply-To: <20240212111609.869266-1-arnd@kernel.org>
+From: Andrey Konovalov <andreyknvl@gmail.com>
+Date: Wed, 14 Feb 2024 23:01:22 +0100
+Message-ID: <CA+fCnZe4Tr4FXruNgOzaXHR-u+M8h2MkZCOQMH0B8mwUy=wVig@mail.gmail.com>
+Subject: Re: [PATCH] kasan/test: avoid gcc warning for intentional overflow
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Andrey Konovalov <adech.fo@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexander Potapenko <glider@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	Vincenzo Frascino <vincenzo.frascino@arm.com>, Marco Elver <elver@google.com>, kasan-dev@googlegroups.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Rather than inventing a wrapper to acpi_video_get_edid() use the
-one provided by drm. This fixes two problems:
-1. A memory leak that the memory provided by the ACPI call was
-   never freed.
-2. Validation of the BIOS provided blob.
+On Mon, Feb 12, 2024 at 12:16=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wr=
+ote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The out-of-bounds test allocates an object that is three bytes too
+> short in order to validate the bounds checking. Starting with gcc-14,
+> this causes a compile-time warning as gcc has grown smart enough to
+> understand the sizeof() logic:
+>
+> mm/kasan/kasan_test.c: In function 'kmalloc_oob_16':
+> mm/kasan/kasan_test.c:443:14: error: allocation of insufficient size '13'=
+ for type 'struct <anonymous>' with size '16' [-Werror=3Dalloc-size]
+>   443 |         ptr1 =3D kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
+>       |              ^
+>
+> Hide the actual computation behind a RELOC_HIDE() that ensures
+> the compiler misses the intentional bug.
+>
+> Fixes: 3f15801cdc23 ("lib: add kasan test module")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  mm/kasan/kasan_test.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+> index 318d9cec111a..2d8ae4fbe63b 100644
+> --- a/mm/kasan/kasan_test.c
+> +++ b/mm/kasan/kasan_test.c
+> @@ -440,7 +440,8 @@ static void kmalloc_oob_16(struct kunit *test)
+>         /* This test is specifically crafted for the generic mode. */
+>         KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_KASAN_GENERIC);
+>
+> -       ptr1 =3D kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
+> +       /* RELOC_HIDE to prevent gcc from warning about short alloc */
+> +       ptr1 =3D RELOC_HIDE(kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL), 0);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+>
+>         ptr2 =3D kmalloc(sizeof(*ptr2), GFP_KERNEL);
+> --
+> 2.39.2
+>
 
-Convert the usage in nouveau_connector_detect_lvds() to use
-struct drm_edid at the same time.
-
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/gpu/drm/nouveau/nouveau_acpi.c      | 27 ----------------
- drivers/gpu/drm/nouveau/nouveau_acpi.h      |  2 --
- drivers/gpu/drm/nouveau/nouveau_connector.c | 35 +++++++++------------
- 3 files changed, 14 insertions(+), 50 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_acpi.c b/drivers/gpu/drm/nouveau/nouveau_acpi.c
-index 8f0c69aad248..de9daafb3fbb 100644
---- a/drivers/gpu/drm/nouveau/nouveau_acpi.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_acpi.c
-@@ -360,33 +360,6 @@ void nouveau_unregister_dsm_handler(void) {}
- void nouveau_switcheroo_optimus_dsm(void) {}
- #endif
- 
--void *
--nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
--{
--	struct acpi_device *acpidev;
--	int type, ret;
--	void *edid;
--
--	switch (connector->connector_type) {
--	case DRM_MODE_CONNECTOR_LVDS:
--	case DRM_MODE_CONNECTOR_eDP:
--		type = ACPI_VIDEO_DISPLAY_LCD;
--		break;
--	default:
--		return NULL;
--	}
--
--	acpidev = ACPI_COMPANION(dev->dev);
--	if (!acpidev)
--		return NULL;
--
--	ret = acpi_video_get_edid(acpidev, type, -1, &edid);
--	if (ret < 0)
--		return NULL;
--
--	return kmemdup(edid, EDID_LENGTH, GFP_KERNEL);
--}
--
- bool nouveau_acpi_video_backlight_use_native(void)
- {
- 	return acpi_video_backlight_use_native();
-diff --git a/drivers/gpu/drm/nouveau/nouveau_acpi.h b/drivers/gpu/drm/nouveau/nouveau_acpi.h
-index e39dd8b94b8b..6a3def8e6cca 100644
---- a/drivers/gpu/drm/nouveau/nouveau_acpi.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_acpi.h
-@@ -10,7 +10,6 @@ bool nouveau_is_v1_dsm(void);
- void nouveau_register_dsm_handler(void);
- void nouveau_unregister_dsm_handler(void);
- void nouveau_switcheroo_optimus_dsm(void);
--void *nouveau_acpi_edid(struct drm_device *, struct drm_connector *);
- bool nouveau_acpi_video_backlight_use_native(void);
- void nouveau_acpi_video_register_backlight(void);
- #else
-@@ -19,7 +18,6 @@ static inline bool nouveau_is_v1_dsm(void) { return false; };
- static inline void nouveau_register_dsm_handler(void) {}
- static inline void nouveau_unregister_dsm_handler(void) {}
- static inline void nouveau_switcheroo_optimus_dsm(void) {}
--static inline void *nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector) { return NULL; }
- static inline bool nouveau_acpi_video_backlight_use_native(void) { return true; }
- static inline void nouveau_acpi_video_register_backlight(void) {}
- #endif
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
-index 856b3ef5edb8..492035dc8453 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@ -687,22 +687,13 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
- 	struct nouveau_encoder *nv_encoder = NULL;
--	struct edid *edid = NULL;
-+	const struct drm_edid *drm_edid = NULL;
- 	enum drm_connector_status status = connector_status_disconnected;
- 
- 	nv_encoder = find_encoder(connector, DCB_OUTPUT_LVDS);
- 	if (!nv_encoder)
- 		goto out;
- 
--	/* Try retrieving EDID via DDC */
--	if (!drm->vbios.fp_no_ddc) {
--		status = nouveau_connector_detect(connector, force);
--		if (status == connector_status_connected) {
--			edid = nv_connector->edid;
--			goto out;
--		}
--	}
--
- 	/* On some laptops (Sony, i'm looking at you) there appears to
- 	 * be no direct way of accessing the panel's EDID.  The only
- 	 * option available to us appears to be to ask ACPI for help..
-@@ -712,10 +703,14 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
- 	 * the nouveau decides an entry in the VBIOS FP mode table is
- 	 * valid - it's not (rh#613284)
- 	 */
--	if (nv_encoder->dcb->lvdsconf.use_acpi_for_edid) {
--		edid = nouveau_acpi_edid(dev, connector);
--		if (edid) {
--			status = connector_status_connected;
-+	if (nv_encoder->dcb->lvdsconf.use_acpi_for_edid)
-+		connector->acpi_edid_allowed = true;
-+
-+	/* Try retrieving EDID via BIOS or DDC */
-+	if (!drm->vbios.fp_no_ddc || nv_encoder->dcb->lvdsconf.use_acpi_for_edid) {
-+		status = nouveau_connector_detect(connector, force);
-+		if (status == connector_status_connected) {
-+			drm_edid = drm_edid_alloc(nv_connector->edid, EDID_LENGTH);
- 			goto out;
- 		}
- 	}
-@@ -734,12 +729,9 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
- 	 * stored for the panel stored in them.
- 	 */
- 	if (!drm->vbios.fp_no_ddc) {
--		edid = (struct edid *)nouveau_bios_embedded_edid(dev);
--		if (edid) {
--			edid = kmemdup(edid, EDID_LENGTH, GFP_KERNEL);
--			if (edid)
--				status = connector_status_connected;
--		}
-+		drm_edid = drm_edid_alloc(nouveau_bios_embedded_edid(dev), EDID_LENGTH);
-+		if (drm_edid)
-+			status = connector_status_connected;
- 	}
- 
- out:
-@@ -750,7 +742,8 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
- 		status = connector_status_unknown;
- #endif
- 
--	nouveau_connector_set_edid(nv_connector, edid);
-+	drm_edid_connector_update(connector, drm_edid);
-+	drm_edid_free(drm_edid);
- 	if (nv_encoder)
- 		nouveau_connector_set_encoder(connector, nv_encoder);
- 	return status;
--- 
-2.34.1
-
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
