@@ -1,117 +1,173 @@
-Return-Path: <linux-kernel+bounces-65248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361D1854A11
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:08:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E06F854A12
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:09:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68C971C219CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:08:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C9228B0AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99ED53393;
-	Wed, 14 Feb 2024 13:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F1A537FC;
+	Wed, 14 Feb 2024 13:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CGkHxOHC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDYMdqUN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0764524CD;
-	Wed, 14 Feb 2024 13:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E0A535D3;
+	Wed, 14 Feb 2024 13:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707916127; cv=none; b=D8YDYmXh4JUP19LpxM+2LYF7hrkmGOer8IXNBi5gC76F+JESICTIkxE33xLBQ3737uE7zxf6qPkx8Hmy63NQjCTHmobYqG+P8KHXLVLt5n8LJ7D5i2N8sWNoGJ5sNednD47w+8dKIg6EwamR8NsTbjKTQJ8NthqWx4C88te1BT4=
+	t=1707916129; cv=none; b=o077hodF/iUa+JsCAcrjmUQoj1FPSB++lzBIRSHmEGr9oBrLFDU/cVwqOqQrkotgH3VwjXNADB/z+YSlO2n8SfiDU7ZB/MPdQBJwDWhz9E1KQsFS8VcLIPZpmYQh0eTOHEsfJU6v5T4aoMrCYPHf7eeiG3tvsidTaG9l6iGgzO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707916127; c=relaxed/simple;
-	bh=IHcwF1sOsEfQq3VWY3GdXolnhsPbOpMy0ZYtGeksXTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AqrI90FZC3G35F11jJgieWUpYz2Tk2YbybiAeK7M62qyjU5cFZiET8h76OLgXIeBNQZqhZTOtuyxZf29xk4YkQd04Lqns0Tx96bV6+g9WlmCUTEIVLud5LmA6ut1qigOrNVYa3UlrnvgszyNdR/lZXZVn5XOgNwMGUfDd4KnSbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CGkHxOHC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A620C433F1;
-	Wed, 14 Feb 2024 13:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707916126;
-	bh=IHcwF1sOsEfQq3VWY3GdXolnhsPbOpMy0ZYtGeksXTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CGkHxOHC41g8N0yA/P5KY/a2156nEPyA5bHeL44W9xbbcceIGO3sVZGSjpGljbA5l
-	 +tEsDMGegPnkPcZtasOFnLyIJySkxC+bypjQXpBP9c+2iSIXF2Qywy96vZUlQrYTYK
-	 rMLsFSrg4QptLba4OG+jC2OnxtwEo9FMuGXjF8qM=
-Date: Wed, 14 Feb 2024 14:08:42 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 6.1 00/64] 6.1.78-rc1 review
-Message-ID: <2024021422-reckless-remark-e721@gregkh>
-References: <20240213171844.702064831@linuxfoundation.org>
- <83771838-c346-4a90-92c1-6ba592a620ac@nvidia.com>
+	s=arc-20240116; t=1707916129; c=relaxed/simple;
+	bh=LJKPHMPjmHlU2PJKYir/2UiQYp8Nni0aZPwyL3+QEQI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jM6bJqdIAwCMYAy1+husjYlqsUVexXOfmm0xBObiM7BQ9fqYzCDcQvYlD2x79rANfRCUBukv4DPOLdK/FjdAtpH1Pj3BOEpsEkSyWOdafgbPDG0itFFwtF8UpvnO/TOREaGqnONYIXPpZUC2ZW45636eTLROIfsFzIYuALa/e8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDYMdqUN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6209CC43399;
+	Wed, 14 Feb 2024 13:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707916129;
+	bh=LJKPHMPjmHlU2PJKYir/2UiQYp8Nni0aZPwyL3+QEQI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dDYMdqUNK2cUFdZcoJQdatO9QdalPCDefOYbT/hPddd9+v387BHBT3h29qhAu0vVb
+	 w0YvaKZ5ismqqrtF242BRBeoxLSX3yOJzMzHZ7WndxrY3IL8SzUdhpl55H0nLpD4S+
+	 1n0lj0akqRz1z4YWAK7qavjSBPjRsVSISyTmPX7wYWNP8+wJb5useYbjCMz/1eqEQe
+	 2wToUWXJaH6YJ7znkUNWjouGr7HvqJWnNVoFAQAQlako1Fd2N9jpPJaCXGiXzLb/8K
+	 vC992tnsr6s3RvgVFxkTZbOiS8tLD+HzHwjSheJ+leg/ykyv9O9EhqK2cEQrdCrlVC
+	 dgg+RStP2PFFw==
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so7319003a12.1;
+        Wed, 14 Feb 2024 05:08:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUDjZ+p0ZYgEX5BrAFsHMWoGQl2L+1jYORPzhs0SRreeOdVV+veR+ZQtX9QvAoaOBg7WOTRXxH54hH5P54FO03K/RHxp/aocYFVcNEzkTh2mqYzrthdAcG4ki/GPKNjlV7y
+X-Gm-Message-State: AOJu0YyJV7786qoznCx+GlEGN8FUcRZEeR0U5Oci29cV9+vwh/0Fzq4N
+	PEE+isQ7baHR9XrCutm4yh6+QPwOQ4BWa+i8/7S7x5hmiuwgkkrnArDP0j5Gv0Upesku3guyezr
+	pomuWPYihGg+yt5bACk2W4fKp5uM=
+X-Google-Smtp-Source: AGHT+IGQjdAs7/xBZGeUuHvsWykfdt4hjXWz/dkFlvTVpDXBTHOvjjDTopZjU++jNtkTn7NFKnZ8yTQpCvE0Tvz9jVc=
+X-Received: by 2002:aa7:d3da:0:b0:561:c6fa:715a with SMTP id
+ o26-20020aa7d3da000000b00561c6fa715amr1769221edr.40.1707916127870; Wed, 14
+ Feb 2024 05:08:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83771838-c346-4a90-92c1-6ba592a620ac@nvidia.com>
+References: <20240214101557.2900512-1-kernel@xen0n.name> <20240214101557.2900512-6-kernel@xen0n.name>
+In-Reply-To: <20240214101557.2900512-6-kernel@xen0n.name>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 14 Feb 2024 21:08:44 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H43mQy34FWqRCA4h9YxsFai3AsALvqNP82OZhYdAw5TbA@mail.gmail.com>
+Message-ID: <CAAhV-H43mQy34FWqRCA4h9YxsFai3AsALvqNP82OZhYdAw5TbA@mail.gmail.com>
+Subject: Re: [PATCH for-6.8 5/5] KVM: LoongArch: Clean up comments of
+ _kvm_get_cpucfg_mask and kvm_check_cpucfg
+To: WANG Xuerui <kernel@xen0n.name>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+	Bibo Mao <maobibo@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, WANG Xuerui <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 09:03:59AM +0000, Jon Hunter wrote:
-> Hi Greg,
-> 
-> On 13/02/2024 17:20, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.78 release.
-> > There are 64 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.78-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> Builds are failing for Tegra ...
-> 
-> Test results for stable-v6.1:
->     10 builds:	3 pass, 7 fail
->     6 boots:	6 pass, 0 fail
->     18 tests:	18 pass, 0 fail
-> 
-> Linux version:	6.1.78-rc1-gb29c5b14893f
-> Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
->                 tegra30-cardhu-a04
-> 
-> Builds failed:	aarch64+defconfig+jetson, arm+multi_v7
-> 
-> 
-> > Furong Xu <0x1207@gmail.com>
-> >      net: stmmac: xgmac: fix handling of DPP safety error for DMA channels
-> 
-> The above commit is causing a build regression for older toolchains and
-> I have reported this [0]. This is also seen on the mainline and -next and
-> there is a fix in the works [1].
-> 
-> Note this is breaking the build for linux-6.6.y and linux-6.7.y too.
+Hi, Xuerui,
 
-Thanks, I've now queued up the fix.  Do you need me to push out a -rc2
-for this issue for your testing?
+On Wed, Feb 14, 2024 at 6:16=E2=80=AFPM WANG Xuerui <kernel@xen0n.name> wro=
+te:
+>
+> From: WANG Xuerui <git@xen0n.name>
+>
+> Remove comments that are merely restatement of the code nearby, and
+> paraphrase the rest so they read more natural for English speakers (that
+> lack understanding of Chinese grammar). No functional changes.
+>
+> Signed-off-by: WANG Xuerui <git@xen0n.name>
+> ---
+>  arch/loongarch/kvm/vcpu.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+> index 9e108ffaba30..ff51d6ba59aa 100644
+> --- a/arch/loongarch/kvm/vcpu.c
+> +++ b/arch/loongarch/kvm/vcpu.c
+> @@ -302,20 +302,14 @@ static int _kvm_get_cpucfg_mask(int id, u64 *v)
+>  {
+>         switch (id) {
+>         case 2:
+> -               /* Return CPUCFG2 features which have been supported by K=
+VM */
+> +               /* CPUCFG2 features unconditionally supported by KVM */
+>                 *v =3D CPUCFG2_FP     | CPUCFG2_FPSP  | CPUCFG2_FPDP     =
+|
+>                      CPUCFG2_FPVERS | CPUCFG2_LLFTP | CPUCFG2_LLFTPREV |
+>                      CPUCFG2_LAM;
+> -               /*
+> -                * If LSX is supported by CPU, it is also supported by KV=
+M,
+> -                * as we implement it.
+> -                */
+> +               /* If LSX is supported by the host, then it is also suppo=
+rted by KVM */
+>                 if (cpu_has_lsx)
+>                         *v |=3D CPUCFG2_LSX;
+> -               /*
+> -                * if LASX is supported by CPU, it is also supported by K=
+VM,
+> -                * as we implement it.
+> -                */
+> +               /* Same with LASX */
+Consider a full description "If LASX is supported by the host, then it
+is also supported by KVM"?
 
-thanks,
+>                 if (cpu_has_lasx)
+>                         *v |=3D CPUCFG2_LASX;
+>
+> @@ -336,21 +330,23 @@ static int kvm_check_cpucfg(int id, u64 val)
+>
+>         switch (id) {
+>         case 2:
+> -               /* CPUCFG2 features checking */
+>                 if (val & ~mask)
+> -                       /* The unsupported features should not be set */
+> +                       /* Unsupported features should not be set */
+>                         return -EINVAL;
+>                 if (!(val & CPUCFG2_LLFTP))
+> -                       /* The LLFTP must be set, as guest must has a con=
+stant timer */
+> +                       /* Guests must have a constant timer */
+>                         return -EINVAL;
+>                 if ((val & CPUCFG2_FP) && (!(val & CPUCFG2_FPSP) || !(val=
+ & CPUCFG2_FPDP)))
+> -                       /* Single and double float point must both be set=
+ when enable FP */
+> +                       /* Single and double float point must both be set=
+ when FP is enabled */
+>                         return -EINVAL;
+>                 if ((val & CPUCFG2_LSX) && !(val & CPUCFG2_FP))
+> -                       /* FP should be set when enable LSX */
+> +                       /* LSX is architecturally defined to imply FP */
+>                         return -EINVAL;
+>                 if ((val & CPUCFG2_LASX) && !(val & CPUCFG2_LSX))
+> -                       /* LSX, FP should be set when enable LASX, and FP=
+ has been checked before. */
+> +                       /*
+> +                        * LASX is architecturally defined to imply LSX a=
+nd FP
+> +                        * FP is checked just above
+I think "LASX is architecturally defined to imply LSX and FP" is enough her=
+e.
 
-greg k-h
+> +                        */
+>                         return -EINVAL;
+>                 return 0;
+>         default:
+And I prefer to squash the last two patches together.
+
+Huacai
+
+> --
+> 2.43.0
+>
+>
 
