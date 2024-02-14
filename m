@@ -1,389 +1,153 @@
-Return-Path: <linux-kernel+bounces-65767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38865855184
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:07:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFE3855190
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:08:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E47B1296EC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:07:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A0F31F24143
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B47F12BEA0;
-	Wed, 14 Feb 2024 18:00:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE0612BE95;
-	Wed, 14 Feb 2024 18:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222D012BF3F;
+	Wed, 14 Feb 2024 18:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TdLmQ0K5"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34B91292CC;
+	Wed, 14 Feb 2024 18:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933605; cv=none; b=gpCbnpjWCSw1qRoIz/41O7h6Y/mCnIW7aNJrGEgEGZWXEJdfK7ybfWhw/bVIoTZOvq90YuacYotJ60fpAzp+XtcpbevhzsOHG6QQNCA7TsB44R+G5KcWMzPgMTDgOrwyL6loL2ALa/VNQ/f+ozRsksylyIex8AI0XStra8bOiuE=
+	t=1707933774; cv=none; b=utAyTJ9liAM+g5TTWwEr9ERObO+faKxXEDXTrDpuydyr8pLWsxwl/tow/eyCVE0tBlkdGqVwkoIpWxHhIUSQ/OKd44z6WfDQ1MtNp2BmfWOPoOqmVYRLCnFBZvcmfygvcRosRAFt597HYB+KziqDT5C3Nfq/CBZVNr8Oh6bsJ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933605; c=relaxed/simple;
-	bh=8o1OMKcaZWOUsbyykAfyHVNqcdPrR8vjw8GOz8EVjaI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=YcajP84aaMJXDwIORvSAb5M1ZwKRFXEbCGfy9jPS6a921ffAohNyYNlqUIpPs9cnifNVm0YhETPW4QX6Rb+DmMkgoHP3C9Karj6KUM3a16KH0vSCM1mpXbpoIkByYeaiQ88abQLKPPqFgP1Zr9xPec259Gj79KwyzdnDQGTgcSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E0031FB;
-	Wed, 14 Feb 2024 10:00:44 -0800 (PST)
-Received: from [10.57.64.120] (unknown [10.57.64.120])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F36F3F766;
-	Wed, 14 Feb 2024 10:00:02 -0800 (PST)
-Message-ID: <032098e3-38f7-4127-b420-b579a97ce47e@arm.com>
-Date: Wed, 14 Feb 2024 18:00:00 +0000
+	s=arc-20240116; t=1707933774; c=relaxed/simple;
+	bh=XNSWQVAKioEdiIWsSLtpNc/QmIthNVyXFka5sud+Oeo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rlXcX5qIwQ+y+cZCPqaby+M7FeuTftnF4poW+xhjjpMo3eZdxCUbQW/ufItGUROpFYYeg7PfowKtDOMzvwQgeTDqP54WSiWje9/21W6pvG4G4vA78kMY4bVT2kHqFvcbVO4sg9mpendWqgk+eplPM2XoW2pJGkjhZyPtLIsXsCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TdLmQ0K5; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41EHPS46029136;
+	Wed, 14 Feb 2024 18:02:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=QoMDsaCSkkb16GXrIH1bJHTndnxHaOKSYN4y2bjArSc=; b=Td
+	LmQ0K54PsMs37BGTPVqoe1qWW3ToSayaEHXmQUP1ebSGFYBDGUUYMjnhunVMJH1C
+	uS4E6JZa0DaJn4RBrlanFP7tn1Uo0cTwrRsGSi4c0hw0TrmSCQIyy9zcyfbzXYMQ
+	VF+A4my/eGgPp8JOOyBwZedT3HC+1KObN25LLxi2rvMjdSYMdy9grAHNfXGMb+Ec
+	qYhfeadggdBFxrYOs8ogxgamoQCQITcxYo8205+matQH94XrAEEVt8IkBFPqRcM8
+	jZ/kzV/NXCou5dZ1hZ/d3ME/wGtTnYVv7IORPYqwlkPRBTBDb5+7NmG0a6r+c9lq
+	BBy78fZcACVle+GVU3YQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8myg1rxs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 18:02:34 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41EI2E5C009061
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 18:02:14 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
+ 2024 10:02:13 -0800
+Message-ID: <1cb90bff-ce5b-c6d1-a3df-24f6306f833a@quicinc.com>
+Date: Wed, 14 Feb 2024 10:02:12 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/12] selftests/mm: thp_settings: conform to TAP
- format output
-Content-Language: en-GB
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Aishwarya TCV <Aishwarya.TCV@arm.com>
-References: <20240202113119.2047740-1-usama.anjum@collabora.com>
- <20240202113119.2047740-10-usama.anjum@collabora.com>
- <0c3182ae-885c-4156-980b-e35d825fe72e@arm.com>
-In-Reply-To: <0c3182ae-885c-4156-980b-e35d825fe72e@arm.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] drm/msm/dpu: make "vblank timeout" more useful
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark
+	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>
+CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240208-fd-dpu-debug-timeout-v2-1-9f907f1bdd87@linaro.org>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240208-fd-dpu-debug-timeout-v2-1-9f907f1bdd87@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-
-On 14/02/2024 17:19, Ryan Roberts wrote:
-> On 02/02/2024 11:31, Muhammad Usama Anjum wrote:
->> Conform the layout, informational and status messages to TAP. No
->> functional change is intended other than the layout of output messages.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->>  tools/testing/selftests/mm/khugepaged.c   |   3 +-
->>  tools/testing/selftests/mm/thp_settings.c | 123 ++++++++--------------
->>  tools/testing/selftests/mm/thp_settings.h |   4 +-
->>  3 files changed, 47 insertions(+), 83 deletions(-)
->>
->> diff --git a/tools/testing/selftests/mm/khugepaged.c b/tools/testing/selftests/mm/khugepaged.c
->> index d51fdaee7dc6a..3f202da0867c5 100644
->> --- a/tools/testing/selftests/mm/khugepaged.c
->> +++ b/tools/testing/selftests/mm/khugepaged.c
->> @@ -152,8 +152,7 @@ static void get_finfo(const char *dir)
->>  		     major(path_stat.st_dev), minor(path_stat.st_dev)) >= sizeof(path))
->>  		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->>  
->> -	if (read_file(path, buf, sizeof(buf)) < 0)
->> -		ksft_exit_fail_msg("read_file(read_num): %s\n", strerror(errno));
->> +	read_file(path, buf, sizeof(buf));
->>  
->>  	if (strstr(buf, "DEVTYPE=disk")) {
->>  		/* Found it */
->> diff --git a/tools/testing/selftests/mm/thp_settings.c b/tools/testing/selftests/mm/thp_settings.c
->> index a4163438108ec..273a95d025285 100644
->> --- a/tools/testing/selftests/mm/thp_settings.c
->> +++ b/tools/testing/selftests/mm/thp_settings.c
->> @@ -5,7 +5,9 @@
->>  #include <stdlib.h>
->>  #include <string.h>
->>  #include <unistd.h>
->> +#include <errno.h>
->>  
->> +#include "../kselftest.h"
->>  #include "thp_settings.h"
->>  
->>  #define THP_SYSFS "/sys/kernel/mm/transparent_hugepage/"
->> @@ -42,58 +44,45 @@ static const char * const shmem_enabled_strings[] = {
->>  	NULL
->>  };
->>  
->> -int read_file(const char *path, char *buf, size_t buflen)
->> +void read_file(const char *path, char *buf, size_t buflen)
->>  {
->>  	int fd;
->>  	ssize_t numread;
->>  
->>  	fd = open(path, O_RDONLY);
->>  	if (fd == -1)
->> -		return 0;
->> +		ksft_exit_fail_msg("%s open failed: %s\n", path, strerror(errno));
-> 
-> Hi,
-> 
-> This change has broken back compat. It's no longer possible to run cow and
-> khugepaged tests against older kernels.
-> 
-> This function, as well as others in this file are intended to return 0 to
-> indicate the file could not be accessed (e.g. doesn't exist or don't have
-> permission, etc). Then higher level code can decide how to handle that. For
-> example, thp_supported_orders() determines which THP orders are supported by the
-> system based on the existence of certain files in sysfs. Then cow decides which
-> test variants to run based on the supported orders. With your change, it all
-> goes bang on the first probe and the whole test suite gets failed without
-> running any tests.
-> 
-> I've no problem with improving the TAP output from tests, but this must only be
-> done at the test level, where it makes sense to do so. You can just call
-> ksft_exit_fail_msg() from deep within a utility function.
-> 
-> Please can we remove this from mm-unstable.
-
-Actually it is even worse than I first thought. With this change, the tests fail
-even when running against a matched kernel.
-
-thp_supported_orders() tries to probe every possible order and relies on the
-probe succeeding or failing to determine which orders are actually supported.
-The first order it tries is 0 (4K). That is not THP, so there is no
-hugepages-4K/enabled file for it. So it blows up immediately.
-
-So I don't think you even ran the tests locally after making the change?
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tQaPJv5Iy1j9aGOR7INtSGMYbv6ZM4fi
+X-Proofpoint-ORIG-GUID: tQaPJv5Iy1j9aGOR7INtSGMYbv6ZM4fi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402140141
 
 
-> 
-> Thanks,
-> Ryan
-> 
-> 
->>  
->>  	numread = read(fd, buf, buflen - 1);
->>  	if (numread < 1) {
->>  		close(fd);
->> -		return 0;
->> +		ksft_exit_fail_msg("No data read\n");
->>  	}
->>  
->>  	buf[numread] = '\0';
->>  	close(fd);
->> -
->> -	return (unsigned int) numread;
->>  }
->>  
->> -int write_file(const char *path, const char *buf, size_t buflen)
->> +void write_file(const char *path, const char *buf, size_t buflen)
->>  {
->>  	int fd;
->>  	ssize_t numwritten;
->>  
->>  	fd = open(path, O_WRONLY);
->> -	if (fd == -1) {
->> -		printf("open(%s)\n", path);
->> -		exit(EXIT_FAILURE);
->> -		return 0;
->> -	}
->> +	if (fd == -1)
->> +		ksft_exit_fail_msg("%s open failed\n", path);
->>  
->>  	numwritten = write(fd, buf, buflen - 1);
->>  	close(fd);
->> -	if (numwritten < 1) {
->> -		printf("write(%s)\n", buf);
->> -		exit(EXIT_FAILURE);
->> -		return 0;
->> -	}
->> -
->> -	return (unsigned int) numwritten;
->> +	if (numwritten < 1)
->> +		ksft_exit_fail_msg("write failed (%s)\n", buf);
->>  }
->>  
->>  const unsigned long read_num(const char *path)
->>  {
->>  	char buf[21];
->>  
->> -	if (read_file(path, buf, sizeof(buf)) < 0) {
->> -		perror("read_file()");
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	read_file(path, buf, sizeof(buf));
->>  
->>  	return strtoul(buf, NULL, 10);
->>  }
->> @@ -103,10 +92,7 @@ void write_num(const char *path, unsigned long num)
->>  	char buf[21];
->>  
->>  	sprintf(buf, "%ld", num);
->> -	if (!write_file(path, buf, strlen(buf) + 1)) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	write_file(path, buf, strlen(buf) + 1);
->>  }
->>  
->>  int thp_read_string(const char *name, const char * const strings[])
->> @@ -117,30 +103,22 @@ int thp_read_string(const char *name, const char * const strings[])
->>  	int ret;
->>  
->>  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (ret >= PATH_MAX)
->> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->>  
->> -	if (!read_file(path, buf, sizeof(buf))) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	read_file(path, buf, sizeof(buf));
->>  
->>  	c = strchr(buf, '[');
->> -	if (!c) {
->> -		printf("%s: Parse failure\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (!c)
->> +		ksft_exit_fail_msg("%s: Parse failure\n", __func__);
->>  
->>  	c++;
->>  	memmove(buf, c, sizeof(buf) - (c - buf));
->>  
->>  	c = strchr(buf, ']');
->> -	if (!c) {
->> -		printf("%s: Parse failure\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (!c)
->> +		ksft_exit_fail_msg("%s: Parse failure\n", __func__);
->> +
->>  	*c = '\0';
->>  
->>  	ret = 0;
->> @@ -150,8 +128,8 @@ int thp_read_string(const char *name, const char * const strings[])
->>  		ret++;
->>  	}
->>  
->> -	printf("Failed to parse %s\n", name);
->> -	exit(EXIT_FAILURE);
->> +	ksft_exit_fail_msg("Failed to parse %s\n", name);
->> +	return -1;
->>  }
->>  
->>  void thp_write_string(const char *name, const char *val)
->> @@ -160,15 +138,10 @@ void thp_write_string(const char *name, const char *val)
->>  	int ret;
->>  
->>  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (ret >= PATH_MAX)
->> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->>  
->> -	if (!write_file(path, val, strlen(val) + 1)) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	write_file(path, val, strlen(val) + 1);
->>  }
->>  
->>  const unsigned long thp_read_num(const char *name)
->> @@ -177,10 +150,9 @@ const unsigned long thp_read_num(const char *name)
->>  	int ret;
->>  
->>  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (ret >= PATH_MAX)
->> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->> +
->>  	return read_num(path);
->>  }
->>  
->> @@ -190,10 +162,9 @@ void thp_write_num(const char *name, unsigned long num)
->>  	int ret;
->>  
->>  	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (ret >= PATH_MAX)
->> +		ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->> +
->>  	write_num(path, num);
->>  }
->>  
->> @@ -275,29 +246,26 @@ void thp_write_settings(struct thp_settings *settings)
->>  
->>  struct thp_settings *thp_current_settings(void)
->>  {
->> -	if (!settings_index) {
->> -		printf("Fail: No settings set");
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (!settings_index)
->> +		ksft_exit_fail_msg("Fail: No settings set\n");
->> +
->>  	return settings_stack + settings_index - 1;
->>  }
->>  
->>  void thp_push_settings(struct thp_settings *settings)
->>  {
->> -	if (settings_index >= MAX_SETTINGS_DEPTH) {
->> -		printf("Fail: Settings stack exceeded");
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (settings_index >= MAX_SETTINGS_DEPTH)
->> +		ksft_exit_fail_msg("Fail: Settings stack exceeded\n");
->> +
->>  	settings_stack[settings_index++] = *settings;
->>  	thp_write_settings(thp_current_settings());
->>  }
->>  
->>  void thp_pop_settings(void)
->>  {
->> -	if (settings_index <= 0) {
->> -		printf("Fail: Settings stack empty");
->> -		exit(EXIT_FAILURE);
->> -	}
->> +	if (settings_index <= 0)
->> +		ksft_exit_fail_msg("Fail: Settings stack empty\n");
->> +
->>  	--settings_index;
->>  	thp_write_settings(thp_current_settings());
->>  }
->> @@ -335,14 +303,11 @@ unsigned long thp_supported_orders(void)
->>  	for (i = 0; i < NR_ORDERS; i++) {
->>  		ret = snprintf(path, PATH_MAX, THP_SYSFS "hugepages-%ukB/enabled",
->>  			(getpagesize() >> 10) << i);
->> -		if (ret >= PATH_MAX) {
->> -			printf("%s: Pathname is too long\n", __func__);
->> -			exit(EXIT_FAILURE);
->> -		}
->> +		if (ret >= PATH_MAX)
->> +			ksft_exit_fail_msg("%s: Pathname is too long\n", __func__);
->>  
->> -		ret = read_file(path, buf, sizeof(buf));
->> -		if (ret)
->> -			orders |= 1UL << i;
->> +		read_file(path, buf, sizeof(buf));
->> +		orders |= 1UL << i;
->>  	}
->>  
->>  	return orders;
->> diff --git a/tools/testing/selftests/mm/thp_settings.h b/tools/testing/selftests/mm/thp_settings.h
->> index 71cbff05f4c7f..04a6a7bbd08f8 100644
->> --- a/tools/testing/selftests/mm/thp_settings.h
->> +++ b/tools/testing/selftests/mm/thp_settings.h
->> @@ -56,8 +56,8 @@ struct thp_settings {
->>  	struct hugepages_settings hugepages[NR_ORDERS];
->>  };
->>  
->> -int read_file(const char *path, char *buf, size_t buflen);
->> -int write_file(const char *path, const char *buf, size_t buflen);
->> +void read_file(const char *path, char *buf, size_t buflen);
->> +void write_file(const char *path, const char *buf, size_t buflen);
->>  const unsigned long read_num(const char *path);
->>  void write_num(const char *path, unsigned long num);
->>  
-> 
 
+On 2/8/2024 6:50 AM, Dmitry Baryshkov wrote:
+> We have several reports of vblank timeout messages. However after some
+> debugging it was found that there might be different causes to that.
+> To allow us to identify the DPU block that gets stuck, include the
+> actual CTL_FLUSH value into the timeout message and trigger the devcore
+> snapshot capture.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+> Changes in v2:
+> - Added a call to msm_disp_snapshot_state() to trigger devcore dump
+>    (Abhinav)
+> - Link to v1: https://lore.kernel.org/r/20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> index d0f56c5c4cce..a8d6165b3c0a 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> @@ -489,7 +489,8 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
+>   		(hw_ctl->ops.get_flush_register(hw_ctl) == 0),
+>   		msecs_to_jiffies(50));
+>   	if (ret <= 0) {
+> -		DPU_ERROR("vblank timeout\n");
+> +		DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
+> +		msm_disp_snapshot_state(phys_enc->parent->dev);
+
+
+There is no rate limiting in this piece of code unfortunately. So this 
+will flood the number of snapshots.
+
+Short-term solution is you can go with a vblank_timeout_cnt and reset it 
+in the enable() like other similar error counters.
+
+long-term solution is we need to centralize these error locations to one 
+single dpu_encoder_error_handler() with a single counter and the error 
+handler will print out the error code along with the snapshot instead of 
+the snapshot being called from all over the place.
+
+
+
+>   		return -ETIMEDOUT;
+>   	}
+>   
+> 
+> ---
+> base-commit: 39676dfe52331dba909c617f213fdb21015c8d10
+> change-id: 20240106-fd-dpu-debug-timeout-e917f0bc8063
+> 
+> Best regards,
 
