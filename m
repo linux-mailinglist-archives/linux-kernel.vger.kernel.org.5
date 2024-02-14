@@ -1,100 +1,142 @@
-Return-Path: <linux-kernel+bounces-65226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391E68549B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:54:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60A1A8549B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B76B1C21C54
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:54:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DA65289A92
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF995338D;
-	Wed, 14 Feb 2024 12:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97BC535CB;
+	Wed, 14 Feb 2024 12:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m65Hc/Rq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="XE2pPkt3"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCFE52F6D;
-	Wed, 14 Feb 2024 12:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C413C53393
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915206; cv=none; b=a2/DaH4Cj4JXtUJpAf+xjIRSnC+seBe5dPjLK7XhwnaJyBWG9HpyEc++i8xGoTuqxYjLVFgY4XLWn4XPueZJ3gFhB3Y4rnnvUFHYasLCu6OH/015UK4dZOWZpg8Z9vd4iD2svvaNf4s9FNhQPnyJ8XneUf8e2PJi5Z9K7SvNizg=
+	t=1707915211; cv=none; b=aQZ1rR/gjKnIS5jx3oxLw7GPqwuWh/Ty/a5/thBs22LLur+age4SDleYpxyVvK0VlReeplNnszIJqzBI/UukvCQC/TyPM9Zmx2iLHNQ+T5jNAPQ2f7xpeHBFqULVVs8YQtJ0VEmCou/ioI7npM7oIKDfi+sN8ipbUJbo08DXZ1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915206; c=relaxed/simple;
-	bh=/ugjthiYNVRZbQHfNTQs8D389INhtH0zhWqQPZwLa04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I2LTE1qunGDKHx49BITOV1RuD8BNBb52QrJ0rNVvJzHQELA82YBljz6moio4jvC1ij+LNbo7EgYHfekS99JjKcL0u1q8ncMdq6H/lVex5g1w/dGO0GpTigzVIPoYxk6r/KfLG1H2hvwg9rpwaU6wBWN2SUdDu36Rwk/N1qzjIFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m65Hc/Rq; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707915205; x=1739451205;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/ugjthiYNVRZbQHfNTQs8D389INhtH0zhWqQPZwLa04=;
-  b=m65Hc/RqzQ6YsrVvR3knd2JULvDWT9gTk4khGymegXD86dNrggsj66xT
-   JP4/rUVJwNNnDoUBwF5yQeX5WZrLz6ePdZAGB1TrGhdsV0cYPLgdObX/x
-   4f4RwoFOjXyrm83xrzJYZckYjDRZXM6bhGdTRo8cbiKGw2M4rWl3HhiJp
-   E7FxtGeU0AKYE4bhnCltmRKVbiYdqw4epOrZ5olxhFk1pqk83++KrOGko
-   JzndZFcTnUB3rPRx8bh2sODoe+6Crq0nim3RqTL0BOU3ujDdCfAgaduv3
-   eFNjg1uCO1gsRMwjHkaejUR6G7MeujHxjazWqCMGCXIrICBjHLPhrqq6o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1809965"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="1809965"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 04:53:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="912083940"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="912083940"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 04:53:21 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raElK-00000004UaX-3iWL;
-	Wed, 14 Feb 2024 14:53:18 +0200
-Date: Wed, 14 Feb 2024 14:53:18 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, Alex Elder <elder@linaro.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Wolfram Sang <wsa@the-dreams.de>, Mark Brown <broonie@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 0/4] gpio: fix SRCU bugs
-Message-ID: <Zcy3voO1yTPHo88T@smile.fi.intel.com>
-References: <20240214084419.6194-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1707915211; c=relaxed/simple;
+	bh=7qQl3oUH908Qo+DjPhPwTveHPALrcW4P/GCBSzvUYvg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dGcXM71uILybjAxuk1RZehlyNKA6XzuGwxFE2T7GIrnVfO4iC/fp1oucB5HFUypCMgwW9hKPCEkmg2XwriwGVIHVsZzSG6+AB/PwvNcknVZzW3v93qeq44gMtEpcMpaZ14PZDMb53giuQYEUmfwZ9cliiWPiptRK47HEPYOMTWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=XE2pPkt3; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1707915205;
+	bh=2yGYnjksCOnTrmVt4RdgHftQySQabm4BEhRKLQZMYvw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=XE2pPkt3SjW8DtGmMvWJGhlsNBiE4/O11nAWaHS4X4tOUavECaHl3WodQ6RZ02WrI
+	 almV87Vjd3dekGxaIEk1nq2vrEFBC2fwJlTQC/NPMmv0sAH/9z39AzF6g5JkxVx15l
+	 4FN5phMtb9ZgcugZSS2XWi1jNOejnfyLXMLHdYCK63VX6KVnD6nU9JaU6EscAzSUN7
+	 Ys+WtcnU4s1YvhKkoHxFUey4JGkmQX3rrPk7lI9QULOLTewhWjgb2c3Cc2zl/lb8UM
+	 PsMeR4O6sjG9HMH7rLAzoW0HSRxfrXXLAbJi30sBWqLW1D9qwqc4uVEgsFAZ4R7U3q
+	 LXiQPCup57nYg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZdR636lbz4wcp;
+	Wed, 14 Feb 2024 23:53:22 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, Shivaprasad G Bhat <sbhat@linux.ibm.com>
+Cc: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+ naveen.n.rao@linux.ibm.com, jroedel@suse.de,
+ tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
+ gregkh@linuxfoundation.org, gbatra@linux.vnet.ibm.com,
+ vaibhav@linux.ibm.com
+Subject: Re: [PATCH] powerpc/iommu: Fix the missing iommu_group_put() during
+ platform domain attach
+In-Reply-To: <4f5e638d-30a2-4207-b515-d07c20b0fb47@linux.vnet.ibm.com>
+References: <170784021983.6249.10039296655906636112.stgit@linux.ibm.com>
+ <20240213172128.GM765010@ziepe.ca>
+ <4f5e638d-30a2-4207-b515-d07c20b0fb47@linux.vnet.ibm.com>
+Date: Wed, 14 Feb 2024 23:53:20 +1100
+Message-ID: <87le7n6wcf.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214084419.6194-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 
-On Wed, Feb 14, 2024 at 09:44:15AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Here are four fixes to some bugs in recent SRCU changes. The first one fixes
-> an actual race condition. The other three just make lockdep happy.
+Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com> writes:
+> Thanks for the patch. Applied this patch and verified and issue is fixed.
+>
+> This issue way originally reported in the below mail.
+>
+> https://marc.info/?l=linux-kernel&m=170737160630106&w=2
 
-Same comment here, can we simply redo this work so we won't have tons of fixes
-on top of the nice RCU rework?
+Please use lore for links, in this case:
 
--- 
-With Best Regards,
-Andy Shevchenko
+https://lore.kernel.org/all/274e0d2b-b5cc-475e-94e6-8427e88e271d@linux.vnet.ibm.com/
 
+cheers
 
+> On 13/02/24 10:51 pm, Jason Gunthorpe wrote:
+>> On Tue, Feb 13, 2024 at 10:05:22AM -0600, Shivaprasad G Bhat wrote:
+>>> The function spapr_tce_platform_iommu_attach_dev() is missing to call
+>>> iommu_group_put() when the domain is already set. This refcount leak
+>>> shows up with BUG_ON() during DLPAR remove operation as,
+>>>
+>>>    KernelBug: Kernel bug in state 'None': kernel BUG at arch/powerpc/platforms/pseries/iommu.c:100!
+>>>    Oops: Exception in kernel mode, sig: 5 [#1]
+>>>    LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
+>>>    <snip>
+>>>    Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_016) hv:phyp pSeries
+>>>    NIP:  c0000000000ff4d4 LR: c0000000000ff4cc CTR: 0000000000000000
+>>>    REGS: c0000013aed5f840 TRAP: 0700   Tainted: G          I         (6.8.0-rc3-autotest-g99bd3cb0d12e)
+>>>    MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 44002402  XER: 20040000
+>>>    CFAR: c000000000a0d170 IRQMASK: 0
+>>>    GPR00: c0000000000ff4cc c0000013aed5fae0 c000000001512700 c0000013aa362138
+>>>    GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000119c8afd0
+>>>    GPR08: 0000000000000000 c000001284442b00 0000000000000001 0000000000001003
+>>>    GPR12: 0000000300000000 c0000018ffff2f00 0000000000000000 0000000000000000
+>>>    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>>>    GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>>>    GPR24: c0000013aed5fc40 0000000000000002 0000000000000000 c000000002757d90
+>>>    GPR28: c0000000000ff440 c000000002757cb8 c00000183799c1a0 c0000013aa362b00
+>>>    NIP [c0000000000ff4d4] iommu_reconfig_notifier+0x94/0x200
+>>>    LR [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200
+>>>    Call Trace:
+>>>    [c0000013aed5fae0] [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200 (unreliable)
+>>>    [c0000013aed5fb10] [c0000000001a27b0] notifier_call_chain+0xb8/0x19c
+>>>    [c0000013aed5fb70] [c0000000001a2a78] blocking_notifier_call_chain+0x64/0x98
+>>>    [c0000013aed5fbb0] [c000000000c4a898] of_reconfig_notify+0x44/0xdc
+>>>    [c0000013aed5fc20] [c000000000c4add4] of_detach_node+0x78/0xb0
+>>>    [c0000013aed5fc70] [c0000000000f96a8] ofdt_write.part.0+0x86c/0xbb8
+>>>    [c0000013aed5fce0] [c00000000069b4bc] proc_reg_write+0xf4/0x150
+>>>    [c0000013aed5fd10] [c0000000005bfeb4] vfs_write+0xf8/0x488
+>>>    [c0000013aed5fdc0] [c0000000005c0570] ksys_write+0x84/0x140
+>>>    [c0000013aed5fe10] [c000000000033358] system_call_exception+0x138/0x330
+>>>    [c0000013aed5fe50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
+>>>    --- interrupt: 3000 at 0x20000433acb4
+>>>    <snip>
+>>>    ---[ end trace 0000000000000000 ]---
+>>>
+>>> The patch adds the missing iommu_group_put() call.
+>>>
+>>> Fixes: a8ca9fc9134c ("powerpc/iommu: Do not do platform domain attach atctions after probe")
+>>> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+>>> ---
+>>>   arch/powerpc/kernel/iommu.c |    4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>> Doh, that is a weird splat for this but thanks for finding it
+>>
+>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>>
+>> Jason
+>>
 
