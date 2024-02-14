@@ -1,208 +1,290 @@
-Return-Path: <linux-kernel+bounces-65482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E14854D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:05:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC67854DA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 759AD1F22B43
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02B841F23330
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FE45F845;
-	Wed, 14 Feb 2024 16:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857D15F875;
+	Wed, 14 Feb 2024 16:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="A6M8tbB2"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MEIXjw6n"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E29859B46;
-	Wed, 14 Feb 2024 16:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1428B5C917
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926735; cv=none; b=UnXla/nunzHmd2VyHJ6fQ9cf5QPPPmcaLEt+MlbJw9v12TG9GPKewHLPRahWsVZe4bsM3zVuz+1kptTqdXdv5rF/ZlTly5yuGfKeypnX+uDwBuv/6vwJYC33iPBH1sjbAS3zNbqGNl9bReFCKoMXEFDMKBs1oGwSbweaVxWElmo=
+	t=1707926750; cv=none; b=UPIoGc8VGxXD2NyQ0uzGLJCpU12aDb+5soHd55ankyEvKHFkdnjgyB8dxE8uMYupmdRXxd24tFmh47yIKNz3E0gsi7L0UnFp3RAaQNku2jgccX7pBSdwLPSHtJHysoMfbk5a8NvWclyZhw4PSoEZ+MjuLp9qjOowvvupPJWAnTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926735; c=relaxed/simple;
-	bh=vZJjX7v0+cZVtrXJb1qzjl54ZV3LHzmjSfzYPq/YME8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s5Er2w2lqqxEzzj4O7MT74baEYB0ErRkO0cbN7J5fZwN/quHrabr53N6XXiTc1Jrf9Ng37JHg+FGbqpuux6LHKv3EMEo82etRvIi+PTdLyX18gIRI0acDW08Bk9QifKdyeky++qu0J2RLw4+xKJtEbAiiclW2rWgNMr6/yrO0aI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=A6M8tbB2; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 20B8740E0192;
-	Wed, 14 Feb 2024 16:05:29 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id GcIdxJPXPwPb; Wed, 14 Feb 2024 16:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707926726; bh=MAkqJKknBcfdA6Ur6Ce0a958/WHpln9qM4AlUEpf32o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A6M8tbB2cEpF91h07OFHYW0dL6zOCGrjO58iLd5/QPZHFtKCMA0Fh2w+F+o0nt9T9
-	 BaEEZVI8+rJd+CcnBzZBda4igs4brScN0Tpw2ePcautM7gnVZiVfkwa63HD2ePtg1r
-	 tw8Tg6a8vnjLEWiC7XH9+2TD3EOtP5WuR4fC2C8wEPj8gYeiypiw0KgQ49l3y6VWnE
-	 fRaYLJCBrd72C7DUfvYgf2rJD3sApylNuEcE8mIOMtY3OZGDW3mcdbqF8sbtImne4N
-	 1TBq4CJ76vJeOEOUnh2WuEzsTlbePl1WjiVAO+SPdTyvbdjkYH26i2VUsm92KTKH6w
-	 Xt975PDgbDtRjaspIiYoWz+mgOSMF0GPqJzO0gM35AE53m+n0G0Q2kj3PDYLKv7zIg
-	 jxRFySv/UQmBiLj0a9InMb9ALKy+c50iCOpz6k2kw/Pk5WJjLCDBjb6BxH4UM7BqK9
-	 ibqX4FUFK7smP8i6psunhFmVpNwb7kluAUBEE6TZHb2Y8AzcU8tIHY4YetSzQNxitG
-	 cuR9W25WOmvCgZtbiu6dCaXm/d/TsPqZ+x8fnGDcPcIul0ny4cmQJhK2cTunLzKIEW
-	 G9MBervnKrsfrAAAD8MO644JGiebl9YP61iZ8yJMRcjepKjtssSBioCkj2WgpfOTXE
-	 2ATw4O4yh/NP+UH5bOahKZ3Y=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 143DF40E00B2;
-	Wed, 14 Feb 2024 16:05:17 +0000 (UTC)
-Date: Wed, 14 Feb 2024 17:05:12 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 1/2] RAS/AMD/ATL, EDAC/amd64: Move MI300 Row Retirement
- to ATL
-Message-ID: <20240214160512.GDZczkuNJf_VVZxNeI@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-2-yazen.ghannam@amd.com>
- <20240214083623.GZZcx7h_BcIWpoEmMJ@fat_crate.local>
- <d01ef2f5-10d9-410b-a6ec-d5eca05ffda4@amd.com>
+	s=arc-20240116; t=1707926750; c=relaxed/simple;
+	bh=dc1KQpY0JaxYBA4PG7k53I+9SMfrAWxXKgE5iyHjJ6M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l1XEHwkB7inQITqK8WuOm589rhPuTZhDLmJ/aSqvpDM9TSvwctcnYxLmaw2DXpPX7z8r2+9o+SZZ/31aNrc/fpW79RlywlDrS1oRSzh8/lKSdCw3T2jkZJ57bFlRAz3S30wcW9NrIX45y2TSeCZhqMbxURGuzarcL+dINw3YwgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MEIXjw6n; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-411d9e901dcso91235e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707926746; x=1708531546; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=D0ZXpfKsVxZsard92upIgK/guQSZv3oZnwS2SvpnT4A=;
+        b=MEIXjw6nY91nWXEVl/kjohanka7g716qRufSWAk+bGomW7W6lELukjL/1Dnt28uRj2
+         i+4uo0U3XXf7AoC6ahQtcLD7/6iWyx8acJhcyAgMObz/jwhFdoUmpDm7hK4vcdEmSTdE
+         F58ymKXo5cej04qnQaLzjNmZG+Cby9xIqEEjmUTl44RiHEgzHwk6wvViRyIyuR3bF50K
+         9zRnbHM9pnhMyYoGArQSiuX+4Mp/DydBwEK/u/lh/uOm6Ha6FCHRmiJnAJdtSpdP+MwC
+         8cbHNlKz9kVskBTxtq0kFlFyqsN9nnyE3tCxzjrD3kyWfcApXOwfBeufwI3CA4D8Svh0
+         IRGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707926746; x=1708531546;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D0ZXpfKsVxZsard92upIgK/guQSZv3oZnwS2SvpnT4A=;
+        b=P6DptKqPwplWfBtiSNg/QMrUJBPduyZOzW/N0uGij5ZYDYYTmyL1gqG9UP0poK1NJg
+         klLoLIZ25b571Kr6suBOQlIjW592QNI9dkWQEYXAW7GFJVoKlyGcAg15cPP/CmorgDKE
+         HTWTgMDVxZqwlMhSDhO5/wUEM9COWxEvdWR5fNqYEhP4TwozieBaqOCItWDa+J/edqv4
+         OlneWcoA2cpGDv45iBizWmBWjCZlDsPh2dXCgRa+RcSg3YrG4xohz3F9FI57/pIv30a1
+         TD2u/GuTNGaCDTQ5zeHchDBvPYLt8aot53o9FuqgdhliiqogsR27UlqpIDWw18ef+pTz
+         gcYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXdTEQ64abOgOwAXMCEjGHV8NYujstB4yL9uuTTr9AQFakf+frpg7v8GSfgFq5nyaK6j4DccXyCofPwbDfAQJFSrUbSUT1285RahEKC
+X-Gm-Message-State: AOJu0Ywtuzo/Pjvn/qQSZvOFMm+a6FCQw8+KL5WGm2zU2njYWlOdpemM
+	Xe07NAsrqXb7Dau3XMkX0Yp2mi3OP5TqT31ZkTQdzxIr7jYAflx7aKJ+FZUMdw==
+X-Google-Smtp-Source: AGHT+IFQx3AR+dJ4tRuny2Zl3PYxdt3LuDwruLklz7IHA3o+QvX7gRTt7eytQ7BUceKnARE9I8n+Sw==
+X-Received: by 2002:a05:600c:519b:b0:411:e5c1:9b2a with SMTP id fa27-20020a05600c519b00b00411e5c19b2amr161066wmb.2.1707926746115;
+        Wed, 14 Feb 2024 08:05:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUwwkkMnTjoYEDNabe8vKqZdn5tv9oDKwRWK4zf5GsCOWHcf/AVXcvm52C5bTuLK2NbqXtblzKIkrpdtJeCa9hhed3VVSbYEDUx6curN4LLsKnOqFixNfhl9htsCIwkPiXU4F9B/uqjZhfOYcLix0x2v9gzCQgnkiSDq10Qq3/qTY6TVGv4EbpIJDgJB7McV2I+5xL4HBSW3OkV67lySg/bQm1ulJVesuup+MG96wCqEQmQg0KL2DkkKFKdy+e4quYRaAXr7JCLAgP4jxINha04ZDK/LTDAi35fpr3wdxE=
+Received: from localhost ([2a02:168:96c5:1:cead:684f:86ff:5d41])
+        by smtp.gmail.com with ESMTPSA id i22-20020a05600c4b1600b0040fdb244485sm2291938wmp.40.2024.02.14.08.05.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 08:05:44 -0800 (PST)
+From: Jann Horn <jannh@google.com>
+To: Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>,
+	Kees Cook <keescook@chromium.org>,
+	John Johansen <john.johansen@canonical.com>,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jann Horn <jannh@google.com>
+Subject: [PATCH] security: fix integer overflow in lsm_set_self_attr() syscall
+Date: Wed, 14 Feb 2024 17:05:38 +0100
+Message-ID: <20240214160538.1086089-1-jannh@google.com>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d01ef2f5-10d9-410b-a6ec-d5eca05ffda4@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 09:19:13AM -0500, Yazen Ghannam wrote:
-> Yes, that's fine.
+security_setselfattr() has an integer overflow bug that leads to
+out-of-bounds access when userspace provides bogus input:
+`lctx->ctx_len + sizeof(*lctx)` is checked against `lctx->len` (and,
+redundantly, also against `size`), but there are no checks on
+`lctx->ctx_len`.
+Therefore, userspace can provide an `lsm_ctx` with `->ctx_len` set to a
+value between `-sizeof(struct lsm_ctx)` and -1, and this bogus `->ctx_len`
+will then be passed to an LSM module as a buffer length, causing LSM
+modules to perform out-of-bounds accesses.
 
-Easy peasy:
+The following reproducer will demonstrate this under ASAN (if AppArmor is
+loaded as an LSM):
+```
+#define _GNU_SOURCE
+#include <unistd.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <sys/syscall.h>
 
-From 98ecd3942837df907fbf9ceff7e23f55e55e40b2 Mon Sep 17 00:00:00 2001
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-Date: Tue, 13 Feb 2024 21:35:15 -0600
-Subject: [PATCH] RAS/AMD/ATL: Add MI300 row retirement support
+struct lsm_ctx {
+  uint64_t id;
+  uint64_t flags;
+  uint64_t len;
+  uint64_t ctx_len;
+  char ctx[];
+};
 
-DRAM row retirement depends on model-specific information that is best
-done within the AMD Address Translation Library.
+int main(void) {
+  size_t size = sizeof(struct lsm_ctx);
+  struct lsm_ctx *ctx = malloc(size);
+  ctx->id = 104/*LSM_ID_APPARMOR*/;
+  ctx->flags = 0;
+  ctx->len = size;
+  ctx->ctx_len = -sizeof(struct lsm_ctx);
+  syscall(
+    460/*__NR_lsm_set_self_attr*/,
+    /*attr=*/  100/*LSM_ATTR_CURRENT*/,
+    /*ctx=*/   ctx,
+    /*size=*/  size,
+    /*flags=*/ 0
+  );
+}
+```
 
-Export a generic wrapper function for other modules to use. Add any
-model-specific helpers here.
+(I'm including an ASAN splat in the patch notes sent to the list.)
 
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240214033516.1344948-2-yazen.ghannam@amd.com
+Fixes: a04a1198088a ("LSM: syscalls for current process attributes")
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
- drivers/ras/amd/atl/Kconfig |  1 +
- drivers/ras/amd/atl/umc.c   | 51 +++++++++++++++++++++++++++++++++++++
- include/linux/ras.h         |  2 ++
- 3 files changed, 54 insertions(+)
+ASAN splat from the reproducer:
+==================================================================
+BUG: KASAN: slab-out-of-bounds in do_setattr (security/apparmor/lsm.c:860) 
+Read of size 1 at addr ffff888006163abf by task setselfattr/548
 
-diff --git a/drivers/ras/amd/atl/Kconfig b/drivers/ras/amd/atl/Kconfig
-index a43513a700f1..df49c23e7f62 100644
---- a/drivers/ras/amd/atl/Kconfig
-+++ b/drivers/ras/amd/atl/Kconfig
-@@ -10,6 +10,7 @@
- config AMD_ATL
- 	tristate "AMD Address Translation Library"
- 	depends on AMD_NB && X86_64 && RAS
-+	depends on MEMORY_FAILURE
- 	default N
- 	help
- 	  This library includes support for implementation-specific
-diff --git a/drivers/ras/amd/atl/umc.c b/drivers/ras/amd/atl/umc.c
-index 7e310d1dfcfc..08c6dbd44c62 100644
---- a/drivers/ras/amd/atl/umc.c
-+++ b/drivers/ras/amd/atl/umc.c
-@@ -239,6 +239,57 @@ static unsigned long convert_dram_to_norm_addr_mi300(unsigned long addr)
- 	return addr;
- }
+CPU: 0 PID: 548 Comm: setselfattr Not tainted 6.8.0-rc4-00014-g7e90b5c295ec-dirty #5
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Call Trace:
+<TASK>
+dump_stack_lvl (lib/dump_stack.c:107) 
+print_report (mm/kasan/report.c:378 mm/kasan/report.c:488) 
+[...]
+kasan_report (mm/kasan/report.c:603) 
+[...]
+do_setattr (security/apparmor/lsm.c:860) 
+[...]
+apparmor_setselfattr (security/apparmor/lsm.c:935) 
+security_setselfattr (security/security.c:4038) 
+__x64_sys_lsm_set_self_attr (security/lsm_syscalls.c:55) 
+do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
+entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
+RIP: 0033:0x7f29a170ff59
+Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 64 89 01 48
+All code
+========
+   0:	00 c3                	add    %al,%bl
+   2:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+   9:	00 00 00 
+   c:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  11:	48 89 f8             	mov    %rdi,%rax
+  14:	48 89 f7             	mov    %rsi,%rdi
+  17:	48 89 d6             	mov    %rdx,%rsi
+  1a:	48 89 ca             	mov    %rcx,%rdx
+  1d:	4d 89 c2             	mov    %r8,%r10
+  20:	4d 89 c8             	mov    %r9,%r8
+  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
+  28:	0f 05                	syscall
+  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	ret
+  33:	48 8b 0d 07 6f 0c 00 	mov    0xc6f07(%rip),%rcx        # 0xc6f41
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W
+
+Code starting with the faulting instruction
+===========================================
+   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
+   6:	73 01                	jae    0x9
+   8:	c3                   	ret
+   9:	48 8b 0d 07 6f 0c 00 	mov    0xc6f07(%rip),%rcx        # 0xc6f17
+  10:	f7 d8                	neg    %eax
+  12:	64 89 01             	mov    %eax,%fs:(%rcx)
+  15:	48                   	rex.W
+RSP: 002b:00007ffd41c781a8 EFLAGS: 00000202 ORIG_RAX: 00000000000001cc
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f29a170ff59
+RDX: 0000000000000020 RSI: 000056518c581260 RDI: 0000000000000064
+RBP: 00007ffd41c781c0 R08: 00000000000a3330 R09: 000056518c581260
+R10: 0000000000000000 R11: 0000000000000202 R12: 000056518bd95060
+R13: 00007ffd41c782a0 R14: 0000000000000000 R15: 0000000000000000
+</TASK>
+
+Allocated by task 548 on cpu 0 at 61.045304s:
+kasan_save_stack (mm/kasan/common.c:48) 
+kasan_save_track (mm/kasan/common.c:68) 
+__kasan_kmalloc (mm/kasan/common.c:372 mm/kasan/common.c:389) 
+__kmalloc (./include/linux/kasan.h:211 mm/slub.c:3981 mm/slub.c:3994) 
+load_elf_binary (./include/linux/slab.h:594 fs/binfmt_elf.c:880) 
+bprm_execve (fs/exec.c:1783 fs/exec.c:1825 fs/exec.c:1877 fs/exec.c:1853) 
+do_execveat_common.isra.0 (fs/exec.c:1984) 
+__x64_sys_execve (fs/exec.c:2129 (discriminator 1)) 
+do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
+entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
+
+Freed by task 548 on cpu 0 at 61.045380s:
+kasan_save_stack (mm/kasan/common.c:48) 
+kasan_save_track (mm/kasan/common.c:68) 
+kasan_save_free_info (mm/kasan/generic.c:643 (discriminator 1)) 
+poison_slab_object (mm/kasan/common.c:243) 
+__kasan_slab_free (mm/kasan/common.c:257 (discriminator 1)) 
+kfree (mm/slub.c:4299 (discriminator 3) mm/slub.c:4409 (discriminator 3)) 
+load_elf_binary (fs/binfmt_elf.c:896 (discriminator 1)) 
+bprm_execve (fs/exec.c:1783 fs/exec.c:1825 fs/exec.c:1877 fs/exec.c:1853) 
+do_execveat_common.isra.0 (fs/exec.c:1984) 
+__x64_sys_execve (fs/exec.c:2129 (discriminator 1)) 
+do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
+entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
+
+The buggy address belongs to the object at ffff888006163a80
+which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 31 bytes to the right of
+allocated 32-byte region [ffff888006163a80, ffff888006163aa0)
+
+The buggy address belongs to the physical page:
+page:0000000021a8da3a refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x6163
+flags: 0x100000000000800(slab|node=0|zone=1)
+page_type: 0xffffffff()
+raw: 0100000000000800 ffff888001042500 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080400040 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ffff888006163980: fa fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
+ffff888006163a00: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff888006163a80: fa fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
+^
+ffff888006163b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ffff888006163b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+ security/security.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/security/security.c b/security/security.c
+index 3aaad75c9ce8..7035ee35a393 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -29,6 +29,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/string.h>
+ #include <linux/msg.h>
++#include <linux/overflow.h>
+ #include <net/flow.h>
  
-+/*
-+ * When a DRAM ECC error occurs on MI300 systems, it is recommended to retire
-+ * all memory within that DRAM row. This applies to the memory with a DRAM
-+ * bank.
-+ *
-+ * To find the memory addresses, loop through permutations of the DRAM column
-+ * bits and find the System Physical address of each. The column bits are used
-+ * to calculate the intermediate Normalized address, so all permutations should
-+ * be checked.
-+ *
-+ * See amd_atl::convert_dram_to_norm_addr_mi300() for MI300 address formats.
-+ */
-+#define MI300_NUM_COL		BIT(HWEIGHT(MI300_UMC_MCA_COL))
-+static void retire_row_mi300(struct atl_err *a_err)
-+{
-+	unsigned long addr;
-+	struct page *p;
-+	u8 col;
-+
-+	for (col = 0; col < MI300_NUM_COL; col++) {
-+		a_err->addr &= ~MI300_UMC_MCA_COL;
-+		a_err->addr |= FIELD_PREP(MI300_UMC_MCA_COL, col);
-+
-+		addr = amd_convert_umc_mca_addr_to_sys_addr(a_err);
-+		if (IS_ERR_VALUE(addr))
-+			continue;
-+
-+		addr = PHYS_PFN(addr);
-+
-+		/*
-+		 * Skip invalid or already poisoned pages to avoid unnecessary
-+		 * error messages from memory_failure().
-+		 */
-+		p = pfn_to_online_page(addr);
-+		if (!p)
-+			continue;
-+
-+		if (PageHWPoison(p))
-+			continue;
-+
-+		memory_failure(addr, 0);
-+	}
-+}
-+
-+void amd_retire_dram_row(struct atl_err *a_err)
-+{
-+	if (df_cfg.rev == DF4p5 && df_cfg.flags.heterogeneous)
-+		return retire_row_mi300(a_err);
-+}
-+EXPORT_SYMBOL_GPL(amd_retire_dram_row);
-+
- static unsigned long get_addr(unsigned long addr)
- {
- 	if (df_cfg.rev == DF4p5 && df_cfg.flags.heterogeneous)
-diff --git a/include/linux/ras.h b/include/linux/ras.h
-index 09c632832bf1..a64182bc72ad 100644
---- a/include/linux/ras.h
-+++ b/include/linux/ras.h
-@@ -45,8 +45,10 @@ struct atl_err {
- #if IS_ENABLED(CONFIG_AMD_ATL)
- void amd_atl_register_decoder(unsigned long (*f)(struct atl_err *));
- void amd_atl_unregister_decoder(void);
-+void amd_retire_dram_row(struct atl_err *err);
- unsigned long amd_convert_umc_mca_addr_to_sys_addr(struct atl_err *err);
- #else
-+static inline void amd_retire_dram_row(struct atl_err *err) { }
- static inline unsigned long
- amd_convert_umc_mca_addr_to_sys_addr(struct atl_err *err) { return -EINVAL; }
- #endif /* CONFIG_AMD_ATL */
--- 
-2.43.0
+ /* How many LSMs were built into the kernel? */
+@@ -4015,6 +4016,7 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
+ 	struct security_hook_list *hp;
+ 	struct lsm_ctx *lctx;
+ 	int rc = LSM_RET_DEFAULT(setselfattr);
++	u64 required_len;
+ 
+ 	if (flags)
+ 		return -EINVAL;
+@@ -4027,8 +4029,9 @@ int security_setselfattr(unsigned int attr, struct lsm_ctx __user *uctx,
+ 	if (IS_ERR(lctx))
+ 		return PTR_ERR(lctx);
+ 
+-	if (size < lctx->len || size < lctx->ctx_len + sizeof(*lctx) ||
+-	    lctx->len < lctx->ctx_len + sizeof(*lctx)) {
++	if (size < lctx->len ||
++	    check_add_overflow(sizeof(*lctx), lctx->ctx_len, &required_len) ||
++	    lctx->len < required_len) {
+ 		rc = -EINVAL;
+ 		goto free_out;
+ 	}
 
+base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0.687.g38aa6559b0-goog
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
