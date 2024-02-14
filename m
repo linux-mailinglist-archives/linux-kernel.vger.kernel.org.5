@@ -1,130 +1,132 @@
-Return-Path: <linux-kernel+bounces-65104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083388547D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:13:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBC058547D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9669E1F21E31
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:13:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C29011C218CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3880C18EB0;
-	Wed, 14 Feb 2024 11:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0771946C;
+	Wed, 14 Feb 2024 11:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="4koZZDLz"
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CkOhCRQ1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CBE5171CC
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1317818EA2;
+	Wed, 14 Feb 2024 11:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707909214; cv=none; b=eYGBEH+B+sNYqO0PZ83zxSqrX6nH2QHEUFayvkDCDQyQFQ8GicCIf9Jb+QEGoGmWJAuSzmi2YSgO8Cir7BmfKX/5zuRI2iejnVpgJB06qJFfexC41M9JUgsEFRvz67L4fTqZGc2ZdZcA1pQgrjHbemqnZ67DfMWKG6vRSCIT+wc=
+	t=1707909282; cv=none; b=R8yJQYlrAgUCP7xFAIUX5qHtHuvmclvI0zV0OBpfhh7xHAjKLYflEcQCe9sEVxYBZx1kM08thwhD5ZUYB2QEaS0RzaeIguHZNi7fHIShN8dSjTgZ5pQOoOIxemAVGgeBxiS+uqoH7+Eke29P0U3bmv+bQiKArgYBEeKib1fs32g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707909214; c=relaxed/simple;
-	bh=iLflZ9PnEbYl8GXEHbaZY3T06atPvwTgT/Jb0exuRr0=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=NqAgSdUeM8tttA6iCbnAj4bWEhXhIM2I35AV+CIzNlMUDzVhy5qS87D3buLCE2M24/6MZK+tn6ZZE68WiDR2HSXldENcPt5NdT9zq0NQ2Sg3RDsGEHSKxeVs1SAe0pjsYAAI8/4jUvI1va4s3uhkJoxN1HBuupxzF+mR3d7iQTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=4koZZDLz; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-	by cmsmtp with ESMTPS
-	id a6ycrSoC9CF6GaDCfrqQ2f; Wed, 14 Feb 2024 11:13:25 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id aDCerAhkqhxy0aDCerY1v4; Wed, 14 Feb 2024 11:13:25 +0000
-X-Authority-Analysis: v=2.4 cv=GO+rEfNK c=1 sm=1 tr=0 ts=65cca055
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=Z1RhuQvObekGR5VE35kA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xId3Yv3kQ+KIH1jIcASUszezOipjWVAnh+ch6eYfRVg=; b=4koZZDLzk6NUnV4nBH7scTWYvQ
-	NtvWjNJWa2vKksTx8l8JNXbLwzFzq7ZmXqyqGHO0HxL9WTfjyJwPECbL+ddUHLGqWploYrVtqPua1
-	jK1d4HBo1h/2lzQhZjQRB/3JTzkpFKEuARMaDvr/RfcvaOtcm9hE3g0vqtWR1et9Jktdmr9xnTdlt
-	OP8dLDi71SrtKRTM7+C+Rkz9Qb3Ny7MLkuTWZjrSfBNp2gDF8WsDU4wOG6I1lsWcLWWHfl9k1RGqw
-	2M9gBdMYWigfaK3ZjcpjWkuHn2w04tRSd7l7AP+LGNqvXLsj0Gf867S5I+Ym9sYoOTHTiA3AfnLnZ
-	XypMklXw==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:46056 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1raDCc-000Ai8-04;
-	Wed, 14 Feb 2024 04:13:22 -0700
-Subject: Re: [PATCH 6.7 000/124] 6.7.5-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240213171853.722912593@linuxfoundation.org>
-In-Reply-To: <20240213171853.722912593@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <e29f092b-53de-67cd-2afe-f77154a6f906@w6rz.net>
-Date: Wed, 14 Feb 2024 03:13:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1707909282; c=relaxed/simple;
+	bh=/zBV41EcCG6K/uokJf/6APSOmXZDKRrKNCSzt+OXz+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H7wGZqGq2rMSLPYJdVynYTPLKiGacoSS6YhWatrS223LI2W7HbXxr9mv7B819PJGTQs0asZ1xJ3uwmHv4F5vP28I+tkWA6cjlLOuKmbb1ri/ftM+J2g08LnNK/5WkipDBRZk5yPTqrFoxP+1nS1zFQNZLSJPHyKm4559FZcFwUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CkOhCRQ1; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707909281; x=1739445281;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/zBV41EcCG6K/uokJf/6APSOmXZDKRrKNCSzt+OXz+4=;
+  b=CkOhCRQ1Ox2wDwjQElorh73rLyVhbNa9mpwDOY9ZlbscHRgdl4kktEET
+   SfI28oLSxMIIuqg5E3AdtALaLRDQmKu60Xs3OsBDUROY1V9uQJtbCB020
+   A0WLCx9+BRopy+Rnc1ZINQr8MoroH+fs71buAN3LIQuepLbnF8UGqM1gm
+   cEqe7RXcxFWC8UvgVqImYokb+WvJP7P2/kp6LMp/AZWR/1qNLHqSFje8d
+   GjS5KZLOHYeqFVjwFtYK3hLxkBR71NdyeUp7J+bYOHukz8iaOhszf9EM6
+   0QJVAmnzY9C7t4EzaFLNBeP1CT1JjaA0jynbEqJt8oA7EL5tPk6M7XWxI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2091795"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="2091795"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:14:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="3067801"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:14:38 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 878CB11F86A;
+	Wed, 14 Feb 2024 13:14:35 +0200 (EET)
+Date: Wed, 14 Feb 2024 11:14:35 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Tommaso Merciai <tomm.merciai@gmail.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	linuxfancy@googlegroups.com, martin.hecht@avnet.eu,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] media: i2c: alvium: fix req_fr check into
+ alvium_s_frame_interval()
+Message-ID: <ZcygmyT1ZaKsbSxX@kekkonen.localdomain>
+References: <20231220124023.2801417-1-tomm.merciai@gmail.com>
+ <20231220124023.2801417-6-tomm.merciai@gmail.com>
+ <20231220130236.GN29638@pendragon.ideasonboard.com>
+ <ZYLxtTRQF0sWJLiu@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1raDCc-000Ai8-04
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:46056
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDl7P6GaXhOS7Qo2t+5IMNAPRFMi1KYEo31cHs3fFYZetyVBr1+QS7Sp4kwNwUgmICHgtPcfvrye7vzhSr6eJ9OEJbOmTnPQVc+ptQYuO29QNWW1uWR6
- Z+qGXS2SIjioFtVv6/F/U6yMd+h28QGJCmQa62SrbCbmGVqt7YnItJ/SLLlj5G8Bley1Hv6GRrtMvnEFpXx9pAeAO9pAREZfqw8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYLxtTRQF0sWJLiu@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 
-On 2/13/24 9:20 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.5 release.
-> There are 124 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Tommaso,
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+On Wed, Dec 20, 2023 at 02:52:53PM +0100, Tommaso Merciai wrote:
+> Hi Laurent,
+> 
+> On Wed, Dec 20, 2023 at 03:02:36PM +0200, Laurent Pinchart wrote:
+> > Hi Tommaso,
+> > 
+> > Thank you for the patch.
+> > 
+> > On Wed, Dec 20, 2023 at 01:40:23PM +0100, Tommaso Merciai wrote:
+> > > Actually req_fr check into alvium_s_frame_interval() is wrong.
+> > > In particular req_fr can't be >=max and <= min at the same time.
+> > > Fix this using clamp and remove dft_fr parameter from
+> > > alvium_get_frame_interval() not more used.
+> > 
+> > The commit message should have explained why clamping is better than
+> > picking a default value, as that's a functional change. If you propose
+> > an updated commit message in a reply, I think Sakari can update the
+> > patch when applying the series to his tree, there's no need for a v4.
+> 
+> What about:
+> 
+> Actually req_fr check into alvium_s_frame_interval() is wrong.
+> In particular req_fr can't be >=max and <= min at the same time.
+> Fix this using clamp and remove dft_fr parameter from
+> alvium_get_frame_interval() not more used.
+> 
+> Clamp function make sure that if the setted value exceeds the limits is
+> replaced with min_fr/max_fr instead of setting the value readed back
+> from the hw.
+> 
+> What do you think?
 
-Tested-by: Ron Economos <re@w6rz.net>
+I used this, hopefully it's ok:
 
+media: i2c: alvium: fix req_fr check in alvium_s_frame_interval()
+
+req_fr check in alvium_s_frame_interval() is incorrect. In particular
+req_fr can't be >=max and <= min at the same time. Ensure the requested
+frame rate remains within the supported range between min_fr and max_fr by
+clamping it.
+
+Also remove the unused dft_fr argument of alvium_get_frame_interval().
+
+-- 
+Kind regards,
+
+Sakari Ailus
 
