@@ -1,131 +1,106 @@
-Return-Path: <linux-kernel+bounces-65802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 480EC855211
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:28:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99ECD855213
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF7511F299FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:28:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56E1E28667A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A033A128382;
-	Wed, 14 Feb 2024 18:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E867B1292C5;
+	Wed, 14 Feb 2024 18:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oSkPOZUN"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KH7yOub8"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74DC3604AB
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B708D17580;
+	Wed, 14 Feb 2024 18:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707935312; cv=none; b=QRPq13wYeUg5CI1S4gVpVmGaZPim46RRR+72Awx9nijl1dz5jfpKHGqrMkcWKWmS5iv1JKDBD6O4tkLJIrTah1q8Ap5OKTL7G7uVIGaIM9LFwf0grL2ob1gr290zMb7/aZTQDiQw2e2B3M0kZGiiweUVbSOQZGRv+YUkL1veJwI=
+	t=1707935411; cv=none; b=lCauy8gcuax4anOsKjvDMyDnAMG6Cqi/5QpPzgfiPKqIFlGO897FktIn9RiwEmEID5rKyzhJo/aptafOXSLSiSD9EPlxLxHnltkZQEaDjkKizxp6Es8Re4Bq7xEUuqNOoJPQUpxdXCTDEQg0LGMHdpnw2Iyk5T7WXjMhlz4Y6RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707935312; c=relaxed/simple;
-	bh=L1cQy5vPjEPPvGhy+Pjr6Faj2fP17lsqUJrqsKN8S9U=;
+	s=arc-20240116; t=1707935411; c=relaxed/simple;
+	bh=HkIB5DKyzWpxlx3qTesPK6i0xnigJpcI7ULrUohNKmk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wt7y+saxRncrozIcHHR6ondjLxettqds5hTsIIUfqo5Lbp13wMv44WBEoW0FnxFnl5NcYF8RUbxV0IaWH3HRr6YyOuJ19TtI4+mNMc2Ykd7Lr6Hce+jrDNYTSQPGtakSegzAKJ5mWYWUsgIoeF3Zs8Y2yTKul+U//5+9XFo/Gpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oSkPOZUN; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7beda6a274bso214650539f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:28:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707935310; x=1708540110; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UXG7T3GS6T6xydEvB7aK25Z8yMzmDQXeLDbtiaZDxqs=;
-        b=oSkPOZUNBtxhJwGTWvUQRphtjU/1jpT4HhpjoQEhZlli5yWNvbvi08XloElDiJ6lXP
-         yC0CvAby3nvZfUySXDzTtBQ6hapF/JolRFZR7EJMIfvRpNICmKA40RHn+fSr5Q/8RTFE
-         wD3MX9LpDPxxHEHkbOpLCVHqsMP4f4++d1bKJZ45BJBdjRG9LWLZwDqRtc5LtgX18Ui7
-         TTUF9LqREFVttmniOQ13+8VlrWQdj/p3D8svkGwlGyBPKkMJ3wXIhFvsiXOb9sWwbvs1
-         +jjowwu7Oc0ByjILel4fuRfALLm43SuXMe2h9bXjWkOSZeKriJ2lZZ1udYXtF674A0Gh
-         Xnuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707935310; x=1708540110;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UXG7T3GS6T6xydEvB7aK25Z8yMzmDQXeLDbtiaZDxqs=;
-        b=gJpUnLbXBD74Z8clIdrY07MG2BXjGs9gdP1gLiWuOFfHm3n9Zyg2uNC9XeQu0ZDCn+
-         arKolGXaEg6C/kCl9ryLmhSZ4bRCHEcITm1YeprlR7GJJ2QqcMIRSYKFSQGWbMl5X6lO
-         s700Tq4iE1D7PCrAInkWov2L65Kqif2ZT4m6zf+sjqQxiNSgsW0x7CvTI1Fwl5iXufOE
-         OtNgj8C3LfdnBA4MM7flUxK9ARrIny/y++UV8DV6LGxEp/nM65LKwXNcdMufNHH+wYNo
-         l+d3l0maKC9hrqqLZOhswWZzRBkGOs9wPzsV7huoyvPUGycSvjaAECAri9PetCK8zGvY
-         yK0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXOBtv4+VeZBHtBJUxTEtLPzhkkyf5JkEHrm0C3adA81S8IXFj0svKs3hDxk2/rhZD6EsTX6pO1Anyyfhey9q2ddLe2n8yHcMa92Puw
-X-Gm-Message-State: AOJu0YyliJAxIWCHViaeOv/g+ycUFGBnyamSLK8X6H6tr2ekKJXVJ/pX
-	HqUKdpYReF64IeQabdRD0axeUz3M5xcUefo6SheL2Rl+9zsWgYSAlbGdE2yKsA==
-X-Google-Smtp-Source: AGHT+IEiKlUZY2svl3CmYmFiwFlC+HtEN+d+i2JVJ8GIWshr6QOje2I94cpJFsJpFiYgYD/MtRPDGg==
-X-Received: by 2002:a6b:6610:0:b0:7c4:3b9e:f766 with SMTP id a16-20020a6b6610000000b007c43b9ef766mr3533717ioc.20.1707935310529;
-        Wed, 14 Feb 2024 10:28:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCULDYdhHx0Tim9oaW2CeKEN3+wa2WE1J8k3qfIEDy1/Ves/fXZMA/ZWBlP5PgV1w0P8rIpJB1y6ffKeoDGwOZVUZd9CsF7FksR3Zxw3fhk4pPv7TxK25e1Mk0DB0fS0HcVRLqaAr9SfKgSAmZk5XVSXqECQnkBQf5U3Hgwvm7q+lIwy/QzTP4MK7A2h21mI+orjPXohcdbsIBwaRnqRmCoouz0GN7jHTnNnpvFj8fpoHQn7UL1ZT2xO0oOum7GXMFfQWpSYx8RxdpIycXZB0bB0ieQNAqcrYK4rdsIrlF6+fhJ9/CgR1KgpH2qSLp0PoZ3Ddwn6+n96sw9CDNWWUcBD7igadr0WKJliD2kf2Zf4EfbKxPk=
-Received: from google.com (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id a22-20020a6b6d16000000b007c45ab3dc34sm2131730iod.29.2024.02.14.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 10:28:29 -0800 (PST)
-Date: Wed, 14 Feb 2024 18:28:25 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Andrew Ballance <andrewjballance@gmail.com>
-Cc: linux-kbuild@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	masahiroy@kernel.org, morbo@google.com, nathan@kernel.org,
-	ndesaulniers@google.com, nicolas@fjasle.eu,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH v3 1/1] gen_compile_commands: fix invalid escape sequence
- warning
-Message-ID: <20240214182825.ghe2rqux4mdkgh2f@google.com>
-References: <CAFhGd8pvhzehMGh1XEHBct7CGEQuF0CZeneMH3D6cKSRj5UdHQ@mail.gmail.com>
- <20240214012439.879134-1-andrewjballance@gmail.com>
- <20240214012439.879134-2-andrewjballance@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gj4l10CXpeAe8OCJRojqO1SWbXYf8g5m6DS8O1m52C1OTBl8jlR1EXrzmmAj/8dQf9kR+6tCCktqQDelmW35UVasRt9ZOwya7U3KjuY3tUvbxRj4FJa0mar1vziyM5C0etgKUU6rrTD1ONtb+K1kUOpZHh9fCkhlxs+X3yqJn7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KH7yOub8; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3B8AD40E01BB;
+	Wed, 14 Feb 2024 18:30:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id oDoqT-OwrLQF; Wed, 14 Feb 2024 18:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707935403; bh=9CHUUOpbm7+wDKAULGdSXuwhdw848MNTurUBco/P7KM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KH7yOub8uLRIsrxweMEz7HdV+5lthB/znwbPxWr39Iy2MNBFrMCnIC78SmiRT+m4r
+	 yrQQkK+DRWGsjhBhuCL9ybs/nrqUcZ9hAmwUS86CZpRFDYRJ2IBnqgy/m/F/DzGMc5
+	 k155BsUAEBtmgZVcFzDTykwdN3YihVjVCxMHNCvTRrqP1zoldSN6DbkuTSdLGp0WGz
+	 ioD9z/mpacqbFh3xtlfqnbMBoJjJWltm96MkcaW2rYfTa2wFJ8MTyzPtV0a5nQUaVG
+	 6VF7a9cB686sJaBMnbxuLca4K5e8mj+rUvkzEj8NzDLJOsp7Bs9Te4G4SiWBVFGzF8
+	 h+6/sjjHo97kNhzsPaJu1m2Y8ltZOdAWyepF6rn2XX3mLqvmQLMibMOeyIrlsqhUkm
+	 efGxnQ22JKKxTk6ETWRxEfJj2ZS0a5MZl7mYGw6fcxFcy9fSKyJ4wA51ZxUdVTSU3T
+	 ufp7R35GzLzk9BY6BQABw1AMGKz4EstzltJ8QC/URYRATfsMIO0NtIikNtJL5TrkeV
+	 7rg4mqiHkUDHvgaumDs7sAm0FZn4qb+L8OiAw4qRUCNK6ZvV0/A1p1euX24E3Hu2eY
+	 YI8bhyt7FZazpwB0K8ZgWJO8n09nQLRZNiF7dLOQLhlQ399kdNDmpJvCKrZtd2Q09M
+	 0iFiI8bHzy9lnYDn/C8TxgAw=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B52F540E00B2;
+	Wed, 14 Feb 2024 18:29:54 +0000 (UTC)
+Date: Wed, 14 Feb 2024 19:29:53 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214182953.GMZc0GofSSQxd3T5-N@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
+ <20240214103446.GDZcyXRkyf1bFzMh7L@fat_crate.local>
+ <3bc7bef5-9cfc-400a-a1ba-99ebf5d94952@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240214012439.879134-2-andrewjballance@gmail.com>
+In-Reply-To: <3bc7bef5-9cfc-400a-a1ba-99ebf5d94952@amd.com>
 
-Hi,
+On Wed, Feb 14, 2024 at 09:46:46AM -0500, Yazen Ghannam wrote:
+> > This is a generic thing and thus can't use an x86-ism struct mce,
+> > remember?
+> > 
+> 
+> Yep, that's one of the assumptions/limitations I highlighted.
 
-On Tue, Feb 13, 2024 at 07:23:05PM -0600, Andrew Ballance wrote:
-> with python 3.12.1 '\#' results in this warning
->     SyntaxWarning: invalid escape sequence '\#'
->
-> Signed-off-by: Andrew Ballance <andrewjballance@gmail.com>
+Right, since the notifier callback fru_mem_poison_nb is on the x86 MCE
+chain and since we're making this thing depend on AMD_ATL which depends
+on X86_64 currently, it is ok to have struct mce in there.
 
-You probably don't need to send a patch series (with a cover letter) if
-you're only sending a single patch to the list.
+Once something else outside of x86 wants to use it, it'll have to be
+decoupled and use atl_err.
 
-Really, though, who cares!
+Later...
 
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-> ---
->  scripts/clang-tools/gen_compile_commands.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> index 5dea4479240b..e4fb686dfaa9 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file_path):
->      # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
->      # kernel version). The compile_commands.json file is not interepreted
->      # by Make, so this code replaces the escaped version with '#'.
-> -    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
-> +    prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
->
->      # Return the canonical path, eliminating any symbolic links encountered in the path.
->      abs_path = os.path.realpath(os.path.join(root_directory, file_path))
-> --
-> 2.43.0
->
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks
-Justin
+https://people.kernel.org/tglx/notes-about-netiquette
 
