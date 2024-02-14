@@ -1,148 +1,196 @@
-Return-Path: <linux-kernel+bounces-66095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214588556CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:02:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61498556D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1B8D282451
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 423331F223B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6121419A6;
-	Wed, 14 Feb 2024 23:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F301B13DBA7;
+	Wed, 14 Feb 2024 23:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gt5CNsqr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gHvL7Eje"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F164250F6
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B09B128388;
+	Wed, 14 Feb 2024 23:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707951754; cv=none; b=iXnaROj0DXKqt132c6E0Cf6BZNnUV3HGFFeN54UK0qNXwKhbiSuj5pTPLZuAtsYVg0cI3/IetZHuop6/TCJZbPEQWX2rTfg8l28yWUre7HEUrfsU8fCnrQogyZUnbyP/ffV9fmT5HQAItqzXffZL/LdqL2AslWHcBc5qoF2ZrFs=
+	t=1707951792; cv=none; b=lG/edtT2Y+8QmeypVZBZ7SJvqN4fUcvmT+cqpNq1w2r1xju/DVVIPpKAtkhjDrB6VJKjMdj1HpQ3Ctt6r+kxG6mhrQkyKjFgC8UjdWeY0N452Xrs+pm8ufn2zrbyDQMAv5ufaXOz5Uq+oEKOpjCasN+gf/XnFaD6N28Kq6EK+/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707951754; c=relaxed/simple;
-	bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kPwVxpVyiQ/DwEja3zAl0Ua/bvOXzJjduyaQVKgRNXZhePwEVG/1XjhOeeCZIJH9Du6+Ts7hG3eTkCMWjMy+ZNYUA8wLOWZNr0mhywV4/rF6+t8Bcu3Isqfp7bdM8Rlw61DAdcOWMh4dNb5hC8uEAITPL+t8XZQn4uyJUP/+mZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gt5CNsqr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707951750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
-	b=Gt5CNsqrMA2KY6/kegyD6QHn77uRRDIV+ofhJz5maBjFozUud2flJ6uH4rtrYGob/CrQY0
-	LvgPs0PRwalRcKBIflMW8FDoXe7HSv5AERw3aB3pTT1hNRkfMJU+GWYZ7GaKYWSwcAQJw5
-	QleoQY2RF+AcBVeo4axekgIam8SX0OA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-558-JAZlSDMtNUqp4tx5VH4h6w-1; Wed, 14 Feb 2024 18:02:29 -0500
-X-MC-Unique: JAZlSDMtNUqp4tx5VH4h6w-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3d4608fa21so7889466b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:02:28 -0800 (PST)
+	s=arc-20240116; t=1707951792; c=relaxed/simple;
+	bh=ykirw4cmA2+9ydHbNedf3+zryWiqyI2UNN0bE/4GBw0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ihr/24bsmw19gxnpm570nDMbBLntSqW0Q4/L8UF8XHpQ0mce4o7ijZeREJjzln/uQZLkTShRNyku3zFu6GLllU92fS3fd2oVJ2lh+SvaVLwQnRL5KnOgm4JKnGKuktSMtpduJrjL4mu9dI7FjzdlHe7M1toF4uTtYIGhtVsthzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gHvL7Eje; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso267059a12.0;
+        Wed, 14 Feb 2024 15:03:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707951790; x=1708556590; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=IULViN1YE3jnUbW2nwCagZ5usHptjYJ+ObRYjMrSkZQ=;
+        b=gHvL7EjeOt+ADDdTMRlLJg8PDKz9ygoScwZtAyB3PtAX/HVDOTmFTDv6jKit3cVgcR
+         VIZmOgkd0UrBRom6mPdT0tBVMgrNQYqaeUlYhqCe8kwkOXs5Dki/if4yodMUyZAsJfMQ
+         9kBo+TNK9ilKuS/PX39cUueaQtKUBTLqQHRJ7DkfKiE8asgSB4ANCDK7BmM0PwImcQ70
+         KyFXqDq2yQXyg+eHbIPdwNO/2UUkCaXqM/QOATjE61VexNC0u3KKVvszbMq6xs5GeXuN
+         estpOy4nI6fNcqj/8Q5pNpD51KKKl/fN+9UpJe/k44+BxM7X8cIrwYz1ADdDUU7qK46p
+         xOkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707951748; x=1708556548;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cqWEKTv+pK5/gmdVatT0ND12R+9NOiP4SAY4OtzSw/0=;
-        b=H48KlpdQ088ilooCYVYi8t4udqZ+zZMSVqlyxI9Cu4H1YlnhRX9Em9oQr4S9/ln10x
-         q//1TPtPabLhbUY9eRuPtdmaqvJI96c3vqpyB7vTK8B2uQKZchyYnpByzbE37RD0MYKi
-         +NPvsFdYA0a1NNVsmEudH8oVBs+tXlVjqRtZGL6yF+rFA2R7ExmdUUN0QD8uOVdWX4qO
-         MGAFjDxjaq3XpYTTyTPCmfP0r3K74Ft4lALruAV3r++jB4Y+1MGXQqA9Fdn3p3IdSdwv
-         2yKHbRkvtu4mHFSsm2AuURzir5EleRKY5X1GtfIRyiDwA3fes2G6FNGsvBVI0cunPQk4
-         F92A==
-X-Forwarded-Encrypted: i=1; AJvYcCWhrPVZ73N9Ombw0afIL3n4A/xFZVXLL85YPgED+5Ab8shL8G2dMLGV8hH+OimGWkYMcglGCohd7VTjgLDWsL9TjTqE34PRIgO0UeBL
-X-Gm-Message-State: AOJu0YwfXMENKNgp3VNfddeEreVDq9gvh3JMRjNCTOUDcm0doDZ8X2MQ
-	jOVCiOmDszOYsSw9yPuxeuMT5Xfts9K3hnuZ+y7rrHWSHwl2I/9QxWrHldvg2YUSIX5rRZ+nYkO
-	9LwNVMdNf0MhHkxFDC7aUOV1Z5V/Eiyx0sncPMYhITy2sIbSOvDfSNdRooPypOA==
-X-Received: by 2002:aa7:d952:0:b0:561:ced:4093 with SMTP id l18-20020aa7d952000000b005610ced4093mr22859eds.36.1707951748116;
-        Wed, 14 Feb 2024 15:02:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGwAbv0p8XEb5CZdU5nMo7RDOF7CDGsdXTO6nSa/5ofpKs9OFHHVE7UovDzYvqv85RDWD1I6A==
-X-Received: by 2002:aa7:d952:0:b0:561:ced:4093 with SMTP id l18-20020aa7d952000000b005610ced4093mr22849eds.36.1707951747837;
-        Wed, 14 Feb 2024 15:02:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWfRik3tmJcJzfVLZR6jJMe8DjlZAARqkTe6s9rFnew4TeesqnMQI7SKcYnc+489yEQ+47mclWuRfTvyjJ2qhtRz9XjmQMpyNpxiG/KOrikjIJmvs/tb8ON0jVFmdLUGdoR/E38cMmNcI+woJxddxG/r0VSibLUsEpBh6YNmv7Npoo+BXO/y+Nrz5xlei8Mo3ETAqGPocxvL01Tn1xJyb8T6guNzM3qComNvvjdwG6iZCcHQD/TI53QRL9xXaK3R+SDTrvHM0lLnMj25yL5+VbaG0CXlH0n9KbHgLZRrCr83aImuRMkjzF1erFFbrJv1RrhNtf+YssD
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id c37-20020a509fa8000000b005639c8b6922sm333804edf.52.2024.02.14.15.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 15:02:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 1630A10F586A; Thu, 15 Feb 2024 00:02:27 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, Martin KaFai Lau
- <martin.lau@linux.dev>, Jakub Kicinski <kuba@kernel.org>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf/test_run: increase Page Pool's ptr_ring
- size in live frames mode
-In-Reply-To: <87cyszdnrz.fsf@toke.dk>
-References: <20240214153838.4159970-1-aleksander.lobakin@intel.com>
- <87cyszdnrz.fsf@toke.dk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 15 Feb 2024 00:02:27 +0100
-Message-ID: <87y1bmd4zg.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1707951790; x=1708556590;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IULViN1YE3jnUbW2nwCagZ5usHptjYJ+ObRYjMrSkZQ=;
+        b=rw22FGa7VenTVvdcXArifCfvm08TjK+dxOC1j6IVvXzedVCzkgMNZQb2V8EqKfPCYI
+         H+tErTEkkgiQdp40BB9V+0xkHsEZwYKNLpNVBwhhBfgdJ7oH3IfnhzfEWB9LIFiYoRUP
+         LYW+h8pXRWq9f7kR6jsSzETrAsCOI1Fd9z+dil7QZ4Ft6YY3b+3AyVrtMkJke96ItpcO
+         99+SfRutzFnYRiungZOYGhrFT85C7/XLbG95AHROli+nGkaNH7PJX8m/pkfrBRPs9xJF
+         SpaCSAeACiyCcwMV+YlOMu2SCYOk1YjErLzDS96YLXg9FToX6YhUCaEqLcYzwDaxv/2V
+         e/Ww==
+X-Forwarded-Encrypted: i=1; AJvYcCVreuo1CZqrPJi7JaF9i+2dKCUR5IXFVw9QrZ+SQM5k1OnEjDhl6iQkOFfAQzGQbDe+X39FdIRhTBsLvR/Z0DxxT4IO24M/60P3JLhf
+X-Gm-Message-State: AOJu0YykbjJGjS1RbE1em5G3gOeEoqH/C6QnY68A5QzDlB5B6ojIyhvN
+	Une/Q0C/mQegMkx94BbLT0xSuFMgimZiCzhSdRup5KkF/81RxUsf
+X-Google-Smtp-Source: AGHT+IF7nzEB/BdTWQHw2nfTZqmx63PWm2Z6al/3WdycoTCSjl2mX04/TarUQVCor2lhd5FyW+4VRw==
+X-Received: by 2002:a05:6a20:d38f:b0:1a0:6856:d1a9 with SMTP id iq15-20020a056a20d38f00b001a06856d1a9mr369641pzb.10.1707951789540;
+        Wed, 14 Feb 2024 15:03:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUtFgpjvamH4s9HGKND8D1df2bUnh8D3uLtTDbl4NTB2QmoGQDv4jXjFAKFDUGI86nFBstfodeOVZsMO5ssIsnXDy1TRBUxGfXYNlL0a52DMYF45x0J701+nBtT5EvjCOILDfGLaqEz9zmYS2DgzY/9PCkb7BFPHAQB+iG7Yjq86oFIStFSziFLF9YfzQb/z6wAkgo71Q9SLzdWRkzzgtlgXitgvv2RACgIL7zRgKVXbysJLfQZ6VEvegu4KzrFdgFYyru3Tjxh1lH56sNKX3M2xE9Xk3/cwCMSheYI3q3vMdoVpw==
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id fd23-20020a056a002e9700b006e03cce3f4asm9914588pfb.25.2024.02.14.15.03.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 15:03:09 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+Date: Wed, 14 Feb 2024 15:03:07 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+On 2/14/24 13:41, Charlie Jenkins wrote:
+> The test cases for ip_fast_csum and csum_ipv6_magic were failing on a
+> variety of architectures that are big endian or do not support
+> misalgined accesses. Both of these test cases are changed to support big
+> and little endian architectures.
+> 
+> The test for ip_fast_csum is changed to align the data along (14 +
+> NET_IP_ALIGN) bytes which is the alignment of an IP header. The test for
+> csum_ipv6_magic aligns the data using a struct. An extra padding field
+> is added to the struct to ensure that the size of the struct is the same
+> on all architectures (44 bytes).
+> 
+> The test for csum_ipv6_magic somewhat arbitrarily aligned saddr and
+> daddr. This would fail on parisc64 due to the following code snippet in
+> arch/parisc/include/asm/checksum.h:
+> 
+> add		%4, %0, %0\n"
+> ldd,ma		8(%1), %6\n"
+> ldd,ma		8(%2), %7\n"
+> add,dc		%5, %0, %0\n"
+> 
+> The second add is expecting carry flags from the first add. Normally,
+> a double word load (ldd) does not modify the carry flags. However,
+> because saddr and daddr may be misaligned, ldd triggers a misalignment
+> trap that gets handled in arch/parisc/kernel/unaligned.c. This causes
+> many additional instructions to be executed between the two adds. This
+> can be easily solved by adding the carry into %0 before executing the
+> ldd.
+> 
 
-> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
->
->> Currently, when running xdp-trafficgen, test_run creates page_pools with
->> the ptr_ring size of %NAPI_POLL_WEIGHT (64).
->> This might work fine if XDP Tx queues are polled with the budget
->> limitation. However, we often clear them with no limitation to ensure
->> maximum free space when sending.
->> For example, in ice and idpf (upcoming), we use "lazy" cleaning, i.e. we
->> clean XDP Tx queue only when the free space there is less than 1/4 of
->> the queue size. Let's take the ring size of 512 just as an example. 3/4
->> of the ring is 384 and often times, when we're entering the cleaning
->> function, we have this whole amount ready (or 256 or 192, doesn't
->> matter).
->> Then we're calling xdp_return_frame_bulk() and after 64th frame,
->> page_pool_put_page_bulk() starts returning pages to the page allocator
->> due to that the ptr_ring is already full. put_page(), alloc_page() et at
->> starts consuming a ton of CPU time and leading the board of the perf top
->> output.
->>
->> Let's not limit ptr_ring to 64 for no real reason and allow more pages
->> to be recycled. Just don't put anything to page_pool_params::size and
->> let the Page Pool core pick the default of 1024 entries (I don't believe
->> there are real use cases to clean more than that amount of descriptors).
->> After the change, the MM layer disappears from the perf top output and
->> all pages get recycled to the PP. On my test setup on idpf with the
->> default ring size (512), this gives +80% of Tx performance with no
->> visible memory consumption increase.
->>
->> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
->
-> Hmm, so my original idea with keeping this low was to avoid having a lot
-> of large rings lying around if it is used by multiple processes at once.
-> But we need to move away from the per-syscall allocation anyway, and
-> with Lorenzo's patches introducing a global system page pool we have an
-> avenue for that. So in the meantime, I have no objection to this...
->
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+I really think this is a bug either in the trap handler or in the hppa64
+qemu emulation. Only unaligned ldd instructions affect (actually,
+unconditionally set) the carry flag. That doesn't happen with unaligned
+ldw instructions. It would be worthwhile tracking this down since there are
+lots of unaligned data accesses (8-byte accesses on 4-byte aligned addresses)
+when running the kernel in 64-bit mode. On the other side, I guess this
+is a different problem. Not sure though if that should even be mentioned
+here since that makes it sound as if it would be expected that such
+accesses impact the carry flag.
 
-Actually, since Lorenzo's patches already landed in net-next, let's just
-move to using those straight away. I'll send a patch for this tomorrow :)
+> However, that is not necessary since ipv6 headers should always be
+> aligned on a 16-byte boundary on parisc since NET_IP_ALIGN is set to 2
+> and the ethernet header size is 14.
+> 
+> Architectures that set NET_IP_ALIGN to 0 must support misaligned saddr
+> and daddr, but that is not tested here.
+> 
+> Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
--Toke
+I'll run this through my test system and let you know how it goes.
+It should be done in a couple of hours.
+
+Thanks,
+Guenter
 
 
