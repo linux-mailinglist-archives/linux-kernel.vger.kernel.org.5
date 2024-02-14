@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-65269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81D71854A63
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:23:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76A3854A65
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:23:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 273F328E9F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:23:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25DA91F232EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6D654F9C;
-	Wed, 14 Feb 2024 13:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B21A54BC7;
+	Wed, 14 Feb 2024 13:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqQ1kvx/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPHC7Xg7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB3054FA1;
-	Wed, 14 Feb 2024 13:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904E75577F;
+	Wed, 14 Feb 2024 13:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707916957; cv=none; b=lpD3AOGaBIp6QoOS78WOfeMKCr/CnnpB2wWxTX6jjeyN55DB84DtFF0g5CMK3v6cfvetNEcmyO1CtpD2UIn73sQOFLDJs7JKovZiLcSHuPgbfzFdKllJ2lZBJ5MtA/mMgI0pLR33sYJLUdi/SKd37ZkMSy9ZuE5SqhmoBdW71i8=
+	t=1707916965; cv=none; b=vAQmuP05Us0BQrNGrxSP8yRZTbkPX4gBw09kNLmmJABSLJ5ZG9l/Dx95x28U3CJIgV9xCK2CXchVgTubePFlcMyHP01D8td3VeMxzGzoCPNH+tvJ7lYsxRqawlEow9TGOGv7hBDoM5xFSRpuDd2pvwE5P+IQzooc50tkbWfzJEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707916957; c=relaxed/simple;
-	bh=uBscQYEWaOjRVRSlzctG/Sn/fNhszLxXKt2J3iXHHPY=;
+	s=arc-20240116; t=1707916965; c=relaxed/simple;
+	bh=yieHy5vPyZ9GKnhIfdK7wI+syqv8Xn4pjv7kN2Wdqk8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bUhE5l1DmibUKjz4BIGQUtXdyJd8fWBeXdBc88hyJJHNpLBhFD0fvzmmjnHa/5l7QNccjcnW3nU5Q2Fc1UJxMyVK/TQP0xk0RKi7Si2p4OQaOdQLkrsT2zhrD3GFxbZKpITJnnxAndCKbj8BtGJkAjVOi7q8uzXs5/2dy4NCZXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hqQ1kvx/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C48CC433C7;
-	Wed, 14 Feb 2024 13:22:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=PsVANDD/5KSw5JnB9At3fn2y8xhrmX24d4p9hKfe+QzRB1wd/BgvPteiNdtlniRKuiZLjEZiBNVexk8VXP2VADlCqqEacwqcRXjIZzICWzrJRrMwM4KQNmE8HTGEbuMJ8Wb/Q1cP+g5R25a7j3tJwi/hlnUXajDtecEYO8Gv8hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPHC7Xg7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCEAC433C7;
+	Wed, 14 Feb 2024 13:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707916956;
-	bh=uBscQYEWaOjRVRSlzctG/Sn/fNhszLxXKt2J3iXHHPY=;
+	s=k20201202; t=1707916965;
+	bh=yieHy5vPyZ9GKnhIfdK7wI+syqv8Xn4pjv7kN2Wdqk8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hqQ1kvx/k+fQ6qWjv3Nf1zCZzr/SqN2GZsI6sY2JDEXC68hJPb6hGeOb5+xE0Wg7F
-	 Ea18k+9Aq+5YJgivrWW6GReJOEAsm1QDCKphGtY2qMutXq6kZnaQbkb9hqR6IAU/Z2
-	 85L13JIyyfvR80RbAGA+6/uK+KVDyVAJMYLO+6ed5+ionJc6rCS9xo+dews2syWr87
-	 KPLZQGgImJvSBBs+tgqp9GLv/iM3AuOU+N1+iQ0yRrDJKM7dKAzsH3vQocSwBAw50X
-	 UbTDo0U1lx5lGPkkuR/1WPqod4Jgqagg2hR8lx4Go9ey3Vyl4PqqpEZQVau3Us0MMk
-	 azxa12oOvLkBQ==
+	b=tPHC7Xg7qzU1VK6NemlpP2nCk0swiPUy9BFrmE+FIkmbiAu31CddeCK86GhgmbBbW
+	 HdCY/KixZpeQPeT97MtrJzYzEAH/CVdHGPVH6aAimirT27mHSnNsRX9ZFTbw2EG555
+	 cqRw4l8SkBoB6+UdM9DAwnw6EQSacd+4YdYkV8mlH38gwzRQ60PTTXqoA+kvI/EolI
+	 pZXVjnVIp6hC3E/uMwmWPMj6N6wBbpJtIpMHiVEpKT1a3RFc+aaW6KgeyNDF8m2JeB
+	 AbJehiK0qXcviL6kzgtdW2E7fvt8ybt5fkOD2mfZUiI9f9oxbCywDe3Lh1qTETwfty
+	 QMnwxOjbJQmJw==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: linux-trace-kernel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Steven Rostedt <rostedt@goodmis.org>,
 	mhiramat@kernel.org
-Subject: [PATCH RFC 2/5] tracing/fprobe-event: cleanup: Fix a wrong comment in fprobe event
-Date: Wed, 14 Feb 2024 22:22:32 +0900
-Message-Id: <170791695283.389532.14517656803358182473.stgit@devnote2>
+Subject: [PATCH RFC 3/5] tracing/probes: Cleanup probe argument parser
+Date: Wed, 14 Feb 2024 22:22:41 +0900
+Message-Id: <170791696161.389532.2934502877024558489.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170791693437.389532.6816883363982512874.stgit@devnote2>
 References: <170791693437.389532.6816883363982512874.stgit@devnote2>
@@ -63,25 +63,364 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Despite the fprobe event,  "Kretprobe" was commented. So fix it.
+Cleanup traceprobe_parse_probe_arg_body() to split out the
+type parser and post-processing part of fetch_insn.
+This makes no functional change.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- kernel/trace/trace_fprobe.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_probe.c |  230 ++++++++++++++++++++++++++------------------
+ 1 file changed, 137 insertions(+), 93 deletions(-)
 
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 7d2ddbcfa377..3ccef4d82235 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -210,7 +210,7 @@ fentry_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 34289f9c6707..67a0b9cbb648 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1090,67 +1090,45 @@ static int __parse_bitfield_probe_arg(const char *bf,
+ 	return (BYTES_TO_BITS(t->size) < (bw + bo)) ? -EINVAL : 0;
  }
- NOKPROBE_SYMBOL(fentry_trace_func);
  
--/* Kretprobe handler */
-+/* function exit handler */
- static nokprobe_inline void
- __fexit_trace_func(struct trace_fprobe *tf, unsigned long entry_ip,
- 		   unsigned long ret_ip, struct pt_regs *regs,
+-/* String length checking wrapper */
+-static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+-					   struct probe_arg *parg,
+-					   struct traceprobe_parse_context *ctx)
++/* Split type part from @arg and return it. */
++static char *parse_probe_arg_type(char *arg, struct probe_arg *parg,
++				  struct traceprobe_parse_context *ctx)
+ {
+-	struct fetch_insn *code, *scode, *tmp = NULL;
+-	char *t, *t2, *t3;
+-	int ret, len;
+-	char *arg;
++	char *t = NULL, *t2, *t3;
++	int offs;
+ 
+-	arg = kstrdup(argv, GFP_KERNEL);
+-	if (!arg)
+-		return -ENOMEM;
+-
+-	ret = -EINVAL;
+-	len = strlen(arg);
+-	if (len > MAX_ARGSTR_LEN) {
+-		trace_probe_log_err(ctx->offset, ARG_TOO_LONG);
+-		goto out;
+-	} else if (len == 0) {
+-		trace_probe_log_err(ctx->offset, NO_ARG_BODY);
+-		goto out;
+-	}
+-
+-	ret = -ENOMEM;
+-	parg->comm = kstrdup(arg, GFP_KERNEL);
+-	if (!parg->comm)
+-		goto out;
+-
+-	ret = -EINVAL;
+ 	t = strchr(arg, ':');
+ 	if (t) {
+-		*t = '\0';
+-		t2 = strchr(++t, '[');
++		*t++ = '\0';
++		t2 = strchr(t, '[');
+ 		if (t2) {
+ 			*t2++ = '\0';
+ 			t3 = strchr(t2, ']');
+ 			if (!t3) {
+-				int offs = t2 + strlen(t2) - arg;
++				offs = t2 + strlen(t2) - arg;
+ 
+ 				trace_probe_log_err(ctx->offset + offs,
+ 						    ARRAY_NO_CLOSE);
+-				goto out;
++				return ERR_PTR(-EINVAL);
+ 			} else if (t3[1] != '\0') {
+ 				trace_probe_log_err(ctx->offset + t3 + 1 - arg,
+ 						    BAD_ARRAY_SUFFIX);
+-				goto out;
++				return ERR_PTR(-EINVAL);
+ 			}
+ 			*t3 = '\0';
+ 			if (kstrtouint(t2, 0, &parg->count) || !parg->count) {
+ 				trace_probe_log_err(ctx->offset + t2 - arg,
+ 						    BAD_ARRAY_NUM);
+-				goto out;
++				return ERR_PTR(-EINVAL);
+ 			}
+ 			if (parg->count > MAX_ARRAY_LEN) {
+ 				trace_probe_log_err(ctx->offset + t2 - arg,
+ 						    ARRAY_TOO_BIG);
+-				goto out;
++				return ERR_PTR(-EINVAL);
+ 			}
+ 		}
+ 	}
++	offs = t ? t - arg : 0;
+ 
+ 	/*
+ 	 * Since $comm and immediate string can not be dereferenced,
+@@ -1161,74 +1139,52 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 	     strncmp(arg, "\\\"", 2) == 0)) {
+ 		/* The type of $comm must be "string", and not an array type. */
+ 		if (parg->count || (t && strcmp(t, "string"))) {
+-			trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0),
+-					NEED_STRING_TYPE);
+-			goto out;
++			trace_probe_log_err(ctx->offset + offs, NEED_STRING_TYPE);
++			return ERR_PTR(-EINVAL);
+ 		}
+ 		parg->type = find_fetch_type("string", ctx->flags);
+ 	} else
+ 		parg->type = find_fetch_type(t, ctx->flags);
++
+ 	if (!parg->type) {
+-		trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0), BAD_TYPE);
+-		goto out;
++		trace_probe_log_err(ctx->offset + offs, BAD_TYPE);
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	code = tmp = kcalloc(FETCH_INSN_MAX, sizeof(*code), GFP_KERNEL);
+-	if (!code)
+-		goto out;
+-	code[FETCH_INSN_MAX - 1].op = FETCH_OP_END;
+-
+-	ctx->last_type = NULL;
+-	ret = parse_probe_arg(arg, parg->type, &code, &code[FETCH_INSN_MAX - 1],
+-			      ctx);
+-	if (ret)
+-		goto fail;
+-
+-	/* Update storing type if BTF is available */
+-	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
+-	    ctx->last_type) {
+-		if (!t) {
+-			parg->type = find_fetch_type_from_btf_type(ctx);
+-		} else if (strstr(t, "string")) {
+-			ret = check_prepare_btf_string_fetch(t, &code, ctx);
+-			if (ret)
+-				goto fail;
+-		}
+-	}
+-	parg->offset = *size;
+-	*size += parg->type->size * (parg->count ?: 1);
++	return t;
++}
+ 
+-	if (parg->count) {
+-		len = strlen(parg->type->fmttype) + 6;
+-		parg->fmt = kmalloc(len, GFP_KERNEL);
+-		if (!parg->fmt) {
+-			ret = -ENOMEM;
+-			goto out;
+-		}
+-		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
+-			 parg->count);
+-	}
++/* After parsing, adjust the fetch_insn according to the probe_arg */
++static int finalize_fetch_insn(struct fetch_insn *code,
++			       struct probe_arg *parg,
++			       char *type,
++			       int type_offset,
++			       struct traceprobe_parse_context *ctx)
++{
++	struct fetch_insn *scode;
++	int ret;
+ 
+-	ret = -EINVAL;
+ 	/* Store operation */
+ 	if (parg->type->is_string) {
++		/* Check bad combination of the type and the last fetch_insn. */
+ 		if (!strcmp(parg->type->name, "symstr")) {
+ 			if (code->op != FETCH_OP_REG && code->op != FETCH_OP_STACK &&
+ 			    code->op != FETCH_OP_RETVAL && code->op != FETCH_OP_ARG &&
+ 			    code->op != FETCH_OP_DEREF && code->op != FETCH_OP_TP_ARG) {
+-				trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0),
++				trace_probe_log_err(ctx->offset + type_offset,
+ 						    BAD_SYMSTRING);
+-				goto fail;
++				return -EINVAL;
+ 			}
+ 		} else {
+ 			if (code->op != FETCH_OP_DEREF && code->op != FETCH_OP_UDEREF &&
+ 			    code->op != FETCH_OP_IMM && code->op != FETCH_OP_COMM &&
+ 			    code->op != FETCH_OP_DATA && code->op != FETCH_OP_TP_ARG) {
+-				trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0),
++				trace_probe_log_err(ctx->offset + type_offset,
+ 						    BAD_STRING);
+-				goto fail;
++				return -EINVAL;
+ 			}
+ 		}
++
+ 		if (!strcmp(parg->type->name, "symstr") ||
+ 		    (code->op == FETCH_OP_IMM || code->op == FETCH_OP_COMM ||
+ 		     code->op == FETCH_OP_DATA) || code->op == FETCH_OP_TP_ARG ||
+@@ -1244,9 +1200,10 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 			code++;
+ 			if (code->op != FETCH_OP_NOP) {
+ 				trace_probe_log_err(ctx->offset, TOO_MANY_OPS);
+-				goto fail;
++				return -EINVAL;
+ 			}
+ 		}
++
+ 		/* If op == DEREF, replace it with STRING */
+ 		if (!strcmp(parg->type->name, "ustring") ||
+ 		    code->op == FETCH_OP_UDEREF)
+@@ -1267,47 +1224,134 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 		code++;
+ 		if (code->op != FETCH_OP_NOP) {
+ 			trace_probe_log_err(ctx->offset, TOO_MANY_OPS);
+-			goto fail;
++			return -E2BIG;
+ 		}
+ 		code->op = FETCH_OP_ST_RAW;
+ 		code->size = parg->type->size;
+ 	}
++
++	/* Save storing fetch_insn. */
+ 	scode = code;
++
+ 	/* Modify operation */
+-	if (t != NULL) {
+-		ret = __parse_bitfield_probe_arg(t, parg->type, &code);
++	if (type != NULL) {
++		/* Bitfield needs a special fetch_insn. */
++		ret = __parse_bitfield_probe_arg(type, parg->type, &code);
+ 		if (ret) {
+-			trace_probe_log_err(ctx->offset + t - arg, BAD_BITFIELD);
+-			goto fail;
++			trace_probe_log_err(ctx->offset + type_offset, BAD_BITFIELD);
++			return ret;
+ 		}
+ 	} else if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
+ 		   ctx->last_type) {
++		/* If user not specified the type, try parsing BTF bitfield. */
+ 		ret = parse_btf_bitfield(&code, ctx);
+ 		if (ret)
+-			goto fail;
++			return ret;
+ 	}
+-	ret = -EINVAL;
++
+ 	/* Loop(Array) operation */
+ 	if (parg->count) {
+ 		if (scode->op != FETCH_OP_ST_MEM &&
+ 		    scode->op != FETCH_OP_ST_STRING &&
+ 		    scode->op != FETCH_OP_ST_USTRING) {
+-			trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0),
+-					    BAD_STRING);
+-			goto fail;
++			trace_probe_log_err(ctx->offset + type_offset, BAD_STRING);
++			return -EINVAL;
+ 		}
+ 		code++;
+ 		if (code->op != FETCH_OP_NOP) {
+ 			trace_probe_log_err(ctx->offset, TOO_MANY_OPS);
+-			goto fail;
++			return -E2BIG;
+ 		}
+ 		code->op = FETCH_OP_LP_ARRAY;
+ 		code->param = parg->count;
+ 	}
++
++	/* Finalize the fetch_insn array. */
+ 	code++;
+ 	code->op = FETCH_OP_END;
+ 
+-	ret = 0;
++	return 0;
++}
++
++/* String length checking wrapper */
++static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
++					   struct probe_arg *parg,
++					   struct traceprobe_parse_context *ctx)
++{
++	struct fetch_insn *code, *tmp = NULL;
++	char *type, *arg;
++	int ret, len;
++
++	len = strlen(argv);
++	if (len > MAX_ARGSTR_LEN) {
++		trace_probe_log_err(ctx->offset, ARG_TOO_LONG);
++		return -E2BIG;
++	} else if (len == 0) {
++		trace_probe_log_err(ctx->offset, NO_ARG_BODY);
++		return -EINVAL;
++	}
++
++	arg = kstrdup(argv, GFP_KERNEL);
++	if (!arg)
++		return -ENOMEM;
++
++	parg->comm = kstrdup(arg, GFP_KERNEL);
++	if (!parg->comm) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	type = parse_probe_arg_type(arg, parg, ctx);
++	if (IS_ERR(type)) {
++		ret = PTR_ERR(type);
++		goto out;
++	}
++
++	code = tmp = kcalloc(FETCH_INSN_MAX, sizeof(*code), GFP_KERNEL);
++	if (!code) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	code[FETCH_INSN_MAX - 1].op = FETCH_OP_END;
++
++	ctx->last_type = NULL;
++	ret = parse_probe_arg(arg, parg->type, &code, &code[FETCH_INSN_MAX - 1],
++			      ctx);
++	if (ret < 0)
++		goto fail;
++
++	/* Update storing type if BTF is available */
++	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
++	    ctx->last_type) {
++		if (!type) {
++			parg->type = find_fetch_type_from_btf_type(ctx);
++		} else if (strstr(type, "string")) {
++			ret = check_prepare_btf_string_fetch(type, &code, ctx);
++			if (ret)
++				goto fail;
++		}
++	}
++	parg->offset = *size;
++	*size += parg->type->size * (parg->count ?: 1);
++
++	if (parg->count) {
++		len = strlen(parg->type->fmttype) + 6;
++		parg->fmt = kmalloc(len, GFP_KERNEL);
++		if (!parg->fmt) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
++			 parg->count);
++	}
++
++	ret = finalize_fetch_insn(code, parg, type, type ? type - arg : 0, ctx);
++	if (ret < 0)
++		goto fail;
++
++	for (; code < tmp + FETCH_INSN_MAX; code++)
++		if (code->op == FETCH_OP_END)
++			break;
+ 	/* Shrink down the code buffer */
+ 	parg->code = kcalloc(code - tmp + 1, sizeof(*code), GFP_KERNEL);
+ 	if (!parg->code)
+@@ -1316,7 +1360,7 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
+ 		memcpy(parg->code, tmp, sizeof(*code) * (code - tmp + 1));
+ 
+ fail:
+-	if (ret) {
++	if (ret < 0) {
+ 		for (code = tmp; code < tmp + FETCH_INSN_MAX; code++)
+ 			if (code->op == FETCH_NOP_SYMBOL ||
+ 			    code->op == FETCH_OP_DATA)
 
 
