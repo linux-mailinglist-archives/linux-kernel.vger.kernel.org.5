@@ -1,48 +1,50 @@
-Return-Path: <linux-kernel+bounces-65904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5974E85538E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:58:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5AF85538F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13EAD28F6D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:58:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25D251F24948
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD79813EFE1;
-	Wed, 14 Feb 2024 19:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D96313DBA2;
+	Wed, 14 Feb 2024 19:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="We3T8zLR"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bAb38AmS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C3A13DBB7;
-	Wed, 14 Feb 2024 19:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806BA13DB93;
+	Wed, 14 Feb 2024 19:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707940675; cv=none; b=etgGNSYQk18MexhoBmyTCQSFC+L81n6HCp6qYo5v9dpi61ZIonlSrP/kauPii9YXupqxSUoP0+iCYPqxWPxiCFVsAnn7Vg3+hXRTqpVqvlbRpOf6FTJrY8dS1K7afsJMgglMMqCdr9+vyPkQ73D8VB4cu210ODPyrCgJCCnQ8iI=
+	t=1707940684; cv=none; b=cvb55fey+6/3xCocpxfLbQ2sjy+uk22lAfwFtsvhn3MkPWR8tjscSNCX47dW5cMk58opnfDPuM6a1pDtJJsKakVpVHli4DqV5hK4Xsa2uLjuKcY7w1lqavoSSlZyNMjHizyvq769FGjZbeegAhxzG9Ov7xogbYm5D2NzE82DF1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707940675; c=relaxed/simple;
-	bh=JObSMzd6HvbxyZ7oi2dYfoS+BK3H8zc/IpUDq+NI1aA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rMOHPxgDHaJU5wZeY402WEIAQ10+wSYc0ZN+Hve/y6BpAlXaHjnKwg5VSIvIOM61rlqoTqCo+WQwpMQU3J6txiTl9a5ATBlEPJDOqgjH6LfwRqFoOUQGc1A/iLZQmtEcNs9N054Lm2iBSJbEGkknbk6+GuCfaDoNacj06xQGEr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=We3T8zLR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 654EFC433F1;
-	Wed, 14 Feb 2024 19:57:52 +0000 (UTC)
+	s=arc-20240116; t=1707940684; c=relaxed/simple;
+	bh=rTKv1TDsFzL+RzB4KD1Ng3M4meMkWcKDfmVZOO+HcO0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZyjDcdlvQB4tSNCtV17EnaDtx4QIuwzzSmpAeOLJv4HQf4/4At+kMded0D3li/foIivQwH56fHUj1KtnyVi0bMCUlijJ3me1esUTrMg0M87POOnsNTq1CfRGJUDr+3K+pMm3LGNruwgprZsg5QR82m5B5E3ZSojeS1xk10RO0K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=bAb38AmS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEBC6C433C7;
+	Wed, 14 Feb 2024 19:58:02 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="We3T8zLR"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="bAb38AmS"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1707940669;
+	t=1707940681;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EBWgH/bJ48TOitK6Vt3KlSbCS2O18SAPEqKWNkp++qs=;
-	b=We3T8zLRQ/yIJ9kKCOZn3FPO7zMrdzBAjxqcziriLpa3MLC1FYMrVvaaTNUCtA4/G60Sx4
-	1a1c0efcte5Y5dXbLc5PKdVsKu/sOPBeU18X/r9qLHuFuLxOBVkHn05RVoyvBRLKe6wPia
-	xth+hOo7NokZTBtmz7AAZBYVUH1wjbc=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=usBdTDKhZdYOqvFmhLJXleA6TJU1AAI9ITba9p7Xy2A=;
+	b=bAb38AmSl+1HLYBs2tbYWtbKGdv9rc3fEuKOzyVp0l7GFm/kfZx+r+PPndQPtqIXwI7cNI
+	j61OF/Fd8BmYNgjSAkZSMMp4nf8hfN2aaib+LKY/lpjm0SOTTInPqsfck2j68ybarrZ0ft
+	S8lroiEzKdWeQxtpE95tgCewvP2Y2Co=
 Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 2f6abd26 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Wed, 14 Feb 2024 19:57:48 +0000 (UTC)
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a632d9c0 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 14 Feb 2024 19:58:01 +0000 (UTC)
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 To: x86@kernel.org,
 	linux-coco@lists.linux.dev,
@@ -57,9 +59,11 @@ Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
 	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2 0/2] CoCo/RDRAND brokenness fixes
-Date: Wed, 14 Feb 2024 20:56:46 +0100
-Message-ID: <20240214195744.8332-1-Jason@zx2c4.com>
+Subject: [PATCH v2 1/2] x86/archrandom: WARN if RDRAND fails and don't retry
+Date: Wed, 14 Feb 2024 20:56:47 +0100
+Message-ID: <20240214195744.8332-2-Jason@zx2c4.com>
+In-Reply-To: <20240214195744.8332-1-Jason@zx2c4.com>
+References: <20240214195744.8332-1-Jason@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,17 +73,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This takes a two-pronged approach to the matter, now that we have
-details from Intel and AMD:
+According to both Intel [1] and AMD [2], RDRAND will never fail unless
+the hardware is defective. The old advice to try 10 times is not
+considered correct.
 
-- In the generic case, if RDRAND fails, simply WARN(), and don't try
-  again. It turns out the "try 10 times" thing isn't actually a correct
-  recommendation from Intel. Since RDRAND failure implies CPU failure, a
-  WARN() seems in order on all platforms.
+RDSEED is a different story. But with RDRAND never failing, WARN()ing
+when it does seems like a reasonable thing to do, as it's probably
+indicative of some deeper problem.
 
-- On CoCo machines, where RDRAND failure implies the whole threat model
-  is compromised and execution shouldn't continue, we ensure that the
-  RNG gets 256-bits of RDRAND at boot, or otherwise fails.
+[1] https://lore.kernel.org/all/DM8PR11MB57503A2BB6F74618D64CC44AE74E2@DM8PR11MB5750.namprd11.prod.outlook.com/
+[2] https://lore.kernel.org/all/20240209214530.GHZcac-vOym8k3IuJm@fat_crate.local/
 
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Daniel P. Berrangé <berrange@redhat.com>
@@ -90,17 +93,45 @@ Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Cc: Theodore Ts'o <tytso@mit.edu>
 Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ arch/x86/include/asm/archrandom.h | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-Jason A. Donenfeld (2):
-  x86/archrandom: WARN if RDRAND fails and don't retry
-  x86/coco: Require seeding RNG with RDRAND on CoCo systems
-
- arch/x86/coco/core.c              | 37 +++++++++++++++++++++++++++++++
- arch/x86/include/asm/archrandom.h | 18 ++++++---------
- arch/x86/include/asm/coco.h       |  2 ++
- arch/x86/kernel/setup.c           |  2 ++
- 4 files changed, 48 insertions(+), 11 deletions(-)
-
+diff --git a/arch/x86/include/asm/archrandom.h b/arch/x86/include/asm/archrandom.h
+index 02bae8e0758b..1cc01ecd5e75 100644
+--- a/arch/x86/include/asm/archrandom.h
++++ b/arch/x86/include/asm/archrandom.h
+@@ -13,22 +13,18 @@
+ #include <asm/processor.h>
+ #include <asm/cpufeature.h>
+ 
+-#define RDRAND_RETRY_LOOPS	10
+-
+ /* Unconditional execution of RDRAND and RDSEED */
+ 
+ static inline bool __must_check rdrand_long(unsigned long *v)
+ {
+ 	bool ok;
+-	unsigned int retry = RDRAND_RETRY_LOOPS;
+-	do {
+-		asm volatile("rdrand %[out]"
+-			     CC_SET(c)
+-			     : CC_OUT(c) (ok), [out] "=r" (*v));
+-		if (ok)
+-			return true;
+-	} while (--retry);
+-	return false;
++	asm volatile("rdrand %[out]"
++		     CC_SET(c)
++		     : CC_OUT(c) (ok), [out] "=r" (*v));
++#ifndef KASLR_COMPRESSED_BOOT
++	WARN_ON(!ok);
++#endif
++	return ok;
+ }
+ 
+ static inline bool __must_check rdseed_long(unsigned long *v)
 -- 
 2.43.0
 
