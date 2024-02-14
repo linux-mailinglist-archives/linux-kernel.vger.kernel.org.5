@@ -1,81 +1,88 @@
-Return-Path: <linux-kernel+bounces-65883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5D7855340
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:33:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67C19855343
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C45CC281B7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:33:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A7581C25F23
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D7113B78C;
-	Wed, 14 Feb 2024 19:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B70113B793;
+	Wed, 14 Feb 2024 19:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="XgQsAz2b"
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="DvWDt/wU"
 Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2D11E4B7;
-	Wed, 14 Feb 2024 19:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6401E4B7;
+	Wed, 14 Feb 2024 19:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707939219; cv=none; b=h++XiKbKOtPxJyi5/fYNAeWiiZkl17iS4Ww/IcPZ6+Vm2buUWRS35ymk2HxtfbSODhO8AkqaxaXAEwcKZgWXdTYoM/7Am61TmpSzXrT9cEAGBuMqmq13tQLo97ZBSMduwVIY3UADjooykexGb9PaNdCLEL8aHZtp0L0fDVZBBbE=
+	t=1707939336; cv=none; b=kI5lwwg/B50zqaVqejmV5PaWZSkTf5VQtEGTEYGeq36JtinnU2DdRS8rFkxVrlE0sxvDnsByRgu33vdjOssCC83Zfzvcm9I4g5CH0XZ+tGvN/IiDZT9P27+aOEMcN/koJmAhfjGaPNyAeiknbRpxh5snrD9YfVg24gXVyLfzuJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707939219; c=relaxed/simple;
-	bh=3Uxw2BBpPfLn6Mh91wTNWE4KZxWkqy1JIOiIb4xxOw0=;
+	s=arc-20240116; t=1707939336; c=relaxed/simple;
+	bh=P4Bh5FcGvSk9durew7iUkAxjBkiLsJ7x2lUEm+PGSW4=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A8NAbgT5/qEbje1zQRbC4dsKqXPRYFPI5GYM1HxBLgp+uKfLuvHIT07Ik2nIxf4+VNdf4v6wn1zHtNJXDonF5aYgNC8rgi+H7ZKajfNkjsY7PTJhon05+8SkyKv9Xnc5VaHaA7BhP15qBy0u4h0utlfNDARgqNrJenDSV/UbYNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=XgQsAz2b; arc=none smtp.client-ip=77.93.223.253
+	 MIME-Version:Content-Type; b=b3RIpKZobWFrul2LOA2rQNRkR15ldWueyLxRYvuLT340LK0WnWUPNN5DV5YzR1aPw/dKHgbEWjDRYIWaBF2qv7enIERcFsQPpc7Jlfp2kEQ/KognVhww7mHiXowheOC5LOSMmShDHpLe4gi8pVoz01AO9OM/sBABA3SzMCVUK28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=DvWDt/wU; arc=none smtp.client-ip=77.93.223.253
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
 Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id A0FE91A36A5;
-	Wed, 14 Feb 2024 20:33:32 +0100 (CET)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id A8D361A4082;
+	Wed, 14 Feb 2024 20:35:30 +0100 (CET)
 Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1707939213; bh=3C0Q3eC899xoDvzLqtNRjkK3NL6o8Y9GbWdF64ouq0c=;
+	t=1707939331; bh=P4Bh5FcGvSk9durew7iUkAxjBkiLsJ7x2lUEm+PGSW4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XgQsAz2bWVerxxg+fZgeInCVn9WFce0qUwc6Tc4ZaxsDMTcbA2LE5RjETQhfiPqr/
-	 D+WYw0uMYvdygK4CKZiJ8SxMDMgUylgSIRC9mlCfKiN3i2VWRzhmT7l1Cj66KWk30b
-	 b1eUgbW6kuV3BvyEXHX1KAlOTY8eULSfy28CgIiC2WuVqUbKblvFMbTn+0qkc2EmEZ
-	 ipfLU3qkjBWRDpNaA/cJFtm/bP9zoVc58itsqmWl5De7tKaK11cwBU9nIqkFwrrvkM
-	 KVvLsOgOyEAEt28tHBT8AorMWz/IK/k/0FAc9qLPpogDSuWKDoGBmBlPH1UHL8M8Wa
-	 rUBFW/Bt/zRRA==
-Date: Wed, 14 Feb 2024 20:33:31 +0100
+	b=DvWDt/wUl3uJfrhp2L+7o5xiIszepQH4gfE2VzxMasWVhcu82Wtz97NmY/RByuJiP
+	 lhMOR8uGDaTWlAwK2yc83HLc6jeQsbAQKNTZPWk1EXV/ix1rnZ/7V0F+fFSZ3mZp7k
+	 ox6/g+mKYu+MUFjpk1q54peK7qVbc70+HKZqSPoii/u8aEMSwgQdaHCZmdRHrnk/rb
+	 K7mjD4+IidrdmKP8Xm3YEPPNdmLkjgY4YBK1IA9ARuprZjcxD6wT/j7ukIuMP7nOLs
+	 kkGuLehOiA8Rn6SkieoMjBuUhY/Ylpqe6jhBxEUWidQYnMF3UFw34u3f/iiXjTZ3lJ
+	 F1Fs8Rd+iqh6g==
+Date: Wed, 14 Feb 2024 20:35:29 +0100
 From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
- 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
- <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>, Kees Cook <keescook@chromium.org>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
- <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
- <zegao2021@gmail.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
- (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Xu, Pengfei" <pengfei.xu@intel.com>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "luto@kernel.org" <luto@kernel.org>,
+ "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+ "brgerst@gmail.com" <brgerst@gmail.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "corbet@lwn.net" <corbet@lwn.net>, "Li, Xin3" <xin3.li@intel.com>,
+ "roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "petr.tesarik1@huawei-partners.com" <petr.tesarik1@huawei-partners.com>,
+ "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>, "x86@kernel.org" <x86@kernel.org>,
+ "bp@alien8.de" <bp@alien8.de>, "peterz@infradead.org"
+ <peterz@infradead.org>, "rppt@kernel.org" <rppt@kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, "mhiramat@kernel.org"
+ <mhiramat@kernel.org>, "oleg@redhat.com" <oleg@redhat.com>,
+ "keescook@chromium.org" <keescook@chromium.org>, "Huang, Kai"
+ <kai.huang@intel.com>, "jacob.jun.pan@linux.intel.com"
+ <jacob.jun.pan@linux.intel.com>, "zegao2021@gmail.com"
+ <zegao2021@gmail.com>, "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com"
+ <mingo@redhat.com>, "jpoimboe@kernel.org" <jpoimboe@kernel.org>, "Rodel,
+ Jorg" <jroedel@suse.de>, "Zhang, Tina" <tina.zhang@intel.com>, "Hansen,
+ Dave" <dave.hansen@intel.com>, "linux-doc@vger.kernel.org"
+ <linux-doc@vger.kernel.org>, "akpm@linux-foundation.org"
+ <akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>, "petrtesarik@huaweicloud.com"
+ <petrtesarik@huaweicloud.com>
 Subject: Re: [PATCH v1 0/8] x86_64 SandBox Mode arch hooks
-Message-ID: <20240214203331.240a6863@meshulam.tesarici.cz>
-In-Reply-To: <a762aaba-feb7-46ab-9e13-cea3a097311e@intel.com>
+Message-ID: <20240214203529.68eccc68@meshulam.tesarici.cz>
+In-Reply-To: <78fe4fdefa4f427b3fb1b6968d8799035c0c4124.camel@intel.com>
 References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
 	<c424618c-d6c6-430a-8975-8851a617204e@intel.com>
-	<20240214192214.78734652@meshulam.tesarici.cz>
-	<a762aaba-feb7-46ab-9e13-cea3a097311e@intel.com>
+	<34B19756-91D3-4DA1-BE76-BD3122C16E95@zytor.com>
+	<20240214174143.74a4f10c@meshulam.tesarici.cz>
+	<a27c9c32e410fc3582f3593f209cc1cf3b287042.camel@intel.com>
+	<20240214193241.7447a082@meshulam.tesarici.cz>
+	<78fe4fdefa4f427b3fb1b6968d8799035c0c4124.camel@intel.com>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -86,45 +93,32 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 Feb 2024 10:42:57 -0800
-Dave Hansen <dave.hansen@intel.com> wrote:
+On Wed, 14 Feb 2024 19:19:27 +0000
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-> On 2/14/24 10:22, Petr Tesa=C5=99=C3=ADk wrote:
-> > Anyway, in the long term I would like to work on gradual decomposition
-> > of the kernel into a core part and many self-contained components.
-> > Sandbox mode is a useful tool to enforce isolation. =20
+> On Wed, 2024-02-14 at 19:32 +0100, Petr Tesa=C5=99=C3=ADk wrote:
+> > > What use case needs to have the sandbox both protected from the
+> > > kernel
+> > > (trusted operations) and non-privileged (the kernel protected from
+> > > it
+> > > via CPL3)? It seems like opposite things. =20
+> >=20
+> > I think I have mentioned one: parsing keys for the trusted keyring.
+> > The
+> > parser is complex enough to be potentially buggy, but the security
+> > folks have already dismissed the idea to run it as a user mode
+> > helper. =20
 >=20
-> I'd want to see at least a few examples of how this decomposition would
-> work and how much of a burden it is on each site that deployed it.
-
-Got it. Are you okay with a couple of examples to illustrate the
-concept? Because if you want patches that have been acked by the
-respective maintainers, it somehow becomes a chicken-and-egg kind of
-problem...
-
-> But I'm skeptical that this could ever work.  Ring-0 execution really is
-> special and it's _increasingly_ so.  Think of LASS or SMAP or SMEP.
-
-I have just answered a similar concern by hpa. In short, I don't think
-these features are relevant, because by definition sandbox mode does
-not share anything with user mode address space.
-
-> We're even seeing hardware designers add hardware security defenses to
-> ring-0 that are not applied to ring-3.
+> Ah, I didn't realize the kernel needed to be protected from the key
+> parsing part because you called it out as a trusted operation. So on
+> the protect-the-kernel-side it's similar to the microkernel security
+> reasoning.
 >=20
-> In other words, ring-3 isn't just a deprivileged ring-0, it's more
-> exposed to attacks.
->=20
-> > I'd rather fail fast than maintain hundreds of patches in an
-> > out-of-tree branch before submitting (and failing anyway). =20
->=20
-> I don't see any remotely feasible path forward for this approach.
+> Did I get the other part wrong - that you want to protect the sandbox
+> from the rest of kernel as well?
 
-I can live with such decision. But first, I want to make sure that the
-concept has been understood correctly. So far, at least some concerns
-suggest an understanding that is not quite accurate.
-
-Is this sandbox idea a bit too much out-of-the-box?
+Protecting the sandbox from the rest of the kernel is out of scope.
+However, different sandboxes should be protected from each other.
 
 Petr T
 
