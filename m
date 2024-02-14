@@ -1,74 +1,92 @@
-Return-Path: <linux-kernel+bounces-65035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44CEB8546FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:19:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB597854704
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C178F1F21660
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:19:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1151CB22904
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:21:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2312417552;
-	Wed, 14 Feb 2024 10:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7CF1804E;
+	Wed, 14 Feb 2024 10:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCVnLR+2"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DNRgpeGh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX6r6YD0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DNRgpeGh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX6r6YD0"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5D914ABC;
-	Wed, 14 Feb 2024 10:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688781757A;
+	Wed, 14 Feb 2024 10:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707905956; cv=none; b=jZunKASwtoRTICN0DoototlDcQL6NqmjSjAOnvY9qun6N+3jKbhtK6hdHBRB000/DI0lbXMhhXryXcJIa+KSbfdHQOQPvQ+eEKDz/zWFpyAXmnyLgmSSnTuz8LesBk5IOBVC23LoQnpeRuOw1iWRZdsqoJN3LcqnP1llv7tfCjY=
+	t=1707906036; cv=none; b=L14ozIf+XSinNjn4U9I6d70eZNHJ+MUIoLYY9ROA6owPrtLtvntRbh0lwGBeA25nbzpDvu988v7ups9jNIWl83tSAWhrQguzicE/TSYHCsndF9Mqt25aKqPp/y0YzAbWiI+YCgWsXqgUhVctHha/WDXoYxHucLbtDlOOPQR9DXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707905956; c=relaxed/simple;
-	bh=dXM4ltp9m0nlbbTajOk7i5VsfwfQ7oRilD4YzJbboQ0=;
+	s=arc-20240116; t=1707906036; c=relaxed/simple;
+	bh=20sRNx8iOq0dxtbjIRX48x/rKE5QlAzFN67tIlBtgIA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rRU//azmS2g17vDFU1rTtJL0WTioqRUizU0VeCus+7158IdxL6zpO+WPpXaJwjr0wt3k0t9M0v7c+pUbjHxoRVx6UhGs4iGbzOsPMVlmhzhKDRx0mLlCkaqMeNCGFuJ2q1xUoB7b2DwF89Eq60vX+f40yhMYALeZq3ooerTzzcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCVnLR+2; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3d2cce1126so112323866b.2;
-        Wed, 14 Feb 2024 02:19:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707905953; x=1708510753; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OLRj1mFJpl+9yLnpvglaJFB5v6n1ThidnnLPgjLs0yo=;
-        b=WCVnLR+2sS3d6FzMgTflTqFZwaB+QSyrWmmzmu+hVLXAlJwmcaK+b4eVigowanU6Rv
-         LWvtss9ftURJ2+p9c85KCuLqTf6YoqrVsIlTuoV/rLpGp4ctHaMxE0Sp/D7MhdxTShxg
-         7ySO8r0zuRZZKIG3rvvaIFEVaKZxQOZpeC1GM35yKIgBG3oADGZWIlIxF18mR1Dp6HrS
-         OrU5YtmFmSU73mzgrmzvvhQ83zFmHDwSF9shoNS4E8ECuCuQgGqbzUKWNbka+EIuRxW6
-         YZj7+N+yy3ZIT/+mqfyLIlzEDCzLojQr46c27olpwpslA46qDYp6PE7cVrZ8P1FIhg4B
-         udYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707905953; x=1708510753;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OLRj1mFJpl+9yLnpvglaJFB5v6n1ThidnnLPgjLs0yo=;
-        b=LuNO5sLagB64QHQ5oTkzbsu8rTfyd+VLrbdYR88EAg2f1bb+ihD61U1Wt5EJvZJGwT
-         Mx9gLxp5k1DuBjEmJy4Z/ybQSaL1tXa1lfRB5Ruk39sADjLydKUAHAjpTsCjr+1K3WWE
-         Bb6j/Zkioft8sTjO0N3wEs2FCUyDkZLdkX/nWzT6HnzMuZYJH/0JVrsupM/V2eQJshGI
-         NvHlZRz2gXqmObgY3E/jPgZ8eIOQkCBjAiRhQtlze42AmKj/YxZcJ2bA4+rJdMfTHLXg
-         hYKOUmEfw+1InzmJHuihibY99C3qBMUBoiPOc9y0lkQsu+6zklLMTPm95Oj8cfvd5CyJ
-         Ht7w==
-X-Forwarded-Encrypted: i=1; AJvYcCWjYH1WxGoCn1SjCMjkgXAI7z2BQ259A/6z/JpPyXBiyqjtYp8+DzjMX7cdOrblIS4g/hLtFgT6WxcmW0rP22w5DoIg/46e6dE488PWS3BLE4WAYtUC2yQmQNvy4bLn81+uNU4vgy9A4vokLiy7csUi+4ijDsQQhmqwR7OiyKnbRZ3YtA==
-X-Gm-Message-State: AOJu0YxOI7TvhBYPcyEtyDwlQ0dqprZCNdDHRyz01WbzwfvVKsFbbKq6
-	Wxta5mgRxICWzg0QQteewc+AS/innGmpQTwh41rdi3w+8+AVx3DG
-X-Google-Smtp-Source: AGHT+IEl2Ag3bYgP/Z3P3BT488BPaO2IYQUkRcodC6FMIdU8fXJSacH/fwANZYS9xUDvQUcknqsHSw==
-X-Received: by 2002:a17:906:4f0a:b0:a3d:607b:a280 with SMTP id t10-20020a1709064f0a00b00a3d607ba280mr349986eju.59.1707905952758;
-        Wed, 14 Feb 2024 02:19:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWOAx91eFcQOTulUqIbqfn4LyXCdEoTcC5Pncl3OX9Nh3Y4eCJSvYtv4fepI/t678chIot8cgWsOLyFXrLQqAOPHDpxX9Q/nqSucOiEXT7CQKSy9KVdZwTjtiSTBdA2puJ9YkN8pBi3EorRj/RBhLKdvQd8kvz+VSNzweM93AqP22Mv8Gz84kGcz/YfhKS2bWfYr13nQTskzh6dlIyq6HlMLvC/3KZDfE6rQ6hRInA2DUOBjUkAW+F4HVTPHb14OxJb0MBD2M80EendauhuZgrosIyicqRZDtL/f5eBVFVJMzqNAoNcH9/a55tMn/fh+0V+apL6py8P0xZKZSXz7Nn1eQf+0HlIC1PrjuFnViUzZh70KdJcgz1T8G2nW0goknTQQ4U9lCGW5Gcb0edyC1RcOSbiZeM/0XWmlVRijqqh9nAH3y5v086utpkgcKpnG6uVV/wbaneG4v+iCYsib1NRjBrkYcNaYUDw5W0prtE=
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id hw20-20020a170907a0d400b00a3cf243de37sm1738164ejc.111.2024.02.14.02.19.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 02:19:12 -0800 (PST)
-Message-ID: <eb97a068-4de6-4500-993b-86737844de70@gmail.com>
-Date: Wed, 14 Feb 2024 11:19:10 +0100
+	 In-Reply-To:Content-Type; b=QYaClOI7qoHA195u3hu1jEGH31E/gm6Zw6kepovDgvyeeLr6oF8kys7cr7QtvkRI/D3WpSf6zxN0jnco3qIQpC3pbVygO1g6f/0XDMOsMmjnzVuWhqdTafDHaNJ9JaiS3LcbAf87d74Ec4sCTrXW71PIekRKRmCJkGuihgqj4LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DNRgpeGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX6r6YD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DNRgpeGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX6r6YD0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 110351FD18;
+	Wed, 14 Feb 2024 10:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707906027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
+	b=DNRgpeGhsDI+oSKTmcp+slsJEYfRS5HYFj3TT/mD1w+ZV1MzliTWcl4XEU6bVt3xTX9gBa
+	6c93XMG6n7uYcTsRNReflnsHj10orptTi2Vyl2Ll8/BiPXGvllIFrZYcU8UY4ckjh5/mYE
+	ecPjl2bd/Jyci9DykfeSrzt1k/0aaCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707906027;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
+	b=nX6r6YD0jPrpVOJ83kIFxVBq3vl0couSpQ2UrxdMnSPIbg4NKpFIEC32DvhFQkJALEvR40
+	eek/vbRuZR1rV0DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707906027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
+	b=DNRgpeGhsDI+oSKTmcp+slsJEYfRS5HYFj3TT/mD1w+ZV1MzliTWcl4XEU6bVt3xTX9gBa
+	6c93XMG6n7uYcTsRNReflnsHj10orptTi2Vyl2Ll8/BiPXGvllIFrZYcU8UY4ckjh5/mYE
+	ecPjl2bd/Jyci9DykfeSrzt1k/0aaCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707906027;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FGladMXENrd0YjrbTrjIK8mVP0LFAbru1yEEbY+cSOQ=;
+	b=nX6r6YD0jPrpVOJ83kIFxVBq3vl0couSpQ2UrxdMnSPIbg4NKpFIEC32DvhFQkJALEvR40
+	eek/vbRuZR1rV0DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7241913A72;
+	Wed, 14 Feb 2024 10:20:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wRKNG+qTzGW7RwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 14 Feb 2024 10:20:26 +0000
+Message-ID: <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
+Date: Wed, 14 Feb 2024 11:20:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,97 +94,133 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: pwm: mediatek,mt2712: add compatible for
- MT7988
-To: Conor Dooley <conor@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- John Crispin <john@phrozen.org>, linux-pwm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240213164633.25447-1-zajec5@gmail.com>
- <20240213-resource-evaluator-0754cfd5882d@spud>
- <d4391868-ddcd-4f66-b539-28d245fa83df@gmail.com>
- <e957b044-fe84-4b72-bdf1-cbc40c722019@collabora.com>
- <20240214-reversion-arguably-37bbee9caf78@spud>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
 Content-Language: en-US
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20240214-reversion-arguably-37bbee9caf78@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ Suren Baghdasaryan <surenb@google.com>
+Cc: David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>,
+ akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+ liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+ dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240212213922.783301-1-surenb@google.com>
+ <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DNRgpeGh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nX6r6YD0
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[73];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[redhat.com,suse.com,linux-foundation.org,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -3.00
+X-Rspamd-Queue-Id: 110351FD18
+X-Spam-Flag: NO
 
-On 14.02.2024 11:06, Conor Dooley wrote:
-> On Wed, Feb 14, 2024 at 10:27:54AM +0100, AngeloGioacchino Del Regno wrote:
->> Il 14/02/24 07:34, Rafał Miłecki ha scritto:
->>> On 13.02.2024 19:18, Conor Dooley wrote:
->>>> On Tue, Feb 13, 2024 at 05:46:32PM +0100, Rafał Miłecki wrote:
->>>>> From: Rafał Miłecki <rafal@milecki.pl>
->>>>>
->>>>> MT7988 has on-SoC controller that can control up to 8 PWMs.
->>>>
->>>> I see a binding and a dts patch, but no driver patch, how come?
->>>
->>> I believe that to avoid cross-trees patchsets (which are sometimes
->>> tricky for maintainers) there are two ways of submiting such changes:
->>> 1. dt-binding + driver; then (separately) DTS
->>> 2. dt-binding + DTS; then (separately) driver
->>>
->>> I chose later in this case as my personal priority right now is to deal
->>> with all MediaTek DTS files.
->>>
->>> Is that wrong or unacceptable?
->>>
->>
->> It's not wrong but it's partially unacceptable, at least on my side.
+On 2/14/24 00:08, Kent Overstreet wrote:
+> On Tue, Feb 13, 2024 at 02:59:11PM -0800, Suren Baghdasaryan wrote:
+>> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
+>> <kent.overstreet@linux.dev> wrote:
+>> >
+>> > On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+>> > > On 13.02.24 23:30, Suren Baghdasaryan wrote:
+>> > > > On Tue, Feb 13, 2024 at 2:17 PM David Hildenbrand <david@redhat.com> wrote:
+>> > > If you think you can easily achieve what Michal requested without all that,
+>> > > good.
+>> >
+>> > He requested something?
+>> 
+>> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+>> possible until the compiler feature is developed and deployed. And it
+>> still would require changes to the headers, so don't think it's worth
+>> delaying the feature for years.
 > 
->> I want to put emphasis on sending the binding with the driver, as this allows
->> for a better review on everyone's side because we do see the full picture and
->> we can give better advices: in this case, I'm not sure whether adding a new
->> compatible for MT7988 in an enum is a good idea, as the compatible string may
->> be shared with one of the *eleven* SoCs that are supported in the PWM driver,
->> meaning that (hardware speaking!) the PWM controller in 7988 might be the same
->> as the one in mt1234.
+> Hang on, let's look at the actual code.
 > 
-> Re-ordering to make my reply make more sense...
+> This is what instrumenting an allocation function looks like:
 > 
->> In my opinion (and I believe many do agree with me), sending the binding along
->> with the driver is the right choice, and if you also want to include the dts
->> that is also appreciated: series can go through multiple maintainers applying
->> subsets - it's ok to do.
+> #define krealloc_array(...)                     alloc_hooks(krealloc_array_noprof(__VA_ARGS__))
 > 
-> Ye, either of those two makes my life a lot easier. I can then at least
-> go and check the driver patch to see if things match up. In this case, I
-> would want to check that the driver requires changes to support this
-> device, given the commit message mentions nothing about the difference
-> between this device and others. I'd still probably request that the
-> commit message be improved to explain the lack of a fallback, but at
-> least I would be clear about what I want and could provide a conditional
-> Ack.
+> IOW, we have to:
+>  - rename krealloc_array to krealloc_array_noprof
+>  - replace krealloc_array with a one wrapper macro call
 > 
-> If you're not sending the bindings patch with the driver, there's an
-> extra onus on you to explain exactly what makes this device incompatible
-> with the other devices in the enum, although in an ideal world it'd make
-> no difference and every bindings patch would contain that information.
+> Is this really all we're getting worked up over?
+> 
+> The renaming we need regardless, because the thing that makes this
+> approach efficient enough to run in production is that we account at
+> _one_ point in the callstack, we don't save entire backtraces.
+> 
+> And thus we need to explicitly annotate which one that is; which means
+> we need _noprof() versions of functions for when the accounting is done
+> by an outer wraper (e.g. mempool).
+> 
+> And, as I keep saying: that alloc_hooks() macro will also get us _per
+> callsite fault injection points_, and we really need that because - if
+> you guys have been paying attention to other threads - whenever moving
+> more stuff to PF_MEMALLOC_* flags comes up (including adding
+> PF_MEMALLOC_NORECLAIM), the issue of small allocations not failing and
+> not being testable keeps coming up.
 
-I understand, thanks guys for discussing this with me.
-
-I'll send V2 with Linux driver part.
-
-
->>>
->>>> Also, what makes this incompatibly different with the other devices in
->>>> the binding, like the 8183?
->>>
->>> It can control 8 PWMs unlike any other SoC block except for MT2712.
->>> It uses different registers than MT2712 thought.
-> 
-> Put this information in your commit message next time :)
-> 
-> Cheers,
-> Conor.
-
+How exactly do you envision the fault injection to help here? The proposals
+are about scoping via a process flag, and the process may then call just
+about anything under that scope. So if our tool is per callsite fault
+injection points, how do we know which callsites to enable to focus the
+fault injection on the particular scope?
 
