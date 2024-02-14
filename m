@@ -1,96 +1,108 @@
-Return-Path: <linux-kernel+bounces-65859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 996958552E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:06:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5244C8552DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25B371F23751
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:06:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E8E228F15C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7804913A26C;
-	Wed, 14 Feb 2024 19:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A648713A276;
+	Wed, 14 Feb 2024 19:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YHJyqyec"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NwkZPBsj"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A1760DE5
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1987C60DE5
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707937564; cv=none; b=AadA+kFpV03bJDqDs9VKL8s/vysRSP0hqxOhVip1A0Ue0+XElJhBiy/N3IlstrMqdBeb5YlAZ3j3o/rNCW+T+3rgxMF+FqF0MflHV0Ml3Dg0u3Xrdi54dsJSNVlfsBNgZWfkLH4KxrtDqDGYAw8xUNpW7HDItrwmsE961D1HGlY=
+	t=1707937452; cv=none; b=sGKCsuLgp43IgiVxsJi6PgQpR8ENus9+LpSeJXsrLZgi+mwe4DpGOS0IIlx5B1WNNb8e/jlsxMMFjkni3Z4l+6TRpqUe7lHWP/HnHxqFpt7rcer2tLOLlqKP6aPA9w00tnhfDn8cAuk7xc99qCBQaP05woH1A1sBgEu4o+LQH5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707937564; c=relaxed/simple;
-	bh=xFMeZwcDHHVXswxCzpJihYdm2tRWpo2qchzwb+I7kKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BSFT3GmcXaXYMLk2k4mWuMLgQ83P/JH41kGhMPyZluM+oIDfea1U0sNGMPsWM76Pxn9TkDHCg5/OpIpk8sXZt4QB0MEwPPjRJ1rKJm5kdneP6xs2Aevxgy5tPmkagNRjE2UrRJ3xXn5K7dNGNIMSbLJAsEOKdOzu+6XBG1Ba5xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YHJyqyec; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707937562;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rrj06WBEVkGII72TIMpbKKvXYs1O1D5VjTMRDkQroAo=;
-	b=YHJyqyecLY/RDx9opP+hcb8NQ5PIut1CAsJdobdB/NXenyXAarMSRmNDjzlSICA8K8XxYT
-	BLMAfNtzCGwl8vdYN8UXGN+xTeZLov8YJGlCrvV305T07hwQO3MrdsUCDJApif/sskdCCz
-	j0bYeiuGoVEErCUmyjGc47acEFBZvXQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-Px-Z8yAsN9m3hy992gZR6A-1; Wed, 14 Feb 2024 14:05:58 -0500
-X-MC-Unique: Px-Z8yAsN9m3hy992gZR6A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AFC411005055;
-	Wed, 14 Feb 2024 19:05:57 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id DC781200AE71;
-	Wed, 14 Feb 2024 19:05:56 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 35EF440419F4D; Wed, 14 Feb 2024 15:59:36 -0300 (-03)
-Date: Wed, 14 Feb 2024 15:59:36 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Leonardo Bras <leobras@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [patch 11/12] x86/resctrl: use smp_call_function_single_fail
-Message-ID: <Zc0NmOkQDW1AOSwz@tpad>
-References: <20240206185710.116221062@redhat.com>
- <87zfw5k8w8.ffs@tglx>
+	s=arc-20240116; t=1707937452; c=relaxed/simple;
+	bh=T1B8PjP1AIUWWTdJo24fyn84sVFnmmuoOYsaM3cR1Ac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wp2heKT+WdWM0Y9pkcOmmX1pjcNlRP79dZyB3IdVf9IjY/Gm99Be0OoP78WUnnTgHsSw7ztLEWt/UPmpEXFSMtx5fieHxRWwSspDMduHKTMJZxYocpOLur+ptARXCv1G/3kqorR1zMbSYpn37tVdDy071msdaJdl6JXdZ+cY9Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NwkZPBsj; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28a6cef709so4181866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:04:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1707937449; x=1708542249; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=02Qc7c7VkuaWWM5w5oi8WQdKbPvcP4h+Wa+jjfebFsI=;
+        b=NwkZPBsjO2x7hHjJ3brbUvryHatJDtqLGeiBH9rLHPHzV2Rz1mwGyD2npYEr5IxOB2
+         hxf0glUPqHCp4bGIPfuuD8uXb2N6sS3N+7RCwT6FHa2N4Nh9Z7XViTKysm452SHl1IIc
+         +r7+2lqrt6kLsOuaP/mucBVCCsGEeN2vxM94k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707937449; x=1708542249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02Qc7c7VkuaWWM5w5oi8WQdKbPvcP4h+Wa+jjfebFsI=;
+        b=sFcBCZFfO3s83P4XAcAbT3nSevXWvYwkd3WIxbR2SUlLUnm0ca/zbQkNvksANsGY+A
+         +G4nOX9V1lq+MC60bAQWn5omxXRb98NgFI1MxCTnztyOPLaE8dBRJUiHCAhOLSSxeC7A
+         A14s5nc+43xnIj3ilOkfUKBWcqZBKRszoL6BX+fQ6F0chGJ7hCYaFFlSOOLTTwNKtIKz
+         jNPFKNy67EpB/4DgnGq5k2LxzoMZOIA1A2jVKue9cYggVWMqwCB0bk1m8+otB1xOtk5j
+         Pu9JXXHoaR9K6IXsgy6COCbrZzSGAHi0brqMlAdvOzyj5GpjKqvD0vR1sPX0sL9OUsWJ
+         QIhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXURhUodmTOcoKeKwtKjjetTblnabDweHU23o+9NCCD8SzYpPrVHD77SMXEB0o7czm8GWWQhVIVNkNo1Jc4+6E5rJg0fKFsHtSy8dsS
+X-Gm-Message-State: AOJu0Yxg4o1OIY8NP5qgpEr29jqGbh0hMfLp8+1NrK1r2O5V8/Nrotif
+	sY++cvR9xhWb4K5kd4m39RA3bSTGmlteKa6BIzgQu3RWV+Jpz0tACVwrI3nMH4VkE2/2idqFKUv
+	20as=
+X-Google-Smtp-Source: AGHT+IGrx4jpm+wtOiFeFcRuNUDGzGVkvpYK3An9SiO25/wegDf4R9Un9LnFFTUQ5gLSab/ktRqQrA==
+X-Received: by 2002:a17:906:749:b0:a37:b8fb:50e0 with SMTP id z9-20020a170906074900b00a37b8fb50e0mr2428188ejb.52.1707937448896;
+        Wed, 14 Feb 2024 11:04:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNsSrt8G9CYZ6BdvmU2yIZ6MxH3/vZIdlmE2A4Oup9M38aM2qCsmWWB3RnO9eSciGIYmdx5euQyG+c/IGIJxY7rPKKuinLaO98xdJ+
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id q19-20020a170906361300b00a3d25d35ca5sm1325208ejb.16.2024.02.14.11.04.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 11:04:08 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so126923a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:04:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUUoDL8yiSLVuq2YabN+3nOTDPdAlxwLiy826f0EC1XtpKK5lZhxZUTThEZeNd9C5awKOS9cl9E1tHC8auSNeg0qu+QPNgJQDv+FAfM
+X-Received: by 2002:a50:fb06:0:b0:55f:f7bb:40fd with SMTP id
+ d6-20020a50fb06000000b0055ff7bb40fdmr2668640edq.2.1707937447958; Wed, 14 Feb
+ 2024 11:04:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zfw5k8w8.ffs@tglx>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+References: <Zc0IzeM6tAvm1NTl@mtj.duckdns.org>
+In-Reply-To: <Zc0IzeM6tAvm1NTl@mtj.duckdns.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 14 Feb 2024 11:03:46 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiVWmTfaCUjZYrV6pVh3O6hYksKsWx4bJY0EhNNat9QDg@mail.gmail.com>
+Message-ID: <CAHk-=wiVWmTfaCUjZYrV6pVh3O6hYksKsWx4bJY0EhNNat9QDg@mail.gmail.com>
+Subject: Re: [PATCH wq/for-6.9] workqueue: Fix queue_work_on() with BH workqueues
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 12, 2024 at 04:19:19PM +0100, Thomas Gleixner wrote:
-> On Tue, Feb 06 2024 at 15:49, Marcelo Tosatti wrote:
-> > Convert update_task_closid_rmid from smp_call_function_single
-> > to smp_call_func_single_fail, which will fail in case
-> > the target CPU is tagged as block interference CPU.
-> 
-> You fail again to provide a rationale for this change.
-> 
-> What's worse is that you fail to explain why you think that creating
-> inconistent state is a valid approach.
+On Wed, 14 Feb 2024 at 10:39, Tejun Heo <tj@kernel.org> wrote:
+>
+> When queue_work_on() is used to queue a BH work item on a remote CPU, the
+> work item is queued on that CPU but kick_pool() raises softirq on the local
+> CPU.
 
-Well, the patch is broken and needs fixing.
+Now, does it make a lot of sense to ask to queue a BH work on another
+CPU in the first place?
 
+I don't think tasklets supported that. And while the workqueues
+obviously do - and you fix that case - I wonder if we shouldn't say
+"that operation makes no sense, please don't do it" rather than
+actually support it?
+
+What made you notice this issue?
+
+                  Linus
 
