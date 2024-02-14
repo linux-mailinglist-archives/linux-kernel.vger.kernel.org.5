@@ -1,153 +1,302 @@
-Return-Path: <linux-kernel+bounces-65007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 905C185467D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F7628546E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:14:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4845A28DA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:52:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB6E728E05A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14301429C;
-	Wed, 14 Feb 2024 09:52:05 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36181171C4;
+	Wed, 14 Feb 2024 10:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bzgcSofK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D154113ADB
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4158E17C61;
+	Wed, 14 Feb 2024 10:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904325; cv=none; b=pI5MC28dIhyhUpa04n3xxu4qbfGuDywlULic4mRHXQqSYeEeINsUrCPAM9SFPwSObN4Nn13P0rfYuezDBMnW/lchqICeikNTfeCovANsGcNDDwFZnnQvdstQZZt4/96jBCsGppXr2MACw0/4vRbl59MyV3hKSoRpj6gU85Em37c=
+	t=1707905654; cv=none; b=COelZoisXrT10aLDYdlNL/qNibyiTG/y1d81DyUh4fc07VJ74xmD4Lhw+KD6scf6zhapVQn1MSWkDs+PO5+c3wih37F114ihFznzv9U7qGWjaqzajYq7WAimjnAma0LbPskZD5ZlD3h0ciVpKpQtGQCj4TUqrcQ1mREvqklirjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904325; c=relaxed/simple;
-	bh=/WZ+0en2hYRrVYORtDQ6E5O368IXClGjaFQPYTU4Th4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=KIpIq/NiDNtvZOVwBBZHFdjd6Cn09Zi+iE4kT3M2yzanl/eEz8R1e1ChohQo30NJukeuf2fF5Hf4YugTLgh+8INq/UJgUC2vPbX8kCOV2YoC686IdT8DrpA/BDX/5aHThnQ3rsx2A+tRTGgFtTso3wmpXWUox9E3R5MheoMl6Yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363da08fc19so47457785ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:52:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707904323; x=1708509123;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0cpkPdutDChRiHnxGrJ0+2dxav52OhwGkxn+PEdR9JQ=;
-        b=w36cl6BwxKt4ip4rFJ14Zpq/rh7NLsXBDrjSAm0q2SBOo1pBb/LQBNvzcvesXOqIaI
-         zxakUg4syxWG+3GMwXrBi/cR3RgJdnxx8WT2dFBetMOrRqOIPniCiJIVrJ4Ot2xdVTCj
-         6TyIEsmyehBJsoI8GdSYvTJ/DZSCikka55SuZgSfDXFxkvZ/gjAX4+nozIH7lylr0AiW
-         fXQ5jP+XNI02wfnp3KIxPCpz6dDmo/ec3BO0e++8cT1O6AW3box7n8etzDrSQslvaxbf
-         wqo0xmBDse6slEVdUVxwVk6gQLtvg3P+Ae7YY4+XTxjpF3uy1bXALcgcLEbvgGcALk8d
-         OLtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURErFPjy5xElY5O9hHsLoVQGzQrqOGHMlTMfPSJOB6T+F9YcfCmWrfG2OoGKaeqA9IQZdsp8+1TJ4H6c5w3nXlIdhVZujkbYf0ATwj
-X-Gm-Message-State: AOJu0YxnW6a70qRzu5ng0mmUX3ofnpUR+kYuUm9YlEB6JnwOyGxF7stc
-	ZZyJMFjWQ69FWcV7vmhXCVlKuTq+ZNPKY47mTXJ95CZsijmhNVttCaHLCgl3FLu9o6hlD7LQnRH
-	GRcSI1cnTIb4jNv1Kht2jYZweUtbdb5C05gTZFZcKqWLUpFeRHrmHDRE=
-X-Google-Smtp-Source: AGHT+IGbF+h8vgEmVuLVSqw8VUOCxUDbzHv6vN14kAKpmPXDA83IyVqZlKNwYiijytn9SaZ3iKkFXSVtSOedFG0TcUu89k3pQ/bf
+	s=arc-20240116; t=1707905654; c=relaxed/simple;
+	bh=AkK8H6K5JsX3fPqhL9edm6tVElqq/qDa1tKSAyvAosE=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=A6OAutU9YeZpMivsqy7Ry0XdtEMN2HY2h+m96K4Z50sbhMm9Go1cmKn8YrdJN3cva2ePalL/TKawPffziDmsJ9GMRH99UBPUz52N8GBWkUzsa0NyAMpZbYCikCJy41zsDuhNg/SBAn8eCDbwA4R9ytnGnVG6LPTecISo2McG5N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bzgcSofK; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707905653; x=1739441653;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=AkK8H6K5JsX3fPqhL9edm6tVElqq/qDa1tKSAyvAosE=;
+  b=bzgcSofKfFXTLNKt4qPj6jmTSejwwcYNt4tdGCPpNYQBgLeOgGPzdveY
+   I1VQP61T7u0MzBIpM+3MDhA8zGQXySNOKj28u27L57VOXuDpZOlppaEHw
+   TEPUfJqCFHMa3iletJQZ24Ctuqtgypjp8to3WeCk1nhelzBN035fYSwKk
+   cYdeXHP8HsoDpD+1ICpma0foBrWMplcT9urMt8Ndj6lhOXU4FYhk81Zi5
+   M/G/MPDSy7EQnZdkdGUupvFo3Zm4wJlXl3VTbo7Ad+qRX05HFuVEFZ8B7
+   wCsrpvewYN//9ZYFADgCLusw/JEUmr7QW52LHwdO5ERckSvlbcm66E5+z
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="13335602"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="13335602"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 02:14:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="3432586"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.33.229])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 02:14:09 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 14 Feb 2024 11:52:24 +0200 (EET)
+To: Vishnu Sankar <vishnuocv@gmail.com>
+cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Mark Pearson <mpearson-lenovo@squebb.ca>, vsankar@lenovo.com
+Subject: Re: [PATCH 1/2] platform/x86: thinkpad_acpi: Simplify thermal mode
+ checking
+In-Reply-To: <20240214052959.8550-1-vishnuocv@gmail.com>
+Message-ID: <c49e4415-7cd5-e1ba-e6c6-5086730b9866@linux.intel.com>
+References: <20240214052959.8550-1-vishnuocv@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218a:b0:363:c4a0:5d06 with SMTP id
- j10-20020a056e02218a00b00363c4a05d06mr159076ila.1.1707904323060; Wed, 14 Feb
- 2024 01:52:03 -0800 (PST)
-Date: Wed, 14 Feb 2024 01:52:03 -0800
-In-Reply-To: <9cf86b72-286d-f726-6907-ff2c11af6d75@blackhole.kfki.hu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c900506115476fc@google.com>
-Subject: Re: [syzbot] [netfilter?] WARNING: ODEBUG bug in ip_set_free
-From: syzbot <syzbot+ebbab3e04c88fa141e6b@syzkaller.appspotmail.com>
-To: kadlec@blackhole.kfki.hu, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="8323328-900362618-1707904344=:1008"
 
-Hello,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: ODEBUG bug in ip_set_free
+--8323328-900362618-1707904344=:1008
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object: 0000000062ae9ef3 object type: timer_list hint: bitmap_port_gc+0x0/0x4dc net/netfilter/ipset/ip_set_bitmap_port.c:282
-WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
-WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-Modules linked in:
-CPU: 0 PID: 6628 Comm: syz-executor.0 Not tainted 6.8.0-rc3-syzkaller-00010-gf735966ee23c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : debug_print_object lib/debugobjects.c:514 [inline]
-pc : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-pc : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-lr : debug_print_object lib/debugobjects.c:514 [inline]
-lr : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-lr : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-sp : ffff8000978c6950
-x29: ffff8000978c6990 x28: 0000000000000000 x27: ffff80008aeec3c0
-x26: ffff0000e345d318 x25: dfff800000000000 x24: 0000000000000000
-x23: ffff80009368be40 x22: ffff0000e345d000 x21: 0000000000000000
-x20: ffff8000894dfe30 x19: ffff0000e345d300 x18: 1fffe000367ff596
-x17: ffff80008ec6d000 x16: ffff80008031fff4 x15: 0000000000000001
-x14: 1fffe00036801de8 x13: 0000000000000000 x12: 0000000000000003
-x11: 0000000000000001 x10: 0000000000000003 x9 : dee47f29bae7c100
-x8 : dee47f29bae7c100 x7 : ffff800080296b68 x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000006 x1 : ffff80008aecd8e0 x0 : ffff800125439000
-Call trace:
- debug_print_object lib/debugobjects.c:514 [inline]
- __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
- debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
- slab_free_hook mm/slub.c:2093 [inline]
- slab_free mm/slub.c:4299 [inline]
- kfree+0x114/0x3cc mm/slub.c:4409
- kvfree+0x40/0x50 mm/util.c:663
- ip_set_free+0x28/0x7c net/netfilter/ipset/ip_set_core.c:264
- bitmap_port_destroy+0xe4/0x324 net/netfilter/ipset/ip_set_bitmap_gen.h:66
- ip_set_create+0x904/0xf48 net/netfilter/ipset/ip_set_core.c:1157
- nfnetlink_rcv_msg+0xa78/0xf80 net/netfilter/nfnetlink.c:302
- netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2543
- nfnetlink_rcv+0x21c/0x1ed0 net/netfilter/nfnetlink.c:659
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
- ___sys_sendmsg net/socket.c:2638 [inline]
- __sys_sendmsg+0x26c/0x33c net/socket.c:2667
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 294
-hardirqs last  enabled at (293): [<ffff800080296c08>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
-hardirqs last  enabled at (293): [<ffff800080296c08>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5154
-hardirqs last disabled at (294): [<ffff80008ad60eac>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
-softirqs last  enabled at (276): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (276): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
-softirqs last disabled at (147): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
----[ end trace 0000000000000000 ]---
+On Wed, 14 Feb 2024, Vishnu Sankar wrote:
 
+Thanks for doing this, it's major improvement to readability already as=20
+is, and even more of after the second patch!!
 
-Tested on:
+> Add a thermal_read_mode_check helper function to make the code
 
-commit:         f735966e Merge branches 'for-next/reorg-va-space' and ..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=10afd01c180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d47605a39da2cf06
-dashboard link: https://syzkaller.appspot.com/bug?extid=ebbab3e04c88fa141e6b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10de0934180000
+thermal_read_mode_check()
 
+remove "function" as it's obvious.
+
+> simpler during init.
+> This helps particularly when the new TPEC_12 mode is added in
+> the next patch.
+
+Flow the paragraph normally without the premature line break.
+=20
+> Suggested-by: Ilpo Jarvinen <ilpo.jarvinen@intel.com>
+
+This is not my email address, please use
+
+Suggested-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+> Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
+> ---
+>  drivers/platform/x86/thinkpad_acpi.c | 136 +++++++++++++--------------
+>  1 file changed, 66 insertions(+), 70 deletions(-)
+>=20
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/=
+thinkpad_acpi.c
+> index c4895e9bc714..2428c8bd0fa2 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -6147,6 +6147,71 @@ struct ibm_thermal_sensors_struct {
+>  static enum thermal_access_mode thermal_read_mode;
+>  static bool thermal_use_labels;
+> =20
+> +/* Function to check thermal read mode */
+> +static enum thermal_access_mode thermal_read_mode_check(void)
+> +{
+> +=09u8 t, ta1, ta2, ver =3D 0;
+> +=09int i;
+> +
+> +=09if (thinkpad_id.ec_model) {
+> +=09=09/*
+> +=09=09 * Direct EC access mode: sensors at registers
+> +=09=09 * 0x78-0x7F, 0xC0-0xC7.  Registers return 0x00 for
+
+Remove the double space, one is enough in kernel comments.
+
+> +=09=09 * non-implemented, thermal sensors return 0x80 when
+> +=09=09 * not available
+
+Add the missing . please.
+
+Perhaps add a empty line here to make this two paragraphs.
+
+> +=09=09 * The above rule is unfortunately flawed. This has been seen with
+> +=09=09 * 0xC2 (power supply ID) causing thermal control problems.
+> +=09=09 * The EC version can be determined by offset 0xEF and at least fo=
+r
+> +=09=09 * version 3 the Lenovo firmware team confirmed that registers 0xC=
+0-0xC7
+> +=09=09 * are not thermal registers.
+> +=09=09 */
+
+While the patch touches this, this entire comment should be reflowed=20
+properly for 80 columns.
+
+> +=09=09if (!acpi_ec_read(TP_EC_FUNCREV, &ver))
+> +=09=09=09pr_warn("Thinkpad ACPI EC unable to access EC version\n");
+> +
+> +=09=09ta1 =3D ta2 =3D 0;
+> +=09=09for (i =3D 0; i < 8; i++) {
+> +=09=09=09if (acpi_ec_read(TP_EC_THERMAL_TMP0 + i, &t)) {
+> +=09=09=09=09ta1 |=3D t;
+> +=09=09=09} else {
+> +=09=09=09=09ta1 =3D 0;
+> +=09=09=09=09break;
+> +=09=09=09}
+> +=09=09=09if (ver < 3) {
+> +=09=09=09=09if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
+> +=09=09=09=09=09ta2 |=3D t;
+> +=09=09=09=09} else {
+> +=09=09=09=09=09ta1 =3D 0;
+> +=09=09=09=09=09break;
+> +=09=09=09=09}
+> +=09=09=09}
+> +=09=09}
+> +
+> +=09=09if (ta1 =3D=3D 0) {
+> +=09=09=09pr_err("ThinkPad ACPI EC access misbehaving, disabling thermal =
+sensors access\n");
+> +=09=09=09return TPACPI_THERMAL_NONE;
+> +=09=09}
+> +
+> +=09=09if (ver >=3D 3) {
+> +=09=09=09thermal_use_labels =3D true;
+> +=09=09=09return TPACPI_THERMAL_TPEC_8;
+> +=09=09}
+> +
+> +=09=09return (ta2 !=3D 0) ? TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC=
+_8;
+> +=09}
+> +
+> +=09if (acpi_evalf(ec_handle, NULL, "TMP7", "qv")) {
+> +=09=09if (tpacpi_is_ibm() &&
+> +=09=09    acpi_evalf(ec_handle, NULL, "UPDT", "qv"))
+
+Single line and keep the braces please (I know it will go >80 chars but no=
+=20
+important info is lost).
+
+> +=09=09=09/* 600e/x, 770e, 770x */
+> +=09=09=09return TPACPI_THERMAL_ACPI_UPDT;
+> +=09=09/* IBM/LENOVO DSDT EC.TMPx access, max 8 sensors */
+> +=09=09return TPACPI_THERMAL_ACPI_TMP07;
+> +=09}
+> +
+> +=09/* temperatures not supported on 570, G4x, R30, R31, R32 */
+> +=09return TPACPI_THERMAL_NONE;
+> +}
+> +
+>  /* idx is zero-based */
+>  static int thermal_get_sensor(int idx, s32 *value)
+>  {
+> @@ -6375,78 +6440,9 @@ static const struct attribute_group temp_label_att=
+r_group =3D {
+> =20
+>  static int __init thermal_init(struct ibm_init_struct *iibm)
+>  {
+> -=09u8 t, ta1, ta2, ver =3D 0;
+> -=09int i;
+> -=09int acpi_tmp7;
+> -
+>  =09vdbg_printk(TPACPI_DBG_INIT, "initializing thermal subdriver\n");
+> =20
+> -=09acpi_tmp7 =3D acpi_evalf(ec_handle, NULL, "TMP7", "qv");
+> -
+> -=09if (thinkpad_id.ec_model) {
+> -=09=09/*
+> -=09=09 * Direct EC access mode: sensors at registers
+> -=09=09 * 0x78-0x7F, 0xC0-0xC7.  Registers return 0x00 for
+> -=09=09 * non-implemented, thermal sensors return 0x80 when
+> -=09=09 * not available
+> -=09=09 * The above rule is unfortunately flawed. This has been seen with
+> -=09=09 * 0xC2 (power supply ID) causing thermal control problems.
+> -=09=09 * The EC version can be determined by offset 0xEF and at least fo=
+r
+> -=09=09 * version 3 the Lenovo firmware team confirmed that registers 0xC=
+0-0xC7
+> -=09=09 * are not thermal registers.
+> -=09=09 */
+> -=09=09if (!acpi_ec_read(TP_EC_FUNCREV, &ver))
+> -=09=09=09pr_warn("Thinkpad ACPI EC unable to access EC version\n");
+> -
+> -=09=09ta1 =3D ta2 =3D 0;
+> -=09=09for (i =3D 0; i < 8; i++) {
+> -=09=09=09if (acpi_ec_read(TP_EC_THERMAL_TMP0 + i, &t)) {
+> -=09=09=09=09ta1 |=3D t;
+> -=09=09=09} else {
+> -=09=09=09=09ta1 =3D 0;
+> -=09=09=09=09break;
+> -=09=09=09}
+> -=09=09=09if (ver < 3) {
+> -=09=09=09=09if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
+> -=09=09=09=09=09ta2 |=3D t;
+> -=09=09=09=09} else {
+> -=09=09=09=09=09ta1 =3D 0;
+> -=09=09=09=09=09break;
+> -=09=09=09=09}
+> -=09=09=09}
+> -=09=09}
+> -=09=09if (ta1 =3D=3D 0) {
+> -=09=09=09/* This is sheer paranoia, but we handle it anyway */
+> -=09=09=09if (acpi_tmp7) {
+> -=09=09=09=09pr_err("ThinkPad ACPI EC access misbehaving, falling back to=
+ ACPI TMPx access mode\n");
+> -=09=09=09=09thermal_read_mode =3D TPACPI_THERMAL_ACPI_TMP07;
+
+Eh, where did this go in the new helper?
+
+--=20
+ i.
+
+> -=09=09=09} else {
+> -=09=09=09=09pr_err("ThinkPad ACPI EC access misbehaving, disabling therm=
+al sensors access\n");
+> -=09=09=09=09thermal_read_mode =3D TPACPI_THERMAL_NONE;
+> -=09=09=09}
+> -=09=09} else {
+> -=09=09=09if (ver >=3D 3) {
+> -=09=09=09=09thermal_read_mode =3D TPACPI_THERMAL_TPEC_8;
+> -=09=09=09=09thermal_use_labels =3D true;
+> -=09=09=09} else {
+> -=09=09=09=09thermal_read_mode =3D
+> -=09=09=09=09=09(ta2 !=3D 0) ?
+> -=09=09=09=09=09TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC_8;
+> -=09=09=09}
+> -=09=09}
+> -=09} else if (acpi_tmp7) {
+> -=09=09if (tpacpi_is_ibm() &&
+> -=09=09    acpi_evalf(ec_handle, NULL, "UPDT", "qv")) {
+> -=09=09=09/* 600e/x, 770e, 770x */
+> -=09=09=09thermal_read_mode =3D TPACPI_THERMAL_ACPI_UPDT;
+> -=09=09} else {
+> -=09=09=09/* IBM/LENOVO DSDT EC.TMPx access, max 8 sensors */
+> -=09=09=09thermal_read_mode =3D TPACPI_THERMAL_ACPI_TMP07;
+> -=09=09}
+> -=09} else {
+> -=09=09/* temperatures not supported on 570, G4x, R30, R31, R32 */
+> -=09=09thermal_read_mode =3D TPACPI_THERMAL_NONE;
+> -=09}
+> +=09thermal_read_mode =3D thermal_read_mode_check();
+> =20
+>  =09vdbg_printk(TPACPI_DBG_INIT, "thermal is %s, mode %d\n",
+>  =09=09str_supported(thermal_read_mode !=3D TPACPI_THERMAL_NONE),
+>=20
+
+--8323328-900362618-1707904344=:1008--
 
