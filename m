@@ -1,141 +1,187 @@
-Return-Path: <linux-kernel+bounces-65505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02200854DF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:19:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DDA854E02
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FEE1C26145
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3A0A1F225B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3165FF17;
-	Wed, 14 Feb 2024 16:19:17 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C9A604B2;
+	Wed, 14 Feb 2024 16:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZCU26HMn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004105C8F9;
-	Wed, 14 Feb 2024 16:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69B25FF1E;
+	Wed, 14 Feb 2024 16:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927557; cv=none; b=uEIb5Kn67WL84c6dxDkn8/kHe19M+RKkCK59ovxZS8Xu59wrhUzMELEN710C7AcwrqzsOH3R77bgSnwax8zc5fpZCUHE95G2YrTKMkPJe6wVTXyQmzAiyLu/IxCK/feJjuXHlTAb8eTTztCPoOwcmx1tsfeKZeLBGka2MvVFrhY=
+	t=1707927764; cv=none; b=rFNm2EAXX3KqLCJvjJlEnS0rxDzSV/vi1CY7Lv1xQfSNpvwTmo8QOeNJ6bCx8SIxXNK6EUYCQr9EwR4ZYFu1Y7JYOE9EaYNbZYBPFF7VcCTEauNIItnmb6rja/yZ/Tbr3YwHON8hU/OaaehG+uwS6EFGjs0i3yOhKdWLFQpCqTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927557; c=relaxed/simple;
-	bh=FgoKfr/kiklKS0MR9RdlQzsKfKHg1gO0Og/ldxC+h6Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=vGt2G6MRa6F76oieZZHtXL2ctZDPfRuqNlDTqOaEWbt0FWDTGIRItWgcuH/QZfXKLJBoptOeW6U4Ecjz4MqqMB6l4igN1t8csTv6Eqyup1pUX9wehIlI3HDA1lDovgOfTRyvXQ0xsAQZnqGX3G9nwaUvbrHC4CuHpUFL+EZiD2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB86CC433F1;
-	Wed, 14 Feb 2024 16:19:15 +0000 (UTC)
-Date: Wed, 14 Feb 2024 11:20:46 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Kalle@web.codeaurora.org, "Valo <kvalo"@kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH v2] tracing: Inform kmemleak of saved_cmdlines allocation
-Message-ID: <20240214112046.09a322d6@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707927764; c=relaxed/simple;
+	bh=/p1Alr34TjW78H6O+WCKsMe1YvlhwfLn1wdHdogT8+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oqq69lBoI73beqmSlrFWt4sRq+SXgJEmEVnPAQ19aYPITuAZf9WFuFx/QjfptNYreVyxqdos6s0pIJSB5R0IPfkJMFwAS6tsDQMeVtHVrrbZ2uhUEMue4y0ENu9IFOM108S5FM41OMhqUPKRJ3q9B1Hh3UxpoF7bbQkt9eeYds4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZCU26HMn; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707927763; x=1739463763;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/p1Alr34TjW78H6O+WCKsMe1YvlhwfLn1wdHdogT8+A=;
+  b=ZCU26HMnfmcFb3LFzj8PAjkAHsxCx3DYGF3Zz0c4EgioqoAjEtTzl1M3
+   +a3r81R5dDd6bBLA5j0hhoNJGx1v/0XP233lw8D/4PP/5RYNEp1YH+WVs
+   nL26YVLKH8UpVUgz8EO2tTf3X03zg9Ey63DNbc8OAqLG49wUI6Hyt/hKM
+   rfOkWAk16UPSU10OUFr/E0wt4VUFLBGHTJWUjDp3W+66h15Ude5D++1A6
+   danyyRfa/lQ5/nNdEZmenXdh8dxcuMluyjHVCmkuZ6YnFRx5Q94zeckgW
+   hECvuPrV65IQ0u2q7PoG37niH0Vm4nWy0ZA+xbAIk9m1nc91wFISSMzUM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5755519"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="5755519"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 08:22:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="26399956"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmviesa002.fm.intel.com with ESMTP; 14 Feb 2024 08:22:38 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/7] dma: skip calling no-op sync ops when possible
+Date: Wed, 14 Feb 2024 17:21:54 +0100
+Message-ID: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The series grew from Eric's idea and patch at [0]. The idea of using the
+shortcut for direct DMA as well belongs to Chris.
 
-The allocation of the struct saved_cmdlines_buffer structure changed from:
+When an architecture doesn't need DMA synchronization and the buffer is
+not an SWIOTLB buffer, most of times the kernel and the drivers end up
+calling DMA sync operations for nothing.
+Even when DMA is direct, this involves a good non-inline call ladder and
+eats a bunch of CPU time. With IOMMU, this results in calling indirect
+calls on hotpath just to check what is already known and return.
+XSk is been using a custom shortcut for that for quite some time.
+I recently wanted to introduce a similar one for Page Pool. Let's combine
+all this into one generic shortcut, which would cover all DMA sync ops
+and all types of DMA (direct, IOMMU, ...).
 
-        s = kmalloc(sizeof(*s), GFP_KERNEL);
-	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
+* #1 adds stub inlines to be able to skip DMA sync ops or even compile
+     them out when not needed.
+* #2 adds the generic shortcut and enables it for direct DMA.
+* #3 adds ability to skip DMA syncs behind an IOMMU.
+* #4-5 are just cleanups for Page Pool to avoid merge conflicts in future.
+* #6 checks for the shortcut as early as possible in the Page Pool code to
+     make sure no cycles wasted.
+* #7 replaces XSk's shortcut with the generic one.
 
-to:
+On 100G NIC, the result is +3-5% for direct DMA and +10-11% for IOMMU.
+As a bonus, XSk core now allows batched buffer allocations for IOMMU
+setups.
+If the shortcut is not available on some system, there should be no
+visible performance regressions.
 
-	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-	order = get_order(orig_size);
-	size = 1 << (order + PAGE_SHIFT);
-	page = alloc_pages(GFP_KERNEL, order);
-	if (!page)
-		return NULL;
+[0] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
 
-	s = page_address(page);
-	memset(s, 0, sizeof(*s));
+Alexander Lobakin (7):
+  dma: compile-out DMA sync op calls when not used
+  dma: avoid redundant calls for sync operations
+  iommu/dma: avoid expensive indirect calls for sync operations
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  page_pool: check for DMA sync shortcut earlier
+  xsk: use generic DMA sync shortcut instead of a custom one
 
-	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
+ kernel/dma/Kconfig                            |  4 +
+ include/net/page_pool/types.h                 | 21 ++++-
+ include/linux/device.h                        |  5 ++
+ include/linux/dma-map-ops.h                   | 21 +++++
+ include/linux/dma-mapping.h                   | 84 ++++++++++++++++---
+ include/net/xdp_sock_drv.h                    |  7 +-
+ include/net/xsk_buff_pool.h                   | 13 +--
+ drivers/base/dd.c                             |  2 +
+ drivers/iommu/dma-iommu.c                     |  3 +-
+ drivers/net/ethernet/engleder/tsnep_main.c    |  2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c     |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |  2 +-
+ .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  2 +-
+ drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |  2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +-
+ kernel/dma/mapping.c                          | 59 ++++++++++---
+ kernel/dma/swiotlb.c                          |  8 ++
+ net/core/page_pool.c                          | 67 +++++++++------
+ net/xdp/xsk_buff_pool.c                       | 29 +------
+ 23 files changed, 239 insertions(+), 106 deletions(-)
 
-Where that s->saved_cmdlines allocation looks to be a dangling allocation
-to kmemleak. That's because kmemleak only keeps track of kmalloc()
-allocations. For allocations that use page_alloc() directly, the kmemleak
-needs to be explicitly informed about it.
-
-Add kmemleak_alloc() and kmemleak_free() around the page allocation so
-that it doesn't give the following false positive:
-
-unreferenced object 0xffff8881010c8000 (size 32760):
-  comm "swapper", pid 0, jiffies 4294667296
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace (crc ae6ec1b9):
-    [<ffffffff86722405>] kmemleak_alloc+0x45/0x80
-    [<ffffffff8414028d>] __kmalloc_large_node+0x10d/0x190
-    [<ffffffff84146ab1>] __kmalloc+0x3b1/0x4c0
-    [<ffffffff83ed7103>] allocate_cmdlines_buffer+0x113/0x230
-    [<ffffffff88649c34>] tracer_alloc_buffers.isra.0+0x124/0x460
-    [<ffffffff8864a174>] early_trace_init+0x14/0xa0
-    [<ffffffff885dd5ae>] start_kernel+0x12e/0x3c0
-    [<ffffffff885f5758>] x86_64_start_reservations+0x18/0x30
-    [<ffffffff885f582b>] x86_64_start_kernel+0x7b/0x80
-    [<ffffffff83a001c3>] secondary_startup_64_no_verify+0x15e/0x16b
-
-Link: https://lore.kernel.org/linux-trace-kernel/87r0hfnr9r.fsf@kernel.org/
-
-Fixes: 44dc5c41b5b1 ("tracing: Fix wasted memory in saved_cmdlines logic")
-Reported-by: Kalle Valo <kvalo@kernel.org>
-Tested-by: Kalle Valo <kvalo@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240214102614.1a1405be@gandalf.local.home/
+From v2[1]:
+* #1:
+  * use two tabs for indenting multi-line function prototypes (Chris);
+* #2:
+  * make shortcut clearing function generic and move it out of the
+    SWIOTLB code (Chris);
+  * remove dma_set_skip_sync(): use direct assignment during the initial
+    setup, not used anywhere else (Chris);
+  * commitmsg: remove "NIC" and the workaround paragraph (Chris).
 
-- Rebased on my urgent branch that still has the code in trace.c and not
-  my for-next local branch that moved it to trace_sched_switch.c
+From v1[2]:
+* #1:
+  * use static inlines instead of macros (Chris);
+  * move CONFIG_DMA_NEED_SYNC check into dma_skip_sync() (Robin);
+* #2:
+  * use a new dma_map_ops flag instead of new callback, assume the same
+    conditions as for direct DMA are enough (Petr, Robin);
+  * add more code comments to make sure the whole idea and path are
+    clear (Petr, Robin, Chris);
+* #2, #3: correct the Git tags and the authorship a bit.
 
- kernel/trace/trace.c | 3 +++
- 1 file changed, 3 insertions(+)
+Not addressed in v2:
+* #1:
+  * dma_sync_*range_*() are still wrapped, as some subsystems may want
+    to call the underscored versions directly (e.g. Page Pool);
+* #2:
+  * the new dev->dma_skip_sync bit is still preferred over checking for
+    READ_ONCE(dev->dma_uses_io_tlb) + dev_is_dma_coherent() on hotpath
+    as a faster solution.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index aa54810e8b56..8198bfc54b58 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -39,6 +39,7 @@
- #include <linux/ctype.h>
- #include <linux/init.h>
- #include <linux/panic_notifier.h>
-+#include <linux/kmemleak.h>
- #include <linux/poll.h>
- #include <linux/nmi.h>
- #include <linux/fs.h>
-@@ -2339,6 +2340,7 @@ static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
- 	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
- 
- 	kfree(s->map_cmdline_to_pid);
-+	kmemleak_free(s);
- 	free_pages((unsigned long)s, order);
- }
- 
-@@ -2358,6 +2360,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
- 		return NULL;
- 
- 	s = page_address(page);
-+	kmemleak_alloc(s, size, 1, GFP_KERNEL);
- 	memset(s, 0, sizeof(*s));
- 
- 	/* Round up to actual allocation */
+[1] https://lore.kernel.org/netdev/20240205110426.764393-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20240126135456.704351-1-aleksander.lobakin@intel.com
 -- 
 2.43.0
 
