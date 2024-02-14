@@ -1,293 +1,109 @@
-Return-Path: <linux-kernel+bounces-65700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F7F8550A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:45:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AC1855087
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AC4FB2B955
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B2161C2934C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332D885634;
-	Wed, 14 Feb 2024 17:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A64EA84A3D;
+	Wed, 14 Feb 2024 17:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="R0QCwz5D"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jL8OrNId"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A528A85628
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA5683CC7
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707932485; cv=none; b=sMuRZ5aHaNCFwFr1oPHbA+wjcjLZNeWMMGRpiIFx67QxIdnUDC8t8cNQPR4MlrqDYNuSjEnRqqxuyrJ28ZdZlddT8xR6A3Xiqie+xfpSh/k4TsEIPrUkSn5qiiVmSOFxVq0hYuk6BbP+k/ydOswQThun5gLTlPc3aGjY0JaO6/Q=
+	t=1707932433; cv=none; b=maTKVWFxhocxlMWbGXoG1jXcXL+NlWeH/HAN2rx/T6U6TcoPM506W6O0Kp2516R+Zr+R4aggNPhN4YORjxAht8PKbo8+7/PBMZV4R5zWRHE7qyzCLHS7EVwedRB7EQrQCwgkWawP+fcBx/oRSHQnnzPigBZXdUYh/0gfTbz4Hf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707932485; c=relaxed/simple;
-	bh=nomzOqG8qtQlSxsBxKy5X1xMNj4S0dr5Ifd+oiSg+rg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T3rGhDKbezfLN6DKu5NhQf0KL7moQZwxPkGXLmE6vboQZCb5S5+ajkhuDfBGtVVd6kkV1m6JuMbrAnt1q5AwtZZHKcdoRrDx8LygBXE/e9fWxnsNoGF7V0fV9cyaXmMxqKgOYXxw1gxoMAt+BgkKzcku+WjkwoiY2cQBAAdtQBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=R0QCwz5D; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e2e44aad03so2024795a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:41:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1707932482; x=1708537282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EjezFELGsG5yYdoO8o3jjgWXUKsZRmSJ3eM36KaKRP0=;
-        b=R0QCwz5DPYqkFzxtiGF6d2r89yTg+iapiIe5ujgDb5S47otsJJ3m8A2FgxcU9anVCp
-         WmPg5fow8UvZ6abaRs5Y8KImqQIvd4/OkhjOhMkq9e79J8OqwRpIa9/6HJ/cYpOWs0VE
-         oqMvCHidQm/tKJpUWumhYUW/c+XOOQ5MIVAbtg/eS8oD7bz+RIy/mBMdq6iGLSwyvnLw
-         jHVwkfxHeEt/pom/tg4LzKf7WwzOhaHiIFkEQ7sd4mI1ylgSlOd5dWKjy2dUrx/DSl67
-         a+8wFXYrgkOCavdO3PZ49HHheRCoLPEcQD+V8hoguxC3PualT4UbTdiH0kYuIXACl5M8
-         N1fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707932482; x=1708537282;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EjezFELGsG5yYdoO8o3jjgWXUKsZRmSJ3eM36KaKRP0=;
-        b=BcewFYxwXvoSdqNNAJRBiwcLw2PI6cb5dbHgMVFrRfsjYlLPyA17V3dsjd9I9K+TKx
-         HdTQ1lWFNWxDY1WQVlA08JtUnmUfOiqA3E3Bez/RmxTB4bY2ou7CkajbObzY3RJ7gEfz
-         pTWIrwbN1gMkYaDUS3NRY18BqWRDOexPS4O+8lecd18IZk6227aagjNEFkJkK/0SWmDH
-         iIt8DRfWoKYGz1/dz4hveTdF9acOq64IWZGegaMn1TD30X+QffZ+cT7zAZdKiPa3H6PS
-         TtqHMyEG669MhGd48UB8WKimDCfCVHOdsrFje7Lkbvw8aBs4TvIpssf2YWOIj0l0uev3
-         f4ZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9pvy7t/1pDfhGFPNHxsT8zpzIlUuzgExGfamqNkErGOasg/hw9QsrpMwz4ZOO4a8+8H6xIW+y1NQ7pgw8q7sUoBTNokXtfbhznIBf
-X-Gm-Message-State: AOJu0YwIPG1yfJRdjxLrr5BqZaY6PPBTiARad+PhsvmkLTlm7XHceFrD
-	GxbOAKE0BXaHDinWKHQ9wrCsBdRzeMnaS+zsPAAxe/3YsxGZ9KdNRBXvuSqGTg==
-X-Google-Smtp-Source: AGHT+IFmSEieag8tCyc8604BELPKwiIo404ZfsK6cYr9yraeW3R4mfErPRQxwNVYXWIs5kv7eyTTpg==
-X-Received: by 2002:a05:6358:2c8e:b0:179:1f8b:445a with SMTP id l14-20020a0563582c8e00b001791f8b445amr3924795rwm.22.1707932482324;
-        Wed, 14 Feb 2024 09:41:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVnlM9zlbKauAzR+O8NeswMzBEQYMRe6SdGtLXHn/uwjuvV8h43PMKUBzKLCUE9aRV2+93xF/DSRqB51At0GMA+YYik2LfhT0r9Crq/4gW8JMAfnKoXl4scVMznsiXU0/1wKWBYKMSpApTNbCQl+72tg53WTWtuvDLlNZMnhiixbI9K7nUjBu3NUO2hH5KVu1Ergerb+p6hz5EPrL4glSTALBkq4rD3JxhxEaYiGPGa+XOfpfTBK/F141MywGj5TP4JVWbBK3P7nMBSnRIeX5Zu9OM13Q0OVN1lyQs61JEaqINGJ0TVte78/1GyrKq/ux/4LwN5DK/6dtEHpR+0BFEgu7l37GcqU59IwJr75apKFuxAB7dhyB5P1vif6bwxWDXdchPiaJgz2NAESVqq5kpM4hVsQ/7S6X95tlVe/jdivNR7W/WVGNnFlnNd9chn1Q14NMYpxaJA2zrPDgaUOfYSX+Wtbewj7b/VZQTZXtYOyLgnFZxCF8BrGcYAB2XhyE+zR0+odhLPKdvyGiIR0akRS5XZtT6/SCgqOyYT+7Njy8bOn8gwKxB5xfjyGRB4HxQa7zuoaVB5UmCHGUg9RZsrin0QkZo/exrBSj2p5MDypJetWkFDdPASRG1lzWUXGJY2LCr5kjT5UoWDAIrs+uBhhCIB7BKObl9Yibc=
-Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id p5-20020aa78605000000b006e0874cbaefsm9567604pfn.27.2024.02.14.09.41.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 09:41:21 -0800 (PST)
-From: Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To: Kyle Huey <khuey@kylehuey.com>,
-	linux-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Robert O'Callahan <robert@ocallahan.org>,
-	Song Liu <song@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [RESEND PATCH v5 4/4] selftest/bpf: Test a perf bpf program that suppresses side effects.
-Date: Wed, 14 Feb 2024 09:39:35 -0800
-Message-Id: <20240214173950.18570-5-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240214173950.18570-1-khuey@kylehuey.com>
-References: <20240214173950.18570-1-khuey@kylehuey.com>
+	s=arc-20240116; t=1707932433; c=relaxed/simple;
+	bh=HZSTDjLTjtJutTTm3uF/PqRH0u2jT56Wvocr3fhg+CQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ea77XKdu4oCesjXth7DpbyyEJ8/902sVqGTCKnNDk1ayA1yl9s2H2us34ACRt2RHr/7tFpBrqz1qJzsNFz79jo6e2VqUfSQPBak4wFjBPAMKZZcPcnzFU61kZ7T8iQZddD5SYPi54BL+/34fcKelhK7hoO41q5KsHK38L8ynDdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jL8OrNId; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707932431; x=1739468431;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=HZSTDjLTjtJutTTm3uF/PqRH0u2jT56Wvocr3fhg+CQ=;
+  b=jL8OrNId4wj6YGCki4EV5TgbMi7QxixyvQKUY9dCX9qMS2utB9NPOHw4
+   R9BMgeXVX2UMCJYqzyx01lk/fM1Mp9XyUFjbBvOxu59U3K8/RoOPdE9et
+   K04njc6XVQ2Rhi24Lc7OSGRREaDywEzdDlMBOHPbrh8F91GxwaSxRP2HE
+   bCdm8v6jSYhXwG5tBVXN5yjkTyozWkUee+BlSEkqJJoMepCyPzUKrYg+k
+   UOL5hwQPmhpdEAQWv54fY937+a6wE/Qo1m65f9R3eIQEoumtsBqkHB07/
+   z2zC697sXuqzWifa1PGRSRkiq/P16HdYbp/9sktf6N9zJVK9PVccb8mPj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="13379235"
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="13379235"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:40:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912092379"
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="912092379"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:40:28 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1raJFC-00000004YZP-08cR;
+	Wed, 14 Feb 2024 19:40:26 +0200
+Date: Wed, 14 Feb 2024 19:40:25 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>
+Subject: Re: [PATCH v2 2/3] auxdisplay: Move cfag12864b.h to the subsystem
+ folder
+Message-ID: <Zcz7Cfc5XSM2MtKV@smile.fi.intel.com>
+References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
+ <20240212132515.2660837-4-andriy.shevchenko@linux.intel.com>
+ <Zcoe9axtLXxB7Jeo@smile.fi.intel.com>
+ <CAMuHMdUJ4gSGo4A0BVGkieWvNyqa9Dv_rQVMFj9N8GWYoKCZVg@mail.gmail.com>
+ <CANiq72muoZHzX+qNKabYWnH738okKqrfAruUOpY-4WUJBLP=Yw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72muoZHzX+qNKabYWnH738okKqrfAruUOpY-4WUJBLP=Yw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The test sets a hardware breakpoint and uses a bpf program to suppress the
-side effects of a perf event sample, including I/O availability signals,
-SIGTRAPs, and decrementing the event counter limit, if the ip matches the
-expected value. Then the function with the breakpoint is executed multiple
-times to test that all effects behave as expected.
+On Wed, Feb 14, 2024 at 06:15:48PM +0100, Miguel Ojeda wrote:
+> On Wed, Feb 14, 2024 at 5:59 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >
+> > /me looked at your branch
+> >
+> > Just use a pattern? drivers/auxdisplay/cfag12864b*
+> 
+> +1
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/perf_skip.c      | 137 ++++++++++++++++++
- .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
- 2 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+I don't want to rebase, esp. taking into account the proposal below.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-new file mode 100644
-index 000000000000..37d8618800e4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <test_progs.h>
-+#include "test_perf_skip.skel.h"
-+#include <linux/compiler.h>
-+#include <linux/hw_breakpoint.h>
-+#include <sys/mman.h>
-+
-+#ifndef TRAP_PERF
-+#define TRAP_PERF 6
-+#endif
-+
-+int sigio_count, sigtrap_count;
-+
-+static void handle_sigio(int sig __always_unused)
-+{
-+	++sigio_count;
-+}
-+
-+static void handle_sigtrap(int signum __always_unused,
-+			   siginfo_t *info,
-+			   void *ucontext __always_unused)
-+{
-+	ASSERT_EQ(info->si_code, TRAP_PERF, "si_code");
-+	++sigtrap_count;
-+}
-+
-+static noinline int test_function(void)
-+{
-+	asm volatile ("");
-+	return 0;
-+}
-+
-+void serial_test_perf_skip(void)
-+{
-+	struct sigaction action = {};
-+	struct sigaction previous_sigtrap;
-+	sighandler_t previous_sigio = SIG_ERR;
-+	struct test_perf_skip *skel = NULL;
-+	struct perf_event_attr attr = {};
-+	int perf_fd = -1;
-+	int err;
-+	struct f_owner_ex owner;
-+	struct bpf_link *prog_link = NULL;
-+
-+	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-+	action.sa_sigaction = handle_sigtrap;
-+	sigemptyset(&action.sa_mask);
-+	if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), "sigaction"))
-+		return;
-+
-+	previous_sigio = signal(SIGIO, handle_sigio);
-+	if (!ASSERT_NEQ(previous_sigio, SIG_ERR, "signal"))
-+		goto cleanup;
-+
-+	skel = test_perf_skip__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	attr.type = PERF_TYPE_BREAKPOINT;
-+	attr.size = sizeof(attr);
-+	attr.bp_type = HW_BREAKPOINT_X;
-+	attr.bp_addr = (uintptr_t)test_function;
-+	attr.bp_len = sizeof(long);
-+	attr.sample_period = 1;
-+	attr.sample_type = PERF_SAMPLE_IP;
-+	attr.pinned = 1;
-+	attr.exclude_kernel = 1;
-+	attr.exclude_hv = 1;
-+	attr.precise_ip = 3;
-+	attr.sigtrap = 1;
-+	attr.remove_on_exec = 1;
-+
-+	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-+	if (perf_fd < 0 && (errno == ENOENT || errno == EOPNOTSUPP)) {
-+		printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n");
-+		test__skip();
-+		goto cleanup;
-+	}
-+	if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
-+		goto cleanup;
-+
-+	/* Configure the perf event to signal on sample. */
-+	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
-+	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-+		goto cleanup;
-+
-+	owner.type = F_OWNER_TID;
-+	owner.pid = syscall(__NR_gettid);
-+	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
-+	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-+		goto cleanup;
-+
-+	/* Allow at most one sample. A sample rejected by bpf should
-+	 * not count against this.
-+	 */
-+	err = ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
-+	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
-+		goto cleanup;
-+
-+	prog_link = bpf_program__attach_perf_event(skel->progs.handler, perf_fd);
-+	if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event"))
-+		goto cleanup;
-+
-+	/* Configure the bpf program to suppress the sample. */
-+	skel->bss->ip = (uintptr_t)test_function;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 0, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
-+
-+	/* Configure the bpf program to allow the sample. */
-+	skel->bss->ip = 0;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+	/* Test that the sample above is the only one allowed (by perf, not
-+	 * by bpf)
-+	 */
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+cleanup:
-+	bpf_link__destroy(prog_link);
-+	if (perf_fd >= 0)
-+		close(perf_fd);
-+	test_perf_skip__destroy(skel);
-+
-+	if (previous_sigio != SIG_ERR)
-+		signal(SIGIO, previous_sigio);
-+	sigaction(SIGTRAP, &previous_sigtrap, NULL);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-new file mode 100644
-index 000000000000..7eb8b6de7a57
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+uintptr_t ip;
-+
-+SEC("perf_event")
-+int handler(struct bpf_perf_event_data *data)
-+{
-+	/* Skip events that have the correct ip. */
-+	return ip != PT_REGS_IP(&data->regs);
-+}
-+
-+char _license[] SEC("license") = "GPL";
+> In fact, for `cfag12864b{,fb}` and `ks0108`, they should probably go
+> into staging anyway and removed if nobody complains (I am not aware of
+> anyone using them nowadays).
+
+Send a patch?
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
