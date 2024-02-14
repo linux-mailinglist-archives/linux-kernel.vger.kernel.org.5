@@ -1,162 +1,143 @@
-Return-Path: <linux-kernel+bounces-65915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2368553B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:09:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC438553B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0A5B286726
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F421F2B102
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF9613DBA5;
-	Wed, 14 Feb 2024 20:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEA413DBAC;
+	Wed, 14 Feb 2024 20:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="oVdD9OVj"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwRLB3iD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7745D5C90E;
-	Wed, 14 Feb 2024 20:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EF613DB9F;
+	Wed, 14 Feb 2024 20:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707941383; cv=none; b=ieQ4Vews0PtCSW41r+XM1o8rioL21Gh4jUwhikivtIe5HCJHdei5ofid+P6tNTiOmKjghObexzU5hEJ2YZv4aZhEvkdA06f0Wdx77x778BBDIqBf1dSSioe+I+J6GRtOujRXl3ReVYF5olCDLDBIcvsNJps1PXDjxHOzAjiNxpo=
+	t=1707941395; cv=none; b=O7FQAxmGTshPVkyHMkFbLBCQkZ1aeB37Upqy12eYbsYc+arHhpKG+2n0XXzxVVN/QkdE2tpWvUlYzY9r/hZ7aQYlbxkhsK6F+oWUvV53fzYN2BaH9PvhvXIztgi1lJb4+ih2AsoAVbE21NMIdjYimGckBppEOfKmF60L6DmTsrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707941383; c=relaxed/simple;
-	bh=FAp8q6u4+OafC5yLy+uYi9sE/N2x6rE7jj5vjk/Ekvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o/8WZBFHNZFU1X5fQpr65hIwTwzvDRhikjm+aC6rd2jYfr076+FN48aqE9/lss2KpRuUioodqq2uhHOOLyo7KsokSorW5sp9hF7ISovrpQztyaM0nfFfpzCKJ3v+EERyLwhl5HDFHiZojh+rr8RYWcwlF2pdkJgkyHJDtcwCJeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=oVdD9OVj; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 614671A0CF9;
-	Wed, 14 Feb 2024 21:09:38 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1707941379; bh=pnr9jHJcWT1LGtqicgTbuE7ZC/LWYS+FDN6jvOn19r8=;
+	s=arc-20240116; t=1707941395; c=relaxed/simple;
+	bh=4azwoIdbG/L/6RFnx1ncMgHMgVCWQZsgXPP6KuYxyxM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cs3UaD6cjgKpqz5vwgdeU+LZqXTiyaJXyFjLu/BvlveXhruq07rAxltmGlaImgbzyeSwdYFI2ZOhzLvfJqtJXro3ytyCw24KBvpkBquB3UsEI7flQEbLV+iiB70H3SOXEa8llkmGy8R2dWaTX8cwSyl7tNysLrzNOxe3HNOIqs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwRLB3iD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39CE9C433C7;
+	Wed, 14 Feb 2024 20:09:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707941395;
+	bh=4azwoIdbG/L/6RFnx1ncMgHMgVCWQZsgXPP6KuYxyxM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oVdD9OVjXgVy9KOB0DRMYyhrHzr/TgA6xFoW1aTJDVuDp7JjCQgy8toowLVZunOOO
-	 aIwP48IDMxdda9abPRVjcxcHN+n9dRBbVKUwzi6McjyFz+cJKI/o2HbWCGSI2vjvz7
-	 xLIyesi1VXn64q+mjSb9Mz1cLd4YjZs6LRK3SRTsqzlGIj6h5dUjJ1h2Nzn8U4qYZb
-	 Qn/SKJRwTF0TP9kkdhpzMcsf0o9jUHXlGtMwi3PH2lk5aQwxuUXKhj+zgaCdpqU5S3
-	 61djeFCzEByPTh/ayK0TnQPCb/dEYtZsb34i+VP0Ab5Yh7uJ5QX4UNoiqcnK6E2BHt
-	 XSKwIQL2hegmg==
-Date: Wed, 14 Feb 2024 21:09:37 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Morton
- <akpm@linux-foundation.org>, Petr Tesarik <petrtesarik@huaweicloud.com>,
- Jonathan Corbet <corbet@lwn.net>, David Kaplan <david.kaplan@amd.com>,
- Larry Dewey <larry.dewey@amd.com>, Elena Reshetova
- <elena.reshetova@intel.com>, Carlos Bilbao <carlos.bilbao@amd.com>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Randy Dunlap
- <rdunlap@infradead.org>, Petr Mladek <pmladek@suse.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, Marc
- =?UTF-8?B?QXVyw6hsZQ==?= La France <tsi@tuyoix.net>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Nhat Pham <nphamcs@gmail.com>, "Christian Brauner
- (Microsoft)" <brauner@kernel.org>, Douglas Anderson
- <dianders@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>, Guenter
- Roeck <groeck@chromium.org>, Mike Christie <michael.christie@oracle.com>,
- Maninder Singh <maninder1.s@samsung.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 5/5] sbm: SandBox Mode documentation
-Message-ID: <20240214210937.3a19945f@meshulam.tesarici.cz>
-In-Reply-To: <g3llwlzlhatvz2a23cntx7lscqarepq4uyaq6wne6my7ddo3mk@6b64pjcnykah>
-References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
-	<20240214113035.2117-6-petrtesarik@huaweicloud.com>
-	<20240214053053.982b48d993ae99dad1d59020@linux-foundation.org>
-	<2024021425-audition-expand-2901@gregkh>
-	<20240214155524.719ffb15@meshulam.tesarici.cz>
-	<2024021415-jokester-cackle-2923@gregkh>
-	<20240214173112.138e0e29@meshulam.tesarici.cz>
-	<g3llwlzlhatvz2a23cntx7lscqarepq4uyaq6wne6my7ddo3mk@6b64pjcnykah>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	b=NwRLB3iDFB91KJiT18wZmerQ+hDWKgGjk1X4ykBWIzKrrUnLS2zbOeE/en64tqWvT
+	 axQWgz9jfEAhZpnVWUA8ssURc1jKUHZ/bZeRz3J8OoriEjDCkP9IOqk9OsXonLc/7w
+	 x7BzyIqIAazjivTJTVocrBP5zJ8mnatvXnN0IHF+4GQEC+ay4YEcJAjMbu3iwp9T6j
+	 1ew4dU0T1M9zB7omd6WFLZbIkqN3eV0RxmUEMktHcwuMOFRVXFW70OZcQTK2mujN3q
+	 d8FU+D5dLG+iPg293XSEszOaYZ63gCeTMIH2TsxmvhJlqP2BleTbfKv8DZP585JNaD
+	 z7NzcLFP2A5lA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raLZo-003GHt-SZ;
+	Wed, 14 Feb 2024 20:09:52 +0000
+Date: Wed, 14 Feb 2024 20:09:52 +0000
+Message-ID: <86v86q4xkf.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for interacting with an ITS
+In-Reply-To: <Zc0NsFm40nIqTmRf@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<20240213094114.3961683-1-oliver.upton@linux.dev>
+	<86zfw33qae.wl-maz@kernel.org>
+	<Zc0NsFm40nIqTmRf@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, 14 Feb 2024 13:54:54 -0500
-Kent Overstreet <kent.overstreet@linux.dev> wrote:
+On Wed, 14 Feb 2024 19:00:00 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Wed, Feb 14, 2024 at 05:32:25PM +0000, Marc Zyngier wrote:
+> > On Tue, 13 Feb 2024 09:41:14 +0000,
+> > Oliver Upton <oliver.upton@linux.dev> wrote:
+> > > 
+> > > A prerequisite of testing LPI injection performance is of course
+> > > instantiating an ITS for the guest. Add a small library for creating an
+> > > ITS and interacting with it *from userspace*.
+> > > 
+> > > Yep, you read that right. KVM unintentionally allows userspace to send
+> > > commands to the virtual ITS via the command queue. Besides adding test
+> > > coverage for an elusive UAPI, interacting with the ITS in userspace
+> > > simplifies the handling of commands that need to allocate memory, like a
+> > > MAPD command with an ITT.
+> > 
+> > I don't mean to derail the party, but I really think we should plug
+> > this hole. Either that, or we make it an official interface for state
+> > restore. And don't we all love to have multiple interfaces to do the
+> > same thing?
+> 
+> Ok, I've thought about it a bit more and I'm fully convinced we need to
+> shut the door on this stupidity.
+> 
+> We expect CREADR == CWRITER at the time userspace saves the ITS
+> registers, but we have a *hideous* ordering issue on the restore path.
+> 
+> If the order of restore from userspace is CBASER, CWRITER, CREADR then
+> we **wind up replaying the entire command queue**. While insane, I'm
+> pretty sure it is legal for the guest to write garbage after the read
+> pointer has moved past a particular command index.
+> 
+> Fsck!!!
 
-> On Wed, Feb 14, 2024 at 05:31:12PM +0100, Petr Tesa=C5=99=C3=ADk wrote:
-> > On Wed, 14 Feb 2024 16:11:05 +0100
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >  =20
-> > > On Wed, Feb 14, 2024 at 03:55:24PM +0100, Petr Tesa=C5=99=C3=ADk wrot=
-e: =20
-> > > > OK, so why didn't I send the whole thing?
-> > > >=20
-> > > > Decomposition of the kernel requires many more changes, e.g. in lin=
-ker
-> > > > scripts. Some of them depend on this patch series. Before I go and
-> > > > clean up my code into something that can be submitted, I want to get
-> > > > feedback from guys like you, to know if the whole idea would be even
-> > > > considered, aka "Fail Fast".   =20
-> > >=20
-> > > We can't honestly consider this portion without seeing how it would
-> > > work, as we don't even see a working implementation that uses it to
-> > > verify it at all.
-> > >=20
-> > > The joy of adding new frameworks is that you need a user before anyone
-> > > can spend the time to review it, sorry. =20
-> >=20
-> > Thank your for a quick assessment. Will it be sufficient if I send some
-> > code for illustration (with some quick&dirty hacks to bridge the gaps),
-> > or do you need clean and nice kernel code? =20
->=20
-> Given that code is going to need a rewrite to make use of this anyways -
-> why not just do the rewrite in Rust?
+This is documented Documentation/virt/kvm/devices/arm-vgic-its.rst to
+some extent, and it is allowed for the guest to crap itself on behalf
+of userspace if the ordering isn't respected.
 
-Thank you for this question! I concur that rewriting the whole kernel
-in Rust would be a better option. I see two differences:
+> So, how about we do this:
+> 
+>  - Provide a uaccess hook for CWRITER that changes the write-pointer
+>    without processing any commands
+> 
+>  - Assert an invariant that at any time CWRITER or CREADR are read from
+>    userspace that CREADR == CWRITER. Fail the ioctl and scream if that
+>    isn't the case, so that way we never need to worry about processing
+>    'in-flight' commands at the destination.
 
-1. amount of work
-2. regressions
+Are we guaranteed that we cannot ever see CWRITER != CREADR at VM
+dumping time? I'm not convinced that we cannot preempt the vcpu thread
+at the right spot, specially given that you can have an arbitrary
+large batch of commands to execute.
 
-Rewriting something in Rust means pretty much writing it from scratch.
-Doing that necessarily introduces regressions. Old code has been used.
-It has been tested. In many corner cases. Lots of bugs have been found,
-and they=E2=80=99ve been fixed. If you write code from scratch, you lose mu=
-ch
-of the accumulated knowledge.
+Just add a page-fault to the mix, and a signal pending. Pronto, you
+see a guest exit and you should be able to start dumping things
+without the ITS having processed much. I haven't tried, but that
+doesn't seem totally unlikely.
 
-It may still pay off in the long run.
+	M.
 
-More importantly, sandbox mode can be viewed as a tool that enforces
-decomposition of kernel code. This decomposition is the main benefit.
-It requires understanding the dependencies among different parts of the
-kernel (both code flow and data flow), and that will in turn promote
-better design.
-
-> Then you get memory safety, which seems to be what you're trying to
-> achieve here.
->=20
-> Or, you say this is for when performance isn't critical - why not a user
-> mode helper?
-
-Processes in user mode are susceptible to all kinds of attacks you may
-want to avoid. Sandbox mode can be used in situations where user mode
-does not exist, e.g. to display a boot logo or to unpack initramfs.
-
-Sandbox mode is part of the kernel, hence signed, which may be relevant
-if the kernel is locked down, so you can use it e.g. to parse a key
-from the bootloader and put it on the trusted keyring.
-
-Regarding performance, sandbox overhead is somewhere between kernel
-mode and UMH. It is not suitable for time-critical code (like handling
-NIC interrupts), but it's still much faster than UMH.
-
-Petr T
+-- 
+Without deviation from the norm, progress is not possible.
 
