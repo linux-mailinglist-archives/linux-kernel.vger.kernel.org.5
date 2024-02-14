@@ -1,133 +1,174 @@
-Return-Path: <linux-kernel+bounces-65174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08608548E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:06:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 587538548EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76F9828CAAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:06:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F6D7B21353
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A461B7EA;
-	Wed, 14 Feb 2024 12:06:38 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8F81B7F9;
+	Wed, 14 Feb 2024 12:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MuxlAnTp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142581AADC;
-	Wed, 14 Feb 2024 12:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522E6199BE
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707912398; cv=none; b=Jc36pbIybtP+yxlnU6NAhNtj7pAjMI7mj4+WvDqa05wH8Mq/18YyY0vidcfss/qdz0jZMz8qA7d5wnTxuyxjH9s5uD5u1RZb0fil43ROgyM09/w9iDhNHNK1vWUPmfXxrFl69lSH1WRuSb0C8R6fWkN6Yjp+Z599fpbcberwc3U=
+	t=1707912594; cv=none; b=oLMbJWZAfGqYgnY9PEfGH90hD5uhadCdHOgV35I3TuQgMVNcRhud8NXwT1b8NC8vO3Y5lwXHQubDT0JSqr2VK3/pbmpMIGMA0+ko6Jd4WXKvkzT1cNl+vZZ+1m0nyAzXt0rfi6pYKBIYM26g90VsFTncGZNcSaYKOp5zZK6/jS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707912398; c=relaxed/simple;
-	bh=OpGJVKdC/fGBc82A/zCyqry22fkLQp5s0JfMov9Hylk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SxeziULUw32uvUrMGONhPD4uZK+CyhzEqotbaQw4VY3h5Inakrx1vGp5Dcn6HQNY0ogPfMfI8ZAQG/NPoAnEjT9s5ISyMZLvZMY+MxQJea+j24UYrunB7wTatjmmsK/8IJA0FH+rsv5Whf5h95pK1Cz4Ug2wAEu26qRgFgXuwfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZcJg0NPWz6D8X1;
-	Wed, 14 Feb 2024 20:02:43 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3591F1402CD;
-	Wed, 14 Feb 2024 20:06:09 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 12:06:08 +0000
-Date: Wed, 14 Feb 2024 12:06:07 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Hojin Nam <hj96.nam@samsung.com>
-CC: "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>, Wonjae Lee
-	<wj28.lee@samsung.com>, KyungSan Kim <ks0204.kim@samsung.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>
-Subject: Re: [PATCH] perf: CXL: fix CPMU filter value mask length
-Message-ID: <20240214120607.00002bdd@Huawei.com>
-In-Reply-To: <20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b@epcms2p8>
-References: <CGME20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b@epcms2p8>
-	<20240214045214epcms2p81d2ea826483fb4aecf19930f2755d55b@epcms2p8>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707912594; c=relaxed/simple;
+	bh=phbKthtZ1sVqCSWncrebUVU0hamw/lbY4c1dCVvHvck=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pl2s8kxHwIhYI+JiKZPdN+W8n5ULDQ+K7QPpSNcEy6rCclGKZtogWqNDbl21lPlOgKus4Dqu5WQ2DuTRP7Ezixp1hL9wUWD7VTTh0goY2FvJ/D+uX9L1mEq9SV2ZrLywvpuDKe+VL4n/n5bO5qhpduSwHffHmtXnuEVRFP0qWZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MuxlAnTp; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707912592; x=1739448592;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=phbKthtZ1sVqCSWncrebUVU0hamw/lbY4c1dCVvHvck=;
+  b=MuxlAnTpK+eSfETMMIQHpZsNwzmszCWkLvO7AZWwAGsHTP0Ywh/QufaN
+   Sq/S7hGJ6yCK3Dgk9Kvi6JdrjLbt9FIVyXyjoVoQZo33zUIkTyeqlIEEv
+   Xidkl/lGGNo7N71mWZy9ErooKVMzZti3i9VDdSZEX2ow76pqx6wR/sAz2
+   5nH+yGa4f7V9MzEvl6uLwPq44TzwMHHzsKi9+J909AbZY4mZSP+e7GDga
+   cTuI4DobNIuxuBG0/3VQgo9Qm2+TS6M7SLJyag5XuTF7iIXrzevhedY3M
+   MVx0pOL/s1WUyC8tUTumOiPOsCDzzkhDmw7jC8aPyaX3D7ueryafFNq5S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="19463474"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="19463474"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 04:09:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="3523964"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 14 Feb 2024 04:09:50 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1raE5D-0008kI-2J;
+	Wed, 14 Feb 2024 12:09:47 +0000
+Date: Wed, 14 Feb 2024 20:09:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Palmer Dabbelt <palmer@rivosinc.com>
+Subject: include/linux/hugetlb.h:916:20: error: static declaration of
+ 'arch_hugetlb_migration_supported' follows non-static declaration
+Message-ID: <202402142035.Aq7hibAu-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, 14 Feb 2024 13:52:14 +0900
-Hojin Nam <hj96.nam@samsung.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7e90b5c295ec1e47c8ad865429f046970c549a66
+commit: ce68c035457bdd025a9961e0ba2157323090c581 riscv: Fix arch_hugetlb_migration_supported() for NAPOT
+date:   7 days ago
+config: riscv-randconfig-r064-20240214 (https://download.01.org/0day-ci/archive/20240214/202402142035.Aq7hibAu-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402142035.Aq7hibAu-lkp@intel.com/reproduce)
 
-> CPMU filter value is described as 4B length in CXL r3.0 8.2.7.2.2.
-> However, it is used as 2B length in code and comments.
-> 
-> Fixes: 5d7107c72796 ("perf: CXL Performance Monitoring Unit driver")
-> Signed-off-by: Hojin Nam
-Sign off broken.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402142035.Aq7hibAu-lkp@intel.com/
 
-I have my suspicions about why this is the case (bit of history involved
-that I won't go into) but indeed this is wrong. So with SoB fixed.
+All errors (new ones prefixed by >>):
 
-However, I think the driver only supports HDM filtering currently so
-you can't actually hit this. Hence not sure the fixes tag is
-appropriate. If you can hit this limitation please post the command.
+   In file included from kernel/fork.c:52:
+>> include/linux/hugetlb.h:916:20: error: static declaration of 'arch_hugetlb_migration_supported' follows non-static declaration
+     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
+         |                    ^
+   arch/riscv/include/asm/hugetlb.h:15:42: note: expanded from macro 'arch_hugetlb_migration_supported'
+      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
+         |                                          ^
+   arch/riscv/include/asm/hugetlb.h:14:6: note: previous declaration is here
+      14 | bool arch_hugetlb_migration_supported(struct hstate *h);
+         |      ^
+   1 error generated.
+--
+   In file included from kernel/sysctl.c:45:
+>> include/linux/hugetlb.h:916:20: error: static declaration of 'arch_hugetlb_migration_supported' follows non-static declaration
+     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
+         |                    ^
+   arch/riscv/include/asm/hugetlb.h:15:42: note: expanded from macro 'arch_hugetlb_migration_supported'
+      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
+         |                                          ^
+   arch/riscv/include/asm/hugetlb.h:14:6: note: previous declaration is here
+      14 | bool arch_hugetlb_migration_supported(struct hstate *h);
+         |      ^
+   In file included from kernel/sysctl.c:53:
+   In file included from include/linux/nfs_fs.h:31:
+   In file included from include/linux/sunrpc/auth.h:13:
+   In file included from include/linux/sunrpc/sched.h:19:
+   include/linux/sunrpc/xdr.h:782:46: warning: result of comparison of constant 4611686018427387903 with expression of type '__u32' (aka 'unsigned int') is always false [-Wtautological-constant-out-of-range-compare]
+     782 |         if (U32_MAX >= SIZE_MAX / sizeof(*p) && len > SIZE_MAX / sizeof(*p))
+         |                                                 ~~~ ^ ~~~~~~~~~~~~~~~~~~~~~
+   1 warning and 1 error generated.
+--
+   In file included from kernel/events/core.c:31:
+>> include/linux/hugetlb.h:916:20: error: static declaration of 'arch_hugetlb_migration_supported' follows non-static declaration
+     916 | static inline bool arch_hugetlb_migration_supported(struct hstate *h)
+         |                    ^
+   arch/riscv/include/asm/hugetlb.h:15:42: note: expanded from macro 'arch_hugetlb_migration_supported'
+      15 | #define arch_hugetlb_migration_supported arch_hugetlb_migration_supported
+         |                                          ^
+   arch/riscv/include/asm/hugetlb.h:14:6: note: previous declaration is here
+      14 | bool arch_hugetlb_migration_supported(struct hstate *h);
+         |      ^
+   In file included from kernel/events/core.c:43:
+   include/linux/mman.h:158:9: warning: division by zero is undefined [-Wdivision-by-zero]
+     158 |                _calc_vm_trans(flags, MAP_SYNC,       VM_SYNC      ) |
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/mman.h:136:21: note: expanded from macro '_calc_vm_trans'
+     136 |    : ((x) & (bit1)) / ((bit1) / (bit2))))
+         |                     ^ ~~~~~~~~~~~~~~~~~
+   1 warning and 1 error generated.
 
-Worth noting that we still don't have a way to attach this to
-switch USPs or host bridges, so the increase in HDM decoders to 32 for
-those in r3.1 isn't yet relevant.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
- 
-> ---
->  drivers/perf/cxl_pmu.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
-> index 365d964b0f6a..ca5e92f28b4a 100644
-> --- a/drivers/perf/cxl_pmu.c
-> +++ b/drivers/perf/cxl_pmu.c
-> @@ -59,7 +59,7 @@
->  #define   CXL_PMU_COUNTER_CFG_EVENT_GRP_ID_IDX_MSK     GENMASK_ULL(63, 59)
-> 
->  #define CXL_PMU_FILTER_CFG_REG(n, f)   (0x400 + 4 * ((f) + (n) * 8))
-> -#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(15, 0)
-> +#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(31, 0)
-> 
->  #define CXL_PMU_COUNTER_REG(n)         (0xc00 + 8 * (n))
-> 
-> @@ -314,9 +314,9 @@ static bool cxl_pmu_config1_get_edge(struct perf_event *event)
->  }
-> 
->  /*
-> - * CPMU specification allows for 8 filters, each with a 16 bit value...
-> - * So we need to find 8x16bits to store it in.
-> - * As the value used for disable is 0xffff, a separate enable switch
-> + * CPMU specification allows for 8 filters, each with a 32 bit value...
-> + * So we need to find 8x32bits to store it in.
-> + * As the value used for disable is 0xffff_ffff, a separate enable switch
->   * is needed.
->   */
-> 
-> @@ -642,7 +642,7 @@ static void cxl_pmu_event_start(struct perf_event *event, int flags)
->                 if (cxl_pmu_config1_hdm_filter_en(event))
->                         cfg = cxl_pmu_config2_get_hdm_decoder(event);
->                 else
-> -                       cfg = GENMASK(15, 0); /* No filtering if 0xFFFF_FFFF */
-> +                       cfg = GENMASK(31, 0); /* No filtering if 0xFFFF_FFFF */
->                 writeq(cfg, base + CXL_PMU_FILTER_CFG_REG(hwc->idx, 0));
->         }
-> 
-> --
-> 2.34.1
+vim +/arch_hugetlb_migration_supported +916 include/linux/hugetlb.h
 
+161df60e9e8965 Naoya Horiguchi   2022-07-14  902  
+c177c81e09e517 Naoya Horiguchi   2014-06-04  903  #ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
+e693de186414ae Anshuman Khandual 2019-03-05  904  #ifndef arch_hugetlb_migration_supported
+e693de186414ae Anshuman Khandual 2019-03-05  905  static inline bool arch_hugetlb_migration_supported(struct hstate *h)
+e693de186414ae Anshuman Khandual 2019-03-05  906  {
+94310cbcaa3c2b Anshuman Khandual 2017-07-06  907  	if ((huge_page_shift(h) == PMD_SHIFT) ||
+9b553bf5eb99dd Anshuman Khandual 2019-03-05  908  		(huge_page_shift(h) == PUD_SHIFT) ||
+94310cbcaa3c2b Anshuman Khandual 2017-07-06  909  			(huge_page_shift(h) == PGDIR_SHIFT))
+94310cbcaa3c2b Anshuman Khandual 2017-07-06  910  		return true;
+94310cbcaa3c2b Anshuman Khandual 2017-07-06  911  	else
+94310cbcaa3c2b Anshuman Khandual 2017-07-06  912  		return false;
+e693de186414ae Anshuman Khandual 2019-03-05  913  }
+e693de186414ae Anshuman Khandual 2019-03-05  914  #endif
+c177c81e09e517 Naoya Horiguchi   2014-06-04  915  #else
+e693de186414ae Anshuman Khandual 2019-03-05 @916  static inline bool arch_hugetlb_migration_supported(struct hstate *h)
+e693de186414ae Anshuman Khandual 2019-03-05  917  {
+d70c17d436b3fb Chen Gang         2016-05-20  918  	return false;
+e693de186414ae Anshuman Khandual 2019-03-05  919  }
+c177c81e09e517 Naoya Horiguchi   2014-06-04  920  #endif
+e693de186414ae Anshuman Khandual 2019-03-05  921  
+
+:::::: The code at line 916 was first introduced by commit
+:::::: e693de186414ae66f2a316ff9befcd2b7a6d07b6 mm/hugetlb: enable arch specific huge page size support for migration
+
+:::::: TO: Anshuman Khandual <anshuman.khandual@arm.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
