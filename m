@@ -1,80 +1,68 @@
-Return-Path: <linux-kernel+bounces-65690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBE8855075
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45BD9855078
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 502D91F220DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF3EA1F2AC0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D842839ED;
-	Wed, 14 Feb 2024 17:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7402B84A33;
+	Wed, 14 Feb 2024 17:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="if6Z7TNf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="bS0LZlXP"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD145F865;
-	Wed, 14 Feb 2024 17:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2C725F865;
+	Wed, 14 Feb 2024 17:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707932284; cv=none; b=MnED1N6QJwTC94jBniTZi5jCfIfzYCztv630uUCQeKfpqEGNSZp3QGklbT7F/XqK4LcNtnYuwOM8xFUnW/aINjJbtR127WqBk18BcjAIAOrQ/vTtvwtX1Q72LCvPQEVmRsgsYIiD9JZzVujG8uUHY0rLc9cMEK5XJykT7QyQuR0=
+	t=1707932301; cv=none; b=IeCwLGQlPuGJR3vcgA1xRmjEp1V/TfIXHV8YLgSLxQeGJB+hhUQzapvW2UUvJrGHiJFm2cW2VFVgxY1TVbH466Izq4jiji6NkS+6Z6TzyNK9jCGlN2GccRCknetZ/kW7NHdeWNddWgJHgGST7eYVxcKL17uekoFDNzMCUyljUYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707932284; c=relaxed/simple;
-	bh=XWUAHVjqKJCcZpzFJ3o1ueTJgBHTHr2KA5qq2NYJvQw=;
+	s=arc-20240116; t=1707932301; c=relaxed/simple;
+	bh=s6HeBJyfIPnyqjs4144G8v3FowXnX150xUdsdubyEh4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VTircHLl4CoEGgxlEnSBVt9I1sUCd5a0WbS/XdBNIfuP3CMck4rno3FDtGFFowY7/dcGqOIU7w9CHEsylCsKluweU8RXTCRMQzSUqB2E056Qc1LoxGFf9LFiEhIIR5gqtTzU4hhqoI7/ItBVNYdVBt/GWwWaSNmnHZ63GtPUHqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=if6Z7TNf; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707932283; x=1739468283;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XWUAHVjqKJCcZpzFJ3o1ueTJgBHTHr2KA5qq2NYJvQw=;
-  b=if6Z7TNfZWhj3NPrubvn5SeW4nNHzAHGYpGbv0G7+5QwUqsIxFh72U04
-   N2GTuYq8lSrgTR3izyql2GrIJAdq92nTmu7czmIX661MmHP3GjaXyO6Ck
-   aJBelaCaCJ6uzHQq/EUDfUuDTC/ABHsYO+o2BC6QDW/DxfwU3wKxFof/c
-   nh4E/Eaopg+sFqs5x7Zx3aDS6GhGP6Ey7gvpyNeCMJyD8bHz2UUipbEMb
-   nRGk86alhohQ32JoTJptsAjLUSNDEKQAMTdt9z2YFCJh4Ic1SbEPb7cT5
-   JZ7NH7s4bRrErVfkrFHdfPdIiygaQd09OF1JsGFb4LEk2Oi5hFjgFbD1S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="13379043"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="13379043"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:38:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912092337"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="912092337"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:37:59 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raJCm-00000004YXQ-3xy8;
-	Wed, 14 Feb 2024 19:37:56 +0200
-Date: Wed, 14 Feb 2024 19:37:56 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: auxdisplay: hit,hd44780: use defines
- for GPIO flags
-Message-ID: <Zcz6dMz2h2jrhOXu@smile.fi.intel.com>
-References: <20240214155438.155139-1-krzysztof.kozlowski@linaro.org>
- <20240214155438.155139-2-krzysztof.kozlowski@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VdtknJFFN8AJUDL2rW+ftSMUZCmVq8hNVPy/+u/81Jg0buqsnZyPINeKeybbxURzXGcThvxaBW3wSKie4Oy6V2aQqUw5kCVGz1Nr+HkP8PYOHoClWXv7cKg2XGYelxOHL3VrJXE25SezCZ/X1owYD+oCqvFatDltusjfIIB3Lu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=bS0LZlXP; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TZllr01Ppz9sqP;
+	Wed, 14 Feb 2024 18:38:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1707932296;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sENgyQIfMJrprwSCQD6BnlwUXKHmIs45mARoOV6LcHI=;
+	b=bS0LZlXPS54FRT/AI0C8xeZlvGsjQeTurUngmAUx3VgaKmOdICNJAzvuS8Hcz5Cbe3a3Zq
+	fc98QmzKnvfPDogUpKx9Sz6mLV6arx/Lhmn7gyGj1lXtOqZcMq6lfaJzsYcGsKVGhW5IUM
+	tM2z80U3jR/Pf/6V+89v1Zz70v/xO2+kOIat8NJKTuprLGP+X/HOHUP9HNxSasAeaox2vX
+	XjV/oYg74OeZRfnJAvlGVTX1A+Y486vAS19kFNvYUmwzjaFuPU9UWP4gzbt9Py9hVH3IFa
+	9og1z8puLb9xNQnyaxBmt9KDJoUuqd0P+RBHP8+c2U0ITezBkYFOeFmXfj+uWA==
+Date: Wed, 14 Feb 2024 18:38:11 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Zi Yan <ziy@nvidia.com>
+Cc: "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>, 
+	linux-mm@kvack.org, David Hildenbrand <david@redhat.com>, 
+	Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>, 
+	"\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	=?utf-8?Q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	"\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>, 
+	Mcgrof Chamberlain <mcgrof@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] Split a folio to any lower order folios
+Message-ID: <fggmw4jfozww47c3pbpbad7v5ew3jvvgiqg7ccloz6xl5xd4dy@2nxr5lhhzbcb>
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <FC18B703-54B3-4BC4-B298-5057E8F26A70@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,17 +71,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214155438.155139-2-krzysztof.kozlowski@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <FC18B703-54B3-4BC4-B298-5057E8F26A70@nvidia.com>
 
-On Wed, Feb 14, 2024 at 04:54:38PM +0100, Krzysztof Kozlowski wrote:
-> Improve example DTS readability by using known defines for GPIO flags.
+On Wed, Feb 14, 2024 at 12:18:14PM -0500, Zi Yan wrote:
+> Hi Pankaj,
+> 
+> On 13 Feb 2024, at 16:55, Zi Yan wrote:
+> 
+> > From: Zi Yan <ziy@nvidia.com>
+> >
+> > Hi all,
+> >
+> > File folio supports any order and multi-size THP is upstreamed[1], so both
+> > file and anonymous folios can be >0 order. Currently, split_huge_page()
+> > only splits a huge page to order-0 pages, but splitting to orders higher than
+> > 0 is going to better utilize large folios. In addition, Large Block
+> > Sizes in XFS support would benefit from it[2]. This patchset adds support for
+> 
+> Just talked to Matthew about his order-1 pagecache folio, I am planning to
+> grab that into this one, so that I can remove the restriction in my patches
+> and you guys do not need to do that in your patchset. Let me know if it works
+> for you.
+> 
 
-Applied, thanks!
+Cool! Sounds good to me. I generally base my baseline based on -rcs. So
+I might include it while sending for reviews until 6.8. I will remove
+that patch once this gets in for the 6.9 merge window.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks.
+--
+Pankaj
 
