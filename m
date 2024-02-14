@@ -1,287 +1,264 @@
-Return-Path: <linux-kernel+bounces-66124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9B90855758
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:36:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C93C78557CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F8A3B25E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:36:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 805712922A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736951420A8;
-	Wed, 14 Feb 2024 23:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387E314A093;
+	Wed, 14 Feb 2024 23:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Lfqk1F6e";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3f1nx5PQ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="n/nWFiGo"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D292574B
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7711487E0;
+	Wed, 14 Feb 2024 23:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707953799; cv=none; b=YeXBqn9xkxq/vND02Nr2r4RSe5J5rj8sS5DFRaK+FBju3r8m/5K2odbij22ACMAW1oyPLDfiZmc7BgcWCiXlP0EgP/Olxg6F9MSH4Ac/lDMfj+H2MsNWjnArj3TvL0WRa/TsDxIsl/Wk3wKl7vzxXUF8I3HOO6Jf/Vuh3GHuHj8=
+	t=1707954819; cv=none; b=fjDAxO/SbpZm3KM3J8vUxQOesVlRk1AGFCWpVx6UnCld9xCwsYs3h+1/5bxIg+FNYfR72o7BmI5h/fDBryxWRhfJVTZ87PIfnrf4AhtiN8tb7xIHnbfQWjz2wYX21FYEDYzG6f6/u2wmiEf1+2sH2yTJYCGJHomgaP3RQZP9qaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707953799; c=relaxed/simple;
-	bh=zd6L+JirXYb9RJJTMyqMFnBDXyLuZEtp3hoaLf51cYM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SSv1NlrRal+0XjCeVYiIUvr2eHfKuX3D/6vAfwr+AO+bgYfrLGglEZdFIvXx4xlede8w+hSBhycZnyigNokLuh4mKIODxbnaQ2xy6e0mBYnu/gIdR2R/Rf3uyifJXiQ3ImUTepNl+xsrIqN75lSngvE4ePM96rDbRS5a9544lX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Lfqk1F6e; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3f1nx5PQ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707953795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xnraHAYZS5nKpdZRhg4CnvYWWLS8hA9ptlRZifrVoJ8=;
-	b=Lfqk1F6eDyuQFYbVSibifuM3J2rFv2z+qtsr1jyhAdlErdrmr4b9jBHwxynnADP8XXTbjb
-	hFWsVgJ4aWNO7be7kXEGr66fJeb2zb1hsn+5BlQXfE/3G2FicI3dEytnZrvyLYNcCb30zC
-	We0cSL38XjGmKSJYdCsiXFAbO7o3c8q7oBpHypKhSE7V6UIpLPfzSF63Sy73+zsLq3wawH
-	6p01trfUmNyU3uNz2IQ22mUC8wXopk3y7AD23O2OAupuhEERMiZpqmjacq2lAAg3cLHeeG
-	coExPmunZ9wfdlLRhMF+n4YmWIPibke5NzZGKQrcDnYK17P0SAnvquK/A99dPA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707953795;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xnraHAYZS5nKpdZRhg4CnvYWWLS8hA9ptlRZifrVoJ8=;
-	b=3f1nx5PQq7WMeZ+/Wd0NAtORdx7zOeWjX9Jz+/AXwCVmyab4gfN1fX19++yXFvC38zWxlL
-	2LbegzGv4yzCnKCQ==
-To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
- akpm@linux-foundation.org, pmladek@suse.com, maz@kernel.org,
- liusong@linux.alibaba.com
-Cc: linux-kernel@vger.kernel.org, Bitao Hu <yaoma@linux.alibaba.com>
-Subject: Re: [PATCH 2/3] watchdog/softlockup: report the most time-consuming
- hardirq
-In-Reply-To: <20240123121223.22318-3-yaoma@linux.alibaba.com>
-References: <20240123121223.22318-1-yaoma@linux.alibaba.com>
- <20240123121223.22318-3-yaoma@linux.alibaba.com>
-Date: Thu, 15 Feb 2024 00:36:34 +0100
-Message-ID: <8734tufwjh.ffs@tglx>
+	s=arc-20240116; t=1707954819; c=relaxed/simple;
+	bh=bVuwBFR3wNPjG4EZapnn+JxOCYHF1TYbNJ4S3BcO82k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F7SSEWiHoWNfXVf8egygRjaBaqSkvsabrQawIy2B3/oCKkLughGzrjVZsVx22dIY+r6FSzbIhoDYwxam8/ANkcdT0GEhSiHfLr7jZwHr7Nk9c5SBSAIBIdk4mlpdnj1sT+fy5AnsmhxEw1yZpEolEzlZnZCih6XcZRBlXJJHwTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=n/nWFiGo; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=zjekde2x30CdNsYziPe+SiVMfo8WJOaRbmjucF5cXTE=; b=n/nWFiGoWM9dRn9xOyNUxDI1pG
+	g8DCJKdEoW8j4KCRh3HFfyDOLq02aaHdDoDn/cjQyEOkAPDSD+d5fu0RQI55L0ATKnHG//B5sRWAB
+	+bSURT9adNFdy71EWutWHAuYp7bCBSj3wreIqXwyFoOy73yUd7Pwh4I3l6sYSVmJ4hjT1d+MCM9hC
+	c6RKNWdhcqu2ATbm/IzLM036Uokyo8f/sk1jR0ZLvqVZ3Kju5wSwTkcDXkRtP2jO12oIQkHboVhG4
+	WZ7UP/9+pVF2zTZdT3H5ATcU+uyi1gXzZ4AVOAbSemjauH/GUw7KZ03aHEvC3F6wST+ZcnUNSMeLL
+	b3+rlypQ==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.mn.codeweavers.com)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1raOoV-00GbiL-08;
+	Wed, 14 Feb 2024 17:37:15 -0600
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	wine-devel@winehq.org,
+	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Elizabeth Figura <zfigura@codeweavers.com>
+Subject: [PATCH 00/31] NT synchronization primitive driver
+Date: Wed, 14 Feb 2024 17:36:36 -0600
+Message-ID: <20240214233645.9273-1-zfigura@codeweavers.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 23 2024 at 20:12, Bitao Hu wrote:
-> +/*
-> + * If the proportion of time spent handling irq exceeds 50% during a sampling period,
-> + * then it is necessary to tally the handling time of each irq.
-> + */
-> +static inline bool need_trace_irqtime(int type)
-> +{
-> +	int tail = this_cpu_read(cpustat_tail);
-> +
-> +	if (--tail == -1)
-> +		tail = 4;
-> +	return this_cpu_read(cpustat_diff[tail][type]) > sample_period/2;
-> +}
-> +
-> +static void irq_handler_entry_callback(void *data, int irq, struct irqaction *action)
-> +{
-> +	this_cpu_ptr(irq_to_desc(irq)->irq_time)->start_time = local_clock();
-> +}
-> +
-> +static void irq_handler_exit_callback(void *data, int irq, struct irqaction *action, int ret)
-> +{
-> +	u64 delta;
-> +	struct per_irqtime *irq_time;
-> +
-> +	if (test_bit(SOFTLOCKUP_HARDIRQ, this_cpu_ptr(&softlockup_flags))) {
-> +		irq_time = this_cpu_ptr(irq_to_desc(irq)->irq_time);
-> +		delta = local_clock() - irq_time->start_time;
-> +		irq_time->delta += delta;
-> +	}
-> +}
+This patch series introduces a new char misc driver, /dev/ntsync, which is used
+to implement Windows NT synchronization primitives.
 
-I can understand what you are trying to achieve, but you inflict the
-overhead of two tracepoints to every interrupt unconditionally.
+This was previously submitted as an RFC [1]. Since there were no major changes
+requested to the last RFC revision, I've stripped the RFC prefix.
 
-For the vast majority of usage scenarios that's just pointless overhead
-for no value. That's not acceptable at all.
+[1] https://lore.kernel.org/lkml/20240131021356.10322-1-zfigura@codeweavers.com/
 
-Instrumentation and debugging has to find the least intrusive solution
-and not just go for the perfect picture. Remember: perfect is the enemy
-of good.
+== Background ==
 
-You really have to think hard about what you really need to achieve for
-a particular problem case.
+The Wine project emulates the Windows API in user space. One particular part of
+that API, namely the NT synchronization primitives, have historically been
+implemented via RPC to a dedicated "kernel" process. However, more recent
+applications use these APIs more strenuously, and the overhead of RPC has become
+a bottleneck.
 
-In this case it's completely sufficient to know the number of interrupts
-which happened since softlockup detection took a snapshot and the actual
-analysis.
+The NT synchronization APIs are too complex to implement on top of existing
+primitives without sacrificing correctness. Certain operations, such as
+NtPulseEvent() or the "wait-for-all" mode of NtWaitForMultipleObjects(), require
+direct control over the underlying wait queue, and implementing a wait queue
+sufficiently robust for Wine in user space is not possible. This proposed
+driver, therefore, implements the problematic interfaces directly in the Linux
+kernel.
 
-That's especially true when interrupt time accounting is active because
-then the only interesting information is which interrupts fired during
-the observation period.
+This driver was presented at Linux Plumbers Conference 2023. For those further
+interested in the history of synchronization in Wine and past attempts to solve
+this problem in user space, a recording of the presentation can be viewed here:
 
-Even if that's not available it is a reasonable assumption that the
-number of interrupts during the observation period gives a pretty
-conclusive hint about the potential cause of the problem.
+    https://www.youtube.com/watch?v=NjU4nyWyhU8
 
-This is not meant to find the oddball issue of an interrupt handler
-which consumes a lot of time per invocation. This is about storm
-detection where the handler runs briefly and actually returns
-IRQ_HANDLED so that the spurious detection does not catch it.
 
-This can be implemented with exactly zero overhead for the good case,
-keeping it self contained to the interrupt core code and providing
-sensible interfaces for the watchdog code.
+== Performance ==
 
-See the uncompiled patch for illustration below.
+The gain in performance varies wildly depending on the application in question
+and the user's hardware. For some games NT synchronization is not a bottleneck
+and no change can be observed, but for others frame rate improvements of 50 to
+150 percent are not atypical. The following table lists frame rate measurements
+from a variety of games on a variety of hardware, taken by users Dmitry
+Skvortsov, FuzzyQuils, OnMars, and myself:
 
-As a side note: While C does not allow proper encapsulation it's a non
-starter to fiddle with the interrupt descriptor internals in random code
-just because the compiler allows you to do so. While not enforced there
-are clear boundaries and we went a long way to encapsulate this.
+Game                            Upstream        ntsync          improvement
+===========================================================================
+Anger Foot                       69              99              43%
+Call of Juarez                   99.8           224.1           125%
+Dirt 3                          110.6           860.7           678%
+Forza Horizon 5                 108             160              48%
+Lara Croft: Temple of Osiris    141             326             131%
+Metro 2033                      164.4           199.2            21%
+Resident Evil 2                  26              77             196%
+The Crew                         26              51              96%
+Tiny Tina's Wonderlands         130             360             177%
+Total War Saga: Troy            109             146              34%
+===========================================================================
 
-Thanks,
 
-        tglx
----
- include/linux/irqdesc.h |    9 +++++++--
- kernel/irq/internals.h  |    2 +-
- kernel/irq/irqdesc.c    |   32 ++++++++++++++++++++++++++------
- kernel/irq/proc.c       |    9 +++------
- 4 files changed, 37 insertions(+), 15 deletions(-)
+== Patches ==
 
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -17,6 +17,11 @@ struct irq_desc;
- struct irq_domain;
- struct pt_regs;
- 
-+struct irqstat {
-+	unsigned int	cnt;
-+	unsigned int	ref;
-+};
-+
- /**
-  * struct irq_desc - interrupt descriptor
-  * @irq_common_data:	per irq and chip data passed down to chip functions
-@@ -55,7 +60,7 @@ struct pt_regs;
- struct irq_desc {
- 	struct irq_common_data	irq_common_data;
- 	struct irq_data		irq_data;
--	unsigned int __percpu	*kstat_irqs;
-+	struct irqstat __percpu	*kstat_irqs;
- 	irq_flow_handler_t	handle_irq;
- 	struct irqaction	*action;	/* IRQ action list */
- 	unsigned int		status_use_accessors;
-@@ -119,7 +124,7 @@ extern struct irq_desc irq_desc[NR_IRQS]
- static inline unsigned int irq_desc_kstat_cpu(struct irq_desc *desc,
- 					      unsigned int cpu)
- {
--	return desc->kstat_irqs ? *per_cpu_ptr(desc->kstat_irqs, cpu) : 0;
-+	return desc->kstat_irqs ? per_cpu(desc->kstat_irqs->cnt, cpu) : 0;
- }
- 
- static inline struct irq_desc *irq_data_to_desc(struct irq_data *data)
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -258,7 +258,7 @@ static inline void irq_state_set_masked(
- 
- static inline void __kstat_incr_irqs_this_cpu(struct irq_desc *desc)
- {
--	__this_cpu_inc(*desc->kstat_irqs);
-+	__this_cpu_inc(desc->kstat_irqs->cnt);
- 	__this_cpu_inc(kstat.irqs_sum);
- }
- 
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -122,7 +122,7 @@ static void desc_set_defaults(unsigned i
- 	desc->name = NULL;
- 	desc->owner = owner;
- 	for_each_possible_cpu(cpu)
--		*per_cpu_ptr(desc->kstat_irqs, cpu) = 0;
-+		*per_cpu_ptr(desc->kstat_irqs, cpu) = (struct irqstat) { };
- 	desc_smp_init(desc, node, affinity);
- }
- 
-@@ -418,8 +418,8 @@ static struct irq_desc *alloc_desc(int i
- 	desc = kzalloc_node(sizeof(*desc), GFP_KERNEL, node);
- 	if (!desc)
- 		return NULL;
--	/* allocate based on nr_cpu_ids */
--	desc->kstat_irqs = alloc_percpu(unsigned int);
-+
-+	desc->kstat_irqs = alloc_percpu(struct irqstat);
- 	if (!desc->kstat_irqs)
- 		goto err_desc;
- 
-@@ -952,8 +952,7 @@ unsigned int kstat_irqs_cpu(unsigned int
- {
- 	struct irq_desc *desc = irq_to_desc(irq);
- 
--	return desc && desc->kstat_irqs ?
--			*per_cpu_ptr(desc->kstat_irqs, cpu) : 0;
-+	return desc && desc->kstat_irqs ? per_cpu(desc->kstat_irqs->cnt, cpu) : 0;
- }
- 
- static bool irq_is_nmi(struct irq_desc *desc)
-@@ -975,10 +974,31 @@ static unsigned int kstat_irqs(unsigned
- 		return data_race(desc->tot_count);
- 
- 	for_each_possible_cpu(cpu)
--		sum += data_race(*per_cpu_ptr(desc->kstat_irqs, cpu));
-+		sum += data_race(per_cpu(desc->kstat_irqs->cnt, cpu));
- 	return sum;
- }
- 
-+void kstat_snapshot_irqs(void)
-+{
-+	struct irq_desc *desc;
-+	unsigned int irq;
-+
-+	for_each_irq_desc(irq, desc) {
-+		if (!desc->kstat_irqs)
-+			continue;
-+		this_cpu_write(desc->kstat_irqs->ref, this_cpu_read(desc->kstat_irqs->cnt));
-+	}
-+}
-+
-+unsigned int kstat_get_irq_since_snapshot(unsigned int irq)
-+{
-+	struct irq_desc *desc = irq_to_desc(irq);
-+
-+	if (!desc || !desc->kstat_irqs)
-+		return 0;
-+	return this_cpu_read(desc->kstat_irqs->cnt) - this_cpu_read(desc->kstat_irqs->ref);
-+}
-+
- /**
-  * kstat_irqs_usr - Get the statistics for an interrupt from thread context
-  * @irq:	The interrupt number
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -488,18 +488,15 @@ int show_interrupts(struct seq_file *p,
- 	if (!desc || irq_settings_is_hidden(desc))
- 		goto outsparse;
- 
--	if (desc->kstat_irqs) {
--		for_each_online_cpu(j)
--			any_count |= data_race(*per_cpu_ptr(desc->kstat_irqs, j));
--	}
-+	if (desc->kstat_irqs)
-+		any_count = data_race(desc->tot_count);
- 
- 	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
- 		goto outsparse;
- 
- 	seq_printf(p, "%*d: ", prec, i);
- 	for_each_online_cpu(j)
--		seq_printf(p, "%10u ", desc->kstat_irqs ?
--					*per_cpu_ptr(desc->kstat_irqs, j) : 0);
-+		seq_printf(p, "%10u ", desc->kstat_irqs ? per_cpu(desc->kstat_irqs->cnt, j) : 0);
- 
- 	raw_spin_lock_irqsave(&desc->lock, flags);
- 	if (desc->irq_data.chip) {
+The intended semantics of the patches are broadly intended to match those of the
+corresponding Windows functions. For those not already familiar with the Windows
+functions (or their undocumented behaviour), patch 31/31 provides a detailed
+specification, and individual patches also include a brief description of the
+API they are implementing.
+
+The patches making use of this driver in Wine can be retrieved or browsed here:
+
+    https://repo.or.cz/wine/zf.git/shortlog/refs/heads/ntsync5
+
+
+== Implementation ==
+
+Some aspects of the implementation may deserve particular comment:
+
+* In the interest of performance, each object is governed only by a single
+  spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
+  objects be changed as a single atomic operation. In order to achieve this, we
+  first take a device-wide lock ("wait_all_lock") any time we are going to lock
+  more than one object at a time.
+
+  The maximum number of objects that can be used in a vectored wait, and
+  therefore the maximum that can be locked simultaneously, is 64. This number is
+  NT's own limit.
+
+  The acquisition of multiple spinlocks will degrade performance. This is a
+  conscious choice, however. Wait-for-all is known to be a very rare operation
+  in practice, especially with counts that approach the maximum, and it is the
+  intent of the ntsync driver to optimize wait-for-any at the expense of
+  wait-for-all as much as possible.
+
+* NT mutexes are tied to their threads on an OS level, and the kernel includes
+  builtin support for "robust" mutexes. In order to keep the ntsync driver
+  self-contained and avoid touching more code than necessary, it does not hook
+  into task exit nor use pids.
+
+  Instead, the user space emulator is expected to manage thread IDs and pass
+  them as an argument to any relevant functions; this is the "owner" field of
+  ntsync_wait_args and ntsync_mutex_args.
+
+  When the emulator detects that a thread dies, it should therefore call
+  NTSYNC_IOC_MUTEX_KILL on any open mutexes.
+
+* ntsync is module-capable mostly because there was nothing preventing it, and
+  because it aided development. It is not a hard requirement, though.
+
+
+== Previous versions ==
+
+Changes from the last (v2) RFC:
+
+* Add a new wait flag NTSYNC_WAIT_REALTIME. I had originally missed a corner
+  case in NtWaitForMultipleObjects() related to its interaction with system time
+  adjustments. Essentially the function is sometimes supposed to respect system
+  time adjustments and sometimes supposed to ignore them, so in order to achieve
+  this I've added a function that controls which flag is being synchronized to.
+  Thanks Piotr Caban for catching this.
+
+* Add tests for overflowing semaphore and mutex counters, and a test for
+  exceeding NTSYNC_MAX_WAIT_COUNT, per Andi Kleen.
+
+* Add a more intense and realistic test involving multiple threads using the
+  same mutex to access data, per Andi Kleen.
+
+* Use check_add_overflow() instead of writing out overflow checking manually
+  [and thereby avoid relying on -fwrapv].
+
+* Add some missing headers that were being implicitly included: atomic.h,
+  hrtimer.h, ktime.h, sched.h, sched/signal.h, spinlock.h.
+
+* Link to RFC v2: https://lore.kernel.org/lkml/20240131021356.10322-1-zfigura@codeweavers.com/
+* Link to RFC v1: https://lore.kernel.org/lkml/20240124004028.16826-1-zfigura@codeweavers.com/
+
+Elizabeth Figura (31):
+  ntsync: Introduce the ntsync driver and character device.
+  ntsync: Introduce NTSYNC_IOC_CREATE_SEM.
+  ntsync: Introduce NTSYNC_IOC_SEM_POST.
+  ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+  ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
+  ntsync: Introduce NTSYNC_IOC_CREATE_MUTEX.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_UNLOCK.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_KILL.
+  ntsync: Introduce NTSYNC_IOC_CREATE_EVENT.
+  ntsync: Introduce NTSYNC_IOC_EVENT_SET.
+  ntsync: Introduce NTSYNC_IOC_EVENT_RESET.
+  ntsync: Introduce NTSYNC_IOC_EVENT_PULSE.
+  ntsync: Introduce NTSYNC_IOC_SEM_READ.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_READ.
+  ntsync: Introduce NTSYNC_IOC_EVENT_READ.
+  ntsync: Introduce alertable waits.
+  ntsync: Allow waits to use the REALTIME clock.
+  selftests: ntsync: Add some tests for semaphore state.
+  selftests: ntsync: Add some tests for mutex state.
+  selftests: ntsync: Add some tests for NTSYNC_IOC_WAIT_ANY.
+  selftests: ntsync: Add some tests for NTSYNC_IOC_WAIT_ALL.
+  selftests: ntsync: Add some tests for wakeup signaling with
+    WINESYNC_IOC_WAIT_ANY.
+  selftests: ntsync: Add some tests for wakeup signaling with
+    WINESYNC_IOC_WAIT_ALL.
+  selftests: ntsync: Add some tests for manual-reset event state.
+  selftests: ntsync: Add some tests for auto-reset event state.
+  selftests: ntsync: Add some tests for wakeup signaling with events.
+  selftests: ntsync: Add tests for alertable waits.
+  selftests: ntsync: Add some tests for wakeup signaling via alerts.
+  selftests: ntsync: Add a stress test for contended waits.
+  maintainers: Add an entry for ntsync.
+  docs: ntsync: Add documentation for the ntsync uAPI.
+
+ Documentation/userspace-api/index.rst         |    1 +
+ .../userspace-api/ioctl/ioctl-number.rst      |    2 +
+ Documentation/userspace-api/ntsync.rst        |  399 +++++
+ MAINTAINERS                                   |    9 +
+ drivers/misc/Kconfig                          |    9 +
+ drivers/misc/Makefile                         |    1 +
+ drivers/misc/ntsync.c                         | 1146 ++++++++++++++
+ include/uapi/linux/ntsync.h                   |   62 +
+ tools/testing/selftests/Makefile              |    1 +
+ .../testing/selftests/drivers/ntsync/Makefile |    8 +
+ tools/testing/selftests/drivers/ntsync/config |    1 +
+ .../testing/selftests/drivers/ntsync/ntsync.c | 1407 +++++++++++++++++
+ 12 files changed, 3046 insertions(+)
+ create mode 100644 Documentation/userspace-api/ntsync.rst
+ create mode 100644 drivers/misc/ntsync.c
+ create mode 100644 include/uapi/linux/ntsync.h
+ create mode 100644 tools/testing/selftests/drivers/ntsync/Makefile
+ create mode 100644 tools/testing/selftests/drivers/ntsync/config
+ create mode 100644 tools/testing/selftests/drivers/ntsync/ntsync.c
+
+
+base-commit: e21817acb23ece75d41a4fa7b40c85550f147389
+-- 
+2.43.0
+
 
