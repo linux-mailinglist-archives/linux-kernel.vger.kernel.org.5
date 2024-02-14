@@ -1,263 +1,132 @@
-Return-Path: <linux-kernel+bounces-65448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32620854D31
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D279854D3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA63C1F21529
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:45:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C68B24FB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61F75D8EF;
-	Wed, 14 Feb 2024 15:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4602E5D913;
+	Wed, 14 Feb 2024 15:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bEPyTDFE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6FB5FDD5;
-	Wed, 14 Feb 2024 15:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925505; cv=none; b=sIhQ3HivZBrZ/zDv6gL7PY8V/jN4P361wIVoxLcCBkY3/45PDPJLurBuM1eegJJnTddSh1ICJRe3Vbc9lviljmULtHewRnhnQ3y0bd5MN6UgIHNgGkNSBHY7NAIpXLjjlb7w4yFrMu/YsaseMSVkswLgYBapls/BieSDPxGRgBc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925505; c=relaxed/simple;
-	bh=EL7E34S73VEyNjrDaB02lzU+jLe0zHK8Ab5PHjatrCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WtvB0OmIq7LipwR+E/5sreIWe+avbTxcyzKntcDpUczFag3zSZ4v0tMoZX5vEIIK54vWpggy1Elfo/mKOv+7Z+woZOYcpbwGN+0toPIPKDrQ0SZYq5QScY2VmkjOai2allYHiZU1aTwGq6+JANYRTmyNt11s5u+Ev/D/aoRSTsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bEPyTDFE; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707925504; x=1739461504;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=EL7E34S73VEyNjrDaB02lzU+jLe0zHK8Ab5PHjatrCI=;
-  b=bEPyTDFEWF9XL2nFkoiXq4BfmZvLTAC3PZy1GxNaOzLOmmZf0QlOlpxf
-   uHwaxoU6eDDuaB3oRXYC5FfO/pdp1Le+1QJfrs+YA5W7LwQNOJMUXTgw5
-   zfHC0A8Otiuv0YkkHaLkIUUAusWAnIEVv7XeFTWAhYHTpe+UsR6ZQ24Wl
-   y700oTA2Qnue/0T18e9EWSGnnk2IYzChj3JtYArury5WEbMSWj5hm6SwO
-   0fsAG/vdftzyJ2vn/nhXIUD4A+YnzgIG/QRq5OpDjBVpi5MNEFrDFwrGm
-   wyyipLJWZSfZD/jqQTsLTb9qbNUNZhN9hpmtEiYBckDZT4HHdb34dO/Tp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5805266"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="5805266"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 07:45:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="3218446"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 07:45:02 -0800
-Received: from [10.212.64.118] (kliang2-mobl1.ccr.corp.intel.com [10.212.64.118])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="CB5dhkms"
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 89CA95804CF;
-	Wed, 14 Feb 2024 07:44:59 -0800 (PST)
-Message-ID: <192acf18-ffcb-4e18-97e2-d843dc5f346c@linux.intel.com>
-Date: Wed, 14 Feb 2024 10:44:58 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FA05D728
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707925598; cv=none; b=n9i/ECmjQc7c6vYLYlkVL8fSHfju+ZMszCdMJ39mrjZOMKhVdRt+wL2sc8ybME3uNFO74BvlVAQUW6d1/q+L3pkl0/KNlzcpR7J+bzK5TpI8PXiHkugS4knLPKLt5CEkalAYblpw8aYkHsdlZY6rS4a3CHLiyCiyurlT5qxuSGM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707925598; c=relaxed/simple;
+	bh=nXt2NydxVPyI52wKlorJbsmqB3Y1sW0XBLcflaBdxWI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RkQGD35oGVr5W2IrFYysURyshNQYWs1claSrr3AnXADEq360t71MtLLCP3zi4lyHBfsS/7pT/kWH9NOsPN0neDAWe2/M0m0BtSpWFg36J0oR+pIGA7sXcesKRhb87v4WI06UGVC1XBAe6AVOk7V0BhIyW8ivNARDjebJngl66qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=CB5dhkms; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2193ccbb885so2347543fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707925596; x=1708530396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=43U0prLBEviHcCJ3pSlb1u8y9sUlYBpSR6dl+zr/IL8=;
+        b=CB5dhkms/IoQIZ0SSZkK9qtAUj1aDMxKzE8xM4f9PrWezhuGOsacgz4YP2KGzuisXO
+         Yypudkqr2k/5n1+E6iTB/wf13I60X7EiEeAI9wGRgBQAZPlD/uCwJbX1D0iDVI3HsFku
+         WHDw1EOiOjFemrSSQqb1dYtDtyaYwhNkkM3EC5LG7g7BwmT6wg0ca8BoQ4iY7PpUL8SN
+         GQM6o8+LDI/wjkx0bLASEhFzVRujNmkyye7gHLbAzAL6saIlLtv6sjYsrwK/mWKDh+NA
+         CqQtQWYZQLEis8ERh3yCubqJPDzxDkdSrwt2WwlXUdnisDvZxgYMMoIS+ZFsMk7wOnKS
+         ScUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707925596; x=1708530396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=43U0prLBEviHcCJ3pSlb1u8y9sUlYBpSR6dl+zr/IL8=;
+        b=gC+krUn/VTzo+b+XRl0zFexgqTXYZiQDWo8B81n3siwN26JqLs1SJLrVpEeIO54wpJ
+         wL9kmcR3351ldL40eFZGBbYSRZ6Tejp5KiU6RmPBJH4HlWNV8jAZYVzFLCuNmNjL61OP
+         /dkDPvxFtb3p/AtEtRqeViGW2GZuCZnBaCndAY5ctaBqADR1VEDBPg4oBbY/mkl49RuX
+         WubFNJnT2mjZ/3rlYuOjdyt/5zogYc97zx5I0fwYvQKFTqj3UyBO4FDOEwbcaS/Fe4oz
+         gx4Bckz8/voXb/mRYXwo0Z0XO80OQZS+QeH/9/ne+hLCnWaswdj5G9IbLrvEY9w2ZQTX
+         HNeg==
+X-Forwarded-Encrypted: i=1; AJvYcCX76jA5G+QsOCT+rBYlNWgumGr+7CKqgK2bLUoq1QbyYJuiPeaYs1ZcN/ratC6AhC7QSuFEwNbtj/y/9b4SKpzeS7eHqmibANSCAql7
+X-Gm-Message-State: AOJu0YxuhVDZBHJktMf0Xp7sSw86CDhhcSkFXigJlulnCDzb1LoizkPM
+	SmgGzZnZq7f8Fe0jqyDMYDCwCtmW6kLsxGlF+2kPK6C0ZXHjj+IwWqsHB6hrx9EYE2FKUxoK4Lf
+	wyeT8ZGxSZlcRdyeFYpnkvK9i06KvRmYuFwU0/A==
+X-Google-Smtp-Source: AGHT+IGq/FPDHURxZuXkT8EEMfyOBxQIWZRGOM045VqtAvTD1CETCELK38VG/mvuBgw8UVUij5Aehjzrk5JxYSrtPyI=
+X-Received: by 2002:a05:6871:551:b0:218:55c9:bb20 with SMTP id
+ t17-20020a056871055100b0021855c9bb20mr3419259oal.21.1707925596168; Wed, 14
+ Feb 2024 07:46:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 00/30] perf vendor event and TMA 4.7 metric update
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
- Perry Taylor <perry.taylor@intel.com>, Samantha Alt
- <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>,
- Weilin Wang <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>
-Cc: Stephane Eranian <eranian@google.com>
-References: <20240214011820.644458-1-irogers@google.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240214011820.644458-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240201155532.49707-1-brgl@bgdev.pl> <20240201155532.49707-9-brgl@bgdev.pl>
+ <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
+In-Reply-To: <7tbhdkqpl4iuaxmc73pje2nbbkarxxpgmabc7j4q26d2rhzrv5@ltu6niel5eb4>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 14 Feb 2024 16:46:25 +0100
+Message-ID: <CAMRc=MeM_ys7_Rk2=yhEVL6pe1bWQXqS8r_Y7P-SMQ_cTCMebA@mail.gmail.com>
+Subject: Re: [RFC 8/9] PCI/pwrctl: add PCI power control core code
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-pci@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 2, 2024 at 4:53=E2=80=AFAM Bjorn Andersson <andersson@kernel.or=
+g> wrote:
+>
 
+[snip]
 
-On 2024-02-13 8:17 p.m., Ian Rogers wrote:
-> The first 12 patches update vendor events to those in:
-> https://github.com/intel/perfmon
-> 
-> The next 18 patches update the TMA metrics from version 4.5 to version
-> 4.7. This includes improvements to many models like the
-> tma_info_bottleneck* metrics, an abstraction or summarization of the
-> 100+ TMA tree nodes into 12-entry familiar performance metrics.
-> 
-> The update was possible due to the release of TMA 4.7 metrics in:
->   https://github.com/intel/perfmon/pull/140
->   https://github.com/intel/perfmon/pull/138
-> 
-> Pull request:
-> https://github.com/intel/perfmon/pull/144
-> was applied to the converter script. This PR adds back CORE_CLKS as in
-> TMA metrics 4.5 for pre-Icelake models. This avoids an issue running
-> perf stat not in system wide mode where pre-Icelake models need to
-> scale the slots dependent on what the other hyperthread is doing (via
-> the event CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE - later models have a
-> slots counter for this). This is a known not accurate thing to do,
-> hence the removal from TMA 4.7, but perf would allow the use of the
-> metric not in system wide mode and report a metric with value. It
-> seemed better to give a more accurate number in not system wide mode,
-> possibly induce multiplexing, and have the TMA 4.5 behavior. We can
-> later update the behavior to be NaN [1] when not in system wide mode
-> to avoid broken usage. The not system wide mode in the TMA 4.5
-> spreadsheet is known as "#EBS_Mode" and is detected in perf json with
-> the "#core_wide" literal.
-> 
-> [1] https://lore.kernel.org/lkml/20240209204947.3873294-2-irogers@google.com/
-> 
-> Ian Rogers (30):
->   perf vendor events intel: Update alderlake events to v1.24
->   perf vendor events intel: Update alderlaken events to v1.24
->   perf vendor events intel: Update broadwell events to v29
->   perf vendor events intel: Update emeraldrapids events to v1.03
->   perf vendor events intel: Update grandridge events to v1.01
->   perf vendor events intel: Update haswell events to v35
->   perf vendor events intel: Update icelake events to v1.21
->   perf vendor events intel: Update meteorlake events to v1.07
->   perf vendor events intel: Update rocketlake events to v1.02
->   perf vendor events intel: Update sierraforst events to v1.01
->   perf vendor events intel: Update skylake events to v58
->   perf vendor events intel: Update tigerlake events to v1.15
->   perf vendor events intel: Update alderlake TMA metrics to 4.7
->   perf vendor events intel: Update broadwell TMA metrics to 4.7
->   perf vendor events intel: Update broadwellde TMA metrics to 4.7
->   perf vendor events intel: Update broadwellx TMA metrics to 4.7
->   perf vendor events intel: Update cascadelakex TMA metrics to 4.7
->   perf vendor events intel: Update haswell TMA metrics to 4.7
->   perf vendor events intel: Update haswellx TMA metrics to 4.7
->   perf vendor events intel: Update icelake TMA metrics to 4.7
->   perf vendor events intel: Update icelakex TMA metrics to 4.7
->   perf vendor events intel: Update ivybridge TMA metrics to 4.7
->   perf vendor events intel: Update ivytown TMA metrics to 4.7
->   perf vendor events intel: Update jaketown TMA metrics to 4.7
->   perf vendor events intel: Update rocketlake TMA metrics to 4.7
->   perf vendor events intel: Update sandybridge TMA metrics to 4.7
->   perf vendor events intel: Update sapphirerapids TMA metrics to 4.7
->   perf vendor events intel: Update skylake TMA metrics to 4.7
->   perf vendor events intel: Update skylakex TMA metrics to 4.7
->   perf vendor events intel: Update tigerlake TMA metrics to 4.7
-> 
+>
+> > +             break;
+> > +     case BUS_NOTIFY_BOUND_DRIVER:
+> > +             pwrctl->link =3D device_link_add(dev, pwrctl->dev,
+> > +                                            DL_FLAG_AUTOREMOVE_CONSUME=
+R);
+> > +             if (!pwrctl->link)
+> > +                     dev_err(pwrctl->dev, "Failed to add device link\n=
+");
+> > +             break;
+> > +     case BUS_NOTIFY_UNBOUND_DRIVER:
+> > +             device_link_del(pwrctl->link);
+>
+> This might however become a NULL-pointer dereference, if dev was bound
+> to its driver before the pci_pwrctl_notify() was registered for the
+> pwrctl and then the PCI device is unbound.
+>
 
-Thanks Ian!
+Right. And it also makes me think that right after registering with
+the notifier, we should iterate over the PCI bus devices and see if
+the relevant one is already there.
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> This would also happen if device_link_add() failed when the PCI device
+> was bound...
+>
 
-Thanks,
-Kan
->  .../arch/x86/alderlake/adl-metrics.json       |  459 ++-
->  .../arch/x86/alderlake/floating-point.json    |   30 +-
->  .../arch/x86/alderlake/metricgroups.json      |   11 +-
->  .../pmu-events/arch/x86/alderlake/other.json  |   10 +
->  .../arch/x86/alderlake/pipeline.json          |   13 +
->  .../pmu-events/arch/x86/alderlaken/other.json |    9 +
->  .../arch/x86/alderlaken/pipeline.json         |    9 +
->  .../arch/x86/broadwell/bdw-metrics.json       |  204 +-
->  .../pmu-events/arch/x86/broadwell/memory.json |    2 +-
->  .../arch/x86/broadwell/metricgroups.json      |    7 +-
->  .../arch/x86/broadwellde/bdwde-metrics.json   |  191 +-
->  .../arch/x86/broadwellde/metricgroups.json    |    7 +-
->  .../arch/x86/broadwellx/bdx-metrics.json      |  250 +-
->  .../arch/x86/broadwellx/metricgroups.json     |    7 +-
->  .../arch/x86/cascadelakex/clx-metrics.json    |  566 +++-
->  .../arch/x86/cascadelakex/metricgroups.json   |   12 +-
->  .../arch/x86/emeraldrapids/uncore-cache.json  |  152 +
->  .../pmu-events/arch/x86/grandridge/cache.json |  185 ++
->  .../arch/x86/grandridge/floating-point.json   |   68 +
->  .../arch/x86/grandridge/frontend.json         |   16 +
->  .../arch/x86/grandridge/memory.json           |   66 +
->  .../pmu-events/arch/x86/grandridge/other.json |   16 +
->  .../arch/x86/grandridge/pipeline.json         |  353 ++
->  .../arch/x86/grandridge/uncore-cache.json     | 1795 +++++++++++
->  .../x86/grandridge/uncore-interconnect.json   |  175 +
->  .../arch/x86/grandridge/uncore-io.json        | 1187 +++++++
->  .../arch/x86/grandridge/uncore-memory.json    |  385 +++
->  .../arch/x86/grandridge/uncore-power.json     |   10 +
->  .../arch/x86/grandridge/virtual-memory.json   |  113 +-
->  .../arch/x86/haswell/hsw-metrics.json         |  178 +-
->  .../pmu-events/arch/x86/haswell/memory.json   |    2 +-
->  .../arch/x86/haswell/metricgroups.json        |    7 +-
->  .../arch/x86/haswellx/hsx-metrics.json        |  224 +-
->  .../arch/x86/haswellx/metricgroups.json       |    7 +-
->  .../arch/x86/icelake/icl-metrics.json         |  398 ++-
->  .../pmu-events/arch/x86/icelake/memory.json   |    1 +
->  .../arch/x86/icelake/metricgroups.json        |   12 +-
->  .../pmu-events/arch/x86/icelake/other.json    |    2 +-
->  .../pmu-events/arch/x86/icelake/pipeline.json |   10 +-
->  .../arch/x86/icelakex/icx-metrics.json        |  586 +++-
->  .../arch/x86/icelakex/metricgroups.json       |   12 +-
->  .../arch/x86/ivybridge/ivb-metrics.json       |  197 +-
->  .../arch/x86/ivybridge/metricgroups.json      |    7 +-
->  .../arch/x86/ivytown/ivt-metrics.json         |  200 +-
->  .../arch/x86/ivytown/metricgroups.json        |    7 +-
->  .../arch/x86/jaketown/jkt-metrics.json        |   64 +-
->  .../arch/x86/jaketown/metricgroups.json       |    7 +-
->  tools/perf/pmu-events/arch/x86/mapfile.csv    |   24 +-
->  .../pmu-events/arch/x86/meteorlake/cache.json |    8 +-
->  .../arch/x86/meteorlake/floating-point.json   |   86 +-
->  .../pmu-events/arch/x86/meteorlake/other.json |   10 +
->  .../arch/x86/meteorlake/pipeline.json         |   76 +
->  .../arch/x86/meteorlake/virtual-memory.json   |   36 +
->  .../arch/x86/rocketlake/memory.json           |    1 +
->  .../arch/x86/rocketlake/metricgroups.json     |   12 +-
->  .../pmu-events/arch/x86/rocketlake/other.json |    2 +-
->  .../arch/x86/rocketlake/pipeline.json         |   10 +-
->  .../arch/x86/rocketlake/rkl-metrics.json      |  406 ++-
->  .../arch/x86/sandybridge/metricgroups.json    |    7 +-
->  .../arch/x86/sandybridge/snb-metrics.json     |   71 +-
->  .../arch/x86/sapphirerapids/metricgroups.json |   12 +-
->  .../arch/x86/sapphirerapids/spr-metrics.json  |  773 +++--
->  .../arch/x86/sierraforest/cache.json          |  185 ++
->  .../arch/x86/sierraforest/floating-point.json |   68 +
->  .../arch/x86/sierraforest/frontend.json       |   16 +
->  .../arch/x86/sierraforest/memory.json         |   66 +
->  .../arch/x86/sierraforest/other.json          |   16 +
->  .../arch/x86/sierraforest/pipeline.json       |  360 +++
->  .../arch/x86/sierraforest/uncore-cache.json   | 2853 +++++++++++++++++
->  .../arch/x86/sierraforest/uncore-cxl.json     |   10 +
->  .../x86/sierraforest/uncore-interconnect.json | 1228 +++++++
->  .../arch/x86/sierraforest/uncore-io.json      | 1634 ++++++++++
->  .../arch/x86/sierraforest/uncore-memory.json  |  385 +++
->  .../arch/x86/sierraforest/uncore-power.json   |   10 +
->  .../arch/x86/sierraforest/virtual-memory.json |  113 +-
->  .../pmu-events/arch/x86/skylake/memory.json   |    2 +-
->  .../arch/x86/skylake/metricgroups.json        |   12 +-
->  .../pmu-events/arch/x86/skylake/pipeline.json |    2 +-
->  .../arch/x86/skylake/skl-metrics.json         |  395 ++-
->  .../arch/x86/skylake/virtual-memory.json      |    2 +-
->  .../arch/x86/skylakex/metricgroups.json       |   12 +-
->  .../arch/x86/skylakex/skx-metrics.json        |  548 +++-
->  .../arch/x86/tigerlake/metricgroups.json      |   12 +-
->  .../pmu-events/arch/x86/tigerlake/other.json  |    2 +-
->  .../arch/x86/tigerlake/pipeline.json          |   10 +-
->  .../arch/x86/tigerlake/tgl-metrics.json       |  406 ++-
->  .../x86/tigerlake/uncore-interconnect.json    |    2 +
->  87 files changed, 15763 insertions(+), 2349 deletions(-)
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/floating-point.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-cache.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-interconnect.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-io.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-memory.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/grandridge/uncore-power.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/floating-point.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-cache.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-cxl.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-interconnect.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-io.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-memory.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/sierraforest/uncore-power.json
-> 
+Right.
+
+Bart
+
+[snip]
 
