@@ -1,65 +1,70 @@
-Return-Path: <linux-kernel+bounces-65154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68B368548A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:42:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18BE0854894
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9DD71F24756
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:42:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94D11F228B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A93B1A731;
-	Wed, 14 Feb 2024 11:42:49 +0000 (UTC)
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECC71A29A;
+	Wed, 14 Feb 2024 11:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i6yVSl6u"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6AE18EB4;
-	Wed, 14 Feb 2024 11:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.67.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0047312B61
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910969; cv=none; b=uenCLVujxKRmaZYP7WY47lb298JK8AnUODCw0+2Jewn8Xqit6d0Rj9Ay3eStyEHviHO/okFlaJfoTpBJAzIOtJi7pZfAvCZNLerX4z00Jp70qJouceXzvtV777eqH1UMmP/FjvBQJaohneaRTcH8yF5nCpTHTUBROg+yNrQSlt8=
+	t=1707910815; cv=none; b=ZYQquVJsQeBt3Nj5lzSDhojMaL660JVm8t574nSxlLsQIvqL7asBLR3oObFvoT1zaGdAJLqHYJJoRM7z96hCGjQvcjDu6C2wmRhTzHkcxWt4ZHXoDYq4H6C4+8CB+Wp3Q4xniar+cbXR2Kse9vv1+xO4q5SMWC8630Mf/8URW9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910969; c=relaxed/simple;
-	bh=jl4X2nLs/EGY7MkFbQnr2YKdAJST/jbucKSgzovRLww=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ejIGt14z6c2B6qbuLcQm8MQLUeADgIm/zEWYLXFQwgQo8nwFOVFHJO8wPEat0HmEX2L6HVPcqLxj4IsBY5pYRInprDm64nfrEAcx3n9f1XRZlKOwL5SvaHgdWImWiKFudBGR3yGAfe5EvBlAmBWNhdm97oC+PQdWOccJTE8+NJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.67.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp69t1707910725t3jqpubl
-X-QQ-Originating-IP: fDEDb8Byls7cymFQN/Cx3S4iUt4gnKrfZ1Si9YIXh+o=
-Received: from localhost ( [112.22.30.30])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 14 Feb 2024 19:38:44 +0800 (CST)
-X-QQ-SSF: 01400000002000504000B00A0000000
-X-QQ-FEAT: uWtt+4oZiA/qS7T2ZI6hwxc3Siw4b/9Zv2iNiIVjBOb8bkerl33Bqy8OZLhaw
-	4G3zIxmMqqLcjxh5jd6LceKODJBczcv+wHcf6kCXBXHrtlzQNY9+UwClyu8CRNi38i+MrEM
-	1qW63T66HF7yzcHm0FWTnEI1pnliSA2c/vcfnTnRlZVPfUL8VRlVeMlFhwOYgNMU1cMM5hN
-	YXtQUgLsFLk6v8rRIXLqSCDy5WlgLzXXvoMoOTtD6vm6uMU2V8N2vVH4IQ8NrpqmzNHUT2D
-	SvSz0SqUELNknSeMm5UG9KwkVdhSBW/D/iAmX1s7MNXe2YZc3dSg8oTzax4oHHjOf0z0gd6
-	Q3iFWqDpSQc5uWnHcXgGgGy5K2e5XYG9l12v/lw+SoGt8piQmsZjpLioVjPBfqU6FmFlQXV
-	dFcXxD69jGU=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 11672996985482081614
-From: Dawei Li <dawei.li@shingroup.cn>
-To: mchehab@kernel.org
-Cc: sakari.ailus@linux.intel.com,
-	laurent.pinchart@ideasonboard.com,
-	linux-media@vger.kernel.org,
+	s=arc-20240116; t=1707910815; c=relaxed/simple;
+	bh=WNSlR33tBViXu08xbrYk0ySUbQI6bmCyn/fNCHmqg6U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ObmKbyJuhOCBX+ME/aj7TIFfcMsDVFTr//tGMwzbOgoVP1d3q46S4vEWSHYNRzIv1oWMv3EiOQMBNGgrlWVGtPTFoyXr6+mjeIMw3WkLC+PJ5xSBlDA7B7VvQaA4tZgApej4usvlgIKgrcrKAzboFYCrlUGqTGgVipWP1Aecbng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i6yVSl6u; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707910810;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uT81D9JadSG4shnyPAzeCNq5QuDdA42vAVAwALPxupk=;
+	b=i6yVSl6uTdkrx6HNLprqf5oHzRLgtC5JZQkJuQR6agOvHCg/AMST2eLGx1vFU3A00TNMDc
+	W6HIk/+HvpVx4AhZasgIvsCQXJOr/PttA4KuQJETrVo5d3VvyVx4r36xtpuK4BnKIJ1efl
+	CE0D7myb/TkQwGbDq2rSHjzxZkTlhhI=
+From: Leo Yan <leo.yan@linux.dev>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Will Deacon <will@kernel.org>,
+	James Clark <james.clark@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	Guo Ren <guoren@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ming Wang <wangming01@loongson.cn>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	hdegoede@redhat.com,
-	oe-kbuild-all@lists.linux.dev,
-	set_pte_at@outlook.com,
-	Dawei Li <dawei.li@shingroup.cn>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH] media: Add dependency of ov7670/mcam/cafe on CONFIG_V4L2_ASYNC explicitly
-Date: Wed, 14 Feb 2024 19:38:30 +0800
-Message-Id: <20240214113830.3656367-1-dawei.li@shingroup.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <202402130955.f6uxzdCA-lkp@intel.com>
-References: <202402130955.f6uxzdCA-lkp@intel.com>
+	linux-csky@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Cc: Leo Yan <leo.yan@linux.dev>
+Subject: [PATCH v1 0/4] perf parse-regs: Cleanup config and building
+Date: Wed, 14 Feb 2024 19:39:43 +0800
+Message-Id: <20240214113947.240957-1-leo.yan@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,83 +72,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Migadu-Flow: FLOW_OUT
 
-Kernel test robot reports:
-   ld: drivers/media/i2c/ov7670.o: in function `ov7670_remove':
-   drivers/media/i2c/ov7670.c:2011: undefined reference to
-   `v4l2_async_unregister_subdev'
-   ld: drivers/media/i2c/ov7670.o: in function `ov7670_parse_dt':
-   drivers/media/i2c/ov7670.c:1836: undefined reference to
-   `v4l2_fwnode_endpoint_parse'
-   ld: drivers/media/i2c/ov7670.o: in function `ov7670_probe':
-   drivers/media/i2c/ov7670.c:1990: undefined reference to
-   `v4l2_async_register_subdev'
-   ld: drivers/media/platform/marvell/cafe-driver.o: in function
-   `cafe_pci_probe':
->> drivers/media/platform/marvell/cafe-driver.c:543: undefined reference
-   to `v4l2_async_nf_init'
->> ld: drivers/media/platform/marvell/cafe-driver.c:545: undefined
-   reference to `__v4l2_async_nf_add_i2c'
-   ld: drivers/media/platform/marvell/mcam-core.o: in function
-   `mccic_shutdown':
->> drivers/media/platform/marvell/mcam-core.c:1931: undefined reference to
-   `v4l2_async_nf_unregister'
->> ld: drivers/media/platform/marvell/mcam-core.c:1932: undefined reference
-   to `v4l2_async_nf_cleanup'
-   ld: drivers/media/platform/marvell/mcam-core.o: in function
-   `mccic_register':
-   drivers/media/platform/marvell/mcam-core.c:1910: undefined reference to
-   `v4l2_async_nf_unregister'
-   ld: drivers/media/platform/marvell/mcam-core.c:1911: undefined reference
-   to `v4l2_async_nf_cleanup'
->> ld: drivers/media/platform/marvell/mcam-core.c:1873: undefined reference
-   to `v4l2_async_nf_register'
+Currently, the perf building enables register parsing based on the
+target architecture has supported register feature.
 
-Add explicit dependency on CONFIG_V4L2_ASYNC to mute ld errors.
+Furthermore, the perf building system needs to maintain a variable
+'NO_PERF_REGS' and defines macro 'HAVE_PERF_REGS_SUPPORT' for statically
+compiling the tool.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402130955.f6uxzdCA-lkp@intel.com/
-Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
----
- drivers/media/i2c/Kconfig              | 1 +
- drivers/media/platform/marvell/Kconfig | 2 ++
- 2 files changed, 3 insertions(+)
+As a result, the perf has no flexibilty for parsing register if an
+architecture doesn't support it. And the source files use the macro
+'HAVE_PERF_REGS_SUPPORT' to switch on and off the register parsing
+related code, which is not a good practice.
 
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 4c3435921f19..453cb4b81d6f 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -523,6 +523,7 @@ config VIDEO_OV7640
- 	  module will be called ov7640.
- 
- config VIDEO_OV7670
-+	select V4L2_ASYNC
- 	tristate "OmniVision OV7670 sensor support"
- 	help
- 	  This is a Video4Linux2 sensor driver for the OmniVision
-diff --git a/drivers/media/platform/marvell/Kconfig b/drivers/media/platform/marvell/Kconfig
-index d6499ffe30e8..48f5484478a0 100644
---- a/drivers/media/platform/marvell/Kconfig
-+++ b/drivers/media/platform/marvell/Kconfig
-@@ -11,6 +11,7 @@ config VIDEO_CAFE_CCIC
- 	select VIDEOBUF2_VMALLOC
- 	select VIDEOBUF2_DMA_CONTIG
- 	select VIDEOBUF2_DMA_SG
-+	select V4L2_ASYNC
- 	help
- 	  This is a video4linux2 driver for the Marvell 88ALP01 integrated
- 	  CMOS camera controller.  This is the controller found on first-
-@@ -27,6 +28,7 @@ config VIDEO_MMP_CAMERA
- 	select VIDEOBUF2_VMALLOC
- 	select VIDEOBUF2_DMA_CONTIG
- 	select VIDEOBUF2_DMA_SG
-+	select V4L2_ASYNC
- 	help
- 	  This is a Video4Linux2 driver for the integrated camera
- 	  controller found on Marvell Armada 610 application
+This series is to remove the static building for register parsing. In
+theory, we should can dynamically detect if an arch has support this
+feature and functions can return errors when the feature is not
+supported.
+
+The first patch is to remove unused build configuration
+CONFIG_PERF_REGS.
+
+The second patch is to build perf register functions, without using the
+macro 'HAVE_PERF_REGS_SUPPORT' to statically turn on or off code.
+
+The third patch is to introduce a weak function arch__sample_reg_masks(),
+this function can allow the target arch to return its sample register
+list.  With this change, we can totally remove the macro
+'HAVE_PERF_REGS_SUPPORT' in the source file.
+
+The forth patch is to clean up the Makefile for removing relevant
+configuration and macro definition, as they are not useful anymore.
+
+I tested this patch set on Arm64 and x86 for building and did a cross
+register parsing ('perf record' on Arm64 and 'perf report' on x86).
+
+
+Leo Yan (4):
+  perf build: Remove unused CONFIG_PERF_REGS
+  perf parse-regs: Always build perf register functions
+  perf parse-regs: Introduce a weak function arch__sample_reg_masks()
+  perf build: Cleanup perf register configuration
+
+ tools/perf/Makefile.config                    | 25 --------------
+ tools/perf/arch/arm/util/perf_regs.c          |  7 +++-
+ tools/perf/arch/arm64/util/machine.c          |  2 ++
+ tools/perf/arch/arm64/util/perf_regs.c        |  7 +++-
+ tools/perf/arch/csky/util/perf_regs.c         |  7 +++-
+ tools/perf/arch/loongarch/util/perf_regs.c    |  7 +++-
+ tools/perf/arch/mips/util/perf_regs.c         |  7 +++-
+ tools/perf/arch/powerpc/util/perf_regs.c      |  7 +++-
+ tools/perf/arch/riscv/util/perf_regs.c        |  7 +++-
+ tools/perf/arch/s390/util/perf_regs.c         |  7 +++-
+ tools/perf/arch/x86/util/perf_regs.c          |  7 +++-
+ tools/perf/util/parse-regs-options.c          |  8 ++---
+ .../util/perf-regs-arch/perf_regs_aarch64.c   |  4 ---
+ .../perf/util/perf-regs-arch/perf_regs_arm.c  |  4 ---
+ .../perf/util/perf-regs-arch/perf_regs_csky.c |  4 ---
+ .../util/perf-regs-arch/perf_regs_loongarch.c |  4 ---
+ .../perf/util/perf-regs-arch/perf_regs_mips.c |  4 ---
+ .../util/perf-regs-arch/perf_regs_powerpc.c   |  4 ---
+ .../util/perf-regs-arch/perf_regs_riscv.c     |  4 ---
+ .../perf/util/perf-regs-arch/perf_regs_s390.c |  4 ---
+ .../perf/util/perf-regs-arch/perf_regs_x86.c  |  4 ---
+ tools/perf/util/perf_regs.c                   | 11 ++++--
+ tools/perf/util/perf_regs.h                   | 34 +------------------
+ 23 files changed, 67 insertions(+), 112 deletions(-)
+
 -- 
-2.27.0
+2.34.1
 
 
