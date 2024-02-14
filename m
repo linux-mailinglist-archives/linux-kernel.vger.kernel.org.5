@@ -1,96 +1,119 @@
-Return-Path: <linux-kernel+bounces-65276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A25854A76
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:25:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED4C854A7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B771F24CE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:25:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DDA4B27A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA72054F90;
-	Wed, 14 Feb 2024 13:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A63554789;
+	Wed, 14 Feb 2024 13:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DP3MvIKC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iKyYENnD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F129054F82;
-	Wed, 14 Feb 2024 13:25:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C02429437;
+	Wed, 14 Feb 2024 13:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707917144; cv=none; b=YrLoPmi88KOriWJoH53lgCC1W+yI1q7Z0+IlVraomW1OK8JzOqykmbIIgR/7yZkCnGBR9kaOChQGGa066scWSkv7FwTF/5FnSxrG49lpbZEY6V18HBlTtQkMqZWQF+ocMn8vq6+tQlCned8UXp5PxSRYE3st8wclfsK55vS3AWY=
+	t=1707917293; cv=none; b=cTCXfJGaFy3U5Na88XpRIJvhcPwHThoMZ2zklPbZu10TII9D1bNqFbIXX5eHIiBsgrQ6OGZyrYQa4XURUimiseFQgl8XK1U43JItt/dNIP8J7vUW2os3Y/R0dX00b7Cy0NxuCmo/bSWS6e/VV90+QR0DqWlZG6Ip5oQW2P5a/yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707917144; c=relaxed/simple;
-	bh=ec+5pA6eqCefVv3bkSMVygeKg7lBf5lDJ6Av8fyMLTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MEJkP7pzL2UsjEnUrGpCZHfsmbbjasSXhNaPA9tzXxwl8xFWqQrs310E+1NTVDqEHPY2irXT7Lypo4RkbepCJGnjhb71Rx7dwsb7B27qicaRcH+T3/1JS7+Cy2ID+t1Br3MZBx1fWnWX3a/elblsV1IUIUtZALUj+WSuPPCSUyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DP3MvIKC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F6E2C43390;
-	Wed, 14 Feb 2024 13:25:41 +0000 (UTC)
+	s=arc-20240116; t=1707917293; c=relaxed/simple;
+	bh=dr4fZY5Udf3n038yhYLKk5netrjQQ8WRTOzQbrzRkN0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=u1lnbzRAYwDFeshH4lVK2x/QYMKgORntMUxDmZXI5H8uNPtnB5QTblpw/nsq7GCe08CVbgptWxtB+pEfZD1VplCI7yqbi2Shr7xZ2/fRBUbLHbS35yuvCdUL3wNkcCFdkqU6TFIBCWkYCxlW3JH2YHGscYE8Jt+qtan+pVRs1vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iKyYENnD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC5DC433C7;
+	Wed, 14 Feb 2024 13:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707917143;
-	bh=ec+5pA6eqCefVv3bkSMVygeKg7lBf5lDJ6Av8fyMLTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DP3MvIKCuo1Pr1XASVT1JXs3+SvLI0Psszrd3OtQZiTFZlpRSG8a2JS4Nz8iDyfrT
-	 sXCVdn4DAKtmGawXHrpee6kIUuighT7+OVU5D5rmkJ6+pyvVQuccDFDDCdi1hSw5Ub
-	 6//K4ggZqmdq9itvGeE/r/amV4ZZPaQpGuJQszfyiPm9U0UYXc8oGBWGiR9zqQBEEM
-	 aWyT0Siatl9hHYaai08e4QylaxtLDo2kucJNeSUsuUIIucOCk7IMX4Kaowhxf9oiL9
-	 ng7gr69pKkw5iYgXxTt/Pw8Bwg1wp5KNjWeof16+KzxDGjw9XGFf55XCuCdKGGIeY0
-	 GrDrFhM7FAAmg==
-Date: Wed, 14 Feb 2024 13:25:38 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: bryan.odonoghue@nexus-software.ie, andersson@kernel.org,
-	konrad.dybcio@linaro.org, lgirdwood@gmail.com,
-	quic_fenglinw@quicinc.com, quic_collinsd@quicinc.com,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
- voltage
-Message-ID: <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
-References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
+	s=k20201202; t=1707917292;
+	bh=dr4fZY5Udf3n038yhYLKk5netrjQQ8WRTOzQbrzRkN0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=iKyYENnDmyT7TVOrWZ0E6ri4G6N+j6LRxKcG4JKbe95j6S1iSABYaXNkelw41t0Lz
+	 4mcjPsXhAG/kX6LMBrjKSpzFXQnK7G8Ud93esV1p6C2Ik/q8Nb6GhlG9g8SkkC9u3N
+	 C8MmXPHqMpaCBDf/Cb82cFU43Sy/noljjun5SNW6znjuu887+1bPy1Bf+fG7w1pejO
+	 7i4vrSR/WhqSOIEo05C/pu+qOp0cUVYv6bCLlclcEDeuHx2eeNvP+g9zDyWKsdDmJe
+	 9i2rRyUoEXCrVqiUVY8ojubWx35cS35mvWT6EQckvlnCDfbIkhljOdubqQuffqEyp8
+	 egkIQIvtd/SIA==
+Date: Wed, 14 Feb 2024 22:28:06 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 10/36] ftrace/function_graph: Pass fgraph_ops to
+ function graph callbacks
+Message-Id: <20240214222806.0eaf984d4e56f791a3e1a697@kernel.org>
+In-Reply-To: <20240213204218.0673fbb0@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723216124.502590.13855631208872523552.stgit@devnote2>
+	<20240213204218.0673fbb0@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="r17f06/4YKIVk7Q3"
-Content-Disposition: inline
-In-Reply-To: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
-X-Cookie: Available while quantities last.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Tue, 13 Feb 2024 20:42:18 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed,  7 Feb 2024 00:09:21 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > Pass the fgraph_ops structure to the function graph callbacks. This will
+> > allow callbacks to add a descriptor to a fgraph_ops private field that wil
+> > be added in the future and use it for the callbacks. This will be useful
+> > when more than one callback can be registered to the function graph tracer.
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  Changes in v2:
+> >   - cleanup to set argument name on function prototype.
+> > ---
+> >
+> 
+> This patch fails to compile without this change:
+
+Thanks for pointing it out! Let me fix this in next version.
+
+> 
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index e35a941a5af3..47b461b1cf7e 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -381,7 +381,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+>  		if (gops == &fgraph_stub)
+>  			continue;
+>  
+> -		if (gops->entryfunc(&trace))
+> +		if (gops->entryfunc(&trace, gops))
+>  			bitmap |= BIT(i);
+>  	}
+>  
+> 
+> 
+> -- Steve
+> 
 
 
---r17f06/4YKIVk7Q3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Feb 14, 2024 at 12:16:14PM +0000, Bryan O'Donoghue wrote:
-
->  	.voltage_ranges = (struct linear_range[]) {
-> -		REGULATOR_LINEAR_RANGE(1800000, 0,  2,  200000),
-> +		REGULATOR_LINEAR_RANGE(1808000, 0,  2,  200000),
-
-This will also offset all other voltages that get set, is that expected
-and desired?
-
---r17f06/4YKIVk7Q3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXMv1EACgkQJNaLcl1U
-h9AzXgf8CaXLf67yXq6uJFdCGGwbgcmiAVIqD2Erqmp+1IEn4fPWevmkyc3SkMkg
-0rY7VgauEFF1PePaW0out7P5ac2lMZVol33GLXfp9e8infEQzZhZBd4Tpm2foNHu
-qwv/RIpRgFRSB2k5B9EnDFMSAe1gcwwiKlA9EpSK5ir+D4w0vb3s3+vMc0US3HCz
-glXtAvMzoenWyTtfcifytMmmEi3N1DP6+s3uhpAkO2sNRnQdztxysz5+C8mHxjJ5
-c03ntS+0echMzNJ/IgPoT6mdlwqx7iwEjGVJDDhXOljOcP6DxbqMjR8DYrTrd5vn
-terqQg9GgTt1tbobzrKqxJHn52MjSg==
-=PNfk
------END PGP SIGNATURE-----
-
---r17f06/4YKIVk7Q3--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
