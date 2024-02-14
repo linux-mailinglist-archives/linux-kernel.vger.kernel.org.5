@@ -1,191 +1,145 @@
-Return-Path: <linux-kernel+bounces-65113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E15F18547F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:16:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5178547FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:18:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F6C291070
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:16:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B5C3289AFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A451B7E2;
-	Wed, 14 Feb 2024 11:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BB419472;
+	Wed, 14 Feb 2024 11:18:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MnACvIFJ"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HUODt3XT"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31DD1B801
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C591BC23;
+	Wed, 14 Feb 2024 11:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707909406; cv=none; b=bJlG+sReCFMxZgFeIwZs6cuBdpuwBjWiKYXpwVjGVhE/qgk+Up4aLTwt9lvqiHUwj20Po055UI8Pr+nIrvyyLjNTmqsdV6wztgHWTTaBV70q/FnXBZaYAw1+1AqDukBuR+4qSm4BVbSbZ710jwTDivsPMI5z/wCzl8W0ygcYoeE=
+	t=1707909483; cv=none; b=YEhMlHiR7QZ1cTl3ykYCzLXh4oOs75aHDBV1xojM2yPbuFW+X+tI4IV5Uz5WfELlnvDS7Y5APequxKI6dBMLJBfMJjxw+49pVI/8ddexrSCEomMmxjQCs+VUz6tR9eHhD8TakRC0LJAODXIftZQYBl4h2nruF1UveWKXVY4H8ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707909406; c=relaxed/simple;
-	bh=CorA3UG1u4Z30koMSg5l+MLwFOJanBiEK6JJM33nAkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I1lLsh9mmWuG3aTjIbvCSp49t2rORF7GLs078mB4w0JSq/QKEMm63ER8CswjhotJ01Jccb7s1M/iR2loV/3C8e9pXjshM6e2O1bZWU66BbEqMv4PynF3TnaMY99hPKrSvYoY7SiSOyyvllrjU35SXDCm09hGiye87H0r/nw2DrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MnACvIFJ; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso1630764276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 03:16:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707909404; x=1708514204; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uj6mDAYoRHzkcy8dqG4hUvzPf2kuoVsNIBmDePLCGTA=;
-        b=MnACvIFJY5VoncDRNkpZ+d3mGxbk5VggNN0kc5RVbpfeDBHidEtBB0avzUwYmZ3r/t
-         y0a7BHRSQKt5jj/tVvfk5r8jDxOOT5jqCdOnXNjM0SHV3ioc+nWDvFUezFjrvuEvvijr
-         MrKr+wcCMMm1kRhrRgiqOzwuNLhJ4wfuVj8kuiX92ojMDkgjeKYwTQiZDA7T1RcM5ZHT
-         VsyxSfAtu6PuziaEY1a15lShleW7uoaWBsu2adCm2PeH7Rf3tccT/mwYvXNCtRzbJ8VP
-         5J9lA9B6m/I4loHsvUDGsPpVzC+swLKQixsREx518rCzzW4UJFlAyfVSjXEdP0mX8g/w
-         i5Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707909404; x=1708514204;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uj6mDAYoRHzkcy8dqG4hUvzPf2kuoVsNIBmDePLCGTA=;
-        b=P9km0pbVcfQxgToX2z8YwULWkAeiigOT2PJJw5kNWNERdbF/2CNhtVNYdQhB8RZLYC
-         Xjm1SifW4MtuevO8CYp9w7cPuiz3v3FHm1lquHaP6pAC6kpv4Ghw0mDw2VxEgwFwWgwV
-         /zVFrU9J+VbwID/L+pRGor8SPVbO9Q/wg2aOBjwEcPtZzAsPz7ZKTQJ/OPn7mzniKCuS
-         k/EyH5RzChw2uSFvMxLHy7HIhSZ4ZrEXlL9fLUxuvMPPPMAgwlZkZB2mRjHnde2sz3ro
-         U5UemxByAUNbRI7GS9v2NDO/9KfAxA8KOijDPSeg13PS1q2D4Mr2ERNOXkj89KNJlTvs
-         Ia2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWJnzlbIAxHdgrqKDRVQ5SpYAmbx0+gt4cQMluxiYQ59unDOMkt5KySrQC9vdhwANAIULvHDEYfCTzAnIslMkjWiFZxaE4eTvvVpSBV
-X-Gm-Message-State: AOJu0Yw4/hhGTo5++A0KRo8rqcfGejwViIUr/ov5fs3fkDm7Plb9ZPej
-	ac7YAUxAG3zdGG5A5RHbzTI2XN1DokdRpL81BN0esX+iqG0Rqhhh7f3/uYHFQp67cifzqIBO+x2
-	sLKiZVFYmB6+KjRSpJdtrLo4YFnOo/CWKuoEgMQ==
-X-Google-Smtp-Source: AGHT+IGR6d9+WdNJXu0uxM+Xlzc9aogCPu7mnmTFb0vI1BVAlCSxaoGjJYxY6TTrV91065vIGhvBhfdccdgYl7fPDE8=
-X-Received: by 2002:a25:b29f:0:b0:dc7:6f13:61d1 with SMTP id
- k31-20020a25b29f000000b00dc76f1361d1mr2242861ybj.20.1707909403782; Wed, 14
- Feb 2024 03:16:43 -0800 (PST)
+	s=arc-20240116; t=1707909483; c=relaxed/simple;
+	bh=ZXYInM9DzYBXRy307ukp5GNDcgD4Crt155eACGYgiHg=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=nrWp9WfJYUkTESuGauZj35q4N7vvxxy4z0RIfEfCUdQymzEC0AnUzxNWV9l42SoZat3D3qeex/Ireyk+lH6iXm3BH6ORk7g9coqzR52sN4yy8FlQpWGyVlqijM0QKeYzPFZ+sROrVkOIsi5n3xEcjukkG2yxu8Bbg+Q/SrXivYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HUODt3XT; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E9uCWb026014;
+	Wed, 14 Feb 2024 11:17:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=Jva86+YXCMqx
+	o0LT3C/0gbD8Dx0/YyWNE6GHj6ltS1c=; b=HUODt3XTxERqmmu9yz9sfr5x51A6
+	b/OBazA68wn4oZVLqV1yDBxjyRAreRbBjn/y/aDeVh8gqk6WuGShZYJdPHoEDM/c
+	dwM8iHmNpnt7YYGJNffVKJurIKvSUStKl+fXbK2WSgK2CBL1jD5Sf+6KLrP33EgQ
+	RyBD/jbX8r0q/PcqaYqE7PmVo1G91gxCsUu11LIaftrDPcbKzRsrLy+zBi9K1aJP
+	tMJZI8/a81uCPKDaZYBWSxmRvMkxc5OWfi3EHyIy5y+R/ZLpJd0VVQ8semMvoQJj
+	UnizjtncSJBd6zHl8ykDQ44DbvE7hGSTO24d/a2ao8KXhvXKIve2LPEESw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8jrj905u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 11:17:48 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA05.qualcomm.com [127.0.0.1])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41EBDjLS016521;
+	Wed, 14 Feb 2024 11:17:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA05.qualcomm.com (PPS) with ESMTP id 3w88r6f091-1;
+	Wed, 14 Feb 2024 11:17:47 +0000
+Received: from NALASPPMTA05.qualcomm.com (NALASPPMTA05.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41EBHl7v023397;
+	Wed, 14 Feb 2024 11:17:47 GMT
+Received: from hu-devc-lv-u18-c.qualcomm.com (hu-selvaras-lv.qualcomm.com [10.47.205.157])
+	by NALASPPMTA05.qualcomm.com (PPS) with ESMTP id 41EBHk3M023395;
+	Wed, 14 Feb 2024 11:17:47 +0000
+Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 4178377)
+	id D2401600C33; Wed, 14 Feb 2024 03:17:46 -0800 (PST)
+From: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+To: tern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com,
+        Selvarasu Ganesan <quic_selvaras@quicinc.com>
+Subject: [PATCH] usb-storage: Add US_FL_FIX_INQUIRY quirk for Intenso Twist Line USB 3.2
+Date: Wed, 14 Feb 2024 03:17:21 -0800
+Message-Id: <20240214111721.18346-1-quic_selvaras@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: E3bxnyCKtXIo7-h0S4A5DagDOAP9Q-VD
+X-Proofpoint-ORIG-GUID: E3bxnyCKtXIo7-h0S4A5DagDOAP9Q-VD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_04,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=553 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402140088
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240207143951.938144-1-christophe.kerello@foss.st.com>
-In-Reply-To: <20240207143951.938144-1-christophe.kerello@foss.st.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 14 Feb 2024 12:16:07 +0100
-Message-ID: <CAPDyKFpsABh4qsJv7sJiSZGWiBPM+umN2kp7teUYqdReC2a-zw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmci: stm32: fix DMA API overlapping mappings warning
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: alexandre.torgue@foss.st.com, yann.gautier@foss.st.com, 
-	linus.walleij@linaro.org, linux-mmc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 7 Feb 2024 at 15:40, Christophe Kerello
-<christophe.kerello@foss.st.com> wrote:
->
-> Turning on CONFIG_DMA_API_DEBUG_SG results in the following warning:
->
-> DMA-API: mmci-pl18x 48220000.mmc: cacheline tracking EEXIST,
-> overlapping mappings aren't supported
-> WARNING: CPU: 1 PID: 51 at kernel/dma/debug.c:568
-> add_dma_entry+0x234/0x2f4
-> Modules linked in:
-> CPU: 1 PID: 51 Comm: kworker/1:2 Not tainted 6.1.28 #1
-> Hardware name: STMicroelectronics STM32MP257F-EV1 Evaluation Board (DT)
-> Workqueue: events_freezable mmc_rescan
-> Call trace:
-> add_dma_entry+0x234/0x2f4
-> debug_dma_map_sg+0x198/0x350
-> __dma_map_sg_attrs+0xa0/0x110
-> dma_map_sg_attrs+0x10/0x2c
-> sdmmc_idma_prep_data+0x80/0xc0
-> mmci_prep_data+0x38/0x84
-> mmci_start_data+0x108/0x2dc
-> mmci_request+0xe4/0x190
-> __mmc_start_request+0x68/0x140
-> mmc_start_request+0x94/0xc0
-> mmc_wait_for_req+0x70/0x100
-> mmc_send_tuning+0x108/0x1ac
-> sdmmc_execute_tuning+0x14c/0x210
-> mmc_execute_tuning+0x48/0xec
-> mmc_sd_init_uhs_card.part.0+0x208/0x464
-> mmc_sd_init_card+0x318/0x89c
-> mmc_attach_sd+0xe4/0x180
-> mmc_rescan+0x244/0x320
->
-> DMA API debug brings to light leaking dma-mappings as dma_map_sg and
-> dma_unmap_sg are not correctly balanced.
->
-> If an error occurs in mmci_cmd_irq function, only mmci_dma_error
-> function is called and as this API is not managed on stm32 variant,
-> dma_unmap_sg is never called in this error path.
->
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+The Intenso Twist Line USB 3.2 flash drive fails to respond to the
+INQUIRY data stage request for a 36 bulk in request from the host. This
+commit adds the US_FL_FIX_INQUIRY flag to fake the INQUIRY command for
+this device, preventing a storage enumeration failure.
 
-Applied for fixes and by adding a fixes- and stable-tag, thanks!
+USBMON log:
+ffffff8a3ee06a00 3192811972 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+ffffff8a3ee06a00 3192862051 C Ci:2:009:0 -2 0
+ffffff8a3ee06a00 3192862185 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+ffffff8a3ee06a00 3192912299 C Ci:2:009:0 -2 0
+ffffff8a3ee06e00 3193040068 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+ffffff8a3ee06e00 3193040214 C Ci:2:003:0 0 4 = 880b0700
+ffffff8a3ee06e00 3193040279 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+ffffff8a3ee06e00 3193040427 C Ci:2:002:0 0 4 = 00010000
+ffffff8a3ee06e00 3193040470 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+ffffff8a3ee06e00 3193040672 C Ci:2:002:0 0 4 = 03050000
+ffffff892b309500 3193824092 S Ci:2:009:0 s a1 fe 0000 0000 0001 1 <
+ffffff892b309500 3193824715 C Ci:2:009:0 0 1 = 00
+ffffff892b309500 3193825060 S Bo:2:009:2 -115 31 = 55534243 01000000 24000000 80000612 00000024 00000000 00000000 000000
+ffffff892b309500 3193825150 C Bo:2:009:2 0 31 >
+ffffff8b8419d400 3193825737 S Bi:2:009:1 -115 36 <
+ffffff8a3ee06400 3194040175 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+ffffff8a3ee06400 3194040372 C Ci:2:003:0 0 4 = 880b0700
+ffffff89bee5b100 3194040591 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+ffffff89bee5b100 3194040681 C Ci:2:002:0 0 4 = 00010000
+ffffff89bee5b100 3194040999 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+ffffff89bee5b100 3194041083 C Ci:2:002:0 0 4 = 03050000
+ffffff8a3ee06a00 3195040349 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
 
-Kind regards
-Uffe
+Signed-off-by: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+---
+ drivers/usb/storage/unusual_devs.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
+index fd68204374f2..7285287ca379 100644
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -784,6 +784,13 @@ UNUSUAL_DEV(  0x058f, 0x6387, 0x0141, 0x0141,
+ 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+ 		US_FL_MAX_SECTORS_64 ),
+ 
++/* Selvarasu Ganesan <quic_selvaras@quicinc.com> */
++UNUSUAL_DEV(  0x058f, 0x6387, 0x0002, 0x0002,
++		"Intenso",
++		"Flash drive",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_FIX_INQUIRY),
++
+ /* Fabrizio Fellini <fello@libero.it> */
+ UNUSUAL_DEV(  0x0595, 0x4343, 0x0000, 0x2210,
+ 		"Fujifilm",
+-- 
+2.17.1
 
-> ---
->  drivers/mmc/host/mmci_stm32_sdmmc.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> index 35067e1e6cd8..f5da7f9baa52 100644
-> --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-> +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> @@ -225,6 +225,8 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
->         struct scatterlist *sg;
->         int i;
->
-> +       host->dma_in_progress = true;
-> +
->         if (!host->variant->dma_lli || data->sg_len == 1 ||
->             idma->use_bounce_buffer) {
->                 u32 dma_addr;
-> @@ -263,9 +265,30 @@ static int sdmmc_idma_start(struct mmci_host *host, unsigned int *datactrl)
->         return 0;
->  }
->
-> +static void sdmmc_idma_error(struct mmci_host *host)
-> +{
-> +       struct mmc_data *data = host->data;
-> +       struct sdmmc_idma *idma = host->dma_priv;
-> +
-> +       if (!dma_inprogress(host))
-> +               return;
-> +
-> +       writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-> +       host->dma_in_progress = false;
-> +       data->host_cookie = 0;
-> +
-> +       if (!idma->use_bounce_buffer)
-> +               dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
-> +                            mmc_get_dma_dir(data));
-> +}
-> +
->  static void sdmmc_idma_finalize(struct mmci_host *host, struct mmc_data *data)
->  {
-> +       if (!dma_inprogress(host))
-> +               return;
-> +
->         writel_relaxed(0, host->base + MMCI_STM32_IDMACTRLR);
-> +       host->dma_in_progress = false;
->
->         if (!data->host_cookie)
->                 sdmmc_idma_unprep_data(host, data, 0);
-> @@ -676,6 +699,7 @@ static struct mmci_host_ops sdmmc_variant_ops = {
->         .dma_setup = sdmmc_idma_setup,
->         .dma_start = sdmmc_idma_start,
->         .dma_finalize = sdmmc_idma_finalize,
-> +       .dma_error = sdmmc_idma_error,
->         .set_clkreg = mmci_sdmmc_set_clkreg,
->         .set_pwrreg = mmci_sdmmc_set_pwrreg,
->         .busy_complete = sdmmc_busy_complete,
-> --
-> 2.25.1
->
 
