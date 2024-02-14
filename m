@@ -1,56 +1,71 @@
-Return-Path: <linux-kernel+bounces-65125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79340854856
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:29:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278A78547B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15EB71F2812D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:29:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 206A9B2501E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73FF1A28C;
-	Wed, 14 Feb 2024 11:29:42 +0000 (UTC)
-Received: from gepdcl09.sg.gdce.sony.com.sg (unknown [121.100.38.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424E218EAD;
+	Wed, 14 Feb 2024 11:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bu55+Q1N"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D70171A3;
-	Wed, 14 Feb 2024 11:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=121.100.38.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F06418638;
+	Wed, 14 Feb 2024 11:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910182; cv=none; b=N9KURrlt9xo+kDgJditJbIeBtE8qKV3EtEVDDlfIpw4h5c3U5dTkOYxIVzan4lb63opmaOXCCwePCY04XErp63Q8067BuxlPwc0phEXptYfL6kGlsnawIntXLCb0+G8N3l182fWqTjxR2XTmbjCtKcH+8NIN9RQCaDuFhejOW0w=
+	t=1707908724; cv=none; b=HYv+jvHjueF9+7CzBkG9zNroX3Mlt/r1WPLgOQ8bPuIDHqqY4Vs5PBvom3NxmMM2D+KcjJqNY/ngaT5QJiWN6rgKFpcocalKO+49Ur9rxT57ybj2zsa3RdLfxEBzvJPnqGhILC2vb7Xd0amNDlngfocJVCeB85CF1eSqaaAUnC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910182; c=relaxed/simple;
-	bh=3t2GII+GFBiCVO0yfeqLOOLESh/DgusqChhhZZZl7tk=;
+	s=arc-20240116; t=1707908724; c=relaxed/simple;
+	bh=leNWJYh69CV7bQ1lqnd7BjWIi97NaiPuvMnUCm+KwVA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3lq81YZeNR2jWn28OxDcXUBoftpmrZzRYP9Iq483kclCtqp84c2/Qz4cKURMTdsSm/1KeXrKT5QZEqSIkMC+xPYxyoHgONmbRVAa7UDBZEgTjsNf+kTjcx0jl3UbXZ/GNaKbRVPQgiMBoPvh5/qtYh2TFBh2EiNnR9CbnKk3T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com; spf=fail smtp.mailfrom=sony.com; arc=none smtp.client-ip=121.100.38.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=sony.com
-Received: from gepdcl04.s.gdce.sony.com.sg (SGGDCSE1NS08.sony.com.sg [146.215.123.198])
-	by gepdcl09.sg.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EAgcpk007668;
-	Wed, 14 Feb 2024 18:44:09 +0800
-Received: from mail.sony.com ([43.88.80.246])
-	by gepdcl04.s.gdce.sony.com.sg (8.14.7/8.14.4) with ESMTP id 41EAg5SS002885;
-	Wed, 14 Feb 2024 18:42:05 +0800
-Received: by mail.sony.com (Postfix, from userid 1000)
-	id 367FD20C089D; Wed, 14 Feb 2024 16:10:39 +0530 (IST)
-Date: Wed, 14 Feb 2024 16:10:39 +0530
-From: Sreenath Vijayan <sreenath.vijayan@sony.com>
-To: Petr Mladek <pmladek@suse.com>
-Cc: john.ogness@linutronix.de, corbet@lwn.net, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, rdunlap@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        taichi.shimoyashiki@sony.com, daniel.palmer@sony.com,
-        anandakumar.balasubramaniam@sony.com
-Subject: Re: [PATCH v4 2/2] tty/sysrq: Dump printk ring buffer messages via
- sysrq
-Message-ID: <ZcyYp4eZsrrrunFj@sony.com>
-References: <cover.1706772349.git.sreenath.vijayan@sony.com>
- <ca8dd18e434f309612c907d90e9f77c09e045b37.1706772349.git.sreenath.vijayan@sony.com>
- <ZcOdLrOPiPJmCec5@alley>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LPlN5BFsvfg+jRYsdZv47oXuIjFHiOPjE/pBiZbckzg+0AZUldiG3NnOJumbv8MQx/++tWm9ASrWy0JoqxH7mEXz1oB+wr9nC09mt7tjHTKb2/SWO6M5KpKFIKF1wGfBL087/akDTYC/i3CVLliEneYrlJpEPezaIym9fCLwCys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bu55+Q1N; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707908723; x=1739444723;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=leNWJYh69CV7bQ1lqnd7BjWIi97NaiPuvMnUCm+KwVA=;
+  b=Bu55+Q1NxFgFJ5W5IAcJVrZ9trvJowb9yIqCwri1xY3wHVAU/AfArXgf
+   pahKP8AKmz6yTSPY6FcQRwG3T9th+hD6KLvCrgtUU+8aNFUKk0XaFbIVu
+   yfT8mrP9KAb95cSpv8vLv+Tgfgxi+QP54qdvBQizVrf5FNIyMZt2Tr6uL
+   eYzOnEkd+jCOsNylOrKEeY6+KHSFBg7/oj4IRLAg4uKH3iZGqizVXgOb3
+   3cADWHw55biaFjlYNe2VoC5egNE+6th0Dkdc6bNER8LG3SROnlpqmiu6q
+   4tVDhV5Lns7TH+7jNZNfluYLPYZ5JE3habUnQ6UjBoWeFgCkXVel8s+vn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2069860"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="2069860"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:05:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="3511208"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 03:05:20 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id ECCE111F86A;
+	Wed, 14 Feb 2024 13:05:16 +0200 (EET)
+Date: Wed, 14 Feb 2024 11:05:16 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Youssef Quaisse <yquaisse@gmail.com>
+Cc: bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+	gregkh@linuxfoundation.org, skhan@linuxfoundation.org,
+	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-media@vger.kernel.org
+Subject: Re: [PATCH] Fix three warnings when running `make htmldocs`
+Message-ID: <ZcyebKY86sAJDhr4@kekkonen.localdomain>
+References: <20240210221451.27769-1-yquaisse@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,117 +74,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcOdLrOPiPJmCec5@alley>
+In-Reply-To: <20240210221451.27769-1-yquaisse@gmail.com>
 
-On Wed, Feb 07, 2024 at 04:09:34PM +0100, Petr Mladek wrote:
-> On Thu 2024-02-01 13:12:41, Sreenath Vijayan wrote:
-> > When terminal is unresponsive, one cannot use dmesg to view printk
-> > ring buffer messages. Also, syslog services may be disabled,
-> > to check the messages after a reboot, especially on embedded systems.
-> > In this scenario, dump the printk ring buffer messages via sysrq
-> > by pressing sysrq+D.
-> 
-> I would use sysrq-R and say that it replays the kernel log on
-> consoles.
-> 
-> The word "dump" is ambiguous. People might thing that it calls
-> dmesg dumpers.
->
+Hi Youssef,
 
-Ok noted. We proposed sysrq-D as it is an alternative to dmesg
-command and might be easier to remember.
- 
-> Also the messages would be shown on the terminal only when
-> console_loglevel is set to show all messages. This is done
-> in __handle_sysrq(). But it is not done in the workqueue
-> context.
+On Sat, Feb 10, 2024 at 10:14:38PM +0000, Youssef Quaisse wrote:
+> Running `make htmldocs` generates warnings for file
+> drivers/staging/media/ipu3/include/uapi/intel-ipu3.h.
 > 
+> Fix was to remove the "excess" definitions.
+> 
+> Warnings in question:
+> 
+> ```
+> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved1' description in 'ipu3_uapi_acc_param'
+> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved2' description in 'ipu3_uapi_acc_param'
+> ./drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2778: warning: Excess struct member '__acc_osys' description in 'ipu3_uapi_flags'
+> ```
+> 
+> Signed-off-by: Youssef Quaisse <yquaisse@gmail.com>
 
-Yes, the initial implementation was using write() of consoles
-so the messages would be shown irrespective of the console log
-level. The current implementation depends on the console log
-level but many other sysrq keys dump the messages at KERN_INFO
-level. In my understanding, __handle_sysrq() dumps only the
-sysrq header at the manipulated loglevel. It restores original
-loglevel before calling callback function for the key.
-If console_loglevel is set to show KERN_INFO messages, it would
-dump most of the important printk messages in our case. Also the
-loglevel can be modified using sysrq itself now.
+Thanks for the patch. These have been already addressed by commit
+dcef3ed5b0d79f89018e31d55cf09f2c2f81392b .
 
-> Finally, the commit message should explain why workqueues are used
-> and what are the limitations. Something like:
+> ---
+>  drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> <add>
-> The log is replayed using workqueues. The reason is that it has to
-> be done a safe way (in compare with panic context).
-> 
-> This also means that the sysrq won't have the desired effect
-> when the system is in so bad state that workqueues do not
-> make any progress.
-> </add>
-> 
-> Another reason might be that we do not want to do it in
-> an interrupt context. But this reason is questionable.
-> Many other sysrq commands do a complicate work and
-> print many messages as well.
->
+> diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> index caa358e0bae4..4aa2797f5e3c 100644
+> --- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> +++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> @@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
+>   *		&ipu3_uapi_yuvp1_y_ee_nr_config
+>   * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
+>   * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
+> - * @reserved1: reserved
+>   * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
+>   * @tcc:	total color correction config as defined in struct
+>   *		&ipu3_uapi_yuvp2_tcc_static_config
+> - * @reserved2: reserved
+>   * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
+>   * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
+>   * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
+> @@ -2724,7 +2722,6 @@ struct ipu3_uapi_obgrid_param {
+>   * @acc_ae: 0 = no update, 1 = update.
+>   * @acc_af: 0 = no update, 1 = update.
+>   * @acc_awb: 0 = no update, 1 = update.
+> - * @__acc_osys: 0 = no update, 1 = update.
+>   * @reserved3: Not used.
+>   * @lin_vmem_params: 0 = no update, 1 = update.
+>   * @tnr3_vmem_params: 0 = no update, 1 = update.
 
-Noted. Will add this if we proceed with workqueue implementation.
- 
-> Another reason is that the function need to use console_lock()
-> which can't be called in IRQ context. Maybe, we should use
-> console_trylock() instead.
-> 
-> The function would replay the messages only when console_trylock()
-> succeeds. Users could repeat the sysrq when it fails.
-> 
-> Idea:
-> 
-> Using console_trylock() actually might be more reliable than
-> workqueues. console_trylock() might fail repeatably when:
-> 
->     + the console_lock() owner is stuck. But workqueues would fail
->       in this case as well.
-> 
->     + there is a flood of messages. In this case, replaying
->       the log would not help much.
-> 
-> Another advantage is that the consoles would be flushed
-> in sysrq context with the manipulated console_loglevel.
-> 
-> Best Regards,
-> Petr
+-- 
+Kind regards,
 
-Yes, this seems to work well from interrupt context when the
-console lock owner is not stuck. We can also manipulate
-the console_loglevel. Something like this:
-
-//in printk.c
-void console_replay_all(void)
-{
-       if (console_trylock()) {
-               __console_rewind_all();
-               console_unlock();
-       }
-}
-
-//in sysrq.c
-static void sysrq_handle_dmesg_dump(u8 key)
-{
-       int orig_log_level = console_loglevel;
-       console_loglevel = CONSOLE_LOGLEVEL_DEFAULT;
-       console_replay_all();
-       console_loglevel = orig_log_level;
-}
-
-
-The downside I see is that the user may have to hit the
-key multiple times or give up trying if the console lock
-owner is busy at the time of key press. This information
-should probably be updated in the documentation.
-
-Please let me know your opinion.
-
-Regards,
-Sreenath
+Sakari Ailus
 
