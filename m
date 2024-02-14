@@ -1,132 +1,139 @@
-Return-Path: <linux-kernel+bounces-65026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE578546DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:11:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162B68546E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5841C2435A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:11:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9500C1F26DDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B12171C8;
-	Wed, 14 Feb 2024 10:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD92171C4;
+	Wed, 14 Feb 2024 10:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hQ59DxE2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Cijv3v90";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hQ59DxE2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Cijv3v90"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="UlLsptYk"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1B279DF
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6603633;
+	Wed, 14 Feb 2024 10:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707905458; cv=none; b=DZtfGqNpbH8nsKEVvOQ9i8JeXCmlCSCtktFNSkx8gdoXKwTObYglqRVyLjCdr99nAPMC/xL/FZmyRk8wTz9JmRV2duY0WjnDuc0sINZF+0WEB1tpreDgp811bTi0sC2paaifh2tmm98fP72sUEc3997UpX+hev5939+Qb1zqiiw=
+	t=1707905550; cv=none; b=rdCDcXldpfNOawGmXTKZemUV28gTH8NSz6h8xDGbUQvFPyDUHUFndKFu9RCeqPawIe2eCot8AiwPU/j/1dNjsKY3TnJKLHvoR/EqpkIqlYX9IIlSZ/58PQNIkyPuaV4mpVrLPMllBKlHtV3c+aEP5qzoCZyotfSlprSYLGJsaVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707905458; c=relaxed/simple;
-	bh=VbCpi648cWO9vEdIxj6hhE5XdEGDe2VZIK8zfnr0l2I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=q5kvuEF4Qjg0KDhE4Z3ALzwDZIFsPu1ZmbY6tubEwgLuxiZ69aWtNbjwJb+P6pHfPEVY4r/MJjAb9/ABwgj2LgweUlmDucQaRzJ0S6aQaGVQ1qiJetZtYDbVlbCCBWOyo6v++BY79iUX2lR4yOiCfEjqGGw3kYJnbzcftJBOEkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hQ59DxE2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Cijv3v90; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hQ59DxE2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Cijv3v90; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 0988A22034;
-	Wed, 14 Feb 2024 10:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707905455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKHS3Tm9mFG5fwX6aOLXFqUCCVUiA1XcZVTlspPHL4k=;
-	b=hQ59DxE2eGoDgeAPzrKgnd/lATT0UnlL/VauispDaRmzRcWzrHoupVd/iuLFCcp1bWccOm
-	wnRQ9OG0lph7VCAeWQGzfeaCX/KMKNXGjXwh/aA/4BSRpjXMdXADAbkn9RcDHqzCH0yjHo
-	4F0S2cuQUl47fVitwZf/lrQtyIB8/ns=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707905455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKHS3Tm9mFG5fwX6aOLXFqUCCVUiA1XcZVTlspPHL4k=;
-	b=Cijv3v90qAXWqCrQVYxQ0HJ75CdM4G/XjXV4BhnxSqAlbNQFxbiNrf1OOnhumuEhyOJGPc
-	XSJJM0WOCaUFivCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707905455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKHS3Tm9mFG5fwX6aOLXFqUCCVUiA1XcZVTlspPHL4k=;
-	b=hQ59DxE2eGoDgeAPzrKgnd/lATT0UnlL/VauispDaRmzRcWzrHoupVd/iuLFCcp1bWccOm
-	wnRQ9OG0lph7VCAeWQGzfeaCX/KMKNXGjXwh/aA/4BSRpjXMdXADAbkn9RcDHqzCH0yjHo
-	4F0S2cuQUl47fVitwZf/lrQtyIB8/ns=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707905455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKHS3Tm9mFG5fwX6aOLXFqUCCVUiA1XcZVTlspPHL4k=;
-	b=Cijv3v90qAXWqCrQVYxQ0HJ75CdM4G/XjXV4BhnxSqAlbNQFxbiNrf1OOnhumuEhyOJGPc
-	XSJJM0WOCaUFivCA==
-Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
-	id C1FF44A04EC; Wed, 14 Feb 2024 11:10:54 +0100 (CET)
-From: Andreas Schwab <schwab@suse.de>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org,  Palmer Dabbelt <palmer@dabbelt.com>,
-  Yunhui Cui <cuiyunhui@bytedance.com>,  =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: use KERN_INFO in do_trap
-In-Reply-To: <20240214-exclusion-pluck-fcb6352a8393@spud> (Conor Dooley's
-	message of "Wed, 14 Feb 2024 09:19:09 +0000")
-References: <mvmh6ic1y75.fsf@suse.de>
-	<20240214-exclusion-pluck-fcb6352a8393@spud>
-X-Yow: This is a NO-FRILLS flight -- hold th' CANADIAN BACON!!
-Date: Wed, 14 Feb 2024 11:10:54 +0100
-Message-ID: <mvmttmbz781.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707905550; c=relaxed/simple;
+	bh=RLCvrrflZorAq9nAsP+7+IT8f8mOlNWhvnR0sd8IqNM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KaLevJIX8wJo76Yzm5tQoKEyZ92DURO8Kn3ftPGrK3n1fYVFKBGRnyuiOV5rJ6MmOY8Q82LchHobkGGDQC+T6L8Yh+9X/50cApk/CYZ9lLH+acSeMpFUl2/w8GBE44uZ12FegMXguUzQViNszPwQKHPwisLeRMDlpHd7V5Q4vhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=UlLsptYk; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41EACMC0100217;
+	Wed, 14 Feb 2024 04:12:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707905542;
+	bh=sYFG4wG96nGDWnLOzQCoY4382ryKOg3IRV8vs+gaUP4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=UlLsptYkusp0Iw6B5U+okrlzZPv0qd77+eePI5EYCgppISyDn5mMhoXg2dwzbpI3y
+	 TtQ4oMnjx+a3YsqOrgbjYrTohStT63wpMWeYWHYN2ZTDT7PnVuxtgwL0VlGiLNrgLq
+	 AiIThphdcrw6CfMId2dwqrnP4lw4SR0xDF9Qgr1U=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41EACMJX045154
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 14 Feb 2024 04:12:22 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
+ Feb 2024 04:12:21 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 14 Feb 2024 04:12:21 -0600
+Received: from [10.24.68.216] (a0498981-hp-z2-tower-g5-workstation.dhcp.ti.com [10.24.68.216])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41EACIO0011533;
+	Wed, 14 Feb 2024 04:12:19 -0600
+Message-ID: <a113aa78-82d5-48c8-bfd4-663144936798@ti.com>
+Date: Wed, 14 Feb 2024 15:42:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.89 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-1.79)[93.73%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.89
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v2 1/4] arm64: dts: ti: k3-j7200-common-proc-board:
+ Modify Pinmux for wkup_uart0 and mcu_uart0
+Content-Language: en-US
+To: Vignesh Raghavendra <vigneshr@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20240212104417.1058993-1-b-kapoor@ti.com>
+ <20240212104417.1058993-2-b-kapoor@ti.com>
+ <2c1da868-0295-4398-8811-6367c589df52@ti.com>
+From: Bhavya Kapoor <b-kapoor@ti.com>
+In-Reply-To: <2c1da868-0295-4398-8811-6367c589df52@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Feb 14 2024, Conor Dooley wrote:
 
-> On Tue, Feb 13, 2024 at 10:59:58AM +0100, Andreas Schwab wrote:
->> Print the instruction dump with info instead of emergency level like the
->> rest of the output when printing the information for an unhandled signal.
+On 14/02/24 12:58 pm, Vignesh Raghavendra wrote:
 >
-> I'm not entirely sure that this is true, __show_regs() prints with
-> KERN_DEFAULT, but this certainly is more consistent than it was before.
-
-The first line is printed with pr_info.  Perhaps __show_regs should gain
-a level argument.
-
--- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+> On 12/02/24 16:14, Bhavya Kapoor wrote:
+>> WKUP_PADCONFIG registers for wkup_uart0 and mcu_uart0 lies
+>> under wkup_pmx2 for J7200. Thus, modify pinmux for both
+>> of them.
+>>
+>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+>> ---
+>
+> This warrants a Fixes: tag. Can you provide one here? I can fix it up
+> when merging.
+Yes , i agree to that. I will send a v3 with the required changes
+>>   .../boot/dts/ti/k3-j7200-common-proc-board.dts  | 17 +++++++++--------
+>>   1 file changed, 9 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> index 1d8bddcae90e..160580a0584a 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> @@ -119,24 +119,25 @@ transceiver3: can-phy3 {
+>>   };
+>>   
+>>   &wkup_pmx0 {
+>> +};
+>> +
+>> +&wkup_pmx2 {
+>>   	mcu_uart0_pins_default: mcu-uart0-default-pins {
+>>   		pinctrl-single,pins = <
+>> -			J721E_WKUP_IOPAD(0xf4, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
+>> -			J721E_WKUP_IOPAD(0xf0, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+>> -			J721E_WKUP_IOPAD(0xf8, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
+>> -			J721E_WKUP_IOPAD(0xfc, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
+>> +			J721E_WKUP_IOPAD(0x90, PIN_INPUT, 0) /* (E20) MCU_UART0_CTSn */
+>> +			J721E_WKUP_IOPAD(0x94, PIN_OUTPUT, 0) /* (E21) MCU_UART0_RTSn */
+>> +			J721E_WKUP_IOPAD(0x8c, PIN_INPUT, 0) /* (D20) MCU_UART0_RXD */
+>> +			J721E_WKUP_IOPAD(0x88, PIN_OUTPUT, 0) /* (D19) MCU_UART0_TXD */
+>>   		>;
+>>   	};
+>>   
+>>   	wkup_uart0_pins_default: wkup-uart0-default-pins {
+>>   		pinctrl-single,pins = <
+>> -			J721E_WKUP_IOPAD(0xb0, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
+>> -			J721E_WKUP_IOPAD(0xb4, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
+>> +			J721E_WKUP_IOPAD(0x48, PIN_INPUT, 0) /* (B14) WKUP_UART0_RXD */
+>> +			J721E_WKUP_IOPAD(0x4c, PIN_OUTPUT, 0) /* (A14) WKUP_UART0_TXD */
+>>   		>;
+>>   	};
+>> -};
+>>   
+>> -&wkup_pmx2 {
+>>   	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
+>>   		pinctrl-single,pins = <
+>>   			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_RGMII1_TX_CTL */
 
