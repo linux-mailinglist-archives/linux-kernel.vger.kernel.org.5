@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE1A854BA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:39:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C04C854BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70CDD1C221EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:39:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D07F1F24FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D91F5D749;
-	Wed, 14 Feb 2024 14:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB365B5C0;
+	Wed, 14 Feb 2024 14:37:52 +0000 (UTC)
 Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81C355C2B;
-	Wed, 14 Feb 2024 14:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C63F5B02B;
+	Wed, 14 Feb 2024 14:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707921462; cv=none; b=cxiVGIoigDSyFQ8sYM0XhjPZW2+RH9PVFEFqa7Cq1mXx1tNrMLjaFRsx5mOEJyLS/6v1vl0FuX8F+bWUr4RNheab0ROtOfhe2WuNAoLv6AiFnI25NsGWceLZshFjtKDwMihDmpJNXhWTV7OXVJaSIl6HoeWy+wPxsCyXeFZZ1/4=
+	t=1707921472; cv=none; b=HoONdoXOF3ntGfU0mtt+ahja4JCNICvsqvm7ArtUGUtic4lcpS/SiA+VT6Q539E7aTCpFaFaO6IvVBwD23AddVh3Xqk2v9vZioeVowvg2Wil2sPvrlLgRo02m7gngwlH9iYKrxncp/I0oN8hPH7R23CoN8ZfT+eZGXhrI6qFuzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707921462; c=relaxed/simple;
-	bh=1uHbgUQNt5fzE/RWCYXBumAhqJ5Eit2krWy+OxbqU3M=;
+	s=arc-20240116; t=1707921472; c=relaxed/simple;
+	bh=+JzV9zu5I05SQvb2FTgYGGXhXwu6XOdL9AMsciATnr4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AvBAU3jlryvTW0MPgpfPQrBRL+HLhbg2+UmBrKPQ/tqi4YNn+WWD2NhLI8u3t2EmFEQFtnRXuYNKaXsxiYLAMzMf0uLkpMaG25sxuIN8NLmOwgxcWkABOoAoONazqMXFdQq5AqZMZ+/8FseJ6bwy/UW6o9JoS4qbffxqMyEz0z0=
+	 MIME-Version; b=WSqeH98nJMLyogK5e1xPWR+mJnDtpsEsS+EXeC6AZOOe98I4gMa+lZpI0YzoIvgQGQ//1QwYZRgXL4tmzid76nNAH8f6lO712MALWWv2iRRuj2TtJ4nXK+4pZfEN52TX7LwFT4L9zYEcb+1ZjWmgv9REEbvdrsGZghCcg3ePDyg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TZgKM1C3Gz9xrnP;
-	Wed, 14 Feb 2024 22:18:31 +0800 (CST)
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TZgKW2lKsz9xrnX;
+	Wed, 14 Feb 2024 22:18:39 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 7FE861406BF;
-	Wed, 14 Feb 2024 22:37:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 7A0A21405F3;
+	Wed, 14 Feb 2024 22:37:41 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwDXgRrHz8xlZ55_Ag--.52204S9;
-	Wed, 14 Feb 2024 15:37:28 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwDXgRrHz8xlZ55_Ag--.52204S10;
+	Wed, 14 Feb 2024 15:37:40 +0100 (CET)
 From: Roberto Sassu <roberto.sassu@huaweicloud.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -65,9 +65,9 @@ Cc: linux-kernel@vger.kernel.org,
 	mzerqung@0pointer.de,
 	kgold@linux.ibm.com,
 	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 7/8] ima: Use digest cache for appraisal
-Date: Wed, 14 Feb 2024 15:35:23 +0100
-Message-Id: <20240214143525.2205481-8-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH 8/8] ima: Detect if digest cache changed since last measurement/appraisal
+Date: Wed, 14 Feb 2024 15:35:24 +0100
+Message-Id: <20240214143525.2205481-9-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214143525.2205481-1-roberto.sassu@huaweicloud.com>
 References: <20240214143525.2205481-1-roberto.sassu@huaweicloud.com>
@@ -78,10 +78,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwDXgRrHz8xlZ55_Ag--.52204S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3XFWDAFykAw47tFyUWFykKrg_yoW7AFyxpa
-	9xKF1UKry8GFWfuFZxAanxCa1Sk34vgFWUWw4DJ342kFsxXr10vryrtw47ZFy5Jr1rJFn7
-	tw4qgr1UAa1Fy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:LxC2BwDXgRrHz8xlZ55_Ag--.52204S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxXry7ZF4xGF4ruFyxKFy5XFb_yoWrKr4kpa
+	9ruF1UKr48ZF43CanxAa42kF4rKrZYgFW7Gws8GwnYyFs3Xr1vvw1Fyw1UuryrGrWUZa1x
+	tw42gr4UZ3WjvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmv14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -96,142 +96,123 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3XFWDAFykAw47tFyUWFykKrg_yoW7AFyxpa
 	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
 	WUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUv
 	cSsGvfC2KfnxnUUI43ZEXa7sRRtCztUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj5ZZnAAAsp
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj5ZZnAABso
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Similarly to measurement, enable the new appraisal style too using digest
-caches.
+IMA invalidates the cached verification result on file content/metadata
+update, so that the file is evaluated again at next access.
 
-Instead of verifying individual file signatures, verify the signature of
-lists of digests and search calculated file digests in those lists.
+While until now checking modifications on the file was sufficient to
+determine if the cached verification result is still valid, that no longer
+applies if that verification result was obtained with digest caches.
 
-The benefits are that signed lists of digests already exist (e.g. RPM
-package headers), although their format needs to be supported by the
-digest_cache LSM, and appraisal with digest lists is computationally much
-less expensive than with individual file signatures (see the performance
-evaluation of the digest_cache LSM).
+In that case, it is also necessary to check modifications on the digest
+lists and on the security.digest_list xattr of the files for which digest
+caches are used.
 
-As for measurement, pass the AND of the policy mask and the digest list
-verification mask to ima_appraise_measurement().
+The digest_cache LSM offers the digest_cache_changed() function, which
+tells if a file would use a different digest cache than the one passed as
+argument. digest_cache_get() might return a different digest cache if the
+digest list was modified/deleted/renamed or the security.digest_list xattr
+was modified.
 
-If EVM is disabled or the file does not have any protected xattr
-(evm_verifyxattr() returns INTEGRITY_UNKNOWN or INTEGRITY_NOXATTRS), the
-other appraisal methods (xattr and modsig) are not available, and the AND
-of the masks has the IMA_DIGEST_CACHE_APPRAISE_CONTENT flag set, mark the
-file as successfully appraised (i.e. set the integrity status to
-INTEGRITY_PASS and return zero).
+Hold a digest cache reference in the IMA integrity metadata, when using it
+for measurement/appraisal. At every file access, check if that reference is
+still actual by passing it to digest_cache_changed(). If not, reset the
+integrity status and do the verification again.
+
+Finally, move the digest_cache_put() call from process_measurement() to
+ima_iint_free(), unless the digest cache changed. In that case, still
+release the reference in process_measurement().
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- security/integrity/ima/ima.h          |  6 ++++--
- security/integrity/ima/ima_appraise.c | 31 +++++++++++++++++++++------
- security/integrity/ima/ima_main.c     |  3 ++-
- 3 files changed, 30 insertions(+), 10 deletions(-)
+ security/integrity/ima/ima.h      |  1 +
+ security/integrity/ima/ima_iint.c |  3 +++
+ security/integrity/ima/ima_main.c | 22 ++++++++++++++++++----
+ 3 files changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index cf04f5a22234..36faf2bc81b0 100644
+index 36faf2bc81b0..c25bde918cd5 100644
 --- a/security/integrity/ima/ima.h
 +++ b/security/integrity/ima/ima.h
-@@ -433,7 +433,8 @@ int ima_check_blacklist(struct ima_iint_cache *iint,
- int ima_appraise_measurement(enum ima_hooks func, struct ima_iint_cache *iint,
- 			     struct file *file, const unsigned char *filename,
- 			     struct evm_ima_xattr_data *xattr_value,
--			     int xattr_len, const struct modsig *modsig);
-+			     int xattr_len, const struct modsig *modsig,
-+			     u64 digest_cache_mask);
- int ima_must_appraise(struct mnt_idmap *idmap, struct inode *inode,
- 		      int mask, enum ima_hooks func);
- void ima_update_xattr(struct ima_iint_cache *iint, struct file *file);
-@@ -458,7 +459,8 @@ static inline int ima_appraise_measurement(enum ima_hooks func,
- 					   const unsigned char *filename,
- 					   struct evm_ima_xattr_data *xattr_value,
- 					   int xattr_len,
--					   const struct modsig *modsig)
-+					   const struct modsig *modsig,
-+					   u8 digest_cache_mask)
- {
- 	return INTEGRITY_UNKNOWN;
+@@ -192,6 +192,7 @@ struct ima_iint_cache {
+ 	enum integrity_status ima_read_status:4;
+ 	enum integrity_status ima_creds_status:4;
+ 	struct ima_digest_data *ima_hash;
++	struct digest_cache *digest_cache;
+ };
+ 
+ extern struct lsm_blob_sizes ima_blob_sizes;
+diff --git a/security/integrity/ima/ima_iint.c b/security/integrity/ima/ima_iint.c
+index b4f476fae437..fd369809809f 100644
+--- a/security/integrity/ima/ima_iint.c
++++ b/security/integrity/ima/ima_iint.c
+@@ -68,6 +68,7 @@ static void ima_iint_init_always(struct ima_iint_cache *iint,
+ 	iint->ima_read_status = INTEGRITY_UNKNOWN;
+ 	iint->ima_creds_status = INTEGRITY_UNKNOWN;
+ 	iint->measured_pcrs = 0;
++	iint->digest_cache = NULL;
+ 	mutex_init(&iint->mutex);
+ 	ima_iint_lockdep_annotate(iint, inode, nested);
  }
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 27ccc9a2c09f..dcea88d502a9 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -478,7 +478,8 @@ int ima_check_blacklist(struct ima_iint_cache *iint,
- int ima_appraise_measurement(enum ima_hooks func, struct ima_iint_cache *iint,
- 			     struct file *file, const unsigned char *filename,
- 			     struct evm_ima_xattr_data *xattr_value,
--			     int xattr_len, const struct modsig *modsig)
-+			     int xattr_len, const struct modsig *modsig,
-+			     u64 digest_cache_mask)
+@@ -75,6 +76,8 @@ static void ima_iint_init_always(struct ima_iint_cache *iint,
+ static void ima_iint_free(struct ima_iint_cache *iint)
  {
- 	static const char op[] = "appraise_data";
- 	const char *cause = "unknown";
-@@ -488,12 +489,19 @@ int ima_appraise_measurement(enum ima_hooks func, struct ima_iint_cache *iint,
- 	int rc = xattr_len;
- 	bool try_modsig = iint->flags & IMA_MODSIG_ALLOWED && modsig;
- 
--	/* If not appraising a modsig, we need an xattr. */
--	if (!(inode->i_opflags & IOP_XATTR) && !try_modsig)
-+	/*
-+	 * If not appraising a modsig/there is no digest cache match, we need
-+	 * an xattr.
-+	 */
-+	if (!(inode->i_opflags & IOP_XATTR) && !try_modsig &&
-+	    !digest_cache_mask)
- 		return INTEGRITY_UNKNOWN;
- 
--	/* If reading the xattr failed and there's no modsig, error out. */
--	if (rc <= 0 && !try_modsig) {
-+	/*
-+	 * If reading the xattr failed and there's no modsig/digest cache match,
-+	 * error out.
-+	 */
-+	if (rc <= 0 && !try_modsig && !digest_cache_mask) {
- 		if (rc && rc != -ENODATA)
- 			goto out;
- 
-@@ -524,8 +532,11 @@ int ima_appraise_measurement(enum ima_hooks func, struct ima_iint_cache *iint,
- 	case INTEGRITY_UNKNOWN:
- 		break;
- 	case INTEGRITY_NOXATTRS:	/* No EVM protected xattrs. */
--		/* It's fine not to have xattrs when using a modsig. */
--		if (try_modsig)
-+		/*
-+		 * It's fine not to have xattrs when using a modsig or the
-+		 * digest cache.
-+		 */
-+		if (try_modsig || digest_cache_mask)
- 			break;
- 		fallthrough;
- 	case INTEGRITY_NOLABEL:		/* No security.evm xattr. */
-@@ -555,6 +566,12 @@ int ima_appraise_measurement(enum ima_hooks func, struct ima_iint_cache *iint,
- 	     rc == -ENOKEY))
- 		rc = modsig_verify(func, modsig, &status, &cause);
- 
-+	if (!xattr_value && !try_modsig &&
-+	    (digest_cache_mask & IMA_DIGEST_CACHE_APPRAISE_CONTENT)) {
-+		status = INTEGRITY_PASS;
-+		rc = 0;
-+	}
-+
- out:
- 	/*
- 	 * File signatures on some filesystems can not be properly verified.
+ 	kfree(iint->ima_hash);
++	if (iint->digest_cache)
++		digest_cache_put(iint->digest_cache);
+ 	mutex_destroy(&iint->mutex);
+ 	kmem_cache_free(ima_iint_cache, iint);
+ }
 diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 48a09747ae7a..a66522a22cbc 100644
+index a66522a22cbc..e1b2f5737753 100644
 --- a/security/integrity/ima/ima_main.c
 +++ b/security/integrity/ima/ima_main.c
-@@ -400,7 +400,8 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 			inode_lock(inode);
- 			rc = ima_appraise_measurement(func, iint, file,
- 						      pathname, xattr_value,
--						      xattr_len, modsig);
-+						      xattr_len, modsig,
-+						      allow_mask);
- 			inode_unlock(inode);
+@@ -301,6 +301,15 @@ static int process_measurement(struct file *file, const struct cred *cred,
  		}
- 		if (!rc)
+ 	}
+ 
++	/* Check if digest cache changed since last measurement/appraisal. */
++	if (iint->digest_cache &&
++	    digest_cache_changed(inode, iint->digest_cache)) {
++		iint->flags &= ~IMA_DONE_MASK;
++		iint->measured_pcrs = 0;
++		digest_cache_put(iint->digest_cache);
++		iint->digest_cache = NULL;
++	}
++
+ 	/* Determine if already appraised/measured based on bitmask
+ 	 * (IMA_MEASURE, IMA_MEASURED, IMA_XXXX_APPRAISE, IMA_XXXX_APPRAISED,
+ 	 *  IMA_AUDIT, IMA_AUDITED)
+@@ -371,8 +380,15 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 	 * Since we allow IMA policy rules without func=, we have to enforce
+ 	 * this restriction here.
+ 	 */
+-	if (rc == 0 && policy_mask && func != DIGEST_LIST_CHECK)
+-		digest_cache = digest_cache_get(file_dentry(file));
++	if (rc == 0 && policy_mask && func != DIGEST_LIST_CHECK) {
++		if (!iint->digest_cache) {
++			/* Released by ima_iint_free(). */
++			digest_cache = digest_cache_get(file_dentry(file));
++			iint->digest_cache = digest_cache;
++		} else {
++			digest_cache = iint->digest_cache;
++		}
++	}
+ 
+ 	if (digest_cache) {
+ 		found = digest_cache_lookup(file_dentry(file), digest_cache,
+@@ -386,8 +402,6 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 			if (verif_mask_ptr)
+ 				allow_mask = policy_mask & *verif_mask_ptr;
+ 		}
+-
+-		digest_cache_put(digest_cache);
+ 	}
+ 
+ 	if (action & IMA_MEASURE)
 -- 
 2.34.1
 
