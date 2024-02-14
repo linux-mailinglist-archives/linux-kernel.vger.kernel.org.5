@@ -1,210 +1,153 @@
-Return-Path: <linux-kernel+bounces-65006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A58F85467C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:51:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905C185467D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF2F4B28CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:51:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4845A28DA50
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08EA9168AF;
-	Wed, 14 Feb 2024 09:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fg0FNhUA"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14301429C;
+	Wed, 14 Feb 2024 09:52:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB7812E44
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D154113ADB
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904227; cv=none; b=sGFciLv1rQRvasIe7ErdZ+NgxwyDOA1E1JY64loEvFdu7LmgzFFuQmmbwmf73w4SA8wb85yLqFiDtid80h8ZyFLfulOUlCcBoZijc1WT5ZBn7jVMnAxJJ0/WgZw7bPQIdViWoZEmpIt5PECWKZqNA5uaaAI8KMa/A5IhK9Y5Uj4=
+	t=1707904325; cv=none; b=pI5MC28dIhyhUpa04n3xxu4qbfGuDywlULic4mRHXQqSYeEeINsUrCPAM9SFPwSObN4Nn13P0rfYuezDBMnW/lchqICeikNTfeCovANsGcNDDwFZnnQvdstQZZt4/96jBCsGppXr2MACw0/4vRbl59MyV3hKSoRpj6gU85Em37c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904227; c=relaxed/simple;
-	bh=zk4EnXBuE0K5H30v5NDcVwK4iqg3fzeexCaeoohuMwM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=sBoCSmiDIl6m0dhiMZrNFA+7rDP5BfGCCVp8eFokaFclDy1Aq7923TXCuDT+qAmiul0piqSiT2oWowq3X5QO0Uu+dSB9K5yxyjCgn5VuEAirLDWX99XyA3Quk+IUUjscoae256aur9Mxf/6g3Sr0vGW5wSEJJqN62kczV3Tp2o8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Fg0FNhUA; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33cd57b86bfso1153154f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:50:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707904223; x=1708509023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K3oqzJu651I3hD2aUVksoi8h7VJNzLL1lNiNLXvIQ20=;
-        b=Fg0FNhUAVtt3/ex4OA3pFVzMbbDQ3hX+XnBqN3BmZA3ncRqyUX2DbeZSOgefF98toL
-         v+Tw0ix7WTeAXDoqL5D/RezzUgsPVRV+EIjOZN5reDVBenwUMInqL2mX1O2m7vy/6HN4
-         N7EP1zFb2eIPSO8/H4SfV8r3K2SjOZz3kNjgu43LVBW7dZsZ1Uewb+Y2EMMJgvoQCr0J
-         5MhEMUu4kviW46kMZEzMIBBqNAmpzh7FEKp3a70TH/h26z6VbDufev7DJmFGW8ZKfwBL
-         wkhfFhrNP3zQW5b/FMy8vw8qevezUHoMNDAyPu/B9wk9L499LHn+RxHoAgEMK5YIjHxP
-         Tnog==
+	s=arc-20240116; t=1707904325; c=relaxed/simple;
+	bh=/WZ+0en2hYRrVYORtDQ6E5O368IXClGjaFQPYTU4Th4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=KIpIq/NiDNtvZOVwBBZHFdjd6Cn09Zi+iE4kT3M2yzanl/eEz8R1e1ChohQo30NJukeuf2fF5Hf4YugTLgh+8INq/UJgUC2vPbX8kCOV2YoC686IdT8DrpA/BDX/5aHThnQ3rsx2A+tRTGgFtTso3wmpXWUox9E3R5MheoMl6Yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363da08fc19so47457785ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:52:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707904224; x=1708509024;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=K3oqzJu651I3hD2aUVksoi8h7VJNzLL1lNiNLXvIQ20=;
-        b=Zmt/qoqcSsMrpcYOh6ULNXH65w01k/GuvJcWi0zUkj2ZsHIk7grfesPCkb6lidT0Ne
-         36ebn7oIPY3h42K+2aqQIcLN6U2vJ2/mFL27Ku6DBaVyjW01mihwFTVa8W6uo3IZ591i
-         wh17gsyitjw/v/KXPd9xUehm9w8+AtlZr6NqQ4AfuWxO0+QDlsH6C9UKt6T5QZVXh1ch
-         PNv/yV69QN2adsgta7347MejE40ywwOxDqqCNu3OaA4rwk8+6H6dvkFrkGC/IrwylKgx
-         D990mtFRc17eNFtoJhod/jjqnYH8Wd0THsVDa6jedXju+uX37amB1fgwVu4NCTHLQFwF
-         LTKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ0CTMkp22A0H08Br9wo3F8fqIMcdG76vSsLhgBv9RDXfrhXWF163Saz9rdz1Qfi0S4iux3kIXxJ0hxIWGbIxqSbJjA7CNfX1pyAnQ
-X-Gm-Message-State: AOJu0YyQJ8NQRElMYfU9amXYz0ZIO5L926XlyxhJWEOmp2W+lV+4sPx5
-	vLzpq/d3AYKeQbmJSFZHyVZsO7Ta1l9pqz3yKEyIhUW/SGiqIOTGK8Wq+6N3pb4=
-X-Google-Smtp-Source: AGHT+IHmyPUjUsGUAjjrxpz8F2ZqModlPfmBdwaETRWIh6d05Ckg0QgddgagrlPFXl8qhK5otBtxZw==
-X-Received: by 2002:a5d:558e:0:b0:33b:49bb:5f91 with SMTP id i14-20020a5d558e000000b0033b49bb5f91mr1383897wrv.16.1707904223601;
-        Wed, 14 Feb 2024 01:50:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUOBmHidvJmdLA/fLShjhU6mSvfYljQS2avuA9S1BOTgr0k/gV3tq6mFxzsXbiGd32AL15BGjwpkfaSMlDVL3aKSWNFvLYEkYoeQa7El8rpv/kGRExl7ax5XGhNY04rrZYRkh9lQKLT9AddhyjkFAGv950Ic0GWvCv+0v+p2BrOJuEMsQv491ZKos1SWkhhRFoZhpsmChhH9SugyG9lA1c+K4l+Q4LIjGrkwstbRgETiwQelCLq95P1702l6zpwIpaad1Yjzla0fdv2Zp/ERevwnv8qy7sF9DUbGxldVtMK+rh1oe3fLx4/6Gqn6P3fVphIfVR9XJ+y35Ps3CpWIL5zO8TStNr8fcm/n/oX6bROuC9SksQLt9NmyPWTATtxaK/8sxChHAW2qeOhVyzN80GBAAIi1D+40cjZ6y8dMvwuM9tUs8rsUrBTKqAO6KV40u5rzad/O7x+33IRqg9Jz/EMTtGPfJfiSK7G6+tSQCxr96tDINJOv3NE4GIAye3isOOziT+qpOEsWwp8XUZbwuKKE7Y0SVqAu/4UZei3GoAWqXu128Njlh+XdUZvHyMN+PHpCbJxhFMchq8+T+5laOBnqs18dX4uDX2uW22ooCjrUyCoI7rCpYUwgat6BOKfvHsJV6dg58kp3agHqI7QTr70cuCJ6nZtuYNg21cQiKfoTyvDZAV+EZcofIiE60sVe3aqfjMPOryY
-Received: from ?IPV6:2a01:e0a:982:cbb0:31aa:ecd:7a9f:63a1? ([2a01:e0a:982:cbb0:31aa:ecd:7a9f:63a1])
-        by smtp.gmail.com with ESMTPSA id e12-20020adf9bcc000000b0033ce9e6e8easm1444672wrc.32.2024.02.14.01.50.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 01:50:23 -0800 (PST)
-Message-ID: <f9164049-6529-42c1-a35a-e91132c823b9@linaro.org>
-Date: Wed, 14 Feb 2024 10:50:21 +0100
+        d=1e100.net; s=20230601; t=1707904323; x=1708509123;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0cpkPdutDChRiHnxGrJ0+2dxav52OhwGkxn+PEdR9JQ=;
+        b=w36cl6BwxKt4ip4rFJ14Zpq/rh7NLsXBDrjSAm0q2SBOo1pBb/LQBNvzcvesXOqIaI
+         zxakUg4syxWG+3GMwXrBi/cR3RgJdnxx8WT2dFBetMOrRqOIPniCiJIVrJ4Ot2xdVTCj
+         6TyIEsmyehBJsoI8GdSYvTJ/DZSCikka55SuZgSfDXFxkvZ/gjAX4+nozIH7lylr0AiW
+         fXQ5jP+XNI02wfnp3KIxPCpz6dDmo/ec3BO0e++8cT1O6AW3box7n8etzDrSQslvaxbf
+         wqo0xmBDse6slEVdUVxwVk6gQLtvg3P+Ae7YY4+XTxjpF3uy1bXALcgcLEbvgGcALk8d
+         OLtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCURErFPjy5xElY5O9hHsLoVQGzQrqOGHMlTMfPSJOB6T+F9YcfCmWrfG2OoGKaeqA9IQZdsp8+1TJ4H6c5w3nXlIdhVZujkbYf0ATwj
+X-Gm-Message-State: AOJu0YxnW6a70qRzu5ng0mmUX3ofnpUR+kYuUm9YlEB6JnwOyGxF7stc
+	ZZyJMFjWQ69FWcV7vmhXCVlKuTq+ZNPKY47mTXJ95CZsijmhNVttCaHLCgl3FLu9o6hlD7LQnRH
+	GRcSI1cnTIb4jNv1Kht2jYZweUtbdb5C05gTZFZcKqWLUpFeRHrmHDRE=
+X-Google-Smtp-Source: AGHT+IGbF+h8vgEmVuLVSqw8VUOCxUDbzHv6vN14kAKpmPXDA83IyVqZlKNwYiijytn9SaZ3iKkFXSVtSOedFG0TcUu89k3pQ/bf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
-Content-Language: en-US, fr
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
- <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
- <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com>
- <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
- <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
- <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
- <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
- <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
- <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
- <CACRpkdacS9ojXUuogygkz6xxCf3mMq6GG_75sze8ukUu=rxVyw@mail.gmail.com>
- <f99d363c-d4a6-44b3-8057-3925f8dac1d5@linaro.org>
- <CYL76M5KT424.G3BC6JX74XVN@fairphone.com>
- <CZ4P5PWJTODV.3UJ89H6M8W07H@fairphone.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CZ4P5PWJTODV.3UJ89H6M8W07H@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:218a:b0:363:c4a0:5d06 with SMTP id
+ j10-20020a056e02218a00b00363c4a05d06mr159076ila.1.1707904323060; Wed, 14 Feb
+ 2024 01:52:03 -0800 (PST)
+Date: Wed, 14 Feb 2024 01:52:03 -0800
+In-Reply-To: <9cf86b72-286d-f726-6907-ff2c11af6d75@blackhole.kfki.hu>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c900506115476fc@google.com>
+Subject: Re: [syzbot] [netfilter?] WARNING: ODEBUG bug in ip_set_free
+From: syzbot <syzbot+ebbab3e04c88fa141e6b@syzkaller.appspotmail.com>
+To: kadlec@blackhole.kfki.hu, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 14/02/2024 10:33, Luca Weiss wrote:
-> On Mon Jan 22, 2024 at 12:27 PM CET, Luca Weiss wrote:
->> On Fri Jan 12, 2024 at 11:26 AM CET,  wrote:
->>> On 12/01/2024 11:23, Linus Walleij wrote:
->>>> On Fri, Jan 12, 2024 at 10:52 AM Luca Weiss <luca.weiss@fairphone.com> wrote:
->>>>
->>>>> Since there's zero indication Truly is involved in this panel in my
->>>>> documentation - much less the number 5P65 - I'm not going to add that.
->>>
->>> Ack
->>>
->>>>
->>>> OK then, I fold, thanks for looking into it.
->>>> Keep the Himax hx83112a file name and symbols.
->>>>
->>>>> So in short this panel is the model 9A-3R063-1102B from DJN, which uses
->>>>> a Himax HX83112A driver IC.
->>>>
->>>> So compatible = "djn,9a-3r063-1102b" since the setup sequences for
->>>> hx83112a are clearly for this one display?
->>>
->>> Yep let's settle on that!
->>
-> 
-> Hi Neil and Linus,
-> 
-> Any feedback about the below question?
-> 
-> Regards
-> Luca
-> 
->> It's clear to me to use "djn,9a-3r063-1102b" in the driver now but what
->> about dts?
->>
->> Currently here in v2 we have this:
->> compatible = "fairphone,fp4-hx83112a-djn", "himax,hx83112a";
->>
->> Should this just become this?
->> compatible = "djn,9a-3r063-1102b";
->>
->> Or e.g. this?
->> compatible = "djn,9a-3r063-1102b", "himax,hx83112a";
->>
->> Or something else completely? Do we have some documentation / best
->> practises around this maybe?
+Hello,
 
-Sorry I totally missed the question.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING: ODEBUG bug in ip_set_free
 
-Not sure if "himax,hx83112a" is needed here, the "djn,9a-3r063-1102b" is enough to know the IC is hx83112a.
+------------[ cut here ]------------
+ODEBUG: free active (active state 0) object: 0000000062ae9ef3 object type: timer_list hint: bitmap_port_gc+0x0/0x4dc net/netfilter/ipset/ip_set_bitmap_port.c:282
+WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
+WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
+WARNING: CPU: 0 PID: 6628 at lib/debugobjects.c:517 debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
+Modules linked in:
+CPU: 0 PID: 6628 Comm: syz-executor.0 Not tainted 6.8.0-rc3-syzkaller-00010-gf735966ee23c-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : debug_print_object lib/debugobjects.c:514 [inline]
+pc : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
+pc : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
+lr : debug_print_object lib/debugobjects.c:514 [inline]
+lr : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
+lr : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
+sp : ffff8000978c6950
+x29: ffff8000978c6990 x28: 0000000000000000 x27: ffff80008aeec3c0
+x26: ffff0000e345d318 x25: dfff800000000000 x24: 0000000000000000
+x23: ffff80009368be40 x22: ffff0000e345d000 x21: 0000000000000000
+x20: ffff8000894dfe30 x19: ffff0000e345d300 x18: 1fffe000367ff596
+x17: ffff80008ec6d000 x16: ffff80008031fff4 x15: 0000000000000001
+x14: 1fffe00036801de8 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000000001 x10: 0000000000000003 x9 : dee47f29bae7c100
+x8 : dee47f29bae7c100 x7 : ffff800080296b68 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000006 x1 : ffff80008aecd8e0 x0 : ffff800125439000
+Call trace:
+ debug_print_object lib/debugobjects.c:514 [inline]
+ __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
+ debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
+ slab_free_hook mm/slub.c:2093 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kfree+0x114/0x3cc mm/slub.c:4409
+ kvfree+0x40/0x50 mm/util.c:663
+ ip_set_free+0x28/0x7c net/netfilter/ipset/ip_set_core.c:264
+ bitmap_port_destroy+0xe4/0x324 net/netfilter/ipset/ip_set_bitmap_gen.h:66
+ ip_set_create+0x904/0xf48 net/netfilter/ipset/ip_set_core.c:1157
+ nfnetlink_rcv_msg+0xa78/0xf80 net/netfilter/nfnetlink.c:302
+ netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2543
+ nfnetlink_rcv+0x21c/0x1ed0 net/netfilter/nfnetlink.c:659
+ netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+ netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1367
+ netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1908
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x26c/0x33c net/socket.c:2667
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+irq event stamp: 294
+hardirqs last  enabled at (293): [<ffff800080296c08>] raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
+hardirqs last  enabled at (293): [<ffff800080296c08>] finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5154
+hardirqs last disabled at (294): [<ffff80008ad60eac>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
+softirqs last  enabled at (276): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (276): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
+softirqs last disabled at (147): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
+---[ end trace 0000000000000000 ]---
 
-I don't think you'll ever find a "djn,9a-3r063-1102b" with another controller IC ?
 
-And "himax,hx83112a" alone as fallback is not enough to describe the panel hardware, so I think it should be dropped.
+Tested on:
 
-Thanks,
-Neil
-
->>
->> Regards
->> Luca
->>
->>>
->>> Thanks,
->>> Neil
->>>
->>>>
->>>> Yours,
->>>> Linus Walleij
-> 
+commit:         f735966e Merge branches 'for-next/reorg-va-space' and ..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=10afd01c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d47605a39da2cf06
+dashboard link: https://syzkaller.appspot.com/bug?extid=ebbab3e04c88fa141e6b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10de0934180000
 
 
