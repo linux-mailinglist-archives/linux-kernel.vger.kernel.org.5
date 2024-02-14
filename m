@@ -1,70 +1,72 @@
-Return-Path: <linux-kernel+bounces-65304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75446854ADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:59:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (unknown [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED831854ADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C2F3286002
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:59:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C221C20B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0DD55E44;
-	Wed, 14 Feb 2024 13:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F6B55E5E;
+	Wed, 14 Feb 2024 13:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="AsssQ2ej"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="mzhq07Tf"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD7F54F83
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E291954BF5
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707919128; cv=none; b=alxryKP8uMC5hfwKd+0sOBVVzZNId7bMId7f73RF6yRYHKi/uaNBjDKls6AkzvjQL0jPGZlYjPD4/pzExcXdfqyOgrP2i0SQzfoVrhNP7YU06h/5kzELF2HGrFvgNZarVXRNDXddD2sC8nJc8/To5eP/inYmlhdOnAwKlionmIo=
+	t=1707919129; cv=none; b=dZkr/o+Uj3zu+AS9qFWHFdb+brMi2s2s3g++ybp2mR73tk1qCy6P4Znw+ElN1jRwk7c9JLZ2IsUJ+FTlQDacjr9VfV3yZeXir4mdf9H5r1PfxSGibUtN6ezyvZ0/s1LQFCPs7gBNZ4awfi2heeI6glCxfAHy6A4Lw5D3ATiJbtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707919128; c=relaxed/simple;
-	bh=QTo2vaKjibWxTlfxwFldo69+DAlArXcmbGu8z0hzYRM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KL/nhI8sCSEhjupfVjutJHnbAw33Sod+6X0NntauhRL/TN2EpBAfnrQdY4cePVASvqIVPIgwp3PDGV+rV+7EhMu6zkEhXfi4Y3qYcBeGSuYVFNQ7VDF2Ed+qziKI+LslQld6xSTcIRJNG0BkwYENTULUrUF06ed62Nn26h/e/OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=AsssQ2ej; arc=none smtp.client-ip=209.85.221.52
+	s=arc-20240116; t=1707919129; c=relaxed/simple;
+	bh=ovrPp+G0VODHlIZZU4WtY6ajQ42RxzeAYpVNEp/CzVY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NteKl7z2mR9e5yWxMs2qqSUtTz2R8ZP5go843U5tKsZvOCtHzfai2g8u6tPlEjwQTZntfC7NLc20eKTBAZUmkZZw+WZG7rz1lqZ4fwBMuE8dpxLImVRRIYQYpUhjRW24n1QPWThlvg1b6MoXDezVGwm2rtZDAsg9LbaYwrvY5XU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=mzhq07Tf; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33cdedb40c4so987057f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:58:45 -0800 (PST)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so3832761f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:58:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707919124; x=1708523924; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v2Q2Z0kn1NfJ1eM/+pIgOtt+zWhQbGntnuOFYjaTGg4=;
-        b=AsssQ2ej7zhSw+J/gtV6ynao+YDWXqOlEZHxHeSJsV6t3g5vbegZZGthpJ+v/Oz1NC
-         XQtDjMkOToolIUWNfvfhZ/XfkUcCh1On24v5hLbc5c9F+sUqFPbbq6kVYnSJBGSku5E7
-         Wh5ddpQaSYh+G2gtipZWdQY1Fx+Mg5hPnCXkROvcqQ4F8lRc+XxgxUkcdkGwmbHQZ2kr
-         BZUEtZ+4pP3H+S7ymU/0XyXyeeiD0eGUHoT9hc91q6zDyRb2x9gScA5jcTGMepDXL2V3
-         C1EKJumpdYxAS+BJUAFYwI8BdZsTsmxjkwJXx7iTkcj4LPUaK6Ru3caAuai/h+7dtIEn
-         rS2w==
+        d=tuxon.dev; s=google; t=1707919125; x=1708523925; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=swsP/3c8yGBz0+swt8nV2kFhh+Xlnvuijm0NkYnRlL0=;
+        b=mzhq07TfcC6Fz2m+pzssbdBYS5+AIXRxrOi/f/73JMpyWwg4piHoX3dQZh3y8JMLaU
+         bdOpS7oHldrsFbd3iCHTOCx0ZWCI4vtQQ5jdg4lGTzviUWipiaDTbiJdNN8rX9XFoBvE
+         yMtqfSLsg76Xqx1cLCAp7e4xI5s9osU1Rej3S2P/8uBSYT62Y4nHMB8R0WStAAoGNqGU
+         L+bEd7UxpQD4K1LfCpNj3qPwGsNWuCa8AkG1qwM1B6Q/xFg5Tbl72m7V/hvhQmdLaO1R
+         fBt/iyuxIP18Fj8bsYOT0j7AJXchobrm1UpmFSS9MboTO727nV8BVZ60Szx4w4H7E5LN
+         /vpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707919124; x=1708523924;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v2Q2Z0kn1NfJ1eM/+pIgOtt+zWhQbGntnuOFYjaTGg4=;
-        b=pGLP4mi5Ka3i5Ro7/iY4lzBKkPA93K3wEF3j7b0AkTjjAvhnDXMfao8X6/dLWJS6qv
-         gLcYoJ/TU3ziq+n0O0vY1BstpYKZAnLV2iPvW+aqt7z1qYwWY9rG/I3yF4VwyA/exQi/
-         1FFeNhKyyxo9ACaE+tawBB7l+aHvkgEeIsHBwJtiapjaWwW0dhZFTdCO5eA5HCJnpddN
-         cg/ouWKLlXHDHKZCRf6OboLDX4I9S34eHvrBvniwAbdoVcvhHmG6Cz3IirpArIxLbVKa
-         0q1iL8Bx8ijvKzNEhviJggVmrx4lQQuCKV7Sd2r8YamFqvsgMzghpN1cThEpBZtu4pe4
-         Jjkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWIpH3+VloIZ4fU2xtjdSRoEUTtki0d8XvFOkYZlKH7UDorteYf1Ao9ko9LwojF1GwaZEh+997MpM6rPxzNIKZY+Itj2ACfNxZ5xfwO
-X-Gm-Message-State: AOJu0YzRtiKGTN/C+HEnQ2d5eFbW5HeSZ7SbTmNZr3ueXAmaI6yNLURc
-	rQs0uuJoJ1PEBp7lrLPiIXRlbvyrGBCT56K2AN+yDWE67Whoq0dh/T2/x4NA4OA=
-X-Google-Smtp-Source: AGHT+IHgn+C84i6k8WfBVbpgkCeTeSmK7AvBOIs04oUzRLgjnN4Fjc230os6xl6EDhs0YTi39B191w==
-X-Received: by 2002:a5d:6a8a:0:b0:33b:5590:c0d8 with SMTP id s10-20020a5d6a8a000000b0033b5590c0d8mr2032758wru.8.1707919123924;
-        Wed, 14 Feb 2024 05:58:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW0KIs0Wvg3WpjPl1XhfNrCXJ3W1SDOeAr5Cgfi0e4/ooyOaf6/goMabQ+NX/EXdTcgZuv2E7d9jxAN/aYO5mG/8plYFjQQWp18idSRI/rR2DnpuQhbyP3V3OJMqvMTSRAaMdirXYE2GLPQCNAibc6o2KUt75RsooJZXPFH+BN5WGnQrnJXPxmweTRPz9oKzsN8ln1ql4CeqYlmBCVd0BjH0vhs91vHDZKKcr41QmrJPThvAQ7dPLt1vpt919a5Enx6jQSE9gwzfC73ZLAhDnphiideF9Muz/GFke4sqBqW4oxWX40I/wPmkeET86Fi+giydpG5pxvpjktH4A5zOiSSEcVqbBjLxsb24PueU2YKkVYU2vU9
+        d=1e100.net; s=20230601; t=1707919125; x=1708523925;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=swsP/3c8yGBz0+swt8nV2kFhh+Xlnvuijm0NkYnRlL0=;
+        b=vlVtKS6xIb0sKHyklVeOy8AW/9mfhNMXkpoyE33/2sX9kXnYfiApttemoFjW3i6off
+         u7SikdTCuPJlDTdDKbBsFRBTRfIOWVPGaeWZvPg0LkNoLnixEGsBp4TXbz2NsIkwWe88
+         b2NN5fJZoptrmiD+N+5QxTRzvelQbKZ13BRywqr2sf2VK/0KWCE79BJid9WvIU0FWu9J
+         t07YJWUUr4Ej3CJikp9Wp8fOH58nZkw22jzV8rG8AZLILSMWviuFdLEQopS1Vd04BhY8
+         J+yFcIMbZwW0mI+RUkV54+8hQnkEecSvPWyzb3jmZs/LBYnGU/EKchs1kCgYLDoCLUUK
+         DhxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5GIBKB3NlIMRwHjeN/DjhK7d+F9PVVrDysYc5PdaZHCGH0SLSdFKSyBiHAnkcxtCqZot55XWn8FnSBJQhqNrTFjMmD0y+IXnSgR/w
+X-Gm-Message-State: AOJu0Yxm7f5hBPuyLqedifzMhgPWu6tRyTPpApPETk0VG6+cBJM/RepR
+	TZMUOtgVSuXhLQ3cUMa04k6aB2WbxyQ5Xqu2EvIns9XwNW4iigiaWAGWH5bL/Co=
+X-Google-Smtp-Source: AGHT+IENq/aQVmiWIMkqE6w6BpWTXhUntX74dLJ1qh//yRk8CEm3sfE3YuGQ3K6h974s7VbERJttiw==
+X-Received: by 2002:a05:6000:152:b0:33b:4b0f:b989 with SMTP id r18-20020a056000015200b0033b4b0fb989mr1657935wrx.0.1707919125306;
+        Wed, 14 Feb 2024 05:58:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW7Vta8OeopnfxHn57LmxvTKp1JIiFuRvtgRSj9PFHX8slQ+UHHUIOc3ukCNu00VWYWt4tSAaBXccLgLazfdBWb9Ufc/kye2D6MSHXhGBaTtV4vE1ERFI60jz9BKes+xGNkghe33es23MfBrukQ9l+LfbSPfvTvAgSLeFBw0kQalbcfTF1SYhX6COOt4ong7shGYM+xXoaaa8jJifyTjz/M6ML4hM2qz4lJNXZEXV51vOTNe6FV/f4RMQex0uT4DWl2OYW1K4hXMOv7WrEEgORFIhNgYiBMRu5KeycqQOD99H6ppr1jVRSR+DpeS6Ax5nqMPpR+2HQJc/UvZvCnP34nTxeXdSALSYxE3a9tPL4UGEwMO0VU
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id f15-20020adff58f000000b0033cdbebfda7sm4282140wro.14.2024.02.14.05.58.42
+        by smtp.gmail.com with ESMTPSA id f15-20020adff58f000000b0033cdbebfda7sm4282140wro.14.2024.02.14.05.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 05:58:43 -0800 (PST)
+        Wed, 14 Feb 2024 05:58:45 -0800 (PST)
 From: Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To: s.shtylyov@omp.ru,
@@ -78,10 +80,12 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	claudiu.beznea@tuxon.dev,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v4 0/6] net: ravb: Add runtime PM support (part 2)
-Date: Wed, 14 Feb 2024 15:57:54 +0200
-Message-Id: <20240214135800.2674435-1-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v4 1/6] net: ravb: Get rid of the temporary variable irq
+Date: Wed, 14 Feb 2024 15:57:55 +0200
+Message-Id: <20240214135800.2674435-2-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240214135800.2674435-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20240214135800.2674435-1-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,55 +96,118 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi,
+The 4th argument of ravb_setup_irq() is used to save the IRQ number that
+will be further used by the driver code. Not all ravb_setup_irqs() calls
+need to save the IRQ number. The previous code used to pass a dummy
+variable as the 4th argument in case the IRQ is not needed for further
+usage. That is not necessary as the code from ravb_setup_irq() can detect
+by itself if the IRQ needs to be saved. Thus, get rid of the code that is
+not needed.
 
-Series adds runtime PM support for the ravb driver. This is a continuation
-of [1].
+Reported-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+---
 
-There are 5 more preparation patches (patches 1-5) and patch 6
-adds runtime PM support.
-
-Patches in this series were part of [2].
-
-Changes in v4:
-- remove unnecessary code from patch 4/6
-- improve the code in patch 5/6
+Change in v4:
+- none
 
 Changes in v3:
-- fixed typos
-- added patch "net: ravb: Move the update of ndev->features to
-  ravb_set_features()"
-- changes title of patch "net: ravb: Do not apply RX checksum
-  settings to hardware if the interface is down" from v2 into
-  "net: ravb: Do not apply features to hardware if the interface
-  is down", changed patch description and updated the patch
-- collected tags
+- collected tag
 
 Changes in v2:
-- address review comments
-- in patch 4/5 take into account the latest changes introduced
-  in ravb_set_features_gbeth()
+- use a temporary variable in ravb_setup_irq()
 
 Changes since [2]:
-- patch 1/5 is new
-- use pm_runtime_get_noresume() and pm_runtime_active() in patches
-  3/5, 4/5
-- fixed higlighted typos in patch 4/5
+- this patch in new
 
-[1] https://lore.kernel.org/all/20240202084136.3426492-1-claudiu.beznea.uj@bp.renesas.com/
 [2] https://lore.kernel.org/all/20240105082339.1468817-1-claudiu.beznea.uj@bp.renesas.com/
 
-Claudiu Beznea (6):
-  net: ravb: Get rid of the temporary variable irq
-  net: ravb: Keep the reverse order of operations in ravb_close()
-  net: ravb: Return cached statistics if the interface is down
-  net: ravb: Move the update of ndev->features to ravb_set_features()
-  net: ravb: Do not apply features to hardware if the interface is down
-  net: ravb: Add runtime PM support
+ drivers/net/ethernet/renesas/ravb_main.c | 29 +++++++++++++-----------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
- drivers/net/ethernet/renesas/ravb_main.c | 132 ++++++++++++++++++-----
- 1 file changed, 103 insertions(+), 29 deletions(-)
-
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index f9a1e9038dbf..a1bf54de0e4c 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -2747,24 +2747,27 @@ static int ravb_setup_irq(struct ravb_private *priv, const char *irq_name,
+ 	struct device *dev = &pdev->dev;
+ 	const char *dev_name;
+ 	unsigned long flags;
+-	int error;
++	int error, irq_num;
+ 
+ 	if (irq_name) {
+ 		dev_name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s", ndev->name, ch);
+ 		if (!dev_name)
+ 			return -ENOMEM;
+ 
+-		*irq = platform_get_irq_byname(pdev, irq_name);
++		irq_num = platform_get_irq_byname(pdev, irq_name);
+ 		flags = 0;
+ 	} else {
+ 		dev_name = ndev->name;
+-		*irq = platform_get_irq(pdev, 0);
++		irq_num = platform_get_irq(pdev, 0);
+ 		flags = IRQF_SHARED;
+ 	}
+-	if (*irq < 0)
+-		return *irq;
++	if (irq_num < 0)
++		return irq_num;
++
++	if (irq)
++		*irq = irq_num;
+ 
+-	error = devm_request_irq(dev, *irq, handler, flags, dev_name, ndev);
++	error = devm_request_irq(dev, irq_num, handler, flags, dev_name, ndev);
+ 	if (error)
+ 		netdev_err(ndev, "cannot request IRQ %s\n", dev_name);
+ 
+@@ -2776,7 +2779,7 @@ static int ravb_setup_irqs(struct ravb_private *priv)
+ 	const struct ravb_hw_info *info = priv->info;
+ 	struct net_device *ndev = priv->ndev;
+ 	const char *irq_name, *emac_irq_name;
+-	int error, irq;
++	int error;
+ 
+ 	if (!info->multi_irqs)
+ 		return ravb_setup_irq(priv, NULL, NULL, &ndev->irq, ravb_interrupt);
+@@ -2799,28 +2802,28 @@ static int ravb_setup_irqs(struct ravb_private *priv)
+ 		return error;
+ 
+ 	if (info->err_mgmt_irqs) {
+-		error = ravb_setup_irq(priv, "err_a", "err_a", &irq, ravb_multi_interrupt);
++		error = ravb_setup_irq(priv, "err_a", "err_a", NULL, ravb_multi_interrupt);
+ 		if (error)
+ 			return error;
+ 
+-		error = ravb_setup_irq(priv, "mgmt_a", "mgmt_a", &irq, ravb_multi_interrupt);
++		error = ravb_setup_irq(priv, "mgmt_a", "mgmt_a", NULL, ravb_multi_interrupt);
+ 		if (error)
+ 			return error;
+ 	}
+ 
+-	error = ravb_setup_irq(priv, "ch0", "ch0:rx_be", &irq, ravb_be_interrupt);
++	error = ravb_setup_irq(priv, "ch0", "ch0:rx_be", NULL, ravb_be_interrupt);
+ 	if (error)
+ 		return error;
+ 
+-	error = ravb_setup_irq(priv, "ch1", "ch1:rx_nc", &irq, ravb_nc_interrupt);
++	error = ravb_setup_irq(priv, "ch1", "ch1:rx_nc", NULL, ravb_nc_interrupt);
+ 	if (error)
+ 		return error;
+ 
+-	error = ravb_setup_irq(priv, "ch18", "ch18:tx_be", &irq, ravb_be_interrupt);
++	error = ravb_setup_irq(priv, "ch18", "ch18:tx_be", NULL, ravb_be_interrupt);
+ 	if (error)
+ 		return error;
+ 
+-	return ravb_setup_irq(priv, "ch19", "ch19:tx_nc", &irq, ravb_nc_interrupt);
++	return ravb_setup_irq(priv, "ch19", "ch19:tx_nc", NULL, ravb_nc_interrupt);
+ }
+ 
+ static int ravb_probe(struct platform_device *pdev)
 -- 
 2.39.2
 
