@@ -1,151 +1,178 @@
-Return-Path: <linux-kernel+bounces-65012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 583D58546AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:55:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E1708546BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:00:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D52DEB21782
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:55:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88490B21F71
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A96168AF;
-	Wed, 14 Feb 2024 09:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA59168D7;
+	Wed, 14 Feb 2024 10:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BeyZ8QX4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pdi53vxe"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FCB17585;
-	Wed, 14 Feb 2024 09:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE7112B69;
+	Wed, 14 Feb 2024 10:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904526; cv=none; b=Q8vebhGwI5ILYpPplusv1QZ5gl3G43TD6XVdvqR2s5QjD3NZGjAbj5QjsO4gkaCz2ONBOwU9dn+2cX0M2D/oqvl9wTwslA5ScfyXLV3AVaOiRZhEu8d6xAwObZozspj9IYbI23+M0qefdbr36OneKnuCKKACAAlJsG53RqCI/Kc=
+	t=1707904846; cv=none; b=gDE9wYgWwEOjOgwpZdWVHZusIHo5rNyyO9BW2X1MvEHRETk4K5sT10IUd5HGYS/S8ffk8/0RD2FY3wfHTmTBPrtbRptmT0u5IuSwg/1wY6o/f/P5BYpjJRkrT0siVhtsOE8mmP5WVrmbi3JflCKZ1oc0nfHEy2n8BwKo9Bz9/LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904526; c=relaxed/simple;
-	bh=A/g1r9lBVBXaq+NvYx4KgeDD3Du8cdjmgJE9bAtv2zA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Dw8pFhDSgXsWx0i+9tA8q4g2vssAH+zZJ1HrQwtyQ/zlCT6T/9JnA2eIsjoRn0uupA1uCSKwQugStFiUBdF5vp/XabPdYuSVqU+DE7Q00TDzT72WkrnG/4NejbMVMd7AUkmWyoAPr2pH2jqbXrxWqfed0O56VaEgYJ0moCAoGNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BeyZ8QX4; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707904523; x=1739440523;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=A/g1r9lBVBXaq+NvYx4KgeDD3Du8cdjmgJE9bAtv2zA=;
-  b=BeyZ8QX48Xa81mp1jqJAVDqHrJrGysyymE/GyWJgZc+HIko+Wh4L14Zc
-   lnJGWhmvcui2gTUK53d/wBwg7Uy/SU51ywm2YNDwkYHnAQaEyNS133Cvu
-   CKhb4XjzxgvneXVJt978uZtW9DeAZ2pUxMhs4jD1pt7xWCTxSXTpZaYmQ
-   q1ZVP40u0XpBWBZ57+lCqDFUO9kXLi/bYHvMRYazMXcq8i+hovTwPxA3p
-   qIbchUsTrFE1Omh6wc0gDd7w96CwoX/AT9Tqqvk9HEDeTJa1HRAiZBVrN
-   MrjZ/hSQMMQihTucF+XjDB4bPBcjRj56bvS6b7vUmzU4FrGxV3z2zDmjr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2085167"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="2085167"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 01:55:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="3499569"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.38.190])
-  by orviesa006.jf.intel.com with ESMTP; 14 Feb 2024 01:55:24 -0800
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-	id B5A60300B65; Wed, 14 Feb 2024 01:55:23 -0800 (PST)
-From: Andi Kleen <ak@linux.intel.com>
-To: Ben Gainey <ben.gainey@arm.com>
-Cc: linux-perf-users@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  peterz@infradead.org,
-  mingo@redhat.com,  acme@kernel.org,  mark.rutland@arm.com,
-  alexander.shishkin@linux.intel.com,  jolsa@kernel.org,
-  namhyung@kernel.org,  irogers@google.com,  adrian.hunter@intel.com,
-  will@kernel.org
-Subject: Re: [RFC PATCH 0/2] A mechanism for efficient support for
- per-function metrics
-In-Reply-To: <20240123113420.1928154-1-ben.gainey@arm.com> (Ben Gainey's
-	message of "Tue, 23 Jan 2024 11:34:18 +0000")
-References: <20240123113420.1928154-1-ben.gainey@arm.com>
-Date: Wed, 14 Feb 2024 01:55:23 -0800
-Message-ID: <87r0hfwet0.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1707904846; c=relaxed/simple;
+	bh=R06cQdi4MNgbIu422h++0jlD99NL6HlGgH6a1VBS/Fs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wzv6FsH1Vtigj9wnrzgKExJ7+LE4B0R4BxJDAKfjpjERL8/szo8qzouzQZ8i1IEnyuQnh+JuLRB+8TWtpZ9lkrcueIMcoTsBy0iTmJBZiZv9ZLIuDpffsOgt5FduwvOIh0Lv1eOuDy2NAg/mk2lxgmTuVrGdSP7++ClxSb38gNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pdi53vxe; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3cedc4acd3so57679366b.1;
+        Wed, 14 Feb 2024 02:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707904843; x=1708509643; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uiSxlbKBjhgqtlbTNin6t3C+/oKvkiypv2RdUBSMVWY=;
+        b=Pdi53vxeBuqBb5iiNrbUSmawHuTNPBTZ64IkGyv3Q6EJX5ovvBExliZoEAO74rHC6R
+         +7egnV/wS5b1VNj+uRuO6Jcio2T1vcped3qulqyRBmDkYiUQ/SjMGWme7QXk5rvWGuUF
+         U9Qz2XkIFEdrB8eZFRzdhsuWBGN745UEDwp6EMnI0rZQ+Jv5e08U+7gDKjiiKvS0CgDW
+         lGqxw3YzKXLTI/sXqdBkOqkT3jVCsmTksDw0c8toOHN9aV+dH/ns0C/fz7ZmAmFfSYeP
+         hOkEJc1e1i74zQBb12xUVUjIejgkRfGtaW4G5mibJdPbm4t8DDcrBN+BAlDkMMxYhYMV
+         wAlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707904843; x=1708509643;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uiSxlbKBjhgqtlbTNin6t3C+/oKvkiypv2RdUBSMVWY=;
+        b=o/Z9aMuRYi8DgUWdqSV28o9TdTxgNvGw+DT1+pNOBVq+6ZIbJUJVNLjV7o2joq5Y1u
+         dlUquA/jQyq2VCINT6iivU80RES4XE8+5XYo9a1VoXFlvaPG8EraK9AVtHMNajPVkpVq
+         7Rv+iElDCzBP89AAxo8oaB3l4obj2oVxNalcIRfOuiDmt0Mkh6F9JfYIBotKFNeqI2Oi
+         FjdIG2siR5WUmHzjPPOuNiemvZFY/ApCvk8XRRXHV9U9IFAZaycvVZqXyAYJdVAwtl/i
+         b715Lt2vv4j/WtUhaIZS3BADSwf0uaxLUMFEjl4Ii2L7Nas4yDXNvkXtLEVKqptd0l37
+         dV4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXwkaMQDZSLJc1oYq2CsiU6nNwnZSTky6nztkHNWvliNLUs6ymJtuAH28ZgNyUhBz9KnsMbQl6OWPoZOiPX/YI4IQ1/7IDa9BGurkaleC5XCT8YazffX2+rfCtGqRi5+B+SalGaYZEpHKQ=
+X-Gm-Message-State: AOJu0YyTHAeeG84NRQ+WKu3dRO41lrcPZdVzLLiibuuRpLf9gtqvqArS
+	hPD5rSwzgMOM6KrUI0XKdG46hUcmhBO6CEacb2ocuRg+LnOj01bA
+X-Google-Smtp-Source: AGHT+IENcqpoxV5hNe7FBZSRoN2dpxq1P7sBzqb+6iw2m9XhFdO/Va94p/133+7MsvxX5aqG7pD9Cg==
+X-Received: by 2002:a17:907:a809:b0:a3b:b390:22dd with SMTP id vo9-20020a170907a80900b00a3bb39022ddmr1840833ejc.2.1707904842432;
+        Wed, 14 Feb 2024 02:00:42 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWz4v97B5kS9ULaL9vTQkeIFJIXFdka6+v4Y+d3NOrj9xsRe2vE0W9Xx4i+r2AULs2zhPC/3sBS7DyHJ71Apl/rZSNvdm3iiVExbHjmnEUiHHzXRUATmwz6T/VHHNVxNtfIAi/r7P0SU9yhdvyZKJjogr6HbHZAFNaz/wZzfVFpArUAFW1q+VNYu/7ep11yGx/V3xTbT5WrPCjA4sJytMt08o2hZvxmFNWGB1Q2Mig=
+Received: from desktop-nixos-martino.. ([2a01:e11:5004:180::bd5a:12c2])
+        by smtp.gmail.com with ESMTPSA id vu6-20020a170907a64600b00a3d19aed4cesm1134133ejc.21.2024.02.14.02.00.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 02:00:41 -0800 (PST)
+From: Martino Fontana <tinozzo123@gmail.com>
+To: djogorchock@gmail.com,
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Martino Fontana <tinozzo123@gmail.com>,
+	Ryan McClelland <rymcclel@gmail.com>
+Subject: [PATCH v2 RESEND] HID: nintendo: use ida for LED player id
+Date: Wed, 14 Feb 2024 10:55:52 +0100
+Message-ID: <20240214095653.9374-2-tinozzo123@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Ben Gainey <ben.gainey@arm.com> writes:
+Previously, the leds pattern would just increment with every controller
+connected. This wouldn't take into consideration when controllers are
+disconnected. The same controller could be connected and disconnected
+with the pattern increasing player count each time.
 
-> I've been working on an approach to supporting per-function metrics for
-> aarch64 cores, which requires some changes to the arm_pmuv3 driver, and
-> I'm wondering if this approach would make sense as a generic feature
-> that could be used to enable the same on other architectures?
->
-> The basic idea is as follows:
->
->  * Periodically sample one or more counters as needed for the chosen
->    set of metrics.
->  * Record a sample count for each symbol so as to identify hot
->    functions.
->  * Accumulate counter totals for each of the counters in each of the
->    metrics *but* only do this where the previous sample's symbol
->    matches the current sample's symbol.
+This patch changes it by using an ID allocator in order to assign the
+player id, the same way hid-playstation does.
 
-It sounds very similar to what perf script -F +metric already does
-(or did if it wasn't broken currently). It would be a straight forward
-extension here to add this "same as previous" check.
+Signed-off-by: Martino Fontana <tinozzo123@gmail.com>
+Signed-off-by: Ryan McClelland <rymcclel@gmail.com>
+---
+Changes for v2:
 
-Of course the feature is somewhat dubious in that it will have a very
-strong systematic bias against short functions and even long functions
-in some alternating execution patterns. I assume you did some
-experiments to characterize this. It would be important
-to emphasize this in any documentation.
+ida_free now frees the correct id, instead of an id that got moduloed.
 
-> For this to work efficiently, it is useful to provide a means to
-> decouple the sample window (time over which events are counted) from
-> the sample period (time between interesting samples). This patcheset
-> modifies the Arm PMU driver to support alternating between two
-> sample_period values, providing a simple and inexpensive way for tools
-> to separate out the sample period and the sample window. It is expected
-> to be used with the cycle counter event, alternating between a long and
-> short period and subsequently discarding the counter data for samples
-> with the long period. The combined long and short period gives the
-> overall sampling period, and the short sample period gives the sample
-> window. The symbol taken from the sample at the end of the long period
-> can be used by tools to ensure correct attribution as described
-> previously. The cycle counter is recommended as it provides fair
-> temporal distribution of samples as would be required for the
-> per-symbol sample count mentioned previously, and because the PMU can
-> be programmed to overflow after a sufficiently short window; this may
-> not be possible with software timer (for example). This patch does not
-> restrict to only the cycle counter, it is possible there could be other
-> novel uses based on different events.
+ drivers/hid/hid-nintendo.c | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
-I don't see anything ARM specific with the technique, so if it's done
-it should be done generically IMHO
+diff --git a/drivers/hid/hid-nintendo.c b/drivers/hid/hid-nintendo.c
+index ccc4032fb2b0..6ab4c2ec4a5d 100644
+--- a/drivers/hid/hid-nintendo.c
++++ b/drivers/hid/hid-nintendo.c
+@@ -34,6 +34,7 @@
+ #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/hid.h>
++#include <linux/idr.h>
+ #include <linux/input.h>
+ #include <linux/jiffies.h>
+ #include <linux/leds.h>
+@@ -569,6 +570,7 @@ static const enum led_brightness joycon_player_led_patterns[JC_NUM_LED_PATTERNS]
+ struct joycon_ctlr {
+ 	struct hid_device *hdev;
+ 	struct input_dev *input;
++	u32 player_id;
+ 	struct led_classdev leds[JC_NUM_LEDS]; /* player leds */
+ 	struct led_classdev home_led;
+ 	enum joycon_ctlr_state ctlr_state;
+@@ -2283,7 +2285,8 @@ static int joycon_home_led_brightness_set(struct led_classdev *led,
+ 	return ret;
+ }
+ 
+-static DEFINE_SPINLOCK(joycon_input_num_spinlock);
++static DEFINE_IDA(nintendo_player_id_allocator);
++
+ static int joycon_leds_create(struct joycon_ctlr *ctlr)
+ {
+ 	struct hid_device *hdev = ctlr->hdev;
+@@ -2294,20 +2297,19 @@ static int joycon_leds_create(struct joycon_ctlr *ctlr)
+ 	char *name;
+ 	int ret;
+ 	int i;
+-	unsigned long flags;
+ 	int player_led_pattern;
+-	static int input_num;
+-
+-	/*
+-	 * Set the player leds based on controller number
+-	 * Because there is no standard concept of "player number", the pattern
+-	 * number will simply increase by 1 every time a controller is connected.
+-	 */
+-	spin_lock_irqsave(&joycon_input_num_spinlock, flags);
+-	player_led_pattern = input_num++ % JC_NUM_LED_PATTERNS;
+-	spin_unlock_irqrestore(&joycon_input_num_spinlock, flags);
+ 
+ 	/* configure the player LEDs */
++	ctlr->player_id = U32_MAX;
++	ret = ida_alloc(&nintendo_player_id_allocator, GFP_KERNEL);
++	if (ret < 0) {
++		hid_warn(hdev, "Failed to allocate player ID, skipping; ret=%d\n", ret);
++		goto home_led;
++	}
++	ctlr->player_id = ret;
++	player_led_pattern = ret % JC_NUM_LED_PATTERNS;
++	hid_info(ctlr->hdev, "assigned player %d led pattern", player_led_pattern + 1);
++
+ 	for (i = 0; i < JC_NUM_LEDS; i++) {
+ 		name = devm_kasprintf(dev, GFP_KERNEL, "%s:%s:%s",
+ 				      d_name,
+@@ -2789,6 +2791,7 @@ static void nintendo_hid_remove(struct hid_device *hdev)
+ 	spin_unlock_irqrestore(&ctlr->lock, flags);
+ 
+ 	destroy_workqueue(ctlr->rumble_queue);
++	ida_free(&nintendo_player_id_allocator, ctlr->player_id);
+ 
+ 	hid_hw_close(hdev);
+ 	hid_hw_stop(hdev);
+-- 
+2.43.0
 
-
-> Cursory testing on a Xeon(R) W-2145 sampling every 300 cycles (without
-> the patch) suggests this approach would work for some counters.
-> Calculating branch miss rates for example appears to be correct,
-> likewise UOPS_EXECUTED.THREAD seems to give something like a sensible
-> cycles-per-uop value. On the other hand the fixed function instructions
-> counter does not appear to sample correctly (it seems to report either
-> very small or very large numbers). No idea whats going on there, so any
-> insight welcome...
-
-If you use precise samples with 3p there is a restriction on the periods
-that is enforced by the kernel. Non precise or single/double p should
-support arbitrary, except that any p is always period + 1.
-
-One drawback of the technique on x86 is that it won't allow multi record
-pebs (collecting samples without interrupts), so the overhead might
-be intrinsically higher.
-
--Andi
 
