@@ -1,129 +1,150 @@
-Return-Path: <linux-kernel+bounces-65796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB888551F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 814A78551FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05BE01F20984
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:20:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20C2F1F2672A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77715127B7E;
-	Wed, 14 Feb 2024 18:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f5CIfjXE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF5AB126F3E;
-	Wed, 14 Feb 2024 18:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C99127B7E;
+	Wed, 14 Feb 2024 18:21:36 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C8264CCE
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707934825; cv=none; b=dlQCG1zLvILkf6dOP2C/5uoX0xV+VgH1ZILQSV5rNSXVuNuTn7xs/SiVYM0kzETXaYcGYJStZ7D7+qLe1DgXA+Qmlxm5X0PinbXJxiG27PYz1Cif23S4U0c2n50A6vDBLzEm52vPNLOZ7xDpJRXdeL3whk4n/CTJ3NAP8/qJy1Y=
+	t=1707934895; cv=none; b=by/9DW7h8nWumoLLy52Y34RCqQZKTo7cFHAGtguCVjeGzT2QwYSRYnJNtzIc/wrShPj+JXJ3HNuaeXmlu9FxstlgRzDpVHB8MaXgDhkOUeRkdKjh0qp1ZyLZCIX4ag7/0hxiHryVvg9MIpDqljG01VgPkTliQECe6hG8Xw8+MJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707934825; c=relaxed/simple;
-	bh=PTX79Fr3Yf/DKhXSG/icIh5ogvuh9dWkZkc8teuKW4E=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=kqHtY5lKxoeC+jbiG2OY49JkLrXD0vx9qb6lyvkzb4NjblK2CvDWaKQMnmRLZDVGqXxknpI9uCz9abQZpXkkWIA1unVyNM9QRMHRRmfpMd+NvdM6tyksSAcU/BxklSx2a5/qUnNFOF+OkAiAH3zz7QXtoPrengIpBfkwShF8U2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f5CIfjXE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C2B9C433F1;
-	Wed, 14 Feb 2024 18:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707934825;
-	bh=PTX79Fr3Yf/DKhXSG/icIh5ogvuh9dWkZkc8teuKW4E=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=f5CIfjXEf/R3e29WGZgQL5Ic1GDWj9c9ATaExeXZTj1Z1BIbKf1vaupXlV0iZDvJu
-	 iSnhd5pygx5Rp9TkwUbMyUKk66RGhwUMhbfVUrrizT93QVLfxmTBfe4bA8DUF+t2nG
-	 2BMSD0wJRhr3W4jVBzjRLr0QBRMCA4PIBozcoRao9S0TSwt95rWk4452JQDJILgjKS
-	 jBGMddxBwpqjnqv1svtf7bbVhAenqlbtMqp8EQPRT5YQyqukTsZj3IUFCrwim5aTDb
-	 ser88cs2bmUhM08+gXSdG7iT7L0rMGsQsEmBB6cLEKUCpkPdrBik3pD7l8I7tXXCbj
-	 /zlg3wHVpeMKg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,  Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>,  Masami Hiramatsu
- <mhiramat@kernel.org>,  Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>,  Catalin Marinas
- <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2] tracing: Inform kmemleak of saved_cmdlines allocation
-References: <20240214112046.09a322d6@gandalf.local.home>
-Date: Wed, 14 Feb 2024 20:20:22 +0200
-In-Reply-To: <20240214112046.09a322d6@gandalf.local.home> (Steven Rostedt's
-	message of "Wed, 14 Feb 2024 11:20:46 -0500")
-Message-ID: <87h6iaewm1.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1707934895; c=relaxed/simple;
+	bh=fVtRJgko8Y94qf0CWO9az0MkYE3hGijFPfGtUp+w/4Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j2QaE/bj5orw8hT3tQ0I/DMDxsY8NnXHu8kU1ITphAkjdx0dQ5f7fACpYdVPtCjxCxGRIcDUaSVyIKDIL+YU+tEp6A0YmywkLBxFQer1O36eSr5YNF9BhHDLuo76kxOrf7UzrVAk5Zull5q0MlBAFmSAeXW6syypZxBYWqBlZq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FDDD1FB;
+	Wed, 14 Feb 2024 10:22:14 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF65B3F7B4;
+	Wed, 14 Feb 2024 10:21:31 -0800 (PST)
+Date: Wed, 14 Feb 2024 18:21:29 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Nikunj Kela <quic_nkela@quicinc.com>
+Cc: kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
+	oe-kbuild-all@lists.linux.dev, sudeep.holla@arm.com,
+	vincent.guittot@linaro.org, peng.fan@oss.nxp.com,
+	michal.simek@amd.com, quic_sibis@quicinc.com,
+	souvik.chakravarty@arm.com
+Subject: Re: [PATCH 06/11] firmware: arm_scmi: Implement Clock
+ .is_notify_supported callback
+Message-ID: <Zc0EqV69sg6Dqnti@pluto>
+References: <20240212123233.1230090-7-cristian.marussi@arm.com>
+ <202402131047.2NVZWHma-lkp@intel.com>
+ <ZcstL8tRVKIUFoBr@pluto>
+ <fc28f615-eaaf-459a-96e2-fce104f77fe7@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc28f615-eaaf-459a-96e2-fce104f77fe7@quicinc.com>
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On Tue, Feb 13, 2024 at 10:24:48AM -0800, Nikunj Kela wrote:
+> 
+> On 2/13/2024 12:49 AM, Cristian Marussi wrote:
+> > On Tue, Feb 13, 2024 at 10:58:23AM +0800, kernel test robot wrote:
+> > > Hi Cristian,
+> > > 
+> > > kernel test robot noticed the following build errors:
+> > > 
+> > > [auto build test ERROR on soc/for-next]
+> > > [also build test ERROR on linus/master v6.8-rc4 next-20240212]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > And when submitting patch, we suggest to use '--base' as documented in
+> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > 
+> > Hi,
+> > 
+> > this series, as stated in the cover-letter, is based off the current tip of
+> > 
+> > 	sudeep/for-next/scmi/updates
+> > 
+> > and particularly needs commit:
+> > 
+> > 	9c5bc650031e firmware: arm_scmi: Rework clock domain info lookups
+> > 
+> > from there, since it contains the missing scmi_clock_domain_lookup().
+> > 
+> > Not_sure/dont_known if there is any way to convey this "based-on-branch"
+> > info to your/any CI at the moment.
+> > 
+> > Thanks,
+> > Cristian
+> Maybe add supdeep's tree in MAINTAINERS and use 'base-commit'.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> The allocation of the struct saved_cmdlines_buffer structure changed from:
->
->         s = kmalloc(sizeof(*s), GFP_KERNEL);
-> 	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
->
-> to:
->
-> 	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
-> 	order = get_order(orig_size);
-> 	size = 1 << (order + PAGE_SHIFT);
-> 	page = alloc_pages(GFP_KERNEL, order);
-> 	if (!page)
-> 		return NULL;
->
-> 	s = page_address(page);
-> 	memset(s, 0, sizeof(*s));
->
-> 	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
->
-> Where that s->saved_cmdlines allocation looks to be a dangling allocation
-> to kmemleak. That's because kmemleak only keeps track of kmalloc()
-> allocations. For allocations that use page_alloc() directly, the kmemleak
-> needs to be explicitly informed about it.
->
-> Add kmemleak_alloc() and kmemleak_free() around the page allocation so
-> that it doesn't give the following false positive:
->
-> unreferenced object 0xffff8881010c8000 (size 32760):
->   comm "swapper", pid 0, jiffies 4294667296
->   hex dump (first 32 bytes):
->     ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
->     ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
->   backtrace (crc ae6ec1b9):
->     [<ffffffff86722405>] kmemleak_alloc+0x45/0x80
->     [<ffffffff8414028d>] __kmalloc_large_node+0x10d/0x190
->     [<ffffffff84146ab1>] __kmalloc+0x3b1/0x4c0
->     [<ffffffff83ed7103>] allocate_cmdlines_buffer+0x113/0x230
->     [<ffffffff88649c34>] tracer_alloc_buffers.isra.0+0x124/0x460
->     [<ffffffff8864a174>] early_trace_init+0x14/0xa0
->     [<ffffffff885dd5ae>] start_kernel+0x12e/0x3c0
->     [<ffffffff885f5758>] x86_64_start_reservations+0x18/0x30
->     [<ffffffff885f582b>] x86_64_start_kernel+0x7b/0x80
->     [<ffffffff83a001c3>] secondary_startup_64_no_verify+0x15e/0x16b
->
-> Link: https://lore.kernel.org/linux-trace-kernel/87r0hfnr9r.fsf@kernel.org/
->
-> Fixes: 44dc5c41b5b1 ("tracing: Fix wasted memory in saved_cmdlines logic")
-> Reported-by: Kalle Valo <kvalo@kernel.org>
-> Tested-by: Kalle Valo <kvalo@kernel.org>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Thanks Nikunj, I'll try with base-commit.
+Cristian
 
-Applies cleanly to v6.8-rc4 and I don't see the leak anymore, thank you
-for fixing it so quickly!
-
-Tested-by: Kalle Valo <kvalo@kernel.org>
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> > > url:    https://github.com/intel-lab-lkp/linux/commits/Cristian-Marussi/firmware-arm_scmi-Check-for-notification-support/20240212-203727
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+> > > patch link:    https://lore.kernel.org/r/20240212123233.1230090-7-cristian.marussi%40arm.com
+> > > patch subject: [PATCH 06/11] firmware: arm_scmi: Implement Clock .is_notify_supported callback
+> > > config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/config)
+> > > compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project c08b90c50bcac9f3f563c79491c8dbcbe7c3b574)
+> > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240213/202402131047.2NVZWHma-lkp@intel.com/reproduce)
+> > > 
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202402131047.2NVZWHma-lkp@intel.com/
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > > > > drivers/firmware/arm_scmi/clock.c:853:8: error: call to undeclared function 'scmi_clock_domain_lookup'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+> > >       853 |         clk = scmi_clock_domain_lookup(ci, src_id);
+> > >           |               ^
+> > > > > drivers/firmware/arm_scmi/clock.c:853:6: error: incompatible integer to pointer conversion assigning to 'struct scmi_clock_info *' from 'int' [-Wint-conversion]
+> > >       853 |         clk = scmi_clock_domain_lookup(ci, src_id);
+> > >           |             ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >     2 errors generated.
+> > > 
+> > > 
+> > > vim +/scmi_clock_domain_lookup +853 drivers/firmware/arm_scmi/clock.c
+> > > 
+> > >     842	
+> > >     843	static bool scmi_clk_notify_supported(const struct scmi_protocol_handle *ph,
+> > >     844					      u8 evt_id, u32 src_id)
+> > >     845	{
+> > >     846		bool supported;
+> > >     847		struct scmi_clock_info *clk;
+> > >     848		struct clock_info *ci = ph->get_priv(ph);
+> > >     849	
+> > >     850		if (evt_id >= ARRAY_SIZE(evt_2_cmd))
+> > >     851			return false;
+> > >     852	
+> > >   > 853		clk = scmi_clock_domain_lookup(ci, src_id);
+> > >     854		if (IS_ERR(clk))
+> > >     855			return false;
+> > >     856	
+> > >     857		if (evt_id == SCMI_EVENT_CLOCK_RATE_CHANGED)
+> > >     858			supported = clk->rate_changed_notifications;
+> > >     859		else
+> > >     860			supported = clk->rate_change_requested_notifications;
+> > >     861	
+> > >     862		return supported;
+> > >     863	}
+> > >     864	
+> > > 
+> > > -- 
+> > > 0-DAY CI Kernel Test Service
+> > > https://github.com/intel/lkp-tests/wiki
 
