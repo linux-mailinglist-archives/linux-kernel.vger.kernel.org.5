@@ -1,128 +1,154 @@
-Return-Path: <linux-kernel+bounces-65789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89D18551DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:15:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB698551D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D09C1F293E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7596028686C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2AAF12C819;
-	Wed, 14 Feb 2024 18:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4544212C552;
+	Wed, 14 Feb 2024 18:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PSU0UOPZ"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="TBNyiB7A";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YFwk5T69"
+Received: from wflow2-smtp.messagingengine.com (wflow2-smtp.messagingengine.com [64.147.123.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438F28527F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FCD84A3E;
+	Wed, 14 Feb 2024 18:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707934329; cv=none; b=bNE+sTfJ9sqgmiltbU9nnNBoMwoJrLHT3ELbBEiHErByn5y5+zzKBy+KhiGu2KNfSRtwgVBKOt1EYCCakUWXJMGuH5rRrUWbmvmI/00pPUja90dFPPMxfUKfW4hdJK20qPsL1O3pnMAnYxG639fuasBAax6HjvYka74MnZYPrhk=
+	t=1707934326; cv=none; b=QprWrXk8zyyGmE1E48lMijQiEbqys/qk++IQeXimUHiyWyLU7+JnanGps7T2GbYEAFaX7W70veZr3ifzIhVy9m2k2qRERUuM3u4dIg6eJuWbmtRXzbisLSOTG8mIEPM57IhciK3/ouMymvb8FWOrdXdj0ZKndQGl3plwMomwd8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707934329; c=relaxed/simple;
-	bh=OE9ONYhRtt1RT9UxYhOGWQZAzy9csxc4vRQdMTFcZmE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sV/3uyMoIuNU6pDVgPcVOJgduuQMXAUYaxlzvDTKVdF+MgiQbms5/owF59OSS5uuQDiJp0wiTyn5PB1hWWUgjpuhTRECvJESRRQDC+vYJ6n6HX0XMxP2D4ZOPegrvuB2oxL4SXKenOr9GarhE0x/kI+4hN7EXHy2rBvqfMZq/PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PSU0UOPZ; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-68c431c6c91so506176d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:12:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707934325; x=1708539125; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OE9ONYhRtt1RT9UxYhOGWQZAzy9csxc4vRQdMTFcZmE=;
-        b=PSU0UOPZ9NlWZVaWaV04SwNGPWr91c8VwQpPIbQYsFzhvQSd0XngDiCSSn54Ab1LU2
-         36U06+osPCMF799tHgtOPeHi9Jus2qgofT2kNlGvWu5i0iFGT8o0Yk8p/pmBhRD0dahw
-         vEmPwKcgBj5fHXRxX9KCnCMdnukJKllrnemoU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707934325; x=1708539125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OE9ONYhRtt1RT9UxYhOGWQZAzy9csxc4vRQdMTFcZmE=;
-        b=TQrk1rLeE0RzaMikVFlopS6CjvV3blz+HxVbcgtzJ6Oa4jwiSHciNzCQdxI9/vhWCb
-         dbKhSxwKOygy9pPpjEHBayeAfL/ABFKiu4awgs54Ve4ihJ7dtEphjaWmFxC1CSIBdM8f
-         uyAsIY43qRToQuLoza63mVGnjIrz5+wY5kO1v5cU2aIAkiGVQyLFE3BWw/w3tp/0pZc3
-         37WnO3lxQ6whhcIukeyhk2ca+c1FfVbgu0Nc1pY0t0BYguU4ERULsucN8C9wjFbRmu0n
-         38cikOpLnejFdOnhCgurehLBt1vCbCkrfrJONbV5fX29TTOStHKAAONcpXcn8464hDEr
-         Yabw==
-X-Forwarded-Encrypted: i=1; AJvYcCV3gIV2J4XUa4WZQVlYJcpX751IjRGgWVvQqFtwJP8g1eIJeYu2iT51btd/OLTRK4Vv2XwYXjtros2OGSj7UwBrOtz7L/5NrevuozIQ
-X-Gm-Message-State: AOJu0Yz+vOWaLIFFFDOBRD3JIStUiUISXtuoW7DVoMmIGEzUcHFIW6vx
-	ewVrMkJUwRDJMO9SKkTCh0E8oDePIzrm5NWE7Y/uqWwf6fdGXhfYhr9+u96nPUagB+W+3ru2abT
-	bqknrXwlyoHg1Rtn19A8rXfHY6yZGqWFGTHpK
-X-Google-Smtp-Source: AGHT+IEgrWvxXcraQzc1baiUPwiEzauqEskx3AucYV5QX8er4b9bpYzTMRyz2B2QxRzh4QRdmPCoEcLyLXCe6Vd4YFM=
-X-Received: by 2002:a05:6214:e82:b0:68c:da0a:10ef with SMTP id
- hf2-20020a0562140e8200b0068cda0a10efmr4022290qvb.57.1707934325206; Wed, 14
- Feb 2024 10:12:05 -0800 (PST)
+	s=arc-20240116; t=1707934326; c=relaxed/simple;
+	bh=xaNjbfsXALYJf7A9rUTlboAITdFj7hL2rnQGSgbm4FI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kzs9d1Djf9n7jDvqOgpgpCHFq368FfpcHIr9tc6mQrcmSV9eWHgQz6OGL3oNYg5g8pr1PzHwSS0pP1NWAT4F6YVZgci5j+kr0rdsgfb5yQY9LtjUpn7xygf26aMmLmaj9EnKF/8MR9Nvc877mzAVt4/g8dKEZz2CI7GAnqhJpIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=TBNyiB7A; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YFwk5T69; arc=none smtp.client-ip=64.147.123.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailflow.west.internal (Postfix) with ESMTP id C50602CC02C2;
+	Wed, 14 Feb 2024 13:12:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 14 Feb 2024 13:12:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1707934321; x=1707941521; bh=YyjszkVulV
+	wS9ApAAhU5F14N1kZwgfnmL4dXYcuxs4Y=; b=TBNyiB7AxVjfWKAklylOYdaEtS
+	LDX7hv+vsIFNJkciDeKmC4ZxZ66lQiy0d6ubGBo3UclIjS/EXbgGet9cdmvj2/ZK
+	JlDe+CaYXY0NfFbl0114ZR79HFmyyjRAn3MbzxI85GV8qUTyGc9A1qroNcrKib1Z
+	NEPZO54lFU7FELTmNiKngFYEOnrUnULjeCK/15B7j3VkCKtlE56PVFIbLIWL5CYR
+	U4kSpwnL8Ss+4PBd4qAztJf+J15+TzHRV2UMyxI2sU7EagE86i3kgalIM261OVRh
+	9ywIH0BP/3YvTJU/ESdl3ArhZ4GoDdX+UbAlQDfF7aWxT7dh+RMa7+zPEDnA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707934321; x=1707941521; bh=YyjszkVulVwS9ApAAhU5F14N1kZw
+	gfnmL4dXYcuxs4Y=; b=YFwk5T69aHohbXMadg1f6TH9B2bxoFucQ+2mufrZF/7Q
+	amCR8gzOfkHLj4AZMwYSBzIXbsdwq1yyZLB+KRrK/gReB0fau04w7VXbF+oP47MD
+	jAnKJdHhs4Rx/cU5TyOcteljI3iSgm/EeLifVh8m9so+DBXalTaRqI7Spad19Qkt
+	qJO6LYEaZOfv9Tg9ax7JkoxnENBHBP79v/1t7iexWq20u370ZcF2dF9D0+wZDF5x
+	bkBy+m4dNveY7VGQ1yQxomv9AU06DhumYAGiHK6Fbmyk0WQlY39uNWt16BoFdCQe
+	VCCfIjrQZV5iToSQ3e7TTf5rSntTmT5XcdBk441H4w==
+X-ME-Sender: <xms:cALNZUfx16W7IjtETrHdLMm9SenOXZulc3V3WwJz6BV78HY-CCRC0A>
+    <xme:cALNZWOhIecGHB4B5NQ2ZBHrq5TksBlmKtibRNs972oxvGZrtQaRaZ6zS9-ivbL7X
+    WKbvivKFCaU1KMN80g>
+X-ME-Received: <xmr:cALNZVgB9ThiugBlx2eizIoR2kzEEinE3NsiOw5AzIk5t4WtDDgbqoAHdOg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
+    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
+    grthhtvghrnhepueettdetgfejfeffheffffekjeeuveeifeduleegjedutdefffetkeel
+    hfelleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:cALNZZ8OijF3iXe7rHiP4uRqCEpNNecqhYVuEmwWeim6H68gYhYGLA>
+    <xmx:cALNZQvYwrmTLFlYHX4VFE_WjiYJ7GDzgnUZZOmjd0LnA394iFViMA>
+    <xmx:cALNZQF7GlsSfLnKkGChc8jcIMeuwKCN2a-BFEh5dxqt6cYWSPbMRg>
+    <xmx:cQLNZRPey3rcDYDaj_wTvqESmQhTvj2CXdVt-_pn9pZACw8_0NcNFQSS2a8bKQ73>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 14 Feb 2024 13:11:57 -0500 (EST)
+Date: Wed, 14 Feb 2024 11:11:55 -0700
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: coverity-bot <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Peng Zhang <zhangpeng.00@bytedance.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Tycho Andersen <tandersen@netflix.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: Coverity: __do_sys_pidfd_send_signal(): UNINIT
+Message-ID: <Zc0Ca5te+QFBZ1U6@tycho.pizza>
+References: <202402131559.B76A34B@keescook>
+ <ZcwGua3a9Z8nJXVq@tycho.pizza>
+ <20240214090332.GA14017@redhat.com>
+ <20240214090640.GB14017@redhat.com>
+ <ZczLyDCN+zG6imTd@tycho.pizza>
+ <20240214175555.GC16265@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213130018.3029991-1-heikki.krogerus@linux.intel.com>
- <20240213130018.3029991-3-heikki.krogerus@linux.intel.com>
- <CACeCKadLKg89c8s68QD6VsqiKBMms6765O7mFFihqtET30pUyQ@mail.gmail.com>
- <ZcyUblecufzeso17@kuha.fi.intel.com> <CAAuZZi9h=d2_CM4tU4-H9wJfhLZbw99X2dGSddiCeDFDdb+kjw@mail.gmail.com>
- <ZcyrCosNDXxGZh9O@kuha.fi.intel.com>
-In-Reply-To: <ZcyrCosNDXxGZh9O@kuha.fi.intel.com>
-From: Prashant Malani <pmalani@chromium.org>
-Date: Wed, 14 Feb 2024 10:11:53 -0800
-Message-ID: <CACeCKacOFLKGCBTuFTVj+=W9C+rC++7DfzkG=M23i0Qh4qTOxA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Make sure the USB
- role switch has PLD
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Emilie Roberts <hadrosaur@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Guenter Roeck <groeck@chromium.org>, "Nyman, Mathias" <mathias.nyman@intel.com>, 
-	"Regupathy, Rajaram" <rajaram.regupathy@intel.com>, 
-	"Radjacoumar, Shyam Sundar" <ssradjacoumar@google.com>, Samuel Jacob <samjaco@google.com>, 
-	Uday Bhat <uday.m.bhat@intel.com>, linux-usb@vger.kernel.org, 
-	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214175555.GC16265@redhat.com>
 
-Hi Heikki,
+On Wed, Feb 14, 2024 at 06:55:55PM +0100, Oleg Nesterov wrote:
+> Hi Tycho,
+> 
+> let me repeat just in case, I am fine either way, whatever you and
+> Christian prefer. In particular, I agree in advance if you decide
+> to not change the current code, it is correct even if it can fool
+> the tools.
+> 
+> That said,
+> 
+> On 02/14, Tycho Andersen wrote:
+> >
+> > On Wed, Feb 14, 2024 at 10:06:41AM +0100, Oleg Nesterov wrote:
+> > >
+> > > -	/* Ensure that only a single signal scope determining flag is set. */
+> > > -	if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
+> > > +	switch (flags) {
+> > > +	case 0:
+> > > +		/* but see the PIDFD_THREAD check below */
+> >
+> > Why not put that bit inline?
+> 
+> Not sure I understand what does "inline" mean... but let me reply
+> anyway.
+> 
+> We want to check the "flags" argument at the start, we do not want to
+> delay the "case 0:" check until we have f.file (so that we can check
+> f.file->f_flags).
 
-On Wed, Feb 14, 2024 at 3:59=E2=80=AFAM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> Hi Emilie,
->
-> On Wed, Feb 14, 2024 at 12:04:22PM +0100, Emilie Roberts wrote:
-> > My understanding is that this is related to the wiring spec and not
-> > ChromeOS specific. It seems possible that OEMs making non-ChromeOS devi=
-ces
-> > may have this same issue. Or are we certain that only Chromebooks will =
-ever
-> > see this?
->
-> Non-ChromeOS platforms do not have this issue.
->
-> The issue is with the ACPI tables - the USB role switch ACPI device
-> nodes don't have the _PLD object on these systems. Ideally this could
-> be fixed there by simply adding the _PLD to those ACPI device objects,
-> but I understood that that is not an option.
->
-> But maybe I misunderstood... Can the ACPI tables on these platforms
-> still be updated?
+Fair point. I was thinking delaying it would make it simpler, but then
+you have to free the file and it's less fast in the EINVAL case. I
+also don't have a strong opinion here.
 
-Since it's just a _PLD update to, it should be possible to do a "light" fir=
-mware
-update on the relevant boards. Shyam/Emilie/Won, how practical is this?
-
-I'd much prefer this to be fixed properly in the ACPI table than relying
-on this quirk.
-
-IAC, if we absolutely *have* to use this quirk:
-Acked-by: Prashant Malani <pmalani@chromium.org>
-
-Thanks,
+Tycho
 
