@@ -1,340 +1,157 @@
-Return-Path: <linux-kernel+bounces-66104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3EA8556F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:13:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642C685570B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FFE91F24C23
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:13:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 213A128F0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B931419BA;
-	Wed, 14 Feb 2024 23:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C0514601A;
+	Wed, 14 Feb 2024 23:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hCw1MKmv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="nYISlLWx"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B7E24B33;
-	Wed, 14 Feb 2024 23:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F19F145FF3;
+	Wed, 14 Feb 2024 23:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707952411; cv=none; b=NYfJabZ3RdJbAVLSXKC0IPmOUiRauT1ygXXx5uwbtm5ktFrPP4qwflgJifPRQT2faVx03FfhPOY37/lqu1/UMN4jv73ibIt1KVz1QsUO9Cm1P4xZs5BkyEe+4P4mJrdmjj0PLQilwMs8JG7iM4ocIruRXzSBJ3TUvXnapxIkLd4=
+	t=1707952453; cv=none; b=OkX/nqt8tJhGzU1f4qjoLfKjZG7HWzVpr0iZ34uJVWYCRGiB08fydIwlsKL/YTVSfTqTOg6mRmOOqx2VmlxoP2Cw/V5Y8ZyDErLmfMhHiBYDjCLjCMn1LA54ZKLstymT37AvZXAvWL6S1OYnP1+dvjJbYsumng02UnGkAcU2xFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707952411; c=relaxed/simple;
-	bh=Z1/yl5RJ77QqCCp71GxnprkzPjJyVEnw3bnTqBlUQMY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IhjrkkQSvwiV5VJT8pnI/F3PDXpoPGUjkLBULkeWVuIdsjIBQZXnBBmyjrVQU+fNOwn3GBwbnaf57WdpkSi38TO3hSCmpxuupymtwVm4uWWI8K5OzFi4SLuEc4170eptWuEgYfsnkUz9UCXSWi+FNpF8ofophs1/imkTTlUFwAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hCw1MKmv; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707952410; x=1739488410;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Z1/yl5RJ77QqCCp71GxnprkzPjJyVEnw3bnTqBlUQMY=;
-  b=hCw1MKmvNqiDO7/1L/9VPDy6alVhEDrY7mK+AXV5JxG95XwyGYLqL7OH
-   l+z2TcQ8uPpgkrVAfwJhJCRt4zsYf6GdUm4qIncp7dGbl8gY6+99hz6mH
-   SvoSkIYlr3LXkPQgWdt9lHaRKq0TEEGnKrGnZ1Ju65oIDtQmclNgCq8Ug
-   iCYzktPoSYuEkLKXIdpTEqDgcT48Bn5nLHdZHAQXszir1t9XakAUkJK12
-   voQQ6jjM2iIOtBU7tNlMkfv4yMmyxdC/i6Zgu84ZcqegOPbbqOuUNjBMR
-   eL4bBtrpJfTHCnlfc/0xFG6WubCVSnuy0oZNaCZC/iRrE15q1oEd8mYfw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="13422004"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="13422004"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 15:13:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="826369893"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="826369893"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 14 Feb 2024 15:13:23 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 15 Feb 2024 01:13:22 +0200
-Date: Thu, 15 Feb 2024 01:13:22 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-	amd-gfx@lists.freedesktop.org,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
-	linux-renesas-soc@vger.kernel.org,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>,
-	Mark Pearson <mpearson-lenovo@squebb.ca>
-Subject: Re: [PATCH v6 3/5] drm: Add support to get EDID from ACPI
-Message-ID: <Zc1JEg5mC0ww_BeU@intel.com>
-References: <20240214215756.6530-1-mario.limonciello@amd.com>
- <20240214215756.6530-4-mario.limonciello@amd.com>
+	s=arc-20240116; t=1707952453; c=relaxed/simple;
+	bh=9+M44JGWsDWJYIbg9x3Eie/quc/6CSKv3btaL1mRVk8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=mK9++Vr8qwFZuwCS1NtY2iEMV1qgaaSOV9Gip6Q5bHe3156UPnbr0XzQKCQWluywXjMwPbsyXfL8qRzezyIG5osgbK+GAdL6EDHI5bjMFCvGM+cfhYG2iSP6U5a4DvQJPbQx8hB/EYl/5FjKu6ROv4UgyTCuelMD3OYPH1kQb9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=nYISlLWx; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=Cc:To:In-Reply-To:References:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+	In-Reply-To:References; bh=49iqTWfS/7oGaeehgWp7vgxQU4YHET0VID5+MapWGoc=; b=nY
+	ISlLWxsAC6LYs872WEaIwPQGL6ohm+NGpCk3V02m6hb0+iElzuP54/oahiBRVEUL7KKFXZuFtrc2M
+	D8kJcxZzzgKydkEWgg79f2HdeA4AKHCNCGypqZe+IKjmZCOh6RqhKgAlsU50/sSMdL0dHazSyM4Sn
+	PFgbk8YgbySfDD4=;
+Received: from c-76-156-77-114.hsd1.mn.comcast.net ([76.156.77.114] helo=thinkpad.home.lunn.ch)
+	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raOSD-007pqx-KV; Thu, 15 Feb 2024 00:14:13 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+Date: Wed, 14 Feb 2024 17:13:22 -0600
+Subject: [PATCH net-next v2 5/8] net: intel: i40e/igc: Remove setting
+ Autoneg in EEE capabilities
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240214215756.6530-4-mario.limonciello@amd.com>
-X-Patchwork-Hint: comment
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240214-keee-u32-cleanup-v2-5-4ac534b83d66@lunn.ch>
+References: <20240214-keee-u32-cleanup-v2-0-4ac534b83d66@lunn.ch>
+In-Reply-To: <20240214-keee-u32-cleanup-v2-0-4ac534b83d66@lunn.ch>
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Ariel Elior <aelior@marvell.com>, 
+ Manish Chopra <manishc@marvell.com>, 
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+ Andrew Lunn <andrew@lunn.ch>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2657; i=andrew@lunn.ch;
+ h=from:subject:message-id; bh=9+M44JGWsDWJYIbg9x3Eie/quc/6CSKv3btaL1mRVk8=;
+ b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBlzUkk+rR68hA2G2PyV777v/AUcs9UNwvnxswYZ
+ A2Rl6AaeMqJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZc1JJAAKCRDmvw3LpmlM
+ hKLQD/9T1pxSQXqLaiLLzt97eAe5eh4P4BlIJxZg5HlocwxaIeSSoaLGERNr/OWaT4TIKyGRSh/
+ lZirct/22D1jAULjbl9oYWmQB9d8OOy9gXWKqp/80sCszIHwXJI0X6918X1bNsl2A390Wil7wSa
+ 2Ooi2TvFjVLveS7RDsggmbplfNeKdLQp7VmCWB38g9F4PmF2dh2EjSYX4d925lVwUt3kvXvI53G
+ WlCNpJsZpt3VELBsJacfYDoYaFXhOAvXUwl/XnFVw9effCslhGDxGhKYKWZP88rBRDTN/P7iDyy
+ dqQCRdgKqSbSDErdgHgrL87BCuf7zi7y4l0zb3g3L6Qk08AwkOh3Ct0cvm8DBFdisvtfFj09z37
+ Peh4XLIPMRS9PbHiJUaus/LEim9eNkNZevLOEYG6RsRp0IoRrodKhGdFkNXh1RfC3oJJJPtxLXn
+ rSz1K4nqFO9X2g9Yq7XZ/kEKTaajs7Ec3GQ/8Iaea/5V67HwgD2LA+bBCZfMhxOLJXiomLSrPJK
+ qfqXSwBLPmKiU0iKISe9X5QNeHE9bi0u8LhwP7vHzR09cW7z/f+jH8pL0MeLxLRv3bdcmP6mzOp
+ 1UfSIvRKDjhnDyDCo+K4F925AKdrHB7XI0w57CqJZIGR1n8aGJp4OjbBgnlQ1Op0SQolefAhA1l
+ TWVacQfReSV1M4A==
+X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
+ fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
 
-On Wed, Feb 14, 2024 at 03:57:54PM -0600, Mario Limonciello wrote:
-> Some manufacturers have intentionally put an EDID that differs from
-> the EDID on the internal panel on laptops.  Drivers that prefer to
-> fetch this EDID can set a bit on the drm_connector to indicate that
-> the DRM EDID helpers should try to fetch it and it is preferred if
-> it's present.
-> 
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  drivers/gpu/drm/Kconfig     |   1 +
->  drivers/gpu/drm/drm_edid.c  | 109 +++++++++++++++++++++++++++++++++---
->  include/drm/drm_connector.h |   6 ++
->  include/drm/drm_edid.h      |   1 +
->  4 files changed, 109 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index 872edb47bb53..3db89e6af01d 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -8,6 +8,7 @@
->  menuconfig DRM
->  	tristate "Direct Rendering Manager (XFree86 4.1.0 and higher DRI support)"
->  	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && HAS_DMA
-> +	depends on (ACPI_VIDEO || ACPI_VIDEO=n)
->  	select DRM_PANEL_ORIENTATION_QUIRKS
->  	select DRM_KMS_HELPER if DRM_FBDEV_EMULATION
->  	select FB_CORE if DRM_FBDEV_EMULATION
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 923c4423151c..cdc30c6d05d5 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -28,6 +28,7 @@
->   * DEALINGS IN THE SOFTWARE.
->   */
->  
-> +#include <acpi/video.h>
->  #include <linux/bitfield.h>
->  #include <linux/cec.h>
->  #include <linux/hdmi.h>
-> @@ -2188,6 +2189,58 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
->  	return ret == xfers ? 0 : -1;
->  }
->  
-> +/**
-> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
-> + * @data: struct drm_connector
-> + * @buf: EDID data buffer to be filled
-> + * @block: 128 byte EDID block to start fetching from
-> + * @len: EDID data buffer length to fetch
-> + *
-> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
-> + *
-> + * Return: 0 on success or error code on failure.
-> + */
-> +static int
-> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> +{
-> +	struct drm_connector *connector = data;
-> +	struct drm_device *ddev = connector->dev;
-> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-> +	unsigned char start = block * EDID_LENGTH;
-> +	void *edid;
-> +	int r;
-> +
-> +	if (!acpidev)
-> +		return -ENODEV;
-> +
-> +	switch (connector->connector_type) {
-> +	case DRM_MODE_CONNECTOR_LVDS:
-> +	case DRM_MODE_CONNECTOR_eDP:
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
+Energy Efficient Ethernet should always be negotiated with the link
+peer. Don't include SUPPORTED_Autoneg in the results of get_eee() for
+supported, advertised or lp_advertised, since it is
+assumed. Additionally, ethtool(1) ignores the set bit, and no other
+driver sets this.
 
-We could have other types of connectors that want this too.
-I don't see any real benefit in having this check tbh. Drivers
-should simply notset the flag on connectors where it won't work,
-and only the driver can really know that.
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+---
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 7 +------
+ drivers/net/ethernet/intel/igc/igc_ethtool.c   | 4 ----
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-> +	/* fetch the entire edid from BIOS */
-> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-> +	if (r < 0) {
-> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
-> +		return r;
-> +	}
-> +	if (len > r || start > r || start + len > r) {
-> +		r = -EINVAL;
-> +		goto cleanup;
-> +	}
-> +
-> +	memcpy(buf, edid + start, len);
-> +	r = 0;
-> +
-> +cleanup:
-> +	kfree(edid);
-> +
-> +	return r;
-> +}
-> +
->  static void connector_bad_edid(struct drm_connector *connector,
->  			       const struct edid *edid, int num_blocks)
->  {
-> @@ -2621,7 +2674,8 @@ EXPORT_SYMBOL(drm_probe_ddc);
->   * @connector: connector we're probing
->   * @adapter: I2C adapter to use for DDC
->   *
-> - * Poke the given I2C channel to grab EDID data if possible.  If found,
-> + * If the connector allows it, try to fetch EDID data using ACPI. If not found
-> + * poke the given I2C channel to grab EDID data if possible.  If found,
->   * attach it to the connector.
->   *
->   * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> @@ -2629,20 +2683,50 @@ EXPORT_SYMBOL(drm_probe_ddc);
->  struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter)
->  {
-> -	struct edid *edid;
-> +	struct edid *edid = NULL;
->  
->  	if (connector->force == DRM_FORCE_OFF)
->  		return NULL;
->  
-> -	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> -		return NULL;
-> +	if (connector->acpi_edid_allowed)
-> +		edid = _drm_do_get_edid(connector, drm_do_probe_acpi_edid, connector, NULL);
-> +
-> +	if (!edid) {
-> +		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> +			return NULL;
-> +		edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
-> +	}
->  
-> -	edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
->  	drm_connector_update_edid_property(connector, edid);
->  	return edid;
->  }
->  EXPORT_SYMBOL(drm_get_edid);
->  
-> +/**
-> + * drm_edid_read_acpi - get EDID data, if available
-> + * @connector: connector we're probing
-> + *
-> + * Use the BIOS to attempt to grab EDID data if possible.
-> + *
-> + * The returned pointer must be freed using drm_edid_free().
-> + *
-> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> + */
-> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector)
-> +{
-> +	const struct drm_edid *drm_edid;
-> +
-> +	if (connector->force == DRM_FORCE_OFF)
-> +		return NULL;
-> +
-> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector);
-> +
-> +	/* Note: Do *not* call connector updates here. */
-> +
-> +	return drm_edid;
-> +}
-> +EXPORT_SYMBOL(drm_edid_read_acpi);
-> +
->  /**
->   * drm_edid_read_custom - Read EDID data using given EDID block read function
->   * @connector: Connector to use
-> @@ -2727,10 +2811,11 @@ const struct drm_edid *drm_edid_read_ddc(struct drm_connector *connector,
->  EXPORT_SYMBOL(drm_edid_read_ddc);
->  
->  /**
-> - * drm_edid_read - Read EDID data using connector's I2C adapter
-> + * drm_edid_read - Read EDID data using BIOS or connector's I2C adapter
->   * @connector: Connector to use
->   *
-> - * Read EDID using the connector's I2C adapter.
-> + * Read EDID from BIOS if allowed by connector or by using the connector's
-> + * I2C adapter.
->   *
->   * The EDID may be overridden using debugfs override_edid or firmware EDID
->   * (drm_edid_load_firmware() and drm.edid_firmware parameter), in this priority
-> @@ -2742,10 +2827,18 @@ EXPORT_SYMBOL(drm_edid_read_ddc);
->   */
->  const struct drm_edid *drm_edid_read(struct drm_connector *connector)
->  {
-> +	const struct drm_edid *drm_edid = NULL;
-> +
->  	if (drm_WARN_ON(connector->dev, !connector->ddc))
->  		return NULL;
->  
-> -	return drm_edid_read_ddc(connector, connector->ddc);
-> +	if (connector->acpi_edid_allowed)
-
-That should probably be called 'prefer_acpi_edid' or something
-since it's the first choice when the flag is set.
-
-But I'm not so sure there's any real benefit in having this
-flag at all. You anyway have to modify the driver to use this,
-so why not just have the driver do the call directly instead of
-adding this extra detour via the flag?
-
-> +		drm_edid = drm_edid_read_acpi(connector);
-> +
-> +	if (!drm_edid)
-> +		drm_edid = drm_edid_read_ddc(connector, connector->ddc);
-> +
-> +	return drm_edid;
->  }
->  EXPORT_SYMBOL(drm_edid_read);
->  
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index fe88d7fc6b8f..74ed47f37a69 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1886,6 +1886,12 @@ struct drm_connector {
->  
->  	/** @hdr_sink_metadata: HDR Metadata Information read from sink */
->  	struct hdr_sink_metadata hdr_sink_metadata;
-> +
-> +	/**
-> +	 * @acpi_edid_allowed: Get the EDID from the BIOS, if available.
-> +	 * This is only applicable to eDP and LVDS displays.
-> +	 */
-> +	bool acpi_edid_allowed;
-
-Aren't there other bools/small stuff in there for tighter packing?
-
->  };
->  
->  #define obj_to_connector(x) container_of(x, struct drm_connector, base)
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index 7923bc00dc7a..1c1ee927de9c 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -459,5 +459,6 @@ bool drm_edid_is_digital(const struct drm_edid *drm_edid);
->  
->  const u8 *drm_find_edid_extension(const struct drm_edid *drm_edid,
->  				  int ext_id, int *ext_index);
-> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector);
->  
->  #endif /* __DRM_EDID_H__ */
-> -- 
-> 2.34.1
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 1b5473358e1a..42e7e6cdaa6d 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -5664,16 +5664,12 @@ static int i40e_get_eee(struct net_device *netdev, struct ethtool_keee *edata)
+ 	if (phy_cfg.eee_capability == 0)
+ 		return -EOPNOTSUPP;
+ 
+-	edata->supported_u32 = SUPPORTED_Autoneg;
+-	edata->lp_advertised_u32 = edata->supported_u32;
+-
+ 	/* Get current configuration */
+ 	status = i40e_aq_get_phy_capabilities(hw, false, false, &phy_cfg, NULL);
+ 	if (status)
+ 		return -EAGAIN;
+ 
+-	edata->advertised_u32 = phy_cfg.eee_capability ? SUPPORTED_Autoneg : 0U;
+-	edata->eee_enabled = !!edata->advertised_u32;
++	edata->eee_enabled = !!phy_cfg.eee_capability;
+ 	edata->tx_lpi_enabled = pf->stats.tx_lpi_status;
+ 
+ 	edata->eee_active = pf->stats.tx_lpi_status && pf->stats.rx_lpi_status;
+@@ -5691,7 +5687,6 @@ static int i40e_is_eee_param_supported(struct net_device *netdev,
+ 		u32 value;
+ 		const char *name;
+ 	} param[] = {
+-		{edata->advertised_u32 & ~SUPPORTED_Autoneg, "advertise"},
+ 		{edata->tx_lpi_timer, "tx-timer"},
+ 		{edata->tx_lpi_enabled != pf->stats.tx_lpi_status, "tx-lpi"}
+ 	};
+diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+index 47c797dd2cd9..ac92d10a3e97 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
++++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+@@ -1634,7 +1634,6 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
+ 			mmd_eee_adv_to_ethtool_adv_t(adapter->eee_advert);
+ 
+ 	*edata = adapter->eee;
+-	edata->supported_u32 = SUPPORTED_Autoneg;
+ 
+ 	eeer = rd32(IGC_EEER);
+ 
+@@ -1647,9 +1646,6 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
+ 
+ 	edata->eee_enabled = hw->dev_spec._base.eee_enable;
+ 
+-	edata->advertised_u32 = SUPPORTED_Autoneg;
+-	edata->lp_advertised_u32 = SUPPORTED_Autoneg;
+-
+ 	/* Report correct negotiated EEE status for devices that
+ 	 * wrongly report EEE at half-duplex
+ 	 */
 
 -- 
-Ville Syrjälä
-Intel
+2.43.0
+
 
