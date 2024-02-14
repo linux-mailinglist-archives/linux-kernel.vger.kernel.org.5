@@ -1,118 +1,189 @@
-Return-Path: <linux-kernel+bounces-65581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B62F854EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:45:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74300854F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47A791C290F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DF7FB2A425
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C356088E;
-	Wed, 14 Feb 2024 16:45:19 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07A860867;
+	Wed, 14 Feb 2024 16:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PgkUDikR"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79562605DF;
-	Wed, 14 Feb 2024 16:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE3B604A7;
+	Wed, 14 Feb 2024 16:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707929118; cv=none; b=F8Cebg936ch+f55ea4y4rrqxlODxnz7iQpP1lecy04uE5tgaN+XcNHEFSU19DWifBDGAS+frkEnrU/xx08rjgVUgcjrijVM6zYTcY9qfl/Xde/AQQ+XXQEf+KyZMcGmSRmYvvYq0eNLYD4bVU6QOmoQoMaUxzwEuNhNDWpCmr4M=
+	t=1707929197; cv=none; b=VHpopRm+Zk8Ce/Mr+nKyT9Fmg+1xQWVKW5jnPmKYkCEHlZeepR8iqQE/NPzZp+5ktKOyEc2VcQ2Q635iM9QzVJTXUkU557KAGJi3zAyO4DM2ZEMnJWfKfFlKmgGDDPo5sh+Z5kx98e9gEi7HypX/c+3gW00djcb4AEH+ZptbFfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707929118; c=relaxed/simple;
-	bh=loxfsSL7zxInO0eCeagCCwayO51o50MXlBy3g5U0WeM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UxJDYB8YQjAFkRKQFNgqaX9e50GftbxnVmrYcaaEiGaIa4iWl8xkPgCppCic7NFKnxiFivubcg3BK4/JqwMl/+WDYX0WZD7iV5Ewaf3aCvLeXc3S/6AtQbGYKE4IztZZuMIqJFDBXHBftysGocgJnlwiJ+tEtIJknLfbTdJo4zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.73.178) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 14 Feb
- 2024 19:44:58 +0300
-Subject: Re: [PATCH net v3] net: ravb: Count packets instead of descriptors in
- GbEth RX path
-To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
-	<wsa+renesas@sang-engineering.com>, Nikita Yushchenko
-	<nikita.yoush@cogentembedded.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
-	<u.kleine-koenig@pengutronix.de>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>, Lad Prabhakar
-	<prabhakar.mahadev-lad.rj@bp.renesas.com>, Biju Das
-	<biju.das.jz@bp.renesas.com>, <netdev@vger.kernel.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240214151204.2976-1-paul.barker.ct@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <041656ca-6029-ade3-97b5-659f73be216d@omp.ru>
-Date: Wed, 14 Feb 2024 19:44:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1707929197; c=relaxed/simple;
+	bh=yn5SllOUHmTKd7QRKLP+uTGbxLc0Lgu7inDoJtTRlXQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZZIHpBU1p3mbOuljrYCaaVGmEScGEseRUysW62ku4T1AFnAA/0w+RGrGB0NiKwWiYQ/tWO7dX9y4DW8siHvbf7pmXObf/FbEUPq4cJlngEYJ0+GOxG5NEeLRcbLmTlfzRXnUWWQ/zbr7NiF6Guu5l7y+jFoV8I89uKqhE1rAMkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PgkUDikR; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EGHqX8020289;
+	Wed, 14 Feb 2024 16:46:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CnFd8ajdxH/cc7VfH42WSgZbWCF+UOq3S7aRofknueM=;
+ b=PgkUDikRjBI7x1XiMVyE0fJUYWDpQqAWw6+G4Pyiqbl2T2I1RZ86XjhckO6udra17/M/
+ xO6IN7AaFdVFfYDaD3qsrszVlpVR/aziLc5CaLvEERwTPALyRVkd9nVcorjDUXbt8hic
+ 7mpJuJLmIXxNZfDufey4LX1BFiPGUpQ85e4c+oQUr257ca3vtBjXxjNZ7bzDOPneA7Vc
+ GJS8TwZ/4AxlNh+LWmx2BgZSXyiv9+HVpQ0Q+MY8moz6+xX7KENbXsR252mx9jP33rh8
+ BqACwl6rJ1QuUcogFxmLXF7onc+wibvex1Zq1CvzKCWTn7P+iNymsZbuB2qFLibyMzsa eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w90wp0t8d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 16:46:05 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41EGJgtK025776;
+	Wed, 14 Feb 2024 16:46:04 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w90wp0t7p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 16:46:04 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41EFVq07032572;
+	Wed, 14 Feb 2024 16:46:03 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kftq9yq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 16:46:03 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41EGk0Oh5047142
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Feb 2024 16:46:02 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 568CF58068;
+	Wed, 14 Feb 2024 16:46:00 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8692558059;
+	Wed, 14 Feb 2024 16:45:52 +0000 (GMT)
+Received: from [9.171.46.73] (unknown [9.171.46.73])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 14 Feb 2024 16:45:52 +0000 (GMT)
+Message-ID: <1b4d5860-8044-4a1f-a801-1c69327076c1@linux.ibm.com>
+Date: Wed, 14 Feb 2024 22:15:50 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240214151204.2976-1-paul.barker.ct@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 14/15] nvme: Support atomic writes
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/14/2024 16:30:26
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183446 [Feb 14 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.178 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.178 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;omp.ru:7.1.1;178.176.73.178:7.4.1,7.1.2,7.7.3;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.178
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/14/2024 16:35:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/14/2024 2:42:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+To: John Garry <john.g.garry@oracle.com>
+Cc: alan.adamson@oracle.com, axboe@kernel.dk, brauner@kernel.org,
+        bvanassche@acm.org, dchinner@redhat.com, djwong@kernel.org, hch@lst.de,
+        jack@suse.cz, jbongio@google.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org, martin.petersen@oracle.com,
+        ming.lei@redhat.com, ojaswin@linux.ibm.com, sagi@grimberg.me,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+References: <20240124113841.31824-15-john.g.garry@oracle.com>
+ <20240214122719.184946-1-nilay@linux.ibm.com>
+ <8332ea29-ac17-4b1a-8ed9-e566d03fd220@oracle.com>
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <8332ea29-ac17-4b1a-8ed9-e566d03fd220@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xU5wfFpy2PP06fiDP3H7bm7SCO6PKL-V
+X-Proofpoint-ORIG-GUID: BUhw35l4XwdwCK0voJZlxVR65GvJzXIC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_09,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402140130
 
-On 2/14/24 6:12 PM, Paul Barker wrote:
 
-> The units of "work done" in the RX path should be packets instead of
-> descriptors, as large packets can be spread over multiple descriptors.
+
+On 2/14/24 18:32, John Garry wrote:
+> On 14/02/2024 12:27, Nilay Shroff wrote:
+>>
+>>
+>>
+>>> Use following method to calculate limits:
+>>
+>>> atomic_write_max_bytes = flp2(NAWUPF ?: AWUPF)
+>>
 > 
-> Fixes: 1c59eb678cbd ("ravb: Fillup ravb_rx_gbeth() stub")
-> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+> You still need to fix that mail client to not add extra blank lines.
+Yes, I am working on it. I hope it's solved now. 
+> 
+>>> atomic_write_unit_min = logical_block_size
+>>
+>>> atomic_write_unit_max = flp2(NAWUPF ?: AWUPF)
+>>
+>>> atomic_write_boundary = NABSPF
+>>
+>>
+>>
+>> In case the device doesn't support namespace atomic boundary size (i.e. NABSPF
+>>
+>> is zero) then while merging atomic block-IO we should allow merge.
+>>
+>>  
+>> For example, while front/back merging the atomic block IO, we check whether
+>>
+>> boundary is defined or not. In case if boundary is not-defined (i.e. it's zero)
+>>
+>> then we simply reject merging ateempt (as implemented in
+>>
+>> rq_straddles_atomic_write_boundary()).
+> 
+> Are you sure about that? In rq_straddles_atomic_write_boundary(), if boundary == 0, then we return false, i.e. there is no boundary, so we can never be crossing it.
+> 
+> static bool rq_straddles_atomic_write_boundary(struct request *rq,
+> unsigned int front,
+> unsigned int back)
+> {
+>     unsigned int boundary = queue_atomic_write_boundary_bytes(rq->q);
+>     unsigned int mask, imask;
+>     loff_t start, end;
+> 
+>     if (!boundary)
+>         return false;
+> 
+>     ...
+> }
+> 
+> And then will not reject a merge for that reason, like:
+> 
+> int ll_back_merge_fn(struct request *req, struct bio *bio, unsigned int nr_segs)
+> {
+>     ...
+> 
+>     if (req->cmd_flags & REQ_ATOMIC) {
+>         if (rq_straddles_atomic_write_boundary(req,
+>             0, bio->bi_iter.bi_size)) {
+>             return 0;
+>         }
+>     }
+> 
+>     return ll_new_hw_segment(req, bio, nr_segs);
+> }
+> 
+> 
+Aargh, you are right. I see that if rq_straddles_atomic_write_boundary() returns true then we avoid merge otherwise the merge is attempted. My bad...
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-[...]
-
-MBR, Sergey
+Thanks,
+--Nilay
 
