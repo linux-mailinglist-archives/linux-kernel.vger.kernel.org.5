@@ -1,55 +1,52 @@
-Return-Path: <linux-kernel+bounces-65544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F95854E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:33:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 717D8854E28
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D0B21C281BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:32:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 973541C2166E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0456C6A334;
-	Wed, 14 Feb 2024 16:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8A86086A;
+	Wed, 14 Feb 2024 16:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eV/b3sjW"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kH7nsdlG"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF6360EE5;
-	Wed, 14 Feb 2024 16:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D585FF0B;
+	Wed, 14 Feb 2024 16:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928084; cv=none; b=bDWcP2a4lwkGD/bjD/wPi+p6CQcHNjGH8YawcXFnaVaEyCMln1qxV5ahYbe06+HEGqSSKbbbBwwZubNDWrvL5hZ53m+U9x1lqbgj0CV4wCgJBIgRCXWt21PjT5UVvQHWaYIIaqvhDw0jHBteV7IjJL5Pv68gA25tdELoZLbICxw=
+	t=1707927896; cv=none; b=NSR+pbIgBuvKmnSYK+Z5c7A42tay41v8fT+LFpMxMljvzKO+MD6tToa6rRa0p4+f4G8TDIBnkURCkHooxC0scaP6FEqtjXBstt0ZHvwVwklT0ZTc8sXJSUh2mUMYuqiM8Yt+BzVyjbjAEu4kyxKQNsuLAXVyLasPQFQ+n13zptI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928084; c=relaxed/simple;
-	bh=A3T5SM//1/4ymVFZvPaOVT1OvRFtKQIqEqwd57cE7Uk=;
+	s=arc-20240116; t=1707927896; c=relaxed/simple;
+	bh=liIAu+HdBd+K5fea1uFUEyksEHrgCU91l/MPuFwanfE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Nxsh2/7BIu/kqo8aSMeoTjBk6Fx2oAjHpYs8r5se073rrCkCK5/gmWPjHGAwJwkH351tXps9NNcKVb7RHuZ3YvnPNC/tgcx/iETTaQu/P16bF5nPCeFFml2Pt+w1tQSebi3bgUYE8UYxll7L3Vikz6kWR/xJjtk+6b9MBOSnyBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eV/b3sjW; arc=none smtp.client-ip=217.70.178.240
+	 In-Reply-To:To:Cc; b=nm1TxlPTlV4R6vpNloe8f1qzu0D2MESAvkgwAs2nzNlag3v4w0Wd7PmrQdo6fRGRTzhaIsvrQNAeIDc5NPWqu5/iXwZbvJX9sfw+PsR57ariP1ES1bB0CxS5qJkC/lTAqPiEGSZWfUeOXbctqHEUPAWezhwGT6r6BD0gtXaY0As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kH7nsdlG; arc=none smtp.client-ip=217.70.183.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay3-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::223])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id E0821C358D;
-	Wed, 14 Feb 2024 16:24:58 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9BCFE60013;
-	Wed, 14 Feb 2024 16:24:50 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DAB160016;
+	Wed, 14 Feb 2024 16:24:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707927891;
+	t=1707927892;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EjxjuGOrCVIWRm1Z72QvMwQu7C7GEtJPDQOWRkQbA+0=;
-	b=eV/b3sjWul3zBV0V30Z9HDyaLBhDuIoqZI9ZOhBPbcqRMoruz4FikgLu1i0RqcD3XoUhd/
-	ZJkwyp600skRK0IFKs8S08A2lqBGRjGbcVum1wG6LALw218tPJrHS/6HMgsH0OnrIkbrNT
-	AxRvt186PtyZyPT/93zHywVdMTUNVAUwhJqqlSjR52ick0Bb7ySOhUjCUgcbvT0jkLpL7T
-	4VUGGZaQ6dP43jJwEBHAQq5LMWn7BfbngnFZi1+m2EAwHNZ71glWXvwrCxCWoFjgcn880k
-	KTdp5O/n3pefPFEgr8W42wX1j1Wn6xEXMXwffzWKsKtmotN978x/828pa1Srvg==
+	bh=gNwsUDGVccEaSEL1sdyKeqNgvGE7K6phcBXwuAXfoTc=;
+	b=kH7nsdlGsizYX5Ap75XjtyQdaIEJcSnEQz53Xj/rPSpD2g0O3d1Fi4Qz+JDwqSaZ9DoJMS
+	9+WarZmhOSe9DDUJVuA3Pil2LybE4ddEuEpy59DIF36EkAV5qQCNuEvVZjHc2YU3S7/P7+
+	NJBkrCJ1EyicgOdm9lDuuTfWIrmN7rttUkWppTnb+5IbLe7b9XVesMxSs5o4HYzgILCZQu
+	edbVKrwJPAvUdtW+HtXdNhgzxlCuWgoiIoVGjoSHw8RhdQFFO+QREfynoWx8iskhc20bVD
+	GeSKV30sK67PkI8BdTrUxvBBB74TP/Txap3BgkFkYNJMfGdzvRX4pYQ7z/oWKA==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 14 Feb 2024 17:24:02 +0100
-Subject: [PATCH 09/23] pinctrl: nomadik: follow type-system kernel coding
+Date: Wed, 14 Feb 2024 17:24:03 +0100
+Subject: [PATCH 10/23] pinctrl: nomadik: follow whitespace kernel coding
  conventions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240214-mbly-gpio-v1-9-f88c0ccf372b@bootlin.com>
+Message-Id: <20240214-mbly-gpio-v1-10-f88c0ccf372b@bootlin.com>
 References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
 In-Reply-To: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -77,298 +74,250 @@ Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Fix strict checkpatch warnings relative to types. Warning types
+Fix strict checkpatch warnings relative to whitespace. Message types
 addressed:
 
-   WARNING: do not add new typedefs
-   WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-   WARNING: static const char * array should probably be static const
-            char * const
+   ERROR: space required before the open parenthesis '('
+   WARNING: quoted string split across lines
+   CHECK: Alignment should match open parenthesis
+   CHECK: Please don't use multiple blank lines
+   CHECK: line length of 103 exceeds 100 columns
+   CHECK: spaces preferred around that '+' (ctx:VxV)
 
-Total messages before: 1 errors, 40 warnings, 39 checks.
-Total messages after:  1 errors,  2 warnings, 38 checks.
+Before: 1 errors, 2 warnings, 38 checks.
+After:  0 errors, 1 warnings, 16 checks.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/pinctrl/nomadik/pinctrl-nomadik.c | 78 +++++++++++++++----------------
- 1 file changed, 38 insertions(+), 40 deletions(-)
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c | 65 +++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-index c1cb3a363692..94338a3c8d4f 100644
+index 94338a3c8d4f..83e7868bc1d7 100644
 --- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
 +++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-@@ -71,8 +71,6 @@
-  * PIN_CFG	   - default config with alternate function
-  */
+@@ -165,7 +165,6 @@
+ #define PIN_SLEEPMODE_DISABLED	(0 << PIN_SLEEPMODE_SHIFT)
+ #define PIN_SLEEPMODE_ENABLED	(1 << PIN_SLEEPMODE_SHIFT)
  
--typedef unsigned long pin_cfg_t;
 -
- #define PIN_NUM_MASK		0x1ff
- #define PIN_NUM(x)		((x) & PIN_NUM_MASK)
- 
-@@ -215,7 +213,7 @@ struct nmk_gpio_chip *nmk_gpio_chips[NMK_MAX_BANKS];
- DEFINE_SPINLOCK(nmk_gpio_slpm_lock);
- 
- static void __nmk_gpio_set_mode(struct nmk_gpio_chip *nmk_chip,
--				unsigned offset, int gpio_mode)
-+				unsigned int offset, int gpio_mode)
- {
- 	u32 afunc, bfunc;
- 
-@@ -230,7 +228,7 @@ static void __nmk_gpio_set_mode(struct nmk_gpio_chip *nmk_chip,
- }
- 
- static void __nmk_gpio_set_pull(struct nmk_gpio_chip *nmk_chip,
--				unsigned offset, enum nmk_gpio_pull pull)
-+				unsigned int offset, enum nmk_gpio_pull pull)
- {
- 	u32 pdis;
- 
-@@ -254,7 +252,7 @@ static void __nmk_gpio_set_pull(struct nmk_gpio_chip *nmk_chip,
- }
- 
- static void __nmk_gpio_set_lowemi(struct nmk_gpio_chip *nmk_chip,
--				  unsigned offset, bool lowemi)
-+				  unsigned int offset, bool lowemi)
- {
- 	bool enabled = nmk_chip->lowemi & BIT(offset);
- 
-@@ -271,13 +269,13 @@ static void __nmk_gpio_set_lowemi(struct nmk_gpio_chip *nmk_chip,
- }
- 
- static void __nmk_gpio_make_input(struct nmk_gpio_chip *nmk_chip,
--				  unsigned offset)
-+				  unsigned int offset)
- {
- 	writel(BIT(offset), nmk_chip->addr + NMK_GPIO_DIRC);
- }
- 
- static void __nmk_gpio_set_mode_safe(struct nmk_gpio_chip *nmk_chip,
--				     unsigned offset, int gpio_mode,
-+				     unsigned int offset, int gpio_mode,
- 				     bool glitch)
- {
- 	u32 rwimsc = nmk_chip->rwimsc;
-@@ -304,7 +302,7 @@ static void __nmk_gpio_set_mode_safe(struct nmk_gpio_chip *nmk_chip,
- }
- 
- static void
--nmk_gpio_disable_lazy_irq(struct nmk_gpio_chip *nmk_chip, unsigned offset)
-+nmk_gpio_disable_lazy_irq(struct nmk_gpio_chip *nmk_chip, unsigned int offset)
- {
- 	u32 falling = nmk_chip->fimsc & BIT(offset);
- 	u32 rising = nmk_chip->rimsc & BIT(offset);
-@@ -343,7 +341,7 @@ static void nmk_write_masked(void __iomem *reg, u32 mask, u32 value)
+ /* Shortcuts.  Use these instead of separate DIR, PULL, and VAL.  */
+ #define PIN_INPUT_PULLDOWN	(PIN_DIR_INPUT | PIN_PULL_DOWN)
+ #define PIN_INPUT_PULLUP	(PIN_DIR_INPUT | PIN_PULL_UP)
+@@ -341,7 +340,7 @@ static void nmk_write_masked(void __iomem *reg, u32 mask, u32 value)
  }
  
  static void nmk_prcm_altcx_set_mode(struct nmk_pinctrl *npct,
--	unsigned offset, unsigned alt_num)
-+	unsigned int offset, unsigned int alt_num)
+-	unsigned int offset, unsigned int alt_num)
++				    unsigned int offset, unsigned int alt_num)
  {
  	int i;
  	u16 reg;
-@@ -515,15 +513,15 @@ static int nmk_get_groups_cnt(struct pinctrl_dev *pctldev)
+@@ -385,7 +384,7 @@ static void nmk_prcm_altcx_set_mode(struct nmk_pinctrl *npct,
+ 					nmk_write_masked(npct->prcm_base + reg, BIT(bit), 0);
+ 					dev_dbg(npct->dev,
+ 						"PRCM GPIOCR: pin %i: alternate-C%i has been disabled\n",
+-						offset, i+1);
++						offset, i + 1);
+ 				}
+ 			}
+ 		}
+@@ -395,8 +394,8 @@ static void nmk_prcm_altcx_set_mode(struct nmk_pinctrl *npct,
+ 	alt_index = alt_num - 1;
+ 	if (pin_desc->altcx[alt_index].used == false) {
+ 		dev_warn(npct->dev,
+-			"PRCM GPIOCR: pin %i: alternate-C%i does not exist\n",
+-			offset, alt_num);
++			 "PRCM GPIOCR: pin %i: alternate-C%i does not exist\n",
++			 offset, alt_num);
+ 		return;
+ 	}
+ 
+@@ -414,7 +413,7 @@ static void nmk_prcm_altcx_set_mode(struct nmk_pinctrl *npct,
+ 				nmk_write_masked(npct->prcm_base + reg, BIT(bit), 0);
+ 				dev_dbg(npct->dev,
+ 					"PRCM GPIOCR: pin %i: alternate-C%i has been disabled\n",
+-					offset, i+1);
++					offset, i + 1);
+ 			}
+ 		}
+ 	}
+@@ -422,7 +421,7 @@ static void nmk_prcm_altcx_set_mode(struct nmk_pinctrl *npct,
+ 	reg = gpiocr_regs[pin_desc->altcx[alt_index].reg_index];
+ 	bit = pin_desc->altcx[alt_index].control_bit;
+ 	dev_dbg(npct->dev, "PRCM GPIOCR: pin %i: alternate-C%i has been selected\n",
+-		offset, alt_index+1);
++		offset, alt_index + 1);
+ 	nmk_write_masked(npct->prcm_base + reg, BIT(bit), BIT(bit));
+ }
+ 
+@@ -499,7 +498,7 @@ int __maybe_unused nmk_prcm_gpiocr_get_mode(struct pinctrl_dev *pctldev, int gpi
+ 			reg = gpiocr_regs[pin_desc->altcx[i].reg_index];
+ 			bit = pin_desc->altcx[i].control_bit;
+ 			if (readl(npct->prcm_base + reg) & BIT(bit))
+-				return NMK_GPIO_ALT_C+i+1;
++				return NMK_GPIO_ALT_C + i + 1;
+ 		}
+ 	}
+ 	return NMK_GPIO_ALT_C;
+@@ -513,7 +512,7 @@ static int nmk_get_groups_cnt(struct pinctrl_dev *pctldev)
  }
  
  static const char *nmk_get_group_name(struct pinctrl_dev *pctldev,
--				       unsigned selector)
-+				       unsigned int selector)
+-				       unsigned int selector)
++				      unsigned int selector)
  {
  	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
  
- 	return npct->soc->groups[selector].grp.name;
- }
- 
--static int nmk_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
--			      const unsigned **pins,
-+static int nmk_get_group_pins(struct pinctrl_dev *pctldev, unsigned int selector,
-+			      const unsigned int **pins,
- 			      unsigned int *num_pins)
- {
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
-@@ -533,7 +531,7 @@ static int nmk_get_group_pins(struct pinctrl_dev *pctldev, unsigned selector,
- 	return 0;
- }
- 
--static struct nmk_gpio_chip *find_nmk_gpio_from_pin(unsigned pin)
-+static struct nmk_gpio_chip *find_nmk_gpio_from_pin(unsigned int pin)
- {
+@@ -536,12 +535,12 @@ static struct nmk_gpio_chip *find_nmk_gpio_from_pin(unsigned int pin)
  	int i;
  	struct nmk_gpio_chip *nmk_gpio;
-@@ -549,7 +547,7 @@ static struct nmk_gpio_chip *find_nmk_gpio_from_pin(unsigned pin)
+ 
+-	for(i = 0; i < NMK_MAX_BANKS; i++) {
++	for (i = 0; i < NMK_MAX_BANKS; i++) {
+ 		nmk_gpio = nmk_gpio_chips[i];
+ 		if (!nmk_gpio)
+ 			continue;
+ 		if (pin >= nmk_gpio->chip.base &&
+-			pin < nmk_gpio->chip.base + nmk_gpio->chip.ngpio)
++		    pin < nmk_gpio->chip.base + nmk_gpio->chip.ngpio)
+ 			return nmk_gpio;
+ 	}
  	return NULL;
- }
- 
--static struct gpio_chip *find_gc_from_pin(unsigned pin)
-+static struct gpio_chip *find_gc_from_pin(unsigned int pin)
- {
- 	struct nmk_gpio_chip *nmk_gpio = find_nmk_gpio_from_pin(pin);
- 
-@@ -559,7 +557,7 @@ static struct gpio_chip *find_gc_from_pin(unsigned pin)
+@@ -557,7 +556,7 @@ static struct gpio_chip *find_gc_from_pin(unsigned int pin)
  }
  
  static void nmk_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
--		   unsigned offset)
-+		   unsigned int offset)
+-		   unsigned int offset)
++			     unsigned int offset)
  {
  	struct gpio_chip *chip = find_gc_from_pin(offset);
  
-@@ -570,8 +568,8 @@ static void nmk_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
- 	nmk_gpio_dbg_show_one(s, pctldev, chip, offset - chip->base, offset);
+@@ -569,8 +568,8 @@ static void nmk_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
  }
  
--static int nmk_dt_add_map_mux(struct pinctrl_map **map, unsigned *reserved_maps,
--		unsigned *num_maps, const char *group,
-+static int nmk_dt_add_map_mux(struct pinctrl_map **map, unsigned int *reserved_maps,
-+		unsigned int *num_maps, const char *group,
- 		const char *function)
+ static int nmk_dt_add_map_mux(struct pinctrl_map **map, unsigned int *reserved_maps,
+-		unsigned int *num_maps, const char *group,
+-		const char *function)
++			      unsigned int *num_maps, const char *group,
++			      const char *function)
  {
  	if (*num_maps == *reserved_maps)
-@@ -586,9 +584,9 @@ static int nmk_dt_add_map_mux(struct pinctrl_map **map, unsigned *reserved_maps,
+ 		return -ENOSPC;
+@@ -584,9 +583,9 @@ static int nmk_dt_add_map_mux(struct pinctrl_map **map, unsigned int *reserved_m
  }
  
  static int nmk_dt_add_map_configs(struct pinctrl_map **map,
--		unsigned *reserved_maps,
--		unsigned *num_maps, const char *group,
--		unsigned long *configs, unsigned num_configs)
-+		unsigned int *reserved_maps,
-+		unsigned int *num_maps, const char *group,
-+		unsigned long *configs, unsigned int num_configs)
+-		unsigned int *reserved_maps,
+-		unsigned int *num_maps, const char *group,
+-		unsigned long *configs, unsigned int num_configs)
++				  unsigned int *reserved_maps,
++				  unsigned int *num_maps, const char *group,
++				  unsigned long *configs, unsigned int num_configs)
  {
  	unsigned long *dup_configs;
  
-@@ -727,8 +725,8 @@ static bool nmk_pinctrl_dt_get_config(struct device_node *np,
+@@ -702,15 +701,14 @@ static const char *nmk_find_pin_name(struct pinctrl_dev *pctldev, const char *pi
+ }
+ 
+ static bool nmk_pinctrl_dt_get_config(struct device_node *np,
+-		unsigned long *configs)
++				      unsigned long *configs)
+ {
+ 	bool has_config = 0;
+ 	unsigned long cfg = 0;
+ 	int i, val, ret;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(nmk_cfg_params); i++) {
+-		ret = of_property_read_u32(np,
+-				nmk_cfg_params[i].property, &val);
++		ret = of_property_read_u32(np, nmk_cfg_params[i].property, &val);
+ 		if (ret != -EINVAL) {
+ 			if (nmk_dt_pin_config(i, val, &cfg) == 0) {
+ 				*configs |= cfg;
+@@ -723,10 +721,10 @@ static bool nmk_pinctrl_dt_get_config(struct device_node *np,
+ }
+ 
  static int nmk_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
- 		struct device_node *np,
- 		struct pinctrl_map **map,
--		unsigned *reserved_maps,
--		unsigned *num_maps)
-+		unsigned int *reserved_maps,
-+		unsigned int *num_maps)
+-		struct device_node *np,
+-		struct pinctrl_map **map,
+-		unsigned int *reserved_maps,
+-		unsigned int *num_maps)
++					 struct device_node *np,
++					 struct pinctrl_map **map,
++					 unsigned int *reserved_maps,
++					 unsigned int *num_maps)
  {
  	int ret;
  	const char *function = NULL;
-@@ -795,9 +793,9 @@ static int nmk_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
+@@ -751,7 +749,7 @@ static int nmk_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
+ 
+ 		of_property_for_each_string(np, "groups", prop, group) {
+ 			ret = nmk_dt_add_map_mux(map, reserved_maps, num_maps,
+-					  group, function);
++						 group, function);
+ 			if (ret < 0)
+ 				goto exit;
+ 		}
+@@ -792,8 +790,9 @@ static int nmk_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
+ }
  
  static int nmk_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
- 				 struct device_node *np_config,
--				 struct pinctrl_map **map, unsigned *num_maps)
-+				 struct pinctrl_map **map, unsigned int *num_maps)
+-				 struct device_node *np_config,
+-				 struct pinctrl_map **map, unsigned int *num_maps)
++				      struct device_node *np_config,
++				      struct pinctrl_map **map,
++				      unsigned int *num_maps)
  {
--	unsigned reserved_maps;
-+	unsigned int reserved_maps;
+ 	unsigned int reserved_maps;
  	struct device_node *np;
- 	int ret;
+@@ -805,7 +804,7 @@ static int nmk_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
  
-@@ -835,7 +833,7 @@ static int nmk_pmx_get_funcs_cnt(struct pinctrl_dev *pctldev)
- }
+ 	for_each_child_of_node(np_config, np) {
+ 		ret = nmk_pinctrl_dt_subnode_to_map(pctldev, np, map,
+-				&reserved_maps, num_maps);
++						    &reserved_maps, num_maps);
+ 		if (ret < 0) {
+ 			pinctrl_utils_free_map(pctldev, *map, *num_maps);
+ 			of_node_put(np);
+@@ -920,7 +919,8 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned int function,
+ 				g->grp.pins[i], g->grp.name, i);
+ 			goto out_glitch;
+ 		}
+-		dev_dbg(npct->dev, "setting pin %d to altsetting %d\n", g->grp.pins[i], g->altsetting);
++		dev_dbg(npct->dev, "setting pin %d to altsetting %d\n",
++			g->grp.pins[i], g->altsetting);
  
- static const char *nmk_pmx_get_func_name(struct pinctrl_dev *pctldev,
--					 unsigned function)
-+					 unsigned int function)
- {
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
+ 		clk_enable(nmk_chip->clk);
+ 		bit = g->grp.pins[i] % NMK_GPIO_PER_CHIP;
+@@ -934,7 +934,7 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned int function,
+ 		nmk_gpio_disable_lazy_irq(nmk_chip, bit);
  
-@@ -843,7 +841,7 @@ static const char *nmk_pmx_get_func_name(struct pinctrl_dev *pctldev,
- }
+ 		__nmk_gpio_set_mode_safe(nmk_chip, bit,
+-			(g->altsetting & NMK_GPIO_ALT_C), glitch);
++					 (g->altsetting & NMK_GPIO_ALT_C), glitch);
+ 		clk_disable(nmk_chip->clk);
  
- static int nmk_pmx_get_func_groups(struct pinctrl_dev *pctldev,
--				   unsigned function,
-+				   unsigned int function,
- 				   const char * const **groups,
- 				   unsigned * const num_groups)
- {
-@@ -855,8 +853,8 @@ static int nmk_pmx_get_func_groups(struct pinctrl_dev *pctldev,
- 	return 0;
- }
- 
--static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned function,
--		       unsigned group)
-+static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned int function,
-+		       unsigned int group)
- {
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
- 	const struct nmk_pingroup *g;
-@@ -913,7 +911,7 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned function,
- 
- 	for (i = 0; i < g->grp.npins; i++) {
- 		struct nmk_gpio_chip *nmk_chip;
--		unsigned bit;
-+		unsigned int bit;
- 
- 		nmk_chip = find_nmk_gpio_from_pin(g->grp.pins[i]);
- 		if (!nmk_chip) {
-@@ -966,12 +964,12 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned function,
- 
- static int nmk_gpio_request_enable(struct pinctrl_dev *pctldev,
- 				   struct pinctrl_gpio_range *range,
--				   unsigned offset)
-+				   unsigned int offset)
- {
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
- 	struct nmk_gpio_chip *nmk_chip;
- 	struct gpio_chip *chip;
--	unsigned bit;
-+	unsigned int bit;
- 
- 	if (!range) {
- 		dev_err(npct->dev, "invalid range\n");
-@@ -997,7 +995,7 @@ static int nmk_gpio_request_enable(struct pinctrl_dev *pctldev,
- 
- static void nmk_gpio_disable_free(struct pinctrl_dev *pctldev,
- 				  struct pinctrl_gpio_range *range,
--				  unsigned offset)
-+				  unsigned int offset)
- {
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
- 
-@@ -1015,30 +1013,30 @@ static const struct pinmux_ops nmk_pinmux_ops = {
- 	.strict = true,
- };
- 
--static int nmk_pin_config_get(struct pinctrl_dev *pctldev, unsigned pin,
-+static int nmk_pin_config_get(struct pinctrl_dev *pctldev, unsigned int pin,
- 			      unsigned long *config)
- {
- 	/* Not implemented */
- 	return -EINVAL;
- }
- 
--static int nmk_pin_config_set(struct pinctrl_dev *pctldev, unsigned pin,
--			      unsigned long *configs, unsigned num_configs)
-+static int nmk_pin_config_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			      unsigned long *configs, unsigned int num_configs)
- {
--	static const char *pullnames[] = {
-+	static const char * const pullnames[] = {
- 		[NMK_GPIO_PULL_NONE]	= "none",
- 		[NMK_GPIO_PULL_UP]	= "up",
- 		[NMK_GPIO_PULL_DOWN]	= "down",
- 		[3] /* illegal */	= "??"
- 	};
--	static const char *slpmnames[] = {
-+	static const char * const slpmnames[] = {
- 		[NMK_GPIO_SLPM_INPUT]		= "input/wakeup",
- 		[NMK_GPIO_SLPM_NOCHANGE]	= "no-change/no-wakeup",
- 	};
- 	struct nmk_pinctrl *npct = pinctrl_dev_get_drvdata(pctldev);
- 	struct nmk_gpio_chip *nmk_chip;
--	unsigned bit;
--	pin_cfg_t cfg;
-+	unsigned int bit;
-+	unsigned long cfg;
- 	int pull, slpm, output, val, i;
- 	bool lowemi, gpiomode, sleep;
- 
-@@ -1055,7 +1053,7 @@ static int nmk_pin_config_set(struct pinctrl_dev *pctldev, unsigned pin,
- 		 * here we just ignore that part. It's being handled by the
- 		 * framework and pinmux callback respectively.
+ 		/*
+@@ -947,7 +947,7 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned int function,
  		 */
--		cfg = (pin_cfg_t) configs[i];
-+		cfg = configs[i];
- 		pull = PIN_PULL(cfg);
- 		slpm = PIN_SLPM(cfg);
- 		output = PIN_DIR(cfg);
+ 		if ((g->altsetting & NMK_GPIO_ALT_C) == NMK_GPIO_ALT_C)
+ 			nmk_prcm_altcx_set_mode(npct, g->grp.pins[i],
+-				g->altsetting >> NMK_GPIO_ALT_CX_SHIFT);
++						g->altsetting >> NMK_GPIO_ALT_CX_SHIFT);
+ 	}
+ 
+ 	/* When all pins are successfully reconfigured we get here */
+@@ -1219,8 +1219,7 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
+ 	if (!npct->prcm_base) {
+ 		if (version == PINCTRL_NMK_STN8815) {
+ 			dev_info(&pdev->dev,
+-				 "No PRCM base, "
+-				 "assuming no ALT-Cx control is available\n");
++				 "No PRCM base, assuming no ALT-Cx control is available\n");
+ 		} else {
+ 			dev_err(&pdev->dev, "missing PRCM base address\n");
+ 			return -EINVAL;
 
 -- 
 2.43.1
