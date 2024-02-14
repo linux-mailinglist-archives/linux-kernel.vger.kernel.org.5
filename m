@@ -1,116 +1,99 @@
-Return-Path: <linux-kernel+bounces-65055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDBB854734
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:35:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B20C85473D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81C47B2719D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:35:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E45E1F225A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5DA1643A;
-	Wed, 14 Feb 2024 10:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D96417C9E;
+	Wed, 14 Feb 2024 10:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b="P7uy1aO3"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yAdiU5Zg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100A810A3C
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA0E125BB;
+	Wed, 14 Feb 2024 10:37:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707906898; cv=none; b=lzrWbfQ9VDbTqQvZ6Fc5Liu6QjVFwur/SAuCB/0yp2z1HAYeOWTmWGZg8S8u7lTxF579Hjjt7BNLY8hDE+S7YapGAAUJ+CCIDKg1EY3zvTHi+11mCb1oovv28caotMLZZ/ZkQPRlY4f/1ZEqWPZO71MF8Lyr2KBdHARUmPmtp/8=
+	t=1707907047; cv=none; b=bTRo9GTU+RLjkYHba3euREYkI96DixXRqYP3STquxBq5FdKJ9ftgF1V32g5NhsZHvfnEj0Fmc9GSHc23D1tbd2MhiDzaw27RoZnLycAadVOPrrP+rQWTxn5MWs8y1iDCKzZovVgMErIJPrZYDRrKg8V3RlrdtQgYQi10nAcvNVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707906898; c=relaxed/simple;
-	bh=wbjPOlP8cdqurBcP+Z0XkFrHb9mtDoRebK8Q/r9vXPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g5yek6BjQjuzGMuAV3Ga9d8WeroN4uJM2AALkuyvg+mv7JXH3T4zPNA4Max2p8b45EEaplZ7z+CRJ5KsyU4cQ8zJN4dQW5tkdexZe9xkHKG15w/eb3IeyVLVCVab6qfswPA7hLYSRDSRLJrT/z7+hMYsMUDft3TcUu7ENKGZOgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie; spf=pass smtp.mailfrom=conchuod.ie; dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b=P7uy1aO3; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=conchuod.ie
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33ce55ab993so439669f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:34:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=conchuod.ie; s=google; t=1707906894; x=1708511694; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oXOXdlKbQ7b8gP1IjielEHY25ZzqNlF3NYnAzC4w8e0=;
-        b=P7uy1aO30lT++dDhT9U4L55OYAIlB9jV8ym0OfgLDDqE5E0fNTv70hT+lxfKxxJ3P1
-         Os+r0qtPLJt1pFXZSlTW+/pIfc+TO/GQeMxybprhZFkZ5eWiOwEFuBfUJssexRfUwIcs
-         kaFAcdEPsztNquhZ9L7gwLIhfAROZmMyQsl6bCGe1CPcP8YaWnvSTdPfHar28Bzuwn7M
-         B8M3gRVNefQT6NbO0lk9K4zQORJ6/uRJxjrx9TUg71qDiMEZyjkFbFkm++y0ZOGIhVd6
-         gr1StJMytzDGItyqAGpWF2AhcWEtt31vp3k7UZuVXCwnBCdiFfOYUpGBNBP07Fk6SEZ/
-         goyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707906894; x=1708511694;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oXOXdlKbQ7b8gP1IjielEHY25ZzqNlF3NYnAzC4w8e0=;
-        b=uIWKw9stSTDNGy4Mij6+TjYlo08jxP/gNB5b+nl1fMWzxJY5obIj7aaqXWLedq8FMs
-         AKD6KThfjFf2VSncZri+JsFOpLr8aUwTlUIz0qANFIorHYkzSvgEFOT5ySwdrMSdVFQ0
-         wO82/ELogdXNvY/j5g1QiEemiXcvs4BCsqif3/0yaMuOq6I3oemBKs3yp/tv75vhSUeS
-         tKUP42mgzlVBDA47kfyLhTFB1g0PHquQDaHL1s7rDrF3WNFaHvYLY8mcs7txCzNPzGv5
-         u+bDwwuYcccoFqEGpNDn4DGJ5i6g0B9E1mxz1Kaqq9slups6K/MJ4HRN2UMp2LwZC+zJ
-         n5Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnADqGdk9oHATSvnQyD1AciMNDgQiySznHEgmMZ3fmgnErxgY97D2xaTctVf5GojGuHTNQyQCKF0TFSMs7B8R6pMv6XEvE6E0+49oZ
-X-Gm-Message-State: AOJu0YxRjWMxVYp5UIc68HrLKldVH73/VlpHtIPEh8+TJvOfdwTviL+/
-	+qIK0uZhuXu6ZS2jfaIKnhQyyFkURy+EJoquTVxG6qi48D2ZH5blB9VY0caO3lSgrKEiQe4Cbia
-	P
-X-Google-Smtp-Source: AGHT+IFEPDAfEvDMu8J4XJ0lQXp8hFlITdGR9tguh8nJGFpjGxYLL/K/WaEm+SnPqS0/z0r/zmKOew==
-X-Received: by 2002:a5d:50d1:0:b0:33b:433d:e1d7 with SMTP id f17-20020a5d50d1000000b0033b433de1d7mr1515184wrt.1.1707906894167;
-        Wed, 14 Feb 2024 02:34:54 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV74FnXZgGq7FLgYrggZY2ycn0bi0uPib5wlWD/R5foh16pmW1mMSUZ8MKgolPvYKxbwkB5Tb2ORQTJzTyV6tnIc7dMp8C5IgUco11J/NRLki8V5qTDkoQzUYbjkZ1A8XE/NDvqGTXJn1Gmb+9TCsy6xwZsfB6E+eOZaCgLf4p92JA+RaN6XglKaS7iO/FjueR2FKEQMp+V+FUUO/dThdc=
-Received: from [192.168.2.9] ([109.77.20.129])
-        by smtp.gmail.com with ESMTPSA id bt9-20020a056000080900b0033b75d0993esm10923171wrb.74.2024.02.14.02.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 02:34:53 -0800 (PST)
-Message-ID: <4cd7cee5-7943-42eb-bd26-c0e782f29a48@conchuod.ie>
-Date: Wed, 14 Feb 2024 10:34:51 +0000
+	s=arc-20240116; t=1707907047; c=relaxed/simple;
+	bh=cxED5YPWgHhSBwJHo1owowGzFn88/peBM/syHypcwGY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ns2VxVzMelhJnu2YVdiIs1c+0y+EJpqcEEtHJ7E+DuuYUy0jCOIJjVsswlweCwxDzp7qbSMXkS7+H8y/TQB6RQYLx+hPmMi6TxEYoN/jf3yxtG+yzaUwIOu/XwvA3pFH+/COt0qJKkvFyozH3EE2TcEI2DEj+YU7DnyD2BpYAVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yAdiU5Zg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C309C433F1;
+	Wed, 14 Feb 2024 10:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707907047;
+	bh=cxED5YPWgHhSBwJHo1owowGzFn88/peBM/syHypcwGY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=yAdiU5ZgI53hqY9FwXIbYtEU1neJBgYWFVbQJYJQwKXuydESuXEAkxtgQ1Doj7u+i
+	 cWtV6GEl8rnlmooZ4HfX5YgYMbwAoMxyqATdC1vH4siqe7TubRvZGjMd0jFL5pEv2P
+	 BM0MlKnjrrgvHqS9R/ysZy5aq4ai9YmWWeaP6ePU=
+Date: Wed, 14 Feb 2024 11:37:21 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: 'Segher Boessenkool' <segher@kernel.crashing.org>,
+	Arnd Bergmann <arnd@kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+	Justin Stitt <justinstitt@google.com>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] tty: hvc-iucv: fix function pointer casts
+Message-ID: <2024021426-unleveled-unhearing-8021@gregkh>
+References: <20240213101756.461701-1-arnd@kernel.org>
+ <20240213191254.GA19790@gate.crashing.org>
+ <57d72e2ccc8245fe99982613a11c461c@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: use KERN_INFO in do_trap
-Content-Language: en-US
-To: Andreas Schwab <schwab@suse.de>, Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Palmer Dabbelt <palmer@dabbelt.com>,
- Yunhui Cui <cuiyunhui@bytedance.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>, linux-kernel@vger.kernel.org
-References: <mvmh6ic1y75.fsf@suse.de>
- <20240214-exclusion-pluck-fcb6352a8393@spud> <mvmttmbz781.fsf@suse.de>
-From: Conor Dooley <mail@conchuod.ie>
-In-Reply-To: <mvmttmbz781.fsf@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57d72e2ccc8245fe99982613a11c461c@AcuMS.aculab.com>
 
-On 14/02/2024 10:10, Andreas Schwab wrote:
-> On Feb 14 2024, Conor Dooley wrote:
+On Wed, Feb 14, 2024 at 09:46:33AM +0000, David Laight wrote:
+> From: Segher Boessenkool
+> > Sent: 13 February 2024 19:13
+> > 
+> > On Tue, Feb 13, 2024 at 11:17:49AM +0100, Arnd Bergmann wrote:
+> > > clang warns about explicitly casting between incompatible function
+> > > pointers:
+> > >
+> > > drivers/tty/hvc/hvc_iucv.c:1100:23: error: cast from 'void (*)(const void *)' to 'void (*)(struct
+> > device *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
+> > >  1100 |         priv->dev->release = (void (*)(struct device *)) kfree;
+> > >       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Such a cast of course is explicitly allowed by 6.3.2.3/8, only calling a
+> > function using a non-compatible type is UB.  This warning message is
+> > quite misleading.  Doubly so because of the -Werror, as always.
 > 
->> On Tue, Feb 13, 2024 at 10:59:58AM +0100, Andreas Schwab wrote:
->>> Print the instruction dump with info instead of emergency level like the
->>> rest of the output when printing the information for an unhandled signal.
->>
->> I'm not entirely sure that this is true, __show_regs() prints with
->> KERN_DEFAULT, but this certainly is more consistent than it was before.
-> 
-> The first line is printed with pr_info.
+> But it will get called using the wrong type.
+> And (is it) fine-ibt will reject the incorrect call.
 
-Yah, that's what I meant with "more consistent" :)
+And rightfully so, this type of casting abuse is just that, abuse.
 
-> Perhaps __show_regs should gain
-> a level argument.
+Almost no one should be just calling kfree() on a device pointer, I'll
+look at the surrounding code as odds are something odd is going on.  But
+for now, this patch is correct.
 
-I wouldn't be averse. There's 3 users, of which one is show_regs().
-I think we could easily add an argument that sets the printk level
-to match the other outputs from the non show_regs() callers. I
-suppose show_regs() could retain the KERN_DEFAULT behaviour unless
-you've got a better idea.
+thanks,
 
+greg k-h
 
