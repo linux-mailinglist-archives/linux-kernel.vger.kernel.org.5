@@ -1,296 +1,229 @@
-Return-Path: <linux-kernel+bounces-65177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A058548F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4B28548FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F42282B74
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:12:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 334F82817F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64F31B964;
-	Wed, 14 Feb 2024 12:12:02 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E575F1BC23;
+	Wed, 14 Feb 2024 12:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="giJaR+Oq";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="i8gdw5Xp"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EE118E1A;
-	Wed, 14 Feb 2024 12:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707912722; cv=none; b=UlZ1fyDxJdpsWqwHmYcOVucbMOmrYiZX4QcEjFbkP8CJXyq1VSRQcbBweuSFcxEPdbfjG7+k7ktGNKnAE50OlqyLtUziccc7yvwewGqgXV8dC0canYsFlKK5UZh9mkY7DnP0xZiymlsXTup+WuxwqreftUlOPvGKP0PImAzhg38=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707912722; c=relaxed/simple;
-	bh=j+XSQDp5gAB2zYgP/6g0xpngtgILZ2D4XzQghGi3R4Q=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nS+Ccvv2Ed2YeEIO+ybd45yxtSKIsEpEP9ECdk+lGE+wiGMobvjmPy/Fl0QfcF5ulOGaNDOjhhWugnq179T4Ws5fsjywEEZruE42Zp5GiyNZAwQCrgln9P/Au1+7yIG36X4zvLEmEGVgeB8cxp/WHujVSTvBqnJT3fikKS6BV9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZcR16JDXz6899G;
-	Wed, 14 Feb 2024 20:08:13 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id C93E9140D1D;
-	Wed, 14 Feb 2024 20:11:54 +0800 (CST)
-Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 12:11:54 +0000
-Date: Wed, 14 Feb 2024 12:11:53 +0000
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, Dan Williams
-	<dan.j.williams@intel.com>, Smita Koralahalli
-	<Smita.KoralahalliChannabasappa@amd.com>, <linux-acpi@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, "Masami
- Hiramatsu" <mhiramat@kernel.org>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] acpi/ghes: Prevent sleeping with spinlock held
-Message-ID: <20240214121153.00005c97@huawei.com>
-In-Reply-To: <20240206-cxl-cper-smatch-v2-1-84ed07563c31@intel.com>
-References: <20240206-cxl-cper-smatch-v2-1-84ed07563c31@intel.com>
-Organization: Huawei Technologies R&D (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF96F1B5AA;
+	Wed, 14 Feb 2024 12:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707912841; cv=fail; b=HjnENPurYemMCkAEs/mkHBBE6thUQhx9vabOiAkUD7yVh3Dr/niFFaT2ycVlCobuPhbbe4A+mvSp9tanWYrlSKfSYnVggI+ij2NIsge1e8eoi8QAR71cJuoAdCdU/4r0Ue61uY6gwpQTvvi1Ya/KiNiLL6/NY7hniBWWyN0p4MA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707912841; c=relaxed/simple;
+	bh=LaqSJ2pLp9oeZ8c1MxNFSPTweeRYgo/l2ncr/lB86Ls=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=oMPV14Jzl688C8DiqRwzqvbsWLJj7pcg2/QZyWc/KkyjDWSZMoD4wUsNHSfHiQ+xfQQh6vp9iMEhKOwAnIoiKNkDAoy4mKGN7P4zwyZsWmEh8LJ7UJmJ9xP+3PxXfHC39c+jN+O7RUQe3yvQl+pATjve1BHzdRqL1dpKXSUq77I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=giJaR+Oq; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=i8gdw5Xp; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EAZXgZ008755;
+	Wed, 14 Feb 2024 12:13:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=9JjzVNjuDwCXahYXsVXVrgNAIGh+G3t19iXyY1HYcFA=;
+ b=giJaR+OqdGO2FbXC8MoUOAm5l3DxdLR21R/VFV7Czx74pKM7ulNhsv0LFBNY5ryReIYE
+ MRHpxC6k9HwiMjbuNJ6Ja1UvgvyQBqH/UJMEtU24LYfz+rA1LFPRMNF3t8MOj4lED1Ea
+ b8/38G8Ja8LgCPEr/YOXYfx8u73sT8YGQFYHnaQu0o/Y560OJjzUFx81v6vjWS0eiCuu
+ DDLClaq+4jrmUyhWlVLxHKtqPp6Y92DrAwp2WBTL8+oL78iv970GITLsPkh2rzdQVGv0
+ KPtd28U5J1WV0J/0oN/8z8yK65xyyLcNO+sdydOz9ztTZIJG0iaO/3+EhQ3vp5uBmSwm Ig== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w8uvyr6s1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Feb 2024 12:13:34 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41EBdJlP024563;
+	Wed, 14 Feb 2024 12:13:33 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykf4yh7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 14 Feb 2024 12:13:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZIq5enQo1lTC26/BYbvHDYoij9SnRL+JGF3UlodK2jTARq+iyvP7i8sCOhnyPLWCfKUU9BKsNJlLUE2oBotr1spf90dYwelBfz04JU5WkQX1Alsx3PRl7qzqO1ZBMlNgCuNpQQlAV74d0oXhqkNwgE/Gs54MwHC9F9s07Bm26YF8nv4gmBQBE8uO+3wfgNWl75mJ5HAlI4lgnzPytgZQzHn1hn4usGrylYPBeBVvz7fpbEnw1p0iq+HCEnDVHZ1WhrkiLsKkIg75kpaUWeXVG4VTEy0jY9kuM/OIX+yAIWBN0a3K3DCtP2eOPpbzVhhmJ3MhrRFBf4/9KhpJDa8j0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9JjzVNjuDwCXahYXsVXVrgNAIGh+G3t19iXyY1HYcFA=;
+ b=ItCLc9Dcd3XUdtoeqnBob0cWHhXFjRJ0ubWxdWQl29hGgwCxa7L124Pxr2HlYNeL6AU9Imfnhipsu/PfKMExs9oLrfKnff7e3AX6/vz3sT0ONAOyB85Qem2paiI1W3PVjjR2BPE5g5IpZb4oyPSoe4xo/OIucXfwiXtsWAO7b3R9CaKwtnhYn1I0H7Yccv+puIPb1/WOJcht10pOUUymwsgZmLMISf52XA/iVpsOTjY5QH8cK3arcuCuNlp1lUVOUsDVq2/Hf4vlWPyddF97MkTpZqELbLP059IPjEwvc9tSYHlVH/21qvKiuAa7+ta3aWrPsQ2D/OBDLtWFkqQifQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9JjzVNjuDwCXahYXsVXVrgNAIGh+G3t19iXyY1HYcFA=;
+ b=i8gdw5Xpk6OBxejP2MoYxjNzkWAZe52wjo9dor7Rq5V7lRKbj0zZODtANn4TB5JAsQOu+FmT3WcUy6rDvW27wFul/U20H4gMvRgxDEB7L3UzTMBdW8gAlyIWO+PwDmE9K3p/TqMjkbPtHF81kxwLYwaCEHYyGPkyv2bDUMymkUY=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by DM6PR10MB4393.namprd10.prod.outlook.com (2603:10b6:5:223::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.40; Wed, 14 Feb
+ 2024 12:13:31 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::56f9:2210:db18:61c4%4]) with mapi id 15.20.7292.026; Wed, 14 Feb 2024
+ 12:13:31 +0000
+Message-ID: <a1876205-5473-4f44-9439-a7b3c534be4d@oracle.com>
+Date: Wed, 14 Feb 2024 12:13:25 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 5/6] fs: xfs: iomap atomic write support
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com,
+        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com
+References: <20240124142645.9334-1-john.g.garry@oracle.com>
+ <20240124142645.9334-6-john.g.garry@oracle.com>
+ <20240202184758.GA6226@frogsfrogsfrogs>
+ <e61cf382-66bd-4091-b49c-afbb5ce67d8f@oracle.com>
+ <20240213175030.GC6184@frogsfrogsfrogs>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240213175030.GC6184@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4P250CA0022.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e3::12) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DM6PR10MB4393:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3489631e-d6ea-41b8-91c6-08dc2d565bf4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	8p8W4F6jbvhHl8jH4dS0kKTlkazj7u4eSrJsWvQ2d+dkWEqq6m0rRoIHsGIbHjv29bUPImSKqbjFkhiLgH9UizxYjdSl06xUtyBDgGE/zasWXyOFhZKmv0mFJod7euZ8xgb62qasS2ryYkzKh4Lq1pwACLjBoAnb0WjgI7g4VAljwqyfMTqlsk0U+ZYT7pBXBQR2GSFBriDzS5K/76aRx66Msemx6Q1Lcw+T28hf90eMlYjg5ZGwpt01aBxIsJtfbu6tMLtceHzdlqL87Vq7emIy+ih9Uf6KR1y2KYLN+emnG0kJLj3oRZpsZnr+vKsY4inuHnfXh9Dv06FFTRAak/dQzwj4+7Fk9IitSm9OuaseT4rz17074oq061U878sB2tfMnjR3ng4JZYsgQeKadjzFp861GGrO3MAx65bZbeyf/SaKlal6csH8EwJb5eVJYPFWOvRsTG90W5Blcb8HJOKadtUnOLDvVQhMsVxb0KWmCgxpS6baJ5/LOy0B7JuexlcTle3wvIARJfe8unYA7gdwenvJCye9uYSpbgA+C3kakcqKarn27+ZoAz2gybZm
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(39860400002)(346002)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(7416002)(8676002)(8936002)(66476007)(66556008)(66946007)(5660300002)(2906002)(6916009)(4326008)(36756003)(31696002)(86362001)(83380400001)(38100700002)(316002)(478600001)(36916002)(6506007)(6666004)(6512007)(6486002)(26005)(2616005)(41300700001)(31686004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?Ujc0NE8zT0UrZ1FqQW5zVWUyZEhkWHhPanRyZStuSkowSUg2R044Vjg2Z3Rq?=
+ =?utf-8?B?aE9XZ3pGMGZjUXJVcnNZVmFFWUdXeVl2eUNPQzc3UlAxRVd3NUNzNnBtMExL?=
+ =?utf-8?B?SnJuSExremNSd2RQSFJGdVp3TFJDWVRUQXV0U2Z5N0wwbytZUGtiZXlhM1J1?=
+ =?utf-8?B?bjh0S0FKSXNGaytMYWkvMHU2RGJUTFQ5QjJDdmJodmk1dzVYNUFyZmpNUDJs?=
+ =?utf-8?B?K0FtTTJmVzUva2wvRHFkZUVxSTZUZ0tXVmNNaG9temg3RGtFT0Y3VlhieFY5?=
+ =?utf-8?B?WmpqeU44NTRVeG5tajdEazlPbjdwUDZ0N3laRHN4N0p6STlEejNsR3J2Y2kz?=
+ =?utf-8?B?Ukc5ejEwQjhHeG13aTBoQVg4V21DaXkvdWx5VFN0NklYaG1RVTNqZE80RjRx?=
+ =?utf-8?B?cVRaS2V2eFJLbnRyaGc0QUhwTWE1YzhuTlJxQTk0MWh1TDlkZHBobkpGb1ZO?=
+ =?utf-8?B?K3ZLZlpQalN1Y3hzZVBLRmZTNG9jWlg5SkgxMzB5YkZDMktJZG9qVWVHbzUz?=
+ =?utf-8?B?cmIzY0M5UTNlTkNlenJMTmZNNFlXNXg5RXZLVmdBelFRS25oUUZtcndoSWZr?=
+ =?utf-8?B?OW9ZdWdlOUFCeU5VcGhPRXJzeFJOakV3UzgyQ0hKSDNiS3FsTmd0L1pvRGFF?=
+ =?utf-8?B?NXBkWklnM09qRkYzbHlia0lTcGFvN1hmNXBkNnc1TmZoaXBzRU11NnRYaGI5?=
+ =?utf-8?B?WHN0RG1JM0RjVExLcnJnak5CNVNzVTAvTGlDNXY1SzFPZlNYMjJjTTNtVytE?=
+ =?utf-8?B?NzdPR0ZvdEZ4dWc5T2RJRHlQOVUybENqMnV4dHA1Sks3bGJMQjV3WmRTVzVv?=
+ =?utf-8?B?bWxqbEJOd2xDQU1IYVo2ZHNVdmFybnJBRGl4aFpmazlybTlQYUdXaDZCTGlx?=
+ =?utf-8?B?NFlEeTkzUkNENEEvYk1Qb3NsNjdTSG51RVNybFZyZTZlZ1IremRJU0F5VmJZ?=
+ =?utf-8?B?bzFVU1d2YWN5TGpUUHBNcVJnaVM0UG5xN21WL2RKU1AyNHBtY0pGWW5uVG1Y?=
+ =?utf-8?B?ZXJFM216RWhSbHFSRnM0YXdGcVd5Skd6ZlJEdzUzSDRLbUhYQ1laZVo0NzRZ?=
+ =?utf-8?B?ZjZLenZ2aUcxZWxJZnJsRm5UajRrWkhPUmQxRjZiYWtBeHJMN25ZOElnait4?=
+ =?utf-8?B?U1FLUGEveC9BV3hrSjBSK21oK08xOXJyOVBSbzBPQlgwQ1MwUHdHZkZIQWQ1?=
+ =?utf-8?B?Y2t5K2VvQ0VJWWRqTTI3Q1BsT3BpRm8vQ3Q2NTN0QmkrblpxVlRBcGYxeDBL?=
+ =?utf-8?B?TGluYllOVFBlaDN4cG1BVjVPelBFM0VWZkp0Nys4blN1Z1lVVmQ3UlZraDBv?=
+ =?utf-8?B?aVBIRjl4TjRScGw4aHV2dk82TlMwenBYZFFoT3ArRkUzT3JrYnRienR6OWVS?=
+ =?utf-8?B?YWN5TzdsVHRNdkNQN1QwQTlwNmdJTk44aVVvYnZLaGtXV0JnYnNOajBpVElI?=
+ =?utf-8?B?SmZRYmpsZUxkYzJwMHpuMit2VkFsME9jeWVFZTFXUmFVeGNBRTN2TnJXTXBK?=
+ =?utf-8?B?RXNpdy9GSlc4d255M3I0MkdNZUFkenJ1RTZIVDF0bmFDai9aU09SVWtTL1Zj?=
+ =?utf-8?B?V1ErbWR5SmJWZ0FDbW9vRi9PbHU2dDJzSzhTaUFRclZLQ1lFNE0vK01HdVFD?=
+ =?utf-8?B?aS9JeVZUemxoTnF5cGdnZXFZaGZyWXBqbExrNU5pUGJiY0RUaDgzNjVrdWcz?=
+ =?utf-8?B?T2NGNjlIOUV0ZTUwMjVwZHBNQU5uTFpMV3NqazFhOGc1emlKYWlDMGlxMnpE?=
+ =?utf-8?B?b1pHVnU2ZGdVMlN5bGlIOEVPS1VPNjRGa2dRQzgyUFVtL3lkeGJ1WFVNU3NG?=
+ =?utf-8?B?OVhTMFN5TStROTJEMkVHN3p3bGZOb1ArR05EUi94elRBZDBxUVhST1o5akIx?=
+ =?utf-8?B?djRpcGtpWDQwdEduRFdXKzVQUG8vdEpSY21XNk5SV2lXdkluNVN4VlRDNVZp?=
+ =?utf-8?B?RzBLZGt6eUVCOWxJdXRXQjFrb0paV25vdkFIUzJjSlJ2a1dmaDJWS1liNmVt?=
+ =?utf-8?B?U2VxWWRSeStzWUFpdHJRejF0cUxWYXIweThZVVg4VHFock9oM0lueXlnZUpT?=
+ =?utf-8?B?Z05YdmMrVUVuVFdYR3pwT3IvbmovS05rdDVpNnRYSHlucDBoMEdnd3dmMGhx?=
+ =?utf-8?B?Sm1pWjcyaERkUU5HUjRoUmVyLzhKRjJyWE92dzN0YnVtWTUyeGt2RkJNdmln?=
+ =?utf-8?B?NUE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	/Fm6WI1A/lkesP0MuK3z63NgXl1BKsqn6K4dK3mG6Vub2PAApRxWgJthoJmS//I3YNPFV+0aIQMUAJMq3osu9c7diUYxPjH+3ss/MhIpV5q6GPiQY1iHTIJrLdt9x9DoyCEI21tSq5MUOT7a3R0Ppp5qoKCUb9JzDoFGNnfQE33a6B8SEmhBwVQuurQ+pOupQfU0IUh3MMosUIkzwzoUw94L8MKLofYZJgWuG593GqC65Rs+X6WScBeNS8JajOywP23BkQmB7a4boWAlgl0DjVpZGgOhB01KMQMvTT1jMVxWGJvm9Nt+hLGLDewBvNpWiJzYQ+7YPooicHXSfekUVkSYIzNsOk8lpJ7uQLK9fREp4HO7j3PI1RE6v41TGRq7QMpLdgi8B6wJ1oarASw6zwL9NabkRSP/oULTXahvOArz/F8E/NDqi9RUz0pegILksYUUYaqEMmLj+cC370XVPXV9JFoii8HOf2BcKAw9Dv2CwCAXzPsSpipIuOLInt/QhlWihMR8gktaI97XiNbYZ6aFkmYKbRrqpq71qwWO/mr51Gu1V1xeC4MQy57WD8MHdeLRff6OO5vE/mpt8D29c+2iJLkD/TNjS3HvBJ6sl18=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3489631e-d6ea-41b8-91c6-08dc2d565bf4
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 12:13:31.4924
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2lSyFrx3k3JQPPqR+HTRDa4cFHjFO886cXpRQKHioqQslURoTTrTKyZqPtYlz1AkPcrXfoYA4npXD52IdCxAlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4393
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_04,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402140096
+X-Proofpoint-ORIG-GUID: 7WlmiLv0XSc_W2pl7N3znUSx_YaViRem
+X-Proofpoint-GUID: 7WlmiLv0XSc_W2pl7N3znUSx_YaViRem
 
-On Tue, 06 Feb 2024 14:15:32 -0800
-Ira Weiny <ira.weiny@intel.com> wrote:
 
-> Smatch caught that cxl_cper_post_event() is called with a spinlock held
-> or preemption disabled.[1]  The callback takes the device lock to
-> perform address translation and therefore might sleep.  The record data
-> is released back to BIOS in ghes_clear_estatus() which requires it to be
-> copied for use in the workqueue.
+>>>
+>>> Not sure why we care about the file position, it's br_startblock that
+>>> gets passed into the bio, not br_startoff.
+>>
+>> We just want to ensure that the length of the write is valid w.r.t. to the
+>> offset within the extent, and br_startoff would be the offset within the
+>> aligned extent.
 > 
-> Copy the record to a lockless list and schedule a work item to process
-> the record outside of atomic context.
+> Yes, I understand what br_startoff is, but this doesn't help me
+> understand why this code is necessary.  Let's say you have a device that
+> supports untorn writes of 16k in length provided the LBA of the write
+> command is also aligned to 16k, and the fs has 4k blocks.
 > 
-> [1] https://lore.kernel.org/all/b963c490-2c13-4b79-bbe7-34c6568423c7@moroto.mountain/
+> Userspace issues an 16k untorn write at offset 13k in the file, and gets
+> this mapping:
 > 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-+CC tracing folk for the splat below (the second one as first one is fixed!)
-
-Lock debugging is slow (on an emulated machine) :(
-Testing with my gitlab.com/jic23/qemu cxl-2024-02-05-draft branch
-which is only one I've put out with the FW first injection patches so far
-
-For reference without this patch I got a nice spat identifying the original bug.
-So far so good.
-
-With this patch (and tp_printk in command line and trace points enabled)
-[  193.048229] {1}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 1
-[  193.049636] {1}[Hardware Error]: event severity: recoverable
-[  193.050472] {1}[Hardware Error]:  Error 0, type: recoverable
-[  193.051337] {1}[Hardware Error]:   section type: unknown, fbcd0a77-c260-417f-85a9-088b1621eba6
-[  193.052270] {1}[Hardware Error]:   section length: 0x90
-[  193.053402] {1}[Hardware Error]:   00000000: 00000090 00000007 00000000 0d938086  ................
-[  193.055036] {1}[Hardware Error]:   00000010: 000e0000 00000000 00000005 00000000  ................
-[  193.058592] {1}[Hardware Error]:   00000020: 00000180 00000000 1626fa24 17b3b158  ........$.&.X...
-[  193.062289] {1}[Hardware Error]:   00000030: 00000000 00000000 00000000 00000000  ................
-[  193.065959] {1}[Hardware Error]:   00000040: 000007d0 00000000 0fc00307 05210300  ..............!.
-[  193.069782] {1}[Hardware Error]:   00000050: 72690000 6d207361 00326d65 00000000  ..iras mem2.....
-[  193.072760] {1}[Hardware Error]:   00000060: 00000000 00000000 00000000 00000000  ................
-[  193.074062] {1}[Hardware Error]:   00000070: 00000000 00000000 00000000 00000000  ................
-[  193.075346] {1}[Hardware Error]:   00000080: 00000000 00000000 00000000 00000000  ................
-
-I rebased after this so now we get the smaller print - but that's not really relevant here.
-
-[  193.086589] cxl_general_media: memdev=mem1 host=0000:0e:00.0 serial=5 log=Warning : time=1707903675590441508 uuid=fbcd0a77-c260-417f-85a9-088b1621eba6 len=128 flags='0x1' handle=0 related_handle=0 maint_op_class=0 : dpa=7c0 dpa_flags='0x10' descriptor='UNCORRECTABLE_EVENT|THRESHOLD_EVENT|POISON_LIST_OVERFLOW' type='0x3' transaction_type='0xc0' channel=3 rank=33 device=5 comp_id=69 72 61 73 20 6d 65 6d 32 00 00 00 00 00 00 00 validity_flags='CHANNEL|RANK|DEVICE|COMPONENT'
-[  193.087181]                                                                                                                                                                                                                                                      
-[  193.087361] =============================
-[  193.087399] [ BUG: Invalid wait context ]
-[  193.087504] 6.8.0-rc3 #1200 Not tainted
-[  193.087660] -----------------------------
-[  193.087858] kworker/3:0/31 is trying to lock:
-[  193.087966] ffff0000c0ce1898 (&port_lock_key){-.-.}-{3:3}, at: pl011_console_write+0x148/0x1c8
-[  193.089754] other info that might help us debug this:
-[  193.089820] context-{5:5}[  193.089900] 8 locks held by kworker/3:0/31:
-[  193.089990]  #0: ffff0000c0018738 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x154/0x500
-[  193.090439]  #1: ffff800083793de0 (cxl_cper_work){+.+.}-{0:0}, at: process_one_work+0x154/0x500
-[  193.090718]  #2: ffff800082883310 (cxl_cper_rw_sem){++++}-{4:4}, at: cxl_cper_work_fn+0x2c/0xb0
-[  193.091019]  #3: ffff0000c0a7b1a8 (&dev->mutex){....}-{4:4}, at: pci_dev_lock+0x28/0x48
-[  193.091431]  #4: ffff800082738f18 (tracepoint_iter_lock){....}-{2:2}, at: trace_event_buffer_commit+0xd8/0x2c8
-[  193.091772]  #5: ffff8000826b3ce8 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x124/0x398
-[  193.092031]  #6: ffff8000826b3d40 (console_srcu){....}-{0:0}, at: console_flush_all+0x88/0x4b0
-[  193.092363]  #7: ffff8000826b3ef8 (console_owner){....}-{0:0}, at: console_flush_all+0x1bc/0x4b0
-[  193.092799] stack backtrace:
-[  193.092973] CPU: 3 PID: 31 Comm: kworker/3:0 Not tainted 6.8.0-rc3 #1200
-[  193.093118] Hardware name: QEMU QEMU Virtual Machine, BIOS unknown unknown
-[  193.093468] Workqueue: events cxl_cper_work_fn
-[  193.093782] Call trace:
-[  193.094004]  dump_backtrace+0xa4/0x130
-[  193.094145]  show_stack+0x20/0x38
-[  193.094231]  dump_stack_lvl+0x60/0xb0
-[  193.094315]  dump_stack+0x18/0x28
-[  193.094395]  __lock_acquire+0x9e8/0x1ee8
-[  193.094477]  lock_acquire+0x118/0x2e8
-[  193.094557]  _raw_spin_lock+0x50/0x70
-[  193.094820]  pl011_console_write+0x148/0x1c8
-[  193.094904]  console_flush_all+0x218/0x4b0
-[  193.094985]  console_unlock+0x74/0x140
-[  193.095066]  vprintk_emit+0x230/0x398
-[  193.095146]  vprintk_default+0x40/0x58
-[  193.095226]  vprintk+0x98/0xb0
-[  193.095306]  _printk+0x64/0x98
-[  193.095385]  trace_event_buffer_commit+0x138/0x2c8
-[  193.095467]  trace_event_raw_event_cxl_general_media+0x1a8/0x280 [cxl_core]
-[  193.096191]  __traceiter_cxl_general_media+0x50/0x78 [cxl_core]
-[  193.096359]  cxl_event_trace_record+0x204/0x2d0 [cxl_core]
-[  193.096520]  cxl_cper_event_call+0xb0/0xe0 [cxl_pci]
-
-The rw_sem is held to protect the callback pointer.
-
-[  193.096713]  cxl_cper_work_fn+0x7c/0xb0
-[  193.096808]  process_one_work+0x1f4/0x500
-[  193.096891]  worker_thread+0x1f0/0x3f0
-[  193.096971]  kthread+0x110/0x120
-[  193.097052]  ret_from_fork+0x10/0x20
-
-So I'm not sure how to fix this or if we even want to.
-
-We could try and release locks before calling the tracepoint but that looks
-very fiddly and would require ghes.c to be able to see more of the
-CXL tracepoint infrastructure which isn't great.
-
-Just because I was feeling cheeky I did a quick test with following.
-I have a sneaky suspicion this won't got down well even though it 'fixes'
-our issue...  My google fu / lore search terms are failing to find
-much previous discussion of this.
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 9ff8a439d674..7ee45f22f56f 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2957,7 +2957,7 @@ static void output_printk(struct trace_event_buffer *fbuffer)
-        iter->ent = fbuffer->entry;
-        event_call->event.funcs->trace(iter, 0, event);
-        trace_seq_putc(&iter->seq, 0);
--       printk("%s", iter->seq.buffer);
-+       printk_deferred("%s", iter->seq.buffer);
-
-        raw_spin_unlock_irqrestore(&tracepoint_iter_lock, flags);
- }
-
-My assumption is similar views will apply here to Peter Zijlstra's comment on
-not using printk_deferred.
-
-https://lore.kernel.org/all/20231010141244.GM377@noisy.programming.kicks-ass.net/
-
-Note I also tried the hacks Peter links to from there. They trip issues in the initial
-CPER print - so I assume not appropriate here.
-
-So I'm thinking this is a won't fix - wait for the printk rework to land and
-assume this will be resolved as well?
-
-Jonathan
-
-> ---
-> Changes in v2:
-> - djbw: device_lock() sleeps so we need to call the callback in process context
-> - iweiny: create work queue to handle processing the callback
-> - Link to v1: https://lore.kernel.org/r/20240202-cxl-cper-smatch-v1-1-7a4103c7f5a0@intel.com
-> ---
->  drivers/acpi/apei/ghes.c | 44 +++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 41 insertions(+), 3 deletions(-)
+> [startoff: 13k, startblock: 16k, blockcount: 16k]
 > 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index 7b7c605166e0..aa41e9128118 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -679,6 +679,12 @@ static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
->   */
->  static DECLARE_RWSEM(cxl_cper_rw_sem);
->  static cxl_cper_callback cper_callback;
-> +static LLIST_HEAD(cxl_cper_rec_list);
-> +struct cxl_cper_work_item {
-> +	struct llist_node node;
-> +	enum cxl_event_type event_type;
-> +	struct cxl_cper_event_rec rec;
-> +};
->  
->  /* CXL Event record UUIDs are formatted as GUIDs and reported in section type */
->  
-> @@ -706,9 +712,34 @@ static cxl_cper_callback cper_callback;
->  	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
->  		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
->  
-> +static void cxl_cper_work_fn(struct work_struct *work)
-> +{
-> +	struct llist_node *entries, *cur, *n;
-> +	struct cxl_cper_work_item *wi;
-> +
-> +	guard(rwsem_read)(&cxl_cper_rw_sem);
-> +
-> +	entries = llist_del_all(&cxl_cper_rec_list);
-> +	if (!entries)
-> +		return;
+> Why should this IO be rejected? 
 
-Unfortunately the rw_sem is protecting the cper_callback itself
-so I'm not sure how to do this.
+It's rejected as it does not follow the rules.
 
-Maybe a dance where cper_callback creates the record but returns
-the data to here so that we can release the lock and issue
-the tracepoint?
+> The physical space extent satisfies the
+> alignment requirements of the underlying device, and the logical file
+> space extent does not need aligning at all.
 
-> +	/* Process oldest to newest */
-> +	entries = llist_reverse_order(entries);
-> +	llist_for_each_safe(cur, n, entries) {
-> +		wi = llist_entry(cur, struct cxl_cper_work_item, node);
-> +
-> +		if (cper_callback)
-> +			cper_callback(wi->event_type, &wi->rec);
-> +		kfree(wi);
-> +	}
-> +}
-> +static DECLARE_WORK(cxl_cper_work, cxl_cper_work_fn);
-> +
->  static void cxl_cper_post_event(enum cxl_event_type event_type,
->  				struct cxl_cper_event_rec *rec)
->  {
-> +	struct cxl_cper_work_item *wi;
-> +
->  	if (rec->hdr.length <= sizeof(rec->hdr) ||
->  	    rec->hdr.length > sizeof(*rec)) {
->  		pr_err(FW_WARN "CXL CPER Invalid section length (%u)\n",
-> @@ -721,9 +752,16 @@ static void cxl_cper_post_event(enum cxl_event_type event_type,
->  		return;
->  	}
->  
-> -	guard(rwsem_read)(&cxl_cper_rw_sem);
-> -	if (cper_callback)
-> -		cper_callback(event_type, rec);
-> +	wi = kmalloc(sizeof(*wi), GFP_ATOMIC);
-> +	if (!wi) {
-> +		pr_err(FW_WARN "CXL CPER failed to allocate work item\n");
-> +		return;
-> +	}
-> +
-> +	wi->event_type = event_type;
-> +	memcpy(&wi->rec, rec, sizeof(wi->rec));
-> +	llist_add(&wi->node, &cxl_cper_rec_list);
-> +	schedule_work(&cxl_cper_work);
->  }
->  
->  int cxl_cper_register_callback(cxl_cper_callback callback)
-> 
-> ---
-> base-commit: 99bd3cb0d12e85d5114425353552121ec8f93adc
-> change-id: 20240201-cxl-cper-smatch-82b129498498
-> 
-> Best regards,
+Sure. In this case, we can produce a single BIO and the underlying HW 
+may be able to handle this atomically.
 
+The point really is that we want a consistent userspace experience. We 
+say that the write 'must' be naturally aligned, not 'should' be.
+
+It's not really useful to the user if sometimes a write passes and 
+sometimes it fails by chance of how the extents happen to be laid out.
+
+Furthermore, in this case, what should the user do if this write at 13K 
+offset fails as the 16K of data straddles 2x extents? They asked for 16K 
+written at offset 13K and they want it done atomically - there is 
+nothing which the FS can do to help. If they don't really need 16K 
+written atomically, then better just do a regular write, or write 
+individual chunks atomically.
+
+Thanks,
+John
 
