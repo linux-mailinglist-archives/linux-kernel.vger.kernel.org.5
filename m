@@ -1,54 +1,62 @@
-Return-Path: <linux-kernel+bounces-64959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8D4854529
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:28:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4751585452E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 996AC286C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03792286A14
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CA71642A;
-	Wed, 14 Feb 2024 09:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25695134A3;
+	Wed, 14 Feb 2024 09:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4uggz3V0"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="I3MEEXdc"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19651429C;
-	Wed, 14 Feb 2024 09:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B81E12B69;
+	Wed, 14 Feb 2024 09:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902880; cv=none; b=XE58aZvStvjhIznJ/mUrji2H5u6HQOnxM5+Q02p9TGUrummMpupbVzxDPg6gb8yaQNmtGhax1T3/w/w5QNaRu6j4K50gvGuRmjilzUEOC0wZATlEIQrZvd6E1uce6jVwS4YvIwPY+xYNFs25za4CNmosZ+ei8QkPYIdjMwGS/DM=
+	t=1707902906; cv=none; b=TW3aUzdaFmVhiGk2I9vx58K0NhzWd9Dl5snZjnuoUhUEkdeZDFDZ86Nsa1rueHAbvXVdlhkjFljzz4HsJkm+9Yz2DXGiE6D5BJuxBHOhwcclGSTWts7foe8w0ObmVCzhI8NVPzV41QEwaFlekwCD2xJ3vfxFodsZ9kCJu8BHEh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902880; c=relaxed/simple;
-	bh=R7/bEBifI4lBAh8QUwfn+H3MAcMLkC8MOxtp6x/n10M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KLLP0nyULMPB05MmIOFj/C7ttkD8947q1sQDtHVXm0lhzjEqbRkP+J2u675Y6zAkISwtKv969zMQIk2hmLnuo7qVLdaDrKFnUpp3C7Z0hy3adl/TN7dtf4ju3PUOhqX1DoClROrf4aUakC6D/c4CcIwV4h+TeDjzn2T4Bkyy7l8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4uggz3V0; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707902876;
-	bh=R7/bEBifI4lBAh8QUwfn+H3MAcMLkC8MOxtp6x/n10M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=4uggz3V0Edxv8IP6cRbU05flDUjer1IhQ4PFjTRlQUhgVduHUEqnpHW8Yyrkwsz1z
-	 sjZU2G8VmNpGDZ/ZLCnoWGrsECWcSlKn+UrXq0aJARQmubB0T9vXZNDct5ks00j1xp
-	 gouKT9E02DbzrkddLKKJnCfwm0z0SmFeC6KjChIh2b5d9un4TFz7S0lAX3YDDjLi2i
-	 OVDzwPrPBVsr8eHkabjEMthfceQ2mC49sVxKGSR+ts4dE2KhXN0vhmgecQXbG2csbq
-	 HK3kP2gG+VcB6Dfnu6p3GxbPtxBPPvaNsRGhjGhQiq+NzvRLEa1wL08BAbxB6AA7Fc
-	 pnQhu/Fs7tksg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3AD113781FEF;
-	Wed, 14 Feb 2024 09:27:55 +0000 (UTC)
-Message-ID: <e957b044-fe84-4b72-bdf1-cbc40c722019@collabora.com>
-Date: Wed, 14 Feb 2024 10:27:54 +0100
+	s=arc-20240116; t=1707902906; c=relaxed/simple;
+	bh=7iDIf20OmeYQc9dtbnkqUEwyJYpR4gtKqSRf663dNIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PSWoDah7acCBmIulnwSNs5KmIDeuQWSsTZjTcn+fShKCMv9InxVb+t05CMPXy3pXj7fyqAd0X6YeV2CluT8+TtwABWT8IybB0ayO81MxJ/ifIaYy6a0/wqHpg5BnayWmM4QxFlFfSXEQEhdKVFVBW+LBB0pYWV/mabjDG0fmahs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=I3MEEXdc; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E9JAMv029873;
+	Wed, 14 Feb 2024 09:28:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tYik73OUjCMVd31RdndFP6ddzTr57qI1pHLEgBgKThc=; b=I3
+	MEEXdcLmdU/9k3O3XySDXQzIz+4kU/FvgF9wSHQHkusA+YvOSd5hBORh+CpojDvE
+	RhNSeE5qaIxqkTTPTDw3bip0dIsQkK138qL7dzav1fEXKk257xBt+jxrArcMPv1q
+	pv4WTqr20YSgD2Fzbe1P2odJfdVQ5K6JLrky/bWsDHDd7/aYxwXfAh7o6qhNvy24
+	vvLUgJX6gJW2n8TCmkrIyOWBX5LLXXccuK7jM69oysbo8cw2+szFycn5dxpNuUGR
+	iSi3Wy8RyjmZ1rrgBKkMWLJGzBRO7jUJixaZBBfX5XcdFmSJNB4qVRUYiBDmAGd9
+	d6qL8JszJVBMeKYhKysg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8eks987a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 09:28:13 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E9SDfW001639
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 09:28:13 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
+ 2024 01:28:07 -0800
+Message-ID: <222b330d-ecc0-4755-b1b5-674e11dcec5c@quicinc.com>
+Date: Wed, 14 Feb 2024 14:58:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,100 +64,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: pwm: mediatek,mt2712: add compatible for
- MT7988
+Subject: Re: [PATCH v4 4/8] clk: qcom: ipq5332: add gpll0_out_aux clock
 Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Conor Dooley <conor@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- John Crispin <john@phrozen.org>, linux-pwm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240213164633.25447-1-zajec5@gmail.com>
- <20240213-resource-evaluator-0754cfd5882d@spud>
- <d4391868-ddcd-4f66-b539-28d245fa83df@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <d4391868-ddcd-4f66-b539-28d245fa83df@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Il 14/02/24 07:34, Rafał Miłecki ha scritto:
-> On 13.02.2024 19:18, Conor Dooley wrote:
->> On Tue, Feb 13, 2024 at 05:46:32PM +0100, Rafał Miłecki wrote:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> MT7988 has on-SoC controller that can control up to 8 PWMs.
->>
->> I see a binding and a dts patch, but no driver patch, how come?
-> 
-> I believe that to avoid cross-trees patchsets (which are sometimes
-> tricky for maintainers) there are two ways of submiting such changes:
-> 1. dt-binding + driver; then (separately) DTS
-> 2. dt-binding + DTS; then (separately) driver
-> 
-> I chose later in this case as my personal priority right now is to deal
-> with all MediaTek DTS files.
-> 
-> Is that wrong or unacceptable?
-> 
-
-It's not wrong but it's partially unacceptable, at least on my side.
-
-In my opinion (and I believe many do agree with me), sending the binding along
-with the driver is the right choice, and if you also want to include the dts
-that is also appreciated: series can go through multiple maintainers applying
-subsets - it's ok to do.
-
-I want to put emphasis on sending the binding with the driver, as this allows
-for a better review on everyone's side because we do see the full picture and
-we can give better advices: in this case, I'm not sure whether adding a new
-compatible for MT7988 in an enum is a good idea, as the compatible string may
-be shared with one of the *eleven* SoCs that are supported in the PWM driver,
-meaning that (hardware speaking!) the PWM controller in 7988 might be the same
-as the one in mt1234.
-
-Thanks for the great work that you're doing on the bindings btw.
-Keep it up!
-Angelo
-
-> 
->> Also, what makes this incompatibly different with the other devices in
->> the binding, like the 8183?
-> 
-> It can control 8 PWMs unlike any other SoC block except for MT2712.
-> It uses different registers than MT2712 thought.
-> 
-> 
->> Cheers,
->> Conor.
->>
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>>   Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml 
->>> b/Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml
->>> index 0fbe8a6469eb..a5c308801619 100644
->>> --- a/Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml
->>> +++ b/Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml
->>> @@ -24,6 +24,7 @@ properties:
->>>             - mediatek,mt7629-pwm
->>>             - mediatek,mt7981-pwm
->>>             - mediatek,mt7986-pwm
->>> +          - mediatek,mt7988-pwm
->>>             - mediatek,mt8183-pwm
->>>             - mediatek,mt8365-pwm
->>>             - mediatek,mt8516-pwm
->>> -- 
->>> 2.35.3
->>>
-> 
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Catalin
+ Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20240122-ipq5332-nsscc-v4-0-19fa30019770@quicinc.com>
+ <20240122-ipq5332-nsscc-v4-4-19fa30019770@quicinc.com>
+ <635f5e41-1ca2-4b4e-86a5-fdb8f7b27ef9@lunn.ch>
+From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <635f5e41-1ca2-4b4e-86a5-fdb8f7b27ef9@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: k1yxsMlcmMEIAr4Giot05SLm1J4TKlmk
+X-Proofpoint-GUID: k1yxsMlcmMEIAr4Giot05SLm1J4TKlmk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_03,2024-02-12_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 mlxlogscore=891 impostorscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402140073
 
 
+
+On 1/26/2024 1:41 AM, Andrew Lunn wrote:
+> On Mon, Jan 22, 2024 at 11:27:00AM +0530, Kathiravan Thirumoorthy wrote:
+>> Add support for gpll0_out_aux clock which acts as the parent for
+>> certain networking subsystem (NSS) clocks.
+> 
+> This answers the question i asked for the previous patch.
+> 
+> Why did you split this into two patches?
+
+
+driver and binding patch should be separate patches, else checkpatch 
+will complain it.
+
+> 
+> Please also give a more detailed description, rather than the vague
+> 'certain networking subsystem (NSS) clocks'
+
+
+Sure, will call out the clock names explicitly in the next spin.
+
+> 
+> If you device tree and drivers are correct, i should be able to work
+> out what the clock tree looks like, so there is no point trying to
+> hide the information.
+
+
+Clocks which are part of the NSSCC are used by the Networking drivers 
+which are in the pipeline for upstream. Once the networking patches are 
+submitted in the list, we should be able to get the clear picture of the 
+clock tree.
+
+
+> 
+>       Andrew
 
