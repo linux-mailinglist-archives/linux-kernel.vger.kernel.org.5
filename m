@@ -1,118 +1,122 @@
-Return-Path: <linux-kernel+bounces-64601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 752E38540BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:15:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB24D8540C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 162BDB21C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:15:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A7701F24E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA84765C;
-	Wed, 14 Feb 2024 00:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B37A31;
+	Wed, 14 Feb 2024 00:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gy3Q614O"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DQR/6kvK"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5042A7E2
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CEC623
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869737; cv=none; b=tnlDsd2UmHsW7FyXxVTZMaqVJnGPilqwR59IcqPoN2AXnNh/ZfkexYKiRq4vrMgw9NITfcdhRw9XnX9zU0A3EgXw2X/RfoI7CzW4RvdEdrC8dVCtkN10lZwttK/sM5FpijiCXrkdD7yuK/yy5jDVIvAIo59t6I7cSGkkk6snEmI=
+	t=1707869798; cv=none; b=Vrkbu4Me5/Ms7bWsyJx0pKUQRAoWciwLEOQ63tA60zzExKoHdCA/BHIJtCv4pXRpmb8wOZnNXL8JL7+iO4plyygG5Do4tP9RzdYFyjomAkvyLeAnn+rVWTLjTpHsmH2e8oxW/PKjdnTi3B6E3b80cOf4wR9tTCtfBuxjPbDU45Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869737; c=relaxed/simple;
-	bh=e/JPk36YcaAkB2eASchwf/O4/pt4gfV1CfqC3KKqLck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RLYiKXk2yVpULnA99noElaMT95rugpcqZ7YH34qmCYICrGZpzpm/cbgGnehEM84ikUIFgjIbAVI/s+7Eldwm/7LvWbxfT3SDtcMRRBdGDzNI1pYwPWtNA8yM49YdjcPHbuYsI6JLZV/IPJ/Su/PRz0+JMX3Z4f4uGGnNqobO15U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gy3Q614O; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso93844039f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:15:35 -0800 (PST)
+	s=arc-20240116; t=1707869798; c=relaxed/simple;
+	bh=Jj2mI4+z893fkI7KcAWGdICx7F+XHBksLBKFmFLUy3A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k0u0qtqp0LhJNZv+fWGrmI20jIU8iE6BbJDLspr/gmaLit7hskHy49cDiB5UpZm9REOx+ihwGK/YebuB2ky/+iXYWZYKW0MU0XMrF0PkhyhF/dMJU5yToHhGhe0qJDYKnCe6bbiBeuhbJg0saMU/FYfY8r6Ti7yOaIXAyNDs6qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DQR/6kvK; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e0cd3bed29so1612720b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:16:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1707869734; x=1708474534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P2dMR0dbccb+q6sxSnuzRauid6CUXOmO7gipmGVqwVI=;
-        b=gy3Q614OHRtayXXVNca16ZROgGbouqHww8L0MKv9bTnU7BcQEMldT/+XaBNAR338WX
-         fMtwFPD//SEc1WScRDRRwYXKwHU+onUgzDC25ixWK5eR3MGSbUAFvWObQDpLCh8Y/CRd
-         t0/B41LuJYwHY0Jb+TGVN/9SUDiUMDIplHz1o=
+        d=chromium.org; s=google; t=1707869796; x=1708474596; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dE2UETRpvF16U4f37LAirje/SMvTyMmWDk49s8xZgAg=;
+        b=DQR/6kvKRhG3VOKSsna9gIdKQwZ5q4nmS9eTt3+7pPuN5gBOV7mD7V9i8qDqKxvwGv
+         YdUaj3H+7rDOGaQO5ngKJoTNC/eTyWwlPZdn4z83ahZ86d52OQ3+fQg0PDeOrRfx66CB
+         U7WaxlRie7K50nqt4D7odNIzlCS9XdHds5BKY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707869734; x=1708474534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P2dMR0dbccb+q6sxSnuzRauid6CUXOmO7gipmGVqwVI=;
-        b=Aon9G+fI9Iz5NzDgXWjzUdZN4dlrmENMmvFXpXBo85w8q9leRyDrdmrFoysX74iyn9
-         xRdyoNzL6rCeDssKnDW71kEBq+D7r8ug9DgXLfAQ6wpvjjWCs1AUi6IeWKo+mT+LpZwR
-         eJvuwrtsfr9ILABXAQpadCOxXk3XlFMnhNLMV6olAQNQw6lITy/U4mOcndiFnbUyAnZN
-         CESAC7U/8JzJ5fICj3cwfHAOlA+dsLgyEV9FD8ftB2i1qz9V/bIzf3ly5tMSqgUHmMRg
-         TkWXFjzwPc5lV77m7+2ScSXE4xyU0/2VJljQoV3wZ1qsVjy1qDY/X5j8qFXPgqHcG4/X
-         hK+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVev0DtlJShygWDOR/DiW0KMGTlpLloufH4Jo1mY2rhDfvBuqgiwmNRsnBcj7O2ijdLe19ktd/HmFMoVhkupH46zNFPMc5UQpN/A2n8
-X-Gm-Message-State: AOJu0Yx2vMJjQUKcnN3lo5YBzngf9f7e3UeqghpDJR+Ao7qrK16yPhy7
-	sAtATAakrAqd2fR0lw4ghiyIUnOuXYMn9fQnWK9G+ZFi7H5lj+n058JF9UnlXAs=
-X-Google-Smtp-Source: AGHT+IGZPxBDGfs1GmmWPdgYBbbuzmh0oqNysYe208XUtrQBS8ruPHHgQ0FygG9avlS6AY88n1HIyQ==
-X-Received: by 2002:a6b:ec1a:0:b0:7c4:8398:ac64 with SMTP id c26-20020a6bec1a000000b007c48398ac64mr413794ioh.1.1707869734360;
-        Tue, 13 Feb 2024 16:15:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVoTjLI+7jQTSlcz2sbv7KXq9AUXRKEHCUIBP16b9E4j7pskLlJlDZ9IEdtWsLsmQVZWrww6JzE1txJTPJVH3MJTVv5ydQcdsJGIpbKgjBaZJcA8FEl3v7O7fhDZ0NSJsZh8hrRcL1GD/+MvtwFSYdplaRbm2u3zc2RhGJHuHH0EZIvjxCbQvIt3HzXhyz3rIDvetV7UwsskUB13liQdl+iGJerRZYxqtcylOFcL2bTww4+EESP5/USLOPr+6eZ1YhYBdH+7BbpgAn3EcitWCpQZn3GUbzyhHiIaSe4tKOsfyJrzN3Gr59gVejYLM/a4EjL3UcdK83FTk96hEJbk1FDXiwhU1k5wdLDyqctQUX7Hw903pbgV7+tsIgTlGBPY4JEX295XkHm0L8r4wezPiYeM03SQ25GIwUiegekayXJIkpiDlZTjULPZOuckAGwy286xe+2G4WaWD3ihzXA0nrxyVgxXlFGMY2NVp7SEKDcsQQkL6gx469uc40SrFpikyITMtb8CwlYM8n7ydK5dHzKtJIWzD3REkdUQwm3wA0ALLku9Iaxc1wWPuRYViDBV1+iW+bBNNBSxQ==
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id b1-20020a056638150100b00473a063fe07sm2003035jat.118.2024.02.13.16.15.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 16:15:34 -0800 (PST)
-Message-ID: <d66a3b58-2cad-466b-8f6a-cd6a10013b65@linuxfoundation.org>
-Date: Tue, 13 Feb 2024 17:15:33 -0700
+        d=1e100.net; s=20230601; t=1707869796; x=1708474596;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dE2UETRpvF16U4f37LAirje/SMvTyMmWDk49s8xZgAg=;
+        b=VK0IOV/Wl4FffB+tPsmZv8+ufr+A2p1hLfaR0KyORzDbHkRcmVHjFZPLjk7lusBCYX
+         q5DXvLsi8di1p71M+3cLpWjSheLo72Yi/ihbmB8w9UU10jjSV7USLmvnJgVoSmG5HNhO
+         uFjBpwbvMKVK4jRs0hQXq7ErBiGSvzHFOYemsAJRntkJdIBRtLUB0RN6ml7sFeuXyjnb
+         9lMwYH/odM/oOwHHyPjVzbE6OZ20TRRhagWHkmY0oMeC9TItWyrnwCqUiluavVFF9YtF
+         TbaRIiO7nMrsOoqSLdrqEYjKluz/2S9h5nRhZh1xv0AdKw+kinXdatOy4/ypWAxfwhnm
+         xTKA==
+X-Gm-Message-State: AOJu0YyAp0TOwVllbMDae6kC8Jp6SQgtJIZW/tDZ4WxUO0uk9m3nf97X
+	S+iLdlG62JY59TVA8dGKnm35//mkbBwYeIbOwiwPhVzAyhj3QfGP2+/Zi9rsaQ==
+X-Google-Smtp-Source: AGHT+IHJ3aKj7O5FlP5mKnfwqC79okKRRwEuTt+rqMdH8uJz0AMpS6OJQxYmzpXh58S4wjq5eJmd6A==
+X-Received: by 2002:a05:6a21:3a82:b0:19c:b3ea:27ba with SMTP id zv2-20020a056a213a8200b0019cb3ea27bamr1504063pzb.52.1707869795891;
+        Tue, 13 Feb 2024 16:16:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW64+jpFz5kXUa2KhvOrCzbDEq5uznF5TpVCY2bOmO8UHb2gn6CiMR/L7UFPMxYd9IitCIRuFYuR7pbFjS5bGbXXcn8wstyaVxFXAZLO3FcpZ+l/4BJh4TZmt8k+x8DxT4Y0P0vOQ==
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g15-20020a056a0023cf00b006e08f07f0d1sm8011934pfc.169.2024.02.13.16.16.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 16:16:35 -0800 (PST)
+Date: Tue, 13 Feb 2024 16:16:34 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the bcachefs tree
+Message-ID: <202402131606.A70D5347F3@keescook>
+References: <20240212105456.65194f29@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/121] 6.6.17-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240213171852.948844634@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240213171852.948844634@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212105456.65194f29@canb.auug.org.au>
 
-On 2/13/24 10:20, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.17 release.
-> There are 121 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Feb 12, 2024 at 10:54:56AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
-> Anything received after that time might be too late.
+> After merging the bcachefs tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> ERROR: modpost: missing MODULE_LICENSE() in lib/thread_with_file.o
+> ERROR: modpost: "stdio_redirect_vprintf" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "thread_with_file_exit" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "run_thread_with_stdio" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "__darray_resize_slowpath" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "stdio_redirect_readline" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "run_thread_with_file" [fs/bcachefs/bcachefs.ko] undefined!
+> ERROR: modpost: "__darray_resize_slowpath" [lib/thread_with_file.ko] undefined!
 > 
-> thanks,
+> Caused by commit
 > 
-> greg k-h
+>   f894f9e5f0ad ("thread_with_file: Lift from bcachefs")
 > 
+> I have used the version of bcachefs from next-20240206 again.
 
-Compiled and booted on my test system. No dmesg regressions.
+I've mentioned this before, but this patch (and I assume others) was not
+posted to any mailing list before it appeared in -next. This process
+failure really needs to be fixed. Please post _everything_ going into
+your tree to at least linux-bcachefs mailing list, and for things that
+toss stuff into lib/ it really needs to go to lkml too and CCed to some
+subset of people who have touched lib/Kconfig, etc last.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+And, as mentioned before, checkpatch.pl absolutely screams about this
+commit. Lots of code style issues (unnamed arguments in declarations,
+variables defined in the middle of function bodies, etc). Please adjust
+these things so it's easier for other maintainers to work with and on
+this code. :)
 
-thanks,
--- Shuah
+-Kees
+
+-- 
+Kees Cook
 
