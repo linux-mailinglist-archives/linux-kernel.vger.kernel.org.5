@@ -1,114 +1,107 @@
-Return-Path: <linux-kernel+bounces-65845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E838552C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:55:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A261F8552C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:55:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69D81F2AEBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:55:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82D19B29E89
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B574713A264;
-	Wed, 14 Feb 2024 18:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16BA13A26B;
+	Wed, 14 Feb 2024 18:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S121XmqB"
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="apMZOWPT"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D98133438
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E681139571
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936908; cv=none; b=qO5CApT442E9wdoUtUjaiK+PXpKCG5N7a2P2dReBXkNc6y8MppBEhM4lFPG22DesBQI4xvy6sxJIrZJsMsqWLZkiFUUj1xHSRl8LYiB4pit7oQ95zQN7CFewtSSjTiGDe2AiNysKYg9+A0TUoLGJ23xgUBgzjaYGAIxWhSg/u/k=
+	t=1707936921; cv=none; b=ns82qG83geCya8cHTxmK5pTfb2EkoThL7T4pHtpQa0DTE1KAZ8jIX0Yejkc498HacmMc1ith/aTZNtIiVnAwxq5daXmXXHIOncs8TPdHwx3EBbxOwynn/ipiSvSjrnOsqaoHb2uQu3keJ3D2UjEIrByR/lL8Qa4Ihz6r9RbSWFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936908; c=relaxed/simple;
-	bh=lT/X1AIRbNk2Neq323mkmWwsYEJAMoQ7QdshwawIU6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iOM06nfZF3eo5It4dZ3gSwaVRw6Nx/BQr3BTu1UIH/wGswRpVODRAse5XvzU+yphcqX/BJlrnts/hvEV4ISGlUs5gPQZ5kXDtoHwUCU2TgU1uSH3/ZMSdCkPMqJ+zXXPPEBNpQIR+ONIkBclQCdMjQTwJHtCQ1k/zEgMmyqo2S0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S121XmqB; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 13:54:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707936903;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Acyz3pxZ6tCdv6t4q4690mcuB0394xgkvrjHbXOFy0k=;
-	b=S121XmqB4Qi5DZat/IhkTFGklxKssSiWwrtQpzwhO8jfsjtgtAFewhQxjbqx0whAdBMbe9
-	Fyk3P7FsgOcXD5aA/gL0sr9TgmV4fl9YPHU0SixTl80DWi5kAxxP9NJvhUvLBbzRqgzA3C
-	Ox/w7ZMwvC+NKXnyI/FT0xmc3dQ/+U4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Petr Tesarik <petrtesarik@huaweicloud.com>, 
-	Jonathan Corbet <corbet@lwn.net>, David Kaplan <david.kaplan@amd.com>, 
-	Larry Dewey <larry.dewey@amd.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Carlos Bilbao <carlos.bilbao@amd.com>, "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, 
-	Randy Dunlap <rdunlap@infradead.org>, Petr Mladek <pmladek@suse.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, 
-	Marc =?utf-8?Q?Aur=C3=A8le?= La France <tsi@tuyoix.net>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, "Christian Brauner (Microsoft)" <brauner@kernel.org>, 
-	Douglas Anderson <dianders@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Guenter Roeck <groeck@chromium.org>, Mike Christie <michael.christie@oracle.com>, 
-	Maninder Singh <maninder1.s@samsung.com>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 5/5] sbm: SandBox Mode documentation
-Message-ID: <g3llwlzlhatvz2a23cntx7lscqarepq4uyaq6wne6my7ddo3mk@6b64pjcnykah>
-References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
- <20240214113035.2117-6-petrtesarik@huaweicloud.com>
- <20240214053053.982b48d993ae99dad1d59020@linux-foundation.org>
- <2024021425-audition-expand-2901@gregkh>
- <20240214155524.719ffb15@meshulam.tesarici.cz>
- <2024021415-jokester-cackle-2923@gregkh>
- <20240214173112.138e0e29@meshulam.tesarici.cz>
+	s=arc-20240116; t=1707936921; c=relaxed/simple;
+	bh=E7A23eVB+QcyjJSOnbTsqesKEv7J7rv4FPLXbNWF3hQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mqQy4JB0w7Dor0DLXqsDSpCbsR9mFRRDXaqEaYl5hl/xbvihoGyjOeD5kSgJwVV4cmqU7FYT9ioI8I22EMyCXeIzHDVs/ZXtNweNN11uLyvGQ2w2PhPhHWinBp5TJdPP+Oyu1eNBzz2u+5RSvuOV4GsWnF30QcPCV2buti/w9pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=apMZOWPT; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d95d67ff45so300865ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:55:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1707936919; x=1708541719; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F8pBojG5Ph+1av2r+/vw8N+d3NzUsR2t80fTE8XJw6Q=;
+        b=apMZOWPTwgeOLexNgyWnsfghV1LNjfW2KFmLSFsB9LClBl+Stf9Rm43fz2mKAazusc
+         mLcOABBdvdeJKeBUX2a4eKdaKG2eMiubVJ9ul5zl+J4dn7LcnSLiqmY1Kc0rS6K37llp
+         l4AqlGgGVaypx6ub6O6/AoOaGrKmT6+EPcEq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707936919; x=1708541719;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F8pBojG5Ph+1av2r+/vw8N+d3NzUsR2t80fTE8XJw6Q=;
+        b=Re5MuTnaR0DX8ffJevKxmsbbOG62x13XewxgXangLQ18hakbWRd6AwRlftG1f9d1za
+         bGO9ZPEXxFMwg7q0KgWxFq+LlCBKWfWYkn98q8BTfoxr0/z5DCLHCPBEQB1ul+CQsmaT
+         JLvYH6pCBQ35cjjizHPDU2rBezRcnnmfy91oIAI7yWBpYec+h1Csf83kCXxzQ5KT7Dgc
+         nrDGmD71Up4UkTFaBTqR7aifApG6eeY2jVwyvZIe57bkaK3SCWnZ5jMJEBLJ5wH28Amr
+         4DjQD5nOLpnGDcONLa5cdvVZOr1prXSAOu0AzM23ApvLhE2ScUrlh8JQmCSqlOXaK1fh
+         +3Gw==
+X-Gm-Message-State: AOJu0Yy/CnY8QKvFOmqJQiTFj7f64rj+3tQ/TDHVE8tnmAmB2wmRim6e
+	mUBIEOqL54XvnFnBbcR4AkCEV141EruP4n7aTNYe1L053oSroLCOIuPa4sTaZQ==
+X-Google-Smtp-Source: AGHT+IGuQvVjir3zyUTAuYH1w57Im75dP7/2K5h6iQ5XXa7YHY20PGQitQTuG6BoZCd9FIry7YOeng==
+X-Received: by 2002:a17:902:7044:b0:1d9:ba26:effc with SMTP id h4-20020a170902704400b001d9ba26effcmr3411990plt.51.1707936919056;
+        Wed, 14 Feb 2024 10:55:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUIb5NLL6559qfZE28qLRIzmeD3VhVml04Dzqs16AulJBMBcmPRRCEnoPRpLkvAc2kYT6ICn4/qJtTFoAQVBsBdr+P0Dbt2rNWUVM0ETBARtBPEiQwG1/l1XL6XnCWWKdB+mutCCh4IUN0ddAmU
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r10-20020a170903410a00b001d8e4de7a44sm4035449pld.127.2024.02.14.10.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 10:55:18 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Michal Wajdeczko <michal.wajdeczko@intel.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Move upper_*_bits() and lower_*_bits() to wordpath.h
+Date: Wed, 14 Feb 2024 10:54:58 -0800
+Message-Id: <170793689581.601125.11846352168094586184.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240214172752.3605073-1-andriy.shevchenko@linux.intel.com>
+References: <20240214172752.3605073-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240214173112.138e0e29@meshulam.tesarici.cz>
-X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 05:31:12PM +0100, Petr Tesařík wrote:
-> On Wed, 14 Feb 2024 16:11:05 +0100
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed, 14 Feb 2024 19:26:32 +0200, Andy Shevchenko wrote:
+> The wordpart.h header is collecting APIs related to the handling
+> parts of the word (usually in byte granularity). The upper_*_bits()
+> and lower_*_bits() are good candidates to be moved to there.
 > 
-> > On Wed, Feb 14, 2024 at 03:55:24PM +0100, Petr Tesařík wrote:
-> > > OK, so why didn't I send the whole thing?
-> > > 
-> > > Decomposition of the kernel requires many more changes, e.g. in linker
-> > > scripts. Some of them depend on this patch series. Before I go and
-> > > clean up my code into something that can be submitted, I want to get
-> > > feedback from guys like you, to know if the whole idea would be even
-> > > considered, aka "Fail Fast".  
-> > 
-> > We can't honestly consider this portion without seeing how it would
-> > work, as we don't even see a working implementation that uses it to
-> > verify it at all.
-> > 
-> > The joy of adding new frameworks is that you need a user before anyone
-> > can spend the time to review it, sorry.
+> This helps to clean up header dependency hell with regard to kernel.h
+> as the latter gathers completely unrelated stuff together and slows
+> down compilation (especially when it's included into other header).
 > 
-> Thank your for a quick assessment. Will it be sufficient if I send some
-> code for illustration (with some quick&dirty hacks to bridge the gaps),
-> or do you need clean and nice kernel code?
+> [...]
 
-Given that code is going to need a rewrite to make use of this anyways -
-why not just do the rewrite in Rust?
+Applied to for-next/hardening, thanks!
 
-Then you get memory safety, which seems to be what you're trying to
-achieve here.
+[1/1] kernel.h: Move upper_*_bits() and lower_*_bits() to wordpart.h
+      https://git.kernel.org/kees/c/9aa3bb490404
 
-Or, you say this is for when performance isn't critical - why not a user
-mode helper?
+Take care,
+
+-- 
+Kees Cook
+
 
