@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-65854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A018552D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:00:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED31B8552DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A1591C2712F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A95A228A007
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DB713A864;
-	Wed, 14 Feb 2024 19:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508B813B7B0;
+	Wed, 14 Feb 2024 19:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X/1nET5W"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rnKVOBoV"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4178913A264
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC24139575;
+	Wed, 14 Feb 2024 19:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707937209; cv=none; b=YIVeJcyzB1jbJX2mlu6L0Ngg6jscSXJ54F+FjHFLfxWDf5FbQft4R92SSft0Hk8Azi1kFze2MxzuuqzHai8js4+ZFEFHFFKtdxdvU5zhc7PQkYoM88NhBfRh2jwfI+U/CojaUx2XY3JxLo9XAANiENbWrWANN55R1uqr21zt23w=
+	t=1707937211; cv=none; b=CYiBU537oKKNymC46DEFuTPXMcS2fEjIdrA9zMaNvB5v3Bnp1j61jBm/zLeB9QvwYwnlAQ+aqS8TgpPQvPWRfPUAQZcDuirOL1kc7RZdZj/cX4w1m8hiih0UtD+rcEZiLiNp3yq0dn1Ew3tEeDHkrLgqF8GYRTpOu5HvqWOvlDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707937209; c=relaxed/simple;
-	bh=UjVHdWRKxR1wWlwd6TPzyXgOHZ46hNGBZS4G23VAcsg=;
+	s=arc-20240116; t=1707937211; c=relaxed/simple;
+	bh=4jc6g0LFud0Mvqgrbo+tGEeVyeNTU4cJbrkHNFnIVxg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uk+WSiPAwfkoTo0qzVrzAUCSSCWggVdRtwot0Cmlkw3Fj1A8reckTX1l+xURLEFJoE0nW2JWDlsM5vEOBU2FqWgBoEDVkeIgxbVCV6ey0eikjgqjoQbbrtyZ9MO2MxT8hSLKc96XQ2/vfk5KaYlJyCY9VWjoCDto7RK2vkW6E6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X/1nET5W; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 11:00:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707937206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4P041HuvLQ7qtWSEmdckANvsaD0Z2miUICFdYufhm48=;
-	b=X/1nET5WtPtVfcZtVet1QEGDzDL7K064t5P+ZUnZ8xbF7EWyqkGtFsTHy1iBUXEx21LNXr
-	SqhzO+L68HlVXmUP4J6fLej7uI3fLYtv63jfC9iKchwWjhLfOJbDkVRt2A67PT8ZGO5MDB
-	2B37z9Zrxg8evl211A+GeQGjgfQUc2g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
- interacting with an ITS
-Message-ID: <Zc0NsFm40nIqTmRf@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
- <20240213094114.3961683-1-oliver.upton@linux.dev>
- <86zfw33qae.wl-maz@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XjF5gxH6Nh2oOEUJwBKIgmonwBuCXGBDM2IrU8k4JQt8ntYvdbaGflBasjr2xXKHi/378hnbmwPWpgvlUVIVADRQVu2tS1cZqc1cv0e4HEhYqHT2py+R9yin6RljzvlElQNjw/7wOMYjmJDBU7EoIZcshYdblMpb7S1zgE2MyW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rnKVOBoV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=foFpJZ54BtuTBxARzlxsAzGeWzKOUcYpxd8wVsdim80=; b=rnKVOBoVsKHPVo9eorBDHNjwb1
+	EcBJGnPvXMtjFIbHfea3Ga6ZHoG5SkT5KlUzJVQUFepY4phy/SvafFD35XeDH6Ctq9MHWar+cKcVa
+	EQMlXBgs8QO1ORaGVw9ShO8ydsuceXqkAs57A2+b+YBnIiUFiMJ3/ga7+2sZ3lOlD8H8DNibwnzB5
+	mQZApnvIkELdtV2Rx+ZPi8ZxNhhUNVQt/pl+DbAmAh1XiKa0Ox7JNgORj77D1q35Kk/7femrVqfg7
+	PjE9sSzYHtRqZr8LA+dmMu9o/WGPpiLCXszW0TGV56lDa5nQs9XYFc68RmdhsdPH9jNcM82eHZJCA
+	wUGm2WHQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raKUH-0000000HLkn-3GS2;
+	Wed, 14 Feb 2024 19:00:06 +0000
+Date: Wed, 14 Feb 2024 19:00:05 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org,
+	kbusch@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com,
+	linux-kernel@vger.kernel.org, hare@suse.de, linux-mm@kvack.org,
+	david@fromorbit.com
+Subject: Re: [RFC v2 01/14] fs: Allow fine-grained control of folio sizes
+Message-ID: <Zc0NtZrnHIXrZy53@casper.infradead.org>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-2-kernel@pankajraghav.com>
+ <20240213163431.GS6184@frogsfrogsfrogs>
+ <xy45wh2y55oinrvkhea36yxtnqmsoikp7eawaa2b5ejivfv4ku@ob72fvbkj4uh>
+ <20240213212914.GW616564@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,52 +67,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86zfw33qae.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240213212914.GW616564@frogsfrogsfrogs>
 
-On Wed, Feb 14, 2024 at 05:32:25PM +0000, Marc Zyngier wrote:
-> On Tue, 13 Feb 2024 09:41:14 +0000,
-> Oliver Upton <oliver.upton@linux.dev> wrote:
+On Tue, Feb 13, 2024 at 01:29:14PM -0800, Darrick J. Wong wrote:
+> On Tue, Feb 13, 2024 at 10:05:54PM +0100, Pankaj Raghav (Samsung) wrote:
+> > On Tue, Feb 13, 2024 at 08:34:31AM -0800, Darrick J. Wong wrote:
+> > > On Tue, Feb 13, 2024 at 10:37:00AM +0100, Pankaj Raghav (Samsung) wrote:
+> > > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > > > 
+> > > > Some filesystems want to be able to limit the maximum size of folios,
+> > > > and some want to be able to ensure that folios are at least a certain
+> > > > size.  Add mapping_set_folio_orders() to allow this level of control.
+> > > > The max folio order parameter is ignored and it is always set to
+> > > > MAX_PAGECACHE_ORDER.
+> > > 
+> > > Why?  If MAX_PAGECACHE_ORDER is 8 and I instead pass in max==3, I'm
+> > > going to be surprised by my constraint being ignored.  Maybe I said that
+> > > because I'm not prepared to handle an order-7 folio; or some customer
+> > > will have some weird desire to twist this knob to make their workflow
+> > > faster.
+> > > 
+> > > --D
+> > Maybe I should have been explicit. We are planning to add support
+> > for min order in the first round, and we want to add support for max order
+> > once the min order support is upstreamed. It was done mainly to reduce
+> > the scope and testing of this series.
 > > 
-> > A prerequisite of testing LPI injection performance is of course
-> > instantiating an ITS for the guest. Add a small library for creating an
-> > ITS and interacting with it *from userspace*.
+> > I definitely agree there are usecases for setting the max order. It is
+> > also the feedback we got from LPC.
 > > 
-> > Yep, you read that right. KVM unintentionally allows userspace to send
-> > commands to the virtual ITS via the command queue. Besides adding test
-> > coverage for an elusive UAPI, interacting with the ITS in userspace
-> > simplifies the handling of commands that need to allocate memory, like a
-> > MAPD command with an ITT.
+> > So one idea would be not to expose max option until we add the support
+> > for max order? So filesystems can only set the min_order with the
+> > initial support?
 > 
-> I don't mean to derail the party, but I really think we should plug
-> this hole. Either that, or we make it an official interface for state
-> restore. And don't we all love to have multiple interfaces to do the
-> same thing?
+> Yeah, there's really no point in having an argument that's deliberately
+> ignored.
 
-Ok, I've thought about it a bit more and I'm fully convinced we need to
-shut the door on this stupidity.
-
-We expect CREADR == CWRITER at the time userspace saves the ITS
-registers, but we have a *hideous* ordering issue on the restore path.
-
-If the order of restore from userspace is CBASER, CWRITER, CREADR then
-we **wind up replaying the entire command queue**. While insane, I'm
-pretty sure it is legal for the guest to write garbage after the read
-pointer has moved past a particular command index.
-
-Fsck!!!
-
-So, how about we do this:
-
- - Provide a uaccess hook for CWRITER that changes the write-pointer
-   without processing any commands
-
- - Assert an invariant that at any time CWRITER or CREADR are read from
-   userspace that CREADR == CWRITER. Fail the ioctl and scream if that
-   isn't the case, so that way we never need to worry about processing
-   'in-flight' commands at the destination.
-
--- 
-Thanks,
-Oliver
+I favour introducing the right APIs even if they're not fully implemented.
+We have no filesystems today that need this, so it doesn't need to
+be implemented, but if we have to go back and add it, it's more churn
+for every filesystem.  I'm open to better ideas about the API; I think
+for a lot of filesystems they only want to set the minimum, so maybe
+introducing that API now would be a good thing.
 
