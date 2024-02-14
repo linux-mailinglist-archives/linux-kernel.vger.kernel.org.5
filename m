@@ -1,242 +1,210 @@
-Return-Path: <linux-kernel+bounces-65863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 557B18552F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:10:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546E78552F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 243C2B2610F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:09:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09D69282A6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5187213B786;
-	Wed, 14 Feb 2024 19:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1084613A27C;
+	Wed, 14 Feb 2024 19:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hk1jdUmD"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kh9QF0SP"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A141713A860
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497D0171A2
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707937785; cv=none; b=nMKWLUpHyZ/C0HEK0WNBrtBfkIi3oj2EJ6KsGpSUpprYXbR8FVYxoK7nDsg91PrVTo8A9Av+qxGSaOO4AzCCTq9f11uaJS8zPrta1QBFwVa15MJ3rHX1M0XzouPM37mTiSghhf0/3411OUzG6wsZsx6JKG30RroTeQA44wkXJ8M=
+	t=1707937839; cv=none; b=A0L+pZMYm9U94ERzLyEVeFT0dGlF5uYDQje2GiIe0z4Ewun8dOuK6QQfKSNCeFFxbDLQpXdSE8YFa+pNH+obK3YH0lLuL8eUoKTsWvGpCX8WYMAsDw0LueyX3YD3alzNWVpOcoMgOUfA5r2xUcoYoJ8hfNBJSJ9oMmQah4muerw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707937785; c=relaxed/simple;
-	bh=7dJubmbUsQFXN8Bmn/iqqhqzUqvL9YDW9A4PwCTZpGU=;
+	s=arc-20240116; t=1707937839; c=relaxed/simple;
+	bh=gCviKrVLxbB9y0hOk8/aiIqeItVd7YXVOu+7aa27CVU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KHlpsWa8n3emEDidpiSvYPkvLfQnHlHbV0Rm/fQG0yWPEaDycD2YujRxsHguQVdab7hhV1bXbcXoI+5DP8QaeUl3PTtS55KLh+ln00VfZzfqFUmtXog7iZmzJ43U5XWsPEu4E8u87fb/kwAOixv44yIIy3+o1+L7yhl8kmxU8oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hk1jdUmD; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so5290276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:09:43 -0800 (PST)
+	 To:Cc:Content-Type; b=s5bu2ppqzQmJij6odB6JzYbZntjUCSpT/2gJcV7dAZU+Qwpo/NofLVrM7fcuZ+FvIgm9+Rzmu5jBVzren7fedMSPlbgUSkrrNEIv+ZHXbUhnDbP30oAho0s91oc/7zxQm2ylIFhKLyKvtp+PHoYMRqQdvuCQTIIovzJKt3G4GcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kh9QF0SP; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso17485276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:10:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707937782; x=1708542582; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707937836; x=1708542636; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YYQ1iEqH1bC/aeDNG7RWtd5Zq4jRnkeS9Y1nPQkLhuU=;
-        b=hk1jdUmDKoWNYCVQNvuhe/KXccAzQclL6keyuwBfLLOD0iIZidK/XoMxQR4iofKF4M
-         LjE5RxqHumu9djxGPw17mEpxHFTr7hwvgOoqbtvn8kqsayViEua17ouNnxzcvaHG70hI
-         wyVHQyX5+EVFHepnaDFuwmlAMWXVUb0IliyeV9uWw7JuN7rVzti54/1UmAbx3VOCEVtL
-         RHeeUrBIwGZ9bdTGTexEcIhKe1Bg41NU8WWMsj9VHL4fiJjQi3pE/NyVPQe+T7MTxVSA
-         IKRi/StsaDC6aaNYt4BSZSRkW6iYxJvZ3zAxVnKbnyWPTpSVlQ6giq+f1FKDKmVQV8c+
-         IwlQ==
+        bh=Uq831+oypzfGO9lO95Fszd/4mrvaWFJLcRrSZ1YqWm8=;
+        b=kh9QF0SPdXblmlZPbLo/X3RjF1Wnrh2gs4TtRN5eG88F+0yzs3PovZgto7z0f+nWMa
+         qNeGILdd8oz2bM6RrT1t6Jzj1zAEGkNSYxU+6Cl8c0qS0hxQjyYvmHZw3VNjDXlKFekP
+         YAi/6dAFcvPBY1N/Bvrfwh7Xs0Y5KDtDyI2Bcfs9TGCTfuOuMgkkHT7nQGpGnysvZVxT
+         QK8lPps17nqisHesx9AAM4g5yBen2DWQgCpFhnC1o6MrOpmkpt4G+UnjfEuKh95QBdSF
+         YwxOTUd8R0JY3S1PEJDF5cGT3gbIIMi9kscluwsdyIaCYTfs/wcscEaDWPDQd+ctU8Cm
+         U/8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707937782; x=1708542582;
+        d=1e100.net; s=20230601; t=1707937836; x=1708542636;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YYQ1iEqH1bC/aeDNG7RWtd5Zq4jRnkeS9Y1nPQkLhuU=;
-        b=wSb5Q2RGCIEacGOt6OWCCmUl9X354U/4+2LQxwOw8LwhZfoCbOjR8IzvAWrjNVrtTS
-         LD2i8FMOqL3kJF49XoN1zgI/ZfyB+6dHYYDhbUQRknLPGEHbzWcGREbBV5/lTdzLjDjJ
-         5z6PPX4QgVnTHHiT6ZcstO2rzksgRVPiw3BAGuxH2I1o7zbCUGkVbIgdL/06zT7A8h60
-         fBthprub0JrFqKgcU/iwpnZ5iLgrxZf07rwNoNasVtZ49ZBlk8nVzqjOXj7xzdEw+Ifz
-         1sBBquzdHxPIUzUOQYu8NTgSOeaL8uksx1LT8rtIurSmLHXRMfakr9UnMRpsl7J6XqC+
-         Pkag==
-X-Forwarded-Encrypted: i=1; AJvYcCUcOXCTUEEyMU+QP+KSCYDwPoSA6ofudR5LC4PFhZKCsqDuR055b1RF1gxF9amD6Nmib1GyUxloUPvAPktvQT7MGtlybCgbU2dxzE3z
-X-Gm-Message-State: AOJu0YzfdPM4jyJFWa/dq5qfY/IhcGwHESv2aKLy/KTLWIA/xEnlBI+q
-	IcKnHW+Pp8WeG9SD68ADZ8uYSFRxKCj3Q3tR0+jKEnSPNYndYqK8CexL6H45JQe9UadoHvWR9bn
-	esrTPocyjKRKUityxzJXnnr0oj6BjMjzwoeps
-X-Google-Smtp-Source: AGHT+IE0myNa43nYnaJsvlAr1q2GXvgjSojXmvsXBpkzj6lBL3cERK/G4k9guWv0KYdWk2/nQyibRz7ihpshNEhuuEk=
-X-Received: by 2002:a25:2d01:0:b0:dcc:8114:5a54 with SMTP id
- t1-20020a252d01000000b00dcc81145a54mr3243973ybt.43.1707937782071; Wed, 14 Feb
- 2024 11:09:42 -0800 (PST)
+        bh=Uq831+oypzfGO9lO95Fszd/4mrvaWFJLcRrSZ1YqWm8=;
+        b=pHeCMJOsg+V+E29Y/aNagFEmVE4onebF+vCnMhdf/Ej8ICnwdXw3/AFu3EV5Swr/ba
+         YfW+IIF+xIpCG/8+qT93SemOR4GD3gKSa2+GTXTDoe67opUEXhBMvTGxFF8pcbijrXaK
+         Bl9esjbTOk+KR9AX3yc5ZZMHNqJF5LFDuEYconmCsESOqKjqxst4bReRnXD5h4n5cGtU
+         PeJtl47cdItLRUHtn+kUVIeO35Krj8fl6gqslGgnXUMBkOgvPTMR7S1tdfTG2TlrwbqR
+         pExWjm73dybFU3iQb+Tmdt55i2ABUhTgzKlhPSzRJxsdGVx7610/vnbtNXUvVKASOkiB
+         TvLA==
+X-Forwarded-Encrypted: i=1; AJvYcCXxpgJAkFPZcIj3U2qGs/haQM3BG+piaqWiO+pKxCUTab7eTvdB8NGU44SeBnRspE7ZVnCkzEAigcsKw4gmKhLmnSiaIKuInx679MZG
+X-Gm-Message-State: AOJu0Yw+QLQdfnME3k7mYK5jDfcu4QVfMmiarKZC3LNmRpPetOP7JpZ1
+	dK+U76kn7OLHMhIkEF1k/PGJAbauyDh6Ad7+Y9m61YiESEGBguEa5q6pCPYrNRt09uwDo1v1Zt3
+	CcTVM+TNHq1EwYgCpkUsd9v6dB2DNb6Jv4PZoqA==
+X-Google-Smtp-Source: AGHT+IFmsVR2aJSFUOiWSYzFcUYy50TjKK+2YxD61ipvFBAbBI+bFm3GfY2tdB3QV5bM1o3Q0AKeikm65DKhHmKecag=
+X-Received: by 2002:a25:83cf:0:b0:dcd:5c7:8466 with SMTP id
+ v15-20020a2583cf000000b00dcd05c78466mr3316434ybm.44.1707937835898; Wed, 14
+ Feb 2024 11:10:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <4f24986587b53be3f9ece187a3105774eb27c12f.camel@linux.intel.com>
-In-Reply-To: <4f24986587b53be3f9ece187a3105774eb27c12f.camel@linux.intel.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 14 Feb 2024 11:09:30 -0800
-Message-ID: <CAJuCfpGnnsMFu-2i6-d=n1N89Z3cByN4N1txpTv+vcWSBrC2eg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Tim Chen <tim.c.chen@linux.intel.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240213234513.2411604-1-quic_abhinavk@quicinc.com>
+ <CAA8EJpo0yeLyCkVvLFX7wUEV4+i+ORbaCB2qxN0izaWLdFqCrA@mail.gmail.com>
+ <eb8b3bac-5f97-8efd-721e-08e9544be3f8@quicinc.com> <Zc0AR6pdLzDjCrAB@intel.com>
+ <fa63e9c1-3cec-41df-c643-33950346b76c@quicinc.com>
+In-Reply-To: <fa63e9c1-3cec-41df-c643-33950346b76c@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 14 Feb 2024 21:10:24 +0200
+Message-ID: <CAA8EJppqMZFG=wN3kdn75Mx6zYX58LDJHV6Vv3Zuk=bw-h3mRg@mail.gmail.com>
+Subject: Re: [PATCH] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
+	dri-devel@lists.freedesktop.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, robdclark@gmail.com, 
+	freedreno@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
+	quic_jesszhan@quicinc.com, linux-kernel@vger.kernel.org, 
+	intel-xe@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 10:54=E2=80=AFAM Tim Chen <tim.c.chen@linux.intel.c=
-om> wrote:
+On Wed, 14 Feb 2024 at 20:08, Abhinav Kumar <quic_abhinavk@quicinc.com> wro=
+te:
 >
-> On Mon, 2024-02-12 at 13:38 -0800, Suren Baghdasaryan wrote:
-> > Memory allocation, v3 and final:
+>
+>
+> On 2/14/2024 10:02 AM, Ville Syrj=C3=A4l=C3=A4 wrote:
+> > On Wed, Feb 14, 2024 at 09:17:34AM -0800, Abhinav Kumar wrote:
+> >>
+> >>
+> >> On 2/14/2024 12:15 AM, Dmitry Baryshkov wrote:
+> >>> On Wed, 14 Feb 2024 at 01:45, Abhinav Kumar <quic_abhinavk@quicinc.co=
+m> wrote:
+> >>>>
+> >>>> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+> >>>> Lets move this to drm_dp_helper to achieve this.
+> >>>>
+> >>>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >>>
+> >>> My preference would be to have packing functions in
+> >>> drivers/video/hdmi.c, as we already have
+> >>> hdmi_audio_infoframe_pack_for_dp() there.
+> >>>
+> >>
+> >> My preference is drm_dp_helper because it already has some VSC SDP stu=
+ff
+> >> and after discussion with Ville on IRC, I decided to post it this way.
+> >>
+> >> hdmi_audio_infoframe_pack_for_dp() is an exception from my PoV as the
+> >> hdmi audio infoframe fields were re-used and packed into a DP SDP
+> >> thereby re-using the existing struct hdmi_audio_infoframe .
+> >>
+> >> This is not like that. Here we pack from struct drm_dp_vsc_sdp to stru=
+ct
+> >> dp_sdp both of which had prior usages already in this file.
+> >>
+> >> So it all adds up and makes sense to me to be in this file.
+> >>
+> >> I will let the other DRM core maintainers comment on this.
+> >>
+> >> Ville, Jani?
 > >
-> > Overview:
-> > Low overhead [1] per-callsite memory allocation profiling. Not just for=
- debug
-> > kernels, overhead low enough to be deployed in production.
+> > Yeah, I'm not sure bloating the (poorly named) hdmi.c with all
+> > SDP stuff is a great idea. Since other related stuff already
+> > lives in the drm_dp_helper.c that seems reasonable to me at this
+> > time. And if we get a decent amount of this then probably all
+> > DP SDP stuff should be extracted into its own file.
 > >
-> > We're aiming to get this in the next merge window, for 6.9. The feedbac=
-k
-> > we've gotten has been that even out of tree this patchset has already
-> > been useful, and there's a significant amount of other work gated on th=
+>
+> Yes, thanks.
+>
+> > There are of course a few overlaps here andthere (the audio SDP
+> > I guess, and the CTA infoframe SDP). But I'm not sure that actually
+> > needs any SDP specific stuff in hdmi.c, or could we just let hdmi.c
+> > deal with the actual CTA-861 stuff and then have the DP SDP code
+> > wrap that up in its own thing externally? Dunno, haven't really
+> > looked at the details.
+> >
+>
+> Thats a good way to look at it. this packing is from DP spec and not CTA
+> so makes more sense to be in this file.
+>
+> In that case, R-b?
+>
+> >>
+> >>>> ---
+> >>>>    drivers/gpu/drm/display/drm_dp_helper.c | 78 ++++++++++++++++++++=
++++++
+> >>>>    drivers/gpu/drm/i915/display/intel_dp.c | 73 +-------------------=
+---
+> >>>>    include/drm/display/drm_dp_helper.h     |  3 +
+> >>>>    3 files changed, 84 insertions(+), 70 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/d=
+rm/display/drm_dp_helper.c
+> >>>> index b1ca3a1100da..066cfbbf7a91 100644
+> >>>> --- a/drivers/gpu/drm/display/drm_dp_helper.c
+> >>>> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
+> >>>> @@ -2916,6 +2916,84 @@ void drm_dp_vsc_sdp_log(const char *level, st=
+ruct device *dev,
+> >>>>    }
+> >>>>    EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+> >>>>
+> >>>> +/**
+> >>>> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
+> >>>> + * @vsc: vsc sdp initialized according to its purpose as defined in
+> >>>> + *       table 2-118 - table 2-120 in DP 1.4a specification
+> >>>> + * @sdp: valid handle to the generic dp_sdp which will be packed
+> >>>> + * @size: valid size of the passed sdp handle
+> >>>> + *
+> >>>> + * Returns length of sdp on success and error code on failure
+> >>>> + */
+> >>>> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+> >>>> +                           struct dp_sdp *sdp, size_t size)
+> >>>
+> >>> I know that you are just moving the function. Maybe there can be
+> >>> patch#2, which drops the size argument? The struct dp_sdp already has
+> >>> a defined size. The i915 driver just passes sizeof(sdp), which is mor=
 e
-> > code tagging functionality included in this patchset [2].
-> >
-> > Example output:
-> >   root@moria-kvm:~# sort -h /proc/allocinfo|tail
-> >    3.11MiB     2850 fs/ext4/super.c:1408 module:ext4 func:ext4_alloc_in=
-ode
-> >    3.52MiB      225 kernel/fork.c:356 module:fork func:alloc_thread_sta=
-ck_node
-> >    3.75MiB      960 mm/page_ext.c:270 module:page_ext func:alloc_page_e=
-xt
-> >    4.00MiB        2 mm/khugepaged.c:893 module:khugepaged func:hpage_co=
-llapse_alloc_folio
-> >    10.5MiB      168 block/blk-mq.c:3421 module:blk_mq func:blk_mq_alloc=
-_rqs
-> >    14.0MiB     3594 include/linux/gfp.h:295 module:filemap func:folio_a=
-lloc_noprof
-> >    26.8MiB     6856 include/linux/gfp.h:295 module:memory func:folio_al=
-loc_noprof
-> >    64.5MiB    98315 fs/xfs/xfs_rmap_item.c:147 module:xfs func:xfs_rui_=
-init
-> >    98.7MiB    25264 include/linux/gfp.h:295 module:readahead func:folio=
-_alloc_noprof
-> >     125MiB     7357 mm/slub.c:2201 module:slub func:alloc_slab_page
-> >
-> > Since v2:
-> >  - tglx noticed a circular header dependency between sched.h and percpu=
-h;
-> >    a bunch of header cleanups were merged into 6.8 to ameliorate this [=
-3].
-> >
-> >  - a number of improvements, moving alloc_hooks() annotations to the
-> >    correct place for better tracking (mempool), and bugfixes.
-> >
-> >  - looked at alternate hooking methods.
-> >    There were suggestions on alternate methods (compiler attribute,
-> >    trampolines), but they wouldn't have made the patchset any cleaner
-> >    (we still need to have different function versions for accounting vs=
- no
-> >    accounting to control at which point in a call chain the accounting
-> >    happens), and they would have added a dependency on toolchain
-> >    support.
-> >
-> > Usage:
-> > kconfig options:
-> >  - CONFIG_MEM_ALLOC_PROFILING
-> >  - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> >  - CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> >    adds warnings for allocations that weren't accounted because of a
-> >    missing annotation
-> >
-> > sysctl:
-> >   /proc/sys/vm/mem_profiling
-> >
-> > Runtime info:
-> >   /proc/allocinfo
-> >
-> > Notes:
-> >
-> > [1]: Overhead
-> > To measure the overhead we are comparing the following configurations:
-> > (1) Baseline with CONFIG_MEMCG_KMEM=3Dn
-> > (2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)
-> > (3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy)
-> > (4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn && /proc/sys/vm/mem_profi=
-ling=3D1)
-> > (5) Baseline with CONFIG_MEMCG_KMEM=3Dy && allocating with __GFP_ACCOUN=
-T
-> >
->
-> Thanks for the work on this patchset and it is quite useful.
-> A clarification question on the data:
->
-> I assume Config (2), (3) and (4) has CONFIG_MEMCG_KMEM=3Dn, right?
+> >>> or less useless.
+> >>>
+> >>
+> >> Yes this is a valid point, I also noticed this. I can post it on top o=
+f
+> >> this once we get an agreement and ack on this patch first.
+> >>
 
-Yes, correct.
+From my side, with the promise of the size fixup.
 
-> If so do you have similar data for config (2), (3) and (4) but with
-> CONFIG_MEMCG_KMEM=3Dy for comparison with (5)?
-
-I have data for these additional configs (didn't think there were that
-important):
-(6) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)  && CONFIG_MEMCG_KMEM=3Dy
-(7) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy) && CONFIG_MEMCG_KMEM=3Dy
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
->
-> Tim
->
-> > Performance overhead:
-> > To evaluate performance we implemented an in-kernel test executing
-> > multiple get_free_page/free_page and kmalloc/kfree calls with allocatio=
-n
-> > sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
-> > affinity set to a specific CPU to minimize the noise. Below are results
-> > from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
-> > 56 core Intel Xeon:
-> >
-> >                         kmalloc                 pgalloc
-> > (1 baseline)            6.764s                  16.902s
-> > (2 default disabled)    6.793s (+0.43%)         17.007s (+0.62%)
-> > (3 default enabled)     7.197s (+6.40%)         23.666s (+40.02%)
-> > (4 runtime enabled)     7.405s (+9.48%)         23.901s (+41.41%)
-> > (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
-
-(6 default disabled+memcg)    13.332s (+97.10%)         48.105s (+184.61%)
-(7 default enabled+memcg)     13.446s (+98.78%)       54.963s (+225.18%)
-
-(6) shows a bit better performance than (5) but it's probably noise. I
-would expect them to be roughly the same. Hope this helps.
-
-> >
->
->
+--=20
+With best wishes
+Dmitry
 
