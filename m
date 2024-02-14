@@ -1,107 +1,92 @@
-Return-Path: <linux-kernel+bounces-65898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6E485537A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:52:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD8A855382
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A927B1F257F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:52:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A75DFB23B17
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E1713DB85;
-	Wed, 14 Feb 2024 19:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C62413DB9F;
+	Wed, 14 Feb 2024 19:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Huc0BueD";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="rvkRPMDb"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="c8moNkxX"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2041.outbound.protection.outlook.com [40.107.105.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C8F1339B6
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F6213B7B1;
+	Wed, 14 Feb 2024 19:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707940361; cv=fail; b=cr0CWkzDRk0ARRVmkt/ZuqzepBngm+RHkCZhbX6YEPu2ZOtX1/mTjSxT+7UG3Vb6RnzOd5PWxQfG8XZai52bG6DIygzH7s75ZuJKJ+zLgNQBRlPJNPB0j0JNwMi4zHXMPOuYMvKF7/VRljRIUfACdNVPrn2rva7Lqe3AWnzi/Qo=
+	t=1707940492; cv=fail; b=JZ/2EscIfc3AZSmy6Ce7KTYwi/g5rQgOKSBnSSB4oDEv0kf2dS31Qo2HvpidOmAjXC/iMQdvT8m94rudgH/FGjtZk1ShOjVF+U87/UNJ7nVDLes9e1MTvwichWV9umVnjRoYBJVzA3RlXHJS4DAyPHSYYw/Y6hecvqvE3sJhF+0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707940361; c=relaxed/simple;
-	bh=2VBLjZmTKMWX4QYYQwOXOKcwG21HRi0TO18DVOllXTg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tbtz6rlGFGeXgGUcONvQcnyITjNMqLCTszvr/Og5TGF6S7Xwdl0iihX0IJ8qPN5TmXi/2ThstdsnHzbE2zKD613Viirm534eT4CPLTkzslAulN3DCfjBOw3uqgwC91gy53nXF9vtjMjtHZXG7arMXRYAXWdRKn4WM/WpbrVryTk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Huc0BueD; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=rvkRPMDb; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EGsnwq004559;
-	Wed, 14 Feb 2024 19:52:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=I5C/7/Qei6RQj7fhQtoOK6K1Vj5aGccQKHCKXrr4A5I=;
- b=Huc0BueDqnoAbbh+OZUFzo3Sp2ZZZfHVldnBXNlVCkRKdk2F2+xRYZoO0PInVL97UrVK
- HdUAmuKY+0rYc8Vp/+4Dt0uDgr7nP/qXj2gIjVxfHyoz5WHMuLmev58nzXyEDi4CYcpu
- yoAXPerH7AU/Jv3J6irVmho7hc2+sr49fCakW3jis+/OStWxNPgGo1tJXKnDOB986wDN
- llAPA3pstVtEVEBD2PxerILt5KYJQ2QNSKmFEzixTQGM1DcvvfqN+U3DQvIyTXPU/UNN
- HNeh85UEQCiINCOnCWUkEJmHdvBj93CmfW4IehUlEba6f4lfgSTAv+2w2pRENOu1+YTc 5A== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91f00feu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 19:52:24 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41EJ1G9U015037;
-	Wed, 14 Feb 2024 19:52:24 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yk9eg4x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 19:52:24 +0000
+	s=arc-20240116; t=1707940492; c=relaxed/simple;
+	bh=bdI88T0TmkcbTNHph+tQCKi93H9QnnRAatF0vJ9QCIg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=QQ0osgqrE1vsOsHQm92IqzAW31DQUjXU1GUvUK4ow1sonxg127MN23k9OH4Xt1ZrKtEe+NMTc9U6sTaNeCtfdeG7BDapoGyqGNLOnjUKJjrDG/tYDjV035EXshbuSNvbROP86UNtVxeRojecl2aFYbhwbH4OU+m2OiRQ7UPj6QQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=c8moNkxX; arc=fail smtp.client-ip=40.107.105.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Np7E4eUdOrRDywvzZjM5Ne4rWLsxZuDcVENSAayZrab5k3eyfGB8/4q55zvDtRj9asYWAxWDaMccNfjWVtO9frTEIT37M/ExpAN+7bpJI+mKivswe55ehlG4uqBfMYcjTlTc1MG3LTXIuom7FkS3GdDZ/Qe3+IArAcdpcZ9askSKMq9ugp0n3ufKg6CoXEnSovy4/YkmNex3flu9p001lW7YmWsPHnSdpeYh4t1BNWo4A2E67XRCHDmqvlcpBbGEK/f9tFEE78RVr+hDoir1M38el4l0HLEl287U5lMZNVczSaYjZ856xXqVtSpq+IOGlwWn9maotqfMvThq5lF6Ww==
+ b=mxBiDCv5u71LPWDAp/4c2vm3Mg5602BrClR3XSOCpjcOsNkOiJgRlV9EynCM+mFj0D9VTXsZcO6UQINcb4XtNx0GHjNxos7VK1yGhZTswrDwB/81VBxiVt7jdA07Ext9d9EDTU3L5i+1W0UHryaLjflJ1mcPXUhqAj0nY2uCsRYxj//15YQqtaetANfXctIY/YTeql2d1rCzfYtmC7pbn57vYcgIsvaKXNCxoLar4QJGLPf7ixcDTKaLRKtegYFFJys8GXWQen08Le2yAeWcqGUXxVjAUk3LJnfB6jbhiHgED755IWwVnDoXrjo4KgDnWZ7GSnvMQesHwzf+BliUpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I5C/7/Qei6RQj7fhQtoOK6K1Vj5aGccQKHCKXrr4A5I=;
- b=hgtqhgZ4H0npuqWrN2oRqh7F4GOB5DBxlmDT5x/8HDcy6EpH40QG/cZ3MX173/Ob/Zf/G1tOhC163nu55eRqjNRYmI2Pt3fxFtwdCEFIJMFLRpGxabOevvXb2dm8crloBIMNoP9bPH53IHjP68tM+YkzL2ukUc04WbwqPVLrZmQ3900nXbgSy/yAQUZyJLl7azKwjDXUJKSXDNnF8uwIzSsjDA0t0N2FgUr5q0wKhPjbtNwHM9xEuWPcsB/QmpJ+D8COsNNvUZKxyBxcwWcGkkXD1/al6sf87K3goV9NLcNmbBzhIx3TY7s1grLOB+VBxUfR/oPDCK5txihuWRsUog==
+ bh=NCuJnjmRo0IcjvQtw3yJ0ysdOTPVEMYlUWIdw7TkBh4=;
+ b=oX7/SK/W2aUQj6vFd7FVnhcDgu1G41dpY4WF/GlyvovQB8j539Ap0ZAlvKPAKdi7ojnb3IK4jI/hlFoMFztnOZcGJkB556kUNqSVIOvWz59MKLBVybIl9vlCsD11MOQ1QZlBJG+9KanAhS2ii5W4Kphw7JktZYhJx/Ot0+tSSIlIA8TSLq4WQ6qtDZ+U+lVZwSGqLhi4khsbANM7PhHolwrhA+AbgkzBV9V5o+Eq5aAPZcRBUcMFcnVkXwKIqRlZ2LDTujXxQEw0ERu8ePHcfLZ5r/sRxq5zbOni4qcpdStaCNGw0OWDISwPCgob46mkex3gSm6sV+NgXByGKsdT1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I5C/7/Qei6RQj7fhQtoOK6K1Vj5aGccQKHCKXrr4A5I=;
- b=rvkRPMDb56qYIAKaSFrs1bNRmWTO4BfEO9NZ/QeebTzn4HJ14gW04GrG/tso6cVb55ftJlnsftsd1B5J3TR6wgBJyHLTuepDPj22TEYItmSuEpGMMgofX5ZpSKLDeXNiZJMuytbfpyxA4TG9IQ+N5MjmuAI9w2UaywNoNxFrgTQ=
-Received: from SA2PR10MB4684.namprd10.prod.outlook.com (2603:10b6:806:119::14)
- by DM4PR10MB7389.namprd10.prod.outlook.com (2603:10b6:8:10f::19) with
+ bh=NCuJnjmRo0IcjvQtw3yJ0ysdOTPVEMYlUWIdw7TkBh4=;
+ b=c8moNkxXSznJuME01x3OIxS3YD102ATURKfr60HqN4nHMrWX52bqgD7aYb5g1T/NnVt9oJz50HRg3bLw1O0cTCsMYt2eg0xEZZvkdP6WGtXxd+LzY5AGFEf5ZMf6wqbXEodfLcJv+D6biN7/H4ODb9vPhnhw1RDhjcreMb4BbQc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8911.eurprd04.prod.outlook.com (2603:10a6:102:20e::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.40; Wed, 14 Feb
- 2024 19:52:21 +0000
-Received: from SA2PR10MB4684.namprd10.prod.outlook.com
- ([fe80::c3ce:7c28:7db1:656b]) by SA2PR10MB4684.namprd10.prod.outlook.com
- ([fe80::c3ce:7c28:7db1:656b%6]) with mapi id 15.20.7292.022; Wed, 14 Feb 2024
- 19:52:21 +0000
-Message-ID: <996cfabf-c612-43c8-9e56-03fb58a1ebec@oracle.com>
-Date: Wed, 14 Feb 2024 14:52:17 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 3/3] vdpa_sim: flush workers on suspend
-Content-Language: en-US
-To: Eugenio Perez Martin <eperezma@redhat.com>
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-References: <1707758174-142161-1-git-send-email-steven.sistare@oracle.com>
- <1707758174-142161-4-git-send-email-steven.sistare@oracle.com>
- <CAJaqyWfYHqf2=8BMo5ReKEB137fxGZR4XEJ2d4imXOOXAX2wHQ@mail.gmail.com>
- <e1b80fee-30df-4733-9072-ce67e3edc72f@oracle.com>
- <CAJaqyWe1=eQ4eQyv+wOqbr3pfZst6gmss2SrDZSNkY_ZVXcf=Q@mail.gmail.com>
-From: Steven Sistare <steven.sistare@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <CAJaqyWe1=eQ4eQyv+wOqbr3pfZst6gmss2SrDZSNkY_ZVXcf=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.27; Wed, 14 Feb
+ 2024 19:54:47 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7292.027; Wed, 14 Feb 2024
+ 19:54:46 +0000
+Date: Wed, 14 Feb 2024 14:54:38 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] dt-bindings: PCI: dwc: Add 'msg' register region
+Message-ID: <Zc0afuq4t0TwOkZ6@lizhi-Precision-Tower-5810>
+References: <20240202-pme_msg-v3-0-ff2af57a02ad@nxp.com>
+ <20240202-pme_msg-v3-5-ff2af57a02ad@nxp.com>
+ <eg7wrjp5ebz43g37fvebr44nwkoh4rptbtyu76nalbmgbbnqke@4zugpgwesyqd>
+ <20240205183048.GA3818249-robh@kernel.org>
+ <ZcEzYdZKotBJlR5i@lizhi-Precision-Tower-5810>
+ <ZcK2/tmLG9O7CBEH@lizhi-Precision-Tower-5810>
+ <luk5hswq4wnk5p7axml73qih35hio3y3pfnklctbn6rwres62s@mumnvygjh5ch>
+ <ZcOpehO3rzCfAwXf@lizhi-Precision-Tower-5810>
+ <gl7zmzkezr6k4txrrgqyikspfah3vmgwwz2e3j5kwb2iarpkxv@3ofwrhtxl2sz>
+ <20240214061412.GB4618@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0097.namprd03.prod.outlook.com
- (2603:10b6:a03:333::12) To SA2PR10MB4684.namprd10.prod.outlook.com
- (2603:10b6:806:119::14)
+In-Reply-To: <20240214061412.GB4618@thinkpad>
+X-ClientProxiedBy: SJ0PR05CA0151.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::6) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -109,150 +94,265 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4684:EE_|DM4PR10MB7389:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f3fc4e6-9403-4d28-c082-08dc2d967554
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8911:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e30fae9-b162-467a-8501-08dc2d96cbba
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	PxkNf/n78gep1YrCMFcIGGKyqUwaEhD2dqMLXgMWi2ewNK+Ko8gMALHg7Npfrmh+FyWn8Vu92+1xABIy525WiJkPFtxTX+Sm/nymEefxIN6kVHIviA0RyOAZ45oTGahUF82nG+QVq9eaikANPvM2ue9QJDCRTMCrhSEnaosEBMKXZZAl+SmJeUXrV5pBNkqy4dGOGjfHcEuejuh0NcmQkywWDudkKMRa16SZ8wMaEfZJX2GRNAqYInD13RgeklTaFo+zBLhdLpNwHeyTRI+DwvJayHrXKJj5G9gicufqZVvIOUnK4D0E5G9c+WzXs6J0WYKdb2oBKt9vU8hxK3rsdH6fPeFkSH18ll266nUAd9Kt0B46SBSY05Ax4UyD8CmsTm5lwa67gWZ1ah8rXhr8j/H0ypCMj8Ex3KCWljsoXhtNpTiEI1UwY5UbBk0/ahz7M+nW3VtrdJsHpA+O1tmZjRAqgmJJ+xjPJ+45zfXklLV6FT31NNSDKKSg6ZXwJhWdChoOdCZokDPgnzmesn95lp/nv9Ba65LENX7s3B0pa9HHgnUJ012BbV0txwU6tel4
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4684.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(54906003)(6916009)(316002)(41300700001)(31686004)(2906002)(4326008)(15650500001)(86362001)(66556008)(66946007)(8676002)(83380400001)(31696002)(5660300002)(44832011)(478600001)(36756003)(6512007)(53546011)(6666004)(6486002)(66476007)(36916002)(26005)(6506007)(2616005)(38100700002)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	8WTsLmMxmMWh0RLsyFH9DN2DmKkh1KkP166keV43QDy6MaTTknGUF4omrb6ZKVa6LfKWenygxwwDhfG2rPfk8kHoSwQ0sEUhtQjkWG1IOVzp/2i1YjkbIpwy185lzn8eoKBwaP+lQPOnouR1o3xeHGuJST5LlfdKgs1ho3E8+UzyknWCzU1G9MT+QlNNbByDRbzljBXV/IXshl3/TbqIWJYESO5YWXTJHSdutUM7/gWa1wSpq3pTsMtaGG0wmrtuRCN5NqS2jFQCaZxMg3oGvlTlK62jyyCocBV0Xg1TFgb9thBAUaD6pW66NjHhBEzpXX1wzRuCiVAGFkYO8wpMCL6Vmoph5tqPPqVZHpaVM6c7paVx2e4XK4MoHV6M7qEPD6FSaHoeSTzaSU14lD9ABdiGjvbMEKJ0pQ91etd1XGQ3CkMZnPM9X7WNZFm5I+qggudBWcPJJ867VD1NLgicNA9r0p0Lx+tzidRzZJXehaf0PTmWQScJFszx9Yc10/nuT+TPi9Pbi1ZlFeg2eEKE+GbN2fF8W9AOEnb+Nz/N4y99L9IvIcEhwS+MdA7qjEEhcYkePo1S0aHgNs8eJUbeHpWc5/42A7IohnOIEg1TxEc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(7416002)(5660300002)(66946007)(6916009)(8676002)(66476007)(66556008)(2906002)(8936002)(4326008)(66899024)(83380400001)(38100700002)(26005)(86362001)(38350700005)(54906003)(316002)(41300700001)(6666004)(52116002)(478600001)(9686003)(6506007)(966005)(6512007)(6486002)(33716001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?eVp6Vys4eWdtc3pkQ1VIUUxjTU4vMVg0cjk2cE5CSUVCb3Y2aHhwZXlXTTMy?=
- =?utf-8?B?dlB2Y3djNHVnNG11VGQ3OE8xamJZTG1Rd3ZiKzVYMWhHdk5YMXp4UVBsakp3?=
- =?utf-8?B?UkVtcjBXb05udCsvZjhSYnp0aVh0bkVWb0QyTTNFdGZEOGhMZGk0aHF6eXFa?=
- =?utf-8?B?OG01ZW1Zay9zL3BSbmMzbGYrTEVEU0hUVWxZYzA0dzhxRnNmUDB4K3JZS1N4?=
- =?utf-8?B?T2tKUjFNRWdxQ1JCMXJneGt6cWM3akYzUS9ZNlZjVVF0VXZVM2hCNHRIclZW?=
- =?utf-8?B?SzN5bVBxQU0xbHZuK1FoNEk0QlM0RjZvM0IrWmJtMWw5VVBSVW1tOWNKeFN3?=
- =?utf-8?B?TGdVcDNjMUh5ZWFrMkNwWnRNVmlXTDgvUUE4SmpzM1R6V2Nabyt0UkxZSnFo?=
- =?utf-8?B?YlFkdE10bThodEdvWWhNL09rSHVSNVRNZHFxWkdwZnAyUThOaFFQcjdkQ3ZB?=
- =?utf-8?B?SnQvRDh4Wi9sNGVkeDI3V0w2Q0JyT3d0OWxEYkNFRlI4WGUzTnlQK2IxNzVV?=
- =?utf-8?B?Sk5KVjRtZUg5SUhGelFheTRDOVpQK255bjE1MXFQVjkvL1NzcXlvYzEzN3JQ?=
- =?utf-8?B?TGw2SEtrM2ZocnRDN0Mvc1J1M1dzTHV6RzNrT3k4b2hLZ283eE5OZm1kQ0d6?=
- =?utf-8?B?VGhBZnJibVdxUktkSksrRmVoZkxFaFV4K0owRU1GcFg1RGpEbzBQY1RjNHE1?=
- =?utf-8?B?c2pPOEUzWFZEL1NwTExKdXZyOW9ONE5xbHBRUnNVUytVWWl1WWk1MENyT3l2?=
- =?utf-8?B?NGdEdW84K2hRcVRzNDkvTWJaZjhmOVZhb0RtT0lHc1VMRkUxcVpBeHMxcXpG?=
- =?utf-8?B?eks1UnhwTnBydjBPbWdsRlljamFYTzdJeDU5NkZrbWVwYTJTNHVzYmZ2emNP?=
- =?utf-8?B?NWNXV1hOMHZCVk8rYndTVE1wVTMxa2d3S25TOE1UMGNScmZyMTFBc2pzRXNF?=
- =?utf-8?B?TDM4YXg2bFdLNlBmdkl0WitQN0puN0w3TVNmQXYvL216ZTNIZTZjS1RaMVEw?=
- =?utf-8?B?YVJZeVZ0cExJeTVWTFZzUHJ3akJRb1BKK01FbG9va21VVVE4TmE2UWVIR3dS?=
- =?utf-8?B?QzdJM01hTEVzWUdjR05OcU52bnhaNFhXWldzMEdpRk1PUnh1cVcrRHd1WjFE?=
- =?utf-8?B?cHM0Vlg0bEpjREhWbnhnYWUreXFrR1hqQStUM2tMZ1N5enFLVkNiVTZxL2Jj?=
- =?utf-8?B?S0pTcDFuQk5Ga1BWVWVUQ1BHbUpnbjg4NHRwbFBQc0xYTUZSM2I4WlE5eDdF?=
- =?utf-8?B?TDlQbGRMdmFzZ0l4ZkRCMzFhMmF1LytZakJ1ejB3ZTk4cDVtTDZDMGgxNzVX?=
- =?utf-8?B?Rk1VNXVqSEVqTXpzcFhXNm5vS09WMlBmRVdETDQ5MFNPMkVSdUluQjJOMTZW?=
- =?utf-8?B?c3htZ1BUc2o2akp3d3hhRkxEZlBpNjdWdnVMTGs1S3ZEUkl4NVdJZmF0RmVF?=
- =?utf-8?B?Y2Zhd0hxOWZHc3VOd0FVbURFaTNsc3pIZFo5TUxtS2VIOHU0REZKdEJvMGF2?=
- =?utf-8?B?VVhmcFYxTkM4T0NmL3hGWnlZYkZvN1I4M2NpVmt5dXQrYmpKa1RBdEkzWExr?=
- =?utf-8?B?Mm1UMGJkVkRuV3pEcTU3VlhpeEhpd2FOTXhSSzlWTUZuWUlmcUZTcW05cVEy?=
- =?utf-8?B?aTlxcHo1amNIbk9kRXhRSEsvc3RlOHY1SXgzZ0Mza0VwSis2cWJrR1Q5WHkw?=
- =?utf-8?B?TzUwdzVIek9DcHJiOXdFbWZoM2J5ZWUrMlUva3djcVVjNmkyWFQ4NU51ZjBS?=
- =?utf-8?B?bXNWYVhPakJhNStBVGk2WlhIYlhUc09kMEpjck5NTytiOGpvRnZ6blpRZXVJ?=
- =?utf-8?B?MW1qZnJuaXdXc3RGVVRGUldwT21SeGRvcERwRWFST2RwaEl4RVVuWmFpV2Ey?=
- =?utf-8?B?ZDN1cXhlMnNUdXJVZnM3RjNSVmFadWJvbjJXbmJSREUvME9lYW9DamQyU2Zx?=
- =?utf-8?B?dnBMU2pvMG9wSVpaUE16dUM1Z3RENkc3QWlFZE4rQUEwOWxkVzdQa1lnaG1X?=
- =?utf-8?B?OU9lS1duNER6MGUrcXNMNGk0N3RTU2JJU3JMdXBvWkV2QWpreUFjNnhWVlR0?=
- =?utf-8?B?T2JYRXVKSkF1K0k5c1JTM0tyYUVoUE1FNE1hWEtXeVgxT3VaZ0djTXNiRnV0?=
- =?utf-8?B?Yk1STWZ3TzVHSHJWRm5TQkUwSDB4eUw4ZVF1RkprcmJJRWx4S2Y4UHZDelln?=
- =?utf-8?B?b3c9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	R7Mi7naTI90njtzvt7Y7HE8egr9LZLezW3+m4D9QFDCTg82VNqFKDgXkz/Vc9DH3LGwur+dY8rLjd9SdlWeDmyPRLa7DGz7vR341hVoALh1+/38rRrOcKzpwChlzSPoZ6gwRE7DY5HHCqme12xLu0p2+foUyPgYBp49ojvRPVWXnpaZ98s+0Wt3hENB44lLlklMJjxjedv+Ox2qypztwPwdHgZ66HxzREQNOrnwODNaTPsfK++zDpxTw5MO7RUAN0C2WggjSRgkZNLjf35FMbRh39Nzd4uToTy/r+zaX0FkCQiATCChEyTo5fjOGgqbcN1uEhqEAxdKVqmYLh9Tf+dNecFD3XSczIers9EgEnc8SPdfNS4XBABuqax1oIFXqj1eEfuLcN14MAirB/qJeRkrTo5Qq/YzYduAhpNyfjRbQiQTj3/bkbKJvWsp0UVTytUUCkRFO6PQFNCBDv82HlOCYkhn6Hphf+QHa8nwJIjZyqhZnngmDPBmydF/9HyXEnqRMEQic5CwSIu8gSU5H+32vHMEf98d8l826jAZfPd7IZK64+IpuJJpmvBPppltL4ZAxvlNVqU7ZUkK6gtxHKUNOIRN7p1Iz0377Y1++npA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f3fc4e6-9403-4d28-c082-08dc2d967554
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4684.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SVFSRWRMWnl6ZlQrT0NVK0R3N0hqR3JzWGlFanJHME5uNE9nRlZwclRRU2Zw?=
+ =?utf-8?B?STVFWXAxZzhBSU1UK3FuZWVvRHh3ZVltSnpPQk9lZSt1N1pHam1saWFVYTlB?=
+ =?utf-8?B?aWJxcjdWdGZvNXJUVU9EbkVTVkFybndVaEhXdDdETk16UVVsV0pFbUhMVW53?=
+ =?utf-8?B?NXRBSElJMW94YnFncUprYTE5WklLdllwcHJ2WW8xdm9jajFPSUJXcGFwK2xC?=
+ =?utf-8?B?Yy8rWUhiYjh6RTBzaTlPYWpBTzM2N0lMd1UrZXZjemRqVXVpMXlOakpiN3VZ?=
+ =?utf-8?B?eFdRallWbDdMNlZZbUlnNWRaWkRhMk82ZGFMNmZSK0J5OWtHVXBWTHRXZXRk?=
+ =?utf-8?B?TXNkTE56MnFNZnR4TjFBdFZ2UXhNK0RLWWNiWkZBb3dhajFkQXRoSE9Ed2pr?=
+ =?utf-8?B?Q1l0b2Zpejlad0o5K0FIdEhHUlVKWDdJa0dJSHJYR2JmUGJxSE0rTm9rVEVq?=
+ =?utf-8?B?OWF4QzRFd3lOUWNobFlaKzMzNWJHNEZ2ZFc4T295RDVNTHJ1aU8yTXp6TVJM?=
+ =?utf-8?B?YjVNVnNtZ3A1bHpvVjgyd3czN3JMaWV6VWs3ZUQwTlFQTjNHbVpDcTdmdU1E?=
+ =?utf-8?B?TmtLczdQZHE0d2hMYjFTSVZLYnhvVStLSmhaQlZISWVaaFFVSnR3L3NLRmNE?=
+ =?utf-8?B?VzBrKy9KWXRML3hzSWhqMHFDRVJjWEFYV2hDOFV1d0FKOTdaN3ZTdExUZFhN?=
+ =?utf-8?B?YlZwSWVJdm9td3pVQ3RKWDJqNTBuNUhlL2ltTWFVNTMzZ2d2VC9uSkZUUnc5?=
+ =?utf-8?B?Z2FJMGh2UGJ5eWxFeC91Z2Y5YzRENFZFcWRycERSMFFyZ3JyYjE5Q2xkTEN1?=
+ =?utf-8?B?SWNlcTBCaTk3dXpObFNvOU4rY1YrbWdwOWtPaStSSTFKQzVuNkY3Q0trRHlO?=
+ =?utf-8?B?clJmTkduOW5nYUVvMDJKaHcvZGovR3RxejgzeTBIWjZRNWZhTmwwRnhML0hS?=
+ =?utf-8?B?N09GR2hNM1doc1hlNEdmemhKaTZRcVd0eGZDamsyS3hVdkdOY0krb3lyUGxt?=
+ =?utf-8?B?UFpWSU5vRVYxUjlpb0ZPckJXTjB4Kyt6ZFZRbEZQOXNXUW1IR1pueTZ2dlBE?=
+ =?utf-8?B?UmNDWDFNUDhBN1pVNnZSRW5veHY0eHZvUXFpTzBuSWF2eFhUaWNZVXhOU0pp?=
+ =?utf-8?B?VmdEbWFqVFU4bUduVDdmRllEakh0SWlzbkpHZC9pZXI2cVArVEowZExvYUhW?=
+ =?utf-8?B?MDBNM3lteXdNbXE5U1J0QjhjZENaNFlJdDJuY2RHd0pVb2NPRGltcmhWWU5U?=
+ =?utf-8?B?dUZ6eE1hM0F1TzE3K3R1THJMQ0MyYjNKOVhmMVlkdUg1QTlYcGZoN0Yyb1cv?=
+ =?utf-8?B?Uk9UVDFDcG9tem4vOWFHaXY1UTBUcFZNWWRTdVd5c3owdDYrdlRMejhRa1Uy?=
+ =?utf-8?B?aVRpRVhtSEJCeDlRc1R1ZHVsU0c2WnVrS2pncG5JL1RsTjJ1SmIwYzQxcUhm?=
+ =?utf-8?B?U1RRMDZBOWJrSEJjYjNLREQ0SHQvQTUrQ0xtSVQxSUdXYWxPcnFQS01EelBN?=
+ =?utf-8?B?NW1yUUZ0Tyt0L3hSZUVJRG5TZGFRWGNtVThIY1NkTkRaaSt6OFNvelJmRmRI?=
+ =?utf-8?B?UFB1YVVSeUlCbG9VbG5SQUdneWh2a2FFVjFYeWlSd3J3UGU1TmVJSzZBZm0r?=
+ =?utf-8?B?ME5iUnZtY21yOWlRdnBmT2daSG1Ldm1iMXdTeHdVUWJwb1ZkT01qTytTZ2kv?=
+ =?utf-8?B?VjRZT2I2TEdJaXFRN1RQVmN6bUJ4NnFQSUlYMUJvTDI3U0xhN2pCWXVnZE1t?=
+ =?utf-8?B?bnpmT2gvSm5KMG1jSTJLYW9JZjF5ZklacW8zQVEyeEp6bk4yWVhCU3JwT1BT?=
+ =?utf-8?B?RCtDZlhPVVNrLzN3MGxITW1CSGVvUGd6SE1LNVlCUW5tcHN5UGUxLzUxWUxE?=
+ =?utf-8?B?Ynp0Z1pDd1h3S2xKTnJYQkFBZW1rcmNXVmZ0Y3N3N2FoNW1BWGV3bWdjNkhQ?=
+ =?utf-8?B?UVpXTjdOcFhiUVYxSHBsMnZwWUtpUWFqdmRwdzBsQU9nWm8yaDRPbG5tc1hM?=
+ =?utf-8?B?T3RKaVUxdGlIenVVdERGQU5qaytKSFZweXB3MjhFMi9FeGUrWVhMWGlWM2Yz?=
+ =?utf-8?B?cXljbHBzdTNDNHFJVmFPUnp3UW9XNE96dlh3NnlxWTYxUDlKWjNMdUdLYjk0?=
+ =?utf-8?Q?thpo2qex+37LDp3dO3xGY5k+2?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e30fae9-b162-467a-8501-08dc2d96cbba
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 19:52:21.7984
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 19:54:46.8930
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cufAh9D5yDz/ojoU2P8jzCVM/1eeLaln1VjdtoUSihCn1kz8gjw3EJCyImtDujCgZFwmSoT++iW9o3sq9m2ULpJkDhfhk7vH3tUVX0jTRog=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB7389
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_12,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- phishscore=0 adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402140155
-X-Proofpoint-ORIG-GUID: FHtyLBdd1A86l6-GCG337CDpejLZpFlN
-X-Proofpoint-GUID: FHtyLBdd1A86l6-GCG337CDpejLZpFlN
+X-MS-Exchange-CrossTenant-UserPrincipalName: P79lG+GOIeae26V/8pFKQ9MCw9u2eHerHnUGVsYzlJ6Z5uVkT28Ctf7+N2+DX6fYqaPZnbqLePPJCv/l+aY1zg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8911
 
-On 2/14/2024 2:39 PM, Eugenio Perez Martin wrote:
-> On Wed, Feb 14, 2024 at 6:50 PM Steven Sistare
-> <steven.sistare@oracle.com> wrote:
->>
->> On 2/13/2024 11:10 AM, Eugenio Perez Martin wrote:
->>> On Mon, Feb 12, 2024 at 6:16 PM Steve Sistare <steven.sistare@oracle.com> wrote:
->>>>
->>>> Flush to guarantee no workers are running when suspend returns.
->>>>
->>>> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
->>>> ---
->>>>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 13 +++++++++++++
->>>>  1 file changed, 13 insertions(+)
->>>>
->>>> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>>> index be2925d0d283..a662b90357c3 100644
->>>> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>>> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->>>> @@ -74,6 +74,17 @@ static void vdpasim_worker_change_mm_sync(struct vdpasim *vdpasim,
->>>>         kthread_flush_work(work);
->>>>  }
->>>>
->>>> +static void flush_work_fn(struct kthread_work *work) {}
->>>> +
->>>> +static void vdpasim_flush_work(struct vdpasim *vdpasim)
->>>> +{
->>>> +       struct kthread_work work;
->>>> +
->>>> +       kthread_init_work(&work, flush_work_fn);
->>>
->>> If the work is already queued, doesn't it break the linked list
->>> because of the memset in kthread_init_work?
->>
->> work is a local variable.  It completes before vdpasim_flush_work returns,
->> thus is never already queued on entry to vdpasim_flush_work.
->> Am I missing your point?
+On Wed, Feb 14, 2024 at 11:44:12AM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Feb 09, 2024 at 12:52:52PM +0300, Serge Semin wrote:
+> > On Wed, Feb 07, 2024 at 11:02:02AM -0500, Frank Li wrote:
+> > > On Wed, Feb 07, 2024 at 03:37:30PM +0300, Serge Semin wrote:
+> > > > On Tue, Feb 06, 2024 at 05:47:26PM -0500, Frank Li wrote:
+> > > > > On Mon, Feb 05, 2024 at 02:13:37PM -0500, Frank Li wrote:
+> > > > > > On Mon, Feb 05, 2024 at 06:30:48PM +0000, Rob Herring wrote:
+> > > > > > > On Sat, Feb 03, 2024 at 01:44:31AM +0300, Serge Semin wrote:
+> > > > > > > > On Fri, Feb 02, 2024 at 10:11:27AM -0500, Frank Li wrote:
+> > > > > > > > > Add an outbound iATU-capable memory-region which will be used to send PCIe
+> > > > > > > > > message (such as PME_Turn_Off) to peripheral. So all platforms can use
+> > > > > > > > > common method to send out PME_Turn_Off message by using one outbound iATU.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > > > ---
+> > > > > > > > >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml | 4 ++++
+> > > > > > > > >  1 file changed, 4 insertions(+)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > index 022055edbf9e6..25a5420a9ce1e 100644
+> > > > > > > > > --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> > > > > > > > > @@ -101,6 +101,10 @@ properties:
+> > > > > > > > 
+> > > > > > > > >              Outbound iATU-capable memory-region which will be used to access
+> > > > > > > > >              the peripheral PCIe devices configuration space.
+> > > > > > > > >            const: config
+> > > > > > > > > +        - description:
+> > > > > > > > > +            Outbound iATU-capable memory-region which will be used to send
+> > > > > > > > > +            PCIe message (such as PME_Turn_Off) to peripheral.
+> > > > > > > > > +          const: msg
+> > > > > > > > 
+> > > > > > > > Note there is a good chance Rob won't like this change. AFAIR he
+> > > > > > > > already expressed a concern regarding having the "config" reg-name
+> > > > > > > > describing a memory space within the outbound iATU memory which is
+> > > > > > > > normally defined by the "ranges" property. Adding a new reg-entry with
+> > > > > > > > similar semantics I guess won't receive warm welcome.
+> > > > > > > 
+> > > > > > > I do think it is a bit questionable. Ideally, the driver could 
+> > > > > > > just configure this on its own. However, since we don't describe all of 
+> > > > > > > the CPU address space (that's input to the iATU) already, that's not 
+> > > > > > > going to be possible. I suppose we could fix that, but then config space 
+> > > > > > > would have to be handled differently too.
+> > > > > > 
+> > > > > > Sorry, I have not understand what your means. Do you means, you want
+> > > > > > a "cpu-space", for example, 0x8000000 - 0x9000000 for all ATU. 
+> > > > > > 
+> > > > > > Then allocated some space to 'config', 'io', 'memory' and this 'msg'.
+> > > > > 
+> > > > > @rob:
+> > > > > 
+> > > > >     So far, I think "msg" is feasilbe solution. Or give me some little
+> > > > > detail direction?
+> > > > 
+> > > > Found the Rob' note about the iATU-space chunks utilized in the reg
+> > > > property:
+> > > > https://lore.kernel.org/linux-pci/CAL_JsqLp7QVgxrAZkW=z38iB7SV5VeWH1O6s+DVCm9p338Czdw@mail.gmail.com/
+> > > > 
+> > > > So basically Rob meant back then that
+> > > > either originally we should have defined a new reg-name like "atu-out"
+> > > > with the entire outbound iATU CPU-space specified and unpin the
+> > > > regions like "config"/"ecam"/"msg"/etc from there in the driver
+> > > > or, well, stick to the chunking further. The later path was chosen
+> > > > after the patch with the "ecam" reg-name was accepted (see the link
+> > > > above).
+> > > > 
+> > > > Really ECAM/config space access, custom TLP messages, legacy interrupt
+> > > > TLPs, etc are all application-specific features. Each of them is
+> > > > implemented based on a bit specific but basically the same outbound
+> > > > iATU engine setup. Thus from the "DT is a hardware description" point
+> > > > of view it would have been enough to describe the entire outbound iATU
+> > > > CPU address space and then let the software do the space
+> > > > reconfiguration in runtime based on it' application needs.
+> > > 
+> > > There are "addr_space" in EP mode, which useful map out outbound iatu
+> > > region. We can reuse this name.
+> > > 
+> > > To keep compatiblity, cut hole from 'config' and 'ranges'. If there are
+> > > not 'config', we can alloc a 1M(default) from top for 'config', then, 4K
+> > > (default) for msg, 64K( for IO if not IO region in 'ranges'), left is
+> > > mem region. We can config each region size by module parameter or drvdata.
+> > > 
+> > > So we can deprecate 'config', even 'ranges'
+> > 
+> > Not sure I fully understand what you mean. In anyway the "config" reg
+> > name is highly utilized by the DW PCIe IP-core instances. We can't
+> > deprecate it that easily. At least the backwards compatibility must be
+> > preserved. Moreover "addr_space" is also just a single value reg which
+> > won't solve a problem with the disjoint DW PCIe outbound iATU memory
+> > regions.
+> > 
+> > The "ranges" property is a part of the DT specification.  The
+> > PCI-specific way of the property-based mapping is de-facto a standard
+> > too. So this can't be deprecated.
+> > 
+> > > 
+> > > > 
+> > > > * Rob, correct me if am wrong.
+> > > > 
+> > > > On the other hand it's possible to have more than one disjoint CPU
+> > > > address region handled by the outbound iATU (especially if there is no
+> > > > AXI-bridge enabled, see XALI - application transmit client interfaces
+> > > > in HW manual). Thus having a single reg-property might get to be
+> > > > inapplicable in some cases. Thinking about that got me to an idea.
+> > > > What about just extending the PCIe "ranges" property flags
+> > > > (IORESOURCE_TYPE_BITS) with the new ones in this case indicating the
+> > > > TLP Msg mapping? Thus we can avoid creating app-specific reg-names and
+> > > > use the flag to define a custom memory range for the TLP messages
+> > > > generation. At some point it can be also utilized for the config-space
+> > > > mapping. What do you think?
+> > > 
+> > 
+> > > IORESOURCE_TYPE_BITS is 1f, Only 5bit. If extend IORESOURCE_TYPE_BITS, 
+> > > all IORESOURCE_* bit need move. And it is actual MEMORY regain. 
+> > 
+> > No. The lowest four bits aren't flags but the actual value. They are
+> > retrieved from the PCI-specific memory ranges mapping:
+> > https://elinux.org/Device_Tree_Usage#PCI_Address_Translation
+> > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_64.c#L141
+> > https://elixir.bootlin.com/linux/latest/source/arch/sparc/kernel/of_device_32.c#L78
+> > Currently only first four out of _sixteen_ values have been defined so
+> > far. So we can freely use some of the free values for custom TLPs,
+> > etc. Note the config-space is already defined by the ranges property
+> > having the 0x0 space code (see the first link above), but it isn't
+> > currently supported by the PCI subsystem. So at least that option can
+> > be considered as a ready-to-implement replacement for the "config"
+> > reg-name.
+> > 
 > 
-> No, sorry, I was the one missing that. Thanks for explaining it :)!
+> Agree. But still, the driver has to support both options: "config" reg name and
+> "ranges", since ammending the binding would be an ABI break.
+
+of_bus_pci_get_flags()
+{
+	u32 w = addr[0];
+
+	/* For PCI, we override whatever child busses may have used.  */
+	flags = 0;
+	switch((w >> 24) & 0x03) {
+	case 0x01:
+		flags |= IORESOURCE_IO;
+		break;
+
+	case 0x02: /* 32 bits */
+	case 0x03: /* 64 bits */
+		flags |= IORESOURCE_MEM;
+		break;
+	}
+	if (w & 0x40000000)
+		flags |= IORESOURCE_PREFETCH;
+	return flags;
+}
+
+flags will be 0 for config space. It should be okay for flag: 0 as config
+ranges.
+
+but it can't resolve 'msg' space problem. Even there are more bit at
+addr[0]. but there are not enough bits for flags yet.
+
+Anyway, could you please check v4 version:
+https://lore.kernel.org/imx/20240213-pme_msg-v4-0-e2acd4d7a292@nxp.com/T/#t
+
+'msg' will reserve from IORESOURCE_MEM without change dt-bing.
+
+Frank
+
 > 
-> I'm not so used to the kthread queue, but why not calling
-> kthread_flush_work on vdpasim->work directly?
-
-vdpasim->work is not the only work posted to vdpasim->worker; see 
-vdpasim_worker_change_mm_sync.  Posting a new no-op work guarantees
-they are all flushed.
-
-- Steve
-
->>>> +       kthread_queue_work(vdpasim->worker, &work);
->>>> +       kthread_flush_work(&work);
->>>> +}
->>>> +
->>>>  static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
->>>>  {
->>>>         return container_of(vdpa, struct vdpasim, vdpa);
->>>> @@ -511,6 +522,8 @@ static int vdpasim_suspend(struct vdpa_device *vdpa)
->>>>         vdpasim->running = false;
->>>>         mutex_unlock(&vdpasim->mutex);
->>>>
->>>> +       vdpasim_flush_work(vdpasim);
->>>
->>> Do we need to protect the case where vdpasim_kick_vq and
->>> vdpasim_suspend are called "at the same time"? Correct userland should
->>> not be doing it but buggy or mailious could be. Just calling
->>> vdpasim_flush_work with the mutex acquired would solve the issue,
->>> doesn't it?
->>
->> Good catch.  I need to serialize access to vdpasim->running plus the worker queue
->> in these two functions.  vdpasim_kick_vq currently takes no locks. In case it is called
->> from non-task contexts, I should define a new spinlock to be acquired in both functions.
->>
->> - Steve
->>
+> > > 
+> > > Or we can use IORESOURCE_BITS (0xff)
+> > > 
+> > > /* PCI ROM control bits (IORESOURCE_BITS) */
+> > > #define IORESOURCE_ROM_ENABLE		(1<<0)	/* ROM is enabled, same as PCI_ROM_ADDRESS_ENABLE */
+> > > #define IORESOURCE_ROM_SHADOW		(1<<1)	/* Use RAM image, not ROM BAR */
+> > > 
+> > > /* PCI control bits.  Shares IORESOURCE_BITS with above PCI ROM.  */
+> > > #define IORESOURCE_PCI_FIXED		(1<<4)	/* Do not move resource */
+> > > #define IORESOURCE_PCI_EA_BEI		(1<<5)	/* BAR Equivalent Indicator */
+> > > 
+> > > we can add
+> > > 
+> > > IORESOURCE_PRIV_WINDOWS			(1<<6)
+> > > 
+> > > I think previous method was more extendable. How do you think?
+> > 
+> > IMO extending the PCIe "ranges" property semantics looks more
+> > promising, more flexible and more portable across various PCIe
+> > controllers. But the most importantly is what Rob and Bjorn think
+> > about that, not me.
+> > 
 > 
+> IMO, using the "ranges" property to allocate arbitrary memory region should be
+> the way forward, since it has almost all the info needed by the drivers to
+> allocate the memory regions.
+> 
+> But for the sake of DT backwards compatiblity, we have to keep supporting the
+> existing reg entries (addr_space, et al.), because "ranges" is not a required
+> property for EP controllers.
+> 
+> - Mani
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
