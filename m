@@ -1,120 +1,320 @@
-Return-Path: <linux-kernel+bounces-64860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF4E38543E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:15:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53D728543E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7FB91C22A9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:15:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3D871F24566
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E48F125AD;
-	Wed, 14 Feb 2024 08:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE00125AB;
+	Wed, 14 Feb 2024 08:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="2Hi3sxu3"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oLFuVriF"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE04125A2;
-	Wed, 14 Feb 2024 08:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA8311CB6
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707898510; cv=none; b=i2vkcknKD9iR60iOzVkJa64iS6XdnQmBvrLRs09cLMKb44m8tx8gqGk+7ydXPq5wzzs5Hr707VVbNEW1y3q5krn99xY7Ui8T2XI5uhAZfzI74JsRR8SwHCq4X7AddIPEOIG2/9PMfEX4Jxk0CQbN80xKxrN6PjDyl5xZMcHIKp8=
+	t=1707898540; cv=none; b=eDr1R1g1gE9QheMGxT0XPx7X6PeMx4eRs1Ap0eAYXQLdeF5srIuHwReFrLjBzr2iinJJkVsW/pb2nIzUKJkFTUtmTcnvZxhIw6XnBtvJRmh3oDONxPHy+VdC01u6TeiK4YV5dW59LKfnZW/znQEQZEuhdHHPqIn6yWmBNkw0FZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707898510; c=relaxed/simple;
-	bh=R1qEZaJZqEahESp0vUMVsznWrk1nhHpzObybxfL6gjg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qTD6m+Vyo1pA7hRS5AAgsrzpiv8PQixEG1QOCsEo4SK3sTjpG+bS126HGIFBcLVuKldVCJWiqOYjqDwMQceS9BF4q2NSc0njSZe0H0ZzjwIDz0Q1wPtPHzomrn0zZPO2+c+6tczXDex5e8g2yiGVVC4gZ4aj5pI0qQr0ZEO50aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=2Hi3sxu3; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707898510; x=1739434510;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R1qEZaJZqEahESp0vUMVsznWrk1nhHpzObybxfL6gjg=;
-  b=2Hi3sxu3KM/y18BIdJtYyMkzkWnI6/rToE2SIV3Skh4t3A2zZ3evc9Ms
-   fUTirA42tG56e/0GPdWeS3W56LK6/gymUPgf5aEd8KZemmh66Tjkj44xK
-   w+GaOz1nhmypbpvHYkb2sTg32/Bq460PBgfwPJr1BXutzLl5qGTxtsMiM
-   2lOHUbi7kwKz5wyn6NYJsEd0e/65Ptt/nLmTfZ6CnuS+cr8FQk+jsOhkt
-   hEuOzh7XAJpPSCK9SWwBuxsctedE23E+HJ1YzCEHCxw343hkFSDkuTqWY
-   SCfWScxv69hom9yVYxI37Ski+rLqUt5dQvxN6kbRV9ygACuzqQAn/X5b+
-   Q==;
-X-CSE-ConnectionGUID: CP2X/acaTSCOFjJ1bbznCQ==
-X-CSE-MsgGUID: GHR+fUgGQOG+4nuI6k8xAg==
-X-IronPort-AV: E=Sophos;i="6.06,159,1705388400"; 
-   d="scan'208";a="16217464"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Feb 2024 01:15:09 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 14 Feb 2024 01:14:43 -0700
-Received: from localhost (10.10.85.11) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Wed, 14 Feb 2024 01:14:43 -0700
-Date: Wed, 14 Feb 2024 09:14:42 +0100
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <lars.povlsen@microchip.com>,
-	<Steen.Hegelund@microchip.com>, <daniel.machon@microchip.com>,
-	<UNGLinuxDriver@microchip.com>, <u.kleine-koenig@pengutronix.de>,
-	<rmk+kernel@armlinux.org.uk>, <vladimir.oltean@nxp.com>,
-	<jacob.e.keller@intel.com>, <yuehaibing@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: sparx5: Add spinlock for frame
- transmission from CPU
-Message-ID: <20240214081442.w533wvcvqpvq5352@DEN-DL-M31836.microchip.com>
-References: <20240213121705.4070598-1-horatiu.vultur@microchip.com>
- <5476743f-3648-4038-97f8-a9df22c0f507@gmail.com>
+	s=arc-20240116; t=1707898540; c=relaxed/simple;
+	bh=PyBpdEOx60TBrebzHSwTQy0Y4S9f8dvos9Myvh7EfXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gar6c+tNAzihQB4EcBNh7Wf+a8wedKGsEUXKkyJloRimimpKF5b8/ubrg3wc91Do+nGzcJ/W6P2mAudjIyjz/vXxUsetmGwXTyjzUFCk9kc0xP9cQcjdKyyPPzabrkbu501yBxUjZBoUKPrc86P2w4aLTTVZsD2+CCCBBb3BQhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oLFuVriF; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso2380684276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:15:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707898538; x=1708503338; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EKXGtE0o7nACfq6pe512roREe48CDHHUhw9NIs9DgqY=;
+        b=oLFuVriFtiVA0wcsiW7gokiQ0tjTuZsx39BoW29pnfSWZ7UXTtDw4Uj5tAqtDoKqga
+         UFayq81s2Vm9hfMtAcDr2oPkFke/ig4BaLAiPe3TwsGM4sjQ08CpFeJpvhkivfxdq9RJ
+         m21PRRx/Bd3WlnH6cao6+43590eSdUTUOXpOWKFsdN+GHwV9r0k6Aoiagn1ZVsKDM0Dh
+         4yvKjMlRZmC5Tt70IrNeXDUhlfR65PHZpDTOQvT8T+i5mHc4Vdpz3o5MnA5e+yCJiTQM
+         6bGaRKPpRPRP8Y4vYjQ/9jyWyU+3bDYacCZFRSWed0yz0impkyMlQnqsWueMlM1xrzQV
+         L0lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707898538; x=1708503338;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EKXGtE0o7nACfq6pe512roREe48CDHHUhw9NIs9DgqY=;
+        b=MdNVillprgTqdp0FvTB6BLwagekeDW9v3oaNdT7j3iRFTFtuCvtNBMIU3kA6GGJZeo
+         ox4XltranwIRlUy80iKYuSaUO4df71Bqa3V4/MtYtSyZDS6eFNu0hpQ1c6sQov9MNA8z
+         m8Z44cMD1gbcPUCw8SgTuvphRvqUUwAf8jpFRJ/lcJGdn469gY1xhJt06763yGTrQ4mX
+         nUhn3TmykFn8jBkvn8/9HmSS3l9HXO3Vg9VqbO0fFyQgjeR3ompEFkZ5hmRZ/YKpwOIX
+         YDdELo1TbqlISiOLQuechw5wqavP9cvjR93pZwc2SZL8ELbz/3Ak1J97v7YIOb1S3l3B
+         1YTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHZBqFJhNny7e9hzOfY5ajh5KHzy7EojglX8y+1D9iqdjfMzvNoL4Au0Ns8Q9GqqRrQ7hFfrYCKJkfRqT3HSFnwAt+yGBM2Vkvnaqw
+X-Gm-Message-State: AOJu0YyE0eZCQLLgEFfUJgCgMLaXa7R3IEGx3xb5cabTLGl3upcehAog
+	pWrkVWvom9uJFbxT9QDOqHFAqg7ptxGDkfXWacgbR9z+FmWR8D3TmJKbpLJw937XuuzoErQok9Y
+	SurOf+o6MNRhhZOYW+2nzLc1LxL4F4dbw82JFEA==
+X-Google-Smtp-Source: AGHT+IFI6XgUc51w44SGa4dFJZmddk/Aj01+ufuewKBsrzYVS9b+Kup4A4AKPQTJHjDr+FyB9b7AIUFcQMO+GV9FPR8=
+X-Received: by 2002:a5b:dc6:0:b0:dcd:36c1:ecb7 with SMTP id
+ t6-20020a5b0dc6000000b00dcd36c1ecb7mr1383363ybr.54.1707898537795; Wed, 14 Feb
+ 2024 00:15:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <5476743f-3648-4038-97f8-a9df22c0f507@gmail.com>
+References: <20240213234513.2411604-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240213234513.2411604-1-quic_abhinavk@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 14 Feb 2024 10:15:27 +0200
+Message-ID: <CAA8EJpo0yeLyCkVvLFX7wUEV4+i+ORbaCB2qxN0izaWLdFqCrA@mail.gmail.com>
+Subject: Re: [PATCH] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: dri-devel@lists.freedesktop.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, robdclark@gmail.com, 
+	freedreno@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
+	ville.syrjala@linux.intel.com, quic_jesszhan@quicinc.com, 
+	linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 
-The 02/13/2024 09:26, Florian Fainelli wrote:
-> 
-> On 2/13/24 04:17, Horatiu Vultur wrote:
-> > Both registers used when doing manual injection or fdma injection are
-> > shared between all the net devices of the switch. It was noticed that
-> > when having two process which each of them trying to inject frames on
-> > different ethernet ports, that the HW started to behave strange, by
-> > sending out more frames then expected. When doing fdma injection it is
-> > required to set the frame in the DCB and then make sure that the next
-> > pointer of the last DCB is invalid. But because there is no locks for
-> > this, then easily this pointer between the DCB can be broken and then it
-> > would create a loop of DCBs. And that means that the HW will
-> > continuously transmit these frames in a loop. Until the SW will break
-> > this loop.
-> > Therefore to fix this issue, add a spin lock for when accessing the
-> > registers for manual or fdma injection.
-> > 
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> 
-> Any reason you targeted 'net-next' rather than 'net', as this appears to
-> be clearly a bug fix here?
+On Wed, 14 Feb 2024 at 01:45, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+> Lets move this to drm_dp_helper to achieve this.
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-Yes, it is a bug but it is not something that happens all the
-time and I thought this fits more into the lines of 'This could be a
-problem ...' therefore I had targeted 'net-next'.
-But if you consider that I should target 'net' instead of 'net-next' I
-can do that.
+My preference would be to have packing functions in
+drivers/video/hdmi.c, as we already have
+hdmi_audio_infoframe_pack_for_dp() there.
 
+> ---
+>  drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_dp.c | 73 +----------------------
+>  include/drm/display/drm_dp_helper.h     |  3 +
+>  3 files changed, 84 insertions(+), 70 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+> index b1ca3a1100da..066cfbbf7a91 100644
+> --- a/drivers/gpu/drm/display/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
+> @@ -2916,6 +2916,84 @@ void drm_dp_vsc_sdp_log(const char *level, struct device *dev,
+>  }
+>  EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+>
+> +/**
+> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
+> + * @vsc: vsc sdp initialized according to its purpose as defined in
+> + *       table 2-118 - table 2-120 in DP 1.4a specification
+> + * @sdp: valid handle to the generic dp_sdp which will be packed
+> + * @size: valid size of the passed sdp handle
+> + *
+> + * Returns length of sdp on success and error code on failure
+> + */
+> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+> +                           struct dp_sdp *sdp, size_t size)
+
+I know that you are just moving the function. Maybe there can be
+patch#2, which drops the size argument? The struct dp_sdp already has
+a defined size. The i915 driver just passes sizeof(sdp), which is more
+or less useless.
+
+> +{
+> +       size_t length = sizeof(struct dp_sdp);
+> +
+> +       if (size < length)
+> +               return -ENOSPC;
+> +
+> +       memset(sdp, 0, size);
+> +
+> +       /*
+> +        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+> +        * VSC SDP Header Bytes
+> +        */
+> +       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+> +       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+> +       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+> +       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+> +
+> +       if (vsc->revision == 0x6) {
+> +               sdp->db[0] = 1;
+> +               sdp->db[3] = 1;
+> +       }
+> +
+> +       /*
+> +        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+> +        * Format as per DP 1.4a spec and DP 2.0 respectively.
+> +        */
+> +       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+> +               goto out;
+> +
+> +       /* VSC SDP Payload for DB16 through DB18 */
+> +       /* Pixel Encoding and Colorimetry Formats  */
+> +       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+> +       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+> +
+> +       switch (vsc->bpc) {
+> +       case 6:
+> +               /* 6bpc: 0x0 */
+> +               break;
+> +       case 8:
+> +               sdp->db[17] = 0x1; /* DB17[3:0] */
+> +               break;
+> +       case 10:
+> +               sdp->db[17] = 0x2;
+> +               break;
+> +       case 12:
+> +               sdp->db[17] = 0x3;
+> +               break;
+> +       case 16:
+> +               sdp->db[17] = 0x4;
+> +               break;
+> +       default:
+> +               WARN(1, "Missing case %d\n", vsc->bpc);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* Dynamic Range and Component Bit Depth */
+> +       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+> +               sdp->db[17] |= 0x80;  /* DB17[7] */
+> +
+> +       /* Content Type */
+> +       sdp->db[18] = vsc->content_type & 0x7;
+> +
+> +out:
+> +       return length;
+> +}
+> +EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
+> +
+>  /**
+>   * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+>   * @dpcd: DisplayPort configuration data
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index f5ef95da5534..e94db51aeeb7 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -4110,73 +4110,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
+>         return false;
+>  }
+>
+> -static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+> -                                    struct dp_sdp *sdp, size_t size)
+> -{
+> -       size_t length = sizeof(struct dp_sdp);
+> -
+> -       if (size < length)
+> -               return -ENOSPC;
+> -
+> -       memset(sdp, 0, size);
+> -
+> -       /*
+> -        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+> -        * VSC SDP Header Bytes
+> -        */
+> -       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+> -       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+> -       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+> -       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+> -
+> -       if (vsc->revision == 0x6) {
+> -               sdp->db[0] = 1;
+> -               sdp->db[3] = 1;
+> -       }
+> -
+> -       /*
+> -        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+> -        * Format as per DP 1.4a spec and DP 2.0 respectively.
+> -        */
+> -       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+> -               goto out;
+> -
+> -       /* VSC SDP Payload for DB16 through DB18 */
+> -       /* Pixel Encoding and Colorimetry Formats  */
+> -       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+> -       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+> -
+> -       switch (vsc->bpc) {
+> -       case 6:
+> -               /* 6bpc: 0x0 */
+> -               break;
+> -       case 8:
+> -               sdp->db[17] = 0x1; /* DB17[3:0] */
+> -               break;
+> -       case 10:
+> -               sdp->db[17] = 0x2;
+> -               break;
+> -       case 12:
+> -               sdp->db[17] = 0x3;
+> -               break;
+> -       case 16:
+> -               sdp->db[17] = 0x4;
+> -               break;
+> -       default:
+> -               MISSING_CASE(vsc->bpc);
+> -               break;
+> -       }
+> -       /* Dynamic Range and Component Bit Depth */
+> -       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+> -               sdp->db[17] |= 0x80;  /* DB17[7] */
+> -
+> -       /* Content Type */
+> -       sdp->db[18] = vsc->content_type & 0x7;
+> -
+> -out:
+> -       return length;
+> -}
+> -
+>  static ssize_t
+>  intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
+>                                          const struct hdmi_drm_infoframe *drm_infoframe,
+> @@ -4269,8 +4202,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
+>
+>         switch (type) {
+>         case DP_SDP_VSC:
+> -               len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+> -                                           sizeof(sdp));
+> +               len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+> +                                         sizeof(sdp));
+>                 break;
+>         case HDMI_PACKET_TYPE_GAMUT_METADATA:
+>                 len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
+> @@ -4297,7 +4230,7 @@ void intel_write_dp_vsc_sdp(struct intel_encoder *encoder,
+>         struct dp_sdp sdp = {};
+>         ssize_t len;
+>
+> -       len = intel_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
+> +       len = drm_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
+>
+>         if (drm_WARN_ON(&dev_priv->drm, len < 0))
+>                 return;
+> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+> index 863b2e7add29..f8db34a2f7a5 100644
+> --- a/include/drm/display/drm_dp_helper.h
+> +++ b/include/drm/display/drm_dp_helper.h
+> @@ -813,4 +813,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
+>                        int bpp_x16, unsigned long flags);
+>  int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
+>
+> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+> +                           struct dp_sdp *sdp, size_t size);
+> +
+>  #endif /* _DRM_DP_HELPER_H_ */
 > --
-> Florian
-> 
+> 2.34.1
+>
+
 
 -- 
-/Horatiu
+With best wishes
+Dmitry
 
