@@ -1,120 +1,121 @@
-Return-Path: <linux-kernel+bounces-65870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18733855314
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:17:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE00855310
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D869AB21FDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7D51F2784C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E5513B782;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DE213B785;
 	Wed, 14 Feb 2024 19:17:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="rR2LV0V5"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YC9pw1Tg"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CDC134738;
-	Wed, 14 Feb 2024 19:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5C9134CCA
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707938221; cv=none; b=J5P+6mt4WEx6NwvOrxX5gyT9uSdZSwF/NjEcv/jTFZGYbcRxr7R4Q176U8sH/w8oqfpowmitk/+v7LGkYI66bnM2JQA7vq+0xzwCe2BpioW3Zq6nzbdhXoH+rQZBG+6mgy6LCGJX3xj2rn7tvMGYDH64Z3StZ3tUCT6Li3iHhWA=
+	t=1707938221; cv=none; b=JBC/ioNNTzUZQPj0BpTvEAsVKisdgkrGn6cyChuyeVouSn0+OTuJgkYg1kFEAb5S8aOARr29ZPR6j7X/o55kC00HvhAftSHXkDsyKInsOap1ZVGFpNNXnXGDqu+NV2mQuNQybrjU1GeL5Ax0JBOfq1QQuQfVFC4KrWQ8q01nAB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707938221; c=relaxed/simple;
-	bh=BTzf525kT+FV3jnbMUkzrtWmsNx3xlFJuhkjYdqXJ38=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c5ldSrM0fDR5Awils20Ra03f9cgvGDkQsyPBiofmwfZB9i3yORzrBwg5Pz2C/yzjhI9QPnxZZpgnizWxf3h6zlJK6OluVm1eDJmALUngjrQdMD4CygH+YUGbhnzGg514vQtJmmTiX12aK7CwLsumXNdF+eLIXoPdGRko3/VQLSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=rR2LV0V5; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 5A4D81A3A18;
-	Wed, 14 Feb 2024 20:16:57 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1707938218; bh=SANIeE4LUJqtp8FJcgpRO6Z+6oH6sW3ijgTEizl3tyY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rR2LV0V5nf7iWjG/raJitl+/b3Czq8jPiu7eZMAi8w9PdimMCvv+j5ZpK8gou2agU
-	 GvcYN+k8lFtGuPBQm+7yDjHyPh9EA8+B29+yvUlxXMR7i9r4LcunwNW1/Z8Is+hH9G
-	 a4LpSDBzOYmIc2ewFhvTthZsItsVLzLjclQZuEruemPJIsWTH9l9d5duRluEecx6FR
-	 eLjzcxGlZHVSF5XmUkvmbGA3ObemmfA6FKxnbigZiIa0U2CJL94XiJ+DdnCjzB5hQs
-	 1b7yarlrsdlFqpHMxjuVmLs3vhpjFkIvCEFsZAO9GqiAjUz2xmlKr8uq9g3XeIgkvx
-	 IpecVRcLipkcA==
-Date: Wed, 14 Feb 2024 20:16:56 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Xin Li <xin@zytor.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Jonathan Corbet
- <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
- 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
- <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>, Kees Cook <keescook@chromium.org>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
- <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
- <zegao2021@gmail.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
- (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 7/8] sbm: documentation of the x86-64 SandBox Mode
- implementation
-Message-ID: <20240214201656.230f58df@meshulam.tesarici.cz>
-In-Reply-To: <eec160a4-fc59-4e7e-885f-0384a7ede4cf@zytor.com>
-References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
-	<20240214113516.2307-8-petrtesarik@huaweicloud.com>
-	<eec160a4-fc59-4e7e-885f-0384a7ede4cf@zytor.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	bh=hPDrrV3XIMJo8q1tTjBG4ME3Gj2Sw6BkzZjvg7GqD6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pH9zwO9NCl5I1uiMHfQ4SkiDgIUYDVI+XZH320aSKzk+G62jOZuxWLI+agu2in5czaxUiNM76i3p8taGfIM++BIYrJrpZ5VNnHhe2Y0DZdgx7cmWJeEweKKhEUOpn/SabUB0Rcj4UkarJbmpWTnc/XhymLr71zppXMAGLi+UBcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YC9pw1Tg; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d70b0e521eso573125ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:17:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707938219; x=1708543019; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1o3lgJRDuvLUD9lUUbwablSPS6Dg/IMDLr3dC+6DHsQ=;
+        b=YC9pw1TgmmQe2V7cHpLP/evE8F32DJHzWkHymsBZbHpOENO4DrI0lbBaEibZS8Jkbc
+         b1kHwTn/avE9BLq993YpvaV3durW11ZCRsw8pWUNjZ3UQ0zJY/Fm85oa5uzQ9z6GUNuP
+         Yp2i22/0bTmwIHq8WDY303fg8tfnXLFUpDwEAnqRNmgfQrfHY7YYu8npAhBiNkbqfrPH
+         6rLXTc8Az8blH94xR7EvhxM4OcGuUiYycxKaKvf+GMlebPBl9EZ5bgNfKSBaugIJC3o+
+         hbnVt0IUzRSlnC2cCF7Kkk/XVdmFXCPcAL7Fns2yS59+ZM3RlVvkEN0TsAYK+4u++J0W
+         Yoig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707938219; x=1708543019;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1o3lgJRDuvLUD9lUUbwablSPS6Dg/IMDLr3dC+6DHsQ=;
+        b=Etlp2tvHlIdaLV65DY7dSTxFEa7ohFX4NE4BNsbpNcAUTvqZKXJ9Cz0ruRAP34jlPR
+         5wrlPo0YytLERdGDemvOgv4fCIaNsvLUNHOGf8+pKG2ZA/lOfiGoPBwKuTXHaVP4p6Gm
+         lHp5e0Ca3c+fAGUzIj3/Aci6nTKwjXlKdYLIGHvUUfSi+6FHJkjkTerFE1hzSdOWPtsS
+         JwifDVR2ApRHv18AmXlZsB4DWx8caARutSuXJKLVi8GkqE7uY+Jd+UlusQFMOeQcJ9fR
+         msPKUgunRaPSTL/0bNdOMZVyssGzbVbPrzB46WOJ/2BaiJBS5RMgiC2giOTCHoq6hwra
+         ApYA==
+X-Forwarded-Encrypted: i=1; AJvYcCW4Jon3eY1+o/x3gNSpNX3lyOkYnPVslPUe7ciV7Cro85DtnDTnVU+xeVOfqV1iJgdHGJVALf54/tyBe8/obbVFLWyw5jP/eYa65eVc
+X-Gm-Message-State: AOJu0Yym6Npsaa1sMRFacD6Sugb17xBzrZo5qELhtHBCAXIJzesGS6LK
+	pk8FNLSHNqgkVpVjOf5wdW40uuILWozQLIDpK03H0Kp7dl5BNVKF
+X-Google-Smtp-Source: AGHT+IEpMs+uyWaWFXkALNhyE/TedYoidC1riQPQUiC+k4xadRiMsaAzbhKCVibnkbCi31QEMBQ8UQ==
+X-Received: by 2002:a17:902:c951:b0:1db:402c:f098 with SMTP id i17-20020a170902c95100b001db402cf098mr4954932pla.52.1707938219611;
+        Wed, 14 Feb 2024 11:16:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUN/ulDzMFEI6OJ6uIYmU3hAMNmZVX7+9Lfeuc72vxb4tvBeVMQVKLYXCnHtAcapDSjw1lwaZA6ge/B6q3TQEAiYg/2bKGG51Fa4aH0hZZoz2Kps50OEWIhNqqgl764
+Received: from localhost ([2620:10d:c090:400::4:fe87])
+        by smtp.gmail.com with ESMTPSA id mi15-20020a170902fccf00b001db43f3629dsm2766605plb.140.2024.02.14.11.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 11:16:59 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 14 Feb 2024 09:16:57 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH wq/for-6.9] workqueue: Fix queue_work_on() with BH
+ workqueues
+Message-ID: <Zc0Rqaq5DXcJLTta@slm.duckdns.org>
+References: <Zc0IzeM6tAvm1NTl@mtj.duckdns.org>
+ <CAHk-=wiVWmTfaCUjZYrV6pVh3O6hYksKsWx4bJY0EhNNat9QDg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiVWmTfaCUjZYrV6pVh3O6hYksKsWx4bJY0EhNNat9QDg@mail.gmail.com>
 
-On Wed, 14 Feb 2024 10:37:19 -0800
-Xin Li <xin@zytor.com> wrote:
+Hello,
 
-> On 2/14/2024 3:35 AM, Petr Tesarik wrote:
-> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> > 
-> > Add a section about the x86-64 implementation.
-> > 
-> > Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> > ---
-> >   Documentation/security/sandbox-mode.rst | 25 +++++++++++++++++++++++++
-> >   1 file changed, 25 insertions(+)
-> > 
-> > diff --git a/Documentation/security/sandbox-mode.rst b/Documentation/security/sandbox-mode.rst
-> > index 4405b8858c4a..84816b6b68de 100644
-> > --- a/Documentation/security/sandbox-mode.rst
-> > +++ b/Documentation/security/sandbox-mode.rst  
+On Wed, Feb 14, 2024 at 11:03:46AM -0800, Linus Torvalds wrote:
+> On Wed, 14 Feb 2024 at 10:39, Tejun Heo <tj@kernel.org> wrote:
+> >
+> > When queue_work_on() is used to queue a BH work item on a remote CPU, the
+> > work item is queued on that CPU but kick_pool() raises softirq on the local
+> > CPU.
 > 
-> where is this file?
+> Now, does it make a lot of sense to ask to queue a BH work on another
+> CPU in the first place?
 > 
-> I assumed it's newly added, but your patch doesn't say so.
+> I don't think tasklets supported that. And while the workqueues
+> obviously do - and you fix that case - I wonder if we shouldn't say
+> "that operation makes no sense, please don't do it" rather than
+> actually support it?
+> 
+> What made you notice this issue?
 
-Ah, right, for people who are not on the Cc list of my arch-independent
-series, this series is entirely out of context. FWIW the first part is here:
+It's test code I'm using to verify new features to cover
+tasklet_disable/enable(), so not a real use case. For tasklet migration,
+this isn't necessary but at the same time all the mechanics are already
+there, so it's nice to keep the API orthogonal and one can conceive
+plausible use cases - e.g. "I'm using per-cpu work items to collect per-cpu
+states but that comes with really high tail latencies, lemme switch to
+per-cpu BH work items".
 
-https://lore.kernel.org/lkml/20240214113035.2117-1-petrtesarik@huaweicloud.com/
+Thanks.
 
-I wonder, would it be better to resend it with a more complete list of
-recipients?
-
-Petr T
+-- 
+tejun
 
