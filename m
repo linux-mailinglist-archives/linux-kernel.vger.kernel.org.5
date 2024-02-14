@@ -1,127 +1,205 @@
-Return-Path: <linux-kernel+bounces-65082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDF085478F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:52:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C602854791
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E94F41F21175
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFB5D1C22B66
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC4218E10;
-	Wed, 14 Feb 2024 10:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851F718C28;
+	Wed, 14 Feb 2024 10:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zrXgyHlF"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="oAl2KAv9"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBDA18638
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F0C18638;
+	Wed, 14 Feb 2024 10:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907911; cv=none; b=s5PNLH2VGBG/1/CRj2AjxynYwHJGJB6pLwZh/v4+kzBfgNS3kvRty8YA/PYqOpTlzqCGp+37RCszZL41VUaTVmmf8ppizUGYsdqcGui97L7N29heYlTcYi4DrjzAA2q/d0MA5rdhoepOIaDOUoNrNzgQ9+AwJx6cq2BRKDBXyQ0=
+	t=1707907963; cv=none; b=auQK4CbBVCtnFxXyaFNxp7Qz0o6RDtewRKcYAHt0T6PquO2ULtDHtwCdlE/EgNQBWUXplcRtB7G6MUgCC57lm3IJxFQjBHFcjGT+yZcoR9wcE8mFWTjyO2CDKFVlxjoMhrjSSh+O+SJd/w1Gsvq9r0QSwAtl+iMSNo7q/PRjnXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907911; c=relaxed/simple;
-	bh=FngIp4KBxf0vqziz3+ArzSp7oe/urJZKigfldVYi13c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XC2WgpAyKmkf3//s7C+tqxR/utSwEotQXbdfCZ6hOyPdVtHpi9hn7TYadOG9HIPE8aGI1xR+nMP5JgArtnD+cCeot00fGxaS570+r6RLRbaZ5YqjETiqi/a9nPO3m7BoRWrOrRJqSRILMTeSVD7wzBY9GRRLv/e0Dt2RbtqFmpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zrXgyHlF; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so1945810241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:51:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707907908; x=1708512708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2g1mQizjkEn3VxHNfnwCGd5SJVNpMNtdqZQAgI51wCU=;
-        b=zrXgyHlFKZAdxlGFAEhVc9G81FYr3RYeNYuShQ4yP8E8rC3aopZPA22zrXy5aZs3en
-         nUYJUIBjDB0Tcr9doCutUstpxGclzvX4hZItLoP4gP4oCl3pQcHC8oGr/2xsVpeelTN/
-         U3HFwWh3k2v7Dd4bcbmGubl9Dtq84ZF7ipGEj1ZJ+gIgB1/gsNVcg+IlbV0n/gWVZRKh
-         wV3FqGfEELI4OtgBCKAbk1D8b//XX4v4xK7h0nUnYJtvUyvdmHdWZSZH4CyOJB0D7DCl
-         rcEGCecR94nZCDr6lzS8WkdIT0Auh4eO8VNEBo760wtu/P1Y4HM0UEe4qqGfqOWIw0JR
-         F9Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707907908; x=1708512708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2g1mQizjkEn3VxHNfnwCGd5SJVNpMNtdqZQAgI51wCU=;
-        b=I/lZeKr8YfGuNq7OgA0ncKfKHb7Ac/ZBkibndLjHtPK7ZQwDCc9dZ6eFyRALyKxmLL
-         zSiE74fGWGZLOSbfiqYoYz9WBC0KmR3OZwVclcepi3BQMG5htAaHxdrduUZ1MQuFzZ9v
-         y7Sznt9MJ5PXSZHN9bYtBIQOgzjt1P5iXlPZVJRe3fMGXP10Re8BVeR6K18KY81oFJrK
-         qGKOnEHN0M2gzU8qhGOiInuktIRRkyqXlzWXz9BLe5/tHdhyB2jguBD/PPO1YGo4gbvS
-         MiedMzr/qAOouUgoUDiNUkYZZLB/wyh65h6oYGB1kyOjedrfeyh4pt5Ss92wvySnA4AP
-         if5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX6DbWSdBKlEpVJxLPZ6sy7hbOKLbAqvGkgh0HKlKuEdAbaoQ1kQ0Vd0oCfVIBBt/OmEDKSOsfnvjJFjhhDEymjOv/jk6N9pqij9z7u
-X-Gm-Message-State: AOJu0YzwTJv0WH52XIQeAQs43R9+BKVEF56WY6kE10sUwSKTKqsf87t1
-	5M0HduFIajharYpnssl6VpOaPJps2F8hEGE+Ue2iWlGY3L/u6zOAj8XegYq7N0y7hIjTymxdHfC
-	1Qa8iSpvcxzDtvrLJZC6ITne3OF765n6XXMUn
-X-Google-Smtp-Source: AGHT+IExci4zElcZtqMQOuT6NK38iGJAdkqnfcCqnUfNn0vIoBFYe9CwwBiX3ybhUh7K3qqNBm1b+K7r0Iz04LypLPw=
-X-Received: by 2002:a1f:e084:0:b0:4c0:2a9f:d3ec with SMTP id
- x126-20020a1fe084000000b004c02a9fd3ecmr2466287vkg.6.1707907908067; Wed, 14
- Feb 2024 02:51:48 -0800 (PST)
+	s=arc-20240116; t=1707907963; c=relaxed/simple;
+	bh=aBaw8zzSOYKdXSP4WFB7oN6QAraRJxc+J8ue3z3jQPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H4Dd9WQrhoMgBg4BXPSOrdBflCnsSl+eNtQ0IlrT1ydpd47KQ0jmiQRJ7yjZRbP6+Xh9yXwwvlMLGCUVjBesrE114cg28Lwo5rtp5NYF9FEOeK4pdoq7SjpU2i5oQEUHP5D5vg8uOHeXPTtIg0fp/9Lah9HRYuqjC22uiH+HZ2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=oAl2KAv9; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id EEE8120272;
+	Wed, 14 Feb 2024 11:52:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1707907951;
+	bh=3piN2479mTbGHmItuCrKboZS6ZZmmMJocdeKlE4lYoE=; h=From:To:Subject;
+	b=oAl2KAv9Kq22FWnYKpuVm7S8yQAERPms1HXNxtnhCAb1VQsKEm6h+7T4DoHJJ83p+
+	 Pr/E70uV1Q4fDGsd5DmS1l3z9qS5LELsTRZ0rGOUlAghjM2qvRi2iLGQnle0ANkJdR
+	 ZHtgIMsf479bU24I5iHEXsJpqRwRsI2/9GjWLsAFD539zRjjzOYXhxTOyaxEojcSSN
+	 wUzHKVPplmA5iYL5xyGZipDc0nOVO5ID5rIWB7gZ25qMylzIuo9C61U1htvN2BL+b9
+	 JxI6Wu6H+V9L1R34yQyfU4Fcbm6rWXls6lqLsFPUQ484YJQGC6rPsqXtmFkGAYPihJ
+	 SEIXw8b8X/2Fg==
+Date: Wed, 14 Feb 2024 11:52:23 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Roland Hieber <rhi@pengutronix.de>,
+	Linux Regressions <regressions@lists.linux.dev>
+Cc: Hiago De Franco <hiagofranco@gmail.com>,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>, kernel@pengutronix.de,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: MXSFB error: -ENODEV: Cannot connect bridge
+Message-ID: <20240214105223.GA78582@francesco-nb>
+References: <34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia>
+ <20240212110706.ibrreoj2wgzhltyw@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
- <20240208-alice-mm-v2-2-d821250204a6@google.com> <202402091606.A181673F0A@keescook>
-In-Reply-To: <202402091606.A181673F0A@keescook>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Wed, 14 Feb 2024 11:51:36 +0100
-Message-ID: <CAH5fLggZc_Fxi1gjx9jxGDgyYOj1NLz5MYxzRxEja6vV0WffGg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] uaccess: always export _copy_[from|to]_user with CONFIG_RUST
-To: Kees Cook <keescook@chromium.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212110706.ibrreoj2wgzhltyw@pengutronix.de>
 
-On Sat, Feb 10, 2024 at 1:15=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Thu, Feb 08, 2024 at 03:47:52PM +0000, Alice Ryhl wrote:
-> >       unsigned long res =3D n;
-> >       might_fault();
-> >       if (!should_fail_usercopy() && likely(access_ok(from, n))) {
-> > +             /*
-> > +              * Ensure that bad access_ok() speculation will not
-> > +              * lead to nasty side effects *after* the copy is
-> > +              * finished:
-> > +              */
-> > +             barrier_nospec();
->
-> This means all callers just gained this barrier. That's a behavioral
-> change -- is it intentional here? I don't see it mentioned in the commit
-> log.
->
-> Also did this get tested with the CONFIG_TEST_USER_COPY tests? I would
-> expect it to be fine, but better to check and mention it in the commit
-> log.
++ Linux regression.
 
-I just ran this with CONFIG_TEST_USER_COPY on x86 using the Android
-cuttlefish emulator and it passed there. I also verified that it fails
-if I remove the access_ok check. However, the tests succeed even if
-the barrier_nospec() call is removed.
+This is a regression on v6.8-rc1.
 
-That said, it seems like it fails to compile on some other platforms.
-It seems like we need to add #include <linux/nospec.h> to uaccess.h to
-fix it.
+On Mon, Feb 12, 2024 at 12:07:06PM +0100, Roland Hieber wrote:
+> On Thu, Feb 08, 2024 at 12:58:02PM -0300, Hiago De Franco wrote:
+> > Hello all,
+> > 
+> > while doing some tests with kernel v6.8-rc3 and Colibri iMX7D, we
+> > noticed the following error:
+> > 
+> > [    0.432547] mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
+> > 
+> > This was introduced by commit edbbae7fba495284f72f05768696572691231558
+> > ("ARM: dts: imx7: add MIPI-DSI support"). This patch is routing the
+> > lcdif to the mipi_dsi_in_lcdif endpoint, however we do not have the DSI
+> > pins available in our edge connector. Instead, we use the parallel RGB
+> > LCD interface directly with, as example, an external LVDS transmitter:
+> > 
+> > &lcdif {
+> > ...
+> > 	status = "disabled";
+> > 
+> > 	port {
+> > 		lcdif_out: endpoint {
+> > 			remote-endpoint = <&lcd_panel_in>;
+> > 		};
+> > 	};
+> > };
+> > 
+> > By applying the following patch, the issue is gone and the LVDS works
+> > again:
+> > 
+> > diff --git a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
+> > index ebf7befcc11e..9c81c6baa2d3 100644
+> > --- a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
+> > +++ b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
+> > @@ -834,16 +834,6 @@ lcdif: lcdif@30730000 {
+> >  					<&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>;
+> >  				clock-names = "pix", "axi";
+> >  				status = "disabled";
+> > -
+> > -				port {
+> > -					#address-cells = <1>;
+> > -					#size-cells = <0>;
+> > -
+> > -					lcdif_out_mipi_dsi: endpoint@0 {
+> > -						reg = <0>;
+> > -						remote-endpoint = <&mipi_dsi_in_lcdif>;
+> > -					};
+> > -				};
+> >  			};
+> >  
+> >  			mipi_csi: mipi-csi@30750000 {
+> > @@ -895,22 +885,6 @@ mipi_dsi: dsi@30760000 {
+> >  				samsung,esc-clock-frequency = <20000000>;
+> >  				samsung,pll-clock-frequency = <24000000>;
+> >  				status = "disabled";
+> > -
+> > -				ports {
+> > -					#address-cells = <1>;
+> > -					#size-cells = <0>;
+> > -
+> > -					port@0 {
+> > -						reg = <0>;
+> > -						#address-cells = <1>;
+> > -						#size-cells = <0>;
+> > -
+> > -						mipi_dsi_in_lcdif: endpoint@0 {
+> > -							reg = <0>;
+> > -							remote-endpoint = <&lcdif_out_mipi_dsi>;
+> > -						};
+> > -					};
+> > -				};
+> >  			};
+> >  		};
+> > 
+> > I would like to know your opinion about this patch before sending it,
+> > does it makes sense for you? I understand that routing to endpoint
+> > should be done in the SoM device tree, so we are free to rout other
+> > endpoint without issues.
+> 
+> As far as I understood, the LCDIF -> DSI connection is always present in
+> the SoC. Can you overwrite the routing in your dts like this:?
+> 
+>     &lcdif_out_mipi_dsi {
+>         remote-endpoint = <&lcd_panel_in>;
+>     };
+> 
+> I'm not sure what is the best default solution here for imx7s.dtsi. Also
+> the labels don't work out in that case, this could be improved.
 
-Alice
+For sure for something to be defined a solution it should not introduce
+regressions :-)
+
+This commit makes other boards not work anymore, specifically this
+reports is about colibri-imx7.
+
+With that said, the following patch solves the issue
+
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7-colibri.dtsi b/arch/arm/boot/dts/nxp/imx/imx7-colibri.dtsi
+index 9fe51884af79..966ad13e7c78 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7-colibri.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx7-colibri.dtsi
+@@ -536,12 +536,15 @@ &lcdif {
+        status = "disabled";
+
+        port {
+-               lcdif_out: endpoint {
++               lcdif_out: endpoint@0 {
++                       reg = <0>;
+                        remote-endpoint = <&lcd_panel_in>;
+                };
+        };
+ };
+
++/delete-node/ &mipi_dsi_in_lcdif;
++
+ /* Colibri PWM<A> */
+ &pwm1 {
+        pinctrl-names = "default";
+
+
+However, ... I do not really like the delete node, but it's required to
+prevent this error:
+
+arch/arm/boot/dts/nxp/imx/imx7s.dtsi:908.37-911.9: Warning (graph_endpoint): /soc/bus@30400000/dsi@30760000/ports/port@0/endpoint@0: graph connection to node '/soc/bus@30400000/lcdif@30730000/port/endpoint@0' is not bidirectional
+
+With that said, unless you have a better solution I would just send a
+revert for your change.
+
+Francesco
+
 
