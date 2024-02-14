@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-64621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C6878540F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:55:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A6D28540F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D71B5B21328
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:55:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB8801F2AED5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24BF8F59;
-	Wed, 14 Feb 2024 00:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF97B64A;
+	Wed, 14 Feb 2024 00:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPwsNyUW"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RkjvLLHn"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70A579E4;
-	Wed, 14 Feb 2024 00:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA537AD32;
+	Wed, 14 Feb 2024 00:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707872074; cv=none; b=GxFrnsZzXjFk+5E615QhjY5kmYrsTIss8wxT/L/hzBGJBnFgh/Q2ITuuRCZiThjT4rK92K27OwegowRSnYBbmcsXU8uiHPImhDFw3SGw5yEPr0Uxyzxge+NXA+aQxxgPcampVA3Sy7JCQ4QD+CDvNKOu7gtYRV+UciRnokFGkCg=
+	t=1707872079; cv=none; b=VIW4G9f/KWOnBuCHw5aF/TkSN4K5tgBBL7BI8DVp3Df+aiYqvnQuQBc4BsYaBPqzw6b7QNaLApIx1gRtNQBT92Yhb1y4C5zeDpjPAbJYFnt1zCwFNhU1QNSqGwiaU4qvCY/Eh1QyloZp4qgYpThs94ZPn6WgfZTJNHMq9V1KzmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707872074; c=relaxed/simple;
-	bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
+	s=arc-20240116; t=1707872079; c=relaxed/simple;
+	bh=jaE58dVT+Z5BQAhxxugZAsJOr197wav/S9cgS2l1Mj4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=G+nvIU/wnGvsszkK0Dj1ipiW91wzmuNWkiSg/lS+biYr2Sxz2Iiwa0VJ9tTmpvAZuuIRZHG8ELKdVdWkKxi5/cgNPQ+yDpyDZlIuDiiqOlwGTiarOYX2dU9P5ypWyD1gROtr3tEfyMGKOUUF0rrCla17YIg6ze1vk4fUVGm9KSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPwsNyUW; arc=none smtp.client-ip=209.85.215.169
+	 In-Reply-To:To:Cc; b=blMnutjZ8vKhzv2RDb2/F6zj+tmVXYPAaKX13E8UbKosIGsRUws0wcMj4CKevyvvq8DRnlT6ih0kI9PeakDOoqlqysO0+qhIGUXpzpnlpQ63p64n0ax1WiWR6MBxhJEc3Y+IinKzkHje5QKq7YP4pzIMQN2rLBAYjpq7ibvDH/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RkjvLLHn; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so3301850a12.0;
-        Tue, 13 Feb 2024 16:54:32 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e10303de41so898991b3a.1;
+        Tue, 13 Feb 2024 16:54:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707872072; x=1708476872; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707872077; x=1708476877; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
-        b=dPwsNyUWR2Rus1zqntGck5QsBHrReqNEIoi9B2FVi0az7nAYEdJDN9/wD6hijMWG8b
-         3LZnxOok5OMhCHBfDYp+njV23J0JmtZl1nKva3rpOgsGOkRiqGz+uu9GjJOffzDg73L7
-         gw6yGAXqHijTx1shRq5QRNNMQd04nYdvdGNOpIKcMAT15GTGuKsGfQIhV9LuD2dViJyY
-         zTgKCKDNewId1iGy4L5odhgJnY75hDB4NyJODTy1QlaGFImUvp4LSp5KPu2B50m7kM9A
-         2OBcr3v8ctliz5ZSpmNS9yCNKs/T4mZWkHZLwbSMGvZdql/dA6AgrkxLg9LZ9zUbbWne
-         /zqg==
+        bh=ik8qJ3aCWPUVoqq8sIut4tSoLjkKaRHYoxxij3VGIi8=;
+        b=RkjvLLHn4ebk2FttF+X1uItRF28lx0H32/zablDRIiLLohRjmYemIIb579u9WJ56+f
+         SVWiPzQUFIgkmgMLSvzkFkozi3NXEzZL2ijplZmWPXg0ScpBxXUtocRuSyLvjcOARD+F
+         VDZKIPdrVH/pgNkEcssfInTKmxNm10+jazYptQ+SplxYp1Zk2KEJ8pMlMcoQ+1A8Vgel
+         QUtQgR0qEkI2rNA1AoluFp5niX6gSLgZk6BYyscjumxBU6df7+UKUetvvYx2cnLWV32p
+         KmG+3ZN4srXg4pEJpQPFFI5FkO89m0c+ZY50mEb+rJuvYWASuc1cHwWt+RdDxq70pSx9
+         JwKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707872072; x=1708476872;
+        d=1e100.net; s=20230601; t=1707872077; x=1708476877;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
-        b=OYtGS/77fDp4IKgYuNF67OEyP/Q0lHlxXYueyE7LEfOptc0BVruGARouyNrJNm8Y53
-         vGZzYmMTUYJjhiEe6tcgEC4ieW1sEJ7aYDyHhBta5PToKorn9BB8jUeKbD915b8pQ/Df
-         rXuGIOP8WNdvOsq7XvKqDsUrFwFfb2tihqNyL1w7Df6e/YnI4TpaMhGZ0m9cYKRes0jl
-         8pr4yYqjFEN+dvVrAENksxj1QW7WXdSMWnbPHJoPy9OnXpg2NxLQCFpyjyGZC9wr84V/
-         7xUUD4MsdLUsfce7xlLGlmQS1jAaNkVtvM86ds8sk9bCVKQYoI7Fv3kah2b2WEweEr+M
-         uJdA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+P4pS+seXBuhjtdro539omeXpp6wvkJEnBTgXj4h0WmBFjG2LGcHBVzZbGNH2EUhTv2YJi/kSBFkm0q9n523N7NLXoLxibiTVEMKLuxIjIL/O/cLBGVz28eVnUM83JYAWRqvHRJsLMA==
-X-Gm-Message-State: AOJu0YzumLQCaOMz1d8lkQTxB5p2md0hkqTfmRI9gHKd4G6slLF0EloX
-	uTLEnDijMaf1LNbMQiRPFn15jpAoAzAWevyvBG6Hlspmrr/QXl4e
-X-Google-Smtp-Source: AGHT+IGRKwM5VgclU7DYD5F3eTHEzMXSzHHdrPnUCPg7As1kOCrsB7/0iMm8yLZho2DQy+fBzDIdUw==
-X-Received: by 2002:a05:6a20:43ab:b0:19c:6a9c:2c76 with SMTP id i43-20020a056a2043ab00b0019c6a9c2c76mr1565963pzl.10.1707872071933;
-        Tue, 13 Feb 2024 16:54:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV71m1vw6BMjX8z5onBCo7okiJvy33cyAb6RJotJfj51XKB4dQodLyii4kJzrvz9aqPfjrPZxRx0LmpcnXkgM5JGW1DLxizBkS+9ZTAdoNKYBySTiXePgOpIiUiuYycx9rfBsIIotOpQ0Xnhj/wYOhgYRUNHZIGo0wuMOGL1DP+Z0X8Ov5t1x0m9ItP5QMgpWS+MaBMMYll+gv3b38N1EAMarTaS6Vxg8fO1JKLhbrjTE1/1utJS6eVbUr7N2b8wSHsX308vpC2rB+ZueonKL5aWttC2nWSc9L0co1RIKzSFwXzADRgTxL8DRcJW0ENZK86prt8l0SUR3qg52q0s7mtf7FfsLqKG7k8eRuDD4lyxA+qElBHLAOiTsQzJYUIAf/0dSURhcqgOnSojFjybQyo7x9pNgYw5EI7v6h7BSXZDED39hKcZ5JHroGRnVkXPotjjTEXeMvQ1mzdN+O6ViNyJ1TFx7nz62HDe0v7I4UXwjeZo/pyZ28GNE5MXtzArOe+sSWSPc9u2LCdLNgYK1hPr1vsoEMz9dctrc1IPciQqRTmuanr
+        bh=ik8qJ3aCWPUVoqq8sIut4tSoLjkKaRHYoxxij3VGIi8=;
+        b=f0nLXV5z/LpFV65nl61g2Sa8iIOVg7DgLlcWlcfzXv7rAT9gGblcdqkKhCfeoqXVLc
+         OsBJgY/dkTnr3PW+5OE1AUNjWK+dIwNK1zG0LiuvqHFDcLKPt6bnE5qBtJ0Xsc2zRFig
+         z9l/dgY+gMAXfKQnbl51dHigHq6wfR9pGUWf/UpQDqbHXMB+aW3TnmhbaU1wZJGamMCV
+         jOMQ9jvDk9xxoHvRbjnEBPlPHmE/nwe88SvjvLXEj8HaW8TGTOhOoEtyJgqvJvOplRHF
+         /rTro2qUnUjpzRWx/fQWP1IjFd6vUQ8xRU3lvGk/F1Ly/OmzDmeENNo4oqnEneuvFLil
+         oYSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxhx7RysmrotPqyRIhAwmIOI4Z0gZjsHpNOH11EdU7iw6BT/xNx60p9KB6kaMcWxEEjzLYWLtZDC3xKFTbwf3g0Jgqa7H3y/iefiP3Y3xJ8ChLF7spMnH0dKvwYpD4xbbUjFBOg+u45w==
+X-Gm-Message-State: AOJu0Yz8oo3FshoMIPlF6gDUk90K7QKU36yGfMl2LjH5/9GkwheYG9XG
+	MN/CvQb3agwMRgjKfr9FFVtgJuBwSWhdE6sGrLo3TRU83IWzXj5c
+X-Google-Smtp-Source: AGHT+IGpheeiLwW//SBsF14UYTSlU7EveP7OitIBf6UHm6rJL6jNa50vvPvgf2w9aWjJPiG/glY0iQ==
+X-Received: by 2002:a05:6a00:b48:b0:6e0:46ac:edf1 with SMTP id p8-20020a056a000b4800b006e046acedf1mr1080028pfo.18.1707872077120;
+        Tue, 13 Feb 2024 16:54:37 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXnguT6OkIVGW4ggbpKGoTxK6L71qamsSxSdUvwF10mdNemEO3vq3tzJobZU0X0OmLn3C0iLtIabscqBfxR6GzTb6CGOUYhhzJ9h2kGKYcsiSLRfkTMLMK4Ry8JuQyPiTS+feBipj4Hj5SPLlBPW0TyWfJJDRJUAG2Yza7DTJKkhZdcEOHwQpDqnG50PT8/sphnoMGU1jzTEUHJChWsXB2cwFGIvie6d5EKXUvXt7kLULSprAhy8w39U0JgrtYvNh55j+xyoLeJISh8EFpbrJQ/tKMsEZ/yUZl8xC6yKLQL/A/AMI18Gev/F+iEt4T4+4XSPLyz9EW230ZlWwUNxLoj1SaQrjYdgaFLLekRH72UibWl17XBXIn4zt15L6b4VdU3d2DiQ3oKamkbB2QeUY3t1SqeHySc9/9NZeLO9fstBmJyxnwdjc9hpAGeSRd0C0bQ1OJ0QkIEqne6oUhxgH+XQeWl0sN4BHl26kEcB+s+ts8DGwIFXvw7D7MAB27seF0ijRAtg4Z9YpyQzyJ2GxJcuM4P9c9Fn0DPIbN0/kCn9aPLjVin
 Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
-        by smtp.gmail.com with ESMTPSA id q10-20020aa7982a000000b006e094bf05f4sm8005694pfl.213.2024.02.13.16.54.27
+        by smtp.gmail.com with ESMTPSA id q10-20020aa7982a000000b006e094bf05f4sm8005694pfl.213.2024.02.13.16.54.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 16:54:31 -0800 (PST)
+        Tue, 13 Feb 2024 16:54:36 -0800 (PST)
 From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Date: Tue, 13 Feb 2024 21:54:15 -0300
-Subject: [PATCH net-next v3 1/3] dt-bindings: net: dsa: realtek:
- reset-gpios is not required
+Date: Tue, 13 Feb 2024 21:54:16 -0300
+Subject: [PATCH net-next v3 2/3] dt-bindings: net: dsa: realtek: add reset
+ controller
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,7 +79,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240213-realtek-reset-v3-1-37837e574713@gmail.com>
+Message-Id: <20240213-realtek-reset-v3-2-37837e574713@gmail.com>
 References: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
 In-Reply-To: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -97,44 +97,44 @@ Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
  Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1010; i=luizluca@gmail.com;
- h=from:subject:message-id; bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
- b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBlzA89CzCn2LhoEdVuY8Dx2HQjw6UsZEIg1Rpk+
- 1OapDXN78yJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZcwPPQAKCRC7Edu60Qc7
- VvCFB/0Q3Gzprs8PlbF2QJvKVhs4I/uSh3llF/mUsc6lCLFaYSpSjBckdEvNQwTZZk4ksuo/Kcd
- eJJ0a1NfzeUM95NEOjopCL2CH6Q7l+RSNUKTYubdVPhla0exbjN4PeKKtNwJ7HpkoEoczYWdhOJ
- h92+HucGDsqIHtI8c123zck1/Vh41OVvpusw45IP18CtiNCvURrpk6jgug7s09X4Lr6kYAGNVkR
- Qai96D3/tWnIErecl5A/ULcJfe25558Dt95LSZUuLbWYXxSvZxDuvSzg25VqCswlif+h/kw8kud
- fSrQP77PMXWHg2L3GXYT653FWApFoI69AoFPdnTVpy763gUD
+X-Developer-Signature: v=1; a=openpgp-sha256; l=988; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=jaE58dVT+Z5BQAhxxugZAsJOr197wav/S9cgS2l1Mj4=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBlzA89Q7luKADGUZgWZiYNYPeWfYp8lZxwi1pYK
+ ZvAahwWkNiJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZcwPPQAKCRC7Edu60Qc7
+ VsygB/9QsXTLWrMn1RGvjQYh6cgiaF1WDeOWERyUSibltZi2OzMOrvRr/Tfh2Ukq691Eb2b/2fn
+ ngwPywiDNS7BHIBunNBcW7gytMw/5PgMYsEAErJV7vW5Yca/L2cJJ7pI8VMSZm/8jXgC9qNZwRW
+ nj82KgqUKHipADDnjihiBb8LVFuLiFgdVTKaCKuOS2xbgaHeWin1aG1aN4QIFCnZB8Ct4MFpIq4
+ MB351/swWgGEQV96ape6P6VlXvFd5WlpfSm/w6o6bXNmt9PNyktZF/V9x8IiCua0rIXId0HnnAd
+ rBAbwPyPyFS/S6YqQ+a5Bp122pRXGBah9QnEp4HoHb1VzrYm
 X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
  fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-The 'reset-gpios' should not be mandatory. although they might be
-required for some devices if the switch reset was left asserted by a
-previous driver, such as the bootloader.
+Realtek switches can use a reset controller instead of reset-gpios.
 
 Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 Cc: devicetree@vger.kernel.org
 Acked-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Rob Herring <robh@kernel.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Reviewed-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/net/dsa/realtek.yaml | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/devicetree/bindings/net/dsa/realtek.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
-index cce692f57b08..46e113df77c8 100644
+index 46e113df77c8..70b6bda3cf98 100644
 --- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
 +++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
-@@ -127,7 +127,6 @@ else:
-     - mdc-gpios
-     - mdio-gpios
-     - mdio
--    - reset-gpios
+@@ -59,6 +59,9 @@ properties:
+     description: GPIO to be used to reset the whole device
+     maxItems: 1
  
- required:
-   - compatible
++  resets:
++    maxItems: 1
++
+   realtek,disable-leds:
+     type: boolean
+     description: |
 
 -- 
 2.43.0
