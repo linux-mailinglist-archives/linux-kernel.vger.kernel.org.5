@@ -1,156 +1,192 @@
-Return-Path: <linux-kernel+bounces-66129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3E0855771
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:46:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D0F855774
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:46:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 154B928E563
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 168131C21C3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A45145345;
-	Wed, 14 Feb 2024 23:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501311420D0;
+	Wed, 14 Feb 2024 23:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROb/g6o4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgnnRWR4"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE2D13DB90;
-	Wed, 14 Feb 2024 23:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19AE1420B4;
+	Wed, 14 Feb 2024 23:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707954358; cv=none; b=ijam2aRpr+124yIW6Usu1/ONrs88xIlM2qTz0Arcj4sbLk7ZpKNDD1r6RAMDV4Rp5ykNaDiOOqD8sgMRuu7fKO0yKKtZScimQd/vWwhDs/FLj7bJmrqTviWlFOQxcMsgfLC47MInUG5pxo721F+aLyfM6pplv/CM1fo/PQv6XMY=
+	t=1707954384; cv=none; b=IgRP9YGSI0MY2XA49YgtIJa04yNAA319FtinuQ0FjjmZ0OgH6nfUIUwUcYEGsi0L9nUllSYzDg4cU3g0lD8UBKgcRZzXMn2X18Qh+zNDFzxTR+TbCI/q46Z4d73uvhT3gUIqU6zGW2blzym14GPiF5fGizqiEquuL8LOxNwRyk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707954358; c=relaxed/simple;
-	bh=hn5Jto1lbD3UHNlb8zUDUPu4Gm63tv903DcDXQ0+ApI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=agpvCoibGdYldhjn0vRE4r+x706HBjRHiGCzvN0udnMcu9c0SCJYpW7AmVMAaxknfQl+KjFE3kOqwXrPp9wL/Xn0310ANYBitPvRvJI/+WJd4D6n591+7d8XNMcBuo3WZwaoqIcN5tlACFQRxXFHUeIC8/Hvp7rRYyzsJ4/I/50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROb/g6o4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81BDC433F1;
-	Wed, 14 Feb 2024 23:45:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707954358;
-	bh=hn5Jto1lbD3UHNlb8zUDUPu4Gm63tv903DcDXQ0+ApI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ROb/g6o4xeezKeZLKlXyLy3rPKgfQLts9chQg4z2aKEOn6iAzcTEYaZsmNGajI9NN
-	 G3xX8reIVUmp0jCg3fdzBXzBZW1gcW2IBX0xwrA7//yVVm609XLvRPY0SZJOKGsyUU
-	 dOZjWr6jSUoTfskYgTsK6Kh0PolaH5QBU7IpscamflkQxirQKnZSL4VrwIgFA6PEmS
-	 A9Zndmm5qaijY8dyxVZy1UbZeO5U/QomSplCyr5mgwn6XhqvAtdGxuxYIDUNNyeO0q
-	 8E3vdGLhm9x3A0jS7D3OPDaAgpZvq9QFiaRvNQ5o9bSmcwZoLMRwZYRlzWsljy+NfY
-	 GkzGElWMW+CbQ==
-Date: Thu, 15 Feb 2024 08:45:52 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 19/36] function_graph: Implement
- fgraph_reserve_data() and fgraph_retrieve_data()
-Message-Id: <20240215084552.b72d6d22ce1b93bb8e04b70a@kernel.org>
-In-Reply-To: <20240214135958.23ed55e1@gandalf.local.home>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723226123.502590.4924916690354403889.stgit@devnote2>
-	<20240214135958.23ed55e1@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707954384; c=relaxed/simple;
+	bh=vM5LV0bgJnYCoYbnuehayMAo2Z6Rn3ErOzpg2M6ffXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MbugzrVYtJ01KQarnzOwVBd+lzdzN0Mr94HMWRyauSR4ZSeZsnlfF+d/nNrFCYDe8XdKJkiATDsDcct3/OsW41TXgB+Y6t83Nt+/Y5X+gRxjyYKpCqOqWLd2lo+FIW2T7eUcb4YYbz4M8GdQyOvX/eSguo53NkjMPHnjyCRGZbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PgnnRWR4; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55f0b2c79cdso470458a12.3;
+        Wed, 14 Feb 2024 15:46:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707954381; x=1708559181; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pf9NdgBQNRoMuxuHiS061fyD7EA6QdWqQVzZdoymaX4=;
+        b=PgnnRWR4xqrwtn14sV7EJWnA4Pzkc6L6xa9mXTcJrqYviGAFmGJ/EFNHDQ0JojA23F
+         qU7oe1bzdAX5S4yS9VpUZzkhr2tie3Oh9Q/AFlcMgiA9Ncy11IPmaGVgyVz8wfJB9Gfc
+         ib2cpaF7h+k0xhulXiDWOyeS/2ditsdkp8yX3PNk1bhGmw0rZOL9XmupwtLqXZrcqtFa
+         TR6WMZ6FWGsYe5AlOE9PAuNCVRIyQnsEFxyIQeHu00GTijgqmi6sJmIzCJcbry7Mqda+
+         VZdo6sFzvjHpTMox+E/i38SVWqiPmAR5hpnUngf3WHNz2fB9f2X3UYCvn8aEDaRyVlkK
+         Z04A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707954381; x=1708559181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pf9NdgBQNRoMuxuHiS061fyD7EA6QdWqQVzZdoymaX4=;
+        b=ug69F6GdP30OWecCBJn5IIg0k/TGv3yvAci+PQjreombfc5FzgkdrGshnpBgA2ko/e
+         1VXQwe7YreZyDawal7yANAxVO4pD7L3zdfkXwXp0jIWtwF47QyOidmLAML03My+g2gVS
+         pYByyqfANfAg1kScQ5lw7nmtje3d68GyoB85PMzfZDZt68S++OP+a827JkKt2Tu1/WKY
+         lU42Musv+NmfSI2ur8OLlXu5+Y5uT2z31VWVwa4SmnqGSUi1QOUU6M+GxTKlhex9Q8U/
+         x6N4cOqLDSh/t8OvOc0E771tS4GeC6IXPorD3EwNj930NgrClb/JyQ3O872jJS/U1Dh3
+         +bGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxAg1wxDR7l65Mht/fqoI91Mmv1LheSbC7cq/eaY7mCX9hdowoztN+mOp5BSwMfC0UGd+QfAgsOSFdLFiaYtP4cUbmcQVpx8tsgXui
+X-Gm-Message-State: AOJu0Yw3Rgo//yA07K5SjEO1MCxVYYZRMPOUPfYQGGDTg1LyQ4JjJzYy
+	HdpKdnxGZzy9EglTYIm1vQfEPvhvC9qALX41Jnk+X7O7wXIGzucj
+X-Google-Smtp-Source: AGHT+IFEdCvqtuH9QJ4fTTQsdBLyoHmoAYhys4d0EcaWj75efx62YufKh6TfKDrUsPdQwEEr8R8WDg==
+X-Received: by 2002:a17:906:7189:b0:a3c:edf6:a735 with SMTP id h9-20020a170906718900b00a3cedf6a735mr39373ejk.47.1707954380500;
+        Wed, 14 Feb 2024 15:46:20 -0800 (PST)
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id w24-20020a170906131800b00a3d22f53210sm3280ejb.188.2024.02.14.15.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 15:46:20 -0800 (PST)
+Date: Thu, 15 Feb 2024 01:46:17 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Pawel Dembicki <paweldembicki@gmail.com>
+Cc: netdev@vger.kernel.org, linus.walleij@linaro.org,
+	Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 01/15] net: dsa: vsc73xx: use
+ read_poll_timeout instead delay loop
+Message-ID: <20240214234617.c4vz66ntydr7dw3v@skbuf>
+References: <20240213220331.239031-1-paweldembicki@gmail.com>
+ <20240213220331.239031-2-paweldembicki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213220331.239031-2-paweldembicki@gmail.com>
 
-On Wed, 14 Feb 2024 13:59:58 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Feb 13, 2024 at 11:03:14PM +0100, Pawel Dembicki wrote:
+> This commit switches delay loop to read_poll_timeout macro during
+> Arbiter empty check in adjust link function.
 
-> On Wed,  7 Feb 2024 00:11:01 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> 
-> > From: Ste
-> > +/**
-> > + * fgraph_reserve_data - Reserve storage on the task's ret_stack
-> > + * @idx:	The index of fgraph_array
-> > + * @size_bytes: The size in bytes to reserve
-> > + *
-> > + * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-> > + * task's ret_stack shadow stack, for a given fgraph_ops during
-> > + * the entryfunc() call. If entryfunc() returns zero, the storage
-> > + * is discarded. An entryfunc() can only call this once per iteration.
-> > + * The fgraph_ops retfunc() can retrieve this stored data with
-> > + * fgraph_retrieve_data().
-> > + *
-> > + * Returns: On success, a pointer to the data on the stack.
-> > + *   Otherwise, NULL if there's not enough space left on the
-> > + *   ret_stack for the data, or if fgraph_reserve_data() was called
-> > + *   more than once for a single entryfunc() call.
-> > + */
-> > +void *fgraph_reserve_data(int idx, int size_bytes)
-> > +{
-> > +	unsigned long val;
-> > +	void *data;
-> > +	int curr_ret_stack = current->curr_ret_stack;
-> > +	int data_size;
-> > +
-> > +	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-> > +		return NULL;
-> > +
-> > +	/* Convert to number of longs + data word */
-> > +	data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
-> 
-> Hmm, the above is a fast path. I wonder if we should add a patch to make that into:
-> 
-> 	if (unlikely(size_bytes & (sizeof(long) - 1)))
-> 		data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
-> 	else
-> 		data_size = size_bytes >> (sizeof(long) == 4 ? 2 : 3);
-> 
-> to keep from doing the division.
-
-OK, I thought DIV_ROUND_UP was not much cost. Since sizeof(long) is
-fixed 4 or 8, so 
-
-data_size = (size_bytes + sizeof(long) - 1) >> BITS_PER_LONG;
-
-will this work?
-
-Thanks,
+Replace "This commit does X" with imperative mood: "Switch the delay
+loop during the Arbiter empty check from vsc73xx_adjust_link() to use
+read_poll_timeout(). Functionally, one msleep() call is eliminated at
+the end of the loop, in the timeout case".
 
 > 
-> -- Steve
+> As Russel King suggested:
+
+s/Russel/Russell/
+
 > 
-> > +
-> > +	val = get_fgraph_entry(current, curr_ret_stack - 1);
-> > +	data = &current->ret_stack[curr_ret_stack];
-> > +
-> > +	curr_ret_stack += data_size + 1;
-> > +	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_INDEX))
-> > +		return NULL;
-> > +
-> > +	val = make_fgraph_data(idx, data_size, __get_index(val) + data_size + 1);
-> > +
-> > +	/* Set the last word to be reserved */
-> > +	current->ret_stack[curr_ret_stack - 1] = val;
-> > +
-> > +	/* Make sure interrupts see this */
-> > +	barrier();
-> > +	current->curr_ret_stack = curr_ret_stack;
-> > +	/* Again sync with interrupts, and reset reserve */
-> > +	current->ret_stack[curr_ret_stack - 1] = val;
-> > +
-> > +	return data;
-> > +}
-> > +
+> "This [change] avoids the issue that on the last iteration, the code reads
+> the register, test it, find the condition that's being waiting for is
 
+s/test/tests/
+s/find/finds/
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> false, _then_ waits and end up printing the error message - that last
+> wait is rather useless, and as the arbiter state isn't checked after
+> waiting, it could be that we had success during the last wait."
+> 
+> It also remove one short msleep delay.
+
+Apart from the fact that there's a grammatical mistake in this phrase
+("it remove" -> "it removes"), it's also a bit redundant, since
+Russell's explanation above implies this is what would happen. Anyway,
+I've suggested a replacement for it in the first paragraph, the one
+describing the change.
+
+> Suggested-by: Russell King <linux@armlinux.org.uk>
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> v4:
+>   - Resend patch
+> v3:
+>   - Add "Reviewed-by" to commit message only
+> v2:
+>   - introduced patch
+> 
+>  drivers/net/dsa/vitesse-vsc73xx-core.c | 25 +++++++++++--------------
+>  1 file changed, 11 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> index ae70eac3be28..8b2219404601 100644
+> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
+> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> @@ -779,7 +779,7 @@ static void vsc73xx_adjust_link(struct dsa_switch *ds, int port,
+>  	 * after a PHY or the CPU port comes up or down.
+>  	 */
+>  	if (!phydev->link) {
+> -		int maxloop = 10;
+> +		int ret, err;
+>  
+>  		dev_dbg(vsc->dev, "port %d: went down\n",
+>  			port);
+> @@ -794,19 +794,16 @@ static void vsc73xx_adjust_link(struct dsa_switch *ds, int port,
+>  				    VSC73XX_ARBDISC, BIT(port), BIT(port));
+>  
+>  		/* Wait until queue is empty */
+> -		vsc73xx_read(vsc, VSC73XX_BLOCK_ARBITER, 0,
+> -			     VSC73XX_ARBEMPTY, &val);
+> -		while (!(val & BIT(port))) {
+> -			msleep(1);
+> -			vsc73xx_read(vsc, VSC73XX_BLOCK_ARBITER, 0,
+> -				     VSC73XX_ARBEMPTY, &val);
+> -			if (--maxloop == 0) {
+> -				dev_err(vsc->dev,
+> -					"timeout waiting for block arbiter\n");
+> -				/* Continue anyway */
+> -				break;
+> -			}
+> -		}
+> +		ret = read_poll_timeout(vsc73xx_read, err,
+> +					err < 0 || (val & BIT(port)),
+> +					1000, 10000, false,
+
+Some #defines for 1000 and 10000 please (VSC73XX_ARBITER_SLEEP_US,
+VSC73XX_ARBITER_TIMEOUT_US)?
+
+> +					vsc, VSC73XX_BLOCK_ARBITER, 0,
+> +					VSC73XX_ARBEMPTY, &val);
+> +		if (ret)
+> +			dev_err(vsc->dev,
+> +				"timeout waiting for block arbiter\n");
+> +		else if (err < 0)
+> +			dev_err(vsc->dev, "error reading arbiter\n");
+>  
+>  		/* Put this port into reset */
+>  		vsc73xx_write(vsc, VSC73XX_BLOCK_MAC, port, VSC73XX_MAC_CFG,
+> -- 
+> 2.34.1
+> 
 
