@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-65804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F22D855215
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:30:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62064855217
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F4128B77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCD621F2989E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC8512BF24;
-	Wed, 14 Feb 2024 18:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C06612C540;
+	Wed, 14 Feb 2024 18:30:36 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CD612BF0B
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7594E12BF23
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707935435; cv=none; b=qJdom3P+NmCnmh7S4ebwrBClhNluxBNqyi0qZvs5FaMmopdLwp3vLz5Qy4G2jbn+BZ6fOpFfnP25dYNr8HRT6o9n0DUb8OuyuLTpF4n0hTEPJXhNWE4wxPaGBBgbYAxomFWtGrH41ATAIOscgG+ragN4ju0HchfEOSGYP5SabhQ=
+	t=1707935435; cv=none; b=RiO1hVzT9W07Hh/QHN7p8ErB/RqR0yXYCbimyG0YcndRzDumKeqF1J46utp0v+fCtNpDVpvLis1YkYLLOrsQQw9F4ACEGI6sF9RUOSJaKpdovk4y2bmyRZxVUXRUhDud4Lzar9wHkUr8NAcUC+v5PXZhtmfT0Pim5Jtpm4ARgYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707935435; c=relaxed/simple;
-	bh=oguWnocZws5vf+j1aiEz+HdHe1tJCGNmDLJH2xJJZ04=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sK2VOX7u3Z46+Z8fXWFcpjuts+BGTD7WCncHBec4b3BEq1NabdYvbQuxAX4WrLPDwOftmbUsKgYDIqqg6QC98/55uGTcMO5ipwNYC7uMuA6gtit07kpKo9I8Ch8lamq+lAdySKWqIEkIuuQvu6DB26+B3Lk5TReb/HezaXsJklE=
+	bh=L7rCObjeJJ/6znwFBtlQDxE88+afFeZnyW7f58K3Lx8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=A2ApI2Hjq7lLD6/Xj1LRQqYLpYFng5tN2Ov48qjQq8VnRUFFy3itQJwla3TVhhYIFGlv9NT/AIeuLWP2bPHmDCOk4Zox4cU0DKsoh/GBsUnm8ctSY6wqw3l2iBDebJau75EgFxpAIix7eSG+elg2aawvv+ygKZcuU34JEwgU//M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8B161FB;
-	Wed, 14 Feb 2024 10:31:11 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AB90DA7;
+	Wed, 14 Feb 2024 10:31:13 -0800 (PST)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 015763F7B4;
-	Wed, 14 Feb 2024 10:30:28 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E92FE3F7B4;
+	Wed, 14 Feb 2024 10:30:30 -0800 (PST)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
@@ -44,10 +45,12 @@ Cc: sudeep.holla@arm.com,
 	quic_nkela@quicinc.com,
 	souvik.chakravarty@arm.com,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH 0/7] SCMI V3.2 Misc updates
-Date: Wed, 14 Feb 2024 18:29:59 +0000
-Message-ID: <20240214183006.3403207-1-cristian.marussi@arm.com>
+Subject: [PATCH 1/7] firmware: arm_scmi: Add a common helper to check if a message is supported
+Date: Wed, 14 Feb 2024 18:30:00 +0000
+Message-ID: <20240214183006.3403207-2-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240214183006.3403207-1-cristian.marussi@arm.com>
+References: <20240214183006.3403207-1-cristian.marussi@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,56 +59,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+A common helper is provided to check if a specific protocol message is
+supported or not.
 
-another round of updates related to the last v3.2 SCMI spec, mostly around
-Clock protocol.
-
-Note that the series is based on sudeep/for-next/scmi/updates on top of
-
-  7dd3d11f4dac ("clk: scmi: Add support for forbidden clock state controls")
-
-and patch [1/7], which was included in the recently posted [1], it is
-included also here just for ease of usage. (since needed also here ofc)
-
-Having said that, [2/7] add a centralized support to the SCMI core to
-handle v3.2 optional protocol version negotiation, so that at protocol
-initialization time, mif the platform advertised version is newer than
-supported by the kernel and protocol version negotiation is supported,
-the SCMI core will attempt to negotiate an older protocol version.
-
-Patches 3,4,5 adds the remaining last missing bits of Clock v3.2 protocol
-and bumps the supported protocol version to 0x30000 (v3.2).
-
-On top of these new SCMI additions, [6/7] reworks at first slightly how the
-clk-scmi driver configures per-clock CLK ops, and then [7/7] adds support
-for clock get/set duty cycle, as allowed by the last v3.2 spec additions,
-but only if the related SCMI clk domain supports that specific clock
-permissions.
-
-Thanks,
-Cristian
-
-[1]: https://lore.kernel.org/linux-arm-kernel/20240212123233.1230090-3-cristian.marussi@arm.com/
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
+ drivers/firmware/arm_scmi/driver.c    | 34 +++++++++++++++++++++++++++
+ drivers/firmware/arm_scmi/protocols.h |  4 ++++
+ 2 files changed, 38 insertions(+)
 
-Cristian Marussi (7):
-  firmware: arm_scmi: Add a common helper to check if a message is
-    supported
-  firmware: arm_scmi: Add support for v3.2 NEGOTIATE_PROTOCOL_VERSION
-  firmware: arm_scmi: Add Clock check for extended config support
-  firmware: arm_scmi: Add standard Clock OEM definitions
-  firmware: arm_scmi: Update supported Clock protocol version
-  clk: scmi: Allocate CLK operations dynamically
-  clk: scmi: Support get/set duty_cycle operations
-
- drivers/clk/clk-scmi.c                | 168 +++++++++++++++++---------
- drivers/firmware/arm_scmi/clock.c     |  67 +++++++---
- drivers/firmware/arm_scmi/driver.c    |  99 ++++++++++++++-
- drivers/firmware/arm_scmi/protocols.h |   5 +
- include/linux/scmi_protocol.h         |  15 ++-
- 5 files changed, 270 insertions(+), 84 deletions(-)
-
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 3ea64b22cf0d..4a64ad5c21ee 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1754,10 +1754,44 @@ static void scmi_common_fastchannel_db_ring(struct scmi_fc_db_info *db)
+ #endif
+ }
+ 
++/**
++ * scmi_protocol_msg_check  - Check protocol message attributes
++ *
++ * @ph: A reference to the protocol handle.
++ * @message_id: The ID of the message to check.
++ * @attributes: A parameter to optionally return the retrieved message
++ *		attributes, in case of Success.
++ *
++ * An helper to check protocol message attributes for a specific protocol
++ * and message pair.
++ *
++ * Return: 0 on SUCCESS
++ */
++static int scmi_protocol_msg_check(const struct scmi_protocol_handle *ph,
++				   u32 message_id, u32 *attributes)
++{
++	int ret;
++	struct scmi_xfer *t;
++
++	ret = xfer_get_init(ph, PROTOCOL_MESSAGE_ATTRIBUTES,
++			    sizeof(__le32), 0, &t);
++	if (ret)
++		return ret;
++
++	put_unaligned_le32(message_id, t->tx.buf);
++	ret = do_xfer(ph, t);
++	if (!ret && attributes)
++		*attributes = get_unaligned_le32(t->rx.buf);
++	xfer_put(ph, t);
++
++	return ret;
++}
++
+ static const struct scmi_proto_helpers_ops helpers_ops = {
+ 	.extended_name_get = scmi_common_extended_name_get,
+ 	.iter_response_init = scmi_iterator_init,
+ 	.iter_response_run = scmi_iterator_run,
++	.protocol_msg_check = scmi_protocol_msg_check,
+ 	.fastchannel_init = scmi_common_fastchannel_init,
+ 	.fastchannel_db_ring = scmi_common_fastchannel_db_ring,
+ };
+diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+index e683c26f24eb..26a3edd49fea 100644
+--- a/drivers/firmware/arm_scmi/protocols.h
++++ b/drivers/firmware/arm_scmi/protocols.h
+@@ -251,6 +251,8 @@ struct scmi_fc_info {
+  *			provided in @ops.
+  * @iter_response_run: A common helper to trigger the run of a previously
+  *		       initialized iterator.
++ * @protocol_msg_check: A common helper to check is a specific protocol message
++ *			is supported.
+  * @fastchannel_init: A common helper used to initialize FC descriptors by
+  *		      gathering FC descriptions from the SCMI platform server.
+  * @fastchannel_db_ring: A common helper to ring a FC doorbell.
+@@ -264,6 +266,8 @@ struct scmi_proto_helpers_ops {
+ 				    unsigned int max_resources, u8 msg_id,
+ 				    size_t tx_size, void *priv);
+ 	int (*iter_response_run)(void *iter);
++	int (*protocol_msg_check)(const struct scmi_protocol_handle *ph,
++				  u32 message_id, u32 *attributes);
+ 	void (*fastchannel_init)(const struct scmi_protocol_handle *ph,
+ 				 u8 describe_id, u32 message_id,
+ 				 u32 valid_size, u32 domain,
 -- 
 2.43.0
 
