@@ -1,160 +1,185 @@
-Return-Path: <linux-kernel+bounces-64597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D3778540B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:08:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67C3C8540B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A5A1C24E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005DC1F2A1CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14042290C;
-	Wed, 14 Feb 2024 00:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E4810F2;
+	Wed, 14 Feb 2024 00:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jym8a+/N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u8ip9JAz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F96B7F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8EE7F;
+	Wed, 14 Feb 2024 00:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869284; cv=none; b=VJRkPB66spfeSAdJflwiQJmsY7ITjG0SmD0h0jLGrfN/tqitBIIkTzvwyC7xDXKR5/B6hy1HZVvgqLWrrM4yFFQAZ9a4yuc5Tm0nokaCYvQtihp3FIzYpX1xBLcGdjDA00tsmiSozbVwvYiRXV2ghn2blRzb/3Bpzaf2ysGvyng=
+	t=1707869386; cv=none; b=B6vJFaHITaEd9JcrcIl1o15m3nLWbqRZ8YHVMrzWWnry/DIArfMD6tCA5lDtFkBW2zi+t11sVeYJPbqGGy5m4R8eily5+CFsS/MhwthZLu2iitoRHaHgxj/UoOANGikeKSCMhUcCLPPqeo6rHHl1NJkGcVLCVX3HAGXIrP8akOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869284; c=relaxed/simple;
-	bh=Onc/Nm5J2ADHvGRgUGidlYL5cNBOfivtq/tSzL+HJ1s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TToPjbrh+Y1npba/25doBLGYeK5JnyNQG1K3JiJTZmOw7+PoFeVhhWkfaQEpnI0ocbErrJ6lnBq0g72DCzSXAdierJljdXuPsmXoECirRa3C4BjVNfPklXYP9KIf6mf4U4HzGTbn83dDaAf7N37Q66pOAc6aT8S7zGhe+YX2abo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jym8a+/N; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707869282; x=1739405282;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Onc/Nm5J2ADHvGRgUGidlYL5cNBOfivtq/tSzL+HJ1s=;
-  b=Jym8a+/NYjRXbNUjgY0bjdAqHw/wbYrZm0Oh220ja8pvKNpIlS5xE/jD
-   1Zc8qXjFWpHT/GZ+Q08sHCcqko8kvE64LFQNeuPEiA0oNLn3DVZevOSQZ
-   u0u38TKptpS712EGV5xrOHPa8iwNW0m1PS3H3hUGqJoXd+Jpcz9CpQcrj
-   zTQw5FNgzAEj5IBd/Ywz8zMgO3MnwOAo34WeMwEn3Wka29DOdN8hWSNHb
-   3wdbPOZ8QTrsT2OWc1zFpJzjgeDd9JPir5BGbSQY3SszGfdOQN/Rq/iMm
-   OYF8qv/nriiUIGxzsybXszfday1lXYz6wQz2nhzx0tcZk/Zt4Fb3vitoX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2261138"
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="2261138"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:08:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935501057"
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="935501057"
-Received: from arieldux-mobl.amr.corp.intel.com (HELO [10.209.91.178]) ([10.209.91.178])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:08:00 -0800
-Message-ID: <c4ae18fb13ab1c63cdd34da9fe7b1e0f1a91c909.camel@linux.intel.com>
-Subject: Re: [PATCH v3] mm: swap: async free swap slot cache entries
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Wei Xu
- <weixugc@google.com>,  Yu Zhao <yuzhao@google.com>, Greg Thelen
- <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>,  Yosry Ahmed
- <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, Mel Gorman
- <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, Nhat Pham
- <nphamcs@gmail.com>, Kairui Song <kasong@tencent.com>, Barry Song
- <v-songbaohua@oppo.com>
-Date: Tue, 13 Feb 2024 16:08:00 -0800
-In-Reply-To: <20240213-async-free-v3-1-b89c3cc48384@kernel.org>
-References: <20240213-async-free-v3-1-b89c3cc48384@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1707869386; c=relaxed/simple;
+	bh=XGF57pUD1lmuUaWsfaETEZITZpWlnPt6/M5D/Up5LbA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XL1V2jVmbJDT3VNQJyHvr/MIKAvrpJ7NiEEr/1H+D2g/kgsbza6d3+OdPebwHuC4UjftFjSYqcp99HnH/htXKNB9FzoMHb9WRipVJR7Ez1UugwnL1B2sZsPH6kVaZVAO03g6SUjaAsYHEMsQPoIkL7ybOWK/7wGr/OLF97hTj6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u8ip9JAz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D763C433F1;
+	Wed, 14 Feb 2024 00:09:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707869385;
+	bh=XGF57pUD1lmuUaWsfaETEZITZpWlnPt6/M5D/Up5LbA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=u8ip9JAzdkIcb3TcwM4qD6FbBawPsJw72koMHQp1u7S4tNYyLTRQB0eNhsHVSk8eb
+	 W5oUtVrmvtvKyPyQK35+cerSuRnZf/dTlBVNA2p1MVx1L+3gWUsOkbk/7+D0L7+M7N
+	 CnltdzI+S6AcX/5C+SIf50NxayQqOjHoibccvFlt+7QdFhHafx2O5qClqlK0eEJ1vm
+	 4La/59C03Eu6OUgg3G6Cv0dlg8HVkan5E1DVjKzsCbk+q3G3Sdot5gWDYNQ+RcJh55
+	 ClbpjD8LQAskSSvGe4yi9N40hIy4R/Le977Xey4yYkTk+U9T6KqTUICx0fmqdGx59C
+	 nhvvteXWkh5YQ==
+Message-ID: <e2d6dded-dea6-4832-ba16-6a97e3060992@kernel.org>
+Date: Wed, 14 Feb 2024 09:09:42 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
+To: Niklas Cassel <cassel@kernel.org>, Andrey Melnikov <temnota.am@gmail.com>
+Cc: Sergei Shtylyov <sergei.shtylyov@gmail.com>, linux-ide@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hdegoede@redhat.com
+References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
+ <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
+ <CA+PODjpOE=LGPi1G1ebvEwGeXAfpuZ+s_k4uMUwu3i6st9y--g@mail.gmail.com>
+ <Zcukjucb4VEbKK9x@x1-carbon> <Zcuvbzoo7/7c/F1q@x1-carbon>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <Zcuvbzoo7/7c/F1q@x1-carbon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-02-13 at 15:20 -0800, Chris Li wrote:
-> We discovered that 1% swap page fault is 100us+ while 50% of
-> the swap fault is under 20us.
->=20
-> Further investigation show that a large portion of the time
-> spent in the free_swap_slots() function for the long tail case.
->=20
-> The percpu cache of swap slots is freed in a batch of 64 entries
-> inside free_swap_slots(). These cache entries are accumulated
-> from previous page faults, which may not be related to the current
-> process.
->=20
-> Doing the batch free in the page fault handler causes longer
-> tail latencies and penalizes the current process.
->=20
-> Add /sys/kernel/mm/swap/swap_slot_async_free to control the
-> async free behavior. When enabled, using work queue to async
-> free the swap slot when the swap slot cache is full.
->=20
-> Testing:
->=20
-> Chun-Tse did some benchmark in chromebook, showing that
-> zram_wait_metrics improve about 15% with 80% and 95% confidence.
->=20
-> I recently ran some experiments on about 1000 Google production
-> machines. It shows swapin latency drops in the long tail
-> 100us - 500us bucket dramatically.
->=20
-> platform	(100-500us)	 	(0-100us)
-> A		1.12% -> 0.36%		98.47% -> 99.22%
-> B		0.65% -> 0.15%		98.96% -> 99.46%
-> C		0.61% -> 0.23%		98.96% -> 99.38%
->=20
-> Signed-off-by: Chris Li <chrisl@kernel.org>
-> ---
-> Changes in v3:
-> - Address feedback from Tim Chen, direct free path will free all swap slo=
-ts.
-> - Add /sys/kernel/mm/swap/swap_slot_async_fee to enable async free. Defau=
-lt is off.
-> - Link to v2: https://lore.kernel.org/r/20240131-async-free-v2-1-525f03e0=
-7184@kernel.org
->=20
-> Changes in v2:
-> - Add description of the impact of time changing suggest by Ying.
-> - Remove create_workqueue() and use schedule_work()
-> - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b27799=
-2cb0@kernel.org
-> ---
->  include/linux/swap_slots.h |  2 ++
->  mm/swap_slots.c            | 20 ++++++++++++++++++++
->  mm/swap_state.c            | 23 +++++++++++++++++++++++
->  3 files changed, 45 insertions(+)
->=20
-> diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
-> index 15adfb8c813a..bb9a401d7cae 100644
-> --- a/include/linux/swap_slots.h
-> +++ b/include/linux/swap_slots.h
-> @@ -19,6 +19,7 @@ struct swap_slots_cache {
->  	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
->  	swp_entry_t	*slots_ret;
->  	int		n_ret;
-> +	struct work_struct async_free;
->  };
-> =20
->  void disable_swap_slots_cache_lock(void);
-> @@ -27,5 +28,6 @@ void enable_swap_slots_cache(void);
->  void free_swap_slot(swp_entry_t entry);
-> =20
->  extern bool swap_slot_cache_enabled;
-> +extern uint8_t slot_cache_async_free __read_mostly;
+On 2/14/24 03:05, Niklas Cassel wrote:
+> On Tue, Feb 13, 2024 at 06:19:10PM +0100, Niklas Cassel wrote:
+>> On Thu, Feb 08, 2024 at 10:27:11AM +0300, Andrey Melnikov wrote:
+>>>> On 2/7/24 12:58 PM, Andrey Jr. Melnikov wrote:
+>>>>
+>>>>> The ASM1064 SATA host controller always reports wrongly,
+>>>>> that it has 24 ports. But in reality, it only has four ports.
+>>>>>
+>>>>> before:
+>>>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+>>>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
+>>>>> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
+>>>>>
+>>>>> after:
+>>>>> ahci 0000:04:00.0: ASM1064 has only four ports
+>>>>> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
+>>>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
+>>>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
+>>>>> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
+>>>>>
+>>>>>
+>>>>> Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
+>>>>>
+>>>>> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+>>>>> index da2e74fce2d9..ec30d8330d16 100644
+>>>>> --- a/drivers/ata/ahci.c
+>>>>> +++ b/drivers/ata/ahci.c
+>>>>> @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
+>>>>>  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
+>>>>>                                        struct ahci_host_priv *hpriv)
+>>>>>  {
+>>>>> -     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
+>>>>> -             dev_info(&pdev->dev, "ASM1166 has only six ports\n");
+>>>>> -             hpriv->saved_port_map = 0x3f;
+>>>>> +     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
+>>>>> +             if (pdev->device == 0x1166) {
+>>>>
+>>>>    Maybe *switch* instead?
+>>>
+>>> Ok.
+>>
+>> Hello Andrey,
+>>
+>> do you intend to send out a v2 that uses a switch instead?
+>>
+>> And perhaps take Damien's patch as patch 1/2
+>> (with Suggested-by: Damien ... of course),
+>> so that the before/after print in your commit message shows
+>> the override value.
+> 
+> On second thought, just go ahead and respin your patch using a switch,
+> as I don't think Damien's patch is fully correct.
+> 
+> He suggested to use hpriv->saved_port_map.
+> 
+> However, that will show the wrong result for platforms using
+> hpriv->mask_port_map.
+> 
+> As when hpriv->mask_port_map is used, saved_port_map is not set:
+> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L536-L548
+> 
+> However, the local variable "port_map" is updated for both
+> saved_port_map and mask_port_map cases.
+> 
+> And then at the end:
+> hpriv->port_map = port_map;
+> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L597
+> 
+> So I think we should print hpriv->port_map,
+> and not hpriv->saved_port_map.
 
-Why wouldn't you enable the async_free always?
-Otherwise the patch looks fine to me.
+Indeed, good catch...
 
-Tim
+> However.. hpriv->port_map is already printed:
+> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L2617
+> in the "0x%x impl" print.
+> 
+> So
+>> before:
+>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
+> 
+>> after:
+>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
+> 
+> Actually prints the number of *implemented* ports.
+> 
+> 
+> I have to admit that this is a bit confusing.
+> 
+> Personally I would have preferred if we simply printed
+> "%u ports", hpriv->port_map,
+> 
+> and simply dropped the "0x%x impl" part of the print,
+> but I'm a bit worried that someone parses this print from user space,
+> but I guess we must be allowed to improve prints if they are confusing.
+> 
+> Damien, what do you think?
 
-> =20
+..but port_map is a mask, not a count of ports. So this would still be wrong.
+I think we simply need a small helper that look something like:
+
+int ahci_nr_ports(struct ata_host *host)
+{
+        struct ahci_host_priv *hpriv = host->private_data;
+	int i, n = 0;
+
+	for_each_set_bit(i, &hpriv->port_map, AHCI_MAX_PORTS)
+		n++;
+
+	return n;
+}
+
+and print that instead together with the mask.
+
+-- 
+Damien Le Moal
+Western Digital Research
 
 
