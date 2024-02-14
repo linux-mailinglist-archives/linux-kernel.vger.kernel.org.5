@@ -1,211 +1,196 @@
-Return-Path: <linux-kernel+bounces-65395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F427854C4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:13:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D397854C55
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB0F928A663
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:13:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70321F28783
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956E35C901;
-	Wed, 14 Feb 2024 15:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34A65EE78;
+	Wed, 14 Feb 2024 15:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lkWs3yP6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6SSGVqOE";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hVS06lzN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6uL1+Jv8"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QqnVFzdf"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8F75C5FA;
-	Wed, 14 Feb 2024 15:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1FE25B671
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923559; cv=none; b=AlY/YS2d06tFBf5kfaJovZvp4N3nv0kLeleB61k+6V+XBHGn96naJ1JEupzg5Ra2EU/NV94E1yPCieZlH45e6HHZL5qFUtTeF216CPqxVRuAG/oawHSIXQwMHme8LTnbqmPESYF+WXD4AXDwyjxQEHnBawvkKeE0Keo3y7gStds=
+	t=1707923604; cv=none; b=a63nTDWQoQ3J5slDChHdSCjxocwBUNhv/We1yl3W64xuF0QyhdIr1SP0Yon6J+uDfsaVi7h3mqkI6IMOKExxwE9kAwqNGk9h5ELj6nY3piAOyXCVbQt+zdwDaSq/lvmZGEHkd2PzW/l3rV7i5E+Y5awQ6FAQqliUPWBMJ7L+7Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923559; c=relaxed/simple;
-	bh=7/P7x+/AqII8L6wca9mcDfS/hzMkjEos5evXqT75hRw=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a9jJVix8p1m0GSrn/AEVrsmJ4tfcf4yBWXyiA0Acgkd27tjI/WeCRLfxiZ0XHSc5I92GT6FgTSAis6PQFndBD2Mgbln20eVcCZGbtC70tnCOUZJ3DrJ+4DvNPhg2CIaEQsVWni89dXA+VBa7reStIOQgLbpfiYvqeDQuYOqQkjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lkWs3yP6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6SSGVqOE; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hVS06lzN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6uL1+Jv8; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0ECD11F806;
-	Wed, 14 Feb 2024 15:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707923556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1707923604; c=relaxed/simple;
+	bh=iLd26OvacHUz2LtzsLY81PDv5FJLEM70pEIMoNjFxWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bkCZd5kIoHv8ZMRbrdVeoH3VRDcbhliOfA0F2WzL3ZTa24VfWRN3Z64NcHnNZZgu7lM6c9JL3+SPxqS/7Dg8et5HYgdTuluRmyvDKKlhJin7Gwl902GGqNBAB5+8AVncTfAz1Pdq6RKb/iR3qvYCMrod5y5BUo4dlOsO2Tgj6ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QqnVFzdf; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 10:13:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707923600;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6+/B5wDGrnXVqk4PQUhrU9bSZQxWwxNn0w4TAr6yKcQ=;
-	b=lkWs3yP6FFBkBWgFYb5/XRFIuFsC6uzYOwerLfBuM/knxMIy5CK7RFnhqkvHcdkAgvZ/5b
-	gDkjbT5sN62k4sXdLHJrBIh1nFFabxPZN4OQ24T5CCQ0k3VPEXcyHmjSVNhxJvVscjzA5l
-	zcd+1s8cZHr51Iey8Xf9zi+oL29YXn4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707923556;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6+/B5wDGrnXVqk4PQUhrU9bSZQxWwxNn0w4TAr6yKcQ=;
-	b=6SSGVqOEUT7GMI8Eof4haHBGyPj3v01GAQsPCgA/7uh9EXWZEnKSF7oHhXe1m4/VluKImF
-	QRXx8ilqzUs8ruCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707923554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6+/B5wDGrnXVqk4PQUhrU9bSZQxWwxNn0w4TAr6yKcQ=;
-	b=hVS06lzN98Yokb41766nmq2ZnujrLlNWZxDC4h8xVg+ChWfhVO9ESSv8+35LpMX8GKwCd6
-	eoxZJDQKNvutURSQQRG4EK0tWyu3+b4q9CZ6TZF9fU2A82v7KfEfZjcNwO050Ih9IpAzIj
-	AO1Wmdf2sVJWsiknNeF3bedREJf2vJQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707923554;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6+/B5wDGrnXVqk4PQUhrU9bSZQxWwxNn0w4TAr6yKcQ=;
-	b=6uL1+Jv8ciGuXWkHvvH9bz//4XQidPEl0imupmTBSMNoskY84HLPdACN9zh2g1oonSe+wO
-	Gh2itcqqtZkSXKBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D3CA513A6D;
-	Wed, 14 Feb 2024 15:12:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OjRNMmHYzGUQIQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 14 Feb 2024 15:12:33 +0000
-Date: Wed, 14 Feb 2024 16:12:33 +0100
-Message-ID: <87jzn7gjvi.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Warning! Unlikely big volume range (=9234), cval->res is probably wrong. (Dell XPS 13 9360 and Plantronics Blackwire 315.1
-In-Reply-To: <a18994c5-6584-403f-8754-b9db43c1f6fa@molgen.mpg.de>
-References: <a18994c5-6584-403f-8754-b9db43c1f6fa@molgen.mpg.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	bh=PY07zx4xo5DT+YIldZdwTzLPFVE7nIythW2Rrqykp1E=;
+	b=QqnVFzdfgyWfkP1gDQRlNaQ9Xyie0OsgEXlSv6icMe/mIY70ikjjb+WkXEP8tlb20Awecc
+	eSWpRmstvlZgXVi+BSGTN5X3X9cM/puYpsElr3tKfaJBdRGgACJD6atY6S0rGhJ3jos+tq
+	NUAuld4iYByfqcO+Yc2C3ZNT2XCuffA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, 
+	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, axboe@kernel.dk, 
+	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, 
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <lkozkbcucokzaicygwn7ym2cmmdt6bwyrluxb7ka7ygnrgyyfh@ktvirhq3hrtn>
+References: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
+ <ZczVcOXtmA2C3XX8@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-2022-JP
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SUBJECT_HAS_EXCLAIM(0.00)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[mpg.de:email,alsa-project.org:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZczVcOXtmA2C3XX8@casper.infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 14 Feb 2024 15:53:03 +0100,
-Paul Menzel wrote:
+On Wed, Feb 14, 2024 at 03:00:00PM +0000, Matthew Wilcox wrote:
+> On Tue, Feb 13, 2024 at 06:08:45PM -0500, Kent Overstreet wrote:
+> > This is what instrumenting an allocation function looks like:
+> > 
+> > #define krealloc_array(...)                     alloc_hooks(krealloc_array_noprof(__VA_ARGS__))
+> > 
+> > IOW, we have to:
+> >  - rename krealloc_array to krealloc_array_noprof
+> >  - replace krealloc_array with a one wrapper macro call
+> > 
+> > Is this really all we're getting worked up over?
+> > 
+> > The renaming we need regardless, because the thing that makes this
+> > approach efficient enough to run in production is that we account at
+> > _one_ point in the callstack, we don't save entire backtraces.
 > 
-> Dear Linux folks,
+> I'm probably going to regret getting involved in this thread, but since
+> Suren already decided to put me on the cc ...
 > 
+> There might be a way to do it without renaming.  We have a bit of the
+> linker script called SCHED_TEXT which lets us implement
+> in_sched_functions().  ie we could have the equivalent of
 > 
-> On the Dell XPS 13 9360, plugging in a USB headset, I saw the warning
-> below the first time since using the devices since December 2023.
+> include/linux/sched/debug.h:#define __sched             __section(".sched.text")
 > 
-> ```
-> $ sudo dmesg | grep -e "DMI:" -e "Linux version" -e microcode
-> [    0.000000] Linux version 6.8.0-rc4
-> (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 13.2.0-13) 13.2.0,
-> GNU ld (GNU Binutils for Debian) 2.42) #20 SMP PREEMPT_DYNAMIC Mon Feb
-> 12 09:40:49 CET 2024
-> [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
-> [    0.386024] microcode: Current revision: 0x000000f4
-> [    0.386026] microcode: Updated early from: 0x000000f0
-> […]
-> [88628.500854] usb 1-2: new full-speed USB device number 11 using xhci_hcd
-> [88628.723620] usb 1-2: New USB device found, idVendor=047f,
-> idProduct=c037, bcdDevice= 1.45
-> [88628.723627] usb 1-2: New USB device strings: Mfr=1, Product=2,
-> SerialNumber=3
-> [88628.723629] usb 1-2: Product: Plantronics Blackwire 315.1
-> [88628.723631] usb 1-2: Manufacturer: Plantronics
-> [88628.723633] usb 1-2: SerialNumber: F3D422B734B3EC4CAF12EA236AFCB5EA
-> [88628.794126] input: Plantronics Plantronics Blackwire 315.1 Consumer
-> Control as
-> /devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.3/0003:047F:C037.000F/input/input67
-> [88628.853158] input: Plantronics Plantronics Blackwire 315.1 as
-> /devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.3/0003:047F:C037.000F/input/input68
-> [88628.853253] input: Plantronics Plantronics Blackwire 315.1 as
-> /devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.3/0003:047F:C037.000F/input/input69
-> [88628.853428] hid-generic 0003:047F:C037.000F: input,hiddev1,hidraw2:
-> USB HID v1.11 Device [Plantronics Plantronics Blackwire 315.1] on
-> usb-0000:00:14.0-2/input3
-> [88628.853447] probe of 0003:047F:C037.000F returned 0 after 59756 usecs
-> [88628.853463] probe of 1-2:1.3 returned 0 after 127842 usecs
-> [88628.853491] probe of 1-2 returned 0 after 129625 usecs
-> [88628.892691] calling  alsa_rawmidi_init+0x0/0xff0 [snd_rawmidi] @ 117168
-> [88628.892707] initcall alsa_rawmidi_init+0x0/0xff0 [snd_rawmidi]
-> returned 0 after 1 usecs
-> [88628.964882] calling  usb_audio_driver_init+0x0/0xff0
-> [snd_usb_audio] @ 117168
-> [88629.840845] usb 1-2: Warning! Unlikely big volume range (=9234),
-> cval->res is probably wrong.
-> [88629.840850] usb 1-2: [11] FU [Sidetone Playback Volume] ch = 1, val
-> = 0/9234/1
-> [88630.401192] probe of 1-2:1.0 returned 0 after 1436245 usecs
-> [88630.401216] usbcore: registered new interface driver snd-usb-audio
-> [88630.401219] initcall usb_audio_driver_init+0x0/0xff0
-> [snd_usb_audio] returned 0 after 1436302 usecs
-> [89546.685992] usb 1-2: USB disconnect, device number 11
-> ```
-> 
-> (`/sbin/alsa-info` [1])
-> 
-> I am unable to reproduce this. Is that a problem with the headset, the
-> laptop or something else?
-> 
-> Looking at the archive of Linux messages archive of *Hardware for
-> Linux* [1], the message shows up quite often.
+> perhaps #define __memalloc __section(".memalloc.text")
+> which would do all the necessary magic to know where the backtrace
+> should stop.
 
-You can ignore it as long as the device appears working.
-It mere informs a firmware bug of the device.  The driver detected it
-and avoids the strange volume setup.
+Could we please try to get through the cover letter before proposing
+alternatives? I already explained there why we need the renaming.
 
-I have such a Plantronics USB headset, too ;)
+In addition, you can't create the per-callsite codetag with linker
+magic; you nede the macro for that.
+
+Instead of citing myself again, I'm just going to post what I was
+working on last night for the documentation directory:
+
+. SPDX-License-Identifier: GPL-2.0
+
+===========================
+MEMORY ALLOCATION PROFILING
+===========================
+
+Low overhead (suitable for production) accounting of all memory allocations,
+tracked by file and line number.
+
+Usage:
+kconfig options:
+ - CONFIG_MEM_ALLOC_PROFILING
+ - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+ - CONFIG_MEM_ALLOC_PROFILING_DEBUG
+   adds warnings for allocations that weren't accounted because of a
+   missing annotation
+
+sysctl:
+  /proc/sys/vm/mem_profiling
+
+Runtime info:
+  /proc/allocinfo
+
+Example output:
+  root@moria-kvm:~# sort -h /proc/allocinfo|tail
+   3.11MiB     2850 fs/ext4/super.c:1408 module:ext4 func:ext4_alloc_inode
+   3.52MiB      225 kernel/fork.c:356 module:fork func:alloc_thread_stack_node
+   3.75MiB      960 mm/page_ext.c:270 module:page_ext func:alloc_page_ext
+   4.00MiB        2 mm/khugepaged.c:893 module:khugepaged func:hpage_collapse_alloc_folio
+   10.5MiB      168 block/blk-mq.c:3421 module:blk_mq func:blk_mq_alloc_rqs
+   14.0MiB     3594 include/linux/gfp.h:295 module:filemap func:folio_alloc_noprof
+   26.8MiB     6856 include/linux/gfp.h:295 module:memory func:folio_alloc_noprof
+   64.5MiB    98315 fs/xfs/xfs_rmap_item.c:147 module:xfs func:xfs_rui_init
+   98.7MiB    25264 include/linux/gfp.h:295 module:readahead func:folio_alloc_noprof
+    125MiB     7357 mm/slub.c:2201 module:slub func:alloc_slab_page
 
 
-thanks,
+Theory of operation:
 
-Takashi
+Memory allocation profiling builds off of code tagging, which is a library for
+declaring static structs (that typcially describe a file and line number in
+some way, hence code tagging) and then finding and operating on them at runtime
+- i.e. iterating over them to print them in debugfs/procfs.
 
-> 
-> 
-> Kind regards,
-> 
-> Paul
-> 
-> 
-> [1]: https://alsa-project.org/db/?f=3dc36e15c0cd57e299a119fb0b5b1ad6ed78e898
-> [2]: https://github.com/linuxhw/Dmesg
+To add accounting for an allocation call, we replace it with a macro
+invocation, alloc_hooks(), that
+ - declares a code tag
+ - stashes a pointer to it in task_struct
+ - calls the real allocation function
+ - and finally, restores the task_struct alloc tag pointer to its previous value.
+
+This allows for alloc_hooks() calls to be nested, with the most recent one
+taking effect. This is important for allocations internal to the mm/ code that
+do not properly belong to the outer allocation context and should be counted
+separately: for example, slab object extension vectors, or when the slab
+allocates pages from the page allocator.
+
+Thus, proper usage requires determining which function in an allocation call
+stack should be tagged. There are many helper functions that essentially wrap
+e.g. kmalloc() and do a little more work, then are called in multiple places;
+we'll generally want the accounting to happen in the callers of these helpers,
+not in the helpers themselves.
+
+To fix up a given helper, for example foo(), do the following:
+ - switch its allocation call to the _noprof() version, e.g. kmalloc_noprof()
+ - rename it to foo_noprof()
+ - define a macro version of foo() like so:
+   #define foo(...) alloc_hooks(foo_noprof(__VA_ARGS__))
 
