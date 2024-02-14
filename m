@@ -1,144 +1,208 @@
-Return-Path: <linux-kernel+bounces-64745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 658A785422C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:56:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D04854238
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2184728F8D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 04:56:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44E561C2238F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E958B168D7;
-	Wed, 14 Feb 2024 04:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292E610A24;
+	Wed, 14 Feb 2024 05:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dvza0EGk"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aYOQpnxI"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63161427F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 04:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165FC10A01
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707886498; cv=none; b=dtN7s4veztk2+pPGTX8cE5Dbc3UFclL588O0optscJYvPCe8syahFVu5YdDavv6eq4tbJUKGnD8BxOWP9Bhf+HFO7qgSDec0pjfiQOuHJi+GUUaI4cuxLSK9Eewf/N46LW8lNBJYMRwsrZuOBTSJ08T3E3Sa66o4TW6lM2HvGS0=
+	t=1707886816; cv=none; b=h9Ds/bQm4gLsh22VmxeGLTNNxLxhnZCIHpGipzN0hS4wV+WyTH6G4kM7MLjiodqBYIQZlu0KU0ev5z/quh+1vyxMEaTlTzuuiJEk+2m7N4wJwZb+yzHNo3m5SmosA9YOuTahKRTIANK/Toe1tvWtSLa7CG5GmPmST4s3C43CEik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707886498; c=relaxed/simple;
-	bh=RzMZrbrulsy/RZPWJvtZBoLiAJHl/tCZx3nfOmxjK4w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GFjXYoQQ8AH49e9T2QUA9jqrtKZO4bWzDoFSTnzod9tzTmMbsPzBdLHHiHPu0Xdzv8UttJjgVUu9G7WJ1NdUlxcg6QD/MhkvLrSDjtExYn0k0B9pMR7q1wIIITLfHxpKjG/X9Kpg39EM/ftgEy6m+qF/4abTmIETbtM9kPTwnf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dvza0EGk; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <854345d2-201e-481f-8d6c-e59a788683d5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707886493;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4382P76+Y7tKDUvDdheaaNMjB6c+0ejXl5XBSiHG0io=;
-	b=dvza0EGkf4toDKv/2JsRvuJlHsbLqIhVlhRjTndgfvTr4v/W64+oDC2L7gtqTo7Q8iPAwW
-	zztKYU1tSd9MqBG9M4MocOkfAdKHzzsX7Ue07CzbrSO2gWBR76gzZcfITNclnNP1dXgpJN
-	Aludn9trCW46xmCGzc1JHGjvfbdHu1c=
-Date: Wed, 14 Feb 2024 12:54:43 +0800
+	s=arc-20240116; t=1707886816; c=relaxed/simple;
+	bh=zNpj6ds/BGQIXRec684PPL+jtb+JOBpfcMzIWDOwtaE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=n2n9Zogw9SBpYMLt6U5Cmc/CmOwl5nIR1IqxM3i/P40aQe+mMmsvHvBs0uffxeon6GcGVc5F2r9fmV/VfW/z6J14IiBQv/nbPllMVZKTbSXGj3tQ9s7XJwwgZCZdU9W8VpkPNE5FWsT2wcSX5Mt5iP6D55C6xnyD8FmWbu78KKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aYOQpnxI; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707886814; x=1739422814;
+  h=date:from:to:cc:subject:message-id;
+  bh=zNpj6ds/BGQIXRec684PPL+jtb+JOBpfcMzIWDOwtaE=;
+  b=aYOQpnxIVCF0ZjCpMznP4WJ0NUyOt12d9/PswCPrrNdgFURMmNwhP2zg
+   DwPKRiG9r5DpbhiLjct6lYsAuYkDw6Nab0kd3WQmWTzDxoDFUNyEkJLXt
+   Rw/9ot6cQXm7ePg8WtVM1/Q2sdBK6V1GCWW+TP3RnRab4eRJIsz4nvz5B
+   lspE2+zc5sg+DrsVrOOGjr33dGSgpOFEwx03x7+ekfkfiD5UMrwLZjoGY
+   0mlOoXIOoUPRbe2+kxYaylhDMxbWkcZH3ZoLD2IoAKlFrBXODTZDDBDyM
+   A2xEI4PLvbk+Pppys2+IvQNCClUCdKWMOUL1FwTckW2rP21QHon6N+4jH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="396356054"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="396356054"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 21:00:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="3443755"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 13 Feb 2024 21:00:12 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ra7NS-0008TF-0c;
+	Wed, 14 Feb 2024 05:00:10 +0000
+Date: Wed, 14 Feb 2024 12:59:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/alternatives] BUILD SUCCESS
+ cadb7de3170e22893b617276c297216039aad88d
+Message-ID: <202402141253.CZeVAnfl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [etnaviv-next v13 7/7] drm/etnaviv: Add support for vivante GPU
- cores attached via PCI(e)
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
- Russell King <linux+etnaviv@armlinux.org.uk>,
- Christian Gmeiner <christian.gmeiner@gmail.com>,
- David Airlie <airlied@gmail.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240206172759.421737-1-sui.jingfeng@linux.dev>
- <20240206172759.421737-8-sui.jingfeng@linux.dev>
- <ZcNO9aZwWzyYs-Rv@phenom.ffwll.local>
- <jahydq72bqb27de2ijwwmdjh4ri326mxhfjn5pbvf7cqcpnauq@rw5hjdiroi5d>
- <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <ZcYGWEG8eqAiqqai@phenom.ffwll.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/alternatives
+branch HEAD: cadb7de3170e22893b617276c297216039aad88d  x86/alternatives: Sort local vars in apply_alternatives()
 
+elapsed time: 801m
 
-On 2024/2/9 19:02, Daniel Vetter wrote:
-> On Thu, Feb 08, 2024 at 04:27:02PM +0100, Maxime Ripard wrote:
->> On Wed, Feb 07, 2024 at 10:35:49AM +0100, Daniel Vetter wrote:
->>> On Wed, Feb 07, 2024 at 01:27:59AM +0800, Sui Jingfeng wrote:
->>>> The component helper functions are the glue, which is used to bind multiple
->>>> GPU cores to a virtual master platform device. Which is fine and works well
->>>> for the SoCs who contains multiple GPU cores.
->>>>
->>>> The problem is that usperspace programs (such as X server and Mesa) will
->>>> search the PCIe device to use if it is exist. In other words, usperspace
->>>> programs open the PCIe device with higher priority. Creating a virtual
->>>> master platform device for PCI(e) GPUs is unnecessary, as the PCI device
->>>> has been created by the time drm/etnaviv is loaded.
->>>>
->>>> we create virtual platform devices as a representation for the vivante GPU
->>>> ip core. As all of subcomponent are attached via the PCIe master device,
->>>> we reflect this hardware layout by binding all of the virtual child to the
->>>> the real master.
->>>>
->>>> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
->>> Uh so my understanding is that drivers really shouldn't create platform
->>> devices of their own. For this case here I think the aux-bus framework is
->>> the right thing to use. Alternatively would be some infrastructure where
->>> you feed a DT tree to driver core or pci subsystem and it instantiates it
->>> all for you correctly, and especially with hotunplug all done right since
->>> this is pci now, not actually part of the soc that cannot be hotunplugged.
->> I don't think we need intermediate platform devices at all. We just need
->> to register our GPU against the PCI device and that's it. We don't need
->> a platform device, we don't need the component framework.
-> Afaik that's what this series does. The component stuff is for the
-> internal structure of the gpu ip, so that the same modular approach that
-> works for arm-soc also works for pci chips.
->
-> Otherwise we end up with each driver hand-rolling that stuff, which is
-> defacto what both nouveau and amdgpu do (intel hw is too much a mess for
-> that component-driver based approach to actually work reasonably well).
+configs tested: 120
+configs skipped: 134
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Emmm, I spend years to achieve this, and only to find that you have fully
-understand my patch within two days.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240214   gcc  
+arc                   randconfig-002-20240214   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                   randconfig-002-20240214   gcc  
+arm                    vt8500_v6_v7_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-003-20240214   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240214   gcc  
+csky                  randconfig-002-20240214   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240214   clang
+i386         buildonly-randconfig-002-20240214   clang
+i386         buildonly-randconfig-003-20240214   clang
+i386         buildonly-randconfig-004-20240214   gcc  
+i386         buildonly-randconfig-005-20240214   gcc  
+i386         buildonly-randconfig-006-20240214   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240214   clang
+i386                  randconfig-002-20240214   clang
+i386                  randconfig-003-20240214   clang
+i386                  randconfig-004-20240214   gcc  
+i386                  randconfig-005-20240214   clang
+i386                  randconfig-006-20240214   gcc  
+i386                  randconfig-011-20240214   clang
+i386                  randconfig-012-20240214   gcc  
+i386                  randconfig-013-20240214   gcc  
+i386                  randconfig-014-20240214   gcc  
+i386                  randconfig-015-20240214   clang
+i386                  randconfig-016-20240214   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240214   gcc  
+loongarch             randconfig-002-20240214   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         bigsur_defconfig   gcc  
+mips                      pic32mzda_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240214   gcc  
+nios2                 randconfig-002-20240214   gcc  
+parisc                randconfig-001-20240214   gcc  
+parisc                randconfig-002-20240214   gcc  
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                                defconfig   clang
+s390                  randconfig-002-20240214   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                    randconfig-001-20240214   gcc  
+sh                    randconfig-002-20240214   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7705_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sparc64               randconfig-001-20240214   gcc  
+sparc64               randconfig-002-20240214   gcc  
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-002-20240214   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240214   gcc  
+x86_64       buildonly-randconfig-002-20240214   clang
+x86_64       buildonly-randconfig-003-20240214   gcc  
+x86_64       buildonly-randconfig-004-20240214   gcc  
+x86_64       buildonly-randconfig-005-20240214   gcc  
+x86_64       buildonly-randconfig-006-20240214   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240214   clang
+x86_64                randconfig-002-20240214   gcc  
+x86_64                randconfig-003-20240214   clang
+x86_64                randconfig-004-20240214   gcc  
+x86_64                randconfig-005-20240214   clang
+x86_64                randconfig-006-20240214   clang
+x86_64                randconfig-011-20240214   clang
+x86_64                randconfig-012-20240214   clang
+x86_64                randconfig-013-20240214   gcc  
+x86_64                randconfig-014-20240214   gcc  
+x86_64                randconfig-015-20240214   clang
+x86_64                randconfig-016-20240214   clang
+x86_64                randconfig-071-20240214   gcc  
+x86_64                randconfig-072-20240214   clang
+x86_64                randconfig-073-20240214   gcc  
+x86_64                randconfig-074-20240214   clang
+x86_64                randconfig-075-20240214   clang
+x86_64                randconfig-076-20240214   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                randconfig-001-20240214   gcc  
+xtensa                randconfig-002-20240214   gcc  
+xtensa                         virt_defconfig   gcc  
 
-
-> Cheers, Sima
->
->>> I think I've seen some other pci devices from arm soc designs that would
->>> benefit from this too, so lifting this logic into a pci function would
->>> make sense imo.
-
-
-Yes, as you said, we are trying to avoid the hand-rolling stuff.
-I guess, extremely advanced drivers(like i915, amdgpu, and nouveau)
-won't need this. So I'm not sure if lifting this logic into PCI
-core would benefit to other people. While investigating the aux-bus
-framework a few days, I find it is not as concise as this one. It
-introduce a lot of new structure, I fear that it may cause namespace
-pollution if adopt it. So, I thinks I should choose the alternative
-way.
-
-While taking a lot from contribution, we are really want to do some
-feedback(pay-back). We are happy if there are other users(or new
-drivers) would like to adopt this idea, I think, the idea itself
-has already been conveyed. Which probably can be seen as a trivial
-contribution. Other programmer are free to copy and modify.
-
-But as a initial commit, I minimized the mount of changes  as required
-by Locus. meanwhile, I'm willing to following the expectation in the
-long term. If there are other users or other problem need to solve,
-I would like help to improve and to cooperate to testing in the future.
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
