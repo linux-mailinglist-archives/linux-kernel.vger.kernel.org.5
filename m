@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel+bounces-65469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB3E854D76
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:56:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A90854D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31B531F28F1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247A31C26865
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC185DF05;
-	Wed, 14 Feb 2024 15:56:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 254F35FB8A;
-	Wed, 14 Feb 2024 15:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96675DF0F;
+	Wed, 14 Feb 2024 15:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ChCecnFt"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9B95C8F9;
+	Wed, 14 Feb 2024 15:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926175; cv=none; b=KZ10i3F/MX0AfwkflYnHmn1Mmf5hnZZN0l6rLOU9Fg+pFj8V37nWZqFw3hMsNTAUBcx01KW54R/ForbApKnCb5OPzUeRa4Urjm9/3vd1G5AKrBbAAUziJ/ZQQ65JpNEGdvDGIpaqPBz3c0gdJBr4zFGFgEix34QJg/uIyOdatHM=
+	t=1707926246; cv=none; b=EnU7ZdSDh9rzZ1NDOj4O0V/Bq9VJWm6T+7prpyRcghJdSQnRbHtiba7GyTdoUmiOx5XfVwAXmtLxgXPOqsBPet9lm4Z1pQLd6bntPgc05ZZcjcUM0glOxYKymTbMiMC1BA8ATdbNT7X2lCaN8ggzLUPPRYOtPUP+2aDuYzhFHlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926175; c=relaxed/simple;
-	bh=8wE9VeZZ/pE3GTv1zR5T7QMkoHUzBLH+y37aO4m/9PU=;
+	s=arc-20240116; t=1707926246; c=relaxed/simple;
+	bh=9S1I1UJjz/X6ER5LhtT7IGanpvGoyXhIkt7y7jddGRM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sZBaKayq+1pBi8J6dUv4vgO0oD4Wvw6IB2b/XUPjw3f2cqg5W/Tsx7VUDog63l3RMZfL7A0PwxsrcIlRga/J7cGr4IW/8BwChyTBLKr2B8vT4FOc0kHxxe+gnK9iLXr0tATdL2qcxJ/8SSIyei7Taej1Yr6T8F4gznBAU4plToA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 043451FB;
-	Wed, 14 Feb 2024 07:56:50 -0800 (PST)
-Received: from [10.57.49.250] (unknown [10.57.49.250])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4E003F762;
-	Wed, 14 Feb 2024 07:56:06 -0800 (PST)
-Message-ID: <c70df5a6-20af-4cee-b147-5847751fa36b@arm.com>
-Date: Wed, 14 Feb 2024 15:56:05 +0000
+	 In-Reply-To:Content-Type; b=IezDtq4FgNJ8jUE3NZ5T484QphPubYBkNcWQS7+JkNZkLTvAgw7h/5FUMMkDYAsom3yiQIxqzr+qqKcPjdHIvTKOi/8DIjBp8FoLCInrU1c1FUIT5gN1NytRb85Ov1NGARv/xNsOF1ojz3e3nBtKU6Q/EEJ9idRnoWrdDuF0+UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ChCecnFt; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707926242;
+	bh=9S1I1UJjz/X6ER5LhtT7IGanpvGoyXhIkt7y7jddGRM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ChCecnFtsuu89rAx4oQVrab/J7YJwvcBTw7poUim+4V7Jh/s9CaJ7kvywmUU3WCjL
+	 duyRWlOvU8VNDpkvnV2nHr+SKCdSvF5fX9GdEDC4MwI0SbL6k2jqK9NfwLd/WxWhbu
+	 d+jfED/0i2tVJQHpocJ1Fmtsvuy9vmoHE+rTsqrdloypio1kwatMgjdu1W2EwxoUXC
+	 qZlNrwEC05xdXUMQBJV+eAqh4SxbI7eP/+S1s5DiAPyE3rp9mTJKwFPMQxS+qJp3gg
+	 RjRZSqC9FP9kIFgiqG+gJP7siRfIbsV+wepS1oeWv6LBMWJF7Xi4IP4zMzVU9WSWOY
+	 mvyj/c67OmLJA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A6AF93780894;
+	Wed, 14 Feb 2024 15:57:21 +0000 (UTC)
+Message-ID: <137bc832-80fe-4dec-bbe5-caca2c1c5b97@collabora.com>
+Date: Wed, 14 Feb 2024 16:57:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,42 +56,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: qcom,coresight-tpdm: Rename
- qcom,dsb-element-size
-Content-Language: en-GB
-To: Rob Herring <robh@kernel.org>, Mao Jinlong <quic_jinlmao@quicinc.com>
-Cc: Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
+Subject: Re: [PATCH V2 1/2] dt-bindings: pwm: mediatek,mt2712: add compatible
+ for MT7988
+Content-Language: en-US
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Tao Zhang <quic_taozha@quicinc.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240213160521.15925-1-quic_jinlmao@quicinc.com>
- <20240213160521.15925-2-quic_jinlmao@quicinc.com>
- <20240213222957.GA2502642-robh@kernel.org>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240213222957.GA2502642-robh@kernel.org>
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, John Crispin
+ <john@phrozen.org>, linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20240214140454.6438-1-zajec5@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240214140454.6438-1-zajec5@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 13/02/2024 22:29, Rob Herring wrote:
-> On Tue, Feb 13, 2024 at 08:05:17AM -0800, Mao Jinlong wrote:
->> Change qcom,dsb-element-size to qcom,dsb-element-bits as the unit is
->> bit.
+Il 14/02/24 15:04, Rafał Miłecki ha scritto:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> That may be, but this is an ABI and you are stuck with it. Unless, you
-> can justify why that doesn't matter. (IIRC, this is new, so maybe no
-> users yet?)
+> MT7988 has on-SoC controller that can control up to 8 PWM interfaces. It
+> differs from blocks on other SoCs (amount of PWMs & registers) so it
+> needs its own compatible string.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
-This was added and support queued in v6.8. This change won't make it to 
-v6.8 (given it has to go via two levels and is technically not a fix).
-
-As James also pointed out, it doesn't matter what the name is (now that
-it has been published).
-
-Suzuki
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
