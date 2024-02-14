@@ -1,157 +1,225 @@
-Return-Path: <linux-kernel+bounces-65008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D056A854682
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:52:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8228A854692
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44ED41F23A7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:52:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A748F1C21839
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0147F14ABC;
-	Wed, 14 Feb 2024 09:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AC714270;
+	Wed, 14 Feb 2024 09:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pnIYhYCB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vnQc++Ui"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4567E13ADB;
-	Wed, 14 Feb 2024 09:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B36111643A
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707904365; cv=none; b=dv6BTQoBF3ndMqFsEmO5bEDWbIwp76o001A0OrTW1TbACNs/WKTYyz/vyn2y+sx8bva+NUWXGIROcIJuOAyDYNcquWU9ONIL41ry2yKPy1s8l7QY6FT6yiPDuTGjiF1BJaBl0Lh0vlp46RkpeLxn8suIxZv4Yyp+MSs5y+2ckiQ=
+	t=1707904419; cv=none; b=Nn+TwRgsTDmIFdsB8J7CwC1QvkMGSdoSThi2sLwZqwJKEByvdDxT7WlQL3s/jPdPPb0TijvJ9mtHVX3ChaVUIhjt15X3JpaTPKdGEnJTCIvYsLKVbE43HCDWC9oz7hcNqPI3ph0QgRriLG/bSMD11UQvJdbhAfQ7uY9w16mzt9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707904365; c=relaxed/simple;
-	bh=4ITR0NaF2IXIbe34i/5k34/8TGKN+3qf0hadVySymOY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TIP9vzIOt6xn2vQRvZc0o31Fbm40t8O5XDnNLMCkVhx+DnkOBB4BkbrDV5xduyQQHNdrtFFlA9wAf4L9FwhvXNwexWpG97HtQk7TlQs8gjb9DEBZkYjD+SysrHKBI62BGrJe+EdIqTLJ18tSuhGfHv2+usbhfltjxaMleWUNHmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pnIYhYCB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8100C433C7;
-	Wed, 14 Feb 2024 09:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707904364;
-	bh=4ITR0NaF2IXIbe34i/5k34/8TGKN+3qf0hadVySymOY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pnIYhYCBuhpeg3T5OinEnaE7B9fUDvzhXQJ4JOuzEH4eteSInkiU/TwDS0wFFAmL2
-	 UEyceDLnLmI/Ur1O3CMqSnpmqhDhUL1e8onL1nweUuA3vF0JSxx3sgRYvvpheqhZMl
-	 MxRiGrPkPu1gYH2/Xucs7HC7/FSjadpGxumhSJto9FsVA2GnkCTlS4afZUpdMPgW/y
-	 fUYKymtT9IodkCQFtAvw34ZFh0cKNyY0ksvIshmR8nRgeXKh6pmw60MK/hFyDMzLrJ
-	 JK0uiuyKSJlR3lx80SFRD0RvnT6i64IdNb6O9JkjqTKxeUJARGUxiA3edA3+gs/5OO
-	 h8qBnNFOByH5w==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1raBwY-0035aU-0R;
-	Wed, 14 Feb 2024 09:52:42 +0000
-Date: Wed, 14 Feb 2024 09:52:41 +0000
-Message-ID: <867cj75q52.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Rob Herring <robh@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Peter Rosin <peda@axentia.se>,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v2] of: OF_IRQ: select IRQ_DOMAIN instead of depending on it
-In-Reply-To: <20240213225619.11726-1-rdunlap@infradead.org>
-References: <20240213225619.11726-1-rdunlap@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707904419; c=relaxed/simple;
+	bh=EU3ABdr8K5hm1pH5imG0GpRTGaP6fx8XbrQr3yoLOM0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DPoB77OQU852hNxCTVKGMfnArVlF7LzIp60TZJss1/vBl6zmtBYN9ElFe7Vv+7J6qKIPjHJ/T08Wg+iWsTs26p3KVfAPiK7cCaq5eQTWvGUkGfBrcpnR0GTpXSE7gA5JXbq5sREnR+2DFVH3xKWX6xbilb3NGdiPY0SwKR15eAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vnQc++Ui; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3cb228b90bso316069866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:53:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707904414; x=1708509214; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EaUjppUgiZAPCVE885hL282NkwF8fm6ZDFZemDPWHzs=;
+        b=vnQc++UiRPOKRuxAo6s8l75QZFzbIFI9d9brXsVpOxPRSGeSa6RTyYaCoExixFwQN2
+         Zyz4Ecf00CY6f2zCKkwPD2dGn3gfp/c1hgQ/I0cfFOSypx/vm7i2+5T0dQ88AkAOzmoX
+         YU93uH5tCkQiD/ZHWolxsOAHSHHDFCWGPEQcFCjyY7nNCbViUHMnEqsUqR9UPk3ltU5Z
+         VxJcSdEIdrF8AbwUYsazX3pd5N/MlfPq4Npq+shddkCzlqmF9cfgYegX/aBHgmxtFUpP
+         fjNAxMtm+cP0zV2TCMzEN5wQQd+Dt5h/pZKTef7hkbNBn7lSaR+wkcYLOy9jxAx6p21j
+         dujA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707904414; x=1708509214;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EaUjppUgiZAPCVE885hL282NkwF8fm6ZDFZemDPWHzs=;
+        b=mqeYrxOrOV6rMCFUXuYzjgJRJbeLWFKIBP5hLXwJqzj91uSx4PlOHmmoyLYej9c5TA
+         Tr/MMBeSJArrqG/V3yVks0NWOCJ+emUdbzR0q2fLM1irrd8npjfOZOc2O8tS6liTdOh3
+         Xptva9vcQUJl/kYVBwW3pKC3lSBuPl8xt/Ftv/MMPb1IlLFZkUTWqYPlXRJ+lXsWgp/6
+         KRH0IthFlD1j6B7YRz1XaDUybkmNQNP4+RhUUhAB+Oiopzpj+qPtbr5dh3O/WCx5b2XU
+         M/MIvLAZhTc99KZGbG6LXnRnWPoZs0/UoEHZ0NJD3uR926djk/OVLYL0Nr341cCv3WYq
+         fNzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgjt1P/NFS65d4fbm3qdbn5jFZP9fHI8Kda5e0bZrpk8jhXNwbYb2RDmz8pbEe3FXQmHfXg6lY68UnOgSFhpx/Viihx9vl1XIMxnRr
+X-Gm-Message-State: AOJu0YwQzh027NdMvoLR7VcADGWdeRLqbkeWpIvtti+j1KtyE+BNHV4J
+	6zv2muQ4ja7w59URScQMHm/XVp0H8HMhcCNbhFCDGzbkHYcGlH1anHfoK88w6/o=
+X-Google-Smtp-Source: AGHT+IHUD7IopZjbxD8lEAJpguq89fNC7GXCm2nTCf0GUa5tnbfVhf0QZ0UYSyTxXbaUiG4GWvlugA==
+X-Received: by 2002:a17:906:ccd2:b0:a3d:6592:a7e with SMTP id ot18-20020a170906ccd200b00a3d65920a7emr21284ejb.37.1707904413927;
+        Wed, 14 Feb 2024 01:53:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWHWykznHAKiQeCk2JWDJoDpwem6lshIoVSZOgUBdVG8iZb9VmTYPODLgX8OQxj8tR0kJ4OtjD0fxSc0+ebR3Cz79J6Ku12QeDik7HtGEdWTkpeGJjD3EAQB8hu5s/JRQwNNZcgWsFdn1kXhhT7j9bBlUk+x3XBxwz8w5vJ7YOObhPNLYebG9L+MFxXvKIvtxK5xsRHwd6TRTjh4DFe/KcZ11IA+zpDOdLAHYAy0WSIMqZo0a5m+xIfpFvSnwT8sn/RmUMnxbj86KE+GC1TOMtsic5uPXnTxKzNCMjLxU7pOZICVj9ZCnshWQmhBQCUSkg/Bya5iLMaaNft4ORp1DHkTLfRSlX9eE3isN1OCyKPiysU6ulCZOZ0xI3/nzYIdqPCHIgVD0/M1HS/rScP+puMadMbBsuhtrbbO4l42L+oQMObzJrzaBsKX4TpkpZcnBInSHuxu61oZjQHNPN7S2eQDZl21Px5vLstqvw3fZAyzcnEA6NKpizqE8Wp03JKTUN4wQ5evHazQkyymSSjZUsrWtMsq/ra8Y2sUP+spbE2YSjfFdD1ze5wKzw2WAaZUBHu1rWBHjRUiKowpf3+oVlaoiX5Fxa2bqMYr7CM4dFzx9vRc6a7ZrhBH4zBcgVialZZjDDSQX5DTh1dHagf4lj7Cffp/eKVbY913MkhZesbaYuXlPBl
+Received: from [192.168.0.22] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id o7-20020a1709061d4700b00a3d6395156esm43228ejh.168.2024.02.14.01.53.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:53:33 -0800 (PST)
+Message-ID: <630b892e-a948-4683-97bd-5633fc81f917@linaro.org>
+Date: Wed, 14 Feb 2024 10:53:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: rdunlap@infradead.org, linux-kernel@vger.kernel.org, geert@linux-m68k.org, robh@kernel.org, arnd@arndb.de, p.zabel@pengutronix.de, peda@axentia.se, devicetree@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Add eSPI device driver (flash channel)
+Content-Language: en-US
+To: Manojkiran Eda <manojkiran.eda@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ jk@codeconstruct.com.au, Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
+ Ryan Chen <ryan_chen@aspeedtech.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, openbmc@lists.ozlabs.org,
+ zev@bewilderbeest.net
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 13 Feb 2024 22:56:19 +0000,
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On 13/02/2024 15:36, Manojkiran Eda wrote:
+> This patch adds the driver support for the eSPI controller of
+> Aspeed 5/6th generation SoCs. This controller is a slave device
+> communicating with a master over Enhanced Serial Peripheral
+> Interface (eSPI).
 > 
-> IRQ_DOMAIN is a hidden (not user visible) symbol. Users cannot set
-> it directly thru "make *config", so drivers should select it instead
-> of depending on it if they need it.
-> Relying on it being set for a dependency is risky.
+> eSPI supports 4 channels, namely peripheral, virtual wire,
+> out-of-band, and flash, and operates at max frequency of 66MHz.
 > 
-> Consistently using "select" or "depends on" can also help reduce
-> Kconfig circular dependency issues.
+> But at the moment, this patch set only supports the flash channel.
 > 
-> Therefore, change OF_IRQ's use of "depends on" to "select".
-> 
-> This patch reduces one Kconfig circular dependency in
-> drivers/mux/Kconfig when MUX_MMIO attempts to select REGMAP (a failed
-> patch), which that driver needs (but does not completely resolve that
-> issue). [1]
-> 
-> before this patch: (10 lines of detail)
-> drivers/net/ethernet/arc/Kconfig:19:error: recursive dependency detected!
-> drivers/net/ethernet/arc/Kconfig:19:	symbol ARC_EMAC_CORE is selected by ARC_EMAC
-> drivers/net/ethernet/arc/Kconfig:26:	symbol ARC_EMAC depends on OF_IRQ
-> drivers/of/Kconfig:81:	symbol OF_IRQ depends on IRQ_DOMAIN
-> kernel/irq/Kconfig:60:	symbol IRQ_DOMAIN is selected by REGMAP
-> drivers/base/regmap/Kconfig:6:	symbol REGMAP is selected by MUX_MMIO
-> drivers/mux/Kconfig:48:	symbol MUX_MMIO depends on MULTIPLEXER
-> drivers/mux/Kconfig:6:	symbol MULTIPLEXER is selected by MDIO_BUS_MUX_MULTIPLEXER
-> drivers/net/mdio/Kconfig:275:	symbol MDIO_BUS_MUX_MULTIPLEXER depends on MDIO_DEVICE
-> drivers/net/mdio/Kconfig:6:	symbol MDIO_DEVICE is selected by PHYLIB
-> drivers/net/phy/Kconfig:16:	symbol PHYLIB is selected by ARC_EMAC_CORE
-> 
-> after this patch: (5 lines of detail)
-> drivers/mux/Kconfig:6:error: recursive dependency detected!
-> drivers/mux/Kconfig:6:	symbol MULTIPLEXER is selected by MDIO_BUS_MUX_MULTIPLEXER
-> drivers/net/mdio/Kconfig:275:	symbol MDIO_BUS_MUX_MULTIPLEXER depends on MDIO_BUS
-> drivers/net/mdio/Kconfig:13:	symbol MDIO_BUS is selected by REGMAP
-> drivers/base/regmap/Kconfig:6:	symbol REGMAP is selected by MUX_MMIO
-> drivers/mux/Kconfig:48:	symbol MUX_MMIO depends on MULTIPLEXER
-> 
-> [1] https://lore.kernel.org/lkml/20230210115625.GA30942@pengutronix.de/
-> 
-> Fixes: 63c60e3a6dc3 ("of: OF_IRQ should depend on IRQ_DOMAIN")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Peter Rosin <peda@axentia.se>
-> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
 > ---
-> v2: update patch description, rebase & resend
+> Hello everyone,
 > 
->  drivers/of/Kconfig |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> I'm presenting a revised version of the eSPI device driver patch series found at the following link:
 > 
-> diff -- a/drivers/of/Kconfig b/drivers/of/Kconfig
-> --- a/drivers/of/Kconfig
-> +++ b/drivers/of/Kconfig
-> @@ -80,7 +80,8 @@ config OF_ADDRESS
->  
->  config OF_IRQ
->  	def_bool y
-> -	depends on !SPARC && IRQ_DOMAIN
-> +	depends on !SPARC
-> +	select IRQ_DOMAIN
->  
->  config OF_RESERVED_MEM
->  	def_bool OF_EARLY_FLATTREE
+> https://lore.kernel.org/openbmc/20220516005412.4844-1-chiawei_wang@aspeedtech.com/ 
+
+What changed? Please provide changelog and continue with versioning.
+
+
 > 
+> This update addresses the issues identified during the review process.
+> 
+> While the previous patch series attempted to incorporate support for all four different channels of eSPI,
+> this new series focuses on upstreaming the flash channel initially, ensuring that all review comments are
+> duly addressed, before progressing further.
+> 
+> Results:
+> 
+> Successfully conducted a flash update via eSPI.
+> 
+> Note:
+> 
+> This marks my inaugural endeavor in contributing code to the kernel subsystem. I kindly request reviewers
+> to incorporate as many details as possible in the review comments.
+> ---
+>  .../devicetree/bindings/soc/aspeed/espi.yaml       | 125 ++++++
+>  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi            |  16 +-
 
-This seems to be moving is the right direction. FWIW,
+These are all separatge patches.
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
 
-	M.
+>  drivers/mtd/mtdcore.c                              |   2 +-
+>  drivers/soc/aspeed/Kconfig                         |  10 +
+>  drivers/soc/aspeed/Makefile                        |   3 +
+>  drivers/soc/aspeed/aspeed-espi-ctrl.c              | 197 +++++++++
+>  drivers/soc/aspeed/aspeed-espi-ctrl.h              | 169 ++++++++
+>  drivers/soc/aspeed/aspeed-espi-flash.c             | 466 +++++++++++++++++++++
+>  drivers/soc/aspeed/aspeed-espi-flash.h             |  45 ++
+>  include/uapi/linux/espi/aspeed-espi-ioc.h          | 103 +++++
+>  10 files changed, 1134 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/aspeed/espi.yaml b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+> new file mode 100644
+> index 000000000000..6521a351d18d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+> @@ -0,0 +1,125 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# # Copyright (c) 2021 Aspeed Technology Inc.
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/soc/aspeed/espi.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 
--- 
-Without deviation from the norm, progress is not possible.
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+Not reviewing further. Test your code....
+
+Best regards,
+Krzysztof
+
 
