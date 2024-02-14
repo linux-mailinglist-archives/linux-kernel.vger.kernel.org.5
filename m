@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8758854868
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3934785486A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B8421F26839
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B809E1F28B34
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AABD199C2;
-	Wed, 14 Feb 2024 11:31:58 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827501B813;
+	Wed, 14 Feb 2024 11:32:00 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE6618E29;
-	Wed, 14 Feb 2024 11:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8742C19473;
+	Wed, 14 Feb 2024 11:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910317; cv=none; b=UU8WyL98NA0QUwxug6NBO8XSQq2YjaxwNp5rYTgVyqbs5picCB6hdq+yABqIEtJHW9Y7Q6p2Acc73C6rls2wJS9wykOdafT67PEbnSbnoVxBAJBF3UvxcHE98a5Xi+XRoT73J43U3qCBjigqrwlOhJVea3IJBS3uorhfURaN834=
+	t=1707910319; cv=none; b=OhkCKPLHnZ4dzsWFPb8VzAb8bKamL+QCQxRKnYGSsjp6mceCLCdc5ficCDXhpPRrmJeL2sxeCKSLpHNIYcW0jkgCE9sHPnz75GPVltJoPeRB5kVAmC2TH5SMIrmvTOfZkXkqd/u62Z25liMPWAWwlUKXilNkYjf3Df1JScOi7jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910317; c=relaxed/simple;
-	bh=IZRkWO/+sOchYJGTeX49qHMaLdDDn4RxMUwVyR1RVFI=;
+	s=arc-20240116; t=1707910319; c=relaxed/simple;
+	bh=6+0IzA4B2DlV4NvMNithN+HguWo+5w/SReDep9hW9Lo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O88bz9EW6gRK9JOs3ubIeFktnndDqI1FenB4wbEtulCazr4NK6qn/bAgh/OPqWTG+dHxpl+1zWh1tMwgEyYW3d+HAEaGtEEQS0eqOT7AqAQa/Yc6hObr/MfaW0JUMrhT4g6S2B8FDGxZJqJttVE95vdiXVxh7YrN3U9C5DpVmnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+	 MIME-Version; b=Pv6weYLPvZC/aMptg+6M0LFjFDcpKT3FYuIkWp8qcxVoEkrItSnq+RSqYUMAa30+Gknj4cEnKGW5/sRsDG/uO7ah6Dk64egjO5DPNfW+ZTBgLhFDSq/XS4FJTT8R5wRGDO6x8pBuHnTpoduWwQTt36RJ2YGz6BZoXU8lxfQMXZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TZbHN35hjz9yMKw;
-	Wed, 14 Feb 2024 19:16:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TZbC34nB3z9y62P;
+	Wed, 14 Feb 2024 19:12:47 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id AE0AD1405A2;
-	Wed, 14 Feb 2024 19:31:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 887C014061E;
+	Wed, 14 Feb 2024 19:31:49 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAn0Rl8pMxlwo99Ag--.51308S3;
-	Wed, 14 Feb 2024 12:31:36 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwAn0Rl8pMxlwo99Ag--.51308S4;
+	Wed, 14 Feb 2024 12:31:48 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	David Kaplan <david.kaplan@amd.com>,
@@ -65,9 +65,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	petr@tesarici.cz,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 1/5] sbm: SandBox Mode core data types and functions
-Date: Wed, 14 Feb 2024 12:30:31 +0100
-Message-Id: <20240214113035.2117-2-petrtesarik@huaweicloud.com>
+Subject: [PATCH v1 2/5] sbm: sandbox input and output buffers
+Date: Wed, 14 Feb 2024 12:30:32 +0100
+Message-Id: <20240214113035.2117-3-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
 References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
@@ -78,12 +78,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAn0Rl8pMxlwo99Ag--.51308S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4rXFyUuw15Zr48GF43Awb_yoWfArW5pF
-	43A3Z8Kr48ta4ay3yfJrWF9ryftw4Sgr15JFy7A343ta4qgry8WFsYqry29Fs3CrWkKayF
-	qF1FgF10ka15Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:LxC2BwAn0Rl8pMxlwo99Ag--.51308S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48XrWUGw1rZFy8GF4rXwb_yoWDJF4DpF
+	n8tFn8GF45Jry7Jrsxtr4F9w4ftw4IqF1UKay7W34YyFy5trn7WFykJr9FqFsrCrZrGayr
+	Jr1vgay8Ga45J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUm214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
 	8EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
@@ -95,332 +95,367 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4rXFyUuw15Zr48GF43Awb_yoWfArW5pF
 	CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
 	0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
 	IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-	xhVjvjDU0xZFpf9x0JU7pnQUUUUU=
+	xhVjvjDU0xZFpf9x0JUzWlgUUUUU=
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Introduce SandBox Mode (SBM) core infrastructure and make the feature
-configurable at build time with CONFIG_SANDBOX_MODE.
+Provide SBM_COPY_IN(), SBM_COPY_OUT() and SBM_COPY_INOUT() macros to
+allocate sandbox mode buffers for input/output data. Input data is copied
+from kernel mode to the allocated buffer before calling the target
+function. Output data is copied from the allocated buffer to kernel mode
+after the target function returns.
 
-Provide an API to execute a function in a sandbox. This target function
-runs in an address space that is similar to but distinct from the caller's
-address space. This is why the target function cannot be called directly.
-Instead, it is called via sbm_exec(), which takes the target function as a
-parameter and executes it inside the sandbox.
+Define two new arch hooks to map input/output buffers:
 
-All target functions take one void parameter and return an integer which
-can be interpreted as error status (zero is success, negative is error).
+* arch_sbm_map_readonly()
+* arch_sbm_map_writable()
 
-Store sandbox parameters and state in struct sbm, and define these
-operations on it:
+Before calling the target function, use these hooks to create mappings for
+all buffers, read-only or writable as appropriate. Provide a fallback no-op
+implementation.
 
-* sbm_init() - set up a sandbox
-* sbm_destroy() - clean up sandbox resources
-* sbm_error() - query error status
-* sbm_exec() - execute code in sandbox
+Upon expansion, the SBM_COPY_xxx() macros evaluate to the address of the
+buffer in sandbox mode, cast back to the original type. This pointer should
+be used by code running in the sandbox. It should not be used in kernel
+mode; although the address is valid, the buffers are overwritten by
+sbm_exec().
 
-Allow to defer error checking until after the last operation. When a SBM
-operation fails, set an error value in struct sbm and make it stick, that
-is fail all subsequent operations and return this error instead. The error
-value can be explicitly retrieved with sbm_error(), but simple use cases
-can get by with the return value of sbm_exec() alone.
-
-Also declare these arch hooks:
-
-* arch_sbm_init() - arch-specific setup
-* arch_sbm_destroy() - arch-specific cleanup
-* arch_sbm_exec() - arch-specific code execution
-
-These hooks are required to provide strong isolation. The availability of
-arch hooks is indicated by CONFIG_HAVE_ARCH_SBM. Initially, no architecture
-provides SBM arch hooks, falling back to a trivial no-op implementation.
+To do the typecast, prefer typeof(({x;})) over typeof(x). The statement
+expression forces array-to-pointer decay, which allows to pass an array as
+an argument to these macros.
 
 Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 ---
  include/linux/sbm.h | 154 ++++++++++++++++++++++++++++++++++++++++++++
- init/Kconfig        |   2 +
- kernel/Kconfig.sbm  |  31 +++++++++
- kernel/Makefile     |   1 +
- kernel/sbm.c        |  45 +++++++++++++
- 5 files changed, 233 insertions(+)
- create mode 100644 include/linux/sbm.h
- create mode 100644 kernel/Kconfig.sbm
- create mode 100644 kernel/sbm.c
+ kernel/sbm.c        |  88 +++++++++++++++++++++++++
+ 2 files changed, 242 insertions(+)
 
 diff --git a/include/linux/sbm.h b/include/linux/sbm.h
-new file mode 100644
-index 000000000000..8e0c63fb9fb2
---- /dev/null
+index 8e0c63fb9fb2..9671b3c556c7 100644
+--- a/include/linux/sbm.h
 +++ b/include/linux/sbm.h
-@@ -0,0 +1,154 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-+ *
-+ * SandBox Mode (SBM) public API declarations.
-+ */
-+#ifndef __LINUX_SBM_H
-+#define __LINUX_SBM_H
+@@ -9,16 +9,27 @@
+ #ifndef __LINUX_SBM_H
+ #define __LINUX_SBM_H
+ 
++struct sbm_buf;
 +
+ /**
+  * struct sbm - SandBox Mode instance.
+  * @error:    Error code. Initialized to zero by sbm_init() and updated when
+  *            a SBM operation fails.
+  * @private:  Arch-specific private data.
++ * @input:    Input data. Copied to a temporary buffer before starting sandbox
++ *            mode.
++ * @output:   Output data. Copied from a temporary buffer after return from
++ *            sandbox mode.
++ * @io:       Input and output data. Copied to a temporary buffer before
++ *            starting sandbox mode and copied back after return.
+  */
+ struct sbm {
+ #ifdef CONFIG_SANDBOX_MODE
+ 	int error;
+ 	void *private;
++	struct sbm_buf *input;
++	struct sbm_buf *output;
++	struct sbm_buf *io;
+ #endif
+ };
+ 
+@@ -73,6 +84,103 @@ static inline int sbm_error(const struct sbm *sbm)
+  */
+ int sbm_exec(struct sbm *sbm, sbm_func func, void *data);
+ 
 +/**
-+ * struct sbm - SandBox Mode instance.
-+ * @error:    Error code. Initialized to zero by sbm_init() and updated when
-+ *            a SBM operation fails.
-+ * @private:  Arch-specific private data.
++ * struct sbm_buf - Description of an input/output buffer.
++ * @next:      Pointer to the next buffer in the list.
++ * @kern_ptr:  Buffer address in kernel mode.
++ * @sbm_ptr:   Buffer address in sandbox mode.
++ * @size:      Size of the buffer.
 + */
-+struct sbm {
-+#ifdef CONFIG_SANDBOX_MODE
-+	int error;
-+	void *private;
-+#endif
++struct sbm_buf {
++	struct sbm_buf *next;
++	void *kern_ptr;
++	void *sbm_ptr;
++	size_t size;
 +};
 +
 +/**
-+ * typedef sbm_func - Sandbox mode function pointer.
-+ * @data:  Arbitrary data passed via sbm_exec().
++ * sbm_alloc_buf() - Allocate a new input/output buffer.
++ * @sbm:   SBM instance.
++ * @size:  Size of the buffer.
 + *
-+ * Return: Zero on success, negative on error.
++ * Allocate a new &struct sbm_buf and the corresponding sandbox mode
++ * input/output buffer. If either allocation fails, update &sbm->error.
++ *
++ * Return: New buffer descriptor, or %NULL on allocation failure.
 + */
-+typedef int (*sbm_func)(void *data);
-+
-+#ifdef CONFIG_SANDBOX_MODE
++struct sbm_buf *sbm_alloc_buf(struct sbm *sbm, size_t size);
 +
 +/**
-+ * sbm_init() - Initialize a SandBox Mode instance.
-+ * @sbm:     SBM instance.
++ * sbm_add_buf() - Add a new I/O buffer to the SBM instance.
++ * @sbm:   SBM instance.
++ * @list:  Target argument buffer list.
++ * @buf:   Buffer virtual address.
++ * @size:  Size of the buffer.
 + *
-+ * Initialize a SBM instance structure.
++ * Add a new buffer to @list.
 + *
-+ * Return: Zero on success, negative on error.
++ * Return: SBM address of the buffer, or %NULL on error.
 + */
-+int sbm_init(struct sbm *sbm);
++static inline void *sbm_add_buf(struct sbm *sbm, struct sbm_buf **list,
++				const void *buf, size_t size)
++{
++	struct sbm_buf *io;
++
++	io = sbm_alloc_buf(sbm, size);
++	if (!io)
++		return NULL;
++
++	io->kern_ptr = (void *)buf;
++	io->next = *list;
++	*list = io;
++	return io->sbm_ptr;
++}
 +
 +/**
-+ * sbm_destroy() - Clean up a SandBox Mode instance.
-+ * @sbm:    SBM instance to be cleaned up.
++ * SBM_COPY_IN() - Mark an input buffer for copying into SBM.
++ * @sbm:   SBM instance.
++ * @buf:   Buffer virtual address.
++ * @size:  Size of the buffer.
++ *
++ * Add a buffer to the input buffer list for @sbm. The content of the
++ * buffer is copied to sandbox mode before calling the target function.
++ *
++ * It is OK to modify the input buffer after invoking this macro.
++ *
++ * Return: Buffer address in sandbox mode.
 + */
-+void sbm_destroy(struct sbm *sbm);
++#define SBM_COPY_IN(sbm, buf, size) \
++	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->input, (buf), (size)))
 +
 +/**
-+ * sbm_error() - Get SBM error status.
++ * SBM_COPY_OUT() - Mark an output buffer for copying out of SBM.
++ * @sbm:   SBM instance.
++ * @buf:   Buffer virtual address.
++ * @size:  Size of the buffer.
++ *
++ * Add a buffer to the output buffer list for @sbm. The content of the
++ * buffer is copied to kernel mode after calling the target function.
++ *
++ * Return: Buffer address in sandbox mode.
++ */
++#define SBM_COPY_OUT(sbm, buf, size) \
++	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->output, (buf), (size)))
++
++/**
++ * SBM_COPY_INOUT() - Mark an input buffer for copying into SBM and out of SBM.
++ * @sbm:   SBM instance.
++ * @buf:   Buffer virtual address.
++ * @size:  Size of the buffer.
++ *
++ * Add a buffer to the input and output buffer list for @sbm. The content
++ * of the buffer is copied to sandbox mode before calling the target function
++ * and copied back to kernel mode after the call.
++ *
++ * Return: Buffer address in sandbox mode.
++ */
++#define SBM_COPY_INOUT(sbm, buf, size) \
++	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->io, (buf), (size)))
++
+ #ifdef CONFIG_HAVE_ARCH_SBM
+ 
+ /**
+@@ -95,6 +203,30 @@ int arch_sbm_init(struct sbm *sbm);
+  */
+ void arch_sbm_destroy(struct sbm *sbm);
+ 
++/**
++ * arch_sbm_map_readonly() - Arch hook to map a buffer for reading.
 + * @sbm:  SBM instance.
++ * @buf:  Buffer to be mapped.
 + *
-+ * Get the SBM error code. This can be used to distinguish between
-+ * errors returned by the target function and errors from setting
-+ * up the sandbox environment.
++ * Make the specified buffer readable by sandbox code. See also
++ * arch_sbm_map_writable().
++ *
++ * Return: Zero on success, negative on error.
 + */
-+static inline int sbm_error(const struct sbm *sbm)
-+{
-+	return sbm->error;
-+}
++int arch_sbm_map_readonly(struct sbm *sbm, const struct sbm_buf *buf);
 +
 +/**
-+ * sbm_exec() - Execute function in a sandbox.
-+ * @sbm:   SBM instance.
-+ * @func:  Function to be called.
-+ * @data:  Argument for @func.
++ * arch_sbm_map_writable() - Arch hook to map a buffer for reading and writing.
++ * @sbm:  SBM instance.
++ * @buf:  Buffer to be mapped.
 + *
-+ * Execute @func in a fully prepared SBM instance.
++ * Make the specified buffer readable and writable by sandbox code.
++ * See also arch_sbm_map_readonly().
 + *
-+ * Return: Return value of @func on success, or a negative error code.
++ * Return: Zero on success, negative on error.
 + */
-+int sbm_exec(struct sbm *sbm, sbm_func func, void *data);
++int arch_sbm_map_writable(struct sbm *sbm, const struct sbm_buf *buf);
 +
-+#ifdef CONFIG_HAVE_ARCH_SBM
-+
-+/**
-+ * arch_sbm_init() - Arch hook to initialize a SBM instance.
-+ * @sbm:  Instance to be initialized.
-+ *
-+ * Perform any arch-specific initialization. This hook is called by sbm_init()
-+ * immediately after zeroing out @sbm.
-+ *
-+ * Return: Zero on success, negative error code on failure.
-+ */
-+int arch_sbm_init(struct sbm *sbm);
-+
-+/**
-+ * arch_sbm_destroy() - Arch hook to clean up a SBM instance.
-+ * @sbm:  Instance to be cleaned up.
-+ *
-+ * Perform any arch-specific cleanup. This hook is called by sbm_destroy() as
-+ * the very last operation on @sbm.
-+ */
-+void arch_sbm_destroy(struct sbm *sbm);
-+
-+/**
-+ * arch_sbm_exec() - Arch hook to execute code in a sandbox.
-+ * @sbm:   SBM instance.
-+ * @func:  Function to be executed in a sandbox.
-+ * @data:  Argument passed to @func.
-+ *
-+ * Execute @func in a fully prepared SBM instance. If sandbox mode
-+ * cannot be set up or is aborted, set &sbm->error to a negative error
-+ * value. This error is then returned by sbm_exec(), overriding the
-+ * return value of arch_sbm_exec().
-+ *
-+ * Return: Return value of @func.
-+ */
-+int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *data);
-+
-+#else /* !CONFIG_HAVE_ARCH_SBM */
-+
-+static inline int arch_sbm_init(struct sbm *sbm)
+ /**
+  * arch_sbm_exec() - Arch hook to execute code in a sandbox.
+  * @sbm:   SBM instance.
+@@ -121,6 +253,18 @@ static inline void arch_sbm_destroy(struct sbm *sbm)
+ {
+ }
+ 
++static inline int arch_sbm_map_readonly(struct sbm *sbm,
++					const struct sbm_buf *buf)
 +{
 +	return 0;
 +}
 +
-+static inline void arch_sbm_destroy(struct sbm *sbm)
-+{
-+}
-+
-+static inline int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *data)
-+{
-+	return func(data);
-+}
-+
-+#endif /* CONFIG_HAVE_ARCH_SBM */
-+
-+#else /* !CONFIG_SANDBOX_MODE */
-+
-+static inline int sbm_init(struct sbm *sbm)
++static inline int arch_sbm_map_writable(struct sbm *sbm,
++					const struct sbm_buf *buf)
 +{
 +	return 0;
 +}
 +
-+static inline void sbm_destroy(struct sbm *sbm)
-+{
-+}
-+
-+static inline int sbm_error(const struct sbm *sbm)
-+{
-+	return 0;
-+}
-+
-+static inline int sbm_exec(struct sbm *sbm, sbm_func func, void *data)
-+{
-+	return func(data);
-+}
-+
-+#endif /* CONFIG_SANDBOX_MODE */
-+
-+#endif /* __LINUX_SBM_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 8d4e836e1b6b..253ac8c45527 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1932,6 +1932,8 @@ config TRACEPOINTS
+ static inline int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *data)
+ {
+ 	return func(data);
+@@ -149,6 +293,16 @@ static inline int sbm_exec(struct sbm *sbm, sbm_func func, void *data)
+ 	return func(data);
+ }
  
- source "kernel/Kconfig.kexec"
++/* Evaluate expression exactly once, avoiding warnings about a "statement
++ * with no effect". GCC doesn't issue this warning for the return value
++ * of a statement expression.
++ */
++#define __SBM_EVAL(x) ({ typeof(({x; })) __tmp = (x); __tmp; })
++
++#define SBM_COPY_IN(sbm, buf, size)  __SBM_EVAL(buf)
++#define SBM_COPY_OUT(sbm, buf, size) __SBM_EVAL(buf)
++#define SBM_COPY_INOUT(sbm, buf, size) __SBM_EVAL(buf)
++
+ #endif /* CONFIG_SANDBOX_MODE */
  
-+source "kernel/Kconfig.sbm"
-+
- endmenu		# General setup
- 
- source "arch/Kconfig"
-diff --git a/kernel/Kconfig.sbm b/kernel/Kconfig.sbm
-new file mode 100644
-index 000000000000..64d683cefd4d
---- /dev/null
-+++ b/kernel/Kconfig.sbm
-@@ -0,0 +1,31 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-+#
-+# Author: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-+#
-+# SandBox Mode (SBM) config options.
-+#
-+
-+config HAVE_ARCH_SBM
-+       def_bool n
-+
-+config SANDBOX_MODE
-+	bool "SandBox Mode (SBM)"
-+	default n
-+	help
-+	  SandBox Mode provides kernel API to run native kernel functions in a
-+	  sandbox, preventing out-of-bounds memory accesses. On targets which
-+	  implement SBM arch hooks, the isolation is strong, preventing all
-+	  memory accesses outside the sandbox; after a protection violation,
-+	  the affected kernel thread can continue running. On all other
-+	  targets, the isolation is weak, preventing only buffer overflows
-+	  within a guard page; after a violation, the kernel thread usually
-+	  terminates.
-+
-+	  This is an opt-in self-defense mechanism, i.e. kernel source code
-+	  must be modified to run in SandBox Mode. For such code, there is
-+	  some run-time overhead (CPU time, memory) associated with entering
-+	  and leaving the sandbox.
-+
-+	  If unsure, say N.
-diff --git a/kernel/Makefile b/kernel/Makefile
-index ce105a5558fc..ecc4bfd6213f 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -115,6 +115,7 @@ obj-$(CONFIG_HAVE_STATIC_CALL) += static_call.o
- obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call_inline.o
- obj-$(CONFIG_CFI_CLANG) += cfi.o
- obj-$(CONFIG_NUMA) += numa.o
-+obj-$(CONFIG_SANDBOX_MODE) += sbm.o
- 
- obj-$(CONFIG_PERF_EVENTS) += events/
- 
+ #endif /* __LINUX_SBM_H */
 diff --git a/kernel/sbm.c b/kernel/sbm.c
-new file mode 100644
-index 000000000000..9a5b89a71a23
---- /dev/null
+index 9a5b89a71a23..df57184f5d87 100644
+--- a/kernel/sbm.c
 +++ b/kernel/sbm.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-+ *
-+ * SandBox Mode (SBM) public API and generic functions.
-+ */
+@@ -9,7 +9,46 @@
+ 
+ #include <linux/export.h>
+ #include <linux/sbm.h>
++#include <linux/slab.h>
+ #include <linux/string.h>
++#include <linux/vmalloc.h>
 +
-+#include <linux/export.h>
-+#include <linux/sbm.h>
-+#include <linux/string.h>
-+
-+int sbm_init(struct sbm *sbm)
++struct sbm_buf *sbm_alloc_buf(struct sbm *sbm, size_t size)
 +{
-+	memset(sbm, 0, sizeof(*sbm));
++	struct sbm_buf *buf;
 +
-+	sbm->error = arch_sbm_init(sbm);
 +	if (sbm->error)
-+		return sbm->error;
++		return NULL;
++
++	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf) {
++		sbm->error = -ENOMEM;
++		goto out;
++	}
++	buf->sbm_ptr = vzalloc(size);
++	if (!buf->sbm_ptr) {
++		sbm->error = -ENOMEM;
++		goto out;
++	}
++	buf->size = size;
++
++out:
++	return buf;
++}
++EXPORT_SYMBOL(sbm_alloc_buf);
++
++/* Free a buffer list. */
++static void sbm_free_buf_list(const struct sbm_buf *buf)
++{
++	const struct sbm_buf *nextbuf;
++
++	while (buf) {
++		vfree(buf->sbm_ptr);
++		nextbuf = buf->next;
++		kfree(buf);
++		buf = nextbuf;
++	}
++}
+ 
+ int sbm_init(struct sbm *sbm)
+ {
+@@ -25,14 +64,61 @@ EXPORT_SYMBOL(sbm_init);
+ 
+ void sbm_destroy(struct sbm *sbm)
+ {
++	sbm_free_buf_list(sbm->input);
++	sbm_free_buf_list(sbm->output);
++	sbm_free_buf_list(sbm->io);
+ 	arch_sbm_destroy(sbm);
+ }
+ EXPORT_SYMBOL(sbm_destroy);
+ 
++/* Copy input buffers into a sandbox. */
++static int sbm_copy_in(struct sbm *sbm)
++{
++	const struct sbm_buf *buf;
++	int err = 0;
++
++	for (buf = sbm->input; buf; buf = buf->next) {
++		err = arch_sbm_map_readonly(sbm, buf);
++		if (err)
++			return err;
++		memcpy(buf->sbm_ptr, buf->kern_ptr, buf->size);
++	}
++
++	for (buf = sbm->io; buf; buf = buf->next) {
++		err = arch_sbm_map_writable(sbm, buf);
++		if (err)
++			return err;
++		memcpy(buf->sbm_ptr, buf->kern_ptr, buf->size);
++	}
++
++	for (buf = sbm->output; buf; buf = buf->next) {
++		err = arch_sbm_map_writable(sbm, buf);
++		if (err)
++			return err;
++	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(sbm_init);
 +
-+void sbm_destroy(struct sbm *sbm)
++/* Copy output buffers out of a sandbox. */
++static void sbm_copy_out(struct sbm *sbm)
 +{
-+	arch_sbm_destroy(sbm);
++	const struct sbm_buf *buf;
++
++	for (buf = sbm->output; buf; buf = buf->next)
++		memcpy(buf->kern_ptr, buf->sbm_ptr, buf->size);
++	for (buf = sbm->io; buf; buf = buf->next)
++		memcpy(buf->kern_ptr, buf->sbm_ptr, buf->size);
 +}
-+EXPORT_SYMBOL(sbm_destroy);
 +
-+int sbm_exec(struct sbm *sbm, sbm_func func, void *args)
-+{
-+	int ret;
-+
+ int sbm_exec(struct sbm *sbm, sbm_func func, void *args)
+ {
+ 	int ret;
+ 
 +	if (sbm->error)
 +		return sbm->error;
 +
-+	ret = arch_sbm_exec(sbm, func, args);
-+	if (sbm->error)
-+		return sbm->error;
++	sbm->error = sbm_copy_in(sbm);
+ 	if (sbm->error)
+ 		return sbm->error;
+ 
+@@ -40,6 +126,8 @@ int sbm_exec(struct sbm *sbm, sbm_func func, void *args)
+ 	if (sbm->error)
+ 		return sbm->error;
+ 
++	sbm_copy_out(sbm);
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL(sbm_exec);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(sbm_exec);
 -- 
 2.34.1
 
