@@ -1,48 +1,50 @@
-Return-Path: <linux-kernel+bounces-64819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CAE85433B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:05:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B00A85433A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30CE51F291E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:05:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC597286320
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DBD1173D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA7911731;
 	Wed, 14 Feb 2024 07:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="D3neLMNN"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="pKqPcOHH"
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FF0111B0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCF1111B6;
 	Wed, 14 Feb 2024 07:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707894293; cv=none; b=gsAx7nExisVCN8cl+QLLF1NtOD8Fsjc0pH9DN3u/Gq65ZdIGnzlVgAWxRapl+mhsSTZgdiEQyLEpHJg6OFZMkJ238yTcIXRgscYOSsJn/q85FWbjukSvgO3YLWnbBgLsnxPHBnQIdqhxh4lacbaE93FHnXoGCwga3gDM4VVvta0=
+	t=1707894293; cv=none; b=Wxu9dirwr0uS2gr7JEbnM6Wuh1zH+ywL+IEVk44S5YVBKiw8cglFgrwAX2sSRHI+5/tmOW92hNbRrdb5PBnfJWESqW+ACSl7KcflevYL5tt4JOXKc7SyEK7/BpsIEv05ZhPxC0p1qA4HPMl0brTC4GvLorJytOGOgaM47JFOEK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707894293; c=relaxed/simple;
-	bh=9WF497N0mP5INdxam/s7jjMx5qgKT8n8tqzrHlsYhq0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uFvKZOWjS7vkaHkKUHO2LJoLEqRKnJFUKvh9NPQGcBzbl+UlqgNET8fpolV5DOu92PuZ5wkr3pAm9UPl5qNIY4LWXrSDpKWqe6abCMFM6xXKMzECTJYLeGg9/Y3ccd+PTLEUVmoZYIGhv+dQ6re5bVm2ToO2iFtFaDhzBAZUYp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=D3neLMNN; arc=none smtp.client-ip=212.227.15.19
+	bh=8WIWWUU+GbXzNoh423yyJOXltpMWeWKv8sdpqZTjWwc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ei6sQBE8jyPaEeu58RYOY8DouxbB8vm8nmuvXC9R5gAaULBhlVncdz8Mrv9RUPZ6hoCk+1dUGWgw0OUguBBZq4YCv2uHWn20rhRlJ5rZxqP+fn3GzO+EmGmi4MatZBSg1jKYLRYyw86ff7xE4uPpsbII39IRuWxXkRtIu5RczW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=pKqPcOHH; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1707894277; x=1708499077; i=w_armin@gmx.de;
-	bh=9WF497N0mP5INdxam/s7jjMx5qgKT8n8tqzrHlsYhq0=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=D3neLMNNjJTeXH1Fc63ssXErJ4oxyExeEKPP99SMC0MdHz6vxuZhK6MzYRNnkXEU
-	 M6D6M3dFACptbZgRD79YiAIjMP/XLsEOCGBUL9n3KPD66Go69IhJm3elZ/+WUhz4/
-	 pyKy7NQtKx3MQ8jzrWr4PUYFMC5bWf6l/TwXVEWG6A+fdYAVQxKFvu/Bdh3X0nYmy
-	 pMa5IYJaKhQMyse0AWaPrRo8XtH51x+OWFYgVfATuWraoU7BbqDExsyEZtS9bT22P
-	 GodeOizafUmCOr1oeHXvdbdv7oysefqxPlkFLahdx0MU+PHK5CJdyu7QtR+QtG/WH
-	 I5vz5GRtw2ESwM3I0g==
+	t=1707894278; x=1708499078; i=w_armin@gmx.de;
+	bh=8WIWWUU+GbXzNoh423yyJOXltpMWeWKv8sdpqZTjWwc=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=pKqPcOHH9qt0K+PpYwW8mhb3VRJFRZGa3L896sIU5H6DPiR8EAc72P6McNHzUFqy
+	 uGK/9X2ds5XeAG4jl7Ad6ND4mDsuqv9H0ElZ5hfqAgxLlLdsdqun65kTlLvXXI3W0
+	 bU+t1Lrwa8423eboTaOMNfJbJz9kR7TXJmV/gwpdW7rDaP9nZixtYSydppxo5Urt/
+	 ZyJ1R9/CZj4BwBkGRxwNKqCJozR2pBNM7ZqOrsWQGelglAUhZZw50usBnSrpxEpWg
+	 aivbwhlB6K9dbUTI5uAVzxKZfMUVzN/zqev2XSbLT9ZTROT1dPZOf6KOEkfNhWuBq
+	 /IhSs+nVPexCsHRfVA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
  (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MxDp4-1qleEn0EEy-00xbZ6; Wed, 14 Feb 2024 08:04:37 +0100
+ 1MD9T1-1rjBsV2EWv-0098Vv; Wed, 14 Feb 2024 08:04:38 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: corentin.chary@gmail.com,
 	luke@ljones.dev
@@ -50,10 +52,12 @@ Cc: hdegoede@redhat.com,
 	ilpo.jarvinen@linux.intel.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/5] platform/x86: wmi: Fixes for event data handling
-Date: Wed, 14 Feb 2024 08:04:28 +0100
-Message-Id: <20240214070433.2677-1-W_Armin@gmx.de>
+Subject: [PATCH 1/5] platform/x86: wmi: Prevent incompatible event driver from probing
+Date: Wed, 14 Feb 2024 08:04:29 +0100
+Message-Id: <20240214070433.2677-2-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240214070433.2677-1-W_Armin@gmx.de>
+References: <20240214070433.2677-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,60 +65,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kHHTIzpSa5Q/YMCYAMtpResv8URGHXtnxQMel96xS29hKHkQ2Ly
- 3odIg0dyrr3zojRqi4gU2xBsEviCN35cLfD3rL5c8nxQyDzxzGCCcCQQ/ZR9dBHJtM/wgiE
- 2/lmpYDlKnzjP7VyJuQxzAhV4a0uMw6e8ppistgTURq5yZM0lkJZ7BRAomFnknnnc/dCRY6
- oCA9O7bgJ2QKZORWR9Z8Q==
+X-Provags-ID: V03:K1:z0+cLwmfh32NWUP0FBmWp4fdiQOVVMcb+/mVpjhXSCfZo2sZe78
+ JQsDR11z4W6ZMI9VVYH7bACwKzZVRQeFaWwxP4If9qGaEGjx+DLO/D4Za2kqnfBOnCOfY/2
+ TM6P9hrJi4OU/H/tZMOeI0IFMb5Iosm35/LlF1VG29rxuuH1+An4z5Jy9ZAp6kWCL7o2DIh
+ s7oAhOTtbPIFJ6ko1Vdfg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:19Gueatd4H0=;F0AOFIW/7F6yBKwWzIYmqqJHyA9
- +H/vlHfkTXzVzwBN7JQJ8qtmKRQfzP6uV67zhUf9SFlbs4alHxcKpqzHCNV9KdaX6YmnGh6BY
- fylye4tVSsTQixEwkdQG1+6YfaVHt6Ipib2+KtyVV7kTCzJifLmpve+EdaPxZ/eKACWW4goY9
- tqzjZ3h1WO5J9bkCMdF3dcDOGi5VwiammBrCEhWGHRmD/3a1XWLpUxQ7zhBEzpd8Y7O+06pf3
- QIaYAzeSI4uOgCu/TbSFmTkh3D3Sra/RP3zStGUR/Zl5jcv7ImJDBVcApq6dNw0tTvNxq3UM2
- m4vSisHzL9h9mUkvZVzYSxc8rg8LrASvWqMh6BbndIsToDfSpwWQC3jOKKi2Kc/jlDOvEMADV
- C28rVLpPIxD+iFe+9W+U0pn0yD9DOhA8QOmAwiAuPjjVFxqkVOj8iumSoE2guIJqdq0f2UrZA
- qgEk7D0gEqjFbMRIXj7WNWQd8SJC7W0hUsBkTuYVZwzUp8lbjPHPrhvarpbjvV4tGOFHjQm30
- 7ExcHkaE7s4SzJqeUiRLXlD7n1E3KSVA9k7pb1+yMXgPy2AmatEsSOrmZ6w+UKuK2TtzbdLLl
- Vr2p9OUQNXXZFhXsW436ByWVykQWg4KtaXz/tNU6wrXVLvI+mAx4epzET8gvslhalUvLT+1mb
- iWndfssKYwohpzsa3EHArUtRoKuaZN0QZKbW+qTe2CY1Ux1DFnjVIDPD3NiogLydNpmSzQ/fa
- EahAXeML8MCEIab4yMd+ksAUbqAaQo0GOkLTvOCoN3N9uAPVIGlEeRr0KhS3WXZ3ofoHVw7k/
- z3AWl9AIPo5udeG+r2vXjanlV2fypVJFXAlQcmqpVNH1A=
+UI-OutboundReport: notjunk:1;M01:P0:5UOUuCvHEkY=;VOe8NGUwF81q+RZMe7qwYJIf7gg
+ tBJIWr6iLgOyoc6tcJl13QlHE8CoPYOaDcYyMm9MyVGzB5gCjwBx4sfdGxpfLD7G4oLzL93Nx
+ 3r/sOr/OxKNw6solx/Y4j6ymTHCc2e/eS/UWaMYbgfSKGGRf0+aOrAaJK2Up3atLiPRHQ1Vro
+ x63ZVCZ2yeGbXVNfK+LJ/YADFCtjLAUJrmqteK/cIjYnqwxCGkbf75jnc7P9xjmYL2/xSTxIP
+ zVJI/vcpved4bPfX8nYZhNzKgBCeyvQip1chk+Rblv1vvp1dufiTFmy4ytyG4DFsEFXnj432s
+ AOSOC1hL8OT0chg56WcjhopIRok7Pvs79NQtZT+kwndJnOBUQTk8vWNQEm/Glaa9eis3xzh4q
+ WVWjzu+yOX2evHbQ8fv69QYzD8Fuib2g+Tm0nJiD8ZvzLlwqr44zTZEaL93i42jChyp52KwBB
+ LhRdd+Qt7ertVuI1c3YBrz8bpYdeNttTOstnwXHxPRVdBcx4XXyXUjx0+M6Kb/EpwxdTdZOWk
+ oDIZYcBBuFXnjRCn7SQ2NzMbyatAZWNklUhA9Q61txqe2tOoAqps6GCMIRtIDVXNhWo8i8dHP
+ RxP8eLwzoFnKrDTGJJHgrVd0KUDO4cO8ErvKTSMFjKGYogoqK9+fF5BfGLFEQmCX7UWtBcSbe
+ ggOfBhrcnK+chKa3WGzfkGJRO842ufrcg0L3qKAXxA/6GkxUupkMlFhts5ktvOqhV6rSp3Euv
+ WTJPz2CkyVcopMH5yAeFj2pngWITN4zFr3OZr6xIlLJsTNLy52aoWj8bARVRjBsxglzZc/Mgd
+ TbrEvjIg9z6e5G7Suz0ulBurL5M7qjuNDwkRxN9WH7y+4=
 
-This patch series contains fixes for the handling of WMI event data
-when receiving WMI events.
+If a WMI event driver has no_notify_data set, then he indicates
+support for WMI events which provide no notify data, otherwise
+the notify() callback expects a valid ACPI object as notify data.
 
-The first patch aims to prevent WMI event drivers depending on WMI
-event data support from binding to a WMI device which does not
-support the retrieval of additional WMI event data.
+However if a WMI event driver which requires notify data is bound
+to a WMI event device which cannot retrieve such data due to the
+_WED ACPI method being absent, then the driver will be dysfunctional
+since all WMI events will be dropped due to the missing notify data.
 
-The second patch makes sure that the WMI core not only checks that
-evaluating the ACPI control method used for retrieving additional
-event data (_WED) succeeded, but that it also returned any data.
+Fix this by not allowing such WMI event drivers to bind to WMI event
+devices which do not support retrieving of notify data. Also reword
+the description of no_notify_data a bit.
 
-The third patch fixes an compatibility issue with the ACPI firmware
-of some ASUS notebooks. This issue was "fixed" inside asus-wmi by
-manually retrieving event data items, sidestepping the WMI core.
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/platform/x86/wmi.c | 10 ++++++++++
+ include/linux/wmi.h        |  2 +-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-The last patch reverts this hacky fixup, as the underlying issue is
-now handled inside the WMI core itself.
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index b83c0f0ddd5c..34d8f55afaad 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -57,6 +57,7 @@ static_assert(__alignof__(struct guid_block) =3D=3D 1);
 
-All patches where tested on a Dell Inspiron 3505 and a ASUS Prime
-B650-Plus motherboard. However the last patch should be tested on an
-actual ASUS notebook which is affected by the workaround.
+ enum {	/* wmi_block flags */
+ 	WMI_READ_TAKES_NO_ARGS,
++	WMI_NO_EVENT_DATA,
+ };
 
-Armin Wolf (5):
-  platform/x86: wmi: Prevent incompatible event driver from probing
-  platform/x86: wmi: Check if event data is not NULL
-  platform/x86: wmi: Always evaluate _WED when receiving an event
-  platform/x86: wmi: Update documentation regarding _WED
-  Revert "platform/x86: asus-wmi: Support WMI event queue"
+ struct wmi_block {
+@@ -870,6 +871,11 @@ static int wmi_dev_probe(struct device *dev)
+ 	struct wmi_driver *wdriver =3D drv_to_wdrv(dev->driver);
+ 	int ret =3D 0;
 
- Documentation/wmi/acpi-interface.rst |  5 +-
- drivers/platform/x86/asus-wmi.c      | 71 ++------------------------
- drivers/platform/x86/wmi.c           | 74 +++++++++++++++++++++++-----
- include/linux/wmi.h                  |  2 +-
- 4 files changed, 71 insertions(+), 81 deletions(-)
++	if (wdriver->notify) {
++		if (test_bit(WMI_NO_EVENT_DATA, &wblock->flags) && !wdriver->no_notify_=
+data)
++			return -ENODEV;
++	}
++
+ 	if (ACPI_FAILURE(wmi_method_enable(wblock, true)))
+ 		dev_warn(dev, "failed to enable device -- probing anyway\n");
 
+@@ -1095,6 +1101,7 @@ static int parse_wdg(struct device *wmi_bus_dev, str=
+uct platform_device *pdev)
+ 	struct acpi_device *device =3D ACPI_COMPANION(&pdev->dev);
+ 	struct acpi_buffer out =3D {ACPI_ALLOCATE_BUFFER, NULL};
+ 	const struct guid_block *gblock;
++	bool event_data_available;
+ 	struct wmi_block *wblock;
+ 	union acpi_object *obj;
+ 	acpi_status status;
+@@ -1114,6 +1121,7 @@ static int parse_wdg(struct device *wmi_bus_dev, str=
+uct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+
++	event_data_available =3D acpi_has_method(device->handle, "_WED");
+ 	gblock =3D (const struct guid_block *)obj->buffer.pointer;
+ 	total =3D obj->buffer.length / sizeof(struct guid_block);
+
+@@ -1132,6 +1140,8 @@ static int parse_wdg(struct device *wmi_bus_dev, str=
+uct platform_device *pdev)
+
+ 		wblock->acpi_device =3D device;
+ 		wblock->gblock =3D gblock[i];
++		if (gblock[i].flags & ACPI_WMI_EVENT && !event_data_available)
++			set_bit(WMI_NO_EVENT_DATA, &wblock->flags);
+
+ 		retval =3D wmi_create_device(wmi_bus_dev, wblock, device);
+ 		if (retval) {
+diff --git a/include/linux/wmi.h b/include/linux/wmi.h
+index 686291b87852..781958310bfb 100644
+=2D-- a/include/linux/wmi.h
++++ b/include/linux/wmi.h
+@@ -48,7 +48,7 @@ u8 wmidev_instance_count(struct wmi_device *wdev);
+  * struct wmi_driver - WMI driver structure
+  * @driver: Driver model structure
+  * @id_table: List of WMI GUIDs supported by this driver
+- * @no_notify_data: WMI events provide no event data
++ * @no_notify_data: Driver supports WMI events which provide no event dat=
+a
+  * @probe: Callback for device binding
+  * @remove: Callback for device unbinding
+  * @notify: Callback for receiving WMI events
 =2D-
 2.39.2
 
