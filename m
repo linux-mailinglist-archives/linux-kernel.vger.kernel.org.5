@@ -1,146 +1,159 @@
-Return-Path: <linux-kernel+bounces-65466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F35D6854D6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:55:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B124B854D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:55:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251BA1C28A1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:55:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBA36B27649
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2815FB94;
-	Wed, 14 Feb 2024 15:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53BD55EE7E;
+	Wed, 14 Feb 2024 15:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lvqkGmDf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDRU0t6i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9076024D;
-	Wed, 14 Feb 2024 15:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F225B5DB;
+	Wed, 14 Feb 2024 15:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926102; cv=none; b=IXbfysFMRzNJeRuHDJXIKMpAk6XzbC1dmwcwZIfsgqS5G+giRtWyEeFsyQl6T0pao5o4lyZ55yF++5E0OvKyspZXJD2R9une2fZmF6c/RI33mz3mrNQY9advbRI3y31xmBWdcaVG07MWiQfFo5tWd1WVLsk+XMCVzH1aDqqQrbk=
+	t=1707926137; cv=none; b=VFw7sMwUku4NU0Z/84X5AGgNbDTs+0ol1bxaZGe9VniBHnehB6fmgzV/iE55Z1flcyyBHBzTAyXMxOO4rF4fQKWHsNgr4Z1OSNEFeVT37zNYI+PfUbqXlWyqW9MIZwtOD8TrYbjihqXat4krFRb7e4mbyDjoBwJkSFqdqqy9zQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926102; c=relaxed/simple;
-	bh=I5QmVlSxsPE/Gk4+HnD06ucKGeusZCkAT0pMy1rJFdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nE+vTZTAV5yH8Eu85rN2Ncr/q3GZ5T9WXQA8shFZeYM5Afm6ZRip4fttGIkraKbn0VzY9yWBzSEKP/wF/SfE5pNvVV9WbESeXMG9XgxT7HtEg8sPDQSm9dw6SCsxh9UUAYyEZDc/gIvE5SQa5KmrmR7/CJOBhEBv7amR/7ngjwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lvqkGmDf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00213C43399;
-	Wed, 14 Feb 2024 15:54:59 +0000 (UTC)
+	s=arc-20240116; t=1707926137; c=relaxed/simple;
+	bh=3nBeVvDzPWSYkBUuAMGRboAigFEsz79F7jZ+9eTr11k=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KFKJ17cZAaVM/gTWUOBPLe8fPwmNe2kfmgL9JWoOPgDYk3lPUFxz43YOJUe7rzUr0dtlQabeArETjW+aImSsWqdnXSr9bQYBDeXac49v50gjwQDiHDyshkq/mNoJW8HfIYS16kPbIvaUN2qUl2ebtTw5klRC6CYv0USAC0qL0gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PDRU0t6i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E806C433C7;
+	Wed, 14 Feb 2024 15:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707926102;
-	bh=I5QmVlSxsPE/Gk4+HnD06ucKGeusZCkAT0pMy1rJFdk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lvqkGmDfiWK0/udDnfCBRaDRe2kArttC6QTkDsM1BxGHPZTBnbzWYTP4veP3ZargP
-	 aa80u28eGTmb3HYZ6oGtKR65HcpjxycM1VMzPS4fYFTC0EbeI+rblhYH5Pxe8kkoTk
-	 piWqBbRlZ3WUN8Ur08uVW+pleZvBCYBuFxtDvJH0kTxKRxdrLHSaweAq9p/Ya8HFOM
-	 sD0nomU3aUbzp3g/hO/j9ABxNQ+PevDhv8jT7tFPC+GjPBI0HImRZV6jPzw3axLIAC
-	 CzUwM/eHkXlHKHd9XW1i4L3SQ30mWBeGeaEFgIOQeI9Ks+AjSmvK9B5bf7NlwGMfJr
-	 fmbaBGfW564vw==
-Date: Wed, 14 Feb 2024 15:54:57 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Palmer Dabbelt <palmer@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>,
-	jirislaby@kernel.org, Atish Patra <atishp@rivosinc.com>,
-	ajones@ventanamicro.com, apatel@ventanamicro.com,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Emil Renner Berthing <kernel@esmil.dk>
-Subject: Re: [PATCH] tty: hvc: Don't enable the RISC-V SBI console by default
-Message-ID: <20240214-impound-gumdrop-230d0725f5ce@spud>
-References: <20240214153429.16484-2-palmer@rivosinc.com>
+	s=k20201202; t=1707926137;
+	bh=3nBeVvDzPWSYkBUuAMGRboAigFEsz79F7jZ+9eTr11k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PDRU0t6iSS5gndYGuN7noRJU4+3sY22cJUlXpmJS0WbshlislZBuL+WOH78XbW4OQ
+	 2HKYlgz29AjLMgMt4FOTHonoqy8kkblX0mhaatZ9fv/L+oQVLhKBzwrpBJ/Y/Jhg30
+	 RBuNY8YlFdnOkIDmTia/G9nIEcEhf2d6lY+0AXhgYoP/wdpiiA5Br5RLbFIKk2m7ba
+	 Tf8k+tDS3NtMvxyIPx0MOOpZhuZNQ15yAFqkinuJlS89qseh9P1Dun2l9HiXRiNwgq
+	 dYQ2zD7ixKYVA5cVGgZRcxe8Omw/gJ6ZEKCbhYvGEv4usmNE5Ie8sH02Fx/wSTnwmN
+	 fSNtoIgjBWg1Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raHbi-003Bjv-UN;
+	Wed, 14 Feb 2024 15:55:35 +0000
+Date: Wed, 14 Feb 2024 15:55:33 +0000
+Message-ID: <864jeb59ca.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/23] KVM: arm64: Add tracepoints + stats for LPI cache effectiveness
+In-Reply-To: <20240213093250.3960069-2-oliver.upton@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<20240213093250.3960069-2-oliver.upton@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ZpSavjsIcxHJ5llO"
-Content-Disposition: inline
-In-Reply-To: <20240214153429.16484-2-palmer@rivosinc.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-
---ZpSavjsIcxHJ5llO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Feb 14, 2024 at 07:34:30AM -0800, Palmer Dabbelt wrote:
-> From: Palmer Dabbelt <palmer@rivosinc.com>
->=20
-> The new SBI console has the same problem as the old one: there's only
-> one shared backing hardware and no synchronization, so the two drivers
-> end up stepping on each other.  This was the same issue the old SBI-0.1
-> console drivers had, but that was disabled by default when SBI-0.1 was.
->=20
-> So just mark the new driver as nonportable.
->=20
-> Reported-by: Emil Renner Berthing <kernel@esmil.dk>
-> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI drive=
-r")
-> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-
-As was brought up when we covered this earlier today, if you're going to
-probe a driver based on an ecall, the same hardware should not remain
-enabled in the DT passed to the kernel.
-If you want to enable this driver in a multiplatform kernel alongside
-"real" drivers, then the solution is simple, firmware needs implementation
-needs to patch the DT and, at least, mark the uart as reserved if it is
-using it to provide the debug console. Marking this nonportable so that
-people only walk into this with their eyes open seems like a reasonable
-action to me.
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
+On Tue, 13 Feb 2024 09:32:38 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> LPI translation and injection has been shown to have a significant
+> impact on the performance of VM workloads, so it probably makes sense to
+> add some signals in this area.
+> 
+> Introduce the concept of a KVM tracepoint that associates with a VM
+> stat and use it for the LPI translation cache tracepoints. It isn't too
+> uncommon for a kernel hacker to attach to tracepoints, while at the same
+> time userspace may open a 'binary stats' FD to peek at the corresponding
+> VM stats.
+> 
+> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
 > ---
->  drivers/tty/hvc/Kconfig | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
-> index 6e05c5c7bca1..c2a4e88b328f 100644
-> --- a/drivers/tty/hvc/Kconfig
-> +++ b/drivers/tty/hvc/Kconfig
-> @@ -108,13 +108,15 @@ config HVC_DCC_SERIALIZE_SMP
-> =20
->  config HVC_RISCV_SBI
->  	bool "RISC-V SBI console support"
-> -	depends on RISCV_SBI
-> +	depends on RISCV_SBI && NONPORTABLE
->  	select HVC_DRIVER
->  	help
->  	  This enables support for console output via RISC-V SBI calls, which
-> -	  is normally used only during boot to output printk.
-> +	  is normally used only during boot to output printk.  This driver
-> +	  conflicts with real console drivers and should not be enabled on
-> +	  systems that directly access the console.
-> =20
-> -	  If you don't know what do to here, say Y.
-> +	  If you don't know what do to here, say N.
-> =20
->  config HVCS
->  	tristate "IBM Hypervisor Virtual Console Server support"
-> --=20
-> 2.43.0
->=20
->=20
+>  arch/arm64/include/asm/kvm_host.h |  3 ++
+>  arch/arm64/kvm/guest.c            |  5 ++-
+>  arch/arm64/kvm/vgic/trace.h       | 66 +++++++++++++++++++++++++++++++
+>  arch/arm64/kvm/vgic/vgic-its.c    | 14 ++++++-
+>  include/linux/kvm_host.h          |  4 ++
+>  5 files changed, 89 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 21c57b812569..6f88b76373a5 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -966,6 +966,9 @@ static inline bool __vcpu_write_sys_reg_to_cpu(u64 val, int reg)
+>  
+>  struct kvm_vm_stat {
+>  	struct kvm_vm_stat_generic generic;
+> +	u64 vgic_its_trans_cache_hit;
+> +	u64 vgic_its_trans_cache_miss;
+> +	u64 vgic_its_trans_cache_victim;
+>  };
+>  
+>  struct kvm_vcpu_stat {
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index aaf1d4939739..354d67251fc2 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -30,7 +30,10 @@
+>  #include "trace.h"
+>  
+>  const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
+> -	KVM_GENERIC_VM_STATS()
+> +	KVM_GENERIC_VM_STATS(),
+> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_hit),
+> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_miss),
+> +	STATS_DESC_COUNTER(VM, vgic_its_trans_cache_victim)
+>  };
 
---ZpSavjsIcxHJ5llO
-Content-Type: application/pgp-signature; name="signature.asc"
+We've talked about this offline, but I thought I'd make my position
+public on these.
 
------BEGIN PGP SIGNATURE-----
+I've very concerned that exposing these statistic, however useful they
+may be at a given point in time, will eventually become all wrong
+and/or misleading.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcziUQAKCRB4tDGHoIJi
-0ha2AP4h37dfZJEi2Ma4Nfwx6PGVD0xADFSNtFYCxflzdgLW7AD+OawAfKCLrXnJ
-5fR1lKUHo+712HP3zmc1aJ6D2m0LTg8=
-=3+DZ
------END PGP SIGNATURE-----
+Case in point, our discussion about this very series, where we landed
+on a potential reimplementation of the translation cache as a per-ITS
+xarray. If this comes to fruition, these stats will probably be
+totally useless (hit monotonically increasing at the rate of 1 per
+interrupt, miss being 0 or 1, victim being stuck to 0).
 
---ZpSavjsIcxHJ5llO--
+I'm *not* saying that such stats are totally useless. Just that they
+are, by definition, tied to a kernel-side implementation choice, which
+will evolve. The trouble is that they create an ABI that we need to
+support forever.
+
+I wish we could work on something that would allow such statistics to
+be *extracted* (as opposed to published). Something like this as a
+discussion subject for a future KVM Forum or LPC uConf would get my
+full backing (and I'm pretty sure the networking folks have solved
+that problem a long time ago).
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
