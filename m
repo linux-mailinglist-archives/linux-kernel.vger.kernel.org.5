@@ -1,272 +1,116 @@
-Return-Path: <linux-kernel+bounces-65074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BCA885477C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:45:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC9485477F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:47:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B651C28A728
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:45:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F055282C98
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B96318021;
-	Wed, 14 Feb 2024 10:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8090C18021;
+	Wed, 14 Feb 2024 10:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="aqzg1vpt"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=orexplore-com.20230601.gappssmtp.com header.i=@orexplore-com.20230601.gappssmtp.com header.b="1SrNxuIx"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EE71A29A
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39EC18E10
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907513; cv=none; b=PVJATw5sGyvy2eKixOFMZa6GkA2FFYz+p2Lo0fVPIJadpS81OnBzqfbxGn5MUuqidL8euLHgoSKlq9/qj6ePkRaSZXY/nRjbiSPmsAeJmMA+RFhOLiTaW+JoX30tBdsCoJFiStTtJHAjA2eVbry2rIM1Rk/RgSg2iLNUAbpkI8E=
+	t=1707907654; cv=none; b=SsKHBDPUUrbroY3bbkqfBrd/Z9IBF5WFFfR1e1/elzgWZX1jWkE2L9XNYaOsLkHVg5jHFj6VZlo5eLyvnE7milycKHubZ+tSxmQVmygnCRKxNvZ8k1Y7OqeZp9m1zHZwAgqK1I/NkM5NpgzjBLGHImeqoJyg+/Q8gUIQfuImP60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907513; c=relaxed/simple;
-	bh=WdQFa2ePJ6/QoxeNCFbUr5gtPyRyjF5Kjt+3Q2HEPXA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aEaGEkrvqrJaPRXf1+der596Jsn7LuvjPTpxAvqWb9DPwVI5Sg3Dz9om/ssLdKny+flfRn3RwOQFa5yjZ/4Dkry8R18aL41jQJiTU5Za5SPKyAq7xyYDraQNKjhQjeTdknyDOWqnocNge/r05nWPm2O/fPzxoeLkL+XIXavuTG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=aqzg1vpt; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40efcb37373so42027865e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:45:11 -0800 (PST)
+	s=arc-20240116; t=1707907654; c=relaxed/simple;
+	bh=MO3JxlrQ/cVmUX7PKXni7ujhJaqoXyJJtpFjOcyfB7A=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=tjoFVcycUYk/yTzpbKgCpB+/oL8owNaDx+wvlrt+Ao5+/qJ+V+gtVlpSR4mD7HTfWRS4dd9BPDquiSlLvMmPNVMXf8EeilPczeTlKYYlLKGHhNxRE3TvldmKhmf4rYX7rtUuzpo8dOl4LIAOPd0oax7cLXYquw7QWZZcxZ9n3o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orexplore.com; spf=pass smtp.mailfrom=orexplore.com; dkim=pass (2048-bit key) header.d=orexplore-com.20230601.gappssmtp.com header.i=@orexplore-com.20230601.gappssmtp.com header.b=1SrNxuIx; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orexplore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=orexplore.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-511a4a1c497so659330e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:47:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707907509; x=1708512309; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/5fTN37ykfJWG/a6PN4F37MkWi8mM5N7iPK0vS9DcU=;
-        b=aqzg1vpt1bp5KpyAs6KgEAZiD/M2hENKQKIKI7Jwms3tKr4tysr3k5qGYOB47wlmN9
-         MCw2u5FtVczRvg85f293CYF0fr7A0+rXLDuy6SRmb+sDv1xFi0ZLKxW6DDCjTp9X5Jzq
-         9M6PUOsDQ/gxMP/XJoJDdMELSI/6vxCNHuB7g7an9ceI5GoOHv4Z0M6iK6OHMUmusE4b
-         WetrvSus+vcsmiJWNRXGMLOEesa9gt23oFc1pIDki3yqYY/qZsU1dKYtBOcNyO5gzLZk
-         ttE+005wG/m620GfqYhZtA9rlqWhBbg4BqZGxEMwGMkiFfGTfgX+MlwkYzA9WrmoDXSC
-         SQMQ==
+        d=orexplore-com.20230601.gappssmtp.com; s=20230601; t=1707907651; x=1708512451; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DWaA8J8k9q8zsSb+XvN8old+8VI1DLxksteg4CKxM84=;
+        b=1SrNxuIx0xAx3BsBX96wuaN0PtUVU6jucckCq3afaY7ttGbtZw0Re6y0uH0A9ddxe3
+         H9ODij7cIiXv6OY74uTPZ7MpaS04rKl22kdDO2g0zQxlqe/p/uOpd9ZzJlwMEu8FCoce
+         Ax8mYEW74KAjgBNDDeaNjKtFaZODU3m+Ck4/lXSJCYG4NcxGa7k0ujjElAKlEmGzgHc4
+         G6wDs2ZHVyraNWwUsbsmk+9akMBHCP1KWftzzaWzzw+NSzsUZ6ruoPmxX+bZ6tM4vSbh
+         YPMlESHxK0ZEOuxBUOHe1+MvS2Y/wzlD9WHFx1UKKQLt76uxTodml8Q1gYma8wE/CRUl
+         dOcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707907509; x=1708512309;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C/5fTN37ykfJWG/a6PN4F37MkWi8mM5N7iPK0vS9DcU=;
-        b=JmxBE/mI8bDWUxG8+JRzE2p5fUBkTL7vCRdv7Df2dq2y5MfABDjzFIHhU0lR50l0mE
-         kJMHYjQfOjSmdcwLJZa1/etbMwozZn/NnGV/hCGPaP37dfCC9+tyJUwmGsDZGF5tgPrH
-         3f8wIKVmMizeKyFXxjT4jrr/uG9tmaL5ZwEoaPquMKweNt978VsceLEgj5PILDTjhvpy
-         JEN8GfzVJAp48QMzx/bro5NhrfHhIj/Zuc3wy/StJm9gQHaONJ4Mm2De+GJ/slXFQ0b5
-         GwkkLcwpTVe1h2A4EkxO+rlDL1ksCX8A6w73Str9K8LWnJIr2/SF9m5c0oM9CLn2OJil
-         FmBg==
-X-Forwarded-Encrypted: i=1; AJvYcCW7FVOyFHhrD12kdBvcZky2pPiqjiVmH8A0CFI/FGrPvyYX+kdbt13ftwOkH/fdq34PH+20/skhOXvw1skaqVfNAc2wQ91v3q2D3woc
-X-Gm-Message-State: AOJu0YxJ0VJsbnvyq7nwOltdq1V0jowQCcJM8zGg+kgQ7SOUKojrkfYX
-	KHkky0mIOeEZxdBr2QeImY3+/OxLa9Yko/4SD9k8l34m2/9cyhzhGum470UbAH0=
-X-Google-Smtp-Source: AGHT+IGiKEvsl9augwO+cMFc4o0rMudVgy8PYQw0HqO3klGgmCZH48BaRj0Cukr0QQgUs3yQI7rmgg==
-X-Received: by 2002:a05:600c:474f:b0:411:ddc2:28b2 with SMTP id w15-20020a05600c474f00b00411ddc228b2mr1639794wmo.27.1707907509268;
-        Wed, 14 Feb 2024 02:45:09 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:cfee:a5b6:1f9b:9c9b])
-        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b00411e1574f7fsm1528662wmj.44.2024.02.14.02.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 02:45:08 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpio: sim: add lockdep asserts
-Date: Wed, 14 Feb 2024 11:45:06 +0100
-Message-Id: <20240214104506.16771-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1707907651; x=1708512451;
+        h=content-transfer-encoding:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DWaA8J8k9q8zsSb+XvN8old+8VI1DLxksteg4CKxM84=;
+        b=XTZwOnNM045ykhx4KUutOYS1U5NoRljfTarGPY3NYLqJcyOfv0OJ/S2v2d83Y9Obz4
+         F/UQAWrjhKgF27jRMoVZpmk7B7XRI0rSLylrmp7AxO+Th+xrqUaRBpuGi7ujt6zk93q1
+         mh0Kkx0Mt995ch08LxylgcBU8YI2syKPIRWSJzAh0sAep0dQzhDZqqIVdRWqzNU6WFY9
+         odd/L8ld4qGCz8j54l09cPn1uwWz0aY5sb164qBY82wpB4KgTzMIFoaaUtOydqDtLb7+
+         wxagO8Gd5e59Zrh+d+gBHJQr170muVHVIOlD72KXTrF9sMTudS/zViftPLuPI1bB5+QV
+         WBcA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0rJGFCrMVekhJeDK8Ne7rw6LPTSMci4RF4fa9vfnD8Rf/jmx65E6SFq8XvWGBLiLs2aqCcs21SwlpBA6eqsPzfXjQnVG9Drd0sqtY
+X-Gm-Message-State: AOJu0YwYX5Kwon6ta56xGGP4h9jy3EnLGM/jt/BAK6x7tgZiB8tQbJd7
+	AhvTak0bddp71nn8iN+dxBnGEROcF3MYc9SbkB6aEAkpihazOadxSphHX28qUA0=
+X-Google-Smtp-Source: AGHT+IHUniIwYuej/N0zibAfgCjbmdu7EJz8sjyemGn4wUOKCM4kVcEVo9sHDtbBBi/eNkwtU/Rjjg==
+X-Received: by 2002:a05:6512:110a:b0:511:84fe:8dcd with SMTP id l10-20020a056512110a00b0051184fe8dcdmr2026615lfg.1.1707907650786;
+        Wed, 14 Feb 2024 02:47:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXIQj84KE0a/LO0SIoych96XLVdiec+QebWdZK2byN13Pi0Km9YXd1QQTh9la7lpO4Pf+5KUzrgad6mw3uUTsK61/X/2vmCv/XAG7ppScVKRNuckGuvKW+zMHr3oYokqwcDOfPCyw/wVAwR22KtSjK+T2TR/1rUWeWgsiMMOUOrZLddLw==
+Received: from [192.168.0.212] (h-109-228-184-226.A137.corp.bahnhof.se. [109.228.184.226])
+        by smtp.gmail.com with ESMTPSA id fb13-20020a056512124d00b005118d5b3adbsm1185349lfb.98.2024.02.14.02.47.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 02:47:30 -0800 (PST)
+Message-ID: <18444448-6e04-4d28-b93d-5852958e35c1@orexplore.com>
+Date: Wed, 14 Feb 2024 11:47:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: =?UTF-8?B?Q2hyaXN0aWFuIEjDpGdnc3Ryw7Zt?=
+ <christian.haggstrom@orexplore.com>
+Subject: [PATCH] USB: serial: cp210x: add ID for MGP Instruments PDS100
+To: Johan Hovold <johan@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The radiation meter has the text MGP Instruments PDS-100G or PDS-100GN
+produced by Mirion Technologies. Tested by forcing the driver
+association with
 
-We have three functions in gpio-sim that are called with the device lock
-already held. We use the "_unlocked" suffix in their names to indicate
-that. This has proven to be confusing though as the naming convention in
-the kernel varies between using "_locked" or "_unlocked" for this
-purpose. Naming convention also doesn't enforce anything. Let's remove
-the suffix and add lockdep annotation at the top of these functions.
+   echo 10c4 863c > /sys/bus/usb-serial/drivers/cp210x/new_id
 
-This makes it clear the function requires a lock to be held (and which
-one specifically!) as well as results in a warning if it's not the case.
-The only place where the information is lost is the place where the
-function is called but the caller doesn't care about that information
-anyway.
+and then setting the serial port in 115200 8N1 mode. The device
+announces ID_USB_VENDOR_ENC=Silicon\x20Labs and ID_USB_MODEL_ENC=PDS100
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Christian Häggström <christian.haggstrom@orexplore.com>
 ---
- drivers/gpio/gpio-sim.c | 41 ++++++++++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 17 deletions(-)
+  drivers/usb/serial/cp210x.c | 1 +
+  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index c4106e37e6db..db42dc5616e4 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -22,6 +22,7 @@
- #include <linux/irq_sim.h>
- #include <linux/kernel.h>
- #include <linux/list.h>
-+#include <linux/lockdep.h>
- #include <linux/minmax.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-@@ -697,8 +698,10 @@ static struct gpio_sim_device *gpio_sim_hog_get_device(struct gpio_sim_hog *hog)
- 	return gpio_sim_line_get_device(line);
- }
- 
--static bool gpio_sim_device_is_live_unlocked(struct gpio_sim_device *dev)
-+static bool gpio_sim_device_is_live(struct gpio_sim_device *dev)
- {
-+	lockdep_assert_held(&dev->lock);
-+
- 	return !!dev->pdev;
- }
- 
-@@ -737,7 +740,7 @@ gpio_sim_device_config_live_show(struct config_item *item, char *page)
- 	bool live;
- 
- 	scoped_guard(mutex, &dev->lock)
--		live = gpio_sim_device_is_live_unlocked(dev);
-+		live = gpio_sim_device_is_live(dev);
- 
- 	return sprintf(page, "%c\n", live ? '1' : '0');
- }
-@@ -926,7 +929,7 @@ static bool gpio_sim_bank_labels_non_unique(struct gpio_sim_device *dev)
- 	return false;
- }
- 
--static int gpio_sim_device_activate_unlocked(struct gpio_sim_device *dev)
-+static int gpio_sim_device_activate(struct gpio_sim_device *dev)
- {
- 	struct platform_device_info pdevinfo;
- 	struct fwnode_handle *swnode;
-@@ -934,6 +937,8 @@ static int gpio_sim_device_activate_unlocked(struct gpio_sim_device *dev)
- 	struct gpio_sim_bank *bank;
- 	int ret;
- 
-+	lockdep_assert_held(&dev->lock);
-+
- 	if (list_empty(&dev->bank_list))
- 		return -ENODATA;
- 
-@@ -998,10 +1003,12 @@ static int gpio_sim_device_activate_unlocked(struct gpio_sim_device *dev)
- 	return 0;
- }
- 
--static void gpio_sim_device_deactivate_unlocked(struct gpio_sim_device *dev)
-+static void gpio_sim_device_deactivate(struct gpio_sim_device *dev)
- {
- 	struct fwnode_handle *swnode;
- 
-+	lockdep_assert_held(&dev->lock);
-+
- 	swnode = dev_fwnode(&dev->pdev->dev);
- 	platform_device_unregister(dev->pdev);
- 	gpio_sim_remove_hogs(dev);
-@@ -1023,12 +1030,12 @@ gpio_sim_device_config_live_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (live == gpio_sim_device_is_live_unlocked(dev))
-+	if (live == gpio_sim_device_is_live(dev))
- 		ret = -EPERM;
- 	else if (live)
--		ret = gpio_sim_device_activate_unlocked(dev);
-+		ret = gpio_sim_device_activate(dev);
- 	else
--		gpio_sim_device_deactivate_unlocked(dev);
-+		gpio_sim_device_deactivate(dev);
- 
- 	return ret ?: count;
- }
-@@ -1069,7 +1076,7 @@ static ssize_t gpio_sim_bank_config_chip_name_show(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return device_for_each_child(&dev->pdev->dev, &ctx,
- 					     gpio_sim_emit_chip_name);
- 
-@@ -1098,7 +1105,7 @@ static ssize_t gpio_sim_bank_config_label_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return -EBUSY;
- 
- 	trimmed = gpio_sim_strdup_trimmed(page, count);
-@@ -1142,7 +1149,7 @@ gpio_sim_bank_config_num_lines_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return -EBUSY;
- 
- 	bank->num_lines = num_lines;
-@@ -1179,7 +1186,7 @@ static ssize_t gpio_sim_line_config_name_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return -EBUSY;
- 
- 	trimmed = gpio_sim_strdup_trimmed(page, count);
-@@ -1219,7 +1226,7 @@ static ssize_t gpio_sim_hog_config_name_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return -EBUSY;
- 
- 	trimmed = gpio_sim_strdup_trimmed(page, count);
-@@ -1274,7 +1281,7 @@ gpio_sim_hog_config_direction_store(struct config_item *item,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return -EBUSY;
- 
- 	if (sysfs_streq(page, "input"))
-@@ -1392,7 +1399,7 @@ gpio_sim_bank_config_make_line_group(struct config_group *group,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return ERR_PTR(-EBUSY);
- 
- 	line = kzalloc(sizeof(*line), GFP_KERNEL);
-@@ -1445,7 +1452,7 @@ gpio_sim_device_config_make_bank_group(struct config_group *group,
- 
- 	guard(mutex)(&dev->lock);
- 
--	if (gpio_sim_device_is_live_unlocked(dev))
-+	if (gpio_sim_device_is_live(dev))
- 		return ERR_PTR(-EBUSY);
- 
- 	bank = kzalloc(sizeof(*bank), GFP_KERNEL);
-@@ -1467,8 +1474,8 @@ static void gpio_sim_device_config_group_release(struct config_item *item)
- 	struct gpio_sim_device *dev = to_gpio_sim_device(item);
- 
- 	scoped_guard(mutex, &dev->lock) {
--		if (gpio_sim_device_is_live_unlocked(dev))
--			gpio_sim_device_deactivate_unlocked(dev);
-+		if (gpio_sim_device_is_live(dev))
-+			gpio_sim_device_deactivate(dev);
- 	}
- 
- 	mutex_destroy(&dev->lock);
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index 923e0ed85444..ab725c2c5594 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -144,6 +144,7 @@ static const struct usb_device_id id_table[] = {
+  	{ USB_DEVICE(0x10C4, 0x85EA) }, /* AC-Services IBUS-IF */
+  	{ USB_DEVICE(0x10C4, 0x85EB) }, /* AC-Services CIS-IBUS */
+  	{ USB_DEVICE(0x10C4, 0x85F8) }, /* Virtenio Preon32 */
++	{ USB_DEVICE(0x10C4, 0x863C) }, /* MGP Instruments PDS100 */
+  	{ USB_DEVICE(0x10C4, 0x8664) }, /* AC-Services CAN-IF */
+  	{ USB_DEVICE(0x10C4, 0x8665) }, /* AC-Services OBD-IF */
+  	{ USB_DEVICE(0x10C4, 0x87ED) }, /* IMST USB-Stick for Smart Meter */
 -- 
-2.40.1
-
+2.43.0
 
