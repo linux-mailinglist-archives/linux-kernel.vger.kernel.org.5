@@ -1,97 +1,359 @@
-Return-Path: <linux-kernel+bounces-65634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C81854FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:17:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383A7854FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:18:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9BE72854CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:17:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 663221C214C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287577E101;
-	Wed, 14 Feb 2024 17:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7CA7C6D4;
+	Wed, 14 Feb 2024 17:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4mD7JZfK"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IHSRuXpl"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA79C6A002;
-	Wed, 14 Feb 2024 17:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C7B6087F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931035; cv=none; b=jHyaLBSkOPza+vkr2GRzTqXsOmM2NRBWj9orv665H7SuufvHG1oHJH4d3Y5L+wR4+0w1ewToOOe1XnTSM/5UsnvjJl1j+rkkmv+Mn9aImLXQ3uonPSb6R8s1Dqj6CgApnF3R3I+ys0C1NUTAmck06WZi0ye6i4ZR+YEI281ww6o=
+	t=1707931075; cv=none; b=lRooA37WeDBK8VwALFAyiG+zt+sOV4QO6JByDU8BakmVymxO+BxMmOP1iK1JsvIpj6aWAl8XvHB+SZS5ZlDcaEwUjnwKrYM6NMWnsVicY38FkWsaVzs8uDLHKcFDrSh6w5tOPL3yoGE7/zkWcxek5wWb8ns+dn4pYjC0xqBafXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931035; c=relaxed/simple;
-	bh=UTA6dQy4agQnhswSzw36oVcafU0M4bUjEInWDdi20YQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oXFZ2Wmapvgj1Co9N4EsGOuNFFZPG09GvKOu+6C1niCc+bKg8EMe9lNrjym3HuLg4J5X9BIXRB/ThGtls5tYXjmN6QbUt2+h3gAIhNeO8wcJv71etEozmPJecjDDABxcDx62jCefUm25aRI9uXquPb16480fbILua4v6/FTIZsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4mD7JZfK; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=iHkPVLSwZQNhDPIR6Y51dQVDy9dx3m/6H3kSC/CtpmM=; b=4mD7JZfK4F/xZNeENZHCJjuoj2
-	QpqHJlsJ458khDQPjrNaho9B/2LKr33dqpE6/YY97ygqb6nvsk2DlL2og7GITKsACYXswhTdqhm6E
-	sVJ2RJ8yDp3vXaudJcpUhF8LHkMCW7YkQKVuBXdD1MdT/wfzXuN0jyQHVVsmrD6H6hgE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1raIsd-007o93-Re; Wed, 14 Feb 2024 18:17:07 +0100
-Date: Wed, 14 Feb 2024 18:17:07 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 02/17] of: property: Add fw_devlink support
- for pse parent
-Message-ID: <6ed80613-bd9b-44fd-828c-c3caa0e186bd@lunn.ch>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
- <20240208-feature_poe-v3-2-531d2674469e@bootlin.com>
+	s=arc-20240116; t=1707931075; c=relaxed/simple;
+	bh=9Kt1tPZvc2PJE7DS8h6uq3G+B3Bo+jjJh3zwI+puTls=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MlSYB3rhJVhOSDFWQeVrSnfEC6j1hCo4tT3uGapW7K3R5d75ebKewwD3Ppx7bia1PxMOF26LfWMFnS0pA/p/zk9T6xv0Q8oOmdFKQHx19NLQZysFpYc9oUtI/3G4cre+/ZJM02aY4TLItY+w5bToCdc6XF4ue06CJPyt8siunOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IHSRuXpl; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E90aaG004320;
+	Wed, 14 Feb 2024 17:17:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=cpgWYEWq6DP+jNNJl+5t63QHfxeoJvHVCyCtujNb1Sw=; b=IH
+	SRuXplkPZZ/86a1haB8VQIlP619AFNbdBNEKGQIyUB2F7OgKeM7g/gVePl/3liqM
+	3QtHlBFLSpK0t//gka85eU+T5ecJwCwAh01Hlh1uqDc4VhOk8zC50Vuphka12t90
+	wrMq9d0dksrqJtAAM53Y+tPGXqASEf9rmx8cPGm1ggfpIw7ngVja+RVnbFst/ShO
+	YFqS5sszrrgx/JGnsfapc1RM+JIqZJUosVD5xC422qjXh5Q0mngi/H9iKEg+FeDd
+	D58t3gg1bPdD3kk4MTDrOhD3GK2d9yXoI0qENggNlxxCD6ZscUdBuIVsAX6mstRi
+	p0XWu6jVLOiI0meSbdFg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8enna89h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 17:17:37 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41EHHafN003490
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 14 Feb 2024 17:17:36 GMT
+Received: from [10.71.109.81] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
+ 2024 09:17:35 -0800
+Message-ID: <eb8b3bac-5f97-8efd-721e-08e9544be3f8@quicinc.com>
+Date: Wed, 14 Feb 2024 09:17:34 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208-feature_poe-v3-2-531d2674469e@bootlin.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin
+	<tvrtko.ursulin@linux.intel.com>,
+        <robdclark@gmail.com>, <freedreno@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
+        <quic_jesszhan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <intel-xe@lists.freedesktop.org>
+References: <20240213234513.2411604-1-quic_abhinavk@quicinc.com>
+ <CAA8EJpo0yeLyCkVvLFX7wUEV4+i+ORbaCB2qxN0izaWLdFqCrA@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpo0yeLyCkVvLFX7wUEV4+i+ORbaCB2qxN0izaWLdFqCrA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _-kD4V7i3gEHIiLo4KbsIDDpjrMh6YEY
+X-Proofpoint-ORIG-GUID: _-kD4V7i3gEHIiLo4KbsIDDpjrMh6YEY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-14_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402140135
 
-On Thu, Feb 08, 2024 at 02:08:39PM +0100, Kory Maincent wrote:
-> This allows fw_devlink to create device links between consumers of
-> a PSE and the supplier of the PSE.
 
-It will be interesting to see how this turns out. fw_devlink often
-gets itself into knots with MAC and PHY dependencies sometimes being
-circular. If we get a PSE on an MDIO bus, this is going to get even
-more interesting.
 
-> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+On 2/14/2024 12:15 AM, Dmitry Baryshkov wrote:
+> On Wed, 14 Feb 2024 at 01:45, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+>> Lets move this to drm_dp_helper to achieve this.
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> 
+> My preference would be to have packing functions in
+> drivers/video/hdmi.c, as we already have
+> hdmi_audio_infoframe_pack_for_dp() there.
+> 
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+My preference is drm_dp_helper because it already has some VSC SDP stuff 
+and after discussion with Ville on IRC, I decided to post it this way.
 
-    Andrew
+hdmi_audio_infoframe_pack_for_dp() is an exception from my PoV as the 
+hdmi audio infoframe fields were re-used and packed into a DP SDP 
+thereby re-using the existing struct hdmi_audio_infoframe .
+
+This is not like that. Here we pack from struct drm_dp_vsc_sdp to struct 
+dp_sdp both of which had prior usages already in this file.
+
+So it all adds up and makes sense to me to be in this file.
+
+I will let the other DRM core maintainers comment on this.
+
+Ville, Jani?
+
+>> ---
+>>   drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
+>>   drivers/gpu/drm/i915/display/intel_dp.c | 73 +----------------------
+>>   include/drm/display/drm_dp_helper.h     |  3 +
+>>   3 files changed, 84 insertions(+), 70 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+>> index b1ca3a1100da..066cfbbf7a91 100644
+>> --- a/drivers/gpu/drm/display/drm_dp_helper.c
+>> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
+>> @@ -2916,6 +2916,84 @@ void drm_dp_vsc_sdp_log(const char *level, struct device *dev,
+>>   }
+>>   EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+>>
+>> +/**
+>> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
+>> + * @vsc: vsc sdp initialized according to its purpose as defined in
+>> + *       table 2-118 - table 2-120 in DP 1.4a specification
+>> + * @sdp: valid handle to the generic dp_sdp which will be packed
+>> + * @size: valid size of the passed sdp handle
+>> + *
+>> + * Returns length of sdp on success and error code on failure
+>> + */
+>> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> +                           struct dp_sdp *sdp, size_t size)
+> 
+> I know that you are just moving the function. Maybe there can be
+> patch#2, which drops the size argument? The struct dp_sdp already has
+> a defined size. The i915 driver just passes sizeof(sdp), which is more
+> or less useless.
+> 
+
+Yes this is a valid point, I also noticed this. I can post it on top of 
+this once we get an agreement and ack on this patch first.
+
+>> +{
+>> +       size_t length = sizeof(struct dp_sdp);
+>> +
+>> +       if (size < length)
+>> +               return -ENOSPC;
+>> +
+>> +       memset(sdp, 0, size);
+>> +
+>> +       /*
+>> +        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+>> +        * VSC SDP Header Bytes
+>> +        */
+>> +       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+>> +       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+>> +       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+>> +       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+>> +
+>> +       if (vsc->revision == 0x6) {
+>> +               sdp->db[0] = 1;
+>> +               sdp->db[3] = 1;
+>> +       }
+>> +
+>> +       /*
+>> +        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+>> +        * Format as per DP 1.4a spec and DP 2.0 respectively.
+>> +        */
+>> +       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+>> +               goto out;
+>> +
+>> +       /* VSC SDP Payload for DB16 through DB18 */
+>> +       /* Pixel Encoding and Colorimetry Formats  */
+>> +       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+>> +       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+>> +
+>> +       switch (vsc->bpc) {
+>> +       case 6:
+>> +               /* 6bpc: 0x0 */
+>> +               break;
+>> +       case 8:
+>> +               sdp->db[17] = 0x1; /* DB17[3:0] */
+>> +               break;
+>> +       case 10:
+>> +               sdp->db[17] = 0x2;
+>> +               break;
+>> +       case 12:
+>> +               sdp->db[17] = 0x3;
+>> +               break;
+>> +       case 16:
+>> +               sdp->db[17] = 0x4;
+>> +               break;
+>> +       default:
+>> +               WARN(1, "Missing case %d\n", vsc->bpc);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       /* Dynamic Range and Component Bit Depth */
+>> +       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+>> +               sdp->db[17] |= 0x80;  /* DB17[7] */
+>> +
+>> +       /* Content Type */
+>> +       sdp->db[18] = vsc->content_type & 0x7;
+>> +
+>> +out:
+>> +       return length;
+>> +}
+>> +EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
+>> +
+>>   /**
+>>    * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+>>    * @dpcd: DisplayPort configuration data
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+>> index f5ef95da5534..e94db51aeeb7 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+>> @@ -4110,73 +4110,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
+>>          return false;
+>>   }
+>>
+>> -static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> -                                    struct dp_sdp *sdp, size_t size)
+>> -{
+>> -       size_t length = sizeof(struct dp_sdp);
+>> -
+>> -       if (size < length)
+>> -               return -ENOSPC;
+>> -
+>> -       memset(sdp, 0, size);
+>> -
+>> -       /*
+>> -        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+>> -        * VSC SDP Header Bytes
+>> -        */
+>> -       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+>> -       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+>> -       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+>> -       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+>> -
+>> -       if (vsc->revision == 0x6) {
+>> -               sdp->db[0] = 1;
+>> -               sdp->db[3] = 1;
+>> -       }
+>> -
+>> -       /*
+>> -        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+>> -        * Format as per DP 1.4a spec and DP 2.0 respectively.
+>> -        */
+>> -       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+>> -               goto out;
+>> -
+>> -       /* VSC SDP Payload for DB16 through DB18 */
+>> -       /* Pixel Encoding and Colorimetry Formats  */
+>> -       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+>> -       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+>> -
+>> -       switch (vsc->bpc) {
+>> -       case 6:
+>> -               /* 6bpc: 0x0 */
+>> -               break;
+>> -       case 8:
+>> -               sdp->db[17] = 0x1; /* DB17[3:0] */
+>> -               break;
+>> -       case 10:
+>> -               sdp->db[17] = 0x2;
+>> -               break;
+>> -       case 12:
+>> -               sdp->db[17] = 0x3;
+>> -               break;
+>> -       case 16:
+>> -               sdp->db[17] = 0x4;
+>> -               break;
+>> -       default:
+>> -               MISSING_CASE(vsc->bpc);
+>> -               break;
+>> -       }
+>> -       /* Dynamic Range and Component Bit Depth */
+>> -       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+>> -               sdp->db[17] |= 0x80;  /* DB17[7] */
+>> -
+>> -       /* Content Type */
+>> -       sdp->db[18] = vsc->content_type & 0x7;
+>> -
+>> -out:
+>> -       return length;
+>> -}
+>> -
+>>   static ssize_t
+>>   intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
+>>                                           const struct hdmi_drm_infoframe *drm_infoframe,
+>> @@ -4269,8 +4202,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
+>>
+>>          switch (type) {
+>>          case DP_SDP_VSC:
+>> -               len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+>> -                                           sizeof(sdp));
+>> +               len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+>> +                                         sizeof(sdp));
+>>                  break;
+>>          case HDMI_PACKET_TYPE_GAMUT_METADATA:
+>>                  len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
+>> @@ -4297,7 +4230,7 @@ void intel_write_dp_vsc_sdp(struct intel_encoder *encoder,
+>>          struct dp_sdp sdp = {};
+>>          ssize_t len;
+>>
+>> -       len = intel_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
+>> +       len = drm_dp_vsc_sdp_pack(vsc, &sdp, sizeof(sdp));
+>>
+>>          if (drm_WARN_ON(&dev_priv->drm, len < 0))
+>>                  return;
+>> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+>> index 863b2e7add29..f8db34a2f7a5 100644
+>> --- a/include/drm/display/drm_dp_helper.h
+>> +++ b/include/drm/display/drm_dp_helper.h
+>> @@ -813,4 +813,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
+>>                         int bpp_x16, unsigned long flags);
+>>   int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
+>>
+>> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> +                           struct dp_sdp *sdp, size_t size);
+>> +
+>>   #endif /* _DRM_DP_HELPER_H_ */
+>> --
+>> 2.34.1
+>>
+> 
+> 
 
