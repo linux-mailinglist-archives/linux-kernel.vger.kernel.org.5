@@ -1,68 +1,76 @@
-Return-Path: <linux-kernel+bounces-65650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53765855000
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A0652855005
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775AD1C29386
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:23:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C526E1C28EFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAB284FAE;
-	Wed, 14 Feb 2024 17:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908184FCB;
+	Wed, 14 Feb 2024 17:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bz2viO5C"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GI5OsJ1w"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A258128368
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA43E83A17
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931189; cv=none; b=De3nasGWuAmkE7v8JIOsGAYbbIcpC77Bs22K8rq/YQu6dqfLzyZrgQ/I+L+0DkfeQKqfNmzXctTaEA6cz4zhRQvCkDSW3Pmr1tRwjJJhHobMiZeO6fWy6wbm/D/6izi8dwpty3QQOOas7TyVyxCH0/7qrA/LVKW1VsQXVJ92ffA=
+	t=1707931204; cv=none; b=toqmiopZAhJH4NJKUso+t/ZPDHytYpg4bHrDFnwiuRBHGPi0Ug/2C8Ei7+q2LpFIAH8MVPNiHz7cqhZGhCoZCfwUYjx208uyzenrHIocgx9NqVkciXmDWftD95rgBbZCSr9gCOU3Iiy9Fx9hi+pgLtoEVOq8cPYp8xWLnuCpkgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931189; c=relaxed/simple;
-	bh=Yku4QTzDRgKI/i8hKOFaa1PxharxpUPm5kuh1Z3KMas=;
+	s=arc-20240116; t=1707931204; c=relaxed/simple;
+	bh=zJ9UnsbBVQk+7CK64IucZXo37BDgEgF/64+egIlJnYc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CPDFKrQS5ItEIuYOt9xCXtx/ZG49fNoQ0d+cz5giIZzMFnoBIj/rdkLXx5pmKEPuXc4eT753H0f2F7Ev6FxgX2ai3LQ76cPQbR8IwCh6BqX8daT1o3WC7EC+uvxnzRMb56NLUlS1yleNszbqKg6eTZlDZ3erFotGbgIBVgB+/X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bz2viO5C; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7232dcb3eso42959435ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:19:47 -0800 (PST)
+	 To:Cc:Content-Type; b=Tg/dX7BKg74TteCkgTpYxrVVVIztWcX0hi5b6QPP4uodQ3gDBeLxWD+ZKcoilpWPRld/O4fGnJ9pDGxCW5/VtwMu1dewur6wo/BbLFUlRj9XW19B9cS9A1g/A2jstIqZWMryEYRevmaRk9zrZ80eIX7nx2vaCdGBvO4GYrMfX/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GI5OsJ1w; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-561587ce966so1966839a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:20:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707931187; x=1708535987; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1707931200; x=1708536000; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kQJxYiPtkKunXHr1tWOWmm3RzE0fHMgYFU5N+FoanzQ=;
-        b=bz2viO5CXR43zHcNBPXSQpr8axEtMcy6ugW9CYGG1Dg3Ei1haWIZcwbHlbyoVQDMQ4
-         0jObCmRQs5ZYIbbHCKY/pVWw3MAdFFG+bU6GBKz5T1CaqR1veJY2i6RMqyA+cmOvBObq
-         UNfXg5sw3jDh1HpblzSn2ZKpUWwXmdbmWE4KtydlQylNrklVKXO2S0jq+0tn+rRZpxbn
-         OlIbro1TGzQwJLqrDh4txKaz52dlkrhX+Oqb50tGky4eJ1EKzIopcBTMKtzsiVUsv+dv
-         HKbLsM0cIzS+gIrtXfMjuhW7rppLJsCZ5fZ0TfTibyLLYvsmTcRNCgGn3eG7YTbUnvnB
-         36+Q==
+        bh=236lqzUHLILRkjMonxzcy3On2gm7C9J5rPgBDfLu9uc=;
+        b=GI5OsJ1wz5H57Sg4mAXsqobe1T4cnGXVVvPIZYy9/pYyPNM7H7qlJanQEFrYmi6fw0
+         5AunEgggKy9cS5hSKY5UfCfii2Sw2D1XK+mC6FBEuZ1c3KrX7G+6O/OGKMvZPYjNoSwK
+         sUt+1NPmOynEM9Mc6gCnvzntgqXkRcHQGhm4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707931187; x=1708535987;
+        d=1e100.net; s=20230601; t=1707931200; x=1708536000;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kQJxYiPtkKunXHr1tWOWmm3RzE0fHMgYFU5N+FoanzQ=;
-        b=sOcEgs2CEbT2OLXmb9TwmlaN7DtDLDuMAatfffJo+G9feWVCJ5YZpth0NW8VQutqA3
-         3fY0M10LWvTOEUfG2bokpHSsFyeV3B59zq4ZkDHdBscXa4ErxA8R6/Po3hOXKy5JKNIW
-         +B4yAsXX1zHhHEcFpy2Fe2j/Wl0vxwgBCmrbOVqE4tGkWp0yL8bsTsYJOZTQ6+5z6nbD
-         E4hRRDBeRHZzYSTmM6PbvyFER1nIea8XTBxXzAGYWk7czBphZLm/grGerAOYzcQFpODV
-         qr+23jKAOheeEndBRmr4H58zYyNzaq/lxY7DTpxclJT3XmK8fL5XQ+PpSL9catqmZj5R
-         xXGA==
-X-Forwarded-Encrypted: i=1; AJvYcCUPmoxiLS9LJfD5DQqMkgPY76pACLhbMKFOTnGn6qZQ3w7I0NiJbdZrlhTDsdC0Qc5hKx+xXeVOx5s0m0rLxmiHnbBusuY3TgOAJqUH
-X-Gm-Message-State: AOJu0YypquPlZjbZ79L+1O4dK4rF0IMvwr/41AUXDS/8LaU58EZeXW2J
-	x8rVODh90qVT9ymEhj3oxFuN2bBnYP24mmMIESplrqSoTkriynyFaitMaKjolhHuH2TQ3GMKnuk
-	1W+AfNHOXzMcxTH1CPPhkCcosEpoABUecU0jKXw==
-X-Google-Smtp-Source: AGHT+IE/4Jb60J8umLNZe6538ribl0j0RPOFasDoPpDRIFX5AjneBXpKfyUvuFsnp7LDN4A0Ix05qgk5V9Wx9geOoCA=
-X-Received: by 2002:a17:90b:351:b0:298:ba30:789b with SMTP id
- fh17-20020a17090b035100b00298ba30789bmr3088028pjb.32.1707931187327; Wed, 14
- Feb 2024 09:19:47 -0800 (PST)
+        bh=236lqzUHLILRkjMonxzcy3On2gm7C9J5rPgBDfLu9uc=;
+        b=WQgkALc9Y7Wa+SV4fNjIaIrO/AOqVO6HPrQGB3uhrZW5pJaOEUH2OQS+7lopOHPysn
+         OzwHjCfuyUATs7fNA8hNIRy0tI41BIHAbHtkJCyG+WBsYTptK5d0GUdabz7eP8Lskbyp
+         har+0ffZrQd7s1SrHzza8qiz9a9qbH/iNrNR5XkphXKf8NSYbkdfy+HF9bUEpqs+D0gT
+         MEF/DeirERtdxOjmbXh9he7Cippd40A8WYQXOV8G8g1pdoy0pa4AL5nke0JRwNnm96L4
+         SkQJdcX35NJJYLW7f5tq+DNrJw9UBtsMOIcVNJVGC0/Sc68N39YZr9P7tAc2HKTnzcO7
+         ISyg==
+X-Forwarded-Encrypted: i=1; AJvYcCXevKqPytyqSn0Tm5BYkZK67PV5fk5tKXn4pUbLs6vd9psvepfzisbIvLx5gjulBjoLKV3+dN1xiwQWnY/mOsoj4wHeTMlQrtCk/3De
+X-Gm-Message-State: AOJu0Yzh9mu0eW621b487YXvJiXXJUM9wd1yuyE281vNM/MCo5dKco10
+	LD1QvJLR8w9/lRd1L16aTcFRotmjxGOGcdl+iMSfh/bico5hXgVkxasT+1U/qV4Gn0VMJuNbU1F
+	GoT8=
+X-Google-Smtp-Source: AGHT+IGTzn/MRKZ55WwbZtPC5eQOt+pk4nB8u5Hy3P4h+3jAB0qsDBVdAeivGjlWV5uB6c4uzFnb0A==
+X-Received: by 2002:a05:6402:12c9:b0:562:1094:7556 with SMTP id k9-20020a05640212c900b0056210947556mr2531898edx.8.1707931200437;
+        Wed, 14 Feb 2024 09:20:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXhWzpvmpO4Ap68HbT1AQZtZJddDbED5itpyKxwIfXK5pKnoKbhO0N/ZlTShGub2zJobGpqaV4SPYsDeHX5ljzr2rBS0l83SFVi1l9a
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id b8-20020a509f08000000b005637db1a071sm706980edf.86.2024.02.14.09.19.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 09:19:59 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-561587ce966so1966752a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:19:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXqLr6LSnw2RYFXLswX5jQedpj08gTwq4i1r1nCHdTeKxwcDZXJNYp1HcpU5QLeGJCDGNHIukIZqHhT57kB4f5EfGn/fGNUy/izGyOU
+X-Received: by 2002:a05:6402:5410:b0:561:5e21:8b89 with SMTP id
+ ev16-20020a056402541000b005615e218b89mr2620799edb.13.1707931198880; Wed, 14
+ Feb 2024 09:19:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,73 +79,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240114183600.135316-1-vincent.guittot@linaro.org> <6ec54a8f-a602-4f33-96ce-0204f07046e1@nvidia.com>
 In-Reply-To: <6ec54a8f-a602-4f33-96ce-0204f07046e1@nvidia.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 14 Feb 2024 18:19:35 +0100
-Message-ID: <CAKfTPtAR-yWG8odEv-b8XoZQa05OiYd3PLn56MA+AqPb4h=NJA@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 14 Feb 2024 09:19:42 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgjiVanO4ZS1hy2sfAFTN_pYtQqVQb_g+dbrP34M6xTDw@mail.gmail.com>
+Message-ID: <CAHk-=wgjiVanO4ZS1hy2sfAFTN_pYtQqVQb_g+dbrP34M6xTDw@mail.gmail.com>
 Subject: Re: [PATCH] sched/fair: Fix frequency selection for non invariant case
 To: Jon Hunter <jonathanh@nvidia.com>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, wkarny@gmail.com, 
-	torvalds@linux-foundation.org, qyousef@layalina.io, tglx@linutronix.de, 
-	rafael@kernel.org, viresh.kumar@linaro.org, linux-kernel@vger.kernel.org, 
+Cc: Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	wkarny@gmail.com, qyousef@layalina.io, tglx@linutronix.de, rafael@kernel.org, 
+	viresh.kumar@linaro.org, linux-kernel@vger.kernel.org, 
 	linux-pm@vger.kernel.org, 
 	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, Thierry Reding <treding@nvidia.com>, 
 	Sasha Levin <sashal@nvidia.com>, Laxman Dewangan <ldewangan@nvidia.com>, 
 	Shardar Mohammed <smohammed@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hi John,
-
-On Wed, 14 Feb 2024 at 18:12, Jon Hunter <jonathanh@nvidia.com> wrote:
->
-> Hi Vincent,
->
-> On 14/01/2024 18:36, Vincent Guittot wrote:
-> > When frequency invariance is not enabled, get_capacity_ref_freq(policy)
-> > returns the current frequency and the performance margin applied by
-> > map_util_perf(), enabled the utilization to go above the maximum compute
-> > capacity and to select a higher frequency than the current one.
-> >
-> > The performance margin is now applied earlier in the path to take into
-> > account some utilization clampings and we can't get an utilization higher
-> > than the maximum compute capacity.
-> >
-> > We must use a frequency above the current frequency to get a chance to
-> > select a higher OPP when the current one becomes fully used. Apply
-> > the same margin and returns a frequency 25% higher than the current one in
-> > order to switch to the next OPP before we fully use the cpu at the current
-> > one.
-> >
-> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Closes: https://lore.kernel.org/lkml/CAHk-=wgWcYX2oXKtgvNN2LLDXP7kXkbo-xTfumEjmPbjSer2RQ@mail.gmail.com/
-> > Reported-by: Wyes Karny <wkarny@gmail.com>
-> > Closes: https://lore.kernel.org/lkml/20240114091240.xzdvqk75ifgfj5yx@wyes-pc/
-> > Fixes: 9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor performance estimation")
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > Tested-by: Wyes Karny <wkarny@gmail.com>
-> > ---
-> >   kernel/sched/cpufreq_schedutil.c | 6 +++++-
-> >   1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 95c3c097083e..d12e95d30e2e 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -133,7 +133,11 @@ unsigned long get_capacity_ref_freq(struct cpufreq_policy *policy)
-> >       if (arch_scale_freq_invariant())
-> >               return policy->cpuinfo.max_freq;
-> >
-> > -     return policy->cur;
-> > +     /*
-> > +      * Apply a 25% margin so that we select a higher frequency than
-> > +      * the current one before the CPU is full busy
-> > +      */
-> > +     return policy->cur + (policy->cur >> 2);
-> >   }
-> >
-> >   /**
->
+On Wed, 14 Feb 2024 at 09:12, Jon Hunter <jonathanh@nvidia.com> wrote:
 >
 > We have also observed a performance degradation on our Tegra platforms
 > with v6.8-rc1. Unfortunately, the above change does not fix the problem
@@ -163,28 +122,24 @@ On Wed, 14 Feb 2024 at 18:12, Jon Hunter <jonathanh@nvidia.com> wrote:
 >   9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor
 >
 > ... then the perf is similar to where it was ...
->
-> Linux v6.8-rc4 plus reverts:
-> [   31.768189] CPU0: Dhrystones per Second: 48421678 (27559 DMIPS)
-> [   36.556838] CPU1: Dhrystones per Second: 48401324 (27547 DMIPS)
-> [   41.343343] CPU2: Dhrystones per Second: 48421678 (27559 DMIPS)
-> [   46.163347] CPU3: Dhrystones per Second: 47679814 (27137 DMIPS)
->
-> All CPUs are running with the schedutil CPUFREQ governor. We have not
-> looked any further but wanted to report this in case you have any more
-> thoughts or suggestions for us to try.
 
-Have you tried this :
-https://lore.kernel.org/lkml/20240117190545.596057-1-vincent.guittot@linaro.org/
+Ok, guys, this whole scheduler / cpufreq rewrite seems to have been
+completely buggered.
 
-It's in driver-core-linus' branch and should be sent to Linus soon
+Please tell me why we shouldn't just revert things as per above?
 
-Vincent
+Sure, the problem _I_ experienced is fixed, but apparently there are
+others just lurking, and they are even bigger degradations than the
+one I saw.
 
->
-> Thanks
-> Jon
->
-> --
-> nvpublic
+We're now at rc4, we're not releasing a 6.8 with the above kinds of
+numbers. So either there's another obvious one-liner fix, or we need
+to revert this whole thing.
+
+Yes, dhrystones is a truly crappy benchmark, but partly _because_ it's
+such a horribly bad benchmark it's also a very simple case. It's pure
+CPU load with absolutely nothing interesting going on. Regressing on
+that by a factor of three is a sign of complete failure.
+
+                  Linus
 
