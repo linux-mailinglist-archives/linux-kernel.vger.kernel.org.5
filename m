@@ -1,88 +1,143 @@
-Return-Path: <linux-kernel+bounces-65762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B06468551A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3D8F855180
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF29CB2F7D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:04:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D32A4B258AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDAF9130E2A;
-	Wed, 14 Feb 2024 17:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ES9QI0tv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1799D12FF9F;
-	Wed, 14 Feb 2024 17:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2342412839C;
+	Wed, 14 Feb 2024 17:58:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFF8127B51;
+	Wed, 14 Feb 2024 17:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933496; cv=none; b=o0duMjPkV7i8Mad9yrUePLCzk3kcLA8IQwYEUyzdO3Q/Pulrmd5Khd2tl7Trb4cATwfhqscSl1X6VGXxu5fCR4eteFGbx0VG+mqN6tihXd3XF6uniwRyEqIeT5ObLpIxQ+N+k60FQVTmyo9LuHMNqK01pl+VFI7I1G4LW2O8d4Y=
+	t=1707933517; cv=none; b=EiwTBQxmjONUvf6DoZ+yEayq+AI30j3YldI0Ocw6eKJggQrHd1yUwXtZglvSLp3x4it7/adfHldFh52bfIk5mvURwrK5eKHktjgbZoguIcAktZl0i8qNAGtz1Y6RcxtCU/iyEXEESgICMz0XH3ca3j6LIHl269ctj8ujKRa0aVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933496; c=relaxed/simple;
-	bh=Ya63E65YcbVHL4uPFHoX6f2hfQp8l81yI8tgBeiUBTQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rRQ8DZL9WOuuTtm9IEEYqe7R6w4d/7TKd+gJShZ5d6Xs9IT/CnxekjaqhkQVst82hbWeFfrYXKocAOxhv7Qi9uh3m+/iuy4BAVo1MeZ6ZRcp0DoILDnnvLvnfTiAG06BYXttQWnzo+q5edgYAMuOhYQrC/uZu4Hu7vXqYTTKaVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ES9QI0tv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1D31C43399;
-	Wed, 14 Feb 2024 17:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933495;
-	bh=Ya63E65YcbVHL4uPFHoX6f2hfQp8l81yI8tgBeiUBTQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ES9QI0tvnxYax7I47IMhhicFTT2aMY48oIwFFHJ/Wijy4Hu3oYkVQnNoOqz3Xyvw/
-	 lGX902/OBlx+wdojjI+nGnafPoODeJ4qjH9op4UFeGvIQR3nJQvUU+kCh3m2c5piXz
-	 otLpUOiMEwdjItne7De007uN0ux4pTycKuSbsAPXcAHu9e7NXw59hqPHr6Qk7nfxJy
-	 P+A1Gvcdba4N5ZrvNFjoQdQ4p6LugU/PydSs52AEKmLOXmxs5KqJlt3XbQqVgfGbSl
-	 xItZI0kdF5G7oDUeMTuCyrHw4KQVvXvMZBmHIP1/pvcmjMcyM5EfXS1SXPP0lU1bnp
-	 Yr52C31wK7jUQ==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yassine Oudjana <y.oudjana@protonmail.com>
-Cc: Yassine Oudjana <yassine.oudjana@gmail.com>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: msm8996: Define UFS UniPro clock limits
-Date: Wed, 14 Feb 2024 11:57:43 -0600
-Message-ID: <170793345802.27225.14414738389431861403.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218133917.78770-1-y.oudjana@protonmail.com>
-References: <20231218133917.78770-1-y.oudjana@protonmail.com>
+	s=arc-20240116; t=1707933517; c=relaxed/simple;
+	bh=M9SzvVIV7YSZhK7oCmf3vj7+C0jEeizkNf7iIs8Prgk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D74D6rXgIP31aqKyuNjFuEMWncYyki+H3gtCUJGlYoKHHLHbvFjHrMx+z8N9M7IX+g4nMeZKosnEcv/2pXUf295xLUXDoQ5ywUTo6eN2ZerfMzgARJ7YS0T+R/njDArkw+EwYe0Fv0bf++UKdN49v9LlzNivMId9aaAZE5T92cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13D4B1FB;
+	Wed, 14 Feb 2024 09:59:16 -0800 (PST)
+Received: from [10.57.47.86] (unknown [10.57.47.86])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59B433F766;
+	Wed, 14 Feb 2024 09:58:32 -0800 (PST)
+Message-ID: <2d13134d-1e5c-4534-8686-c0022caeb36c@arm.com>
+Date: Wed, 14 Feb 2024 17:58:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 3/7] iommu/dma: avoid expensive indirect calls
+ for sync operations
+Content-Language: en-GB
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
+ <20240214162201.4168778-4-aleksander.lobakin@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240214162201.4168778-4-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On Mon, 18 Dec 2023 13:39:42 +0000, Yassine Oudjana wrote:
-> These limits were always defined as 0, but that didn't cause any issue
-> since the driver had hardcoded limits. In commit b4e13e1ae95e ("scsi: ufs:
-> qcom: Add multiple frequency support for MAX_CORE_CLK_1US_CYCLES") the
-> hardcoded limits were removed and the driver started reading them from DT,
-> causing UFS to stop working on MSM8996. Add real UniPro clock limits to fix
-> UFS.
+On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
+> When IOMMU is on, the actual synchronization happens in the same cases
+> as with the direct DMA. Advertise %DMA_F_CAN_SKIP_SYNC in IOMMU DMA to
+> skip sync ops calls (indirect) for non-SWIOTLB buffers.
 > 
-> [...]
+> perf profile before the patch:
+> 
+>      18.53%  [kernel]       [k] gq_rx_skb
+>      14.77%  [kernel]       [k] napi_reuse_skb
+>       8.95%  [kernel]       [k] skb_release_data
+>       5.42%  [kernel]       [k] dev_gro_receive
+>       5.37%  [kernel]       [k] memcpy
+> <*>  5.26%  [kernel]       [k] iommu_dma_sync_sg_for_cpu
+>       4.78%  [kernel]       [k] tcp_gro_receive
+> <*>  4.42%  [kernel]       [k] iommu_dma_sync_sg_for_device
+>       4.12%  [kernel]       [k] ipv6_gro_receive
+>       3.65%  [kernel]       [k] gq_pool_get
+>       3.25%  [kernel]       [k] skb_gro_receive
+>       2.07%  [kernel]       [k] napi_gro_frags
+>       1.98%  [kernel]       [k] tcp6_gro_receive
+>       1.27%  [kernel]       [k] gq_rx_prep_buffers
+>       1.18%  [kernel]       [k] gq_rx_napi_handler
+>       0.99%  [kernel]       [k] csum_partial
+>       0.74%  [kernel]       [k] csum_ipv6_magic
+>       0.72%  [kernel]       [k] free_pcp_prepare
+>       0.60%  [kernel]       [k] __napi_poll
+>       0.58%  [kernel]       [k] net_rx_action
+>       0.56%  [kernel]       [k] read_tsc
+> <*>  0.50%  [kernel]       [k] __x86_indirect_thunk_r11
+>       0.45%  [kernel]       [k] memset
+> 
+> After patch, lines with <*> no longer show up, and overall
+> cpu usage looks much better (~60% instead of ~72%):
+> 
+>      25.56%  [kernel]       [k] gq_rx_skb
+>       9.90%  [kernel]       [k] napi_reuse_skb
+>       7.39%  [kernel]       [k] dev_gro_receive
+>       6.78%  [kernel]       [k] memcpy
+>       6.53%  [kernel]       [k] skb_release_data
+>       6.39%  [kernel]       [k] tcp_gro_receive
+>       5.71%  [kernel]       [k] ipv6_gro_receive
+>       4.35%  [kernel]       [k] napi_gro_frags
+>       4.34%  [kernel]       [k] skb_gro_receive
+>       3.50%  [kernel]       [k] gq_pool_get
+>       3.08%  [kernel]       [k] gq_rx_napi_handler
+>       2.35%  [kernel]       [k] tcp6_gro_receive
+>       2.06%  [kernel]       [k] gq_rx_prep_buffers
+>       1.32%  [kernel]       [k] csum_partial
+>       0.93%  [kernel]       [k] csum_ipv6_magic
+>       0.65%  [kernel]       [k] net_rx_action
+> 
+> iavf yields +10% of Mpps on Rx. This also unblocks batched allocations
+> of XSk buffers when IOMMU is active.
 
-Applied, thanks!
+Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-[1/1] arm64: dts: qcom: msm8996: Define UFS UniPro clock limits
-      commit: 68c4c20848d71b0e69c3403becb5dd23e89e5896
-
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+> Co-developed-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>   drivers/iommu/dma-iommu.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 50ccc4f1ef81..4ab9ac13d362 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -1707,7 +1707,8 @@ static size_t iommu_dma_opt_mapping_size(void)
+>   }
+>   
+>   static const struct dma_map_ops iommu_dma_ops = {
+> -	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
+> +	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED |
+> +				  DMA_F_CAN_SKIP_SYNC,
+>   	.alloc			= iommu_dma_alloc,
+>   	.free			= iommu_dma_free,
+>   	.alloc_pages		= dma_common_alloc_pages,
 
