@@ -1,236 +1,244 @@
-Return-Path: <linux-kernel+bounces-65357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8929854BC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:45:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BD1854BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 955DEB2360C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:45:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49E08283635
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23B35A7B6;
-	Wed, 14 Feb 2024 14:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="IoEa8p6q"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2069.outbound.protection.outlook.com [40.107.243.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707705B1FC;
+	Wed, 14 Feb 2024 14:45:44 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135C45A7B4;
-	Wed, 14 Feb 2024 14:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707921920; cv=fail; b=IMB5oITZqPLE9iNANah9sa6y0kogLoFe3xNB32YFBbKSyEXUfFGO2bT/bPe0E2Jtowr3iuHsDzPEweViN8Zg07YgX8AgUMC9pxfmwugICpQYGxL9pYwnrzNJoJFihwJynzUOaxQddUyjQ72mZq7Gs37vMIXEGMAgh8mzvjp/X/4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707921920; c=relaxed/simple;
-	bh=cqIXbpy8kI6AG3hfTs3jB38Yd7Xyv9AIon3sponqbQo=;
-	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=U+wWgc/ACthN84b5gbcWqYLykdLEyZctq4BQTdzmS0K11aEkDSoYiYcFSNxSb6F7XeQCUqGQIvWMu6v5a5wL2ZnwN6oAVTUrqpGRd/pCKfQAEfkoiqtX5JdCrkxIIULocDMS5JAUFOdUFQ8jdAoe2dfIf+4Zcwbvg3P2Y0zocno=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=IoEa8p6q; arc=fail smtp.client-ip=40.107.243.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k151eKWOHk7bpBmgyV0yvvFryZ0NqK1TjWZjuBdbj3O0svGZwXxcL+LPRFWV7edj4gahdYUI9uPOeBvC9OvqX5Gt6PzqyrAK9Oy9f9aH3bQXBHv/qi1K3CZeKuJZuyjUEs7f7V0HI9eVbn11aMNvS+RZNDQ99I5Hm4tZItbpq+C+stM3JeSY3g8jkJwEzdG5LuzI2Ubdqf993O4ysUjAPxR71sxtEpcFvn6dC6a5mlXbccO8mhLhHIBmToHuMLHe60T3qmBtiuECoWT5c0bBexGWC1gGF74B2NmxlUmOg8hLi5xkcWLsfeuyAQFL9e0MD2Ab+n4+OSqazvRaJE83Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HxGlMvegfLIpbBrw0sZfleotNbdFsKmr8leW1LhBqZo=;
- b=T9iu+DW8Hr0AWmLw9kjd9uPwLU8pSD0leD8CAJSJN3c7gsQpi3WY3jJT3sxZSHqZPUzWbzk2jkMW/cUCqCd5cLcnSTgVImJG0PvCCsZYDsb2izuxIIWo2mi2o47p7nV7EMvdmZupEbyCUiimKpIVzbwqNwi5rWi25h63qse2N235ZuNWTke6SFoNTejVBWshyuPz0zFq6Qywpwq1iaumSaZY37f4lPUIHIfjP85/7iJp9tCbWAPbAoPk56pAW598zzCTzViP+xQg/TlIn3FF51tIn5s/c8tz63RqaIb5tr97tW3oFXZVVeXc9UfBlA1HOig2BQpqKDFz+cXumXwdkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HxGlMvegfLIpbBrw0sZfleotNbdFsKmr8leW1LhBqZo=;
- b=IoEa8p6q5dm78fd+PSt4gzcm5wX7v029MqLpwFF+EWWN6ElcOlQ8bOxvXljEDixa5jewI8LuTXckFk5MZq/0qRT57mNusEBVyRtDshR0fRVXgdro4kqMd0CkN4ulH8BBs2yigltY2kf6UCvHLoKup6NUH95KRkvL4Kx2gOggAu4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by CYYPR12MB8752.namprd12.prod.outlook.com (2603:10b6:930:b9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Wed, 14 Feb
- 2024 14:45:16 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3a46:cf50:1239:510c]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::3a46:cf50:1239:510c%7]) with mapi id 15.20.7270.016; Wed, 14 Feb 2024
- 14:45:16 +0000
-Message-ID: <2a83026c-ea36-44ca-a101-74a8b3a2ea89@amd.com>
-Date: Wed, 14 Feb 2024 09:45:14 -0500
-User-Agent: Mozilla Thunderbird
-Cc: yazen.ghannam@amd.com, tony.luck@intel.com, linux-edac@vger.kernel.org,
- linux-kernel@vger.kernel.org, avadhut.naik@amd.com, john.allen@amd.com,
- muralidhara.mk@amd.com, naveenkrishna.chatradhi@amd.com,
- sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214102926.GCZcyWBuEBe7WRXWYO@fat_crate.local>
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-In-Reply-To: <20240214102926.GCZcyWBuEBe7WRXWYO@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN9PR03CA0635.namprd03.prod.outlook.com
- (2603:10b6:408:13b::10) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A135A4E1;
+	Wed, 14 Feb 2024 14:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707921943; cv=none; b=enCGne/tkc2of/ljsgx2h/pvRuox+MYi0oajJC3vxSXQu4sTbVCyxUasgyQd7QPjJkNTH5sUL9e970itWIEjw6Qfjj2Hb0djOGG2mfpxy/dxLNmv5Atd9GooFeF4MSU9fWCX7gxvBgVVVCCbDX4xRAdwKoswRt736crkq1nVaOU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707921943; c=relaxed/simple;
+	bh=8MyxQT7/gBC6vuc7ry6wUblncxJirCttHsUs/0lAXNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L33E2wWnQ/uPhEXfRLsCeThtr2Dn/heBBMjqiExOIsgpQmwh0ZwObnTO1O3njUnTPVDB8HN+x/9s/HUaI+t4awZRQ/iK2npp804p81CKeRt7Nw7fEfwwyBDdGARL6X5ZQDzd3Wxpt1yxDIDhjKX47UCoAyNt/mHwUEI3xlreKxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a293f2280c7so787988366b.1;
+        Wed, 14 Feb 2024 06:45:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707921940; x=1708526740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lhd2wrMWsy/2+hyUeyTKyzA2QO1XJBxjRCV0ZhF1M4A=;
+        b=peOcILwPoKJM+IdjLnNqXZ7jGfgeHc4JjDy1PfTGafZRU0aAoZRcoxUKWH34UAtK7X
+         uqQkE4PmW6PDskDWfg07mryp0Jj1GYG5yHgxK7xjNkthNrgp2PcbflUDPo7q9/YPPcg0
+         PrNM35p9d6yJtn3KXph6bgCbF5NuK5TTjs/TdyjIDULxTmsCYYz0D/59FthfViy1itdM
+         hziZLI781LsG3DDNUdt0jJvDtLpMX7I0RRvnbWN+gVgPgNLYzuyJfHAvSA7UiXh+mKeP
+         05W1zF6Q5IhF2GvZbyqtXn7TOKnflsA6e+40iRp5JuW0g7cpK/pZyeSb2R4KV3nceb3c
+         FqXg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxCxc+zUtEnRB+Bs6tonpcBoPgG6KD51CieUTRyW2nAXovfDSYkmxf5Qc1qLVoo2lrGIIDZwiOtznbkdeMfy5wTRoN5SFWPfCYRKrxAY/bar9/saYAtj6Vuc20AQ2hbBdz8F5XIFmXoKxWAjSMsIqDTtxroa4WL2BwKd+Vi3drAnfkLnTxQeEx
+X-Gm-Message-State: AOJu0YxpKVd6N8NkR2puNUUuhZEp7d9ZAWms8JCr4+aW9hE8cuDARcdb
+	aosXubM7DnGC38rKdMmeoePKG7dJwFhJ2Y7ccveEu0nGDvKDUJh6
+X-Google-Smtp-Source: AGHT+IElnGmGnTSC+OXTn2OYMpnhKwSyaIIjRsWcfzpIJQ0aMjD+Tu9o9gmBlBhtEGPZXoLMr7XXQw==
+X-Received: by 2002:a17:906:6c9a:b0:a3d:1f59:7412 with SMTP id s26-20020a1709066c9a00b00a3d1f597412mr2427327ejr.72.1707921939927;
+        Wed, 14 Feb 2024 06:45:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVTsXHkq5jVto/WnQvCEgK7kD9VAQVdHZunDPtDhbAJSGpzLFwVmZ9VDC77j/5TOC1gTxmooMzpk8d2VIJlJlEj1Z0moiaBCtCwxscWRWaMfp8aaGf6jiBKSyvVcfOI7mofUoeaIcOZ1sqxDuFmN6usNYCpO2Fd9e6I/ACx4QMjx58h8cyMvKR88OwjLrisXlTr27uuUwFgcd9gXjKH2aWWdSZUVwCWaBvqCuXmq3loFgjzLMQxezhArspue6enbEsZts3LYOyEUTgMvsxzONiza0VMz3k3+KrxN+mNH9WZ34yc08f6Hlhr5v5E/QexC3Q4QDM92nd/jXYispbFV6YSOfBLNG81rvd/73Qj30ecnUngxM50b00K700jZizwwR0A39y4oiJ0ln5ltdCecSHh+2l1BzZp74uSgLc6lXBnoyTy2xH0a3ifYRDg0TJIf24LgYmyKOIbPj57gGaEc0SAnnKIXTtfZGRx9WCKfQXqMrnbv6dM9EOcKDMNas8h4zvJwe7eMzwvYLQtBZeM7lsTBZ3WQzF5XLHwbpMc7RMJp4OcsZRh
+Received: from gmail.com (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id rg8-20020a1709076b8800b00a3d2f55bc2esm955212ejc.161.2024.02.14.06.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 06:45:39 -0800 (PST)
+Date: Wed, 14 Feb 2024 06:45:36 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>, edumazet@google.com
+Cc: Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+	pabeni@redhat.com, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>, weiwan@google.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	horms@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	"open list:TRACING" <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] net: dqs: add NIC stall detector based on BQL
+Message-ID: <ZczSEBFtq6E6APUJ@gmail.com>
+References: <20240202165315.2506384-1-leitao@debian.org>
+ <CANn89iLWWDjp71R7zttfTcEvZEdmcA1qo47oXkAX5DuciYvOtQ@mail.gmail.com>
+ <20240213100457.6648a8e0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|CYYPR12MB8752:EE_
-X-MS-Office365-Filtering-Correlation-Id: d6dd1108-9872-4170-cee2-08dc2d6b8f0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GyHdXpvulc9AGkm5Py69aaogesJILKtWEiOhuQbO+gB0cyFY079zLXhS5XVoJoRuAqds6T0LDp4jMyfkqb3m9GCYmLSm3sCVcOZ9RRVqGc4RPuxMxzYeJssrQKA/1xN32Izn4cfd4Z/LjASYtt0Q/MGoY2ZEsoe33D70fmFNfcZ3lcQY6vdzmTxZS3yXm/Be9ts5ScrlHzAYK2WhCgB/Dybsn//SA166Lieo1yHnsM6v05oTaoptPBhhj4i8uvefKdmeEZCXNdw8B458HbRygcF1TuzhXdml3lc2CcN8bU7Gx+tHUqEbZF9fscvZzEK/2opOtYtnLTfOuDhYfZ9Z4wmEgmzPR5CFGQuVkSwYt4C8nVwO+81IcCikeV/63j5QE8TXJiZECfS55VI8REXuwnOFYzW6wordFoH3CavtnUjxT8ls8hINpYytt5cfOxltDg8eQ0r/Thj8tkqQKnTMiYQlV0ZEI3FSrqfbR9tOACiY9DfFPRRAFFmN4m5KfsgEfWVjsjFj21yTB86oABTKOXbj5rk9u/IWVdecS3HjQeiWZuK6vKQqnAbF2PIfZWQ8
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(396003)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(8936002)(5660300002)(4326008)(44832011)(8676002)(2906002)(83380400001)(2616005)(26005)(36756003)(38100700002)(31696002)(86362001)(6506007)(66476007)(66946007)(6916009)(66556008)(316002)(53546011)(6486002)(478600001)(6512007)(31686004)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TGdkaU15WWtxNDUxa1B2NDEzN0xNN2lRRldTbngzeEdxRmZLYWVOOE92b2V2?=
- =?utf-8?B?L0RjenZIRFRNMzkwVEVIWHFUYmM5TkJKcGI1bmxDOWUvQVF5MmZ4VHFNZkF1?=
- =?utf-8?B?TzRaSkVXa09COUpaUExKY0pIUDJTSTdJTnR1c2FEUWF5b3g1TFl4ekxXMG5V?=
- =?utf-8?B?QXY5TkpPV0txL2o3d0NhOGtTY250VlhGcVRBU0dQOVBlb2tsa0dJdnJNOWsw?=
- =?utf-8?B?TW4wSUx1SkFyWXhkZlN1em8zWUY0UWRwZk83bFk4ZXREakxIdG52ZkhLWGxU?=
- =?utf-8?B?LzV4WGVtMUh6R3Z6dTBqTGo4ZFFMdU0xYnFKdkhGLzB6ZFluYmlocm44UGdS?=
- =?utf-8?B?bnFYMXp5dyt1WS9lTFRPNk5PUFVaZklQejVpaFF0NU9ENUtRVFVLdnM4WHh1?=
- =?utf-8?B?N0lkck14RWRnYXBvVWlyN1VzZ0pWWWhYNFUyS3Q0bkE0eVNKUTlMZ3djdUlt?=
- =?utf-8?B?cXlScjczdzArR0gvZWRKbzIrbWVNelpKbUhNNG5MVnVIOHhmUjk2K21iYVlp?=
- =?utf-8?B?YUJQbDdDNUFnNWlqWUJMa2dhVFZ4UUlKRzY1SHdtNzloQmdNYzc4S3VIbzVt?=
- =?utf-8?B?UUdObkRiSUVMMFdjN3JBQ01SRGFtMFlTRXZNcTNrYUo2MzBHVkYrMUhtU0Y1?=
- =?utf-8?B?NzM4LzJ1VmdSaEFiMjZRekhJWEwwLzBIa2VjTGdlaWM1V2ViYjVBRm5sb0lN?=
- =?utf-8?B?VWJxSW9MS3lPdUI4L2t0Tmh5aWJUTHdmZ3JMWG5xN1VQTUIxY001ZGk1TVB1?=
- =?utf-8?B?RHFBNDNnUVY4bkpCUE1MUy9BMGxsbmxrWDdrWE5XMndray9rWDdZLzhTRUcv?=
- =?utf-8?B?Q25YQkkzR2ZtVmViQUpWdnF6UzZOUFdTa293WXIwVXYxejF3V3dFYlI0V1ZK?=
- =?utf-8?B?am13N1lJNkNEZW5BN3FIVmc4SEptZWNtOFE4bFplTjNYR2FaUmJYdmQ3amI3?=
- =?utf-8?B?Vjc4TnliSnhLY3RpSlpvWTY0N1NsR0dnek5tWU4zc2V3cXhLNVRhSi9vWnlw?=
- =?utf-8?B?d1hRbk81clFsNVROOThEeEU5QmRhYzFTaGpvd2RxYVZGa3NpOXcxQ3VYM0hj?=
- =?utf-8?B?Q0QwdkhaZVZWZjF2V3RPRGthL1dvdk5XenRYZWJ3UGx4Y2JUaDV6eDJ6V2pa?=
- =?utf-8?B?c0FSWmhHNWlDcnl4V0haMzBHRnVqRzAvWEdjSlV1MmhRTXQrcXBwVGJiZThy?=
- =?utf-8?B?OC84bWlqUWNIbUdCeldDY05oemVySUR0cGxLVVNrR2FQcys4YUkrUFB0KzM2?=
- =?utf-8?B?cWVCWitqbTFSQVozMnM1aEJWcCtIMjluZ0IrWThUam0xejZtOUJGdDdraity?=
- =?utf-8?B?R3o0NmRDZjRjZTdZQWVRRzg2U0d5UER2U2tBcmwxZnVjL0dkaGcrWE5FRkZO?=
- =?utf-8?B?WUtra0JtcWcrVmNuR2JnUVJyTThpb1NCL2lqVWFiZHlxQXdQMXpjYUJwcjNP?=
- =?utf-8?B?K2M0UElwRTF5VDF6b1Y3S05IR2l4Y2xtZ1J5bHpmKzhUb3ZlRk91TjYrMlYx?=
- =?utf-8?B?VzA5RlhsUHRROWpmNG9EOU1EaStuWmc0ekg5TTk1cG5CS0RkM1ZMc3BtVVRZ?=
- =?utf-8?B?Y1BYcGZRM0l2OFRxdFFmUWhrUXUxWmJhU2d1cHZLdUM4TlRoRVd4cHI1VXRl?=
- =?utf-8?B?MmREY2g4dWprYjBvZlRXVzJpU1J6VXdEUkpxT2pMMTh1emltRHZsbmxZVzdG?=
- =?utf-8?B?c2R3SDJZNHd1MTB5SmI3OXVNYkMwRVR6YjVjK0tlQnlLWGNPTHlHWnd2SmlQ?=
- =?utf-8?B?dnIrRUx5MWFNU2FSRUFCZXpHdUdyNjlsR0tOSFFhbTIyYndyMC8xNGJNNGM2?=
- =?utf-8?B?TFlMNjJYalhiUWliVndoL2pJbGFmZXU1TWdyNUtHNE80ZFlwUlppVnk5a2tT?=
- =?utf-8?B?TkpENllCcGZ5YXNRY1krQnNmSVNZcDBwaXRoZCtuOXpUT0hFSE4xU2ZZYVND?=
- =?utf-8?B?NWFkbWhWK1Zad1NHMjVVNlVEbERCTnNCTHFsSWlwR1djMGNVRUdyMElUeWk5?=
- =?utf-8?B?c0ZjbnZaVEpDdVFmTUJCeFNNd3lQbnhmUWtYN01IV2J4eVVYY3dVZnlacnpr?=
- =?utf-8?B?OEJteG8yWDhlNlFoTm1GcWM5d2RVQlZNSHpGeURLN1g5dmozeVgrS1VqTFBK?=
- =?utf-8?Q?U/pP3qKJp0+In+5Xt0g9/Xm7N?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6dd1108-9872-4170-cee2-08dc2d6b8f0f
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 14:45:16.5978
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e+Gv1VRxxkelXZdwckUtuxjBFN6XuaW+2DfLk6fXCUyDx/Z0VJkGOWylzKVjexkDgPkhht6Y1ErqZ6P1NA+1XQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8752
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213100457.6648a8e0@kernel.org>
 
-On 2/14/2024 5:29 AM, Borislav Petkov wrote:
-> On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
->> +/* FRU Memory Poison Section, UEFI vX.Y sec N.X.Z */
+On Tue, Feb 13, 2024 at 10:04:57AM -0800, Jakub Kicinski wrote:
+> On Tue, 13 Feb 2024 14:57:49 +0100 Eric Dumazet wrote:
+> > Please note that adding other sysfs entries is expensive for workloads
+> > creating/deleting netdev and netns often.
+> > 
+> > I _think_ we should find a way for not creating
+> > /sys/class/net/<interface>/queues/tx-{Q}/byte_queue_limits  directory
+> > and files
+> > for non BQL enabled devices (like loopback !)
 > 
-> Whack those:
-> 
-> diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-> index 328e0a962c23..0246b13b5ba1 100644
-> --- a/drivers/ras/amd/fmpm.c
-> +++ b/drivers/ras/amd/fmpm.c
-> @@ -72,7 +72,7 @@
->   /* FRU ID Types */
->   #define FMP_ID_TYPE_X86_PPIN		0
->   
-> -/* FRU Memory Poison Section, UEFI vX.Y sec N.X.Z */
-> +/* FRU Memory Poison Section */
->   struct cper_sec_fru_mem_poison {
->   	u32 checksum;
->   	u64 validation_bits;
-> @@ -89,7 +89,7 @@ struct cper_sec_fru_mem_poison {
->   /* FRU Descriptor Address Types */
->   #define FPD_ADDR_TYPE_MCA_ADDR		0
->   
-> -/* Memory Poison Descriptor, UEFI vX.Y sec N.X.Y */
-> +/* Memory Poison Descriptor */
->   struct cper_fru_poison_desc {
->   	u64 timestamp;
->   	u32 hw_id_type;
-> 
->
+> We should try, see if anyone screams. We could use IFF_NO_QUEUE, and
+> NETIF_F_LLTX as a proxy for "device doesn't have a real queue so BQL 
+> would be pointless"? Obviously better to annotate the drivers which
+> do have BQL support, but there's >50 of them on a quick count..
 
-Ack.
-  
->> +/**
->> + * DOC: fru_poison_entries (byte)
->> + * Maximum number of descriptor entries possible for each FRU.
->> + *
->> + * Values between '1' and '255' are valid.
->> + * No input or '0' will default to FMPM_DEFAULT_MAX_NR_ENTRIES.
->> + */
->> +static u8 max_nr_entries;
->> +module_param(max_nr_entries, byte, 0644);
->> +MODULE_PARM_DESC(max_nr_entries,
->> +		 "Maximum number of memory poison descriptor entries per FRU");
-> 
-> Why is there a module parameter?
->
+Let me make sure I understand the suggestion above. We want to disable
+BQL completely for devices that has dev->features & NETIF_F_LLTX or
+dev->priv_flags & IFF_NO_QUEUE, right?
 
-I didn't think too much on this one. I kept the idea from the old set.
+Maybe we can add a ->enabled field in struct dql, and set it according
+to the features above. Then we can created the sysfs and process the dql
+operations based on that field. This should avoid some unnecessary calls
+also, if we are not display sysfs.
 
-Murali, Naveen, any comments?
-  
-> So that people can brick their BIOSes if it can't handle some size?
->
+Here is a very simple PoC to represent what I had in mind. Am I in the
+right direction?
 
-The ERST operations should fail and return an error status if there's not enough
-space.
-  
-> Can we read out the max size of the area destined for FRU records from
-> somewhere and go with it?
->
-
-This idea was done in the old set. But it's not correct, IMO.
-
-The 'size' we can see from ERST isn't necessarily the available storage size.
-For the !NVRAM cases, it's the size of the temporary bounce buffer that BIOS
-can use to pass records to and from the OS.
-
-So it would be big enough to old the largest record BIOS expects. It doesn't
-have to match the record size used in this module. ERST is used by other code
-with different records.
-  
->> +#define FMPM_DEFAULT_MAX_NR_ENTRIES	8
->> +
->> +/* Maximum number of FRUs in the system. */
->> +static unsigned int max_nr_fru;
->> +
->> +/* Total length of record including headers and list of descriptor entries. */
->> +static size_t max_rec_len;
->> +
->> +/*
->> + * Protect the local cache and prevent concurrent writes to storage.
-> 
-> "local cache"?
->
-
-Yes, we keep a local copy of the records within the module. That way we just need
-to update the local copy and write it down to the platform. This saves time and
-avoids interrupting the platform to do an extra read.
-
-Thanks,
-Yazen
+diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
+index 407c2f281b64..a9d17597ea80 100644
+--- a/include/linux/dynamic_queue_limits.h
++++ b/include/linux/dynamic_queue_limits.h
+@@ -62,6 +62,7 @@ struct dql {
+ 	unsigned int	max_limit;		/* Max limit */
+ 	unsigned int	min_limit;		/* Minimum limit */
+ 	unsigned int	slack_hold_time;	/* Time to measure slack */
++	bool		enabled;		/* Queue is active */
+ };
+ 
+ /* Set some static maximums */
+@@ -101,7 +102,7 @@ void dql_completed(struct dql *dql, unsigned int count);
+ void dql_reset(struct dql *dql);
+ 
+ /* Initialize dql state */
+-void dql_init(struct dql *dql, unsigned int hold_time);
++void dql_init(struct net_device *dev, struct dql *dql, unsigned int hold_time);
+ 
+ #endif /* _KERNEL_ */
+ 
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index ef7bfbb98497..5c69bbf4267d 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3541,6 +3541,9 @@ static inline void netdev_tx_sent_queue(struct netdev_queue *dev_queue,
+ 					unsigned int bytes)
+ {
+ #ifdef CONFIG_BQL
++	if (!dev_queue->dql.enabled)
++		return
++
+ 	dql_queued(&dev_queue->dql, bytes);
+ 
+ 	if (likely(dql_avail(&dev_queue->dql) >= 0))
+@@ -3573,7 +3576,8 @@ static inline bool __netdev_tx_sent_queue(struct netdev_queue *dev_queue,
+ {
+ 	if (xmit_more) {
+ #ifdef CONFIG_BQL
+-		dql_queued(&dev_queue->dql, bytes);
++		if (dev_queue->dql.enabled)
++			dql_queued(&dev_queue->dql, bytes);
+ #endif
+ 		return netif_tx_queue_stopped(dev_queue);
+ 	}
+@@ -3617,7 +3621,7 @@ static inline void netdev_tx_completed_queue(struct netdev_queue *dev_queue,
+ 					     unsigned int pkts, unsigned int bytes)
+ {
+ #ifdef CONFIG_BQL
+-	if (unlikely(!bytes))
++	if (unlikely(!bytes) || !dev_queue->dql.enabled)
+ 		return;
+ 
+ 	dql_completed(&dev_queue->dql, bytes);
+@@ -3656,6 +3660,9 @@ static inline void netdev_completed_queue(struct net_device *dev,
+ static inline void netdev_tx_reset_queue(struct netdev_queue *q)
+ {
+ #ifdef CONFIG_BQL
++	if (!q->dql.enabled)
++		return;
++
+ 	clear_bit(__QUEUE_STATE_STACK_XOFF, &q->state);
+ 	dql_reset(&q->dql);
+ #endif
+diff --git a/lib/dynamic_queue_limits.c b/lib/dynamic_queue_limits.c
+index fde0aa244148..0a0a51f06c3b 100644
+--- a/lib/dynamic_queue_limits.c
++++ b/lib/dynamic_queue_limits.c
+@@ -10,6 +10,7 @@
+ #include <linux/dynamic_queue_limits.h>
+ #include <linux/compiler.h>
+ #include <linux/export.h>
++#include <linux/netdevice.h>
+ 
+ #define POSDIFF(A, B) ((int)((A) - (B)) > 0 ? (A) - (B) : 0)
+ #define AFTER_EQ(A, B) ((int)((A) - (B)) >= 0)
+@@ -128,11 +129,21 @@ void dql_reset(struct dql *dql)
+ }
+ EXPORT_SYMBOL(dql_reset);
+ 
+-void dql_init(struct dql *dql, unsigned int hold_time)
++static bool netdev_dql_supported(struct net_device *dev)
++{
++	if (dev->features & NETIF_F_LLTX ||
++	    dev->priv_flags & IFF_NO_QUEUE)
++		return false;
++
++	return true;
++}
++
++void dql_init(struct net_device *dev, struct dql *dql, unsigned int hold_time)
+ {
+ 	dql->max_limit = DQL_MAX_LIMIT;
+ 	dql->min_limit = 0;
+ 	dql->slack_hold_time = hold_time;
+ 	dql_reset(dql);
++	dql->enabled = netdev_dql_supported(dev);
+ }
+ EXPORT_SYMBOL(dql_init);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 9bb792cecc16..76aa70ee2c87 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10052,7 +10052,7 @@ static void netdev_init_one_queue(struct net_device *dev,
+ 	netdev_queue_numa_node_write(queue, NUMA_NO_NODE);
+ 	queue->dev = dev;
+ #ifdef CONFIG_BQL
+-	dql_init(&queue->dql, HZ);
++	dql_init(dev, &queue->dql, HZ);
+ #endif
+ }
+ 
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index a09d507c5b03..144ce4bb57bc 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1709,9 +1709,11 @@ static int netdev_queue_add_kobject(struct net_device *dev, int index)
+ 		goto err;
+ 
+ #ifdef CONFIG_BQL
+-	error = sysfs_create_group(kobj, &dql_group);
+-	if (error)
+-		goto err;
++	if (queue->dql.enabled) {
++		error = sysfs_create_group(kobj, &dql_group);
++		if (error)
++			goto err;
++	}
+ #endif
+ 
+ 	kobject_uevent(kobj, KOBJ_ADD);
 
