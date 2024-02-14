@@ -1,65 +1,62 @@
-Return-Path: <linux-kernel+bounces-65028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19FDC8546E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:13:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B8AC8546EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0241C26333
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:13:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B7FF1F28FE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F8017552;
-	Wed, 14 Feb 2024 10:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D01171D2;
+	Wed, 14 Feb 2024 10:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="dfPOhhPg"
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bfq05XKp"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C574171A6;
-	Wed, 14 Feb 2024 10:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E6F1643A
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707905623; cv=none; b=BqDovX10X5svJk+3lz03aoGQB+Ehep4aMPlq+sy69mJVhPCmFiE5A7Fz6OErCpa++8XQtdCTqOQaDZ7hLwz0oczT78PEwX8+hGun1SyQGocWynIFos0qbefTzAikcfvQiUjadPjoFWrZgvAcoH0n+1sJUazkc4GW9ZEtb2BX03M=
+	t=1707905673; cv=none; b=PPisSZM8Y7OYqApl1ZNGhyAOE+NPPi5UFKHDD/6bbeCmVAhu3Mm5KKraOa0oiYfSVPwNDmTuKV3cGG/1dGwMA4eSgZZxbBXabvq+IezX3W4qLKBeS2HyX4+EuTrkMKSb8pDDIs6Lv5pJ0DEXddjO6iHfdkETaEbJPQv7aiJxZeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707905623; c=relaxed/simple;
-	bh=zrB91wqBVkDC4s3OV3Y4T12bjoCXJSwWKQnWpDHyY1k=;
+	s=arc-20240116; t=1707905673; c=relaxed/simple;
+	bh=wH6ZUUDxzWcvM9A5J/M26EhQbNj8CDbgdD8EHHWlvfE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HpmSzEWpIlkB1VVBIrZRs3SS2JMFay+tw5RW4WMjDYlDm0tiUe5fW1WUFEnJ5zfttVO5DkwZ52EJEB+K4rTcyXCiYLFGdJzmTM3QLoPw97uhZ2M3jiZk/eVqsdVmyhPWOAFpUxyVPnHDmVMaksf1LArAVPv/dkl6pw4581A5Lrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=dfPOhhPg; arc=none smtp.client-ip=80.241.56.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4TZYtn2Pyrz9t7V;
-	Wed, 14 Feb 2024 11:13:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1707905617;
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZKfHzZpBX2AfsOkNr4D++smERBUu6qS/eRQCLTSvikOotOiEc7sYHGLFUUSgO+nJCEr5CoWQXSsvar7Ak1bfoyWEjonk0hkV/6qj6am7co8yNZcfYFo2Kp9V8OlaobUuOz04eiuUa/IIdhi6siLme0xGhLezKijD7rjH+Qp9nXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bfq05XKp; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 18:14:20 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707905669;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tukJiiXHxlnAZSRWrSKvYIrOKtvtQgT2kcRjC7iKjgc=;
-	b=dfPOhhPgpRh5rz/wIjBRF7DEF9ooEVW/TGmRGGvvJ4bRRbD9VBVGgWZsqHQyL2FAeBmbXr
-	5kbQJlEP3G/FafnxH5LXfzU27cCWvRQFUhqCoBvFjv82vo9jted1y5DLLtdMLy7a2uD+z3
-	1jYQfuGoLgxe5uVOZYbI0bpXYXls+9eNl/QUhBYcSyYp+6niCpZ9wxx0XPbW7vwaa7K5Q5
-	9jPcNdvmGXtVYZftGaVdO3XyKKJ2Lu7hM8lC8/PA3CZpyUm97CwfMUJOBI+O5lXl+1OADF
-	rnMpXX0+1KTzd851/9R0okrIHkxPOvxcbgEcr+oGS1AVeyAkn7cOpTKoFm8lxg==
-Date: Wed, 14 Feb 2024 11:13:31 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org, 
-	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
-	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org
-Subject: Re: [RFC v2 03/14] filemap: use mapping_min_order while allocating
- folios
-Message-ID: <n7v4b4q6kyhwvbm66x4xvg7r6ttdqegikc7thf4o35vcff6mew@kjjh5db7tnc4>
-References: <20240213093713.1753368-1-kernel@pankajraghav.com>
- <20240213093713.1753368-4-kernel@pankajraghav.com>
- <ZcvnlfyaBRhWaIzD@dread.disaster.area>
+	bh=Sq2ZgsBArKU+/0ptSnLdA9Td8CjugpWxYMkYPjmxX1A=;
+	b=Bfq05XKp+zIQtFUrDOsAp5gfblgGsPGVIhQuL7AsMzfWvqCzE7E7SBWMXoVUa+8taAJaWV
+	UACiCI8iKWwXqHb3AXKU5gpyvIE1rqnFKkoiJVPdrooLT2TN4tnZE+1HNCPTxnzp055tv5
+	JtWgQkUDVvmgHGNoTem+qlMG4Cn9+VQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Leo Yan <leo.yan@linux.dev>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCH] perf tools: Fixup module symbol end address properly
+Message-ID: <20240214101420.GF81405@debian-dev>
+References: <20240212233322.1855161-1-namhyung@kernel.org>
+ <20240213033954.GB81405@debian-dev>
+ <CAM9d7ciTwYAgry-nW9z+_VMj+BJ7ZNZnkKH_t_AHvV5joNuWQQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,55 +65,134 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZcvnlfyaBRhWaIzD@dread.disaster.area>
-X-Rspamd-Queue-Id: 4TZYtn2Pyrz9t7V
+In-Reply-To: <CAM9d7ciTwYAgry-nW9z+_VMj+BJ7ZNZnkKH_t_AHvV5joNuWQQ@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-> > +++ b/mm/filemap.c
-> > @@ -127,6 +127,7 @@
-> >  static void page_cache_delete(struct address_space *mapping,
-> >  				   struct folio *folio, void *shadow)
-> >  {
-> > +	unsigned int min_order = mapping_min_folio_order(mapping);
-> >  	XA_STATE(xas, &mapping->i_pages, folio->index);
-> >  	long nr = 1;
-> >  
-> > @@ -135,6 +136,7 @@ static void page_cache_delete(struct address_space *mapping,
-> >  	xas_set_order(&xas, folio->index, folio_order(folio));
-> >  	nr = folio_nr_pages(folio);
-> >  
-> > +	VM_BUG_ON_FOLIO(folio_order(folio) < min_order, folio);
-> >  	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+On Tue, Feb 13, 2024 at 10:48:53AM -0800, Namhyung Kim wrote:
+> Hi Leo,
 > 
-> If you are only using min_order in the VM_BUG_ON_FOLIO() macro, then
-> please just do:
+> Thanks for your review!
 > 
-> 	VM_BUG_ON_FOLIO(folio_order(folio) < mapping_min_folio_order(mapping),
-> 			folio);
+> On Mon, Feb 12, 2024 at 7:40???PM Leo Yan <leo.yan@linux.dev> wrote:
+> >
+> > On Mon, Feb 12, 2024 at 03:33:22PM -0800, Namhyung Kim wrote:
+> > > I got a strange error on ARM to fail on processing FINISHED_ROUND
+> > > record.  It turned out that it was failing in symbol__alloc_hist()
+> > > because the symbol size is too big.
+> > >
+> > > When a sample is captured on a specific BPF program, it failed.  I've
+> > > added a debug code and found the end address of the symbol is from
+> > > the next module which is placed far way.
+> > >
+> > >   ffff800008795778-ffff80000879d6d8: bpf_prog_1bac53b8aac4bc58_netcg_sock    [bpf]
+> > >   ffff80000879d6d8-ffff80000ad656b4: bpf_prog_76867454b5944e15_netcg_getsockopt      [bpf]
+> > >   ffff80000ad656b4-ffffd69b7af74048: bpf_prog_1d50286d2eb1be85_hn_egress     [bpf]   <---------- here
+> > >   ffffd69b7af74048-ffffd69b7af74048: $x.5    [sha3_generic]
+> > >   ffffd69b7af74048-ffffd69b7af740b8: crypto_sha3_init        [sha3_generic]
+> > >   ffffd69b7af740b8-ffffd69b7af741e0: crypto_sha3_update      [sha3_generic]
+> > >
+> > > The logic in symbols__fixup_end() just uses curr->start to update the
+> > > prev->end.  But in this case, it won't work as it's too different.
+> > >
+> > > I think ARM has a different kernel memory layout for modules and BPF
+> > > than on x86.  Actually there's a logic to handle kernel and module
+> > > boundary.  Let's do the same for symbols between different modules.
+> >
+> > Even Arm32 and Arm64 kernel have different memory layout for modules
+> > and kernel image.
+> >
+> > eBPF program (JITed) should be allocated from the vmalloc region, for
+> > Arm64, see bpf_jit_alloc_exec() in arch/arm64/net/bpf_jit_comp.c.
 > 
-> There is no need to clutter up the function with variables that are
-> only used in one debug-only check.
-> 
-Got it. I will fold it in.
+> Ok, so chances are they can fall out far away right?
 
-> > @@ -1847,6 +1853,10 @@ struct folio *__filemap_get_folio(struct address_space *mapping, pgoff_t index,
-> >  		fgf_t fgp_flags, gfp_t gfp)
-> >  {
-> >  	struct folio *folio;
-> > +	unsigned int min_order = mapping_min_folio_order(mapping);
-> > +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
-> > +
-> > +	index = round_down(index, min_nrpages);
-> 
-> 	index = mapping_align_start_index(mapping, index);
+Yes, this is my understanding.
 
-I will add this helper. Makes the intent more clear. Thanks.
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/symbol.c | 21 +++++++++++++++++++--
+> > >  1 file changed, 19 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> > > index 35975189999b..9ebdb8e13c0b 100644
+> > > --- a/tools/perf/util/symbol.c
+> > > +++ b/tools/perf/util/symbol.c
+> > > @@ -248,14 +248,31 @@ void symbols__fixup_end(struct rb_root_cached *symbols, bool is_kallsyms)
+> > >                * segment is very big.  Therefore do not fill this gap and do
+> > >                * not assign it to the kernel dso map (kallsyms).
+> > >                *
+> > > +              * Also BPF code can be allocated separately from text segments
+> > > +              * and modules.  So the last entry in a module should not fill
+> > > +              * the gap too.
+> > > +              *
+> > >                * In kallsyms, it determines module symbols using '[' character
+> > >                * like in:
+> > >                *   ffffffffc1937000 T hdmi_driver_init  [snd_hda_codec_hdmi]
+> > >                */
+> > >               if (prev->end == prev->start) {
+> > > +                     const char *prev_mod;
+> > > +                     const char *curr_mod;
+> > > +
+> > > +                     if (!is_kallsyms) {
+> > > +                             prev->end = curr->start;
+> > > +                             continue;
+> > > +                     }
+> > > +
+> > > +                     prev_mod = strchr(prev->name, '[');
+> > > +                     curr_mod = strchr(curr->name, '[');
+> > > +
+> > >                       /* Last kernel/module symbol mapped to end of page */
+> > > -                     if (is_kallsyms && (!strchr(prev->name, '[') !=
+> > > -                                         !strchr(curr->name, '[')))
+> > > +                     if (!prev_mod != !curr_mod)
+> > > +                             prev->end = roundup(prev->end + 4096, 4096);
+> > > +                     /* Last symbol in the previous module */
+> > > +                     else if (prev_mod && strcmp(prev_mod, curr_mod))
+> >
+> > Should two consecutive moudles fall into this case? I think we need to assign
+> > 'prev->end = curr->start' for two two consecutive moudles.
+> 
+> Yeah I thought about that case but I believe they would be on
+> separate pages (hopefully there's a page gap between them).
+> So I think it should not overlap.  But if you really care we can
+> check it explicitly like this:
+> 
+>     prev->end = min(roundup(...), curr->start);
 
+I am not concerned that to assign a bigger end value for the 'prev'
+symbol. With an exaggerate end region, it will not cause any
+difficulty for parsing symbols. On the other hand, I am a bit concern
+for a big function (e.g. its code size > 4KiB), we might fail to find
+symbols in this case with the change above.
+
+> > If so, we should use a specific checking for eBPF program, e.g.:
+> >
+> >                         else if (prev_mod && strcmp(prev_mod, curr_mod) &&
+> >                                  (!strcmp(prev->name, "bpf") ||
+> >                                   !strcmp(curr->name, "bpf")))
 > 
-> The rest of the function only cares about min_order, not
-> min_nrpages....
+> I suspect it can happen on any module boundary so better
+> to handle it in a more general way.
+
+I don't want to introduce over complexity at here. We can apply
+current patch as it is.
+
+A side topic, when I saw the code is hard coded for 4096 as the page
+size, this is not always true on Arm64 (the page size can be 4KiB,
+16KiB or 64KiB). We need to consider to extend the environment for
+recording the system's page size.
+
+Thanks,
+Leo
+
+> Thanks,
+> Namhyung
 > 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> >
+> > >                               prev->end = roundup(prev->end + 4096, 4096);
+> > >                       else
+> > >                               prev->end = curr->start;
+> > > --
+> > > 2.43.0.687.g38aa6559b0-goog
+> > >
 
