@@ -1,135 +1,244 @@
-Return-Path: <linux-kernel+bounces-65850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E40998552CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:57:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 727F68552C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95EF41F2A8C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:57:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28D0428F4E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBCF13A880;
-	Wed, 14 Feb 2024 18:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9414B13A272;
+	Wed, 14 Feb 2024 18:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VpJbWs8j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="PvKiy7lX";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PC+QLcg6"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E76133438
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FD21272CD;
+	Wed, 14 Feb 2024 18:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707937036; cv=none; b=V1Pc6FAx+4zegarzzyuPchLRP+Smj41c+q4n68AppUyM9jOhzNJpcGZ6eUNB5r4gOlnXTfV9PbVMOmcNUq6FdL2lry4SJCWc0hympgmeHJztFmefsqCBlQsSUojycZjkLNM7sXF2e3VqG7t5NQEcXa/qpjhZMQPBYrXfK1l2eds=
+	t=1707936996; cv=none; b=S5mLgDgITvJY94DB6ItQdcs1r4JTP+OEXpZAUlMJXjleO+1Oft9zH2MvMhFBGSqEWRBggTnnIZo63Muq30JdOvLGun9yXMDUhSLzu36imhCC6RoClaGwtoRlpJZj5KCh5dmLww/EgiSCLW4gWUsLxBGK+uA+IZMpOBQMr6dQgDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707937036; c=relaxed/simple;
-	bh=pW32P6LpHOLEugg6QuLJO9UuoF6gfVeJgjMbxEuiqts=;
+	s=arc-20240116; t=1707936996; c=relaxed/simple;
+	bh=8hIv6cNq3a7qYNhZDESFyBQfplcDitQ8UTCfog5Utu8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dejo9vvqjTs+AnedxozYXUZHEF7VxeW2QHALKUWW8M1yz6ERPLxGJQlUB36RMbwE+BYtcoA8b3/rF/FWD31JDrottJroNFitWSRLnvptAF6tWK08ch3zmCihaAXvOc3mJJJboT/cI8+iuFCRrJTuf1yPGvprByoy6m8p6VRsuzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VpJbWs8j; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707937035; x=1739473035;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=pW32P6LpHOLEugg6QuLJO9UuoF6gfVeJgjMbxEuiqts=;
-  b=VpJbWs8j4sP+x4N+3VOMzN2X9K6NgpThRG5UixZFlkWqqSWlBUM2xRX6
-   TCfzBZo7W1WpcyntKCOkRiN9z7yiWd8SG8iqTR2QMo37SAWIr2eQYUipS
-   xtTET3rwZAuc+Kx5V2QI26Nel/rh9IwLa74OR/It99JmFBKNgGJA5XKL9
-   XKBdpI6VpkpwTpIx+4+cOy5v+FuzYDqugKmJB0x8FPyGwHzlvkV9rEVRa
-   O4pxLpBd1h7amAhAsRkQnHLrqxs+tG3iB2gWBcDqlHoA8n7sn8xUhkKaO
-   pkjksE6sAJwnJDxIhs9BQxHNSbg1MzjPUY+tbkeCz5AxUxa8r2vDGFkrF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1870300"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="1870300"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 10:57:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912094308"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="912094308"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 10:57:12 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raKRS-00000004a0L-1ihD;
-	Wed, 14 Feb 2024 20:57:10 +0200
-Date: Wed, 14 Feb 2024 20:57:10 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH v2 2/3] auxdisplay: Move cfag12864b.h to the subsystem
- folder
-Message-ID: <Zc0NBo2HDCsAQjn8@smile.fi.intel.com>
-References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
- <20240212132515.2660837-4-andriy.shevchenko@linux.intel.com>
- <Zcoe9axtLXxB7Jeo@smile.fi.intel.com>
- <CAMuHMdUJ4gSGo4A0BVGkieWvNyqa9Dv_rQVMFj9N8GWYoKCZVg@mail.gmail.com>
- <CANiq72muoZHzX+qNKabYWnH738okKqrfAruUOpY-4WUJBLP=Yw@mail.gmail.com>
- <Zcz7Cfc5XSM2MtKV@smile.fi.intel.com>
- <CANiq72ntYrPyybUDavPuT+anrwfjPb27P8VbL+toMvyp8K293w@mail.gmail.com>
- <Zcz9WNXpRzv8THKW@smile.fi.intel.com>
- <CANiq72mYMztZG5Y5v6m+h2xroDFyyf0Kn7aZ2D7p6p4k_YtTcw@mail.gmail.com>
- <Zc0MShdvTsjrGGjl@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rIcxCnAGi+4ilxd+k6zMshnNManV0LOLPchJWWA+lbjPKBw+oqDrm+R8v9Whh0j1W0XGSRkJrgKnntp3dQcyUY+E6wBKUkG5oaKVqkVzeNDl/mvRrExQtlUzziYzbb57wF+zpgEav6Is1pZELjdKR5vsj+oW3CYaSvG2tz+uCqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=PvKiy7lX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PC+QLcg6; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.west.internal (Postfix) with ESMTP id 3F28A32000D7;
+	Wed, 14 Feb 2024 13:56:33 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 14 Feb 2024 13:56:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1707936992; x=1708023392; bh=FxSmCPiL63
+	zh2ckZioO639gBdqwSW26PXW2TfMlHQxE=; b=PvKiy7lXwzYXozeyjTOaroEtqW
+	2gE3GuxYj1dhPLfU8iIeeY8eWLBkbuPUlNeofECEl1YOanAir1dli75qd7HT0ZvI
+	FHuWpX9YIScHyq7Pe03x2eOIYC+q63n9p2CZ/uhr+Xy7zj6XxvLvCzAvc30Fbd5E
+	zdDJ96CvhIBz8C7kbPSz+QMk1derkloPXzNvYP+2UyjK6aJshkaFo3OEbUD11shS
+	IYuk6L85Kn0kIKMdCpDpTpZjPGR9XIo2un/47tecoge0lQqpL1zv93D5CYi/EbOX
+	DIxyt4cKErhjuU9l+eLLQWz4DRH+agohiYmea/h9RHteS4NsNe2Ah5wBP2bA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707936992; x=1708023392; bh=FxSmCPiL63zh2ckZioO639gBdqwS
+	W26PXW2TfMlHQxE=; b=PC+QLcg6F6MHTQcympb5SGi9021pPgwN02fovRpqQHBn
+	Tukqtq/Tz8j0B4/I3nJhEvuLpkcLGTt2SqB9yy3e7em8AsaH0ZYeJrHAvknUoLRc
+	SVR+FWfq7FyeyFGBttWMS5Fs2sb+6Ke2tVoUShWYO3DRtdXF4A6waQ1A5lI3DpBJ
+	XD1rjrCNVLjVtCu/dfGpPV/h4IWqNDjI76jYYsw5P9+N1ZKsz775f6WNBOn2FOAR
+	MtaZaiBuanYfeJtr0Nv6WfcfPyIcFHZxcXDjZXxvGhCYoDooHh49TbcrWX3Oyp+J
+	jTeJWRP/UHITaPWYifH3S9WrX6hx6lzIoJE7MOg3DA==
+X-ME-Sender: <xms:4AzNZdY7AUrcmL0L-2xOWZ1fNSn7PdRc1mEoxOMeVY994EByEuUS1Q>
+    <xme:4AzNZUbahqPruflPS5R_uKZUmAAan6z7_sASgn8unQ28KmCKFCWEWOKMDEbN1IGnx
+    FuUWx98QNs_I_EuSPY>
+X-ME-Received: <xmr:4AzNZf8rbqxAkaXdzbDSMflSlHinDQhSt8fXvzFkjLeISusFbFijFfZNVGfOMyNaLwOMr-0iAVeJ0EJjCtX8c90S758>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdduudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:4AzNZbpBZ1yGJgUyRZVJlxeAarPK_OvqLawt7LDkFzMd-72h4T2X4g>
+    <xmx:4AzNZYrcvzza08xiE4k74Oj0LOtGruAn9hmmK7O81qPM46_ntwvf5w>
+    <xmx:4AzNZRR_87lT4Bb8jtLUU6NoHxSoP3kfIm7quJYvAwgJ8VVkHrazxw>
+    <xmx:4AzNZdAlcp-IGBE2x3Gw0HhJ1cFeE5Zn2DGh2l68cDthBp40yz1-sA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 14 Feb 2024 13:56:31 -0500 (EST)
+Date: Wed, 14 Feb 2024 10:58:09 -0800
+From: Boris Burkov <boris@bur.io>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] btrfs: open block devices after superblock creation
+Message-ID: <20240214185809.GC377066@zen.localdomain>
+References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
+ <20240214-hch-device-open-v1-4-b153428b4f72@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zc0MShdvTsjrGGjl@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240214-hch-device-open-v1-4-b153428b4f72@wdc.com>
 
-On Wed, Feb 14, 2024 at 08:54:02PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 14, 2024 at 07:48:31PM +0100, Miguel Ojeda wrote:
-> > On Wed, Feb 14, 2024 at 6:50 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > It's a standard practice in the Linux kernel development.
-> > > If it's not a so critical issue, why should we rebase?
-> > >
-> > > rebasing will break SHA sums and it's not appreciated especially at the late
-> > > rcX weeks. Linus can even refuse to accept a PR based on this fact.
-> > 
-> > I am well aware of what rebasing does and the rules for PRs to Linus, thank you.
-> > 
-> > First of all, you should have not applied the patch this quickly.
-> > Nobody gave a tag for it and you yourself are the author. Even if
-> > someone gave you a tag, 2 days is way too little time for something
-> > like auxdisplay. 2 weeks would be a more reasonable time frame.
-> > 
-> > The point is: you seem to be rejecting feedback on the basis that you
-> > already applied a patch that you yourself authored 2 days ago. Not
-> > good.
-> > 
-> > Now, for branches in linux-next, what you should avoid is rebasing
-> > wildly, but you can still do so if needed. If you are uncomfortable
-> > with that, then you should avoid rushing patches to begin with so that
-> > you don't have to do that.
-> > 
-> > Regarding PRs to Linus, we are still in -rc4. There is plenty of time
-> > to bake things in `linux-next`. Unless you meant to sent this to a -rc
-> > release. But in that case: 1) there is no rush, 2) please see the
-> > first point again.
+On Wed, Feb 14, 2024 at 08:42:15AM -0800, Johannes Thumshirn wrote:
+> From: Christoph Hellwig <hch@lst.de>
 > 
-> Okay, I dropped that patch from the queue.
+> Currently btrfs_mount_root opens the block devices before committing to
+> allocating a super block. That creates problems for restricting the
+> number of writers to a device, and also leads to a unusual and not very
+> helpful holder (the fs_type).
+> 
+> Reorganize the code to first check whether the superblock for a
+> particular fsid does already exist and open the block devices only if it
+> doesn't, mirroring the recent changes to the VFS mount helpers.  To do
+> this the increment of the in_use counter moves out of btrfs_open_devices
+> and into the only caller in btrfs_mount_root so that it happens before
+> dropping uuid_mutex around the call to sget.
 
-To be clear why:
-- I don't see how to use pattern that won't collide with the other record
-- reducing churn in case you want to move this to staging
+I believe this commit message is now out of date as of
+'btrfs: remove old mount API code'
+which got rid of btrfs_mount_root.
 
--- 
-With Best Regards,
-Andy Shevchenko
+As far as I can tell, the code itself is updated and fine.
 
-
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/super.c   | 41 +++++++++++++++++++++++++----------------
+>  fs/btrfs/volumes.c | 15 +++++----------
+>  2 files changed, 30 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 51b8fd272b15..1fa7d83d02c1 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1794,7 +1794,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>  	struct btrfs_fs_info *fs_info = fc->s_fs_info;
+>  	struct btrfs_fs_context *ctx = fc->fs_private;
+>  	struct btrfs_fs_devices *fs_devices = NULL;
+> -	struct block_device *bdev;
+>  	struct btrfs_device *device;
+>  	struct super_block *sb;
+>  	blk_mode_t mode = btrfs_open_mode(fc);
+> @@ -1817,15 +1816,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>  	fs_devices = device->fs_devices;
+>  	fs_info->fs_devices = fs_devices;
+>  
+> -	ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
+> +	fs_devices->in_use++;
+>  	mutex_unlock(&uuid_mutex);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0)
+> -		return -EACCES;
+> -
+> -	bdev = fs_devices->latest_dev->bdev;
+>  
+>  	/*
+>  	 * From now on the error handling is not straightforward.
+> @@ -1843,24 +1835,41 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+>  	set_device_specific_options(fs_info);
+>  
+>  	if (sb->s_root) {
+> -		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
+> +		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY) {
+>  			ret = -EBUSY;
+> +			goto error_deactivate;
+> +		}
+>  	} else {
+> -		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
+> +		struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +
+> +		mutex_lock(&uuid_mutex);
+> +		ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
+> +		mutex_unlock(&uuid_mutex);
+> +		if (ret)
+> +			goto error_deactivate;
+> +
+> +		if (!(fc->sb_flags & SB_RDONLY) && !fs_devices->rw_devices) {
+> +			ret = -EACCES;
+> +			goto error_deactivate;
+> +		}
+> +
+> +		snprintf(sb->s_id, sizeof(sb->s_id), "%pg",
+> +			 fs_devices->latest_dev->bdev);
+>  		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
+>  		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
+>  		ret = btrfs_fill_super(sb, fs_devices, NULL);
+> -	}
+> -
+> -	if (ret) {
+> -		deactivate_locked_super(sb);
+> -		return ret;
+> +		if (ret)
+> +			goto error_deactivate;
+>  	}
+>  
+>  	btrfs_clear_oneshot_options(fs_info);
+>  
+>  	fc->root = dget(sb->s_root);
+>  	return 0;
+> +
+> +error_deactivate:
+> +	deactivate_locked_super(sb);
+> +	return ret;
+>  }
+>  
+>  /*
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index f27af155abf0..6e82bd7ce501 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1220,8 +1220,6 @@ static int devid_cmp(void *priv, const struct list_head *a,
+>  int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  		       blk_mode_t flags, void *holder)
+>  {
+> -	int ret;
+> -
+>  	lockdep_assert_held(&uuid_mutex);
+>  	/*
+>  	 * The device_list_mutex cannot be taken here in case opening the
+> @@ -1230,14 +1228,11 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  	 * We also don't need the lock here as this is called during mount and
+>  	 * exclusion is provided by uuid_mutex
+>  	 */
+> -	if (!fs_devices->is_open) {
+> -		list_sort(NULL, &fs_devices->devices, devid_cmp);
+> -		ret = open_fs_devices(fs_devices, flags, holder);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -	fs_devices->in_use++;
+> -	return 0;
+> +	ASSERT(fs_devices->in_use);
+> +	if (fs_devices->is_open)
+> +		return 0;
+> +	list_sort(NULL, &fs_devices->devices, devid_cmp);
+> +	return open_fs_devices(fs_devices, flags, holder);
+>  }
+>  
+>  void btrfs_release_disk_super(struct btrfs_super_block *super)
+> 
+> -- 
+> 2.43.0
+> 
 
