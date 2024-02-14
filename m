@@ -1,101 +1,103 @@
-Return-Path: <linux-kernel+bounces-65188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073A1854922
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:22:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB39A85492B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:25:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACF661F2A4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2F371C20EB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE5B1C6BB;
-	Wed, 14 Feb 2024 12:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0921BDD5;
+	Wed, 14 Feb 2024 12:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d7Zu30X5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sY+W//+o"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1136A1C2BD;
-	Wed, 14 Feb 2024 12:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3413C1B813;
+	Wed, 14 Feb 2024 12:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707913323; cv=none; b=hEOrqMihKoIZqOZ//CeK2WPTIOI+r0WfxFLrFhktAPXlhLeQtrDDqtOrVvrifY/r1vcuQvOZlIZGpqH2wiPcvzo331cUNduC9VxfsqBKt764a8r8bDEWqyinXz6i0zgeDGYE9EWWPUjNFxoNyDz8XYPS1hSj41bkkrTp0XESA3k=
+	t=1707913502; cv=none; b=db58AvSrT7m0YecBxKdl9LklxN5EGht3L7dd57fRSEyoO12eOVv7yFnaZKVhT7j1kg9imzlLnMivihZCoMKuf+HXv3+sEYSvKOyAi2rKcQnJU8bgvntsbxnDXi/h0lRI5YuLdjKx31P9sAysW21Sy0zQ9pQ/MNdKCJAVshIaNNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707913323; c=relaxed/simple;
-	bh=LwkFI7+p8oCAuVQnG1sefqZieJrN8VzUlf25gAJ1Yq8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=Cf0GnB+E5/2XLXaFIRpo+FGQGs7bO07DCNidsmeFB7ryZ2b90+nt9qwIr5ZBCM29vGy8Ra9qqklT0Ui8JQpEzdBM3E/LzjaiqBtDTJnFeMwQm5hdXSTA355dUiiOTqH/tLjyE773sVVupP+H2SQiN+Z00Uux4DRFZGJ7AEuMirs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d7Zu30X5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DED9C43394;
-	Wed, 14 Feb 2024 12:22:00 +0000 (UTC)
+	s=arc-20240116; t=1707913502; c=relaxed/simple;
+	bh=om12AIRXbhoBkX5ErV9iC57tbcp9qmnO+XHs8NR0XaA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pst2ZP/FPvYwsprb52cDBfog4IkNVroBsvoWQ+tHZOyg/vcWcfsGrMVFKkLO48yfF+vcSbnfwlodr2XL2bYyiwzf6O60SvyHVfxif/kyKwTOEs1+Hyk8nSg4wpQs6Ac8s8K/4MotID3cu0HDLrejUMAW1RYBAimDoDY0MpaB1po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sY+W//+o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E18DDC433F1;
+	Wed, 14 Feb 2024 12:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707913322;
-	bh=LwkFI7+p8oCAuVQnG1sefqZieJrN8VzUlf25gAJ1Yq8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=d7Zu30X57/BUn6tN++GQwykOX1zQ/ldlz1/4mpNR/fWZTQDtLONUoVNnzg6kHhmEi
-	 oJS4KUlnDqog/S5cyA4FpylbBbMRgDSQY8oklsPzb6C1PbR5X3i2yI98pFWpxETpMi
-	 S7tXQVKsiV/hM505F9bWzvUkW081aofqJouSEt2TawT4uQ+r+KLl3HFvDunSyb6ecw
-	 /ivOXN/5nc7dPr71QkB4VRi9bDngqy2c3sCXHShEnsRG4rA7B76xmCnxDREiJ2g99i
-	 sHL7aRuTwDt0Fudxc8f9uEXWAHoLnoMIFQM3Xp7merrX9XJeIjwREHLbUgBRmZ3laA
-	 51SuZ1SCiDi0Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Arnd Bergmann" <arnd@kernel.org>,  "Jeff Johnson"
- <quic_jjohnson@quicinc.com>,  "Karthikeyan Periyasamy"
- <quic_periyasa@quicinc.com>,  "Aloka Dixit" <quic_alokad@quicinc.com>,
-  "Wen Gong" <quic_wgong@quicinc.com>,  "Muna Sinada"
- <quic_msinada@quicinc.com>,  "Aditya Kumar Singh"
- <quic_adisi@quicinc.com>,  ath12k@lists.infradead.org,
-  linux-wireless@vger.kernel.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wifi: ath12k: sanitize ath12k_mac_allocate() return code
-References: <20240213100912.459018-1-arnd@kernel.org>
-	<170790025305.3179441.138152315558305278.kvalo@kernel.org>
-	<08ac32ef-610d-479d-a3fd-a3c3b8c4c697@app.fastmail.com>
-	<87plwze34l.fsf@kernel.org>
-	<d9a7ad2f-c9a7-4886-8bbc-7a77771c0aec@app.fastmail.com>
-Date: Wed, 14 Feb 2024 14:21:58 +0200
-In-Reply-To: <d9a7ad2f-c9a7-4886-8bbc-7a77771c0aec@app.fastmail.com> (Arnd
-	Bergmann's message of "Wed, 14 Feb 2024 11:51:02 +0100")
-Message-ID: <87le7ndymx.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1707913501;
+	bh=om12AIRXbhoBkX5ErV9iC57tbcp9qmnO+XHs8NR0XaA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sY+W//+oR5pT+WqLTp1mUjOaDEV57w6AM2zyTU5R+puNv38dmMoH3d477WwuHMWCc
+	 Byzg4+kFesYaTSSssDgxb+3kjerABcZ2lY6PXSEIQE8Ag7sRhypfakz6Q8fTRn6Yok
+	 fzK4Cw9GnU+bUQrxxMnq9eJ9B2URNGFJbpEOC8xCHLyzw/1SsYyVAXsnK24PMJUsae
+	 rN9i3eNBbqJ1OePuJ7qeOah1liQQE6RbNN0+0uYBxP1iF8ow0YivnQZ9ZT5+kHFZnc
+	 juE1ksU1dgDn4v9IXyAHJ8M/sicz3YNjb+9nW1koJPEhZMeEmeYcy4VOdmLNsUvCno
+	 ZwlOG9l8DAwjA==
+Date: Wed, 14 Feb 2024 12:24:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Balakrishnan Sambath <balakrishnan.s@microchip.com>
+Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: sound:atmel-at91sam9g20ek: convert bindings
+ to json-schema
+Message-ID: <aa707af2-b0ef-46de-83ae-584756d5569d@sirena.org.uk>
+References: <20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s7rTl/oWJRMeE7uX"
+Content-Disposition: inline
+In-Reply-To: <20240214-at91sam9g20ek-wm8731-yaml-v1-1-33333e17383b@microchip.com>
+X-Cookie: Available while quantities last.
 
-"Arnd Bergmann" <arnd@arndb.de> writes:
 
-> On Wed, Feb 14, 2024, at 11:44, Kalle Valo wrote:
->> "Arnd Bergmann" <arnd@arndb.de> writes:
->>> On Wed, Feb 14, 2024, at 09:44, Kalle Valo wrote:
->>>> Arnd Bergmann <arnd@kernel.org> wrote:
->>
->>> but I see it's not in linux-next yet as of today.
->>
->> Yeah, it's a problem that ath.git is not included linux-next builds. The
->> commits will be in linux-next only after ath-next is pulled to
->> wireless-next :/
->
-> Not sure if that is intentional, but if you'd like to change
-> that, you can just email Stephen Rothwell asking him to include
-> ath-next into linux-next as well.
+--s7rTl/oWJRMeE7uX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We haven't done that as Stephen prefers that there are no "next-next"
-patches in linux-next during the merge window and we don't want to stop
-the development for two weeks.
+On Wed, Feb 14, 2024 at 12:10:06PM +0530, Balakrishnan Sambath wrote:
+> Convert atmel-at91sam9g20ek-wm8731-audio DT binding to yaml
+> based json-schema.Change file name to match json-scheme naming.
 
-But this is not the first time we get duplicate fixes due to the first
-fix not being in linux-next, so we should fix this. I guess we could do
-a similar for-next branch trick like we have in wireless-next? I'll talk
-with Jeff and we'll see what we can do.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+--s7rTl/oWJRMeE7uX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXMsRcACgkQJNaLcl1U
+h9AUYQf+IoYLzVMnh8iw5Nit64An1Vh3KQ/uSzayMzfztETr+85K7EGJw6RuAuEF
+X9XXAgq5jPkq4VvN57Urd4ieIR4gajNsEoOk09cM3w7hYF0UNk8BcnX1LF/c4/JZ
++ItbXiyPZUNXGjHwi4IEoMK1g0Og6Y0B7lSwTb+bYV0NYTu1LIZytwpYQEBeXRGY
+g5dm+0Hh0dzJ5yAT8zT7PyoxMaHmNB7lHU9v0RYtSVbj7lg836C3uI1TM8TllMMZ
+afjmEjNPP7I8eCI+X8NzorvWLi+e0CwHvI3SZnZoflcGhuxQGlGNPPtdeT2hmFq5
+hrT3azEJn0Olq8RI61G+QCJK9J8ziw==
+=dEZg
+-----END PGP SIGNATURE-----
+
+--s7rTl/oWJRMeE7uX--
 
