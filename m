@@ -1,110 +1,132 @@
-Return-Path: <linux-kernel+bounces-65296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A693854AC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:52:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5662E854AC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7CE5B264D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:52:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69991F23C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A2E54BDE;
-	Wed, 14 Feb 2024 13:52:08 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F1D54BD2
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC054BE9;
+	Wed, 14 Feb 2024 13:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="JMRxzCjz"
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC22252F85;
+	Wed, 14 Feb 2024 13:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707918727; cv=none; b=TXnGsyo9KD6ok64HiF6mj3u91L6LeootqiXbSUtc0Hsz8R0nznM/2fvTzwQ0k5tfD1u1xAQWrdXIji7TN4vxqd2oYuMOCslaY6LTEm/qtwlqwFYg7nGDKn5B0IXMuU3IYU4Ja0kZEAW1xCcXdh4gIypEZfhLuNVCR5dwiegW78k=
+	t=1707918804; cv=none; b=m4T1DdWIF1eSZHHGPWtVu/Tt8Hyw82QtRvIyejxbOHINJR9mvQjag4vNjt25WQhxTug+poznS4E3kP/hgHoyNmd+4NFLczC87/KRY/uLHof3VNQUQGIQJgZ6a2ZvR/Fxgy/jNJJtTUzx/mWm7d9+wNxnz1txAl47s+YlNUfM1yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707918727; c=relaxed/simple;
-	bh=LrtHpvJw1vI6P720DwnUq6dxSYylRr0Q5fQtw2Jur1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ev+wEyeD04I05ZN22DGK39P+29o9Bt40vxi41oO3LMEVQkQcFjGat89kC5ZD6uWDnKbEV/3Z9IrXjXnuym+ZtV6Q+fojz3BduN9a6NBuz+NddLvc+l/TmAw+I38san+pKZ9PaLwH19aeKtVlLkJLd8XoJEMrovHP7ie78oDC8d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F77B1FB;
-	Wed, 14 Feb 2024 05:52:45 -0800 (PST)
-Received: from [10.57.64.191] (unknown [10.57.64.191])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8B7A3F5A1;
-	Wed, 14 Feb 2024 05:52:02 -0800 (PST)
-Message-ID: <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
-Date: Wed, 14 Feb 2024 13:52:05 +0000
+	s=arc-20240116; t=1707918804; c=relaxed/simple;
+	bh=YpA7bONSsZgNbBAnV91WbZ8toW2ppPhIUw4IaPbutb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SiGhhizU1ysnzJC0xASof8agpjSM32UfqpvCKzZBFjlhAa6kJH/DzjtNu4Bkc9aFvohoVzwKpex2PNy64wpVLjn0XPIADNB86WC/nt3AKf04RK5tykLFXWP5yrjxfmkbXBdlrW0y3Ib5/QZrZCjW3uEWu37fDllVH3DSXi+iAiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=JMRxzCjz; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TZfm92ClQz9sSV;
+	Wed, 14 Feb 2024 14:53:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1707918793;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PgaJ49BhAMCLOE6dIaBl/wo8RSey7cGj+RjgTwSx7ZY=;
+	b=JMRxzCjz3aXN4ygkKy0nGgnkoH+yYQGcDxiFsx6+ZU9TQNe6YG58EpL5ItS32oE3HuW2ki
+	EZk7Eqy9sEIyTczO8ML6OSm8Sb310sk6+0k6CdzDKeLJ5l3Ht1bu95DGVWkk+hRnOtPIMR
+	dk+v88kLjoovJGwIuGZjw2d2lNCzXIc/rOrJxPPwIIwyOPSZVEdbCyzYMscEV0cJKmUoqg
+	SZBtTVLIu9uqxQwlezn8uEOKshKoYxPhPBGSfW9hu+uOVpu61tG8d5fRYTMCn4yafcYoJP
+	YrIcTEpu5EtVONCwsJOYGA/U0ACNBTnwi1W77P63U6mpSOyFytpGDhx06QVnvg==
+Date: Wed, 14 Feb 2024 14:53:04 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	mcgrof@kernel.org, gost.dev@samsung.com, akpm@linux-foundation.org, 
+	kbusch@kernel.org, djwong@kernel.org, chandan.babu@oracle.com, p.raghav@samsung.com, 
+	linux-kernel@vger.kernel.org, hare@suse.de, willy@infradead.org, linux-mm@kvack.org
+Subject: Re: [RFC v2 04/14] readahead: set file_ra_state->ra_pages to be at
+ least mapping_min_order
+Message-ID: <npesqtrkkaslbebsnycnvjuoh6znq5lddxau3v3b7ce5ocnd22@ncosz6mtqsz7>
+References: <20240213093713.1753368-1-kernel@pankajraghav.com>
+ <20240213093713.1753368-5-kernel@pankajraghav.com>
+ <ZcvosYG9F0ImM9OS@dread.disaster.area>
+ <c7fkrrjybapcf3h5sks3skb2ynv7hw4qpplw4kaimjkfas2nls@v522lehxqxqm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] Always record job cycle and timestamp information
-To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Rob Herring <robh@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20240214121435.3813983-1-adrian.larumbe@collabora.com>
-Content-Language: en-GB
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240214121435.3813983-1-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7fkrrjybapcf3h5sks3skb2ynv7hw4qpplw4kaimjkfas2nls@v522lehxqxqm>
+X-Rspamd-Queue-Id: 4TZfm92ClQz9sSV
 
-Hi Adrián,
+On Wed, Feb 14, 2024 at 02:32:20PM +0100, Pankaj Raghav (Samsung) wrote:
+> On Wed, Feb 14, 2024 at 09:09:53AM +1100, Dave Chinner wrote:
+> > On Tue, Feb 13, 2024 at 10:37:03AM +0100, Pankaj Raghav (Samsung) wrote:
+> > > From: Luis Chamberlain <mcgrof@kernel.org>
+> > > 
+> > > Set the file_ra_state->ra_pages in file_ra_state_init() to be at least
+> > > mapping_min_order of pages if the bdi->ra_pages is less than that.
+> > > 
+> > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > ---
+> > >  mm/readahead.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/mm/readahead.c b/mm/readahead.c
+> > > index 2648ec4f0494..4fa7d0e65706 100644
+> > > --- a/mm/readahead.c
+> > > +++ b/mm/readahead.c
+> > > @@ -138,7 +138,12 @@
+> > >  void
+> > >  file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
+> > >  {
+> > > +	unsigned int min_nrpages = mapping_min_folio_nrpages(mapping);
+> > > +	unsigned int max_pages = inode_to_bdi(mapping->host)->io_pages;
+> > > +
+> > >  	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
+> > > +	if (ra->ra_pages < min_nrpages && min_nrpages < max_pages)
+> > > +		ra->ra_pages = min_nrpages;
+> > 
+> > Why do we want to clamp readahead in this case to io_pages?
+> > 
+> > We're still going to be allocating a min_order folio in the page
+> > cache, but it is far more efficient to initialise the entire folio
+> > all in a single readahead pass than it is to only partially fill it
+> > with data here and then have to issue and wait for more IO to bring
+> > the folio fully up to date before we can read out data out of it,
+> > right?
 
-On 14/02/2024 12:14, Adrián Larumbe wrote:
-> A driver user expressed interest in being able to access engine usage stats
-> through fdinfo when debugfs is not built into their kernel. In the current
-> implementation, this wasn't possible, because it was assumed even for
-> inflight jobs enabling the cycle counter and timestamp registers would
-> incur in additional power consumption, so both were kept disabled until
-> toggled through debugfs.
+I think I misunderstood your question. I got more context after seeing
+your next response.
+
+You are right, I will remove the clamp to io_pages. So a single FSB
+might be split into multiple IOs if the underlying block device has
+io_pages < min_nrpages.
+
 > 
-> A second read of the TRM made me think otherwise, but this is something
-> that would be best clarified by someone from ARM's side.
-
-I'm afraid I can't give a definitive answer. This will probably vary
-depending on implementation. The command register enables/disables
-"propagation" of the cycle/timestamp values. This propagation will cost
-some power (gates are getting toggled) but whether that power is
-completely in the noise of the GPU as a whole I can't say.
-
-The out-of-tree kbase driver only enables the counters for jobs
-explicitly marked (BASE_JD_REQ_PERMON) or due to an explicit connection
-from a profiler.
-
-I'd be happier moving the debugfs file to sysfs rather than assuming
-that the power consumption is small enough for all platforms.
-
-Ideally we'd have some sort of kernel interface for a profiler to inform
-the kernel what it is interested in, but I can't immediately see how to
-make that useful across different drivers. kbase's profiling support is
-great with our profiling tools, but there's a very strong connection
-between the two.
-
-Steve
-
-> Adrián Larumbe (1):
->   drm/panfrost: Always record job cycle and timestamp information
+> We are not clamping it to io_pages. ra_pages is set to min_nrpages if
+> bdi->ra_pages is less than the min_nrpages. The io_pages parameter is
+> used as a sanity check so that min_nrpages does not go beyond it.
 > 
->  drivers/gpu/drm/panfrost/Makefile           |  2 --
->  drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ------------------
->  drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 ------------
->  drivers/gpu/drm/panfrost/panfrost_device.h  |  1 -
->  drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 -----
->  drivers/gpu/drm/panfrost/panfrost_job.c     | 24 ++++++++-------------
->  drivers/gpu/drm/panfrost/panfrost_job.h     |  1 -
->  7 files changed, 9 insertions(+), 59 deletions(-)
->  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
->  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> So maybe, this is not the right place to check if we can at least send
+> min_nrpages to the backing device but instead do it during mount?
 > 
-> 
-> base-commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
-
+> > 
+> > -Dave.
+> > -- 
+> > Dave Chinner
+> > david@fromorbit.com
 
