@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-65975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F2F6855499
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:18:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBE985549C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9188E1C21076
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:18:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 408151C22875
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE5413EFF3;
-	Wed, 14 Feb 2024 21:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A107C13F001;
+	Wed, 14 Feb 2024 21:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KTlX+2vK"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E88bNEtL"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946B4134740
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C03213DB8A
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707945518; cv=none; b=oPlJuRHyKamlMdJBXGOJEzYS9O3GgXSMv9yuiq6xh2P56isZiCPm/0ZNDZDSS5vtsMzKwV7Hot2dxdIZykNo+2fTzEH5zp9kwiDMg+Y6JcaojmjuHagJGkktK7UDjf48ppnoUlrMWraHYa71cDpu9UYVUFwboBLalz9GkYOzawo=
+	t=1707945661; cv=none; b=dG8m6WzRTKecsYg3sH+0NAOsYkwBCBlAzxkRd15kx896UGHcox9q1bp1yAJd8mVQz2HvhuXk0/xjMNnfbLIEkNRGpwN4fNHb01QyQNxNPRr5Cr5+l4OI2g5AGEwsX2otO2BT067AD38+7UyitAs3nK1y9SY07h6v69CkiAms0P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707945518; c=relaxed/simple;
-	bh=I9ZUxJJlafK0c3Z5PqT0rjC/48W7vAcuBMONCXbH/48=;
+	s=arc-20240116; t=1707945661; c=relaxed/simple;
+	bh=UH20tkUJPZTtnE+bVLwhS0oDXXvWrOablcK+6ybpZF8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G/QWcdsUiecSDBKab8tDtX1dYlMoGgdqJasyumTYmNQFceH6ldhvprn4NcXhahzrs/bbUYloroXDiVe5EvIUbJsxCy/JMTqBMZ11GXwBbmMVclgEjyNkdW/YIGAKMNaULxGC6TBLbAbhhUwcwnJIq0eamSVqEz8+U+K9DwR01Fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KTlX+2vK; arc=none smtp.client-ip=209.85.167.41
+	 In-Reply-To:Content-Type; b=afD07rYE7frTtnfCcrPs2b+QxMsdCt+K5tLXqekD8mkqR/YaUW7yUTcfONcZ7zkHGpetXZ5rLMKtnzGIqUeou1pojaogCBE/6COpp5ia3QBWRIZAlbXF93YtN8CRLQfcrKf3u2pU3UxVLvYGMfD4+BotTgAYi3hW2FZX0pzkk1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E88bNEtL; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-511831801f3so164604e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:18:36 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-511a04c837bso198766e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:21:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707945515; x=1708550315; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707945658; x=1708550458; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WRyBUtzXbW0kgRi+8+Ri/hdHNlvzaJxlrnrYNx31b84=;
-        b=KTlX+2vKTEtfE+pFrN+l7ZVs3N7IXxkBzl6D52YpAAcEVPKzqJoy9kdlRX6sVpvefe
-         VqM9/jcXeQi2KcxU+5Bly47ndZ/TSzLcAY/VRrsD219Zp76sBKmHBJ8QhQrKRxiQH6TQ
-         3i8ifBrdHymi/BqUj4CRp7QGfDfFUwluJ0oXPHnOOQEZst2rShC09+rBrlxrUpuWVpxJ
-         xzXiPSsnQokryoTVuNnYlugfgvXJEfeYsbOoOayOWyEnff51q1CS0QuNJEIEr2x+yrIb
-         olUe0Kc+SyBmWxF2r4n2rdwHP/oIxDHp7g121RBkwef4/gYRAHt79sGNr1BFHrgsxlux
-         LvVg==
+        bh=KOS2B7sbqxhq5r87RRG1TrTI32jzxgx2gbxZryh0k5k=;
+        b=E88bNEtL97yVZVZz8p+PQ7XWCH4i6plpMWfAlyDVX35zqJVlHQUq/pklvZvW7o7QDW
+         flG0flAZU+38fmy3jePSLUqyiTPEoeL9PkDBbm/NDwvsekzmBLLVACk9wZmFPyf0N2hw
+         GQpJBI3v0LBefbxo3IbNsLl5AbKTAR04Mk3SxbcojwtwJpk8QLAjTEyHagEfqzAAu3ow
+         faqnzJK10h8sY2vApYfUfJ4XeRgvK8tsEL3OVCaM3FiZa0276f4j1fkq72KHuRv7jcrJ
+         fBADUWjMetJugX7fLIc8Oo013zn2wyrpT6X1Ij6QC4nuf9QbwMmrbR0tY9WNNE5vmERj
+         KMCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707945515; x=1708550315;
+        d=1e100.net; s=20230601; t=1707945658; x=1708550458;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WRyBUtzXbW0kgRi+8+Ri/hdHNlvzaJxlrnrYNx31b84=;
-        b=FQR4DHRGVyu99JEbAwBZzuqB7QnMQe+x9pz9FTaqhv5H8R3+hAS5AiD6u5/o0nWiwM
-         mufdGb8bM/PqrhAPAdQ0G9/HWl/09e5Q2DshyHcTfLHcwAvt8fHORte8wJKLACpBy0LY
-         +8hpDb+NK2cXq03bIEKv2hEfagOpSZyvlsA6OVHhJ66wXWJ/8U2ODdmp8UPCRWBOih9F
-         ySTrpPyk9EaiG3NWKjymvQStTMvOyU6Y5r9wttJA3jmIvAX3Sj3pwU2v7+mfp4t0P/W1
-         0hVZnsGatE7wGDPm5k/Et9nU516gozPanuSzNvTyLk219D7qPvjocq+F4ArwBOu4Br78
-         BIrg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZiyRJPqxrtijyDeRLWNihd9lui+ye8IERXC/SvcokMk1JfYusZdiYA8+gA4ExiXi7F6qiCmn7Hs0lq4qD+7DzOojpbVhSSK2tcPl0
-X-Gm-Message-State: AOJu0YzKSvgTX+4N4DX8RpmcCjybV2W8ymGstUgJIRF15+K3Mv/kuV2h
-	0LPiOvAVdy+XYPcOB2RDCIrlYzhg+0AgbpmpJ9SFJd1nT22Ws0lrm9IwTaWeyGw=
-X-Google-Smtp-Source: AGHT+IEJzS+a/N0hEePfei4g8rF7eBX5FU0IitrV848R3OKkMmnBlNczo0RLXpoyy0ZZiZ3TvdWT2A==
-X-Received: by 2002:a19:c20c:0:b0:511:977b:3103 with SMTP id l12-20020a19c20c000000b00511977b3103mr7920lfc.15.1707945514686;
-        Wed, 14 Feb 2024 13:18:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV0Xe7Z87iFYT+ScCrOZSQ2nZNL3AUE0yfC1zxuFl25IsRPLCQr74wTZ2Y+mW/tx//Hhm1LQGV1v67zal/mFt9D+kww4sCBkvOBbgNMY0I3k7N+QcvZCS0yRjFS/w51GBoLFB2ezPDfIy6fHb/1YzFUzWZY7nUkLGwyQ/6RfjyJktwt2Z8Pd+QNL/aK1ZW4FWGOKjp4k8Fb0MlBHBeXniKyQeFUiYkFJoDc+v8qEIM3WCRsW93a1xmWhCNHP5cCKO7Mr/XgVqeSEfhrZwHApg9SotLteadQWHNgOwmOGVq5d+9tp1c1d9KBJbncGviFDpygCO2BLaQcgnQ1/yJhKb/5gI7KRZhOOA6Z/eROdUvSywQNLhu6CyT5KspD+zAuYtwQLWXk1fMwNdBzBm9ya4y+iP42sEiJp9VMvfv2hwzqO0xRUVC7AgaIxAapeZdZC995RMHop2RbTMOUExs8I5LNntPkAiAV9bE=
+        bh=KOS2B7sbqxhq5r87RRG1TrTI32jzxgx2gbxZryh0k5k=;
+        b=naMHScmihY3KMJNwJ5jGCuwKppUj9IVrAqSsQXKuJ/5xM9hIj/gsrhfBAPmFuaCbMX
+         vp7LS7ewd3NREBMAGlaJtuHtbNFxP371DFZ0bE6WqnUxKCIyfLyK5x68he45CxlLplDa
+         2A5NIRSxUOezF3kQ0Nh/GTlcfiak3lfJP201WxytZ6WCdCTtuHck04BZtQ/HTX3Zi7kA
+         rkrFOCABd1IabC7h3SIz7z3RUArWruhhebiQRzm9iYGKGUs9uNxUcQXXMcNqOL7+5JWm
+         zJzc8EM9U+/mw/vwQpoexShs089vEELs1Tc7NXcgF3G4mAuY/C1N11ItsSJ+BAAWMTYW
+         DwSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWa3vJCL1tWeroM7hxIRM4qx08AIWSUqoR1DCv8GU99CEIS0wQ+o2rIepYqIe+8yoMfueXdZVwTdsCo8HxaXRi1o6DIArTZkPjeaFhR
+X-Gm-Message-State: AOJu0YwzAp3wWPXrMfDsyusge9fGDZO5/jP2OjSm+wtTBGowNt5hqhx9
+	1qGJzNt66VWNIQ32ZipvzvinJXBVExm9vC35N3Wa6M+oKXNUJUU4SpSNpO429oQ=
+X-Google-Smtp-Source: AGHT+IESSnAcoYGoUyHNkZHb6JzZCxOglkyOOBU1GX+rmYmsiuzPmbFGDYr5lywvK7ZqTp+8RlXZYA==
+X-Received: by 2002:a05:6512:2354:b0:511:940b:fc62 with SMTP id p20-20020a056512235400b00511940bfc62mr27362lfu.1.1707945658283;
+        Wed, 14 Feb 2024 13:20:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUpvVKqGEGGnhNvXeluHoQkMPQaJN6hxC2jAk15VH9Gua3GJH/JM21CZRj07Hi1c4NzVC6baHex9pWOcG+YMKMCwcnf4njUApyuUS7olSB0BHtSPvq6rR3ZudCE5qtQM/MkZlN+Gh8DEhkr9dvCzXOLdOs9rMJeg62UOvRPDifj7T4HNCJIr+rCjtGay6b3qg/oFO4A3aETiIrfciJD5hE3ZM/eJRf8dGi26pcBkEYxsi4HbydC5h6R0ZABUkS/T0V6DeRuAd8RdbrXd0wODs6WUfwUYP813cuhXumb3Cvz8R/HCRFT/J2wIpVzWxlwzq4A1zPJt57ESL9SaHZ3F5e+ILy1JPfXQaTC0KUGkQgEc11RKPVigY3I8Md1YbEI9AxrVLPQa+juP+QnWkNZlsVBtvwA8ZuXzse689jmrSAqCB1eQoOOG9/JckadZiRG5KpVS+wReXo1EsT7uaFPyLjLWCyUGxvWFsfnmI19Zh6O
 Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id mj18-20020a170906af9200b00a3d3fde216dsm1006846ejb.217.2024.02.14.13.18.33
+        by smtp.gmail.com with ESMTPSA id vw7-20020a170907a70700b00a3d73e6b2f9sm294407ejc.46.2024.02.14.13.20.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 13:18:34 -0800 (PST)
-Message-ID: <d9d8e86b-a499-49d1-90ad-6fae5b7dcbb7@linaro.org>
-Date: Wed, 14 Feb 2024 22:18:33 +0100
+        Wed, 14 Feb 2024 13:20:57 -0800 (PST)
+Message-ID: <ad20b872-0b50-4a16-b342-582d2f33eeca@linaro.org>
+Date: Wed, 14 Feb 2024 22:20:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,21 +76,23 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 3/4] spmi: pmic-arb: Make core resources acquiring
- a version operation
+Subject: Re: [PATCH v2 20/20] media: venus: pm_helpers: Use reset_bulk API
 Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-mediatek@lists.infradead.org
-References: <20240214-spmi-multi-master-support-v3-0-0bae0ef04faf@linaro.org>
- <20240214-spmi-multi-master-support-v3-3-0bae0ef04faf@linaro.org>
+To: Philipp Zabel <p.zabel@pengutronix.de>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Dikshita Agarwal <quic_dikshita@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
+ <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -127,80 +129,49 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20240214-spmi-multi-master-support-v3-3-0bae0ef04faf@linaro.org>
+In-Reply-To: <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14.02.2024 22:13, Abel Vesa wrote:
-> Rather than setting up the core, obsrv and chnls in probe by using
-> version specific conditionals, add a dedicated "get_core_resources"
-> version specific op and move the acquiring in there.
+On 14.02.2024 14:31, Philipp Zabel wrote:
+> Hi Konrad,
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  drivers/spmi/spmi-pmic-arb.c | 111 ++++++++++++++++++++++++++++++-------------
->  1 file changed, 78 insertions(+), 33 deletions(-)
+> On Fr, 2024-02-09 at 22:10 +0100, Konrad Dybcio wrote:
+>> All of the resets are toggled together. Use the bulk api to save on some
+>> code complexity.
+>>
+>> The delay between resets is now correctly determined by the reset
+>> framework.
 > 
-> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-> index 23939c0d225f..489556467a4c 100644
-> --- a/drivers/spmi/spmi-pmic-arb.c
-> +++ b/drivers/spmi/spmi-pmic-arb.c
-> @@ -203,6 +203,7 @@ struct spmi_pmic_arb {
->   */
->  struct pmic_arb_ver_ops {
->  	const char *ver_str;
-> +	int (*get_core_resources)(struct platform_device *pdev, void __iomem *core);
->  	int (*init_apid)(struct spmi_pmic_arb *pmic_arb, int index);
->  	int (*ppid_to_apid)(struct spmi_pmic_arb *pmic_arb, u16 ppid);
->  	/* spmi commands (read_cmd, write_cmd, cmd) functionality */
-> @@ -956,6 +957,19 @@ static int pmic_arb_init_apid_min_max(struct spmi_pmic_arb *pmic_arb)
->  	return 0;
->  }
->  
-> +static int pmic_arb_get_core_resources_v1(struct platform_device *pdev,
-> +					  void __iomem *core)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +
-> +	pmic_arb->wr_base = core;
-> +	pmic_arb->rd_base = core;
-> +
-> +	pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS;
-> +
-> +	return 0;
-> +}
-> +
->  static int pmic_arb_init_apid_v1(struct spmi_pmic_arb *pmic_arb, int index)
->  {
->  	u32 *mapping_table;
-> @@ -1063,6 +1077,41 @@ static u16 pmic_arb_find_apid(struct spmi_pmic_arb *pmic_arb, u16 ppid)
->  	return apid;
->  }
->  
-> +static int pmic_arb_get_obsrvr_chnls_v2(struct platform_device *pdev)
-> +{
-> +	struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *res;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> If this is a recent change, could you reference the commit?
 
-It's no longer indented to deep, no need to keep such aggressive wrapping
+It's a series that recently landed in -next [1]
 
-> +					   "obsrvr");
-> +	pmic_arb->rd_base = devm_ioremap(dev, res->start,
-> +					 resource_size(res));
-> +	if (IS_ERR(pmic_arb->rd_base))
-> +		return PTR_ERR(pmic_arb->rd_base);
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> +					   "chnls");
-> +	pmic_arb->wr_base = devm_ioremap(dev, res->start,
-> +					 resource_size(res));
-> +	if (IS_ERR(pmic_arb->wr_base))
-> +		return PTR_ERR(pmic_arb->wr_base);
+[...]
 
-Could probably make it "devm_platform_get_and_ioremap_resource "
+> 
+> Since VIDC_RESETS_NUM_MAX is only 2, I don't think a separate
+> allocation is worth it.
+
+It's 2 today, anyway. I wanted to keep it flexible
+
+[...]
+
+>> +	ret = reset_control_bulk_reset(res->resets_num, core->resets);
+>> +	if (ret)
+>> +		dev_err(core->dev, "Failed to toggle resets: %d\n", ret);
+>>  
+>> -err:
+>>  	return ret;
+> 
+> Could be simplified to:
+> 
+> 	return reset_control_bulk_reset(res->resets_num, core-
+>> resets);
+
+I intentionally kept the if (ret) to print a specific error message
+in case the call fails, this driver doesn't go a good job of telling
+the user/developer what went wrong.
 
 Konrad
 
