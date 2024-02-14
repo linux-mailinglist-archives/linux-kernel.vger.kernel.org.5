@@ -1,113 +1,146 @@
-Return-Path: <linux-kernel+bounces-65731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2C5E8550EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:56:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE9F48550F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0D09286626
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 252EC1C2935A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E03A12837E;
-	Wed, 14 Feb 2024 17:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7621292CA;
+	Wed, 14 Feb 2024 17:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hKuyTVQD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R0PzHOM2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FD41272C0;
-	Wed, 14 Feb 2024 17:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EBFD128839
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933354; cv=none; b=CbPvI1Ms4WArayWhn4e9qulAih2adHbe8GlNf3QGd/ZqtAXqXmvCxzx9hP0XapT+N7AwkTjX7eyAuBmPTxkW1lyZT/Ghov4qzMfi+ufSXWAmon9QqSpZW4Oir9nkhHWtzQsejQ0LEWyVcwov/rMsqZtjoAz+bzmU+zhNd8bp3mY=
+	t=1707933448; cv=none; b=bZzgqch5+1db/7gQvvWUGz9P/X+pb2uEg+sKOYRBC9Ex/eYAs/gU0fMfgx+1SZIXdI7cGa65N8lPlm2P77p06Vz22hBqBWkLjvAjcU3aAH1l9YhGMvsG6pT2y/CzDKRCN4k+Hy5f9p9Drhrn204TnJlh3jRgP7umRMm3rEznRVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933354; c=relaxed/simple;
-	bh=AekKESNH1YzcWERD9WvAuc+h4Br5J7sxCXJp1H3DgIw=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=LmaG1qlw8P7SXOUVSaANJjJ7TjPqi8aXOPYyUDgh+vEfV7RHzOLis9Jx4V5Xe7UOWU+Brgk3IdUD2fck0Y7FPE5mKdb0akorvXRM5q4zdLj3f5a53F0jrUu0it/qtTWODBa6vbaYH+evs+Ku4koFa5Ky+C8qSsHt28DZ5CPpmEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hKuyTVQD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF503C433C7;
-	Wed, 14 Feb 2024 17:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933354;
-	bh=AekKESNH1YzcWERD9WvAuc+h4Br5J7sxCXJp1H3DgIw=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=hKuyTVQDqnFOOiIzi24tJPQ1jaKR1kx1X+NHUv51k/lBi9dzWWY7AMgukTmxA/xIV
-	 aNU+95ZSw2gZx2SH+v+Kxtc4tAbkqpQ8/DbBwj4Y7Lz9dYyeDxyufOMtTJhxHqXYdq
-	 4TIcd7sX5ZiFUNPeG3yV0JxRWhNtV/U3jMSSnUfzF7tLk5psc5Qf2uZEktBOjeZJGy
-	 VYaBibDRgvKyaHFO8itr9h28IGow/I+UfuFF/EnF1sINg9b8tp6VDV6+bMGY2eFXUK
-	 to9cGho1TZ84A1p+tJhsu1XO2aXsYs/08XblS+r01W1VDlZqM3j1lKvaazWvKrNjCb
-	 WtuOcfbL4Rj0A==
-From: Kalle Valo <kvalo@kernel.org>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Arend van Spriel" <arend.vanspriel@broadcom.com>,  "Arnd Bergmann"
- <arnd@kernel.org>,  "Nathan Chancellor" <nathan@kernel.org>,  "Greg
- Kroah-Hartman" <gregkh@suse.de>,  "Pieter-Paul Giesberts"
- <pieterpg@broadcom.com>,  "Nick Desaulniers" <ndesaulniers@google.com>,
-  "Bill Wendling" <morbo@google.com>,  "Justin Stitt"
- <justinstitt@google.com>,  "Artem Chernyshev"
- <artem.chernyshev@red-soft.ru>,  "Jonas Gorski" <jonas.gorski@gmail.com>,
-  linux-wireless@vger.kernel.org,  brcm80211@lists.linux.dev,
-  brcm80211-dev-list.pdl@broadcom.com,  linux-kernel@vger.kernel.org,
-  llvm@lists.linux.dev
-Subject: Re: [PATCH] brcmsmac: avoid function pointer casts
-References: <20240213100548.457854-1-arnd@kernel.org>
-	<170790035300.3179441.9169506478575963188.kvalo@kernel.org>
-	<fd36f032-3bf6-4cae-a0d0-213604cef024@broadcom.com>
-	<3f1c2d5a-ba98-4ae5-a7a0-0328b7552113@app.fastmail.com>
-Date: Wed, 14 Feb 2024 19:55:48 +0200
-In-Reply-To: <3f1c2d5a-ba98-4ae5-a7a0-0328b7552113@app.fastmail.com> (Arnd
-	Bergmann's message of "Wed, 14 Feb 2024 16:07:00 +0100")
-Message-ID: <87frxvnd5n.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1707933448; c=relaxed/simple;
+	bh=C/07i7uhraJ/iCdkIrk3+g0sJu4LRkL1MeEwKjt2QEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HYjAIk06EGGzErYGIHtscplBVdE9xPmqFTmEwTV+QYgTvqtiZa8GldvX6Tv/NRs3rshvvnCW0jl95GOy6rEIjQKzROAS2AHPxPXSfb54x0fnZmP38GhsBr9zssBIhp1nMTZNavHWzjd5vWZ7FSdDPTKJF3rqZXZsGOHv2aMLqY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R0PzHOM2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707933446;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QeVoRP0IbpurjG7gS4VE/L43GNfNUTlOq+29WpW/Zzo=;
+	b=R0PzHOM2rZNcS4XQYtUAErNaZWbLxknc+fHoDsVWtcoQ/Gxjw4uUwga4tzUDcahGdtE8V9
+	190nO9EAjUmXiIB9Gww++R39oIHA+d1Ovh75FOV1r/KDUPhGpv25wGI7XZ9O0O+NtdXqLc
+	Wds0UwIDIVKDocDHEG42z+Q0iyotBk0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-157-_FqYJNzxP3iqxzNw-5dL_w-1; Wed, 14 Feb 2024 12:57:18 -0500
+X-MC-Unique: _FqYJNzxP3iqxzNw-5dL_w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 531DB185A785;
+	Wed, 14 Feb 2024 17:57:17 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.126])
+	by smtp.corp.redhat.com (Postfix) with SMTP id E186D2166B4F;
+	Wed, 14 Feb 2024 17:57:12 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 14 Feb 2024 18:56:00 +0100 (CET)
+Date: Wed, 14 Feb 2024 18:55:55 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: coverity-bot <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Peng Zhang <zhangpeng.00@bytedance.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Tycho Andersen <tandersen@netflix.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: Coverity: __do_sys_pidfd_send_signal(): UNINIT
+Message-ID: <20240214175555.GC16265@redhat.com>
+References: <202402131559.B76A34B@keescook>
+ <ZcwGua3a9Z8nJXVq@tycho.pizza>
+ <20240214090332.GA14017@redhat.com>
+ <20240214090640.GB14017@redhat.com>
+ <ZczLyDCN+zG6imTd@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZczLyDCN+zG6imTd@tycho.pizza>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-"Arnd Bergmann" <arnd@arndb.de> writes:
+Hi Tycho,
 
-> On Wed, Feb 14, 2024, at 10:23, Arend van Spriel wrote:
+let me repeat just in case, I am fine either way, whatever you and
+Christian prefer. In particular, I agree in advance if you decide
+to not change the current code, it is correct even if it can fool
+the tools.
+
+That said,
+
+On 02/14, Tycho Andersen wrote:
 >
->> On 2/14/2024 9:45 AM, Kalle Valo wrote:
->>> Arnd Bergmann <arnd@kernel.org> wrote:
->>> 
->>>> From: Arnd Bergmann <arnd@arndb.de>
->>>>
->>>> An old cleanup went a little too far and causes a warning with clang-16
->>>> and higher as it breaks control flow integrity (KCFI) rules:
->>>>
->>>> drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy_shim.c:64:34: error: cast from 'void (*)(struct brcms_phy *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->>>>     64 |                         brcms_init_timer(physhim->wl, (void (*)(void *))fn,
->>>>        |                                                       ^~~~~~~~~~~~~~~~~~~~
->>>>
->>>> Change this one instance back to passing a void pointer so it can be
->>>> used with the timer callback interface.
->>>>
->>>> Fixes: d89a4c80601d ("staging: brcm80211: removed void * from softmac phy")
->>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>> 
->>> I guess this should go to wireless tree?
->>
->> This has been like this forever looking at the "staging" part in the 
->> Fixes tag. Is it really so urgent now? On the other hand I have no real 
->> problem with moving this to the wireless tree. Just wondering out loud.
+> On Wed, Feb 14, 2024 at 10:06:41AM +0100, Oleg Nesterov wrote:
+> >
+> > -	/* Ensure that only a single signal scope determining flag is set. */
+> > -	if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
+> > +	switch (flags) {
+> > +	case 0:
+> > +		/* but see the PIDFD_THREAD check below */
 >
-> It's probably fine either way. Some maintainers like to backport
-> the warning fixes to stable kernels, others don't. Since the
-> warning is currently only enabled at W=1 level, it's probably fine
-> to fix it for linux-next only, but if we want the fix backported,
-> it should also go into 6.8.
+> Why not put that bit inline?
 
-Thanks, let's take it wireless-next then.
+Not sure I understand what does "inline" mean... but let me reply
+anyway.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+We want to check the "flags" argument at the start, we do not want to
+delay the "case 0:" check until we have f.file (so that we can check
+f.file->f_flags).
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+but perhaps this is another case when I misunderstand you.
+
+> But I guess the hweight and flags mask
+> are intended to be future proofness for flags that don't fit into this
+> switch.
+
+Yes I see, but
+
+> That said, your patch reads better than the way it is in the
+> tree and is what I was thinking.
+
+this was my point.
+
+And if we add more flags, we will need to update the "switch" stmt anyway.
+
+But again, I won't insist. This is cosmetic afer all.
+
+Oleg.
+
 
