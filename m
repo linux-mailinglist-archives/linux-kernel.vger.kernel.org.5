@@ -1,204 +1,103 @@
-Return-Path: <linux-kernel+bounces-65631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B68854FAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:15:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5F9854FAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:16:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D4AF1F2135C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:15:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B2628F746
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0903B839FB;
-	Wed, 14 Feb 2024 17:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7F77C0A6;
+	Wed, 14 Feb 2024 17:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Sj6nCkcu"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ng9gosTC"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D047C0A2
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60B87BAEA
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930901; cv=none; b=U24mQsbCs+S1Il1Z/4M76T0Ii+NDFyVTiFjo+BQCOrGi88/DixUNkwVHpRQ31YAGHhQGJglC6/T8jxCr2DEbNek18zw1HcRMwMj4fI9I+SlvQVKHNU1rIzToMgdwx8a+0MpU4yKXOk1LjWIGB+mFqfxfSEn8bDQcS0L2tQglFXw=
+	t=1707930962; cv=none; b=pzwvAkhjVV0oDzHG+esVrRgvQwTbw/NybvpfoIpq8lGnQMuCrhOMs3MtLpgK8eaG0gZIJm5rCU/3QuRRBvzs+C9PxZ8zGGVZDDVkykS7oCUX+tpaj2nOfYbR3S529r0sL0CnWuwkeejyVUOlXb0vqczUxhU4DtTl8jLgwfZqheg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930901; c=relaxed/simple;
-	bh=sPCot6JJr6K4Y/nDZ6Ug5FbtqBuDWyih5na/iBbRBjk=;
+	s=arc-20240116; t=1707930962; c=relaxed/simple;
+	bh=Ene65fYJJquc4AEYtE1LCICsAUahdiIa3q9X62z8LQQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nUl13Qv6nxZxBALd9QnA5tzl8OrlFfEb/kTGXEa7JD6H5FcGpUk3PFLUGAirSdung+yguJP2cSlQzc0dhira46dISUmX/LrJEXY3Aqx2QQs12o9K85zncD1M9VeI0pJ+i9vzyojzzZ29UQtZ18bvTnW+EFQQCDG9xF3acrtD1zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Sj6nCkcu; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so2987470276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:14:58 -0800 (PST)
+	 To:Cc:Content-Type; b=ldNE4Q2G2X31gXKYHelv7LV/8moUTykz+PWVhDkoEgvPHb1y1HWKiZnbq9nSPngeBTtGLJn6AEAY8/61fFdM63MW2B6oMN+AhlPCUtZT057QT2K/BMVTPF7r0XJbX/vvEcIoOvLSsEWE6QAxmtepZm4SNioranK7ffp66Ea+IjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ng9gosTC; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso5182343276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:16:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707930898; x=1708535698; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707930959; x=1708535759; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LDg0vk5u/oyOZlQ8e31c3DglAzpuw7KxG8umDKGdfj8=;
-        b=Sj6nCkcuvdkrrPfRVep8I8nY+W4bKwJ0JRq25VZVF0Ku8M8lr4MbFQrNhGaM5+aNSr
-         0k9vsUH0ezeX8s5zkCaO42Gb5ToeSQqbzfMzlBDfmiJOAmn5jr+dSfIWC2SK/nSNuoUT
-         A/iv3na+rKVxtNL7gliH0ImBMDbcT2L1aUuDh4+HcZFl3C+eSapdhHLTCaN72t+YynLt
-         94acJV0SFOK5SuajIxIyNNibpk086Q5AiN+nBFDZUYs1t6HBYcHgoYG1ecdeZT1rjm2e
-         FLZqnL1/VNVJolPDkbw+jDay5tTqEYQB0B+NJf7q//dyMhgdYKJYewbqnv1t63xxxMKR
-         7l7A==
+        bh=Ene65fYJJquc4AEYtE1LCICsAUahdiIa3q9X62z8LQQ=;
+        b=ng9gosTCj43xM3I4Qt7XkBrrX7yLtAmEdFzZuMT4gDw5s1VeueRLswf1UobTEHi7EI
+         75TTKZWtE1IUpdc88fRfVCahDcfDQ+3Ct1obwvJVF0B3MM+J3Wbr9I+ZRuvhnM98tfoI
+         swdzh/QcFgRO8TDwxYF1Q4OlSIZq8BiSYAoT8qJKGTyTquCRuIpkUlEFhGt5qRXt62ei
+         fgclnOk55p4JjAixyibHi+E/UjWHZGuHHpFJKNz82hmxrRU8QSZmFNHzKUZvGM2x2uTB
+         qCg9b4Y2UDpXLd15uxTxDno9eyvVP8aitgdoE/KjsoGnfMnjLaDLAzR/Z+PRniBtsjVI
+         UrWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707930898; x=1708535698;
+        d=1e100.net; s=20230601; t=1707930959; x=1708535759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LDg0vk5u/oyOZlQ8e31c3DglAzpuw7KxG8umDKGdfj8=;
-        b=SYly9PtH893XJQsNOX+kkDYZZYqpA0wk93iTQqIh7o3Ebx9DUtQbXR1VzZIMBdQlPv
-         /BvZo0R1/XPy5ojxCG0x8lXBHK65sHODxjkgetJq89RqS3jyDEN4FaV8rIV2OlBTMtaD
-         +8PUxxldFVftCr1IF2+3bhvByftFPQRjq+U0oUqapxZAYHal8AFnLHQOJuyLz04hkiQt
-         8nVRJ//ssrDocCYz8NsAxj67FYsvFe+2Vzp4fk2voud1rBIx9mD+fZBYGDdFqvTyF6pH
-         QeyILHLHf34lC+v163/IAugm1Vv0wIeZntepfeIy3a62GCHXJg1Uzn5MEmobqHAU1WaX
-         Ja9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW+NhwzLUjlztMtXqKJeuLG1BnxtOs1ofnW8y4DrBvJ1+xHQj7UILAb2edCWXw+hNajDYZVYdYa0BL/RpiNT2XLXKgHSWAm0Ijr9GO3
-X-Gm-Message-State: AOJu0YzuXLp89FqzQf8lwhquhZqMH7EG7rqXJ3csjYdaqMpi74J5Gfag
-	J2pKaGH8Em0Y+08FbYZHhZTOUfLJmxmruB25c4oaxH4CoNw88vfkFm/gjip4FqJ2gz8KbQe3haJ
-	Dy2fdcpHvUYVlxxyMJPmkfdx2iyOBv2x7kBOo
-X-Google-Smtp-Source: AGHT+IFzocTbMe8vXbVa4j69vx7gDqurZ3EaP/A9DOqxrZVhCKoBgWMQN08N6cMcnP1DyMjMOOc1HMd1b4SoKjvkySI=
-X-Received: by 2002:a25:7443:0:b0:dcb:e82c:f7d with SMTP id
- p64-20020a257443000000b00dcbe82c0f7dmr2936932ybc.41.1707930897779; Wed, 14
- Feb 2024 09:14:57 -0800 (PST)
+        bh=Ene65fYJJquc4AEYtE1LCICsAUahdiIa3q9X62z8LQQ=;
+        b=OTEX5zlri5wkd3gCInrlbt2VnGmfjQ9X4jHIS/VbkWba7RT1Yck0mwk945W4RinIsv
+         FMJZdamUqrQGQHb/VvIaDsPAiqT44fHAuY5p+8bEEVYk860YEwzgiab6vfbIjuijE4Rz
+         DOtez0eEMIEM6Pjbhoy8lWc8akQFh36rtxxoUwmpS39w4aJgqar+Lar4QpGU7zQNU0W7
+         VTpQEMfah/AvRgDtYIefwycPhlxiSHcjNuZTjB+WFBp4YCRgTlerOTNvv5Jx0OGC0U7j
+         DbX8fqnbrUSaH/OZ0hPB8TlKfVc9ABnsxguMuVUJIVN7OAzsQVEpI1flROPbWxAHy5Bi
+         FsqA==
+X-Forwarded-Encrypted: i=1; AJvYcCWpURdZcGokVbPPs/SrOGeApbNeQXk7ZRvVSRWfnf1BIHPJ9pIPRhTLSiGyOVgajBgNOR6fqxsWTY2ucpfIehkX3eOn42WF1NgTjIQN
+X-Gm-Message-State: AOJu0YwXy/O61RrL+p1fH4loWPOmpS1WfseSQFt2hu5VN60D6I4didbn
+	RhW+T8oX1HmmcnyMh/y9lM3RCyVWLrWJj+ArG4gfTyK+gSsCDVIgmWgWezAEe4LtlIs5ZMirfA2
+	tJc80gHfOb4GUd8lFpd5x5tJB0lk=
+X-Google-Smtp-Source: AGHT+IG98dwwtygWTFTU/gt45MN7ZYxVvTXF3FxHNKyUgKCJO1xJcWLMSM0CmGXAf2cgOtZxhsYAfg0O+8Np8cOUs7A=
+X-Received: by 2002:a25:df12:0:b0:dcc:1f6a:d755 with SMTP id
+ w18-20020a25df12000000b00dcc1f6ad755mr2815170ybg.39.1707930959665; Wed, 14
+ Feb 2024 09:15:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <Zctfa2DvmlTYSfe8@tiehlicka>
- <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com> <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com> <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com> <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com> <20240214085548.d3608627739269459480d86e@linux-foundation.org>
-In-Reply-To: <20240214085548.d3608627739269459480d86e@linux-foundation.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 14 Feb 2024 09:14:46 -0800
-Message-ID: <CAJuCfpE3yQyMXX5izocnWaDuB5ATfqHi-JcvcTQSvmf9c2zS4A@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, David Hildenbrand <david@redhat.com>, 
-	Michal Hocko <mhocko@suse.com>, vbabka@suse.cz, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240212132515.2660837-2-andriy.shevchenko@linux.intel.com>
+ <20240212132515.2660837-4-andriy.shevchenko@linux.intel.com>
+ <Zcoe9axtLXxB7Jeo@smile.fi.intel.com> <CAMuHMdUJ4gSGo4A0BVGkieWvNyqa9Dv_rQVMFj9N8GWYoKCZVg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUJ4gSGo4A0BVGkieWvNyqa9Dv_rQVMFj9N8GWYoKCZVg@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Wed, 14 Feb 2024 18:15:48 +0100
+Message-ID: <CANiq72muoZHzX+qNKabYWnH738okKqrfAruUOpY-4WUJBLP=Yw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] auxdisplay: Move cfag12864b.h to the subsystem folder
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 8:55=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Wed, Feb 14, 2024 at 5:59=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
 >
-> On Tue, 13 Feb 2024 14:59:11 -0800 Suren Baghdasaryan <surenb@google.com>=
- wrote:
+> /me looked at your branch
 >
-> > > > If you think you can easily achieve what Michal requested without a=
-ll that,
-> > > > good.
-> > >
-> > > He requested something?
-> >
-> > Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
-> > possible until the compiler feature is developed and deployed. And it
-> > still would require changes to the headers, so don't think it's worth
-> > delaying the feature for years.
->
-> Can we please be told much more about this compiler feature?
-> Description of what it is, what it does, how it will affect this kernel
-> feature, etc.
+> Just use a pattern? drivers/auxdisplay/cfag12864b*
 
-Sure. The compiler support will be in a form of a new __attribute__,
-simplified example:
++1
 
-// generate data for the wrapper
-static void _alloc_tag()
-{
-  static struct alloc_tag _alloc_tag __section ("alloc_tags")
-      =3D { .ct =3D CODE_TAG_INIT, .counter =3D 0 };
-}
+In fact, for `cfag12864b{,fb}` and `ks0108`, they should probably go
+into staging anyway and removed if nobody complains (I am not aware of
+anyone using them nowadays).
 
-static inline int
-wrapper (const char *name, int x, int (*callee) (const char *, int),
-         struct alloc_tag *callsite_data)
-{
-  callsite_data->counter++;
-  printf ("Call #%d from %s:%d (%s)\n", callsite_data->counter,
-          callsite_data->ct.filename, callsite_data->ct.lineno,
-          callsite_data->ct.function);
-  int ret =3D callee (name, x);
-  printf ("Returned: %d\n", ret);
-  return ret;
-}
-
-__attribute__((annotate("callsite_wrapped_by", wrapper, _alloc_tag)))
-int foo(const char* name, int x);
-
-int foo(const char* name, int x) {
-  printf ("Hello %s, %d!\n", name, x);
-  return x;
-}
-
-Which we will be able to attach to a function without changing its
-name and preserving the namespace (it applies only to functions with
-that name, not everything else).
-Note that we will still need _noprof versions of the allocators.
-
->
-> Who is developing it and when can we expect it to become available?
-
-Aleksei Vetrov (google) with the help of Nick Desaulniers (google).
-Both are CC'ed on this email.
-After several iterations Aleksei has a POC which we are evaluating
-(https://github.com/llvm/llvm-project/compare/main...noxwell:llvm-project:c=
-allsite-wrapper-tree-transform).
-Once it's in good shape we are going to engage with CLANG and GCC
-community to get it upstreamed. When it will become available and when
-the distributions will pick it up is anybody's guess. Upstreaming is
-usually a lengthy process.
-
->
-> Will we be able to migrate to it without back-compatibility concerns?
-> (I think "you need quite recent gcc for memory profiling" is
-> reasonable).
-
-The migration should be quite straight-forward, replacing the macros
-with functions with that attribute.
-
->
->
-> Because: if the maintainability issues which Michel describes will be
-> significantly addressed with the gcc support then we're kinda reviewing
-> the wrong patchset.  Yes, it may be a maintenance burden initially, but
-> at some (yet to be revealed) time in the future, this will be addressed
-> with the gcc support?
-
-That's what I'm aiming for. I just don't want this placed on hold
-until the compiler support is widely available, which might take
-years.
-
->
+Cheers,
+Miguel
 
