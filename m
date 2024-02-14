@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-65131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3934785486A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FDA85486C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B809E1F28B34
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:32:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE6F1F29428
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827501B813;
-	Wed, 14 Feb 2024 11:32:00 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A88C1BC2A;
+	Wed, 14 Feb 2024 11:32:21 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8742C19473;
-	Wed, 14 Feb 2024 11:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9155A1BC2C;
+	Wed, 14 Feb 2024 11:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910319; cv=none; b=OhkCKPLHnZ4dzsWFPb8VzAb8bKamL+QCQxRKnYGSsjp6mceCLCdc5ficCDXhpPRrmJeL2sxeCKSLpHNIYcW0jkgCE9sHPnz75GPVltJoPeRB5kVAmC2TH5SMIrmvTOfZkXkqd/u62Z25liMPWAWwlUKXilNkYjf3Df1JScOi7jA=
+	t=1707910340; cv=none; b=Vk13WCSWaqzr21h1dtf8DjZ/yeQ56T4PgllhheYdqANic+2uFcO18oQn+uit4EmZ4nhaHxYMSkCqmCW9t532CYKUWJzHY7b0wTXoXGF4QcgIwsh5x9OFjMiDUQRmmduGVu0jhgAnbR9pEZ5VO686LPjIkPKmqXWminKzoojBcYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910319; c=relaxed/simple;
-	bh=6+0IzA4B2DlV4NvMNithN+HguWo+5w/SReDep9hW9Lo=;
+	s=arc-20240116; t=1707910340; c=relaxed/simple;
+	bh=toWcMARzYilY+SoIGqBpKXvEhdozlZlMae/6ffMliPE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Pv6weYLPvZC/aMptg+6M0LFjFDcpKT3FYuIkWp8qcxVoEkrItSnq+RSqYUMAa30+Gknj4cEnKGW5/sRsDG/uO7ah6Dk64egjO5DPNfW+ZTBgLhFDSq/XS4FJTT8R5wRGDO6x8pBuHnTpoduWwQTt36RJ2YGz6BZoXU8lxfQMXZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+	 MIME-Version; b=bp20iIOHv4DJfRVDBeMzqQa0v40+AhbH1dj/5sKwRPdOnqceNbw1GsuduNGe5rNpcx9rEtQBmQJmSdM9nKA0TAsFhS/LileB966pBgb/oKnFMwYB/nJo37ZJzuHxyEOTVSGLerrnroFstvq4NFqg5PnANYhjmUKbJ96fAYlGrGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TZbC34nB3z9y62P;
-	Wed, 14 Feb 2024 19:12:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TZbHn2Ylyz9xrsF;
+	Wed, 14 Feb 2024 19:16:53 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 887C014061E;
-	Wed, 14 Feb 2024 19:31:49 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 42C641405A2;
+	Wed, 14 Feb 2024 19:32:02 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.45.156.69])
-	by APP1 (Coremail) with SMTP id LxC2BwAn0Rl8pMxlwo99Ag--.51308S4;
-	Wed, 14 Feb 2024 12:31:48 +0100 (CET)
+	by APP1 (Coremail) with SMTP id LxC2BwAn0Rl8pMxlwo99Ag--.51308S5;
+	Wed, 14 Feb 2024 12:32:01 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Jonathan Corbet <corbet@lwn.net>,
 	David Kaplan <david.kaplan@amd.com>,
@@ -65,9 +65,9 @@ To: Jonathan Corbet <corbet@lwn.net>,
 Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	petr@tesarici.cz,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [PATCH v1 2/5] sbm: sandbox input and output buffers
-Date: Wed, 14 Feb 2024 12:30:32 +0100
-Message-Id: <20240214113035.2117-3-petrtesarik@huaweicloud.com>
+Subject: [PATCH v1 3/5] sbm: call helpers and thunks
+Date: Wed, 14 Feb 2024 12:30:33 +0100
+Message-Id: <20240214113035.2117-4-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
 References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
@@ -78,384 +78,281 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAn0Rl8pMxlwo99Ag--.51308S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xw48XrWUGw1rZFy8GF4rXwb_yoWDJF4DpF
-	n8tFn8GF45Jry7Jrsxtr4F9w4ftw4IqF1UKay7W34YyFy5trn7WFykJr9FqFsrCrZrGayr
-	Jr1vgay8Ga45J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUm214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+X-CM-TRANSID:LxC2BwAn0Rl8pMxlwo99Ag--.51308S5
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xw4rXrW8ZrWxKr17XFyrZwb_yoWfWFyDpF
+	18CFyDGFs8tFW2kr1Ska1vvr1ft3yUAr1UAF95J3s0y3yUtas5XFZ2kr4YyF9rAr48tFyf
+	Xa1jqr1YgrnxArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
-	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-	kIwI1lc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-	IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-	xhVjvjDU0xZFpf9x0JUzWlgUUUUU=
+	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
+	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
+	AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
+	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
+	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
+	daVFxhVjvjDU0xZFpf9x0JU7CzZUUUUU=
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Provide SBM_COPY_IN(), SBM_COPY_OUT() and SBM_COPY_INOUT() macros to
-allocate sandbox mode buffers for input/output data. Input data is copied
-from kernel mode to the allocated buffer before calling the target
-function. Output data is copied from the allocated buffer to kernel mode
-after the target function returns.
+The sbm_exec() function allows to pass only a single void pointer to the
+target function running in sandbox mode. Provide a set of macros which make
+it easier to pass a wide variety of parameters from kernel mode to sandbox
+mode, preserving C type safety.
 
-Define two new arch hooks to map input/output buffers:
+To use this mechanism with a target function foo(), define the matching
+call helper and thunk like this:
 
-* arch_sbm_map_readonly()
-* arch_sbm_map_writable()
+    /* This can go into a header file: */
+    int foo(struct bar *data);
+    SBM_DEFINE_CALL(foo, struct bar *, data);
 
-Before calling the target function, use these hooks to create mappings for
-all buffers, read-only or writable as appropriate. Provide a fallback no-op
-implementation.
+    /* This should be defined together with foo(): */
+    SBM_DEFINE_THUNK(foo, struct bar *, data);
 
-Upon expansion, the SBM_COPY_xxx() macros evaluate to the address of the
-buffer in sandbox mode, cast back to the original type. This pointer should
-be used by code running in the sandbox. It should not be used in kernel
-mode; although the address is valid, the buffers are overwritten by
-sbm_exec().
+The call helper, running in kernel mode, accepts the same set of parameters
+as the target function. It saves them in a target-specific struct and calls
+sbm_exec(), passing it a pointer to this struct. This pointer becomes the
+data parameter of the matching thunk function, running in sandbox mode. The
+thunk interprets the parameter as a pointer to the target-specific struct,
+loads the saved arguments from this struct and calls the target function.
 
-To do the typecast, prefer typeof(({x;})) over typeof(x). The statement
-expression forces array-to-pointer decay, which allows to pass an array as
-an argument to these macros.
+Define a shorthand macro SBM_DEFINE_FUNC() that can be used if the target
+function, thunk and call helper are all used only in one file:
+
+    static SBM_DEFINE_FUNC(foo, struct bar *, data)
+    {
+	/* do something with data */
+	return 0;
+    }
 
 Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 ---
- include/linux/sbm.h | 154 ++++++++++++++++++++++++++++++++++++++++++++
- kernel/sbm.c        |  88 +++++++++++++++++++++++++
- 2 files changed, 242 insertions(+)
+ include/linux/sbm.h | 208 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 208 insertions(+)
 
 diff --git a/include/linux/sbm.h b/include/linux/sbm.h
-index 8e0c63fb9fb2..9671b3c556c7 100644
+index 9671b3c556c7..98fd27cd58d0 100644
 --- a/include/linux/sbm.h
 +++ b/include/linux/sbm.h
-@@ -9,16 +9,27 @@
- #ifndef __LINUX_SBM_H
- #define __LINUX_SBM_H
+@@ -305,4 +305,212 @@ static inline int sbm_exec(struct sbm *sbm, sbm_func func, void *data)
  
-+struct sbm_buf;
-+
- /**
-  * struct sbm - SandBox Mode instance.
-  * @error:    Error code. Initialized to zero by sbm_init() and updated when
-  *            a SBM operation fails.
-  * @private:  Arch-specific private data.
-+ * @input:    Input data. Copied to a temporary buffer before starting sandbox
-+ *            mode.
-+ * @output:   Output data. Copied from a temporary buffer after return from
-+ *            sandbox mode.
-+ * @io:       Input and output data. Copied to a temporary buffer before
-+ *            starting sandbox mode and copied back after return.
-  */
- struct sbm {
- #ifdef CONFIG_SANDBOX_MODE
- 	int error;
- 	void *private;
-+	struct sbm_buf *input;
-+	struct sbm_buf *output;
-+	struct sbm_buf *io;
- #endif
- };
- 
-@@ -73,6 +84,103 @@ static inline int sbm_error(const struct sbm *sbm)
-  */
- int sbm_exec(struct sbm *sbm, sbm_func func, void *data);
- 
-+/**
-+ * struct sbm_buf - Description of an input/output buffer.
-+ * @next:      Pointer to the next buffer in the list.
-+ * @kern_ptr:  Buffer address in kernel mode.
-+ * @sbm_ptr:   Buffer address in sandbox mode.
-+ * @size:      Size of the buffer.
-+ */
-+struct sbm_buf {
-+	struct sbm_buf *next;
-+	void *kern_ptr;
-+	void *sbm_ptr;
-+	size_t size;
-+};
-+
-+/**
-+ * sbm_alloc_buf() - Allocate a new input/output buffer.
-+ * @sbm:   SBM instance.
-+ * @size:  Size of the buffer.
-+ *
-+ * Allocate a new &struct sbm_buf and the corresponding sandbox mode
-+ * input/output buffer. If either allocation fails, update &sbm->error.
-+ *
-+ * Return: New buffer descriptor, or %NULL on allocation failure.
-+ */
-+struct sbm_buf *sbm_alloc_buf(struct sbm *sbm, size_t size);
-+
-+/**
-+ * sbm_add_buf() - Add a new I/O buffer to the SBM instance.
-+ * @sbm:   SBM instance.
-+ * @list:  Target argument buffer list.
-+ * @buf:   Buffer virtual address.
-+ * @size:  Size of the buffer.
-+ *
-+ * Add a new buffer to @list.
-+ *
-+ * Return: SBM address of the buffer, or %NULL on error.
-+ */
-+static inline void *sbm_add_buf(struct sbm *sbm, struct sbm_buf **list,
-+				const void *buf, size_t size)
-+{
-+	struct sbm_buf *io;
-+
-+	io = sbm_alloc_buf(sbm, size);
-+	if (!io)
-+		return NULL;
-+
-+	io->kern_ptr = (void *)buf;
-+	io->next = *list;
-+	*list = io;
-+	return io->sbm_ptr;
-+}
-+
-+/**
-+ * SBM_COPY_IN() - Mark an input buffer for copying into SBM.
-+ * @sbm:   SBM instance.
-+ * @buf:   Buffer virtual address.
-+ * @size:  Size of the buffer.
-+ *
-+ * Add a buffer to the input buffer list for @sbm. The content of the
-+ * buffer is copied to sandbox mode before calling the target function.
-+ *
-+ * It is OK to modify the input buffer after invoking this macro.
-+ *
-+ * Return: Buffer address in sandbox mode.
-+ */
-+#define SBM_COPY_IN(sbm, buf, size) \
-+	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->input, (buf), (size)))
-+
-+/**
-+ * SBM_COPY_OUT() - Mark an output buffer for copying out of SBM.
-+ * @sbm:   SBM instance.
-+ * @buf:   Buffer virtual address.
-+ * @size:  Size of the buffer.
-+ *
-+ * Add a buffer to the output buffer list for @sbm. The content of the
-+ * buffer is copied to kernel mode after calling the target function.
-+ *
-+ * Return: Buffer address in sandbox mode.
-+ */
-+#define SBM_COPY_OUT(sbm, buf, size) \
-+	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->output, (buf), (size)))
-+
-+/**
-+ * SBM_COPY_INOUT() - Mark an input buffer for copying into SBM and out of SBM.
-+ * @sbm:   SBM instance.
-+ * @buf:   Buffer virtual address.
-+ * @size:  Size of the buffer.
-+ *
-+ * Add a buffer to the input and output buffer list for @sbm. The content
-+ * of the buffer is copied to sandbox mode before calling the target function
-+ * and copied back to kernel mode after the call.
-+ *
-+ * Return: Buffer address in sandbox mode.
-+ */
-+#define SBM_COPY_INOUT(sbm, buf, size) \
-+	((typeof(({buf; })))sbm_add_buf((sbm), &(sbm)->io, (buf), (size)))
-+
- #ifdef CONFIG_HAVE_ARCH_SBM
- 
- /**
-@@ -95,6 +203,30 @@ int arch_sbm_init(struct sbm *sbm);
-  */
- void arch_sbm_destroy(struct sbm *sbm);
- 
-+/**
-+ * arch_sbm_map_readonly() - Arch hook to map a buffer for reading.
-+ * @sbm:  SBM instance.
-+ * @buf:  Buffer to be mapped.
-+ *
-+ * Make the specified buffer readable by sandbox code. See also
-+ * arch_sbm_map_writable().
-+ *
-+ * Return: Zero on success, negative on error.
-+ */
-+int arch_sbm_map_readonly(struct sbm *sbm, const struct sbm_buf *buf);
-+
-+/**
-+ * arch_sbm_map_writable() - Arch hook to map a buffer for reading and writing.
-+ * @sbm:  SBM instance.
-+ * @buf:  Buffer to be mapped.
-+ *
-+ * Make the specified buffer readable and writable by sandbox code.
-+ * See also arch_sbm_map_readonly().
-+ *
-+ * Return: Zero on success, negative on error.
-+ */
-+int arch_sbm_map_writable(struct sbm *sbm, const struct sbm_buf *buf);
-+
- /**
-  * arch_sbm_exec() - Arch hook to execute code in a sandbox.
-  * @sbm:   SBM instance.
-@@ -121,6 +253,18 @@ static inline void arch_sbm_destroy(struct sbm *sbm)
- {
- }
- 
-+static inline int arch_sbm_map_readonly(struct sbm *sbm,
-+					const struct sbm_buf *buf)
-+{
-+	return 0;
-+}
-+
-+static inline int arch_sbm_map_writable(struct sbm *sbm,
-+					const struct sbm_buf *buf)
-+{
-+	return 0;
-+}
-+
- static inline int arch_sbm_exec(struct sbm *sbm, sbm_func func, void *data)
- {
- 	return func(data);
-@@ -149,6 +293,16 @@ static inline int sbm_exec(struct sbm *sbm, sbm_func func, void *data)
- 	return func(data);
- }
- 
-+/* Evaluate expression exactly once, avoiding warnings about a "statement
-+ * with no effect". GCC doesn't issue this warning for the return value
-+ * of a statement expression.
-+ */
-+#define __SBM_EVAL(x) ({ typeof(({x; })) __tmp = (x); __tmp; })
-+
-+#define SBM_COPY_IN(sbm, buf, size)  __SBM_EVAL(buf)
-+#define SBM_COPY_OUT(sbm, buf, size) __SBM_EVAL(buf)
-+#define SBM_COPY_INOUT(sbm, buf, size) __SBM_EVAL(buf)
-+
  #endif /* CONFIG_SANDBOX_MODE */
  
++/**
++ * __SBM_MAP() - Convert parameters to comma-separated expressions.
++ * @m: Macro used to convert each pair.
++ * @e: Expansion if no arguments are given.
++ */
++#define __SBM_MAP(m, e, ...) \
++	CONCATENATE(__SBM_MAP, COUNT_ARGS(__VA_ARGS__))(m, e, ##__VA_ARGS__)
++#define __SBM_MAP0(m, e)             e
++#define __SBM_MAP2(m, e, t, a)       m(t, a)
++#define __SBM_MAP4(m, e, t, a, ...)  m(t, a), __SBM_MAP2(m, e, __VA_ARGS__)
++#define __SBM_MAP6(m, e, t, a, ...)  m(t, a), __SBM_MAP4(m, e, __VA_ARGS__)
++#define __SBM_MAP8(m, e, t, a, ...)  m(t, a), __SBM_MAP6(m, e, __VA_ARGS__)
++#define __SBM_MAP10(m, e, t, a, ...) m(t, a), __SBM_MAP8(m, e, __VA_ARGS__)
++#define __SBM_MAP12(m, e, t, a, ...) m(t, a), __SBM_MAP10(m, e, __VA_ARGS__)
++
++/**
++ * __SBM_MEMBERS() - Convert parameters to struct declaration body.
++ *
++ * This macro is similar to __SBM_MAP(), but the declarations are delimited by
++ * semicolons, not commas.
++ */
++#define __SBM_MEMBERS(...) \
++	CONCATENATE(__SBM_MEMBERS, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
++#define __SBM_MEMBERS0()
++#define __SBM_MEMBERS2(t, a)       t a;
++#define __SBM_MEMBERS4(t, a, ...)  t a; __SBM_MEMBERS2(__VA_ARGS__)
++#define __SBM_MEMBERS6(t, a, ...)  t a; __SBM_MEMBERS4(__VA_ARGS__)
++#define __SBM_MEMBERS8(t, a, ...)  t a; __SBM_MEMBERS6(__VA_ARGS__)
++#define __SBM_MEMBERS10(t, a, ...) t a; __SBM_MEMBERS8(__VA_ARGS__)
++#define __SBM_MEMBERS12(t, a, ...) t a; __SBM_MEMBERS10(__VA_ARGS__)
++
++/************************* Target function **************************/
++
++/**
++ * __SBM_DECL() - Map a parameter to a declaration.
++ * @type: Parameter type.
++ * @id:   Parameter identifier.
++ *
++ * Use this macro with __SBM_MAP() to get variable or function parameter
++ * declarations.
++ */
++#define __SBM_DECL(type, id)   type id
++
++/**
++ * __SBM_DECLARE_FUNC() - Declare a target function.
++ * @f:   Target function name.
++ * @...: Parameters as type-identifier pairs.
++ *
++ * Target function parameters are specified as type-identifier pairs, somewhat
++ * similar to SYSCALL_DEFINEn(). The function name @f is followed by up to 6
++ * type and identifier pairs, one for each parameter. The number of parameters
++ * is determined automatically.
++ *
++ * For example, if your target function is declared like this:
++ *
++ * .. code-block:: c
++ *   static int foo(struct bar *baz);
++ *
++ * it would be declared with __SBM_DECLARE_FUNC() like this:
++ *
++ * .. code-block:: c
++ *   static __SBM_DECLARE_FUNC(foo, struct bar *, baz);
++ *
++ */
++#define __SBM_DECLARE_FUNC(f, ...) \
++	int f(__SBM_MAP(__SBM_DECL, void, ##__VA_ARGS__))
++
++/*************************** Call helper ****************************/
++
++/**
++ * __SBM_CALL() - Call helper function identifier.
++ * @f: Target function name.
++ */
++#define __SBM_CALL(f)	__sbm_call_##f
++
++/**
++ * __SBM_VAR() - Map a parameter to its identifier.
++ * @type: Parameter type (unused).
++ * @id:   Parameter identifier.
++ *
++ * Use this macro with __SBM_MAP() to get only the identifier from each
++ * type-identifier pair.
++ */
++#define __SBM_VAR(type, id)    id
++
++/**
++ * __SBM_OPT_ARG() - Define an optional macro argument.
++ * @...: Optional parameters.
++ *
++ * Expand to a comma followed by all macro parameters, but if the parameter
++ * list is empty, expand to nothing (not even the comma).
++ */
++#define __SBM_OPT_ARG(...)	__SBM_OPT_ARG_1(__VA_ARGS__)
++#define __SBM_OPT_ARG_1(...)	, ##__VA_ARGS__
++
++/**
++ * SBM_DEFINE_CALL() - Define a call helper.
++ * @f:   Target function name.
++ * @...: Parameters as type-identifier pairs.
++ *
++ * Declare an argument-passing struct and define the corresponding call
++ * helper. The call helper stores its arguments in an automatic variable of
++ * the corresponding type and calls sbm_exec().
++ *
++ * The call helper is an inline function, so it is OK to use this macro in
++ * header files.
++ *
++ * Target function parameters are specified as type-identifier pairs, see
++ * __SBM_DECLARE_FUNC().
++ */
++#define SBM_DEFINE_CALL(f, ...) \
++	int __SBM_THUNK(f)(void *__p);					\
++	struct __SBM_ARG(f) {						\
++		__SBM_MEMBERS(__VA_ARGS__)				\
++	};								\
++	static inline int __SBM_CALL(f)(				\
++		struct sbm *__sbm					\
++		__SBM_OPT_ARG(__SBM_MAP(__SBM_DECL, , ##__VA_ARGS__)))	\
++	{								\
++		struct __SBM_ARG(f) __args = {				\
++			__SBM_MAP(__SBM_VAR, , ##__VA_ARGS__)		\
++		};							\
++		return sbm_exec(__sbm, __SBM_THUNK(f), &__args);	\
++	}
++
++/************************** Thunk function **************************/
++
++/**
++ * __SBM_ARG() - Struct tag for target function arguments.
++ * @f: Target function name.
++ */
++#define __SBM_ARG(f)	__sbm_arg_##f
++
++/**
++ * __SBM_DEREF() - Map a parameter to a struct __SBM_ARG() field.
++ * @type: Parameter type (unused).
++ * @id:   Parameter identifier.
++ *
++ * Use this macro with __SBM_MAP() to dereference a struct __SBM_ARG()
++ * pointer.
++ */
++#define __SBM_DEREF(type, id)  __arg->id
++
++/**
++ * __SBM_THUNK() - Thunk function identifier.
++ * @f: Target function name.
++ *
++ * Use this macro to generate the thunk function identifier for a given target
++ * function.
++ */
++#define __SBM_THUNK(f)	__sbm_thunk_##f
++
++/**
++ * SBM_DEFINE_THUNK() - Define a thunk function.
++ * @f:   Target function name.
++ * @...: Parameters as type-identifier pairs.
++ *
++ * The thunk function casts its parameter back to the argument-passing struct
++ * and calls the target function @f with parameters stored there by the call
++ * helper.
++ *
++ * Target function parameters are specified as type-identifier pairs, see
++ * __SBM_DECLARE_FUNC().
++ */
++#define SBM_DEFINE_THUNK(f, ...) \
++	int __SBM_THUNK(f)(void *__p)					\
++	{								\
++		struct __SBM_ARG(f) *__arg __maybe_unused = __p;	\
++		return (f)(__SBM_MAP(__SBM_DEREF, , ##__VA_ARGS__));	\
++	}
++
++/**************************** Shorthands ****************************/
++
++/**
++ * SBM_DEFINE_FUNC() - Define target function, thunk and call helper.
++ * @f:   Target function name.
++ * @...: Parameters as type-identifier pairs.
++ *
++ * Declare or define a target function and also the corresponding
++ * thunk and call helper. Use this shorthand to avoid repeating the
++ * target function signature.
++ *
++ * The target function is declared twice. The first declaration allows to
++ * precede the macro with storage-class specifiers. The second declaration
++ * allows to follow the macro with the function body. You can also put a
++ * semicolon after the macro to make it only a declaration.
++ *
++ * Target function parameters are specified as type-identifier pairs, see
++ * __SBM_DECLARE_FUNC().
++ */
++#define SBM_DEFINE_FUNC(f, ...) \
++	__SBM_DECLARE_FUNC(f, ##__VA_ARGS__);		\
++	static SBM_DEFINE_CALL(f, ##__VA_ARGS__)	\
++	static SBM_DEFINE_THUNK(f, ##__VA_ARGS__)	\
++	__SBM_DECLARE_FUNC(f, ##__VA_ARGS__)
++
++/**
++ * sbm_call() - Call a function in sandbox mode.
++ * @sbm:    SBM instance.
++ * @func:   Function to be called.
++ * @...:    Target function arguments.
++ *
++ * Call a function using a call helper which was previously defined with
++ * SBM_DEFINE_FUNC().
++ */
++#define sbm_call(sbm, func, ...) \
++	__SBM_CALL(func)(sbm, ##__VA_ARGS__)
++
  #endif /* __LINUX_SBM_H */
-diff --git a/kernel/sbm.c b/kernel/sbm.c
-index 9a5b89a71a23..df57184f5d87 100644
---- a/kernel/sbm.c
-+++ b/kernel/sbm.c
-@@ -9,7 +9,46 @@
- 
- #include <linux/export.h>
- #include <linux/sbm.h>
-+#include <linux/slab.h>
- #include <linux/string.h>
-+#include <linux/vmalloc.h>
-+
-+struct sbm_buf *sbm_alloc_buf(struct sbm *sbm, size_t size)
-+{
-+	struct sbm_buf *buf;
-+
-+	if (sbm->error)
-+		return NULL;
-+
-+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
-+	if (!buf) {
-+		sbm->error = -ENOMEM;
-+		goto out;
-+	}
-+	buf->sbm_ptr = vzalloc(size);
-+	if (!buf->sbm_ptr) {
-+		sbm->error = -ENOMEM;
-+		goto out;
-+	}
-+	buf->size = size;
-+
-+out:
-+	return buf;
-+}
-+EXPORT_SYMBOL(sbm_alloc_buf);
-+
-+/* Free a buffer list. */
-+static void sbm_free_buf_list(const struct sbm_buf *buf)
-+{
-+	const struct sbm_buf *nextbuf;
-+
-+	while (buf) {
-+		vfree(buf->sbm_ptr);
-+		nextbuf = buf->next;
-+		kfree(buf);
-+		buf = nextbuf;
-+	}
-+}
- 
- int sbm_init(struct sbm *sbm)
- {
-@@ -25,14 +64,61 @@ EXPORT_SYMBOL(sbm_init);
- 
- void sbm_destroy(struct sbm *sbm)
- {
-+	sbm_free_buf_list(sbm->input);
-+	sbm_free_buf_list(sbm->output);
-+	sbm_free_buf_list(sbm->io);
- 	arch_sbm_destroy(sbm);
- }
- EXPORT_SYMBOL(sbm_destroy);
- 
-+/* Copy input buffers into a sandbox. */
-+static int sbm_copy_in(struct sbm *sbm)
-+{
-+	const struct sbm_buf *buf;
-+	int err = 0;
-+
-+	for (buf = sbm->input; buf; buf = buf->next) {
-+		err = arch_sbm_map_readonly(sbm, buf);
-+		if (err)
-+			return err;
-+		memcpy(buf->sbm_ptr, buf->kern_ptr, buf->size);
-+	}
-+
-+	for (buf = sbm->io; buf; buf = buf->next) {
-+		err = arch_sbm_map_writable(sbm, buf);
-+		if (err)
-+			return err;
-+		memcpy(buf->sbm_ptr, buf->kern_ptr, buf->size);
-+	}
-+
-+	for (buf = sbm->output; buf; buf = buf->next) {
-+		err = arch_sbm_map_writable(sbm, buf);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Copy output buffers out of a sandbox. */
-+static void sbm_copy_out(struct sbm *sbm)
-+{
-+	const struct sbm_buf *buf;
-+
-+	for (buf = sbm->output; buf; buf = buf->next)
-+		memcpy(buf->kern_ptr, buf->sbm_ptr, buf->size);
-+	for (buf = sbm->io; buf; buf = buf->next)
-+		memcpy(buf->kern_ptr, buf->sbm_ptr, buf->size);
-+}
-+
- int sbm_exec(struct sbm *sbm, sbm_func func, void *args)
- {
- 	int ret;
- 
-+	if (sbm->error)
-+		return sbm->error;
-+
-+	sbm->error = sbm_copy_in(sbm);
- 	if (sbm->error)
- 		return sbm->error;
- 
-@@ -40,6 +126,8 @@ int sbm_exec(struct sbm *sbm, sbm_func func, void *args)
- 	if (sbm->error)
- 		return sbm->error;
- 
-+	sbm_copy_out(sbm);
-+
- 	return ret;
- }
- EXPORT_SYMBOL(sbm_exec);
 -- 
 2.34.1
 
