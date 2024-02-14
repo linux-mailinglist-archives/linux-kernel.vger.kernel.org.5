@@ -1,106 +1,115 @@
-Return-Path: <linux-kernel+bounces-64813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AC2854327
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE9F85432E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA4661C22DF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:59:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14831C25FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B641170A;
-	Wed, 14 Feb 2024 06:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC5F1173A;
+	Wed, 14 Feb 2024 06:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gWbPeKK0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Qh9Rk2Fv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC2A1119C;
-	Wed, 14 Feb 2024 06:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2085125A1;
+	Wed, 14 Feb 2024 06:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707893956; cv=none; b=iBLBr7YbPeERzOSJ5aTGoofATEh7Mg5sQfIZRNvMSBQddvbqQCchXSK5ddaboHamOLj2yNBcu1r3AsNR4eLPaUuSE8RkHFl7uVonmhMpiQ6nRyOTRhEwKqaK7JhDiKh1J5WobZ5FSMJ4G8UsXSDUjCbnPOzJj+TVpKUDLcyZm7c=
+	t=1707893984; cv=none; b=JGSSlGFhmus0PIpEUaZRTEajGYxa/jHMx4T6yK2M2cjYkCSGd6BUPvgFFrjuGm9Yfw5WjhmgcvD7fNyJhW8ESbHcfbP8zMIHSfXFNTJ8n7ZzlQKwjmbf95KeM1H9mBnqt/GWlkSuVgK2ZFJJa2YfsKQJcx3G59SwREh+zmsr9pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707893956; c=relaxed/simple;
-	bh=NFdrGOtMllbEA7m7PeDgmPLNj3yRtazcQgFg1SMEcSE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uI8jjXfyJNYzT3dJgyoU5F40ly7Ie5adWW78s1a0Hsf6vsmPjlcZ0658gK8pATzHQGQ41f33MKeuhj4ec1dsuXINfDSKuNzzONY7CSWRj+NW0PZTEjkWHg0NZP5a9ZXTYgCtnGdqD7jWHlwXc7nu0h5wFDaNSaJQQyLkFrQimdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gWbPeKK0; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707893955; x=1739429955;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=NFdrGOtMllbEA7m7PeDgmPLNj3yRtazcQgFg1SMEcSE=;
-  b=gWbPeKK0X9rz/xB/iRb0WZAlyN08dVOMUTEx4W83PuyRyAPemyyuLehV
-   IJRcaSFP8mDp+4G1L0ntg8caj8idyLG9ldtJh3Arnc08oyZUkSdeCVLXw
-   ghLmjrj8RcNJIr66APnYItn/sVDnjQQqJ6YqvoSBiRSgK5Pjh/HyLUKZx
-   Wlljiwjp9zxsrmXym+iZ7QD9oYWbk1QzqoHU5/8wcYzneA75VsSosekRJ
-   9M5VtFwr1ET8xtg5sDaIgzMBRm1/ThfuhpzzsH5jJJORmuU/csId/gbNd
-   XKQEu1ttL775igfXmAmif38//F/bSoXMk9JljzSZM1RPLmkLaSvz1nJfy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="12646627"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="12646627"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 22:58:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="3429746"
-Received: from jhogande-desk.fi.intel.com (HELO [10.237.72.164]) ([10.237.72.164])
-  by orviesa007.jf.intel.com with ESMTP; 13 Feb 2024 22:58:50 -0800
-Message-ID: <93c77778-fbdc-4345-be8b-04959d1ce929@linux.intel.com>
-Date: Wed, 14 Feb 2024 08:58:48 +0200
+	s=arc-20240116; t=1707893984; c=relaxed/simple;
+	bh=CS45QcVTT2orYhyYWwHGZgci25zetj2poa2oQoA+Qkw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGHrBSfAfFmo/Fi5VSE/J2NkvFDgBw1/wlO6DdD2K/lKay8QLwf5xcXhJ3y9NtuvmHKT7OJtM7wOD5PAiWdJifsDCTBJk9Y48HGnfb5At/rVZQrUinJyhiS8Pp1RDpCfJvARZYKrcLZeWgiuFnQ7D8888nDXBtH8FVy/xKCRLic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Qh9Rk2Fv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0546CC433C7;
+	Wed, 14 Feb 2024 06:59:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707893983;
+	bh=CS45QcVTT2orYhyYWwHGZgci25zetj2poa2oQoA+Qkw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qh9Rk2FvW4tWlAWdz0iYDcgsCcNhqHDodBRSm2Ahxxogpbd+1FwGwI+oPZPtk2YXt
+	 XcXI3kcrT2Gc0TKHUFNK3hQ0VqgTtmfEUjPtLuhjJbnNo+2z2YAQHtrghbVMCMzSeQ
+	 XyffkRKeIyHUohBlM/+8e3ex4T2LzDh/eVeZQjc8=
+Date: Wed, 14 Feb 2024 07:59:40 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lukas Wunner <lukas@wunner.de>, Dan Williams <dan.j.williams@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>, Dave Chinner <david@fromorbit.com>,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Russell King <linux@armlinux.org.uk>, linux-arch@vger.kernel.org,
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+	dm-devel@lists.linux.dev, nvdimm@lists.linux.dev,
+	linux-s390@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>
+Subject: Re: [PATCH v5 5/8] virtio: Treat alloc_dax() -EOPNOTSUPP failure as
+ non-fatal
+Message-ID: <2024021418-diving-subduing-6e34@gregkh>
+References: <20240212163101.19614-1-mathieu.desnoyers@efficios.com>
+ <20240212163101.19614-6-mathieu.desnoyers@efficios.com>
+ <20240213062559.GA27364@wunner.de>
+ <c0a08e00-e7b5-48ac-a152-3068ab0c9e15@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] PCI / PM: Really allow runtime PM without callback
- functions
-To: Bjorn Helgaas <helgaas@kernel.org>, Raag Jadav <raag.jadav@intel.com>
-Cc: bhelgaas@google.com, mika.westerberg@linux.intel.com,
- andriy.shevchenko@linux.intel.com, stanislaw.gruszka@linux.intel.com,
- lukas@wunner.de, rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
- linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, sashal@kernel.org
-References: <20240213200648.GA1219964@bhelgaas>
-Content-Language: en-US
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20240213200648.GA1219964@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0a08e00-e7b5-48ac-a152-3068ab0c9e15@efficios.com>
 
-Hi
-
-On 2/13/24 22:06, Bjorn Helgaas wrote:
->> Debugged-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+On Tue, Feb 13, 2024 at 02:46:05PM -0500, Mathieu Desnoyers wrote:
+> On 2024-02-13 01:25, Lukas Wunner wrote:
+> > On Mon, Feb 12, 2024 at 11:30:58AM -0500, Mathieu Desnoyers wrote:
+> > > In preparation for checking whether the architecture has data cache
+> > > aliasing within alloc_dax(), modify the error handling of virtio
+> > > virtio_fs_setup_dax() to treat alloc_dax() -EOPNOTSUPP failure as
+> > > non-fatal.
+> > > 
+> > > Co-developed-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > > Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+> > 
+> > That's a v4.0 commit, yet this patch uses DEFINE_FREE() which is
+> > only available in v6.6 but not any earlier stable kernels.
 > 
-> Sounds like this resolves a problem report?  Is there a URL we can
-> cite?  If not, at least a mention of what the user-visible problem is?
-> 
->  From the c5eb1190074c commit log, it sounds like maybe this allows
-> devices to be autosuspended when they previously could not be?
-> 
-> Possibly this should have "Fixes: c5eb1190074c ("PCI / PM: Allow
-> runtime PM without callback functions")" since it sounds like it goes
-> with it?
-> 
-I don't think there's known regression but my above commit wasn't 
-complete. Autosuspending works without runtime PM callback as long as 
-the driver has the PM callbacks structure set.
+> I asked this question to Greg KH before creating this patch, and his
+> answer was to implement my fix for master, and stable kernels would take
+> care of backporting all the required dependencies.
 
-For example the drivers/i2c/busses/i2c-i801.c has system suspend/resume 
-callbacks. I tested this patch by hack-removing them and yes, 
-autosuspend doesn't work without this patch.
+That is correct.
 
-Raag and Mika noticed the issue when cleaning up empty runtime PM 
-callbacks from an another driver which doesn't have any other PM callbacks.
+> Now if I look at latest 6.1, 5.15, 5.10, 5.4, 4.19 stable kernels,
+> none seem to have include/linux/cleanup.h today. But I suspect that
+> sooner or later relevant master branch fixes will require stable
+> kernels to backport cleanup.h, so why not do it now ?
 
+Yes, eventually we will need to backport cleanup.h to the older kernel
+trees, I know of many patches "in flight" that are using it, so it's not
+unique to this one at all, so this is fine to have.
+
+Remember, make changes for Linus's tree, don't go through any gyrations
+to make things special for stable releases, that's something to only
+consider later on, if you want to.  stable kernels should have no affect
+on developers OTHER than a simple cc: stable tag on stuff that they know
+should be backported, unless they really want to do more than that,
+that's up to them.
+
+thanks,
+
+greg k-h
 
