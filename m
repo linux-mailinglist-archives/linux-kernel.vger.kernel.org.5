@@ -1,116 +1,127 @@
-Return-Path: <linux-kernel+bounces-65076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC9485477F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:47:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C861C854783
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F055282C98
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:47:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69AE7B26E23
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8090C18021;
-	Wed, 14 Feb 2024 10:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFAC18B02;
+	Wed, 14 Feb 2024 10:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=orexplore-com.20230601.gappssmtp.com header.i=@orexplore-com.20230601.gappssmtp.com header.b="1SrNxuIx"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Nq5u5pgS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Co5CI5Wb"
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39EC18E10
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113D018027;
+	Wed, 14 Feb 2024 10:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907654; cv=none; b=SsKHBDPUUrbroY3bbkqfBrd/Z9IBF5WFFfR1e1/elzgWZX1jWkE2L9XNYaOsLkHVg5jHFj6VZlo5eLyvnE7milycKHubZ+tSxmQVmygnCRKxNvZ8k1Y7OqeZp9m1zHZwAgqK1I/NkM5NpgzjBLGHImeqoJyg+/Q8gUIQfuImP60=
+	t=1707907728; cv=none; b=WETmMnwp+Qcj7PVXdX1LZJ09jb2QkT7UfZ+Yu7YJ+YlsarAbwr4Haoczka0DDBe49u6fHIY9B5wGFpqYcTuCEby5MQ/XnosYd+GfP8DcB/YB7UBe2WxPhJHP9OPP1L6upN3waTNR1N82sFrmAGW0135D6pkHAnuFFdsZhdeMi5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907654; c=relaxed/simple;
-	bh=MO3JxlrQ/cVmUX7PKXni7ujhJaqoXyJJtpFjOcyfB7A=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=tjoFVcycUYk/yTzpbKgCpB+/oL8owNaDx+wvlrt+Ao5+/qJ+V+gtVlpSR4mD7HTfWRS4dd9BPDquiSlLvMmPNVMXf8EeilPczeTlKYYlLKGHhNxRE3TvldmKhmf4rYX7rtUuzpo8dOl4LIAOPd0oax7cLXYquw7QWZZcxZ9n3o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orexplore.com; spf=pass smtp.mailfrom=orexplore.com; dkim=pass (2048-bit key) header.d=orexplore-com.20230601.gappssmtp.com header.i=@orexplore-com.20230601.gappssmtp.com header.b=1SrNxuIx; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orexplore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=orexplore.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-511a4a1c497so659330e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 02:47:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=orexplore-com.20230601.gappssmtp.com; s=20230601; t=1707907651; x=1708512451; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DWaA8J8k9q8zsSb+XvN8old+8VI1DLxksteg4CKxM84=;
-        b=1SrNxuIx0xAx3BsBX96wuaN0PtUVU6jucckCq3afaY7ttGbtZw0Re6y0uH0A9ddxe3
-         H9ODij7cIiXv6OY74uTPZ7MpaS04rKl22kdDO2g0zQxlqe/p/uOpd9ZzJlwMEu8FCoce
-         Ax8mYEW74KAjgBNDDeaNjKtFaZODU3m+Ck4/lXSJCYG4NcxGa7k0ujjElAKlEmGzgHc4
-         G6wDs2ZHVyraNWwUsbsmk+9akMBHCP1KWftzzaWzzw+NSzsUZ6ruoPmxX+bZ6tM4vSbh
-         YPMlESHxK0ZEOuxBUOHe1+MvS2Y/wzlD9WHFx1UKKQLt76uxTodml8Q1gYma8wE/CRUl
-         dOcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707907651; x=1708512451;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DWaA8J8k9q8zsSb+XvN8old+8VI1DLxksteg4CKxM84=;
-        b=XTZwOnNM045ykhx4KUutOYS1U5NoRljfTarGPY3NYLqJcyOfv0OJ/S2v2d83Y9Obz4
-         F/UQAWrjhKgF27jRMoVZpmk7B7XRI0rSLylrmp7AxO+Th+xrqUaRBpuGi7ujt6zk93q1
-         mh0Kkx0Mt995ch08LxylgcBU8YI2syKPIRWSJzAh0sAep0dQzhDZqqIVdRWqzNU6WFY9
-         odd/L8ld4qGCz8j54l09cPn1uwWz0aY5sb164qBY82wpB4KgTzMIFoaaUtOydqDtLb7+
-         wxagO8Gd5e59Zrh+d+gBHJQr170muVHVIOlD72KXTrF9sMTudS/zViftPLuPI1bB5+QV
-         WBcA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0rJGFCrMVekhJeDK8Ne7rw6LPTSMci4RF4fa9vfnD8Rf/jmx65E6SFq8XvWGBLiLs2aqCcs21SwlpBA6eqsPzfXjQnVG9Drd0sqtY
-X-Gm-Message-State: AOJu0YwYX5Kwon6ta56xGGP4h9jy3EnLGM/jt/BAK6x7tgZiB8tQbJd7
-	AhvTak0bddp71nn8iN+dxBnGEROcF3MYc9SbkB6aEAkpihazOadxSphHX28qUA0=
-X-Google-Smtp-Source: AGHT+IHUniIwYuej/N0zibAfgCjbmdu7EJz8sjyemGn4wUOKCM4kVcEVo9sHDtbBBi/eNkwtU/Rjjg==
-X-Received: by 2002:a05:6512:110a:b0:511:84fe:8dcd with SMTP id l10-20020a056512110a00b0051184fe8dcdmr2026615lfg.1.1707907650786;
-        Wed, 14 Feb 2024 02:47:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXIQj84KE0a/LO0SIoych96XLVdiec+QebWdZK2byN13Pi0Km9YXd1QQTh9la7lpO4Pf+5KUzrgad6mw3uUTsK61/X/2vmCv/XAG7ppScVKRNuckGuvKW+zMHr3oYokqwcDOfPCyw/wVAwR22KtSjK+T2TR/1rUWeWgsiMMOUOrZLddLw==
-Received: from [192.168.0.212] (h-109-228-184-226.A137.corp.bahnhof.se. [109.228.184.226])
-        by smtp.gmail.com with ESMTPSA id fb13-20020a056512124d00b005118d5b3adbsm1185349lfb.98.2024.02.14.02.47.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 02:47:30 -0800 (PST)
-Message-ID: <18444448-6e04-4d28-b93d-5852958e35c1@orexplore.com>
-Date: Wed, 14 Feb 2024 11:47:29 +0100
+	s=arc-20240116; t=1707907728; c=relaxed/simple;
+	bh=HOpVLzrkwrpaCaBOGts1En5J/94ABppLQek5BJX4AhA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=UCwafJnMccTzO2CkJ4QIJ8I/hQtx36wMgon1VYoggZE/FE2Wv8fzx5AP2y5M8lZjZzdv+pW5FxfQxSoeXcSI710XP2//mvyxK10+KPzEK/XgIwzbqlMOI39bc3NENtFy2m6nyF7UZXYTZHRoys3naSnrv3FD9dv07JPUXRxqUrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Nq5u5pgS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Co5CI5Wb; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 94F583200922;
+	Wed, 14 Feb 2024 05:48:45 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 05:48:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707907725; x=1707994125; bh=Gv8xUDfNBj
+	Pjg5I7E95yOUAvwqbLQDclBoZX6xao6eM=; b=Nq5u5pgSom8OH60hq1TO3E+HA0
+	BUCjxVQ6+I7qef/2NBMMRwnucMwMG53MgFy5nLtKWHKszZbyLnxXpAYQxzbwEkHB
+	agQesBZKwWU6i8zY4agdN5ruGJEnt6HnIsCmwEBPBZLWlriNjH/Gj2vTex6ydO1Q
+	VosvTScviDzZUH4XzTAC1hlW4hPizpf0XsDX3z9qE0/7pqUeuTsDmHcqtl94XEDi
+	k2CmrDvmUNGuypQfOaDyQSdmXCU3FVAbbPeFzhUeD8pgqZihyqCLghn5Owevpj5y
+	vlS7yq2LLDOjhYjwkAxRs9gEJ7n22avQNuE9jK40vqGNi0mF9g7uEJnA2tsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707907725; x=1707994125; bh=Gv8xUDfNBjPjg5I7E95yOUAvwqbL
+	QDclBoZX6xao6eM=; b=Co5CI5WbaBOcbD1KZF8SRnZrx6JiUtx/k8adKwLIaFM+
+	MvBMv4yoW+ispyB/y5hxvBDey3+8Ex3TTDx5OPIRyQpqyvHhnk09UBZbiMil/3b4
+	lqey2f0oazZmAxIQi4N3Ls8xODeu85zoilyEIquKpvbWFBUOMm/c1ARH6jugIhkh
+	iMgm2gMCiRsgiK+D7oEusf8TjcN30UzCHN2hl+xrDgR106dNMEr+DOdKiKoMBbF8
+	aB573HgR8pn43F6gFdqCYJAi25rRzhEvcnO+GWouvVU6UdVMSFT6tuEn/TGhHbwI
+	ADccQbLCYHL7YmS6wWEcBW6EMoZFMyUyflwsrjMm8Q==
+X-ME-Sender: <xms:jJrMZS32twMt4Ggu8XtwrULRdriOJRbtCqHOHQ8u5sNKpAONBvxqPQ>
+    <xme:jJrMZVFb8hvwHYO_DpOMDOjDD50L_fWLvCGenWJ4QwythyC7X2SgI2tcj6GbRhAWq
+    eKDUc882WtIovaMu64>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddulecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:jJrMZa7_RwgI3e_r-FzJTezqjml0aoH5KdKNHaj5rBVFF5UHefXHwQ>
+    <xmx:jJrMZT2dqRM8p-1LEE2aXWYXL3FTwyDVkp4GvE9xhobIu_prYByNfw>
+    <xmx:jJrMZVGF_Nhbpm5Yu21jt9OMO1w_1_pxtjmmnZPJunUtF1tN3sSj0A>
+    <xmx:jZrMZZi_l-uMFoobfdjAEB2bgrsNeeXNv8nSI3dUzMvAihxEAa-SCQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 93894B6008F; Wed, 14 Feb 2024 05:48:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: =?UTF-8?B?Q2hyaXN0aWFuIEjDpGdnc3Ryw7Zt?=
- <christian.haggstrom@orexplore.com>
-Subject: [PATCH] USB: serial: cp210x: add ID for MGP Instruments PDS100
-To: Johan Hovold <johan@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-Id: <2027d488-a245-4492-bc17-27e17af575fd@app.fastmail.com>
+In-Reply-To: <ZcyW8zn14iIbn45X@kekkonen.localdomain>
+References: <20240213095555.454392-1-arnd@kernel.org>
+ <24cbf7b2-a091-440e-92cc-5c9828d52260@xs4all.nl>
+ <ZcyW8zn14iIbn45X@kekkonen.localdomain>
+Date: Wed, 14 Feb 2024 11:48:24 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sakari Ailus" <sakari.ailus@linux.intel.com>,
+ "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "Mauro Carvalho Chehab" <mchehab@kernel.org>
+Subject: Re: [PATCH] media: v4l: marvell: select CONFIG_V4L2_ASYNC where needed
+Content-Type: text/plain
 
-The radiation meter has the text MGP Instruments PDS-100G or PDS-100GN
-produced by Mirion Technologies. Tested by forcing the driver
-association with
+On Wed, Feb 14, 2024, at 11:33, Sakari Ailus wrote:
+> Hi Hans, Arnd,
+>
+> On Wed, Feb 14, 2024 at 11:24:41AM +0100, Hans Verkuil wrote:
+>> Arnd, Sakari,
+>> 
+>> Is this something that needs to go to v6.8? Or just v6.9?
+>> 
+>> Do we need a Fixes tag?
+>
+> The patch seems to be related to this:
+> <URL:https://lore.kernel.org/oe-kbuild-all/202402130955.f6uxzdCA-lkp@intel.com/>.
+>
+> So most likely yes, and Cc: stable, too.
 
-   echo 10c4 863c > /sys/bus/usb-serial/drivers/cp210x/new_id
+Ah, so lkp bisected it to that commit, which means it was
+already broken in 6.5, but I'm fairly sure the bug is even
+older then, as your commit seems to have only uncovered
+an existing problem.
 
-and then setting the serial port in 115200 8N1 mode. The device
-announces ID_USB_VENDOR_ENC=Silicon\x20Labs and ID_USB_MODEL_ENC=PDS100
+It was definitely working before ff3cc65cadb5 ("media: v4l: async,
+fwnode: Improve module organisation") in linux-5.13, but it's not
+clear if that is the culprit. It's probably safe to backport
+to v5.15 and higher.
 
-Signed-off-by: Christian Häggström <christian.haggstrom@orexplore.com>
----
-  drivers/usb/serial/cp210x.c | 1 +
-  1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 923e0ed85444..ab725c2c5594 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -144,6 +144,7 @@ static const struct usb_device_id id_table[] = {
-  	{ USB_DEVICE(0x10C4, 0x85EA) }, /* AC-Services IBUS-IF */
-  	{ USB_DEVICE(0x10C4, 0x85EB) }, /* AC-Services CIS-IBUS */
-  	{ USB_DEVICE(0x10C4, 0x85F8) }, /* Virtenio Preon32 */
-+	{ USB_DEVICE(0x10C4, 0x863C) }, /* MGP Instruments PDS100 */
-  	{ USB_DEVICE(0x10C4, 0x8664) }, /* AC-Services CAN-IF */
-  	{ USB_DEVICE(0x10C4, 0x8665) }, /* AC-Services OBD-IF */
-  	{ USB_DEVICE(0x10C4, 0x87ED) }, /* IMST USB-Stick for Smart Meter */
--- 
-2.43.0
+    Arnd
 
