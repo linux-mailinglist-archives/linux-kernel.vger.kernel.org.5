@@ -1,216 +1,165 @@
-Return-Path: <linux-kernel+bounces-64619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3081C8540EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F8E48540F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6700FB27E65
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:53:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07C65B20BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A67801;
-	Wed, 14 Feb 2024 00:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3883290C;
+	Wed, 14 Feb 2024 00:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ht+WzOlI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EyI55Nnc"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E68079D8
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707871996; cv=fail; b=NVQeXSiiMeTD3Lq7yttTs193mWTWW9ddI87BxnncO5uc6sMeNiteiLFAdtOl3/QtEkPki37fStABBySPQm/4cNtbUbfebVZOMpDQJPS0JIn6RxmZGZjzLwVDal5Tr6GbZHU0TGwGKXnYDEEP6s/TBXfbRw46VcLw0aL7kcAGmDw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707871996; c=relaxed/simple;
-	bh=xUk7ibPdM+HcQum47qpHjE1ltw95UoWAVvSgdsJ+BQU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=AxwDSJDIAfNLaJdd859uQ+obmzPw2yHeVbAl9QijIsFlCOTIpVaqJhNObf+jzNj63jqfxT01Nv9SVX044meLK0zTSvs1m2oOIn+L+mpPDMYJEVU2BWju0cNPPyLFr6adOIzqgh5w69S0R0eFibNGgi8k/55u/43yn35VkQ1i914=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ht+WzOlI; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707871994; x=1739407994;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=xUk7ibPdM+HcQum47qpHjE1ltw95UoWAVvSgdsJ+BQU=;
-  b=ht+WzOlIMfAsiJF6koHEdZ16a7ukBwhm8fXv/3ltuacOWTm0aP0dFygv
-   52rh9cT+saudJgii6AZukCDpjTZii9jGsLdzKFX76Ug1HRBD7449k1SVl
-   5LiLa+2gPo6+/EEr3jaUvvJY7N5rl13LcojnvrWQbE3a7dt5tF2aPfOx+
-   8+yuOXHwVxeLfQe9bh1+2BRIxg8uMNZxYBdG/iZgvpiTUxahMSoPo3Vu8
-   l9RGvJF07xTXxiKgPHZ6pw20k1KdKBXbP/Usjwx7zuh3MyP3Tdp0K8sTH
-   r0BsR3CeNQYbqVyJMmAVJbGkPmr0f58dWF8uR5A3WJ2LFvYGQejukkOdL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1757658"
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="1757658"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:53:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
-   d="scan'208";a="7796080"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Feb 2024 16:53:13 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 13 Feb 2024 16:53:12 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 13 Feb 2024 16:53:12 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 13 Feb 2024 16:53:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IOZL+TzODG7DuTt+m4pdWK4Sv3qPwi/hmavcIH1oebSgcudelJVIyUYugcixwYCZ8MZKIZn9B/N8IlIXeFsMZZ9syxkeryaofrTxU9vIVgTTRG1fVpxxOjZA8t4H5I5fFQSa526A+RhqIoZ4w1vj7z8piRqL8+Wkt5lJT0tlxZ6BqXK5mqma9UNPUmx/NLkJ6WBv4fcAzuu9xdn8+RJ0Nv7a1xM7BfHd+UxDFTEDvu2Sk+Om3JPd8kKP5465BoVLPaG8N9btm1xBOGRnaN1+ONrdnXH56cRw2CKqUJ65sGFtpqlKg4NBR/e7bcaUJu/ER+j26QHebv2C6YsWNlMKMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ey/9nmrmenI2tJOJq8WUkMwQ6QMgmcHY5+o7WTD23+w=;
- b=Wsf2SolGtZgpgitsfCsQZLsYrGBP+EsUGhFzNgIQTkCnhru2wB20WDO4MzHI96SM/n7LCW1CIyPps3kw1pYMSarQ/uV9bAkmPAMf5dxlK7hlsVc6ge6JeNcclxYGBeUX0TsuZb60DB5Np2zS/x3niTJd7+cjNYGz9qnAmoW7yQAnbpv13UZp0S0ZJePN8MkE9kD0+TCY+qA1ruffE6oolriJBjFcqWMB0b4wQ0gaNcNSu0adGcGutw7BXd4bIRvd+MogPx9E9RwsvGMGe1jSgF+TERHhNWXRKeaebFMMoOtxxFxyhEHLFNIfOIBPgnghinGLDpCkksKkbg9M0CuJmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SA2PR11MB4777.namprd11.prod.outlook.com (2603:10b6:806:115::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Wed, 14 Feb
- 2024 00:53:09 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7270.036; Wed, 14 Feb 2024
- 00:53:09 +0000
-Date: Tue, 13 Feb 2024 16:53:06 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Theodore Ts'o <tytso@mit.edu>, Dan Williams <dan.j.williams@intel.com>
-CC: "Reshetova, Elena" <elena.reshetova@intel.com>, "Jason A. Donenfeld"
-	<Jason@zx2c4.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-	"Kuppuswamy Sathyanarayanan" <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Nakajima, Jun" <jun.nakajima@intel.com>, Tom Lendacky
-	<thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, Sean
- Christopherson <seanjc@google.com>, "linux-coco@lists.linux.dev"
-	<linux-coco@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
-Message-ID: <65cc0ef2c7be_29b12948d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240201045710.GD2356784@mit.edu>
- <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
- <DM8PR11MB57505F657A8F08E15DC34673E7422@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240202153927.GA119530@mit.edu>
- <Zb4RlTzq_LV7AzsH@zx2c4.com>
- <CAHmME9owdbHzfb66xisoWmvWeT_-hkxCu7tR2=Rbye_ik1JgQQ@mail.gmail.com>
- <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20240212163236.GA444708@mit.edu>
- <65cb1a1fe2dda_29b1294e@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240213231341.GB394352@mit.edu>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240213231341.GB394352@mit.edu>
-X-ClientProxiedBy: MW4PR03CA0216.namprd03.prod.outlook.com
- (2603:10b6:303:b9::11) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720FC7F;
+	Wed, 14 Feb 2024 00:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707872069; cv=none; b=o9+0AsWq7Rl9Hm1WPlITM1levEGFmEjNofqJi1pNaL+0np/+6CvLSdNIFTp7qPJVHarLFguE3Qk6Hag+pPYR3jC2lUraF2ZmK7F3MUyubHa3OBQhz16GGhCz7ZmBh6jl6gsxM7koy7FPXSq08kC8dZUKyBKPhMfErE2ju0XTo5I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707872069; c=relaxed/simple;
+	bh=+MpH6MyUTdWv3FaAVCTooanj1lBPt+xls+adOgFJAzY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QIKLl8dqdEZ+RBsTODcTfyjxa+1Ek+g3FCMQ+DFf8dIWLsqDDWwkz/KKoPbMfs5F+KPLRuTvNVU25ZE33LZyKL+duoPhDYVKVXkGTEOWWD927Byg3AtxDeEX7MAzqIbmUpK7luW3oeHkoDOAfLP5XpEY2/++93WXQeyGSV8+ltI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EyI55Nnc; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8df2edd29so1101739a12.2;
+        Tue, 13 Feb 2024 16:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707872067; x=1708476867; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IRAv5G1mvUWjYBsrE0YtysVB4o7+LEIixKnLnZc8qP4=;
+        b=EyI55Nnc7AD3sdYkJ73MAVWdWwp8ElI5yuifLCB5c5HyLaE/jIXNNpDp31P16z37uQ
+         pvjgBoxnVFPXDVqIuc439C/pub1JorCB1PLdFMNRV8WZpX3PbJzr3Y8p+APar8OXF/9G
+         z45jkln8Wb/Xty/7mVzcvhkXozzZCg9u+NBm/IdBsHwFPXnxZ5Rdm4hRYPbNVcJim2Fz
+         5jSbXIjJv4Vqb3gIO7eZ46rnGs35mUzJseqIslbV4b61lUNVLQ/dZuJ7deFTkyGp2Lw4
+         xMNHhqokcNEMOotlzbaP12mI2ySz3u/XLYiSFN5Hwr3V7RbCl1WLaM7Ma5W85sQkSXem
+         gUvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707872067; x=1708476867;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IRAv5G1mvUWjYBsrE0YtysVB4o7+LEIixKnLnZc8qP4=;
+        b=Y0F/yhIzMPd9dY8sZduOFcsdnD7ab89PXhZE8c4XRS6KoB9N0z3yK9t1w+4cyww9eH
+         ujR8cH1uJFnP0XH/nCZLWyD3N5957oZwr5zrzEaYrqtzSHlvN2/9Lkj3XyPXbrIueJAw
+         zlnXpNHsDQtPCGpehNBtDpi0zvVooynFv0PtAavD01ghdo6+sxKadEqELvMzYR3SgAkM
+         b2K+6J5fsbUkPS+ISVqxJIGF+iOX6wK9Bf9gINbFv7+m4HvgSbv/JTL4xDHyBcgii8cQ
+         ooaq/ZrQ433VozICwIj+AvorW0owMT4v8TqVo2mmXNMt3YaCmWAeSLc7NWMO6MV/MboT
+         TomQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUckiCxdRNF9v7A9Bslq/c7bWC3W3iANEAW72PQW3/xDlNzl0f1MrnQHoWnffzHaxpovh+Pt2P8LOh7iExeOkmYiTSeawo3n7G3rl6421/VsQQ1h8N388v0vtgh83Co/2eEOeoUG+pGxw==
+X-Gm-Message-State: AOJu0YzJdrxpHDur86qU4MekMWT320yt/mmh5ERFuymESxifKXN3II1L
+	ux1/3yzUlpJHnQMhaaPywtHJbKvFYbG00jkAUwGQX1hFzWiO6Toy
+X-Google-Smtp-Source: AGHT+IHMDwwoT3BKADBeEicpLQUF/XmxqD8G8bt1SAgGiBJR+XjDvUYZMi2w90n9bZWA9TQFdxzxSA==
+X-Received: by 2002:a05:6a20:bc01:b0:19e:48e9:5052 with SMTP id fw1-20020a056a20bc0100b0019e48e95052mr1098724pzb.22.1707872066763;
+        Tue, 13 Feb 2024 16:54:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX+oLq1TSbRAwIsNWJvgzFoXR36Vm7QOY4/URojqtbdaMuz+f3u/duTCMGUylCSr4/nQOJauPk5aCJu819NPbv3FYt2YX+6kV4Nd2OlFoDlpd8WXTUOY0rU2VCkJnJnSaJ1NJ0OfvMJ9YSNfIF5inYHC5cUNj+GVNK0giAb8UoiJ7eeYLUqZCwGdxQdiyJjzuxOsQd0rZkb2Upf8p+px0ziJ/NRfvOAa+QyOt/d+tTaUl1gAABGiuywlbYJkmv7TO0U1gT8JTajajRoTb5AE25GzphwoJbPWlTLiei1yLc7WwTEyxi3FdQFPacLFPLLH1Uf60AJlPd4W76EnR/woSmDnVCVE7IesoIHEhrOER7qz2cAeJEXIJL+PACGGNsC/vQ1Id9dx9t08h2lXQvWtJ86Fm3/vn+9hQrMLQETfbwVGnHtzJmtlAeHw7cfy5Gq/T59Q1QwY57juhSxkUwJzG+OnR979EB6MIvNClPn8qKjOCNwzOcCrYsYOCKN4Gyv2iaQyUWj+lbgIoZ4w8YFjhUztgyuSRuwLr5KtuzbK5n5ggFwZFD0
+Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
+        by smtp.gmail.com with ESMTPSA id q10-20020aa7982a000000b006e094bf05f4sm8005694pfl.213.2024.02.13.16.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Feb 2024 16:54:26 -0800 (PST)
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Subject: [PATCH net-next v3 0/3] net: dsa: realtek: support reset
+ controller and update docs
+Date: Tue, 13 Feb 2024 21:54:14 -0300
+Message-Id: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SA2PR11MB4777:EE_
-X-MS-Office365-Filtering-Correlation-Id: 792ab746-47a6-45c2-f993-08dc2cf74fcc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9YQVky8T5Ll+J1GoTL5kKzpUlXKw4XHCFvGu4KBqaW+tBeNU0L06es5m3VFCK1Ednaw/qD/Ia/sphInxztrPH0l3htTAzQb8NsqIo8Q7xsl8jZ4C7qTrurvAeC+gB2vZoYQDbwg6ZV13bDJCW0yG+o6AMGLEqzYYffNYqVCB/ACaG/SoQhNNw7o2s+cRUV4LWwKHIrYf8lxNtmATR5zqcG4Z39Li+90nmK5mj6wM09yV3gYOsBfgrws1Yhp8UrPCNOFCtwioUPv5m+O8eXMi/FTv9q1BAGEJPYaDfdzJVtBOhXaBR48Mmh2kBGJPTZKoenS09p+s87MN0SWId5nzAktNLE3Wgn7LMwZud4C0YDElCBgF7WbRrd4wfIHTg18vJoFy9x2FijFYzKstk8v+iuYKlAvLaOiNv6XB+NP+kjMwP7WyyJsONScMXGVhRhtlSiJJ3LAXfhWg1bBwV+oB8HanGJSo2Q4Zf3dulAGUMZB86St3hD1VM6ODnpUyArfOuejCwJiZL81gL/fnLLfsaj7k4ylvLf+dyqQZ5TgcJg0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(366004)(39860400002)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(82960400001)(86362001)(38100700002)(966005)(6486002)(478600001)(54906003)(110136005)(316002)(6666004)(6506007)(26005)(6512007)(9686003)(66946007)(2906002)(5660300002)(4326008)(66476007)(66556008)(8936002)(8676002)(7416002)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gpqGlCTMWydgkI51pxgVYKX9j3uD+eY1JY3JRGl2iPqBfphqyoqyrDH/C53H?=
- =?us-ascii?Q?IFLioS3mPjVmLueqrUHgSMtRHR/5ZMQTziGyPaJf4/PYWZDfWsFqme/sLWzf?=
- =?us-ascii?Q?dWavig6IibcPn3eQnW6n5bZRKv5rF4I8WffNWmuJTFPVZdOXMvmYXeeJAmvr?=
- =?us-ascii?Q?DK+tZKcyfozjEuaX9X5DmZJIOL29wwLhMQmqT2Be1+JkwZ5laWV3lhI9/I1v?=
- =?us-ascii?Q?Dbk5kOJi0CL0BbQgq8tLyDANrKERuN55d1DI1qMD23f7B0jzj8Mg50h1Teer?=
- =?us-ascii?Q?Ty/P5qGLl9p3TlLxSH/QTaCAW2lUzXviYQuUDYR4os82Br2sTLq6upydylsC?=
- =?us-ascii?Q?c/4ha5R0krm2fiRFlWWan5U0RcFLwCHD+GclccXzfaJSXcsV9u1a/VraQt4l?=
- =?us-ascii?Q?4AzdBDNrL+DFYpmMBYrpiVw41nGDuK/TQ7qDjj9FJEhHTBXybrEPA+GU7azq?=
- =?us-ascii?Q?DGhmLnxJK8yqLQRcly90CWiWHhDyihvQMoNzlhJCsbd0J4LkywvLGTR2NyUM?=
- =?us-ascii?Q?n24wrYcEK8acN8FrkCGcmeLamCLqYwgi3MiC8cf5cKvu7Mr51fEt5ltWpIgY?=
- =?us-ascii?Q?kpuHDc8gvYNDYmz25UUXcEMuB1UtB9qbZYlJGIE4juzjxs0nQ8TjA3cVkqSF?=
- =?us-ascii?Q?FprYZKCqXXM/IypXkUiQZi830XEyFo0j9CpSA1XnEDJq/ZIvPH3QS1NUu0c9?=
- =?us-ascii?Q?A7GYsR7x3FhiaYnvBYQ6JsD93/BupKuTpTlKlRv1SQOieJcEX6mcWmlRLR+/?=
- =?us-ascii?Q?toMslAQdX0oCPnpXyxejxUOgbSSqfk/2tEvM73Ezbq8ZR6EPZUbNiZ4FX9+P?=
- =?us-ascii?Q?wNR7QgWcC6w0kTSxmybhKBM0u9LN1gi7J7pnt/5StvJvfRLE9cck8bG+gI9W?=
- =?us-ascii?Q?NqqoWCLgTv0mlaXfJVDdnUEQyHdNeVGwrkWNA0VMzy2ZYnPUYpdc9D7Q/o17?=
- =?us-ascii?Q?chh39epdKp5fZFo/2aKkOB+iI3+REDge0EokHnzSJA31otQDvfOv1nUntVPJ?=
- =?us-ascii?Q?BNC5YV1tKpucNNgH/VRf6t0LsreSl+K5xx6OhOAXt8LTOVZoSW0qnr5O9aRF?=
- =?us-ascii?Q?thvGazMxM7ExgCzQf+yzMPtZFOQ5g9HXBbMjDf+xuTi4qXMxw6PVg9TW5LI3?=
- =?us-ascii?Q?/u0XwERMNygDJGgyKQjssuOGmj5Q4qqFwXmwdEqAem54iD4glqjRDR+wmeEl?=
- =?us-ascii?Q?lSnQb35aaAWTm5tmTVSqnB/GMz2btiVtLlFSKryybyi95QWtX6k+LgnyWsDw?=
- =?us-ascii?Q?vg5aDCxa2PEHUFn4EJdSqG1NUxH/FtZtRkvXAHT/zf08ZZfC4Ehoo9qjOOPm?=
- =?us-ascii?Q?a4P2ZliUcB8FbldfJGA8WBGx1V21UwtzjquVP/9l4Q7lHlMMSPvu9wUMnTn7?=
- =?us-ascii?Q?Q3Ep/mYgJfC4+DUxD2kvIlcQebUpripq/F8xNs6KE/Ea8CDIJggwuqCBnHIS?=
- =?us-ascii?Q?V2wZHjFhEcuk3uAUAIByo0dVvC80j5QTwohG8GSPVPb7fGRDZN+U/Zg6u2+L?=
- =?us-ascii?Q?77JB3mO067ewWZqPMqVjVTYr9ZDai08nvIfFhwC6KLhLUW2ol+kqLHBgoPIr?=
- =?us-ascii?Q?hDgwWkeKyOzKw1gOhYihtUfypdxzcdtfwBKwDPJyI1qEV83xB7rAq2dBms19?=
- =?us-ascii?Q?DA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 792ab746-47a6-45c2-f993-08dc2cf74fcc
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 00:53:08.9442
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l2UWZak2vqU49PnaU3RPZdbZaEK3I5XUrheH2ucU8iISlC+v5UoO9VHLxibGwHOCqTj5NmdHZrDmBizm9iow8IjSpRfPkwOGI9LwCrw4zLY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4777
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADcPzGUC/x2M0QqDMBAEf0XuuYH0rBD6K9KHxK71UNKSCxIQ/
+ 92jT8PA7B6kKAKlZ3dQwS4q32zS3zqalpg/cPI2J/b88HxnVxC3itWoqC6E6NPMQ0rMZJtfwSz
+ t/zdStiCjVXqd5wWUKiYtaQAAAA==
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
+ Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2247; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=+MpH6MyUTdWv3FaAVCTooanj1lBPt+xls+adOgFJAzY=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBlzA89WGb88ILlID120vimjP3ywfQPNEK9cImoT
+ znBvY35E86JATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZcwPPQAKCRC7Edu60Qc7
+ VvNvB/9YKsxOUQbfYacjU/vvdQf7EwylJ1tfxEDWTZloC9x0dRrYlr+AxSzy8yiErFx4BeAy32a
+ 17OhSANqYzoEnwP8VcjnmBfRteKclqD7fDl3ksY1Duo7qGgj7cNwgvZ6fNeJXfL1nyq6swviH7g
+ u/a6vmoI0qDgEvN/iCt2fKMU6kP8dyAqx9GiCGg5xCbTn5KV51PpxJaBxPCRIzOgiYEVUmlTLGk
+ sO0U8Xciyv5YLkLLAq4CST/XjgZ1Wc5FNJPqM6of+n/FmDV3WyJ4cHY6jzzusdSIfI7a1EJ84R5
+ 8F0CbQO5ZfiIdHqAapcIZT6jDYKCIKfXNgXaAKeNU/uDFcN2
+X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
+ fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-Theodore Ts'o wrote:
-> On Mon, Feb 12, 2024 at 11:28:31PM -0800, Dan Williams wrote:
-> > Sure there is, that is what, for example, PCI TDISP (TEE Device
-> > Interface Security Protocol) is about. Set aside the difficulty of doing
-> > the PCI TDISP flow early in boot, and validating the device certficate
-> > and measurements based on golden values without talking to a remote
-> > verifier etc..., but if such a device has been accepted and its driver
-> > calls hwrng_register() it should be added as an entropy source.
-> 
-> How real is TDISP?  What hardware exists today and how much of this
-> support is ready to land in the kernel?  Looking at the news articles,
-> it appears to me like bleeding edge technology, and what an unkind
-> person might call "vaporware"?  Is that an unfair characterization?
+The driver previously supported reset pins using GPIO, but it lacked
+support for reset controllers. Although a reset method is generally not
+required, the driver fails to detect the switch if the reset was kept
+asserted by a previous driver.
 
-Indeed it is. Typically when you have x86, riscv, arm, and s390 folks
-all show up at a Linux Plumbers session [1] to talk about their approach
-to handling a new platform paradigm, that is a decent indication that
-the technology is more real than not. Point taken that it is not here
-today, but it is also not multiple hardware generations away as the
-Plumbers participation indicated.
+This series adds support to reset a Realtek switch using a reset
+controller. It also updates the binding documentation to remove the
+requirement of a reset method and to add the new reset controller
+property.
 
-> There have plenty of things that have squirted out of standards
-> bodies, like for example, "objected base storage", which has turned
-> out to be a complete commercial failure and was never actually
-> deployed in any real numbers, other than sample hardare being provided
-> to academic researchers.  How can we be sure that PCI TDISP won't end
-> up going down that route?
+It was tested on a TL-WR1043ND v1 router (rtl8366rb via SMI).
 
-Of course, that is always a risk. History is littered with obsolesence,
-some of it before seeing any commercial uptake, some after.
+Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+---
 
-> In any case, if we are going to go down this path, we will need to
-> have some kind of policy engine hwrng_register() reject
-> non-authenticated hardware if Confidential Compute is enabled (and
-> possibly in other cases).
+Changes in v3:
+- Rebased on the Realtek DSA driver refactoring (08f627164126)
+- Dropped the reset controller example in bindings
+- Used %pe in error printing
+- Linked to v2: https://lore.kernel.org/r/20231027190910.27044-1-luizluca@gmail.com/
 
-Sounds reasonable, that recognition is all I wanted from mentioning PCI
-TDISP.
+Changes in v2:
+- Introduced a dedicated commit for removing the reset-gpios requirement
+- Placed binding patches before code changes
+- Removed the 'reset-names' property
+- Moved the example from the commit message to realtek.yaml
+- Split the reset function into _assert/_deassert variants
+- Modified reset functions to return a warning instead of a value
+- Utilized devm_reset_control_get_optional to prevent failure when the
+  reset control is missing
+- Used 'true' and 'false' for boolean values
+- Removed the CONFIG_RESET_CONTROLLER check as stub methods are
+  sufficient when undefined
+- Linked to v1: https://lore.kernel.org/r/20231024205805.19314-1-luizluca@gmail.com/
 
-[1]: https://lpc.events/event/17/contributions/1633/
+---
+Luiz Angelo Daros de Luca (3):
+      dt-bindings: net: dsa: realtek: reset-gpios is not required
+      dt-bindings: net: dsa: realtek: add reset controller
+      net: dsa: realtek: support reset controller
+
+ .../devicetree/bindings/net/dsa/realtek.yaml       |  4 +-
+ drivers/net/dsa/realtek/realtek.h                  |  2 +
+ drivers/net/dsa/realtek/rtl83xx.c                  | 52 +++++++++++++++++++---
+ drivers/net/dsa/realtek/rtl83xx.h                  |  2 +
+ 4 files changed, 54 insertions(+), 6 deletions(-)
+---
+base-commit: 0f37666d87d2dea42ec21776c3d562b7cbd71612
+change-id: 20240212-realtek-reset-88a0bf25bb22
+
+Best regards,
+-- 
+Luiz Angelo Daros de Luca <luizluca@gmail.com>
+
 
