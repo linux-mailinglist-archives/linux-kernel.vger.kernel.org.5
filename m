@@ -1,147 +1,250 @@
-Return-Path: <linux-kernel+bounces-65192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82255854938
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:29:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205F685499C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D1FC28237B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:29:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8651F1F22637
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080501C6BD;
-	Wed, 14 Feb 2024 12:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RAyyuSiu"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CFB5466E;
+	Wed, 14 Feb 2024 12:50:08 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324821B593;
-	Wed, 14 Feb 2024 12:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA105337E;
+	Wed, 14 Feb 2024 12:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707913726; cv=none; b=WYDkyNlDaStXMIXAesRM8UhuQSYweaqC7pxb+qQINT90CMtJzV6+bUyLhgbx75/3AC/NzVIZrbYPwC5r8wS4FIUjI5NRQ2DwWQ+j3FtPEli7ZppqVKeQRuGI0GUDMz5RpiFnkcz9DfU4+LBKIRrs0XZYJlZcXleQ9WfmsdbM5uQ=
+	t=1707915008; cv=none; b=f/CTy2rNuzNrYJMH3JNVask6Fhs32U8mQcXLgrbg9yUG0Os6ogfbPClNmGKLIx73voJUnLJU3JHksWRM39by+yYoL24fixxxS7TcmCYMAZc2z5ou2GidTnldV0+LN96r/OKB+KomhwAs8nOh+DKSCor710r8ma/eLGHAyZixisc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707913726; c=relaxed/simple;
-	bh=j/9Y4RyzPuUKx7quQTGyGBQV203CBRKx9NceOBRl3v8=;
+	s=arc-20240116; t=1707915008; c=relaxed/simple;
+	bh=qxJhbOKvEv1aOswKgO4WuniZESROcDNZKcfH2VkqaSQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cX8obDrhD4WLX1Wb2s7RiU6Tc87PuyZrtPa2+dM5Tlcd9RaRO8JJKQWlNJyJwDw1Ph4MVaXzwF2M59m1+c3AXWDZnTjLvGSnP+t45/JzmaeTUBUxVIC6T8Gxpsce5X2pLGmCW6xWCCBnwkc1MOUITjSqcJMzYc41uGtgaTnba9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RAyyuSiu; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41EBuYt3032116;
-	Wed, 14 Feb 2024 12:28:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=MRFKlhzzIOqZkfBxF3tF90gsNVo0FbFcej3DjTeQ68Q=;
- b=RAyyuSiuyE1/8N/E++GW0YWMFId7OBYiV3UQ9eM4Zhs8jy2oE3VqNpSDOCHFoMBsCZ1K
- o49R9lYVDaJsjzIpHnb6sE0Z6sDW038WAYhEwHV1tu3ZoO6CHGgzhQ2AVJ/cw59ftVXc
- mmFL67T7td01fQjFd3uxBGg797RCVHh2MVGw9izgCdMzLC3IMbalyXfxzqiHiXGbUHQG
- aR4Fe2YIRUpEyHbj5VypVVxevkXQ153S3iTaXWthAxmjV2p9rOwvu/AxXigBDZZA4j12
- zA8yocMdIz/NW1uEL1M16AUy/x8U/XDPLLWNxzaGR3WAqY8LelLU4BhqCQDPATwYCXZx Eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w8vtc0y5m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 12:28:15 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41EBudau000403;
-	Wed, 14 Feb 2024 12:27:59 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w8vtc0wwd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 12:27:58 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41E9pwjn024878;
-	Wed, 14 Feb 2024 12:27:30 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfpdssn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 12:27:30 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41ECRPn220054748
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 12:27:27 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E56B820043;
-	Wed, 14 Feb 2024 12:27:24 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4C2D920040;
-	Wed, 14 Feb 2024 12:27:20 +0000 (GMT)
-Received: from li-c9696b4c-3419-11b2-a85c-f9edc3bf8a84.in.ibm.com (unknown [9.109.198.187])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 14 Feb 2024 12:27:20 +0000 (GMT)
-From: Nilay Shroff <nilay@linux.ibm.com>
-To: john.g.garry@oracle.com
-Cc: alan.adamson@oracle.com, axboe@kernel.dk, brauner@kernel.org,
-        bvanassche@acm.org, dchinner@redhat.com, djwong@kernel.org, hch@lst.de,
-        jack@suse.cz, jbongio@google.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-xfs@vger.kernel.org, martin.petersen@oracle.com,
-        ming.lei@redhat.com, ojaswin@linux.ibm.com, sagi@grimberg.me,
-        tytso@mit.edu, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v3 14/15] nvme: Support atomic writes
-Date: Wed, 14 Feb 2024 17:57:19 +0530
-Message-ID: <20240214122719.184946-1-nilay@linux.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124113841.31824-15-john.g.garry@oracle.com>
-References: <20240124113841.31824-15-john.g.garry@oracle.com>
+	 MIME-Version:Content-Type; b=na/7HGvLSsIw19P2s97yz3KdSn8K6WToMqfPvxpGXG5WQvzk2327oD34heAD5PWlFRxuGETESZdN0G0SWTXwx/lxehQHnbCgsJCEHKS/Q+OnChnolyXmfz6wq5w8pe8z/qSrkZ0x42tEnbt4euDGwakitp1SrxG5JnOb8Go0Zmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id d5b3f5452e748b4f; Wed, 14 Feb 2024 13:49:58 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D3880669DB7;
+	Wed, 14 Feb 2024 13:49:57 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
+ Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+ Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Subject:
+ [PATCH v2 1/6] thermal: core: Store zone trips table in struct
+ thermal_zone_device
+Date: Wed, 14 Feb 2024 13:28:57 +0100
+Message-ID: <1883976.tdWV9SEqCh@kreacher>
+In-Reply-To: <4551531.LvFx2qVVIh@kreacher>
+References: <4551531.LvFx2qVVIh@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OzWX2STjmdBlT2OvLENkQJSFshfYk4zr
-X-Proofpoint-GUID: RSF1EXPuEZ0h1L4vhPfo9aQTI-RvmULM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_04,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 clxscore=1011 mlxlogscore=849 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402140097
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdeggecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedugedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=14 Fuz1=14 Fuz2=14
 
->Support reading atomic write registers to fill in request_queue=0D
->properties.=0D
-=0D
->Use following method to calculate limits:=0D
->atomic_write_max_bytes =3D flp2(NAWUPF ?: AWUPF)=0D
->atomic_write_unit_min =3D logical_block_size=0D
->atomic_write_unit_max =3D flp2(NAWUPF ?: AWUPF)=0D
->atomic_write_boundary =3D NABSPF=0D
-=0D
-In case the device doesn't support namespace atomic boundary size (i.e. NAB=
-SPF =0D
-is zero) then while merging atomic block-IO we should allow merge.=0D
- =0D
-For example, while front/back merging the atomic block IO, we check whether=
- =0D
-boundary is defined or not. In case if boundary is not-defined (i.e. it's z=
-ero) =0D
-then we simply reject merging ateempt (as implemented in =0D
-rq_straddles_atomic_write_boundary()).  =0D
-=0D
-I am quoting this from NVMe spec (Command Set Specification, revision 1.0a,=
- =0D
-Section 2.1.4.3) : "To ensure backwards compatibility, the values reported =
-for =0D
-AWUN, AWUPF, and ACWU shall be set such that they  are  supported  even  if=
-  a  =0D
-write  crosses  an  atomic  boundary.  If  a  controller  does  not  guaran=
-tee =0D
-atomicity across atomic boundaries, the controller shall set AWUN, AWUPF, a=
-nd =0D
-ACWU to 0h (1 LBA)." =0D
-=0D
-Thanks,=0D
---Nilay=0D
-=0D
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+The current code expects thermal zone creators to pass a pointer to a
+writable trips table to thermal_zone_device_register_with_trips() and
+that trips table is then used by the thermal core going forward.
+
+Consequently, the callers of thermal_zone_device_register_with_trips()
+are required to hold on to the trips table passed to it until the given
+thermal zone is unregistered, at which point the trips table can be
+freed, but at the same time they are not expected to access that table
+directly.  This is both error prone and confusing.
+
+To address it, turn the trips table pointer in struct thermal_zone_device
+into a flex array (counted by its num_trips field), allocate it during
+thermal zone device allocation and copy the contents of the trips table
+supplied by the zone creator (which can be const now) into it, which
+will allow the callers of thermal_zone_device_register_with_trips() to
+drop their trip tables right after the zone registration.
+
+This requires the imx thermal driver to be adjusted to store the new
+temperature in its internal trips table in imx_set_trip_temp(), because
+it will be separate from the core's trips table now and it has to be
+explicitly kept in sync with the latter.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+---
+
+v1 -> v2:
+   * Rebase.
+   * Drop all of the redundant trips[] checks against NULL.
+   * Add imx change to still allow it to use its local trips table.
+   * Add R-by from Stanislaw (which is still applicable IMV).
+
+---
+ drivers/thermal/imx_thermal.c  |    1 +
+ drivers/thermal/thermal_core.c |   17 ++++++++---------
+ drivers/thermal/thermal_trip.c |    2 +-
+ include/linux/thermal.h        |   10 +++++-----
+ 4 files changed, 15 insertions(+), 15 deletions(-)
+
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -137,7 +137,6 @@ struct thermal_cooling_device {
+  * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
+  * @mode:		current mode of this thermal zone
+  * @devdata:	private pointer for device private data
+- * @trips:	an array of struct thermal_trip
+  * @num_trips:	number of trip points the thermal zone supports
+  * @passive_delay_jiffies: number of jiffies to wait between polls when
+  *			performing passive cooling.
+@@ -167,6 +166,7 @@ struct thermal_cooling_device {
+  * @poll_queue:	delayed work for polling
+  * @notify_event: Last notification event
+  * @suspended: thermal zone suspend indicator
++ * @trips:	array of struct thermal_trip objects
+  */
+ struct thermal_zone_device {
+ 	int id;
+@@ -179,7 +179,6 @@ struct thermal_zone_device {
+ 	struct thermal_attr *trip_hyst_attrs;
+ 	enum thermal_device_mode mode;
+ 	void *devdata;
+-	struct thermal_trip *trips;
+ 	int num_trips;
+ 	unsigned long passive_delay_jiffies;
+ 	unsigned long polling_delay_jiffies;
+@@ -200,10 +199,11 @@ struct thermal_zone_device {
+ 	struct list_head node;
+ 	struct delayed_work poll_queue;
+ 	enum thermal_notify_event notify_event;
++	bool suspended;
+ #ifdef CONFIG_THERMAL_DEBUGFS
+ 	struct thermal_debugfs *debugfs;
+ #endif
+-	bool suspended;
++	struct thermal_trip trips[] __counted_by(num_trips);
+ };
+ 
+ /**
+@@ -322,7 +322,7 @@ int thermal_zone_get_crit_temp(struct th
+ #ifdef CONFIG_THERMAL
+ struct thermal_zone_device *thermal_zone_device_register_with_trips(
+ 					const char *type,
+-					struct thermal_trip *trips,
++					const struct thermal_trip *trips,
+ 					int num_trips, void *devdata,
+ 					struct thermal_zone_device_ops *ops,
+ 					const struct thermal_zone_params *tzp,
+@@ -381,7 +381,7 @@ void thermal_zone_device_critical(struct
+ #else
+ static inline struct thermal_zone_device *thermal_zone_device_register_with_trips(
+ 					const char *type,
+-					struct thermal_trip *trips,
++					const struct thermal_trip *trips,
+ 					int num_trips, void *devdata,
+ 					struct thermal_zone_device_ops *ops,
+ 					const struct thermal_zone_params *tzp,
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -1227,9 +1227,6 @@ int thermal_zone_get_crit_temp(struct th
+ 	if (tz->ops->get_crit_temp)
+ 		return tz->ops->get_crit_temp(tz, temp);
+ 
+-	if (!tz->trips)
+-		return -EINVAL;
+-
+ 	mutex_lock(&tz->lock);
+ 
+ 	for (i = 0; i < tz->num_trips; i++) {
+@@ -1271,10 +1268,12 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_
+  * IS_ERR*() helpers.
+  */
+ struct thermal_zone_device *
+-thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *trips, int num_trips,
+-					void *devdata, struct thermal_zone_device_ops *ops,
+-					const struct thermal_zone_params *tzp, int passive_delay,
+-					int polling_delay)
++thermal_zone_device_register_with_trips(const char *type,
++					const struct thermal_trip *trips,
++					int num_trips, void *devdata,
++					struct thermal_zone_device_ops *ops,
++					const struct thermal_zone_params *tzp,
++					int passive_delay, int polling_delay)
+ {
+ 	struct thermal_zone_device *tz;
+ 	int id;
+@@ -1308,7 +1307,7 @@ thermal_zone_device_register_with_trips(
+ 	if (!thermal_class)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	tz = kzalloc(sizeof(*tz), GFP_KERNEL);
++	tz = kzalloc(struct_size(tz, trips, num_trips), GFP_KERNEL);
+ 	if (!tz)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -1340,7 +1339,7 @@ thermal_zone_device_register_with_trips(
+ 	tz->ops = ops;
+ 	tz->device.class = thermal_class;
+ 	tz->devdata = devdata;
+-	tz->trips = trips;
++	memcpy(tz->trips, trips, num_trips * sizeof(*trips));
+ 	tz->num_trips = num_trips;
+ 
+ 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
+Index: linux-pm/drivers/thermal/imx_thermal.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/imx_thermal.c
++++ linux-pm/drivers/thermal/imx_thermal.c
+@@ -355,6 +355,7 @@ static int imx_set_trip_temp(struct ther
+ 		return -EINVAL;
+ 
+ 	imx_set_alarm_temp(data, temp);
++	trips[IMX_TRIP_PASSIVE].temperature = temp;
+ 
+ 	pm_runtime_put(data->dev);
+ 
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -122,7 +122,7 @@ void __thermal_zone_set_trips(struct the
+ int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			    struct thermal_trip *trip)
+ {
+-	if (!tz || !tz->trips || trip_id < 0 || trip_id >= tz->num_trips || !trip)
++	if (!tz || trip_id < 0 || trip_id >= tz->num_trips || !trip)
+ 		return -EINVAL;
+ 
+ 	*trip = tz->trips[trip_id];
+
+
+
 
