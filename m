@@ -1,117 +1,143 @@
-Return-Path: <linux-kernel+bounces-65958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A81855467
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:55:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE16185546A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:56:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2461F1F22592
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:55:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEE5A1C221D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E975F13DBBC;
-	Wed, 14 Feb 2024 20:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7213513EFE1;
+	Wed, 14 Feb 2024 20:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Pk1ICBHh"
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PfJnhvA8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CDE13DBBF
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B13913B799
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707944124; cv=none; b=hCP2lKZUL5sj7F7GRn91rw4oXO07/ZKDwEhrCKuC/ZIOfN51cXwb8sYJRtfAn+zsToLKM9WJgLExAaKArK1jrcNalboNn9iXK0jg6EXyXYBwe+1SGZvNclUllX7gLuJMi9G7WBFYWxMsfmZuRKXJAPhK/vF1IfD3oiGmNrSWEhU=
+	t=1707944154; cv=none; b=QbyIEVe6BClSCySm2MXhX7kyvHdcoI/CfIsd4miaOmJsNB9YzysetojFekVhv7uPD/4Oqe0nzYPFDdSf+NurMrc+71c2DRURzwHEC5u59pqfUNQJaHTjMjusTfOytXt7u1z9Gdt4RKCjNF7jAtzMIvmX2jmkXYR8mLVWos875DM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707944124; c=relaxed/simple;
-	bh=3iFXhBXrEO5fMGfS3YlOFuiqKJb2jToIVEM1adjf3KE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fXyWIUv3oxnSFCrUApeDIoKiGw9zlJiVCGd2VZF0mNRmr9uUTJNAl8ADE7WeGB5s6c+k3eJyyu7UzLxtjzjkLEdyC9BT3zCiZJrzWzJf3Ror41Awr4iK/oRXAhhtT2fdVFl6TMXGEHgY1yUpc2+H/KiNGE5tSScafaWz3TkaYXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Pk1ICBHh; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 12:55:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707944119;
+	s=arc-20240116; t=1707944154; c=relaxed/simple;
+	bh=/Yf1On6PPx/GIt4Nh8Uwcd47eLJMbzpEgqXi7NBje+M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kKIiYPwrh6e8er40/Zbaz2NfMbWgny9cCljDHw9NXVsT6Nai2CMeiq0lYB0OzvxL0QTxrTyzmBUs8ADfPhisljgQq6whwybfVk+janSnvSLe70KyFTDEO0C1FFscmjq6CmWqG+SyoKYar57l++lFmA/zG85ddFOuMj5fI0CiEQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PfJnhvA8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707944152;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xo8269aewKOfShv/31KAAKnpB/F7S+Kl3+Lk1/FPD3g=;
-	b=Pk1ICBHhIE2T5qz5LlX4RF1DHCijddx53Q7QHWurpgjANNIC33z13Uq6ipi2CzOcOeqdhg
-	w/lP6rjgfoYdEZWWP+xT9pzh+YW4UGPBq4xUkainwHB4dsNoMuCAhDvTmTjjN/6DiCOZ6p
-	/k8iGjl1Iy8+O/twNjnbNz7WKb+nXKs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
- interacting with an ITS
-Message-ID: <Zc0orzU-CeKEyx3j@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
- <20240213094114.3961683-1-oliver.upton@linux.dev>
- <86zfw33qae.wl-maz@kernel.org>
- <Zc0NsFm40nIqTmRf@linux.dev>
- <86v86q4xkf.wl-maz@kernel.org>
+	bh=qd2aiPI9hKK8zn318SlhqtdzM62v1ZVBF4dOWFWdohA=;
+	b=PfJnhvA85qrbL6krTc/g3CYlcSJugv0D16nJMM6zmVhegeqzwl4dXQGJmWordkTflWwyoI
+	I652eFqXzvAX6SQQavtdW/HAHiP1LrnfkgQZek3taDzzZLozYFVp/O8/jMw+NR51UEIKXg
+	Eb7goPQaZGrUlJc59KmLRre5pcDV4JI=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-696-INn6TyccOfqSJMkmNjWZmg-1; Wed, 14 Feb 2024 15:55:49 -0500
+X-MC-Unique: INn6TyccOfqSJMkmNjWZmg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-51151b8de86so133246e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:55:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707944148; x=1708548948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qd2aiPI9hKK8zn318SlhqtdzM62v1ZVBF4dOWFWdohA=;
+        b=vuQvMdMx101YRDj/BLWrb0u8U1LKn06UIVs8yj47nCm3ZQNfalAGZbujRWr5JsGG2L
+         rWwAtmP6i6mjuw109UAaWM8fEE4DgjjYLb5XFuAN5fC1elXdZcBfLub6HEqWrYPBMAik
+         +X7BbZ6LSomgQG4UQbmrFoWYiQUHm0lI1O+0AuoWIyKHdz6ekDwrnQVWr6u7DARZ1IL0
+         lTtdE6TPC4ti3FnncVSw1kEcVJ2oKP6kZc/1cEvoMuEbL/5TkcSxW7Hx5CV3lSZntYXC
+         tjHGI3TPLVH1mPv97UNH2MzakqzPsLBQ6eZNuhGp8/G9Xlt9/in83g1TkyH5vvWfsiax
+         4kyw==
+X-Gm-Message-State: AOJu0YyX+fQZ1EqJWm/YuEbBhg2LTmhViY5tQJnzrBh8JPKSnzFYzpNJ
+	UMTL9h3qvsH+XGDU7WQM5ZbPvjlTFaX+NaGJodO9vvAAMR5Bas/b8MiqxpLkNihwnraaMeTsy97
+	umCotcATm96DYZ1QVO5zPVm3+g2XxvycDM5G6cNxwnuzIBLeeHKNUG2fuzllzxkHNSngdshMkzb
+	HCra4snr3GX75ig3iNi3OP9ySbEKe8Fb2YPyap
+X-Received: by 2002:a05:6512:1287:b0:511:acd9:c10d with SMTP id u7-20020a056512128700b00511acd9c10dmr1759010lfs.40.1707944148508;
+        Wed, 14 Feb 2024 12:55:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGAdIviCY+cOciu/DFH2BuB1fIjxeT6eRhZTrKn5UOsY0w+5r+k1jdM88qSbORRZ0fRDTMriyN0YlhWiPoNZks=
+X-Received: by 2002:a05:6512:1287:b0:511:acd9:c10d with SMTP id
+ u7-20020a056512128700b00511acd9c10dmr1759002lfs.40.1707944148226; Wed, 14 Feb
+ 2024 12:55:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86v86q4xkf.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240207184100.18066-1-djeffery@redhat.com> <20240207184100.18066-2-djeffery@redhat.com>
+ <CAGETcx91KahXY6ULXDpek3Xf6k4s646Y6+jn_LtfZPDDOpg7hA@mail.gmail.com>
+In-Reply-To: <CAGETcx91KahXY6ULXDpek3Xf6k4s646Y6+jn_LtfZPDDOpg7hA@mail.gmail.com>
+From: David Jeffery <djeffery@redhat.com>
+Date: Wed, 14 Feb 2024 15:55:36 -0500
+Message-ID: <CA+-xHTG2E3zMmQSKdEJHC=nnf1AX-UQ=tPY0DDHDsozP+-QL_Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/6] minimal async shutdown infrastructure
+To: Saravana Kannan <saravanak@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, 
+	linux-scsi@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Laurence Oberman <loberman@redhat.com>, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 08:09:52PM +0000, Marc Zyngier wrote:
-> > If the order of restore from userspace is CBASER, CWRITER, CREADR then
-> > we **wind up replaying the entire command queue**. While insane, I'm
-> > pretty sure it is legal for the guest to write garbage after the read
-> > pointer has moved past a particular command index.
-> > 
-> > Fsck!!!
-> 
-> This is documented Documentation/virt/kvm/devices/arm-vgic-its.rst to
-> some extent, and it is allowed for the guest to crap itself on behalf
-> of userspace if the ordering isn't respected.
+On Tue, Feb 13, 2024 at 10:43=E2=80=AFPM Saravana Kannan <saravanak@google.=
+com> wrote:
+>
+> On Wed, Feb 7, 2024 at 10:40=E2=80=AFAM David Jeffery <djeffery@redhat.co=
+m> wrote:
+> >
+> > + * Wait for all async shutdown operations currently active to complete
+> > + */
+> > +static void wait_for_active_async_shutdown(void)
+> > +{
+> > +       struct device *dev, *parent;
+> > +
+> > +        while (!list_empty(&async_shutdown_list)) {
+> > +                dev =3D list_entry(async_shutdown_list.next, struct de=
+vice,
+> > +                                kobj.entry);
+> > +
+> > +                parent =3D dev->parent;
+>
+> I didn't check the code thoroughly, but so there might be other big
+> issues. But you definitely need to take device links into account.
+> Shutdown all your consumers first similar to how you shutdown the
+> children devices first. Look at the async suspend/resume code for some
+> guidance.
+>
 
-Ah, fair, I missed the documentation here. If we require userspace to
-write CTLR last then we _should_ be fine, but damn is this a tricky set
-of expectations.
+Sure, I'll work on adding that into the order rules.
 
-> > So, how about we do this:
-> > 
-> >  - Provide a uaccess hook for CWRITER that changes the write-pointer
-> >    without processing any commands
-> > 
-> >  - Assert an invariant that at any time CWRITER or CREADR are read from
-> >    userspace that CREADR == CWRITER. Fail the ioctl and scream if that
-> >    isn't the case, so that way we never need to worry about processing
-> >    'in-flight' commands at the destination.
-> 
-> Are we guaranteed that we cannot ever see CWRITER != CREADR at VM
-> dumping time? I'm not convinced that we cannot preempt the vcpu thread
-> at the right spot, specially given that you can have an arbitrary
-> large batch of commands to execute.
-> 
-> Just add a page-fault to the mix, and a signal pending. Pronto, you
-> see a guest exit and you should be able to start dumping things
-> without the ITS having processed much. I haven't tried, but that
-> doesn't seem totally unlikely.
+> > @@ -110,6 +115,8 @@ struct device_driver {
+> >         void (*sync_state)(struct device *dev);
+> >         int (*remove) (struct device *dev);
+> >         void (*shutdown) (struct device *dev);
+> > +       void (*async_shutdown_start) (struct device *dev);
+> > +       void (*async_shutdown_end) (struct device *dev);
+>
+> Why not use the existing shutdown and call it from an async thread and
+> wait for it to finish? Similar to how async probes are handled. Also,
+> adding separate ops for this feels clunky and a very narrow fix. Just
+> use a flag to indicate the driver can support async shutdown using the
+> existing shutdown() op.
+>
+It is rather clunky. It was carried from older patches where I
+mistakenly thought people wanted this separate interface. And adding
+threads seemed like overkill. Others have been working on similar
+patches on linux-nvme that I was unaware of. They add an optional
+shutdown_wait call instead of this interface. I had planned on
+adapting to work with their interface design.
 
-Well, we would need to run all userspace reads and writes through the
-cmd_lock in this case, which is what we already do for the CREADR
-uaccess hook. To me the 'racy' queue accessors only make sense for guest
-accesses, since the driver is expecting to poll for completion in that
-case.
+David Jeffery
 
-Otherwise we decide the existing rules for restoring the ITS are fine
-and I get to keep my funky driver :)
-
--- 
-Thanks,
-Oliver
 
