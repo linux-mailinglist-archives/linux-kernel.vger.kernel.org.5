@@ -1,90 +1,193 @@
-Return-Path: <linux-kernel+bounces-65279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC98D854A84
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:31:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3779A854A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:31:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF4D21C2443A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:31:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C92511F24983
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9C254745;
-	Wed, 14 Feb 2024 13:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="2Bwly8Af"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D416F54BC9;
+	Wed, 14 Feb 2024 13:31:47 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC507499;
-	Wed, 14 Feb 2024 13:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158591CA80
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707917455; cv=none; b=GH2NiP6jcLjNtbCIXNdlpbCDCMVnP9wTq7cPHeZ7dCrkLrSzQiI3GP6Owdd6t3KqMirzcfjsPy+rCB8BoPISj1c1TZr+P+fMYOd3fDrJmVEbsJLeyD/rlk9JbRXmT51qVMEyJf7lRtUslb5LvhOkVJHA3Sy9UzoKppPCnhObMMA=
+	t=1707917507; cv=none; b=ljktlZEn57oxKs9kcwleCAd/1UHy5htbK7N4A4pq9eLUQalSSWTQ91un9cH3VaCpQePfpX9wntFMp31jUHhIwsQts204iPDcwwQ6cx/uLeub6gIggHNs4CDWVz9ktGvLCko9Qrbj1GPZ7lHm5pjVVwH2XF056DVf+lZ7xecQyHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707917455; c=relaxed/simple;
-	bh=K455WI33R+3XbLzWm+QlI6MIT3mn7lkjaRiD7AzxaF4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Jp5t/J7MyHLcRQcE3EGy0wFB3CWPycJcpuq/SxmAg5q69HuWUakF0ZWBLOqBhPj3fl1OfUSOfJ1Uz0CoeSarxro3Z80x/IKvkk6vHxfKBS257w4uEHvlMPoQJLcPicu7CJF85llE/S09B5Ij1p9ojQVg+fn7Y9LH93EULEPiPYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=2Bwly8Af; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17C54C433C7;
-	Wed, 14 Feb 2024 13:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1707917454;
-	bh=K455WI33R+3XbLzWm+QlI6MIT3mn7lkjaRiD7AzxaF4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=2Bwly8Af5Am8RU4eqwKTcNBh/zkJGqw0bhqJFxF+8xgUQluNVkggAMsxJJ5ouGMEO
-	 kXKZ+BjwS9u8mSUR7Rf6dh4/azAGZV+s4ui/KQ7bo4KQBAStM4vZX/yChJh3LNZJ9D
-	 2TGhKOdESaP2te+w/zP0foEfTP1WovcfGQuhLhQI=
-Date: Wed, 14 Feb 2024 05:30:53 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, David Kaplan <david.kaplan@amd.com>,
- Larry Dewey <larry.dewey@amd.com>, Elena Reshetova
- <elena.reshetova@intel.com>, Carlos Bilbao <carlos.bilbao@amd.com>,
- "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Randy Dunlap
- <rdunlap@infradead.org>, Petr Mladek <pmladek@suse.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, Marc
- =?ISO-8859-1?Q?Aur=E8le?= La France <tsi@tuyoix.net>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Nhat Pham <nphamcs@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Christian Brauner (Microsoft)"
- <brauner@kernel.org>, Douglas Anderson <dianders@chromium.org>, Luis
- Chamberlain <mcgrof@kernel.org>, Guenter Roeck <groeck@chromium.org>, Mike
- Christie <michael.christie@oracle.com>, Kent Overstreet
- <kent.overstreet@linux.dev>, Maninder Singh <maninder1.s@samsung.com>,
- linux-doc@vger.kernel.org (open list:DOCUMENTATION),
- linux-kernel@vger.kernel.org (open list), Roberto Sassu
- <roberto.sassu@huaweicloud.com>, petr@tesarici.cz, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 5/5] sbm: SandBox Mode documentation
-Message-Id: <20240214053053.982b48d993ae99dad1d59020@linux-foundation.org>
-In-Reply-To: <20240214113035.2117-6-petrtesarik@huaweicloud.com>
-References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
-	<20240214113035.2117-6-petrtesarik@huaweicloud.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707917507; c=relaxed/simple;
+	bh=g7+dYMrf4hQ0Bbepi6j5xfvu9bdIju/3TxK2e2upb9Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OJkT25OVEQ99peUiGJ8V//20EkPdWQV+6cNboD5u5KhRfz99NpnFLzevUW4LicQ1LLa4sqPwdfK+MLD1ZwJVnVuLOvyUlL/zYcUAJ/twYVtVzPWxcEKveI0d/ZIrWeuA7Wxyli9fUBmz8hibdRC6maKM2dVExL44FF78ctWki/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raFM1-0005aN-6M; Wed, 14 Feb 2024 14:31:13 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raFLy-000hZq-4h; Wed, 14 Feb 2024 14:31:10 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raFLy-000ARF-0F;
+	Wed, 14 Feb 2024 14:31:10 +0100
+Message-ID: <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
+Subject: Re: [PATCH v2 20/20] media: venus: pm_helpers: Use reset_bulk API
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, Stanimir Varbanov
+ <stanimir.k.varbanov@gmail.com>, Vikash Garodia
+ <quic_vgarodia@quicinc.com>,  Bryan O'Donoghue
+ <bryan.odonoghue@linaro.org>, Andy Gross <agross@kernel.org>, Bjorn
+ Andersson <andersson@kernel.org>,  Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Dikshita Agarwal <quic_dikshita@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, Stanimir Varbanov
+	 <stanimir.varbanov@linaro.org>, Mauro Carvalho Chehab
+	 <mchehab+huawei@kernel.org>, linux-media@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Wed, 14 Feb 2024 14:31:09 +0100
+In-Reply-To: <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+	 <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, 14 Feb 2024 12:30:35 +0100 Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
+Hi Konrad,
 
-> +Although data structures are not serialized and deserialized between kernel
-> +mode and sandbox mode, all directly and indirectly referenced data structures
-> +must be explicitly mapped into the sandbox, which requires some manual effort.
+On Fr, 2024-02-09 at 22:10 +0100, Konrad Dybcio wrote:
+> All of the resets are toggled together. Use the bulk api to save on some
+> code complexity.
+>=20
+> The delay between resets is now correctly determined by the reset
+> framework.
 
-Maybe I'm missing something here, but...
+If this is a recent change, could you reference the commit?
 
-The requirement that the sandboxed function only ever touch two linear
-blocks of memory (yes?) seems a tremendous limitation.  I mean, how can
-the sandboxed function call kmalloc()?  How can it call any useful
-kernel functions?  They'll all touch memory which lies outside the
-sandbox areas?
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c       | 15 ++++++++++-----
+>  drivers/media/platform/qcom/venus/core.h       |  4 ++--
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 15 +++------------
+>  3 files changed, 15 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/pla=
+tform/qcom/venus/core.c
+> index 873affe17537..ff5601a5ce77 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -328,11 +328,16 @@ static int venus_probe(struct platform_device *pdev=
+)
+>  	if (ret)
+>  		return ret;
+> =20
+> -	for (i =3D 0; i < res->resets_num; i++) {
+> -		core->resets[i] =3D devm_reset_control_get_exclusive(dev, res->resets[=
+i]);
+> -		if (IS_ERR(core->resets[i]))
+> -			return PTR_ERR(core->resets[i]);
+> -	}
+> +	core->resets =3D devm_kcalloc(dev, res->resets_num, sizeof(*core->reset=
+s), GFP_KERNEL);
 
-Perhaps a simple but real-world example would help clarify.
+Since VIDC_RESETS_NUM_MAX is only 2, I don't think a separate
+allocation is worth it.
+
+> +	if (res->resets_num && !core->resets)
+> +		return -ENOMEM;
+> +
+> +	for (i =3D 0; i < res->resets_num; i++)
+> +		core->resets[i].id =3D res->resets[i];
+> +
+> +	ret =3D devm_reset_control_bulk_get_exclusive(dev, res->resets_num, cor=
+e->resets);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Failed to get resets\n");
+> =20
+>  	ret =3D venus_get_resources(core);
+>  	if (ret)
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/pla=
+tform/qcom/venus/core.h
+> index 6ecaa3e38cac..2376b9cbdf2c 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -130,7 +130,7 @@ struct venus_format {
+>   * @pmdomains:	a pointer to a list of pmdomains
+>   * @opp_dl_venus: an device-link for device OPP
+>   * @opp_pmdomain: an OPP power-domain
+> - * @resets: an array of reset signals
+> + * @resets: a reset_control_bulk_data array of hardware reset signals
+>   * @vdev_dec:	a reference to video device structure for decoder instance=
+s
+>   * @vdev_enc:	a reference to video device structure for encoder instance=
+s
+>   * @v4l2_dev:	a holder for v4l2 device structure
+> @@ -183,7 +183,7 @@ struct venus_core {
+>  	struct dev_pm_domain_list *pmdomains;
+>  	struct device_link *opp_dl_venus;
+>  	struct device *opp_pmdomain;
+> -	struct reset_control *resets[VIDC_RESETS_NUM_MAX];
+> +	struct reset_control_bulk_data *resets;
+
+Any reason not to just keep this as an array[VIDC_RESETS_NUM_MAX]?
+
+>  	struct video_device *vdev_dec;
+>  	struct video_device *vdev_enc;
+>  	struct v4l2_device v4l2_dev;
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/med=
+ia/platform/qcom/venus/pm_helpers.c
+> index 9df8f2292c17..170fb131cb1e 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -865,21 +865,12 @@ void vcodec_domains_put(struct venus_core *core)
+>  static int core_resets_reset(struct venus_core *core)
+>  {
+>  	const struct venus_resources *res =3D core->res;
+> -	unsigned int i;
+>  	int ret;
+> =20
+> -	for (i =3D 0; i < res->resets_num; i++) {
+> -		ret =3D reset_control_assert(core->resets[i]);
+> -		if (ret)
+> -			goto err;
+> -
+> -		usleep_range(150, 250);
+> -		ret =3D reset_control_deassert(core->resets[i]);
+> -		if (ret)
+> -			goto err;
+> -	}
+> +	ret =3D reset_control_bulk_reset(res->resets_num, core->resets);
+> +	if (ret)
+> +		dev_err(core->dev, "Failed to toggle resets: %d\n", ret);
+> =20
+> -err:
+>  	return ret;
+
+Could be simplified to:
+
+	return reset_control_bulk_reset(res->resets_num, core-
+>resets);
+
+regards
+Philipp
 
