@@ -1,165 +1,208 @@
-Return-Path: <linux-kernel+bounces-65824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30AA855279
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:44:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3453E855282
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6BAA1C274BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:44:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D685C2888C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A513D12F37B;
-	Wed, 14 Feb 2024 18:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA56C134CD9;
+	Wed, 14 Feb 2024 18:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GPYuxI1z"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UyDrvRw0"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20C8604AB
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:44:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207F112F598;
+	Wed, 14 Feb 2024 18:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936252; cv=none; b=Z69/OagRfbGYuYa68uDIRFS9klAIt4lvYojpnumHl7JlG4YpiSTBhIQz4YBHgXr9DyR89JVg0kMGCwZczDqG6f+DTA7Hxn3MGbDy4yKBcL+qaxVXL+ZTz3ZjeFnRqeRIEvWbPPreaEB9O296cru77tOml/rt6GKNRqlJX2j5uhc=
+	t=1707936285; cv=none; b=KXskgip6aH5SFuyFsdgmPblKt5f3KZD4tTfPZel854FQzfCMGAMj+BRnM6cuFdY9FPyuDptXcyXRv/u3UqktMY1m9Pvx4L6N3SHvV9BmpR2+L2WvMHaJAqoiCkE4KjgHhylJg3NgdEzBx6PcBA78Z/3e/61wvp9vndvKBmaL1Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936252; c=relaxed/simple;
-	bh=icjqOUBqDhvNqaJSlrDNjJyaZHw4wcNN655EoUeZaWE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UfpMbYYHJqnzEE1zAd2MR2ssjAMfKilNFIxEUIL3l+/dZOetIpu/6SxKtQQ+suAazPeH/2jUlU3lqEO13NLVnxVChUV1oT/oiXKKGe+ojNkeGg6g6r6jblc7Dk+5MOSZ202E3Vw3ghIC6nhb2xwqCLW8vM/7K3E7bNRKiv+mL+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GPYuxI1z; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a90a0a1a1so111626a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:44:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1707936249; x=1708541049; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GqaxyVnmqOcpqixyynWKkEU90hzNVr8SECJt4qWMgW4=;
-        b=GPYuxI1zMIQ9rrbFushFvsDTJQz7T1C8Ju0bpBZi3JHTN/5A0t57GoFBWH1nRCpgTN
-         LUiU8mXvTJVSxl1fLDLO1KDJYge24RxJJvGkA/QQWUBNxRmVn68pG8ayCJO/B4g2ItVm
-         x2Ep9gvgBvp43aRsynYMrOpDJ5DaJ9R+Y+hag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707936249; x=1708541049;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GqaxyVnmqOcpqixyynWKkEU90hzNVr8SECJt4qWMgW4=;
-        b=hl+5x7LYA2qoq/hFrznyWiBwEGFWF9o0+YKcvrXFz8QJTfIAuOlwnp9d9alxaZhz0g
-         q028+a52f/eSWsMix1dE7FJZO3MIJxDL86S7NdiNKvppSm0X+BRS0Cf+J06hd0sWjPKr
-         SfOndHAMmudQQMQaBDXZO+OYNIpNYj16LE7ltFvP8u3aUrHdAzTKleQ+yCQ9gk8Wagv2
-         bIvg9Z0woLt6v27ungB0ZUYkwbnm8JD+4lNL3uYn4+1MxWKlmR7xYP8kip+lzu6jn7SU
-         RxVOGh8MGbEtgOjY5ty1ojrbvtgqDt3AVvV5M1f9ZUQcVuuZzzA0V+YTYwUKNW6ZQb2s
-         dmWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmQ607V/e0rmFUBdRBQWpNvBnlWgEywCCYF/q0bmT6OphthEfgbXmPvp1Z2UzfPojiIB1ScHHGE4t5qafhAg9kGRInBLDd3tzuZMSc
-X-Gm-Message-State: AOJu0YwA/nZrnWfbtBYlsutno3G8a8aDQFyq+/wi29DupA6tCQzp0/9i
-	yRAObxdXv4HGBtvP12KVh/+Eo48thQngEmlRmBaVo4NTioeY9fpz8GWmYVFF+/xHNg0PV7x/I6Z
-	CH8I=
-X-Google-Smtp-Source: AGHT+IFIbAn27atsILmGI1LmhLV8xCoEIATS+TskLdFW2kOH5mGqXgNTiN7Dd//KeHxv19YC3JB1WA==
-X-Received: by 2002:a17:906:260a:b0:a3c:c451:2115 with SMTP id h10-20020a170906260a00b00a3cc4512115mr2519783ejc.77.1707936248845;
-        Wed, 14 Feb 2024 10:44:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUxu/j3d5jIBQDbvpRTBmpB/hhgxTYtOl5Mm4GJLVCebCgcNdSCG9fr2fqnVeZrKMraDtjmM/8kYgejowHQQssZJJZcvyd16x+ZkvKh
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id m8-20020a1709060d8800b00a3d47ee62c7sm821317eji.124.2024.02.14.10.44.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 10:44:07 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so82680a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:44:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXBGJBCSNl4IWhWvwQ5mB9yeTXqpEHOTcP5l267UZbn+jIoWlk0GQJT658g9pqwEkTM6cgUcqo3PZ9WIKxV2ZV9QAYQoxCzli29ywF/
-X-Received: by 2002:a05:6402:35c1:b0:563:2069:9555 with SMTP id
- z1-20020a05640235c100b0056320699555mr2778693edc.35.1707936247440; Wed, 14 Feb
- 2024 10:44:07 -0800 (PST)
+	s=arc-20240116; t=1707936285; c=relaxed/simple;
+	bh=uD+/f2teJKsFCPXY5eQJTRjF7hC8K1LL4j9UeYj59Eo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AVKYqu7HbS/OTmisQ0HJgtgK6Po0kKZfStg3FS+5SlpQvurrZ2hbNuEpn4wRmDnwUqipaEXxkpv67rGHRHecnKYsdE5t2X37aAm8egvF+nJTRIq28pn59r1rCvvEiguNRxvT8+iVzgx5TCl0oYAFq459S6PRcJyBxIDVAhy6iYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UyDrvRw0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D5CC740E01BB;
+	Wed, 14 Feb 2024 18:44:40 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id pADLPMB760tG; Wed, 14 Feb 2024 18:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707936278; bh=hPjwBz+7GPfxkRtkOoKm116lDwc03zgFS/o6mesmDKk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UyDrvRw0dbXag6vks8q/YkiYSTI4nAX2LEDiV4qqwhIMEQE2xzuwNNL7sJ/uVsYAN
+	 Cij167krmYVSwTuN47C5WH+IXluhwpMRZVVO6KqbRS1hCNO/bwNvC+bTQm6twUVNNR
+	 kMX3Nn6axYX+mk6hzL67sfxpVF6h2rDssaxcPtE91zVAwjziz2xfAeuU7DxevH9YCe
+	 ztZjSCBG538tJBNdYT60HAKCpCLn0yW1oFDtSlTUm3REagulYN9ES43PEZxAZBdChu
+	 hiQRa0kZLYJbAybdlWOMQk4hEMYdRRY/EQYa24r4ry9cSk0k3HHz/Eqn8RVbuutSfh
+	 wa75gkxIm76M+DYLbDFqs6R3UxcMRhqS56VZQIJABVgS2woeKRkjJFkrKN79CyaZLK
+	 ERGol1412fagrRPCb5g4yy3M3CpJZ+mpwOle6QwSfMrBhwc/xQSrd61Oqj3UNYZotD
+	 qnrRX0gcj4fx32xiuOh4RS9kBW+tjnIdnJTwsru1SoNVxca4EP4r9I39HX0E54f1Fr
+	 yEfWjiyaYqrrBwrCMHViYbAbSy3sRYMLoAN72FWxtGSTqONMGlxX0dAwCONFBHLlVE
+	 O/9wC/WlXhuZ+7Vm9/tYvEWAVaPnSNSy8+Qcd9vsN4ldURGuFkfsWKJ/vmKlA3suqL
+	 FRIgTT59zXPg6zJyL6m3rfLQ=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7BAED40E016C;
+	Wed, 14 Feb 2024 18:44:29 +0000 (UTC)
+Date: Wed, 14 Feb 2024 19:44:23 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214184423.GNZc0KB_8va7gUyk_m@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
+ <20240214110541.GFZcyehY44eSSYsW2l@fat_crate.local>
+ <3f793ed7-b65c-48d0-a556-f51bdf4f5add@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208220604.140859-1-seanjc@google.com> <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com> <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
-In-Reply-To: <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 14 Feb 2024 10:43:50 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
-Message-ID: <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
-Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
- (and earlier)
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>, Jakub Jelinek <jakub@redhat.com>, 
-	Sean Christopherson <seanjc@google.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000540e2206115be5e4"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3f793ed7-b65c-48d0-a556-f51bdf4f5add@amd.com>
 
---000000000000540e2206115be5e4
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Feb 14, 2024 at 09:56:14AM -0500, Yazen Ghannam wrote:
+> > This one needs to go too.
+> > 
+> 
+> Ack.
 
-On Sun, 11 Feb 2024 at 03:12, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> So, I'd suggest at least limit the workaround to known-bad compilers.
+Gone:
 
-Based on the current state of
+diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
+index a67a4b67cf9d..643c36b6dc9c 100644
+--- a/drivers/ras/amd/fmpm.c
++++ b/drivers/ras/amd/fmpm.c
+@@ -146,11 +146,6 @@ static DEFINE_MUTEX(fmpm_update_mutex);
+ #define for_each_fru(i, rec) \
+ 	for (i = 0; rec = fru_records[i], i < max_nr_fru; i++)
+ 
+-static inline struct cper_fru_poison_desc *get_fpd(struct fru_rec *rec, u32 entry)
+-{
+-	return &rec->entries[entry];
+-}
+-
+ static inline u32 get_fmp_len(struct fru_rec *rec)
+ {
+ 	return rec->sec_desc.section_length - sizeof(struct cper_section_descriptor);
+@@ -253,7 +248,9 @@ static bool rec_has_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *fpd)
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < rec->fmp.nr_entries; i++) {
+-		if (same_fpd(get_fpd(rec, i), fpd)) {
++		struct cper_fru_poison_desc *fpd_i = &rec->entries[i];
++
++		if (same_fpd(fpd_i, fpd)) {
+ 			pr_debug("Found duplicate record");
+ 			return true;
+ 		}
+@@ -265,7 +262,7 @@ static bool rec_has_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *fpd)
+ static void update_fru_record(struct fru_rec *rec, struct mce *m)
+ {
+ 	struct cper_sec_fru_mem_poison *fmp = &rec->fmp;
+-	struct cper_fru_poison_desc fpd;
++	struct cper_fru_poison_desc fpd, *fpd_dest;
+ 	u32 entry = 0;
+ 
+ 	mutex_lock(&fmpm_update_mutex);
+@@ -287,9 +284,10 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
+ 		goto out_unlock;
+ 	}
+ 
+-	entry = fmp->nr_entries;
++	entry	  = fmp->nr_entries;
++	fpd_dest  = &rec->entries[entry];
+ 
+-	memcpy(get_fpd(rec, entry), &fpd, sizeof(struct cper_fru_poison_desc));
++	memcpy(fpd_dest, &fpd, sizeof(struct cper_fru_poison_desc));
+ 
+ 	fmp->nr_entries		 = entry + 1;
+ 	fmp->validation_bits	|= FMP_VALID_LIST_ENTRIES;
+@@ -359,11 +357,10 @@ static u32 get_cpu_from_fru_id(u64 fru_id)
+ 
+ static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries, u32 cpu)
+ {
+-	struct cper_fru_poison_desc *fpd;
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < nr_entries; i++) {
+-		fpd = get_fpd(rec, i);
++		struct cper_fru_poison_desc *fpd = &rec->entries[i];
+ 
+ 		if (fpd->hw_id_type != FPD_HW_ID_TYPE_MCA_IPID)
+ 			continue;
 
-    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113921
 
-I would suggest this attached kernel patch, which makes the manual
-"volatile" the default case (since it should make no difference except
-for the known gcc issue), and limits the extra empty asm serialization
-to gcc versions older than 12.1.0.
+> >          /* Use the complement value. */
+> >          rec->fmp.checksum = -checksum;
+> > 
+> > I'd say.
+> > 
+> 
+> This was my first thought. Other checksum code in the kernel does
+> the (0-X) thing. So I wasn't sure if there's any odd side effects
+> of one over the other. And I didn't take the time to dig into it.
 
-But Jakub is clearly currently trying to figure out exactly what was
-going wrong, so things may change. Maybe the commit he bisected to
-happened to just accidentally hide the real issue.
+I guess to probably be more expressive? I don't see how
 
-                Linus
+0 - X
 
---000000000000540e2206115be5e4
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lsm537ms0>
-X-Attachment-Id: f_lsm537ms0
+and 
 
-IGluY2x1ZGUvbGludXgvY29tcGlsZXItZ2NjLmggICB8IDEyICsrKy0tLS0tLS0tLQogaW5jbHVk
-ZS9saW51eC9jb21waWxlcl90eXBlcy5oIHwgMTEgKysrKysrKysrKy0KIDIgZmlsZXMgY2hhbmdl
-ZCwgMTMgaW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5jbHVk
-ZS9saW51eC9jb21waWxlci1nY2MuaCBiL2luY2x1ZGUvbGludXgvY29tcGlsZXItZ2NjLmgKaW5k
-ZXggYzFhOTYzYmU3ZDI4Li5kMTgxZDI3MDNiYmEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgv
-Y29tcGlsZXItZ2NjLmgKKysrIGIvaW5jbHVkZS9saW51eC9jb21waWxlci1nY2MuaApAQCAtNjcs
-MjEgKzY3LDE1IEBACiAvKgogICogR0NDICdhc20gZ290bycgd2l0aCBvdXRwdXRzIG1pc2NvbXBp
-bGVzIGNlcnRhaW4gY29kZSBzZXF1ZW5jZXM6CiAgKgotICogICBodHRwczovL2djYy5nbnUub3Jn
-L2J1Z3ppbGxhL3Nob3dfYnVnLmNnaT9pZD0xMTA0MjAKLSAqICAgaHR0cHM6Ly9nY2MuZ251Lm9y
-Zy9idWd6aWxsYS9zaG93X2J1Zy5jZ2k/aWQ9MTEwNDIyCisgKiAgIGh0dHBzOi8vZ2NjLmdudS5v
-cmcvYnVnemlsbGEvc2hvd19idWcuY2dpP2lkPTExMzkyMQogICoKICAqIFdvcmsgaXQgYXJvdW5k
-IHZpYSB0aGUgc2FtZSBjb21waWxlciBiYXJyaWVyIHF1aXJrIHRoYXQgd2UgdXNlZAogICogdG8g
-dXNlIGZvciB0aGUgb2xkICdhc20gZ290bycgd29ya2Fyb3VuZC4KLSAqCi0gKiBBbHNvLCBhbHdh
-eXMgbWFyayBzdWNoICdhc20gZ290bycgc3RhdGVtZW50cyBhcyB2b2xhdGlsZTogYWxsCi0gKiBh
-c20gZ290byBzdGF0ZW1lbnRzIGFyZSBzdXBwb3NlZCB0byBiZSB2b2xhdGlsZSBhcyBwZXIgdGhl
-Ci0gKiBkb2N1bWVudGF0aW9uLCBidXQgc29tZSB2ZXJzaW9ucyBvZiBnY2MgZGlkbid0IGFjdHVh
-bGx5IGRvCi0gKiB0aGF0IGZvciBhc21zIHdpdGggb3V0cHV0czoKLSAqCi0gKiAgICBodHRwczov
-L2djYy5nbnUub3JnL2J1Z3ppbGxhL3Nob3dfYnVnLmNnaT9pZD05ODYxOQogICovCisjaWYgR0ND
-X1ZFUlNJT04gPCAxMjAxMDAKICNkZWZpbmUgYXNtX2dvdG9fb3V0cHV0KHguLi4pIFwKIAlkbyB7
-IGFzbSB2b2xhdGlsZSBnb3RvKHgpOyBhc20gKCIiKTsgfSB3aGlsZSAoMCkKKyNlbmRpZgogCiAj
-aWYgZGVmaW5lZChDT05GSUdfQVJDSF9VU0VfQlVJTFRJTl9CU1dBUCkKICNkZWZpbmUgX19IQVZF
-X0JVSUxUSU5fQlNXQVAzMl9fCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2NvbXBpbGVyX3R5
-cGVzLmggYi9pbmNsdWRlL2xpbnV4L2NvbXBpbGVyX3R5cGVzLmgKaW5kZXggNjYzZDg3OTFjODcx
-Li4zYmI1YTlkMTZlYWEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvY29tcGlsZXJfdHlwZXMu
-aAorKysgYi9pbmNsdWRlL2xpbnV4L2NvbXBpbGVyX3R5cGVzLmgKQEAgLTM2Miw4ICszNjIsMTcg
-QEAgc3RydWN0IGZ0cmFjZV9saWtlbHlfZGF0YSB7CiAjZGVmaW5lIF9fbWVtYmVyX3NpemUocCkJ
-X19idWlsdGluX29iamVjdF9zaXplKHAsIDEpCiAjZW5kaWYKIAorLyoKKyAqICJhc20gZ290byIg
-aXMgZG9jdW1lbnRlZCB0byBhbHdheXMgYmUgdm9sYXRpbGUsIGJ1dCBzb21lIHZlcnNpb25zCisg
-KiBvZiBnY2MgZG9uJ3QgYWN0dWFsbHkgZG8gdGhhdDoKKyAqCisgKiAgIGh0dHBzOi8vZ2NjLmdu
-dS5vcmcvYnVnemlsbGEvc2hvd19idWcuY2dpP2lkPTEwMzk3OQorICoKKyAqIFNvIHdlJ2xsIGp1
-c3QgZG8gaXQgbWFudWFsbHkgdW5sZXNzIHdlIGhhdmUgb3RoZXIgbW9yZSBleHRlbnNpdmUKKyAq
-IHdvcmthcm91bmRzLgorICovCiAjaWZuZGVmIGFzbV9nb3RvX291dHB1dAotI2RlZmluZSBhc21f
-Z290b19vdXRwdXQoeC4uLikgYXNtIGdvdG8oeCkKKyNkZWZpbmUgYXNtX2dvdG9fb3V0cHV0KHgu
-Li4pIGFzbSB2b2xhdGlsZSBnb3RvKHgpCiAjZW5kaWYKIAogI2lmZGVmIENPTkZJR19DQ19IQVNf
-QVNNX0lOTElORQo=
---000000000000540e2206115be5e4--
+-X
+
+differ.
+
+And you can always do a before-after and look at the asm:
+
+before:
+# drivers/ras/amd/fmpm.c:202:   rec->fmp.checksum = 0 - checksum;
+#NO_APP
+        subl    %edx, %eax      # checksum, tmp100
+        movl    %eax, 200(%rbx) # tmp100, rec_9(D)->fmp.checksum
+
+after:
+# drivers/ras/amd/fmpm.c:202:   rec->fmp.checksum = -checksum;
+#NO_APP
+        subl    %edx, %eax      # checksum, tmp100
+        movl    %eax, 200(%rbx) # tmp100, rec_9(D)->fmp.checksum
+
+
+> > -/* Calculate a new checksum. */
+> > -static u32 get_fmp_checksum(struct fru_rec *rec)
+> 
+> I made this a helper because we need to validate the checksum when
+> reading records from storage too.
+
+It has a single user that's why I whacked it. If a new one materializes,
+sure, you can carve it out.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
