@@ -1,119 +1,99 @@
-Return-Path: <linux-kernel+bounces-65595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7982854F3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:57:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4112A854F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05CB01C228E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:57:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E98A51F216C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF4B6087F;
-	Wed, 14 Feb 2024 16:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D4A60B82;
+	Wed, 14 Feb 2024 16:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="bcp4Da1B"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52347604D9;
-	Wed, 14 Feb 2024 16:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pL2nwhSi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF94604BC;
+	Wed, 14 Feb 2024 16:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707929829; cv=none; b=l+TXiAczdAh+48ZrnUBrp3qrfnRwbEd6nVvCOPRu20A8C4jRc+D0hhSz4Giq/MHSqHQHd9PvOry60k4Ro9xtdpyn7GBkxiVfdST/Xz13OkjbHtm20Jvc8/AMCQYmYP6u33ONiE4SuYzdPGwFxGYYiCzW9SMSgtoU8pk6xIVHtbs=
+	t=1707929882; cv=none; b=cAcJRTBZDQTosAYyDSayPuWR8wlVlcZA+4Nx9BKHjxwZoYdMF6n13j+muXq4cdW55ABLYQBydpfyoJ2Q3OPHd2NVdxUEz+fzVNA9qhWIUiJzd3Asnnr4N7wDb8uSCRhg5j/KF4aSZqK8HRuV+hgyUxBrkUcsv/fgps+iKPxaT2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707929829; c=relaxed/simple;
-	bh=biuzYcQMelgQl+J54Kbot+3JqcMvoeGyuw3X50yl3uo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Doth6bbzK9QQxGdZQ7ypCOWBdct5BFDMGquFXIlADHU0qBWMLNDfiCuZF1gLQWVHBSkqMGmSlfJXc2CUIoLr+Sv9w7MN1gGIckWxcSGr2iN4v3QncSm0QCi1wwjDbw5GMIJDpsoT9C4j9ul7VAfoC+rr4CinoFGjlAuVddjx5fU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=bcp4Da1B; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.66.32.72] (unknown [108.143.43.187])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 4C6E120B2000;
-	Wed, 14 Feb 2024 08:56:59 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4C6E120B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707929827;
-	bh=ckiTjQJyYMqOqp6nmIcopayJUmMXUp+ALCH4tNreFgA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bcp4Da1BitmockWhF96LYrtqTtYF1wsfqg1TsvWy2uwN7ngUJtjxpHOsFsOFkYRJo
-	 Oc1JJKqKMD6tBVucLCv3I/J+wJYE56PeZVCCO7qQ3ND3CBRPqEuGxsTyjNc2QPe9EQ
-	 6yEqS9dEv9MTe2x16MuoGJbktHyukuLjD1rAvyRk=
-Message-ID: <b6f00233-0cbf-4d9a-aa8b-babc8a9ca696@linux.microsoft.com>
-Date: Wed, 14 Feb 2024 17:56:56 +0100
+	s=arc-20240116; t=1707929882; c=relaxed/simple;
+	bh=QZHxpOWGstMLL7cOOITs7En2K1eIVAPNG1eepxsSzQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=bjzvKAm3TkrqJKKvGybnA1R4+Z39Hehgwp5Erj/FjCLyqq2yotAi8PKMxoiX9gG40NMpz9WZW1Yzwk3784PHDX+uu2GRhIfMwFvhTluNLfbBKf6DHo4ro+cofzT9G0HJzaA6DribHLvdkJuJlW8d5Rt1HnUPun/V+BLSoQCuUS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pL2nwhSi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0529DC433F1;
+	Wed, 14 Feb 2024 16:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707929882;
+	bh=QZHxpOWGstMLL7cOOITs7En2K1eIVAPNG1eepxsSzQk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=pL2nwhSiDD9P3cmh9vfh1L2zZAuGnHwMUNz6aVd0nq3Nxy7qJuus9zSnoVPvIpDBC
+	 m3AVtdTDmqJc5GLDa0HOMFkCbFvgoG06GFbkjo07iJMsVxkpfmZCg75D06Q8FbDQyE
+	 TLfmEjSNzHQZcY2e36Bp20ncZlRl9vDrBq0OeunZ0SMoERwrDU5sFEwwWuGG2PBw7h
+	 Gm+O+kBHzD8LpLdG7gi3ckxxvJuwvlMr/2dfQFjnygONmmrGd8QcmztWnafleZGOlV
+	 wI+g/eGieKBAUOcWsHYruB9dmergGF78Runlp2uSxTemqyEKb9+0epi/unWqXNSTl4
+	 YytRU5dwBDNwg==
+Date: Wed, 14 Feb 2024 10:58:00 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Raag Jadav <raag.jadav@intel.com>, bhelgaas@google.com,
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com, lukas@wunner.de,
+	rafael@kernel.org, ilpo.jarvinen@linux.intel.com,
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+	sashal@kernel.org
+Subject: Re: [PATCH v1] PCI / PM: Really allow runtime PM without callback
+ functions
+Message-ID: <20240214165800.GA1254628@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/26] x86/sev: Add the host SEV-SNP initialization
- support
-To: Borislav Petkov <bp@alien8.de>, Michael Roth <michael.roth@amd.com>
-Cc: x86@kernel.org, kvm@vger.kernel.org, linux-coco@lists.linux.dev,
- linux-mm@kvack.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org,
- pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
- jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
- slp@redhat.com, pgonda@google.com, peterz@infradead.org,
- srinivas.pandruvada@linux.intel.com, rientjes@google.com, tobin@ibm.com,
- vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
- tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
- alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
- nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
- "liam.merwick@oracle.com Brijesh Singh" <brijesh.singh@amd.com>
-References: <20231230161954.569267-1-michael.roth@amd.com>
- <20231230161954.569267-5-michael.roth@amd.com>
- <f60c5fe0-9909-468d-8160-34d5bae39305@linux.microsoft.com>
- <20240105160916.GDZZgprE8T6xbbHJ9E@fat_crate.local>
- <20240105162142.GEZZgslgQCQYI7twat@fat_crate.local>
- <0c4aac73-10d8-4e47-b6a8-f0c180ba1900@linux.microsoft.com>
- <20240108170418.GDZZwrEiIaGuMpV0B0@fat_crate.local>
- <b5b57b60-1573-44f4-8161-e2249eb6f9b6@linux.microsoft.com>
- <20240109122906.GCZZ08Esh86vhGwVx1@fat_crate.local>
- <20240109124440.GDZZ0/uDY9RRPIOxOB@fat_crate.local>
-Content-Language: en-US
-From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20240109124440.GDZZ0/uDY9RRPIOxOB@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93c77778-fbdc-4345-be8b-04959d1ce929@linux.intel.com>
 
-On 09/01/2024 13:44, Borislav Petkov wrote:
-> On Tue, Jan 09, 2024 at 01:29:06PM +0100, Borislav Petkov wrote:
->> At least three issues I see with that:
->>
->> - the allocation can fail so it is a lot more convenient when the
->>   firmware prepares it
->>
->> - the RMP_BASE and RMP_END writes need to be verified they actially did
->>   set up the RMP range because if they haven't, you might as well
->>   throw SNP security out of the window. In general, letting the kernel
->>   do the RMP allocation needs to be verified very very thoroughly.
->>
->> - a future feature might make this more complicated
-> 
-> - What do you do if you boot on a system which has the RMP already
->   allocated in the BIOS?
-> 
-> - How do you detect that it is the L1 kernel that must allocate the RMP?
-> 
-> - Why can't you use the BIOS allocated RMP in your scenario too instead
->   of the L1 kernel allocating it?
-> 
-> - ...
-> 
-> I might think of more.
-> 
+On Wed, Feb 14, 2024 at 08:58:48AM +0200, Jarkko Nikula wrote:
+> On 2/13/24 22:06, Bjorn Helgaas wrote:
+> > > Debugged-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > 
+> > Sounds like this resolves a problem report?  Is there a URL we can
+> > cite?  If not, at least a mention of what the user-visible problem is?
+> > 
+> >  From the c5eb1190074c commit log, it sounds like maybe this allows
+> > devices to be autosuspended when they previously could not be?
+> > 
+> > Possibly this should have "Fixes: c5eb1190074c ("PCI / PM: Allow
+> > runtime PM without callback functions")" since it sounds like it goes
+> > with it?
+> > 
+> I don't think there's known regression but my above commit wasn't complete.
+> Autosuspending works without runtime PM callback as long as the driver has
+> the PM callbacks structure set.
 
-Sorry for not replying back sooner.
+I didn't suggest there was a regression, but if we mention that Mika
+debugged something, I want to know what the something was.
 
-I agree, lets get the base SNP stuff in and then talk about extensions.
+I'm guessing runtime PM doesn't work for some subset of drivers, and
+this patch fixes that.  So let's say exactly how to find that subset
+of drivers, e.g., "drivers that implement X but not Y" or whatever.
 
-I want to sync up with Michael to make sure he's onboard with what I'm
-proposing. I'll add more design/documentation/usecase descriptions with the
-next submission and will make sure to address all the issues you brought up.
+> For example the drivers/i2c/busses/i2c-i801.c has system suspend/resume
+> callbacks. I tested this patch by hack-removing them and yes, autosuspend
+> doesn't work without this patch.
+> 
+> Raag and Mika noticed the issue when cleaning up empty runtime PM callbacks
+> from an another driver which doesn't have any other PM callbacks.
 
-Jeremi
+Bjorn
 
