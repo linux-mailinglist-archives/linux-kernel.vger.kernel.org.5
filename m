@@ -1,118 +1,206 @@
-Return-Path: <linux-kernel+bounces-65988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0E678554D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:32:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 677478554D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:33:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D9F9283EF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:32:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FA07284281
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:33:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20A913EFFC;
-	Wed, 14 Feb 2024 21:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2576313F000;
+	Wed, 14 Feb 2024 21:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h8BmpZ4Z"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ui2XcTJW"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7802413EFEF
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A18513EFEE
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707946346; cv=none; b=L00UWbm5TjvC4eJQkfdwEKGBxv8U/99CibFlgB7oh+8lfYfvHSFa2mkwQHHKQCh+LLry0pg0lNDApzIDdZjAlvcHKVirc3PtDwbOig5534sjunVq0vjgVArM9G0AbGGv78sDWehFPx4AGND1tayuPxZ83Zvs+itK6IVx0V7IM80=
+	t=1707946405; cv=none; b=Tx81KDLUS93ZiAF6EPmVDXaz5wnjJdsIqK6nrCB6Gib9ln+ZJOPonj3COQrVb7SNlU072/S8d2bCYl63XgkuDiVApVWRBmqiXTHwCT5MfPT17otxepreLJFjHsJGXSB4BqMu2jZrYyoCKl0bSGxGdKzPZDUmG5Bm+eJ3YWeZBJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707946346; c=relaxed/simple;
-	bh=mzDDSMUcdlm0Up4f4mJcp+HyVxmyqjTrTC7RCdD9z7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FH3h27kVeYQxWppjGGA9J6NtNFQI0EnW2+3MKOQhfnI1COAXXT1hSXhlhARInJJN+TG5+Mq6g/xnGRBTUpSaw0J6dEeFzoeYz+7+eZ02YT0CJOZWvslRgxGLRVQDG2aCH3G6zXUD0yNpLfnHrJ81/cMs2od8JdhEKEcqoM++5rE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h8BmpZ4Z; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4120933b710so5445e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:32:24 -0800 (PST)
+	s=arc-20240116; t=1707946405; c=relaxed/simple;
+	bh=xxyACrWt2PwJkS0pdU4dWiP6K7ZzMm9WVJSfh/427dM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N9icroBE8k/w55amJB691kPhunjAeSKULcorOQFMUKfsaUyY+HuBHEZEPnOpu8pLGuyoBIOnPx4RCxuX85bDp+krroA7GxiF4CfKt45K/r6qfZ+bLkIR3yi/xHhFp53d8XJJcf1qrwXpZb2ZcsKvHGMW46IszBPpzTDXA8BCzMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ui2XcTJW; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5638447af43so289286a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:33:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707946343; x=1708551143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q7jzhXS2LwlH6Na13t2uRB5AnuKFssoLivXgy4Bk1Ws=;
-        b=h8BmpZ4Z0stU30SoQgsIP+67tQwaGwKNEwCCgoNFJZcpoxW+as7Me2Bt7XjVbQm6iL
-         AgKJDEDBA3XS2O7foQfR7kDeeOCUhjmt6dpYMsrLZOP77b2cuvswX4PAyTg5+8nFqEvg
-         C9leQiytaJU5MYudrnzWLyt08XbmrQBxRgCWcf6HQbB9SiOzeB+iRXjj3MICr825V7pM
-         v7TQ4M9hg0NrdD5loYofuJ32PBB8GUZK62J9zMjz/h0ZSAKYN088QSCUimIYC/vzeCe4
-         ZwvNu8Gb3p0wrwrIaAyJCkcRktiA1mAPpJdgqnvaR1wFEJiYA296oYAJ/n7ZrWMHY6lk
-         8G3w==
+        d=linaro.org; s=google; t=1707946402; x=1708551202; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FUHzAymlINFHw4AT1ThDN8yqkHJxGPn+LrVpBC58mtc=;
+        b=Ui2XcTJWlnCKiCK9wTmt1fClG1Jr0CCieLV3JxtESualYR86iXtTFwFFyu1rF49Cnh
+         ATns1+2nPxkeGfxaCVZcfJwFWgGRD19ihTAe7zZ7tAq75OFdR4oCAAvGlfd+Hq3kGmj0
+         GvWWVbZ5knc+p2ZtHT30Ey+8Yd2BzQ5F5Y5U4eKzB3e6pdJjckD//HJdMkSa94cqdX/I
+         +NBwo8QH1NWhvi1w+NX4er7eHMpAk/t1pNZ8Rj6FaxYp64Oyuf9TojLEifHDc9GqDMs+
+         tsDJ8/H1PcgGZNhEIRliKMeCATbSEpaftuGDM///VWkh5zMVaXvUCWWGmEJrnPhKw6x2
+         cRxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707946343; x=1708551143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q7jzhXS2LwlH6Na13t2uRB5AnuKFssoLivXgy4Bk1Ws=;
-        b=d7gLSomjwcaVgIoQlMCGAAMNmhg+JkZF8R9F3K5kcz1U/MKbzyThqvsbwTO02/QCDf
-         5C4W3OocTn3/xNfrmCTDbMbml8Cg0myjkL6etnaByaNCf7giA0SnSJP5JLvgprQkkDbs
-         VScpdvGbtxBDYgfS1tZ4nVmiBGOkfnEy+801ShmD/YM5BC0sFCzkTDthRxnzCuQwTFlb
-         S0RYU+nbsvPAiHesnhInRWlzF29enBUUOlY38NHBobBcMVGCPo863Z74+EhoNw8aWw7P
-         Y8YUGtd9rw9zFYs5xiGvQNHgFTd6x7zo1Gw9QHCyKV1GpAQTgv319M7T5+geV91S6yKj
-         2hbg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3ItZtnyWpP3Cjg9K9buNHVUUnbDalTej0dtC1Xb/MjOk4TTBNiraIHkNZmC5ctt32y5Hteu5JeP61VlZrU2U1Tm7/qgx8DSU6ssGw
-X-Gm-Message-State: AOJu0YxrE3NE773Wz6R3ZteLX/4fWwKMvoaR2vA1e+sG3BhznIu30ulR
-	+AJKFAK72OrqrzpZNksCeZb3g4JtuzfLfg2c54twe4Ii+zIXY3W1FQqXxiAL4EZpyYUoEeKSyOF
-	Y2LiXlpWccPmW1hlwtB1ycLbJSM6AFfoKNI+6
-X-Google-Smtp-Source: AGHT+IE5ehL53MTjl/C7JyHdLt/tpxzFhvMTW9TYqxUkVLe03JhGEAREu202kUoVCBnpW7EKcv+ZGc8eHAGUZNCg7gE=
-X-Received: by 2002:a05:600c:a01a:b0:411:e72d:e5c9 with SMTP id
- jg26-20020a05600ca01a00b00411e72de5c9mr223035wmb.5.1707946342669; Wed, 14 Feb
- 2024 13:32:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707946402; x=1708551202;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FUHzAymlINFHw4AT1ThDN8yqkHJxGPn+LrVpBC58mtc=;
+        b=Z5ADtQQKSB5c8l7QxKXI1YrXFusZCe6M3aGLeOWRe5vMupg1zOFwk6GIiCDPq4wkHx
+         kai2ZGfO0u3agyHOv6lJrdD8woBCgfv0vc+xcOPWGq4wbTNOCUQR1y7+IBAZjRPqOC7c
+         KQ25qBvG4em3i8JaFRKeiV5U6ekFY7EROW/iqwjiO7GO1cahhu+jMSOeLhfSZP8nIzbJ
+         zw7ljn8rlUU6t1eTK5eQQE7Ivhc+DuntY1yqsy6PI8cb5u2/rlDM1DcZdyj4vtamg1Jf
+         6BT2qerl/M9mg/v2HkMHUDG7+6bjnObOpPROLJk/089cj1zwd93Naki3IyjAq1Gs2W2r
+         wXHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTwPdepANWHQ1BMJQ3CfZJO2NhyzeUt72GoQKKJAB40Cb1kjEdIjoyeNI1Apl2EN4LaKyAoH41dAKrB4ogpcad/Bu/HpIAZ2BWVXsq
+X-Gm-Message-State: AOJu0YyISvMP/BSqtJADTqnRGxlfRT1qD0aJnHLmNtm3sAu9gVTPCOY7
+	aAS6uRyd7s8x9fjv0qP1XxBPoAX1GdlZc8hyQ2Y6bdSlzmzcPITL3I2IDWDnYIA=
+X-Google-Smtp-Source: AGHT+IH6oW3hMniMs7BZaUCXOI7d7wMy8AfX3ii+mWNpaRLanp1gpdeeS4h2MkrK+l8K1r2rsQL2zg==
+X-Received: by 2002:a05:6402:22ca:b0:562:9e4f:6bd1 with SMTP id dm10-20020a05640222ca00b005629e4f6bd1mr2095725edb.9.1707946401721;
+        Wed, 14 Feb 2024 13:33:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV+Y3B+Y40sfv2m3w7vtPBrJH3hXIBXNY7dZUsceCxzt2z7Qps2IJ5AGUnvODHwj98JB3VjhvYKqM71fmtxpXg1rUG1Arb8RWZKUy+NmIrRyxSTTjR3rf0QEobGyFkEd4Kgeocr4k6LZ3XPbYLbEWuIHSjC1rX4LMggc4DQ40q9EMmeNC/ECJwwsIMZSIkTRB5RElp8O1ys8vJjAB8iQ0pdYTKPxT5y2boe7u8LZn2B+EwzJdJq9SMzQkiXOxRz8DaqrWVV1Ir8nJijSaE86v2gWveuXfinBfWQKGTReb8OcV9dBdwt7PmcyaY5hZzkxPFgdFy9Eb3UfYJwNbTIly213RGojN27SSoedBHOEWSfAM+RX6wHEtMI8PvoJK63TuXqfmrLJC5nDI2GfnyfsOQOI6V9kV8SdnZQHgZD0/Xp
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id j2-20020aa7de82000000b005621b45daffsm1159426edv.28.2024.02.14.13.33.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 13:33:21 -0800 (PST)
+Message-ID: <27560098-ced3-4672-bc60-6c1b7c0dc807@linaro.org>
+Date: Wed, 14 Feb 2024 22:33:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207-s390-lld-and-orphan-warn-v1-0-8a665b3346ab@kernel.org>
- <20240207-s390-lld-and-orphan-warn-v1-6-8a665b3346ab@kernel.org>
- <CAFP8O3+L6Jpgktk50UBKg_SodH-DTAW2syZueUqxdZsxrOT3bg@mail.gmail.com> <20240214121755.6438-C-hca@linux.ibm.com>
-In-Reply-To: <20240214121755.6438-C-hca@linux.ibm.com>
-From: Fangrui Song <maskray@google.com>
-Date: Wed, 14 Feb 2024 13:32:09 -0800
-Message-ID: <CAFP8O3+uLO9a2n3NuQd9bhzRtpG4GvzoJyMuasGZuCrkBRqq_A@mail.gmail.com>
-Subject: Re: [PATCH 06/11] s390/boot: vmlinux.lds.S: Handle '.rela' sections
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, ndesaulniers@google.com, 
-	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] PCI: qcom: properly implement RC shutdown/power up
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Johan Hovold <johan+linaro@kernel.org>,
+ Bjorn Andersson <quic_bjorande@quicinc.com>
+References: <20240212213216.GA1145794@bhelgaas>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240212213216.GA1145794@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 4:18=E2=80=AFAM Heiko Carstens <hca@linux.ibm.com> =
-wrote:
->
-> On Mon, Feb 12, 2024 at 09:18:34PM -0800, Fangrui Song wrote:
-> > >         ASSERT(SIZEOF(.plt) =3D=3D 0, "Unexpected run-time procedure =
-linkages detected!")
-> > > +       .rela.dyn : {
-> > > +               *(.rela.*) *(.rela_*)
-> > > +       }
-> > > +       ASSERT(SIZEOF(.rela.dyn) =3D=3D 0, "Unexpected run-time reloc=
-ations (.rela) detected!")
-> ...
-> > Commit 5354e84598f264793265cc99b4be2a2295826c86 ("x86/build: Add
-> > asserts for unwanted sections")
-> > specifies `*(.rela.*) *(.rela_*)` but it's not clear why `.rela_*` is
-> > included. We only need .rela.* (see also ld.bfd --verbose)
-> >
-> > This patch LGTM with this changed.
->
-> I'll keep it as it is, just to be consistent with x86.
+On 12.02.2024 22:32, Bjorn Helgaas wrote:
+> "Properly" is a noise word that suggests "we're doing it right this
+> time" but doesn't hint at what actually makes this better.
+> 
+> On Sat, Feb 10, 2024 at 06:10:07PM +0100, Konrad Dybcio wrote:
+>> Currently, we've only been minimizing the power draw while keeping the
+>> RC up at all times. This is suboptimal, as it draws a whole lot of power
+>> and prevents the SoC from power collapsing.
+> 
+> Is "power collapse" a technical term specific to this device, or is
+> there some more common term that could be used?  I assume the fact
+> that the RC remains powered precludes some lower power state of the
+> entire SoC?
 
-Sent https://lore.kernel.org/all/20240214212929.3753766-1-maskray@google.co=
-m/
-("[PATCH] x86/build: Simplify patterns for unwanted section")
-to simplify the patterns in x86 vmlinux.lds.S:)
+That's spot on, "power collapse" commonly refers to shutting down as many
+parts of the SoC as possible, in order to achieve miliwatt-order power draw.
 
 
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+> 
+>> Implement full shutdown and re-initialization to allow for powering off
+>> the controller.
+>>
+>> This is mainly indended for SC8280XP with a broken power rail setup,
+>> which requires a full RC shutdown/reinit in order to reach SoC-wide
+>> power collapse, but sleeping is generally better than not sleeping and
+>> less destructive suspend can be implemented later for platforms that
+>> support it.
+> 
+> s/indended/intended/
+> 
+>>  config PCIE_QCOM
+>>  	bool "Qualcomm PCIe controller (host mode)"
+>>  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>> +	depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
+> 
+> Just out of curiosity since I'm not a Kconfig expert, what does
+> "depends on X || X=n" mean?  
+
+"not a module"
+
+> 
+> I guess it's different from
+> "depends on (QCOM_COMMAND_DB || !QCOM_COMMAND_DB)", which I also see
+> used for QCOM_RPMH?
+
+Yep
+
+> 
+> Does this reduce compile testing?  I see COMPILE_TEST mentioned in a
+> few other QCOM_COMMAND_DB dependencies.
+
+I can add "&& COMPILE_TEST", yeah
+
+> 
+>> +	ret_l23 = readl_poll_timeout(pcie->parf + PARF_PM_STTS, val,
+>> +				     val & PM_ENTER_L23, 10000, 100000);
+> 
+> Are these timeout values rooted in some PCIe or Qcom spec?  Would be
+> nice to have a spec citation or other reason for choosing these
+> values.
+> 
+>> +	reset_control_assert(res->rst);
+>> +	usleep_range(2000, 2500);
+> 
+> Ditto, some kind of citation would be nice.
+
+Both are magic values coming from Qualcomm BSP, that we suppose
+we can safely assume (and that's a two-level assumption at this
+point, I know..) is going to work fine, as it does so on millions
+of shipped devices.
+
+Maybe Mani or Bjorn A can find something interesting in the documentation.
+
+Konrad
 
