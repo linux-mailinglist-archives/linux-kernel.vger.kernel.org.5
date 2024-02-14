@@ -1,53 +1,81 @@
-Return-Path: <linux-kernel+bounces-65562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B8C7854EC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:39:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 820DC854F0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47A53281649
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:39:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77735B2ED2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E5460ECB;
-	Wed, 14 Feb 2024 16:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887636166E;
+	Wed, 14 Feb 2024 16:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="T4+Q2Q7H"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC0B5FF03
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xm+zNKCM"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961BD22071
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928647; cv=none; b=U03E9idUa5SIkVvb1NXxyKd/Gzj/YntcQGkS82p6Mj92IUhM51oDzEqDXYypqsWD6jsWbU6lSFL6RHvhJkRYMp2OoyCzwlHUX8gzgiu0ibZ4JldT1p8KcA9eiayWUQb9UkzOkfevHHBck2YzIZgZpDWh9Eh1ptqKdntvwHxW9I0=
+	t=1707928709; cv=none; b=F79yZVB/6fPKblQJpoWC8OzzWMbTmtYa5Tbf5QZYZ9xsbdVVZy7y6+xqGJDuytk7R0Bp3rqlTncPpzHhXj80iQL1ZWTpiXO1p0MJAM6WVOq9+n1jjKKuTfSscoL2f4KJEtBJIb2mbqz3g+w8VBKoaLcmziBY53d9iy0+JSfXJ4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928647; c=relaxed/simple;
-	bh=9voo30oNITjqcl95HrTR+YJsE+CMPDocBizyzA23bz8=;
+	s=arc-20240116; t=1707928709; c=relaxed/simple;
+	bh=3a96hFHa9kHGgs4R7+BbKUdcoCcJIe8Xk80EXRVjjJA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AyLgQaLrjbniWYhFygSdjlPmAQqitm/eptLaJICcEGkr5J5N+5/IvsUjapGP1jMFDMhSEBgeVAJrgLDWQwf1XCkWGIOjWrCJtC1lDJvp8y/oz9cNcEQSDvEyiPZ7nFkiQfRKfV8tZHSYsTUkpNSYaOrb6HxXVNcoohF6QRrIYek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=T4+Q2Q7H; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1112)
-	id DDCCD207ECBE; Wed, 14 Feb 2024 08:37:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DDCCD207ECBE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707928645;
-	bh=+kmK/2svGs1ufSiHAszH1wJVvcNtLuRM2uodeUxuFqM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T4+Q2Q7HVRE7NyIVkRErx6go+pIXm3Gi4BCXg+jhkBYwC/LflqXaSAuKKktgempiy
-	 rI7MByuyRDgkehY58yH9Ug8nrU25W1TX/21KWN5Ypi7Bb8dgQA2bwsNkzrPnSzYaIS
-	 ba4XaTGO1ADvT6hf1aka+pQkkF0sSCIGHVrQbv3E=
-Date: Wed, 14 Feb 2024 08:37:25 -0800
-From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ashish Kalra <ashish.kalra@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>, X86 ML <x86@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/sev: Dump SEV_STATUS
-Message-ID: <20240214163725.GA13407@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20240213163311.32130-1-bp@alien8.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=r8UHyv3dGcse2eiB12Quz8movSFkYtBA0hopqYL6HgImmmKJGpjkl86QNa5agkjuj8iGGlzwxASuQW9u6EN5QKA2Trt9HdcTQbyNrOAMx/QP0qFT9CkjrzYTOLQruQ8VXhAuVC5q9zSgvTeZMgyETVnX7F+hQxFx+3LAV3HZ09g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xm+zNKCM; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 11:38:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707928705;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GhC8U54i48aAhQsKXgUpTdpqc3Q9oBEWvXQFXanbxaU=;
+	b=Xm+zNKCMeqV79v7rJ5E5an4MzgIP4PD8/8ugFWMqKQm3NKxkYrYq0OYQxclkHYIL8RZCoP
+	TC2LBaoxPghcPUQzNf8N/tkj2r5IU55ThbSV14NQ/Bs/1muwGdvLMDBwjC0Nd8EVp21WU+
+	XnEe90fkimXt0ALl4VLMlcoyT6d4gss=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, 
+	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, axboe@kernel.dk, 
+	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, 
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <wbe5dfkrjpspzykhbi4dshhfgc4t3jpyymutogppyyevzxyyra@r32wpro3xrbi>
+References: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
+ <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,38 +84,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240213163311.32130-1-bp@alien8.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 13, 2024 at 05:33:11PM +0100, Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On Wed, Feb 14, 2024 at 11:20:26AM +0100, Vlastimil Babka wrote:
+> On 2/14/24 00:08, Kent Overstreet wrote:
+> > And, as I keep saying: that alloc_hooks() macro will also get us _per
+> > callsite fault injection points_, and we really need that because - if
+> > you guys have been paying attention to other threads - whenever moving
+> > more stuff to PF_MEMALLOC_* flags comes up (including adding
+> > PF_MEMALLOC_NORECLAIM), the issue of small allocations not failing and
+> > not being testable keeps coming up.
 > 
-> It is, and will be even more useful in the future, to dump the SEV
-> features enabled according to SEV_STATUS. Do so:
-> 
->   [    0.542753] Memory Encryption Features active: AMD SEV SEV-ES SEV-SNP
->   [    0.544425] SEV: Status: SEV SEV-ES SEV-SNP DebugSwap
-> 
+> How exactly do you envision the fault injection to help here? The proposals
+> are about scoping via a process flag, and the process may then call just
+> about anything under that scope. So if our tool is per callsite fault
+> injection points, how do we know which callsites to enable to focus the
+> fault injection on the particular scope?
 
-This could use some commas/delimiters to improve readability for those multi-word
-bits (or stick to the name from the APM). This is from an Azure SNP CVM(*):
+So the question with fault injection is - how do we integrate it into
+our existing tests?
 
-Feb 14 16:16:55 vm kernel: SEV: Status: SEV SEV-ES SEV-SNP vTom Reflect VC AI DebugSwap No HostIBS BTB Isol VMSA reg prot
+We need fault injection that we can integrate into our existing tests
+because that's the only way to get the code coverage we need - writing
+new tests that cover all the error paths isn't going to happen, and
+wouldn't work as well anyways.
 
-(*): tested with the below patch applied (I'm not suggesting this should be
-incorporated) because from a kernel point of view only vTOM is present in the
-cached sev_status, the rest is handled by VMPL0:
+But the trouble with injecting memory allocation failures is that
+they'll result in errors bubbling up to userspace, and in unpredictable
+ways.
 
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -2285,6 +2285,8 @@
- void sev_show_status(void)
- {
-        int i;
-+       u64 sev_status;
-+       rdmsrl(MSR_AMD64_SEV, sev_status);
+We _definitely_ cannot enable random memory allocation faults for the
+entire kernel at runttme - or rather we _could_, and that would actually
+be great to do as a side project; but that's not something we can do in
+our existing automated tests because the results will be completely
+unpredictable. If we did that the goal would be to just make sure the
+kernel doesn't explode - but what we actually want is for our automated
+pass/fail tests to still pass; we need to constrain what will fail.
 
-        pr_info("Status: ");
-        for (i = 0; i < MSR_AMD64_SNP_RESV_BIT; i++) {
+So we need at a minumum to be able to only enable memory allocation
+failures for the code we're interested in testing (file/module) -
+enabling memory allocation failures in some other random subsystem we're
+not developing or looking at isn't what we want.
 
+Beyond that, it's very much subsystem dependent. For bcachefs, my main
+strategy has been to flip on random (1%) memory allocation failures
+after the filesystem has mounted. During startup, we do a ton of
+allocations (I cover those with separate tests), but after startup we
+should be able to run normally in the precence of allocation failures
+without ever returning an error to userspace - so that's what I'm trying
+to test.
 
