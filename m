@@ -1,223 +1,159 @@
-Return-Path: <linux-kernel+bounces-65911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEBFD85539D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:03:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E8AA8553A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:04:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DACCC1C22F16
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:03:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 207C51C25096
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84EF113DB8F;
-	Wed, 14 Feb 2024 20:03:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB4413DBA1;
+	Wed, 14 Feb 2024 20:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D2DS/huq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECUbcmGz"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84B31292D4
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76A65C90E;
+	Wed, 14 Feb 2024 20:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707941029; cv=none; b=pU2zWrek9VIp66Y/aj9+u4796LoVtwjwbk1W/q5PqHBUpwKfOyE79eJO54nC8UDh99HmrkieRGEHaSI8uEV/mzs6pRCwHa3PF7q83o6Sw5LfH1obdjqJnlFmLCF+R55JkbG2rni+I9bblDlx66DihuyPK7WCWhMhtKMSY4wnlZg=
+	t=1707941074; cv=none; b=bWpA1X7If7XatwmbAAXOyGdR2SVDh+86DZ4VIPpuquTxo4hfVQggEtLAehtJykuY7M8Cc7inKna2Y/cBY/BPH6u7tcguc7n1apMVxBaqG9VCvLGXZxEdooJh/Zg7RqXxQSjg37RTy+bfw9LtLXhZJddUQrtCYbaK/RA7faoZZrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707941029; c=relaxed/simple;
-	bh=jZLBXQKQLglga9662VyENxHMEUWgFFV3sLEJL7yFSRA=;
+	s=arc-20240116; t=1707941074; c=relaxed/simple;
+	bh=Nyn4zdMUYJcetucv3ZLRDWdEDWYVJZ7irXf29bg1UYc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gAbsxZhrVdaqGPJWKaX1msr5M/A0Uuv/7sOgwvJFVU5wWejLaJ9jMobpYWQuc0O/+nERMuIPkHNlhhRkXYCYD4DORuA7Ot7IzuaeSIMrsA/OTRemOwYTm65cH0w/ovevZR5tWb8oFNCng3Hg6qgdaKEStsmu3FIN1LIjlLNDWno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D2DS/huq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707941026;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7CLxhbccijdLbqEHOPRIA/Ab924uWKmLPLU2fxFN5Ws=;
-	b=D2DS/huqNzAUEyGmE5WnB8T5tjK/heR5ajl527KZMc37BMPWgcoCkk34kzjfOUwM7N6JEw
-	A6DnPLDLZJ0Bn/dCCIMWmKCMtx+qVIUT1Cto6yRbBbV8O4l2BUFWgePJBbLOrrDD8hCWEM
-	xlk9IybkKU5o7Qtr1sTjt2GPQsWzR/g=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-448-UE3PNMBuOli5idaLMadW9Q-1; Wed,
- 14 Feb 2024 15:03:40 -0500
-X-MC-Unique: UE3PNMBuOli5idaLMadW9Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CA0A43C23FCF;
-	Wed, 14 Feb 2024 20:03:29 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.192.33])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id D29F640CD14A;
-	Wed, 14 Feb 2024 20:03:22 +0000 (UTC)
-Date: Wed, 14 Feb 2024 15:03:18 -0500
-From: Phil Auld <pauld@redhat.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
- N_MEMORY
-Message-ID: <20240214200318.GA74174@lorien.usersys.redhat.com>
-References: <20240214035355.18335-1-byungchul@sk.com>
- <20240214123137.GA70927@lorien.usersys.redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gdwQsLOs9Rj37WTZ1wWbYFz89D5B5GBrVVrYtfestbifEL1Y6q94ujROOfZs/uLc4Os3ZGZcYS9xCUKoJ0/7eiw7kcbxAN0NRhqZyfa603BO8sNo9MVCP4H3CSxrHEf77VC5lBGor0Nx4QUPt7U/pjwNEgBXXniOJT6IISleKDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECUbcmGz; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d09bdddfc9so1028411fa.2;
+        Wed, 14 Feb 2024 12:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707941071; x=1708545871; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y0+QBUAm/aVRpiPaqhCze/LDszKrnlyY/NggllvOcA0=;
+        b=ECUbcmGzTskJcHkgrvyawdZGtqmBIkf/vSjf2iEOtt3HKWp4n+oY05HEVf7lg01bSS
+         xT6pfIMET1doO95Ydgp4VnU64XG26ip82R5vUAHkN8xBmKi9psx9gsHyyi9hobMQL1pf
+         hpCaFxnM8VjmlPZTwM8cPZvdBMAuRpBLuNbRPWdq4PYS0VF2/Acmt/XWdCCFMC7U0fkU
+         M1DncO8HDDKDLK4XI4INLwUUgEbn0adqDWUPondFBzrVOlcfKW5Tj/2fEL7cEBfLhosp
+         U2Bb82U/yXKQJGlOzyloTfHLbxFnQto5XG1+qtQuPtVhQgM5/E7fOAvT1vku3G76eo5b
+         q98w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707941071; x=1708545871;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y0+QBUAm/aVRpiPaqhCze/LDszKrnlyY/NggllvOcA0=;
+        b=ADxT0gMd8lWP5WAsQC8x44uAtIAhUDxKYTGywpoz9vVzn0204U3iD1VumunOx23G4x
+         LjsY4VxHozQHgqoIl8vaCZam0Qy8SK7fZv2L8TkEosa4D1xQon4DmmPmZQJbG2tULPzJ
+         kItH3IC+mv0eIs0DyA2n52l+pEJA8KyFjEVrsfIYgBXL1UIXwaD5Fvymp5wB03fkrOyO
+         +e8z617kaodREP1JKXitjBUOYjUdbFnOLY1qXW0iI1keuzC+6cc4ejGN+eb1sYiVZ8ZA
+         PFvSJZK6r+1/Xkq2Vvpb2wKFVphfOlh74iIaL377yJyz3YPq2QgRq+OvtL4J6wN7TXfm
+         /FEg==
+X-Forwarded-Encrypted: i=1; AJvYcCX2vcuCPio85LUsas8hdpX2IjP8asB7EViTY5EyjVH27oAQ6xCrE7IgzlLktQwJ2Sl8PbF8J9yHKkN4enfCGA72B8Vs6oqm9pNGNjQrOgT16KAP3iTPpEE7OVyiuUGV6YaI1Og2RGs+TlsRLG9asMtcaXGltTdX82kja9FI20XLWG1pWg==
+X-Gm-Message-State: AOJu0YysspTUsQkDkKMGg5Jne16ooRb2jNL/yiyUdMkNmNY5GHjN5XSR
+	H65pBEoIr7GwSNuZUIxAkJ1tZpOJewBhZExDzcJriJ6cFFjsppFA
+X-Google-Smtp-Source: AGHT+IHCCk3h4RYYrdY/RIfjuz0KCiI8lT7wSiom63AMX0z71+lISRylWaJNs5DSlXnpEHv75qUPPQ==
+X-Received: by 2002:a2e:2206:0:b0:2d0:e587:8f44 with SMTP id i6-20020a2e2206000000b002d0e5878f44mr2866879lji.10.1707941070425;
+        Wed, 14 Feb 2024 12:04:30 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVnLQH8oTYViKRCiyoOTnDGWCL46suRUTUlmiNTgxkByAk2D7QSsuJLlbRBVRdsCu2tgNENk9IXt7n+vsfKJXZ85C9z3kg7wfjKoXybug2PYT6eUDEw0fu0TlnFyng0/Q834uWq9bss+GPzVM7QYHYfMW6FY/MPc6I5JawLs8fuyQThW7UcOnFKpV9t2iFg79b2r0qYf+OcVxxhESjsGk438Z/EiXF9zn/0P1aO/xwmIb/BxpoD+tfvifNXxPQoIM518sQZy9OqvH0tWwnTw5CUCteJNewY7PYH3VN0hUMtPhI/BCHdMy3RoqV1AQT930V4kX/xaPUfLk8h75UD9cRbEfgxrsQFmMuR1NwjxzKqyjr46A3mXtPtCKbE2+NJRPedF50wTa6HRroF
+Received: from localhost ([2a05:3580:f312:6c01:1b8f:2a1b:d18:1951])
+        by smtp.gmail.com with ESMTPSA id u22-20020a2e8456000000b002d08f4f0adasm969187ljh.16.2024.02.14.12.04.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 12:04:29 -0800 (PST)
+Date: Wed, 14 Feb 2024 23:04:29 +0300
+From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] iio: magnetometer: add a driver for Voltafield
+ AF8133J magnetometer
+Message-ID: <Zc0czfbphqRABxYR@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>, Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+References: <20240212175410.3101973-1-megi@xff.cz>
+ <20240212175410.3101973-4-megi@xff.cz>
+ <ZcvdW3SvgIuhJtKX@skv.local>
+ <20240214163815.00005a02@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240214123137.GA70927@lorien.usersys.redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240214163815.00005a02@Huawei.com>
 
-On Wed, Feb 14, 2024 at 07:31:37AM -0500 Phil Auld wrote:
-> Hi,
+On 24-02-14 16:38, Jonathan Cameron wrote:
+> On Wed, 14 Feb 2024 00:21:31 +0300
+> Andrey Skvortsov <andrej.skvortzov@gmail.com> wrote:
 > 
-> On Wed, Feb 14, 2024 at 12:53:55PM +0900 Byungchul Park wrote:
-> > While running qemu with a configuration where some CPUs don't have their
-> > local memory and with a kernel numa balancing on, the following oops has
-> > been observed. It's because of null pointers of ->zone_pgdat of zones of
-> > those nodes that are not initialized at booting time. So should avoid
-> > nodes not set N_MEMORY from getting promoted.
+> > Hi Ondřej,
 > > 
-> > > BUG: unable to handle page fault for address: 00000000000033f3
-> > > #PF: supervisor read access in kernel mode
-> > > #PF: error_code(0x0000) - not-present page
-> > > PGD 0 P4D 0
-> > > Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > > CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > >    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> > > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> > > Code: (omitted)
-> > > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> > > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> > > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> > > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> > > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> > > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > PKRU: 55555554
-> > > Call Trace:
-> > >  <TASK>
-> > > ? __die
-> > > ? page_fault_oops
-> > > ? __pte_offset_map_lock
-> > > ? exc_page_fault
-> > > ? asm_exc_page_fault
-> > > ? wakeup_kswapd
-> > > migrate_misplaced_page
-> > > __handle_mm_fault
-> > > handle_mm_fault
-> > > do_user_addr_fault
-> > > exc_page_fault
-> > > asm_exc_page_fault
-> > > RIP: 0033:0x55b897ba0808
-> > > Code: (omitted)
-> > > RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> > > RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> > > RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> > > RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> > > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> > > R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
-> > >  </TASK>
-> > > Modules linked in:
-> > > CR2: 00000000000033f3
-> > > ---[ end trace 0000000000000000  ]---
-> > > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> > > Code: (omitted)
-> > > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> > > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> > > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> > > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> > > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> > > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > PKRU: 55555554
-> > > note: masim[895] exited with irqs disabled
-> 
-> I think you could trim the down a little bit.
-> 
-> 
+> > thank you for submitting the driver.
 > > 
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > Reported-by: hyeongtak.ji@sk.com
-> > ---
-> >  kernel/sched/fair.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
+> > On 24-02-12 18:53, Ondřej Jirman wrote:
+> > > From: Icenowy Zheng <icenowy@aosc.io>
+> > > 
+> > > AF8133J is a simple I2C-connected magnetometer, without interrupts.
+> > > 
+> > > Add a simple IIO driver for it.
+> > > 
+> > > Co-developed-by: Icenowy Zheng <icenowy@aosc.io>
+> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> > > Signed-off-by: Dalton Durst <dalton@ubports.com>
+> > > Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
+> > > Co-developed-by: Ondrej Jirman <megi@xff.cz>
+> > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > > ---
+> > >  drivers/iio/magnetometer/Kconfig   |  12 +
+> > >  drivers/iio/magnetometer/Makefile  |   1 +
+> > >  drivers/iio/magnetometer/af8133j.c | 528 +++++++++++++++++++++++++++++
+> > >  3 files changed, 541 insertions(+)
+> > >  create mode 100644 drivers/iio/magnetometer/af8133j.c
+> > > 
+> > > diff --git a/drivers/iio/magnetometer/Kconfig b/drivers/iio/magnetometer/Kconfig
+> > > index 38532d840f2a..cd2917d71904 100644
+> > > --- a/drivers/iio/magnetometer/Kconfig
+> > > +++ b/drivers/iio/magnetometer/Kconfig
+> > > @@ -6,6 +6,18 @@
+> > >    
 > > 
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index d7a3c63a2171..6d215cc85f14 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -1828,6 +1828,23 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
-> >  	int dst_nid = cpu_to_node(dst_cpu);
-> >  	int last_cpupid, this_cpupid;
-> >  
-> > +	/*
-> > +	 * A node of dst_nid might not have its local memory. Promoting
-> > +	 * a folio to the node is meaningless. What's even worse, oops
-> > +	 * can be observed by the null pointer of ->zone_pgdat in
-> > +	 * various points of the code during migration.
-> > +	 *
-> 
-> > +	 * For instance, oops has been observed at CPU2 while qemu'ing:
-> > +	 *
-> > +	 * {qemu} \
-> > +	 *    -numa node,nodeid=0,mem=1G,cpus=0-1 \
-> > +	 *    -numa node,nodeid=1,cpus=2-3 \
-> > +	 *    -numa node,nodeid=2,mem=8G \
-> > +	 *    ...
-> 
-> This part above should probably be in the commit message not in the code.
-> The first paragraph of comment is plenty.
-> 
-> Otherwise, I think the check probably makes sense.
->
+> > Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> > 
+> > I've successfully tested driver from v2 on 6.8-rc3.
+> > 
+> How about a Tested-by tag so we can keep that for ever?
+I have nothing against that.
 
-Actually, after looking at the memory.c code I wonder if this check should
-not be made farther up in the numa migrate machinery.
-
-
-Cheers,
-Phil
-
-> 
-> Cheers,
-> Phil
-> 
-> > +	 */
-> > +	if (!node_state(dst_nid, N_MEMORY))
-> > +		return false;
-> > +
-> >  	/*
-> >  	 * The pages in slow memory node should be migrated according
-> >  	 * to hot/cold instead of private/shared.
-> > -- 
-> > 2.17.1
-> > 
-> > 
-> 
-> -- 
-> 
-> 
+Tested-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 
 -- 
-
+Best regards,
+Andrey Skvortsov
 
