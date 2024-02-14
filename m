@@ -1,254 +1,209 @@
-Return-Path: <linux-kernel+bounces-65213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06FA7854995
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:50:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5939E85493D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7129DB2430A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E2721C2127E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B737D537F6;
-	Wed, 14 Feb 2024 12:50:07 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9C548792;
+	Wed, 14 Feb 2024 12:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Lv1oAN9N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E5D52F72;
-	Wed, 14 Feb 2024 12:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7EC482FA
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 12:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915007; cv=none; b=k7QGPg0oihQshW5Q8ISbYq2h68jpRHD25AKc1KWJCKHlsgh0azaWwgmrpEn2E1fHB4pNtvMQWlhxFa4gDfVfrSssMMli6H+8Gx7C3PGPBQ7W4nFtd39g1Nlyn0/hCT1fK0DvI5/AOoZDHvnGoDKPzXUNFPFVPVnANOIr2JF2ddY=
+	t=1707913906; cv=none; b=H4yf5Kx6lFA9+E+ia7vo7PYlL+ZqTWupyY4BiYiay9UnNG/EUIAwzccmqm2tLRhLmZ/ysWnvUnVSJtSS+ScG50oN5MSkW3BP25GQziPGvqjWuUmYZJYdLXkAXkrC0kaKi/sw/qfjf3sqew4kpqxIqB9Ohki/9Ms+2Nj6N7OVBec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915007; c=relaxed/simple;
-	bh=JaHBeuuIG5uZZoaEPSZ2sPa9jXgVOE0rd93vNNIckrg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pFuqHO9Iko6r4jhon+5ceY/o7nwX1p1KzZT3bY4IykbdFPB8CFVdixEnTQQkySMeDhWfh5mon5tFbpOS4dLRhWMBmAne7tHYRkkp13wzKrWT5UBmeFrJaUfqS5j3yibjsoLx56m+XJlBtSTRMQ9OCv/TwJ/3+h4HLcksx8o6Py4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 88be413aea02551f; Wed, 14 Feb 2024 13:49:57 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1707913906; c=relaxed/simple;
+	bh=GDFkVyXorFTGtaZfFvPt24YYmuv9P1atr+iOhrjkSlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AiurzEoT9UFgp2yhdDKN/uGk1MA6bSWu2ksTDy9+FMqI2Hds2NSYms/O0NHvXxmH8SMotYryJXraY0oq8z3m6mSOfRGsGOmUtL/LwXDlJ98h1RIeuWADZKnmAx56OEf74NMl9rPYZdMtZUUEbL6RUDxKzxV/L+x8CBnWMRkxusM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Lv1oAN9N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707913903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=D9vLY8T3+KMronmH2QmMJQBkacfjmZkBy5ra1Aycnxw=;
+	b=Lv1oAN9NN4Tzlrkg+WvF5/nz/6jgbpx7VoNOY/9SkLtUk1Ed0FVja5pRqs60n90L2RDlD7
+	3hVZvOkb87HiFrh3Mq5D3quGvkgEkDThREeTtVIyIqx681y8nSds+JClDjiQfeGPd+MERE
+	Jat79sJOH37jwGK4J6PQUm7UUGdgKe4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-623-_DKCtM7WNwiKEuQREe1LwA-1; Wed,
+ 14 Feb 2024 07:31:42 -0500
+X-MC-Unique: _DKCtM7WNwiKEuQREe1LwA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id F0A62669DCB;
-	Wed, 14 Feb 2024 13:49:56 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
- LKML <linux-kernel@vger.kernel.org>, Linux ACPI <linux-acpi@vger.kernel.org>,
- Lukasz Luba <lukasz.luba@arm.com>, Zhang Rui <rui.zhang@intel.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Subject:
- [PATCH v2 2/6] thermal: ACPI: Discard trips table after zone registration
-Date: Wed, 14 Feb 2024 13:30:23 +0100
-Message-ID: <13457348.uLZWGnKmhe@kreacher>
-In-Reply-To: <4551531.LvFx2qVVIh@kreacher>
-References: <4551531.LvFx2qVVIh@kreacher>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7BCEF1C05ABC;
+	Wed, 14 Feb 2024 12:31:41 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.16.162])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id AA7DDC185C0;
+	Wed, 14 Feb 2024 12:31:38 +0000 (UTC)
+Date: Wed, 14 Feb 2024 07:31:37 -0500
+From: Phil Auld <pauld@redhat.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
+ N_MEMORY
+Message-ID: <20240214123137.GA70927@lorien.usersys.redhat.com>
+References: <20240214035355.18335-1-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdeggecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedugedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=14 Fuz1=14 Fuz2=14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214035355.18335-1-byungchul@sk.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi,
 
-Because the thermal core creates and uses its own copy of the trips
-table passed to thermal_zone_device_register_with_trips(), it is not
-necessary to hold on to a local copy of it any more after the given
-thermal zone has been registered.
+On Wed, Feb 14, 2024 at 12:53:55PM +0900 Byungchul Park wrote:
+> While running qemu with a configuration where some CPUs don't have their
+> local memory and with a kernel numa balancing on, the following oops has
+> been observed. It's because of null pointers of ->zone_pgdat of zones of
+> those nodes that are not initialized at booting time. So should avoid
+> nodes not set N_MEMORY from getting promoted.
+> 
+> > BUG: unable to handle page fault for address: 00000000000033f3
+> > #PF: supervisor read access in kernel mode
+> > #PF: error_code(0x0000) - not-present page
+> > PGD 0 P4D 0
+> > Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> >    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> > Code: (omitted)
+> > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > PKRU: 55555554
+> > Call Trace:
+> >  <TASK>
+> > ? __die
+> > ? page_fault_oops
+> > ? __pte_offset_map_lock
+> > ? exc_page_fault
+> > ? asm_exc_page_fault
+> > ? wakeup_kswapd
+> > migrate_misplaced_page
+> > __handle_mm_fault
+> > handle_mm_fault
+> > do_user_addr_fault
+> > exc_page_fault
+> > asm_exc_page_fault
+> > RIP: 0033:0x55b897ba0808
+> > Code: (omitted)
+> > RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
+> > RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
+> > RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
+> > RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
+> > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+> > R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
+> >  </TASK>
+> > Modules linked in:
+> > CR2: 00000000000033f3
+> > ---[ end trace 0000000000000000  ]---
+> > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> > Code: (omitted)
+> > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > PKRU: 55555554
+> > note: masim[895] exited with irqs disabled
 
-Accordingly, modify the ACPI thermal driver to store the trips table
-passed to thermal_zone_device_register_with_trips() in a local variable
-which is automatically discarded when acpi_thermal_add() returns to
-its caller.
-
-Also make some additional code simplifications unlocked by the above
-change.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
----
-
-v1 -> v2: Add R-by from Stanislaw.
-
----
- drivers/acpi/thermal.c |   57 +++++++++++++++++--------------------------------
- 1 file changed, 20 insertions(+), 37 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -47,6 +47,8 @@
- 
- #define ACPI_THERMAL_TRIP_PASSIVE	(-1)
- 
-+#define ACPI_THERMAL_MAX_NR_TRIPS	(ACPI_THERMAL_MAX_ACTIVE + 3)
-+
- /*
-  * This exception is thrown out in two cases:
-  * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
-@@ -112,7 +114,6 @@ struct acpi_thermal {
- 	unsigned long polling_frequency;
- 	volatile u8 zombie;
- 	struct acpi_thermal_trips trips;
--	struct thermal_trip *trip_table;
- 	struct thermal_zone_device *thermal_zone;
- 	int kelvin_offset;	/* in millidegrees */
- 	struct work_struct thermal_check_work;
-@@ -451,26 +452,19 @@ fail:
- 	return false;
- }
- 
--static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
-+static void acpi_thermal_get_trip_points(struct acpi_thermal *tz)
- {
--	unsigned int count = 0;
- 	int i;
- 
--	if (acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE))
--		count++;
-+	acpi_thermal_init_trip(tz, ACPI_THERMAL_TRIP_PASSIVE);
- 
- 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
--		if (acpi_thermal_init_trip(tz, i))
--			count++;
--		else
-+		if (!acpi_thermal_init_trip(tz, i))
- 			break;
--
- 	}
- 
- 	while (++i < ACPI_THERMAL_MAX_ACTIVE)
- 		tz->trips.active[i].trip.temp_dk = THERMAL_TEMP_INVALID;
--
--	return count;
- }
- 
- /* sys I/F for generic thermal sysfs support */
-@@ -662,13 +656,14 @@ static void acpi_thermal_zone_sysfs_remo
- }
- 
- static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz,
-+					      const struct thermal_trip *trip_table,
- 					      unsigned int trip_count,
- 					      int passive_delay)
- {
- 	int result;
- 
- 	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
--								   tz->trip_table,
-+								   trip_table,
- 								   trip_count,
- 								   tz,
- 								   &acpi_thermal_zone_ops,
-@@ -823,10 +818,10 @@ static void acpi_thermal_free_thermal_zo
- 
- static int acpi_thermal_add(struct acpi_device *device)
- {
-+	struct thermal_trip trip_table[ACPI_THERMAL_MAX_NR_TRIPS] = { 0 };
- 	struct acpi_thermal_trip *acpi_trip;
- 	struct thermal_trip *trip;
- 	struct acpi_thermal *tz;
--	unsigned int trip_count;
- 	int crit_temp, hot_temp;
- 	int passive_delay = 0;
- 	int result;
-@@ -848,21 +843,10 @@ static int acpi_thermal_add(struct acpi_
- 	acpi_thermal_aml_dependency_fix(tz);
- 
- 	/* Get trip points [_CRT, _PSV, etc.] (required). */
--	trip_count = acpi_thermal_get_trip_points(tz);
-+	acpi_thermal_get_trip_points(tz);
- 
- 	crit_temp = acpi_thermal_get_critical_trip(tz);
--	if (crit_temp != THERMAL_TEMP_INVALID)
--		trip_count++;
--
- 	hot_temp = acpi_thermal_get_hot_trip(tz);
--	if (hot_temp != THERMAL_TEMP_INVALID)
--		trip_count++;
--
--	if (!trip_count) {
--		pr_warn(FW_BUG "No valid trip points!\n");
--		result = -ENODEV;
--		goto free_memory;
--	}
- 
- 	/* Get temperature [_TMP] (required). */
- 	result = acpi_thermal_get_temperature(tz);
-@@ -881,13 +865,7 @@ static int acpi_thermal_add(struct acpi_
- 
- 	acpi_thermal_guess_offset(tz, crit_temp);
- 
--	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
--	if (!trip) {
--		result = -ENOMEM;
--		goto free_memory;
--	}
--
--	tz->trip_table = trip;
-+	trip = trip_table;
- 
- 	if (crit_temp != THERMAL_TEMP_INVALID) {
- 		trip->type = THERMAL_TRIP_CRITICAL;
-@@ -923,9 +901,17 @@ static int acpi_thermal_add(struct acpi_
- 		trip++;
- 	}
- 
--	result = acpi_thermal_register_thermal_zone(tz, trip_count, passive_delay);
-+	if (trip == trip_table) {
-+		pr_warn(FW_BUG "No valid trip points!\n");
-+		result = -ENODEV;
-+		goto free_memory;
-+	}
-+
-+	result = acpi_thermal_register_thermal_zone(tz, trip_table,
-+						    trip - trip_table,
-+						    passive_delay);
- 	if (result)
--		goto free_trips;
-+		goto free_memory;
- 
- 	refcount_set(&tz->thermal_check_count, 3);
- 	mutex_init(&tz->thermal_check_lock);
-@@ -944,8 +930,6 @@ static int acpi_thermal_add(struct acpi_
- flush_wq:
- 	flush_workqueue(acpi_thermal_pm_queue);
- 	acpi_thermal_unregister_thermal_zone(tz);
--free_trips:
--	kfree(tz->trip_table);
- free_memory:
- 	acpi_thermal_free_thermal_zone(tz);
- 
-@@ -966,7 +950,6 @@ static void acpi_thermal_remove(struct a
- 
- 	flush_workqueue(acpi_thermal_pm_queue);
- 	acpi_thermal_unregister_thermal_zone(tz);
--	kfree(tz->trip_table);
- 	acpi_thermal_free_thermal_zone(tz);
- }
- 
+I think you could trim the down a little bit.
 
 
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Reported-by: hyeongtak.ji@sk.com
+> ---
+>  kernel/sched/fair.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d7a3c63a2171..6d215cc85f14 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1828,6 +1828,23 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+>  	int dst_nid = cpu_to_node(dst_cpu);
+>  	int last_cpupid, this_cpupid;
+>  
+> +	/*
+> +	 * A node of dst_nid might not have its local memory. Promoting
+> +	 * a folio to the node is meaningless. What's even worse, oops
+> +	 * can be observed by the null pointer of ->zone_pgdat in
+> +	 * various points of the code during migration.
+> +	 *
+
+> +	 * For instance, oops has been observed at CPU2 while qemu'ing:
+> +	 *
+> +	 * {qemu} \
+> +	 *    -numa node,nodeid=0,mem=1G,cpus=0-1 \
+> +	 *    -numa node,nodeid=1,cpus=2-3 \
+> +	 *    -numa node,nodeid=2,mem=8G \
+> +	 *    ...
+
+This part above should probably be in the commit message not in the code.
+The first paragraph of comment is plenty.
+
+Otherwise, I think the check probably makes sense.
+
+
+Cheers,
+Phil
+
+> +	 */
+> +	if (!node_state(dst_nid, N_MEMORY))
+> +		return false;
+> +
+>  	/*
+>  	 * The pages in slow memory node should be migrated according
+>  	 * to hot/cold instead of private/shared.
+> -- 
+> 2.17.1
+> 
+> 
+
+-- 
 
 
