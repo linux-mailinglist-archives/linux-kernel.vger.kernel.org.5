@@ -1,243 +1,246 @@
-Return-Path: <linux-kernel+bounces-64807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C65485430B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:49:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5F685430F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138A8B24189
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:49:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34B411F250F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73D0111B0;
-	Wed, 14 Feb 2024 06:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E30111CB6;
+	Wed, 14 Feb 2024 06:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="RAqzv1t9";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="ZDcSfglE"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2126.outbound.protection.outlook.com [40.107.20.126])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UEYziLXC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D69FB677;
-	Wed, 14 Feb 2024 06:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.126
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707893331; cv=fail; b=ljXK2DeS5BwtJxOPrE0XG4FZmAsX2uRKq8wfkBjHQ35WqyKM0h+ahCVc00GXFBsMgE+3LsD138JMpZAeNyCddnsZKyFM1JvWzSessqZ2O0KPY2C949DyCEIvs+euTw8C9HxdCiKuKyuM7rT1qi1aRBEhDsaTPnLJo6FWKcdwyyU=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707893331; c=relaxed/simple;
-	bh=XUQ2ou4NqPwOSTDpB+dmjzVjOrnKxYjM4BG9Fu/kdDk=;
-	h=Message-ID:Date:From:Subject:To:CC:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jCQtBvBU12D0eKj0kPiFI6CqiiDQcxlPkP490t2z8UjIsjUivEaTLG70kx9INTTjQ2sZUhqZ8WVFTGrf/2oTFtOqJertobKoR/0cnniB4e0OGG4dK6SKaHGlrlp6OBYcrBJgdRWQnTU7g3wrXbxEn0QipE5/WQ4vPh6/IXVsPWk=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=RAqzv1t9; dkim=fail (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=ZDcSfglE reason="signature verification failed"; arc=fail smtp.client-ip=40.107.20.126
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=fail;
- b=QKVFi6d21auqfEu1EdTNa0TlFT1Va3D6nczD/JyQEH20fz8tNpF6ykpaKrN69vzzY7OHmuMdkdppBudvVIHEEXbyIDZ2plajkgRjMbY4H/6ZrLwFWTQZlj12lnydruZa7ht5KoTHmlwUeIpRpNkzxBVqg2dq0h3ePeDcv2J6iL/1BRlf6Uq0cDIXkoBgski+gJPkS9nUZ+vDtOy2X5gKZZexjLRO+3/ZgUJ8S5ts7rE5XUNqE4ajnEEeZEnfjpZCvuuSzDRBHf5QRHugsI0fEprz1YDCCfbbmppV56nyMYUD1/ZLOMWdtytXV9WP0hk8gAA5O095W/kFlwLYMSxMEg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DASjtvYeXXbLCsNZ+T1qlqgL4sNHe9UNo3IscbxMRDE=;
- b=LrpUafJ7w0jHWMSSKwoOape/VsgjUvS/LaFnS7+UuZwVbIa2+1xaRrmE95jqTolkWO4BTA8Va0NqqPHJPkSj0lIW0ltb0n1U1BX9XPq/DgdWZ7wm2m4X7VG/tK1ctoHeX5rwRv1tNqjbbN6IQ/4KLPEN/ulkP0pFvGaT5cYNBRU8N7rM5ScoEXVXq4JhPnQ/fVYffz+lhTKaJb6QA7YlaBgFf9nPQ99ZVNXwj5RIM57Od4jYuHBgA9vj4uKWj9Ry0jpViROKLEINTieWkFca94YqPWcBXJ7888/nnu5r410jhv/ybAnVzGHa9r5Z5DrUlYepfHUDL9RzfETfQW7VJQ==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 20.93.157.195) smtp.rcpttodomain=kernel.org smtp.mailfrom=topic.nl;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
- dkim=fail (signature did not verify) header.d=topic.nl; arc=fail (47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DASjtvYeXXbLCsNZ+T1qlqgL4sNHe9UNo3IscbxMRDE=;
- b=RAqzv1t9KQCsxEqklIRB/6htYDxjy2v41a8QKCb1hMpU8KkiRaQHvEEVU/8EVSA9mYKjqOX0uVwrK+U+WaxTbEIbsH2er+8I3wNov2ivZ9rRe3BshGaUAoMVqZVk6wSIvCTybU69kYRZYwQpyICev2I6XunP9HwUCMhaJO9oqOpDNZQn9ilOrC8Me3ap4KX9DfVpn3zvx5UbEJ0on4A1SWhXLByUYedWWX29LgHM24erEPCY7vBHoW5OhNZ8DtL1Fi3u9iwdJ/GRDYZiSYHuXD5SKbzSRSQiSBN1nCuTXtWRy7ISblazo7UB8g/F3lgD9HPT1J6AHbsDWgp+mWMzJQ==
-Received: from AS9PR05CA0055.eurprd05.prod.outlook.com (2603:10a6:20b:489::6)
- by AS5PR04MB9924.eurprd04.prod.outlook.com (2603:10a6:20b:67e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.26; Wed, 14 Feb
- 2024 06:48:45 +0000
-Received: from AM3PEPF00009BA2.eurprd04.prod.outlook.com
- (2603:10a6:20b:489:cafe::bf) by AS9PR05CA0055.outlook.office365.com
- (2603:10a6:20b:489::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
- Transport; Wed, 14 Feb 2024 06:48:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.93.157.195)
- smtp.mailfrom=topic.nl; dkim=fail (signature did not verify)
- header.d=topic.nl;dmarc=pass action=none header.from=topic.nl;
-Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
- 20.93.157.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.93.157.195; helo=westeu11-emailsignatures-cloud.codetwo.com;
- pr=C
-Received: from westeu11-emailsignatures-cloud.codetwo.com (20.93.157.195) by
- AM3PEPF00009BA2.mail.protection.outlook.com (10.167.16.27) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Wed, 14 Feb 2024 06:48:45 +0000
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (104.47.12.50) by westeu11-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Wed, 14 Feb 2024 06:48:44 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46391170F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 06:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707893336; cv=fail; b=f/NoxvuUMZ/cyX1TxTyUKm9s7PM0/Rge02Bz8fxZ7yX6wP1Sr+/RH+NzGX/b4u/U2NdHnl++lKO62J5il17pDEaJZGEcxhW86sBQe3nafWUpa6G1vxU9jzOat4d7icFrXsjL8BeKIdxkA3AY80hYKE56HS40/xUOnbCd8fsOq4c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707893336; c=relaxed/simple;
+	bh=gj1OsezbVdUp465XskWF6w3o+vOwIRT6zex3dnHMMpo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=WWjfJrE6lmYCBuoDjWAep2H+V8Ck30rUIycuBLVNVMVdU+6NQvrPKOaZZyDYcDKXkHMspuKmxgSYjxsfDIcO+MW4h+vAiRiCdS0E9MQBWF1zPVyL5IodwGR6HPUpfO3rNVuVo7mnVFyYGxg4Wco9VxpUkMljTgB/EoyOqYJ2070=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UEYziLXC; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707893335; x=1739429335;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=gj1OsezbVdUp465XskWF6w3o+vOwIRT6zex3dnHMMpo=;
+  b=UEYziLXCpi8pyx6msdcN/N3DNvxwL1jCTkKeczEnM+nE6rE2Zv644ZAW
+   KW7FiuIwgg4QKD5tGFh96PAUSbWrnJyfe6bMhTSDXYgdGl6mbQecY5/4r
+   lRENnig/g/seJvsZh/AWJXj1RZs0mop93YXHdnxbxkaQbSABq57k2puII
+   KICxNV67lH74EwsaOYIOf1hPDI5qgNWulQ09Jzl6aVHGazddo1L0qsehh
+   yrnBbrzoFdLOvrwUfyb7VPkzHP2pg7yCjotu+JevKXjdHrPivGtXTBOTD
+   jnnB7ftn2fgvPKrN0lwbgYZDNqbVi7Cs3aQsO4J8YeBcUhVHUI63TM1os
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="5747682"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="5747682"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 22:48:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="7758326"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Feb 2024 22:48:55 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 13 Feb 2024 22:48:53 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 13 Feb 2024 22:48:53 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 13 Feb 2024 22:48:53 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 13 Feb 2024 22:48:53 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V5XzDlIiAp3wOtTioKOEHCf6RHtC5slS1crJGybErKMEX94ujiDcEAlcVDT/zx1xHA+Xjejf1yxA1/Ueu3zgwh1abwdVpWQ/rXugCiG8gazmORpSt4WuB1qNSkPWnVPFq1TOShUkxLcRPDAhK47ptcx4fafMRpxfQW82C2a3635DY3heg2DX1I617w1t49LkfjbRcd2N4ka/TGjDDJstN95jn7u7c/KbCa5MlG8s4Vy0TVpbq3bhpZceE4EUMJ+102UxnPrapDM2A/wuwElwqLcm3ZSBOpgBZ9G4IT4iTq3Br5Q3FyrJd5/olCq1AprvkEGNDZAt7yyydqPQVxBbSQ==
+ b=YABKSFHV2MIa/qyNHBnIlSAUo+J9BIfrlgRXksetxIFHzvGwU6EqIVag85WrFgmKI+kDB/iOVpxiIadfNzNZJ5TCvc7XoGBbI3uvWHWsIt9bLkvjLbuuNYt0XXXaoL5vBC9OIz9fBMFdT/oPJERb/dbOtmbeyn0ZEpf0+CDMKj+R/EV4kpXsy+cgvcT98NHQKiyQgYcc7EOoa1x0RhBKHpd32K1jympvPzAzMcQENeWS3nHwTVkQNslv25ICm45vr7JOwMmXG1tgXstVYyTJGZ4PVu86CcGSqhsM8+tnDACZHajNcvjGpep6wRr6L4a88PZQlXEbQG0ZMCrLAC65oQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v4ULB+uPtoVZBhTLxpMcb1JkQDm7RvXhfsQCcK2sgHM=;
- b=MYXs0KpQpEMgn2O+W8IM/T0x2GqNqMOsBHcAhCwZCSmgxcf4jTUhQVa4nveg6Inc3TMCvH/ABxdu6yW9T3fCS5yPtyY2T0f76GBcL6vg7uqzMRHsi23yCVqjWZ+1kJ5ZpWfVY1JTS9z3X7AWS4wEoa5hKu1+6gt7ywkxhnIWA6cUnXr+53VuY1dn0dpk/c/hZrAOmnMJqVHQyJ8mRr6LpfSDjZDDwDal0y4u6sHPovprVYUJcrpEtW3lUVhIFEp52225rr04rr9NNWZlN0g1vESedFDeTg6QGxH7DVeNmq4VDrGGeZQJUve5iKGEjAzkv0OjkVt/g1ByK8nBleyFyA==
+ bh=7EcdzdEbquwRRTUB+Y25+8lKwrbS7Cu0OXADu3QuzWw=;
+ b=G79kz1Z5RVOBCN57q0Z88Xpk7L+Tzl4GO4E+DaBs0zoOG6k9Ic3bLW6IfvKewUdCgs7r9tN/9Rud9c0T2y6ZM+YrKtntrf1kkOMxEMuTTw1820FhTg2lqbfd0cZ4KtBaEJIg+9bB3RleYYLUdKX+Nl1mheYnsWYQi+Fi8phQCLM+y79EaEXy12qpXVQkuzcxyNCOvf7D0VDm4z6N0c8xSIJMsrjsZt/WEkTdgU4zCpqm9+ZnuJc4qnbxPx6ZJwxDwRz1eFZtF/gzYXyzM/t24MzARHSza+3QYkUY8hnAZbsZ67APjKBSRbrN3MMjWTw3Z+o89b2kUmZod0G6icJ3sA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=topic.nl; dmarc=pass action=none header.from=topic.nl;
- dkim=pass header.d=topic.nl; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v4ULB+uPtoVZBhTLxpMcb1JkQDm7RvXhfsQCcK2sgHM=;
- b=ZDcSfglETPqEzwv1MpmAgfNHPVfXpjXkwe4cUVWItaNpLPbDx2hwC0Ur1LwM0GcJRC/6LCac31ajsIHbOecXikolsGwk3RSg60TWHaN9sbts68oDu+BM9kTrDp5ks5G8MKiS4x5uO0xURmMqg93zyoRns8JjjkAuYbwROoGi+TL+B+sY+Gapgc2+hLfl2nZvB/l14SNeTFKFj2liIHdqT7fEYgwQdH4YcRF6C/B6SuZSPENW8QK8HR5jnXvHN5gQ1EXAK/yl7z+W1KMcPgFhnYOaurz0TLPOzxEPBOIIQ/qyE/SLgFR6SJEM0Cvrb7WqdbiQ4nbwPJmbVey7p+YCqw==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=topic.nl;
-Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
- by AS8PR04MB8546.eurprd04.prod.outlook.com (2603:10a6:20b:421::7) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CO1PR11MB4915.namprd11.prod.outlook.com (2603:10b6:303:93::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.30; Wed, 14 Feb
- 2024 06:48:42 +0000
-Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
- ([fe80::651a:dedd:945a:d1dd]) by AS8PR04MB8644.eurprd04.prod.outlook.com
- ([fe80::651a:dedd:945a:d1dd%6]) with mapi id 15.20.7292.027; Wed, 14 Feb 2024
- 06:48:42 +0000
-Message-ID: <44d0a115-1a8b-496e-bfa9-89caccbee5bc@topic.nl>
-Date: Wed, 14 Feb 2024 07:48:40 +0100
-User-Agent: Mozilla Thunderbird
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v3 2/2] iio: adc: ti-ads1298: Add driver
-To: Jonathan Cameron <jic23@kernel.org>
-CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>, Liam Beguin <liambeguin@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Maksim Kiselev <bigunclemax@gmail.com>,
- Marcus Folkesson <marcus.folkesson@gmail.com>,
- Marius Cristea <marius.cristea@microchip.com>,
- Mark Brown <broonie@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>,
- Okan Sahin <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
-References: <20240206065818.2016910-1-mike.looijmans@topic.nl>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.fd628a1a-a926-426e-a239-bfd8c9858b94@emailsignatures365.codetwo.com>
- <20240206065818.2016910-2-mike.looijmans@topic.nl>
- <ZcIsuiuisQjTIxJv@smile.fi.intel.com>
- <4c6654f5-2d9e-4c1b-a5de-7bdeacf5e99f@topic.nl>
- <ZcI5PoWojKRrdpVl@smile.fi.intel.com>
- <67387cf4-1065-4313-b4c6-054128ba8f3a@topic.nl>
- <40a3a47b-1388-4ed0-a24b-2c0bcef3be3d@topic.nl>
- <ZcJLnOiFoaABami1@smile.fi.intel.com>
- <e04ca010-289c-4216-95ea-2f2418613378@topic.nl>
- <ZcJfOgDMmLBpEho2@smile.fi.intel.com>
- <11613ba7-fc14-46bd-84ba-a0b5d966cbfc@topic.nl>
- <20240210162704.5126478c@jic23-huawei>
-Content-Language: en-US
-Organization: TOPIC
-In-Reply-To: <20240210162704.5126478c@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AM8P251CA0025.EURP251.PROD.OUTLOOK.COM
- (2603:10a6:20b:21b::30) To AS8PR04MB8644.eurprd04.prod.outlook.com
- (2603:10a6:20b:42b::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.40; Wed, 14 Feb
+ 2024 06:48:51 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7270.036; Wed, 14 Feb 2024
+ 06:48:51 +0000
+Date: Tue, 13 Feb 2024 22:48:48 -0800
+From: Dan Williams <dan.j.williams@intel.com>
+To: Theodore Ts'o <tytso@mit.edu>, Dan Williams <dan.j.williams@intel.com>
+CC: "Reshetova, Elena" <elena.reshetova@intel.com>, "Jason A. Donenfeld"
+	<Jason@zx2c4.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>, Kuppuswamy
+ Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, "Nakajima, Jun"
+	<jun.nakajima@intel.com>, Tom Lendacky <thomas.lendacky@amd.com>, "Kalra,
+ Ashish" <ashish.kalra@amd.com>, "Sean Christopherson" <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <65cc625028bfc_5c7629490@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <DM8PR11MB57505F657A8F08E15DC34673E7422@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20240202153927.GA119530@mit.edu>
+ <Zb4RlTzq_LV7AzsH@zx2c4.com>
+ <CAHmME9owdbHzfb66xisoWmvWeT_-hkxCu7tR2=Rbye_ik1JgQQ@mail.gmail.com>
+ <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20240212163236.GA444708@mit.edu>
+ <65cb1a1fe2dda_29b1294e@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240213231341.GB394352@mit.edu>
+ <65cc0ef2c7be_29b12948d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <20240214043245.GC394352@mit.edu>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240214043245.GC394352@mit.edu>
+X-ClientProxiedBy: MW4PR03CA0302.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::7) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	AS8PR04MB8644:EE_|AS8PR04MB8546:EE_|AM3PEPF00009BA2:EE_|AS5PR04MB9924:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7eecb051-4600-4463-6812-08dc2d28fd58
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CO1PR11MB4915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82661994-c511-48c6-655c-08dc2d2900dd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- nhU57gFkD8qqcmpnnNlg9sgxR6AsHdGQOun0X2K+H+S3/Ok165iTeNoC54UDG3zfh8oRoDOvo2k92VMxwbFRWRkZsd91xPuCA5n95RbgJ72W5I4ywviCEKK1gJG2ngteidtqv+9vSx2q53hSQBYlL/FRXH842W1X7jzrZcwCOgcJoBId8o9Swd/yrU7/sl+aCrsxTW4FMRP7ZBlqmXurWOGfaASSqLfWrRN8tMV8yvvhM0wrYCNcYeyyYfMZ41tKDtAWhbZSIXZf4LW+jM+bbmYAbUpbpYUeuak166H5twiYJ9avYDbb4+XL7Cxw63BAkk3pK9V4D4amhRr1rBjFx0XMskdSi5fLd/RJo0h2leerAFb0tlNaYFmhiceUl9PYN7sUfwsHSd5CC4wlT1N10gia8Kf3NMMOZnPBADDknmJOeppCztIxkT6n56GiWkL9cQU9/ZwOTcecLzZr+/fK6WIENUA0aRau7Xg4sDfyXUKFg+ANa1LLtMgv/NuLrXSw6jCatkRLvPKeVIYx5Rg88QTGKNXydcA9szBee+kmeXw=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39840400004)(366004)(376002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(31686004)(6512007)(6486002)(478600001)(41300700001)(2906002)(8676002)(8936002)(44832011)(4326008)(7416002)(5660300002)(53546011)(36916002)(6506007)(54906003)(316002)(66476007)(66556008)(66946007)(6916009)(2616005)(83380400001)(31696002)(86362001)(15974865002)(26005)(38100700002)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8546
-X-CodeTwo-MessageID: 0c8796cb-c4ca-48dd-969d-de62a8130f03.20240214064844@westeu11-emailsignatures-cloud.codetwo.com
-X-CodeTwoProcessed: true
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- AM3PEPF00009BA2.eurprd04.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	fd1eba66-f8d6-481a-7f07-08dc2d28fb69
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	9mRoyoVvYXTktEb0KDCsWNLxo2t5f2iBZEa1JpbfbqcOWvmBMBxmLeANfd3o3B8SVG/xkEVMFx1bi/w3tJ9MazpO0jF8njsoZapeFpIc472MvP5QcjOUIymUUD1fWKvmUbBLnNOlNYVlEm3gwQekd5dWTDpCXbkigDLRxa9UNUvBTSEPyZGhw0XEI0IzIRLvUZyWH6EbgmEY+xhl5NvXnyN3mf2pkgMJHUrqO98ScXOm2aHCFdWUrp19y8gkDq0MaZWD8rmWo1WQ96/x4XIwAU2WM9xuOZ2Fi0hfx/YT/4eTvP/+k6nezPtaDk/mhs4ohrMBgvbC2fQ4Sfri+C/8zXvDZpaU0pfXtS1W5zMv8UpeeP9bISKH2wLI8NSt99eit481bfqoncAzgIxcc3YkIJII/jBQUjaCjDrbrqijUonuscxE/wcNDBFGqlpvOp7VwEtawK+kWoDiwjW1RCqx7YrHlLjoZJ1a4slR4/zF3R77rQdX+oXo53kHR7mpPBfskndRWev4QEaYXoFdxRV7ZWKfNvwEruydW2Mr9uOJDNV56MRYKvoqOzHg+UikDwQx68KRPBp1kY1EYhq1aY9b2Q==
-X-Forefront-Antispam-Report:
-	CIP:20.93.157.195;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu11-emailsignatures-cloud.codetwo.com;PTR:westeu11-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39840400004)(376002)(230922051799003)(1800799012)(64100799003)(82310400011)(451199024)(186009)(36840700001)(46966006)(44832011)(6486002)(6506007)(53546011)(478600001)(6512007)(54906003)(36916002)(316002)(31686004)(7636003)(2906002)(8676002)(6916009)(5660300002)(7416002)(70206006)(70586007)(4326008)(8936002)(31696002)(356005)(86362001)(36756003)(83380400001)(26005)(2616005)(41300700001)(7596003)(336012)(15974865002);DIR:OUT;SFP:1102;
-X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 06:48:45.0107
+X-Microsoft-Antispam-Message-Info: bS09OvFvlurhJ9fp/Heg3Uw4skh7LnkuUqOXQo6lZzFz8fTHOfGH/G/Jzz9j1iVCMIKfhZ+yAJCFmYlxmfdZ6AJs9Yi/d6UaCpHriy7k0jb9EO9o4zldAf0iWV+BYffpcQQuBy3H1IyzkObPtUdO2abT0Xyj9ridiYobwL+vMWkgmS1XtmReC7iU7kz4Yv5Zefgu+42hMLUOqeOsoquPZ2yUi1gqlRp/F6gtSL4VvXbGRNrm/iWxzClCBkxuwgnHav85QktR1zuRLn9KA+z0LyLhJNkDeobSSOb9+BeAtwYSM+uuI7ZbuNxLG3bRHK9ZIDe4NUAXLJ7E0X7fTSVVWFB+mIZKT/uhkGy4gi5YD2TnGqwF8Nn25d/9R9Y+DIT2vLrW+VB4SptBECSGOuyTqhbD6NS4lmF90ffsKv6FPrT1C4RvXecstD/69536OsbzGXu6iOyK28BAfgNw4SLf+TxkYb6r2sPK+TBgc+GcGYEtJnvRRhGCI2vKrddexCOM1zNZBPWyeMAjU/dkhiz449bMj1ha8MRFKcUp/zAc4DUA2xUlSnWPmVMblj02PTgw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(366004)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(316002)(6666004)(110136005)(54906003)(6506007)(6512007)(8936002)(6486002)(8676002)(66476007)(66946007)(66556008)(4326008)(9686003)(82960400001)(38100700002)(41300700001)(86362001)(26005)(478600001)(83380400001)(2906002)(5660300002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DkIYrQ+C2cOPVwg2sqHipfnRlIGRjubGeKsT7vQWq85xBfYBGHNH/X7t8+91?=
+ =?us-ascii?Q?iLQqjRgG5fH5o+Xf2Gv2zCpzglDZbJ+1n7sEF9YV9kRedth9L3Sas5gulK1o?=
+ =?us-ascii?Q?Q+v08wMlpZohWTCYCoVd2eF+rCD+LAlS12DnBZu4p9Sz3gr0ZyxWBOq9WrBk?=
+ =?us-ascii?Q?+hMO8bgQhcqOxM+uUgj4J8DadvyANqEX/ITsDLx51cKTn/kVmV68POpOlUT+?=
+ =?us-ascii?Q?oxXSRf3i7qVnu3lwsSFccwaRis1Z5SIHa7dGrz1UwmB2v8LaHOKYINxslGET?=
+ =?us-ascii?Q?hCp+BuxEXEeYAF5Gi87DcmdMV1dHWn82p6NKHfhR+mcnmfQzRF+adVwjI/XQ?=
+ =?us-ascii?Q?YEzsgnasefNpFbSfRARu58s2iyGOSz2h1CEY6SCukyBiky6ymcIeTwF+Edbc?=
+ =?us-ascii?Q?mn5j7ntCmy7Q96RvSNgOhqVJOmIZdeGY0J2lVH5hG0C+ea0jeg96PiCujMFB?=
+ =?us-ascii?Q?jf5ZqoRGHpjkiqD5gPqg0zLPowatqnshpj9X/8hHnrAez8H8dMmkY7bfTi6v?=
+ =?us-ascii?Q?5NtlDs13Z4FRoBmzbUqSxY/T+6RgDDmONDDcVGMsT7eZbjGQGXo+RR4QkRm8?=
+ =?us-ascii?Q?XMEf0wZpiuWkMD9opYNqeEynFjwSivay04KsNxWiZ2FNACck7qZS2cz2Fv0M?=
+ =?us-ascii?Q?p18OyG9j3Ha048avwr8xED2kU96HcR2dvpdbbXXqvnaWoPYvswNHNoJuM7jh?=
+ =?us-ascii?Q?cMnoku5iibHZ4DYKaPcLHR3/W3f9/GS2vdOEggCU5Y/iZppAV+/Srf9R8Z4T?=
+ =?us-ascii?Q?bZ0+0dBLQGBRnjgcnh/Rts6zWu5xbe9S/WycYZXfrjykiPzn1CTl3gJNsM1Z?=
+ =?us-ascii?Q?U5RRerSCrEpil8POYsVndTQtN/o7HsdMWp606zXLlNVsnRMOeg+o/PUhAzMw?=
+ =?us-ascii?Q?5XElY2Ms3CbeYfxXjWDQWUbpuYXTlZz2gbT9tvrTgyN8toduSdd7hmTb+0Yl?=
+ =?us-ascii?Q?/IL3Vmkr8nS2RnF/sNTnQpuaAiH3lR4fHqh/YG1dCFGBLSv9S2cLPMJ4Bwl3?=
+ =?us-ascii?Q?jcxQhEL8AAvyaRQem19w150QWzXh8h7snUzZAPBh4zUIlfTrtDizWcsrHTsL?=
+ =?us-ascii?Q?xzUJYESVIKExO1jXEZXVBbJ6puRaKePtjyeZR7jbTdhwh2+tzmRkmSDrIOsM?=
+ =?us-ascii?Q?vGC0ANke8uWawG9EuGOUgfm/j/iU0B1WR8lg3GQxhg0bFVL5DLeDcHGjEJaT?=
+ =?us-ascii?Q?RY6xR2qDboKFl7BAEb1xTCQfp8RWzuDn0Env1TX8pv6PFxiQIf07FwKuL60c?=
+ =?us-ascii?Q?26Wf3YUyVhtV65pNQOMKSrNrVBuCrr7n193vSwq7s4aHN06hDcX1ucw9MrUQ?=
+ =?us-ascii?Q?CjcBfLYJZRnL6OS3ZKSkCnK5Tyd/5D4hM29wUEx/owDbsuumeDX79CyPKngi?=
+ =?us-ascii?Q?KPqnBoGJGovqN1ruk9JbiPlPPvLoshfJebOi6qIzfHeG/AHm1+tIxfOLfd7G?=
+ =?us-ascii?Q?amtkjP6yC9ED48q4Sjd0Di/H1MVGIVI7frEm0tmz5Rv1anSI0QVlpTljPwVs?=
+ =?us-ascii?Q?ybfQnxat5Fz/CYDxj1K1Tax/lD2fSc7hZkvecMysqyyMMclmHzuSvsUaWgbR?=
+ =?us-ascii?Q?5nVCXJPgb2dzgbPfEFlr49Gh16JJ4THBkM6NzPeZxZkoSjbMnl92rGuWvoRE?=
+ =?us-ascii?Q?KA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82661994-c511-48c6-655c-08dc2d2900dd
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 06:48:51.2760
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7eecb051-4600-4463-6812-08dc2d28fd58
-X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[20.93.157.195];Helo=[westeu11-emailsignatures-cloud.codetwo.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AM3PEPF00009BA2.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9924
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8djypRIf7NBFZUjjgYkCDkxC4uQki+awcnT7hsxxJQRUGhb/dI4a2Nc0xcQwzSCOFzfH5WSB7UwFCxs3z5ULe7NmsGy5T8jP3Ynf5pkhn4U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4915
+X-OriginatorOrg: intel.com
 
-On 10-02-2024 17:27, Jonathan Cameron wrote:
-> On Tue, 6 Feb 2024 18:38:29 +0100
-> Mike Looijmans <mike.looijmans@topic.nl> wrote:
->=20
->> On 06-02-2024 17:32, Andy Shevchenko wrote:
->>> On Tue, Feb 06, 2024 at 04:44:03PM +0100, Mike Looijmans wrote:
->>>> On 06-02-2024 16:09, Andy Shevchenko wrote:
->>>>> On Tue, Feb 06, 2024 at 03:47:45PM +0100, Mike Looijmans wrote:
->>> ...
->>>  =20
->>>>> But it's up to you what to do with that.
->>>>> Maybe Jonathan can advice something different.
->>>>>  =20
->>>> The spinlock also protects the call to spi_async().
->>> I don't get this. Locks usually protect the data and not the code.
->>> Can you elaborate?
->>>  =20
->> Either the DRDY or SPI completion handler will call spi_async(), the
->> lock assures that it's only called by one.
->=20
-> Arguably it's protecting the destination buffer of the spi_async()
-> call.  We don't really care if we issue two reads (it's a waste
-> of time and we would store two sets of readings but meh), but we do
-> care about being sure that don't issue a second read into a buffer
-> that we are potentially simultaneously getting data back from.
+Theodore Ts'o wrote:
+> On Tue, Feb 13, 2024 at 04:53:06PM -0800, Dan Williams wrote:
+> > 
+> > Indeed it is. Typically when you have x86, riscv, arm, and s390 folks
+> > all show up at a Linux Plumbers session [1] to talk about their approach
+> > to handling a new platform paradigm, that is a decent indication that
+> > the technology is more real than not. Point taken that it is not here
+> > today, but it is also not multiple hardware generations away as the
+> > Plumbers participation indicated.
+> 
+> My big concerns with TDISP which make me believe it may not be a
+> silver bullet is that (a) it's hyper-complex (although to be fair
+> Confidential Compute isn't exactly simple, and (b) it's one thing to
+> digitally sign software so you know that it comes from a trusted
+> source; but it's a **lot** harder to prove that hardware hasn't been
+> tampered with --- a digital siganture can't tell you much about
+> whether or not the hardware is in an as-built state coming from the
+> factory --- this requires things like wrapping the device with
+> resistive wire in multiple directions with a whetstone bridge to
+> detect if the wire has gotten cut or shorted, then dunking the whole
+> thing in epoxy, so that any attempt to tamper with the hardware will
+> result it self-destructing (via a thermite charge or equivalent :-)
+> 
+> Remember, the whole conceit of Confidential Compute is that you don't
+> trust the cloud provider --- but if that entity controls the PCI cards
+> installed in their servers, and and that entity has the ability to
+> *modify* the PCI cards in the server, all of the digital signatures
+> and fancy-schmancy TDISP complexity isn't necessarily going to save
+> you.
+>
+> The final concern is that it may take quite a while before these
+> devices become real, and then for cloud providers like Amazon, Azure,
+> to actually deploy them.  And in the meantime, Confidential Compute
+> VM's are already something which are available for customers to
+> purchase *today*.  So we need some kind of solution right now, and
+> preferably, something which is simple enough that it is likely to be
+> back-portable to RHEL.
+> 
+> (And I fear that even if TDISP hardware existed today, it is so
+> complicated that it may be a heavy lift to get it backported into
+> enterprise distro kernels.)
 
-Indeed, that.
+No lies detected.
 
->=20
-> There are comments where the release is to describe when it can
-> be safely unlocked.
->=20
-> I'm not super keen on this whole structure but I don't really have a bett=
-er
-> idea.  Who builds a device where you have no latched way of seeing
-> if there is new data? (some) Hardware folk love to assume they have a RTO=
-S only
-> talking to their device and that no pulse signals will ever be missed.
->=20
-> We get to educate them when ever the opportunity arises :)
+Something is broken if you need to rely on TDISP to get a reliable
+random number in a guest. All it can enforce is that the VMM is not
+emulating a HWRNG. Also, VMM denial of service is outside of the TDISP
+threat model, so if VMM can steal all the entropy, or DoS RDSEED, you
+are back at square one. The only reason for jumping in on this tangent
+was to counterpoint the implication that the RNG core must always hard
+code a dependency on CPU HWRNG for confidential computing.
 
-Even on RTOS this chip was a pain - to get it to work reliably I had to set=
- up=20
-a DMA controller to run the SPI transactions, which took some smart=20
-daisy-chaining (I recall having the DMA controller write to its own control=
-=20
-registers to avoid involving the CPU).
+However, yes, given the timelines for TDISP Linux could hard code that
+choice in the near term for expediency and leave it to the TDISP folks
+to unwind it later.
 
-It's probably possible to trick audio hardware (I2S controller) into grabbi=
-ng=20
-the data (my chip doesn't have that) without involving the CPU.
+> Ultimately, if CPU's can actually have an architectgural RNG ala
+> RDRAND/RDSEED that actually can do the right thing in the face of
+> entropy draining attacks, that seems to be a **much** simpler
+> solution.  And even if it requires waiting for the next generation of
+> CPU's, this might be faster than waiting for the TDISP ecosystem
+> mature.
 
-As the code is now, I can grab data and display it with the IIO oscilloscop=
-e=20
-over network at 4kHz without losing samples on an A9 at 600Mhz.
-
-
---=20
-Mike Looijmans
-System Expert
-
-TOPIC Embedded Products B.V.
-Materiaalweg 4, 5681 RJ Best
-The Netherlands
-
-T: +31 (0) 499 33 69 69
-E: mike.looijmans@topic.nl
-W: www.topic.nl
-
-
+Yes, please. I am happy if TDISP flies below the hype cycle so that its
+implications can be considered carefullly. At the same time I will keep
+an eye out for discussions like this where guest attestation of hardware
+provenance is raised.
 
