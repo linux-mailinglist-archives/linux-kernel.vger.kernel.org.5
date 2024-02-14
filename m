@@ -1,159 +1,287 @@
-Return-Path: <linux-kernel+bounces-64757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C6B385427E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:44:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5FEE854280
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD131F21ED1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:44:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11403B21D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 05:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FF9D310;
-	Wed, 14 Feb 2024 05:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE4D101FA;
+	Wed, 14 Feb 2024 05:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gHLncSwx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="s71ahCeE"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B80C8DD
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34FC11183;
+	Wed, 14 Feb 2024 05:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707889459; cv=none; b=T+Pb9JYH5nd8BkH0idg8mIkeLJ5xaTyzqGzW7yTpyt/tSlY41qByS8xZwMyck/EBUXSD95aqH5YWOMGBu3MZNV/3/kF/1S2hCvBnE363KKNcrmmkgLX3jVUlg0GJUgo/jYjt369GkOAuPAoH+V4aPdxl6O3D98BwmCTG3XXqlT0=
+	t=1707889478; cv=none; b=e4m8F/mk5j4KPWslL6SK/pXT0FE25/GG4yl/PQnMUst4A9ehI5s5vSckMT3YNCsXEH8ol5MvJm8OLVtoPFvpPXfeZdCiwChXbOxRa/pSzGCXbiZ26TxCpAEie/ViviS+kSyXv2BPdmELmE15n9+7gfvlXHjo8U4S/BmtETfypWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707889459; c=relaxed/simple;
-	bh=H3x+Tu/KUfIIvKBCAtwFdznjT/Eao+QusDRfpypQgsg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=G/12rV4So39YLHCYE9BDQpIO/tcJ6YRphscd4yxQ+TnJD42ZkLwr9Lb2dG5KxYuVi8VFkJFo8sybZEG0UDx2Yq9H8DZbIxGNsYdu1Wv79ljpgz1r7ObvoGP7bKRV+SyVl5EpCt1TplnGMyjy3BZL9tKBiPwyldMSZ/MkwsyeP0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gHLncSwx; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1707889478; c=relaxed/simple;
+	bh=GNw4J/KFvcmUundha/TAxbmJFey7T/uVB6L9JYLTTIU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=WCc1XpkK6kqkcDEGusCZyjQOUfwHX7xBYML0dHJ58d8PNghF3/S4xaDxF5ixVqhf+p/aYZI+tpveg0kDZfz8jWrlAbabdkm0aiGjCWQPJT/qnMxsl4Ote75HGsUri1mci4S+FYnOWy6ToRNcvBehweAVsJeL+sGMXXPfHliAF9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=s71ahCeE; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707889457; x=1739425457;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=H3x+Tu/KUfIIvKBCAtwFdznjT/Eao+QusDRfpypQgsg=;
-  b=gHLncSwx8AYBFYIy9fAWnWPvGHIdsRDGwKEK2Yv3p8/DxXofeSs4CgWG
-   48UHBIfL84Hvc/lu+/ufsl12YIW+PceLXa4yDrhXMiBBLynrgzjUlRSXy
-   /3F0B4/obIo/77gKIbcaRfd7tbl8u2csikgQXY05HCDM+cHsgIDPS9ttz
-   GXHnj4JfFQr3pyLCd1S8Q4lOv44c+VqsqAStDNq+6KeQowzF1UIQgkBme
-   ZsPBnRBBZzq08cm0G9oh3uOBeupvTJij+zAkqhOBj1F+8akCkE7QXc5NX
-   OFigXq6xT/t+r9EZGFoS1xP1z42X62JBUjNfvP1jy/RcGqYmfVm01v5JU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1792426"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="1792426"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 21:44:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="7741521"
-Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 13 Feb 2024 21:44:14 -0800
-Received: from kbuild by 01f0647817ea with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ra844-0008Vs-1b;
-	Wed, 14 Feb 2024 05:44:12 +0000
-Date: Wed, 14 Feb 2024 13:43:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/opp/debugfs.c:48:54: warning: '%d' directive output may be
- truncated writing between 1 and 11 bytes into a region of size 8
-Message-ID: <202402141313.81ltVF5g-lkp@intel.com>
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1707889475; x=1739425475;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=GNw4J/KFvcmUundha/TAxbmJFey7T/uVB6L9JYLTTIU=;
+  b=s71ahCeEqszShbMVFCBX0ZBtim0LrwsyFsYMr1rUMVYCPybwsGwgbYZu
+   //Uy5B4yqxvziSYQRkix89d+R3c8imUAGbOMlYuVIuLfTFhbATP/PE4XG
+   SQhnmguDYdzhWUx4JwpjhvkMMAus1uBZakfc4pGUoYZ/wXmffxRfrJsF1
+   Q2OJzEEuSBk+/M1bc0J1SkIEMeqdRheQ0u6xsZfMfPEEqOu/1Qelsa6QF
+   q3Z+/3HA7udcyM5UToX8DiLhUROqydraN2qjHRvlL7CKF+9FBKVV+hwH+
+   LnylHbXS5R9SxvY1JwcoqDdPHZrN6FgxvYQLwrlqDNLS/3BVM2oVUBAXC
+   g==;
+X-CSE-ConnectionGUID: YUbQA9s/RgiTYXtTM1m92A==
+X-CSE-MsgGUID: waKejkziQUyMUj0I4zCgQw==
+X-IronPort-AV: E=Sophos;i="6.06,159,1705388400"; 
+   d="scan'208";a="17662184"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Feb 2024 22:44:34 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 13 Feb 2024 22:44:03 -0700
+Received: from [127.0.0.1] (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Tue, 13 Feb 2024 22:43:59 -0700
+From: Balakrishnan Sambath <balakrishnan.s@microchip.com>
+Date: Wed, 14 Feb 2024 11:13:43 +0530
+Subject: [PATCH] dt-bindings: mfd: Convert atmel-flexcom to json-schema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240214-sama5d2-flexcom-yaml-v1-1-5dedd0eba08e@microchip.com>
+X-B4-Tracking: v=1; b=H4sIAA5TzGUC/x3MQQqAIBBA0avErBswzaiuEi1ExxrICoUworsnL
+ d/i/wcSRaYEY/VApIsTH3tBU1dgV7MvhOyKQQrZCtkoTCYY7ST6jbI9At4mbKiEtb4bhk7pHkp
+ 6RvKc/+00v+8HFcdF6mYAAAA=
+To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+	"Alexandre Belloni" <alexandre.belloni@bootlin.com>, Claudiu Beznea
+	<claudiu.beznea@tuxon.dev>, Kavyasree Kotagiri
+	<kavyasree.kotagiri@microchip.com>
+CC: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, Hari Prasath Gujulan Elango
+	<hari.prasathge@microchip.com>, Rob Herring <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski@linaro.org>, Balakrishnan Sambath
+	<balakrishnan.s@microchip.com>
+X-Mailer: b4 0.12.4
 
-Hi Viresh,
+From: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
 
-FYI, the error/warning still remains.
+Convert the Atmel flexcom device tree bindings to json schema.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7e90b5c295ec1e47c8ad865429f046970c549a66
-commit: 46f48aca2e5aef3f430e95d1a5fb68227ec8ec85 OPP: Fix missing debugfs supply directory for OPPs
-date:   5 years ago
-config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20240214/202402141313.81ltVF5g-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402141313.81ltVF5g-lkp@intel.com/reproduce)
+Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Balakrishnan Sambath <balakrishnan.s@microchip.com>
+---
+The yaml DT bindings for the atmel-flexcom driver were submitted
+upstream in a separate patch series in 2022 [1] which was Acked-by
+Krzysztof Kozlowski. However, it has been observed recently that the
+patch has not been merged into the mainline codebase.When attempting to
+apply the patch to the latest upstream kernel,a conflict arose due to a
+recent addition to the original device tree binding in text format. The
+conflict has now been resolved and we are sending a updated version of
+the patch. 
+[1]https://lore.kernel.org/linux-arm-kernel/22063373-6060-d605-62af-35d82ba1729c@linaro.org/
+---
+ .../bindings/mfd/atmel,sama5d2-flexcom.yaml        | 92 ++++++++++++++++++++++
+ .../devicetree/bindings/mfd/atmel-flexcom.txt      | 64 ---------------
+ 2 files changed, 92 insertions(+), 64 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402141313.81ltVF5g-lkp@intel.com/
+diff --git a/Documentation/devicetree/bindings/mfd/atmel,sama5d2-flexcom.yaml b/Documentation/devicetree/bindings/mfd/atmel,sama5d2-flexcom.yaml
+new file mode 100644
+index 000000000000..f28522cd987a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/atmel,sama5d2-flexcom.yaml
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/atmel,sama5d2-flexcom.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Atmel Flexcom (Flexible Serial Communication Unit)
++
++maintainers:
++  - Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
++
++description:
++  The Atmel Flexcom is just a wrapper which embeds a SPI controller,
++  an I2C controller and an USART. Only one function can be used at a
++  time and is chosen at boot time according to the device tree.
++
++properties:
++  compatible:
++    enum:
++      - atmel,sama5d2-flexcom
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  ranges:
++    description:
++      One range for the full I/O register region. (including USART,
++      TWI and SPI registers).
++    items:
++      maxItems: 3
++
++  atmel,flexcom-mode:
++    description: |
++      Specifies the flexcom mode as follows:
++      1: USART
++      2: SPI
++      3: I2C.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [1, 2, 3]
++
++patternProperties:
++  "^serial@[0-9a-f]+$":
++    type: object
++    description:
++      Child node describing USART. See atmel-usart.txt for details
++      of USART bindings.
++
++  "^spi@[0-9a-f]+$":
++    type: object
++    description:
++      Child node describing SPI. See ../spi/spi_atmel.txt for details
++      of SPI bindings.
++
++  "^i2c@[0-9a-f]+$":
++    $ref: /schemas/i2c/atmel,at91sam-i2c.yaml
++    description:
++      Child node describing I2C.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++  - atmel,flexcom-mode
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    flx0: flexcom@f8034000 {
++        compatible = "atmel,sama5d2-flexcom";
++        reg = <0xf8034000 0x200>;
++        clocks = <&flx0_clk>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges = <0x0 0xf8034000 0x800>;
++        atmel,flexcom-mode = <2>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt b/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
+deleted file mode 100644
+index af692e8833a5..000000000000
+--- a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
++++ /dev/null
+@@ -1,64 +0,0 @@
+-* Device tree bindings for Atmel Flexcom (Flexible Serial Communication Unit)
+-
+-The Atmel Flexcom is just a wrapper which embeds a SPI controller, an I2C
+-controller and an USART. Only one function can be used at a time and is chosen
+-at boot time according to the device tree.
+-
+-Required properties:
+-- compatible:		Should be "atmel,sama5d2-flexcom"
+-			or "microchip,sam9x7-flexcom", "atmel,sama5d2-flexcom"
+-- reg:			Should be the offset/length value for Flexcom dedicated
+-			I/O registers (without USART, TWI or SPI registers).
+-- clocks:		Should be the Flexcom peripheral clock from PMC.
+-- #address-cells:	Should be <1>
+-- #size-cells:		Should be <1>
+-- ranges:		Should be one range for the full I/O register region
+-			(including USART, TWI and SPI registers).
+-- atmel,flexcom-mode:	Should be one of the following values:
+-			- <1> for USART
+-			- <2> for SPI
+-			- <3> for I2C
+-
+-Required child:
+-A single available child device of type matching the "atmel,flexcom-mode"
+-property.
+-
+-The phandle provided by the clocks property of the child is the same as one for
+-the Flexcom parent.
+-
+-For other properties, please refer to the documentations of the respective
+-device:
+-- ../serial/atmel-usart.txt
+-- ../spi/spi_atmel.txt
+-- ../i2c/i2c-at91.txt
+-
+-Example:
+-
+-flexcom@f8034000 {
+-	compatible = "atmel,sama5d2-flexcom";
+-	reg = <0xf8034000 0x200>;
+-	clocks = <&flx0_clk>;
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-	ranges = <0x0 0xf8034000 0x800>;
+-	atmel,flexcom-mode = <2>;
+-
+-	spi@400 {
+-		compatible = "atmel,at91rm9200-spi";
+-		reg = <0x400 0x200>;
+-		interrupts = <19 IRQ_TYPE_LEVEL_HIGH 7>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_flx0_default>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		clocks = <&flx0_clk>;
+-		clock-names = "spi_clk";
+-		atmel,fifo-size = <32>;
+-
+-		flash@0 {
+-			compatible = "atmel,at25f512b";
+-			reg = <0>;
+-			spi-max-frequency = <20000000>;
+-		};
+-	};
+-};
 
-All warnings (new ones prefixed by >>):
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240213-sama5d2-flexcom-yaml-30ccf6996358
 
-   drivers/opp/debugfs.c: In function 'opp_debug_create_one':
->> drivers/opp/debugfs.c:48:54: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Wformat-truncation=]
-      48 |                 snprintf(name, sizeof(name), "supply-%d", i);
-         |                                                      ^~
-   In function 'opp_debug_create_supplies',
-       inlined from 'opp_debug_create_one' at drivers/opp/debugfs.c:119:7:
-   drivers/opp/debugfs.c:48:46: note: directive argument in the range [-2147483644, 2147483646]
-      48 |                 snprintf(name, sizeof(name), "supply-%d", i);
-         |                                              ^~~~~~~~~~~
-   drivers/opp/debugfs.c:48:17: note: 'snprintf' output between 9 and 19 bytes into a destination of size 15
-      48 |                 snprintf(name, sizeof(name), "supply-%d", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +48 drivers/opp/debugfs.c
-
-deaa51465105a7 drivers/base/power/opp/debugfs.c Viresh Kumar 2015-11-11  37  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  38  static bool opp_debug_create_supplies(struct dev_pm_opp *opp,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  39  				      struct opp_table *opp_table,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  40  				      struct dentry *pdentry)
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  41  {
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  42  	struct dentry *d;
-1fae788ed640e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2017-05-23  43  	int i;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  44  
-1fae788ed640e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2017-05-23  45  	for (i = 0; i < opp_table->regulator_count; i++) {
-d741029a239040 drivers/opp/debugfs.c            Arvind Yadav 2017-09-21  46  		char name[15];
-d741029a239040 drivers/opp/debugfs.c            Arvind Yadav 2017-09-21  47  
-d741029a239040 drivers/opp/debugfs.c            Arvind Yadav 2017-09-21 @48  		snprintf(name, sizeof(name), "supply-%d", i);
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  49  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  50  		/* Create per-opp directory */
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  51  		d = debugfs_create_dir(name, pdentry);
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  52  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  53  		if (!d)
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  54  			return false;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  55  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  56  		if (!debugfs_create_ulong("u_volt_target", S_IRUGO, d,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  57  					  &opp->supplies[i].u_volt))
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  58  			return false;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  59  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  60  		if (!debugfs_create_ulong("u_volt_min", S_IRUGO, d,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  61  					  &opp->supplies[i].u_volt_min))
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  62  			return false;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  63  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  64  		if (!debugfs_create_ulong("u_volt_max", S_IRUGO, d,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  65  					  &opp->supplies[i].u_volt_max))
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  66  			return false;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  67  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  68  		if (!debugfs_create_ulong("u_amp", S_IRUGO, d,
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  69  					  &opp->supplies[i].u_amp))
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  70  			return false;
-1fae788ed640e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2017-05-23  71  	}
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  72  
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  73  	return true;
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  74  }
-dfbe4678d709e2 drivers/base/power/opp/debugfs.c Viresh Kumar 2016-12-01  75  
-
-:::::: The code at line 48 was first introduced by commit
-:::::: d741029a2390406d4d94279ae5b346831a9e61e6 PM / OPP: Use snprintf() to avoid kasprintf() and kfree()
-
-:::::: TO: Arvind Yadav <arvind.yadav.cs@gmail.com>
-:::::: CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Balakrishnan Sambath <balakrishnan.s@microchip.com>
+
 
