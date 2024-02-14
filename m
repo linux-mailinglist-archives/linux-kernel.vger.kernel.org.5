@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-65739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E358550FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:58:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F468550FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CEB11F215DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20CF51C29D97
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E961292EB;
-	Wed, 14 Feb 2024 17:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C180C129A6D;
+	Wed, 14 Feb 2024 17:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cP1IkrtS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNWCpJkf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22EC3128804;
-	Wed, 14 Feb 2024 17:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B741292F0;
+	Wed, 14 Feb 2024 17:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933467; cv=none; b=raX7YMBDYa6FuKLipfiIm8UgL323zJeBKH9INf/rG9MtHRAd5/t7pIJxN7Y3uvNYiqG4GySxFKQ8Xa5RE0Cgpm9LIOYR4l3gDYdla8XnLOYcN7PFf8ao/Rm/o9jUDgJINdyIOZE0I5fm2UEJ+3kuY4P1fosy8dxfSoW0vUb8tiI=
+	t=1707933468; cv=none; b=lB1SrIhdc1i6nAgzgl/6OFMzmYjgn8fCj84BbLmQ+srYgJPjvD8RlGfBPIZWKiJGyluPh/C4JFPKkyHJMhBvsJlJDemDT5iWYV/fuBpa/6AF5n6hCXv9jQyibWOgwxsP5fkZQA3/RivfKYAc3vn2tHboZITWumNbLDjj6qLiBdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933467; c=relaxed/simple;
-	bh=jHQyAtk+n7f8D2fSMf+yAfUum8YxNu1gvdkzioXdQis=;
+	s=arc-20240116; t=1707933468; c=relaxed/simple;
+	bh=e9d9nBEcVxvgAYnCI2Y4Nbm8yLTOdSlgzQdxVJtZ7XA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cqRL/KzXg6eUy/Dsl8j4PJvAZgtNL8t5k/K6qz8+NBfKEYVnqQsg50kwqchlRNyYwzPAL3C9spJAg0BHaolzaXEOXgnf+IArWuhs1pWIi02turio6vR6xKJIYQmIp+Hx8XR/j8ix+QAYau3h62UuOblMVaNqcytCL/Px3E0YENo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cP1IkrtS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 151C9C433F1;
+	 MIME-Version:Content-Type; b=E9Nc6eHetfgJstRIN4OgNgjwQDjfWsGvDqLK93VpvHsJ9rAT7XXeqQL8suB1usZqabrKYdypT7KxfO5SK7T7DkmMqnAHQ+RyDMDR/Dyxw/ZUhkLwGc4uHv0WJGFEIG4MX4Ed8mA+/KmtadgfwEA2SxDvFchzypTnxPQtakl2trw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNWCpJkf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A64C433C7;
 	Wed, 14 Feb 2024 17:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933466;
-	bh=jHQyAtk+n7f8D2fSMf+yAfUum8YxNu1gvdkzioXdQis=;
+	s=k20201202; t=1707933467;
+	bh=e9d9nBEcVxvgAYnCI2Y4Nbm8yLTOdSlgzQdxVJtZ7XA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cP1IkrtSmoLoY84o9LL+1nnxffZgfypp8mIs8sCPy6G8iGoMzOW9Ik88BZylIWOgm
-	 o4NYdVKkzPzVV0rpY9mvZ6vFlJWRr8qkxDa/vUSfrkevJEogKKdTeqJguflna4sla7
-	 dcQHiq4O42PxTgii9fcF1LQdeNzbTA8Sf50siBoiNJpXXG4+p/eX9YAHsgTx9TXljK
-	 at9/Qkvp6wh5q4L/0TqD6VqkgEn9Suhbkuv2EICUCQGDaFyedR2weVz9hgdRUX/+1D
-	 3QTuh1eoko5S6FLBfa70uhGT3geR2vN6TZduOK7PbEpWjpWOubtmRDDs/JGVADTrP9
-	 B1XBaQrQq2YRA==
+	b=UNWCpJkfapwxErKu8pl7rxDtpjXOKjUXdlglnHRq/8cgvvaVQ9RzJnBxvD7BBxhzk
+	 5FiYKWVufBXuQ4jdviKqgzQf2LmInbbmoUr3g/t6M1mNxsD1Fzsm2xZrE2mRbUJhpH
+	 aww+ouJdEy0YbNTBKrIJ2i3gSPF2f7AFToKjRq/1WwE8zWR3xuEge+LtYgGp2IRmIe
+	 3ljvFPCEYr1aFouWO4m2GE9WWutpSZiS8xi1kb6zQHMWr/h+/yfrF8LlXwVDi6TViR
+	 7CTg1YRPVlIC3KrMYCxxqgT3pUAyYLr9A6jwm6xTVh7C0738wNInAsSIcutoXXXnnf
+	 UzVWeKlv5bb/g==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Abel Vesa <abel.vesa@linaro.org>
+To: konrad.dybcio@linaro.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	Danila Tikhonov <danila@jiaxyga.com>
 Cc: linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: defconfig: Enable X1E80100 multimedia clock controllers configs
-Date: Wed, 14 Feb 2024 11:57:20 -0600
-Message-ID: <170793345828.27225.16242770102119393725.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/2] soc: qcom: socinfo: Add SM8475 IDs
+Date: Wed, 14 Feb 2024 11:57:21 -0600
+Message-ID: <170793345823.27225.60582762103313981.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208-x1e80100-configs-v1-1-9e027bee5209@linaro.org>
-References: <20240208-x1e80100-configs-v1-1-9e027bee5209@linaro.org>
+In-Reply-To: <20240212201428.87151-1-danila@jiaxyga.com>
+References: <20240212201428.87151-1-danila@jiaxyga.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,16 +65,27 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 08 Feb 2024 15:19:00 +0200, Abel Vesa wrote:
-> Enable as modules the CAM, GPU, DISP and TCSR clock controllers for
-> Qualcomm X1E80100 platform.
+On Mon, 12 Feb 2024 23:14:26 +0300, Danila Tikhonov wrote:
+> This series adds IDs for Qualcomm SM8475 SoC.
 > 
+> To: Bjorn Andersson <andersson@kernel.org>
+> To: Konrad Dybcio <konrad.dybcio@linaro.org>
+> To: Rob Herring <robh@kernel.org>
+> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> To: Conor Dooley <conor+dt@kernel.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: defconfig: Enable X1E80100 multimedia clock controllers configs
-      commit: 1734e725ef512c1f9def3febc5920ef43decbe93
+[1/2] dt-bindings: arm: qcom,ids: Add IDs for SM8475 family
+      commit: 307b7d8f70b25733c88c66846bab5acf319fffef
+[2/2] soc: qcom: socinfo: Add Soc IDs for SM8475 family
+      commit: c8f349ac13d174f0ceb26df67b86075b491cacc1
 
 Best regards,
 -- 
