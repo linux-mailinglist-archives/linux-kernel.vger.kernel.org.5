@@ -1,394 +1,147 @@
-Return-Path: <linux-kernel+bounces-65956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4498C855445
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB83855449
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691DD1C2148A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:47:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BAE81C2099E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A7413F014;
-	Wed, 14 Feb 2024 20:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A80D13A264;
+	Wed, 14 Feb 2024 20:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cE2lImJR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Cezpfzgh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WkWegzM6"
+Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA8C1420C4
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:45:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E36555E45;
+	Wed, 14 Feb 2024 20:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707943530; cv=none; b=sgU6PYml6j2ytLM4u57UoEePQ9o283fIFLUliSs2IXHTCZ9xsjEOxPcIXolrgTpFw57EkdjoCbnBPAZsBTffDUE9mMXPqC1681jH4tdvu9a60uqlvBHelDCk+RnEW5uq055ZOZzGvVC874fITqOZ/sWi2zxbppY+sH5XYVzi7OU=
+	t=1707943639; cv=none; b=A+acYoweg9QSeQkmxzZsSTO29MGcyGVIVlFYOqdbEZ5HqbC5aGBtz6mSplFlutWqebDGXY+ebMhGdcZQzuMwSrGUUzBOUUIrbdnVzhY88O3w0u+cXsqDTWzrwplpXkVou92/g8lSmx7pdLOjsCXBGBvwHaA8bRTRugmZ/2TdSio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707943530; c=relaxed/simple;
-	bh=GjDbS8TDvRp1vIA00Uk2HuEPKSBZHcrjP/rtVt+0Wq4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OOCg2kv1HjTmFlNQzwPFL8Kb/7iV5HT/D7cHR/Xe+jXUvQIzlUwRtDYYbtlC09XwnOZPdgj2TnzHT4+bGIZHKdxpbllwskAcfBbMu5y/xpUQD1QNvF19utCyDqsj5CwROtu1/Hgid3/Fa8HDu4h/lL+mKyk8buLxQks5gPjo5es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cE2lImJR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707943527;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MyxDp/8zupvql86OoDnfzfcwBZWGRlpds50qO6uo6X4=;
-	b=cE2lImJR1nycmbWzPDCzUGSfciDDuVOc74/NsbmOeLfBJAVRuiR24a0TWBg9FmqWD4aqOX
-	b4Ftyhi3fLG/joVLAK4DD6o5Nte3BxgHDnPauLV0sP1R2CWlETRM3hPqRouQZ8nRht7WpN
-	qAOPInMZr67lH1qRMXiUH3nV9RPr3ZU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-wHfYfIO7M6uwQlj4FVq0Rg-1; Wed, 14 Feb 2024 15:45:22 -0500
-X-MC-Unique: wHfYfIO7M6uwQlj4FVq0Rg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96991811E79;
-	Wed, 14 Feb 2024 20:45:21 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.194.174])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8E8091C066A9;
-	Wed, 14 Feb 2024 20:45:17 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Yin Fengwei <fengwei.yin@intel.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Will Deacon <will@kernel.org>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Nick Piggin <npiggin@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH v3 10/10] mm/memory: optimize unmap/zap with PTE-mapped THP
-Date: Wed, 14 Feb 2024 21:44:35 +0100
-Message-ID: <20240214204435.167852-11-david@redhat.com>
-In-Reply-To: <20240214204435.167852-1-david@redhat.com>
-References: <20240214204435.167852-1-david@redhat.com>
+	s=arc-20240116; t=1707943639; c=relaxed/simple;
+	bh=lj2iRtunSsbwOF8jHR1368A0TRHv5QANP0TYDzdnr/4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=FmEuO6SQvbrCrQUSEb8CXrY8uFYnT1go0hr2o7jm8g55Aj5zZmQNmRjpXhHSPAUUMtShBic8MEbb9LldV+sEXHZPthqseU2MOZIazxFlKf+x3dXjE3gfmBdW/AbCMayDdHsuwdib3WhveBs8efXIA5Xv2llDTKBaY0kDezY853M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Cezpfzgh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WkWegzM6; arc=none smtp.client-ip=64.147.123.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id D0DBE1C00086;
+	Wed, 14 Feb 2024 15:47:15 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 15:47:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1707943635;
+	 x=1708030035; bh=qKVLPFtRqeaV8XnwIHp+8ptgdRas93oDLyQ07hmKIXo=; b=
+	Cezpfzghblb7kaiIlV18CM8xqUf4M7ffBqTj3ggiz49IECztWZpyvouD0oe4Ohlc
+	JeXPaUGk758WMgZCgRfJUisEkBtgvaYmpXk2qtkEsMYkpRY7WCai3JpwETGb5/b7
+	1QDysbp4Py98T5qtqwZkFztabgYREmV8/zZgMOBY+ENxWITsWz2q08MJIev6vPEn
+	R2UWr6ym5z/uGCozKwJP5WwdaPTfgivE5ywKNXa3LZqB9qNIyo5/A+3C/rnqw/8Z
+	2/nGxE0+uwLpmXHD6t/fG9IibBHUy3NTcmmJQK2xd3m68qc16jGBz0FJWG5Ss0O5
+	5TBTPLJ91KYO7ta4pt7Ulg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707943635; x=
+	1708030035; bh=qKVLPFtRqeaV8XnwIHp+8ptgdRas93oDLyQ07hmKIXo=; b=W
+	kWegzM6xFh7udjj+ONU7e4ZTf4ZwGYIHGp5WFopX4DuLCTXWssLwGNlen+YVORby
+	klOB/tJhpp5fi3dC1strjpD1Ghyxfxpqx6IaZG7SCQ47jOkyico2W4jWBmN3hX8X
+	8agze6sHg5UvIgG4fioABjT6wkVBouGWuOcyUC52ZftICnKW7URXeOcmqlDFG+pd
+	fDnZ/I8ldLZ64gxtunUDHGl2bb6IwMxwwqFcS8sTlAFO4e3GiplDKWVe73AsLjoC
+	wLc1IW6e/wKo5z+2Rw9DvHYkuqSgfCbikvngdvEVMTCgm9PwVFB49Gn8N9MfUrhf
+	2pxAJeIa2qnRvRJDh4m3A==
+X-ME-Sender: <xms:0ibNZUnyrWMEcaKX4-2IyZldpFrw8riqoXCBuiJAfdo4eAKUz3C2cw>
+    <xme:0ibNZT3b_6keWWJJM35wJMK3iVu8PlYDc7J9P7fXVdtxcFiX5dyae8D3Q_E4vIm7H
+    XlgntBscMK9txMR3Ck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddugedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:0ibNZSp_hTq68M36gWLFnqnXkAy3fGJRLr7PWrrtuGOzG7-cN-8eRg>
+    <xmx:0ibNZQlNssZigmjDVU1GGZt4QBaG9jc73Rf5gVbCW-T1MrSihgILEA>
+    <xmx:0ibNZS2nsNnR1VIWQTtrbiylITmS3lC9HbacAL0YQfYeAOE9zXewcA>
+    <xmx:0ybNZbmuulMYaXdKo7NTJNXFFPaYkxYELRtaQMfb_mA-KQLb3hcRm1PUIyU>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id B67CEB6008D; Wed, 14 Feb 2024 15:47:14 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Message-Id: <23b58d3c-82eb-450f-a246-f8a91b8e8075@app.fastmail.com>
+In-Reply-To: 
+ <CAK7LNASQUhJGSdQiyEpc5Rpuk_hJwSCu=W=4JkL-Et_giFNvPg@mail.gmail.com>
+References: <20240214181942.3562473-1-arnd@kernel.org>
+ <CAK7LNASQUhJGSdQiyEpc5Rpuk_hJwSCu=W=4JkL-Et_giFNvPg@mail.gmail.com>
+Date: Wed, 14 Feb 2024 21:45:43 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Masahiro Yamada" <masahiroy@kernel.org>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Nathan Chancellor" <nathan@kernel.org>,
+ "Nicolas Schier" <nicolas@fjasle.eu>,
+ =?UTF-8?Q?Pierre-Cl=C3=A9ment_Tosi?= <ptosi@google.com>,
+ "Ard Biesheuvel" <ardb@kernel.org>, linux-kbuild@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kallsyms: ignore ARMv4 thunks along with others
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Similar to how we optimized fork(), let's implement PTE batching when
-consecutive (present) PTEs map consecutive pages of the same large
-folio.
+On Wed, Feb 14, 2024, at 21:34, Masahiro Yamada wrote:
+> On Thu, Feb 15, 2024 at 3:19=E2=80=AFAM Arnd Bergmann <arnd@kernel.org=
+> wrote:
+> If this is a recurring problem,
+> maybe is it better to use a regular expression?
+>
+>
+> Remove these lines:
+>
+> # arm64 lld
+> / __AArch64ADRPThunk_/d
+>
+> # arm lld
+> / __ARMV5PILongThunk_/d
+> / __ARMV7PILongThunk_/d
+> / __ThumbV7PILongThunk_/d
+>
+> # mips lld
+> / __LA25Thunk_/d
+> / __microLA25Thunk_/d
+>
+>
+>
+>
+>
+> Add this:
+>
+> # lld
+> / __[^[:space:]]*Thunk_/d
+>
+> This pattern is only used in tooling,
+> but never in the kernel space.
 
-Most infrastructure we need for batching (mmu gather, rmap) is already
-there. We only have to add get_and_clear_full_ptes() and
-clear_full_ptes(). Similarly, extend zap_install_uffd_wp_if_needed() to
-process a PTE range.
+Right, makes sense. There is always a risk of removing
+intential kernel symbols and this is slightly higher
+with the regex but still not that bad.
 
-We won't bother sanity-checking the mapcount of all subpages, but only
-check the mapcount of the first subpage we process. If there is a real
-problem hiding somewhere, we can trigger it simply by using small
-folios, or when we zap single pages of a large folio. Ideally, we had
-that check in rmap code (including for delayed rmap), but then we cannot
-print the PTE. Let's keep it simple for now. If we ever have a cheap
-folio_mapcount(), we might just want to check for underflows there.
+I'll give this a spin and send a v2 tomorrow then.
 
-To keep small folios as fast as possible force inlining of a specialized
-variant using __always_inline with nr=1.
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/pgtable.h | 70 +++++++++++++++++++++++++++++++
- mm/memory.c             | 92 +++++++++++++++++++++++++++++------------
- 2 files changed, 136 insertions(+), 26 deletions(-)
-
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index aab227e12493..49ab1f73b5c2 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -580,6 +580,76 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
- }
- #endif
- 
-+#ifndef get_and_clear_full_ptes
-+/**
-+ * get_and_clear_full_ptes - Clear present PTEs that map consecutive pages of
-+ *			     the same folio, collecting dirty/accessed bits.
-+ * @mm: Address space the pages are mapped into.
-+ * @addr: Address the first page is mapped at.
-+ * @ptep: Page table pointer for the first entry.
-+ * @nr: Number of entries to clear.
-+ * @full: Whether we are clearing a full mm.
-+ *
-+ * May be overridden by the architecture; otherwise, implemented as a simple
-+ * loop over ptep_get_and_clear_full(), merging dirty/accessed bits into the
-+ * returned PTE.
-+ *
-+ * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-+ * some PTEs might be write-protected.
-+ *
-+ * Context: The caller holds the page table lock.  The PTEs map consecutive
-+ * pages that belong to the same folio.  The PTEs are all in the same PMD.
-+ */
-+static inline pte_t get_and_clear_full_ptes(struct mm_struct *mm,
-+		unsigned long addr, pte_t *ptep, unsigned int nr, int full)
-+{
-+	pte_t pte, tmp_pte;
-+
-+	pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-+	while (--nr) {
-+		ptep++;
-+		addr += PAGE_SIZE;
-+		tmp_pte = ptep_get_and_clear_full(mm, addr, ptep, full);
-+		if (pte_dirty(tmp_pte))
-+			pte = pte_mkdirty(pte);
-+		if (pte_young(tmp_pte))
-+			pte = pte_mkyoung(pte);
-+	}
-+	return pte;
-+}
-+#endif
-+
-+#ifndef clear_full_ptes
-+/**
-+ * clear_full_ptes - Clear present PTEs that map consecutive pages of the same
-+ *		     folio.
-+ * @mm: Address space the pages are mapped into.
-+ * @addr: Address the first page is mapped at.
-+ * @ptep: Page table pointer for the first entry.
-+ * @nr: Number of entries to clear.
-+ * @full: Whether we are clearing a full mm.
-+ *
-+ * May be overridden by the architecture; otherwise, implemented as a simple
-+ * loop over ptep_get_and_clear_full().
-+ *
-+ * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-+ * some PTEs might be write-protected.
-+ *
-+ * Context: The caller holds the page table lock.  The PTEs map consecutive
-+ * pages that belong to the same folio.  The PTEs are all in the same PMD.
-+ */
-+static inline void clear_full_ptes(struct mm_struct *mm, unsigned long addr,
-+		pte_t *ptep, unsigned int nr, int full)
-+{
-+	for (;;) {
-+		ptep_get_and_clear_full(mm, addr, ptep, full);
-+		if (--nr == 0)
-+			break;
-+		ptep++;
-+		addr += PAGE_SIZE;
-+	}
-+}
-+#endif
- 
- /*
-  * If two threads concurrently fault at the same page, the thread that
-diff --git a/mm/memory.c b/mm/memory.c
-index a3efc4da258a..3b8e56eb08a3 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1515,7 +1515,7 @@ static inline bool zap_drop_file_uffd_wp(struct zap_details *details)
-  */
- static inline void
- zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
--			      unsigned long addr, pte_t *pte,
-+			      unsigned long addr, pte_t *pte, int nr,
- 			      struct zap_details *details, pte_t pteval)
- {
- 	/* Zap on anonymous always means dropping everything */
-@@ -1525,20 +1525,27 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
- 	if (zap_drop_file_uffd_wp(details))
- 		return;
- 
--	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-+	for (;;) {
-+		/* the PFN in the PTE is irrelevant. */
-+		pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
-+		if (--nr == 0)
-+			break;
-+		pte++;
-+		addr += PAGE_SIZE;
-+	}
- }
- 
--static inline void zap_present_folio_pte(struct mmu_gather *tlb,
-+static __always_inline void zap_present_folio_ptes(struct mmu_gather *tlb,
- 		struct vm_area_struct *vma, struct folio *folio,
--		struct page *page, pte_t *pte, pte_t ptent, unsigned long addr,
--		struct zap_details *details, int *rss, bool *force_flush,
--		bool *force_break)
-+		struct page *page, pte_t *pte, pte_t ptent, unsigned int nr,
-+		unsigned long addr, struct zap_details *details, int *rss,
-+		bool *force_flush, bool *force_break)
- {
- 	struct mm_struct *mm = tlb->mm;
- 	bool delay_rmap = false;
- 
- 	if (!folio_test_anon(folio)) {
--		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-+		ptent = get_and_clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
- 		if (pte_dirty(ptent)) {
- 			folio_mark_dirty(folio);
- 			if (tlb_delay_rmap(tlb)) {
-@@ -1548,36 +1555,49 @@ static inline void zap_present_folio_pte(struct mmu_gather *tlb,
- 		}
- 		if (pte_young(ptent) && likely(vma_has_recency(vma)))
- 			folio_mark_accessed(folio);
--		rss[mm_counter(folio)]--;
-+		rss[mm_counter(folio)] -= nr;
- 	} else {
- 		/* We don't need up-to-date accessed/dirty bits. */
--		ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
--		rss[MM_ANONPAGES]--;
-+		clear_full_ptes(mm, addr, pte, nr, tlb->fullmm);
-+		rss[MM_ANONPAGES] -= nr;
- 	}
-+	/* Checking a single PTE in a batch is sufficient. */
- 	arch_check_zapped_pte(vma, ptent);
--	tlb_remove_tlb_entry(tlb, pte, addr);
-+	tlb_remove_tlb_entries(tlb, pte, nr, addr);
- 	if (unlikely(userfaultfd_pte_wp(vma, ptent)))
--		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-+		zap_install_uffd_wp_if_needed(vma, addr, pte, nr, details,
-+					      ptent);
- 
- 	if (!delay_rmap) {
--		folio_remove_rmap_pte(folio, page, vma);
-+		folio_remove_rmap_ptes(folio, page, nr, vma);
-+
-+		/* Only sanity-check the first page in a batch. */
- 		if (unlikely(page_mapcount(page) < 0))
- 			print_bad_pte(vma, addr, ptent, page);
- 	}
--	if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-+	if (unlikely(__tlb_remove_folio_pages(tlb, page, nr, delay_rmap))) {
- 		*force_flush = true;
- 		*force_break = true;
- 	}
- }
- 
--static inline void zap_present_pte(struct mmu_gather *tlb,
-+/*
-+ * Zap or skip at least one present PTE, trying to batch-process subsequent
-+ * PTEs that map consecutive pages of the same folio.
-+ *
-+ * Returns the number of processed (skipped or zapped) PTEs (at least 1).
-+ */
-+static inline int zap_present_ptes(struct mmu_gather *tlb,
- 		struct vm_area_struct *vma, pte_t *pte, pte_t ptent,
--		unsigned long addr, struct zap_details *details,
--		int *rss, bool *force_flush, bool *force_break)
-+		unsigned int max_nr, unsigned long addr,
-+		struct zap_details *details, int *rss, bool *force_flush,
-+		bool *force_break)
- {
-+	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
- 	struct mm_struct *mm = tlb->mm;
- 	struct folio *folio;
- 	struct page *page;
-+	int nr;
- 
- 	page = vm_normal_page(vma, addr, ptent);
- 	if (!page) {
-@@ -1587,14 +1607,29 @@ static inline void zap_present_pte(struct mmu_gather *tlb,
- 		tlb_remove_tlb_entry(tlb, pte, addr);
- 		VM_WARN_ON_ONCE(userfaultfd_wp(vma));
- 		ksm_might_unmap_zero_page(mm, ptent);
--		return;
-+		return 1;
- 	}
- 
- 	folio = page_folio(page);
- 	if (unlikely(!should_zap_folio(details, folio)))
--		return;
--	zap_present_folio_pte(tlb, vma, folio, page, pte, ptent, addr, details,
--			      rss, force_flush, force_break);
-+		return 1;
-+
-+	/*
-+	 * Make sure that the common "small folio" case is as fast as possible
-+	 * by keeping the batching logic separate.
-+	 */
-+	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
-+		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-+				     NULL);
-+
-+		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
-+				       addr, details, rss, force_flush,
-+				       force_break);
-+		return nr;
-+	}
-+	zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, 1, addr,
-+			       details, rss, force_flush, force_break);
-+	return 1;
- }
- 
- static unsigned long zap_pte_range(struct mmu_gather *tlb,
-@@ -1609,6 +1644,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	pte_t *start_pte;
- 	pte_t *pte;
- 	swp_entry_t entry;
-+	int nr;
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- 	init_rss_vec(rss);
-@@ -1622,7 +1658,9 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 		pte_t ptent = ptep_get(pte);
- 		struct folio *folio;
- 		struct page *page;
-+		int max_nr;
- 
-+		nr = 1;
- 		if (pte_none(ptent))
- 			continue;
- 
-@@ -1630,10 +1668,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			break;
- 
- 		if (pte_present(ptent)) {
--			zap_present_pte(tlb, vma, pte, ptent, addr, details,
--					rss, &force_flush, &force_break);
-+			max_nr = (end - addr) / PAGE_SIZE;
-+			nr = zap_present_ptes(tlb, vma, pte, ptent, max_nr,
-+					      addr, details, rss, &force_flush,
-+					      &force_break);
- 			if (unlikely(force_break)) {
--				addr += PAGE_SIZE;
-+				addr += nr * PAGE_SIZE;
- 				break;
- 			}
- 			continue;
-@@ -1687,8 +1727,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			WARN_ON_ONCE(1);
- 		}
- 		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
--		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
--	} while (pte++, addr += PAGE_SIZE, addr != end);
-+		zap_install_uffd_wp_if_needed(vma, addr, pte, 1, details, ptent);
-+	} while (pte += nr, addr += PAGE_SIZE * nr, addr != end);
- 
- 	add_mm_rss_vec(mm, rss);
- 	arch_leave_lazy_mmu_mode();
--- 
-2.43.0
-
+    Arnd
 
