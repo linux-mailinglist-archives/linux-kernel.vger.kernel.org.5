@@ -1,196 +1,167 @@
-Return-Path: <linux-kernel+bounces-65019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51908546CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:06:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EB78546CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402A91F24248
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:06:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D8A51C22F48
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6618F171A3;
-	Wed, 14 Feb 2024 10:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F931756F;
+	Wed, 14 Feb 2024 10:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UoaJejy6"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2082.outbound.protection.outlook.com [40.107.244.82])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEIeFAEa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2E168C4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC085171AE;
+	Wed, 14 Feb 2024 10:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707905210; cv=none; b=lmiJs/RJlM2E1XyxhY4xuOf9dXwiEqQXFcsrBpM4iydM7R29I4HkOEcOWKYVETd4uo0oZJH0HfnUSVJuRRhxj2wmnfpfYNuhoim6P1hwSzkPOn70EkQWBaIQK6PuZ5peXgptf07DmsEsIxgZ1zREVHfAX2vTDsYypdp9iMuTw8g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707905210; c=relaxed/simple;
+	bh=xnJOc4z//DOjfKlx8+OsKAL8Ga16tYDqx+CAITnN62Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8aZo8Mgex5kVFWVQ/ltApnh3m4F27CtZpPm1Q4Vapu3Ony9lH3k3nN3hsC7DYkLA9uXwz4SwVq1NNMgAi+uh421fCgLrXgfd9NsdH5zx/14/fLgTfIC19smMfFuGk5ujNckFmCgflCwbepo1qFwz6bn1kh0sNj3KjueJWEc2QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEIeFAEa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67D9C433F1;
 	Wed, 14 Feb 2024 10:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707905208; cv=fail; b=NFBFdelBGC95PKvMgb70ekpbzspzMBuH1dp1pNf5rwHx8rEwKBRqgMwJHWVxW3uJCflII56B/jrSyBHDyQbHd6JwK/ptfns4c8csnAJKQCVGNiTC4cl6bJFds5VqdKUVxVGGBvQXfABiJ5OHxDUvfTbDZpnOhv+3NDo7vzMy4B4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707905208; c=relaxed/simple;
-	bh=QzF38Agdj2eWmV/q5wo/uShLemi98T+mORL8yb5rMdo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=E+ZydtzlXEruKA3hg94MJHbRHjlmgXfOrp/leQAFpgwU2s0zu8jYOoWg6fCYC1ltznOhpfYTpidHnKmZfOGVawQB05oxWZp4pWX5JOz090dsJYCgoHjDB0RSBj7o337PzvNn5Ye6PnlWdkjWIB+rYpL0UeyZF56pJ7zQhSIIhg4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UoaJejy6; arc=fail smtp.client-ip=40.107.244.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xz+s7bFibRPqkGNDd+WDO5eMZtThyvQCqYeElW1yi4Q5W19PZpljdffSa6t5rgzJH+ZqKldyIqFX2SvhlkABFa3xjckrlb2MkPv70/ee0sFNp64vn6JWbEjSRtLNYY6uD5iRAlVkCdbgEraq3qTyOhim67tWtpXltquE2yRbVSH2wEWqn5v8dusrS/1GM+UN2nLaQMqZ6Xh8jUaYRVx5H69ihOzcZBIPbbIb4vxe0z6X9xAKruQfnwfb3QFfqjrxUX977FOAuCNcSj/leEQxSOsEyuSKaHiq5iJ+vzz5PcoSlxnHy3+6zXJxbAg6hxldTBns/X+DxyPbTbg4W8MS3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W8PvC3Au7ciYpEGUZzQXQ/fdJOHpOMy37ITIjuwQXi0=;
- b=hjeTXUqtnu+hEzSkWvb4yXjwpszJ+svsf3yCD5CrK1skwes900kc+H2zg2gD+nTjXZZOJ/XzZBVLGea7mZZVRdtC2NKv/8tMxuGvkaCf/rfVjA/lmNAvg665sS/JEiPM1ClgwIHot1CLvPtjrt9CbE2fyk7uQms9sQsmFPS8zC/hSYWILYZIJMhY8C+lD19L4d3Z3QlHGRutZ3yRHb6OkYUNftwY76NoFvxSRMiyTXzZQXg6hjU+0Vm5l0mANSgUsPmTfISfNIMFPWBn5bDSeOD11zl0GBfVqc+OIuNahy9l33gEKy/QXWjE40oHu4gJVbSFQy55OAO9IL08jng+ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W8PvC3Au7ciYpEGUZzQXQ/fdJOHpOMy37ITIjuwQXi0=;
- b=UoaJejy6VLcDTEEUu/xV6OR78osQKyWpueLOJTy4KhCzHhu7OklhzfNkIDzmOaFhDsrZisdOOqTyS87R4wUKxw7W2aZWeEK+zSUlgml7+H+v0ir3IsFUCBG+OUmIGvXO3jqWehtopW2RNQxg5N59HKMzj4Cf3CYsLspjewVZ/rk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
- by IA1PR12MB6140.namprd12.prod.outlook.com (2603:10b6:208:3e8::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Wed, 14 Feb
- 2024 10:06:44 +0000
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::9d:17f1:8b3b:1958]) by CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::9d:17f1:8b3b:1958%4]) with mapi id 15.20.7292.022; Wed, 14 Feb 2024
- 10:06:43 +0000
-Date: Wed, 14 Feb 2024 11:06:38 +0100
-From: Robert Richter <rrichter@amd.com>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cxl/pci: Fix disabling CXL memory for zero-based
- addressing
-Message-ID: <ZcyQroz_4XZAgbv3@rric.localdomain>
-References: <20240209193451.163564-1-rrichter@amd.com>
- <65c68969903b1_afa429460@dwillia2-xfh.jf.intel.com.notmuch>
- <Zctg4Lx_y_hbChUW@rric.localdomain>
- <65cbb787e73c_29b129432@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <Zcu-cVG9deqfwdiV@rric.localdomain>
- <65cbc6ec7a0f6_29b129456@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65cbc6ec7a0f6_29b129456@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: FR5P281CA0056.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f0::19) To CYYPR12MB8750.namprd12.prod.outlook.com
- (2603:10b6:930:be::18)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707905209;
+	bh=xnJOc4z//DOjfKlx8+OsKAL8Ga16tYDqx+CAITnN62Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NEIeFAEabfVaJlHVQUx7gy7CMJqfiDCHXwmKI2Q3EtXXl9CIlPPmPNdGwOMm4GlXw
+	 pVqe8n/wjChC71Gw2lWLq6cMk7djaFqNGOikZZORFb4CTlg4tNp7KkrHy4pLrFMqvl
+	 do8Sherb+C43R2vc80w14BFe457qgOs7vXRiUrPLeJPQ7spwnj0f4pStnCX245WD2f
+	 7s6yiZY3uz5/7EeHiit/dcsoudDQBOfL5yZfib9JkAUA/oVO/LJc65zjEkzoTBKVmI
+	 QC4/wvHjEJn0eVGbiz9bhn9UBM48Yjht46O51IoP8o1dcthzymMThf6tyl2FbxWL+/
+	 sARjWgrYJXTkw==
+Date: Wed, 14 Feb 2024 10:06:44 +0000
+From: Conor Dooley <conor@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	John Crispin <john@phrozen.org>, linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: mediatek,mt2712: add compatible
+ for MT7988
+Message-ID: <20240214-reversion-arguably-37bbee9caf78@spud>
+References: <20240213164633.25447-1-zajec5@gmail.com>
+ <20240213-resource-evaluator-0754cfd5882d@spud>
+ <d4391868-ddcd-4f66-b539-28d245fa83df@gmail.com>
+ <e957b044-fe84-4b72-bdf1-cbc40c722019@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|IA1PR12MB6140:EE_
-X-MS-Office365-Filtering-Correlation-Id: c50b2433-a833-48c6-3e7c-08dc2d44a586
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZhWfNB0gQfU7wKuuVDC7shAHoTkKfNiV5Y3UU+fjxKX9wLnY1d6Ljp6tIvHk/byTsom0J2RwwefCGOaQA0gFG4cZzTrWHz44145KVN3jT0brAeJG852hFMkBqhk9UBhv6JS8/Fr+7WpNdKBLwFVCQ0djp9shIw6TKqklO8f9sraT+HtG/XSKJHJ6AdWjwaORGs2KYSXAIAstpQWDtV4or9gUCYDxRpyldgR86JFFNiG+IBUMaCrM9ZhzGXHYAlsvKztLoYJtoABxRI6m7zges2Y6e6SutjtyrUAA46P/FrP47tgXCG8aaolJ0rAudIjy/FiZ7l/z+aA98K/DYT+UYypF+QW2/0zbANjjqm5wwJ3NXonferAqMZ9nPSBMb9FwnwRgTeO/CYlfDfmmXcKRh+Fe3aLeBQIEg/1RPDxYhTP4rqZ9U/2W9SBTXB+9LKkuLFIr4Y0M7bEe/lUjy0+nE2+X9GQwXqBpNiqf1AFvBamRKBF0V4H8NndB8/YRNhIV10EcIhUgFqms4eQySMk+NyQ09HknhfoX3peFKFeR+Xrefc6HKKkgBFVnaPen130l
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(136003)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(2906002)(6666004)(6486002)(6512007)(26005)(9686003)(6506007)(53546011)(478600001)(8936002)(38100700002)(66946007)(66476007)(8676002)(4326008)(66556008)(5660300002)(54906003)(316002)(6916009)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jOXLOXmieeBCCwtOPNQHdbCGmMSiX8ZjiTwdsX6fPZz6qvn3j2pKqS5R+eG7?=
- =?us-ascii?Q?dcFiWUNpWgfvXBKkPjZIj8oDlt0VEp0VyOhkpUdsyUmjZVyXNIkyeALJmA+b?=
- =?us-ascii?Q?DSvGUAGeFjencS9yOqCrCUOax9lvGxsCFeJ20z8Jbr4JnjDzAf5edBotdP0K?=
- =?us-ascii?Q?uFHdSQepvaUtw88+r8nYe/uzm73nIX+gVL97zBDsjwDLGdjLc/8JYPdyuP7t?=
- =?us-ascii?Q?ZbK3Y08YZJUL4SMZxoPvLwjexTtJXyC2GMpBj78v23fdcdcTvMUvvxLHDBKa?=
- =?us-ascii?Q?CtnIHJWu8e9pTsEoDlCXcDyES1313HaF6lRR5vKqDjT+gd9su2HAjRbDcK0O?=
- =?us-ascii?Q?dLQJUgMMqywM/GvWMp7deKGcg7u3Ql8xarr9iPm47x2t3aXKAmEezXcdbL5G?=
- =?us-ascii?Q?KfNJn01/wrEbdNG4mRerI0TbW8tk5jSHk5G+LZO9NaZCFnF5ibV4o+I7dZY8?=
- =?us-ascii?Q?GxgtrLn2nUr3SCHf/RP2lM4mpOrjgW8e1o9A/1EQELkzRlBJEXvDGQ2Rhgtv?=
- =?us-ascii?Q?tLisGBKZ2AsVCm5vCl+7aK+tetWA8/zyN5sbqQvZQfCVesTf/uIWy2nmV7cx?=
- =?us-ascii?Q?lMW01hi4qiD1Uu8qXzFTQ4WHqpu6oekvfZX6qeodTv/R7RDb3N4YOBGSOPpb?=
- =?us-ascii?Q?64KX0RLQ1/9OjB2act6/+rwX4HTQP+mNa5s+8DS0OR8hr+xNltuZzgcpLpVT?=
- =?us-ascii?Q?5D3L+fDxtqk5e1nBxak5gRzth8AFywsFwngAFe7XYqJgLJurIzJJZ35CPxbB?=
- =?us-ascii?Q?fX5BlNd/0e1AVLSg/bXCpuGp0J9b0AxVf53hinTz9Qd468cCp7Y8FQeS9BIA?=
- =?us-ascii?Q?jnssMPT8Up9dvVxGKCTjX0RziLcxCs0EdaZ8nE/aEdEkyGqV7hCIpcnGYNuF?=
- =?us-ascii?Q?Z/VyWokSK3nR2bH/f++SKPSAi2tDiE3gOS/nz8Vo6lZFPU6rs0JyfdTYCwQC?=
- =?us-ascii?Q?QdyUPwAvGpqnBJrMSkqu82vqxcKq2JtyScPMfGVMaFw5xuQ4UmtTmn7TRKBI?=
- =?us-ascii?Q?W5aGsIs66VHUobBIr+rJXPDRMRUpl0z2YtsktYWHmmEx/6VTRGtkmjX/SdTW?=
- =?us-ascii?Q?IxCGaU7uiuVZhswWH58rh4cgw3aHSuGLPuAiHberUk91qB349sx4TBDkcv5x?=
- =?us-ascii?Q?k6JLJiLY86/u0govw33F+XjUxhebDYu4MbaBjmd7Y0q9W7i78uMsq5dvjiJm?=
- =?us-ascii?Q?v+UF6cDuslgAYoUXsZPBVBZiPGlwXCKxQmGvJqsI7d4JXgpgmLhx7ZkMktpP?=
- =?us-ascii?Q?zUtgf3GkTeE4cDDrr9lDt0Bow7GZHkVtrYi8vCTMtz1SD1e54ZyV8Pc89g73?=
- =?us-ascii?Q?kYC7pNdv07jLnzJryN5xtwWkg9MyJ652wsW0XtSnlAFaPCF7UGCGe6xKOalQ?=
- =?us-ascii?Q?wbp8dufftExNbxBZ9TiukcpVKyqPzDQXe7HjZ0n93ASSJjZ1oRyjsFTjxqk+?=
- =?us-ascii?Q?ARVDkYgytkxaUxEqoaRHGZH9RZmrazn8gtup4X8be0ln++FXHqVvCHgE6ifx?=
- =?us-ascii?Q?XWKYQ2pKoO6H1SyvWbAeMRlNdr2F49sXhnRW9BMpG+tn7/nyNE2mE/kTHSzr?=
- =?us-ascii?Q?P5R3InSPSRz2mHHQP8gGj55MF96O1DgYnMTJM4LX?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c50b2433-a833-48c6-3e7c-08dc2d44a586
-X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 10:06:43.8880
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8nTKLdJBK0wtAtRAOUXHSr5Pt+nGff7JlISZRV7v7f89m56WVwIVmT2SimNeVR5Y2HZiW/xbgYelacOfQle1zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6140
-
-On 13.02.24 11:45:48, Dan Williams wrote:
-> Robert Richter wrote:
-> > On 13.02.24 10:40:07, Dan Williams wrote:
-> > > Robert Richter wrote:
-
-> > It would be sane to just not use CXL if assumptions on it are not
-> > valid and not to break system to boot.
-> 
-> I can get on board with that.
-> 
-> > 
-> > > 
-> > > > This may take system memory offline and could lead to a kernel hang.
-> > > 
-> > > Yes, that is not an unreasonable result when Linux fundamental
-> > > assumptions are violated.
-> > 
-> > BUG_ON(fw_table_broken)? If at all, it is not mandatory to have a
-> > CFMWS. Btw, the check is more strict and also checks memory
-> > attributes. It is very likely something can break.
-> 
-> Sure, I'll take a patch like this:
-> 
-> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> index 6c9c8d92f8f7..e4e5a917f1f4 100644
-> --- a/drivers/cxl/core/pci.c
-> +++ b/drivers/cxl/core/pci.c
-> @@ -477,10 +477,11 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
->                 allowed++;
->         }
->  
-> -       if (!allowed) {
-> -               cxl_set_mem_enable(cxlds, 0);
-> -               info->mem_enabled = 0;
-> -       }
-> +       WARN_TAINT(!allowed, TAINT_FIRMWARE_WORKAROUND,
-> +                  FW_BUG "%s: Range register decodes outside platform defined CXL ranges.",
-> +                  dev_name(dev));
-> +       if (!allowed)
-> +               return -ENXIO;
-
-Would you be ok with that? This aligns with all other -ENXIO kind of
-errors where some unexpected firmware or register behavior is
-observed.
-
- 	if (!allowed) {
--		cxl_set_mem_enable(cxlds, 0);
--		info->mem_enabled = 0;
-+		dev_err(dev, FW_BUG "Range register decodes outside platform defined CXL ranges.\n");
-+		return -ENXIO;
- 	}
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="mPF6YbHq+X8lxM7g"
+Content-Disposition: inline
+In-Reply-To: <e957b044-fe84-4b72-bdf1-cbc40c722019@collabora.com>
 
 
-Thanks,
+--mPF6YbHq+X8lxM7g
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Robert
+On Wed, Feb 14, 2024 at 10:27:54AM +0100, AngeloGioacchino Del Regno wrote:
+> Il 14/02/24 07:34, Rafa=C5=82 Mi=C5=82ecki ha scritto:
+> > On 13.02.2024 19:18, Conor Dooley wrote:
+> > > On Tue, Feb 13, 2024 at 05:46:32PM +0100, Rafa=C5=82 Mi=C5=82ecki wro=
+te:
+> > > > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> > > >=20
+> > > > MT7988 has on-SoC controller that can control up to 8 PWMs.
+> > >=20
+> > > I see a binding and a dts patch, but no driver patch, how come?
+> >=20
+> > I believe that to avoid cross-trees patchsets (which are sometimes
+> > tricky for maintainers) there are two ways of submiting such changes:
+> > 1. dt-binding + driver; then (separately) DTS
+> > 2. dt-binding + DTS; then (separately) driver
+> >=20
+> > I chose later in this case as my personal priority right now is to deal
+> > with all MediaTek DTS files.
+> >=20
+> > Is that wrong or unacceptable?
+> >=20
+>=20
+> It's not wrong but it's partially unacceptable, at least on my side.
+
+> I want to put emphasis on sending the binding with the driver, as this al=
+lows
+> for a better review on everyone's side because we do see the full picture=
+ and
+> we can give better advices: in this case, I'm not sure whether adding a n=
+ew
+> compatible for MT7988 in an enum is a good idea, as the compatible string=
+ may
+> be shared with one of the *eleven* SoCs that are supported in the PWM dri=
+ver,
+> meaning that (hardware speaking!) the PWM controller in 7988 might be the=
+ same
+> as the one in mt1234.
+
+Re-ordering to make my reply make more sense...
+
+> In my opinion (and I believe many do agree with me), sending the binding =
+along
+> with the driver is the right choice, and if you also want to include the =
+dts
+> that is also appreciated: series can go through multiple maintainers appl=
+ying
+> subsets - it's ok to do.
+
+Ye, either of those two makes my life a lot easier. I can then at least
+go and check the driver patch to see if things match up. In this case, I
+would want to check that the driver requires changes to support this
+device, given the commit message mentions nothing about the difference
+between this device and others. I'd still probably request that the
+commit message be improved to explain the lack of a fallback, but at
+least I would be clear about what I want and could provide a conditional
+Ack.
+
+If you're not sending the bindings patch with the driver, there's an
+extra onus on you to explain exactly what makes this device incompatible
+with the other devices in the enum, although in an ideal world it'd make
+no difference and every bindings patch would contain that information.
+
+> >=20
+> > > Also, what makes this incompatibly different with the other devices in
+> > > the binding, like the 8183?
+> >=20
+> > It can control 8 PWMs unlike any other SoC block except for MT2712.
+> > It uses different registers than MT2712 thought.
+
+Put this information in your commit message next time :)
+
+Cheers,
+Conor.
+
+--mPF6YbHq+X8lxM7g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcyQtAAKCRB4tDGHoIJi
+0ueXAQDCS+trr+ex9ySxR5bxD0kVm8SrRFLeLixgJlLEsQasHAEAiqnEQG8s/IH4
+xMOno6DMMEiw9aCzIyGoQTTN4Ied7wg=
+=QoHf
+-----END PGP SIGNATURE-----
+
+--mPF6YbHq+X8lxM7g--
 
