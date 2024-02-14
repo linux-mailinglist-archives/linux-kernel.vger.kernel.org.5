@@ -1,185 +1,122 @@
-Return-Path: <linux-kernel+bounces-64598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C3C8540B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFACE8540B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005DC1F2A1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:09:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F4251F2A2D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E4810F2;
-	Wed, 14 Feb 2024 00:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4065333EA;
+	Wed, 14 Feb 2024 00:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u8ip9JAz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MAbCvUUJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8EE7F;
-	Wed, 14 Feb 2024 00:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7813320D;
+	Wed, 14 Feb 2024 00:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869386; cv=none; b=B6vJFaHITaEd9JcrcIl1o15m3nLWbqRZ8YHVMrzWWnry/DIArfMD6tCA5lDtFkBW2zi+t11sVeYJPbqGGy5m4R8eily5+CFsS/MhwthZLu2iitoRHaHgxj/UoOANGikeKSCMhUcCLPPqeo6rHHl1NJkGcVLCVX3HAGXIrP8akOA=
+	t=1707869399; cv=none; b=oRA6a18Yjgn50AeweW8W6o/bU31PMttxxHAA3UFV4FnJrlLcFkyNeuW4e0I78Ku7D5cY1NyD7pNS/h1f653e8KTFHQOTXpx/M3l3doHM5Yd+GvCNOOIw4/fC2WQ0nHlZkueEWrC/5TDJhLbXxi5Z3B+iDJxabP8KE+7VVBH3S0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869386; c=relaxed/simple;
-	bh=XGF57pUD1lmuUaWsfaETEZITZpWlnPt6/M5D/Up5LbA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XL1V2jVmbJDT3VNQJyHvr/MIKAvrpJ7NiEEr/1H+D2g/kgsbza6d3+OdPebwHuC4UjftFjSYqcp99HnH/htXKNB9FzoMHb9WRipVJR7Ez1UugwnL1B2sZsPH6kVaZVAO03g6SUjaAsYHEMsQPoIkL7ybOWK/7wGr/OLF97hTj6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u8ip9JAz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D763C433F1;
-	Wed, 14 Feb 2024 00:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707869385;
-	bh=XGF57pUD1lmuUaWsfaETEZITZpWlnPt6/M5D/Up5LbA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=u8ip9JAzdkIcb3TcwM4qD6FbBawPsJw72koMHQp1u7S4tNYyLTRQB0eNhsHVSk8eb
-	 W5oUtVrmvtvKyPyQK35+cerSuRnZf/dTlBVNA2p1MVx1L+3gWUsOkbk/7+D0L7+M7N
-	 CnltdzI+S6AcX/5C+SIf50NxayQqOjHoibccvFlt+7QdFhHafx2O5qClqlK0eEJ1vm
-	 4La/59C03Eu6OUgg3G6Cv0dlg8HVkan5E1DVjKzsCbk+q3G3Sdot5gWDYNQ+RcJh55
-	 ClbpjD8LQAskSSvGe4yi9N40hIy4R/Le977Xey4yYkTk+U9T6KqTUICx0fmqdGx59C
-	 nhvvteXWkh5YQ==
-Message-ID: <e2d6dded-dea6-4832-ba16-6a97e3060992@kernel.org>
-Date: Wed, 14 Feb 2024 09:09:42 +0900
+	s=arc-20240116; t=1707869399; c=relaxed/simple;
+	bh=BgkpVWsh6Bl9SCabE/LKap1VaB2tWhQF+tCO77wtpTw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c+T/inN38r5DKQjcDexfcCn2QMXfRrrdUnEMRvNBvrlXFQz6+txEz8B9tMC8bUJrpqEGJD0eDYbu+JlDcpGHe/5b8C5vJ75hT2TvSA+/YF3sw2eAJI0H7TO048jv9kDiNmUS3tljqa48cWQrolbZp9+w6BhpkYu4Sx1Fn3xXBwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MAbCvUUJ; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707869398; x=1739405398;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=BgkpVWsh6Bl9SCabE/LKap1VaB2tWhQF+tCO77wtpTw=;
+  b=MAbCvUUJzersLgsNV4dloobPAgUzGKHA/4R3pIIc4CMqYcX7J0vkHLtf
+   KoUIP39uxfXqlxdZNSPjWUYFtCWGPuNFdH2hNpuYGoWxM00nLcvkEgmvZ
+   buuhvqz10bxFikKZMH56z2H73J1PJ1UBj2Dx0gzfqTml2x79CdB9f3KLy
+   nOJrSXlTAFQ4YWB4ou1qkfQ/qNtsYWlnE/dxHeLF4hLUBL+v8iIZ1dWB2
+   XbTOhPTSn62XBwsLdaXQRRnMswhlR07+/8p8xG5Cc0O0VNgBKLZZFP5nL
+   WhZhVucu7KYHXDkWsHpr9aUODadBXe80uv74YgYTpTOzUJ1/gc8gXE4p7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1775106"
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="1775106"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:09:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="3331532"
+Received: from arieldux-mobl.amr.corp.intel.com (HELO [10.209.91.178]) ([10.209.91.178])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:09:56 -0800
+Message-ID: <889b1a2849f50eeda2b334a7045c6748449d3d38.camel@linux.intel.com>
+Subject: Re: [PATCH v2] tracing: Have saved_cmdlines arrays all in one
+ allocation
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,  Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Mark Rutland <mark.rutland@arm.com>, 
+ Vincent Donnefort <vdonnefort@google.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Mete Durlu <meted@linux.ibm.com>
+Date: Tue, 13 Feb 2024 16:09:56 -0800
+In-Reply-To: <20240213115232.5fd9e611@gandalf.local.home>
+References: <20240213115232.5fd9e611@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ahci: asm1064: correct count of reported ports
-To: Niklas Cassel <cassel@kernel.org>, Andrey Melnikov <temnota.am@gmail.com>
-Cc: Sergei Shtylyov <sergei.shtylyov@gmail.com>, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org, hdegoede@redhat.com
-References: <vbpzr7uqpfemb3qa6xy2fxioct44l5vugg2wkywyolfpzqcmau@jgrrhmk2scaj>
- <7559d940-f191-4fe0-e147-17ffa6c1dfc4@gmail.com>
- <CA+PODjpOE=LGPi1G1ebvEwGeXAfpuZ+s_k4uMUwu3i6st9y--g@mail.gmail.com>
- <Zcukjucb4VEbKK9x@x1-carbon> <Zcuvbzoo7/7c/F1q@x1-carbon>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <Zcuvbzoo7/7c/F1q@x1-carbon>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 2/14/24 03:05, Niklas Cassel wrote:
-> On Tue, Feb 13, 2024 at 06:19:10PM +0100, Niklas Cassel wrote:
->> On Thu, Feb 08, 2024 at 10:27:11AM +0300, Andrey Melnikov wrote:
->>>> On 2/7/24 12:58 PM, Andrey Jr. Melnikov wrote:
->>>>
->>>>> The ASM1064 SATA host controller always reports wrongly,
->>>>> that it has 24 ports. But in reality, it only has four ports.
->>>>>
->>>>> before:
->>>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
->>>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
->>>>> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
->>>>>
->>>>> after:
->>>>> ahci 0000:04:00.0: ASM1064 has only four ports
->>>>> ahci 0000:04:00.0: forcing port_map 0xffff0f -> 0xf
->>>>> ahci 0000:04:00.0: SSS flag set, parallel bus scan disabled
->>>>> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
->>>>> ahci 0000:04:00.0: flags: 64bit ncq sntf stag pm led only pio sxs deso sadm sds apst
->>>>>
->>>>>
->>>>> Signed-off-by: Andrey Jr. Melnikov <temnota.am@gmail.com>
->>>>>
->>>>> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
->>>>> index da2e74fce2d9..ec30d8330d16 100644
->>>>> --- a/drivers/ata/ahci.c
->>>>> +++ b/drivers/ata/ahci.c
->>>>> @@ -671,9 +671,14 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
->>>>>  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
->>>>>                                        struct ahci_host_priv *hpriv)
->>>>>  {
->>>>> -     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA && pdev->device == 0x1166) {
->>>>> -             dev_info(&pdev->dev, "ASM1166 has only six ports\n");
->>>>> -             hpriv->saved_port_map = 0x3f;
->>>>> +     if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
->>>>> +             if (pdev->device == 0x1166) {
->>>>
->>>>    Maybe *switch* instead?
->>>
->>> Ok.
->>
->> Hello Andrey,
->>
->> do you intend to send out a v2 that uses a switch instead?
->>
->> And perhaps take Damien's patch as patch 1/2
->> (with Suggested-by: Damien ... of course),
->> so that the before/after print in your commit message shows
->> the override value.
-> 
-> On second thought, just go ahead and respin your patch using a switch,
-> as I don't think Damien's patch is fully correct.
-> 
-> He suggested to use hpriv->saved_port_map.
-> 
-> However, that will show the wrong result for platforms using
-> hpriv->mask_port_map.
-> 
-> As when hpriv->mask_port_map is used, saved_port_map is not set:
-> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L536-L548
-> 
-> However, the local variable "port_map" is updated for both
-> saved_port_map and mask_port_map cases.
-> 
-> And then at the end:
-> hpriv->port_map = port_map;
-> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L597
-> 
-> So I think we should print hpriv->port_map,
-> and not hpriv->saved_port_map.
+On Tue, 2024-02-13 at 11:52 -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+>=20
+> The saved_cmdlines have three arrays for mapping PIDs to COMMs:
+>=20
+>  - map_pid_to_cmdline[]
+>  - map_cmdline_to_pid[]
+>  - saved_cmdlines
+>=20
+> The map_pid_to_cmdline[] is PID_MAX_DEFAULT in size and holds the index
+> into the other arrays. The map_cmdline_to_pid[] is a mapping back to the
+> full pid as it can be larger than PID_MAX_DEFAULT. And the
+> saved_cmdlines[] just holds the COMMs associated to the pids.
+>=20
+> Currently the map_pid_to_cmdline[] and saved_cmdlines[] are allocated
+> together (in reality the saved_cmdlines is just in the memory of the
+> rounding of the allocation of the structure as it is always allocated in
+> powers of two). The map_cmdline_to_pid[] array is allocated separately.
+>=20
+> Since the rounding to a power of two is rather large (it allows for 8000
+> elements in saved_cmdlines), also include the map_cmdline_to_pid[] array.
+> (This drops it to 6000 by default, which is still plenty for most use
+> cases). This saves even more memory as the map_cmdline_to_pid[] array
+> doesn't need to be allocated.
+>=20
+> Link: https://lore.kernel.org/linux-trace-kernel/20240212174011.068211d9@=
+gandalf.local.home/
+>=20
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Indeed, good catch...
 
-> However.. hpriv->port_map is already printed:
-> https://github.com/torvalds/linux/blob/v6.8-rc4/drivers/ata/libahci.c#L2617
-> in the "0x%x impl" print.
-> 
-> So
->> before:
->> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xffff0f impl SATA mode
-> 
->> after:
->> ahci 0000:04:00.0: AHCI 0001.0301 32 slots 24 ports 6 Gbps 0xf impl SATA mode
-> 
-> Actually prints the number of *implemented* ports.
-> 
-> 
-> I have to admit that this is a bit confusing.
-> 
-> Personally I would have preferred if we simply printed
-> "%u ports", hpriv->port_map,
-> 
-> and simply dropped the "0x%x impl" part of the print,
-> but I'm a bit worried that someone parses this print from user space,
-> but I guess we must be allowed to improve prints if they are confusing.
-> 
-> Damien, what do you think?
+Patch looks good to me.
 
-..but port_map is a mask, not a count of ports. So this would still be wrong.
-I think we simply need a small helper that look something like:
+Reviewd-by: Tim Chen <tim.c.chen@linux.intel.com>
 
-int ahci_nr_ports(struct ata_host *host)
-{
-        struct ahci_host_priv *hpriv = host->private_data;
-	int i, n = 0;
-
-	for_each_set_bit(i, &hpriv->port_map, AHCI_MAX_PORTS)
-		n++;
-
-	return n;
-}
-
-and print that instead together with the mask.
-
--- 
-Damien Le Moal
-Western Digital Research
+> ---
+> Changes since v1: https://lore.kernel.org/linux-trace-kernel/202402121809=
+41.379c419b@gandalf.local.home/
+>=20
+> -- Added SAVED_CMDLINE_MAP_ELEMENT_SIZE helper macro.
+>=20
 
 
