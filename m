@@ -1,194 +1,195 @@
-Return-Path: <linux-kernel+bounces-65877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB6D855330
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2661F855337
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90CC61C20C03
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:24:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2811C25A71
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF95613B7B4;
-	Wed, 14 Feb 2024 19:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C0313B79E;
+	Wed, 14 Feb 2024 19:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UwsuHlGc"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3eWZzYN"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB2C13A875
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F6412D76E;
+	Wed, 14 Feb 2024 19:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707938678; cv=none; b=leUTMiDi3Dh6cRnU1a12kGIpW03lLSk4W3m8eCeICPlwooaVWShpb0ckTt6pwGaBGKDMezwEMAtNifGcxoIQ1j5FdOyilA+R1Xj1rxrVakW0jY0/ip6+i1LLZwS7knGIxCWJghnWfZFDS5PctZabileA2kfyi122ab0PifOGIaE=
+	t=1707938978; cv=none; b=bDLOmUZXs/4iL4QZys9CALo5oI6nStJIpNegc17Eoyir216y3ty7nnYsIYmX8yPvCryzeM6hQJzQth1oxKeeZDE1TTtqibZmF0RmI53waIH69c3cWkJzUZwNTwa/wJFjc0BXvxNMDrRspFCS+whP5OUxXt/FNd/0DwLtJ1rBTjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707938678; c=relaxed/simple;
-	bh=S0A1kfhRzOuiQ1TlmH8X2A+T0pY8dnMRCMj0SI+jFYY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RDyjYoM4gWr4LCA6ljvzLamjCiqth1l6hFef2qsNnMZLbFC0sM3Or2BYPk9jNBAPEC4FmJbtMzMQjzOPrNbDckpOGyQpanv2xWsWmBO0Pcck7JxTdEhCfKPHKeB3rJ1JZD1bV6M/H0Jm+sgEE8XZtypDSN/zRvkZq2aP3RjLANk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UwsuHlGc; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so9032276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:24:36 -0800 (PST)
+	s=arc-20240116; t=1707938978; c=relaxed/simple;
+	bh=Nu/AiYO0cZHPXxcq7qHdK3J+BhmArbnGSgTitnJB4/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XmNSJyiQCkQ6X1HVSWqiD/x9/VWWOAJctpzm0UrrZyFEzHZK2mJFaBz5SZaqdOyl8Bb/AMf9Y8tJErayiAq2K9pxGj0Ho2OV7NN7oqOhx+5PwL2AHKBhgdTl6c7Cjh2T+LRcvA39h6rc2tL30r7Hp9q3fdhfKmigMmpaEX1mWyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G3eWZzYN; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-68ce2fe86e3so698266d6.3;
+        Wed, 14 Feb 2024 11:29:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707938675; x=1708543475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1707938976; x=1708543776; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QCBYE/AD/BvL6op5scnwP5wjSjqsrmapht1Ra223I1c=;
-        b=UwsuHlGcrhXjhdyz7FsaHAoTBX0zVMz5qXtPM2OUj55wrNZvLqHXFw+eWmQICcNqD2
-         mkRIzvQEt/wyfA87b6KzFPbtednd9Wmn4PYhx1ZSYaIQ3a9tTgY/ASdL/7qnbOlWxf+c
-         DeW0BYZFVxVxzLKtQqgf5JqXwApgR9aXf6eXe00HuM3qIUBz3mMid3IyuF5oqOk9dxEA
-         aWxa6nX0QA3VPyIIH1G820sazWtnbnvG3QIr2VkjFBstjRyavNejipQ18gjPiU6Xq8YY
-         Ow4V+/UvoV9CFC+8Ocfs3i8DP341meEB5WlQU0bq6ogkSqOXE3P/pDdaXHBawmv36DDf
-         zcZQ==
+        bh=bxKxd0YOf3Ety49fAv0PO6SpvuAL0dCmkIegxDtI/W8=;
+        b=G3eWZzYNaS2sIh2QjBPVkSq8KmF4bCMudktCfS7HT5/N1+OcU/cT+I5YLwpEysKmZ+
+         Tf1DVPxGCMCl5j2xcxkejcLK72qBt/VO/07yvk1ntX90GFJ5hUQvRlxt2ZoJu0JIgR4R
+         YtgxQkpmFwPoZHWMU16BAuxdIOK5ykQa7g6mJ/3kfNgd6uSw3L9Y1G6E6kiA7lz8acNl
+         hgzW+r4IwuBMXaMGSsTU+pST0QCCfzZU12AL9QIgEni/byxwDxdvV46+l7oOwf5+Ggau
+         SvBvJM3aIDMGrANthisLFiXNOLtfaR30I70oPR0jya6FcL/4ePugCQE5/hMQgOlykilv
+         NNdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707938675; x=1708543475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707938976; x=1708543776;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QCBYE/AD/BvL6op5scnwP5wjSjqsrmapht1Ra223I1c=;
-        b=gDvnN9qhlwXo0L11sOczYeDlYE+5c+DfC1vOvNtsijJbXUqStq4QMdzTOxnIozOawa
-         Rx0UBKeDEq77enO9iyC6WLqsU3HloX0rnjA/QmQkZYbq0rQb5gInRWJ8p+utZffV38dw
-         MMlHP75GV8bflWnrkBNl/QoSczBjqpIs7RUnSpNI1xWIJCKpQEVjViIZo/D5ETU41ayg
-         9Av/NPTYMy7vLxECYiY2RBl0kTwHWR3P5wXjU2nlqG3V3/1Ih6GYYjz5kGKArwidNYva
-         fxUY7ECw0XaVHj0svCPuWq4kcjDd9XOWLzjtoZI/olDuhTp5CONZCTg4R1rJBbfnEy1u
-         4A0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUZX/y6qmpYPlk+q7084rgogEguVXXPyHO5ky8jWx/huv1fy1gCXYs4j6Ewdn5YDioEJJVYN2waI0SJRud2nOdHyiKXMbBGxin50vw1
-X-Gm-Message-State: AOJu0Yxfm2CyUy3cMnATsrd+hFuoUqoRQKP6xCfu/w8F/UdFzcBFSIvD
-	B/POBGsoTSBVrJqA1Refodph6S4r1MGm+KRGo6Pzj4cTXMKAAlTc83fhukdy6vbO2NMYKWj3RDX
-	+rsd9HnTXyXbJJkGqKEpNqr8kjCqrbzjgUtQr
-X-Google-Smtp-Source: AGHT+IEHeftxzGg3B5Z0Zkp/sdZtFFtkyDYYBmhmOt9OEJce/O9D422LSeKSHbRCNIcYUksKiHgnsjkqT91cBPG3844=
-X-Received: by 2002:a05:6902:143:b0:dcb:cdce:3902 with SMTP id
- p3-20020a056902014300b00dcbcdce3902mr3406955ybh.55.1707938674882; Wed, 14 Feb
- 2024 11:24:34 -0800 (PST)
+        bh=bxKxd0YOf3Ety49fAv0PO6SpvuAL0dCmkIegxDtI/W8=;
+        b=WpCc29GUjfJFmspWqUZG2THSqkyJ3AgqTrZH6WJV29Gfflqw1uW2QrKh9CtqwL4/bC
+         ewKM1ScrSTtsAm847OVANcFxvaAnCmkXuJGsUifnMvK0AvIR3Ueb4hdRf1x5NfxkC/bA
+         nRkvMuvHLTMdS8GCLKf6uuXVe4uyYvBc5b3Nw9ut/xpkZmAUqfY7WNmb5gjzJbm5xCVl
+         I0l3RvcgBJYWAAhxP/6rCr9RvqHGvI+TtLUi21AQauBEUPi9QRbd9lyZ0SS6aw9AjRbp
+         DhIQuJvgbrQdUEsDrl/RnRYWPUFTguHKB6l3LURnqOLHikg0LdSZzk5Fwh0/6KzupjWV
+         qHvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZihp45Slsu+GbVCPpvvFYgCnNesDRAXdwhJUu3u2YQqOn41fx8cGX48MqNz4X0R1+XhcAINt9O1BodsT7rlbheXZgqGuCyk/diY4ZOWJ+6J3MH7TxEJaUspqe0okl22hhbyfZHp0LjBoGTus=
+X-Gm-Message-State: AOJu0YyOf6E8fw3gH4On7U648YuzOrGtbXeElqz8imI2/Ndk4T4aO8OA
+	S+u8/oa2byF4FTLlc0VQ2EBlUdJ817d7Ant15w9euVGYjqT2bmmJ
+X-Google-Smtp-Source: AGHT+IFR+G2jABSWo8VjAzNAPcu10ITYHuaYab0euOGfRiZrRTKb/GJdEjEDdbw0PJ7e/lR17O6mkw==
+X-Received: by 2002:a0c:cb0c:0:b0:68f:10bf:6ec9 with SMTP id o12-20020a0ccb0c000000b0068f10bf6ec9mr863632qvk.13.1707938975741;
+        Wed, 14 Feb 2024 11:29:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVo4GFgA+hc09NEfLHstdTrSzSAKE5leRPjHoIEvGVv8+hQwzV6TnbBhi71fBYjns5hCpYrVOJxMvT9z4+L0XXLR+yQZaHk2XXcTU8Bh1gq68SzaKLNvZ27fWc4i7MztR0ZnppI+l5apDBp2HLU5pQ/w0AEFlBwMryQmjrstyHdJiF+p78xdPHQIWVyQ7v8Xb++xVjC+gNc8FKZV/+NkWwAfsBtUSr9IEAK5fheZ7mP839UUbTW1ZoMLigyV03Uube9XrJoIlqbD3+dmTdWQ6RI6rAgiXVQ7KoC+66OJMav5cDxM3jAgEhGDlKV8S0JEolPQ2hgX1uXmBXm1vLvh+o9anZdneF1ck26Vw+wGw/ycihKy6c8M95p/hO+
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id d8-20020a0cf6c8000000b0068cbc630dc8sm2555319qvo.49.2024.02.14.11.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 11:29:35 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 8D2441200066;
+	Wed, 14 Feb 2024 14:29:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 14 Feb 2024 14:29:34 -0500
+X-ME-Sender: <xms:nhTNZVxtpzUWzm4CTVRgyfgUuZ16GiEBTgd2LXGzuMROIkarYhwVcQ>
+    <xme:nhTNZVRUUCW0Hc797rQ0EBQJ2ORh6SmRVg5YgQHDdB-HfmQPJUQY_Y3wxyXZ5kA9N
+    zVFwEyLsCdRGrqh7g>
+X-ME-Received: <xmr:nhTNZfW3x5uUh7eVfuHhCQ4NA9ndoA38hXwoze-Z2sp24HeTiOuA-6KRA7UO4g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeejtefftdfgueehgffhkedttddtgeetvdeukeetueeggffhhefffeeuledu
+    ieefveenucffohhmrghinhepiihulhhiphgthhgrthdrtghomhenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgr
+    uhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsoh
+    hquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:nhTNZXjdDhQUwftC2U5qVzOtiUfru18ci223bgIVxAMwRVFC-9jiSg>
+    <xmx:nhTNZXDgMVygXH49bJFVXeY9FPLynR-FUP8OD88nHKAILjsS-GBI8A>
+    <xmx:nhTNZQLMB5m0YngTOTxNybbsn8q7cJ3aVZeSmI27gKaBO5ZY0JAejQ>
+    <xmx:nhTNZULjEFrIzDqIU44CbbAD-NUqnfvSkUgvu2iCPRmEFr31SPyIs1JOYHg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 14 Feb 2024 14:29:34 -0500 (EST)
+Date: Wed, 14 Feb 2024 11:27:49 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Danilo Krummrich <dakr@redhat.com>
+Cc: ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
+	gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
+	a.hindborg@samsung.com, aliceryhl@google.com,
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] rust: str: add {make,to}_{upper,lower}case() to
+ CString
+Message-ID: <Zc0UNUGbmmBlzBAv@boqun-archlinux>
+References: <20240214172505.5044-1-dakr@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zctfa2DvmlTYSfe8@tiehlicka> <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com> <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com> <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com> <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
- <20240214085548.d3608627739269459480d86e@linux-foundation.org> <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
-In-Reply-To: <7c3walgmzmcygchqaylcz2un5dandlnzdqcohyooryurx6utxr@66adcw7f26c3>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 14 Feb 2024 11:24:23 -0800
-Message-ID: <CAJuCfpGi6g3rG8aVmXveSxKvXnfm+5gLKS=Q4ouQBDaTxSuhww@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	Michal Hocko <mhocko@suse.com>, vbabka@suse.cz, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214172505.5044-1-dakr@redhat.com>
 
-On Wed, Feb 14, 2024 at 9:52=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Wed, Feb 14, 2024 at 08:55:48AM -0800, Andrew Morton wrote:
-> > On Tue, 13 Feb 2024 14:59:11 -0800 Suren Baghdasaryan <surenb@google.co=
-m> wrote:
-> >
-> > > > > If you think you can easily achieve what Michal requested without=
- all that,
-> > > > > good.
-> > > >
-> > > > He requested something?
-> > >
-> > > Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
-> > > possible until the compiler feature is developed and deployed. And it
-> > > still would require changes to the headers, so don't think it's worth
-> > > delaying the feature for years.
-> >
-> > Can we please be told much more about this compiler feature?
-> > Description of what it is, what it does, how it will affect this kernel
-> > feature, etc.
-> >
-> > Who is developing it and when can we expect it to become available?
-> >
-> > Will we be able to migrate to it without back-compatibility concerns?
-> > (I think "you need quite recent gcc for memory profiling" is
-> > reasonable).
-> >
-> >
-> >
-> > Because: if the maintainability issues which Michel describes will be
-> > significantly addressed with the gcc support then we're kinda reviewing
-> > the wrong patchset.  Yes, it may be a maintenance burden initially, but
-> > at some (yet to be revealed) time in the future, this will be addressed
-> > with the gcc support?
->
-> Even if we had compiler magic, after considering it more I don't think
-> the patchset would be improved by it - I would still prefer to stick
-> with the macro approach.
->
-> There's also a lot of unresolved questions about whether the compiler
-> approach would even end being what we need; we need macro expansion to
-> happen in the caller of the allocation function
+On Wed, Feb 14, 2024 at 06:24:10PM +0100, Danilo Krummrich wrote:
+> Add functions to convert a CString to upper- / lowercase, either
+> in-place or by creating a copy of the original CString.
+> 
+> Naming followes the one from the Rust stdlib, where functions starting
+> with 'to' create a copy and functions starting with 'make' perform an
+> in-place conversion.
+> 
+> This is required by the Nova project (GSP only Rust successor of
+> Nouveau) to convert stringified enum values (representing different GPU
+> chipsets) to strings in order to generate the corresponding firmware
+> paths. See also [1].
+> 
+> [1] https://rust-for-linux.zulipchat.com/#narrow/stream/288089-General/topic/String.20manipulation.20in.20kernel.20Rust
+> 
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> ---
+> Changes in V3:
+>   - add an `impl DerefMut for CString`, such that these functions can be defined
+>     for `CStr` as `&mut self` and still be called on a `CString`
+> Changes in V2:
+>   - expand commit message mentioning the use case
+>   - expand function doc comments to match the ones from Rust's stdlib
+>   - rename to_* to make_* and add the actual to_* implementations
+> ---
+>  rust/kernel/str.rs | 81 +++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 80 insertions(+), 1 deletion(-)
+> 
+> diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+> index 7d848b83add4..02d6e510b852 100644
+> --- a/rust/kernel/str.rs
+> +++ b/rust/kernel/str.rs
+> @@ -5,7 +5,7 @@
+>  use alloc::alloc::AllocError;
+>  use alloc::vec::Vec;
+>  use core::fmt::{self, Write};
+> -use core::ops::{self, Deref, Index};
+> +use core::ops::{self, Deref, DerefMut, Index};
+>  
+>  use crate::{
+>      bindings,
+> @@ -143,6 +143,19 @@ pub const fn from_bytes_with_nul(bytes: &[u8]) -> Result<&Self, CStrConvertError
+>          unsafe { core::mem::transmute(bytes) }
+>      }
+>  
+> +    /// Creates a mutable [`CStr`] from a `[u8]` without performing any
+> +    /// additional checks.
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// `bytes` *must* end with a `NUL` byte, and should only have a single
+> +    /// `NUL` byte (or the string will be truncated).
+> +    #[inline]
+> +    pub const unsafe fn from_bytes_with_nul_unchecked_mut(bytes: &mut [u8]) -> &mut CStr {
+> +        // SAFETY: Properties of `bytes` guaranteed by the safety precondition.
+> +        unsafe { &mut *(bytes as *mut [u8] as *mut CStr) }
 
-For the record, that's what this attribute will be doing. So it should
-cover our usecase.
+First `.cast::<[u8]>().cast::<CStr>()` is preferred than `as`. Besides,
+I think the dereference (or reborrow) is only safe if `CStr` is
+`#[repr(transparent)]. I.e.
 
-> , and that's another
-> level of hooking that I don't think the compiler people are even
-> considering yet, since cpp runs before the main part of the compiler; if
-> C macros worked and were implemented more like Rust macros I'm sure it
-> could be done - in fact, I think this could all be done in Rust
-> _without_ any new compiler support - but in C, this is a lot to ask.
->
-> Let's look at the instrumentation again. There's two steps:
->
-> - Renaming the original function to _noprof
-> - Adding a hooked version of the original function.
->
-> We need to do the renaming regardless of what approach we take in order
-> to correctly handle allocations that happen inside the context of an
-> existing alloc tag hook but should not be accounted to the outer
-> context; we do that by selecting the alloc_foo() or alloc_foo_noprof()
-> version as appropriate.
->
-> It's important to get this right; consider slab object extension
-> vectors or the slab allocator allocating pages from the page allocator.
->
-> Second step, adding a hooked version of the original function. We do
-> that with
->
-> #define alloc_foo(...) alloc_hooks(alloc_foo_noprof(__VA_ARGS__))
->
-> That's pretty clean, if you ask me. The only way to make it more succint
-> be if it were possible for a C macro to define a new macro, then it
-> could be just
->
-> alloc_fn(alloc_foo);
->
-> But honestly, the former is probably preferable anyways from a ctags/csco=
-pe POV.
+	#[repr(transparent)]
+	pub struct CStr([u8]);
+
+with that you can implement the function as (you can still use `cast()`
+implementation, but I sometimes find `transmute` is more simple).
+
+    pub const unsafe fn from_bytes_with_nul_unchecked_mut(bytes: &mut [u8]) -> &mut CStr {
+	// SAFETY: `CStr` is transparent to `[u8]`, so the transmute is
+	// safe to do, and per the function safety requirement, `bytes`
+	// is a valid `CStr`.
+	unsafe { core::mem::transmute(bytes) }
+    }
+
+but this is just my thought, better wait for others' feedback as well.
+
+Regards,
+Boqun
 
