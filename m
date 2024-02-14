@@ -1,145 +1,204 @@
-Return-Path: <linux-kernel+bounces-65840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94CD18552B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:53:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD78B8552BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:54:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA60C1C20F0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:53:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6607C287F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5591213956E;
-	Wed, 14 Feb 2024 18:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23FE13B78B;
+	Wed, 14 Feb 2024 18:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GmqFbF+1"
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ObjzzCqA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F091E4B7
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08369133438;
+	Wed, 14 Feb 2024 18:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707936797; cv=none; b=Tth5GZRkZubIaySzcIb1bQLml+DX/DMkGBtQzlHt8+heQ1/oenPEG+6W2Bm+6Y41Esg3zYy6OeatYs8sKyv7v8p8N1c8CRnm8hKSGS8Kyu1JncsKte2KUc+sRoEUHmBhgzITM31MR8CkPcry7jYbk0/5qkk6T+vaBcmLLkd3Wns=
+	t=1707936842; cv=none; b=rU6DSMr8078/516NKGeEu0aYMillys4tht4ROL2sC7bQF3w8z5MvPmLR3z9TBwQ+I9hm3kcOmGEyPI2pVELzUjoPRmLMuhif79VWPnJHtjPM7SbRjlJQih/EeVjbiVYkvI0ZOgXkK+ukmF9+Fnf4emMadSo+EDazHxvNDrT7ZT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707936797; c=relaxed/simple;
-	bh=YB0WSEf01Y/V+3sTwuD+fxIA+EUO/mOnBcLiacfmF6I=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=BeXpuNaDx3k8bCLrqNNPRegyLmiY1kmahGMVHVWuQGgqI7h1ksbyyLIwuVijy8aP5Kg1+XnvZs9rpXkR9O8l8UiqkBERVa56kJrRLDwAWP/31y6SnQ3G0UXnmyxeKCFecm8+qQex6swXaft4WGhoZtxERTmCTfmFigN+abY5G1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GmqFbF+1; arc=none smtp.client-ip=209.85.221.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4c015883a13so22374e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1707936794; x=1708541594; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=U7EX0BUU8eYmhs0ZPEmIoQh2Kp64rH+uh/MBL1tuL4s=;
-        b=GmqFbF+1eCKxVFuR+Kyrsu977sb38LnrWY4AeZ4YUMCQVyxLwakk4NQ1ZpNhFHr3Uk
-         PGSE5UOMKHj8qLZjPmanF93VmKGWjkiAvWTnhjY3P88Y4+6xb14uPjS8qC/oGWBMCTIC
-         5Cdx6H6vOOhUBJS1BM6dti1loA91Agdp+8fjQVuPCVS5BCyjSl5od08u59k2Se46xi27
-         RU7+P7+NmK/bK0Ffdz1iYP9NGzRzo3bY1+3l5KOKl9Z0TvVMcNM3S6WH3ve2jDPWt2/u
-         2juXNx9h1j5Y7aJfBPEiWMq+wFuZXc4JAdUgk3MlhlndBVNqFbqNKW51pv211e5ia5w0
-         Swmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707936794; x=1708541594;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U7EX0BUU8eYmhs0ZPEmIoQh2Kp64rH+uh/MBL1tuL4s=;
-        b=sH66l7kMoMgOrqBE/s+r7pFqFiipvSLJTjfX8YAcl90zoiURSXFHuVZvjFizCaUH2O
-         bLbqFXe1B2SiJ95qaKoI5rOoCYF0dJ8WvoMuyvjfMxpZQzwm+1n2MuV9NWrdQrJSlI3X
-         yt+p3NwsrFsUjph/u/LCtyIgnRUUPz4zAQvU1OtQ5dc2aolVYGM44biLg60n7McD7UQe
-         XeWSDzcTNACHZVrtzUeeN/qPlpxymvWidcI60aMjf9mb4sxQCMxCVJaxZzJJDGJp62t1
-         liUy74RRUJ4O3Rrqm5nkBzo/Omlpvm5jF/0WocUXg6hmebGZAYyfNE3ZDtUCNGB/cHM+
-         EHKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWguw88+pjddLeXIDRuRBRQ6GDcdvcx+Ppby2+svMyZbMrW4eeBJqQgouwgaEZa/9qyWE0BQXbqMkIr2fnadCDj2FkKz5XYgT2gOwTB
-X-Gm-Message-State: AOJu0Yz1Z0bSa6VBHfSVf0wW6gFphXB6un8S+sJLjer0iFgpIP0Fd+8l
-	Arfz0CPQJPusU05gLxsnapYenN/WAV4AtucolCSITLbkHxopIv9UGNAYy+SAzg==
-X-Google-Smtp-Source: AGHT+IFE3dcYT/V2vseHwfI/QKGAhtoiv7lpaXvutbo6pW5L51Jt87o/Rt6W4ld0LKTeyp5DB9cqIQ==
-X-Received: by 2002:a1f:d986:0:b0:4bd:3433:aac with SMTP id q128-20020a1fd986000000b004bd34330aacmr3156328vkg.15.1707936794508;
-        Wed, 14 Feb 2024 10:53:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVXIWXDO78A/kdG+CESi3cvOFauyQKoDlFtG4hFccN+h9utfaGjVgINu6NGQywVXm1XZTduZQuRt4VMbk2TJqUWQRgiusXQJQyNFSgYfyR3xT0nLnJnF4IEv8tRuCMd531L2GhbHjeECt89qI4vouDAXu0V6lQ+gt1DSUpfs6IYE6P66sTfa4pzzrNCKl4DYeKthIeK1RbmNbgcK22Pz+lUyFM6uzKnjHctyUD9C+ZRxNGFufQxHUmre6QrRPOVjE3Df8yVvHrlrIKSEPU=
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id od9-20020a0562142f0900b0068c9d0561d1sm2523643qvb.83.2024.02.14.10.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 10:53:14 -0800 (PST)
-Date: Wed, 14 Feb 2024 13:53:13 -0500
-Message-ID: <1e24f1ef83614516c995e1cceccba6ff@paul-moore.com>
+	s=arc-20240116; t=1707936842; c=relaxed/simple;
+	bh=UOkF8QOipvPnQfr/zLHdbACDQEqVEeAbGnpVM7OMNJA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nt6uCLroXMeWKJo5So20wN2WXnFXCoLcnSaamiRkc+baGOfo4TerPjR0by3YIIIphVtRNy4Q7/TgtJXFyU446vBQrdag+7taAwwHSZ+oQSmI9gBh+doFvNBMFLlTBp4yMCC4auVrgLTwf7uByDgdtA+adDZ/1N13PYgpzQ/i53s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ObjzzCqA; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707936840; x=1739472840;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=UOkF8QOipvPnQfr/zLHdbACDQEqVEeAbGnpVM7OMNJA=;
+  b=ObjzzCqAQWHt2/aYlycAVcxicOj7lC6fYfd2buMkgsqj9g7lIYXTg3hg
+   ISVerszMOtLyteSo7W/f0kpX1lT/k74AfJ5V6/Dsup+xvy0JAvY+EoZsk
+   DX7674vuDFhB4M3s8n0fUA+udPDiMIyLDLR5uvPkj4EmHL6Qa7b5/NeuI
+   qqw0+QS/lJDknwx+po08O7enoBHbdUDoXYVyZMa2yDhilTJCxSnPhMen2
+   eVdWI9ad1c1ODW5AG2+RDYuEsOaOtZY5TQuTcyQENMRurV1SRy28cokNg
+   XQcFExOICKTc3A5Gi/anNLhbnKjSFpDX4cU7oYEzE60oYQH6Jt3T7eASM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1873606"
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="1873606"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 10:53:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="7891287"
+Received: from wfaimone-mobl.amr.corp.intel.com (HELO [10.209.29.231]) ([10.209.29.231])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 10:53:54 -0800
+Message-ID: <4f24986587b53be3f9ece187a3105774eb27c12f.camel@linux.intel.com>
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net,  willy@infradead.org, liam.howlett@oracle.com,
+ corbet@lwn.net, void@manifault.com,  peterz@infradead.org,
+ juri.lelli@redhat.com, catalin.marinas@arm.com,  will@kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com,  axboe@kernel.dk, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org,  dennis@kernel.org, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org,  paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com,  yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com,  elver@google.com, dvyukov@google.com,
+ shakeelb@google.com,  songmuchun@bytedance.com, jbaron@akamai.com,
+ rientjes@google.com,  minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com,  linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org,  linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com,  cgroups@vger.kernel.org
+Date: Wed, 14 Feb 2024 10:53:53 -0800
+In-Reply-To: <20240212213922.783301-1-surenb@google.com>
+References: <20240212213922.783301-1-surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: Jann Horn <jannh@google.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Casey Schaufler <casey@schaufler-ca.com>, Kees Cook <keescook@chromium.org>, John Johansen <john.johansen@canonical.com>, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH] security: fix integer overflow in lsm_set_self_attr()  syscall
-References: <20240214160538.1086089-1-jannh@google.com>
-In-Reply-To: <20240214160538.1086089-1-jannh@google.com>
+MIME-Version: 1.0
 
-On Feb 14, 2024 Jann Horn <jannh@google.com> wrote:
-> 
-> security_setselfattr() has an integer overflow bug that leads to
-> out-of-bounds access when userspace provides bogus input:
-> `lctx->ctx_len + sizeof(*lctx)` is checked against `lctx->len` (and,
-> redundantly, also against `size`), but there are no checks on
-> `lctx->ctx_len`.
-> Therefore, userspace can provide an `lsm_ctx` with `->ctx_len` set to a
-> value between `-sizeof(struct lsm_ctx)` and -1, and this bogus `->ctx_len`
-> will then be passed to an LSM module as a buffer length, causing LSM
-> modules to perform out-of-bounds accesses.
-> 
-> The following reproducer will demonstrate this under ASAN (if AppArmor is
-> loaded as an LSM):
-> ```
-> #define _GNU_SOURCE
-> #include <unistd.h>
-> #include <stdint.h>
-> #include <stdlib.h>
-> #include <sys/syscall.h>
-> 
-> struct lsm_ctx {
->   uint64_t id;
->   uint64_t flags;
->   uint64_t len;
->   uint64_t ctx_len;
->   char ctx[];
-> };
-> 
-> int main(void) {
->   size_t size = sizeof(struct lsm_ctx);
->   struct lsm_ctx *ctx = malloc(size);
->   ctx->id = 104/*LSM_ID_APPARMOR*/;
->   ctx->flags = 0;
->   ctx->len = size;
->   ctx->ctx_len = -sizeof(struct lsm_ctx);
->   syscall(
->     460/*__NR_lsm_set_self_attr*/,
->     /*attr=*/  100/*LSM_ATTR_CURRENT*/,
->     /*ctx=*/   ctx,
->     /*size=*/  size,
->     /*flags=*/ 0
->   );
-> }
-> ```
-> 
-> (I'm including an ASAN splat in the patch notes sent to the list.)
-> 
-> Fixes: a04a1198088a ("LSM: syscalls for current process attributes")
-> Signed-off-by: Jann Horn <jannh@google.com>
-> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+On Mon, 2024-02-12 at 13:38 -0800, Suren Baghdasaryan wrote:
+> Memory allocation, v3 and final:
+>=20
+> Overview:
+> Low overhead [1] per-callsite memory allocation profiling. Not just for d=
+ebug
+> kernels, overhead low enough to be deployed in production.
+>=20
+> We're aiming to get this in the next merge window, for 6.9. The feedback
+> we've gotten has been that even out of tree this patchset has already
+> been useful, and there's a significant amount of other work gated on the
+> code tagging functionality included in this patchset [2].
+>=20
+> Example output:
+>   root@moria-kvm:~# sort -h /proc/allocinfo|tail
+>    3.11MiB     2850 fs/ext4/super.c:1408 module:ext4 func:ext4_alloc_inod=
+e
+>    3.52MiB      225 kernel/fork.c:356 module:fork func:alloc_thread_stack=
+_node
+>    3.75MiB      960 mm/page_ext.c:270 module:page_ext func:alloc_page_ext
+>    4.00MiB        2 mm/khugepaged.c:893 module:khugepaged func:hpage_coll=
+apse_alloc_folio
+>    10.5MiB      168 block/blk-mq.c:3421 module:blk_mq func:blk_mq_alloc_r=
+qs
+>    14.0MiB     3594 include/linux/gfp.h:295 module:filemap func:folio_all=
+oc_noprof
+>    26.8MiB     6856 include/linux/gfp.h:295 module:memory func:folio_allo=
+c_noprof
+>    64.5MiB    98315 fs/xfs/xfs_rmap_item.c:147 module:xfs func:xfs_rui_in=
+it
+>    98.7MiB    25264 include/linux/gfp.h:295 module:readahead func:folio_a=
+lloc_noprof
+>     125MiB     7357 mm/slub.c:2201 module:slub func:alloc_slab_page
+>=20
+> Since v2:
+>  - tglx noticed a circular header dependency between sched.h and percpu.h=
+;
+>    a bunch of header cleanups were merged into 6.8 to ameliorate this [3]=
+.
+>=20
+>  - a number of improvements, moving alloc_hooks() annotations to the
+>    correct place for better tracking (mempool), and bugfixes.
+>=20
+>  - looked at alternate hooking methods.
+>    There were suggestions on alternate methods (compiler attribute,
+>    trampolines), but they wouldn't have made the patchset any cleaner
+>    (we still need to have different function versions for accounting vs. =
+no
+>    accounting to control at which point in a call chain the accounting
+>    happens), and they would have added a dependency on toolchain
+>    support.
+>=20
+> Usage:
+> kconfig options:
+>  - CONFIG_MEM_ALLOC_PROFILING
+>  - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+>  - CONFIG_MEM_ALLOC_PROFILING_DEBUG
+>    adds warnings for allocations that weren't accounted because of a
+>    missing annotation
+>=20
+> sysctl:
+>   /proc/sys/vm/mem_profiling
+>=20
+> Runtime info:
+>   /proc/allocinfo
+>=20
+> Notes:
+>=20
+> [1]: Overhead
+> To measure the overhead we are comparing the following configurations:
+> (1) Baseline with CONFIG_MEMCG_KMEM=3Dn
+> (2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+>     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)
+> (3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+>     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy)
+> (4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+>     CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn && /proc/sys/vm/mem_profili=
+ng=3D1)
+> (5) Baseline with CONFIG_MEMCG_KMEM=3Dy && allocating with __GFP_ACCOUNT
+>=20
 
-Looks good to me, thanks Jann.  I'm going to merge this into
-lsm/stable-6.8 and send this up to Linus soon (likely tomorrow).
+Thanks for the work on this patchset and it is quite useful.
+A clarification question on the data:
 
---
-paul-moore.com
+I assume Config (2), (3) and (4) has CONFIG_MEMCG_KMEM=3Dn, right?
+If so do you have similar data for config (2), (3) and (4) but with
+CONFIG_MEMCG_KMEM=3Dy for comparison with (5)?
+
+Tim
+
+> Performance overhead:
+> To evaluate performance we implemented an in-kernel test executing
+> multiple get_free_page/free_page and kmalloc/kfree calls with allocation
+> sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
+> affinity set to a specific CPU to minimize the noise. Below are results
+> from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
+> 56 core Intel Xeon:
+>=20
+>                         kmalloc                 pgalloc
+> (1 baseline)            6.764s                  16.902s
+> (2 default disabled)    6.793s (+0.43%)         17.007s (+0.62%)
+> (3 default enabled)     7.197s (+6.40%)         23.666s (+40.02%)
+> (4 runtime enabled)     7.405s (+9.48%)         23.901s (+41.41%)
+> (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
+>=20
+
 
