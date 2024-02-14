@@ -1,321 +1,122 @@
-Return-Path: <linux-kernel+bounces-65079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE12285478A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:51:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C5D985478E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117C91F2471C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:51:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E676E1F20632
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178BF18AEE;
-	Wed, 14 Feb 2024 10:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3E4199AB;
+	Wed, 14 Feb 2024 10:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B5lHOIV+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="1COWNVYH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nsQklX3H"
+Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E3018633
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 10:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D3118EA5;
+	Wed, 14 Feb 2024 10:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907864; cv=none; b=qQ5aFxJqjERTUsu1wVqYxBoP8Njr+FDGu58cf9C3VW/jkWw2/yNd6P5+OYq7DMJjHUgu3sfdLAI8i4KONphOL6+rLRecR5ODCGZO79cPWTMzdwSIeAdxR9PWzHSXVRAOsXyBBpnW+WEEymRR7ddhdXilu7cJ5c27sq64nEswv7M=
+	t=1707907896; cv=none; b=J4USBJyHlVbWJ23QtFKRbm2rN/gb9aZ3X23iZkynqNnK3l8g5TyIw8ySQxWQpBpQEdv/jHqk+cg97gMUMPRMoY54yifk8l6CCnKszseVU1XUnrwIjgpu/b7xk3xoRmNVBNdT5Yy0pl5xMPcGlhaVetKTTe0V8E89msXD/HA+EUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907864; c=relaxed/simple;
-	bh=Oi7K5rYcGGsepVAtt/jz07oK+Saja2lj1N8ZZPhTw0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gNNo3PUgiHJhjeAsWot2Xg4N/KYfQOrozvhevuSnEHe3nzrHNYlNCUcFWXs4Q2Giq0tzKwtu6epkTdGIffL6s6yPueGqR3ge53J+sFUGwcNliA9xO5oPZCDuM02RNNkqhN3irgUcxHjyvO8xQPdxouYy5srlVgUP+xsgL2jqU/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B5lHOIV+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B94C433C7;
-	Wed, 14 Feb 2024 10:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707907863;
-	bh=Oi7K5rYcGGsepVAtt/jz07oK+Saja2lj1N8ZZPhTw0o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B5lHOIV+kZ1/r2LPiEOZkFaiP5A1xT4G7ar8km78XA0y+Eza51AlsyXnz2wTyD4x/
-	 kp+F9vFr6TB9vVudnbLDaVUfRYQlA+lL7W9lTaMYpAOWOvKIldZW3gna/9y6FroVbj
-	 HaJ+8d0jLkeFQ+naihupg/z4BGqyFzES+SB4j0zU=
-Date: Wed, 14 Feb 2024 11:50:57 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Vamsi Attunuru <vattunuru@marvell.com>
-Cc: arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] misc: mrvl-dpi: add octeontx3 dpi driver
-Message-ID: <2024021435-stray-cried-9737@gregkh>
-References: <20240214035524.1245615-1-vattunuru@marvell.com>
+	s=arc-20240116; t=1707907896; c=relaxed/simple;
+	bh=IKPjU6JepByQUbY4d+KvU9UgItGzStQnpzqm2BCTHvQ=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ued2m7SFCLnmEcrHAOZCxFzeQobAQAFUC44dTlQVkof+9P4zSm0jSnv4uuK3VwVgWNXY8k0CgODgF4CujOU4N0pHBeA+G1sk+lAKP7iSRm8yl1ZQnqTVYVc/uNLx69oEsxcOQRXtk6j9OchlrsxhoJ2MpVSJKrnDCg4CnQxjmlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=1COWNVYH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nsQklX3H; arc=none smtp.client-ip=64.147.123.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 9F5901C0007B;
+	Wed, 14 Feb 2024 05:51:33 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 05:51:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1707907893; x=1707994293; bh=79/Qzm2vJk
+	0BAzjRMVt7ecM1kUIJeCMDLpwDD4uxJWo=; b=1COWNVYH87gWNKMltpLJTnWw29
+	E25ubIUcUwoHblWcT8XhX6017jq8mggn+2LzFzRLZizNfrUHM5fMdHu8tdqOUtbR
+	Rut6m5DVGdTIAhwrtJtiuEGiWiyL/Sn8YqBDXndFO1YVxtyVzwtduSf3+6Fmo8Pl
+	o5lCb5tnI5yfyyJMTUBjW4EJvcW9hwZeXVMifZy40bJDlrJxz5UGkSedmePUqTDD
+	/E8PDeBP6vWghx6RKjgf2T9ZIDD0lVy8SQIjlVI3Qfol8hDi8E21vfT450NPVdkV
+	q6qwj/uYa4tfVjt15cWHWMSFlXTaCdyjGXAwrYdUwq2sQCI9yHq46EHdHGJQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707907893; x=1707994293; bh=79/Qzm2vJk0BAzjRMVt7ecM1kUIJ
+	eCMDLpwDD4uxJWo=; b=nsQklX3H59Y1ufjMGSGzYWPK6jQicRXM1irJ7KW5dOEn
+	yrQqdBhVESERXan/LkmJC7udmsuLmsLbGKrWRj5lsghVKDce2g+jq6LpYSb83DTu
+	XvrY5b9vyAPAZxbNJZoadCu5OBx0RIyJth9xjpAwXPkzTHhK7IgopNm55Tw+Gd5l
+	JzLxf5kFU5aY1KLLVBAlwzz4myfew2tSsHFCgmi3nBri7c/bYSYlT8SzhmeWfO+w
+	+FqaPnAMbvODLnUyKD9LY3U+uT9xs4Qjc443xRytGv7ZwFLLZrsvTKdiVsFqZYYK
+	0hmutfFuGrnr43rBfyihzXpYE+WEzR5M4Tie+msl2A==
+X-ME-Sender: <xms:NJvMZYfsglnlEUxKurnhugeyEfdV54TEHGsGZkqh_shNIhg2nSGxLw>
+    <xme:NJvMZaMbqiNeRXCSSbQieaooADEKvUtW1QoASI6QwH5mkTFGzqA2_ExsCiZPnUdU2
+    96TSMRWpb2mcIZDezg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddvtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:NZvMZZiO5s_YjRzHQwE-h9yArVo-ZuFoSiP1JR6yGT4YOFzkCsaqqQ>
+    <xmx:NZvMZd-ySjK4kgFCrJNikAQ7HJXyrUmYA1-h4n6hTkBM-BKSn2RC5g>
+    <xmx:NZvMZUtHWgpkqZYz4Un54ZvXVuK4Ca_5VcICfU9iaGS2hJiHELoa6Q>
+    <xmx:NZvMZVlC3VMgFqiA2sblIvjIjZ66Lo2oqeswXAyrJvNbcXvRorc6nj8D8YA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D6FFBB6008D; Wed, 14 Feb 2024 05:51:32 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214035524.1245615-1-vattunuru@marvell.com>
+Message-Id: <d9a7ad2f-c9a7-4886-8bbc-7a77771c0aec@app.fastmail.com>
+In-Reply-To: <87plwze34l.fsf@kernel.org>
+References: <20240213100912.459018-1-arnd@kernel.org>
+ <170790025305.3179441.138152315558305278.kvalo@kernel.org>
+ <08ac32ef-610d-479d-a3fd-a3c3b8c4c697@app.fastmail.com>
+ <87plwze34l.fsf@kernel.org>
+Date: Wed, 14 Feb 2024 11:51:02 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Kalle Valo" <kvalo@kernel.org>
+Cc: "Arnd Bergmann" <arnd@kernel.org>,
+ "Jeff Johnson" <quic_jjohnson@quicinc.com>,
+ "Karthikeyan Periyasamy" <quic_periyasa@quicinc.com>,
+ "Aloka Dixit" <quic_alokad@quicinc.com>, "Wen Gong" <quic_wgong@quicinc.com>,
+ "Muna Sinada" <quic_msinada@quicinc.com>,
+ "Aditya Kumar Singh" <quic_adisi@quicinc.com>, ath12k@lists.infradead.org,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wifi: ath12k: sanitize ath12k_mac_allocate() return code
+Content-Type: text/plain
 
-On Tue, Feb 13, 2024 at 07:55:24PM -0800, Vamsi Attunuru wrote:
-> Adds PCIe PF driver for OcteonTx3 DPI PF device which initializes DPI
+On Wed, Feb 14, 2024, at 11:44, Kalle Valo wrote:
+> "Arnd Bergmann" <arnd@arndb.de> writes:
+>> On Wed, Feb 14, 2024, at 09:44, Kalle Valo wrote:
+>>> Arnd Bergmann <arnd@kernel.org> wrote:
+>
+>> but I see it's not in linux-next yet as of today.
+>
+> Yeah, it's a problem that ath.git is not included linux-next builds. The
+> commits will be in linux-next only after ath-next is pulled to
+> wireless-next :/
 
-What is a "PF"?
+Not sure if that is intentional, but if you'd like to change
+that, you can just email Stephen Rothwell asking him to include
+ath-next into linux-next as well.
 
-WHat is "DPI"?
-
-> DMA hardware's global configuration and enables PF-VF mbox channels
-
-What is "PF-VF"?
-
-> which can be used by it's VF devices. This DPI PF driver handles only
-
-What is "VF"?
-
-> the resource configuration requests from VFs and it does not have any
-> data movement functionality.
-
-What do you mean by "data movement functionality"?
-
-Please provide a bit more dummed down description please, for those of
-us who don't understand any of this.
-
-And if this is a pci driver, why is it in misc?
-
-> 
-> Signed-off-by: Vamsi Attunuru <vattunuru@marvell.com>
-> ---
->  MAINTAINERS                    |   5 +
->  drivers/misc/Kconfig           |  10 +
->  drivers/misc/Makefile          |   1 +
->  drivers/misc/mrvl-dpi/Makefile |   9 +
->  drivers/misc/mrvl-dpi/dpi.c    | 559 +++++++++++++++++++++++++++++++++
->  drivers/misc/mrvl-dpi/dpi.h    | 232 ++++++++++++++
->  6 files changed, 816 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 960512bec428..73029199716d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13104,6 +13104,11 @@ S:	Supported
->  F:	Documentation/devicetree/bindings/mmc/marvell,xenon-sdhci.yaml
->  F:	drivers/mmc/host/sdhci-xenon*
->  
-> +MARVELL OCTEONTX3 DPI DRIVER
-> +M:	Vamsi Attunuru <vattunuru@marvell.com>
-> +S:	Maintained
-> +F:	drivers/misc/mrvl-dpi
-> +
->  MATROX FRAMEBUFFER DRIVER
->  L:	linux-fbdev@vger.kernel.org
->  S:	Orphan
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index 4fb291f0bf7c..3142fdb1b4c0 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -574,6 +574,16 @@ config NSM
->  	  To compile this driver as a module, choose M here.
->  	  The module will be called nsm.
->  
-> +config MARVELL_OCTEONTX3_DPI
-> +	tristate "OcteonTX3 DPI driver"
-> +	depends on ARM64 && PCI
-> +	default m
-
-Don't set a default unless you can not boot the box without it.
-
-> +	help
-> +	  Enables OCTEONTX3 DPI driver which intializes DPI PF device's global configuration
-> +	  and it's VFs resource configuration to enable DMA transfers. DPI PF device
-> +	  does not have any data movement functionality, it only serves VF's resource
-> +	  configuration requests.
-
-module name?
-
-
-> +
->  source "drivers/misc/c2port/Kconfig"
->  source "drivers/misc/eeprom/Kconfig"
->  source "drivers/misc/cb710/Kconfig"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index ea6ea5bbbc9c..86229072166c 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -68,3 +68,4 @@ obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
->  obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
->  obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
->  obj-$(CONFIG_NSM)		+= nsm.o
-> +obj-$(CONFIG_MARVELL_OCTEONTX3_DPI)	+= mrvl-dpi/
-> diff --git a/drivers/misc/mrvl-dpi/Makefile b/drivers/misc/mrvl-dpi/Makefile
-> new file mode 100644
-> index 000000000000..c938ea459483
-> --- /dev/null
-> +++ b/drivers/misc/mrvl-dpi/Makefile
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Makefile for Marvell's OcteonTX3 DPI driver
-> +#
-> +
-> +obj-$(CONFIG_MARVELL_OCTEONTX3_DPI) += octeontx3_dpi.o
-> +
-> +octeontx3_dpi-y := dpi.o
-
-Why the two steps?  Why not just name the file the module name?
-
-And because of that, why do you need a subdirectory?
-
-And if you do have a subdirectory, why not move the Kconfig entry into
-it?  You can't have it both ways here, sorry.
-
-
-> +
-> diff --git a/drivers/misc/mrvl-dpi/dpi.c b/drivers/misc/mrvl-dpi/dpi.c
-> new file mode 100644
-> index 000000000000..fe0b3ee469c8
-> --- /dev/null
-> +++ b/drivers/misc/mrvl-dpi/dpi.c
-> @@ -0,0 +1,559 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Marvell OcteonTx3 DPI driver
-> + *
-> + * Copyright (C) 2024 Marvell International Ltd.
-> + *
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/irq.h>
-> +#include <linux/interrupt.h>
-> +
-> +#include "dpi.h"
-
-Why do you need a .h file for a single .c file?
-
-> +
-> +#define DPI_DRV_NAME	"OcteonTx3-dpi"
-> +#define DPI_DRV_STRING  "Marvell OcteonTx3 DPI Driver"
-> +#define DPI_DRV_VERSION	"1.0"
-
-Driver versions do not make sense once they are in the kernel tree,
-please remove.
-
-> +static int mps = 128;
-> +module_param(mps, int, 0644);
-> +MODULE_PARM_DESC(mps, "Maximum payload size, Supported sizes are 128, 256, 512 and 1024 bytes");
-> +
-> +static int mrrs = 128;
-> +module_param(mrrs, int, 0644);
-> +MODULE_PARM_DESC(mrrs, "Maximum read request size, Supported sizes are 128, 256, 512 and 1024 bytes");
-> +
-> +static unsigned long eng_fifo_buf = 0x101008080808;
-> +module_param(eng_fifo_buf, ulong, 0644);
-> +MODULE_PARM_DESC(eng_fifo_buf, "Per engine buffer size. Each byte corresponds to engine number");
-
-This is not the 1990's, no module parameters should be needed, and they
-don't work at all when you have multiple devices.  Please make this
-"just work" and if you have to tune it, make them proper dynamic options
-at runtime.
-
-> +	while (cnt) {
-> +		reg = dpi_reg_read(dpi, DPI_DMAX_QRST(queue));
-> +		--cnt;
-> +		if (!(reg & 0x1))
-> +			break;
-> +	}
-
-That's a long busy-wait loop, one that will take a variable amount of
-time given different processor speeds.  Shouldn't you be using a real
-timeout instead?
-
-> +
-> +	if (reg & 0x1)
-> +		dev_err(&dpi->pdev->dev, "Queue reset failed\n");
-
-What can userspace do with this message?  And why not return an error if
-an error happened?  Why are you ignoring it here?
-
-> +
-> +	dpi_reg_write(dpi, DPI_DMAX_IDS2(queue), 0ULL);
-> +	dpi_reg_write(dpi, DPI_DMAX_IDS(queue), 0ULL);
-> +
-> +	reg = DPI_DMA_IBUFF_CSIZE_CSIZE(csize) | DPI_DMA_IBUFF_CSIZE_NPA_FREE;
-> +	dpi_reg_write(dpi, DPI_DMAX_IBUFF_CSIZE(queue), reg);
-> +
-> +	reg = dpi_reg_read(dpi, DPI_DMAX_IDS2(queue));
-> +	reg |= DPI_DMA_IDS2_INST_AURA(aura);
-> +	dpi_reg_write(dpi, DPI_DMAX_IDS2(queue), reg);
-> +
-> +	reg = dpi_reg_read(dpi, DPI_DMAX_IDS(queue));
-> +	reg |= DPI_DMA_IDS_DMA_NPA_PF_FUNC(npa_pf_func);
-> +	reg |= DPI_DMA_IDS_DMA_SSO_PF_FUNC(sso_pf_func);
-> +	reg |= DPI_DMA_IDS_DMA_STRM(vf + 1);
-> +	reg |= DPI_DMA_IDS_INST_STRM(vf + 1);
-> +	dpi_reg_write(dpi, DPI_DMAX_IDS(queue), reg);
-> +
-> +	spin_unlock(&dpi->vf_lock);
-> +
-> +	return 0;
-
-Shouldn't you have returned an error if one happened?
-
-> +static int queue_config(struct dpipf *dpi, struct dpipf_vf *dpivf, union dpi_mbox_message_t *msg)
-> +{
-> +	switch (msg->s.cmd) {
-> +	case DPI_QUEUE_OPEN:
-> +		dpivf->vf_config.aura = msg->s.aura;
-> +		dpivf->vf_config.csize = msg->s.csize / 8;
-> +		dpivf->vf_config.sso_pf_func = msg->s.sso_pf_func;
-> +		dpivf->vf_config.npa_pf_func = msg->s.npa_pf_func;
-> +		dpi_queue_init(dpi, dpivf, msg->s.vfid);
-> +		if (msg->s.wqecs)
-> +			dpi_wqe_cs_offset(dpi, msg->s.wqecsoff);
-> +		dpivf->setup_done = true;
-> +		break;
-> +	case DPI_QUEUE_OPEN_V2:
-> +		dpivf->vf_config.aura = msg->s.aura;
-> +		dpivf->vf_config.csize = msg->s.csize;
-> +		dpivf->vf_config.sso_pf_func = msg->s.sso_pf_func;
-> +		dpivf->vf_config.npa_pf_func = msg->s.npa_pf_func;
-> +		dpi_queue_init(dpi, dpivf, msg->s.vfid);
-> +		if (msg->s.wqecs)
-> +			dpi_wqe_cs_offset(dpi, msg->s.wqecsoff);
-> +		dpivf->setup_done = true;
-> +		break;
-> +	case DPI_QUEUE_CLOSE:
-> +		dpivf->vf_config.aura = 0;
-> +		dpivf->vf_config.csize = 0;
-> +		dpivf->vf_config.sso_pf_func = 0;
-> +		dpivf->vf_config.npa_pf_func = 0;
-> +		dpi_queue_fini(dpi, dpivf, msg->s.vfid);
-> +		dpivf->setup_done = false;
-> +		break;
-> +	default:
-> +		return -1;
-
-That is not a valid error number :(
-
-
-> +static int __init dpi_init_module(void)
-> +{
-> +	pr_info("%s: %s\n", DPI_DRV_NAME, DPI_DRV_STRING);
-
-When drivers work properly, they are quiet.  No need for this.
-
-
-> +
-> +	return pci_register_driver(&dpi_driver);
-> +}
-> +
-> +static void __exit dpi_cleanup_module(void)
-> +{
-> +	pci_unregister_driver(&dpi_driver);
-> +}
-> +
-> +module_init(dpi_init_module);
-> +module_exit(dpi_cleanup_module);
-
-module_pci_driver() instead?  That will automatically get rid of the
-pr_info() spam above :)
-
-thanks,
-
-greg k-h
+      Arnd 
 
