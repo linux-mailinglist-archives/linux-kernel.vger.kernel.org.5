@@ -1,81 +1,115 @@
-Return-Path: <linux-kernel+bounces-66024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2BA4855584
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:05:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C9285558F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EAA828E18F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:05:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 841FE1C21825
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FF91419A1;
-	Wed, 14 Feb 2024 22:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4A4141988;
+	Wed, 14 Feb 2024 22:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dSKwAtTO"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="bgN0ehq7"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13D614198B;
-	Wed, 14 Feb 2024 22:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C14313F009
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707948317; cv=none; b=m5c+b39zk+xQPfD3ws3Cb88fhgwKiCDQV8hTqCeJ28jZmO1VUcCIJ9t9r3+lFAOlCHwSho1z/gxnIaeVtICOFM/dFJM+HcNhbxqbrf+Zolzj7ZJvjSKCNX5BSnU9806ElRuf/znBdqVkjrHAWJlysgwmbMUTqIVpnoiAru42uCU=
+	t=1707948544; cv=none; b=M/lH9PSgonBqtPH5cD6wEN0XMerbqTd7nfqP8clJnOhjFn2QxBjvDD2xgzt3eAHcd98sfCnEZpwE3ZJABhzDyI1zFMFS46Q/1UBlX5jCpQlakjDUsyyEUT3/b74Cx8J3aw72efiUzyOSFPbPRQD7gjThWkBqJU5hGyklxY4HvJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707948317; c=relaxed/simple;
-	bh=ZIl3wONdo0qB2PDX1x0SKAlCCbObW5oOqEZc1e26ByA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZzSDZqRifHahQQoFON1X/LQh6Py+Ij8+1ynYRWL7XYNy87xkbkQ7KatSZjxwGMdpr/g6Pp8oTMhtKcsQVQA7rA749StvFVq18vj9pQia8tGzZA4bRTLTp5JfDwsisGbHJwFXnK4VN4S94zJSq7ABc8R0ImjqLqzmAnIMGXCeTis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dSKwAtTO; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=qAKUDeW0LEVwbb4w3hOa+dlzg/8g1ktkJMoQSH9sovg=; b=dSKwAtTOV8p3D4tf9hr/kB/Hbm
-	jhAg5W6UaCWEZHOOJcYwrRKHTYKMvJONuGNW+xG13My2ITjdnLc7eSg/sIVUYaH9R3QIWjXsIIbFl
-	sXyWXfoGUIFwHHTMIgGcEY6GX1wWYeHZhOQyDG9Cgv+JECrFssEY0kq/atS39lbNb3F9Zp4Md3350
-	rYlZC6xiN6YIMLjXK7BWoJNAQPJZJHwFrezKMdQ/W7IDH4q4CCmXb9ohgPypU041KMPF9zP5dIfjF
-	a9HJa1T1Cp5ZbTwfzTRT6X0MZibTKhWFmMLqwp4lO6lE6fH/54EFNlW6H3B8RzEvsdf3y4HSEjL1A
-	18yqPfog==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raNNP-000000007cK-01wF;
-	Wed, 14 Feb 2024 22:05:11 +0000
-Date: Wed, 14 Feb 2024 22:05:10 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Chandan Babu R <chandan.babu@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v5 0/3] Remove the XFS mrlock
-Message-ID: <Zc05FiqYKgtNHUL7@casper.infradead.org>
-References: <20240111212424.3572189-1-willy@infradead.org>
+	s=arc-20240116; t=1707948544; c=relaxed/simple;
+	bh=/ZEw3nT9BRApIhNWO23YhMJtkmTMIFXh3nph9Rnl9wo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E+urGxfGbogoJip71PbWSQrzNhWYPS5V5ym9aMTeanfKdzPTJIehLKJsKOA6dumELfzDMuSdT8weqDEaMm3nANCU36YN7NuoPNPObEFsJtv8C0pt7KlsSWwLvmwO/gz9Jeghr17thasfOjz9XFCr6n9kqp9hDwdxz3/wTmo/V6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=bgN0ehq7; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-337d05b8942so101042f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:09:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1707948540; x=1708553340; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rvOh55NDnukoUmm76Hh+HuEqWYW2cORpSho5SBfrrxU=;
+        b=bgN0ehq7JoTSv1yYLzYkPMAKBGaTAvqFYZY5+E9+vnAwdowf4lzPjb7PDVIAlhJusU
+         ixHWkeXjZVEpH/a3of/+AVWDPjY5rUGz5R5WkFvVI5OrME+fPGaot65sxWp/RgNwNGZr
+         2JoipNw0doaPUqOxVzjBXbL9vS6i0m54Hp/W7ja/A+jFIiAyK/tfFt6uLL7ji1hmoljJ
+         OvYYlXiGDRCuusmVqCGrp3HK+ax0RWJ1tLKJziZR5sRXjlqCklqR/U6vO/9+3CefV/ZO
+         ID5RTqeHDOWUtBBbmz3EI3ftB+B94E8UT8Gy5EBdwJY5iAPRaBgQvkhkztPtMtNuLL6c
+         pnaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707948540; x=1708553340;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rvOh55NDnukoUmm76Hh+HuEqWYW2cORpSho5SBfrrxU=;
+        b=NCAOk6NUvraCVgkte5scAouFydEknJBlumFjRqYg4ZdWlwpqjrNXYaTweZAeIzotiY
+         YS+uORLvi738Ut/Ospyx/i/mq33H5DFmECNB0hcTf97+wNXoSB9gNDKy4CKOSBsDNfAG
+         NWGGx1Vxg0AuBInuIRRiYV/OcpvLBQI43eBSFsu9ma538D0bX4V3XHR5rIOLqfSln6sG
+         oP08k7rndzGqBHxjaTaRpnQKNfclbCItT9urXy+qLbrpxLX68o1WaeNrSDXyyjg/HkEm
+         hGnGnnJriBUzft8DvVAHtP13v7K25UJZyYq3Oi9nOpqLWMWrrkYDeX4ANdKze1dsc6ry
+         4wcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXB5xDEgUp9ufyxwZEewDfTADJCYGypj7pey8dF3TT5SA3EC2TYL0AWOZ+AOL+R5hfVDI0tnHhIiaC7NPwNLwQyhiQacslJxWe9NqzW
+X-Gm-Message-State: AOJu0Yx8L/WzjlB6TbSI5YwiPOfpmb1wm/wSRpUt4jJFynhydiWdQzAk
+	NjfDRODWQrbwIy2BUawc29UE0LtXRyT9zRGYR+UQ/8CYiMuEeaNTutUYSBuveQf4qyoH0G+NMYZ
+	T+jrDRQ==
+X-Google-Smtp-Source: AGHT+IFBCkJjgKAte43OlvsT2p+edcXWf4TZt62EkxtkPmvLum/pNRCYcatU+QYBB+Bht0KOnjEiwg==
+X-Received: by 2002:a5d:50d1:0:b0:33b:433d:e1d7 with SMTP id f17-20020a5d50d1000000b0033b433de1d7mr2763880wrt.1.1707948540572;
+        Wed, 14 Feb 2024 14:09:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVC7/90BQ67mnQ5Q3GKq/x5TXhESOtq3i18WD7DLjPm9sgke4J2YcHHiXquH904v5OmDR/AGUOq2L/D7RxyTlAraU+WMJNt/ut66x8xRv5LnRg5uG8T+8t+6qYNH1MVXnGnc+Xx5FW0akLa7kd1ks1x0c6FRca/jOdtybWQ9ytFSPfB+Bbivvf2LpRhOUffBM/Eh5s23duXO6cvi0PWTgU=
+Received: from debian.fritz.box (aftr-82-135-80-242.dynamic.mnet-online.de. [82.135.80.242])
+        by smtp.gmail.com with ESMTPSA id e30-20020adf9bde000000b0033cf5769ab2sm1002122wrc.101.2024.02.14.14.08.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 14:09:00 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] synthetic tracing: Fix trace_string() return value
+Date: Wed, 14 Feb 2024 23:05:56 +0100
+Message-Id: <20240214220555.711598-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240111212424.3572189-1-willy@infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 11, 2024 at 09:24:21PM +0000, Matthew Wilcox (Oracle) wrote:
-> XFS has an mrlock wrapper around the rwsem which adds only the
-> functionality of knowing whether the rwsem is currently held in read
-> or write mode.  Both regular rwsems and rt-rwsems know this, they just
-> don't expose it as an API.  By adding that, we can remove the XFS mrlock
-> as well as improving the debug assertions for the mmap_lock when lockdep
-> is disabled.
-> 
-> I have an ack on the first patch from Peter, so I would like to see this
-> merged through the XFS tree since most of what it touches is XFS.
+Fix trace_string() by assigning the string length to the return variable
+which got lost in commit ddeea494a16f ("tracing/synthetic: Use union
+instead of casts") and caused trace_string() to always return 0.
 
-What needs to happen to get these picked up to not miss the next merge
-window?
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ kernel/trace/trace_events_synth.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index e7af286af4f1..c82b401a294d 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -441,8 +441,9 @@ static unsigned int trace_string(struct synth_trace_event *entry,
+ 	if (is_dynamic) {
+ 		union trace_synth_field *data = &entry->fields[*n_u64];
+ 
++		len = fetch_store_strlen((unsigned long)str_val);
+ 		data->as_dynamic.offset = struct_size(entry, fields, event->n_u64) + data_size;
+-		data->as_dynamic.len = fetch_store_strlen((unsigned long)str_val);
++		data->as_dynamic.len = len;
+ 
+ 		ret = fetch_store_string((unsigned long)str_val, &entry->fields[*n_u64], entry);
+ 
+-- 
+2.39.2
+
 
