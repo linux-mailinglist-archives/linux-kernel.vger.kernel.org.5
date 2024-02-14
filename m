@@ -1,174 +1,117 @@
-Return-Path: <linux-kernel+bounces-65960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BE9B85546B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:56:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A81855467
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5FC628F63D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:56:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2461F1F22592
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0456A13DBA5;
-	Wed, 14 Feb 2024 20:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E975F13DBBC;
+	Wed, 14 Feb 2024 20:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Pz+Du/nR"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2046.outbound.protection.outlook.com [40.107.101.46])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Pk1ICBHh"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3833854649
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707944205; cv=fail; b=BZRKOFZ2BqTimon82duHaTQtirYeJV5quVTmS+5ZJynSxmdQSwHX7A9Ild0Et/AxFqCgQ5VkRJ75cNq+y7EdaW9HFlJuXPCEd5jNfrLAIllQV8V3tEqM50VquTPnqBIlOu0bbIrDFP7pmtGRqGCJSiYYHEPqI/ZmLZIpo7zxPY4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707944205; c=relaxed/simple;
-	bh=/ke4L8DjWC4qd6wtM0l4YL9Qz0JO3OclS9gMSy8DriQ=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=kUO4Ryega6VRDvHmznR3Spv07aUx0J4buLUgZSnI/TeZAiED7IHdystdKhqoY4ym/2X7rZ6sYtD8CY9EjT/WEcv6Y+QC5HSCrHdWNtwXcf+umvaaVFsTXAG+bKitb5tB2iHyejMh1l5USkr/6KyI9qsICiF0WVr/5n39fE76LD4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Pz+Du/nR; arc=fail smtp.client-ip=40.107.101.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k6CsN4lWBkkUSCOoUJ7l0h+QUKBenFrV2B3G1Ps7EJ41ZUcFb3adf12bG2Os6PdtD56TycS0gpPEeNH5iK62XCDQoocPSgBw8ZrjBKak6MscPHG3oCC8VPzPMYQRCwVcGTTHJ9zIKHwR8nAxqLre7V4sR9E/McRyVD6KaI9vEVHZdZ6KqHzKBHSwFYs288j+LMRXMww0q72u41fkN69Zc5rZH2/Zp6zw+kFAJ43gZzZNYXpHHAz5Mr/QEB7ne+T5qkjcbq/+NONKQi0hKR7R9X6dQh49MpS9Tl2kZXccFYOIkB86aSMIjKhgTXQ1jWkKhQplOH5H1xKirkoEryN5ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1maQEiuNSLlkxHXSAx3IxLnHu1GLwhzZrm8AjMqDSBU=;
- b=TPuvA3vW8U78aPFgWaBiGiSn0bBJLghMeDt2wP2qHxbpk2DK/6qxC3fmrDMBu0rx6PyEHRz+5X5PPWXo77ZHG/4QEJR+VjA57Lg6JMJuynR6yLuhgbEUl+w3K4jgzwsIkotebTSBR55QXkbJK+9tiKinpWLN8JLnRBQmCMPTpSaLdcX8LdNTJXzygWqxw8A1cPi9pnvTy1buAtQFOSuHFCbvUqaW8QV9zoowsKHRfuOa0miVUZnTie3GM9UIcV5WZlBXwwIq5SPqcG+kbNnFXZW5N6UTFVsqA2jx+jU4Y1mbrsjgOYU4Ok5jQFykmaX4ysksrI+rJSuDT9WsmLm6jA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1maQEiuNSLlkxHXSAx3IxLnHu1GLwhzZrm8AjMqDSBU=;
- b=Pz+Du/nRttgHHCM9o536srXh7QNBSDfjQckWfPmr9mX8+NeC8F5PW+Dt2cZoN0/Hyn+lRZcI/3LbA7QXZQFrGCtLiwC4cPiB9CWY/C/uJZtYrYDpU2b3KFA9oGxpOiqBOd8csi2MMiz9ZXVgOatAwLtc212PytSPVZqvdJy5tg+qIVCB4kkntNYswft79eJ3cqlCVOyqu4BIiBRexV69DYy0Igh7d8VEfRJ4Z2WSYzKQC7A826i4qYGe8AMo/PvQs4z6Td+SPoEqKlKLTBPkKgNsSaIbefbGKANfpyPcoWMnRbD+/w5eX06QZiTy07asml7RwmyFjexVIYjVAYFh4g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by BL3PR12MB6522.namprd12.prod.outlook.com (2603:10b6:208:3be::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Wed, 14 Feb
- 2024 20:56:40 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::d726:fa79:bfce:f670%7]) with mapi id 15.20.7292.022; Wed, 14 Feb 2024
- 20:56:39 +0000
-References: <20231215124449.317597-1-mpe@ellerman.id.au>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Gal
- Pressman <gal@nvidia.com>
-Subject: Re: [PATCH] powerpc/64s: Increase default stack size to 32KB
-Date: Wed, 14 Feb 2024 12:47:39 -0800
-In-reply-to: <20231215124449.317597-1-mpe@ellerman.id.au>
-Message-ID: <87ttmau5mg.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0016.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::21) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CDE13DBBF
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707944124; cv=none; b=hCP2lKZUL5sj7F7GRn91rw4oXO07/ZKDwEhrCKuC/ZIOfN51cXwb8sYJRtfAn+zsToLKM9WJgLExAaKArK1jrcNalboNn9iXK0jg6EXyXYBwe+1SGZvNclUllX7gLuJMi9G7WBFYWxMsfmZuRKXJAPhK/vF1IfD3oiGmNrSWEhU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707944124; c=relaxed/simple;
+	bh=3iFXhBXrEO5fMGfS3YlOFuiqKJb2jToIVEM1adjf3KE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fXyWIUv3oxnSFCrUApeDIoKiGw9zlJiVCGd2VZF0mNRmr9uUTJNAl8ADE7WeGB5s6c+k3eJyyu7UzLxtjzjkLEdyC9BT3zCiZJrzWzJf3Ror41Awr4iK/oRXAhhtT2fdVFl6TMXGEHgY1yUpc2+H/KiNGE5tSScafaWz3TkaYXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Pk1ICBHh; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 14 Feb 2024 12:55:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707944119;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xo8269aewKOfShv/31KAAKnpB/F7S+Kl3+Lk1/FPD3g=;
+	b=Pk1ICBHhIE2T5qz5LlX4RF1DHCijddx53Q7QHWurpgjANNIC33z13Uq6ipi2CzOcOeqdhg
+	w/lP6rjgfoYdEZWWP+xT9pzh+YW4UGPBq4xUkainwHB4dsNoMuCAhDvTmTjjN/6DiCOZ6p
+	/k8iGjl1Iy8+O/twNjnbNz7WKb+nXKs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Marc Zyngier <maz@kernel.org>
+Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
+ interacting with an ITS
+Message-ID: <Zc0orzU-CeKEyx3j@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+ <20240213094114.3961683-1-oliver.upton@linux.dev>
+ <86zfw33qae.wl-maz@kernel.org>
+ <Zc0NsFm40nIqTmRf@linux.dev>
+ <86v86q4xkf.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|BL3PR12MB6522:EE_
-X-MS-Office365-Filtering-Correlation-Id: c37e8175-53c2-414a-cdd9-08dc2d9f70e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fmVi7XDqFXWH/1G5SVFd1N+HMgTj3g7O6mLJ4Ag/1Hgg0aGApg0UPYvNARkxxqkKOYXzjl3AEwmN281+szJtnrWFbFD2IgvvEKfuGWysEmvFnGJBlDVb4m+EpZY6Oyttv10h/I+jAhuAfFW2deJWG3aRfHRj5XDnTeFrKhhyM938C6Kof/TM55K90kA1GuA10vjFigQe2KiIwhCgTXxTsfhDrb+7RAEyJH6qYHTHqZuEQ2si5CMWOVA87NMf/VEv8lQn7/hWMUiq9Jz0Q2bXOXkdkVqH3c6dh6vWSiuULuHBJK1QAZ1KxNDWEjmgLldD7kyK4K8rGtm2d3rsKD79vmRLFe98JpnD8GYOmpPxAPwfgyh8V4UEjOIiXE85OyEoNbMJpuAb8KndLKDbtPawuBWhgFjFoigJvuGBlyJQFfubI3VSoWi/2/txlxVq30qHW0GSHxAlCzwU9kb4npLJDU6N3Es5D/oh3aMUg6+Dl85M6hwfuqU+3S7g0Pz2982Yj2VZvNntSldQnuOIELbzA1xoT+RIU9VrAFIVssS9TKFm8GLufSYqywRaaZLz8XcD
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(136003)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(2906002)(66946007)(5660300002)(38100700002)(6506007)(86362001)(107886003)(6512007)(83380400001)(316002)(6916009)(26005)(36756003)(66476007)(4326008)(66556008)(6486002)(8676002)(8936002)(2616005)(478600001)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1T4mhS79BNoBLAzAoKtgfguAxcI0Om9tm2HAI9WZk5mwirlQC1SrX2AT3zcM?=
- =?us-ascii?Q?ym/aK9Lrb1OlUgeBUTNkdupc8QIu6V1eaaid+wCZYPgCgXsr6kYEvq8hFvEG?=
- =?us-ascii?Q?4P7+8hUcXqi4PTM70Wdft1gPrMgHezEC0KTk+dxfYitYbQxMZo8tjUHBmrrJ?=
- =?us-ascii?Q?1xgHSTSPS/MngnsxgRqp3nJCyoQ8iDSVzSXGWXMrDCxDHMvMfC9hIGAs29NS?=
- =?us-ascii?Q?ws0YU6DgbFiKNJ5EheWFoss7c6fhnS2QNKPlrwkTrUjPffPL2fRX/dZUUfOj?=
- =?us-ascii?Q?88S4Npp9drjaMSecOcAFZb5mc51eYEBd7WRrkMyBErU33Y/3Jye8CtLnlfMV?=
- =?us-ascii?Q?xnqo/lhn0f7oaIZsZlci2WvMOOYIBZdm5kyspFKHEoC+aiB9Xr1Uu3fr2c3K?=
- =?us-ascii?Q?A1nHFDStkxrn0jkeqdVx1eFqyRyym3GVA+2R6Hn0Q5Xl3+GztPPhBYfPIB49?=
- =?us-ascii?Q?UkOZjqEVfPvR/qSxt7hAU7jEEzYnleNqVOh+61n9WCvFK7qwEDHiVai2d/Li?=
- =?us-ascii?Q?+JpDa86WXdTd43QCzLkyS13al47OVfFS4hWWPt+KixIPaUC3EaV0V0cumTiE?=
- =?us-ascii?Q?WdeAo6qOHplDly3bT6xskoNnQGwjZojLlGMZiAgkpBPAEUp27ZEstQc32l1Q?=
- =?us-ascii?Q?QT+wSF73vWajU5jVHYZ+9KEkgkY7vkvVUhvVz6kB2pP0jFQX38zJF3ZS3f30?=
- =?us-ascii?Q?ojHmzP+gjNpD7C0TCI5fCwqo6YZQ6vkQSRqqGzJYbeEYFivuZrVCpKQugJ7r?=
- =?us-ascii?Q?gDfKMdBrYRAw8YyDUgmCCnpwJf+IfGeEMJJBq0XRIEr/Mi6Z6waRXUr8NDHV?=
- =?us-ascii?Q?g40fcTQIXsY4QVBmZAPTl1xZ+TEKOaMGFHiAJsy7jq8KHRu4GuFzLAeZysr+?=
- =?us-ascii?Q?os3bgZj5Y8qFhPMQ+5of75g5uVmFTn1WOFncKhvdNQEYzzGriKLZDVwXsGpK?=
- =?us-ascii?Q?pOIrVuuojX8APcvFMY1+tGETzs6eKDvWi8hicqHKRvd1z+uS4W5B+Vs9xNs7?=
- =?us-ascii?Q?ocoLia+ufAOb0Nq1FLBGS2B9qwO6PcYNg+cQYR4GNPgMk8mKecbIkx30ALyN?=
- =?us-ascii?Q?oE2iH9e7s1vfdfLy6DGC+rFFakzm2VxSnudH9HfAFSiSALU7LahY09V5fwkM?=
- =?us-ascii?Q?TY+6JbotIjWDlJ4Pt/prUQdG3X5s7JDeCuRCifITslZoa+b+oFaK+0hXxZlo?=
- =?us-ascii?Q?JIhHCmyRZD+4d1ChddwnandqR7newtfexo9/ukwFCGyIGKejHpkfScouiCOf?=
- =?us-ascii?Q?OKZ/lTNHWsjPG2QieL18H0KZuLeTnHCitvGLdw91xYBO3hMZkg03MvSGkU2Q?=
- =?us-ascii?Q?UPHrSl9Mv6/pG2OlH7SFzZMI5qQbnPrpj4lJovfLbdzzGtc0iPzXd1z+pFxp?=
- =?us-ascii?Q?TScMCa8hX1otK4zGROhhii3fZrVtZSsX/yNFD6f9IDUCB9tpmV9YlDfecXHb?=
- =?us-ascii?Q?t1iGCYzBFgGPi6FH59X3ibpw09LTjHRSzYbKRzOIwGmKowpnSwjidJkTKgRe?=
- =?us-ascii?Q?ukkVaihe/JQ2g+sAIsN51i8GPSpec3t4zDuTi4p6c00SDoj83N5DeVO0ByXa?=
- =?us-ascii?Q?I3Hv3cTKBUGuMgWY+zo6j0+Sp2gGmIdNX3/uvowhoapcDNi8CttWP2mtjgjZ?=
- =?us-ascii?Q?jw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c37e8175-53c2-414a-cdd9-08dc2d9f70e3
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 20:56:39.7852
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: squ7KroZS/trb7EWjx9ydVrweylK8RmPtATiBi90j9apBCYBW0MWQSjdYXK377DjKEh79ysiRVmW3KAOfo2pmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6522
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86v86q4xkf.wl-maz@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 15 Dec, 2023 23:44:49 +1100 Michael Ellerman <mpe@ellerman.id.au> wrote:
-> There are reports of kernels crashing due to stack overflow while
-> running OpenShift (Kubernetes). The primary contributor to the stack
-> usage seems to be openvswitch, which is used by OVN-Kubernetes (based on
-> OVN (Open Virtual Network)), but NFS also contributes in some stack
-> traces.
->
-> There may be some opportunities to reduce stack usage in the openvswitch
-> code, but doing so potentially require tradeoffs vs performance, and
-> also requires testing across architectures.
->
-> Looking at stack usage across the kernel (using -fstack-usage), shows
-> that ppc64le stack frames are on average 50-100% larger than the
-> equivalent function built for x86-64. Which is not surprising given the
-> minimum stack frame size is 32 bytes on ppc64le vs 16 bytes on x86-64.
->
-> So increase the default stack size to 32KB for the modern 64-bit Book3S
-> platforms, ie. pseries (virtualised) and powernv (bare metal). That
-> leaves the older systems like G5s, and the AmigaOne (pasemi) with a 16KB
-> stack which should be sufficient on those machines.
->
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> ---
+On Wed, Feb 14, 2024 at 08:09:52PM +0000, Marc Zyngier wrote:
+> > If the order of restore from userspace is CBASER, CWRITER, CREADR then
+> > we **wind up replaying the entire command queue**. While insane, I'm
+> > pretty sure it is legal for the guest to write garbage after the read
+> > pointer has moved past a particular command index.
+> > 
+> > Fsck!!!
+> 
+> This is documented Documentation/virt/kvm/devices/arm-vgic-its.rst to
+> some extent, and it is allowed for the guest to crap itself on behalf
+> of userspace if the ordering isn't respected.
 
-We noticed this change is causing assembler issues for us when building
-the kernel.
+Ah, fair, I missed the documentation here. If we require userspace to
+write CTLR last then we _should_ be fine, but damn is this a tricky set
+of expectations.
 
-  make ARCH=powerpc KERNELRELEASE=6.8.0-rc2_for_upstream_debug_2024_02_06_20_01 KBUILD_BUILD_VERSION=1
-  arch/powerpc/kernel/switch.S: Assembler messages:
-  arch/powerpc/kernel/switch.S:249: Error: operand out of range (0x000000000000fe50 is not between 0xffffffffffff8000 and 0x0000000000007fff)
-  make[6]: *** [scripts/Makefile.build:361: arch/powerpc/kernel/switch.o] Error 1
-  make[5]: *** [scripts/Makefile.build:481: arch/powerpc/kernel] Error 2
-  make[5]: *** Waiting for unfinished jobs....
-  make[4]: *** [scripts/Makefile.build:481: arch/powerpc] Error 2
-  make[4]: *** Waiting for unfinished jobs....
-  make[3]: *** [Makefile:1921: .] Error 2
+> > So, how about we do this:
+> > 
+> >  - Provide a uaccess hook for CWRITER that changes the write-pointer
+> >    without processing any commands
+> > 
+> >  - Assert an invariant that at any time CWRITER or CREADR are read from
+> >    userspace that CREADR == CWRITER. Fail the ioctl and scream if that
+> >    isn't the case, so that way we never need to worry about processing
+> >    'in-flight' commands at the destination.
+> 
+> Are we guaranteed that we cannot ever see CWRITER != CREADR at VM
+> dumping time? I'm not convinced that we cannot preempt the vcpu thread
+> at the right spot, specially given that you can have an arbitrary
+> large batch of commands to execute.
+> 
+> Just add a page-fault to the mix, and a signal pending. Pronto, you
+> see a guest exit and you should be able to start dumping things
+> without the ITS having processed much. I haven't tried, but that
+> doesn't seem totally unlikely.
 
-The issue lies with the do_switch_64 macro.
+Well, we would need to run all userspace reads and writes through the
+cmd_lock in this case, which is what we already do for the CREADR
+uaccess hook. To me the 'racy' queue accessors only make sense for guest
+accesses, since the driver is expecting to poll for completion in that
+case.
 
---
+Otherwise we decide the existing rules for restoring the ITS are fine
+and I get to keep my funky driver :)
+
+-- 
 Thanks,
-
-Rahul Rameshbabu
+Oliver
 
