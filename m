@@ -1,101 +1,168 @@
-Return-Path: <linux-kernel+bounces-66079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C22D855653
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:48:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A38E85565A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5930A288254
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:48:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDE7B1F2C38D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE7127453;
-	Wed, 14 Feb 2024 22:48:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F23857872;
+	Wed, 14 Feb 2024 22:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T3hMHwIq"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ovj9ljpj"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1151A1DDC1
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD905182DF;
+	Wed, 14 Feb 2024 22:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707950884; cv=none; b=YbJRUKTFOStkCOiQ1KiUoaZ0aeKIuZCQ5mV2zT6VcdVuAv9SwSXZOBNxsVsidrxBeLpxroOPnZSHPXfc7VXQQYU55tu4WZaLi3PpSBsmqnnxiA8YEBgYIxqMS4AqZdAozXM46sQhEPh2N72pewFSR2y9pGNHrGRhhGZBlfIw2KI=
+	t=1707951126; cv=none; b=cq6y+PWJmRs8pMBPn4O4mNgclVKOQAmbXBS6+SlyKEd1LJho8LthLOgqJ09uP/9ZxGwLU2g3kKk1QnEe/6VXbAd2G1YaolLeaSIcLLMuevIuCATn0rGN/+T+oQzvXYXTA1WxtjUc8Ats1ZFaykSsgCMOUA84GU/9+vdTOalEQuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707950884; c=relaxed/simple;
-	bh=HSfmelwd1XU3MyUvUaiGTtXyx60hIyu8jW65rYsWTo8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tYV6cJuNwt4MzJUb4FLpx6t2iU2n84c7k+R/BjYOnamZpEvmXMkEFkEv6vixTDxnAfvv3FSGQZ09Fbjh4c34hqm9Ilk39hr6E2A5DFgZ4zvJJFwlCTnR1TDickZQZa5SLk5DWw8cZ0Jp+WO2xzb2AsNnF2Yste6nRUJhN0UPxOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T3hMHwIq; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-411d715c401so1920095e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:48:02 -0800 (PST)
+	s=arc-20240116; t=1707951126; c=relaxed/simple;
+	bh=u09PV9YbBb9hMy1rCPxXxP9YHVWOw9esnqZGdmRe0G0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hIGwmB1+TDQie3xur2AKVHnZ08Hsr6W26+W9/KY2apJMk5WXN+1wzoN9uY0mL0YAUx6pA59acLqkugvsTq3gRPEQIfpJLkboA8Sfz3sOSrY6yIqR0GUeGhHTI5WlvLmqXc+cTw22x1eZmfth6N9ac4P7zhUilQY2hXFEuMbWP7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ovj9ljpj; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33934567777so99557f8f.1;
+        Wed, 14 Feb 2024 14:52:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707950881; x=1708555681; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HSfmelwd1XU3MyUvUaiGTtXyx60hIyu8jW65rYsWTo8=;
-        b=T3hMHwIqQJ9HcCbK9Rxx0fvi7LbCH/+6wv8NfIz3i18s8IBhukfbYKKockJ0X2v09R
-         EBRnyetMHxIAU/oNLfVdXa3fcfguFQyDoPC+P+dUtvxB4a/wpmB5JArOs7ozR7VuHsh+
-         APQD3TPUbgNCAYUCLGD5FcwRzT4dJcpYhyKcLXnUmVVOZgUpThwWRxb3rQb1dJSYSYqo
-         cAGlz4y49HdjneUxVbbUsEnfW1KJTjnqJhiGsRhuzVnAV68gHw6efBRX4bkVMfLPMUUP
-         yLgIEqMSRN72dVucK8cuAqD1/hQGAe0EZKNcJX29V7TCNUeRVGEGHcCIGqr5I7CfyV5a
-         UzJQ==
+        d=gmail.com; s=20230601; t=1707951123; x=1708555923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BQ51eSPqqPDCFvp0TDSFvQ80BT6J5ZmQ2kvwhoUpX+E=;
+        b=Ovj9ljpjlH/XyH63Wtu1PqDK21IGBY2ejK62EM0KizPQaW3lVz9CnMla/HuGA5Nd5Y
+         CEGg+OqXpAdQR4W6XSzmDW0MDIMXY40D6V0ZLoF8uv2yPSRAQIhMz/GEOQwzovNl4kV3
+         AjMILDpQ9MT84TEbuwDlaLr3vktXxi5YArn1xQNptKzwWLvIunLHtDuAH9tM9M3i49hg
+         rfCSb5UxyCla9h55+n//kZIXwuSgVhufs6K9biVHjcQikUH/vahQK0zk/sFAqw7mWlAg
+         skHujKnophKMGfhCbNn+Fnb7q5gzg6LphjYkiBYjgrQArMJahJrMfPwosAAyWrGKwEgd
+         CJiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707950881; x=1708555681;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HSfmelwd1XU3MyUvUaiGTtXyx60hIyu8jW65rYsWTo8=;
-        b=dlZTC1/U7tQv17a0UUBjWgtN9V2OqxfhmwzWfH6GrEy6Gh8HAoYhdj5CBUrohso9QT
-         59p8F0MY+Nwth7XpfzVoiWyscPS5AQ3h+B31jireNPbQ9APx68ORonisC4/J2hLNOYNT
-         6VaAd2S9C9Fn0XoNqbjhkVaLQcd1N72CrGkkak1chwLTvukau09VwO1QSfdPSRYSJFWw
-         6CfmeC+S5IkA3H0WPUCqAyIXDAjywFnfK0wu0/jYx3OZO276YxnFI0LIgtR0dVP0BVdp
-         SLxqumRIKDoa6LpgAfCYO3RH3FFAa4SYOHEhkySx32K+at6PgOhx/NXBtXmgQyCpIEY8
-         gPHg==
-X-Forwarded-Encrypted: i=1; AJvYcCV4zFyG8IiaiinrpCNJLUA6KcnhjaGY3uOQmiwhg/Acv584GhEBI+06EjWFJL3tmNtBdqDXSA4Zp+v9KgkQadhCCcVDFHnkTTwQQ+0K
-X-Gm-Message-State: AOJu0YwKZ7PdTRLUS6yLvlCI/05xVzDnK1SxVNwPtLXgWeXcic5sGxD0
-	qRNu16YeVYfTB5QWmBjd3QuOmgNnU3eAKduXSaxkI0POn8rNFK0L+JZuDef/ic8=
-X-Google-Smtp-Source: AGHT+IFYMUnYSP8KPIiy3Inq4GQZqvIvnjeRZZWCmvnpjDiveWRMLt8suI/sGBQfwanVAu7pJ0WIWw==
-X-Received: by 2002:a5d:4e02:0:b0:33b:80ab:46c with SMTP id p2-20020a5d4e02000000b0033b80ab046cmr15754wrt.63.1707950881401;
-        Wed, 14 Feb 2024 14:48:01 -0800 (PST)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id t4-20020a1c7704000000b0040ef0e26132sm1786389wmi.0.2024.02.14.14.48.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 14:48:01 -0800 (PST)
-Message-ID: <aa30d8ab-86c2-4f75-8c5d-6375e859998e@linaro.org>
-Date: Wed, 14 Feb 2024 22:48:00 +0000
+        d=1e100.net; s=20230601; t=1707951123; x=1708555923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BQ51eSPqqPDCFvp0TDSFvQ80BT6J5ZmQ2kvwhoUpX+E=;
+        b=m4zZ8dklX0eYNZWTPryzgH6Rsdt4mVCM6n6zFxaskP+vipKxzr/RJ5Jj1bGn+dc+IK
+         d8DIkQM6uBDqnjdh9ay/0ab4QadA/6+fUvuMUBEAapmx6Cdq3ycGI8eCDgb0RB8oiAx2
+         /P/XzRy/GyAiQx2xZMsk2oSIrz00hORFvxOgJScBiVQd4wJ1l9TkNcnPlLJ27cM4QZAB
+         cXTxSLR61DFBcjd0NhvPd2lHfkN4yyhhcVNUeSTmwN28aoXapKrkyQp4J5nNPussQhc7
+         21Wm+u2SOv+D3enEhJVUaBtOzmmd5sa1yz21hwfshCjB/+5zTs7VOxP/ezoEUCOJDNmk
+         iZpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPmTyc+8VF8mKN7+L06udbh/ER0/t/5iU0PD0WbpP/QEfD3IpCePKQPMha5axW1VVfEAwJds4jyfZHu48+Zhha9tCMwJzba5uEYLJLtyhoZg8oxBbmo1naK6BIMjA0ekSH
+X-Gm-Message-State: AOJu0Yy27dAnNCKudfsN5NTHEelHa/5L1CdX36EgbNua6ELHGHUfywos
+	Gfxnn69KrwKEqgk7RZleCqBr6JGEDg7hx3+D8W/0uaDvoUQZ0zdy316mJITkQS6misE2iH1ZH1F
+	Rg1XhnYulFqr35aZe5wJ88Xo27Ck=
+X-Google-Smtp-Source: AGHT+IHnlQU4HFey720O/neAbzq4u7yDtbjLSoM696QDkEhKyq8MSwDD9Js+9A6XtBi9LShYLh/3FPdKitff8sbQV/A=
+X-Received: by 2002:adf:eec5:0:b0:33b:74a3:dcfe with SMTP id
+ a5-20020adfeec5000000b0033b74a3dcfemr25991wrp.14.1707951122714; Wed, 14 Feb
+ 2024 14:52:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
- voltage
-Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, lgirdwood@gmail.com,
- quic_fenglinw@quicinc.com, quic_collinsd@quicinc.com,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
- <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
- <f38468b4-8b16-4180-9738-0a2b557651a1@linaro.org>
- <dcce3fa9-ecf3-42be-adf6-ca653a79ba2e@sirena.org.uk>
- <3851e21f-f8cb-487b-9ed4-9975949ff922@linaro.org>
- <a09d6450-95e7-4ed6-a0ad-5e7bb661533a@sirena.org.uk>
- <df6a49f3-88e9-46b4-b7c3-e5419fd01eca@linaro.org>
-In-Reply-To: <df6a49f3-88e9-46b4-b7c3-e5419fd01eca@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240202103935.3154011-1-houtao@huaweicloud.com>
+ <20240202103935.3154011-3-houtao@huaweicloud.com> <eacdea9b-4d4c-4833-b7a4-ac0b042c9efa@intel.com>
+In-Reply-To: <eacdea9b-4d4c-4833-b7a4-ac0b042c9efa@intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 14 Feb 2024 14:51:51 -0800
+Message-ID: <CAADnVQK8avOCKuqE2g__WOKzTKCAqdphxjncvXuEQ801g8jf-g@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 2/3] x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+To: Sohil Mehta <sohil.mehta@intel.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Hou Tao <houtao@huaweicloud.com>, X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	"H . Peter Anvin" <hpa@zytor.com>, LKML <linux-kernel@vger.kernel.org>, 
+	xingwei lee <xrivendell7@gmail.com>, Jann Horn <jannh@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/02/2024 22:47, Bryan O'Donoghue wrote:
-> And there are other rails @ 1v8 if 1v8
+On Fri, Feb 2, 2024 at 11:03=E2=80=AFAM Sohil Mehta <sohil.mehta@intel.com>=
+ wrote:
+>
+> On 2/2/2024 2:39 AM, Hou Tao wrote:
+> > From: Hou Tao <houtao1@huawei.com>
+> >
+> > When trying to use copy_from_kernel_nofault() to read vsyscall page
+> > through a bpf program, the following oops was reported:
+> >
+> >   BUG: unable to handle page fault for address: ffffffffff600000
+> >   #PF: supervisor read access in kernel mode
+> >   #PF: error_code(0x0000) - not-present page
+> >   PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+> >   Oops: 0000 [#1] PREEMPT SMP PTI
+> >   CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+> >   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+> >   RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+> >   ......
+> >   Call Trace:
+> >    <TASK>
+> >    ? copy_from_kernel_nofault+0x6f/0x110
+> >    bpf_probe_read_kernel+0x1d/0x50
+> >    bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+> >    trace_call_bpf+0xc5/0x1c0
+> >    perf_call_bpf_enter.isra.0+0x69/0xb0
+> >    perf_syscall_enter+0x13e/0x200
+> >    syscall_trace_enter+0x188/0x1c0
+> >    do_syscall_64+0xb5/0xe0
+> >    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >    </TASK>
+> >   ......
+> >   ---[ end trace 0000000000000000 ]---
+> >
+> > The oops is triggered when:
+> >
+> > 1) A bpf program uses bpf_probe_read_kernel() to read from the vsyscall
+> > page and invokes copy_from_kernel_nofault() which in turn calls
+> > __get_user_asm().
+> >
+> > 2) Because the vsyscall page address is not readable from kernel space,
+> > a page fault exception is triggered accordingly.
+> >
+> > 3) handle_page_fault() considers the vsyscall page address as a user
+> > space address instead of a kernel space address. This results in the
+> > fix-up setup by bpf not being applied and a page_fault_oops() is invoke=
+d
+> > due to SMAP.
+> >
+> > Considering handle_page_fault() has already considered the vsyscall pag=
+e
+> > address as a userspace address, fix the problem by disallowing vsyscall
+> > page read for copy_from_kernel_nofault().
+> >
+> > Originally-by: Thomas Gleixner <tglx@linutronix.de>
 
-[sic] If 1v8 exact matters to you
+Thomas,
+
+could you please Ack the patch if you're still ok with it,
+so we can take through the bpf tree to Linus soon ?
+
+Not only syzbot, but real users are hitting this bug.
+
+Thanks!
+
+> > Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
+> > Closes: https://lore.kernel.org/bpf/CAG48ez06TZft=3DATH1qh2c5mpS5BT8Uak=
+wNkzi6nvK5_djC-4Nw@mail.gmail.com
+> > Reported-by: xingwei lee <xrivendell7@gmail.com>
+> > Closes: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsji=
+W+UWLoB=3Dw33LvScw@mail.gmail.com
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > ---
+> >  arch/x86/mm/maccess.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+>
+> Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+>
 
