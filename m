@@ -1,168 +1,160 @@
-Return-Path: <linux-kernel+bounces-64596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C088540AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:07:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D3778540B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF60F1F2716D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81A5A1C24E4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 00:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06FE53BE;
-	Wed, 14 Feb 2024 00:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14042290C;
+	Wed, 14 Feb 2024 00:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QwE61G5Q"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jym8a+/N"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136C94A00
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:06:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F96B7F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 00:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707869221; cv=none; b=a3Iaw6msqAFwuVKXZPm2EZvOZiiaFQ2dDTKkPA1LWQxeY/Rwi3QDmd5J2kmA4uXnuuXC0dv3viVizRUTbVDn0sqE2gt2w+4YwillTWSKWS3ZTQysjWx7PZOKcFjck7++kOYE97YFYgJvz5IERW9CzGAfXSionixGyaRAiJzhUf8=
+	t=1707869284; cv=none; b=VJRkPB66spfeSAdJflwiQJmsY7ITjG0SmD0h0jLGrfN/tqitBIIkTzvwyC7xDXKR5/B6hy1HZVvgqLWrrM4yFFQAZ9a4yuc5Tm0nokaCYvQtihp3FIzYpX1xBLcGdjDA00tsmiSozbVwvYiRXV2ghn2blRzb/3Bpzaf2ysGvyng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707869221; c=relaxed/simple;
-	bh=kRl2xvjnEqYqUWOmQ7ofjTzJ/cSkkaVkiE+7IUsfJIA=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:Cc:From:Subject; b=Otxs3ZUuhUD9nE7/jiFGsv9RUfE+xbNKyecggNtwvH9BoVHmdHZ6tJqAUeMCNkwfI0Xr3CKp//hKiX2CdOjLqXuPo9jirxM79J2ZVEO31WQhXTSFq5M0R4wauI7ctkUAXSGnMjTHDSUT+B+yiRn9h0NDofaOW/hVbUZaOCdB8vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QwE61G5Q; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7bff2f6080aso25360139f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 16:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1707869219; x=1708474019; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GhnQu6FmXGPVZCi3UFjGPAyQfbh2TxR1NXwH/TlSM+w=;
-        b=QwE61G5QxGU6+NPISDK5K/zPcZoewOWpMO53VHQQhTvAeiRApupQZRirnDOMz4Mr7D
-         osl1qNBUquu6R7VqofaZUxuBAOZM+vsMGUPrlcPZpsXy+MOq+b4geSgiMsdhIzm4XdbJ
-         jGIt6QuSn8rJ/KaVXEsm2qa61KPBH6zymYsU8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707869219; x=1708474019;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GhnQu6FmXGPVZCi3UFjGPAyQfbh2TxR1NXwH/TlSM+w=;
-        b=a+AmvXc7h5fXulNVqRjgpXdnMk4/5OWNRgZfjSW/4wwoE7VxNPjMqUI9yEyXzyFN9v
-         3yjyomy9PZiHeoJFEWfrSkCEv97KKhNd35OjPcSJN8z/ALgM0sFrEDGZeSI9wjFQ3gzD
-         QAIXCAg8HJMunRWqL75K+PNnrSglY6RZBN3rpkaIAGqLgWGmoH0SHj44WGKnHGsdQaJP
-         GrvJNW232qJnwMMP5iJ8SA1JOj2XMcc/FzHSBFAKn5OxzuLJgY65UBEvaJNHFHKdRfhj
-         EA7PrSTJyQ/S5qSY95OumQzaW1rYKPZaysPMgqyBK9MC7/8jFaFcSJaH3UpiQPbRV38v
-         BYJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNcGGIe1w3iwTKJrXBfmIrpxC3cKtgpF8H8h6ZnRQwCGIo+BOdZwNkpQoYoRXVZywcQeGBgiAwIBvRxYjXEbw5Qda2glljpa+OZO57
-X-Gm-Message-State: AOJu0YzQ/Vb9R71+/WIyNbBwgM6jnExKvsZ41ILx6WSHlMfOJLeKLQEV
-	mJO1nd5OyhIMhDPLi1/3d3HtDRZ3C/dpdZojtNInXGfCJ+R1LNwRENsSCCCjWKI=
-X-Google-Smtp-Source: AGHT+IHJKYRzo/PlZVd0iIErIR69DKw3o9VDIiU5d2kUn3AtE/swPSe1OtmTzjtH+2nxZIpUxXzPwQ==
-X-Received: by 2002:a6b:fe01:0:b0:7c4:8032:5724 with SMTP id x1-20020a6bfe01000000b007c480325724mr809467ioh.0.1707869219183;
-        Tue, 13 Feb 2024 16:06:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXA4aTCw0RK9urTQ3ld4zkHTrIyDI62ZmJAw8XHTRnc+Cf9qmTZe9wUE4VytcuFEsKt28Assj+UwSbhwoKX1NH6EefWt9fsDYDqnZ4KSda9xxk2H3KI3oRUb0M3+TL6c7q8urMVMQgGg0aD/HORoX4GxOTZO6AUfDk6Mfy5td1nOyRw9JWXlHTE7ozVe12yoCDqpHIn574Da3TVmICHwQKIYphqF13wLv3vMRQYtn3CnJyfoUrutyZn
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id u25-20020a02cbd9000000b0047129817ee3sm2209721jaq.141.2024.02.13.16.06.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 16:06:58 -0800 (PST)
-Content-Type: multipart/mixed; boundary="------------BEVlR5zmYlGmqCSr00K4AOwP"
-Message-ID: <876716d6-f865-42cb-94d0-67e9193a96f3@linuxfoundation.org>
-Date: Tue, 13 Feb 2024 17:06:58 -0700
+	s=arc-20240116; t=1707869284; c=relaxed/simple;
+	bh=Onc/Nm5J2ADHvGRgUGidlYL5cNBOfivtq/tSzL+HJ1s=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TToPjbrh+Y1npba/25doBLGYeK5JnyNQG1K3JiJTZmOw7+PoFeVhhWkfaQEpnI0ocbErrJ6lnBq0g72DCzSXAdierJljdXuPsmXoECirRa3C4BjVNfPklXYP9KIf6mf4U4HzGTbn83dDaAf7N37Q66pOAc6aT8S7zGhe+YX2abo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jym8a+/N; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707869282; x=1739405282;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=Onc/Nm5J2ADHvGRgUGidlYL5cNBOfivtq/tSzL+HJ1s=;
+  b=Jym8a+/NYjRXbNUjgY0bjdAqHw/wbYrZm0Oh220ja8pvKNpIlS5xE/jD
+   1Zc8qXjFWpHT/GZ+Q08sHCcqko8kvE64LFQNeuPEiA0oNLn3DVZevOSQZ
+   u0u38TKptpS712EGV5xrOHPa8iwNW0m1PS3H3hUGqJoXd+Jpcz9CpQcrj
+   zTQw5FNgzAEj5IBd/Ywz8zMgO3MnwOAo34WeMwEn3Wka29DOdN8hWSNHb
+   3wdbPOZ8QTrsT2OWc1zFpJzjgeDd9JPir5BGbSQY3SszGfdOQN/Rq/iMm
+   OYF8qv/nriiUIGxzsybXszfday1lXYz6wQz2nhzx0tcZk/Zt4Fb3vitoX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2261138"
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="2261138"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:08:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935501057"
+X-IronPort-AV: E=Sophos;i="6.06,158,1705392000"; 
+   d="scan'208";a="935501057"
+Received: from arieldux-mobl.amr.corp.intel.com (HELO [10.209.91.178]) ([10.209.91.178])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2024 16:08:00 -0800
+Message-ID: <c4ae18fb13ab1c63cdd34da9fe7b1e0f1a91c909.camel@linux.intel.com>
+Subject: Re: [PATCH v3] mm: swap: async free swap slot cache entries
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Wei Xu
+ <weixugc@google.com>,  Yu Zhao <yuzhao@google.com>, Greg Thelen
+ <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>,  Yosry Ahmed
+ <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, Mel Gorman
+ <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, Nhat Pham
+ <nphamcs@gmail.com>, Kairui Song <kasong@tencent.com>, Barry Song
+ <v-songbaohua@oppo.com>
+Date: Tue, 13 Feb 2024 16:08:00 -0800
+In-Reply-To: <20240213-async-free-v3-1-b89c3cc48384@kernel.org>
+References: <20240213-async-free-v3-1-b89c3cc48384@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
- Brendan Higgins <brendanhiggins@google.com>, David Gow
- <davidgow@google.com>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-From: Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit fixes update for Linux 6.8-rc5
 
-This is a multi-part message in MIME format.
---------------BEVlR5zmYlGmqCSr00K4AOwP
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, 2024-02-13 at 15:20 -0800, Chris Li wrote:
+> We discovered that 1% swap page fault is 100us+ while 50% of
+> the swap fault is under 20us.
+>=20
+> Further investigation show that a large portion of the time
+> spent in the free_swap_slots() function for the long tail case.
+>=20
+> The percpu cache of swap slots is freed in a batch of 64 entries
+> inside free_swap_slots(). These cache entries are accumulated
+> from previous page faults, which may not be related to the current
+> process.
+>=20
+> Doing the batch free in the page fault handler causes longer
+> tail latencies and penalizes the current process.
+>=20
+> Add /sys/kernel/mm/swap/swap_slot_async_free to control the
+> async free behavior. When enabled, using work queue to async
+> free the swap slot when the swap slot cache is full.
+>=20
+> Testing:
+>=20
+> Chun-Tse did some benchmark in chromebook, showing that
+> zram_wait_metrics improve about 15% with 80% and 95% confidence.
+>=20
+> I recently ran some experiments on about 1000 Google production
+> machines. It shows swapin latency drops in the long tail
+> 100us - 500us bucket dramatically.
+>=20
+> platform	(100-500us)	 	(0-100us)
+> A		1.12% -> 0.36%		98.47% -> 99.22%
+> B		0.65% -> 0.15%		98.96% -> 99.46%
+> C		0.61% -> 0.23%		98.96% -> 99.38%
+>=20
+> Signed-off-by: Chris Li <chrisl@kernel.org>
+> ---
+> Changes in v3:
+> - Address feedback from Tim Chen, direct free path will free all swap slo=
+ts.
+> - Add /sys/kernel/mm/swap/swap_slot_async_fee to enable async free. Defau=
+lt is off.
+> - Link to v2: https://lore.kernel.org/r/20240131-async-free-v2-1-525f03e0=
+7184@kernel.org
+>=20
+> Changes in v2:
+> - Add description of the impact of time changing suggest by Ying.
+> - Remove create_workqueue() and use schedule_work()
+> - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b27799=
+2cb0@kernel.org
+> ---
+>  include/linux/swap_slots.h |  2 ++
+>  mm/swap_slots.c            | 20 ++++++++++++++++++++
+>  mm/swap_state.c            | 23 +++++++++++++++++++++++
+>  3 files changed, 45 insertions(+)
+>=20
+> diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+> index 15adfb8c813a..bb9a401d7cae 100644
+> --- a/include/linux/swap_slots.h
+> +++ b/include/linux/swap_slots.h
+> @@ -19,6 +19,7 @@ struct swap_slots_cache {
+>  	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
+>  	swp_entry_t	*slots_ret;
+>  	int		n_ret;
+> +	struct work_struct async_free;
+>  };
+> =20
+>  void disable_swap_slots_cache_lock(void);
+> @@ -27,5 +28,6 @@ void enable_swap_slots_cache(void);
+>  void free_swap_slot(swp_entry_t entry);
+> =20
+>  extern bool swap_slot_cache_enabled;
+> +extern uint8_t slot_cache_async_free __read_mostly;
 
-Hi Linus,
+Why wouldn't you enable the async_free always?
+Otherwise the patch looks fine to me.
 
-Please pull the following KUnit fixes update for Linux 6.8-rc5.
+Tim
 
-This KUnit update for Linux 6.8-rc5 consists of one important fix
-to unregister kunit_bus when KUnit module is unloaded. Not doing
-so causes an error when KUnit module tries to re-register the bus
-when it gets reloaded.
+> =20
 
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 1a9f2c776d1416c4ea6cb0d0b9917778c41a1a7d:
-
-   Documentation: KUnit: Update the instructions on how to test static functions (2024-01-22 07:59:03 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-kunit-fixes-6.8-rc5
-
-for you to fetch changes up to 829388b725f8d266ccec32a2f446717d8693eaba:
-
-   kunit: device: Unregister the kunit_bus on shutdown (2024-02-06 17:07:37 -0700)
-
-----------------------------------------------------------------
-linux_kselftest-kunit-fixes-6.8-rc5
-
-This KUnit update for Linux 6.8-rc5 consists of one important fix
-to unregister kunit_bus when KUnit module is unloaded. Not doing
-so causes an error when KUnit module tries to re-register the bus
-when it gets reloaded.
-
-----------------------------------------------------------------
-David Gow (1):
-       kunit: device: Unregister the kunit_bus on shutdown
-
-  lib/kunit/device-impl.h |  2 ++
-  lib/kunit/device.c      | 14 ++++++++++++++
-  lib/kunit/test.c        |  3 +++
-  3 files changed, 19 insertions(+)
-----------------------------------------------------------------
---------------BEVlR5zmYlGmqCSr00K4AOwP
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux_kselftest-kunit-fixes-6.8-rc5.diff"
-Content-Disposition: attachment;
- filename="linux_kselftest-kunit-fixes-6.8-rc5.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2xpYi9rdW5pdC9kZXZpY2UtaW1wbC5oIGIvbGliL2t1bml0L2Rldmlj
-ZS1pbXBsLmgKaW5kZXggNTRiZDU1ODM2NDA1Li41ZmNkNDhmZjBmMzYgMTAwNjQ0Ci0tLSBh
-L2xpYi9rdW5pdC9kZXZpY2UtaW1wbC5oCisrKyBiL2xpYi9rdW5pdC9kZXZpY2UtaW1wbC5o
-CkBAIC0xMyw1ICsxMyw3IEBACiAKIC8vIEZvciBpbnRlcm5hbCB1c2Ugb25seSAtLSByZWdp
-c3RlcnMgdGhlIGt1bml0X2J1cy4KIGludCBrdW5pdF9idXNfaW5pdCh2b2lkKTsKKy8vIEZv
-ciBpbnRlcm5hbCB1c2Ugb25seSAtLSB1bnJlZ2lzdGVycyB0aGUga3VuaXRfYnVzLgordm9p
-ZCBrdW5pdF9idXNfc2h1dGRvd24odm9pZCk7CiAKICNlbmRpZiAvL19LVU5JVF9ERVZJQ0Vf
-SU1QTF9ICmRpZmYgLS1naXQgYS9saWIva3VuaXQvZGV2aWNlLmMgYi9saWIva3VuaXQvZGV2
-aWNlLmMKaW5kZXggMDc0YzZkZDJlMzZhLi42NDRhMzhhMWY1YjEgMTAwNjQ0Ci0tLSBhL2xp
-Yi9rdW5pdC9kZXZpY2UuYworKysgYi9saWIva3VuaXQvZGV2aWNlLmMKQEAgLTU0LDYgKzU0
-LDIwIEBAIGludCBrdW5pdF9idXNfaW5pdCh2b2lkKQogCXJldHVybiBlcnJvcjsKIH0KIAor
-LyogVW5yZWdpc3RlciB0aGUgJ2t1bml0X2J1cycgaW4gY2FzZSB0aGUgS1VuaXQgbW9kdWxl
-IGlzIHVubG9hZGVkLiAqLwordm9pZCBrdW5pdF9idXNfc2h1dGRvd24odm9pZCkKK3sKKwkv
-KiBNYWtlIHN1cmUgdGhlIGJ1cyBleGlzdHMgYmVmb3JlIHdlIHVucmVnaXN0ZXIgaXQuICov
-CisJaWYgKElTX0VSUl9PUl9OVUxMKGt1bml0X2J1c19kZXZpY2UpKQorCQlyZXR1cm47CisK
-KwlidXNfdW5yZWdpc3Rlcigma3VuaXRfYnVzX3R5cGUpOworCisJcm9vdF9kZXZpY2VfdW5y
-ZWdpc3RlcihrdW5pdF9idXNfZGV2aWNlKTsKKworCWt1bml0X2J1c19kZXZpY2UgPSBOVUxM
-OworfQorCiAvKiBSZWxlYXNlIGEgJ2Zha2UnIEtVbml0IGRldmljZS4gKi8KIHN0YXRpYyB2
-b2lkIGt1bml0X2RldmljZV9yZWxlYXNlKHN0cnVjdCBkZXZpY2UgKmQpCiB7CmRpZmYgLS1n
-aXQgYS9saWIva3VuaXQvdGVzdC5jIGIvbGliL2t1bml0L3Rlc3QuYwppbmRleCAzMWE1YTk5
-MmU2NDYuLjFkMTQ3NTU3ODUxNSAxMDA2NDQKLS0tIGEvbGliL2t1bml0L3Rlc3QuYworKysg
-Yi9saWIva3VuaXQvdGVzdC5jCkBAIC05MjgsNiArOTI4LDkgQEAgc3RhdGljIHZvaWQgX19l
-eGl0IGt1bml0X2V4aXQodm9pZCkKICNpZmRlZiBDT05GSUdfTU9EVUxFUwogCXVucmVnaXN0
-ZXJfbW9kdWxlX25vdGlmaWVyKCZrdW5pdF9tb2RfbmIpOwogI2VuZGlmCisKKwlrdW5pdF9i
-dXNfc2h1dGRvd24oKTsKKwogCWt1bml0X2RlYnVnZnNfY2xlYW51cCgpOwogfQogbW9kdWxl
-X2V4aXQoa3VuaXRfZXhpdCk7Cg==
-
---------------BEVlR5zmYlGmqCSr00K4AOwP--
 
