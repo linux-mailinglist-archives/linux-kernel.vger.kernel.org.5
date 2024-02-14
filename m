@@ -1,107 +1,140 @@
-Return-Path: <linux-kernel+bounces-65101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E4A8547C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:10:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C9A8547CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9964BB217B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD87E1F2146E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F188199A1;
-	Wed, 14 Feb 2024 11:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72F3199D9;
+	Wed, 14 Feb 2024 11:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E05J9c6z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="D6+DyW5y"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AA718B14;
-	Wed, 14 Feb 2024 11:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C77718EA2;
+	Wed, 14 Feb 2024 11:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707909027; cv=none; b=h+LOgeECfT/S/RdudhvH4HqCQ2pXuTGrlBR1wgMw1XpWCZl2uERVrZPpPxP34yM+7ad8JhS/q03Vong6e8nUTbVhh/q/jF3xmhcKyUE7n+6aXGYvvgVMHbJrNpaAKNnUPmllWaUUUBUcIgXinKizfVef78yb/TTEylhLEmIbnHI=
+	t=1707909049; cv=none; b=UdgfTf/5a9wyLnEVGYzVuAQJV3cyKtRsljoHQcvbvAdEXW2Vs+vnZQsHfkhv5mctC/WMbZG4gG2OasA8jiW6cMuSLp780BYQSAEA8mgSW8O9wce4/wkuUl/7kwHfboOgrqhYIv+XfB+nqh0usXHmK6KtE8/E4vEbTASDZ2PquYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707909027; c=relaxed/simple;
-	bh=/N+Tr5D1cCwdzGyVTjVobKhxOLKQhp7GUjHGGqZReHw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KsHRzbf/oHXiwiHqDhBYnc0jcfgQyRyWjUKDPq6+lC9CKoO1gWA1kAenwRas7srcnvMDwSE8wATRQRbPDW/AwL6UIMOlmuS5ZcsDHYf7ZI7kKMAFw3W3QnXu892+IKpAQdG5CDrTmuZvWSU5NSAfl5+BcU8S20TkSqs2Qv30fTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E05J9c6z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D530C433F1;
-	Wed, 14 Feb 2024 11:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707909026;
-	bh=/N+Tr5D1cCwdzGyVTjVobKhxOLKQhp7GUjHGGqZReHw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=E05J9c6zjy/3kPry6R6UbtObeLdt6ciRvZaRUE8FGcM7/dCIRGfvgNEgLfQLk1+SA
-	 Z9F+GkB8OF2iKgwKw8hZhxz0+yOMMnjlJQMmlQRhOfsX3NbuntBYlM+JgdkuGm7p1F
-	 OVLnLUIPS55eHtpvWmoOotBxPgdfp4zbAiWvHBLeH4AUHspG8QzuQTy9isQpt0YuP/
-	 pBJwRQpoqnz9WlH3bcG8BXtZEkVNu2E0z8beEEAM9YOMc391H1xCeXHhIvfUe0FBWk
-	 OlfVs88mbDMzWkCkklwO3NHFsqAiPp+8e16jw0vKVTQYqX75Dng77y3Oqzybu/3J6W
-	 LOXJQqhj0ICIQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C735D84BCE;
-	Wed, 14 Feb 2024 11:10:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1707909049; c=relaxed/simple;
+	bh=TJq9COw6PDecnjnk1YApAb3gGy01Mt/c9IxmMSaHGGM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WUr2ZxqbxXyZClmfltTkECJC4xeIkZcxMsDX8cMPpVdw4KYO2x79SbjGtNcUTX8eQ3qMUFhSTU/sx3coYCQ6aFyr/+fKecmfWVTEvas+KMowUV6DpLtJ+Im7WaiL2BX1BsI6aEvj1vqTUjBE0oZVeJQIYbGCmmvzJx9+4srSPAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=D6+DyW5y; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DE6CD40E01A9;
+	Wed, 14 Feb 2024 11:10:44 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Q-TUVYAXG5nX; Wed, 14 Feb 2024 11:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707909042; bh=u8DgBZxZUU4PAy3YQROt3KGRvRieHIBBxlz3D9L7msU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D6+DyW5yeFF1Vckp55kkzEB2cOf+/5BNIsy+igBgyL2W4f8rtjHNGfqKfrlr5QUQY
+	 FlfFp0R4FcXeBMQgjDlJqRCdW3xNZglwUXpnrbt/JnlsmqVXMnCXIzVvKC7IA+el6T
+	 SmbL5+eE/CU9NCdVG9Tx52rG3Xhsrbn80ys3L19TYJmuOtDyu1sJYDPSBsMc1ghybr
+	 GDbdofdYcIwy7PpCkWb1xb9LYcieIReu5rAbI5m84i4IKXE0XRh8tTPn8wJIQ3qFSB
+	 IRq5gsPsThTrhQA+hpWNwg2ai+KROQcnRdJuJ4HpB5V/r2A97V6BS6YaY6qDJLmapN
+	 DDPFL5i5zgWslYQVGNuPeoGQK2OfabdCxY8ZwPEySbHIU2akpVTMPLNOLodXXydsxY
+	 vbdO7rP10CfhM2K8VTn9VlP1E6R+bycQZ6FWaooJB4DIgv4DZJvTLS+s/mFbGLQMbu
+	 WAmVl/5FYzg1er8njJat8XaaS2DfIlzWoGZTp2O8ZObrk4diT4lS9O4LWpX6/+Cy0V
+	 GO1Xqr8EnpXkSVgKBjJ9KvrsYT3Xi69xTiUZaoudVQ6HemLKSXpLdKTSuC2FUD/Zr6
+	 TrNicAs5BQMNBFeCK2DrbM7WmD51s8vu5UZFIs1dg9+9W7yt7VpnABHq5xZ2/aGYND
+	 OeGurmdexLQDCeBIRrKObYR4=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9750940E016C;
+	Wed, 14 Feb 2024 11:10:33 +0000 (UTC)
+Date: Wed, 14 Feb 2024 12:10:32 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214111032.GGZcyfqFqsW0j4Yy3a@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v8 0/4] Per epoll context busy poll support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170790902610.17376.12972731965636317765.git-patchwork-notify@kernel.org>
-Date: Wed, 14 Feb 2024 11:10:26 +0000
-References: <20240213061652.6342-1-jdamato@fastly.com>
-In-Reply-To: <20240213061652.6342-1-jdamato@fastly.com>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- chuck.lever@oracle.com, jlayton@kernel.org, linux-api@vger.kernel.org,
- brauner@kernel.org, edumazet@google.com, davem@davemloft.net,
- alexander.duyck@gmail.com, sridhar.samudrala@intel.com, kuba@kernel.org,
- willemdebruijn.kernel@gmail.com, weiwan@google.com, David.Laight@ACULAB.COM,
- arnd@arndb.de, sdf@google.com, amritha.nambiar@intel.com,
- viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org, deller@gmx.de,
- jack@suse.cz, jirislaby@kernel.org, corbet@lwn.net, jpanis@baylibre.com,
- linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, mpe@ellerman.id.au,
- nathanl@linux.ibm.com, palmer@dabbelt.com, stfrench@microsoft.com,
- thuth@redhat.com, tzimmermann@suse.de
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
 
-Hello:
+On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
+> +static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
+> +{
+> +	memset(fpd, 0, sizeof(struct cper_fru_poison_desc));
+> +
+> +	fpd->timestamp	= m->time;
+> +	fpd->hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
+> +	fpd->hw_id	= m->ipid;
+> +	fpd->addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
+> +	fpd->addr	= m->addr;
+> +}
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Get rid of that one:
 
-On Tue, 13 Feb 2024 06:16:41 +0000 you wrote:
-> Greetings:
-> 
-> Welcome to v8.
-> 
-> TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
-> epoll with socket fds.") by allowing user applications to enable
-> epoll-based busy polling, set a busy poll packet budget, and enable or
-> disable prefer busy poll on a per epoll context basis.
-> 
-> [...]
+diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
+index f8799beddcc4..090b60d269e7 100644
+--- a/drivers/ras/amd/fmpm.c
++++ b/drivers/ras/amd/fmpm.c
+@@ -221,17 +221,6 @@ static int update_record_on_storage(struct fru_rec *rec)
+ 	return ret;
+ }
+ 
+-static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
+-{
+-	memset(fpd, 0, sizeof(struct cper_fru_poison_desc));
+-
+-	fpd->timestamp	= m->time;
+-	fpd->hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
+-	fpd->hw_id	= m->ipid;
+-	fpd->addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
+-	fpd->addr	= m->addr;
+-}
+-
+ static bool has_valid_entries(struct fru_rec *rec)
+ {
+ 	if (!(rec->fmp.validation_bits & FMP_VALID_LIST_ENTRIES))
+@@ -288,7 +277,13 @@ static void update_fru_record(struct fru_rec *rec, struct mce *m)
+ 
+ 	mutex_lock(&fmpm_update_mutex);
+ 
+-	init_fpd(&fpd, m);
++	memset(&fpd, 0, sizeof(struct cper_fru_poison_desc));
++
++	fpd.timestamp	= m->time;
++	fpd.hw_id_type = FPD_HW_ID_TYPE_MCA_IPID;
++	fpd.hw_id	= m->ipid;
++	fpd.addr_type	= FPD_ADDR_TYPE_MCA_ADDR;
++	fpd.addr	= m->addr;
+ 
+ 	/* This is the first entry, so just save it. */
+ 	if (!has_valid_entries(rec))
 
-Here is the summary with links:
-  - [net-next,v8,1/4] eventpoll: support busy poll per epoll instance
-    https://git.kernel.org/netdev/net-next/c/85455c795c07
-  - [net-next,v8,2/4] eventpoll: Add per-epoll busy poll packet budget
-    https://git.kernel.org/netdev/net-next/c/c6aa2a7778d8
-  - [net-next,v8,3/4] eventpoll: Add per-epoll prefer busy poll option
-    https://git.kernel.org/netdev/net-next/c/de57a2510822
-  - [net-next,v8,4/4] eventpoll: Add epoll ioctl for epoll_params
-    https://git.kernel.org/netdev/net-next/c/18e2bf0edf4d
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
