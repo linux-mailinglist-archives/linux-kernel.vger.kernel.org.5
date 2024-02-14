@@ -1,129 +1,108 @@
-Return-Path: <linux-kernel+bounces-65576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC1E854EE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:44:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FEF1854EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18941C28E75
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E80E5288752
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59B062A02;
-	Wed, 14 Feb 2024 16:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C09160DC9;
+	Wed, 14 Feb 2024 16:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BqTZuWEZ"
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b="YuvTpkTt"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401A761695;
-	Wed, 14 Feb 2024 16:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3783660BBE;
+	Wed, 14 Feb 2024 16:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928947; cv=none; b=uZl5QRCvb852R/GPCacDcDhwHFPXlthGbVcfH0iLcR3bONJU/2+f5QFYp5N6bbrXf7V8VIcEhBPFgLLST9/yRBiWKfPIiYoMyO75kNf7k85YA5TNviD9oWambqPd/2LCIMvJzqSeBTXKVThigOvbT+c9jT2WEg0a7hw2d7Isddo=
+	t=1707929069; cv=none; b=kgB5pzjF12Q+KJn35HScASsNMZoeeoFxikojqFSpANoi+NVaTR39FYE6ocr0lZbalwcnJDjBIk5U5xbUFQORUbdg52/zaj+XQHmmVGh3gWqZpEsqeRjgCMAVf58so+Po7W/q53yUnrYFY5b9ICgVfZXuSEBx0JjxjjEvU2T+2e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928947; c=relaxed/simple;
-	bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ILtSj1VWUASBZGvy/KXiwnqdu7GORtmE1twnAR5NFSErthNGku1yPjdEtI1w1FdgkbLo0nmvuVYmUOOxtXcJDNwLCo4QgtxrYKx/lHxA9b9+GqvHeeRxxNauNtiCUIqabA3k9K3Z+DJv+YtWkSmDGdVEACXXYo5Y8+HXUdzxyk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BqTZuWEZ; arc=none smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1707928945; x=1739464945;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
-  b=BqTZuWEZE8YUEPxhjGR4fbzg1nQbl4ttkg14Bs3PCw5WOX0bh+X1UHZy
-   kX216bsZwX6lcZwjhu68P/HtyH8DYx0OcJbojGT+XiKhiAvaRbZYG/kdE
-   iRgvLvRLA3fHCxggF+kM2SfxGBnd0Sy/FNOAjLT7VG9G/zyD0uh9jbxnl
-   /XM7weEPIy5g0DS771TjTq9tBavolPHGu6b0hVvmclv2hyxfw+OVlws6A
-   72nWsI5FK00mLti2H7/xD7lxYYHqN+eA+Q+o5mPQg4p1NPb/E+TK7sC5a
-   SBmV1Uz4v7GHPbjN2UHZ3khkOCnQmG3FhssqauFoCiepqRrCjyVgMO4Yq
-   A==;
-X-CSE-ConnectionGUID: 3PqAXj1mRHCgh1akvRC+cw==
-X-CSE-MsgGUID: qvE74kfMRh+XStqcluh2OA==
-X-IronPort-AV: E=Sophos;i="6.06,159,1705334400"; 
-   d="scan'208";a="9294747"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 00:42:24 +0800
-IronPort-SDR: F6k1MLOE5/8J8qKOpxUSURReH5Yusmwr/nIa58Ltsl2GXDjoysUKZnXpdmsY27sfc0rQGqJpsI
- Da6NvglNaSQg==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Feb 2024 07:51:59 -0800
-IronPort-SDR: gqvyFZhGSaw04+Ud78YXDxHFnxQddOfK8ygif5khsnA6k0J5jME4Cy2ASv3MXe0GseQVdGmh5s
- aDi1iUDBXXGg==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 Feb 2024 08:42:22 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Wed, 14 Feb 2024 08:42:16 -0800
-Subject: [PATCH 5/5] btrfs: use the super_block as holder when mounting
- file systems
+	s=arc-20240116; t=1707929069; c=relaxed/simple;
+	bh=oGw9fVB7x4DqTTJd1RZp9jcHpF1ROTXB3RtCnAkqmII=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NSOqjL+TNn/Ap0FdJMCKn6J28I1eG3rmIoKci2kvvoLUbo28B6P5mF+ktnuUu4YcPBNOJ/fX5Ga0u73qmXhbbvd5bKxJ4W/HTrR/kgLaBB3cxaCDGSiO7ej5FXqiqZ2I7OuM0aK3SQEfSLEs65hKGmIJzcdwa4BC30QNhfBD/rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b=YuvTpkTt; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1707929042; x=1708533842; i=svenjoac@gmx.de;
+	bh=oGw9fVB7x4DqTTJd1RZp9jcHpF1ROTXB3RtCnAkqmII=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:In-Reply-To:References:
+	 Date;
+	b=YuvTpkTtxxPUIsgtfJ8tfRSeipuQq9MtNIizxhdgQlIrtuD3m7xaKZKcSYBYMOGs
+	 6R6gMpXSQLLkT1s7Im1Qdre3uvrODgkj28uVcFS9sXctud0MibqNftnilSgh9LJyD
+	 pMyYt9AfpyyRMcxtLVfawf4nb9CQ+9biIbv54QeEvwDEYZ8lkd/vecHv13G44S+9w
+	 2rsFG+fbtr1Qlz9u1TZSKK+z6gcrignSx3gdvYczvN0e5/8nVWVjNbNlBtWU5HdtY
+	 3LI69WPqo1PibdeP4jgA0GMr3ySe8hTVWGGA5QrA1V+cUB9lfRHNxA8ih37b9UK5d
+	 CgqgD4EEmMiiKEEK6Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.203.86.131]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M3lYB-1rb7Zp1mHj-000vwn; Wed, 14 Feb 2024 17:44:02 +0100
+Received: by localhost.localdomain (Postfix, from userid 1000)
+	id 5CB7880095; Wed, 14 Feb 2024 17:44:00 +0100 (CET)
+From: Sven Joachim <svenjoac@gmx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,  patches@lists.linux.dev,
+  linux-kernel@vger.kernel.org,  torvalds@linux-foundation.org,
+  akpm@linux-foundation.org,  linux@roeck-us.net,  shuah@kernel.org,
+  patches@kernelci.org,  lkft-triage@lists.linaro.org,  pavel@denx.de,
+  jonathanh@nvidia.com,  f.fainelli@gmail.com,  sudipm.mukherjee@gmail.com,
+  srw@sladewatkins.net,  rwarsow@gmx.de,  conor@kernel.org,
+  allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 00/64] 6.1.78-rc1 review
+In-Reply-To: <20240213171844.702064831@linuxfoundation.org> (Greg
+	Kroah-Hartman's message of "Tue, 13 Feb 2024 18:20:46 +0100")
+References: <20240213171844.702064831@linuxfoundation.org>
+Date: Wed, 14 Feb 2024 17:44:00 +0100
+Message-ID: <871q9f3sj3.fsf@turtle.gmx.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240214-hch-device-open-v1-5-b153428b4f72@wdc.com>
-References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
-In-Reply-To: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707928933; l=1407;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=5rfa6IXupj7Jvp1HyDQOjFATBDPTi0LqbzcMFjmSCro=;
- b=YI3WD5e/SUmGdIE0DfNpjyBwSXRjmr39hdskYzorTvIHh9L6oUFmy4XE+lzd7sgCkziaYG8x2
- iNlLie//3u3DKi7tZZpXW/p1nuhTq0YEolIZFV0utmEplJ4NRDB7IDR
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Type: text/plain
+X-Provags-ID: V03:K1:K+HOG/GQYW5pwarb/ntOh32vSaVyV1m9avODePCAc8oUG6iv0KR
+ Gy6ajZl3yVsYiFhL392ecAAHAAQW/FUL7zGa6sC4YRthNDMqNma6cPci4kLTKNAxVY3KjtF
+ unh2aUt2aFJUPpZ/5Kj6/0cOyWj+Kcwx1gFZPY5pzc7a1lFxtE4WNpmYx5CQi76q3B69aQw
+ JNsMYFJ0jQhZKvSaRi0PQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qNJA9s8d16w=;MREgZfBOcuYvsbAw3nmPjZh63RO
+ STE5gDCZje4oqY7UJ8xIR2xaLqfKsLN05ag0kyX9i2IrXebmwxOqDlJged+a84k+9w6GTpXea
+ gulf5wyrMuWmdngoTxpBBBt9XepA8cF4Ybz9w6nrADfVkAdGMWBkO+ALhekmKyQbaUPR3MTJz
+ 5v07nSOachnKf1ctnZ8Ajodos21bSpVxxbs0C1rW3InSp2U/JA3IVpvrUAQNPsk08lJmhO9DX
+ yx3EhSVbXoTiqIltf93MZNXWNPAgeP5Jqvlkw8W+wMG8blEKyfiBYlyyeoSs2NSv60wgYb//Y
+ 0tgxXo7CHD9KScyK56EgogvT7RszOX6XbnWONi2CG8ZokJYdYIJw6FRRbajrdZp8FFQ7746wA
+ WWbm2bBee3nVGIYO/6pMT6oNObtX/BPStu3xgnZO+0Z0XPvjLuBrsdrzmxELzDfaRlsEdQFlu
+ 1xgEi0/WXz+hRINMQBcc9u7gM9Hpa9C3kIQBsc0lXhDMxdf1uOUq8+wsq9Sdk5v0wCdHhq9qW
+ 21ANEpwxjIpNuykUbA19aQQ25eF7alNjgPpbECt9BRXniySyaGjdOz0nGMsrbt98QL5LFpKfL
+ PqFu3a6SDpVJf+M8C7euEep2qs9BHZz/PPjFzmWfpMHdwUzwZAJeEdB+6p4bpBG9Fdk+TP7w3
+ yttKlYYCa8EpOsppwrsDZy3GuYxe+/XDvDj6wuIh6zFa6llpMpXyLytJAP91YMhr9ZcX99FVX
+ UQta/ngggqwfAHNmKS7fLarVnpi5/xeTI/jNAf8DLoosVOWiIZlmVn1ingMcMWn9408LNPMnX
+ 1OJVG2Tujcxg5VF8mY2g53HTp8gXlay3FjVAAkHmInH9g=
 
-From: Christoph Hellwig <hch@lst.de>
+On 2024-02-13 18:20 +0100, Greg Kroah-Hartman wrote:
 
-The file system type is not a very useful holder as it doesn't allow us
-to go back to the actual file system instance.  Pass the super_block
-instead which is useful when passed back to the file system driver.
+> This is the start of the stable review cycle for the 6.1.78 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 15 Feb 2024 17:18:29 +0000.
+> Anything received after that time might be too late.
 
-This matches what is done for all other block device based file systems.
+Works fine for me on x86_64.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Tested-by: Sven Joachim <svenjoac@gmx.de>
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1fa7d83d02c1..0c7956e8f21e 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1843,7 +1843,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 		struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 
- 		mutex_lock(&uuid_mutex);
--		ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-+		ret = btrfs_open_devices(fs_devices, mode, sb);
- 		mutex_unlock(&uuid_mutex);
- 		if (ret)
- 			goto error_deactivate;
-@@ -1856,7 +1856,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg",
- 			 fs_devices->latest_dev->bdev);
- 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
--		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
-+		btrfs_sb(sb)->bdev_holder = sb;
- 		ret = btrfs_fill_super(sb, fs_devices, NULL);
- 		if (ret)
- 			goto error_deactivate;
-
--- 
-2.43.0
-
+Cheers,
+       Sven
 
