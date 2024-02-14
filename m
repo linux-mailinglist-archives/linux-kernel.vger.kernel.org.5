@@ -1,190 +1,136 @@
-Return-Path: <linux-kernel+bounces-66103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F9678556E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:11:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BABF38556FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:14:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 223E61F273DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:11:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22E2D28D75D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4841014198B;
-	Wed, 14 Feb 2024 23:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACC21419BB;
+	Wed, 14 Feb 2024 23:14:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DEaA601A"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="dWDTxDVg"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC33C13A875
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54EED13F006;
+	Wed, 14 Feb 2024 23:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707952263; cv=none; b=haW+jDGanaJHb3o7Ip57J/NgfpD+0Lxx3x2CYPc7NoHSIcoNruynhaD15iKTqI92vX+CCi0l2wCnfd4Twl/WrsXbUITAvY9MtJPWDQMe6A5A1FbA2SrDqwwPc3oeF6NiVCnN/ur7Y6LysUAUMB3JGvgiQyo7wvs0DlDNk+SMYT8=
+	t=1707952443; cv=none; b=TTnrgnKzp9fV+CMBqnME+gqobyCrXaN0KId+9uSHTRirYgL6nedpyijCRUFXughoLM+NCuIs1wVR98Wts8a6En3INi1yvuCy4NF35kOpIjI+nx2rAh6k8rGEG9UGxwFM/B8EXUw4d6tluntC6uom7BJiMq/JmkceU265ywoBpUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707952263; c=relaxed/simple;
-	bh=UW8RGf9gZBE71QcUMtK+MfmU0jrUtwnNwb7STvh115o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XqLfaLTZzHjQkZ0TchYWyyeBbOvHRKOjtkNGWzLnGwDI2Dy74EjZSlrZOwS0/fT6ktagJL+cy0xkYd2gnp+nuzJEzMiRcBbn5oGtW2ofbTE3B8QwSifCvX42XKOGbYhqQUAcQInSgAjLrK8Cavo2BVQsH5njtgeoBswkofSdva0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DEaA601A; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4120933b710so11735e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:11:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707952260; x=1708557060; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pFdP6RSMwEWacxovIP52kptkXcSgN4Mbf51UhpxEIDc=;
-        b=DEaA601AuHQwnewbVKFA0QzUw+cjNuYf6Ma1elfxikdt33/2EalfbmoYUduRes5TV8
-         P4rHdbxVUSukeDLdqo6bH4orsmz3RNlZXpu8n0CXPy7VhaJ5/KXVVDXJPcMf3MoGT2Sl
-         pjXlxGysWEuCdRVXb6HLM5Dp9xwXIO9L34MkhQ11IxW/bicUxGbl1IN1WaqMnVqGJLCh
-         wH9eS5j0Tb3aoru3lHoERkWLkOys1H/4aRjVVoTUjOivMwLEk6GO8SdC1dq9WPWMch8g
-         pC3Gr21IZQPjglzRjxVSoXeoEk3/QFC6/PXsImnTaU08vcbbg1b2q86wMNI9WXrsVHue
-         ZYtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707952260; x=1708557060;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pFdP6RSMwEWacxovIP52kptkXcSgN4Mbf51UhpxEIDc=;
-        b=nrBvRprnjf9xpzHlevyapdGCoHLemg/kqD06jlDajBSzdem63YqJOi8G3lUHvI/8/Q
-         DhOEaGapbWVRkoHMFzezlrP0ifjdm+hRmcGW6BXrcGL7uhCxiuBjo3Dj7hMw+QaCwV8i
-         BPsMbXsNspOJY8s34kcyWbs7+JphjeQ2nFdayW8SNWYsa+TJf9vaiL7ekFg5TlzuPmmt
-         HIeL7JjfyX86CNTArfAp+Wi8TqPStMh8JXxUr/ESVgr64qjM6ZjXBA9C5fN+ey2LQQcD
-         PmjY27PZvbdqJVSkPIm1HQKEG2BrXVCmxMVBx10NrkUibnrnWlIXwbD/N1tBv7m1VQCT
-         KUSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVNQjnI+F9ng30LWnN+bImrd37ln3C6O+bv58mhzk5sJQcNdMzRAqZxrjcSxnOhUBNv7UKv12ZRTt/jsUH0t+QLU1l33S7boc6mrh8F
-X-Gm-Message-State: AOJu0Yy4fYBt8RIiyCRVY86tU3g5NV8UR5a4xOpnd3WVTFnSWUWHIpLm
-	vRZ6iKvnjD4Bb5UgEVTijjNUy5NvpxxHHSwYQKbvXnOMInDQuJeoKa5r5F/1J9oBu+JxfhAnYj4
-	ZBHj2yf4ksIQDgDd1baBFG7YCv8isNmmTHnS1
-X-Google-Smtp-Source: AGHT+IF/GMoDj0jOjVDt9C1sIgJVOb6+Nx4zE7qML7SwDzztZ+XjdTZSiyVZzroVRAotbePaXYYVUQbDyXUc8oU9ToQ=
-X-Received: by 2002:a05:600c:1d93:b0:411:cdf8:f3d1 with SMTP id
- p19-20020a05600c1d9300b00411cdf8f3d1mr347227wms.0.1707952259858; Wed, 14 Feb
- 2024 15:10:59 -0800 (PST)
+	s=arc-20240116; t=1707952443; c=relaxed/simple;
+	bh=gLQgyk5X0dfGFtt2TT12BCejyHtjgLKvuI1NVtt0538=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MTB51t14FxkxtnyOXmhW/qSP+6hxzp0GpVXgZUm17qrLnsL4pent859xP1fiP9jzBI/tNGfdSM85cUrNBl8dzlxbgODeX1E63VsZdg8wxgp2XPT6Th1dAyzKi5MwVVJO7tmYwO+bWZ477lUCNmHZSWQ9v2MjIg5eP4uNZTDdY3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=dWDTxDVg; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:From:Sender:Reply-To:Subject:Date:Message-ID:To:
+	Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Ww5EvsQOF699jHBYzWd4MuRfBoadfrzO0BL2hjc2gH4=; b=dWDTxDVgFCcm1eSezpPWqrkHOt
+	q1YKXH5ZsiCxLqjUpS1X8SFfaQPmlJimqna1uzCpAbUuPpNIpISxhJA1NQAHbJumWFQga4pcsYdtM
+	THBl3jyIuWyFcXmHbjapk8+Z+1n9k9rTKaJGvNPeYo272zJSaB50K+eQE0YdvWXxVg1U=;
+Received: from c-76-156-77-114.hsd1.mn.comcast.net ([76.156.77.114] helo=thinkpad.home.lunn.ch)
+	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raORx-007pqx-4l; Thu, 15 Feb 2024 00:13:57 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH net-next v2 0/8] drivers: net: Convert EEE handling to use
+ linkmode bitmaps
+Date: Wed, 14 Feb 2024 17:13:17 -0600
+Message-Id: <20240214-keee-u32-cleanup-v2-0-4ac534b83d66@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214212929.3753766-1-maskray@google.com> <202402141405.0755DD4E5E@keescook>
- <CAFP8O3LWBHkbLwFJdmy7iSGD0cMSy1jczETo=N6oVapCgPY=sA@mail.gmail.com> <202402141433.AC69F2A3@keescook>
-In-Reply-To: <202402141433.AC69F2A3@keescook>
-From: Fangrui Song <maskray@google.com>
-Date: Wed, 14 Feb 2024 15:10:46 -0800
-Message-ID: <CAFP8O3JZ9=QeJR0wZwYvLYVgXKo9DYBMsaxoBS9vLJZW-U1uZw@mail.gmail.com>
-Subject: Re: [PATCH] x86/build: Simplify patterns for unwanted section
-To: Kees Cook <keescook@chromium.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
-	Nathan Chancellor <nathan@kernel.org>, Heiko Carstens <hca@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA1JzWUC/3WNQQqDMBBFryKz7pQYU4ldeY/iQs1YQ2WUxIhFc
+ veG7Lt8PP77F3hyljw8iwscHdbblRPIWwHj3POb0JrEIIVUQgqFHyLCUEkcF+o5bDjo2tRaPbT
+ RAtJsczTZMydfwLQj07lDl8xs/b66b/46yuz/Z48SBU5DTUJXsjFN3y6B+T7O0MUYf58MDWG4A
+ AAA
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Ariel Elior <aelior@marvell.com>, 
+ Manish Chopra <manishc@marvell.com>, 
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+ Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+ Andrew Lunn <andrew@lunn.ch>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2155; i=andrew@lunn.ch;
+ h=from:subject:message-id; bh=gLQgyk5X0dfGFtt2TT12BCejyHtjgLKvuI1NVtt0538=;
+ b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBlzUkiGKMiPon6NtfhjVIhDqS+MTgu2ROwdFN6V
+ xw/QM+lh/CJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZc1JIgAKCRDmvw3LpmlM
+ hEvuD/wLKhX67mktUeliEEcXu/9ijGnoEzC9f7I6P41hTv8taKyQCcsxwJXIqrxHPqgmc8UaHFY
+ nTaYI7j1ZPgZl2in7IoP8z70KgT2oZCi/6RAL1G8zybnb7UapD6fXbuZQoxN11sShSD9z9ld+X8
+ foRAPfcma7ZDRLfOBejWREPkkd1eNVqs5uQhZMnyKI0i8+8uvW5fMIN8z7qF7zBZVnqESvDe8Vi
+ dMI/zyq8gyiCrX5xtyKQ54dzTw1HxpMJ7n4PTkASp7YdsRFKYSFzJLJbcGHhyAeB+zhZ/xrrp2B
+ oVrv1aMfe9W73U0dNWhmj8Q7xIPf8Kv2L/EJUIoAfYo0SMXXruaNhf/XpquBMrueYZo+hRQ2lIS
+ ftygWZnJfZ7FbsuI/qNreZSaIs2UNViUTAdGhtKwY/AdUE+24Ci2PJiwntVEBAzFytFM43OdH7K
+ eZeCO0Z/aD7ePbow3zoayL6q8xMZNRtcakQV1avmlj6gX/tLCFYTxDHF0TgA5brp+hBwR5G5LSw
+ OQv+YgMUYLzoV+nsyEbzEakITZEKnPOYdM//4+2dpEJSDGndtBtTFqaUlrv7FvVDJUBdj/jIKl7
+ Vw+lMmIToHcfgiUUJ6ifCkyCCMR0j9nCnveYiaCRtPWbJDo1MxCuVGnfC+qrpZEDjckowyb5UyD
+ yfZFeNXcYdE47oQ==
+X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
+ fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
 
-On Wed, Feb 14, 2024 at 2:40=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Wed, Feb 14, 2024 at 02:13:01PM -0800, Fangrui Song wrote:
-> > On Wed, Feb 14, 2024 at 2:07=E2=80=AFPM Kees Cook <keescook@chromium.or=
-g> wrote:
-> > >
-> > > On Wed, Feb 14, 2024 at 01:29:29PM -0800, Fangrui Song wrote:
-> > > > A s390 patch modeling its --orphan-handling=3D after x86 [1] sparke=
-d my
-> > > > motivation to simplify patterns. Commit 5354e84598f2 ("x86/build: A=
-dd
-> > > > asserts for unwanted sections") added asserts that certain input
-> > > > sections must be absent or empty. The patterns can be simplified.
-> > > >
-> > > > For dynamic relocations,
-> > > >
-> > > > *(.rela.*) is sufficient to match all dynamic relocations synthesiz=
-ed by
-> > > > GNU ld and LLD. .rela_* is unnecessary. --emit-relocs may create .r=
-ela_*
-> > > > sections for section names prefixed with _, but they are not matche=
-d by
-> > > > linker scripts.
-> > > >
-> > > > .plt instead of .plt.* is sufficient to match synthesized PLT entri=
-es.
-> > >
-> > > Do you mean ".plt.foo" matches ".plt" ?
-> >
-> > I mean we just need .plt : { *(.plt) } , not .plt : { *(.plt) *(.plt.*)=
- }.
->
-> But then, for example, if it gets generated, .plt.got ends up being
-> reported as an orphan...
->
-> >
-> > The linker synthesized section for PLT entries is .plt, not suffixed.
-> >
-> > > > .igot and .igot.plt are for non-preemptible STT_GNU_IFUNC in GNU ld=
- (LLD
-> > > > just uses .got), which the kernel does not use. In addition, if .ig=
-ot or
->
-> Right, the issue has been getting totally weird sections emitted by the
-> linker. If you're saying you'd rather those get reported as orphan
-> sections instead of being validated for being zero sized, and that works
-> for all the architectures, then okay.
+EEE has until recently been limited to lower speeds due to the use of
+the legacy u32 for link speeds. This restriction has been lifted, with
+the use of linkmode bitmaps. This patchset convert some MAC drivers
+still using the old _u32 to link modes, with the aim of soon being
+able to remove the legacy _u32 members in the keee structure.
 
-Thanks. I trust my judgement here:)
+A couple of Intel drivers do odd things with EEE, setting the autoneg
+bit. It is unclear why, no other driver does, ethtool does not display
+it, and EEE is always negotiated. One patch in this series deletes
+this code. Comments on why its actually useful and should be kept are
+gratefully received.
 
-> > > > .igot.plt is ever non-empty, there will be .rela.* dynamic relocati=
-ons
-> > > > leading to an assert failure anyway.
-> > >
-> > > I think at the time I was dealing with avoid multiple warnings out of
-> > > the linker, as I was getting orphan warnings in addition to the
-> > > non-empty warnings.
-> > >
-> > > >
-> > > > [1]: https://lore.kernel.org/all/20240207-s390-lld-and-orphan-warn-=
-v1-6-8a665b3346ab@kernel.org/
-> > > >
-> > > > Signed-off-by: Fangrui Song <maskray@google.com>
-> > >
-> > > Is anything harmed by leaving all of this as-is?
-> > >
-> > > -Kees
-> >
-> > No harm. But ports adopting --orphan-handling=3D (like s390) may copy
-> > the unneeded .rela_* .
-> > When people read .rela_*, they might think whether the kernel does
-> > anything special that
-> > .rela_* needs to be matched.
->
-> I added these because the were being generated. See commit d1c0272bc1c0
-> ("x86/boot/compressed: Remove, discard, or assert for unwanted sections")
->
-> I don't want to suddenly start generating warnings for older/broken
-> linkers. (i.e. a change like this needs really careful testing, and that
-> needs to be detailed in the commit log.)
->
-> -Kees
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+---
+Changes in v2:
+- igb: Fix type 100BaseT to 1000BaseT.
+- Link to v1: https://lore.kernel.org/r/20240204-keee-u32-cleanup-v1-0-fb6e08329d9a@lunn.ch
 
-I saw this commit and still believe .rela_*  is unnecessary for all
-supported binutils versions.
-GNU ld 2.25 does not support --orphan-handling=3Derror (2015-09
-feature), but it manages to link vmlinux without any warning.
+---
+Andrew Lunn (8):
+      net: usb: r8152: Use linkmode helpers for EEE
+      net: usb: ax88179_178a: Use linkmode helpers for EEE
+      net: qlogic: qede: Use linkmode helpers for EEE
+      net: ethernet: ixgbe: Convert EEE to use linkmodes
+      net: intel: i40e/igc: Remove setting Autoneg in EEE capabilities
+      net: intel: e1000e: Use linkmode helpers for EEE
+      net: intel: igb: Use linkmode helpers for EEE
+      net: intel: igc: Use linkmode helpers for EEE
 
-/tmp/binutils-2.25/out/release/ld/ld-new -m elf_x86_64 -z noexecstack
---emit-relocs --discard-none -z max-page-size=3D0x200000 --build-id=3Dsha1
---script=3D./arch/x86/kernel/vmlinux.lds -o vmlinux --whole-archive
-vmlinux.o .vmlinux.export.o init/version-timestamp.o
---no-whole-archive --start-group --end-group .tmp_vmlinux.kallsyms2.o
+ drivers/net/ethernet/intel/e1000e/ethtool.c      | 17 +++++--
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c   |  7 +--
+ drivers/net/ethernet/intel/igb/igb_ethtool.c     | 33 ++++++++-----
+ drivers/net/ethernet/intel/igc/igc_ethtool.c     | 13 ++---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 48 ++++++++++---------
+ drivers/net/ethernet/qlogic/qede/qede_ethtool.c  | 60 +++++++++++++++---------
+ drivers/net/usb/Kconfig                          |  1 +
+ drivers/net/usb/ax88179_178a.c                   |  9 ++--
+ drivers/net/usb/r8152.c                          | 31 ++++++------
+ 9 files changed, 123 insertions(+), 96 deletions(-)
+---
+base-commit: d1d77120bc2867b3e449e07ee656a26b2fb03d1e
+change-id: 20240204-keee-u32-cleanup-b86d68458d80
 
+Best regards,
+-- 
+Andrew Lunn <andrew@lunn.ch>
 
-> --
-> Kees Cook
-
-
-
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
 
