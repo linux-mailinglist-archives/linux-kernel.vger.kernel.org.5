@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-65805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62064855217
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:30:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DAD85521A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:31:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCD621F2989E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:30:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F71E1F298E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C06612C540;
-	Wed, 14 Feb 2024 18:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C007A12C80C;
+	Wed, 14 Feb 2024 18:30:37 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7594E12BF23
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC1612BF1C
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 18:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707935435; cv=none; b=RiO1hVzT9W07Hh/QHN7p8ErB/RqR0yXYCbimyG0YcndRzDumKeqF1J46utp0v+fCtNpDVpvLis1YkYLLOrsQQw9F4ACEGI6sF9RUOSJaKpdovk4y2bmyRZxVUXRUhDud4Lzar9wHkUr8NAcUC+v5PXZhtmfT0Pim5Jtpm4ARgYs=
+	t=1707935437; cv=none; b=HmageslhNHufQEYklkOly2FwqQPsoEymNTgyF/A0T0wXolX0WfZBTOncn3NZg4cuHSdfdcSJKZZDzXVM/2TLF6UzNL/fTwhXKkKeBQnnrxoe7MSe4QdWGaEb9lr+Bm3KA30koC4HdfC1SzR3jQFeknsU2cRdf/zFhu9e+s8sfrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707935435; c=relaxed/simple;
-	bh=L7rCObjeJJ/6znwFBtlQDxE88+afFeZnyW7f58K3Lx8=;
+	s=arc-20240116; t=1707935437; c=relaxed/simple;
+	bh=aLQIYcBnbK+esT1CQfwNNNQB4YwDBeNIL7pYpzFWpYU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A2ApI2Hjq7lLD6/Xj1LRQqYLpYFng5tN2Ov48qjQq8VnRUFFy3itQJwla3TVhhYIFGlv9NT/AIeuLWP2bPHmDCOk4Zox4cU0DKsoh/GBsUnm8ctSY6wqw3l2iBDebJau75EgFxpAIix7eSG+elg2aawvv+ygKZcuU34JEwgU//M=
+	 MIME-Version; b=ivQzZYg3ShBEs1x34ivgVP0H+TDV5O43nQDbySxMrYts2ilFGWkAoyA3kZNQ4blHEKDxKEXdmLMgMIGbCC2pp4esMyokH80iJ7DU+nIE/pONMt9f8KAZT7Ye/qH9HmLcP0GXye/1sbBxG9ICXdFrsJspBI94k5OSAUEsEsQFnZM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AB90DA7;
-	Wed, 14 Feb 2024 10:31:13 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B94A1476;
+	Wed, 14 Feb 2024 10:31:15 -0800 (PST)
 Received: from pluto.fritz.box (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E92FE3F7B4;
-	Wed, 14 Feb 2024 10:30:30 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC2173F7B4;
+	Wed, 14 Feb 2024 10:30:32 -0800 (PST)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
@@ -45,9 +45,9 @@ Cc: sudeep.holla@arm.com,
 	quic_nkela@quicinc.com,
 	souvik.chakravarty@arm.com,
 	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH 1/7] firmware: arm_scmi: Add a common helper to check if a message is supported
-Date: Wed, 14 Feb 2024 18:30:00 +0000
-Message-ID: <20240214183006.3403207-2-cristian.marussi@arm.com>
+Subject: [PATCH 2/7] firmware: arm_scmi: Add support for v3.2 NEGOTIATE_PROTOCOL_VERSION
+Date: Wed, 14 Feb 2024 18:30:01 +0000
+Message-ID: <20240214183006.3403207-3-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240214183006.3403207-1-cristian.marussi@arm.com>
 References: <20240214183006.3403207-1-cristian.marussi@arm.com>
@@ -59,86 +59,132 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A common helper is provided to check if a specific protocol message is
-supported or not.
+Freshly introduced NEGOTIATE_PROTOCOL_VERSION allows the agent to ascertain
+upfront if a specific, usually older, protocol version is supported by the
+platform.
+
+It is used by the agent in case the platform has advertised the support of
+a newer protocol version than the latest version supported by the agent,
+since backward compatibility cannot be automatically assumed.
+
+Emit a warning about possible incompatibility when negotiation was not
+possible or just print the successfully negotiated protocol.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/driver.c    | 34 +++++++++++++++++++++++++++
- drivers/firmware/arm_scmi/protocols.h |  4 ++++
- 2 files changed, 38 insertions(+)
+ drivers/firmware/arm_scmi/driver.c    | 65 ++++++++++++++++++++++++---
+ drivers/firmware/arm_scmi/protocols.h |  1 +
+ 2 files changed, 61 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 3ea64b22cf0d..4a64ad5c21ee 100644
+index 4a64ad5c21ee..34d77802c990 100644
 --- a/drivers/firmware/arm_scmi/driver.c
 +++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1754,10 +1754,44 @@ static void scmi_common_fastchannel_db_ring(struct scmi_fc_db_info *db)
- #endif
+@@ -86,6 +86,12 @@ struct scmi_xfers_info {
+  * @users: A refcount to track effective users of this protocol.
+  * @priv: Reference for optional protocol private data.
+  * @version: Protocol version supported by the platform as detected at runtime.
++ * @negotiated_version: When the platform supports a newer protocol version,
++ *			the agent will try to negotiate with the platform the
++ *			usage of the newest version known to it, since
++ *			backward compatibility is NOT automatically assured.
++ *			This field is NON-zero when a successful negotiation
++ *			has completed.
+  * @ph: An embedded protocol handle that will be passed down to protocol
+  *	initialization code to identify this instance.
+  *
+@@ -99,6 +105,7 @@ struct scmi_protocol_instance {
+ 	refcount_t			users;
+ 	void				*priv;
+ 	unsigned int			version;
++	unsigned int			negotiated_version;
+ 	struct scmi_protocol_handle	ph;
+ };
+ 
+@@ -1815,6 +1822,44 @@ scmi_revision_area_get(const struct scmi_protocol_handle *ph)
+ 	return pi->handle->version;
  }
  
 +/**
-+ * scmi_protocol_msg_check  - Check protocol message attributes
++ * scmi_protocol_version_negotiate  - Negotiate protocol version
 + *
 + * @ph: A reference to the protocol handle.
-+ * @message_id: The ID of the message to check.
-+ * @attributes: A parameter to optionally return the retrieved message
-+ *		attributes, in case of Success.
 + *
-+ * An helper to check protocol message attributes for a specific protocol
-+ * and message pair.
++ * An helper to negotiate a protocol version different from the latest
++ * advertised as supported from the platform: on Success backward
++ * compatibility is assured by the platform.
 + *
-+ * Return: 0 on SUCCESS
++ * Return: 0 on Success
 + */
-+static int scmi_protocol_msg_check(const struct scmi_protocol_handle *ph,
-+				   u32 message_id, u32 *attributes)
++static int scmi_protocol_version_negotiate(struct scmi_protocol_handle *ph)
 +{
 +	int ret;
 +	struct scmi_xfer *t;
++	struct scmi_protocol_instance *pi = ph_to_pi(ph);
 +
-+	ret = xfer_get_init(ph, PROTOCOL_MESSAGE_ATTRIBUTES,
++	/* At first check if NEGOTIATE_PROTOCOL_VERSION is supported ... */
++	ret = scmi_protocol_msg_check(ph, NEGOTIATE_PROTOCOL_VERSION, NULL);
++	if (ret)
++		return ret;
++
++	/* ... then attempt protocol version negotiation */
++	ret = xfer_get_init(ph, NEGOTIATE_PROTOCOL_VERSION,
 +			    sizeof(__le32), 0, &t);
 +	if (ret)
 +		return ret;
 +
-+	put_unaligned_le32(message_id, t->tx.buf);
++	put_unaligned_le32(pi->proto->supported_version, t->tx.buf);
 +	ret = do_xfer(ph, t);
-+	if (!ret && attributes)
-+		*attributes = get_unaligned_le32(t->rx.buf);
++	if (!ret)
++		pi->negotiated_version = pi->proto->supported_version;
++
 +	xfer_put(ph, t);
 +
 +	return ret;
 +}
 +
- static const struct scmi_proto_helpers_ops helpers_ops = {
- 	.extended_name_get = scmi_common_extended_name_get,
- 	.iter_response_init = scmi_iterator_init,
- 	.iter_response_run = scmi_iterator_run,
-+	.protocol_msg_check = scmi_protocol_msg_check,
- 	.fastchannel_init = scmi_common_fastchannel_init,
- 	.fastchannel_db_ring = scmi_common_fastchannel_db_ring,
- };
+ /**
+  * scmi_alloc_init_protocol_instance  - Allocate and initialize a protocol
+  * instance descriptor.
+@@ -1887,11 +1932,21 @@ scmi_alloc_init_protocol_instance(struct scmi_info *info,
+ 	devres_close_group(handle->dev, pi->gid);
+ 	dev_dbg(handle->dev, "Initialized protocol: 0x%X\n", pi->proto->id);
+ 
+-	if (pi->version > proto->supported_version)
+-		dev_warn(handle->dev,
+-			 "Detected UNSUPPORTED higher version 0x%X for protocol 0x%X."
+-			 "Backward compatibility is NOT assured.\n",
+-			 pi->version, pi->proto->id);
++	if (pi->version > proto->supported_version) {
++		ret = scmi_protocol_version_negotiate(&pi->ph);
++		if (!ret) {
++			dev_info(handle->dev,
++				 "Protocol 0x%X successfully negotiated version 0x%X\n",
++				 proto->id, pi->negotiated_version);
++		} else {
++			dev_warn(handle->dev,
++				 "Detected UNSUPPORTED higher version 0x%X for protocol 0x%X.\n",
++				 pi->version, pi->proto->id);
++			dev_warn(handle->dev,
++				 "Trying version 0x%X. Backward compatibility is NOT assured.\n",
++				 pi->proto->supported_version);
++		}
++	}
+ 
+ 	return pi;
+ 
 diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
-index e683c26f24eb..26a3edd49fea 100644
+index 26a3edd49fea..693019fff0f6 100644
 --- a/drivers/firmware/arm_scmi/protocols.h
 +++ b/drivers/firmware/arm_scmi/protocols.h
-@@ -251,6 +251,8 @@ struct scmi_fc_info {
-  *			provided in @ops.
-  * @iter_response_run: A common helper to trigger the run of a previously
-  *		       initialized iterator.
-+ * @protocol_msg_check: A common helper to check is a specific protocol message
-+ *			is supported.
-  * @fastchannel_init: A common helper used to initialize FC descriptors by
-  *		      gathering FC descriptions from the SCMI platform server.
-  * @fastchannel_db_ring: A common helper to ring a FC doorbell.
-@@ -264,6 +266,8 @@ struct scmi_proto_helpers_ops {
- 				    unsigned int max_resources, u8 msg_id,
- 				    size_t tx_size, void *priv);
- 	int (*iter_response_run)(void *iter);
-+	int (*protocol_msg_check)(const struct scmi_protocol_handle *ph,
-+				  u32 message_id, u32 *attributes);
- 	void (*fastchannel_init)(const struct scmi_protocol_handle *ph,
- 				 u8 describe_id, u32 message_id,
- 				 u32 valid_size, u32 domain,
+@@ -33,6 +33,7 @@ enum scmi_common_cmd {
+ 	PROTOCOL_VERSION = 0x0,
+ 	PROTOCOL_ATTRIBUTES = 0x1,
+ 	PROTOCOL_MESSAGE_ATTRIBUTES = 0x2,
++	NEGOTIATE_PROTOCOL_VERSION = 0x10,
+ };
+ 
+ /**
 -- 
 2.43.0
 
