@@ -1,159 +1,300 @@
-Return-Path: <linux-kernel+bounces-65732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63A18550EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:56:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DB78550E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDF121C2A044
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:56:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE28CB22FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE08E1272D0;
-	Wed, 14 Feb 2024 17:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="CANiH6Gk"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBEC128384;
-	Wed, 14 Feb 2024 17:55:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C99127B75;
+	Wed, 14 Feb 2024 17:55:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9141170F;
+	Wed, 14 Feb 2024 17:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933357; cv=none; b=qfzVuwm8aSe7RKJn+2G9MkdQwH1ub+IqHIit+gXlPdVFdLXESZYfMq7moV7z9XnOaEdAMqBgN43hv+LFV2/7IgFKSBMj+RN7VQAOjbPlCt4lwTXzLz+dbmArHzsmqyRFOycC5QUjdpP8m4MuBA5qiDxefdLtC+QKoW1XQbWI1j0=
+	t=1707933332; cv=none; b=GJaqlaOjJ/R2j6IXv2WF7oC8s5oMKVIBljqooQIqxtko/ZQ+ikHOscBX2t4DT9gOaFyOpTIDgTdCndNGedbq8iGVPYBVIP5FJpIVOeCEUK+zuO7e781QuV0MbTjl23Ygn8HCG7wxki/3WnbRREXLllAEbukSyq6eJU4p3ZRoeXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933357; c=relaxed/simple;
-	bh=3qB79HFhmwRQp/g0OaJbQumLxLHsG6yTbWfyt0udki8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ewMIs5AR9QzqW06O+iFVYoWyRx6B0pKNY4Ljas2cjwEk7DSdQTNvKxm9lPfz9eTPuTYpy5laC2H4ESKmR5OkAvvmFX6zgULSm7tVS8vrzJbGRSLwVbNR4eatZfVOIkhl5fVxhZS6t/Cf22kd80yVGTQ3sXxiUVM1VrEpI1NT/kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=CANiH6Gk; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.160.19])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 03A7920B2000;
-	Wed, 14 Feb 2024 09:55:55 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 03A7920B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1707933355;
-	bh=r+rU2WMM4VJfoXEWQNhgxysCmsxnkWOjgrrXu2wK71A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CANiH6GkGIzkHCJvTmaYYdBbsgL+mrRs2lfI6hhhbU35UwoGFie29kiAWK/wPd8kn
-	 NBeGr6rQ2UuRKn2CUsYs5mwOCE1Uf5nw/ckCX9rBz7wW5i8GmnCuw16FHmrsmb9VNa
-	 8rWPxip0zOgOfI9hR2Ss9o5Ib4rVfg3MiqYSS/es=
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Easwar Hariharan <eahariha@linux.microsoft.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)),
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-kernel@vger.kernel.org (open list)
-Cc: stable@vger.kernel.org
-Subject: [PATCH v2] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM Neoverse N2 errata
-Date: Wed, 14 Feb 2024 17:55:18 +0000
-Message-Id: <20240214175522.2457857-1-eahariha@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707933332; c=relaxed/simple;
+	bh=Q+zwuCQCedgZ3MWerytsD0hvfHCUgL8H8cPvcaHYg0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eOU/LRC8YqzaPEch0rPwdPv2A17hUgPK/tWQvL2S+UGy4mNq8f+NT60CZfUrP6V2PigbnKbZ57bd9LOJtx2gROvJl0SCNfrkLIfoVAGCaYZDAfAEWQrZHjRslhdqV+rKRKsxr6Kws2cWZUs9DZnr9CfNS5qPuuY1zSGTcJou2iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FC911FB;
+	Wed, 14 Feb 2024 09:56:09 -0800 (PST)
+Received: from [10.57.47.86] (unknown [10.57.47.86])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C2E73F766;
+	Wed, 14 Feb 2024 09:55:24 -0800 (PST)
+Message-ID: <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
+Date: Wed, 14 Feb 2024 17:55:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 2/7] dma: avoid redundant calls for sync
+ operations
+Content-Language: en-GB
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
+ <20240214162201.4168778-3-aleksander.lobakin@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240214162201.4168778-3-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
-implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
-suffers from all the same errata.
+On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
+> Quite often, devices do not need dma_sync operations on x86_64 at least.
+> Indeed, when dev_is_dma_coherent(dev) is true and
+> dev_use_swiotlb(dev) is false, iommu_dma_sync_single_for_cpu()
+> and friends do nothing.
+> 
+> However, indirectly calling them when CONFIG_RETPOLINE=y consumes about
+> 10% of cycles on a cpu receiving packets from softirq at ~100Gbit rate.
+> Even if/when CONFIG_RETPOLINE is not set, there is a cost of about 3%.
+> 
+> Add dev->skip_dma_sync boolean which is set during the device
+> initialization depending on the setup: dev_is_dma_coherent() for the
+> direct DMA, !(sync_single_for_device || sync_single_for_cpu) or the new
+> dma_map_ops flag, %DMA_F_CAN_SKIP_SYNC, advertised for non-NULL DMA ops.
+> Then later, if/when swiotlb is used for the first time, the flag
+> is turned off, from swiotlb_tbl_map_single().
+> 
+> On iavf, the UDP trafficgen with XDP_DROP in skb mode test shows
+> +3-5% increase for direct DMA.
+> 
+> Suggested-by: Christoph Hellwig <hch@lst.de> # direct DMA shortcut
+> Co-developed-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>   include/linux/device.h      |  5 +++++
+>   include/linux/dma-map-ops.h | 21 ++++++++++++++++++++
+>   include/linux/dma-mapping.h |  6 +++++-
+>   drivers/base/dd.c           |  2 ++
+>   kernel/dma/mapping.c        | 39 ++++++++++++++++++++++++++++++++++++-
+>   kernel/dma/swiotlb.c        |  8 ++++++++
+>   6 files changed, 79 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 97c4b046c09d..f23e6a32bea0 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -686,6 +686,8 @@ struct device_physical_location {
+>    *		other devices probe successfully.
+>    * @dma_coherent: this particular device is dma coherent, even if the
+>    *		architecture supports non-coherent devices.
+> + * @dma_skip_sync: DMA sync operations can be skipped for coherent non-SWIOTLB
+> + *		buffers.
+>    * @dma_ops_bypass: If set to %true then the dma_ops are bypassed for the
+>    *		streaming DMA operations (->map_* / ->unmap_* / ->sync_*),
+>    *		and optionall (if the coherent mask is large enough) also
+> @@ -800,6 +802,9 @@ struct device {
+>       defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+>   	bool			dma_coherent:1;
+>   #endif
+> +#ifdef CONFIG_DMA_NEED_SYNC
+> +	bool			dma_skip_sync:1;
+> +#endif
+>   #ifdef CONFIG_DMA_OPS_BYPASS
+>   	bool			dma_ops_bypass : 1;
+>   #endif
+> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> index 4abc60f04209..327b73f653ad 100644
+> --- a/include/linux/dma-map-ops.h
+> +++ b/include/linux/dma-map-ops.h
+> @@ -18,8 +18,11 @@ struct iommu_ops;
+>    *
+>    * DMA_F_PCI_P2PDMA_SUPPORTED: Indicates the dma_map_ops implementation can
+>    * handle PCI P2PDMA pages in the map_sg/unmap_sg operation.
+> + * DMA_F_CAN_SKIP_SYNC: DMA sync operations can be skipped if the device is
+> + * coherent and it's not an SWIOTLB buffer.
+>    */
+>   #define DMA_F_PCI_P2PDMA_SUPPORTED     (1 << 0)
+> +#define DMA_F_CAN_SKIP_SYNC		BIT(1)
 
-CC: stable@vger.kernel.org # 5.15+
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
-changelog:
-v1->v2:
-* v1: https://lore.kernel.org/linux-arm-kernel/20240212232909.2276378-1-eahariha@linux.microsoft.com/T/#u
-* Consistently use MICROSOFT throughout
----
- Documentation/arch/arm64/silicon-errata.rst | 7 +++++++
- arch/arm64/include/asm/cputype.h            | 4 ++++
- arch/arm64/kernel/cpu_errata.c              | 3 +++
- 3 files changed, 14 insertions(+)
+Yuck, please be consistent - either match the style of the existing 
+code, or change that to BIT(0) as well.
 
-diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-index e8c2ce1f9df6..45a7f4932fe0 100644
---- a/Documentation/arch/arm64/silicon-errata.rst
-+++ b/Documentation/arch/arm64/silicon-errata.rst
-@@ -243,3 +243,10 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ASR            | ASR8601         | #8601001        | N/A                         |
- +----------------+-----------------+-----------------+-----------------------------+
-++----------------+-----------------+-----------------+-----------------------------+
-+| Microsoft      | Azure Cobalt 100| #2139208        | ARM64_ERRATUM_2139208       |
-++----------------+-----------------+-----------------+-----------------------------+
-+| Microsoft      | Azure Cobalt 100| #2067961        | ARM64_ERRATUM_2067961       |
-++----------------+-----------------+-----------------+-----------------------------+
-+| Microsoft      | Azure Cobalt 100| #2253138        | ARM64_ERRATUM_2253138       |
-++----------------+-----------------+-----------------+-----------------------------+
-diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-index 7c7493cb571f..52f076afeb96 100644
---- a/arch/arm64/include/asm/cputype.h
-+++ b/arch/arm64/include/asm/cputype.h
-@@ -61,6 +61,7 @@
- #define ARM_CPU_IMP_HISI		0x48
- #define ARM_CPU_IMP_APPLE		0x61
- #define ARM_CPU_IMP_AMPERE		0xC0
-+#define ARM_CPU_IMP_MICROSOFT		0x6D
- 
- #define ARM_CPU_PART_AEM_V8		0xD0F
- #define ARM_CPU_PART_FOUNDATION		0xD00
-@@ -135,6 +136,8 @@
- 
- #define AMPERE_CPU_PART_AMPERE1		0xAC3
- 
-+#define MICROSOFT_CPU_PART_AZURE_COBALT_100	0xD49 /* Based on r0p0 of ARM Neoverse N2 */
-+
- #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
- #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
- #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
-@@ -193,6 +196,7 @@
- #define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
- #define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
- #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
-+#define MIDR_MICROSOFT_AZURE_COBALT_100 MIDR_CPU_MODEL(ARM_CPU_IMP_MICROSOFT, MICROSOFT_CPU_PART_AZURE_COBALT_100)
- 
- /* Fujitsu Erratum 010001 affects A64FX 1.0 and 1.1, (v0r0 and v1r0) */
- #define MIDR_FUJITSU_ERRATUM_010001		MIDR_FUJITSU_A64FX
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index 967c7c7a4e7d..76b8dd37092a 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -374,6 +374,7 @@ static const struct midr_range erratum_1463225[] = {
- static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_2139208
- 	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-+	MIDR_ALL_VERSIONS(MIDR_MICROSOFT_AZURE_COBALT_100),
- #endif
- #ifdef CONFIG_ARM64_ERRATUM_2119858
- 	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-@@ -387,6 +388,7 @@ static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
- static const struct midr_range tsb_flush_fail_cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_2067961
- 	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-+	MIDR_ALL_VERSIONS(MIDR_MICROSOFT_AZURE_COBALT_100),
- #endif
- #ifdef CONFIG_ARM64_ERRATUM_2054223
- 	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-@@ -399,6 +401,7 @@ static const struct midr_range tsb_flush_fail_cpus[] = {
- static struct midr_range trbe_write_out_of_range_cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_2253138
- 	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-+	MIDR_ALL_VERSIONS(MIDR_MICROSOFT_AZURE_COBALT_100),
- #endif
- #ifdef CONFIG_ARM64_ERRATUM_2224489
- 	MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
--- 
-2.34.1
+>   struct dma_map_ops {
+>   	unsigned int flags;
+> @@ -111,6 +114,24 @@ static inline void set_dma_ops(struct device *dev,
+>   }
+>   #endif /* CONFIG_DMA_OPS */
+>   
+> +#ifdef CONFIG_DMA_NEED_SYNC
+> +void dma_setup_skip_sync(struct device *dev);
+> +
+> +static inline void dma_clear_skip_sync(struct device *dev)
+> +{
+> +	/* Clear it only once so that the function can be called on hotpath */
+> +	if (unlikely(dev->dma_skip_sync))
+> +		dev->dma_skip_sync = false;
+> +}
+> +#else /* !CONFIG_DMA_NEED_SYNC */
+> +static inline void dma_setup_skip_sync(struct device *dev)
+> +{
+> +}
+> +static inline void dma_clear_skip_sync(struct device *dev)
+> +{
+> +}
+> +#endif /* !CONFIG_DMA_NEED_SYNC */
+> +
+>   #ifdef CONFIG_DMA_CMA
+>   extern struct cma *dma_contiguous_default_area;
+>   
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index 6c7640441214..d85ae541c267 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -364,7 +364,11 @@ static inline void __dma_sync_single_range_for_device(struct device *dev,
+>   
+>   static inline bool dma_skip_sync(const struct device *dev)
+>   {
+> -	return !IS_ENABLED(CONFIG_DMA_NEED_SYNC);
+> +#ifdef CONFIG_DMA_NEED_SYNC
+> +	return dev->dma_skip_sync;
+> +#else
+> +	return true;
+> +#endif
+>   }
+>   
+>   static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 85152537dbf1..67ad3e1d51f6 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -642,6 +642,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+>   			goto pinctrl_bind_failed;
+>   	}
+>   
+> +	dma_setup_skip_sync(dev);
+> +
+>   	ret = driver_sysfs_add(dev);
+>   	if (ret) {
+>   		pr_err("%s: driver_sysfs_add(%s) failed\n",
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 85feaa0e008c..5f588e31ea89 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -846,8 +846,14 @@ bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+>   	const struct dma_map_ops *ops = get_dma_ops(dev);
+>   
+>   	if (dma_map_direct(dev, ops))
+> +		/*
+> +		 * dma_skip_sync could've been set to false on first SWIOTLB
+> +		 * buffer mapping, but @dma_addr is not necessary an SWIOTLB
+> +		 * buffer. In this case, fall back to more granular check.
+> +		 */
+>   		return dma_direct_need_sync(dev, dma_addr);
+> -	return ops->sync_single_for_cpu || ops->sync_single_for_device;
+> +
+> +	return true;
+>   }
+>   EXPORT_SYMBOL_GPL(__dma_need_sync);
+>   
+> @@ -861,3 +867,34 @@ unsigned long dma_get_merge_boundary(struct device *dev)
+>   	return ops->get_merge_boundary(dev);
+>   }
+>   EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
+> +
+> +#ifdef CONFIG_DMA_NEED_SYNC
+> +void dma_setup_skip_sync(struct device *dev)
+> +{
+> +	const struct dma_map_ops *ops = get_dma_ops(dev);
+> +
+> +	if (dma_map_direct(dev, ops))
 
+For DMA_OPS_BYPASS this will be making the decision based on the default 
+dma_mask, but a driver could subsequently set a smaller mask for which 
+the bypass condition will no longer be true.
+
+Maybe instead of driver probe this setup should actually be tied in to 
+dma_set_mask() anyway?
+
+> +		/*
+> +		 * dma_skip_sync will be set to false on first SWIOTLB buffer
+> +		 * mapping, if any. During the device initialization, it's
+> +		 * enough to check only for DMA coherence.
+> +		 */
+> +		dev->dma_skip_sync = dev_is_dma_coherent(dev);
+> +	else if (!ops->sync_single_for_device && !ops->sync_single_for_cpu)
+
+I guess this was the existing condition from dma_need_sync(), but now 
+it's on a one-off slow path it might be nice to check the sync_sg_* ops 
+as well for completeness, or at least comment that nobody should be 
+implementing those without also implementing the sync_single_* ops.
+
+> +		/*
+> +		 * Synchronization is not possible when none of DMA sync ops
+> +		 * is set. This check precedes the below one as it disables
+> +		 * the synchronization unconditionally.
+> +		 */
+> +		dev->dma_skip_sync = true;
+> +	else if (ops->flags & DMA_F_CAN_SKIP_SYNC)
+
+Personally I'd combine this into the dma-direct condition.
+
+> +		/*
+> +		 * Assume that when ``DMA_F_CAN_SKIP_SYNC`` is advertised,
+> +		 * the conditions for synchronizing are the same as with
+> +		 * the direct DMA.
+> +		 */
+> +		dev->dma_skip_sync = dev_is_dma_coherent(dev);
+> +	else
+> +		dev->dma_skip_sync = false;
+> +}
+> +#endif /* CONFIG_DMA_NEED_SYNC */
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index b079a9a8e087..0b737eab4d48 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -1323,6 +1323,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+>   		return (phys_addr_t)DMA_MAPPING_ERROR;
+>   	}
+>   
+> +	/*
+> +	 * If dma_skip_sync was set, reset it to false on first SWIOTLB buffer
+> +	 * mapping to always sync SWIOTLB buffers.
+> +	 */
+> +	dma_clear_skip_sync(dev);
+> +
+>   	/*
+>   	 * Save away the mapping from the original address to the DMA address.
+>   	 * This is needed when we sync the memory.  Then we sync the buffer if
+> @@ -1640,6 +1646,8 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
+>   	if (index == -1)
+>   		return NULL;
+>   
+> +	dma_clear_skip_sync(dev);
+
+We don't need this here, since this isn't a streaming API path.
+
+Thanks,
+Robin.
+
+> +
+>   	tlb_addr = slot_addr(pool->start, index);
+>   
+>   	return pfn_to_page(PFN_DOWN(tlb_addr));
 
