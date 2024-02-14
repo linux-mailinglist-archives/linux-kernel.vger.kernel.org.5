@@ -1,199 +1,287 @@
-Return-Path: <linux-kernel+bounces-65933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D76C8553F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5758553F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33EFAB2C5EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:24:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E41931F21D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E9E13EFE8;
-	Wed, 14 Feb 2024 20:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21BE13EFE4;
+	Wed, 14 Feb 2024 20:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qo0VTsyt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WLw9eMwG"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1984513A89A;
-	Wed, 14 Feb 2024 20:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707942267; cv=fail; b=EKTN19zS10+C1paWMVIQ8HUYqon8yyYg04I8tc5GEPzBcP0BAOM1U+3HK+Kcj6d2BSxXdDG0hguKPDuhTqjzkUwuoQgj/+SO83++sdG2ZIKnN3x4sHMpMXLv/c8dN/8gEgB1lD4iLgoMlFcEomWbSVp5d7sKyiWJ0JrSVPq7JAE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707942267; c=relaxed/simple;
-	bh=DYjI1xKK9r5hx/+ikbCqo5NMHITTRnbeOID25yRI8FQ=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZVL31TmYbWvoDW7UteRnDlC5hFgQWC96wcBrCtjledqOEvvOeMPRLo4c+6xc6JW4hYTN5rlxPzzsVU58Q452QkTaTHhmbLbktW/LAe16rnPHA2d9iUet8O0rUtTwwu1kHLaBy7USC8KI/9V/gsee66rg/gPVwHx7F9noiSp1wmM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qo0VTsyt; arc=fail smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707942265; x=1739478265;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DYjI1xKK9r5hx/+ikbCqo5NMHITTRnbeOID25yRI8FQ=;
-  b=Qo0VTsyt0FJGysSBDSDwhwFFRdM2rBS9QzbsD6EXOxOI8j8BraP1xF6G
-   RihHS6KalH2nW3qbFiYtk3ezowaSqpxZVTWiL+CugwMT5QyjUn5uZuHi6
-   jZ5VEfiBRYGIsOw4XjDEwhBGdDjwxK5UVPlH+x+mbCSLNMl9ZX3lfvihE
-   85jEMoOQczAUGllkoVbBw+uGRKy9NH0D5Gs3vxkEPBAYh3nigoHj3+jd1
-   UJzCi1SvVooBw23OIDpMlDYhy3qJlx4v2tKW8JZ2EH71RZSVWXGedGxc5
-   mFKP4CWqpPP3lFnOxd/bdPFXz0JbCbO+cP9Xa3DbeTBHyC33dxgxCkV5o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2130487"
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="2130487"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 12:24:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
-   d="scan'208";a="3286523"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Feb 2024 12:24:24 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 14 Feb 2024 12:24:24 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 14 Feb 2024 12:24:24 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 14 Feb 2024 12:24:19 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VQ4lD6mqM07b8l3HxlXjQCc+oEsRIQPoGh9VmgwnWJm6A/nDyQIOgRcafBp2Zi+HRFj/xe9FbjrvoEv1JUD6RXVruLjD3fdfcEx3g1pC1X/srwEE2f52T/APeJYQPUul1cAEiM3bEq1hXtBIYolc1qd9R5grDYMEuAUUcXChlZmjAIumqz4xEnvZOZsITPYPUH2wb0XFtif7kKFQ8ag5fl1zQuuG7bBrg9b5GTLdi9bpnba71XdfvaVnt3LoqzE+yf0XVmBRhSCBZXTi0HB3hi9+kVFlvJC/Ap1dIEoTv/P8xfgIm/J1X1m1W/OJpKY5P6l3KLGM7ZNM89Q+6ytE8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EfpehTkSqOtFB75KAKiC3ug3ZW//hw6aMQ1I5csHwLs=;
- b=axqR3gqBxa0HD8rJ2hrffF1Z3cjQMxNkjXgIy4VVLD6f4he8GaHPe2HNMDIoXddX6i/fDaRZR2+N9VKbSMrI7lRvqd5eJv3fzi2QzmGWxfqkmg3ovUfIhMVsiszcTZw5PtCs6hJI7SoHldZMNq7toKW8feC/DSm/q8Gx+oXerxB+l1Hti/j/rxM1MdBoEMMZwUN+N81L2rxu6xMOmyHKWIioEhSREIjam9yVjWx+INlZokuduRq5dctXfBpFx2grxjQv55whdAStJXKnCi+CogGtJV3W0fsBZD3NS6pT7+GVwYpklc0P06FlWni1InaojxDp2W1jRSxxFnxLSprv8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by PH7PR11MB6794.namprd11.prod.outlook.com (2603:10b6:510:1b8::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Wed, 14 Feb
- 2024 20:24:17 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::4069:eb50:16b6:a80d]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::4069:eb50:16b6:a80d%4]) with mapi id 15.20.7292.026; Wed, 14 Feb 2024
- 20:24:17 +0000
-Message-ID: <a9f22838-e90d-4013-be24-127610d64d42@intel.com>
-Date: Wed, 14 Feb 2024 12:24:12 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH stable 5.15 v3] net: bcmgenet: Fix EEE implementation
-Content-Language: en-US
-To: Florian Fainelli <florian.fainelli@broadcom.com>, <stable@vger.kernel.org>
-CC: Russell King <rmk+kernel@armlinux.org.uk>, Jakub Kicinski
-	<kuba@kernel.org>, Doug Berger <opendmb@gmail.com>, Florian Fainelli
-	<f.fainelli@gmail.com>, "David S. Miller" <davem@davemloft.net>, "open
- list:BROADCOM GENET ETHERNET DRIVER" <bcm-kernel-feedback-list@broadcom.com>,
-	"open list:BROADCOM GENET ETHERNET DRIVER" <netdev@vger.kernel.org>, "open
- list" <linux-kernel@vger.kernel.org>
-References: <20240212014859.3860032-1-florian.fainelli@broadcom.com>
- <20240212014859.3860032-2-florian.fainelli@broadcom.com>
-From: Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20240212014859.3860032-2-florian.fainelli@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0115.namprd03.prod.outlook.com
- (2603:10b6:303:b7::30) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A1513DBBA;
+	Wed, 14 Feb 2024 20:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707942367; cv=none; b=KCD1rt96/+kf5RyZNmw2jUx/zvt6gt0CAdPkuivRwgFi++KeuHISXjYyhkHJYKBgIRmDzqYFhozdTQcKHdaAI4cWiwNlKw66gH3dQe9+3pUhDlh6ovXbqpov9g2Yh6NJMV8IQgkZ4/w1/Sa/Jk7/rqQVLPABRCilj5O0X96ag3c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707942367; c=relaxed/simple;
+	bh=RSBoGUpVAORMibTU+6w28wDAlaZ2hGNXjn6Mh92cl5o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S5clnJ2QUVEGxNlpoYFv5HF1NS5GqQb5PMsZlf1e+V8QxppnmMBDZw/8cerxfSSRmTknpeb/ed5RVNgVKHY9ZBnawS0Ch21TUvSVJKq+sXnKPf2cx5dnEX6AXT89aE1Ngz6yw7zorlUchq3XqftBDY9+mj45sAkA3UEc+M4FATw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WLw9eMwG; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d0fd07ba8bso1247971fa.1;
+        Wed, 14 Feb 2024 12:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707942364; x=1708547164; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJTmEarOOIisJHwVOIwDkzWvnO3yHtyBfSCwVWrhYuY=;
+        b=WLw9eMwGqtxUrTz0A43ThDxprU4e1mDetMQ5ri6gQQi7U+QzmBXIdA0u1t/5+QYLGt
+         +s9d14pPfuM1ONecOZfwxZ+YHsBy72rnlngOqopbnPrgPEFaRMeewx9tL6R7NeCxr26y
+         xUvCiAWMOH4hoYK2hEXL0CLcII2djLQDx0h7jXrcW34cveof7pMNI+22dicbsGYetd7W
+         iMRGyvDZfcaGkueCqh0KGThIrXYTsoGSXRs6RuRuvEBLzrg2zUuCOphD0WpMtevdwnqG
+         Wo5+8NydEoCwEPEN4PWjNu0VjsRItTgbFTG4i9dWagCwxiS4aVQvIgXhO/PDGwTZ45n7
+         ziQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707942364; x=1708547164;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fJTmEarOOIisJHwVOIwDkzWvnO3yHtyBfSCwVWrhYuY=;
+        b=eQ1fu8s5LLSXzjb8/DKNZd1RIGeB1r8T+vkRQJ8RxxWrOzdef27fkU0nF0uyZfnTIS
+         /QSL2yjBLA0drgayJf3l2NfAodsdAQ7vxiDOTjbPEYQyozoHyneZxJDc8juGMhJzazGI
+         VwaJCSHJ1W3Bl4jLwIRBWn1cIROKxdZmrAMBRmhW7zKiJUrLFSKClt9Oq8px/l8tJvBo
+         0fF6rOYu3CM7423Q8Lzlr+jjbt8lX1pRwHUCHrNBLMb8KkzqBMq94iBCRkoW3La78JOS
+         vDoa4dbxCIbIEy8nHf79JAIfVYZNnJdTJtNU+FbhFAzdzi8UjLVcLVvkvZmNFZSd4D6Z
+         I+Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVAgY5HjK0eu63+ckDOaMH4wx5KOKNUK7B85ZoEvcnc07cXkId/gphHJOIXpjcMl1x33RZgvsFswL0j3RKHJrHmH8zK0i3gFDNr1g==
+X-Gm-Message-State: AOJu0YxkMjQEDSRCyF8g+bmjukbsFd6/lUxS+xNn/MKqTTc9kk6cJrpP
+	sZK//Oi9GKJZHw8/91D06B1upBom/L5tnPmQT/uiOaM7r9CIQVzO+Z5M2Qo8Y68Lk6RV1myRmbB
+	OUupa9cH+tr2BzF9RIdNgdMPVTg==
+X-Google-Smtp-Source: AGHT+IHeiYMWXYHT0AAdJ1OLaWpLndVd2p6ME2G410bACvwU9iFrp4Tq1e762shfPu5vyJ3dvgjJOVL21KtbzdniOvA=
+X-Received: by 2002:a2e:8ece:0:b0:2d0:ff21:29fb with SMTP id
+ e14-20020a2e8ece000000b002d0ff2129fbmr2756784ljl.35.1707942363563; Wed, 14
+ Feb 2024 12:26:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|PH7PR11MB6794:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8961048c-f57e-4422-3358-08dc2d9aeb05
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8rNWd6x3S1m4qKY/lNQmMAE/+7lWglSQpfD6cF3Xq+mcTvhjIjkKHjQSxXAw0bfjHJxrDJAG+FNrRqRk0L8F4hCzb5+0tO2rFe80v3bwWRULTNNXtX6QMqEHZPwcHdczrXcD2br9npCzpQibSr7Jg/MYiTvx1fhPjJzHmR8Z4yPTUth0t6oW+Gw/X+gQJkQJvI6Z3uX9i/m61GYPLvfg5CUoLNKH0eTKV+8/doO+p6Lj/tzHuEaUbUrNjrxB5XJ5T3vnUtlZeak6GdgzCGgiSSVInBndfMnUmTCzR5BRZOXaVHOb7G8HKHL+gm10GldQsEawZOyE8q8Ec6FNMlEApIJ6gPKONj0jfektz7EMqcZ4SIrU5RzUEAXkps4974iUkDnR0tPDhZS6ssAPe0wMAKMOfhZMnY2utHfLxarM6DSf8fmA15Na2FjQeq4NxSsPhKuhQMb91FcLUiKRfYSvJXhnR6dRW+C/v27iWq2dn3oLM+BXn37AQkGraY2/S9TxlRlbLIIkclAUWLCcPwD/RutfH6hsk4VQHa0EvuAK2TI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(8936002)(83380400001)(41300700001)(2616005)(26005)(6512007)(6506007)(66476007)(66946007)(8676002)(4326008)(66556008)(53546011)(316002)(6486002)(54906003)(6666004)(36756003)(38100700002)(478600001)(31696002)(86362001)(82960400001)(966005)(7416002)(4744005)(2906002)(31686004)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RnNjaXFmbG0yZlZ1ZGdWeDVDU2RISG1yMjgvMDJGT2pnd2FFRG9QbTBZUEE2?=
- =?utf-8?B?K3Y1b2FYbVRJbklCSkdhUTJEQ040QVRkZzJSYWgzYkJ2UURacHhWYlgrR3l5?=
- =?utf-8?B?UmFtOWlKMVVMNXFBUUp5Qm03cHRzMnY1Q0Rqa011emJBN3dleVRMcTNLZlpE?=
- =?utf-8?B?Y2pRY0U2c3MrSk5leGRIR3UwRlI1Z25oeEs1QmlXdnpBbE1PSG02UnF1QmJn?=
- =?utf-8?B?eWZ4MjFWei9YUkZjWWc2NStoZmk3STlrNjEvY1UwYXFsb3ptTm9Yd3h2Mkgy?=
- =?utf-8?B?ckFiRnJDcmdlSDRWU2N4S1lhNFBDUmdnTTh4a1dmNmtUcWlWWVRIZEpWbWYw?=
- =?utf-8?B?RGFrRHVaOU4vMmo1RVpxTU1Edy9NVzlvZHYxdmY5bUZrY3Y0bS9hUit2ZnJJ?=
- =?utf-8?B?UWNiSGFqam5SZGVNbmp5eHJLRGZKd3kvdlQ3OElZL29UZTJZQjV3OUpVVmsx?=
- =?utf-8?B?YloyNE5Fd3ZLRllZZlk4SFpzTWpVa2lTVmt5RTR0aWRJdFQyRWMvdlZpdXE3?=
- =?utf-8?B?cU1rWjJueUE4UGpYVGpmelA3QWQzSXUyK0xaeGI5eXRDbUFxNTZqV1NpMzl5?=
- =?utf-8?B?OUJnbEw5YkFlMkFwZmVXYnIyVlZiMCtqL3BjYVRJWm4yajRnNFhKTGluUUZJ?=
- =?utf-8?B?NWIwb2x5YkplWGFFdlhuOXhvWVVVT1JVZHM4aHZUbG82NzNvSXJacUZwdE42?=
- =?utf-8?B?ZDlSMjJnZUtRQ29OUUJtRVM0YVhRVmtnMlhjYzg1cFQyTUFvU2ZyV0l6Mk1I?=
- =?utf-8?B?cTBqOXhGOUpFNWpJNlY3SXVUQVk1enRCQ3o4SWJpU0F6SVorNWhDTmZtMkt5?=
- =?utf-8?B?V2pucjNmSHRYT3U0VDdEc2tMTEF5YzdHMExaaHRBSUdOUDRxQTNGTVMybnF6?=
- =?utf-8?B?b0dVbnNrZndSSkNsazBJdEY4U0I5SVZzbWxxREpFM3gyVVJmdUJYN2FnWXNH?=
- =?utf-8?B?NEJndHduVTRQQW8yZ0FaTVVsQzFmVFE0aVJKRkRUa0pVMlhBNVQ5UzI4RU42?=
- =?utf-8?B?WnE5SXVxZW1qdGNvV1hoR2t6UThnWnh1TWd5U2VWRkxlUHdwdlM0azRzOHVI?=
- =?utf-8?B?U2lqV1ljbURNMkJiRmFpNU12b0VUa0Y4dmNyMmRZSHBwREVmd01WWktmaDgy?=
- =?utf-8?B?Wm9JRDEyTkRxcjhtek9zOUVzdmJvb016VE1ETWo3ZFgvM1FkbElpSGpuK0NT?=
- =?utf-8?B?Y3F6anlaa3d6T3BSNjFSTEhlVytLUVc3RUdobnlmc1ltakgyRXFZYkYrWm5x?=
- =?utf-8?B?ZGZFNm5JN0RzUlhJd0puNnNIbXpkU25CMm1pbTRZenc5SENaYXY5c0hsVS9q?=
- =?utf-8?B?UWZxYnM1amN4WmpIQzFQYlpBZzRXYVlEcFNVSEpmRzByd3djcXhaYUJ6ZTNv?=
- =?utf-8?B?OHpjQlVLQ3ZRWnpycHZOSUw5TkZkc3dYZmJCTzVXUFlRSXJ4bWtEZ3lCSTQ0?=
- =?utf-8?B?ZTFRZzBKTzZXczBqTytMZGpPWVc0NERVSEE5eUF5U29lM0N2dW5PU1picUVy?=
- =?utf-8?B?VzA5YVNrZ1h1LzBqaEJxdUR1OUhmOTllbUNULzd5MlNzVDMyL1YveXpPMkt1?=
- =?utf-8?B?YTRJeTRlMmNoL29KQnpmb0FhUlJtY244Q0VHY2xUaDhhZEdFS0ZNcVpSL21n?=
- =?utf-8?B?SndrdWFxTXdmOVBQWm1TODYwOGFEVnFEMENMN285ZjBMTVNBdXo4RTB1YzV6?=
- =?utf-8?B?c2s5K3RFTnE2OHlIN3pra2hEQ2s4YnJFODFKMGxGNk4zakRtSXRadWJIb0pH?=
- =?utf-8?B?WUZ2OUpXeXlhYUZKT3psMjNPU3F1Z0pHWFlaWm93bU1ZaEQvNnlUT1A3UG1y?=
- =?utf-8?B?ZUQ0dXE4VXduMWhGWTl0OFJwM3FzNUgrWXJxRVlrOG5qTWhqVVd3YjRMYjZG?=
- =?utf-8?B?NHFWaFpkUEYzK1NhN2NDUlVpbzVaYlRhaVh6TjBmSU9KWDkybzFuVlZVNXJ4?=
- =?utf-8?B?SmxYNlBYSitOY0pKVnJtbkc4MGlRS2tGMmd0UmVrd2FDV1RFN1JFa3BRZ1ht?=
- =?utf-8?B?M0t6dVBFSGJ6a2NNS2kybzByTTU2VjNobmwzYXlZb1BtZmZldnJFQVpSNkxK?=
- =?utf-8?B?Q1R1dlM5M0RWcFB6SkRWL3RaQ3RsdmhRV01ZNlNtQXRHN093OS95aFVDM20x?=
- =?utf-8?B?VmN6bWk4QThVek5TSCtDc0Z1eHI0dHFqaDFxajYvWW40OFpnQmlwYzBJN0JH?=
- =?utf-8?B?VUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8961048c-f57e-4422-3358-08dc2d9aeb05
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 20:24:17.3263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AFLt0g/zArWkRMucfS0qJhvbTg5Sb4wOknuszRn2RlZ5bGeHxUCgtBHReHzj8qsPvhyly/fEJwiCXA8DyZWBQRKugNXMK7bv64t5uqLbHa0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6794
-X-OriginatorOrg: intel.com
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-24-ardb+git@google.com> <CAMzpN2jt3nTmDJ4y6zRFJMSGTcD8eQJY_MjbsnJ7my3hH8d9HA@mail.gmail.com>
+ <CAMj1kXG6sYAVkKMA9EJk7+NmsbrDBL82xYpMon1WEeB_34SRuA@mail.gmail.com>
+In-Reply-To: <CAMj1kXG6sYAVkKMA9EJk7+NmsbrDBL82xYpMon1WEeB_34SRuA@mail.gmail.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Wed, 14 Feb 2024 15:25:52 -0500
+Message-ID: <CAMzpN2gD1+6rz35STqo19TXQAAVPYjdsDQHkwB9Yske6W1RcQg@mail.gmail.com>
+Subject: Re: [PATCH v4 11/11] x86/startup_64: Drop global variables keeping
+ track of LA57 state
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 14, 2024 at 10:45=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> w=
+rote:
+>
+> On Wed, 14 Feb 2024 at 16:24, Brian Gerst <brgerst@gmail.com> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 7:42=E2=80=AFAM Ard Biesheuvel <ardb+git@google=
+com> wrote:
+> > >
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > On x86_64, the core kernel is entered in long mode, which implies tha=
+t
+> > > paging is enabled. This means that the CR4.LA57 control bit is
+> > > guaranteed to be in sync with the number of paging levels used by the
+> > > kernel, and there is no need to store this in a variable.
+> > >
+> > > There is also no need to use variables for storing the calculations o=
+f
+> > > pgdir_shift and ptrs_per_p4d, as they are easily determined on the fl=
+y.
+> > >
+> > > This removes the need for two different sources of truth for determin=
+ing
+> > > whether 5-level paging is in use: CR4.LA57 always reflects the actual
+> > > state, and never changes from the point of view of the 64-bit core
+> > > kernel. The only potential concern is the cost of CR4 accesses, which
+> > > can be mitigated using alternatives patching based on feature detecti=
+on.
+> > >
+> > > Note that even the decompressor does not manipulate any page tables
+> > > before updating CR4.LA57, so it can also avoid the associated global
+> > > variables entirely. However, as it does not implement alternatives
+> > > patching, the associated ELF sections need to be discarded.
+> > >
+> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > ---
+> > >  arch/x86/boot/compressed/misc.h         |  4 --
+> > >  arch/x86/boot/compressed/pgtable_64.c   | 12 ----
+> > >  arch/x86/boot/compressed/vmlinux.lds.S  |  1 +
+> > >  arch/x86/include/asm/pgtable_64_types.h | 58 ++++++++------------
+> > >  arch/x86/kernel/cpu/common.c            |  2 -
+> > >  arch/x86/kernel/head64.c                | 33 +----------
+> > >  arch/x86/mm/kasan_init_64.c             |  3 -
+> > >  arch/x86/mm/mem_encrypt_identity.c      |  9 ---
+> > >  8 files changed, 27 insertions(+), 95 deletions(-)
+> > >
+> > > diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compress=
+ed/misc.h
+> > > index bc2f0f17fb90..2b15ddd0e177 100644
+> > > --- a/arch/x86/boot/compressed/misc.h
+> > > +++ b/arch/x86/boot/compressed/misc.h
+> > > @@ -16,9 +16,6 @@
+> > >
+> > >  #define __NO_FORTIFY
+> > >
+> > > -/* cpu_feature_enabled() cannot be used this early */
+> > > -#define USE_EARLY_PGTABLE_L5
+> > > -
+> > >  /*
+> > >   * Boot stub deals with identity mappings, physical and virtual addr=
+esses are
+> > >   * the same, so override these defines.
+> > > @@ -178,7 +175,6 @@ static inline int count_immovable_mem_regions(voi=
+d) { return 0; }
+> > >  #endif
+> > >
+> > >  /* ident_map_64.c */
+> > > -extern unsigned int __pgtable_l5_enabled, pgdir_shift, ptrs_per_p4d;
+> > >  extern void kernel_add_identity_map(unsigned long start, unsigned lo=
+ng end);
+> > >
+> > >  /* Used by PAGE_KERN* macros: */
+> > > diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/co=
+mpressed/pgtable_64.c
+> > > index 51f957b24ba7..ae72f53f5e77 100644
+> > > --- a/arch/x86/boot/compressed/pgtable_64.c
+> > > +++ b/arch/x86/boot/compressed/pgtable_64.c
+> > > @@ -9,13 +9,6 @@
+> > >  #define BIOS_START_MIN         0x20000U        /* 128K, less than th=
+is is insane */
+> > >  #define BIOS_START_MAX         0x9f000U        /* 640K, absolute max=
+imum */
+> > >
+> > > -#ifdef CONFIG_X86_5LEVEL
+> > > -/* __pgtable_l5_enabled needs to be in .data to avoid being cleared =
+along with .bss */
+> > > -unsigned int __section(".data") __pgtable_l5_enabled;
+> > > -unsigned int __section(".data") pgdir_shift =3D 39;
+> > > -unsigned int __section(".data") ptrs_per_p4d =3D 1;
+> > > -#endif
+> > > -
+> > >  /* Buffer to preserve trampoline memory */
+> > >  static char trampoline_save[TRAMPOLINE_32BIT_SIZE];
+> > >
+> > > @@ -125,11 +118,6 @@ asmlinkage void configure_5level_paging(struct b=
+oot_params *bp, void *pgtable)
+> > >                         native_cpuid_eax(0) >=3D 7 &&
+> > >                         (native_cpuid_ecx(7) & (1 << (X86_FEATURE_LA5=
+7 & 31)))) {
+> > >                 l5_required =3D true;
+> > > -
+> > > -               /* Initialize variables for 5-level paging */
+> > > -               __pgtable_l5_enabled =3D 1;
+> > > -               pgdir_shift =3D 48;
+> > > -               ptrs_per_p4d =3D 512;
+> > >         }
+> > >
+> > >         /*
+> > > diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/c=
+ompressed/vmlinux.lds.S
+> > > index 083ec6d7722a..06358bb067fe 100644
+> > > --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> > > +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> > > @@ -81,6 +81,7 @@ SECTIONS
+> > >                 *(.dynamic) *(.dynsym) *(.dynstr) *(.dynbss)
+> > >                 *(.hash) *(.gnu.hash)
+> > >                 *(.note.*)
+> > > +               *(.altinstructions .altinstr_replacement)
+> > >         }
+> > >
+> > >         .got.plt (INFO) : {
+> > > diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/inclu=
+de/asm/pgtable_64_types.h
+> > > index 38b54b992f32..6a57bfdff52b 100644
+> > > --- a/arch/x86/include/asm/pgtable_64_types.h
+> > > +++ b/arch/x86/include/asm/pgtable_64_types.h
+> > > @@ -6,7 +6,10 @@
+> > >
+> > >  #ifndef __ASSEMBLY__
+> > >  #include <linux/types.h>
+> > > +#include <asm/alternative.h>
+> > > +#include <asm/cpufeatures.h>
+> > >  #include <asm/kaslr.h>
+> > > +#include <asm/processor-flags.h>
+> > >
+> > >  /*
+> > >   * These are used to make use of C type-checking..
+> > > @@ -21,63 +24,50 @@ typedef unsigned long       pgprotval_t;
+> > >  typedef struct { pteval_t pte; } pte_t;
+> > >  typedef struct { pmdval_t pmd; } pmd_t;
+> > >
+> > > -#ifdef CONFIG_X86_5LEVEL
+> > > -extern unsigned int __pgtable_l5_enabled;
+> > > -
+> > > -#ifdef USE_EARLY_PGTABLE_L5
+> > > -/*
+> > > - * cpu_feature_enabled() is not available in early boot code.
+> > > - * Use variable instead.
+> > > - */
+> > > -static inline bool pgtable_l5_enabled(void)
+> > > +static __always_inline __pure bool pgtable_l5_enabled(void)
+> > >  {
+> > > -       return __pgtable_l5_enabled;
+> > > -}
+> > > -#else
+> > > -#define pgtable_l5_enabled() cpu_feature_enabled(X86_FEATURE_LA57)
+> > > -#endif /* USE_EARLY_PGTABLE_L5 */
+> > > +       unsigned long r;
+> > > +       bool ret;
+> > >
+> > > -#else
+> > > -#define pgtable_l5_enabled() 0
+> > > -#endif /* CONFIG_X86_5LEVEL */
+> > > +       if (!IS_ENABLED(CONFIG_X86_5LEVEL))
+> > > +               return false;
+> > > +
+> > > +       asm(ALTERNATIVE_TERNARY(
+> > > +               "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET=
+(c),
+> > > +               %P[feat], "stc", "clc")
+> > > +               : [reg] "=3D&r" (r), CC_OUT(c) (ret)
+> > > +               : [feat] "i"  (X86_FEATURE_LA57),
+> > > +                 [la57] "i"  (X86_CR4_LA57_BIT)
+> > > +               : "cc");
+> >
+> > This should be more like _static_cpu_has(), where the runtime test is
+> > out of line in a discardable section, and the inline part is just a
+> > JMP or NOP.
+> >
+>
+> Why exactly? It matters very little in terms of space, a cross-section
+> jump is 5 bytes, and movq+btl is 7 bytes.
+>
+> If you are referring to the use of the C flag: this way, it is left up
+> to the compiler to decide whether a branch or a conditional move is
+> more suitable, rather than forcing the use of a branch in one of the
+> two cases.
 
+You're probably right in that many uses of pgtable_l5_enabled() are
+choosing between two constants, and static_cpu_has() does not handle
+that case very efficiently.  Something like static_cpu_choose(feature,
+yes_val, no_val) would be a possible idea to explore.
 
-On 2/11/2024 5:48 PM, Florian Fainelli wrote:
-> commit a9f31047baca57d47440c879cf259b86f900260c upstream
-> 
-> We had a number of short comings:
-> 
-> - EEE must be re-evaluated whenever the state machine detects a link
->   change as wight be switching from a link partner with EEE
->   enabled/disabled
-> 
-> - tx_lpi_enabled controls whether EEE should be enabled/disabled for the
->   transmit path, which applies to the TBUF block
-> 
-> - We do not need to forcibly enable EEE upon system resume, as the PHY
->   state machine will trigger a link event that will do that, too
-> 
-> Fixes: 6ef398ea60d9 ("net: bcmgenet: add EEE support")
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Link: https://lore.kernel.org/r/20230606214348.2408018-1-florian.fainelli@broadcom.com
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Brian Gerst
 
