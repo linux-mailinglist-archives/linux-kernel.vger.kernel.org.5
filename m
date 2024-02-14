@@ -1,175 +1,109 @@
-Return-Path: <linux-kernel+bounces-65489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16765854DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:09:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00596854DBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78EFC1F25416
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:09:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73113B24196
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BFB5FDD1;
-	Wed, 14 Feb 2024 16:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AngGxXPN"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2558F5FDBA;
+	Wed, 14 Feb 2024 16:10:00 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FDE45D732;
-	Wed, 14 Feb 2024 16:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDCB5B5DB;
+	Wed, 14 Feb 2024 16:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926959; cv=none; b=vFBth7aZfnkqPh3RAinuebY0NVhujsDWnKJZaHGBzhKuc0YXHUOWvWn4dG2GMsPp4Z0G8rL5uT3KjjAXRX9SXBp5F5XagV1vwdlWqA7c7MEKMh4YtA7380GgegOf9Q1zgkCQjwZHoORdcAQDVDlJfSxqiVUWXNHJCkhdc2m8PTE=
+	t=1707926999; cv=none; b=VS7SxrZkloeq2eJ0qF+0rmZJ4gnGa0KdQZWUryV3tkJZAn9yqjtWpPaxW6Iq5eYfcOptpNYFr65e1//RDYTEFH9g97zB/p9tG5Ec8zHVZzkXMQbp5pMr6/Iwlf5VeMP3dCYyHZ1MmXhzAeVvZ5UXne3anJEo6wGVXC1u5JeDn2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926959; c=relaxed/simple;
-	bh=dQoeYKZoENFVQvLsGVJmPnsaFxLZEW+StaKHuAoCXJ0=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ituthCBce9PrtJYyoDlrvzEWcjUZ0zB+K4Sfm9ogNWX7ZCqhcA0iGfB2BQh19BXtpdzPIk21iROGVh/oveymrKQslwf4IQV2o/fKtplILTc/B+ufIMaaNj3Zdawj/P2oG6Q3eqE8CTwAqcJEDOMAeTxzbnI3wABXBi31k5yPW4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AngGxXPN; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707926999; c=relaxed/simple;
+	bh=eczxNSPiw4p4CNj/PUhSH5mu4tDa6Gr1OgSTglWh40s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WQOnBARK+YsB67KXnmGmkFo2lwxL5vkOxLq1sjoBOu4uXQfXRu/FdG5malk0eOa77cLO5WmhdF6Db/yqt/k0FsxhaFC5CzvU+4I5MU2dIAU7Onw7nnZpo1FZ6Vb0bmYDj/DBsgQbEsYP3Q7Dl0jlaEK5VjXPI5MkXqdlQmYecJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41166710058so22628365e9.3;
-        Wed, 14 Feb 2024 08:09:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707926956; x=1708531756; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYfvmPaesO8YWN53cqmm2yO+rqp53z4kUnNbercSOGU=;
-        b=AngGxXPNv8C6+Fe1p8UeCbBRBuleUlbMZd3oKmV/fO8jkmptiBRvLgbOhg5u+2BTeB
-         3QEWweK2jgiRLUl+5GHjYPkuv/DjxOErqeNXNR0jDDvtqS5dAMqElaG5yIS5IB5P+CnV
-         VE+qw+Jx/iTNk1c+X30VgtMOtkicUwqGo7VirEzfcFuwGELiMqbaa/Z5Mj3ki3JjqA7J
-         Wwpq9xrxxex0Y8B1SSEhSDBL4ozNfoDe/gRTZ9K3qIv8cwmUjPw626hC05mGAxfBH0Ye
-         p2RuneBHysNMXoeez6YxReNMDAdDV2706z2osT+P6C2sXQirv4ePQSIuFI21K1g90E1V
-         tpOg==
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607aafb2cb4so6542197b3.0;
+        Wed, 14 Feb 2024 08:09:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707926956; x=1708531756;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qYfvmPaesO8YWN53cqmm2yO+rqp53z4kUnNbercSOGU=;
-        b=CXUvXAHZwqWiLLi9LuQfhphu0Q2tHSMs0CCax+PWksKrmwhfIy385kQKYBffHMKrfe
-         2J0IufEhE+mfubcWui2lwRKLQRjTBIqZYFESP131AaF4Hv8TFpnxCUlMiipRdT9wTC8Z
-         WAokz0pup57tygNs2Q6DNW6GDyXpl5zK57WE5A8IRXvmyYmS0hO75ffBjuRnhWVVzlmo
-         zpqsjPLLV42PbZNiLZ0lZM0GtMvdN7JmO2yjLztdo6NUfzdX9CAqJPGljwClVKu7Rz+C
-         c8juv15MK7lY+PSufCpLfV66sQ43nimXjGI+YZuWANC1jYkAdt1318V3bXoubb7RoElG
-         q9HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVr7Qk+wX3gPd+y/U2fietKeCKTNzciSTTOzRHiVUd5h67JLBYKnezIREWqk8M0HRQ/RlJdW40fEIPm5C9KjG+1HoByJqvBg3f26zw3xaHu1nw2pnlvmKGqhVJ3hfOqqLqpLIeYWUwxYRG0K7g9NcWG34PmQhVFERWgMqvQwLucX5FYdwbdnaYQ2sdHOZPSPhHdIqdG0gz7j96MmaJz
-X-Gm-Message-State: AOJu0YywcRQhW4DShVLtw0FE4iZYzQS/nSXCrQPRXH3TTCbWtKjrP2VB
-	BwjhNxrMYvyZWXT4kZ+9fN8GWIZH8iWUQ7+BZ+iCds0OTGVtyfwA
-X-Google-Smtp-Source: AGHT+IHbwEiqjQv9iLuTObvOUfd63cZXOTmHaFzCbjCfhIWuPnvc95/UXs9KA9We+Pi+LWXj6QxSeQ==
-X-Received: by 2002:a05:600c:35d6:b0:410:d8fa:fa5f with SMTP id r22-20020a05600c35d600b00410d8fafa5fmr2698181wmq.11.1707926956005;
-        Wed, 14 Feb 2024 08:09:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVJhlD+mcvhAaSJKZYf9+Nf0YrHsZXIbSGJYOxZwxaLmrbYRTabfVe63syiSYHd3UlFKRm2UBHVx1o40zkVnNmf+2ryPyDd/nh+S3kQk05loZsE1TOEfRpTjuz6xlDl/uXAqSfGiOtxUUABpqqQlyL979sOHEijeSvIDucbdnwdWGLjPjpRBGBmBoY5sgOhWI2hEkmF8YA/3SD5hOGyPnMM+aPjPya8j0GFpXmScMFxW5DgVOmVtb7Q08MZ75KqmVdEvC+jmQJR1k2G6fgIX8neByJn8uxEjB5HHhm1QiDJYxFCUvueO4joZfM3q1Mod5fNzHYS+lTG9gAiJiGvDnBY640d135etRuTY6hIqaMG7amUQtouqVs3YMos/9XXyeo2vkuyfTfbmrOBBqfXU9TRE+stjRacbwkssitqqBAguPVGrUP6Q0h5Q8R9L/zXYux4a740zZMgZEm7GT4P7yFz9mc0nGZ1u1bsyX2Iwm6ydxN3L7UQlT7JuIwXs3SjWtmyB61Xzh8V6dm7xYA9jIU0/RRsBCrCrCLl8iWdgKVVjQ==
-Received: from [192.168.11.205] (54-240-197-228.amazon.com. [54.240.197.228])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05600c229a00b00411d640085csm2315458wmf.43.2024.02.14.08.09.14
+        d=1e100.net; s=20230601; t=1707926995; x=1708531795;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=noAyHXMAvZWAemJey+xdD/xMfux7ZkmXm4kG5pidNbg=;
+        b=PbVWtHz5JW2NGZPUwbImWVqaHe+v3aVwA6VrRbd1vHPwN8EQu71tOdkQmu9UCIyHNc
+         GR+ce8q8Ho1rH23ADT53PLmh4rkVIS8XiB3QS3kmkbJ5y5OQ9KllPQ4Rw+TZgZbzeZK8
+         IvOyiP0TNVkd84BtW+8f66/F9QrBzOJmqTJzHTmwBmijXDpE0N9kozFOEZje4KCgaWbK
+         3AJEuv0vn4GH1REeXQhLpFd24uew6avrRXAN8WArLHOfPYOsN0I7VXtnpo4FwtaqzHeS
+         xQ6IvQm3aw0ELlq9LXPKIDhBb738z2K/bZhBsKPUsq1puonfIMtycE4GjDGdXk8UN1N8
+         9qMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVqu8hTuj/qbYoHH3jeBMEW5cIRTsoBg7jliSdgPwsxKLThMwMQBed6OBKVHx3fd/8ZsExBo5q6WQCy1H7+Hso1uSiczfKvw9X6s2tZjKNiZdmaQ3zr/arytRsz3D2VXbJUegyNUfG7
+X-Gm-Message-State: AOJu0Yw/75RKE7sKTt8AvGwYuwEzjwxhFYNUxQoXudrU9NDsJEPmsbcw
+	sLJVI4CwN/9pQJp2QySL0VUkH3yV+pGDt9l658mBUYSR34zC5vIR3olEV4hKU/M=
+X-Google-Smtp-Source: AGHT+IFs8zig0grnwbTuSMfWqswTPyRG9TUyNTKNGiPtpDwGkKWY7Eu2rzsS+FmEf0BXCyUl9ezuEw==
+X-Received: by 2002:a81:a214:0:b0:607:83c3:c138 with SMTP id w20-20020a81a214000000b0060783c3c138mr2987900ywg.34.1707926994725;
+        Wed, 14 Feb 2024 08:09:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWw8aA9D9K+3ZqmF1I2oMpGOuI1ZYDxa4Y3vuBx/b1vYgGttm9o0VuX5yQYoVxSeqQKJ03jQdrrdKY4J6hdLjXniWgw0MZ8lxtZIITFtAPWGf5u9AqeNwSyz9BiAaF4dZu9VzV4jnq7
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id j75-20020a81924e000000b0060790d60113sm679957ywg.89.2024.02.14.08.09.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:09:15 -0800 (PST)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <02385b22-1a59-4bf0-ba08-0da18ca75f74@xen.org>
-Date: Wed, 14 Feb 2024 16:09:01 +0000
+        Wed, 14 Feb 2024 08:09:54 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso2007633276.0;
+        Wed, 14 Feb 2024 08:09:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUe8OlnfGacwSbapcX/rPAXBrOe6C1CJFadf/AmNI2yZOIgGGyk6lUyFvRNpNd+ZFKTgcNhlnAXv8C6olnCweLLqULeCUvEw+Kv66NK4gwWEVQ6/4/wuUKIHyKn9m/DQ5JXlNQ2jgi3
+X-Received: by 2002:a25:8251:0:b0:dc6:d6f6:cc13 with SMTP id
+ d17-20020a258251000000b00dc6d6f6cc13mr2893886ybn.20.1707926993726; Wed, 14
+ Feb 2024 08:09:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v12 08/20] KVM: pfncache: allow a cache to be activated
- with a fixed (userspace) HVA
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- David Woodhouse <dwmw2@infradead.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>
-References: <20240115125707.1183-1-paul@xen.org>
- <20240115125707.1183-9-paul@xen.org> <ZcMBDP6H5PRo5C2d@google.com>
- <7c31e31d0f0ad3f40619f8e0ecf67f1e3d3eef5f.camel@infradead.org>
- <Zczj2vDCasKcBcjn@google.com>
-Organization: Xen Project
-In-Reply-To: <Zczj2vDCasKcBcjn@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240213220221.2380-8-wsa+renesas@sang-engineering.com> <20240213220221.2380-11-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240213220221.2380-11-wsa+renesas@sang-engineering.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 14 Feb 2024 17:09:40 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWVk3VL=E-DqZFuxSzXsGAeQGo0VHZXGtMiq2wi7oo05Q@mail.gmail.com>
+Message-ID: <CAMuHMdWVk3VL=E-DqZFuxSzXsGAeQGo0VHZXGtMiq2wi7oo05Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] mmc: tmio/sdhi: Fix includes
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+	kernel test robot <lkp@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/02/2024 16:01, Sean Christopherson wrote:
-> On Tue, Feb 06, 2024, David Woodhouse wrote:
->> On Tue, 2024-02-06 at 20:03 -0800, Sean Christopherson wrote:
->>> +s390 folks (question on kvm_is_error_gpa() for ya)
->>>
->>> On Mon, Jan 15, 2024, Paul Durrant wrote:
->>>> @@ -1398,7 +1414,9 @@ void kvm_gpc_deactivate(struct gfn_to_pfn_cache *gpc);
->>>>    static inline void kvm_gpc_mark_dirty(struct gfn_to_pfn_cache *gpc)
->>>>    {
->>>>          lockdep_assert_held(&gpc->lock);
->>>> -       mark_page_dirty_in_slot(gpc->kvm, gpc->memslot, gpc->gpa >> PAGE_SHIFT);
->>>> +
->>>> +       if (gpc->gpa != KVM_XEN_INVALID_GPA)
->>>
->>> KVM_XEN_INVALID_GPA absolutely doesn't belong in common code.  Not to mention
->>> that it will break when Paolo (rightly) moves it to an x86 header.
->>>
->>> https://lore.kernel.org/all/20240131233056.10845-3-pbonzini@redhat.com
->>
->> We can use plain INVALID_GPA for that, I think. ISTR the reason we have
->> a separate KVM_XEN_INVALID_GPA is because that's a userspace API.
->>
->> ...
->>
->>> But!  kvm_is_error_gpa() already exists, and it very, very sneakily
->>> does a memslot lookup and checks for a valid HVA.
->>
->> Hm, that doesn't sound as fast as simple comparison. We also can't do
->> it from kvm_gpc_check(), can we?
-> 
-> You snipped the part where I suggested renaming the existing kvm_is_error_gpa().
-> 
-> I am suggesting we do the below (and obviously rename the s390 usage, too), and
-> then the gpc code can use use kvm_is_error_gpa().
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index bbfefd7e612f..e1df988e4d57 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -148,6 +148,11 @@ static inline bool kvm_is_error_hva(unsigned long addr)
->   
->   #endif
->   
-> +static inline bool kvm_is_error_gpa(gpa_t gpa)
-> +{
-> +       return gpa == INVALID_GPA;
-> +}
-> +
+On Tue, Feb 13, 2024 at 11:18=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> TMIO uses an of_* function, and SDHI uses pm_runtime functions. Add the
+> includes directly, so we can clean up another header properly. Sort the
+> pagemap include while we are here.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202402070323.JpYfFtkQ-lkp@i=
+ntel.com/
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Are you ok with a local kvm_gpc_is_error_gpa() or somesuch until there 
-is agreement with s390?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-   Paul
+Gr{oetje,eeting}s,
 
->   #define KVM_ERR_PTR_BAD_PAGE   (ERR_PTR(-ENOENT))
->   
->   static inline bool is_error_page(struct page *page)
-> @@ -1787,7 +1792,7 @@ static inline hpa_t pfn_to_hpa(kvm_pfn_t pfn)
->          return (hpa_t)pfn << PAGE_SHIFT;
->   }
->   
-> -static inline bool kvm_is_error_gpa(struct kvm *kvm, gpa_t gpa)
-> +static inline bool kvm_gpa_is_in_memslot(struct kvm *kvm, gpa_t gpa)
->   {
->          unsigned long hva = gfn_to_hva(kvm, gpa_to_gfn(gpa));
->   
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
