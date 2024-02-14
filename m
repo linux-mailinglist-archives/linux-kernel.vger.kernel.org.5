@@ -1,86 +1,93 @@
-Return-Path: <linux-kernel+bounces-65617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4AD8854F71
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:09:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7350854F7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F8C5281493
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:09:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8356B1F22C75
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5223560888;
-	Wed, 14 Feb 2024 17:09:06 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B95860BAE;
+	Wed, 14 Feb 2024 17:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ph1k09V2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8383F60867
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6999C5C913;
+	Wed, 14 Feb 2024 17:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930545; cv=none; b=fpdMwB3SB4p/FF6e1UpXbTY6Swjoa6tjNWIXiVzCwuftdl2FEEdqepGdRaGRnTPxmzl5YCsFZQsbCKux8ucOb+sMHcOrjMGs1IWR1GwwjB2hivlPtz9uC89+r+RGRpprm9Hy8tRyWfJkoVwNx6beBwrvNaL2pA1PsIN/V5zboL8=
+	t=1707930653; cv=none; b=klgZlVqAPxqJN8V4bWHxYrlWTwwlm+AHTaqF/c0w772yWh7A0wgVLDhK1IsL7AfsxwB6W27/QULRUJNb+u9z//Rmh9eFJJ8uNT3I2wI7CExWTadXPYBhbm1rIyIomEejteC2XSOiaF8LaFu3mc4aCpY9nmX0qXy6thN+j4NB9oY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930545; c=relaxed/simple;
-	bh=BPw4aT0217go/+fjHAnJwpzYWlfdPWlbSH4+dr61yM8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=aJLI7mQifc5vmDSVfV3WdHtx3dv6PIsvR1ruVjku0wtLPM+N8Y4J8n5bqnAinScXcOo55T75Y+bOGmB2B0QZ7UYXd/lWaWdd37hSWRx9rFphwMrceFf5GGRtJwHmwoggm9seM2nXq0uJ/icBVdcuzdGUnw588xb+7V7QdCWub+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-364278061caso14551755ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:09:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707930543; x=1708535343;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YZ5YoZTIkOkfK1+4m3Vu2kUgkzdMHFQEsvekeqW2hXs=;
-        b=jBSkiRFEp4ux4bnmfV08MFntHC9ZV7MKpmwm3wHM3S5YyVzAeWp8/DOuhTQDwJzfVk
-         nbRuuE6WluNmEKSC1nZuM1gX6RgUs2Ur1lz1q9bYtrRphuJJAEeMLZg/q4WmikvbLzo8
-         MV5m4IU2o1rfrXwtb0E2Vjv71I8BUAgLyqZq1Gv3wzRISDP5Oy3hOuliyCx+g3j8nknB
-         g1Fu+vDTuI3rkCsdMuJ98SY+uU0kpekAnTfOyYfU1Fw7lTYDVcM3G43oa8Xn+5MSGqUv
-         qNGvsqtqxhO/pMCZCTZDS/l9GWxkd7Ee9cSw7ktrqkuMCCdcBCNf7FKVnkhs6klTfGMH
-         8Fxg==
-X-Gm-Message-State: AOJu0Yy9coOxEUGqqTM1ZFNwTm7bGB5YMpH7MFoos0ajo+NKkcCeCZZg
-	VdhDcNRAwszN5Hg2ixQOJcZnwfaaz40N7AjQXEGLq+SsMJDCzpqdG5UbKDRFWDNZMfAL9xZQGI1
-	ww70w7lsVucMYTlJ9wE8SbrXeAkW/f0kQYJMyJCSz4DJhB3SCAVSFcU7How==
-X-Google-Smtp-Source: AGHT+IHyKUw3s9RmIp2rbtSh+7fOoy0yViJnO5KqMbP+y7k8aUR679Z4zFz+y6WoHKb6lD3rN+IdwCTnG6cNQujrwXi/kp9W9t28
+	s=arc-20240116; t=1707930653; c=relaxed/simple;
+	bh=8GfvwSh+N6mxrWm0DNjZ4B1zEOtjColCP5+gz3Atp9s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z8szbi2atgiSYrm8+MnTUr2S8BC86sDh4eiNdM3mCS7AvyuIHlZ+NrbLfE1v3pnzvcwq0hbPPivquyYOgT9ZK37M6EwTFN7zgzlIkx4WVzh8U1bD6Mjz2ZXu/90nVsheZ5GTjSwcwNB5ey/CDIWdqkjnZjTTFr8NGSlImDaTpMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ph1k09V2; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707930653; x=1739466653;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8GfvwSh+N6mxrWm0DNjZ4B1zEOtjColCP5+gz3Atp9s=;
+  b=Ph1k09V2/OIgIIcmi20X6qH8z8q57rEyv6+rolXPchJqkIvLeAOhGrD7
+   BxIbR1PMLQW6vDMpSCec0/uwlqaDJgVb47r0pFuZPEXAeJKxQ0zkVYgpv
+   Tzx2eJS/O+hOI9cNyVcdx+cCI+WXX5Z8Bc2ho6cAD1TCz+KaDDHLArKmT
+   dwHn/ln6jWWp2mkKdOJVmVI65DKbfcxQDV3MQ4dWGVDTAa9YtCrtYP6T+
+   ElLnkXNEuqWE4d/uLD/daT4G0HAzScua1abicgVV8dmHIdKkZ0hGP7vHr
+   iLoTFPBWI2wgfNNi/jwJreUfZ9N2lA50faRx1Kd3lZnuYUSU5MEQ3mYP2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="24458016"
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="24458016"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 09:10:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935617215"
+X-IronPort-AV: E=Sophos;i="6.06,160,1705392000"; 
+   d="scan'208";a="935617215"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Feb 2024 09:10:49 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 9B0BD204; Wed, 14 Feb 2024 19:10:48 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 0/5] serial: 8250_exar: A few updates to the driver
+Date: Wed, 14 Feb 2024 19:09:33 +0200
+Message-ID: <20240214171044.3551032-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a2f:b0:363:c25b:75e4 with SMTP id
- g15-20020a056e021a2f00b00363c25b75e4mr256301ile.5.1707930543712; Wed, 14 Feb
- 2024 09:09:03 -0800 (PST)
-Date: Wed, 14 Feb 2024 09:09:03 -0800
-In-Reply-To: <20240215.000350.2097273261001750837.syoshida@redhat.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005bf1e506115a91f9@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
- dereference in sk_psock_verdict_data_ready
-From: syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syoshida@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+A few updates to the 8250 Exar driver as per new in-kernel APIs
+appeared.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Andy Shevchenko (5):
+  serial: 8250_exar: Clear interrupts before registering handler
+  serial: 8250_exar: Use generic function to set firmware node
+  serial: 8250_exar: switch to DEFINE_SIMPLE_DEV_PM_OPS()
+  serial: 8250_exar: Use 8250 PCI library to map and assign resources
+  serial: 8250_exar: Don't use "proxy" headers
 
-Reported-and-tested-by: syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com
+ drivers/tty/serial/8250/8250_exar.c | 43 ++++++++++++++++-------------
+ drivers/tty/serial/8250/Kconfig     |  1 +
+ 2 files changed, 25 insertions(+), 19 deletions(-)
 
-Tested on:
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-commit:         e37243b6 bpf, scripts: Correct GPL license name
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ef9c0c180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5e23375d0c3afdc8
-dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17169634180000
-
-Note: testing is done by a robot and is best-effort only.
 
