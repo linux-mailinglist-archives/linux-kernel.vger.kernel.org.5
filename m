@@ -1,80 +1,143 @@
-Return-Path: <linux-kernel+bounces-65896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076AE855374
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:48:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40DAB855307
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 20:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8F99285295
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:48:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9EB01F2784C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4F213DB85;
-	Wed, 14 Feb 2024 19:48:28 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03017E767;
-	Wed, 14 Feb 2024 19:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE9313DB81;
+	Wed, 14 Feb 2024 19:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Ur3hbKrq"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A1D13B7A9;
+	Wed, 14 Feb 2024 19:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707940108; cv=none; b=Lsuwk5MQEoP3TUZBtIhlL2f2bhQjJu5mXkPipFPbSaXilqsDHGW0uZYxF3wnGoSJLDuyFW57BZcdnNdMg5pxJa2WgRw5WxQd5PrVFlKa814BoSyqb4ubFsEFSIvKwEaqa5pxtXDVTcp3Mg17/OXVP6QXuyAjRbISAp6vyLfeh3U=
+	t=1707938064; cv=none; b=G6VIL4UZwYz5f8jEPPBV7lXmDZ+N14s03Jra2raJ4942YXZd/YOJRgobfmPTA3EevkhZGUPt9iW9PtTNYA4dfmUNK7KOuid+SVsI9X2W+SIz88nbtSlICVbpQfeaScTtYuzRNN6z1Q2ubyHR2EnexG/qlu27N+3emJiQfL/fXag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707940108; c=relaxed/simple;
-	bh=NC8mTAJ2+Ru4a70SXpBDjYkA5AKa1yGpczglRB9UknU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WV8XEkPPhfNsYWiCF/KO1/HmhbQfrcFwb8/gR3bYlsW7wK71ptrBnOMZQgH7vZMQOlojms7tdpn1bf00B7JbYDmZgAsW+UX0vdu536feQC7MtnEfSQQkAcFd22xj9T7G4DllPy9z+swiKJZSCqVVlHqMG9KG+rpWJwi4ngxaer4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1raLEy-0000vd-00; Wed, 14 Feb 2024 20:48:20 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id EC942C0267; Wed, 14 Feb 2024 20:14:27 +0100 (CET)
-Date: Wed, 14 Feb 2024 20:14:27 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 03/14] MIPS: Allows relocation exception vectors
- everywhere
-Message-ID: <Zc0RE8NE0sfYYmZN@alpha.franken.de>
-References: <20240205153503.574468-1-gregory.clement@bootlin.com>
- <20240205153503.574468-4-gregory.clement@bootlin.com>
- <ZcTE8nKCaKuaUvAe@alpha.franken.de>
- <87plwzj8jw.fsf@BL-laptop>
+	s=arc-20240116; t=1707938064; c=relaxed/simple;
+	bh=14BaVx8cuHZCZSoRpr+rbi+jknLxUXS3sryXnLK+89s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ozlfDEHeDrY/QXA1sijOIP4r89xWtLkkHfljfK02VeXTk64GF82v603osT4GjC9pt/A0YNucvjb8m82b8RlktJE61hNJ0PHQV5m2nQh5urZWfmFvark+AF73jPf1Et5mdW+lMbhxDj0z/Yul5vW0ZtT2gB0Wrgr2IBimLLlAu4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Ur3hbKrq; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e0a479a6cbso111044b3a.0;
+        Wed, 14 Feb 2024 11:14:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707938062; x=1708542862;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FS+0qaKLpt8lT9N1wmj76XGmLNXI3ICb4bQ8lj6EZNY=;
+        b=RY5iI7JKTJ8V8hFSymHXhC6XxG+xiNyonSf6maY1yna7t3aESISvpLa/A+5PIF//K5
+         lCiPc7HYvWaQd9jwYFRW/XFhNbBTCrUZW8eSNqxb9ZnWlskAQroh+JBEcMrsEE4NcRyJ
+         jUfUzc2j8C40CdUpLb0fU9eBL9cFBNsbqXqmO5QdstjyZPHss7IX3mseFxWnakrhuOVq
+         iAKlkkWtJwg/rSktwZEDCibagp4DwSVvYR2g2aL+4+dAqRBuOpybg3Or9bhGpAb6+Rws
+         AG47VPsIjYWIG5LH0xu03XOvuYHbw8uriuWum/35dkJvAlnodF47QbEQt8iSJgwbzfzU
+         XBWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUdzYMGNmMZ521f5fFpqSZYPI31uYXMlCNuEujo4sDnkJKucWf6JdKep+vURsthJVbnBesrodPWmfkPb+QnNsGTXAYPoJuFSXtDWmv
+X-Gm-Message-State: AOJu0YwtqXOBekxEI8uPa+vUGM+3Qz9GfgFNLgfRXTeHwBiv/7Yq50Nd
+	N7CRYq9wmseFUDZaCj60hOAixf+giFz4CaV0l274ay5wmhkek4BN
+X-Google-Smtp-Source: AGHT+IH7ooCb5KSY4SSuPAdacKRPF6aKGNWqgf5qrXG4aBKfAXSy0m6/IfY2awqb2YdOW3oGTwlFbg==
+X-Received: by 2002:a05:6a21:3944:b0:1a0:6f99:7287 with SMTP id ac4-20020a056a21394400b001a06f997287mr2361233pzc.61.1707938061788;
+        Wed, 14 Feb 2024 11:14:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWUYfyxipVjWSQOmW5NfLXJ5bSfqPo6q2e45scyrFzYp6KrCYccWgFGyIpz0U6J1dG4j/VqRNBk4tuL+IrTzUckOl70CneeZPLF4OkQI9JwRkrLdMfK9ukX9Cv6LrigRaEpr1PEibU5W5uFlrIFb43qDWEyPFplLer7KN04Y3q2hdujKmRaQaH+dLxUHYz6fEkmQGqE9PYbrgs=
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id t187-20020a6281c4000000b006d99f930607sm10420142pfd.140.2024.02.14.11.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 11:14:21 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1707938060;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FS+0qaKLpt8lT9N1wmj76XGmLNXI3ICb4bQ8lj6EZNY=;
+	b=Ur3hbKrqW2rAbRCU2dKCACKHEY+DDvzxvdD23iuGSEY5eppKJo/ZcLYDJlzLe5yxWzCnSV
+	qbjUkGSJbGdFur338koYI/e7L9FDKGjsBjiAUlniCDCgUtTHQ/d59cl5PE1DWqiQAG0MxY
+	rYEgoJDgyfSwDYBvzT+j8fLu79nU34x9HN1uEC8r05801gxmemCLftUEYFOngWG8jZjz/N
+	FSrSkefbp5Pxr3iGjPXD4rBD99RX4y84msaoZuTeRMLNELg2oJCO/zEHwVRDv1jFUjxAlL
+	vpoOr87hd+LPPMP99HXYBIzEn0Mh0xGQGRouhV2TDq78fQW74BS1R4OEzqAZhQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Wed, 14 Feb 2024 16:15:00 -0300
+Subject: [PATCH] kunit: make kunit_bus_type const
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87plwzj8jw.fsf@BL-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240214-bus_cleanup-kunit-v1-1-1a38323eed73@marliere.net>
+X-B4-Tracking: v=1; b=H4sIADQRzWUC/x3MQQqAIBBA0avErBNGE4quEhGlUw2FhWYE0t2Tl
+ m/xf4JAnilAWyTwdHPgw2XIsgCzjm4hwTYbFCqNSmoxxTCYnUYXT7FFx5doNBpb1ROSRMjd6Wn
+ m5392/ft++PjoXGMAAAA=
+To: Brendan Higgins <brendan.higgins@linux.dev>, 
+ David Gow <davidgow@google.com>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+ linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1126; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=14BaVx8cuHZCZSoRpr+rbi+jknLxUXS3sryXnLK+89s=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBlzRE1VNxJ8zR76D76j3o1iSdYcKAZFek0I1i9g
+ kBNS2hyioWJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZc0RNQAKCRDJC4p8Y4ZY
+ phfeD/9Akfm8qZNJqn7s6OryAmRmpgQ+u0OjFB074u/3vxiwy8kZ6mJ7bXt8H6ntI7aWc5BOWMZ
+ ZG5iyJLHSCbk54saLS1+z24lajvslmUhewBBj1B3hYTeCN0WLv/zj9jbbu7papZbrFIv2ihyvIR
+ 4M9sS/tuY5WyDfhN6REEG2DekiVcy+LQfIlPil3xtEiJTQRGrt7W5Ulyyc2FKjKQpacytKCiC3i
+ nkd/UImp7YvF8nHwWbinXJB5EPz3MlPbSeq7j3e/6u9mU3Gty9p+UntvLN7X0QRmU+/DzJ6MqKV
+ ClnO16bswJ9HgFwrdxXZe+MEhpK1To0gYBmien06D8qYkQMwM9K8k/I7iSHQHl0EN5zVJDkCZ+Q
+ iasMt7BmyVIHFUaMi0212cBANa7WAV7PajaETLjhkeGF2jPWI1qTRwG0Z1AGNnT/YWDfVZT1PzO
+ fUwPRP9X1Za0Svt6qNv1Dqc8amsF6hkon7WbE7PZgEKIEqAvhJNB3TljrPXxwzEp3bQxg5G+RUw
+ iX0E7j1ghzZvKg8IAn+F2XrMuD4LHso1VC7hM39lhiC7E+8J9bOivZ3JTTRWWrWrEy2C4eTMioh
+ DQKXtyZu8MmCpLpn0yJVeR/MEyD6OcVUvOXLQ9GNUT8kasLi9r96aH2fiYb+j3DG2mnGQC5mhEZ
+ xBqxZSKPbRSdIfw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Wed, Feb 14, 2024 at 05:48:51PM +0100, Gregory CLEMENT wrote:
-> Jiaxun Yang sent a series to address it [1]. I managed to rebase my
-> series on top of this one.
-> 
-> Do you agree with these 8 patches?
+Since commit d492cc2573a0 ("driver core: device.h: make struct
+bus_type a const *"), the driver core can properly handle constant
+struct bus_type, move the kunit_bus_type variable to be a constant
+structure as well, placing it into read-only memory which can not be
+modified at runtime.
 
-first glance looked good ;-)
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ lib/kunit/device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Can I send my next series with the assumption that it will be merged?
+diff --git a/lib/kunit/device.c b/lib/kunit/device.c
+index f5371287b375..d23b8fb166d8 100644
+--- a/lib/kunit/device.c
++++ b/lib/kunit/device.c
+@@ -35,7 +35,7 @@ struct kunit_device {
+ 
+ #define to_kunit_device(d) container_of_const(d, struct kunit_device, dev)
+ 
+-static struct bus_type kunit_bus_type = {
++static const struct bus_type kunit_bus_type = {
+ 	.name		= "kunit",
+ };
+ 
 
-yes, I'll start applying next week.
+---
+base-commit: 76021a887a50892fd969cd42a5f3467f5696e50e
+change-id: 20240214-bus_cleanup-kunit-840cd37b0e10
 
-Thomas.
-
+Best regards,
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
