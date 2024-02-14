@@ -1,376 +1,210 @@
-Return-Path: <linux-kernel+bounces-65142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015B7854886
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:37:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93FD1854890
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 12:38:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B40AB27103
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:37:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 199051F220A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF89199BA;
-	Wed, 14 Feb 2024 11:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A35A1CA81;
+	Wed, 14 Feb 2024 11:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lOxmPwcF"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RJWwqUfN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Td7Ix7OG";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="RJWwqUfN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Td7Ix7OG"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42C41B814;
-	Wed, 14 Feb 2024 11:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588B11C69F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 11:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707910618; cv=none; b=uzPwX7VVudFKDONjiHtyYZg53GxXZOeyY7AMX43qBypgqiXQRGmUH/bqjRdMEijRLncABMh01oAR1AokQWJ1heLReWp8qP3PUNoTL1wy5wNgG38i8LnrWuDQvfiW2ad4hNnAkAcIjyM7PHCFSPHVSWhUwRGUKFiJ+7jaS0Rusc0=
+	t=1707910672; cv=none; b=sA8RFojEVRJB/PAOEHBmVgrx8Uu2of//abrwuFpbnhkVXnqPs8+EAxD2FvjAmUpC8HLy586btkubHU6ZCY+whXi9Qe47F7AgDDAXN0E7LDBPFskLNgjOYaEX4/xAX7Ed/FSDlFpKssNfglqDMLsSoEPPRbDDHrE+xVTq0PxsaQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707910618; c=relaxed/simple;
-	bh=T2WqLz2CjW9RPWZ0uth+/4gEHhoWLi0lbC1jmZPBsTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sxnsxBEZo7SGKtL70AGGXpbEfFGsF5wr5KtCtrIasEiEp3w4Pih083VMneAN9HV3xlRoSab3Yss95nOEMgZbBbjNCXdg8n1rJXPOQN8joAhnvnatlDNuoJVU/93/afh5XIePNEgqqprZJ1PDaqvcnGI45Z3Py10DC45qy00n3ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lOxmPwcF; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B037440E0192;
-	Wed, 14 Feb 2024 11:36:47 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id id0nTapW-7z7; Wed, 14 Feb 2024 11:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707910605; bh=rOr6deuDvMexUVv1eZg26bnq02kxdFci8fGUtHaJovs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lOxmPwcFp5f8VWJePTlH0iOrnDP+Sfpnj47A4WrOBel8yYmXsn4u6WZC+GecDzv1V
-	 BrdqZNwHWpKrnwtM7uwVOUgtNTDMcjYatar8tHD+twZFp8z9DdB2HhW5QQ8bRjNaqs
-	 UU5ZTeABC2PmdpbD83S/eRwGCzcuyNN4zp0YU4HXRla7JCAXYLPhwGCDvmaKquPbui
-	 g2b8c9YI40WyQwZ6Z+L12+/vqrmwjQVpLDrykuYaoT2fqZGFw/V8cumiTxaoWMKgS2
-	 J/wkK9sY9pq4j1ETbm9LLznlCj2KwdDI1dHwcyNcsPvirzxlT4/j3jOVVzav4MBfPu
-	 Pvcgpp5TMnj1SCuz95TLJFBwnTMVGpebNwfI7PhjvGgRX0JOKyEyT6kUnJcVYx7pIK
-	 E7493WhztPtNpxzERyLyAliyKiK81a6hpaPKsM6j8d4FqBgoLbIeMJ784D1PZ+o2mE
-	 jCT8pSBUw/WMhWeU0jYj0cAXyaOR2OqDj1bnzKAgoMf7UotUy0OtBHSob15P0/bgiL
-	 urhACpwjyunsOHZrEKmVHklUCbmUD+Ev1D3XsReW+1rU38Q7SWzPJvCdOYS8VzwkKQ
-	 tq3uux3C6RQa0VOG4+nRsClx0xlghZK7DC8brhXcmL8bxmzaaN0k8080gwI2BWD6Mh
-	 giRZ0ex00HvPW98mYr22mFRM=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	s=arc-20240116; t=1707910672; c=relaxed/simple;
+	bh=tUKnbRsubt1txfD8Snvz460QTKeRpLCyiZ24LRq4HE4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SI+X96ubxXafv3BB7Z1z/YGdyeC9dgHj5hIIUOo0fppp4L8sS5h/qdAeHf25phY88uYeS7rrXvOU+3dT+aCZwgen7B8iEZEqRjRxIz+OToPWJV0hPfccDJ7bnPL0902ferNPp0+K+BLOlKvUNhJecrYamkxwnEbWiBOJ+o9UAto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RJWwqUfN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Td7Ix7OG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=RJWwqUfN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Td7Ix7OG; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7120C40E0254;
-	Wed, 14 Feb 2024 11:36:36 +0000 (UTC)
-Date: Wed, 14 Feb 2024 12:36:30 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214113630.GIZcylvp6-m-FNNE7H@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1C88E1F7F5;
+	Wed, 14 Feb 2024 11:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707910668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxIyYzxOV3nh9HraFjdth4tMMfmT9KWuLu4edl2ED40=;
+	b=RJWwqUfNnC50kOEcV7C9lBZZW6IXlF/M+zzoSJGGPVyuC/N3DSFUJiSndqZAyPWEbi/SfJ
+	SuetIyMZSWj/glnmYbASd6mYSnOXWTseTcPlYDSmH6NcWMOXR77HKe5JfEJ39ToSEMoJW0
+	2HLSJO1z8ye3irRbCOjyIc+KYpMlm+E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707910668;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxIyYzxOV3nh9HraFjdth4tMMfmT9KWuLu4edl2ED40=;
+	b=Td7Ix7OGyXKKX8V/QjHkw3TVNKRaQkjIY821twbMc+JKTREmDRSUlv0oMBcXc8aIMLlzY4
+	kFyHx1Sbeu/xX0Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707910668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxIyYzxOV3nh9HraFjdth4tMMfmT9KWuLu4edl2ED40=;
+	b=RJWwqUfNnC50kOEcV7C9lBZZW6IXlF/M+zzoSJGGPVyuC/N3DSFUJiSndqZAyPWEbi/SfJ
+	SuetIyMZSWj/glnmYbASd6mYSnOXWTseTcPlYDSmH6NcWMOXR77HKe5JfEJ39ToSEMoJW0
+	2HLSJO1z8ye3irRbCOjyIc+KYpMlm+E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707910668;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxIyYzxOV3nh9HraFjdth4tMMfmT9KWuLu4edl2ED40=;
+	b=Td7Ix7OGyXKKX8V/QjHkw3TVNKRaQkjIY821twbMc+JKTREmDRSUlv0oMBcXc8aIMLlzY4
+	kFyHx1Sbeu/xX0Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B705613A6D;
+	Wed, 14 Feb 2024 11:37:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BBhGKwumzGUiXAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Wed, 14 Feb 2024 11:37:47 +0000
+Date: Wed, 14 Feb 2024 12:37:47 +0100
+Message-ID: <871q9fi8dw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Aiswarya Cyriac <Aiswarya.Cyriac@opensynergy.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"tiwai@suse.com" <tiwai@suse.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"virtualization@lists.linux-foundation.org" <virtualization@lists.linux-foundation.org>,
+	"virtio-dev@lists.oasis-open.org" <virtio-dev@lists.oasis-open.org>,
+	Anton Yakovlev <Anton.Yakovlev@opensynergy.com>,
+	coverity-bot <keescook+coverity-bot@chromium.org>,
+	Mikhail Golubev-Ciuchea <Mikhail.Golubev-Ciuchea@opensynergy.com>
+Subject: Re: [PATCH] ALSA: virtio: Fix "Coverity: virtsnd_kctl_tlv_op(): Uninitialized variables" warning.
+In-Reply-To: <20240214062348-mutt-send-email-mst@kernel.org>
+References: <20240213085131.503569-1-aiswarya.cyriac@opensynergy.com>
+	<20240213035806-mutt-send-email-mst@kernel.org>
+	<FR3P281MB25272BA9CC886E270EEAE380E64E2@FR3P281MB2527.DEUP281.PROD.OUTLOOK.COM>
+	<20240214062348-mutt-send-email-mst@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240214033516.1344948-3-yazen.ghannam@amd.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RJWwqUfN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Td7Ix7OG
+X-Spamd-Result: default: False [-1.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 TAGGED_RCPT(0.00)[coverity-bot];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,opensynergy.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 1C88E1F7F5
+X-Spam-Level: 
+X-Spam-Score: -1.81
+X-Spam-Flag: NO
 
-On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
-> +static void update_fru_record(struct fru_rec *rec, struct mce *m)
-> +{
-> +	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
-> +	struct cper_fru_poison_desc fpd;
-> +	u32 entry = 0;
-> +
-> +	mutex_lock(&fmpm_update_mutex);
-> +
-> +	init_fpd(&fpd, m);
-> +
-> +	/* This is the first entry, so just save it. */
-> +	if (!has_valid_entries(fmp->validation_bits))
-> +		goto save_fpd;
+On Wed, 14 Feb 2024 12:30:19 +0100,
+Michael S. Tsirkin wrote:
+> 
+> On Wed, Feb 14, 2024 at 09:08:26AM +0000, Aiswarya Cyriac wrote:
+> > Hi Michael,
+> > 
+> > Thank you for reviewing. I have updated my response inline
+> > 
+> > On Tue, Feb 13, 2024 at 09:51:30AM +0100, Aiswarya Cyriac wrote:
+> > >> Fix the following warning when building virtio_snd driver.
+> > >>
+> > >> "
+> > >> *** CID 1583619:  Uninitialized variables  (UNINIT)
+> > >> sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
+> > >> 288
+> > >> 289         break;
+> > >> 290       }
+> > >> 291
+> > >> 292       kfree(tlv);
+> > >> 293
+> > >> vvv     CID 1583619:  Uninitialized variables  (UNINIT)
+> > >> vvv     Using uninitialized value "rc".
+> > >> 294       return rc;
+> > >> 295     }
+> > >> 296
+> > >> 297     /**
+> > >> 298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
+> > >> 299      * @snd: VirtIO sound device.
+> > >> "
+> > >>
+> > >> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> > >> Signed-off-by: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
+> > >> Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+> > >> Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
+> > >> Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
+> > 
+> > >I don't know enough about ALSA to say whether the patch is correct.  But
+> > >the commit log needs work: please, do not "fix warnings" - analyse the
+> > >code and explain whether there is a real issue and if yes what is it
+> > >and how it can trigger. Is an invalid op_flag ever passed?
+> > >If it's just a coverity false positive it might be ok to
+> > >work around that but document this.
+> > 
+> > This warning is caused by the absence of the "default" branch in the
+> > switch-block, and is a false positive because the kernel calls
+> > virtsnd_kctl_tlv_op() only with values for op_flag processed in
+> > this block.
+> 
+> Well we don't normally have functions validate inputs.
+> In this case I am not really sure we should bother
+> with adding dead code. If you really want to, add BUG_ON.
 
-Not needed - if it is the first entry, it'll get saved there.
+Please don't use BUG_ON() in such a case...
+There is no reason to break the whole operation.
 
-> +	/* Ignore already recorded errors. */
-> +	if (is_dup_fpd(rec, &fpd))
-> +		goto out_unlock;
-> +
-> +	if (fmp->nr_entries >= max_nr_entries) {
-> +		pr_warn("Exceeded number of entries for FRU 0x%016llx", fmp->fru_id);
-> +		goto out_unlock;
-> +	}
-> +
-> +	entry = fmp->nr_entries;
 
-..
+thanks,
 
-> +static void retire_dram_row(u64 addr, u64 id, u32 cpu)
-> +{
-> +	struct atl_err a_err;
-
-Yap, exactly, this should use atl_err and not struct mce.
-
-> +
-> +	memset(&a_err, 0, sizeof(struct atl_err));
-> +
-> +	a_err.addr = addr;
-> +	a_err.ipid = id;
-> +	a_err.cpu  = cpu;
-> +
-> +	amd_retire_dram_row(&a_err);
-> +}
-> +
-> +static int fru_mem_poison_handler(struct notifier_block *nb, unsigned long val, void *data)
-> +{
-> +	struct mce *m = (struct mce *)data;
-> +	struct fru_rec *rec;
-> +
-> +	if (!mce_is_memory_error(m))
-> +		return NOTIFY_DONE;
-> +
-> +	retire_dram_row(m->addr, m->ipid, m->extcpu);
-> +
-> +	/*
-> +	 * This should not happen on real errors. But it could happen from
-
-What exactly is "This" here?
-
-> +	 * software error injection, etc.
-> +	 */
-> +	rec = get_fru_record(m->ppin);
-> +	if (!rec)
-> +		return NOTIFY_DONE;
-> +
-> +	update_fru_record(rec, m);
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static struct notifier_block fru_mem_poison_nb = {
-> +	.notifier_call  = fru_mem_poison_handler,
-> +	.priority	= MCE_PRIO_LOWEST,
-> +};
-> +
-> +static u32 get_cpu_from_fru_id(u64 fru_id)
-
-Fold into the single callsite.
-
-> +{
-> +	unsigned int cpu = 0;
-> +
-> +	/* Should there be more robust error handling if none found? */
-> +	for_each_online_cpu(cpu) {
-> +		if (topology_ppin(cpu) == fru_id)
-> +			break;
-> +	}
-> +
-> +	return cpu;
-> +}
-> +
-> +static void retire_mem_fmp(struct fru_rec *rec, u32 nr_entries, u32 cpu)
-> +{
-> +	struct cper_fru_poison_desc *fpd;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr_entries; i++) {
-> +		fpd = get_fpd(rec, i);
-> +
-> +		if (fpd->hw_id_type != FPD_HW_ID_TYPE_MCA_IPID)
-> +			continue;
-> +
-> +		if (fpd->addr_type != FPD_ADDR_TYPE_MCA_ADDR)
-> +			continue;
-> +
-> +		retire_dram_row(fpd->addr, fpd->hw_id, cpu);
-> +	}
-> +}
-> +
-> +static void retire_mem_records(void)
-> +{
-> +	struct cper_sec_fru_mem_poison *fmp;
-> +	struct fru_rec *rec;
-> +	unsigned int i;
-> +	u32 cpu;
-> +
-> +	for_each_fru(i, rec) {
-> +		fmp = get_fmp(rec);
-> +
-> +		if (!has_valid_entries(fmp->validation_bits))
-> +			continue;
-> +
-> +		cpu = get_cpu_from_fru_id(fmp->fru_id);
-
-Pass in that fmp thing into retire_dram_row() so that you can delay
-that get_cpu_from_fru_id() call until the moment you actually need it.
-
-> +static int save_new_records(void)
-> +{
-> +	struct fru_rec *rec;
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	for_each_fru(i, rec) {
-> +		/* Skip restored records. Should these be fixed up? */
-
-I don't understand that question.
-
-> +		if (rec->hdr.record_length)
-> +			continue;
-> +
-> +		set_rec_fields(rec);
-> +
-> +		ret = update_record_on_storage(rec);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static bool is_valid_fmp(struct fru_rec *rec)
-
-fmp_is_valid()
-
-> +{
-> +	struct cper_sec_fru_mem_poison *fmp = get_fmp(rec);
-> +	u32 len = get_fmp_len(rec);
-> +
-> +	if (!fmp)
-> +		return false;
-> +
-> +	if (!len)
-> +		return false;
-> +
-> +	/* Checksum must sum to zero for the entire section. */
-> +	if (do_fmp_checksum(fmp, len))
-> +		return false;
-> +
-> +	if (!(fmp->validation_bits & FMP_VALID_ARCH_TYPE))
-> +		return false;
-> +
-> +	if (fmp->fru_arch_type != FMP_ARCH_TYPE_X86_CPUID_1_EAX)
-> +		return false;
-> +
-> +	if (!(fmp->validation_bits & FMP_VALID_ARCH))
-> +		return false;
-> +
-> +	if (fmp->fru_arch != cpuid_eax(1))
-> +		return false;
-> +
-> +	if (!(fmp->validation_bits & FMP_VALID_ID_TYPE))
-> +		return false;
-> +
-> +	if (fmp->fru_id_type != FMP_ID_TYPE_X86_PPIN)
-> +		return false;
-> +
-> +	if (!(fmp->validation_bits & FMP_VALID_ID))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static void restore_record(struct fru_rec *new, struct fru_rec *old)
-> +{
-> +	/* Records larger than max_rec_len were skipped earlier. */
-> +	size_t len = min(max_rec_len, old->hdr.record_length);
-> +
-> +	memcpy(new, old, len);
-> +}
-
-Fold into the single call site.
-
-> +
-> +static bool valid_record(struct fru_rec *old)
-> +{
-> +	struct fru_rec *new;
-> +
-> +	if (!is_valid_fmp(old)) {
-> +		pr_debug("Ignoring invalid record");
-> +		return false;
-> +	}
-> +
-> +	new = get_fru_record(old->fmp.fru_id);
-> +	if (!new) {
-> +		pr_debug("Ignoring record for absent FRU");
-> +		return false;
-> +	}
-> +
-> +	/* What if ERST has duplicate FRU entries? */
-> +	restore_record(new, old);
-> +
-> +	return true;
-> +}
-> +
-> +/*
-> + * Fetch saved records from persistent storage.
-> + *
-> + * For each found record:
-> + * - If it was not created by this module, then ignore it.
-> + * - If it is valid, then copy its data to the local cache.
-> + * - If it is not valid, then erase it.
-> + */
-> +static int get_saved_records(void)
-> +{
-> +	struct fru_rec *old;
-> +	u64 record_id;
-> +	int ret, pos;
-> +	ssize_t len;
-> +
-> +	/*
-> +	 * Assume saved records match current max size.
-> +	 *
-> +	 * However, this may not be true depending on module parameters.
-
-This must work with module parameters, though. Or, as said and
-preferrably, there should not be any module parameters at all.
-
-> +	 */
-> +	old = kmalloc(max_rec_len, GFP_KERNEL);
-> +	if (!old) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	ret = erst_get_record_id_begin(&pos);
-> +	if (ret < 0)
-> +		goto out_end;
-> +
-> +	while (!erst_get_record_id_next(&pos, &record_id)) {
-> +		/*
-> +		 * Make sure to clear temporary buffer between reads to avoid
-> +		 * leftover data from records of various sizes.
-> +		 */
-> +		memset(old, 0, max_rec_len);
-> +
-> +		len = erst_read_record(record_id, &old->hdr, max_rec_len,
-> +				       sizeof(struct fru_rec), &CPER_CREATOR_FMP);
-> +
-> +		/* Should this be retried if the temporary buffer is too small? */
-
-Only when it turns out that it is necessary.
-
-> +		if (len < 0)
-> +			continue;
-> +
-> +		if (!valid_record(old))
-> +			erst_clear(record_id);
-
-Where is the check which ignores the record not created by this module?
-
-Because this clears all records it deems not valid and that thing needs
-to be really careful here and be sure what exactly it clears...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Takashi
 
