@@ -1,168 +1,196 @@
-Return-Path: <linux-kernel+bounces-66060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB9A855610
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:37:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709FE85561D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:38:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 564431F2A176
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:37:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA3D21F2B432
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887181419A2;
-	Wed, 14 Feb 2024 22:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E72B14600F;
+	Wed, 14 Feb 2024 22:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UEn54zZ3"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O2yMsy/4"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0414502D;
-	Wed, 14 Feb 2024 22:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE95A1420CE
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 22:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707950164; cv=none; b=HkAVjzsguzy1WdMs1KIgBCA/h0Wq5phJ0GikjS94NmuwdPry9kRzLkTSuGg40flCKYuW+Xdh7PaPRbIO3hwp8qGPzqnlUOXeR5hK5ruwgR1UNsITAXvJwRF1CjH2cCdYFkipTqpK915X48LVE7ytIPZYQDUcVmNMaAAtkCjgSY4=
+	t=1707950182; cv=none; b=FU9BFK7ktg/k6fzYS8x2Vsia9BCDq+R2RW3dm63l/6ar9lUB6quuDQ4t2Ek2GYEvPKaDF/Tc8DnBqg5o1pASmzfrf9AMHZfjhTYBj0X/FGoOFiyvrUWsdOmkSQmUvDR253/TPK5tNT3Xvn2VS0MQXGfAz9s+V8eyvAg9dCGJeDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707950164; c=relaxed/simple;
-	bh=zSsEp6WIbwar3E1MkHiDYZQkkX71x7A1W8sVSFzBhc0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HWi6bzsDg1067rhG1hXSSZh6iKmliDnAx0Cmvs/Qu3gaycn93IqXU7DmfKrN74qqedeN3SwPMbrGvxAuyLlWpVWkI0Thf8O26zUgAoyk6CiJHpRsFgr65jmUI9U8Klof1A+Zal/8bLQP3Foqu9Lo3MHguov+LFKfPWz0lUeBmK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=UEn54zZ3; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41ELiX8W022711;
-	Wed, 14 Feb 2024 22:35:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=w3ig6KHMTEgTENKvlHnOdkrUoc8w9f3gJq3KxOYjllA=;
- b=UEn54zZ3fTCl9HgEI3Uc0qg9ulaaAUOd6Wlueh9v0dePptYGUM2TWXlUcJcZ3AyxLYwJ
- QwwQBzr3tJhmaHgF5hZo1r4oUvyf2vtN2isMWRfhwSzq0fHuCcfJbtFzz51EAAvurJhU
- 3HvwsfS0/XDp1pxmec6WMDQy6JYpVTwjWYekuTFB4TUD8JRWWoEjTW5YtVOSWa8u1nGi
- hpuy8ZKcYs6rBTmJgRBVilLUsKIwMbGzsHbVqqFCd5xYvvmilA26uzbbclgTHql2viFS
- eJyIRk3Qs53o4b0Uf42L5YmIfovBpKgguIwa5m9OmqZab8OLC+mYIv7hjPZxroiaQh/y og== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w92ppghs9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 22:35:57 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41ELZirv013764;
-	Wed, 14 Feb 2024 22:35:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apcera3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 14 Feb 2024 22:35:56 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41EMZtqc012570;
-	Wed, 14 Feb 2024 22:35:55 GMT
-Received: from alaljime-dev-e4flex-vm.osdevelopmeniad.oraclevcn.com (alaljime-dev-e4flex-vm.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.106])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w6apcer8u-1;
-	Wed, 14 Feb 2024 22:35:55 +0000
-From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-To: kvm@vger.kernel.org
-Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        suravee.suthikulpanit@amd.com, mlevitsk@redhat.com,
-        alejandro.j.jimenez@oracle.com
-Subject: [PATCH 1/1] KVM: x86: Print names of apicv inhibit reasons in traces
-Date: Wed, 14 Feb 2024 22:35:54 +0000
-Message-Id: <20240214223554.1033154-1-alejandro.j.jimenez@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1707950182; c=relaxed/simple;
+	bh=C0crMXEshWXmvClKWRf7fOFqj/1UG01MNn2e/g61qyA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=u3g68uiV65RwVkRJg5fUqMR+IGN0N2yKyuuOk2SbZkDNCZFhAaSrXf1TdgnIeVCQPZpCPex1PSK2fL4HHgEgwZfw6laij9Bf2mQoLJe1Ywiq95NxbLFW/DJzs0odTbr1jCtIpP2zQypI3zFkDBXvdRayUL537nF6Na+aFS+UWxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O2yMsy/4; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso223086276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 14:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707950178; x=1708554978; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mIZ+3Vimc+Fu9uNEqwRF3MpLhrYbsxAAnrlrt3WNttw=;
+        b=O2yMsy/4oK8Y+fycjp+dTg7a95J3x8uffn5QQr/GODzExUn+5G+F1syIYtUOfWJzqr
+         VWnifaveFBOThJy2sKyI/Uy6uSfYCaWQ8rs+vnJ6uTAaToe3OeN7Ck4g35cRmc7SULgW
+         laJ2nuz+VS51bFFnqHVE7welFFlu4ndy4JVcGUEPx9hVfuSNHt7B6bMWePu/VzHNqW52
+         CA42MpX0muLR6BbAaA7ZcJvUVwHp9ISH7RboIY2VBPjOK9ogFCKNPaPmrRsHKi8s4PUD
+         Ih2VJvDYzSrud5HsdsKn4sU6PKEp9zXsfcrtDRXggHej6O7KHmSUtU8JvMr7ho9EnsKS
+         a7mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707950179; x=1708554979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mIZ+3Vimc+Fu9uNEqwRF3MpLhrYbsxAAnrlrt3WNttw=;
+        b=mWHk310EOHLy0byjCNwylK/wzITdGVkBf4nzTQ2TPTQTypttsAdNTeaMmrx59+Mczd
+         SWfhXUnYhFEk53wHjaQD5b+yF9va5LSE5nBgDiWdtvjnokCHTYctLA10a9VedC6Bdkw8
+         Q3umWFm8BuWdNS0kJ58gfNpGOMv84NZGRxkAm03ZLH5eNUc1EHzXCevuHeTtlMPEZaLX
+         uINj8ZGZE91U6KW/5xRYXf9JKGnGVGqHSxnK2VwqQNgv/frSpprn01dj07CPKvKp/Ooi
+         ONAyJUW4oqXVuZ0VRYvRhMHFSxqU4zlyJmblsCS1JXHbeFP8A6oa3V5yUAfbP4zG/vK+
+         D1ag==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ4/OfhXckiIw3y9iP8vL0byzD2JMF6CrEVzCabYGrybr82tmNXGMcqgEsbNuPbcFwhk/Z3zkS9JSonNdPWsQzV5jTKyEyrgHI57Ve
+X-Gm-Message-State: AOJu0Ywkr1f3yXT+2mJ882B4RbYCmXnRRYLdolJ7Y0f/plMQXogXJ5r/
+	i9f5xfX1yA42SctjlGc3g5D+KhlpcVJ59PkGDqwlfQZ+k9FOnRWpr5YcQggZsiUts53DFhy29nf
+	HQMS46uC4qNQaa/ePJ+8Y6ei85mLfHTr++tND
+X-Google-Smtp-Source: AGHT+IFGMo5QMzgB4haA8j4PHefAYH0QGMXhhajKI9bA2/lcKpgWtoNuuV25DDWG2rPEqNS3u8mi+lX2wk/W+0Ufusg=
+X-Received: by 2002:a25:208:0:b0:dc6:9c4f:9e85 with SMTP id
+ 8-20020a250208000000b00dc69c4f9e85mr3483617ybc.49.1707950178324; Wed, 14 Feb
+ 2024 14:36:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-14_14,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=985 adultscore=0
- suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402140170
-X-Proofpoint-ORIG-GUID: yTAUtYVm6jr8_vaL4CG3EzgAtjl6F59J
-X-Proofpoint-GUID: yTAUtYVm6jr8_vaL4CG3EzgAtjl6F59J
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-26-surenb@google.com>
+ <Zc09KRo7nMlSGpG6@dread.disaster.area>
+In-Reply-To: <Zc09KRo7nMlSGpG6@dread.disaster.area>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 14 Feb 2024 14:36:06 -0800
+Message-ID: <CAJuCfpGPyf9VzohFi8HzvT0XsW4bd3EAnCAb6xxedfJGtzZbBA@mail.gmail.com>
+Subject: Re: [PATCH v3 25/35] xfs: Memory allocation profiling fixups
+To: Dave Chinner <david@fromorbit.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Use the tracing infrastructure helper __print_flags() for printing flag
-bitfields, to enhance the trace output by displaying a string describing
-each of the inhibit reasons set.
+On Wed, Feb 14, 2024 at 2:22=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
+wrote:
+>
+> On Mon, Feb 12, 2024 at 01:39:11PM -0800, Suren Baghdasaryan wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > This adds an alloc_hooks() wrapper around kmem_alloc(), so that we can
+> > have allocations accounted to the proper callsite.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  fs/xfs/kmem.c |  4 ++--
+> >  fs/xfs/kmem.h | 10 ++++------
+> >  2 files changed, 6 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> > index c557a030acfe..9aa57a4e2478 100644
+> > --- a/fs/xfs/kmem.c
+> > +++ b/fs/xfs/kmem.c
+> > @@ -8,7 +8,7 @@
+> >  #include "xfs_trace.h"
+> >
+> >  void *
+> > -kmem_alloc(size_t size, xfs_km_flags_t flags)
+> > +kmem_alloc_noprof(size_t size, xfs_km_flags_t flags)
+> >  {
+> >       int     retries =3D 0;
+> >       gfp_t   lflags =3D kmem_flags_convert(flags);
+> > @@ -17,7 +17,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+> >       trace_kmem_alloc(size, flags, _RET_IP_);
+> >
+> >       do {
+> > -             ptr =3D kmalloc(size, lflags);
+> > +             ptr =3D kmalloc_noprof(size, lflags);
+> >               if (ptr || (flags & KM_MAYFAIL))
+> >                       return ptr;
+> >               if (!(++retries % 100))
+> > diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+> > index b987dc2c6851..c4cf1dc2a7af 100644
+> > --- a/fs/xfs/kmem.h
+> > +++ b/fs/xfs/kmem.h
+> > @@ -6,6 +6,7 @@
+> >  #ifndef __XFS_SUPPORT_KMEM_H__
+> >  #define __XFS_SUPPORT_KMEM_H__
+> >
+> > +#include <linux/alloc_tag.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/sched.h>
+> >  #include <linux/mm.h>
+> > @@ -56,18 +57,15 @@ kmem_flags_convert(xfs_km_flags_t flags)
+> >       return lflags;
+> >  }
+> >
+> > -extern void *kmem_alloc(size_t, xfs_km_flags_t);
+> >  static inline void  kmem_free(const void *ptr)
+> >  {
+> >       kvfree(ptr);
+> >  }
+> >
+> > +extern void *kmem_alloc_noprof(size_t, xfs_km_flags_t);
+> > +#define kmem_alloc(...)                      alloc_hooks(kmem_alloc_no=
+prof(__VA_ARGS__))
+> >
+> > -static inline void *
+> > -kmem_zalloc(size_t size, xfs_km_flags_t flags)
+> > -{
+> > -     return kmem_alloc(size, flags | KM_ZERO);
+> > -}
+> > +#define kmem_zalloc(_size, _flags)   kmem_alloc((_size), (_flags) | KM=
+_ZERO)
+> >
+> >  /*
+> >   * Zone interfaces
+> > --
+> > 2.43.0.687.g38aa6559b0-goog
+>
+> These changes can be dropped - the fs/xfs/kmem.[ch] stuff is now
+> gone in linux-xfs/for-next.
 
-The kvm_apicv_inhibit_changed tracepoint currently shows the raw bitmap
-value, requiring the user to consult the source file where the inhbit
-reasons are defined to decode the trace output.
+Thanks for the note. Will drop in the next submission.
 
-Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-
----
-checkpatch reports an error:
-ERROR: Macros with complex values should be enclosed in parentheses
-
-but that seems common for other patches that also use a macro to define an array
-of struct trace_print_flags used by __print_flags().
-
-I did not include an example of the new traces in the commit message since they
-are longer than 80 columns, but perhaps that is desirable. e.g.:
-
-qemu-system-x86-6961    [055] .....  1779.344065: kvm_apicv_inhibit_changed: set reason=2, inhibits=0x4 ABSENT
-qemu-system-x86-6961    [055] .....  1779.356710: kvm_apicv_inhibit_changed: cleared reason=2, inhibits=0x0
-
-qemu-system-x86-9912    [137] ..... 57106.196107: kvm_apicv_inhibit_changed: set reason=8, inhibits=0x300 IRQWIN|PIT_REINJ
-qemu-system-x86-9912    [137] ..... 57106.196115: kvm_apicv_inhibit_changed: cleared reason=8, inhibits=0x200 PIT_REINJ
----
- arch/x86/kvm/trace.h | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index b82e6ed4f024..8469e59dfce2 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -1372,6 +1372,27 @@ TRACE_EVENT(kvm_hv_stimer_cleanup,
- 		  __entry->vcpu_id, __entry->timer_index)
- );
- 
-+/*
-+ * The inhibit flags in this flag array must be kept in sync with the
-+ * kvm_apicv_inhibit enum members in <asm/kvm_host.h>.
-+ */
-+#define APICV_INHIBIT_FLAGS \
-+	{ BIT(APICV_INHIBIT_REASON_DISABLE),		 "DISABLED" }, \
-+	{ BIT(APICV_INHIBIT_REASON_HYPERV),		 "HYPERV" }, \
-+	{ BIT(APICV_INHIBIT_REASON_ABSENT),		 "ABSENT" }, \
-+	{ BIT(APICV_INHIBIT_REASON_BLOCKIRQ),		 "BLOCKIRQ" }, \
-+	{ BIT(APICV_INHIBIT_REASON_PHYSICAL_ID_ALIASED), "PHYS_ID_ALIASED" }, \
-+	{ BIT(APICV_INHIBIT_REASON_APIC_ID_MODIFIED),	 "APIC_ID_MOD" }, \
-+	{ BIT(APICV_INHIBIT_REASON_APIC_BASE_MODIFIED),	 "APIC_BASE_MOD" }, \
-+	{ BIT(APICV_INHIBIT_REASON_NESTED),		 "NESTED" }, \
-+	{ BIT(APICV_INHIBIT_REASON_IRQWIN),		 "IRQWIN" }, \
-+	{ BIT(APICV_INHIBIT_REASON_PIT_REINJ),		 "PIT_REINJ" }, \
-+	{ BIT(APICV_INHIBIT_REASON_SEV),		 "SEV" }, \
-+	{ BIT(APICV_INHIBIT_REASON_LOGICAL_ID_ALIASED),	 "LOG_ID_ALIASED" } \
-+
-+#define show_inhibit_reasons(inhibits) \
-+	__print_flags(inhibits, "|", APICV_INHIBIT_FLAGS)
-+
- TRACE_EVENT(kvm_apicv_inhibit_changed,
- 	    TP_PROTO(int reason, bool set, unsigned long inhibits),
- 	    TP_ARGS(reason, set, inhibits),
-@@ -1388,9 +1409,12 @@ TRACE_EVENT(kvm_apicv_inhibit_changed,
- 		__entry->inhibits = inhibits;
- 	),
- 
--	TP_printk("%s reason=%u, inhibits=0x%lx",
-+	TP_printk("%s reason=%u, inhibits=0x%lx%s%s",
- 		  __entry->set ? "set" : "cleared",
--		  __entry->reason, __entry->inhibits)
-+		  __entry->reason, __entry->inhibits,
-+		  __entry->inhibits ? " " : "",
-+		  __entry->inhibits ?
-+		  show_inhibit_reasons(__entry->inhibits) : "")
- );
- 
- TRACE_EVENT(kvm_apicv_accept_irq,
-
-base-commit: 7455665a3521aa7b56245c0a2810f748adc5fdd4
--- 
-2.39.3
-
+>
+> -Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
 
