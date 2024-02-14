@@ -1,113 +1,173 @@
-Return-Path: <linux-kernel+bounces-65240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF018549EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:01:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B1D8549F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90D6D1C26FE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ADE81F291A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F9853373;
-	Wed, 14 Feb 2024 13:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E22B52F8A;
+	Wed, 14 Feb 2024 13:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="k5S3FZMy"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YZT00K+A"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FA4524CF
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2138F52F6E;
+	Wed, 14 Feb 2024 13:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707915686; cv=none; b=hovGfyMrJi+uvovUfpU7HSUYMV4KUvnF8iUIVmPFFj5OZhHeA8/11eAXeWvIXSOocg5z9oaXewKE0vCu/MSz2WMArBqC5JAIFWObOdHiCldTgL3ie+x3c1X+MGTb9LbfaHATThFGYmmQGFL7UyCQE+KXXxNhAd+dEjgoqshxbZE=
+	t=1707915717; cv=none; b=jlzzghfh5omCr4P23OXTsJOvGdeXqBfeFsNY0XnogZjmGbJ/ooKG9idiEIvD144NKWFKobDn+7rZfOF1mPM+s8mZapwllt8RbK5pay4FjpRjZ7y+iQjLwgWuhFwIae58478HQ69zGxtMO9meX3Nu2fkTt9oxLIkXwEKWmlZBg+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707915686; c=relaxed/simple;
-	bh=fLVy1f7K0Kn0pdSgvUnQvwzHJ/wGtz6uPSJtJFm0hlI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yfa/NmoaEHqWB+YfnIXECh9zkBrq9NuJxfK2ihcNe+yhbNmrSkjQyB7Grqn+fJF1VCSd/JBWfvbSGs/MeDbvMGeDrcRu11YqCgHVHl5i73wadpW/zEbn8xLUNJ5ydKJqOKM3Rw4ClVpWxqFyL3pSEkURmPzDZInuOS0MaS5ssxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=k5S3FZMy; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6818aa08a33so6979936d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 05:01:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707915684; x=1708520484; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fLVy1f7K0Kn0pdSgvUnQvwzHJ/wGtz6uPSJtJFm0hlI=;
-        b=k5S3FZMyODaPutCg7kBDw56NG4IHWQrwX0Ic/stdpWuH6msMkSMRv82EhJoyTmQRIe
-         kQAtITTWr0yH8Ib4h3kETB50s6OBqMmrwBTpJ0oTA2GqYo5ub6USpx2m2DQ5kvARNpyu
-         sEjTasqW9FJhBBr9MfsltlIeTjkMGyn4Lf691MHqmEXYcM04gBVUBCr+Z4C1gfkgARlG
-         UViJ+DXZ4RsAZG0yOaAbmaHutDEN58onAIxsmZOcw8MpBrTIfuHSPC0Pgh/f1jXDfV/e
-         PotsuXMOZBSL6PVioVT5ZcjoiyvtrBqwU3WHAZZAODRcT1BVfNrryyOj7HJjbd+RqULQ
-         Zqrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707915684; x=1708520484;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fLVy1f7K0Kn0pdSgvUnQvwzHJ/wGtz6uPSJtJFm0hlI=;
-        b=lSqpp7op67hFLhb9IkugK0lkJzd53m95dAKq8d+kHY2G/VIJ+i4al2aoZU6kSSBTi7
-         Z6pG3rOZ2l3F7/phOdJnyZ4HcwM1ZoY887A2vscU/bI8MF2ur8dYwvE20qP8VMFOBUAp
-         Mj0mpnkUrkGN99l6ZCIv2NwzgSJJLgOeiP6PIN6weUB23Z4Oe4b5zK7yWAEqDpPgmkhE
-         gq/HlAGSFg7mCgLc92hO1sqGt8YEP11uE57Pd136bbJI+wE4doBtjwJ/lKm2VJ7NIgcH
-         y8L9tJ974nhTt0otwU7sE4TkvL72CMM90hUr64G9/VstpIIsNDqBHdEi8M0ayP1p3gig
-         /IqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlZzkgBLjsKDd6laRmFh4xA7RZX8uyXSc+G8JG5LjTjSpbChUcb2jyikrOB7bg8JMctgnvANOmIkZzYulXHQut0FdInRThhHQAk7eF
-X-Gm-Message-State: AOJu0Yx/EVIVXtVHqi3BTSYMbb5/eEfAjVpvUWJ/rJjJ6Y0EAYlU4LzX
-	DSuDlt7nycP1nsdxzxegN8fJ2qlvhgca4XvV8bnguIDfnCR0ywzHYZi7ukOOtGJXh/5AwH0QQbJ
-	kIxnhy3uZTifgi8le3+z3i1sylzcDc0BfzhOJlQ==
-X-Google-Smtp-Source: AGHT+IGonhKXoPvsozKTZHzXlucbcYX9bg8Gg73rytHzYubU8rxNgnY/C6AFVJ/TQKBRXQr1jGNt+PCgi0Votzl81JM=
-X-Received: by 2002:a05:6214:4186:b0:68c:7cbb:272e with SMTP id
- ld6-20020a056214418600b0068c7cbb272emr2843572qvb.19.1707915682117; Wed, 14
- Feb 2024 05:01:22 -0800 (PST)
+	s=arc-20240116; t=1707915717; c=relaxed/simple;
+	bh=UPDRuiOXlP13ChjfIMysQjZiACzpmw75739/2c4aLa4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XAaZDNM9hrCmDpPxPF7s64lAyfCwgjBtcer7dtNTmK5qe6tKWgSyX3NGslyY12pv3MXDwWbIS0893KoJKlm/azeqf5clu5mkpeQR8pEQe+mgSL2Vp5M4bvZhwFpbKHi7Jhmx0XiLxQqlCUM1zFvw6uSLknfOqyHY/iVbUMYJGLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YZT00K+A; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707915715; x=1739451715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UPDRuiOXlP13ChjfIMysQjZiACzpmw75739/2c4aLa4=;
+  b=YZT00K+Aip+tuYn07OoxOVHlYi8NiUJx0qbk2c/f0OmOFFsKj2fr2CWv
+   eSKYe4BwzmSsTLlMBPK28EiEGchMK4dO1MdqjQIAUqH7x87bY/T2o8B8f
+   Pfaqpp6xIkdN+b0nDUfyKWIJy6ed5GXqewU0zNNvQXqEw37Za4wSuZuhH
+   5yiTcT2+i0HyDBMjxx2zVCdO0P/ejpI8A62vdDWOwCtBd9OGtmr7Z3NIs
+   rg0XAMx0faDqXNXDQphOM6LaXNaagWataF//2d7vS+4ZUv58uCYJcjN/y
+   HXLgwx2+LUTdaNa+6l6T7UL3Q+RIdOFacKbWdRzP3cxgfvUwafKxicsWm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1866040"
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="1866040"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 05:01:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
+   d="scan'208";a="7776217"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 14 Feb 2024 05:01:50 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1raEtY-0008m6-1t;
+	Wed, 14 Feb 2024 13:01:48 +0000
+Date: Wed, 14 Feb 2024 21:01:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Balint Dobszay <balint.dobszay@arm.com>,
+	op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: oe-kbuild-all@lists.linux.dev, jens.wiklander@linaro.org,
+	sumit.garg@linaro.org, corbet@lwn.net, balint.dobszay@arm.com,
+	sudeep.holla@arm.com, gyorgy.szing@arm.com
+Subject: Re: [PATCH 1/3] tee: optee: Move pool_op helper functions
+Message-ID: <202402142042.JLQEGKBr-lkp@intel.com>
+References: <20240213145239.379875-2-balint.dobszay@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214085248.6534-1-brgl@bgdev.pl> <Zcy3fwAZXwJZpqqu@smile.fi.intel.com>
-In-Reply-To: <Zcy3fwAZXwJZpqqu@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 14 Feb 2024 14:01:11 +0100
-Message-ID: <CAMRc=MeiYe_QZexnYci_uHguChK-=a2+iUC5jtR_OharqwZS=w@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sysfs: fix inverted pointer logic
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213145239.379875-2-balint.dobszay@arm.com>
 
-On Wed, Feb 14, 2024 at 1:52=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Feb 14, 2024 at 09:52:48AM +0100, Bartosz Golaszewski wrote:
->
-> ...
->
-> > Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_de=
-vice with SRCU")
->
-> I'm wondering if instead tons of fixes you can just fold the patches and =
-rebase your tree.
->
-> Yes, we still have time to let it soak in Linux Next, so Torvalds won't c=
-omplain.
-> It will be much less burden to anybody who wants to backport this nice wo=
-rk.
->
+Hi Balint,
 
-No, I don't think so. Rebasing is reserved for really special cases
-when nothing else can be done. Fixes like that should be expected for
-a big rework like this. This is honestly a strange idea.
+kernel test robot noticed the following build errors:
 
-And I don't think anyone should backport this work. It's simply way
-too big and touches too many places.
+[auto build test ERROR on lwn/docs-next]
+[also build test ERROR on soc/for-next linus/master v6.8-rc4 next-20240214]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Bart
+url:    https://github.com/intel-lab-lkp/linux/commits/Balint-Dobszay/tee-optee-Move-pool_op-helper-functions/20240213-225716
+base:   git://git.lwn.net/linux.git docs-next
+patch link:    https://lore.kernel.org/r/20240213145239.379875-2-balint.dobszay%40arm.com
+patch subject: [PATCH 1/3] tee: optee: Move pool_op helper functions
+config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20240214/202402142042.JLQEGKBr-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240214/202402142042.JLQEGKBr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402142042.JLQEGKBr-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/tee/tee_shm.c: In function 'tee_shm_pool_op_alloc_helper':
+>> drivers/tee/tee_shm.c:227:22: error: implicit declaration of function 'virt_to_phys'; did you mean 'virt_to_pfn'? [-Werror=implicit-function-declaration]
+     227 |         shm->paddr = virt_to_phys(shm->kaddr);
+         |                      ^~~~~~~~~~~~
+         |                      virt_to_pfn
+   cc1: some warnings being treated as errors
+
+
+vim +227 drivers/tee/tee_shm.c
+
+   204	
+   205	int tee_shm_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+   206					 size_t size, size_t align,
+   207					 int (*shm_register)(struct tee_context *ctx,
+   208							     struct tee_shm *shm,
+   209							     struct page **pages,
+   210							     size_t num_pages,
+   211							     unsigned long start))
+   212	{
+   213		size_t nr_pages = roundup(size, PAGE_SIZE) / PAGE_SIZE;
+   214		struct page **pages;
+   215		unsigned int i;
+   216		int rc = 0;
+   217	
+   218		/*
+   219		 * Ignore alignment since this is already going to be page aligned
+   220		 * and there's no need for any larger alignment.
+   221		 */
+   222		shm->kaddr = alloc_pages_exact(nr_pages * PAGE_SIZE,
+   223					       GFP_KERNEL | __GFP_ZERO);
+   224		if (!shm->kaddr)
+   225			return -ENOMEM;
+   226	
+ > 227		shm->paddr = virt_to_phys(shm->kaddr);
+   228		shm->size = nr_pages * PAGE_SIZE;
+   229	
+   230		pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+   231		if (!pages) {
+   232			rc = -ENOMEM;
+   233			goto err;
+   234		}
+   235	
+   236		for (i = 0; i < nr_pages; i++)
+   237			pages[i] = virt_to_page((u8 *)shm->kaddr + i * PAGE_SIZE);
+   238	
+   239		shm->pages = pages;
+   240		shm->num_pages = nr_pages;
+   241	
+   242		if (shm_register) {
+   243			rc = shm_register(shm->ctx, shm, pages, nr_pages,
+   244					  (unsigned long)shm->kaddr);
+   245			if (rc)
+   246				goto err;
+   247		}
+   248	
+   249		return 0;
+   250	err:
+   251		free_pages_exact(shm->kaddr, shm->size);
+   252		shm->kaddr = NULL;
+   253		return rc;
+   254	}
+   255	EXPORT_SYMBOL_GPL(tee_shm_pool_op_alloc_helper);
+   256	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
