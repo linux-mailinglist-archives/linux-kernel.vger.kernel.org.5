@@ -1,170 +1,162 @@
-Return-Path: <linux-kernel+bounces-65360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FA3854BD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:46:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22F7B854BD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FCEEB26D4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:46:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3C5128358C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486565B5DB;
-	Wed, 14 Feb 2024 14:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0115A7BB;
+	Wed, 14 Feb 2024 14:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G/fg/fXE";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G/fg/fXE"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CotBDbNL"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2045.outbound.protection.outlook.com [40.107.220.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A9A5A7A1;
-	Wed, 14 Feb 2024 14:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707921998; cv=none; b=KQETrUM356GJ2vQ4poPqlxNI+Dvae8ZHloc0sbA4BQmOTKjnWAZnQLWRTwlTB1t4o4Yg+ER1YA1iwe0jC1k04Mfgj7uNr0ncaM6hHjk/gceqc3qg5Pvpj7aNDAAb4PU2qa7LgEXN3kpEG3qGmxkVraJYAOy3EXf7CgUymV1Ttmg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707921998; c=relaxed/simple;
-	bh=rn+ZMoLKcmq4pEsTZ8FfVyz+GcEVWfCdy4jk0Bj7Vas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CXERSHB6uegeowSjpX1dgwEIpPBH1XWEuc3ex94HAxlGZTK4gkS/9aPjG7sT3uyxgHx/hHKL3qJE4m61z4iBju3dHLSCrZ3zgl6K/Kfi1Rbj5uPOlM0j4YrCZSBsGptuTw9nuKddg0QPWccuuhzpCMfIllD7296epUEQdBGXlAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G/fg/fXE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G/fg/fXE; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AABE1220CA;
-	Wed, 14 Feb 2024 14:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707921994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L7XYt0NyV1LLmmYXD5SRXg7RDztZSN4xXat2vk9BckU=;
-	b=G/fg/fXE/BxmwJaDpB5G6+sbfW69+fMUQ0OzLitvcmHEv1Ds8G+GL4LdouO/fwIfpKsqYP
-	K1h5IhLHPiF9QIXH9zu5TsmsC3q6YrtzaT+6raFWjZBU+43wC0WrFSHBXIgYFSN3RNg2dN
-	Cy4YpNtjfnssPK+JWHc4gG9YwWLpq0E=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707921994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L7XYt0NyV1LLmmYXD5SRXg7RDztZSN4xXat2vk9BckU=;
-	b=G/fg/fXE/BxmwJaDpB5G6+sbfW69+fMUQ0OzLitvcmHEv1Ds8G+GL4LdouO/fwIfpKsqYP
-	K1h5IhLHPiF9QIXH9zu5TsmsC3q6YrtzaT+6raFWjZBU+43wC0WrFSHBXIgYFSN3RNg2dN
-	Cy4YpNtjfnssPK+JWHc4gG9YwWLpq0E=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C19613A72;
-	Wed, 14 Feb 2024 14:46:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Hbm4GUrSzGUzGAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 14 Feb 2024 14:46:34 +0000
-Date: Wed, 14 Feb 2024 15:46:33 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-	kent.overstreet@linux.dev, vbabka@suse.cz, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <ZczSSZOWMlqfvDg8@tiehlicka>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240214062020.GA989328@cmpxchg.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876E25C5EE;
+	Wed, 14 Feb 2024 14:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707922012; cv=fail; b=r0c5MdXljb+wDXdXEbCsvPjCKXVRN/pAmHpLKYkL8KSVvAq9y1Ji+lJT72zEqQuuBOT38/viLqvPh4YRn1eaPyJU1sPMa/q4suMqCz8ySNWTOmxpmjSUdLgdNo2nPtFVlNUZTUTIWfJPm17VquCaTqC8rKBnAkcIDJZPFww5Yx0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707922012; c=relaxed/simple;
+	bh=WS/rLS8o37lozm58Iv3LZNVydpkdGMLe/tcDeGyE42I=;
+	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=tuKYXARSSud5YBxevd57lgEjCG84rY+HNtCrGi1PsuOYFkvMCFHb1rlxqLlrj8f6KxBpr4KsRvFOka8YDwo+QLRIW0/nkUq0W5AL0gnR8lnI8fOm9P7clqJ21h+GcC1X5YM3EsOlWdTINxgRQlLAjEicPqu1GUcUB2CRpk6dS7U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CotBDbNL; arc=fail smtp.client-ip=40.107.220.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CTz2NmwgSJDUblD+GChN654YEdA0DrHbYpehfbIKeupE59ABH34RzgCDuSHBRlRlwKIAR3Fe1asQrJ90WZHVwqgPFxhvKArPBif8garq9YkS8zKEZHTJ3Mji40WMYgUKCy1KvHgQ6x9pbftsklU/JbvBLjbWB7ZuIXItMXP/NnfSMfP0dyPW5TFkpKZ/Xk+xhl5Zq1ltB77kQFhgQn/54cNKPbmzftguHhNUkVpL77oE4r5c0xNNnNMzXqhtNcr7StUx/2kiKDtIy0gr5BAGWnPrKen7NrEZoJxpU8GjZpC1CTpJh2Mt6jWXv/V8a9GYhaG4rHEDIQWTRxfh2hwD7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jY8qTicG38OTopXaTvosaEF8S4pKFQJZ+JnsZVRBbg0=;
+ b=KcQGebElQ6upR3J7pnjxUGE5rYdw8wvuj/ztqq9HxR65tbBnmZ5hMllePZ7giiqXOue401EsINlBdIFEYfE9geNVQGpB/BkhDaPfFrW//Oc3XE4fJu7TH7kc8TXDdVM4vOJWTMtxqJ7H5Of73PWqvZw1ZZ/wUFUIA7zA2CKZ+sT3/IYe21yeUwccIskiQqMS4+8xjOjaaIXSvcZpAnr6goletAaLNSeqh+jC5Zq0yr9Pt+jnFkAemh/SbCdrREx4Jt6tlvVPEfJ5AfQyr/BNuu7PZzRZ7qvKeXs5hPKtsIJWXQ1Z8R3/594DXNmrcCiJ5nwWdSag1iWTCTjR8gAWGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jY8qTicG38OTopXaTvosaEF8S4pKFQJZ+JnsZVRBbg0=;
+ b=CotBDbNLLlmlsDktGm7SsR0b/y77gak4/NnnjpKBH354S01sIbW/tP7V884qUrdgVXSewJdUKQ72ZC7l/9BalEuxfdDqpTw0YFT0dQJTm1TRzWJGCQn9z1OG4ymoMMdSdet2IFc36jjcrGFY4xfC9Rr7wc+Fc9cqsZOMUWstwn4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by CY8PR12MB7633.namprd12.prod.outlook.com (2603:10b6:930:9c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Wed, 14 Feb
+ 2024 14:46:47 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::3a46:cf50:1239:510c]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::3a46:cf50:1239:510c%7]) with mapi id 15.20.7270.016; Wed, 14 Feb 2024
+ 14:46:47 +0000
+Message-ID: <3bc7bef5-9cfc-400a-a1ba-99ebf5d94952@amd.com>
+Date: Wed, 14 Feb 2024 09:46:46 -0500
+User-Agent: Mozilla Thunderbird
+Cc: yazen.ghannam@amd.com, tony.luck@intel.com, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, avadhut.naik@amd.com, john.allen@amd.com,
+ muralidhara.mk@amd.com, naveenkrishna.chatradhi@amd.com,
+ sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
+ <20240214103446.GDZcyXRkyf1bFzMh7L@fat_crate.local>
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <20240214103446.GDZcyXRkyf1bFzMh7L@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0635.namprd03.prod.outlook.com
+ (2603:10b6:408:13b::10) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214062020.GA989328@cmpxchg.org>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="G/fg/fXE"
-X-Spamd-Result: default: False [-0.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 BAYES_HAM(-0.00)[26.79%];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[google.com,linux-foundation.org,linux.dev,suse.cz,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-1.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.31
-X-Rspamd-Queue-Id: AABE1220CA
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|CY8PR12MB7633:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6b2a00e7-62ba-4426-8518-08dc2d6bc4f9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8wewk65RuvigpvcwC6iqcujGCwK73jFRStQKfMjcQH2v7Nwg37JfKswjeshQ6wGcBF4Kn4v4PcYW2g/DWhgNoEzpsGR4/Z5kKGHZAYKr92MbnM+pyiOu4UXl/sndbbWU1gpH/80y22gh24HN7rByFU6iNe0sSGXSRuQNEJsdDIHUlyZgV2swubrosUo71iWChMXMukgUo94VPUFsk7w6+4dDM/2wrDnQls2n4n1oq2XiObk6HlgjmJgiQG3qbxSbaGJjO10++1nkIaf4nkzafw7g4PD7IIiC5EQ6CxXVWDnIMRpzLiM08fb45e/gLG0192QWZjjpVdnncyYlMkiP9Qn/uH11GcMXIrBq2oiZS907HNRqQ6MpF60KkQTs2ivfpMoE1/xtq3FhB88nxtQP1dAiy8hj79KgMp/+ZWjjmram1wR7EaTsQ8sMUOCkttTdIQvuF9XCRVv+7XkYh7DfVDpyRwRZxWzgclOD2elPsGKg5IEBY5SVKZYY0G8LSfjk8YVEeJ5zEWvp2i9f5YNWX4GO+avSpXnICs7fEmhKafRPDXAonKuD5QeopK5DsP5f
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(396003)(136003)(346002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(2906002)(5660300002)(4744005)(2616005)(6506007)(53546011)(36756003)(6512007)(6486002)(478600001)(38100700002)(83380400001)(26005)(8676002)(4326008)(86362001)(8936002)(44832011)(31696002)(316002)(6916009)(66476007)(66556008)(66946007)(31686004)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bGZEYVB6K21oa3hNZzQ2eEZHVno4MmdsdlF0UGZtRjRpZU4vc2dJOXZYODZm?=
+ =?utf-8?B?SnNEaUR6cnUyLys2RzB2ZllaUThMa0NoZVdsbjFHOVB1RnZUN0xqbDVMQ21D?=
+ =?utf-8?B?dEg3L08xOGhkbG9KNFROQ1VtSVFWVXJDRjFYZzM4T1BlRzQ5d0J5OXdDWjdK?=
+ =?utf-8?B?UG5TRVNTQ1VHNFZFVWhyeDJTTm9zeDk2VHhGKzRhekZsSHl5VlJvSnRsMFdo?=
+ =?utf-8?B?YTZ4b2xiMDFPallKeUl1cWZZbzRhZG1uaWxzdmpPakplVzF0S1d3dllvYVEz?=
+ =?utf-8?B?RU45elY3TUtZNG9raU1sL3h2Z3ZId0N0YTl0V2k5akNnSmh0MEpQS09PVGcx?=
+ =?utf-8?B?ckJkTjZSaTNubGs0U1hFQVlMSHBrY3NrckVVR2gza0J4RFI5V2pSMWNEY2E5?=
+ =?utf-8?B?azI1RmRWWmpIeVdadGVMYmZYLy9xdzNIdTg2ZWtSMFQ2bFg0SWREdXN3czF4?=
+ =?utf-8?B?UzN4c0FXbElsUzBsTXZXaEJhWWNuZ2dmaTZJZkhpR3AyZEsvMXR6Njh1NmVD?=
+ =?utf-8?B?aWhyVlJOWkJVd0NkaFowbGtxaWtVakFFTTNUR1libGhTVUIvUlhxMTY0Ynh5?=
+ =?utf-8?B?S1hMVitPN3RqTzVLMGVMeFhBNWR1a1liY0s1ZHJwY21icVNCKy9SelZqK28y?=
+ =?utf-8?B?eHRTQVJZVkVIbkVGQnlSYnNmMm9xeFV6VVg2NEVkVHh1UEFmdGNlcDVkelQv?=
+ =?utf-8?B?YzVhc2d0M0k2L2dHbHcyUjQ1QXBCZFNZb2s3ZzMxM1FEcHcxTjcxa0h4S0VG?=
+ =?utf-8?B?anJobFhRbEloMk5HYUFjK2lTQzhSbjZpSzNSS1BxcHA2em0rUTI2QkJ4aHhM?=
+ =?utf-8?B?S1dPMjNaamxjeFp2QlBKY1FmRW9iUGhON29BRFhjZEozU05aVFpnbEljdWtn?=
+ =?utf-8?B?elE1dklPNGZEZ1p1TkhabGN5K2FCOGdxOEp0elhYaXpzeE9kanpBUGMrM29p?=
+ =?utf-8?B?eERCWnRiZk5Ub0pvYkxvR3lYUC9WNGNFaCtnYWNweXFiOHRLcS9oWitaa2wx?=
+ =?utf-8?B?V0ZwY0FtRmpNTGYva2VpZjlYbGZVMktMM3I5NGF6M2pIVkdubmpkSGtjc0Zj?=
+ =?utf-8?B?ZHgvd2N2UjJPeTlpY1FpbjErdlQ3TDZ2aS9Kc0hwVDZEVDFpL2Q1Uzllb0JL?=
+ =?utf-8?B?Szg0clpZNkhFOXJxQ2Z5OXg0R25sRUxlTGxhR3Z3QlROZU5aVXZRUG5EdjdJ?=
+ =?utf-8?B?NzZaY0NCaVlEaDJia0VFb3JXWWVxWDg3eDdaTkRFYmozTnRHZGtUbi82MmNN?=
+ =?utf-8?B?TmpUYy9aTDIwT1gxcHZkOWZHMllLdEo0OExydVg3U2pRMTVPaFNyWWhHejVr?=
+ =?utf-8?B?OGR1SUJTSEFSeVJjbEQ4MHkrTFVHZHFkSWh5V011RHlvWGE0NWF5WGRWSTRC?=
+ =?utf-8?B?R2pQbUlEVUNWNFM1MjdPcjRMSHRUL3NsUTJ4MkhOOCs4b2czQ1ZVZ1VtSHNE?=
+ =?utf-8?B?UVBOcjRSdWxWZUl6L2tqaENBTktEcFFIamg0NElUSXhETEtZRWdHSUppbnl1?=
+ =?utf-8?B?ZU9lakhwZ1ZiQjg5RERKQkJhbTRDMjVhd3g5ODJqeUVhY2NwRDVOTEtxS0Za?=
+ =?utf-8?B?T3NZN2tFZC9qMWcycSsxeCtiNWhkenJVNHliZ2dIT2xnMjRGSmpVL1lMQ216?=
+ =?utf-8?B?dkZGSXUwT3RVMWU0dEZYQW9EdGRhUkx2NU9MSWtoUFdwYWtaRG15NzJ2QkpN?=
+ =?utf-8?B?SHpoeGl0d2ZlRWRCOTZRVk8yVVp1Q3VJTDREQXdCeEQ3N05LRUtIZ0hEZzFS?=
+ =?utf-8?B?eUVmODBvRHVkRDJuRkExZ1FsaXN1cG1IKy9sWVY2blJqdFdoaVEwSjNWOW1K?=
+ =?utf-8?B?K05WWlFFK0ZQdFhISitXcURUQ1hXZEZtQlNZRWZBVDJtUkQ3TjRkMmhFeE8v?=
+ =?utf-8?B?VUFqU3A1Tnp3MjVxNEd6djgrbC9WYks0NXV3dFpyZUc0b1NqRXptTkxiOVF4?=
+ =?utf-8?B?MWphaHNIeklDRHI5MEdVYzBmSW1LditNTmZTL1pob1hwYVNuTmE2ZE11OHA5?=
+ =?utf-8?B?aVV4dlNIUzJ3K1czWlk0L1FQTE9pazlVWVVhMytHMURwWnpEd1gwTnRTRXhU?=
+ =?utf-8?B?UmpiU3cxaUJVZ3BpZ2Riak1pbE83Wm91bk8rZUlZRjZqaVYzSHBXM1pEaFhy?=
+ =?utf-8?Q?PLLJiEDskP46YRAhBNcV9vKh7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b2a00e7-62ba-4426-8518-08dc2d6bc4f9
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 14:46:47.0133
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fGeO62RsEIFxqFcPTNaYxa2+yxKV6ROOzNeS4NjzeBhCFPrrzAhDjngPp2myQtpJ/XCPEJwxhjPgTQ/g2rKvEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7633
 
-On Wed 14-02-24 01:20:20, Johannes Weiner wrote:
-[...]
-> I agree we should discuss how the annotations are implemented on a
-> technical basis, but my take is that we need something like this.
+On 2/14/2024 5:34 AM, Borislav Petkov wrote:
+> On Tue, Feb 13, 2024 at 09:35:16PM -0600, Yazen Ghannam wrote:
+>> +#include <asm/mce.h>
+> 
+> ...
+> 
+>> +static void init_fpd(struct cper_fru_poison_desc *fpd,  struct mce *m)
+> 								^^^^^^
+> 
+> 
+> This is a generic thing and thus can't use an x86-ism struct mce,
+> remember?
+> 
 
-I do not think there is any disagreement on usefulness of a better
-memory allocation tracking. At least for me the primary problem is the
-implementation. At LFSMM last year we have heard that existing tracing
-infrastructure hasn't really been explored much. Cover letter doesn't
-really talk much about those alternatives so it is really hard to
-evaluate whether the proposed solution is indeed our best way to
-approach this.
+Yep, that's one of the assumptions/limitations I highlighted.
 
-> In a codebase of our size, I don't think the allocator should be
-> handing out memory without some basic implied tracking of where it's
-> going. It's a liability for production environments, and it can hide
-> bad memory management decisions in drivers and other subsystems for a
-> very long time.
-
-Fully agreed! It is quite common to see oom reports with a large portion
-of memory unaccounted and this really presents additional cost on the
-debugging side.
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Yazen
 
