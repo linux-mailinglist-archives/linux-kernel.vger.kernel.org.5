@@ -1,173 +1,179 @@
-Return-Path: <linux-kernel+bounces-65328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50740854B3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:19:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709CC854B41
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9FAEB22481
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:19:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F02E41F28E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381345730B;
-	Wed, 14 Feb 2024 14:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3585579A;
+	Wed, 14 Feb 2024 14:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="jeMUyY42";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="In9lxJI2"
-Received: from wflow8-smtp.messagingengine.com (wflow8-smtp.messagingengine.com [64.147.123.143])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2gwj2FAa"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2073.outbound.protection.outlook.com [40.107.244.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE7B29437;
-	Wed, 14 Feb 2024 14:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.143
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707920338; cv=none; b=EJGlMsb/fSP6Txs8NAMb5rkSHUdCFplrU46vaFKjAQgzR8FJ36TpvXSl46FRaEk3Fmgr91yKkPVrUzTJOILSUfEmT85YaH+tiYOf8bMjafjIMxy0TxU6KnRMqesFXx1wNJMCcz86hvfF+rhvjbqcBYaxvNYcM1fpKsPehjr8sbs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707920338; c=relaxed/simple;
-	bh=nTl1e8UEmACUyenLLW2iCRqE5C4RtIPrVYx7Rhm8IDk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SEtCKKf6DcQvut6YNr6RnKbKnIJbc/WZP/hZ7f4kMdF+uLyUuIsnbsbq6vQq+a514QEZu9RF6uOPtdUFihatddk62+I17mkQ2TSbiEjn2d+ie325TpaHojexm5cVsckBI08Qo6dlZqfH2Vco27oAnBYtn8QOT8l+D7aRcUhZOWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=jeMUyY42; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=In9lxJI2; arc=none smtp.client-ip=64.147.123.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.west.internal (Postfix) with ESMTP id 03A492CC02D0;
-	Wed, 14 Feb 2024 09:18:52 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 14 Feb 2024 09:18:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1707920332; x=1707927532; bh=6RsiVidSCw
-	BrjsulM6iUvKUYTy+Y7E6NKV1i3zA5qpU=; b=jeMUyY42CXSJw46CT9NQVglyCM
-	E7RLRhEzcLYi1I8QeUo183E55xwmzqBHWAv4NLTpkqHNnt65+FgnK83oq4qcxz6k
-	q9tCfccKFZgtS5/NeIVLN6QvdeUUo5/r0ZdTWn7KZDtKJpHlq/vo+N/ObHUeLd8P
-	8WgWL3cwf64GiEdFu7CF/ZCKAf6vELZb8F2CbItzzqIRsO1/IylxcMnb3aI7xy/U
-	2aoWiUu++SvPfgrwlWr23pu8ZFEhUkmYBtS93SGtb066xY9VYgr1HqvZEPXnT7vZ
-	N0+s2Ykx0GdRHBfceSPdQ+2LIVyEwcbe/qOjhjOJy85ic4Sh2gvFo6yyO2Pw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707920332; x=1707927532; bh=6RsiVidSCwBrjsulM6iUvKUYTy+Y
-	7E6NKV1i3zA5qpU=; b=In9lxJI2/qikc/OHPx4USykX8W8PIUIKmbagu2mBdOhB
-	4bwb/STZdV1WcVFEaHvE8eXeK1uebqXZPyMGrvJeNAtpT592uy6MXOtqk4gEWBVL
-	VdIdDBt0epBzO/tVVljh81LxSYUx8w8VWBFx1eqPyaarXJhGRZt9YL+qMP16VIu5
-	YjN/q8aPybrdpW8ZJ3KERsmf1jjH3Pq+Z7vKaorOr9uDI5r94YqamyEQBpOTCMAP
-	VntQkstFmpps4gOR/5CnvUV3bss09HnuNFilvIEgId4CTeDN65gowCVrNm+65KUI
-	Iu5nwSVHeudYda0tjSht/962gXyfcTdrufrsfurCww==
-X-ME-Sender: <xms:y8vMZYrEu3ZKpzC-ur-lUClxdnSXcACjD27_Oi1Qv8UuggyMOM2uNQ>
-    <xme:y8vMZerGtGPjK4YqJTlMNUA0OmYNsTDOl-dIcQ5bBVHKhm4nkFOU77JXHcPAy6KTr
-    PSaW4YYeRJRbKVmuXY>
-X-ME-Received: <xmr:y8vMZdNFxyFZUJVEXRyDcP5mMXZBuqQ17FNSXetFbVa94R9P8PTbbfTkLDnkP5F7QiYZABHo13otPbRvwo2RfeSwOtrO>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgdeifecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteeklefh
-    leelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:y8vMZf64-wd7mz4pF2zxJRbMXrrp25fV54ch5xt5FEsg63gNDa-uxg>
-    <xmx:y8vMZX68zZhXPUHy5CeWIXe5a2jsJHZH7e5eaZPC_yDQqlbERPQuRg>
-    <xmx:y8vMZfgRAXCu25PXsPQr41w9J6C7WjwHBQgBFUdnYrbfNwoxvVkZUA>
-    <xmx:zMvMZV7ibGkEuF3toxvX4kD4YGPjYOBvZ4dLdyJ-EK3yZvJICdZlywQBlax07Xqq>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Feb 2024 09:18:50 -0500 (EST)
-Date: Wed, 14 Feb 2024 07:18:48 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: coverity-bot <keescook@chromium.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Peng Zhang <zhangpeng.00@bytedance.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Tycho Andersen <tandersen@netflix.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: Coverity: __do_sys_pidfd_send_signal(): UNINIT
-Message-ID: <ZczLyDCN+zG6imTd@tycho.pizza>
-References: <202402131559.B76A34B@keescook>
- <ZcwGua3a9Z8nJXVq@tycho.pizza>
- <20240214090332.GA14017@redhat.com>
- <20240214090640.GB14017@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD6E5576A;
+	Wed, 14 Feb 2024 14:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707920361; cv=fail; b=J4wSpL1il+pGufIhqTRrv4h2p0kZby/0yCHDbySfdGDiQu7piGkX3JE7gRWuh/ukJn7d0K5NB2zwTmQq+ZWadWqgVo5eNB2/R7rtGS9B6CsqaJusOKFefnklUAEJmFy32dTM82TnKdY9HZ/UhwXWORO8bC/YdsKp16K5Qpo3Q98=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707920361; c=relaxed/simple;
+	bh=M5DJPfxmt0zrlBd8gMKtGzES70WwjtxcK4Gl7ORe2fQ=;
+	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DOjsU31qg5WBB+BcFluLLrYk5FmTm5QOhCCoKT4jUmw/sS2mEOZGFPD/IGziv2ngsAdF9uv5uuacdjjEi4283buYDCuJj596epYIN1O90LtCjZNU3mnTXKl5cjiYxXUDgwrjRAOMmrR7vSypHJgFdFOO9h8DTKWVrFVLuK8QKR8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2gwj2FAa; arc=fail smtp.client-ip=40.107.244.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ITvhtItdP0e1NC/h+P4Hjb3cRvmHeIFh19EuNPZ5LcxG3pBkwwToKXwwAbOWdoO/zrRCVoNP3MCxq2TN0QpYiNJz2c7l84h2pjB35X3wg8cPNH59zHodcXkllBlpoBUaoEXS+WCfcSvTxy9PZW3g9YaJZuPOPAe2SR7GJc5xkMEtpx9UZ0UQP6r/PNtfhHWdIqBAkJK5dLWYZNW5A4i6wxk8+fK+cTww46/2SaRa5CEiKvSLS326c2P9sIEEGiO2mDGD2A54z5uhVgsMjGLKpRSTXsYSFIdVizyEQFRalKyQURWSU+EzWk95B6t58ibhoInjTlUFZkEXLk23GQOXpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0XYwS5W7EfYDiwxdiqLl4+/H62j1Qw1ZQmbYoBfmB3s=;
+ b=AcbNT4w6UHrf0+8Q5UKsydC46R42/bvDKt5gL8KhRlH1pO1/PgcHyoOCG0QbA+iBBS1K5/WxgwPAlCsRPlHF7pnZtC9JttUUE82v4y9snb9P+7FG79qbPS/mF93g6C02GiyLoHdOIxW50FtIoV4NSe2Q58zn+3761/PBc3QI2OrQOOnZHwUaJRzKJyIziHiT2VxuAv5MSz8QBs9V5c8dDCiGXR4QAK87EcwHresknqbIjGnZJW8Xnid5KFaZJogRF8bjnrGoKp8BOxT/D5YvUUZ3EQJoDjA4iubnEYS4c2qq3tDCn54Ytb2anqyX6nxRRDCVn3gEoxdRi1fXhMIBoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0XYwS5W7EfYDiwxdiqLl4+/H62j1Qw1ZQmbYoBfmB3s=;
+ b=2gwj2FAaQLfMvMz7HSQNXpb8ydP+jNISVGwc0gTzOEUe6dgalL99R/ErKik6uyQtGOf2Mo8CDIjSXOSrOn99I75JW7tEu29PG5oy3h0/ICuZ15ellaycpeFvw4F+SrU/IqaHv3k6UAZMmf8gs8HUJmapOQfA6hAy37ztb9vgGEc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by DM4PR12MB6011.namprd12.prod.outlook.com (2603:10b6:8:6b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.23; Wed, 14 Feb
+ 2024 14:19:16 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::3a46:cf50:1239:510c]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::3a46:cf50:1239:510c%7]) with mapi id 15.20.7270.016; Wed, 14 Feb 2024
+ 14:19:16 +0000
+Message-ID: <d01ef2f5-10d9-410b-a6ec-d5eca05ffda4@amd.com>
+Date: Wed, 14 Feb 2024 09:19:13 -0500
+User-Agent: Mozilla Thunderbird
+Cc: yazen.ghannam@amd.com, tony.luck@intel.com, linux-edac@vger.kernel.org,
+ linux-kernel@vger.kernel.org, avadhut.naik@amd.com, john.allen@amd.com,
+ muralidhara.mk@amd.com, naveenkrishna.chatradhi@amd.com,
+ sathyapriya.k@amd.com
+Subject: Re: [PATCH 1/2] RAS/AMD/ATL, EDAC/amd64: Move MI300 Row Retirement to
+ ATL
+To: Borislav Petkov <bp@alien8.de>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-2-yazen.ghannam@amd.com>
+ <20240214083623.GZZcx7h_BcIWpoEmMJ@fat_crate.local>
+Content-Language: en-US
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <20240214083623.GZZcx7h_BcIWpoEmMJ@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0085.namprd03.prod.outlook.com
+ (2603:10b6:408:fc::30) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214090640.GB14017@redhat.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|DM4PR12MB6011:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8268eac1-4425-4db6-460d-08dc2d67ecca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sYWWYvWRRDt9JD3Mu49btAQLcUlauW7S+22LcNK5aFcpeu0sfPYEWCWR6R6T0BdgQo4oP2p4svG4P//hxsfVnR4W3g9EkNdxJFTNbTlnufOK/TxwfJRZfy+XT/u/fYEpvbS6TUTH0nMkBvOCBGpyQRLLf2tD4IRxRg1zL93KImmVnqOWzStq4pONYESY45bucYbqEpaybYicrWPc0gl040Cf2F9AianHyfdBD73ryXqLBvZ350HRCv8Bsi1toQbEomnfYrRPPQIYizAPH2+KQo+R/WShcckwzZybIa0Zk7H+sqV+nYsjR6PZgubc3lvlVExfjy0MxBFAUc2M8nNy+eFz609NjyfKwu5sBgqXidtwEwYrAPLtgErrFMpYEkcP0WAN42cBu9qZUSENKO7VGmyrjp/XijL6mcYstXcXj1xzLwUXXa6HJJZn7xsKEG0UujoK0zSTLgZiPwIYEkxmHGuXiBzGmXmnEAPILKLmp4S7xuTDfxja+TnKdrU+7+Ow+UWcovtKBsKxhJzEvRnVyo0b5X2ey5xl4+l2xKQz+y0=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(346002)(366004)(396003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(8936002)(31686004)(41300700001)(6506007)(38100700002)(2616005)(6666004)(66556008)(966005)(36756003)(44832011)(4326008)(66476007)(8676002)(6916009)(316002)(5660300002)(2906002)(66946007)(26005)(6486002)(83380400001)(86362001)(31696002)(6512007)(53546011)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WCtZc045R1FJelNYRytlQWVqZE1IZmo3dkhNOTZrNXlZaWdFNGtoVFZNS3Ex?=
+ =?utf-8?B?TEtBTTFFZlVjenVxWFpmMU9VU2YzQms2dDd3azRCOWxXRm5wdTB3OXB4Yzd5?=
+ =?utf-8?B?WHlaN2FzdlIyZXhuUVBVOTBTNUo3bVQ2cytxL1E2akZpeStmcHBiczJLbVBo?=
+ =?utf-8?B?dG5CM2ZGb3huS2NLaUpVWmN1WUt5bXljZDBINFFBbjlqbHB0OHJzUVd1UDc3?=
+ =?utf-8?B?bU9wL2g4Q1pjOXMrUWVyc2dZbVh6ZUdRbk9Ecm1OOUJHZ1daZjNvbW53bVNT?=
+ =?utf-8?B?ak1BeXVMZ2JMcXVUeTZwWUFudTZFRmNURytTckY4eGJoY1JoREtwUHpvUFFT?=
+ =?utf-8?B?T0phUTBuYkJZT3IydGZ5Skpibjk5M2ZsREwvUnJZb2poYmlBaE01SVcwaWJQ?=
+ =?utf-8?B?TjlxR1hFWURpTkczdzdjbzNERUtFS2IyU2VFMStFKzU4Rm91TnF5UnB5TTNs?=
+ =?utf-8?B?NWJvQUhQa2k3dzQ2UzlMOG41RHNnZ0pBTVpqUzRrRncwR3g3aDQ3U3Q1a3V4?=
+ =?utf-8?B?R2p4TVdQaHNHRlV6RGNxOFArc0I5SW9CNW1YblJUb0srR09kSEdHcTNJM2tn?=
+ =?utf-8?B?d21LMEdaUjdGVUV1TUh6eHYvRHh2YlZFRmcra09Ud2p3QUZWV2pqY2lyL1Rq?=
+ =?utf-8?B?UDRMeFhLVWVUSHJwOFo4M0ViSk5zS0VUZmRud3JvdFpWaGQ2MVdYL2gwMjk0?=
+ =?utf-8?B?SzJWM3BIMkIzYTJFWjRTSVdxMnhCbkRodjJkVkFGWDdxaUpKMXYwbzN5dTNz?=
+ =?utf-8?B?Q0lhYnE4c0FSZFl3VnQwMWRMLzdVM2p0ek1Hc3hrVDNqeXg3bjQxL2xYWS9y?=
+ =?utf-8?B?cE03K2xtZDNMam5ETUpNQ05jOFJCYUZPWWt5RGJGQ3hRMnp1YjlHbTRHdVF3?=
+ =?utf-8?B?TzNjRGZ2cDlJa1NxdXdHVnU1c0V3V0xRK0dMUnNoZGo3bUJhZVpGSjFlb1JI?=
+ =?utf-8?B?M3Urak8yaG1UaVRjM3M0bkNXTnRSME9pN2UyQjNYZ2xxUDlWcU5veG42NDA3?=
+ =?utf-8?B?MHN6a2dHcHpreEt6Ulg2WUw1SU42V2ZDSHhiQW40SXBCT3JBZE81N0pWdXNR?=
+ =?utf-8?B?RjV0RWdsT0ExbmQvZmRvVmh4NCtLRUltM2kvT1BkQ0tsRHR0bEEvM1U3a2sv?=
+ =?utf-8?B?RjdPWTMvWHIrWllTTVUzKzdmeFVTVFVMdTVKSXZPVmpWZzlkRnhVT1czZ1lM?=
+ =?utf-8?B?QlVsaWVqMURZYUwvTDV0OGpldTQwM0kwcXNLYWdvSlpRcyt5K1hPVTN3L3ZP?=
+ =?utf-8?B?UjI4dkxMZXVaKzlZRkZnUXdEN3l0eGhoN2xxZjZBenRMWlE2Lzh2anFIajFR?=
+ =?utf-8?B?UERNZmIxUUpaU0JpQlF4cTU4VkZYdTV1NW1yWVp5WHh0ZzBnQmxjTWJOVDdO?=
+ =?utf-8?B?VExlUDJrRzRLL3RwSmFFazB5RVd1ZFBnWkJTdDZIYU5SOWVOZ2VSQkVka0hy?=
+ =?utf-8?B?eHUrb3pna0t1WEc1OWVvNytDYzdmZkx3RzNxdEVjVDlPbXE5RGxWdUNOdlkr?=
+ =?utf-8?B?R3VFU25MNGc0N3QzTWRCd3VDS2Q1ZWxWdWplNDRiRVRLdC8ySE9pMkUxd20y?=
+ =?utf-8?B?N3I2a1QyWUFBbnNBYldnT0ZoOVdDRXVQT0tKakg0QWZ6UkFRMHo4ZUNxa1ZN?=
+ =?utf-8?B?TFdMUWxTOEhJYTVCQUQrTXloaW5NRk1YaFpTNVRBUzJmQVMzWmoyT2VoNVdp?=
+ =?utf-8?B?K1k0djd0NGtXMGNFZm1zcUFiNEg2Y05rKytTU1A5cWRqMlpxZkl2UTJHeWZQ?=
+ =?utf-8?B?NHo0ZGFLMDJUdFZtZVpYU2JibjMzNW91MFRKN21NMi9vTm9wWjF0QnhuNVBU?=
+ =?utf-8?B?Zk52VDc4VWdLTXl6OEJqRllkUlRMOVdqbG4rZWlhNzc5NmtnT3pIN2ZJQXJP?=
+ =?utf-8?B?cG1aT1hXbXBRSzFzTXdzQW1aeUg2REtnenV2L3dyOEJYeTZydS8yQzYyb0ll?=
+ =?utf-8?B?b3NiWGswWnVYT0Y3WG1rSGNNMTVoRWJnYndzTmtzMGwwTmV4TTRNS2Z1K0pk?=
+ =?utf-8?B?TlM2VC92a0xuN2VsTlh5UUVDbVlaWDlTQnIwSjkxb0gyR21JVEpyaW42b0RC?=
+ =?utf-8?B?dnJRK2ovUGdWOWt4SURvWXVrakllZXFTajVyQlhyV3gzODQzTXFONThHN1ZY?=
+ =?utf-8?Q?vkdvkLgKbZh2r/RNJApD6kgMb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8268eac1-4425-4db6-460d-08dc2d67ecca
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 14:19:16.0987
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qt0aoEL9roNLv35AZFenGnDpOAUJjECCmbKVm40xHeBm1O6KFDqeTr470lJxIsDqz3MEdEQJaIqoZoaLy9XYTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6011
 
-On Wed, Feb 14, 2024 at 10:06:41AM +0100, Oleg Nesterov wrote:
-> On 02/14, Oleg Nesterov wrote:
-> >
-> > On 02/13, Tycho Andersen wrote:
-> > >
-> > > I think this is a false positive, we have:
-> >
-> > Agreed,
-> >
-> > > That said, a default case wouldn't hurt, and we should fix the first
-> > > comment anyways, since now we have extensions.
-> > >
-> > > I'm happy to send a patch or maybe it's better for Christian to fix it
-> > > in-tree.
-> >
-> > I leave this to you and Christian, whatever you prefer. But perhaps we
-> > can simplify these checks? Something like below.
+On 2/14/2024 3:36 AM, Borislav Petkov wrote:
+> On Tue, Feb 13, 2024 at 09:35:15PM -0600, Yazen Ghannam wrote:
+>> DRAM row retirement depends on model-specific information that is best
+>> done within the AMD Address Translation Library.
+>>
+>> Export a generic wrapper function for other modules to use. Add any
+>> model-specific helpers here.
+>>
+>> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+>> ---
+>>   drivers/edac/Kconfig        |  1 -
+>>   drivers/edac/amd64_edac.c   | 48 ----------------------------------
+>>   drivers/ras/amd/atl/Kconfig |  1 +
+>>   drivers/ras/amd/atl/umc.c   | 51 +++++++++++++++++++++++++++++++++++++
+>>   include/linux/ras.h         |  2 ++
+>>   5 files changed, 54 insertions(+), 49 deletions(-)
 > 
-> forgot about -EINVAL ...
+> So basically I can zap:
 > 
-> Oleg.
+> 8be4984891e0 ("EDAC/amd64: Add MI300 row retirement support")
 > 
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -3876,10 +3876,6 @@ static struct pid *pidfd_to_pid(const struct file *file)
->  	return tgid_pidfd_to_pid(file);
->  }
->  
-> -#define PIDFD_SEND_SIGNAL_FLAGS                            \
-> -	(PIDFD_SIGNAL_THREAD | PIDFD_SIGNAL_THREAD_GROUP | \
-> -	 PIDFD_SIGNAL_PROCESS_GROUP)
-> -
->  /**
->   * sys_pidfd_send_signal - Signal a process through a pidfd
->   * @pidfd:  file descriptor of the process
-> @@ -3903,13 +3899,23 @@ SYSCALL_DEFINE4(pidfd_send_signal, int, pidfd, int, sig,
->  	kernel_siginfo_t kinfo;
->  	enum pid_type type;
->  
-> -	/* Enforce flags be set to 0 until we add an extension. */
-> -	if (flags & ~PIDFD_SEND_SIGNAL_FLAGS)
-> -		return -EINVAL;
-> -
-> -	/* Ensure that only a single signal scope determining flag is set. */
-> -	if (hweight32(flags & PIDFD_SEND_SIGNAL_FLAGS) > 1)
-> +	switch (flags) {
-> +	case 0:
-> +		/* but see the PIDFD_THREAD check below */
+> from
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git/log/?h=edac-amd-atl
+> 
+> and you can send me a patch which adds the row retirement straight to
+> the ATL?
+> 
 
-Why not put that bit inline? But I guess the hweight and flags mask
-are intended to be future proofness for flags that don't fit into this
-switch. That said, your patch reads better than the way it is in the
-tree and is what I was thinking.
+Yes, that's fine.
 
-Tycho
+Thanks,
+Yazen
+
 
