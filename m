@@ -1,123 +1,132 @@
-Return-Path: <linux-kernel+bounces-65963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902EC85547D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:06:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 831CF855492
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B3D9286BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:06:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B66CF1C22212
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ED713EFF1;
-	Wed, 14 Feb 2024 21:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E8A13EFEF;
+	Wed, 14 Feb 2024 21:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qfvu4z1g"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="XNbIPGHb"
+Received: from cyan.elm.relay.mailchannels.net (cyan.elm.relay.mailchannels.net [23.83.212.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398D855E44
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707944783; cv=none; b=Jh1dYm2YU6JeosZgJUKnUDSx3o+gsObKQrPCZe5OeB+xPEZ1r7Xi7dZFOKwTye1HukbkVGWQCHqOZMv+jCxAOuUwgSPoM1Z6tvUPDTXPaadH6VL7TKJRNdoYXW7T6TItK7kCv8CrOnJVciDDmvutRS/SCmltFZsB2LnRpaqulC0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707944783; c=relaxed/simple;
-	bh=c+0UADNx4KkHHaeDm/qEDcDyoYmLg07y339g5RmUM14=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025D913DBBC;
+	Wed, 14 Feb 2024 21:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707945368; cv=pass; b=BYqH4MQU4w7iAbVTVnfgeg2I+QhJME2wsNUXc5izXfkcECgaAjYVfFom6DpW3T3Fk+uXgShfGGoXD2CC7a8AAYBFoRQ83Lt9qjmsTIYV4wWR8EyGM6sfsNiG+MYRFKQNRFo8Kb4/VRz7Ph93Zi3oswZ936Jl8xoLVmOQcqqbwCc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707945368; c=relaxed/simple;
+	bh=32ZT+v+5JzF5aL7sf+dzxCe3Q4deHg+ix3PfzWTz9OE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JmLOqPdwp0JzfqQDvwCZl5h6Wv2VQLVFvdJ+XAtCeyOO0DdHNyylB/gFYvZ3o1cwgsxSF02HAZSN6jnIidDElFQiNdBQaioLPvk73zJmVQ9RrB29VRm8XVcAuVlV/TT3apE8E51zEXJd6fV3kkIkXMCim7yt185Re4wtO6dn0tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qfvu4z1g; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 13:06:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707944780;
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3Xj+Hp6CpBKcndjcsJfdLheynrrnFaEqwjBbtFku7HbgGCa2HD3/ICc3+ZFM/j4x5JsCcf22DvQ3WzXxmhEVfpslaQhq13J5RHL7TmGYiyWf9f6aDlqYxrMtEqh7gKtiMkXQfnOfZ1tvzOoAC3ey16yCfGZ3Cy2Lzdjs26y3ec=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=XNbIPGHb; arc=pass smtp.client-ip=23.83.212.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 8D0BCC3875;
+	Wed, 14 Feb 2024 21:08:35 +0000 (UTC)
+Received: from pdx1-sub0-mail-a275.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 07003C38E5;
+	Wed, 14 Feb 2024 21:08:35 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1707944915; a=rsa-sha256;
+	cv=none;
+	b=qW9q/dyfJcvz1Dzzm828vunpkgVoSSDgdgfU13G9Mn/EYyJq++eAChtrcWWXUbkHsNzE/T
+	uq9t9J8YRSphbfTrL/fAoShJdZAyeUntCRPR17qXkdnqQg3igw+8uWvaYjs55eZZzMnh/p
+	ALMJGD+7evhDIkwfOFm2SIA5VlNUkyO3DlWZPpU5AA74o3yKg36mF0j6/gF2Bk8aeVIGVE
+	xodNr3kYwxVESTxXPBPuP/9sGWEi4s9LPWYytWapaaOxXL2/zY4Vc7EiQ2Z2aeE0R1Dmg7
+	fxOctX4AvVBAJfzggK3Butr3gJBd2r/rfju1a9OktFUCLwt1aQhFBCAs+Is2uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1707944915;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uO6O9l/7u1FoWCDVNDPi12vidxMFWsbJFIEI+vbkcWI=;
-	b=Qfvu4z1ghH0eYQfo4WtcCs4NQnZnhnvCd/kiESIbOVEsb4Pk2KCeGoA7CpjxaUK3cNiCp/
-	N2IyDNCKrNA+pQoYJQOq+41kBXGMbfNasmhZgR/nS1tiefS9VwosW55GVWHiB7mKM1HoQQ
-	xT6DRaSpb0uF7ELaP9CtEQsQKIUfdHc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 19/23] KVM: selftests: Add a minimal library for
- interacting with an ITS
-Message-ID: <Zc0rRFLRhLfLshpm@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
- <20240213094114.3961683-1-oliver.upton@linux.dev>
- <86zfw33qae.wl-maz@kernel.org>
- <Zc0NsFm40nIqTmRf@linux.dev>
- <86v86q4xkf.wl-maz@kernel.org>
- <Zc0orzU-CeKEyx3j@linux.dev>
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=32ZT+v+5JzF5aL7sf+dzxCe3Q4deHg+ix3PfzWTz9OE=;
+	b=uVUz94c7ILK/FHJXkUSfxKuuZOkTvTg0V9UHXfoZgQ9yyC8BpVpfrz6yPgC6kD03eLmN7V
+	zREhYP88Aa2r7ZnzOpsXHYcXmuUeXfOhcrMnemFQ0m3jDCgOFX1KDcuKkBmIVLdae3sapW
+	2wwxt7YnO4qRsi11h3RermMwgCNxdqUKFd0dyuXiFjWgn/pqs+uFTnb72sQ5KilCGB8CW9
+	xMSfAsop4lVu7sH8CN1sn8KE567bzXuOLci66LAkOLyqTI5rynDrLVUw08pB17xDgZSutR
+	UbS779ITPxr7h+42xHszfgTX2MLV0nJ5Ed3FJuDAPdcA4nG2akNzQBUUWXjQjg==
+ARC-Authentication-Results: i=1;
+	rspamd-55b4bfd7cb-drw6l;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Print-Quick: 6b103d901e01a3c4_1707944915346_3956582227
+X-MC-Loop-Signature: 1707944915346:1267690406
+X-MC-Ingress-Time: 1707944915346
+Received: from pdx1-sub0-mail-a275.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.100.244.10 (trex/6.9.2);
+	Wed, 14 Feb 2024 21:08:35 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a275.dreamhost.com (Postfix) with ESMTPSA id 4TZrQV296mz6x;
+	Wed, 14 Feb 2024 13:08:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1707944914;
+	bh=32ZT+v+5JzF5aL7sf+dzxCe3Q4deHg+ix3PfzWTz9OE=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=XNbIPGHbbg9Cr61Sb16Rbn0gyAMav+UymMelNSIV36MOITM/fp9aKFtXnaDek5LJO
+	 oxvkIQ3D9AU606gK+EJvxjJ/HkW1D4btZn2EIxLCfC6+CLEU2osi4frVkH1XTQCM7L
+	 NsOnehRrihNI/GqSeIsNA8XSe9bXLN3fxvN1r9nQ+z14bj6+/1N8ttWGV8frQC9KsT
+	 ++XEg4vpubZvrl+EsbvX6nQph4YIjOyGOG7FKa/D4qvPD0JOSPTt1Bim3Xcn20jnEC
+	 xPsMnLRCzgWpYjmYwToKXXw0zhqa2vxE2osc14AMVfCnw8vBtG0n8S+Nq4DeT7M59o
+	 MH2n+0HDSzfVg==
+Date: Wed, 14 Feb 2024 13:08:31 -0800
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: Mark Brown <broonie@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Darren Hart <dvhart@infradead.org>,
+	=?utf-8?B?QW5kcsOvwr/CvQ==?= Almeida <andrealmeid@igalia.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: fuxex: Report a unique test name per run of
+ futex_requeue_pi
+Message-ID: <20240214210831.kzhrhqabot55llcd@offworld>
+References: <20240213-kselftest-futex-requeue-pi-unique-v1-1-fa160a4a7ade@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <Zc0orzU-CeKEyx3j@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240213-kselftest-futex-requeue-pi-unique-v1-1-fa160a4a7ade@kernel.org>
+User-Agent: NeoMutt/20220429
 
-On Wed, Feb 14, 2024 at 12:55:11PM -0800, Oliver Upton wrote:
-> On Wed, Feb 14, 2024 at 08:09:52PM +0000, Marc Zyngier wrote:
-> > > If the order of restore from userspace is CBASER, CWRITER, CREADR then
-> > > we **wind up replaying the entire command queue**. While insane, I'm
-> > > pretty sure it is legal for the guest to write garbage after the read
-> > > pointer has moved past a particular command index.
-> > > 
-> > > Fsck!!!
-> > 
-> > This is documented Documentation/virt/kvm/devices/arm-vgic-its.rst to
-> > some extent, and it is allowed for the guest to crap itself on behalf
-> > of userspace if the ordering isn't respected.
-> 
-> Ah, fair, I missed the documentation here. If we require userspace to
-> write CTLR last then we _should_ be fine, but damn is this a tricky set
-> of expectations.
-> 
-> > > So, how about we do this:
-> > > 
-> > >  - Provide a uaccess hook for CWRITER that changes the write-pointer
-> > >    without processing any commands
-> > > 
-> > >  - Assert an invariant that at any time CWRITER or CREADR are read from
-> > >    userspace that CREADR == CWRITER. Fail the ioctl and scream if that
-> > >    isn't the case, so that way we never need to worry about processing
-> > >    'in-flight' commands at the destination.
-> > 
-> > Are we guaranteed that we cannot ever see CWRITER != CREADR at VM
-> > dumping time? I'm not convinced that we cannot preempt the vcpu thread
-> > at the right spot, specially given that you can have an arbitrary
-> > large batch of commands to execute.
-> > 
-> > Just add a page-fault to the mix, and a signal pending. Pronto, you
-> > see a guest exit and you should be able to start dumping things
-> > without the ITS having processed much. I haven't tried, but that
-> > doesn't seem totally unlikely.
-> 
-> Well, we would need to run all userspace reads and writes through the
-> cmd_lock in this case, which is what we already do for the CREADR
-> uaccess hook. To me the 'racy' queue accessors only make sense for guest
-> accesses, since the driver is expecting to poll for completion in that
-> case.
+On Tue, 13 Feb 2024, Mark Brown wrote:
 
-My proposed invariant cannot be maintained, of course, since userspace
-can do whatever it pleases on the cmdq pointers.
+>The futex_requeue_pi test program is run a number of times with different
+>options to provide multiple test cases. Currently every time it runs it
+>reports the result with a consistent string, meaning that automated systems
+>parsing the TAP output from a test run have difficulty in distinguishing
+>which test is which.
+>
+>The parameters used for the test are already logged as part of the test
+>output, let's use the same format to roll them into the test name that we
+>use with KTAP so that automated systems can follow the results of the
+>individual cases that get run.
+>
+>Signed-off-by: Mark Brown <broonie@kernel.org>
 
-> Otherwise we decide the existing rules for restoring the ITS are fine
-> and I get to keep my funky driver :)
-> 
-> -- 
-> Thanks,
-> Oliver
-> 
+Acked-by: Davidlohr Bueso <dave@stgolabs.net>
 
