@@ -1,127 +1,192 @@
-Return-Path: <linux-kernel+bounces-64674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4684D854156
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:43:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AA4854159
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 02:52:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DAFB1C267C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653571C26AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 01:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F899474;
-	Wed, 14 Feb 2024 01:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D60279E4;
+	Wed, 14 Feb 2024 01:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hCTuTGmZ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MRvM2TND"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E2C8F40;
-	Wed, 14 Feb 2024 01:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583672F25;
+	Wed, 14 Feb 2024 01:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707875028; cv=none; b=G55QQZi7rYG+NLdO3J9MkOtECgwKZXTuubrEu6SMhT+QS/CqU5MwMztqGXF1n7nwKapVGX6UF/qXSoSXkLBDyP+4RndWyWEmnQ27r130ilLivq2PDjX8MFtKc2hr60nGjvxcdv1wqTHxQZ3LLvL7d1t5cHSLGaOhftda3RnLW4Y=
+	t=1707875552; cv=none; b=njkoY65EusNqE3s+XvUfmBWZXWgI3E0qe5f91lVKEwXl4UPZl3EmPKIf288AV7/WHx9nw6CnfLd2nLbWgHoS6jrx144BJeUMf/tmHsXAYjeNkRZScexBAt8rPVzvIhxhxzHB/ZwPCw2VdED0Dt/xxV260O8dOJF33vx86iusy6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707875028; c=relaxed/simple;
-	bh=I5ZfUF1YSblSmzuscamdi26822vsk7E/SinkXoVdgaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XecuxnJuM4D59uSHMGlqVtRPrU4IDEHFlXSPPSSQbIAzgry6z5Av9CU/Q2+rnv4Yah8rsoku2iObVgzDou/d3LB4fy4Lttx3PBwItyCQmrhuMXU5s7M/BiePlDfLZyPRkNrjdZQr0aIgWBFd38FIJLfQVKNJLewmYDAp5/AkHnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hCTuTGmZ; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41E0kEdO016909;
-	Wed, 14 Feb 2024 01:43:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BEnjXFrY8jtJX8MYamsZGbWdMnQoTXuJ9G4KYZH+VhE=; b=hC
-	TuTGmZpZBxYreXBu7VPXdRKnhN0qWCVjxUWCILmd6sD9KQ7K+9lszoHGKZ00i7j2
-	KXiV+k2apjUFa7H4j0Ed7gIOdMTmV77aBdpglI+RVfa4R2n/ahBtxZsPC1FQlhpW
-	42Lx0NC1FukpycgswKM0NsKKebMhis0+kzi/MCPsIHRUXZxXBhS/II/hvLnsuTvu
-	MBR3NLD+k4Ow1nzVXLf8IPMvcRFAB7888jkEaL29j7Mevzz6r+M/4jw9Z31L8Lbx
-	fKaD7PzPqyZ5JQkdUYjVzMpZ2KnPRuIR6Ai6ZOgIADR/3bPp248CyiNJcfM1tl3p
-	HtJJYS+AE/WO4sKJC31A==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w7wfyaq69-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 01:43:33 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41E1hXjh004907
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 14 Feb 2024 01:43:33 GMT
-Received: from [10.253.37.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 13 Feb
- 2024 17:43:29 -0800
-Message-ID: <a062ce8d-638a-4a33-8afa-45ad47efcd72@quicinc.com>
-Date: Wed, 14 Feb 2024 09:43:26 +0800
+	s=arc-20240116; t=1707875552; c=relaxed/simple;
+	bh=FYO/Ayy7ax+Dum8m03QRKFc/2rimYYWHD0lN8SmIRKI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=JdvPHhJ+SNhBLU2lLislYd/El+1jibtZCWotu5rPjWwUhkROyJjPAVe8PZ1qoX73V9TAhUxcX7U/8Ru3/6BCLounmmAO7FCU642Q3jfz7eN24u0whq46tCagzhhytWS3FWSvDmvAcdGaGD4r8XW1IW9zpYyDbotqUKLVrv/3jf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MRvM2TND; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71571C433F1;
+	Wed, 14 Feb 2024 01:52:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707875551;
+	bh=FYO/Ayy7ax+Dum8m03QRKFc/2rimYYWHD0lN8SmIRKI=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=MRvM2TNDv764T8sEobYFWJAreh9gPPOG4MDc3/ISbZMeqD/o/ciomSn+OhZYlm7yc
+	 j0SltrRFxhL5HaFlj42L/xgenQB/8gdDuJJGRq1NuPNR2QMlSf5or/LCqrkniiRnmV
+	 CnZAUl+v3eir/gKYQ2b29MUXo5t2UtguF2JqP8ymPKiSEJeyUWsvMSK89crcaRVvq5
+	 gzrfIUHbOrmCtfnlGhJIB23GH72PwRw0kau0qEOWd4ZzBhF5FYVh2WGzpo8Yz0Tavp
+	 ODKrCtoFdxK2EjPoPnal5rTfheDNOfRgONRTxRS85QS7dODKUG1HSyuNIWTC1sKW58
+	 2PXXpV6o3xsSQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: qcom,coresight-tpdm: Rename
- qcom,dsb-element-size
-To: Rob Herring <robh@kernel.org>
-CC: Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach
-	<mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Tao Zhang <quic_taozha@quicinc.com>,
-        "Alexander
- Shishkin" <alexander.shishkin@linux.intel.com>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240213160521.15925-1-quic_jinlmao@quicinc.com>
- <20240213160521.15925-2-quic_jinlmao@quicinc.com>
- <20240213222957.GA2502642-robh@kernel.org>
-Content-Language: en-US
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <20240213222957.GA2502642-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JWqlbZDNFU-HbvuqF1yX0KIYXy_l84lL
-X-Proofpoint-ORIG-GUID: JWqlbZDNFU-HbvuqF1yX0KIYXy_l84lL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-13_16,2024-02-12_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=847
- priorityscore=1501 clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 malwarescore=0 impostorscore=0 spamscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402140012
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 14 Feb 2024 03:52:25 +0200
+Message-Id: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.16.0
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
+ <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
+On Tue Feb 13, 2024 at 1:15 AM EET, Haitao Huang wrote:
+> Hi Jarkko
+>
+> On Mon, 12 Feb 2024 13:55:46 -0600, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
+> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >>
+> >> When the EPC usage of a cgroup is near its limit, the cgroup needs to
+> >> reclaim pages used in the same cgroup to make room for new allocations=
+.
+> >> This is analogous to the behavior that the global reclaimer is trigger=
+ed
+> >> when the global usage is close to total available EPC.
+> >>
+> >> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
+> >> whether synchronous reclaim is allowed or not. And trigger the
+> >> synchronous/asynchronous reclamation flow accordingly.
+> >>
+> >> Note at this point, all reclaimable EPC pages are still tracked in the
+> >> global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
+> >> is activated yet.
+> >>
+> >> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> ---
+> >> V7:
+> >> - Split this out from the big patch, #10 in V6. (Dave, Kai)
+> >> ---
+> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
+> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
+> >>  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
+> >>  3 files changed, 27 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c =20
+> >> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+> >> index d399fda2b55e..abf74fdb12b4 100644
+> >> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+> >> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+> >> @@ -184,13 +184,35 @@ static void =20
+> >> sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+> >>  /**
+> >>   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EP=
+C =20
+> >> page
+> >>   * @epc_cg:	The EPC cgroup to be charged for the page.
+> >> + * @reclaim:	Whether or not synchronous reclaim is allowed
+> >>   * Return:
+> >>   * * %0 - If successfully charged.
+> >>   * * -errno - for failures.
+> >>   */
+> >> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+> >> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool =20
+> >> reclaim)
+> >>  {
+> >> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE=
+);
+> >> +	for (;;) {
+> >> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
+> >> +					PAGE_SIZE))
+> >> +			break;
+> >> +
+> >> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
+> >> +			return -ENOMEM;
+> >> + +		if (signal_pending(current))
+> >> +			return -ERESTARTSYS;
+> >> +
+> >> +		if (!reclaim) {
+> >> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
+> >> +			return -EBUSY;
+> >> +		}
+> >> +
+> >> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
+> >> +			/* All pages were too young to reclaim, try again a little later *=
+/
+> >> +			schedule();
+> >
+> > This will be total pain to backtrack after a while when something
+> > needs to be changed so there definitely should be inline comments
+> > addressing each branch condition.
+> >
+> > I'd rethink this as:
+> >
+> > 1. Create static __sgx_epc_cgroup_try_charge() for addressing single
+> >    iteration with the new "reclaim" parameter.
+> > 2. Add a new sgx_epc_group_try_charge_reclaim() function.
+> >
+> > There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
+> > sgx_epc_cgroup_try_charge_reclaim() because both have almost the
+> > same loop calling internal __sgx_epc_cgroup_try_charge() with
+> > different parameters. That is totally acceptable.
+> >
+> > Please also add my suggested-by.
+> >
+> > BR, Jarkko
+> >
+> > BR, Jarkko
+> >
+> For #2:
+> The only caller of this function, sgx_alloc_epc_page(), has the same =20
+> boolean which is passed into this this function.
 
-On 2/14/2024 6:29 AM, Rob Herring wrote:
-> On Tue, Feb 13, 2024 at 08:05:17AM -0800, Mao Jinlong wrote:
->> Change qcom,dsb-element-size to qcom,dsb-element-bits as the unit is
->> bit.
-> That may be, but this is an ABI and you are stuck with it. Unless, you
-> can justify why that doesn't matter. (IIRC, this is new, so maybe no
-> users yet?)
+I know. This would be good opportunity to fix that up. Large patch
+sets should try to make the space for its feature best possible and
+thus also clean up the code base overally.
 
-Hi Rob,
+> If we separate it into sgx_epc_cgroup_try_charge() and =20
+> sgx_epc_cgroup_try_charge_reclaim(), then the caller has to have the =20
+> if/else branches. So separation here seems not help?
 
-Because for CMB type, it uses qcom,cmb-element-bits. So I change the 
-format to be the same as
-CMB.
+Of course it does. It makes the code in that location self-documenting
+and easier to remember what it does.
 
-Thanks
-Jinlong Mao
-
+BR, Jarkko
 
