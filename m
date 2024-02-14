@@ -1,84 +1,130 @@
-Return-Path: <linux-kernel+bounces-65773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DCB68551AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 694768551AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70971F23F1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:10:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2605C298AB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F6712D777;
-	Wed, 14 Feb 2024 18:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Hhy+CkfP"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4126512DDB0;
+	Wed, 14 Feb 2024 18:04:59 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B53D1292DB;
-	Wed, 14 Feb 2024 18:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ACC1292DB;
+	Wed, 14 Feb 2024 18:04:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933884; cv=none; b=aT4Nfp5sU8I1IcKjGnusvEsHSjHfnQSP8RM4MxBR4lWb/lcSTVT3IshemNOP8/jCoa+SNYzPXFtKaW01xB4NanChnqKxvo9QqWlALxxtIoOGC4ERw8Na7fLLCxLyPt4vsJ4aK6JSKjF5PwFZW9ckyLT5+tlpn9FgSu+UZu8qc78=
+	t=1707933898; cv=none; b=XWkFJn0hferKHz8Fc1bZpG6bY8R5PISVRdwTUiOkTQWvdKTi8RSuN55BtAhT9B6s9ahvcxYB7J9lxFXOEXZgSUb3NMKni4PgRc4nJ5DAryBgBKOUWydAAIExPqHRB2lXZPVzWu5qlpqNzRYZDybREKGeySh/Xq67+XKrCdlgJt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933884; c=relaxed/simple;
-	bh=tp9WBVv4tk8bpCmaDHshpr73lQEddgNoO5Q4jQr2A9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OZxxOfDvzRkciUt9m38PGzDbmKyaB6O826/pn9f+OBMaAALGPUb/3V6dkU6np7kd+JSR7gVA2W4NkoWpjjFH5UQvKqPvsmYHl/1xx0DbD8c8fUIQ9qCm3T1ROy+1wcx3/Um7Ooy971JYdh8/D3KIgQRo2UF8ldE+HsdmOSEgWWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Hhy+CkfP; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=asjQTJ1uTvWYrDDXb91A7DvAB5RkaQAzani0ICferZo=; b=Hhy+CkfP9/tE8VikwnH77iK+Od
-	+5MVECwCQMsHwEWGCRWu/299CEaWjr16LDuw/KnLeRUSmNu6SUsCnPp6XVaCbere563/JkYRO0Jjg
-	EUpGxqzTLuGpioOJ6izUSlMEXZFvj7iXwYUy/MxRJ6V1D7CkUg1Iy2xoOFWpbBoHsoWw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1raJck-007oXp-BD; Wed, 14 Feb 2024 19:04:46 +0100
-Date: Wed, 14 Feb 2024 19:04:46 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH] net: phy: aquantia: add AQR111 and AQR111B0 PHY
- ID
-Message-ID: <e1b02bfc-0e84-4b4d-804a-3db2ce546e3a@lunn.ch>
-References: <20240213133558.1836-1-ansuelsmth@gmail.com>
+	s=arc-20240116; t=1707933898; c=relaxed/simple;
+	bh=1opVNwI5g0qTfL7RCSwClpE248xDSuhAxDOStvKcVJI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ez84ekcnLhIFMYy93zPf1jeRt+zJOiWCTtfcko6OLwtZAIzGXaTvoG9AuOc1PGnbutrkSvI4gLN7TFWRebmnu2Hhp52sLtENuqfRNGT25yHGpng6nijAc9xika8Qz53sMF0B1GCekyynKmNmkAkC5Uyj2gW5APNP2Q72z0neyZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZmFx2cqfz6JB0p;
+	Thu, 15 Feb 2024 02:00:53 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8034B140682;
+	Thu, 15 Feb 2024 02:04:53 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
+ 2024 18:04:53 +0000
+Date: Wed, 14 Feb 2024 18:04:52 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
+	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, Dave Jiang
+	<dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 1/2 v4] cleanup: Add cond_guard() to conditional guards
+Message-ID: <20240214180452.00000974@Huawei.com>
+In-Reply-To: <3917370.kQq0lBPeGt@fdefranc-mobl3>
+References: <20240208130424.59568-1-fabio.maria.de.francesco@linux.intel.com>
+	<20240208130424.59568-2-fabio.maria.de.francesco@linux.intel.com>
+	<3917370.kQq0lBPeGt@fdefranc-mobl3>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213133558.1836-1-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Feb 13, 2024 at 02:35:51PM +0100, Christian Marangi wrote:
-> Add Aquantia AQR111 and AQR111B0 PHY ID. These PHY advertise 10G speed
-> but actually supports up to 5G speed, hence some manual fixup is needed.
+On Tue, 13 Feb 2024 17:51:26 +0100
+"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+
+> On Thursday, 8 February 2024 14:04:23 CET Fabio M. De Francesco wrote:
+> > Add cond_guard() macro to conditional guards.
+> > 
+> > cond_guard() is a guard to be used with the conditional variants of locks,
+> > like down_read_trylock() or mutex_lock_interruptible().
+> > 
+> > It takes a statement (or statement-expression) that is passed as its
+> > second argument. That statement (or statement-expression) is executed if
+> > waiting for a lock is interrupted or if a _trylock() fails in case of
+> > contention.
+> > 
+> > Usage example:
+> > 
+> > 	cond_guard(mutex_intr, return -EINTR, &mutex);
+> > 
+> > Consistent with other usage of _guard(), locks are unlocked at the exit of
+> > the scope where cond_guard() is called.
+> >   
+> [snip]
+> > 
+> > +#define cond_guard(_name, _fail, args...) \
+> > +	CLASS(_name, scope)(args); \
+> > +	if (!__guard_ptr(_name)(&scope)) _fail; \
+> > +	else { }
+> > +  
 > 
-> The Aquantia AQR111B0 PHY is just a variant of the AQR111 with smaller
-> chip size.
+> I have converted and tested several functions in drivers/cxl and found that 
+> there are cases where this macro needs to be called twice in the same scope.
 > 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> The current implementation fails to compile because any subsequent call to 
+> cond_guard() redefines "scope".
+> 
+> I have a solution for this, which is to instantiate a differently named 
+> variable each time cond_guard() is used:
+> 
+> #define __UNIQUE_LINE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
+> #define cond_guard(_name, _fail, args...) \
+>         CLASS(_name, __UNIQUE_LINE_ID(scope))(args); \
+>         if (!__guard_ptr(_name)(&__UNIQUE_LINE_ID(scope))) _fail; \
+>         else { }
+> 
+> But, before sending v5, I think it's best to wait for comments from those with 
+> more experience than me.
 
-The discussion around provisioning should not prevent this being
-merged.
+Ah. So you can't use __UNIQUE_ID as guard does because we need it to be stable
+across the two uses.  What you have looks fine to me.
+We might end up with someone putting multiple calls in a macro but in my
+view anyone doing that level of complexity in a macro is shooting themselves
+in the foot.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Jonathan
 
-    Andrew
+
+> 
+> Fabio
+> 
+> 
+> 
+> 
+
 
