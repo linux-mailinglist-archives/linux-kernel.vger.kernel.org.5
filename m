@@ -1,142 +1,125 @@
-Return-Path: <linux-kernel+bounces-65985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D11398554C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:26:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5218554CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582111F2249B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:26:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B374EB27971
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:28:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F0413EFFD;
-	Wed, 14 Feb 2024 21:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C08613EFF3;
+	Wed, 14 Feb 2024 21:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fJbqnp4v"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkNE3/Ha"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA3413B7A6
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF518134740;
+	Wed, 14 Feb 2024 21:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707945965; cv=none; b=IQCEuwEmlatZyjNfnDiBFSW3bevHDB8PPCS30YHTACi6aCX2g8E1ujKsb3V0yY+v4RiRUoWis/+j/CBGO6A/k2EgppjqDB0zibRYiA2o5nK/QcIFYDi9K8YrHAE9n6eE+FAYGVPgfXlumyz6SCNXAfGU62V1oyJc9O+8CjgkMX4=
+	t=1707946082; cv=none; b=gqAqn1zSMIfxtyh+6u8npFnOoViEbf+JBdR5CS0eNfjxgKeUd5eH3bvLAyLdwa4RJapno+2jVQZB2ixtm5V9a4U6rsHIsWJBVjyXYnU/v8q5dYNkyUw8klo3ZJ1Ah12sAmXXjEj++EpQqgW2qywNdpKWvjalmtAWDxRNZAGOWDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707945965; c=relaxed/simple;
-	bh=oaiUPMkAp8jC6JLP4yuy4naVAJPbARycV+mYUfgPxEk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fw3bA+7U8JLmyxoPdB44kBNVrhVZC/IP/o4CRhrA7EkUU1Iwic/4+8VPEJ1pL5HBz9cM8CtYDW4yEdBGTCtHNLORhGq0nG8LiOF4wmF0bXQ5QRNuayXBZ1oBWBP0VYaThX6yoQets+TgCSO1HcVUbp5sutdt7qq2T3gI2B4DYsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fJbqnp4v; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5639b00a25cso292680a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707945961; x=1708550761; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UeI6ueEZISbOKE339VfpwspxNu7S+AXBqVSOxQ+7kNQ=;
-        b=fJbqnp4vwcYYioaRIV7vUx/yIcSm+OY6I0k0vNU0LqcP7eXXub7PlfTSocVvu/Evd+
-         usm44o7UbRV8f9idoATWF7Bf2uIpj3/IscrMmx/F56b37ftoEKbSzBlj3moOoWN/GhTf
-         wfQpW0KIFQg9wYJTetY5l5Naol77TigXAqgpUESJaH6UBDvoOm4yiJiNJQwSgdtST8C3
-         84wj2GjltCSzS/8MX6lzOZgsGbb/tP0w96VL6RWE4xOHHCeLpGpDECh84tAh4i1roKV3
-         ufieEZr0k4AZPJYa2pUJnUTUX1Kfhu/RqcI7O4r60JDzbxNBSbEgHRSwhsuFBosmc5Vs
-         6h0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707945961; x=1708550761;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UeI6ueEZISbOKE339VfpwspxNu7S+AXBqVSOxQ+7kNQ=;
-        b=VCg7sw0J04wB/FIfEuZA1rGDasOfpt06V+CpH8jPxXK0fDXCDK5ynnIuMskaMkixKF
-         3jxlgVyQmdBiphY9ZrK+cC/qzjhBbTqzytRDBm6s8+LMImG8vtFp9f1r95jY4Qfyl6hv
-         UsLcz1OqZ2uE+j2vOoMoKZB8qJTvn3e/gMt/ad4vcEa/RbfL41tpz4PkwoZP65IT1I04
-         3IhM9wVx3llamNeUQDcY5aKSXpPmbIiMFVo1IaAjv9mlaeROf/0aNDofzNBHy1R78PpQ
-         UWayXK0GZtTg9AJjgtG2lnVQ0SusPvyPO7PTrMF0Mj6x8QS1I3KzHuLaIZHbSeZ9r7TJ
-         bDRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWe4WC644UIPwBsb1R7K4z/h0tTEkUZZrt1OAT4daOPL9ukVQd5hMkzWv9cLioifKuei6/2Wcen62NnMu4uEqkyWIZaofU6nmeLPMqj
-X-Gm-Message-State: AOJu0Yz29KlMTpK6ExqpwCcyQ36bDoSc48nPBRng3JkcyEe3LKFifuHN
-	5vNp2Vhrljw2y0t1wZO3f8hQCD5wVLJvfUiALKjFwUBvJX4Jw+nnkYUvhkny1jM=
-X-Google-Smtp-Source: AGHT+IEiseIgDXjdO3agtRrrSuA4Ij6kdVlB2WGEnNrYS0rcqxoFSloi9gU6MBefcXPysCy7g/BwQQ==
-X-Received: by 2002:a05:6402:398:b0:561:61ca:700e with SMTP id o24-20020a056402039800b0056161ca700emr2832780edv.6.1707945961498;
-        Wed, 14 Feb 2024 13:26:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWoZ8VKH0GLHPuJvmOY+hX8UmR+INOcXAqfR3P8DpcNAZtTyHosnqy6K8XiBiGIipZVFSkzkbAWH8W7GErMzKpYhvAAkjuCGyQH+ZzJ7w7T5hmrMWRhmGrGOoG2tXkcHEEcYdZLIn6OWM+CFkx+9chvv8AynO984tgszjEF3EC6FobJkx4Aatz74HZEQABXfkt1tNSeCux6dBVGABU/Pv7dANzenP+RLAKRnMwJTci618hSVXwcvhmJEn7GtS9YAOnBZrS9PCFsTBklp2ScRVFcm42tm5TQPxSLsQ==
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id cs12-20020a0564020c4c00b00561e675a3casm2193381edb.68.2024.02.14.13.26.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 13:26:01 -0800 (PST)
-Message-ID: <31e77873-bbe4-48d7-a996-ccbea52623c9@linaro.org>
-Date: Wed, 14 Feb 2024 22:25:59 +0100
+	s=arc-20240116; t=1707946082; c=relaxed/simple;
+	bh=sMR/EU43ymYV3sXSFsO3a+GSbk9xup663bB8N2u3J6Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GOwqWgNCxtfzs7FE4dcsE8q5bfywNfi/ju744TqSzKLer42T/URL/RX52YEelZX0zzk8whLlZhLz/YPTo1zF/J3cry4l094ULjVkpluCkVJrM2p+lTeIuXvATKJtbOih/JdpNwvRWA8tvfyhU6IAAph1sg2Ij5t3R4wz5IcHeMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkNE3/Ha; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 434FAC433F1;
+	Wed, 14 Feb 2024 21:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707946082;
+	bh=sMR/EU43ymYV3sXSFsO3a+GSbk9xup663bB8N2u3J6Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=nkNE3/HaVyI7fvPMPdsAn7MA1j+tRn8JsplaOB4Il+ryCZ5ZooXAsGkHAFtiAZx/B
+	 7Pb15ykYHeOtP9CwwV9B7m6KJu69QTYuDfYrQkafXG/EVaCXE1kKGpT5U2f59NxSXE
+	 u9GrvVBbt3eNiZCh/vVctoT7OT6NPAKrHZW6cvSM3Xp31yLTETZwW2wli0PxmDjsbZ
+	 hdh9ND/DJwai0vvjT6breNH4BZuB640Ct+N3sJWhUxNTUXk525Swcjf7w+i2bnsMKW
+	 jYdNcrXF3SJWAGbbiDX6oeDXXfN3Wg/Jj/cy8FmiXFVM82XIBYwYLaiGgaOL/cRyHI
+	 JB1NTwv2/muBQ==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5119cfaec3dso222060e87.1;
+        Wed, 14 Feb 2024 13:28:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXPWxho5BYKx/ImvBtYPdTIq2ASf63qphrIQcpynnIvYfJ88uCN++KjmxHpctk7fvM3gZ26OtHqbtb1K7GkL3Ys32PI7G0wduD/d7FcLUXyyw4HdABigYiaUYrTZarBNR/er23pbV540L0R
+X-Gm-Message-State: AOJu0YzUGXV+4cBZDIMihnBkU4g10+PdvkGhj+WAA0KQx0UYeUdeevxO
+	d7YhFmUQBa08NU6w9O4pH5C/KhSKm1k24l5QB8OCKgtaiGXmhlBP3zT4Cbw6DfEDMhzlptRuVLX
+	jalmP+p+QbsoG9Y/a+xNQ8MK4EtQ=
+X-Google-Smtp-Source: AGHT+IG/W9lqyeivaxRbePZdzCB0jHVgx1oFHIkcNxKQfTN250PE70uEZ83QpRnCOgahYuK3HBhlFT9SwgKvB2qiUXM=
+X-Received: by 2002:ac2:5635:0:b0:511:550f:5300 with SMTP id
+ b21-20020ac25635000000b00511550f5300mr1041746lff.14.1707946080774; Wed, 14
+ Feb 2024 13:28:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] ARM: dts: qcom: msm8974-klte-common: Pin WiFi
- board type
-Content-Language: en-US
-To: Rong Zhang <i@rong.moe>, Bjorn Andersson <andersson@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>
-References: <20240213110137.122737-1-i@rong.moe>
- <20240213110137.122737-3-i@rong.moe>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240213110137.122737-3-i@rong.moe>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAFhGd8pvhzehMGh1XEHBct7CGEQuF0CZeneMH3D6cKSRj5UdHQ@mail.gmail.com>
+ <20240214012439.879134-1-andrewjballance@gmail.com> <20240214012439.879134-2-andrewjballance@gmail.com>
+In-Reply-To: <20240214012439.879134-2-andrewjballance@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 15 Feb 2024 06:27:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASspq7uYYPx6QLOad_WUeXsyRmtbq9qibXJP_Fbo3Fs0g@mail.gmail.com>
+Message-ID: <CAK7LNASspq7uYYPx6QLOad_WUeXsyRmtbq9qibXJP_Fbo3Fs0g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] gen_compile_commands: fix invalid escape sequence warning
+To: Andrew Ballance <andrewjballance@gmail.com>
+Cc: justinstitt@google.com, linux-kbuild@vger.kernel.org, 
+	linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, morbo@google.com, nathan@kernel.org, 
+	ndesaulniers@google.com, nicolas@fjasle.eu, skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 13.02.2024 11:58, Rong Zhang wrote:
-> klte* variants have little difference in the WiFi part. Without
-> "brcm,board-type", variant-specific NVRAM file will be probed (e.g.,
-> klte probes samsung,klte). Pin it to "samsung,klte" to allow klte* to
-> load the same NVRAM file as klte.
-> 
-> Signed-off-by: Rong Zhang <i@rong.moe>
+On Wed, Feb 14, 2024 at 10:25=E2=80=AFAM Andrew Ballance
+<andrewjballance@gmail.com> wrote:
+>
+> with python 3.12.1 '\#' results in this warning
+>     SyntaxWarning: invalid escape sequence '\#'
+
+
+I changed "3.12.1" to "3.12" when I applied it
+because this occurs for Python 3.12.0
+
+
+Thanks.
+
+
+
+>
+> Signed-off-by: Andrew Ballance <andrewjballance@gmail.com>
 > ---
+>  scripts/clang-tools/gen_compile_commands.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-=
+tools/gen_compile_commands.py
+> index 5dea4479240b..e4fb686dfaa9 100755
+> --- a/scripts/clang-tools/gen_compile_commands.py
+> +++ b/scripts/clang-tools/gen_compile_commands.py
+> @@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file=
+_path):
+>      # escape the pound sign '#', either as '\#' or '$(pound)' (depending=
+ on the
+>      # kernel version). The compile_commands.json file is not intereprete=
+d
+>      # by Make, so this code replaces the escaped version with '#'.
+> -    prefix =3D command_prefix.replace('\#', '#').replace('$(pound)', '#'=
+)
+> +    prefix =3D command_prefix.replace(r'\#', '#').replace('$(pound)', '#=
+')
+>
+>      # Return the canonical path, eliminating any symbolic links encounte=
+red in the path.
+>      abs_path =3D os.path.realpath(os.path.join(root_directory, file_path=
+))
+> --
+> 2.43.0
+>
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+--=20
+Best Regards
+Masahiro Yamada
 
