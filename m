@@ -1,130 +1,116 @@
-Return-Path: <linux-kernel+bounces-65774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694768551AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:10:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229938551AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2605C298AB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:10:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47CA11C21B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4126512DDB0;
-	Wed, 14 Feb 2024 18:04:59 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EBE2128368;
+	Wed, 14 Feb 2024 18:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="h6yOHeqR"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ACC1292DB;
-	Wed, 14 Feb 2024 18:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0458127B43;
+	Wed, 14 Feb 2024 18:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933898; cv=none; b=XWkFJn0hferKHz8Fc1bZpG6bY8R5PISVRdwTUiOkTQWvdKTi8RSuN55BtAhT9B6s9ahvcxYB7J9lxFXOEXZgSUb3NMKni4PgRc4nJ5DAryBgBKOUWydAAIExPqHRB2lXZPVzWu5qlpqNzRYZDybREKGeySh/Xq67+XKrCdlgJt0=
+	t=1707933920; cv=none; b=Ot1zvxuvOKDTD09QAyyGpuKst5E6ZqceJx/uNAuqwfYTFdLvvYiyEk2m3GRgarW0rY7eSk6pzmvK7gj8VZ9Z7WtAZFsVIP8G8C+3h294Z/iVBystLqhNYAR7fYvqGyHD6gs8i1d3b82sinFIW8K5Bs3q5rylXry6pcVf0GftaGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933898; c=relaxed/simple;
-	bh=1opVNwI5g0qTfL7RCSwClpE248xDSuhAxDOStvKcVJI=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ez84ekcnLhIFMYy93zPf1jeRt+zJOiWCTtfcko6OLwtZAIzGXaTvoG9AuOc1PGnbutrkSvI4gLN7TFWRebmnu2Hhp52sLtENuqfRNGT25yHGpng6nijAc9xika8Qz53sMF0B1GCekyynKmNmkAkC5Uyj2gW5APNP2Q72z0neyZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZmFx2cqfz6JB0p;
-	Thu, 15 Feb 2024 02:00:53 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8034B140682;
-	Thu, 15 Feb 2024 02:04:53 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 18:04:53 +0000
-Date: Wed, 14 Feb 2024 18:04:52 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
-	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, Dave Jiang
-	<dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 1/2 v4] cleanup: Add cond_guard() to conditional guards
-Message-ID: <20240214180452.00000974@Huawei.com>
-In-Reply-To: <3917370.kQq0lBPeGt@fdefranc-mobl3>
-References: <20240208130424.59568-1-fabio.maria.de.francesco@linux.intel.com>
-	<20240208130424.59568-2-fabio.maria.de.francesco@linux.intel.com>
-	<3917370.kQq0lBPeGt@fdefranc-mobl3>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707933920; c=relaxed/simple;
+	bh=Xd4BEhdZCHi6lxYbCBeevCVswnWw5V1/9wwhFgLobf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qqlbFk4Ret9zjM8BKHN0SIiKFoUUTjpIL8yN8IuETH14XOuQznTeAq+memijM52/nqt+8AmBUkr1pzDFqIFO9Eq5qcIXIr5lYhIXLYkgyP9Cu5ozlIdgUBhI8mnx/EBitW9UEJNayUgbHV50bzbEGZy9zgnLVQRAFeWefTjfIPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=h6yOHeqR; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CE52040E023B;
+	Wed, 14 Feb 2024 18:05:15 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Tff3Nbi6-IIF; Wed, 14 Feb 2024 18:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1707933913; bh=lmJxXy7nb8sBnacq9D2cKP7cWPkayFurWJxqWo9+RgY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h6yOHeqRnaAEHK3JtmRuYoo9YfodlTuyuB570X3JbX01A+w9GSdSqtnbRvS+TFGF0
+	 zbffrLevx0GR78XMRV3MMPUsD0ah0bOBTopu8uhZ62GrpghLl4PEfKoDe1OJKK9lm/
+	 xu7Xn5BOMgET0cmof14X8VSJBwAKjUJWDQ9oS/HbR+H7oJqpy972TclPcBCM3fI8p4
+	 OgdpngcKk5nkXEfFyUG4sTNrw8vhxV5J9g6MaQY/rbjTrsHL1DB4+ESkWSyLS5F6i/
+	 Q15rP6t9IJyqEgsu1NoaXIZnJq9P9YUuVlItq1adzCzTKuxZ4yzM/sY8ZZDV7C+qKJ
+	 A2dmiJbvN1gCttvjCiwy4Oa2RAVDk14vkNGf52pd4fYCBPVuecnSnOItI389dKVGYl
+	 WXSFCNcC44AAvvckfa5lgyehKl/jBYy0Ft7xxr2Sm2ba/mXLJbfiE3sNyLeATEJhZr
+	 y9NsPzPSRfYqHr0hqplYSJ6tR/8+LbqRQeMMXezWv+FGdcL5t4sXH/ebOyI2DTNq/d
+	 ikwSCCqRA3+V1vieSD+LoKsaxYE4OWaPQc2i9ux5tHikGhqCWp47QUm0kbTNBE480b
+	 sSY1rBPlatSPOWLFr+Au3fuGdlQqjkLxykQslXYvZZh48/net5HsQ7Kjmbj0QyYnSh
+	 M5HA4pQ+ngSa4mVNI+ULUDMQ=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79BAE40E01A9;
+	Wed, 14 Feb 2024 18:05:04 +0000 (UTC)
+Date: Wed, 14 Feb 2024 19:04:59 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com,
+	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
+Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
+Message-ID: <20240214180459.GLZc0AywYypIVV1IQ7@fat_crate.local>
+References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
+ <20240214033516.1344948-3-yazen.ghannam@amd.com>
+ <20240214102926.GCZcyWBuEBe7WRXWYO@fat_crate.local>
+ <2a83026c-ea36-44ca-a101-74a8b3a2ea89@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2a83026c-ea36-44ca-a101-74a8b3a2ea89@amd.com>
 
-On Tue, 13 Feb 2024 17:51:26 +0100
-"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+On Wed, Feb 14, 2024 at 09:45:14AM -0500, Yazen Ghannam wrote:
+> Yes, we keep a local copy of the records within the module. That way
+> we just need to update the local copy and write it down to the
+> platform. This saves time and avoids interrupting the platform to do
+> an extra read.
 
-> On Thursday, 8 February 2024 14:04:23 CET Fabio M. De Francesco wrote:
-> > Add cond_guard() macro to conditional guards.
-> > 
-> > cond_guard() is a guard to be used with the conditional variants of locks,
-> > like down_read_trylock() or mutex_lock_interruptible().
-> > 
-> > It takes a statement (or statement-expression) that is passed as its
-> > second argument. That statement (or statement-expression) is executed if
-> > waiting for a lock is interrupted or if a _trylock() fails in case of
-> > contention.
-> > 
-> > Usage example:
-> > 
-> > 	cond_guard(mutex_intr, return -EINTR, &mutex);
-> > 
-> > Consistent with other usage of _guard(), locks are unlocked at the exit of
-> > the scope where cond_guard() is called.
-> >   
-> [snip]
-> > 
-> > +#define cond_guard(_name, _fail, args...) \
-> > +	CLASS(_name, scope)(args); \
-> > +	if (!__guard_ptr(_name)(&scope)) _fail; \
-> > +	else { }
-> > +  
-> 
-> I have converted and tested several functions in drivers/cxl and found that 
-> there are cases where this macro needs to be called twice in the same scope.
-> 
-> The current implementation fails to compile because any subsequent call to 
-> cond_guard() redefines "scope".
-> 
-> I have a solution for this, which is to instantiate a differently named 
-> variable each time cond_guard() is used:
-> 
-> #define __UNIQUE_LINE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
-> #define cond_guard(_name, _fail, args...) \
->         CLASS(_name, __UNIQUE_LINE_ID(scope))(args); \
->         if (!__guard_ptr(_name)(&__UNIQUE_LINE_ID(scope))) _fail; \
->         else { }
-> 
-> But, before sending v5, I think it's best to wait for comments from those with 
-> more experience than me.
+I guess this:
 
-Ah. So you can't use __UNIQUE_ID as guard does because we need it to be stable
-across the two uses.  What you have looks fine to me.
-We might end up with someone putting multiple calls in a macro but in my
-view anyone doing that level of complexity in a macro is shooting themselves
-in the foot.
+diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
+index 901a1f0018fc..99499a37e9d5 100644
+--- a/drivers/ras/amd/fmpm.c
++++ b/drivers/ras/amd/fmpm.c
+@@ -142,8 +142,9 @@ static unsigned int max_nr_fru;
+ static size_t max_rec_len;
+ 
+ /*
+- * Protect the local cache and prevent concurrent writes to storage.
+- * This is only needed after init once notifier block registration is done.
++ * Protect the local records cache in fru_records and prevent concurrent
++ * writes to storage. This is only needed after init once notifier block
++ * registration is done.
+  */
+ static DEFINE_MUTEX(fmpm_update_mutex);
+ 
+I'm still don't like the module param...
 
-Jonathan
+-- 
+Regards/Gruss,
+    Boris.
 
-
-> 
-> Fabio
-> 
-> 
-> 
-> 
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
