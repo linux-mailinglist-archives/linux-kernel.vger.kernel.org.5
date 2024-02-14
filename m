@@ -1,104 +1,146 @@
-Return-Path: <linux-kernel+bounces-65456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3911854D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:49:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A4F854D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85AE1F2974B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:49:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFDC31F29A04
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDFA5DF1A;
-	Wed, 14 Feb 2024 15:49:49 +0000 (UTC)
-Received: from mail.actia.se (mail.actia.se [212.181.117.226])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847BE5D91D;
+	Wed, 14 Feb 2024 15:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="3FN5jaXx"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7655D910;
-	Wed, 14 Feb 2024 15:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572A45D756
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707925788; cv=none; b=gaxulNYdxTfJdWjokUxFliy1VYs2xI2XizcYu4O0phPYbrw+AxBdfDCSE4pPUdVYjIbi64oD4T5PtMYq1roPYnPBcrxWr0/uDuaA2vAubi4xZIrswaB5Q+h+JoRch2jeWOGoXjucQvzuOwBQy4KkXkFVrSPhwQ9S2Cm6nUZV4oc=
+	t=1707925827; cv=none; b=ufBufW3DfedgteD1zNQOZoenAIIXHn47AkFeK2yGDgUfDEoKxkFEU8DbbLrMrqx5x51lHs8W2pDWjbbdaq44FkRjWH5kvHhHjPNjwMRCnRqAUV8gu2tZ/mkxkPwVgaVmUtVgvMFOwLCT9futWQUY41R/i00OEXVFlczErDhMj7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707925788; c=relaxed/simple;
-	bh=FE3FLIyR5j8MemxSxaeAFQdc9r47s2aQ8K9ooV4Nn8M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=MH9dQASs+J9mbEbFGVtw2HVJMCJnhy6lBRrZb8YZ9ASKQWrUcFnr6uFcqsfwaei771BRprENy9hTpLVrSaS8KVcEHGhrV4uHA+5qR/9OakH3pT14Kv3tkMsUX0fc9masL1567JI9/BHchquElSWTALaCU5A2fsiGPs/4cXL5HZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
-Received: from S036ANL.actianordic.se (10.12.31.117) by S035ANL.actianordic.se
- (10.12.31.116) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 16:49:40 +0100
-Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
- S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%4]) with mapi id
- 15.01.2507.035; Wed, 14 Feb 2024 16:49:40 +0100
-From: John Ernberg <john.ernberg@actia.se>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, "Clark
- Wang" <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Paolo
- Abeni" <pabeni@redhat.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: fec: Always call fec_restart() in resume
- path
-Thread-Topic: [PATCH net-next] net: fec: Always call fec_restart() in resume
- path
-Thread-Index: AQHaXaFLRIYd45z3UU+7Sl3MRdVj/bEJE22AgABftoCAAGuqgIAAEAKA
-Date: Wed, 14 Feb 2024 15:49:40 +0000
-Message-ID: <e0641509-e18f-48d6-acba-6b649496782e@actia.se>
-References: <20240212105010.2258421-1-john.ernberg@actia.se>
- <20240213184427.5af2d7eb@kernel.org>
- <5aba2c2b-b712-4827-acb2-d586508a3bd6@actia.se>
- <20240214065221.26d71ed0@kernel.org>
-In-Reply-To: <20240214065221.26d71ed0@kernel.org>
-Accept-Language: en-US, sv-SE
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-esetresult: clean, is OK
-x-esetid: 37303A2921D72955607464
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D63118CCB84A0C4884778A0867F5603D@actia.se>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1707925827; c=relaxed/simple;
+	bh=3ixfx9hvHowkdPW052W2BTLyOZIPcGFLydpr9ppzU6Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ibWCN4fO7r2DIYQymLqDhRvGTd4eZQGKBoiINzAzluZQn5uIesSae6DAbqBtJNIuZo46/HITPkSI/GQuEwJUe4hZm4rtQHPnvjv1Nn47ypsNpON8JresgNV3iQktL/gqUDEAqw87O0MaPP4f8TwDKHeuZrOSRiZFIDpZFqDmLiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=3FN5jaXx; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36426ae1c5eso3912785ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:50:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1707925825; x=1708530625; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QSlVGbEelZs1+mCJGuJE5TbiYr0MAiLjyMJwC22PtNU=;
+        b=3FN5jaXxmOUuARuGbkAUOBRUrTUQBEbCJpSW6jE5Yor5+pG74A3QLo0dAodUMc4VnX
+         sFBGbwnzRqckIaTDnOL2ovj4OfwJZfhcC/izj+oyCtB3O1AKnfBEwoF5bgeF/8J9vgrv
+         nVO0TZ4/bknWSzncZ3m3Kt7nG9CHRRoKj7Zwm+UK6xGdGVSXR5pcM/9tvK+UbAQfPIH7
+         Pxf1wQurgOXXxFbxfpLhJ2sbOR+7n5GZdoXN2UdB68KrtE+fHK6p5kZCfMz2ttULqogj
+         9BNwZ4aom/Mk4Xgj+d8hw7rSMVX5pZVEVY8nBelbzuED7oP97L5QtEUDCVmYtR2CgBZ1
+         LlQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707925825; x=1708530625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QSlVGbEelZs1+mCJGuJE5TbiYr0MAiLjyMJwC22PtNU=;
+        b=wf4OigJ00Wfby1yDoQJl3HuL/LvNZdSs/hCRCygFZfD3p13YlwlUnDBnHbe36YfCMR
+         iF0yOCTSoQ20HPYfj0QHjkG/IcJf3RlbtnFtZv0ymF4q0PUi1sCzXFfN/SEaGB9XthAr
+         QCNxZyTRmiRy5gP9hSQQACsELOq6RP/pJ13mrs9p+EioPW6iR4JOoK6K1Sa1IeM3SLea
+         QVRzvuewmTIMk0uj7hop4W7PbY/Ah5jZfme6SXd70uOp6g8ECq7QsSoa/C9TQHQek+HV
+         QY4LK1o1ZqBfJMTg/zfCyz9Ax/XkLyEa88KN2zYhYHMhm5/+4ng3RBpBceL4h1OlMbvG
+         pHNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJWtZOnAkEKcXZlcXju840OazQpOt4FGmY52HW5V+1kl6HvFdzw6PsGJ4n7uEUwRRIOfgPqbalhYNot+HEAHE4618ueR/bJ8TQlpAO
+X-Gm-Message-State: AOJu0YwbIL+jMAlKcuNZ8xjC02RKFKmwC2ActVMpebuC9aN4zcg2DGl/
+	IAOZ+6OnnwHnDnfm9xkg6E4IQJ2EAkJcme3P3cafNA/MP9kOGAxBrgZ3Gu8D9yKBiXyHIvWM1lm
+	zuL135mtXc7ghq4000V7EOmDBzjt5zTSIgIwUKw==
+X-Google-Smtp-Source: AGHT+IEg1mjBag5fQq6IiYnFAmtRUKSsf1C8M5YPUMlpqUwiUYtvbiinLPu7A8tR+cYW+rVJo79k/QL1npQnEykKim4=
+X-Received: by 2002:a92:ca89:0:b0:363:d9eb:dae2 with SMTP id
+ t9-20020a92ca89000000b00363d9ebdae2mr2993529ilo.13.1707925825474; Wed, 14 Feb
+ 2024 07:50:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240214153429.16484-2-palmer@rivosinc.com>
+In-Reply-To: <20240214153429.16484-2-palmer@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Wed, 14 Feb 2024 21:20:13 +0530
+Message-ID: <CAAhSdy3Tf=9jD1Cd11RjwKyDFPA_gHTqxMXSJ3HwANFFnR-8dA@mail.gmail.com>
+Subject: Re: [PATCH] tty: hvc: Don't enable the RISC-V SBI console by default
+To: Palmer Dabbelt <palmer@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, Greg KH <gregkh@linuxfoundation.org>, 
+	jirislaby@kernel.org, Atish Patra <atishp@rivosinc.com>, ajones@ventanamicro.com, 
+	apatel@ventanamicro.com, linuxppc-dev@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	Emil Renner Berthing <kernel@esmil.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gMi8xNC8yNCAxNTo1MiwgSmFrdWIgS2ljaW5za2kgd3JvdGU6DQo+IE9uIFdlZCwgMTQgRmVi
-IDIwMjQgMDg6Mjc6MDIgKzAwMDAgSm9obiBFcm5iZXJnIHdyb3RlOg0KPj4gWW91IGFyZSBjb3Jy
-ZWN0LCB3ZSB0aG91Z2h0IHNvIHRvbyBhdCBbMV0sIGJ1dCBiaXNlY3Rpb24gaXMgcmVhbGx5IGhh
-cmQNCj4+IGJlY2F1c2Ugd2UgbmVlZCBhIHdob2xlIGJ1bmNoIG9mIHBhdGNoZXMgb24gdG9wIHRv
-IGV2ZW4gYm9vdCB0aGUgc3lzdGVtDQo+PiAoaW14OHF4cCBzcGVjaWZpYyBzdHVmZiBpbiB0aGUg
-TlhQIHZlbmRvciB0cmVlIHRoYXQncyBkaWZmaWN1bHQgdG8NCj4+IHJlYmFzZSksIHdlIGxlZnQg
-aXQgYSBiaXQgb3BlbiBlbmRlZC4NCj4+DQo+PiBPdmVyIHRoZSBjb3Vyc2Ugb2YgdGhlIHdlZWtl
-bmQgSSBsb3N0IGFsbCBjb25maWRlbmNlIGluIG15IGJpc2VjdGlvbg0KPj4gYWZ0ZXIgYmVpbmcg
-Y29uZmlkZW50IGZvciA0LTUgZGF5cywgYmVjYXVzZSB0aGUgbW9yZSBJIHRob3VnaHQgYWJvdXQg
-aXQNCj4+IHRoZSBsZXNzIGl0IG1hZGUgc2Vuc2UgZm9yIHRoYXQgY29tbWl0IHRvIGJlIHRoZSBj
-dWxwcml0Lg0KPj4NCj4+IEkgc2hvdWxkIHByb2JhYmx5IGhhdmUgYm90aCBmb2xsb3dlZCB1cCBv
-biB0aGF0IG1haWwgd2l0aCB0aGF0LCBhbmQgYmVlbg0KPj4gY2xlYXJlciBoZXJlLiBJIGFwb2xv
-Z2l6ZSBmb3IgZmFpbGluZyB0aGF0Lg0KPiANCj4gSXMgaXQgcGVyaGFwcyBwb3NzaWJsZSB0aGF0
-IHVwc3RyZWFtIDUuMTAgYWxzbyBkaWRuJ3Qgd29yaz8NCj4gSSdtIG5vdCBzYXlpbmcgdGhlIGNo
-YW5nZSBpdHNlbGYgaXMgaW5jb3JyZWN0LCBpbmRlZWQgdGhlcmUNCj4gaXMgZmVjX3Jlc3RhcnQo
-KSBvbiBwcm9iZSBhbmQgb3BlbiBwYXRocywgYXMgeW91IHNheS4NCj4gRGlkIHlvdSB0cnkgcmV2
-ZXJ0aW5nIGFzIG1hbnkgb2YgdGhlIGNoYW5nZXMgdGhhdCBoYXBwZW5lZA0KPiBpbiB0aGUgbWVh
-bnRpbWUgYXMgcG9zc2libGUgKGluc3RlYWQgb2YgYmlzZWN0aW9uKT8NCj4gDQoNClRoYXQncyBh
-IHJlYWxseSBnb29kIHBvaW50LiBJJ2xsIG1ha2Ugc29tZSB0aW1lIGZvciB0aGlzIGluIHRoZSBu
-ZXh0IHdlZWtzLg0KUGxlYXNlIG1hcmsgaXQgd2l0aCBjaGFuZ2VzIHJlcXVlc3RlZCBpbiB0aGUg
-bWVhbnRpbWUsIGFzIEkgZXhwZWN0IHRvIA0KbWFrZSBjaGFuZ2VzIHRvIHRoZSBwYXRjaCB3aGVu
-IEkgaGF2ZSBhIHJlc3VsdC4NCg0KPiBUaGUgb3RoZXIgcXVlc3Rpb24gaXMgd2hldGhlciB3ZSBu
-ZWVkIHRvIGVuYWJsZSBhbnkgb2YgdGhlDQo+IGNsb2NrcyBvciBydW50aW1lIHJlc3VtZSBiZWZv
-cmUgY2FsbGluZyBmZWNfcmVzdGFydCgpPw0KDQpPbiBvdXIgYm9hcmQgaXQgd29ya3MgZmluZSB3
-aXRob3V0IGl0LCBJIGRvbid0IGtub3cgZW5vdWdoIGFib3V0IHRoaXMgDQpTb0Mgb3Igb3RoZXIg
-TlhQIFNvQ3MgdG8ga25vdyBpZiBpdCdzIG5lY2Vzc2FyeSBpbiBvdGhlciBzaXR1YXRpb25zLg0K
-DQpUaGUgY2xvY2tzIGFyZSByZS1lbmFibGVkIGluIHRoZSBvcGVuIGNhbGwgd2hpY2ggYXBwZWFy
-cyB0byBiZSBlbm91Z2ggdG8gDQpnZXQgdHJhZmZpYyBnb2luZyBhZ2FpbiB3aGVuIHRoZSBsaW5r
-IGlzIGJyb3VnaHQgdXAuDQoNClBlcmhhcHMgTlhQIGNhbiBmaWxsIHVzIGluPw0KDQpUaGFua3Mh
-IC8vIEpvaG4gRXJuYmVyZw==
+On Wed, Feb 14, 2024 at 9:06=E2=80=AFPM Palmer Dabbelt <palmer@rivosinc.com=
+> wrote:
+>
+> From: Palmer Dabbelt <palmer@rivosinc.com>
+>
+> The new SBI console has the same problem as the old one: there's only
+> one shared backing hardware and no synchronization, so the two drivers
+> end up stepping on each other.  This was the same issue the old SBI-0.1
+> console drivers had, but that was disabled by default when SBI-0.1 was.
+>
+> So just mark the new driver as nonportable.
+>
+> Reported-by: Emil Renner Berthing <kernel@esmil.dk>
+> Fixes: 88ead68e764c ("tty: Add SBI debug console support to HVC SBI drive=
+r")
+> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+
+LTGM.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
+> ---
+>  drivers/tty/hvc/Kconfig | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/tty/hvc/Kconfig b/drivers/tty/hvc/Kconfig
+> index 6e05c5c7bca1..c2a4e88b328f 100644
+> --- a/drivers/tty/hvc/Kconfig
+> +++ b/drivers/tty/hvc/Kconfig
+> @@ -108,13 +108,15 @@ config HVC_DCC_SERIALIZE_SMP
+>
+>  config HVC_RISCV_SBI
+>         bool "RISC-V SBI console support"
+> -       depends on RISCV_SBI
+> +       depends on RISCV_SBI && NONPORTABLE
+>         select HVC_DRIVER
+>         help
+>           This enables support for console output via RISC-V SBI calls, w=
+hich
+> -         is normally used only during boot to output printk.
+> +         is normally used only during boot to output printk.  This drive=
+r
+> +         conflicts with real console drivers and should not be enabled o=
+n
+> +         systems that directly access the console.
+>
+> -         If you don't know what do to here, say Y.
+> +         If you don't know what do to here, say N.
+>
+>  config HVCS
+>         tristate "IBM Hypervisor Virtual Console Server support"
+> --
+> 2.43.0
+>
+>
 
