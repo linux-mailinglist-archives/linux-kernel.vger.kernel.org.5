@@ -1,110 +1,118 @@
-Return-Path: <linux-kernel+bounces-65578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 794F8854EE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:45:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B62F854EEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 183971F25013
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47A791C290F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD3D60B9B;
-	Wed, 14 Feb 2024 16:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EDQ4KWpZ"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C356088E;
+	Wed, 14 Feb 2024 16:45:19 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7340E60864;
-	Wed, 14 Feb 2024 16:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79562605DF;
+	Wed, 14 Feb 2024 16:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707929061; cv=none; b=uNsikm8bq5OZK3U9Gy8lTanLGioGxEl0v0mDQTvwsAOoNkBr7iByQKw98LDbyp0Fs+4s5RMGbrZEC2a2wjozB+qFW2IIYUoA05nYTCHQbfUyLydrUNTzkDeEyqotO/6RYFRbWjGsqRBvBDkXju9By9ZGlULQ+Jqoi0dP3fieLt8=
+	t=1707929118; cv=none; b=F8Cebg936ch+f55ea4y4rrqxlODxnz7iQpP1lecy04uE5tgaN+XcNHEFSU19DWifBDGAS+frkEnrU/xx08rjgVUgcjrijVM6zYTcY9qfl/Xde/AQQ+XXQEf+KyZMcGmSRmYvvYq0eNLYD4bVU6QOmoQoMaUxzwEuNhNDWpCmr4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707929061; c=relaxed/simple;
-	bh=sfJuXclO1Ov9A69m5w+ZOgsfMXgKljyna2t9SiCtuw8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mHWbaT/WoRXUQcArzu7MMjOBqcoV+wImBK2n1kcWyMMqNFBGoNAwF4Iwtl+5fMezNP5I4pbffTUiBp+3rXwDjBnPJA2B1rPFnSHvqze1BDe1HU2j9fjbqk9aFbLAh4PObqltdu+YI1pKg1qyJtTCNd2fRX5X5whzwo0WP0Gt3s4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EDQ4KWpZ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=hftmzppcjHlorwgYJRp+lM988Qc6AOkd1AYuK4Aj3w0=; b=EDQ4KWpZCjyQrQSpbU0qS+hfgt
-	U4P5K0QWOTlNO/Gy8Ld5ua4ISXBQE4e2dzeLr7QZiWq5AccxD+wDdQKRMrq6mg9JUIKSTXqNfmS7w
-	6cKSKmJNrDBI9JIt8AlH2G8yNuwDnTmwMBbhnOqs+U7mVYByFqFrtNmnpaNs47cSWotVHv99u/m+m
-	P5h/bPloUGfsWPo9+SIPBrLJWDvXf+ViYExv7xpbpli68n8XxtIaRcjMbDIPznKFXmqZ/mPHD28f6
-	ukZssGWyaVq91PablLgmHy6YRoqm4GIyw4g0tVH/8IcaFt4Y5RvY0UDDTmdr5FhLzqQuMs+FoXtfs
-	kXvpKg+A==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raIMr-0000000Da5u-48Th;
-	Wed, 14 Feb 2024 16:44:18 +0000
-Message-ID: <768355d0-df1e-48dd-b7fd-9ed34f7a4b7c@infradead.org>
-Date: Wed, 14 Feb 2024 08:44:17 -0800
+	s=arc-20240116; t=1707929118; c=relaxed/simple;
+	bh=loxfsSL7zxInO0eCeagCCwayO51o50MXlBy3g5U0WeM=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=UxJDYB8YQjAFkRKQFNgqaX9e50GftbxnVmrYcaaEiGaIa4iWl8xkPgCppCic7NFKnxiFivubcg3BK4/JqwMl/+WDYX0WZD7iV5Ewaf3aCvLeXc3S/6AtQbGYKE4IztZZuMIqJFDBXHBftysGocgJnlwiJ+tEtIJknLfbTdJo4zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (178.176.73.178) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 14 Feb
+ 2024 19:44:58 +0300
+Subject: Re: [PATCH net v3] net: ravb: Count packets instead of descriptors in
+ GbEth RX path
+To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S . Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, Nikita Yushchenko
+	<nikita.yoush@cogentembedded.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
+	<u.kleine-koenig@pengutronix.de>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>, Lad Prabhakar
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>, Biju Das
+	<biju.das.jz@bp.renesas.com>, <netdev@vger.kernel.org>,
+	<linux-renesas-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240214151204.2976-1-paul.barker.ct@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <041656ca-6029-ade3-97b5-659f73be216d@omp.ru>
+Date: Wed, 14 Feb 2024 19:44:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: Document the Linux Kernel CVE process
+In-Reply-To: <20240214151204.2976-1-paul.barker.ct@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, security@kernel.org,
- Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
-References: <2024021314-unwelcome-shrill-690e@gregkh>
- <60d67476-5c56-4fa4-93cf-1eb8f5aa5953@infradead.org>
- <2024021450-giddy-garland-e499@gregkh>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <2024021450-giddy-garland-e499@gregkh>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 02/14/2024 16:30:26
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183446 [Feb 14 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.178 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.178 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;omp.ru:7.1.1;178.176.73.178:7.4.1,7.1.2,7.7.3;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.178
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/14/2024 16:35:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/14/2024 2:42:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
+On 2/14/24 6:12 PM, Paul Barker wrote:
 
-
-On 2/13/24 23:15, Greg Kroah-Hartman wrote:
-> On Tue, Feb 13, 2024 at 11:56:42AM -0800, Randy Dunlap wrote:
->>> +As part of the normal stable release process, kernel changes that are
->>> +potentially security issues are identified by the developers responsible
->>> +for CVE number assignments and have CVE numbers automatically assigned
->>> +to them.  These assignments are published on the linux-cve mailing list
->>
->>                                                     linux-cve-announce mailing list
+> The units of "work done" in the RX path should be packets instead of
+> descriptors, as large packets can be spread over multiple descriptors.
 > 
-> Ah, good catch, you can see the "old" name for the list here, this is
-> due to this document being an older version, a symptom of "write it on
-> my workstation, sync to laptop, travel with laptop for 3+ weeks and make
-> changes based on meetings with CVE and others and then forget to sync
-> from laptop when arriving home".
-> 
-> Ugh :(
-> 
-> Thanks so much for the grammer fixes, they are much appreciated.  I'll
-> apply them and send out the latest version in a bit.
-> 
->>> +No CVEs will be assigned for unfixed security issues in the Linux
->>> +kernel, assignment will only happen after a fix is available as it can
->>
->>    kernel;
->>
->>> +be properly tracked that way by the git commit id of the original fix.
-> 
-> One of my goals in life is to never use a ';' in a sentence, and after
-> writing 2 books without them, I thought I achieve that pretty well as I
-> never seem to remember when they are to be used or not.  But I'll trust
-> you on this and use it here.
+> Fixes: 1c59eb678cbd ("ravb: Fillup ravb_rx_gbeth() stub")
+> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 
-For some reason kernel documentation has a plethora of run-on sentences. :(
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-Guess we need doclint.
+[...]
 
--- 
-#Randy
+MBR, Sergey
 
