@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-65745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88F2F85510F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41360855110
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 288F21F215A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:00:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F32A2285E6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2036612BE9D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F7412BEBF;
 	Wed, 14 Feb 2024 17:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MIzJDL7c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Efnr/xFp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613EB12B165;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E749912BE94;
 	Wed, 14 Feb 2024 17:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933472; cv=none; b=OduuTH/lY+6foo9fcMM425lGQFFW4E/xKWzF2KJdnQMEXwTgjB0jn3UC4D/DLEO2kLELBQWr8MMYOxsHjx4KNgzuilGPqz8wI1Qpuv8zy5Wp8WGyW7Q83zvIlY//AS1/nLsw0mboBbOLMP91Xwi8PugP7212Rd7WNG011FSTpKo=
+	t=1707933473; cv=none; b=BbvZzKqZV3q9PpRv0ywGSQ9XjoA13dKAwM38rZKd/GY0zT3lfMAA5CzzQU1ElfHekgn8NhuiwrSK5XVkv3so9ykz8H4VV3r/pQuuk4FPKSeo3h+EHVbAUaKTpJNwLZcW8O5PnzxW6Xn2a/zhocKvtfa9ZoNecSOMjyac0uwV44o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933472; c=relaxed/simple;
-	bh=YaYzQS2TMZ6SbsI9/AZEoEa8PAU8fUZJpJZ6GY5gC74=;
+	s=arc-20240116; t=1707933473; c=relaxed/simple;
+	bh=znm+vwJIHyHu3Mjf8BULIVXA4cP7k8xRwROBUryZVl0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kU9oIQVr0zvw/cuPE7io61DHLaKvojS/9OZVzDK226tPIp/S/mdVQzORRrtB4ShSBSl2KJBVU76+1nqzkpMTySYDmVswXeNnVB/7cx58GJuVD5TghV2Lb6F2Q6E0DnEyy0KE5wGeKSqcFnqGLOKN24OTMipxAgVfAyF7CEw7dMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MIzJDL7c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A27DC4166C;
-	Wed, 14 Feb 2024 17:57:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=kWW3cFHZ2KkgQvxjR+npnLJk29S5OR+1UKXBGNMAakSmvmCU+9VLnaB5yt7TBlN0TFR9Xe9DzKUIRUUCUUxYE6YlwFb5JaCrxj340S5GPdUHSRYoVTDrFcK4/G0ks/jABqk7rVDjy4CcdttBdhUeNPezz3tXkQ/7aE/TIDaCDB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Efnr/xFp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25700C433C7;
+	Wed, 14 Feb 2024 17:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933471;
-	bh=YaYzQS2TMZ6SbsI9/AZEoEa8PAU8fUZJpJZ6GY5gC74=;
+	s=k20201202; t=1707933472;
+	bh=znm+vwJIHyHu3Mjf8BULIVXA4cP7k8xRwROBUryZVl0=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=MIzJDL7cgB89sOU8ga+FDy6gMGIcqgIuDHwD9mtoVIDwAC8eOfYNmriMsQnLQCc2L
-	 j/A74J6KAhCUMrFIx3LfCzTc0X4TibgSOUb+/7kejHRp10699du7jUBilpeBEAXlN8
-	 /u+62CWZMtgAEDi7FMOHJ3dGU18gXwXV2/h3ukzyNtIXeFnltD5ud9gWGIJQtNURDz
-	 N2Vp39BufViSwXN6ddcqiqX5r9analZJQ7feO2mZAqijMsqVAqDDG5Laj4RzgrxiUh
-	 gBXjCil45byeFaVBGlQN84XCgafsfGWFHBKb5h79roBKphaTVFrDt9wBr9ZbOr6qqv
-	 L0TvqvpfJjBFg==
+	b=Efnr/xFpaLwas3zJ92BfXErknoetOSUbgWicSXPaZnMEmyVVCC3CWTcrAPYpjSxWG
+	 TL9sb/nFjmywhejKfbtwZGtsl3tWq+h7PIdk6J6Zo98lNOu1CZeOnWrUPdWYPKc7qt
+	 e9++vQ5dFBnx0j+3LZcfjRXkXwH0wHYtort8xLmyChAyBVd6GNVXKTw3AfU4WVkzO1
+	 5/dsSKlr3lXHrvtq/crWY72o9cQIeYZLAh7NUGbKq5tHG2N/aVo7KlERFb10maX4qq
+	 CAHE6/8HLoKRbPHhCRGuAAHS7Oawge9ljRAz6e7tNSjpGnklLj8RhvOhlWW9aT+LNw
+	 3F6D//Y7xrrfw==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: qcom: minor whitespace cleanup
-Date: Wed, 14 Feb 2024 11:57:26 -0600
-Message-ID: <170793345828.27225.126406196959593352.b4-ty@kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc8180x: describe all PCI MSI interrupts
+Date: Wed, 14 Feb 2024 11:57:27 -0600
+Message-ID: <170793345828.27225.3213652485553363830.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240208105208.128706-1-krzysztof.kozlowski@linaro.org>
-References: <20240208105208.128706-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240205163123.81842-1-krzysztof.kozlowski@linaro.org>
+References: <20240205163123.81842-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,16 +65,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 08 Feb 2024 11:52:08 +0100, Krzysztof Kozlowski wrote:
-> The DTS code coding style expects exactly one space before '{' and
-> around '=' characters.
+On Mon, 05 Feb 2024 17:31:23 +0100, Krzysztof Kozlowski wrote:
+> Each group of MSI interrupts is mapped to the separate host interrupt.
+> Describe each of interrupts in the device tree for PCIe hosts.  This
+> also corrects PCIe1 and PCIe2 first MSI interrupt.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: minor whitespace cleanup
-      commit: 77e7257a601743a1cd67fa474288389fffa8839e
+[1/1] arm64: dts: qcom: sc8180x: describe all PCI MSI interrupts
+      commit: 1587bb53c1b59deaa7fc32fd129fb9bb8fb04c3e
 
 Best regards,
 -- 
