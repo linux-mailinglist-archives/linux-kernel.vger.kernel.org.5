@@ -1,184 +1,243 @@
-Return-Path: <linux-kernel+bounces-64846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E11A85439E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:47:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A95488543A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:49:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8244D1C21C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:47:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 316521F299D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3C018645;
-	Wed, 14 Feb 2024 07:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADD81173A;
+	Wed, 14 Feb 2024 07:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w8WMKcLS"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gKmC1TRD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F4E1862F
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452A81170A;
+	Wed, 14 Feb 2024 07:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707896813; cv=none; b=oQOsqplWIetQq0laMwFyNMfpuTLivlin6vDICS5pd7745ZWv/x+RDL21BFAGxlHHRfysBJpZ1ByvBzIJJm+pAcifUiRFR9d/nQQE0SAx6zlka1+2RbjYw0Mm2XzxgMxe8O6E7lK3V3KEMpPBXrGS8f+39p4F380KTHOSBAScQJ4=
+	t=1707896978; cv=none; b=XQZ/pSlcOLuSNToZdzDrfRSzwoARWf4mheYfw5GLBOcccURsv/+WJjOUOKEaZVVAJjzMqBhYuP2siEpgC8xicjpTNLW9mAym1ngbNP7A37H7naAiBEPozIVlCd2NoPA0a8SC4xxHX1IdBy8VFEPcQYWtBkIH/QB8OV20UlQfxFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707896813; c=relaxed/simple;
-	bh=yqB2XdwA6UHCegZCB9/lVXiW3YWDwxrPU4imydmilIQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ifeg5I3npJkrNC5RNscyUe/Q1cQfrqpuyhvlLzr4DE+0pT+PXoLNGkKdMQfDiHr80owktB/EBHN7OzAVv0THI0GAB+0rZ3IsP1GgNxb+nBzGPkjPZ1yeaXjCLTsqCrYpqlZ+SeQSdj7eFGPh8amNkDWj9ixabkVf2No5etCHD+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w8WMKcLS; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a28a6cef709so698034466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Feb 2024 23:46:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707896809; x=1708501609; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B0R4c1Ylk8xxreF7nNGXS85UtN57qLPiI5PzupAO4is=;
-        b=w8WMKcLSzIe/ZW5SHuL5Uza48FfctvU0cXX3VLiP9p2aOdzdT7OwBm2eRjZfJWgRAC
-         7o6VIYcT+AqHErViaGoTSPDKncIeRCs+xZQD0zOI1n6/rrWQxHaOHuDdCPrqser7LGwO
-         jAig9P7ejdDcWpCUtjwikwed8SZpaXPS8r766Dn7pOQssiTAFPh9Quhayo+1Dqbt82pm
-         vDhjP7TA1wJmcNnboDFO7BLYAyKiRBhrhLUvpiWdOt17yCFoWSjWiLu5hOLel7zCHuZw
-         y48cMBRM6pGIXvhKY5A6+veX6A4x8IwjQSJOQp1gVxPSGacAk8VJjbwTdnFoNafwGVHj
-         ONPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707896809; x=1708501609;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0R4c1Ylk8xxreF7nNGXS85UtN57qLPiI5PzupAO4is=;
-        b=A2bI+hbInoo7rS0qURdU6ADcIiPL/yB3onXPISCaa/6IhIBSPPl/prYMdR2L6wU+G/
-         wTHKiGKvwZQFitz49jlAUob7ABn2HhzCxbwytvotP+NyZoyAGKBGJ1LCM2v8Q9jCLU7R
-         ghWRUCiJuA0brk/9gWJuDY1QTq0j1Npvf4guOId4T9MQn4Dl0h2JIHT7F5bzEwvmXMb4
-         xWIH2PIHPTVByYgQfg7+2vgK09DUA/gnWqnXiO8N6Y6z/eeELRbdI2FLKABfuCabO5Rk
-         ur4LCNN0R3eFP0iE4dFElsWVrP88GrwiHaOO61nIhKV/xbogsq37rsUv1A6Nw+G/awOM
-         h5rw==
-X-Forwarded-Encrypted: i=1; AJvYcCVv6opQKdAtkgw0na9hyj/HHK65lrGD0PNUyNpJc7+aXeYxC3uQe+hP58F/9NeBUkvstlEpveQHkPSeJF3ZQs8M7DExvQ5KMb1Gp5LN
-X-Gm-Message-State: AOJu0Yw9vsPcK878rMCgKBRZqzciVtvbaGJdoZbGhk7CuaN5Lv7nlEFH
-	TbfWbR8Iha9Y+0J335V68UMGKB/C6FKWEimq7VbUGmNxtrcbcJyvDldOE/RHevQ=
-X-Google-Smtp-Source: AGHT+IFNERq4Pu0oUowuFY7XJnZIaUf0PIqtAYp2ZpdJ45uNhu4a+E9OoFBYAFugw5+I/njxHcUUyg==
-X-Received: by 2002:a17:906:1997:b0:a38:7541:36f6 with SMTP id g23-20020a170906199700b00a38754136f6mr1155720ejd.21.1707896809126;
-        Tue, 13 Feb 2024 23:46:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWXy07FRHQZQsUwtOQUQeSP5tZae8wDnNB8QFQmIDKOkkbMPwHrHy5ivMIR9fEYbPIE2VECpzcYwuL46XgVkfFXEFz0qgAO4gIO/HvP+OAtjtxapDiqXeRdJsy0+5kuUboimTZJKHUiO5qi+A==
-Received: from [192.168.86.110] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id ty8-20020a170907c70800b00a3d09d09e90sm1278993ejc.59.2024.02.13.23.46.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 23:46:48 -0800 (PST)
-Message-ID: <0e03d788-a4d1-494e-a103-9f57ad81b016@linaro.org>
-Date: Wed, 14 Feb 2024 07:46:46 +0000
+	s=arc-20240116; t=1707896978; c=relaxed/simple;
+	bh=+30XBiTpr9kCZxuWOtbH7uq9JMNwSCfUSLWV8UPLEa8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mL6yzXtsle6x/44QiGuQkEeisn2/NVXSrg36onSvzYdAzg3UjopfwQyLstlwTiJpMetXL93Yu3lIek8Bkd0/hVFbQ7GLhEwcX4f5eiSxzwej3aatVxuj/4b4JjYBf1B30i5hpK4a72CWLKkbYydOk3f6rvCBZLxZ4B/WVUM9aFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gKmC1TRD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41E9EC433C7;
+	Wed, 14 Feb 2024 07:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707896977;
+	bh=+30XBiTpr9kCZxuWOtbH7uq9JMNwSCfUSLWV8UPLEa8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gKmC1TRDRwnne/XHIp8Lgxgq7p5Te1ehpGMWvEu6pNona9feQZqCu8cLYSBJCF13J
+	 gVOwpEG8dfBce/s/baDD/R9agRbvqzHIAdPJyQjf0JLIWrr+QliLKnq8FP0FZpfAZK
+	 KCwFVPCtpOkmhCCD1Y/KO42fbym9tGXzFvKhMNQI=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: corbet@lwn.net,
+	workflows@vger.kernel.org
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	security@kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH v2] Documentation: Document the Linux Kernel CVE process
+Date: Wed, 14 Feb 2024 08:49:29 +0100
+Message-ID: <2024021430-expansion-sporty-4229@gregkh>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/16] misc: fastrpc: Add fastrpc multimode invoke
- request support
-Content-Language: en-US
-To: Ekansh Gupta <quic_ekangupt@quicinc.com>, linux-arm-msm@vger.kernel.org
-Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20240202064039.15505-1-quic_ekangupt@quicinc.com>
- <20240202064039.15505-5-quic_ekangupt@quicinc.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240202064039.15505-5-quic_ekangupt@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Lines: 177
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8674; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=+30XBiTpr9kCZxuWOtbH7uq9JMNwSCfUSLWV8UPLEa8=; b=owGbwMvMwCRo6H6F97bub03G02pJDKlnCrqqKpOyKoXuHnj81Pv2STbLp8E6jXUHu7ueWzpw/ 6u0EYvtiGVhEGRikBVTZPmyjefo/opDil6Gtqdh5rAygQxh4OIUgImsimNY0GT9MSSq4MQOl4iZ M8o1prR2ttjwMCxYpuvJdr4lRLHv35PX5/eyiLhONNYAAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+The Linux kernel project now has the ability to assign CVEs to fixed
+issues, so document the process and how individual developers can get a
+CVE if one is not automatically assigned for their fixes.
 
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+v2: Grammer fixes based on review from Randy
+    Updated paragraph about how CVE identifiers will be assigned
+    (automatically when added to stable trees, or ask us for one
+    directly before that happens if so desired)
 
-On 02/02/2024 06:40, Ekansh Gupta wrote:
-> Multimode invocation request is intended to support multiple
-> different type of requests. This will include enhanced invoke
-> request to support CRC check and performance counter enablement.
-> This will also support few driver level user controllable
-> mechanisms like usage of shared context banks, wakelock support,
-> etc. This IOCTL is also added with the aim to support few
-> new fastrpc features like DSP PD notification framework,
-> DSP Signalling mechanism etc.
-> 
-> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> ---
->   drivers/misc/fastrpc.c      | 176 ++++++++++++++++++++++++++----------
->   include/uapi/misc/fastrpc.h |  26 ++++++
->   2 files changed, 154 insertions(+), 48 deletions(-)
-> 
-..
+ Documentation/process/cve.rst           | 120 ++++++++++++++++++++++++
+ Documentation/process/index.rst         |   1 +
+ Documentation/process/security-bugs.rst |   6 +-
+ 3 files changed, 124 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/process/cve.rst
 
-> diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
-> index f33d914d8f46..45c15be1de58 100644
-> --- a/include/uapi/misc/fastrpc.h
-> +++ b/include/uapi/misc/fastrpc.h
-> @@ -16,6 +16,7 @@
->   #define FASTRPC_IOCTL_INIT_CREATE_STATIC _IOWR('R', 9, struct fastrpc_init_create_static)
->   #define FASTRPC_IOCTL_MEM_MAP		_IOWR('R', 10, struct fastrpc_mem_map)
->   #define FASTRPC_IOCTL_MEM_UNMAP		_IOWR('R', 11, struct fastrpc_mem_unmap)
-> +#define FASTRPC_IOCTL_MULTIMODE_INVOKE	_IOWR('R', 12, struct fastrpc_ioctl_multimode_invoke)
->   #define FASTRPC_IOCTL_GET_DSP_INFO	_IOWR('R', 13, struct fastrpc_ioctl_capability)
->   
->   /**
-> @@ -80,6 +81,31 @@ struct fastrpc_invoke {
->   	__u64 args;
->   };
->   
-> +struct fastrpc_enhanced_invoke {
-> +	struct fastrpc_invoke inv;
-> +	__u64 crc;
-> +	__u64 perf_kernel;
-> +	__u64 perf_dsp;
-> +	__u32 reserved[8];	/* keeping reserved bits for new requirements */
-> +};
-> +
-> +struct fastrpc_ioctl_multimode_invoke {
-This struct needs some documentation.
+diff --git a/Documentation/process/cve.rst b/Documentation/process/cve.rst
+new file mode 100644
+index 000000000000..6465e6a79c18
+--- /dev/null
++++ b/Documentation/process/cve.rst
+@@ -0,0 +1,120 @@
++CVEs
++====
++
++Common Vulnerabilities and Exposure (CVE®) numbers were developed as an
++unambiguous way to identify, define, and catalog publicly disclosed
++security vulnerabilities.  Over time, their usefulness has declined with
++regards to the kernel project, and CVE numbers were very often assigned
++in inappropriate ways and for inappropriate reasons.  Because of this,
++the kernel development community has tended to avoid them.  However, the
++combination of continuing pressure to assign CVEs and other forms of
++security identifiers, and ongoing abuses by community members outside of
++the kernel community has made it clear that the kernel community should
++have control over those assignments.
++
++The Linux kernel developer team does have the ability to assign CVEs for
++potential Linux kernel security issues.  This assignment is independent
++of the :doc:`normal Linux kernel security bug reporting
++process<../process/security_bugs>`.
++
++A list of all assigned CVEs for the Linux kernel can be found in the
++archives of the linux-cve mailing list, as seen on
++https://lore.kernel.org/linux-cve-announce/.  To get notice of the
++assigned CVEs, please subscribe to that mailing list.
++
++Process
++-------
++
++As part of the normal stable release process, kernel changes that are
++potentially security issues are identified by the developers responsible
++for CVE number assignments and have CVE numbers automatically assigned
++to them.  These assignments are published on the linux-cve-announce
++mailing list as announcements on a frequent basis.
++
++Note, due to the layer at which the Linux kernel is in a system, almost
++any bug might be exploitable to compromise the security of the kernel,
++but the possibility of exploitation is often not evident when the bug is
++fixed.  Because of this, the CVE assignment team is overly cautious and
++assign CVE numbers to any bugfix that they identify.  This
++explains the seemingly large number of CVEs that are issued by the Linux
++kernel team.
++
++If the CVE assignment team misses a specific fix that any user feels
++should have a CVE assigned to it, please email them at <cve@kernel.org>
++and the team there will work with you on it.  Note that no potential
++security issues should be sent to this alias, it is ONLY for assignment
++of CVEs for fixes that are already in released kernel trees.  If you
++feel you have found an unfixed security issue, please follow the
++:doc:`normal Linux kernel security bug reporting
++process<../process/security_bugs>`.
++
++No CVEs will be automatically assigned for unfixed security issues in
++the Linux kernel; assignment will only automatically happen after a fix
++is available and applied to a stable kernel tree, and it will be tracked
++that way by the git commit id of the original fix.  If anyone wishes to
++have a CVE assigned before an issue is resolved with a commit, please
++contact the kernel CVE assignment team at <cve@kernel.org> to get an
++identifier assigned from their batch of reserved identifiers.
++
++No CVEs will be assigned for any issue found in a version of the kernel
++that is not currently being actively supported by the Stable/LTS kernel
++team.  A list of the currently supported kernel branches can be found at
++https://kernel.org/category/releases.html
++
++Disputes of assigned CVEs
++-------------------------
++
++The authority to dispute or modify an assigned CVE for a specific kernel
++change lies solely with the maintainers of the relevant subsystem
++affected.  This principle ensures a high degree of accuracy and
++accountability in vulnerability reporting.  Only those individuals with
++deep expertise and intimate knowledge of the subsystem can effectively
++assess the validity and scope of a reported vulnerability and determine
++its appropriate CVE designation.  Any attempt to modify or dispute a CVE
++outside of this designated authority could lead to confusion, inaccurate
++reporting, and ultimately, compromised systems.
++
++Invalid CVEs
++------------
++
++If a security issue is found in a Linux kernel that is only supported by
++a Linux distribution due to the changes that have been made by that
++distribution, or due to the distribution supporting a kernel version
++that is no longer one of the kernel.org supported releases, then a CVE
++can not be assigned by the Linux kernel CVE team, and must be asked for
++from that Linux distribution itself.
++
++Any CVE that is assigned against the Linux kernel for an actively
++supported kernel version, by any group other than the kernel assignment
++CVE team should not be treated as a valid CVE.  Please notify the
++kernel CVE assignment team at <cve@kernel.org> so that they can work to
++invalidate such entries through the CNA remediation process.
++
++Applicability of specific CVEs
++------------------------------
++
++As the Linux kernel can be used in many different ways, with many
++different ways of accessing it by external users, or no access at all,
++the applicability of any specific CVE is up to the user of Linux to
++determine, it is not up to the CVE assignment team.  Please do not
++contact us to attempt to determine the applicability of any specific
++CVE.
++
++Also, as the source tree is so large, and any one system only uses a
++small subset of the source tree, any users of Linux should be aware that
++large numbers of assigned CVEs are not relevant for their systems.
++
++In short, we do not know your use case, and we do not know what portions
++of the kernel that you use, so there is no way for us to determine if a
++specific CVE is relevant for your system.
++
++As always, it is best to take all released kernel changes, as they are
++tested together in a unified whole by many community members, and not as
++individual cherry-picked changes.  Also note that for many bugs, the
++solution to the overall problem is not found in a single change, but by
++the sum of many fixes on top of each other.  Ideally CVEs will be
++assigned to all fixes for all issues, but sometimes we do not notice
++fixes in released kernels, so do not assume that because a specific
++change does not have a CVE assigned to it, that it is not relevant to
++take.
++
+diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
+index 6cb732dfcc72..de9cbb7bd7eb 100644
+--- a/Documentation/process/index.rst
++++ b/Documentation/process/index.rst
+@@ -81,6 +81,7 @@ of special classes of bugs: regressions and security problems.
+ 
+    handling-regressions
+    security-bugs
++   cve
+    embargoed-hardware-issues
+ 
+ Maintainer information
+diff --git a/Documentation/process/security-bugs.rst b/Documentation/process/security-bugs.rst
+index 692a3ba56cca..132842d8b377 100644
+--- a/Documentation/process/security-bugs.rst
++++ b/Documentation/process/security-bugs.rst
+@@ -99,9 +99,9 @@ CVE assignment
+ The security team does not assign CVEs, nor do we require them for
+ reports or fixes, as this can needlessly complicate the process and may
+ delay the bug handling.  If a reporter wishes to have a CVE identifier
+-assigned, they should find one by themselves, for example by contacting
+-MITRE directly.  However under no circumstances will a patch inclusion
+-be delayed to wait for a CVE identifier to arrive.
++assigned, after a fix is created and merged into a public tree, they can
++contact the :doc:`kernel CVE assignment team<../process/cve>` to obtain
++one.
+ 
+ Non-disclosure agreements
+ -------------------------
+-- 
+2.43.1
 
-> +	__u32 req;
-we use req here and then in next few lines we define the same as 
-fastrpc_multimode_invoke_type. I would recommend to make this type 
-instead of req.
-
-> +	__u32 rsvd;		/* padding field */
-reserved?
-
-<---
-> +	__u64 invparam;
-> +	__u64 size;
--->
-Isn't size obvious when we know request type?
-
-This is also opening up a path for userspace to pass some random structures.
-
-It makes more sense to have a union of all the request structures.
-
-Why not add all the enhanced invoke uapi structures as part of this patch?
-
-> +	__u32 reserved[8];	/* keeping reserved bits for new requirements */
-> +};
-> +
-> +enum fastrpc_multimode_invoke_type {
-> +	FASTRPC_INVOKE			= 1,
-> +	FASTRPC_INVOKE_ENHANCED	= 2,
-> +	FASTRPC_INVOKE_CONTROL = 3,
-> +	FASTRPC_INVOKE_DSPSIGNAL = 4,
-> +	FASTRPC_INVOKE_NOTIF = 5,
-> +	FASTRPC_INVOKE_MULTISESSION = 6,
-
-All of these needs a proper documentation. Its impossible to understand 
-what they actually mean.
-
-This applies to all the enums that are added as part of other patches to 
-the uapi headers.
-
-thanks,
-Srini
-
-
-> +};
-> +
->   struct fastrpc_init_create {
->   	__u32 filelen;	/* elf file length */
->   	__s32 filefd;	/* fd for the file */
 
