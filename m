@@ -1,103 +1,115 @@
-Return-Path: <linux-kernel+bounces-65427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 189FC854CCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:32:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55E8B854CB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A92E41F24D83
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:32:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 118F92814C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2CA5DF13;
-	Wed, 14 Feb 2024 15:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063115C911;
+	Wed, 14 Feb 2024 15:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="KsOG9DPa"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gQC8f84J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A5D5A0FB;
-	Wed, 14 Feb 2024 15:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330D85A0FB;
+	Wed, 14 Feb 2024 15:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707924619; cv=none; b=YguTHZpgQinPXTp4pg7B07vj5mMGn6ysILPcoFDuyl00+jUL3OasPQmfyUlmHmjUZFdvca7mz9UN68kwig3ZnFzlDTC12AIguzHZ6bmisyPyyhQhfVjv/cXwePfLnpMStYSqY/j0/vmnf5vdTrYEr40F8H1n8uvIgXz1EVYG5T0=
+	t=1707924533; cv=none; b=GCLrjxj+yw8pLuP+wCSwI1Pwy18DDy4f7ev60oNAikKQ0w+Et67z1AEmab/PYwWvHgur38CEHUzuvrWmNmftEeJbloVH7jcpPR3QuQ1Jh492Aw6I2AUbKQzQnPVLVzwp4UJSKEgAj04YDwD5TA+IVglgg9qhon+1qVhxuvsghQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707924619; c=relaxed/simple;
-	bh=LNiQsxwpb6KqaUIrwzAIc1YaPde2cuUFEm8Lin9I+4c=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=YlwpW7QEF7ZJn89WRfEN/Ew3IKc86m15qPKkfgJpkf25pA0atcmKD/wjeIMyr7TZUuAdQRxVIlGsrk15PcORNpI8IQHNeOJU/RE3mF7xQnddjOBcaVE8Bmi01aUc+AgOIU8RgYy9qrm5gwdqOzYI5v99rJ2uNWUVGBtaarq8vtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=KsOG9DPa; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41EFScet1331064
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 14 Feb 2024 07:28:38 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41EFScet1331064
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1707924521;
-	bh=rk9njXpf6hzFHY17pEhUqSZF9wRgLnS+p3Equ70uV9g=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=KsOG9DPaw5ir6qEJCooeMQWJQMCKKXsB2ez4BpMq4njCXB/iMypn6kRHAYmoAYIIf
-	 bI2i7x7i9vd/OUg3t6q9x1O7qGE96Ypb/3YMNpACt0umzVvoeS2BMGQTXT/SGKUJfi
-	 Jb0GaAPO9/6YSB+JBbfT4UZkfZbg5wfA11KuWqoPUgfDi/TBxsUVGzbf3Joa5RmXtW
-	 Do14EBY5W+LnmVF10jBXuD09SgEe/1Lr8vOu1xubrGFtdkWjDBrTgWFhJUwnlmKAl+
-	 JeqS9Se6UTcm9/mW0OJ/aCaWPUbnSHpsCQvPZcWRGuggLm/w0mgmieUCXUJk1knukA
-	 F2gD2n6NiHfiA==
-Date: Wed, 14 Feb 2024 07:28:35 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Dave Hansen <dave.hansen@intel.com>,
-        Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
-        Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Joerg Roedel <jroedel@suse.de>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Tina Zhang <tina.zhang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC: Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH v1 0/8] x86_64 SandBox Mode arch hooks
-User-Agent: K-9 Mail for Android
-In-Reply-To: <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
-References: <20240214113516.2307-1-petrtesarik@huaweicloud.com> <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
-Message-ID: <34B19756-91D3-4DA1-BE76-BD3122C16E95@zytor.com>
+	s=arc-20240116; t=1707924533; c=relaxed/simple;
+	bh=/5re9uwAhjRh/Dvs/PjZcKYRVJX4Mawl39c28gZZtzE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rwvMvJ/drZlXRrOXhzJdV0tseW1T9QeGcJKA6dYIm0mqCtOminof8xEzY2CK7eHoKitZ1yEQ3mQ3PmWbG/n/1GBVemrmLg8oTGMPBmFlAax9mzpqpI2DSIAMka4qN/uEhM6JR6SdmJQ3pqdpFZeCr1yAqdDx7J8eM8tw2g7dbKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gQC8f84J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC46C433C7;
+	Wed, 14 Feb 2024 15:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707924533;
+	bh=/5re9uwAhjRh/Dvs/PjZcKYRVJX4Mawl39c28gZZtzE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gQC8f84JIBRyEAhPojBIqtxXOFd127/eeGx6LffRh0u5RioYRpV0jYsQsjq1ma3hM
+	 6Bu5SoKvh8eJYVDFMJeOZwUGG3PgiHHPyjEWchFnJZbPRvAeJ5bCF8ER8b3sPHF2K5
+	 33I2OO4PV4VofZ6DUnBe6Nx1/lAjjoN4uOmyaMWs=
+Date: Wed, 14 Feb 2024 16:28:49 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: srinivas.kandagatla@linaro.org
+Cc: linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	regressions@lists.linux.dev,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Chen-Yu Tsai <wenst@chromium.org>, asahi@lists.linux.dev,
+	Sven Peter <sven@svenpeter.dev>
+Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
+Message-ID: <2024021438-rental-pretzel-4969@gregkh>
+References: <20240209163454.98051-1-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240209163454.98051-1-srinivas.kandagatla@linaro.org>
 
-On February 14, 2024 6:52:53 AM PST, Dave Hansen <dave=2Ehansen@intel=2Ecom=
-> wrote:
->On 2/14/24 03:35, Petr Tesarik wrote:
->> This patch series implements x86_64 arch hooks for the generic SandBox
->> Mode infrastructure=2E
->
->I think I'm missing a bit of context here=2E  What does one _do_ with
->SandBox Mode?  Why is it useful?
+On Fri, Feb 09, 2024 at 04:34:54PM +0000, srinivas.kandagatla@linaro.org wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Creating sysfs files for all Cells caused a boot failure for linux-6.8-rc1 on
+> Apple M1, which (in downstream dts files) has multiple nvmem cells that use the
+> same byte address. This causes the device probe to fail with
+> 
+> [    0.605336] sysfs: cannot create duplicate filename '/devices/platform/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
+> [    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S                 6.8.0-rc1-arnd-5+ #133
+> [    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
+> [    0.605362] Call trace:
+> [    0.605365]  show_stack+0x18/0x2c
+> [    0.605374]  dump_stack_lvl+0x60/0x80
+> [    0.605383]  dump_stack+0x18/0x24
+> [    0.605388]  sysfs_warn_dup+0x64/0x80
+> [    0.605395]  sysfs_add_bin_file_mode_ns+0xb0/0xd4
+> [    0.605402]  internal_create_group+0x268/0x404
+> [    0.605409]  sysfs_create_groups+0x38/0x94
+> [    0.605415]  devm_device_add_groups+0x50/0x94
+> [    0.605572]  nvmem_populate_sysfs_cells+0x180/0x1b0
+> [    0.605682]  nvmem_register+0x38c/0x470
+> [    0.605789]  devm_nvmem_register+0x1c/0x6c
+> [    0.605895]  apple_efuses_probe+0xe4/0x120
+> [    0.606000]  platform_probe+0xa8/0xd0
+> 
+> As far as I can tell, this is a problem for any device with multiple cells on
+> different bits of the same address. Avoid the issue by changing the file name
+> to include the first bit number.
+> 
+> Fixes: 0331c611949f ("nvmem: core: Expose cells through sysfs")
+> Link: https://github.com/AsahiLinux/linux/blob/bd0a1a7d4/arch/arm64/boot/dts/apple/t600x-dieX.dtsi#L156
+> Cc: regressions@lists.linux.dev
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Rafał Miłecki <rafal@milecki.pl>
+> Cc: Chen-Yu Tsai <wenst@chromium.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: asahi@lists.linux.dev
+> Cc: Sven Peter <sven@svenpeter.dev>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+> Hi Greg, 
+> 
+> Here is a fix in nvmem for 6.8, could you queue these for next possible rc.
+> 
+> Did not cc Stable as this is only targeted for 6.8 and no backporting is
+> required.
 
-Seriously=2E On the surface it looks like a really bad idea =E2=80=93 basi=
-cally an ad hoc, *more* privileged version of user shave=2E
+Sorry for the delay, now queued up.
+
+greg k-h
 
