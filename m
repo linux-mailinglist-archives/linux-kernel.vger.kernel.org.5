@@ -1,157 +1,105 @@
-Return-Path: <linux-kernel+bounces-65071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC2D854775
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:44:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D260185477B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 11:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE3801C212CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:44:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 876AB1F2155E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:45:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F7221AACB;
-	Wed, 14 Feb 2024 10:43:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8492618E29;
-	Wed, 14 Feb 2024 10:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F3018E29;
+	Wed, 14 Feb 2024 10:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MHd1grYr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F8518C28;
+	Wed, 14 Feb 2024 10:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707907429; cv=none; b=DUMqhJDJ//r1NSBJrVkAKaUrJ756yw+rPMri2T4e6C1HMIG8pHmzMRaXxD2aZ1aGGnS29ZRAvV8D6Jy17JBfa38Z3jOxPe2UABe+k5VhJEEFd2XcAx8jENQ0fiHrMbn3fVQgPg3rKbEUQK9avMFpjz7TgcjPrB+yEqw2Pe2h4Ys=
+	t=1707907503; cv=none; b=qr3t1djgeddXY2Vwqq03R/j9Mk207jAyNmOVM898iqQZVpYBTDQza3/ZCyzZLWYnjwmpShTehIXu3kPUwrwV5kJ68Q5/OyxaBZK0mhRS1tYU8bs4zDL0m59h+Mt2l63JDpvDnIhEnXpxsJII9Tub0pzQnJesyTWa+E3k/sbk9MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707907429; c=relaxed/simple;
-	bh=/d1FtVUVxRZ+e78TMHZblQDSf8Xsk0E7UCHt6C8VlCE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Afrmj1JdWyqVpCkU43GRy89EgeTVQjbUE77EvaPZCSc8+QeMqhQtM91tQDGRLn80Z6zIV+SEgWU9QIMH7PDQDVT0aonLDMYUI33srlxu89HCIF2yPxttWmWADJatda8f9LF1LYeRllkOFcGYTd0OfwM7buFmonRaTew9cXBXhAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84CA5DA7;
-	Wed, 14 Feb 2024 02:44:27 -0800 (PST)
-Received: from [10.57.64.120] (unknown [10.57.64.120])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE4A83F766;
-	Wed, 14 Feb 2024 02:43:43 -0800 (PST)
-Message-ID: <cbb1d6a0-66dd-47d0-8733-f836fe050374@arm.com>
-Date: Wed, 14 Feb 2024 10:43:42 +0000
+	s=arc-20240116; t=1707907503; c=relaxed/simple;
+	bh=c5a5QD1qybAX8sIO7SlkwMh3DXcoPgzluORoGmCH18o=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=Xl8ISgZ4BfeAS+ULThSr1AosnjWt/CPhAHpl/1PYVXN0ehQ4LVNykEqwZxZQ5fZHI7ZIReynWJSqmlDNIa7Y3gAc0QzxdkF1TUDG89OQzsOzA/40l1iiyv1YFm/BukxZqOsaQYBRkB8pqsb83jq54k8tACQVRS31ef+/kVpFi8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MHd1grYr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F91C433F1;
+	Wed, 14 Feb 2024 10:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707907502;
+	bh=c5a5QD1qybAX8sIO7SlkwMh3DXcoPgzluORoGmCH18o=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=MHd1grYrjnKc6N9SBwHUg+n7lvaoMgaqHzbsWY/uOvBtvyA/Sdh5GG2It2CXBgr+O
+	 f6cdD473ETW5ujH6eag47aT9vAFUtzuCDz2Qo3hbR/iKNTJ/nzTfi1eDzuyMui+ma4
+	 SMSV86kIPVszpaikgwZmMolujKS0mFjwrO1ZBlfpR2uNg46S5LBdN/EY/clf9ny6t/
+	 w1UtIqsz3y+mk73XgXWesN6JXldOrboaDEk/OC0MDo9uacqx3ZHkVSzh9ww4X84cMk
+	 KNU4hDcT6ApwBbp0wc6VQdixjI1QQ5UdladLXqrjxpiYZHjQ5XLKeZg98BIMBPUvZc
+	 TEhhP98yNTKZw==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Arnd Bergmann" <arnd@kernel.org>,  "Jeff Johnson"
+ <quic_jjohnson@quicinc.com>,  "Karthikeyan Periyasamy"
+ <quic_periyasa@quicinc.com>,  "Aloka Dixit" <quic_alokad@quicinc.com>,
+  "Wen Gong" <quic_wgong@quicinc.com>,  "Muna Sinada"
+ <quic_msinada@quicinc.com>,  "Aditya Kumar Singh"
+ <quic_adisi@quicinc.com>,  ath12k@lists.infradead.org,
+  linux-wireless@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wifi: ath12k: sanitize ath12k_mac_allocate() return code
+References: <20240213100912.459018-1-arnd@kernel.org>
+	<170790025305.3179441.138152315558305278.kvalo@kernel.org>
+	<08ac32ef-610d-479d-a3fd-a3c3b8c4c697@app.fastmail.com>
+Date: Wed, 14 Feb 2024 12:44:58 +0200
+In-Reply-To: <08ac32ef-610d-479d-a3fd-a3c3b8c4c697@app.fastmail.com> (Arnd
+	Bergmann's message of "Wed, 14 Feb 2024 11:37:52 +0100")
+Message-ID: <87plwze34l.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] mm: truncate: split huge page cache page to a
- non-zero order if possible.
-Content-Language: en-GB
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
- <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <20240213215520.1048625-7-zi.yan@sent.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240213215520.1048625-7-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 13/02/2024 21:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> To minimize the number of pages after a huge page truncation, we do not
-> need to split it all the way down to order-0. The huge page has at most
-> three parts, the part before offset, the part to be truncated, the part
-> remaining at the end. Find the greatest common divisor of them to
-> calculate the new page order from it, so we can split the huge
-> page to this order and keep the remaining pages as large and as few as
-> possible.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/truncate.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index 725b150e47ac..49ddbbf7a617 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -21,6 +21,7 @@
->  #include <linux/task_io_accounting_ops.h>
->  #include <linux/shmem_fs.h>
->  #include <linux/rmap.h>
-> +#include <linux/gcd.h>
->  #include "internal.h"
->  
->  /*
-> @@ -210,7 +211,8 @@ int truncate_inode_folio(struct address_space *mapping, struct folio *folio)
->  bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
->  {
->  	loff_t pos = folio_pos(folio);
-> -	unsigned int offset, length;
-> +	unsigned int offset, length, remaining;
-> +	unsigned int new_order = folio_order(folio);
->  
->  	if (pos < start)
->  		offset = start - pos;
-> @@ -221,6 +223,7 @@ bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
->  		length = length - offset;
->  	else
->  		length = end + 1 - pos - offset;
-> +	remaining = folio_size(folio) - offset - length;
->  
->  	folio_wait_writeback(folio);
->  	if (length == folio_size(folio)) {
-> @@ -235,11 +238,25 @@ bool truncate_inode_partial_folio(struct folio *folio, loff_t start, loff_t end)
->  	 */
->  	folio_zero_range(folio, offset, length);
->  
-> +	/*
-> +	 * Use the greatest common divisor of offset, length, and remaining
-> +	 * as the smallest page size and compute the new order from it. So we
-> +	 * can truncate a subpage as large as possible. Round up gcd to
-> +	 * PAGE_SIZE, otherwise ilog2 can give -1 when gcd/PAGE_SIZE is 0.
-> +	 */
-> +	new_order = ilog2(round_up(gcd(gcd(offset, length), remaining),
-> +				   PAGE_SIZE) / PAGE_SIZE);
+"Arnd Bergmann" <arnd@arndb.de> writes:
 
-Given you have up to 2 regions remaining, isn't it possible that you want a
-different order for both those regions (or even multiple orders within the same
-region)? I guess you just choose gcd for simplicity?
+> On Wed, Feb 14, 2024, at 09:44, Kalle Valo wrote:
+>> Arnd Bergmann <arnd@kernel.org> wrote:
+>>
+>>> The return code has no initializer:
+>>> 
+>>> drivers/net/wireless/ath/ath12k/mac.c:8006:9: error: variable 'ret' is uninitialized when used here [-Werror,-Wuninitialized]
+>>> 
+>>> Make it return -ENOMEM for allocation failures and remove the unused
+>>> variable instead.
+>>> 
+>>> Fixes: 6db6e70a17f6 ("wifi: ath12k: Introduce the container for mac80211 hw")
+>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+>>
+>> Nathan already fixed this:
+>>
+>> https://git.kernel.org/kvalo/ath/c/04edb5dc68f4
+>>
+>> Patch set to Rejected.
+>
+> Ok, sounds good. Nathan's patch looks fine to me
 
-> +
-> +	/* order-1 THP not supported, downgrade to order-0 */
-> +	if (new_order == 1)
-> +		new_order = 0;
+Great, thanks for checking.
 
-I guess this would need to change if supporting order-1 file folios?
+> but I see it's not in linux-next yet as of today.
 
-> +
-> +
->  	if (folio_has_private(folio))
->  		folio_invalidate(folio, offset, length);
->  	if (!folio_test_large(folio))
->  		return true;
-> -	if (split_folio(folio) == 0)
-> +	if (split_huge_page_to_list_to_order(&folio->page, NULL, new_order) == 0)
+Yeah, it's a problem that ath.git is not included linux-next builds. The
+commits will be in linux-next only after ath-next is pulled to
+wireless-next :/
 
-I know you are discussing removing this patch, but since you created
-split_folio_to_order() wouldn't that be better here?
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Thanks,
-Ryan
-
-
->  		return true;
->  	if (folio_test_dirty(folio))
->  		return false;
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
