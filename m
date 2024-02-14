@@ -1,363 +1,314 @@
-Return-Path: <linux-kernel+bounces-65609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53C01854F57
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:03:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88DD854F4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7665F1C2184B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 538B81F21D5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0853D60B82;
-	Wed, 14 Feb 2024 17:01:45 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F306087B;
+	Wed, 14 Feb 2024 17:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="uLlcLA74";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Zl4I14Lo";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="uLlcLA74";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Zl4I14Lo"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17D160DC2;
-	Wed, 14 Feb 2024 17:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD4E5FDD1
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707930104; cv=none; b=OlWuKtyxKlYmFlZJux1YgFgU64nmUFX+wJZ4KWtMEeXE9WlbhowmLYPLBHrzMMNpapqMcfwlml4ZWdmZtmgKOLdxHAPrVRZbQ+vQpHpzFmtUmkk3Z5FPD315PaCQ4nWupvT/jkAINlGyT1FarErZzkvAiy2lzC7vF8G7fu3q0Lg=
+	t=1707930057; cv=none; b=jf6LfjBuH2+z3sMJ9BtcoIeRTSLY5LERo7zEZUmxCJs7WoSW8c4rLankrATu8G1N8ajT/vMM74QaiF6vhk9ctz9T38EC7FnrqjLJ01t8YIUZh/QiTAK/wzmE2gD/BtItUww68x7EIVASwI4rc8AiMzRgG0s8zOjnLArfgPZqc1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707930104; c=relaxed/simple;
-	bh=tP7PPmCwxb3w/ItsQ2l3HAoLtVbGyYY+RZhlA6Qba34=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EwqkbesI8t/GyTZoMDJe7ytr1+311ZTSWFH+HBWHWVLQ+yFH/y2TP5soYgrHneO3TZfas4qfnb/3xH1qIAk1yXeQYJC5ORbBWe4z4aj4eE5PPabtxoimMSIUxAdMLuuKDREVc/AjS1qGU0Lx7U2Yiuhg86qk2I5Y2XzhbV3WSXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZkrx594yz6JB09;
-	Thu, 15 Feb 2024 00:57:37 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id B9F1C140B55;
-	Thu, 15 Feb 2024 01:01:37 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 17:01:37 +0000
-Date: Wed, 14 Feb 2024 17:01:36 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: =?UTF-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Andrey Skvortsov <andrej.skvortzov@gmail.com>, Icenowy Zheng
-	<icenowy@aosc.io>, Dalton Durst <dalton@ubports.com>, Shoji Keita
-	<awaittrot@shjk.jp>, <linux-iio@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] iio: magnetometer: add a driver for Voltafield
- AF8133J magnetometer
-Message-ID: <20240214170136.00003a22@Huawei.com>
-In-Reply-To: <20240212175410.3101973-4-megi@xff.cz>
-References: <20240212175410.3101973-1-megi@xff.cz>
-	<20240212175410.3101973-4-megi@xff.cz>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707930057; c=relaxed/simple;
+	bh=F4DWD5cxpKuyzbJVjD9tjYUUI6/I2opeMGu4UO+RA1k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l2QXHNlQcfqn+HcygrPXOE2ovGzEPGkPJjIzZaCGN5lpFTH5TdoXIFM3skQs/S6vFM6ReNzrTio3aUV5vHXAWNT6DGipT6jJjwxbjeNspszcKR5oPPGY4q2MJwzBBkrxko3NFpI888I6zbosoA0x7EhW1B1BptigpIQFpg/Ad4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=uLlcLA74; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Zl4I14Lo; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=uLlcLA74; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Zl4I14Lo; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 20ED221CF4;
+	Wed, 14 Feb 2024 17:00:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707930053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cb3M704v0Zbq80d/SsO/UOlJgPA2mSZPTOIdkKTDhIA=;
+	b=uLlcLA74AM5649NWms70Xy5ZEdeToRmyqlcASEIxxV3IbyjHSwdR7EqfrZmradPQ3ozuxd
+	TRVC9Vay8pZin4g9BXsbTzPn7WCu3T1RZ6GU6fv97grXyT1t8ZA7QtW6/bELcQHdfGo4ML
+	XYpTwr+jIGg00HRqcGHLgTmu6TNelKM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707930053;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cb3M704v0Zbq80d/SsO/UOlJgPA2mSZPTOIdkKTDhIA=;
+	b=Zl4I14Lo6egjTN4UwXT87JtN1lzIz7KV59YE1+RLeTlbgYVnuCGK+Lueez9ZmcDqIFddP5
+	Yjn3o0PDVW0x6xCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707930053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cb3M704v0Zbq80d/SsO/UOlJgPA2mSZPTOIdkKTDhIA=;
+	b=uLlcLA74AM5649NWms70Xy5ZEdeToRmyqlcASEIxxV3IbyjHSwdR7EqfrZmradPQ3ozuxd
+	TRVC9Vay8pZin4g9BXsbTzPn7WCu3T1RZ6GU6fv97grXyT1t8ZA7QtW6/bELcQHdfGo4ML
+	XYpTwr+jIGg00HRqcGHLgTmu6TNelKM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707930053;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cb3M704v0Zbq80d/SsO/UOlJgPA2mSZPTOIdkKTDhIA=;
+	b=Zl4I14Lo6egjTN4UwXT87JtN1lzIz7KV59YE1+RLeTlbgYVnuCGK+Lueez9ZmcDqIFddP5
+	Yjn3o0PDVW0x6xCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9358213A0B;
+	Wed, 14 Feb 2024 17:00:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id TOM3IcTxzGUfMwAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Wed, 14 Feb 2024 17:00:52 +0000
+From: Oscar Salvador <osalvador@suse.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v9 0/7] page_owner: print stacks and their outstanding allocations
+Date: Wed, 14 Feb 2024 18:01:50 +0100
+Message-ID: <20240214170157.17530-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=uLlcLA74;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Zl4I14Lo
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com,suse.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 20ED221CF4
+X-Spam-Flag: NO
 
-On Mon, 12 Feb 2024 18:53:55 +0100
-Ond=C5=99ej Jirman <megi@xff.cz> wrote:
+Changes v8 -> v9
+     - Fix handle-0 for the very first stack_record entry
+     - Collect Acked-by and Reviewed-by from Marco and Vlastimil
+     - Adressed feedback from Marco and Vlastimil
+     - stack_print() no longer allocates a memory buffer, prints directly
+       using seq_printf: by Vlastimil
+     - Added two static struct stack for dummy_handle and faiure_handle
+     - add_stack_record_to_list() now filters out the gfp_mask the same way
+       stackdepot does, for consistency
+     - Rename set_threshold to count_threshold
 
-> From: Icenowy Zheng <icenowy@aosc.io>
->=20
-> AF8133J is a simple I2C-connected magnetometer, without interrupts.
->=20
-> Add a simple IIO driver for it.
->=20
-> Co-developed-by: Icenowy Zheng <icenowy@aosc.io>
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> Signed-off-by: Dalton Durst <dalton@ubports.com>
-> Signed-off-by: Shoji Keita <awaittrot@shjk.jp>
-> Co-developed-by: Ondrej Jirman <megi@xff.cz>
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+Changes v7 -> v8
+     - Rebased on top of -next
+     - page_owner maintains its own stack_records list now
+     - Kill auxiliary stackdepot function to traverse buckets
+     - page_owner_stacks is now a directory with 'show_stacks'
+       and 'set_threshold'
+     - Update Documentation/mm/page_owner.rst
+     - Adressed feedback from Marco
 
+Changes v6 -> v7:
+     - Rebased on top of Andrey Konovalov's libstackdepot patchset
+     - Reformulated the changelogs
 
-Hi a few comments (mostly on changes)
+Changes v5 -> v6:
+     - Rebase on top of v6.7-rc1
+     - Move stack_record struct to the header
+     - Addressed feedback from Vlastimil
+       (some code tweaks and changelogs suggestions)
 
-The runtime_pm handling can be simplified somewhat if you
-rearrange probe a little.
+Changes v4 -> v5:
+     - Addressed feedback from Alexander Potapenko
 
-> diff --git a/drivers/iio/magnetometer/af8133j.c b/drivers/iio/magnetomete=
-r/af8133j.c
-> new file mode 100644
-> index 000000000000..1f64a2337f6e
-> --- /dev/null
-> +++ b/drivers/iio/magnetometer/af8133j.c
-> @@ -0,0 +1,528 @@
+Changes v3 -> v4:
+     - Rebase (long time has passed)
+     - Use boolean instead of enum for action by Alexander Potapenko
+     - (I left some feedback untouched because it's been long and
+        would like to discuss it here now instead of re-vamping
+        and old thread)
 
-
-> +static int af8133j_take_measurement(struct af8133j_data *data)
-> +{
-> +	unsigned int val;
-> +	int ret;
-> +
-> +	ret =3D regmap_write(data->regmap,
-> +			   AF8133J_REG_STATE, AF8133J_REG_STATE_WORK);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* The datasheet says "Mesaure Time <1.5ms" */
-> +	ret =3D regmap_read_poll_timeout(data->regmap, AF8133J_REG_STATUS, val,
-> +				       val & AF8133J_REG_STATUS_ACQ,
-> +				       500, 1500);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret =3D regmap_write(data->regmap,
-> +			   AF8133J_REG_STATE, AF8133J_REG_STATE_STBY);
-
-return regmap_write()
-
-regmap accesses return 0 or a negative error code enabling little code
-reductions like this.
-
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int af8133j_read_measurement(struct af8133j_data *data, __le16 bu=
-f[3])
-> +{
-> +	struct device *dev =3D &data->client->dev;
-> +	int ret;
-> +
-> +	ret =3D pm_runtime_resume_and_get(dev);
-> +	if (ret) {
-> +		/*
-> +		 * Ignore EACCES because that happens when RPM is disabled
-> +		 * during system sleep, while userspace leave eg. hrtimer
-> +		 * trigger attached and IIO core keeps trying to do measurements.
-
-Yeah. We still need to fix that more elegantly :(
-
-> +		 */
-> +		if (ret !=3D -EACCES)
-> +			dev_err(dev, "Failed to power on (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	scoped_guard(mutex, &data->mutex) {
-> +		ret =3D af8133j_take_measurement(data);
-> +		if (ret)
-> +			goto out_rpm_put;
-> +
-> +		ret =3D regmap_bulk_read(data->regmap, AF8133J_REG_OUT,
-> +				       buf, sizeof(__le16) * 3);
-> +	}
-> +
-> +out_rpm_put:
-> +	pm_runtime_mark_last_busy(dev);
-> +	pm_runtime_put_autosuspend(dev);
-> +
-> +	return ret;
-> +}
-> +
+Changes v2 -> v3:
+     - Replace interface in favor of seq operations
+       (suggested by Vlastimil)
+     - Use debugfs interface to store/read valued (suggested by Ammar)
 
 
-> +
-> +static int af8133j_set_scale(struct af8133j_data *data,
-> +			     unsigned int val, unsigned int val2)
-> +{
-> +	struct device *dev =3D &data->client->dev;
-> +	u8 range;
-> +	int ret =3D 0;
-> +
-> +	if (af8133j_scales[0][0] =3D=3D val && af8133j_scales[0][1] =3D=3D val2)
-> +		range =3D AF8133J_REG_RANGE_12G;
-> +	else if (af8133j_scales[1][0] =3D=3D val && af8133j_scales[1][1] =3D=3D=
- val2)
-> +		range =3D AF8133J_REG_RANGE_22G;
-> +	else
-> +		return -EINVAL;
-> +
-> +	pm_runtime_disable(dev);
-> +
-> +	/*
-> +	 * When suspended, just store the new range to data->range to be
-> +	 * applied later during power up.
-Better to just do
-	pm_runtime_resume_and_get() here
+page_owner is a great debug functionality tool that lets us know
+about all pages that have been allocated/freed and their specific
+stacktrace.
+This comes very handy when debugging memory leaks, since with
+some scripting we can see the outstanding allocations, which might point
+to a memory leak.
 
-> +	 */
-> +	if (!pm_runtime_status_suspended(dev))
-> +		ret =3D regmap_write(data->regmap, AF8133J_REG_RANGE, range);
-> +
-> +	pm_runtime_enable(dev);
-and
-	pm_runtime_mark_last_busy(dev);
-	pm_runtime_put_autosuspend(dev);
-here.
+In my experience, that is one of the most useful cases, but it can get
+really tedious to screen through all pages and try to reconstruct the
+stack <-> allocated/freed relationship, becoming most of the time a
+daunting and slow process when we have tons of allocation/free operations. 
 
-The userspace interface is only way this function is called so rearrange
-probe a little so that you don't need extra complexity in these functions.
+This patchset aims to ease that by adding a new functionality into
+page_owner.
+This functionality creates a new directory called 'page_owner_stacks'
+under 'sys/kernel//debug' with a read-only file called 'show_stacks',
+which prints out all the stacks followed by their outstanding number
+of allocations (being that the times the stacktrace has allocated
+but not freed yet).
+This gives us a clear and a quick overview of stacks <-> allocated/free.
 
+We take advantage of the new refcount_f field that stack_record struct
+gained, and increment/decrement the stack refcount on every
+__set_page_owner() (alloc operation) and __reset_page_owner (free operation)
+call.
 
-> +
-> +	data->range =3D range;
+Unfortunately, we cannot use the new stackdepot api
+STACK_DEPOT_FLAG_GET because it does not fulfill page_owner needs,
+meaning we would have to special case things, at which point
+makes more sense for page_owner to do its own {dec,inc}rementing
+of the stacks.
+E.g: Using STACK_DEPOT_FLAG_PUT, once the refcount reaches 0,
+such stack gets evicted, so page_owner would lose information.
 
-If the write failed, generally don't update the cached value.
+This patch also creates a new file called 'set_threshold' within
+'page_owner_stacks' directory, and by writing a value to it, the stacks
+which refcount is below such value will be filtered out.
 
-> +	return ret;
-> +}
-> +
-> +static int af8133j_write_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int val, int val2, long mask)
-> +{
-> +	struct af8133j_data *data =3D iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_SCALE:
-> +		scoped_guard(mutex, &data->mutex)
-> +			ret =3D af8133j_set_scale(data, val, val2);
+A PoC can be found below:
 
-Look more closely at what scoped_guard() does.
-			return af8133j_set_scale(data, val, val2);
-is fine and simpler as no local variable needed.
-
-> +		return ret;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-
-> +static void af8133j_power_down_action(void *ptr)
-> +{
-> +	struct af8133j_data *data =3D ptr;
-> +	struct device *dev =3D &data->client->dev;
-> +
-> +	pm_runtime_disable(dev);
-You group together unwinding of calls that occur in very
-different places in probe.  Don't do that as it leas
-to disabling runtime pm having never enabled it
-in some error paths.  That may be safe but if fails the
-obviously correct test.
-
-Instead, have multiple callbacks registered.
-Disable will happen anyway due to=20
-> +	if (!pm_runtime_status_suspended(dev))
-This works as the stub for no runtime pm support returns
-false.
-
-So this is a good solution to the normal dance of turning power on
-just to turn it off shortly afterwards.
-
-> +		af8133j_power_down(data);
-> +	pm_runtime_enable(dev);
-Why?
-
-> +}
-> +
-> +static int af8133j_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev =3D &client->dev;
-> +	struct af8133j_data *data;
-> +	struct iio_dev *indio_dev;
-> +	struct regmap *regmap;
-> +	int ret, i;
-> +
-> +	indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	regmap =3D devm_regmap_init_i2c(client, &af8133j_regmap_config);
-> +	if (IS_ERR(regmap))
-> +		return dev_err_probe(dev, PTR_ERR(regmap),
-> +				     "regmap initialization failed\n");
-> +
-> +	data =3D iio_priv(indio_dev);
-> +	i2c_set_clientdata(client, indio_dev);
-> +	data->client =3D client;
-> +	data->regmap =3D regmap;
-> +	data->range =3D AF8133J_REG_RANGE_12G;
-> +	mutex_init(&data->mutex);
-> +
-> +	data->reset_gpiod =3D devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_H=
-IGH);
-> +	if (IS_ERR(data->reset_gpiod))
-> +		return dev_err_probe(dev, PTR_ERR(data->reset_gpiod),
-> +				     "Failed to get reset gpio\n");
-> +
-> +	for (i =3D 0; i < ARRAY_SIZE(af8133j_supply_names); i++)
-> +		data->supplies[i].supply =3D af8133j_supply_names[i];
-> +	ret =3D devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
-> +				      data->supplies);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D iio_read_mount_matrix(dev, &data->orientation);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to read mount matrix\n");
-> +
-> +	ret =3D af8133j_power_up(data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pm_runtime_set_active(dev);
-> +
-> +	ret =3D devm_add_action_or_reset(dev, af8133j_power_down_action, data);
-
-As mentioned above, this should only undo things done before this point.
-So just the af8133j_power_down() I think.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D af8133j_product_check(data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	indio_dev->info =3D &af8133j_info;
-> +	indio_dev->name =3D "af8133j";
-> +	indio_dev->channels =3D af8133j_channels;
-> +	indio_dev->num_channels =3D ARRAY_SIZE(af8133j_channels);
-> +	indio_dev->modes =3D INDIO_DIRECT_MODE;
-> +
-> +	ret =3D devm_iio_triggered_buffer_setup(dev, indio_dev, NULL,
-> +					      &af8133j_trigger_handler, NULL);
-> +	if (ret < 0)
-> +		return dev_err_probe(&client->dev, ret,
-> +				     "Failed to setup iio triggered buffer\n");
-> +
-> +	ret =3D devm_iio_device_register(dev, indio_dev);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to register iio device");
-> +
-> +	pm_runtime_get_noresume(dev);
-
-> +	pm_runtime_use_autosuspend(dev);
-> +	pm_runtime_set_autosuspend_delay(dev, 500);
-> +	ret =3D devm_pm_runtime_enable(dev);
-
-This already deals with pm_runtime_disable() so you shouldn't need do it ma=
-nually.
-Also you want to enable that before the devm_iio_device_register() to avoid
-problems with it not being available as the userspace interfaces are used.
-
-So just move this up a few lines.
+ # cat /sys/kernel/debug/page_owner_stacks/show_stacks > page_owner_full_stacks.txt
+ # head -40 page_owner_full_stacks.txt 
+  prep_new_page+0xa9/0x120
+  get_page_from_freelist+0x801/0x2210
+  __alloc_pages+0x18b/0x350
+  alloc_pages_mpol+0x91/0x1f0
+  folio_alloc+0x14/0x50
+  filemap_alloc_folio+0xb2/0x100
+  page_cache_ra_unbounded+0x96/0x180
+  filemap_get_pages+0xfd/0x590
+  filemap_read+0xcc/0x330
+  blkdev_read_iter+0xb8/0x150
+  vfs_read+0x285/0x320
+  ksys_read+0xa5/0xe0
+  do_syscall_64+0x80/0x160
+  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+ stack_count: 521
 
 
-> +	if (ret)
-> +		return ret;
-> +
-> +	pm_runtime_put_autosuspend(dev);
-> +
-> +	return 0;
-> +}
+
+  prep_new_page+0xa9/0x120
+  get_page_from_freelist+0x801/0x2210
+  __alloc_pages+0x18b/0x350
+  alloc_pages_mpol+0x91/0x1f0
+  folio_alloc+0x14/0x50
+  filemap_alloc_folio+0xb2/0x100
+  __filemap_get_folio+0x14a/0x490
+  ext4_write_begin+0xbd/0x4b0 [ext4]
+  generic_perform_write+0xc1/0x1e0
+  ext4_buffered_write_iter+0x68/0xe0 [ext4]
+  ext4_file_write_iter+0x70/0x740 [ext4]
+  vfs_write+0x33d/0x420
+  ksys_write+0xa5/0xe0
+  do_syscall_64+0x80/0x160
+  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+ stack_count: 4609
+..
+..
+
+ # echo 5000 > /sys/kernel/debug/page_owner_stacks/set_threshold 
+ # cat /sys/kernel/debug/page_owner_stacks/show_stacks > page_owner_full_stacks_5000.txt
+ # head -40 page_owner_full_stacks_5000.txt 
+  prep_new_page+0xa9/0x120
+  get_page_from_freelist+0x801/0x2210
+  __alloc_pages+0x18b/0x350
+  alloc_pages_mpol+0x91/0x1f0
+  folio_alloc+0x14/0x50
+  filemap_alloc_folio+0xb2/0x100
+  __filemap_get_folio+0x14a/0x490
+  ext4_write_begin+0xbd/0x4b0 [ext4]
+  generic_perform_write+0xc1/0x1e0
+  ext4_buffered_write_iter+0x68/0xe0 [ext4]
+  ext4_file_write_iter+0x70/0x740 [ext4]
+  vfs_write+0x33d/0x420
+  ksys_pwrite64+0x75/0x90
+  do_syscall_64+0x80/0x160
+  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+ stack_count: 6781
+
+
+
+  prep_new_page+0xa9/0x120
+  get_page_from_freelist+0x801/0x2210
+  __alloc_pages+0x18b/0x350
+  pcpu_populate_chunk+0xec/0x350
+  pcpu_balance_workfn+0x2d1/0x4a0
+  process_scheduled_works+0x84/0x380
+  worker_thread+0x12a/0x2a0
+  kthread+0xe3/0x110
+  ret_from_fork+0x30/0x50
+  ret_from_fork_asm+0x1b/0x30
+ stack_count: 8641
+
+Oscar Salvador (7):
+  lib/stackdepot: Fix first entry having a 0-handle
+  lib/stackdepot: Move stack_record struct definition into the header
+  mm,page_owner: Maintain own list of stack_records structs
+  mm,page_owner: Implement the tracking of the stacks count
+  mm,page_owner: Display all stacks and their count
+  mm,page_owner: Filter out stacks by a threshold
+  mm,page_owner: Update Documentation regarding page_owner_stacks
+
+ Documentation/mm/page_owner.rst |  45 +++++++
+ include/linux/stackdepot.h      |  58 +++++++++
+ lib/stackdepot.c                |  65 +++--------
+ mm/page_owner.c                 | 200 +++++++++++++++++++++++++++++++-
+ 4 files changed, 318 insertions(+), 50 deletions(-)
+
+-- 
+2.43.0
 
 
