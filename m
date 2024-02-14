@@ -1,235 +1,141 @@
-Return-Path: <linux-kernel+bounces-66131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B3A855778
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:48:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5D985577B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D7D11F22EC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:48:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53BF51F2440B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 23:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7381420CE;
-	Wed, 14 Feb 2024 23:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02AE1419A2;
+	Wed, 14 Feb 2024 23:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PITBkLEo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F7of44bn"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13701419AC;
-	Wed, 14 Feb 2024 23:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F852556E
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707954490; cv=none; b=qbG48Sfdxp1uz20wj09PbNZhLDNNMH5n2Zecdy4cDM0DcRNBBg2QxIpRHfEFc96pIxiaIAYNRMrnV6IpIr32raq3TWZM5cOz4S+Fnq9cNCc+5Na9jCPO7kzTMbKeyC/FuzFhH4voZvNkcQytniZ6fu5vDya1+dFG5pBDhJgNtxw=
+	t=1707954631; cv=none; b=psnu41em4rreM0+zZ3EDHLOf8SO0XV6m57Ay2rotKb48zfIcmC2zNTg6LUckovrqvnLnen16YtQZBWuRP8G4ZS2EDJk9U3CazmmWowvopOKDY/nzG+4ZWMoBh3gUmh7hCoKhhSeikdnvQQJzrYCqnEtIeuSqtV1Gok0SMVZMIPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707954490; c=relaxed/simple;
-	bh=Cgrogkp2dlp3tPwb6L9tN/P6MjANUWODpHGq+fQtbis=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=TA3sVZ8HkpOCSgmRDSv+kLGLrw5HOr1PSGZHuUemiLp+GdvCLrthyQbggP164w0zynSil89Jrc9Io4voJ48FB3Ydz2hpFdLLr80+2Cz1n8uiycIkemMDZqjQJ+X+hhodh8w3MzRBCTlm3a+gTr4dJKTXHXxjWitnbPVU3vaJiyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PITBkLEo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E546C433C7;
-	Wed, 14 Feb 2024 23:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707954490;
-	bh=Cgrogkp2dlp3tPwb6L9tN/P6MjANUWODpHGq+fQtbis=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PITBkLEo+/lsTuiHjE5DosLP7YVRlm3TfbDrtA1qK+en+pjL2/ZRbmC/jdY4TQL2T
-	 tkA9Yd3rEo8IGpLJ76miNnxY54ha9xkj2BqPpPlyMyzWUeNtXvHq/VGsw5Va+tEp0N
-	 ZVKUMPePKcY9habt24PxSqqBZmFjFoFdXMAtqn7J4420HireaY09UAsuJG4tQIpDCv
-	 pN8mwuXlJAbaqcn/4vCt835DpCLU2i6YZ7qsno/UsWuQz8IHFCCkDGASfv5Dvj0Kkr
-	 /uXOQo7WGJeckToHhcufNYd5Ki1m5Jefj5R+zRb+kq9Vc9NiAYX5X5NRjOV4UZTXd1
-	 SH/2Xdw9tJezA==
-Date: Thu, 15 Feb 2024 08:48:03 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 14/36] function_graph: Use a simple LRU for
- fgraph_array index number
-Message-Id: <20240215084803.7bf4e38c5d202bf7a7516220@kernel.org>
-In-Reply-To: <20240214130409.463ae408@gandalf.local.home>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723220474.502590.7646977373091779892.stgit@devnote2>
-	<20240214130409.463ae408@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1707954631; c=relaxed/simple;
+	bh=LjR2Xnv5w8P3uWdzHWgqQx1KlP4R++nOn3Ix96RndFU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/82qBgNF+bscY66NBiM53uE8jCnKpINbeL/Apl39fJoxPmLnYV3pwQrK1NiHLcmKLdsp3ws8qmsaIZGxSg68Oem6fFPkbNf1aUaJKzg3k4uBgob7mSBlR0VCqDrgUEkpHP4SiIuiDjm3FfGiB7ojL0Ex+cGo58wch4WMdlhRtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F7of44bn; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1db61f7ebcbso34805ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:50:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707954629; x=1708559429; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0hLkk26SkKRw8FMas9+HqAOG+Ra2K1devtEkfmg/Abk=;
+        b=F7of44bnvCadMk3qpclFp1z2yMm6S7v4SRY6nnILgD9Xk+DoYXeaBnOyVrk/VursvN
+         6rajrrXqBRZELKjDC0duEhu0rpN0ZEI16rMe/N5fZgNzoerx6xP7lLgWdCyrMccp9Gyj
+         gCLRoPtnx/BubQ6hQ8BgykqJ6fDJ8pxQBA2ABcqYgCS4wNPbMsdvPZ/v7K9RmAM7Jep0
+         sgBWYPgabXKviv5ReFFaS23XrvkRKkooMiALZY9PZ39Lm3smSxPsJkv/QUtrSrBwbVsI
+         l2EXoq0nS9znHTgMTObekMPXWuIzYDDw4LomuI48r7PerNxsEWgXD2x1yANC0zWv+Eu6
+         fffg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707954629; x=1708559429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0hLkk26SkKRw8FMas9+HqAOG+Ra2K1devtEkfmg/Abk=;
+        b=T00/ZFP2DSw4l88/sGzjjb0+gLE2eB/GPgIgUoSSl1KPU9i3qZykdMau+LhpSxYPXa
+         sj+fQMGuAwc3gTzsMw3lx/f3dS0dWRzmQzFmonf/fmA8Q7zyLVbOm0BAjRta6Q7ej4X5
+         V/c+DhEsji7UM3lUodPPfEq2DGi4FIkP2Oygq6isj8F3dh9vXM/hVHW86DFHrOXePg04
+         +mlIxfSwmqbnz75i949AoY5LWsj7xft9dtg1co4JLGSygDCKDpIdXTV5un2GjH81zRW5
+         9MtMRM0VFIhbry+w/q3dB9PfvyZbTM1XMNgR7A5X3c3yD5+Drd52EO3ZMHRQ40Qfacyc
+         EAmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVHOgnuM4WMfiyNryZBa+Tbfxb3sGbkIqVWgGBtrv+izseAc/1tc8q176zO8kz9/ZKX6ZW3YLfME9f054EbZqOkPky/LzI59IJmhQu
+X-Gm-Message-State: AOJu0YzkXbmxnb6y3celKBfg2AjV/c5WpHKR6BCyD2A803lGi4aAvB5V
+	6mxaZuW1amA4D0h5cPqfagV37MQQaRGWkXHpAgogeTI8BSXc2TETeF2Xk4K9nPw1eJKnwU7zu2q
+	3ZA6TMK3M5umjUOounBW25W3fx3G6hxI8mOUPjc3ZV+NCLHpmq7wagFI=
+X-Google-Smtp-Source: AGHT+IEaYtCtfRfALjXKLxTfu9ipI8NqSOh4MowUemoPdlZzds56tsK1ladV4c8fkyXzoH6LsEAAEJK8gsFai2/JoIs=
+X-Received: by 2002:a17:902:f392:b0:1db:5d07:f8de with SMTP id
+ f18-20020a170902f39200b001db5d07f8demr285617ple.5.1707954628911; Wed, 14 Feb
+ 2024 15:50:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240213075256.1983638-1-namhyung@kernel.org> <20240213075256.1983638-2-namhyung@kernel.org>
+In-Reply-To: <20240213075256.1983638-2-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 14 Feb 2024 15:50:17 -0800
+Message-ID: <CAP-5=fVXgKc0r+fup0+2-JOAtJERAsPq61MZh_f7HYTk2XqObg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] libperf evlist: Update group info in perf_evlist__remove()
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 Feb 2024 13:04:09 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, Feb 12, 2024 at 11:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> When an event in a group is removed, it should update the group status
+> including the pointer to leader and number of member events.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-> On Wed,  7 Feb 2024 00:10:04 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> 
-> > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> > index ae42de909845..323a74623543 100644
-> > --- a/kernel/trace/fgraph.c
-> > +++ b/kernel/trace/fgraph.c
-> > @@ -99,10 +99,44 @@ enum {
-> >  DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
-> >  int ftrace_graph_active;
-> >  
-> > -static int fgraph_array_cnt;
-> > -
-> >  static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
-> >  
-> > +/* LRU index table for fgraph_array */
-> > +static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-> > +static int fgraph_lru_next;
-> > +static int fgraph_lru_last;
-> > +
-> > +static void fgraph_lru_init(void)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
-> > +		fgraph_lru_table[i] = i;
-> > +}
-> > +
-> > +static int fgraph_lru_release_index(int idx)
-> > +{
-> > +	if (idx < 0 || idx >= FGRAPH_ARRAY_SIZE ||
-> > +	    fgraph_lru_table[fgraph_lru_last] != -1)
-> 
-> Can fgraph_lru_table[fgraph_lru_last] != -1 ever happen? If not, we should
-> probably add a:
-> 
-> 	    WARN_ON_ONCE(fgraph_lru_table[fgraph_lru_last] != -1))
-> 
-> As the size of fgraph_lru_table is the same size as the available indexes,
-> if we hit this I would think we had a fgraph_lru_relaese_index() without a
-> fgraph_lru_alloc_index() associated with it.
+Should we worry about evlist's all_cpus that could also be stale now?
 
-OK, let me make it warning.
+Thanks,
+Ian
 
-> 
-> > +		return -1;
-> > +
-> > +	fgraph_lru_table[fgraph_lru_last] = idx;
-> > +	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
-> > +	return 0;
-> > +}
-> > +
-> > +static int fgraph_lru_alloc_index(void)
-> > +{
-> > +	int idx = fgraph_lru_table[fgraph_lru_next];
-> > +
-> > +	if (idx == -1)
-> > +		return -1;
-> > +
-> > +	fgraph_lru_table[fgraph_lru_next] = -1;
-> > +	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
-> > +	return idx;
-> > +}
-> > +
-> >  static inline int get_ret_stack_index(struct task_struct *t, int offset)
-> >  {
-> >  	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
-> > @@ -367,7 +401,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
-> >  	if (index < 0)
-> >  		goto out;
-> >  
-> > -	for (i = 0; i < fgraph_array_cnt; i++) {
-> > +	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-> >  		struct fgraph_ops *gops = fgraph_array[i];
-> >  
-> >  		if (gops == &fgraph_stub)
-> > @@ -935,21 +969,17 @@ int register_ftrace_graph(struct fgraph_ops *gops)
-> >  		/* The array must always have real data on it */
-> >  		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
-> >  			fgraph_array[i] = &fgraph_stub;
-> > +		fgraph_lru_init();
-> >  	}
-> >  
-> > -	/* Look for an available spot */
-> > -	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-> > -		if (fgraph_array[i] == &fgraph_stub)
-> > -			break;
-> > -	}
-> > -	if (i >= FGRAPH_ARRAY_SIZE) {
-> > +	i = fgraph_lru_alloc_index();
-> > +	if (i < 0 ||
-> > +	    WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
-> 
-> The above can nicely fit on one column. No need to break it up:
-> 
-> 	if (i < 0 || WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
-
-OK. 
-
-> 
-> 
-> >  		ret = -EBUSY;
-> >  		goto out;
-> >  	}
-> >  
-> >  	fgraph_array[i] = gops;
-> > -	if (i + 1 > fgraph_array_cnt)
-> > -		fgraph_array_cnt = i + 1;
-> >  	gops->idx = i;
-> >  
-> >  	ftrace_graph_active++;
-> > @@ -979,25 +1009,22 @@ int register_ftrace_graph(struct fgraph_ops *gops)
-> >  void unregister_ftrace_graph(struct fgraph_ops *gops)
-> >  {
-> >  	int command = 0;
-> > -	int i;
-> >  
-> >  	mutex_lock(&ftrace_lock);
-> >  
-> >  	if (unlikely(!ftrace_graph_active))
-> >  		goto out;
-> >  
-> > -	if (unlikely(gops->idx < 0 || gops->idx >= fgraph_array_cnt))
-> > +	if (unlikely(gops->idx < 0 || gops->idx >= FGRAPH_ARRAY_SIZE))
-> > +		goto out;
-> > +
-> > +	if (WARN_ON_ONCE(fgraph_array[gops->idx] != gops))
-> >  		goto out;
-> >  
-> > -	WARN_ON_ONCE(fgraph_array[gops->idx] != gops);
-> > +	if (fgraph_lru_release_index(gops->idx) < 0)
-> > +		goto out;
-> 
-> Removing the above WARN_ON_ONCE() is more reason to add it to the release
-> function.
-
-OK.
-
-Thank you for review!
-
-> 
-> -- Steve
-> 
-> 
-> >  
-> >  	fgraph_array[gops->idx] = &fgraph_stub;
-> > -	if (gops->idx + 1 == fgraph_array_cnt) {
-> > -		i = gops->idx;
-> > -		while (i >= 0 && fgraph_array[i] == &fgraph_stub)
-> > -			i--;
-> > -		fgraph_array_cnt = i + 1;
-> > -	}
-> >  
-> >  	ftrace_graph_active--;
-> >  
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  tools/lib/perf/evlist.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> index 058e3ff10f9b..befdb062fa1d 100644
+> --- a/tools/lib/perf/evlist.c
+> +++ b/tools/lib/perf/evlist.c
+> @@ -102,8 +102,29 @@ void perf_evlist__add(struct perf_evlist *evlist,
+>  void perf_evlist__remove(struct perf_evlist *evlist,
+>                          struct perf_evsel *evsel)
+>  {
+> +       struct perf_evsel *leader =3D evsel->leader;
+> +
+>         list_del_init(&evsel->node);
+>         evlist->nr_entries -=3D 1;
+> +
+> +       /* return stand-alone event */
+> +       if (leader =3D=3D evsel && leader->nr_members < 2)
+> +               return;
+> +
+> +       if (leader =3D=3D evsel) {
+> +               struct perf_evsel *member;
+> +
+> +               /* select the next event as a new leader */
+> +               leader =3D member =3D perf_evlist__next(evlist, evsel);
+> +
+> +               /* update members to see the new leader */
+> +               while (member && member->leader =3D=3D evsel) {
+> +                       member->leader =3D leader;
+> +                       member =3D perf_evlist__next(evlist, member);
+> +               }
+> +       }
+> +
+> +       leader->nr_members =3D evsel->leader->nr_members - 1;
+>  }
+>
+>  struct perf_evlist *perf_evlist__new(void)
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
 
