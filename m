@@ -1,167 +1,161 @@
-Return-Path: <linux-kernel+bounces-64781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B688542C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:25:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 204318542CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 07:32:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C331B1F26E80
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:25:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA77828895B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 06:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF8A10A35;
-	Wed, 14 Feb 2024 06:25:17 +0000 (UTC)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37A511183;
+	Wed, 14 Feb 2024 06:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="g37vhshL"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2022.outbound.protection.outlook.com [40.92.46.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528A810A0F;
-	Wed, 14 Feb 2024 06:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707891917; cv=none; b=R9buTf9pn8uv7utW9Y7bIsgJJCdpqlbC57Uu2vB6Aw9hWPsA7d5PtKnMdJyQtVq+2vWnFQb2crH3ivwi+aX8bk8/WG27iNs3OQN4YZ6bBPO+vFt5wLxeL8xuqCD9OaPswoLeeo1I4Y3RWK6yYfOY+bTDg+rgVIc1Nu3cmZ2nQw0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707891917; c=relaxed/simple;
-	bh=qRwnr33xb+LQtMbjNmu6bSjYJ/2tQsFjrG/Eg42t9J4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EehYhtQOl88hBgKcuuD39uq6aQ9THPQRscK2mXDyaR0CSNuv7EoAohXIS0tAwd6MlRb213P/G0MFi8rhkipRJUupozV21vWEny8wFNT8b38jLobg36uZ5ZyF/OI6mEILngPxYMbcwPnWc6HzvmXPwsrdd1pzvICnFpgd5Hu3eiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55fcceb5f34so5953291a12.3;
-        Tue, 13 Feb 2024 22:25:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707891913; x=1708496713;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0++smij7fLXWfkbGHyYXuskvQ10t4OERK+LGxTM1+U=;
-        b=vvRI0bbMyUhknnqIYplm8HLhItEtNoSmrCtJWCuTvXD2wuIXqpeKf7Ie3Gx9HnyZWj
-         NS7HczCWUfuiLvLTc+NF30x4jcHCmN+HGH+mmNXVH9j1Ow2GLc8JBkdmm8YXPlbYa5WB
-         nyiTFqLvY5bD7zkzJgJ+9+aJJnxKoCkO60Jysxax9LGOZjf393V0IGgMmVzJeMR0d6M/
-         24WgEvifYrawUgorPnF2swN86quAE6x14msWt9wJjrzFUBFDlBfG+eBfRIUMn3dm4bMv
-         YBBXRaixTCfH93gPn/ootHl5VQjWDuShtHAfD/x45o47MU3kQY8tJzREj2I47ysVDbY3
-         77CA==
-X-Forwarded-Encrypted: i=1; AJvYcCXU1BjKfBWESXpnPKUM5P/mAY03qc1WrhlsbsA8KKzx7HNg8OutEVaAPYKg8BZ0GnKxA9dSrYPfKlOEwnnwLjRPfJ9a1+ngW19XIJVRAp67d9eaS9oZl26muXuiN5kv9fAnmAaFYNHbYXs6
-X-Gm-Message-State: AOJu0YwhA485D8KQDBUrSJGxley4HtAtt1zdJuj7dAMOwIatdzeINhW7
-	vGSumT3oZTGjGp8enAbLcExvFrPkrJ0jISslk2fJnEq/5UFFB/f6sJSWMtru
-X-Google-Smtp-Source: AGHT+IEcu8iPcIlJEhmy2BuFw0/RZ4f/wLAZ9lBUEihrZV7jl66i5n1IixzmKHDCAdWfQuTMtGYY2Q==
-X-Received: by 2002:a17:906:1997:b0:a3c:8a78:af7b with SMTP id g23-20020a170906199700b00a3c8a78af7bmr914349ejd.74.1707891912323;
-        Tue, 13 Feb 2024 22:25:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWWjYv9+rzwOO0f16zW8meX4an9BbrmJjRSnvod6iD+4DhogFHKrZZuQqCcU9f08PmZvhO1+dJGaLkPmxox88u9kfgbEA3sHIbp0U/hmHGr94I5pW/sBYxAo/SG41AH6janGJAqGzSp0cfOghg1YKHwZdSdSmA+SyjF2ixGViPNnape5NayLp8lBxgzL5Bjw4Dag2Txw1qCWIxuOOpPnSGLqBs/SaH3ePyKcR7GtueNmo1uox9XOe4Z63GwfCSGUknRnqOY9ui1uklzhyq7WdUS6ALaQpN7JA6gWjwvUz1oLjUeMpgAFF7CBuA8xI9z9lTKmu0Qcp5WVfzojXXM/AOarRNEWP12qL/gXIoyec/hIjA=
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id i18-20020a170906115200b00a3d310a2684sm526639eja.158.2024.02.13.22.25.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Feb 2024 22:25:11 -0800 (PST)
-Message-ID: <7b9afb8f-6642-4921-a92a-90c9074a48b7@kernel.org>
-Date: Wed, 14 Feb 2024 07:25:10 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F5C29A2;
+	Wed, 14 Feb 2024 06:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.46.22
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707892351; cv=fail; b=MA69GP9PmEwpqxSoT35K4NGnFxEahQyYgx1hz6uRd97qZbql+lmABvfoWYoqQVDx2Trf8OZjPMu0vk0DoyITcLna+e/tjgYfZTmp0+H7F9hhk25d5Dk1D805IsTizdncoQbc3sUEvbGUNgKCQ4BmeIdW86lF1pksPJtG7cAYinM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707892351; c=relaxed/simple;
+	bh=MZXCi8HkuDSXLbNfZjGcrm/1J+XoJSj8/n3KCxDKVOg=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=aVKjk/GFS5kI9Auxnfo45umKHatPPMR7Txc1cqMaaLGpHSjfteN0KHDhwmPEhRT4u/81uA2HqCk87y+m1KXU5PqtBS39uPV9nvf54KLATG9O7YyE9HR92Rjj7Wwvc2oskVprMUP3oTSaQozg0h1Cz49AGKmADKteMmYe1Om6QeE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=g37vhshL; arc=fail smtp.client-ip=40.92.46.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oNr/u6XLH3RPdTBcNO/2cIMzaNIQOrQ7y1vgIH65psxI0G92X5t0/vNU9eTxBhJ4pHYapem8E0RAUTpCRZURTE5nI1HrIReWVG7pdKl0JDUmdyIUeMSSjmSUnc/Y3RYNHwmzgQT+xAmZd0neluwHTsNK/0/HYEArVrThlQ3C5QBkLag1OCHco+jVG04IMgomZUcl4sLKioiCLwJ5ozou1pvhWaybgMqqsLeQ94BRgZaVnvOKKQ6KR03bY8o8h8jEcL/PS/BydbZHFSXl0S3XpwfOlzNUsATEG7IHronnCxiwbU/uI+FxS9QOKTudfq49IdoYSkREsqiyBBeWO0KQRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1nNVde7Rlv1C2AbEyQWe1VgOjhB7kc5jISoOHGVvmN8=;
+ b=QnsRgrilH67E0iSDRZgw6CGGVzFwYUSlD4UO3jCzH0fxP1LMBM/DWG0ROKrpg8jKfEIyHtZdiJ37a64ehQM8hAIdne2/nLKWYDtSR8UDZ8kQJ9TunqFdrXgx/Y2QL0I+HTLFbHkBdUBQDISteFUkdcUe7IzKGWiBUDDDewGxzx93Hl1YVimqTYNvPv3dJj09H1FB2iI7gQdZ6CyhB3yuwqHitNmqra1MLAqtRXirXj+8J9fJgMmGOW9BbEOT9c1O0soYDr+Qd2Q8wbmnrYoHVbYp2EVkOKvmysmHdiELAGi398JBMGChfgxAsqaiTsLNjXxLhEA96/hyDImWNOiW3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1nNVde7Rlv1C2AbEyQWe1VgOjhB7kc5jISoOHGVvmN8=;
+ b=g37vhshLIG4quB2b+id7Fig1Zf6+nt5opvODiVrD7Og3SqCwl/w/7aIx6rtnEVNxU08/8COVsVqpXbQmzrCgWC9ag8IHeS36fsCKnkvkvoFlJ2reJ+BeRmuFJj64vnJisPwE98IrJop9q7TdRGi/Rewg2nGxs4r/zE48nhYajOqCyUBfsE9Qfs13MaUbbGgBESn3g5pRLV7IF/7AMDZiF3Fhha+Av5kJsQlfb37+8giNxRbTZNKK5WCsape03QbOWFvKmt5u+MMtytzvD+wkGDJU/IN+0UMyRaW+TDfdA7dcnmY+PR/PdfHU379tnIkAiPp2dlxK4rYGrf36+elzfQ==
+Received: from PH7PR20MB4962.namprd20.prod.outlook.com (2603:10b6:510:1fa::6)
+ by DM4PR20MB5063.namprd20.prod.outlook.com (2603:10b6:8:8c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Wed, 14 Feb
+ 2024 06:32:27 +0000
+Received: from PH7PR20MB4962.namprd20.prod.outlook.com
+ ([fe80::4719:8c68:6f:34ff]) by PH7PR20MB4962.namprd20.prod.outlook.com
+ ([fe80::4719:8c68:6f:34ff%6]) with mapi id 15.20.7270.036; Wed, 14 Feb 2024
+ 06:32:27 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH v3 0/2] riscv: sophgo: cv18xx: add top misc system controller
+Date: Wed, 14 Feb 2024 14:32:28 +0800
+Message-ID:
+ <PH7PR20MB4962F822A64CB127911978AABB4E2@PH7PR20MB4962.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [AZZxIpocySHQ/0+OkZE3JvJLF0tEF/KelIANr+ibskPbUAAnahLVTf6GS2vde8zO]
+X-ClientProxiedBy: SI2PR02CA0042.apcprd02.prod.outlook.com
+ (2603:1096:4:196::19) To PH7PR20MB4962.namprd20.prod.outlook.com
+ (2603:10b6:510:1fa::6)
+X-Microsoft-Original-Message-ID:
+ <20240214063231.435079-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty: hvc-iucv: fix function pointer casts
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, llvm@lists.linux.dev
-References: <20240213101756.461701-1-arnd@kernel.org>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240213101756.461701-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR20MB4962:EE_|DM4PR20MB5063:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0baedb0e-ffe8-4fde-339e-08dc2d26b65e
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vHEXCP/uVLZsW2If+PqXDrI5XM6Zt3OeL7gS6ZrY3umcCn7XqbAPqppWzGElKj95Q647MfgVG9zhmKx2pG+7TVTAbI44eiGabBkXDr2Faao16E9AYZM0v62Ecr8NkVziO4/1Vhh9AmBc3fp/1FYNoptLhOwBJKLigH2piVVRHrw+KH3iHEigHvP3Rt5IihqpyPweY2bUuvtdzy1XpinwYdjxnV8T6RpEomQMM+XUIO+rHw9x7MoHhjrDil3P0DjQ6H9eEZy9rTjF0dTbDgRraM3XTRnEzI44oRNclORsQQWsWVb/5Ju7zROH4rQl6Z6HrfBhMjm1U3scLXdqP2xc8ESRoGpIaV7N9iz2YgMWY1LQewdQkLvvAGvcjpM7kSAdMO7dM/VH26/5Q0ykq7A9zCw2aIM1s8jTLwU8BU0K/nvrbwJuwv3vR2Y4DZgHw8Kp7n/D1JfAKu356mX6VpzSJZ8Zs046JO+ADI1x07X+kYE4ir629oj2W4u3DhEaLeibcmAg6zSUVQs9RIEWkSbWoFqIM9grUKVKAoLr3Hf0xlMVe96jpYBMBzxvuonbpOS2TfOzz4dMLFv9DogY1Lxic1phwrFEOhm8YFgRiSvM0FkOqAK6F2lMMvagUiwB++2j
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?l5yOCGShiWcWf02z1iWJg/byxexJVUAt+VWw8w8azWS7a0d3Xsh3i0g5rcE2?=
+ =?us-ascii?Q?z6aynzDfziaupzuzMAwKjJzUDKoTra25rBrkdvdA++7bLGvCOuu6W/vDK5S1?=
+ =?us-ascii?Q?jRi8nTssZ8hOt9afsYPxJk4XLlYIYoh0fuObPn9VlRfM3RwBzNYVz52tu/TU?=
+ =?us-ascii?Q?vUEjy3BVAbhFfHmWlbtkZPlnOx9tNdSmC9nC4dYytlZbayXe/qvjHSbJh5Zk?=
+ =?us-ascii?Q?/dmJ4U3lxjgv7rmwfYl7nZpPcG0nM77rH+goGE10TWz5GcdWjZLgt2sH47Ce?=
+ =?us-ascii?Q?7pk9Bz+CvMYmNiU2uYiOTQhX8u0S3MGKzjdZTWI+WO8UV137/vdAgHdOa8U9?=
+ =?us-ascii?Q?9TvdWsblDnr3p7q2PLMdQNVfo1l0J68FtFHxC7kHb0lt3jr+bti+x7evdaNV?=
+ =?us-ascii?Q?1sAsgLWhcQM6OsGYDKw7dLmlQmwyPLhXoaN6eZZGjSR5GjQL4N/VebXXd0j2?=
+ =?us-ascii?Q?5Ke1RJyWh4JmdAbAV/SBOv818o2r/MXiLqIgew5D1d2rPmEPajvbTbrIEyuy?=
+ =?us-ascii?Q?jOO0xkFIpbFUILKb+IlfVJXLoYN1pQ9Q1rB6yZLraJzJtw/9TKu2yciaeQaS?=
+ =?us-ascii?Q?gST2HLdtHUboed2MR9WmZ5mt5xErU+PAvr+G+3FWYeiJ0PznRDLE+YldK40J?=
+ =?us-ascii?Q?139Ngpc9amCDRqBHCd9iVB3AhscrCj4Cr5gs1n4ryxn8qb8w0wHaQbGF0/nP?=
+ =?us-ascii?Q?c2cHzWrufVYxKBrpMc1YqHZjrRm0I4c3ABAZccZwOMQS3nBK9c1zsj1OmisH?=
+ =?us-ascii?Q?qCKr+EOtMsy2+feM1qGwLvcReb8QJhwO+bQxoP3u4lXF9/mSVwoMauTdw1YP?=
+ =?us-ascii?Q?z4j2s44XtayR0id2g7k7hKjXPIC3MAY5aFaPXiW+4iLVJH5+kFBHQi/P6JkN?=
+ =?us-ascii?Q?Wu67zyRENkvZgdjxuSyBddwo6VU146ZWCja73MLPkaQUmbNEIzGVyrwzqWbI?=
+ =?us-ascii?Q?1SskV6sc97jByEICbkkEl+4Hq15jO7pCxzMguyWp8ujqel7OnItjoGKtnEIK?=
+ =?us-ascii?Q?4DsvswHhLiHOmfoSfiRwvPcqkQcjqN4hYMKO0UViQZeO1oSphJgkB9/seZ2B?=
+ =?us-ascii?Q?dFGSZfh7BCRY9a5bpNotdUwq6GSJnvYU6GKC4gsK+1dwgg1JAq5sg9L/0Fnb?=
+ =?us-ascii?Q?8rsu8oL9rumWR/8Z+YsBpzi75C4aUDIDC2FwS7WrrCeFhrkU8vyCxYkLTZcg?=
+ =?us-ascii?Q?fsJM91Qp5Zne+YZdgNZkDyXKIoaIsouTpfgF9NlNrOKAdSiOW+K2xErKUIAr?=
+ =?us-ascii?Q?KUp9vjxcTkgsrCxDDMKWDkhQaRMQFtfHUnTlAMnpqf9YmPW0o24DYyneTnW+?=
+ =?us-ascii?Q?038=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0baedb0e-ffe8-4fde-339e-08dc2d26b65e
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR20MB4962.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 06:32:27.4570
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR20MB5063
 
-On 13. 02. 24, 11:17, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang warns about explicitly casting between incompatible function
-> pointers:
-> 
-> drivers/tty/hvc/hvc_iucv.c:1100:23: error: cast from 'void (*)(const void *)' to 'void (*)(struct device *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->   1100 |         priv->dev->release = (void (*)(struct device *)) kfree;
->        |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Add a separate function to handle this correctly.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Add top misc system controller to CV18XX/SG200X series.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+At least for now, this topctrl dt node has no related driver, because
+it only contains register for other devices, or the subdevice for some
+other purposes. The patch is submitted for providing potential common
+dependency for watchdog, sdhci, usb phy and maybe etc.
 
-> diff --git a/drivers/tty/hvc/hvc_iucv.c b/drivers/tty/hvc/hvc_iucv.c
-> index fdecc0d63731..b1149bc62ca1 100644
-> --- a/drivers/tty/hvc/hvc_iucv.c
-> +++ b/drivers/tty/hvc/hvc_iucv.c
-> @@ -1035,6 +1035,10 @@ static const struct attribute_group *hvc_iucv_dev_attr_groups[] = {
->   	NULL,
->   };
->   
-> +static void hvc_iucv_free(struct device *data)
-> +{
-> +	kfree(data);
-> +}
->   
->   /**
->    * hvc_iucv_alloc() - Allocates a new struct hvc_iucv_private instance
-> @@ -1097,7 +1101,7 @@ static int __init hvc_iucv_alloc(int id, unsigned int is_console)
->   	priv->dev->bus = &iucv_bus;
->   	priv->dev->parent = iucv_root;
->   	priv->dev->groups = hvc_iucv_dev_attr_groups;
-> -	priv->dev->release = (void (*)(struct device *)) kfree;
-> +	priv->dev->release = hvc_iucv_free;
->   	rc = device_register(priv->dev);
->   	if (rc) {
->   		put_device(priv->dev);
+Changed from v2:
+1. remove the unnecessary "oneOf" in then binding.
 
--- 
-js
-suse labs
+Changed from v1:
+1. fix linting issue.
+2. remove #address-cells and #size-cells in the dtb.
+
+Inochi Amaoto (2):
+  dt-bindings: clock: sophgo: Add top misc controller of CV18XX/SG200X
+    series SoC
+  riscv: dts: sophgo: cv18xx: add top misc system controller
+
+ .../soc/sophgo/sophgo,cv1800-top-syscon.yaml  | 40 +++++++++++++++++++
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |  6 +++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,cv1800-top-syscon.yaml
+
+--
+2.43.1
 
 
