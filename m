@@ -1,118 +1,256 @@
-Return-Path: <linux-kernel+bounces-64969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7F1854543
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:31:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E0F4854544
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 701931C27A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:31:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8C292909AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9456E12E41;
-	Wed, 14 Feb 2024 09:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2ED217571;
+	Wed, 14 Feb 2024 09:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VhV9QM6Z"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EspVej7R"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764E0171AC
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:30:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6348B12B69
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903015; cv=none; b=jGRtXUL//I+wpKXsK3nJNq109QQYR8OfDsX+CfYfuFPD6/UywY0ASuswQawzZWIJZzOl9Da0agbdHbsw/ar2MRQqVwV2j1ZWsxIVKt9yTfpPlXDbq4Gnq3S2F0ILDWBJTgfHUx02GXAH8YwNMBlVZWwtHaeckqe8VS11eZAMnIg=
+	t=1707903018; cv=none; b=n7vOjj9ZMdnm56BKvUXMb81JteEyOu7R2CPRXNeTUAQWByZVYwWiz1I7LmJYDW7oUvf/V7hNgKl/zG+8fgVOi/pVDzAupCTthgo7NX+jBk43BwbKFn+vY93yF+KbXlT8IwEq9eMnBaw1YClpRj45DcWjpebR5IbvSqM5ikv3Dyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903015; c=relaxed/simple;
-	bh=MZXc/+oEg/fprLTqq3So8SjUVzpTcPO4Doree43jGjc=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=KHcaOgO9SZ7FOBjzh7Csoql/+SnfEZXff0XeENiZDrsN7leQQkB71qPPm2SuHEl59fEfw0vHYZ8AkvcrojuSMKKTm8/bxl8kdbu6TuqHOCtkTJB7F5Usz8uI5rX5U5CyK/gBnn50RLRW1WSV2Kfjd55RI0ssb6PjT7qmkJDWJvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pranavpp.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VhV9QM6Z; arc=none smtp.client-ip=209.85.216.73
+	s=arc-20240116; t=1707903018; c=relaxed/simple;
+	bh=0sbOqlYgKuYMYuenntCpahB0mOEu7ATewBc2h8dzDgg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=qBCDIl9DKa9Bnv0Gpk589Rh7nC5fZgM4T0BNZRIPmsk2VzSwVwW3OYUyH8M91GCntUv7pykopXBCAGV7jek51ZPlWu/UG9dW0LiDv4A9dm4KNr5CkSVbcjFBxlzJK9acHjWvjdXZAiuhaAkuWX2ShQ9Ow3z1s5M1vVUNWiCkQRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pranavpp.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EspVej7R; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pranavpp.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-296f78bdb40so5374348a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:30:14 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so8377250276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:30:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707903014; x=1708507814; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mma7wfUNF3QcF2/p2Wj8oZ4dYl748XCEjPWFOwBXlAc=;
-        b=VhV9QM6ZO8Ts8KYK1gtL1nLchEU2B5loY/O0XscC8dJmHCjANqOx61cHuDyWGggptv
-         Ozgc3Q8juYncUaokDuBtiQgWw1M4s3Tp32eod4vcYlfrXtHwCSVImEyqAK2zLFeDWyf5
-         0eDkAkgLUr8p+XCaycGFN16KqUVrzGIoT0GyO4qTotUn17A43qEp4NjNo6+Oo55weFNT
-         t85s5mPaeniGNGpTJ1GOljUs+DhXj+01XrRL6GZs3b6buptLMRuCmvJFFPIR0owPy8qz
-         Xn9qQZNJBmhs8y5Ol20NrGRRPE3zXiFGGON+IR6Kwks/9iVtdyWA8qJffO3mAW1vBySy
-         Hv9Q==
+        d=google.com; s=20230601; t=1707903015; x=1708507815; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gJBAQ5NDq5JSH9VWfJvPqqJU+MxkFsGwwmLKeuSdh/k=;
+        b=EspVej7RJH1F+MlajvtpRMhK9DI1TKsrVxBtepsf6AvCL7yqxqtu9XCbNqY5t9/Cf/
+         sJ9ZW6CpyXXefhLIrEF+GXEQ7U7zuD8wcls3W8EqAIclbUTyin4x19Z5PkqcQDvUhGdr
+         o9HsdUQImHXV9vYnUlWWl9k8xu8DIoM0iaiL0Eft0/XWwsRYZdDSNAvZ0v5nwutzVfxg
+         TBnj+OCvXUK5lXULY6/H2dJCgICcGPgiu2ZoDZsTIrRnIj6mjDf/DORInOZaXTLUbqZs
+         TaNPXrv+6kueAznQJWQAVin0BS9Iz+wSpcAw1srLQCuUC6Lfg/y4mHmBq0Y8IsYdYlhA
+         at8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707903014; x=1708507814;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mma7wfUNF3QcF2/p2Wj8oZ4dYl748XCEjPWFOwBXlAc=;
-        b=lICZcZE6/gC/mx1Il+TadNjnAh+t40wP9AUmKriiox+zDVEyMkbPBncbk2d4/a0TAR
-         iv/sXW1stvX+lGICnuEyGPUxRQivNptnpB+cD9ameQLlRWYza1c5rF1T44U90b2yxla1
-         wiVJCvjxcbZKsLjPKmVRBHuw8wi7tdImy/z2EQ6NfhJB/fa1itAGuaog2V3oH7WPrYab
-         wXKr6FUXn9YmG39n55mivGe020MzWWtXW4h68TcazrYPcCX2T+97byeXpckUDuRLMKJG
-         ZrIciA/puNFS+ZbxfV//Nm2+kZAH1qLU3e2hsFIsydOYT7oIIJ+U5Oz7KK771PQAVdGe
-         d1yQ==
-X-Gm-Message-State: AOJu0YxtglrYrzRZH89NIXM4aPuj9awb17ZITDhfTElDDY3gcpd4r9wV
-	ITaOSA4psg6wNeJQzXNao+M5ETzNCNg/hk7chKLjOQJDetJbTfxG4DSwwYNSaOSUqNngfgf388k
-	cxAF/UlMq3w==
-X-Google-Smtp-Source: AGHT+IGRKESMA0B0TRhzFdh10tIyCqIc3D8jr37bx5O6YOpfxPPYiE9sIs7cfsFqXftIWqHEZSuF35lDARhwuw==
+        d=1e100.net; s=20230601; t=1707903015; x=1708507815;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gJBAQ5NDq5JSH9VWfJvPqqJU+MxkFsGwwmLKeuSdh/k=;
+        b=TYTeffhlBKmA3frCs91wM9345zdDmIboHgHdKMO6mP9txbwmd2CPFBg9UvUv9YE9oZ
+         zeTtJnW67MAuIzsUAMzLX2ARzHNP7N8rmwOnLEfm2xnKCWDBRKltq8uG1aPQlopS44o2
+         6xZKV8DSPMeqnhGKJp8iAjpTwCe5qlkdD4tGIGYFQXiJuYbGm04NZdGaPrZyLZsEhU0H
+         OxjeNuYSB+1lR+KBtIwQot4SR0xULaJMXpdLqgcXgFSmcii/w90WzZcQfPYDfza9efBt
+         A/DzAxk6kd1dFWKyB5DBbMOA3o5pew+d+ZUgVZt/FnHRXC5+zcUhtZDU2QA4La9We0Ig
+         YlXg==
+X-Gm-Message-State: AOJu0YyiwGdJ5gKM68JtSMDqXrP8gGzqdSr5X69DhbTbKxdLy/rgtPdG
+	uB+dqDV1hWqyesJ9SxvkgiT3WnP3MQH/FiWW6UNo6JanwLnXOy8L0vKtmEhTVdp7mmUjPu5Pc+J
+	uSb+f761s9A==
+X-Google-Smtp-Source: AGHT+IHwPGosCFYzXixzK4uFt0LDPTYvPF+MLTwF71VxaOkMvtS5etq7RRoJc7IPknUUKOHvzhGVYDNv1m0Z8g==
 X-Received: from pranav-first.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:390b])
- (user=pranavpp job=sendgmr) by 2002:a17:90b:5288:b0:295:efdc:6abc with SMTP
- id si8-20020a17090b528800b00295efdc6abcmr23368pjb.5.1707903013898; Wed, 14
- Feb 2024 01:30:13 -0800 (PST)
-Date: Wed, 14 Feb 2024 09:29:00 +0000
+ (user=pranavpp job=sendgmr) by 2002:a25:3619:0:b0:dc6:c2e4:5126 with SMTP id
+ d25-20020a253619000000b00dc6c2e45126mr406705yba.12.1707903015399; Wed, 14 Feb
+ 2024 01:30:15 -0800 (PST)
+Date: Wed, 14 Feb 2024 09:29:01 +0000
+In-Reply-To: <20240214092902.1908443-1-pranavpp@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240214092902.1908443-1-pranavpp@google.com>
 X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240214092902.1908443-1-pranavpp@google.com>
-Subject: [PATCH v3 0/2] alarmtimer: Rework the suspend flow in alarmtimer
+Message-ID: <20240214092902.1908443-2-pranavpp@google.com>
+Subject: [PATCH v3 1/2] alarmtimer: Add PM notifier to check early for
+ imminent alarm
 From: Pranav Prasad <pranavpp@google.com>
 To: tglx@linutronix.de, jstultz@google.com, sboyd@kernel.org
 Cc: linux-kernel@vger.kernel.org, krossmo@google.com, 
 	Pranav Prasad <pranavpp@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hi!
+The alarmtimer driver currently fails suspend attempts when there is an
+alarm pending within the next 2 seconds, since the system is expected to
+wake up soon anyway. The entire suspend process is initiated even though
+the system will immediately awaken. This process includes substantial work
+before the suspend fails and additional work afterwards to undo the failed
+suspend that was attempted. Therefore on battery-powered devices that
+initiate suspend attempts from userspace, it may be advantageous to be
+able to fail the suspend earlier in the suspend flow to avoid power
+consumption instead of unnecessarily doing extra work. As one data point,
+an analysis of a subset of Android devices showed that imminent alarms
+account for roughly 40% of all suspend failures on average leading to
+unnecessary power wastage.
 
-During the driver suspend phase of kernel suspend, alarmtimer's suspend
-callback is invoked and it identifies the earliest next wakeup alarm and
-programs that into the HW real time clock (RTC). However, there is an
-exception to this process. If the next alarm is within the next 2 seconds,
-the alarmtimer driver fails to suspend. In this case, a non-trivial amount
-of power is spent to freeze and unfreeze all userspace processes and to
-suspend and resume a number of devices. In the vast majority of cases, the
-imminent alarm that caused the failure was likely already scheduled before
-suspend even started. This provides an opportunity to reduce power
-consumption if the suspend failure decision is made earlier in the suspend
-flow, before the unnecessary extra work is done.
+To facilitate this, register a PM notifier in the alarmtimer subsystem
+that checks if an alarm is imminent during the prepare stage of kernel
+suspend denoted by the event PM_SUSPEND_PREPARE. If an alarm is imminent,
+it returns the errno code ETIME instead of EBUSY to userspace in order to
+make it easily diagnosable.
 
-This patch series aims to achieve a kernel suspend flow in which the check
-for an imminent alarm is performed early during the suspend prepare phase.
+Signed-off-by: Pranav Prasad <pranavpp@google.com>
+---
+ kernel/time/alarmtimer.c | 100 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 79 insertions(+), 21 deletions(-)
 
-Changes in v3 from v2:
-
-- Reversed the order of patches
-- Formatted variable declarations
-- Moved the RTC device check out of alarmtimer_get_soonest()
-- Reinstated the check for pending alarm in alarmtimer_suspend()
-
-Changes in v2 from v1:
-
-- Moved the pm_wakeup_event call to the PM notifier
-- Added a check for RTC device in the PM notifier
-
-Pranav Prasad (2):
-  alarmtimer: Add PM notifier to check early for imminent alarm
-  alarmtimer: Create sysfs to make alarm check window configurable
-
- kernel/time/alarmtimer.c | 164 +++++++++++++++++++++++++++++++++------
- 1 file changed, 140 insertions(+), 24 deletions(-)
-
+diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
+index 4657cb8e8b1f..366ca3568f87 100644
+--- a/kernel/time/alarmtimer.c
++++ b/kernel/time/alarmtimer.c
+@@ -27,6 +27,7 @@
+ #include <linux/compat.h>
+ #include <linux/module.h>
+ #include <linux/time_namespace.h>
++#include <linux/suspend.h>
+ 
+ #include "posix-timers.h"
+ 
+@@ -63,6 +64,78 @@ static struct rtc_timer		rtctimer;
+ static struct rtc_device	*rtcdev;
+ static DEFINE_SPINLOCK(rtcdev_lock);
+ 
++/**
++ * alarmtimer_get_soonest - Finds the soonest alarm to expire among the
++ * alarm bases.
++ * @min: ptr to relative time to the soonest alarm to expire
++ * @expires: ptr to absolute time of the soonest alarm to expire
++ * @type: ptr to alarm type
++ *
++ * Returns true if soonest alarm was found, returns false if don't care.
++ */
++static bool alarmtimer_get_soonest(ktime_t *min,
++				   ktime_t *expires, int *type)
++{
++	unsigned long flags;
++	int i;
++
++	/* Find the soonest timer to expire */
++	for (i = 0; i < ALARM_NUMTYPE; i++) {
++		struct alarm_base *base = &alarm_bases[i];
++		struct timerqueue_node *next;
++		ktime_t delta;
++
++		spin_lock_irqsave(&base->lock, flags);
++		next = timerqueue_getnext(&base->timerqueue);
++		spin_unlock_irqrestore(&base->lock, flags);
++		if (!next)
++			continue;
++		delta = ktime_sub(next->expires, base->get_ktime());
++		if (*min == 0 || delta < *min) {
++			*expires = next->expires;
++			*min = delta;
++			*type = i;
++		}
++	}
++
++	if (*min == 0)
++		return false;
++
++	return true;
++}
++
++static int alarmtimer_pm_callback(struct notifier_block *nb,
++				  unsigned long mode, void *_unused)
++{
++	struct rtc_device *rtc;
++	ktime_t min, expires;
++	int type;
++
++	switch (mode) {
++	case PM_SUSPEND_PREPARE:
++		rtc = alarmtimer_get_rtcdev();
++		/* If we have no rtcdev, just return */
++		if (!rtc)
++			return NOTIFY_DONE;
++
++		/* Find the soonest timer to expire */
++		if (!alarmtimer_get_soonest(&min, &expires, &type))
++			return NOTIFY_DONE;
++
++		if (ktime_to_ns(min) < 2 * NSEC_PER_SEC) {
++			pr_debug("Suspend abort due to imminent alarm\n");
++			pm_wakeup_event(&rtc->dev, 2 * MSEC_PER_SEC);
++			return notifier_from_errno(-ETIME);
++		}
++	}
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block alarmtimer_pm_notifier = {
++	.notifier_call = alarmtimer_pm_callback,
++};
++
+ /**
+  * alarmtimer_get_rtcdev - Return selected rtcdevice
+  *
+@@ -126,6 +199,7 @@ static int alarmtimer_rtc_add_device(struct device *dev)
+ static inline void alarmtimer_rtc_timer_init(void)
+ {
+ 	rtc_timer_init(&rtctimer, NULL, NULL);
++	register_pm_notifier(&alarmtimer_pm_notifier);
+ }
+ 
+ static struct class_interface alarmtimer_rtc_interface = {
+@@ -241,10 +315,10 @@ EXPORT_SYMBOL_GPL(alarm_expires_remaining);
+ static int alarmtimer_suspend(struct device *dev)
+ {
+ 	ktime_t min, now, expires;
+-	int i, ret, type;
+ 	struct rtc_device *rtc;
+ 	unsigned long flags;
+ 	struct rtc_time tm;
++	int ret, type;
+ 
+ 	spin_lock_irqsave(&freezer_delta_lock, flags);
+ 	min = freezer_delta;
+@@ -258,30 +332,14 @@ static int alarmtimer_suspend(struct device *dev)
+ 	if (!rtc)
+ 		return 0;
+ 
+-	/* Find the soonest timer to expire*/
+-	for (i = 0; i < ALARM_NUMTYPE; i++) {
+-		struct alarm_base *base = &alarm_bases[i];
+-		struct timerqueue_node *next;
+-		ktime_t delta;
+-
+-		spin_lock_irqsave(&base->lock, flags);
+-		next = timerqueue_getnext(&base->timerqueue);
+-		spin_unlock_irqrestore(&base->lock, flags);
+-		if (!next)
+-			continue;
+-		delta = ktime_sub(next->expires, base->get_ktime());
+-		if (!min || (delta < min)) {
+-			expires = next->expires;
+-			min = delta;
+-			type = i;
+-		}
+-	}
+-	if (min == 0)
++	/* Find the soonest timer to expire */
++	if (!alarmtimer_get_soonest(&min, &expires, &type))
+ 		return 0;
+ 
+ 	if (ktime_to_ns(min) < 2 * NSEC_PER_SEC) {
++		pr_debug("Suspend abort due to imminent alarm\n");
+ 		pm_wakeup_event(dev, 2 * MSEC_PER_SEC);
+-		return -EBUSY;
++		return -ETIME;
+ 	}
+ 
+ 	trace_alarmtimer_suspend(expires, type);
 -- 
 2.43.0.687.g38aa6559b0-goog
 
