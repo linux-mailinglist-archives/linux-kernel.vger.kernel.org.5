@@ -1,131 +1,153 @@
-Return-Path: <linux-kernel+bounces-64978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B95DD854563
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:34:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B53C85462F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:36:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75FFC292BE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41E0E1C214F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04C714A93;
-	Wed, 14 Feb 2024 09:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rDMgrC6r"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77D91427F;
-	Wed, 14 Feb 2024 09:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70EA12E76;
+	Wed, 14 Feb 2024 09:35:27 +0000 (UTC)
+Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DA411CA9
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903242; cv=none; b=MkM+wdcvl4wEYTf0Z6LE+oQ3EWuW9s275wDubuMYqtPeD8klT1A9lQFHl9nbTC+cdvTT+MK3VtY2SicpuwegqOQDAaMfYdQudBEhVwuRgv7fEf9DByTplxK6Vg9URN0H4vRTnutnEJurtseTKaS8h9eQ48oyiAM8GwPfvjKEsN8=
+	t=1707903327; cv=none; b=CeNhuoOn6FRYu0yoXtyAU+liWe/UAQ88T21OnMDqSGEyVA/qB56xzFcWV3OPZKJqyl/zdbCveRpco+p2ownH0JtEMUJL9E7ZYzjP4BMV4AFIwTFE0Y7ZYfp3xmBPWIllU4HUj0QdZGq2bWQ78yQ1U92sF3naNisZJuKfFpG5yjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903242; c=relaxed/simple;
-	bh=U4bNMH+xtiCB6Y3mK6uVJUXqmlGYS1dPqnhcpgvAQPY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GspFXtVWEyJwsckBJSiBWZ6P9CoK5Rzn/i8y9XGGHwGGNBnSZlmTOfg1clDc9DtWtAaJ/RtY4GpFNbqaKRuBHjyVIJGrejShrT8ygkLJUVOD7DC7dy8c+/st7NxChkdelQkOmDpQ25tSqBKzXd1Tx2IIdQkW0Cl4zOV1aNLMO70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rDMgrC6r; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707903238;
-	bh=U4bNMH+xtiCB6Y3mK6uVJUXqmlGYS1dPqnhcpgvAQPY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rDMgrC6rjZB/wQwJNDPBTssIhx6YtdbvO59smkyyIL2/OBTXaqrPZL+cF4R45oZs1
-	 /HdY2mIKiqSR1mfojtQ2NUox3hQnvpMy1WZlMVPDuhBFwPE0wYXiNMUhOPhT+PdcGA
-	 Si20XPPYL7ZSjL93bDlF68G8vD+9Kv9ESDhHcDkDUi7ThJm66cwp5XpxaDWLux9hqs
-	 rdQHyJDWST73v+C4egSDmNxCdIN4ulD9+YSybmD8yPt+FhXxZUzcyF38b3VVrkbaZq
-	 h02UjL0Y32yX4y7TSEeotI54jaHGLGrbNhe6rFBiKBZqO3lBEDUQ6FP7JWv/xrcyR1
-	 WMp9oKkBefdCw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0AEF23782076;
-	Wed, 14 Feb 2024 09:33:57 +0000 (UTC)
-Message-ID: <b5dce02f-414a-42df-8210-3e80a769e324@collabora.com>
-Date: Wed, 14 Feb 2024 10:33:57 +0100
+	s=arc-20240116; t=1707903327; c=relaxed/simple;
+	bh=BhPisRloYBOp5JHEYXaJkZ4QaiijqmCKzndK4WLH23A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3stkZEVtbUwHtta6RX9MgeVIGTDj4rpzEei3VYhPI147Y4s4/5KPhZIqrNG3L9BabvNr1AFVLb5Xz9A1AJmULErEzrd0FMCj9SmWxAL06/3fncDwxJOV9f0D0eS1IWu8s7oNo1LsqBb40Y+5hxBGoDpucygMVvbPbq8Kdq5w3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 41E9YACA010558;
+	Wed, 14 Feb 2024 03:34:10 -0600
+Received: (from greg@localhost)
+	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 41E9Y9d2010555;
+	Wed, 14 Feb 2024 03:34:09 -0600
+Date: Wed, 14 Feb 2024 03:34:09 -0600
+From: "Dr. Greg" <greg@enjellic.com>
+To: Nikolay Borisov <nik.borisov@suse.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Dan Williams <dan.j.williams@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <20240214093409.GA10124@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20240202153927.GA119530@mit.edu> <Zb4RlTzq_LV7AzsH@zx2c4.com> <CAHmME9owdbHzfb66xisoWmvWeT_-hkxCu7tR2=Rbye_ik1JgQQ@mail.gmail.com> <DM8PR11MB5750C1A848A9F1EF6BE66241E7482@DM8PR11MB5750.namprd11.prod.outlook.com> <20240212163236.GA444708@mit.edu> <65cb1a1fe2dda_29b1294e@dwillia2-mobl3.amr.corp.intel.com.notmuch> <20240213231341.GB394352@mit.edu> <65cc0ef2c7be_29b12948d@dwillia2-mobl3.amr.corp.intel.com.notmuch> <20240214043245.GC394352@mit.edu> <b786185e-fc57-4d4a-b0aa-741b92de0c5c@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: mediatek: mt7988: add PWM controller
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: John Crispin <john@phrozen.org>, linux-pwm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240213164633.25447-1-zajec5@gmail.com>
- <20240213164633.25447-2-zajec5@gmail.com>
- <36baacb4-4aa9-421f-bde0-c4be7d7f4aa1@collabora.com>
- <bbacfaad-a182-4df5-8317-640e32a1954a@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <bbacfaad-a182-4df5-8317-640e32a1954a@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b786185e-fc57-4d4a-b0aa-741b92de0c5c@suse.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 14 Feb 2024 03:34:10 -0600 (CST)
 
-Il 14/02/24 10:24, Rafał Miłecki ha scritto:
-> On 14.02.2024 10:09, AngeloGioacchino Del Regno wrote:
->> Il 13/02/24 17:46, Rafał Miłecki ha scritto:
->>> From: Rafał Miłecki <rafal@milecki.pl>
->>>
->>> Add binding for on-SoC controller that can control up to 8 PWMs.
->>>
->>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->>> ---
->>>   arch/arm64/boot/dts/mediatek/mt7988a.dtsi | 21 ++++++++++++++++++++-
->>>   1 file changed, 20 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/mediatek/mt7988a.dtsi 
->>> b/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
->>> index bba97de4fb44..67007626b5cd 100644
->>> --- a/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
->>> +++ b/arch/arm64/boot/dts/mediatek/mt7988a.dtsi
->>> @@ -1,5 +1,6 @@
->>>   // SPDX-License-Identifier: GPL-2.0-only OR MIT
->>> +#include <dt-bindings/clock/mediatek,mt7988-clk.h>
->>>   #include <dt-bindings/interrupt-controller/arm-gic.h>
->>>   / {
->>> @@ -78,7 +79,7 @@ gic: interrupt-controller@c000000 {
->>>               #interrupt-cells = <3>;
->>>           };
->>> -        clock-controller@10001000 {
->>> +        infracfg: clock-controller@10001000 {
->>>               compatible = "mediatek,mt7988-infracfg", "syscon";
->>>               reg = <0 0x10001000 0 0x1000>;
->>>               #clock-cells = <1>;
->>> @@ -103,6 +104,24 @@ clock-controller@1001e000 {
->>>               #clock-cells = <1>;
->>>           };
->>> +        pwm@10048000 {
->>> +            compatible = "mediatek,mt7988-pwm";
->>
->> I can't take this unless there's a driver that supports your device.
-> 
-> I'd argue you should rather look for a documented binding rather than a
-> (Linux?) driver. Otherwise you would refuse changes that are not
-> strictly Linux related. DTS files are meant to describe hardware in a
-> generic way and not be driven by Linux drivers / design.
-> 
+On Wed, Feb 14, 2024 at 10:34:48AM +0200, Nikolay Borisov wrote:
 
-Of course, devicetree describes hardware - that is pretty much globally known.
+Hi, I hope the week is going well for everyone.
 
-As I wrote in the bindings patch, I still anyway want to see the driver part
-for this block before deciding if your description of this hardware is correct.
+> On 14.02.24 ??. 6:32 ??., Theodore Ts'o wrote:
+> >On Tue, Feb 13, 2024 at 04:53:06PM -0800, Dan Williams wrote:
+> >>
+> >>Indeed it is. Typically when you have x86, riscv, arm, and s390 folks
+> >>all show up at a Linux Plumbers session [1] to talk about their approach
+> >>to handling a new platform paradigm, that is a decent indication that
+> >>the technology is more real than not. Point taken that it is not here
+> >>today, but it is also not multiple hardware generations away as the
+> >>Plumbers participation indicated.
+> >
+> >My big concerns with TDISP which make me believe it may not be a
+> >silver bullet is that (a) it's hyper-complex (although to be fair
+> >Confidential Compute isn't exactly simple, and (b) it's one thing to
+> >digitally sign software so you know that it comes from a trusted
+> >source; but it's a **lot** harder to prove that hardware hasn't been
+> >tampered with --- a digital siganture can't tell you much about
+> >whether or not the hardware is in an as-built state coming from the
+> >factory --- this requires things like wrapping the device with
+> >resistive wire in multiple directions with a whetstone bridge to
+> >detect if the wire has gotten cut or shorted, then dunking the whole
+> >thing in epoxy, so that any attempt to tamper with the hardware will
+> >result it self-destructing (via a thermite charge or equivalent :-)
 
-Regards,
-Angelo
+> This really reminds me of the engineering that goes into the
+> omnipresent POS terminals ate every store, since they store
+> certificates from the card (Visa/Master) operators. So I wonder if
+> at somepoint we'll have a pos-like device (by merit of its
+> engineering) in every server....
 
+It already exists.  CoCo, at least the Intel implementation, is
+dependent on what amounts to this concept.
+
+> >Remember, the whole conceit of Confidential Compute is that you don't
+> >trust the cloud provider --- but if that entity controls the PCI cards
+> >installed in their servers, and and that entity has the ability to
+> >*modify* the PCI cards in the server, all of the digital signatures
+> >and fancy-schmancy TDISP complexity isn't necessarily going to save
+> >you.
+
+> Can't the same argument go for the CPU, though it's a lot more
+> "integrated" into the silicong substrate, yet we somehow believe
+> CoCo ascertains that a vm is running on trusted hardware? But
+> ultimately the CPU is still a part that comes from the untrusted
+> CSP.
+
+The attestation model for TDX is largely built on top of SGX.
+
+The Intel predicate with respect to SGX/TDX is that you have to trust
+the CPU silicon implementation, if you can't entertain that level of
+trust, it is game over for security.
+
+To support that security model, Intel provides infrastructure that
+proves that the software is running on a 'Genuine Intel' CPU.
+
+Roughly, a root key is burned into the silicon that is used as the
+basis for additional derived keys.  The key access and derivation
+processes can only occur when the process is running software with a
+known signature in a protected region of memory (enclave).
+
+The model is to fill a structure with data that defines the
+hardware/software state.  A keyed checksum is run over the structure
+that allows a relying party to verify that the data structure contents
+could have only been generated on a valid Intel CPU.
+
+This process verifies that the CPU is from a known vendor, which is of
+course only the initial starting point for verifying that something
+like a VM is running in a known and trusted state.  But, if you can't
+start with that predicate you have nothing to build on.
+
+The actual implementation nowadays is a bit more complex, given that
+all of this has to happen on multi-socket systems which involve more
+than one CPU, but the concept is the same.
+
+Have a good day.
+
+As always,
+Dr. Greg
+
+The Quixote Project - Flailing at the Travails of Cybersecurity
+              https://github.com/Quixote-Project
 
