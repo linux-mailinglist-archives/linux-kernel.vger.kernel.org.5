@@ -1,61 +1,60 @@
-Return-Path: <linux-kernel+bounces-65743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF81685510A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:59:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B8B855195
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C5862810D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:59:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D4CCB28E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F86212AAC7;
-	Wed, 14 Feb 2024 17:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8A712B162;
+	Wed, 14 Feb 2024 17:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pXtTjz13"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjRQKQPg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FBD12A162;
-	Wed, 14 Feb 2024 17:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A152112AAD1;
+	Wed, 14 Feb 2024 17:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707933470; cv=none; b=cXVck5kbriyQXmhQyHPWrJn4lOYrC3kJ/f1uBIscHRjs2r9d+3tuMkcMUBqZCcJZxnKiQVIfocq2z19m0JQQ8jGm42Va/V6bzPZw38ZZRLleAD93TGiJDCNy+/zbYDHLfX77snHHL3InLDMoq4ns0MurNnZ8eaCGsIjtcIlI40s=
+	t=1707933471; cv=none; b=IA4NPcn6cWhLMG630Uu39uehWWw2KMwqG+G0nBOwCvUo/E8SkW2Y9JwMAoWdH37m8/m80Np3ycoBEgTh7zTLb49+cYzPvx7q4JHgapwBiRZINN2sAwQj0ihH/Mnm9hNypf7OVnwE7i4liMckVLBXokvRdvtq69+PSd6AvwYpX2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707933470; c=relaxed/simple;
-	bh=orxKOf7vyVoeq5LamaGVz8NcLFYJetRThm4I4MUUNIA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q1w5hqS1fgCZQonLzMH+a1OgaT8YFX3PxYtmgcedi1MIBxbNDGQoqMwQ8gpscDCFOAL8W4Mimk7d064/0BhC/gnr0V4sExBBtMNCGY1GovJtIwFZ84VHZGS0B6lD9oDjbARf9Gycoxdv7SRQz0lvHM5D0jMVbpK1W4XAkwTOs2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pXtTjz13; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E02C433F1;
-	Wed, 14 Feb 2024 17:57:49 +0000 (UTC)
+	s=arc-20240116; t=1707933471; c=relaxed/simple;
+	bh=YFU+Ds8M53iZQg2SyYpOVSCKzY2zxmL4C/jaoOq3w3c=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=X0yWQc1t3e8Myt0vJAWmQWqXMOkdRGvewpZHKEdu5SJGXHeOgE0fKDvrlcRKJYNJks6vVA2kqxMuEKs6CtaP9ujncMl+G8JmQE/3cuLFV849cB2S4NCcngRhXwWAWW1zCgPzTCfZKt/XN1UZfNGbuBszmkz+S4+S3kmD0F1D6AE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjRQKQPg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF68C433C7;
+	Wed, 14 Feb 2024 17:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707933470;
-	bh=orxKOf7vyVoeq5LamaGVz8NcLFYJetRThm4I4MUUNIA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pXtTjz13ws1akiM+OaZNoyT76p+9S/ieBQOdYcLhDexB+DR2MSJJHPGPFIVf2EMq6
-	 /EQCdBhPKgN+b1ksKS15Ls2kYOOPgldW5nHT+vUA9DMF/vwKCfpnN+B64jIDguDo2C
-	 x/1lMoL1aBtbTvuhvWRftjggDXLa9SxTQX2ojnTu9Cmmc26gUKnni5NKH05gFW0pAw
-	 EF0MLUOTqbs0jh7zakoAPr1bHSwuDfNB70mIwNPXpiO8QWcn0HiD19Ke8sDvHdg4lZ
-	 bZ98quNZogE1W/9NC/+StTRugLS8FXmqELCapyQZ6HmHoNAV6Lm3bwp0e23DM/7YLl
-	 eWUNz8pSv3Z3A==
+	s=k20201202; t=1707933471;
+	bh=YFU+Ds8M53iZQg2SyYpOVSCKzY2zxmL4C/jaoOq3w3c=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=AjRQKQPg2Br//eL6KJ/uKXmefnh82H0TtN5wmrYlR8A2wkG25TR8BC1J1THmd3m3V
+	 fxKxVujOpDH5+KEibnTUocBIYDLyGW7Mg+XuSvYVb2pYEciOJsIUpWSPXKigYyWxZs
+	 QNgQAkwzHqOrP0ibfovjEGEcuCE0aXRodM0avdr9xo+64VwrFi4jqJnhSFOZyYALmT
+	 SQTxNfRY5Ggvps6mGu4b9S0i815s8hJUD56ki4TiW+Sb3hN7XZPvjLhfXj5lAfoQfl
+	 LSFZzti51YBBLyZAAh2NxhY4b+cJqk9KNxlKb08iLcJRZhP8zF4Hkysf7FjaHKldwr
+	 H6MUL14IHxMcA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Rob Herring <robh@kernel.org>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sm8550: Switch UFS from opp-table-hz to opp-v2
-Date: Wed, 14 Feb 2024 11:57:24 -0600
-Message-ID: <170793345829.27225.16322063372177962081.b4-ty@kernel.org>
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 1/5] arm64: dts: sc8280xp: correct DMIC2 and DMIC3 pin config node names
+Date: Wed, 14 Feb 2024 11:57:25 -0600
+Message-ID: <170793345833.27225.8898510891460575893.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240203-topic-8550_ufs_oppv2-v2-1-b0bef2a73e6c@linaro.org>
-References: <20240203-topic-8550_ufs_oppv2-v2-1-b0bef2a73e6c@linaro.org>
+In-Reply-To: <20240212172335.124845-1-krzysztof.kozlowski@linaro.org>
+References: <20240212172335.124845-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,17 +65,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Sat, 03 Feb 2024 01:10:11 +0100, Konrad Dybcio wrote:
-> Now that the non-legacy form of OPP is supported within the UFS driver,
-> go ahead and switch to it, adding support for more intermediate freq/power
-> states.
+On Mon, 12 Feb 2024 18:23:31 +0100, Krzysztof Kozlowski wrote:
+> Correct the TLMM pin configuration and muxing node names used for DMIC2
+> and DMIC3 (dmic01 -> dmic23).  This has no functional impact, but
+> improves code readability and avoids any confusion when reading the DTS.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sm8550: Switch UFS from opp-table-hz to opp-v2
-      commit: 2f7be4caacd264b23f637f2e1d7dccf4f1e4f20e
+[1/5] arm64: dts: sc8280xp: correct DMIC2 and DMIC3 pin config node names
+      commit: 61474b18e762671a69b2df9665f3cec5c87a38af
+[2/5] arm64: dts: sm8450: correct DMIC2 and DMIC3 pin config node names
+      commit: 0d3eb7ff1f3a994a5b3e49a9bd48f0c2f3c80ef5
+[3/5] arm64: dts: sm8550: correct DMIC2 and DMIC3 pin config node names
+      commit: c6e5bf9278749eaa094dc944add747f10a15dceb
+[4/5] arm64: dts: sm8650: correct DMIC2 and DMIC3 pin config node names
+      commit: 94c312767160f0d527da035b9080ff5675d17f4c
+[5/5] arm64: dts: x1e80100: correct DMIC2 and DMIC3 pin config node names
+      commit: 8794916799d61f3593b87e946ed58338baebd097
 
 Best regards,
 -- 
