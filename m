@@ -1,92 +1,188 @@
-Return-Path: <linux-kernel+bounces-65670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABDC285503F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:28:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B7B855045
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67B1D285813
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:28:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76B811C20B18
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C714127B5F;
-	Wed, 14 Feb 2024 17:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF13082885;
+	Wed, 14 Feb 2024 17:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="w2hgGoFr"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b="qJJVeZI7"
+Received: from pb-smtp21.pobox.com (pb-smtp21.pobox.com [173.228.157.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84D8D127B44;
-	Wed, 14 Feb 2024 17:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B259C7C0B9;
+	Wed, 14 Feb 2024 17:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.228.157.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707931385; cv=none; b=ca3oGsbkhCmDKePq/Y/pfAa2TZjn75vOFCF/6QMyRh2ZIwlMl9rRA10n0AfxhHqrWtZ+6VzO81aTZLoQ9kafRL7+XL5OuGKdrocB4xMSR2yVBI3tE87G9NRaCYRglCTi9da21hMbabqjS3tKctkYOZRcKpC/KjVmS4GJh9mtml8=
+	t=1707931459; cv=none; b=YR8IFQ2aiYs6StIRKN6III/LAXrqMjxZyqIapgGW/Wu5jPq/Kxg9kS8+JCnUU90awkUqQY2NRawvBKpwoRSj6htXTnWQdBdNQa/XvtSTJvnrEsPhxIYrWE2i0znQxrd6hwGHTZhZYdvoHSMktdH8bHKVFcC6x6Eu9FelTGiHN90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707931385; c=relaxed/simple;
-	bh=N2N9KIJ9K4NuU5JrIGnCagcRufSl/68MS18mA10+2CM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H4vCQhOzXZezBh9L3PYnUoHZPSS1X5Y4Gm7Lfo9ztvxE5XwQRRs7Qls5maBiiukk25CaruguUmAO7m5YVYOw01MW2OEX8Qq7vhgI8EwTc2RrJ0eJa3d6m5t2pEId/hhY+PPtMhXNRGKRhDW/N53HelbwznQa856VpXXbiGQVtOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=w2hgGoFr; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Y0fyhuSydzeZFzeqfdy5rCRESdUy2kNN+FLC6ikFSgU=; b=w2hgGoFrpYDiQuksDlHcafKVP/
-	iCAOm6cVAXO4hLj1UonKowN366ryG4JXJJoVAdG3yqLb7R62W1njmMG1GAuysQ3MNJEb7IlOoyJP0
-	w3ZcgqkAQQR+gEhGXRxlr4172zZ9HtxlGp9EWuLN2sxzQoBlhIm1aFORE4ACXO8/a2gQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1raIyN-007oCm-1K; Wed, 14 Feb 2024 18:23:03 +0100
-Date: Wed, 14 Feb 2024 18:23:03 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 09/17] MAINTAINERS: Add myself to pse
- networking maintainer
-Message-ID: <9b8f9b2d-e4e0-4118-bcdb-c809e4f3d1bc@lunn.ch>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
- <20240208-feature_poe-v3-9-531d2674469e@bootlin.com>
+	s=arc-20240116; t=1707931459; c=relaxed/simple;
+	bh=rtNqnQMrhTZoVIcurqvh/n552z2fKUMA1DuDPbo13Yk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ID/+0feRvKDmwZBMtjoA7DGAgvx5JuCWC44xTo3VHtkcbUK7GFijPfduT9VpVQKXKOQl8f4jfnZeylChvymiN1RiIsn0+Kdz53bWHJK+9tvCIzsDuM14weWXRU06pV94tNmDE6GscSSClbkFjTOY0uiCynx3yFciHOg7u1dAW2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com; spf=pass smtp.mailfrom=pobox.com; dkim=pass (1024-bit key) header.d=pobox.com header.i=@pobox.com header.b=qJJVeZI7; arc=none smtp.client-ip=173.228.157.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pobox.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pobox.com
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id 01A491EBBE;
+	Wed, 14 Feb 2024 12:24:11 -0500 (EST)
+	(envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=from:to:cc
+	:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=sasl; bh=rtNqnQMrhTZoVIcurqvh/n552
+	z2fKUMA1DuDPbo13Yk=; b=qJJVeZI7zdARELbX7ZSzQBykYxSDSVc1V15EysdW4
+	vX0JQUey2W1HODPMO2gNRQkJ/0NTSyNCiJ7nz13bCFX5n4vAIGbsRYA8xMHsPVCT
+	rSs/TikOC78rjfGpmEjyAXYucwazrCOcNULnxiDwSfV9McsYo38RxLlLXnXTeEDd
+	MU=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id EDC981EBBD;
+	Wed, 14 Feb 2024 12:24:10 -0500 (EST)
+	(envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [34.125.165.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 9BEB91EBBC;
+	Wed, 14 Feb 2024 12:24:07 -0500 (EST)
+	(envelope-from junio@pobox.com)
+From: Junio C Hamano <gitster@pobox.com>
+To: git@vger.kernel.org
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>,
+    git-packagers@googlegroups.com
+Subject: [ANNOUNCE] Git v2.43.2
+Date: Wed, 14 Feb 2024 09:24:06 -0800
+Message-ID: <xmqqil2rvu15.fsf@gitster.g>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240208-feature_poe-v3-9-531d2674469e@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID:
+ DBE34D3E-CB5D-11EE-9783-A19503B9AAD1-77302942!pb-smtp21.pobox.com
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 08, 2024 at 02:08:46PM +0100, Kory Maincent wrote:
-> As I add support for PoE in PSE networking subsystem it seems legitimate
-> to be added to the maintainers.
-> 
-> Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+The latest maintenance release Git v2.43.2 is now available at
+the usual places.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+The tarballs are found at:
 
-    Andrew
+    https://www.kernel.org/pub/software/scm/git/
+
+The following public repositories all have a copy of the 'v2.43.2'
+tag and the 'maint' branch that the tag points at:
+
+  url =3D https://git.kernel.org/pub/scm/git/git
+  url =3D https://kernel.googlesource.com/pub/scm/git/git
+  url =3D git://repo.or.cz/alt-git.git
+  url =3D https://github.com/gitster/git
+
+----------------------------------------------------------------
+
+Git 2.43.2 Release Notes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Relative to Git 2.43.1, this release has two important fixes to allow
+"git imap-send" to be built with NO_CURL defined, and to restore the
+forced flushing behaviour when GIT_FLUSH=3D1 is set.  It also contains
+other, unexciting, fixes that have already been merged to the 'master'
+branch of the development towards the next major release.
+
+Fixes since Git 2.43.1
+----------------------
+
+ * Update to a new feature recently added, "git show-ref --exists".
+
+ * Rename detection logic ignored the final line of a file if it is an
+   incomplete line.
+
+ * "git diff --no-rename A B" did not disable rename detection but did
+   not trigger an error from the command line parser.
+
+ * "git diff --no-index file1 file2" segfaulted while invoking the
+   external diff driver, which has been corrected.
+
+ * Rewrite //-comments to /* comments */ in files whose comments
+   prevalently use the latter.
+
+ * A failed "git tag -s" did not necessarily result in an error
+   depending on the crypto backend, which has been corrected.
+
+ * "git stash" sometimes was silent even when it failed due to
+   unwritable index file, which has been corrected.
+
+ * Recent conversion to allow more than 0/1 in GIT_FLUSH broke the
+   mechanism by flipping what yes/no means by mistake, which has been
+   corrected.
+
+Also contains documentation updates, code clean-ups and minor fixups.
+
+----------------------------------------------------------------
+
+Changes since v2.43.1 are as follows:
+
+Elijah Newren (1):
+      diffcore-delta: avoid ignoring final 'line' of file
+
+James Touton (1):
+      git-p4: use raw string literals for regular expressions
+
+Jeff King (1):
+      diff: handle NULL meta-info when spawning external diff
+
+Johannes Schindelin (1):
+      win32: special-case `ENOSPC` when writing to a pipe
+
+Junio C Hamano (11):
+      Docs: majordomo@vger.kernel.org has been decomissioned
+      CoC: whitespace fix
+      builtin/worktree: comment style fixes
+      merge-ort.c: comment style fix
+      reftable/pq_test: comment style fix
+      tag: fix sign_buffer() call to create a signed tag
+      bisect: document "terms" subcommand more fully
+      bisect: document command line arguments for "bisect start"
+      ssh signing: signal an error with a negative return value
+      write-or-die: fix the polarity of GIT_FLUSH environment variable
+      Git 2.43.2
+
+Linus Arver (1):
+      strvec: use correct member name in comments
+
+Nikolay Borisov (1):
+      rebase: fix documentation about used shell in -x
+
+Nikolay Edigaryev (1):
+      rev-list-options: fix off-by-one in '--filter=3Dblob:limit=3D<n>' e=
+xplainer
+
+Patrick Steinhardt (1):
+      builtin/stash: report failure to write to index
+
+Philippe Blain (2):
+      imap-send: add missing "strbuf.h" include under NO_CURL
+      .github/PULL_REQUEST_TEMPLATE.md: add a note about single-commit PR=
+s
+
+Ren=C3=A9 Scharfe (2):
+      parse-options: fully disable option abbreviation with PARSE_OPT_KEE=
+P_UNKNOWN
+      parse-options: simplify positivation handling
+
+Sam Delmerico (1):
+      push: region_leave trace for negotiate_using_fetch
+
+Taylor Blau (1):
+      pack-bitmap: drop unused `reuse_objects`
+
+Toon Claes (1):
+      builtin/show-ref: treat directory as non-existing in --exists
+
 
