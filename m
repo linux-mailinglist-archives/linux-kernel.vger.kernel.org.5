@@ -1,220 +1,148 @@
-Return-Path: <linux-kernel+bounces-64901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70FFD854476
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:58:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8E6185447B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E998F1F2459E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 08:58:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12DA01C22E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102AABA29;
-	Wed, 14 Feb 2024 08:58:26 +0000 (UTC)
-Received: from smtp2-kfki.kfki.hu (smtp2-kfki.kfki.hu [148.6.0.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6EDAB645;
+	Wed, 14 Feb 2024 09:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jl6W7Soo"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309A879C0;
-	Wed, 14 Feb 2024 08:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5C679D2
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707901105; cv=none; b=aAT8pSzdl767TYnzFBhMcd1c0FKrfrCCx77iF84EjIWKAzYeSq9Iikk1qswrrZNDX7QwDwiMbrV6NK/XyoxqDvwClaO28bqG8t/uT4pBOeHFCbTm8C0txigVkC17vb2bU5JzT7Fpd+0HLGIV30eMlla3xgxPnKbVu63V2pTlKWo=
+	t=1707901221; cv=none; b=AL/FjzpcXqlTpebJUYo0LMUZ9pzf8rZWLgfKJL+OTMJzZWhSG/0KkrMrCfq2Pn6kR40Ib/+D+eV5azo2BjZAOQIA87eP6g2MukjJIWPZaeKRq0HU8sxr3DOaEuUxGD2sCS03WaIJDhAs/lDpuTDO9SQehutEVkOKLyFncXIQw6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707901105; c=relaxed/simple;
-	bh=uaqZUg8mZx1t6VSWIkjz1N51L+Li3egJ+H+n1pJ1lmw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=OnmXc9M8z42fvsBtrSyy9b9QCsK/KmUFdxpfXKMysUHvhco9EC+UygE9Vnl8Tu6XfHo4opL7v1IKNzd9ygLihXyUuOA+nqd9gOGVpCb+s/wWL9azLbe+N81Ur788o1ClBIgE+Sbpe6F+zt0J6yA/xZVN0o/K24rRWNx1yjD8DCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 4F61CCC02CF;
-	Wed, 14 Feb 2024 09:58:12 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-	by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP; Wed, 14 Feb 2024 09:58:10 +0100 (CET)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-	by smtp2.kfki.hu (Postfix) with ESMTP id C6C2FCC02CD;
-	Wed, 14 Feb 2024 09:58:09 +0100 (CET)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-	id 78020343167; Wed, 14 Feb 2024 09:58:09 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by blackhole.kfki.hu (Postfix) with ESMTP id 76565343166;
-	Wed, 14 Feb 2024 09:58:09 +0100 (CET)
-Date: Wed, 14 Feb 2024 09:58:09 +0100 (CET)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: coreteam@netfilter.org
-cc: David Miller <davem@davemloft.net>, edumazet@google.com, 
-    Florian Westphal <fw@strlen.de>, kuba@kernel.org, 
-    linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-    netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
-    Pablo Neira Ayuso <pablo@netfilter.org>, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [netfilter?] WARNING: ODEBUG bug in ip_set_free
-In-Reply-To: <000000000000d42dae0611477922@google.com>
-Message-ID: <b1d20932-19c1-6cc7-2203-eff38953ad5a@netfilter.org>
-References: <000000000000d42dae0611477922@google.com>
+	s=arc-20240116; t=1707901221; c=relaxed/simple;
+	bh=AfPibrcqDsxvdthbZKnaV+C6vZ2ntirzjX5KshFvZv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=IqDlbkEu4rNqxhcdLqM23xD+jro4K/FrAaDNGfdugr/D91SehtgV9gcLAehOYQA8T8QILA337uvWJAZ37CZtG3KXwKQymz1vtL8XnqH8IFxyXpu3e9XsKPteL6HbAVyGvmdExLk2tutJGg/hSH49N/IsmytnOuKzg9/303c/38E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jl6W7Soo; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5638aa9a5c2so158019a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707901218; x=1708506018; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rUIdnkiSb9ACc7Aso/SmUid/GgndJZt6FDfwx7qEexg=;
+        b=Jl6W7Soo6+iAyF2aPXtNDDSC/RI+TAiGKu9gQUzWoteajpmdQ0XG2dCNi0WH2DKg7G
+         /olhgB6JON2wF5zLzb7m1afpCHDHvsTN3PTokkJrXYQzP37TMQ84aD26EA2Cmy3tL90s
+         IHcwLpVixW59JrFN4ky8awNcaf/nT3C6fTnja11zA1DEEPV0t7dMjdXGIWfimuDdYPmW
+         uzLMuwP9NXtAExMzMUz/Khg+vsmWloB3M1v6PN9AtF/fO7Pyv2qN0xXfN4kJQUUgIohP
+         R83feTunQBA1c/8gl3ykWZ7KMJAhW3QVnK0uBzGWpZprlC8y9yg2t7a8jAQwZAVyfbnq
+         G+4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707901218; x=1708506018;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUIdnkiSb9ACc7Aso/SmUid/GgndJZt6FDfwx7qEexg=;
+        b=psvVcMWs4c4WYoIGIIYztlhU81E9fT0qPqFPcSnnD5KaVtTzBFMckr4IHRJBqlQutF
+         XYRik/7BgEFC2qO0A/dv5VfV3ByHBB8XDj/Jwp3j/Vk0HJbHnvpqQu+KlR5xE4ljGhtW
+         /wGFSLxh2Zhmk27aRhCOhKI60dow5FUIJ51dRhBzxKzixa6ft2MPmd7rnv18zEdVeSw9
+         MTMLhPETGjqheuXV6JUgzPSiU8zyIRlIGlOawJxu9bsmE0hx/R0uL/djRP4UfjC+jrha
+         Uu/CZujJEgb9zbcPFnzKuIQD6hslw7VLZYepZLQoc2kdFqjCz8zXzc2f+uzt37HL4BIT
+         Fz6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUpYP9xbnxgKvpt8PxB8eT9iQhFohwuNHWxPXbSW0CtXtRAXBLiI8/Y/OiCsAOhvA43IoQ1sLTnvL9K533oYfMldrRhAGExOtu4oZBN
+X-Gm-Message-State: AOJu0YyDOQtxM4siqi9ECldYFhI3rDbzy3flq5Q0zbjoMZ15f27hwx2r
+	9BPIhNJHJJsp3T1NOossUG7K2Aa7SefWb7KC6A/Hme6Rjslf8lK/42iiJwADbEI=
+X-Google-Smtp-Source: AGHT+IH79jZnJDd2W40dA1GRM9vdj0ZNbSRCsOcRGqGBOI0ttCIK8wcMpYHxazg9xaHJG4cXPjN0vg==
+X-Received: by 2002:aa7:c1d2:0:b0:562:80:fe95 with SMTP id d18-20020aa7c1d2000000b005620080fe95mr1487803edp.39.1707901218292;
+        Wed, 14 Feb 2024 01:00:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWZEeJ+lsjC6i5ICjt1PV9aoDnEvKejy1OZ/S4xfGXqyS12H3nCGmspTiCcICS+xfBnapwNj5S6HFNtMpD12rtVIdENj22g7NdiQ8voaBVEDu5fMuEbmfU6UnjaczVJe+y9iP9bv8HJbPKCtzxk0GvQVE5y8mpzv7dFLvAnHYIxCdO++zBiB25sPk8jCOEmzHXgCUrCrlpqFfYWabHxdWp3Ok3UR3owWh0njC8QLSFRDic0K2teyRIaGaZbzYLV2B/aXte9es9TvKhlh1V3LGk1cnDowL4Ihx3jqUsA8XBfYAnl+lQGa8yacXqBfG2DkUsaP3Gk1fAaSJVSUx01p0pxmNc43pFO9Bh+dz7HIUKV92BGY1WSmYDJR4FMqBdYU2qJ+u1qPDi8jplNxMbekktk9M18/0zgWoyUji+cOtqb2KaevNzRbzj+6IDJg30VEPzk9Wwn3cNsPEuFID2mQpRDkqTCjcf410XmJqSrkacwupctA1yB87vNKu46pIfmVvmSV9nflpi5hBWwUREoS2UDwhkQRbXVnluD1/WAhyRj1seNYx59Cqb117VnZ3xsUhmkQC8XCvyw1E8b5HynadIc3u2mssjoIzOI1dDwVZPc/6uixZiIFKxxYmudEADQ6+Y0IhA=
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05640217c700b005602346c3f5sm4481965edy.79.2024.02.14.01.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 01:00:17 -0800 (PST)
+Date: Wed, 14 Feb 2024 12:00:14 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Tony Lindgren <tony@atomide.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	"David S . Miller" <davem@davemloft.net>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Johan Hovold <johan@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH v6 4/6] serial: core: Add support for DEVNAME:0.0 style
+ naming for kernel console
+Message-ID: <aa4b1b2e-50b8-419c-bf0d-526711f1aaea@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213084545.40617-5-tony@atomide.com>
 
-Hi,
+Hi Tony,
 
-It seems this is an old bug uncovered now: the bitmap type of sets still
-use del_timer_sync() to cancel the garbage collecors. However
-del_timer_sync() does not prevent rearming, which is triggered by syzbot.
-The proper way to solve the issue is a one-liner:
+kernel test robot noticed the following build warnings:
 
-diff --git a/net/netfilter/ipset/ip_set_bitmap_gen.h b/net/netfilter/ipset/ip_set_bitmap_gen.h
-index cb48a2b9cb9f..60f5e29ac8fd 100644
---- a/net/netfilter/ipset/ip_set_bitmap_gen.h
-+++ b/net/netfilter/ipset/ip_set_bitmap_gen.h
-@@ -294,7 +294,7 @@ mtype_cancel_gc(struct ip_set *set)
-        struct mtype *map = set->data;
+url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/printk-Save-console-options-for-add_preferred_console_match/20240213-171012
+base:   6cc3028f797a549f256d593867a769ab6a8265f2
+patch link:    https://lore.kernel.org/r/20240213084545.40617-5-tony%40atomide.com
+patch subject: [PATCH v6 4/6] serial: core: Add support for DEVNAME:0.0 style naming for kernel console
+config: i386-randconfig-141-20240214 (https://download.01.org/0day-ci/archive/20240214/202402141619.BqEGGzwm-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 
-        if (SET_WITH_TIMEOUT(set))
--               del_timer_sync(&map->gc);
-+               timer_shutdown_sync(&map->gc);
- }
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202402141619.BqEGGzwm-lkp@intel.com/
 
- static const struct ip_set_type_variant mtype = {
+smatch warnings:
+drivers/tty/serial/serial_base_bus.c:255 serial_base_add_preferred_console() error: uninitialized symbol 'port_match'.
 
-(There are no other set types in ipset where del_timer_sync() is used.)
+vim +/port_match +255 drivers/tty/serial/serial_base_bus.c
 
-I'll need time for testing then if it fixes the bug, then I'll submit the 
-patch.
+a2020a9ccacd63 Tony Lindgren 2024-02-13  252  int serial_base_add_preferred_console(struct uart_driver *drv,
+a2020a9ccacd63 Tony Lindgren 2024-02-13  253  				      struct uart_port *port)
+a2020a9ccacd63 Tony Lindgren 2024-02-13  254  {
+a2020a9ccacd63 Tony Lindgren 2024-02-13 @255  	const char *port_match __free(kfree);
 
-Best regards,
-Jozsef
+Someone should add this to checkpatch.  These always need to be
+initialized to NULL.
 
-On Tue, 13 Feb 2024, syzbot wrote:
-
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    f735966ee23c Merge branches 'for-next/reorg-va-space' and ..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=168b6592180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d47605a39da2cf06
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ebbab3e04c88fa141e6b
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1000ede0180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161a6ba2180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/bdea2316c4db/disk-f735966e.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/75ba7806a91c/vmlinux-f735966e.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/208f119d45ed/Image-f735966e.gz.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ebbab3e04c88fa141e6b@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> ODEBUG: free active (active state 0) object: 00000000310f7442 object type: timer_list hint: bitmap_port_gc+0x0/0x4dc net/netfilter/ipset/ip_set_bitmap_port.c:282
-> WARNING: CPU: 1 PID: 6165 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
-> WARNING: CPU: 1 PID: 6165 at lib/debugobjects.c:517 __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-> WARNING: CPU: 1 PID: 6165 at lib/debugobjects.c:517 debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-> Modules linked in:
-> CPU: 1 PID: 6165 Comm: syz-executor468 Not tainted 6.8.0-rc3-syzkaller-gf735966ee23c #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : debug_print_object lib/debugobjects.c:514 [inline]
-> pc : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-> pc : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-> lr : debug_print_object lib/debugobjects.c:514 [inline]
-> lr : __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
-> lr : debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
-> sp : ffff800097886950
-> x29: ffff800097886990 x28: 0000000000000000 x27: ffff80008aeec3c0
-> x26: ffff0000d051c718 x25: dfff800000000000 x24: 0000000000000000
-> x23: ffff80009365bb10 x22: ffff0000d051c000 x21: 0000000000000000
-> x20: ffff8000894dfe30 x19: ffff0000d051c700 x18: ffff800097885e20
-> x17: 626f203234343766 x16: ffff80008aca1180 x15: 0000000000000001
-> x14: 1ffff00012f10c44 x13: 0000000000000000 x12: 0000000000000000
-> x11: 0000000000000002 x10: 0000000000ff0100 x9 : f70d4eacec590700
-> x8 : f70d4eacec590700 x7 : 0000000000000001 x6 : 0000000000000001
-> x5 : ffff800097886238 x4 : ffff80008ed517e0 x3 : ffff80008036df60
-> x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-> Call trace:
->  debug_print_object lib/debugobjects.c:514 [inline]
->  __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
->  debug_check_no_obj_freed+0x398/0x47c lib/debugobjects.c:1019
->  slab_free_hook mm/slub.c:2093 [inline]
->  slab_free mm/slub.c:4299 [inline]
->  kfree+0x114/0x3cc mm/slub.c:4409
->  kvfree+0x40/0x50 mm/util.c:663
->  ip_set_free+0x28/0x7c net/netfilter/ipset/ip_set_core.c:264
->  bitmap_port_destroy+0xe4/0x324 net/netfilter/ipset/ip_set_bitmap_gen.h:66
->  ip_set_create+0x904/0xf48 net/netfilter/ipset/ip_set_core.c:1157
->  nfnetlink_rcv_msg+0xa78/0xf80 net/netfilter/nfnetlink.c:302
->  netlink_rcv_skb+0x214/0x3c4 net/netlink/af_netlink.c:2543
->  nfnetlink_rcv+0x21c/0x1ed0 net/netfilter/nfnetlink.c:659
->  netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->  netlink_unicast+0x65c/0x898 net/netlink/af_netlink.c:1367
->  netlink_sendmsg+0x83c/0xb20 net/netlink/af_netlink.c:1908
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  __sock_sendmsg net/socket.c:745 [inline]
->  ____sys_sendmsg+0x56c/0x840 net/socket.c:2584
->  ___sys_sendmsg net/socket.c:2638 [inline]
->  __sys_sendmsg+0x26c/0x33c net/socket.c:2667
->  __do_sys_sendmsg net/socket.c:2676 [inline]
->  __se_sys_sendmsg net/socket.c:2674 [inline]
->  __arm64_sys_sendmsg+0x80/0x94 net/socket.c:2674
->  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
->  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
->  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
->  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
->  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-> irq event stamp: 524
-> hardirqs last  enabled at (523): [<ffff80008035f104>] __up_console_sem kernel/printk/printk.c:341 [inline]
-> hardirqs last  enabled at (523): [<ffff80008035f104>] __console_unlock kernel/printk/printk.c:2706 [inline]
-> hardirqs last  enabled at (523): [<ffff80008035f104>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3038
-> hardirqs last disabled at (524): [<ffff80008ad60eac>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
-> softirqs last  enabled at (518): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
-> softirqs last  enabled at (518): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
-> softirqs last disabled at (507): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
-> ---[ end trace 0000000000000000 ]---
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
-> 
+a2020a9ccacd63 Tony Lindgren 2024-02-13  256  	int ret;
+a2020a9ccacd63 Tony Lindgren 2024-02-13  257  
+a2020a9ccacd63 Tony Lindgren 2024-02-13  258  	ret = serial_base_add_prefcon(drv->dev_name, port->line);
+a2020a9ccacd63 Tony Lindgren 2024-02-13  259  	if (ret)
+a2020a9ccacd63 Tony Lindgren 2024-02-13  260  		return ret;
+a2020a9ccacd63 Tony Lindgren 2024-02-13  261  
+a2020a9ccacd63 Tony Lindgren 2024-02-13  262  	port_match = kasprintf(GFP_KERNEL, "%s:%i.%i", dev_name(port->dev),
+a2020a9ccacd63 Tony Lindgren 2024-02-13  263  			       port->ctrl_id, port->port_id);
+a2020a9ccacd63 Tony Lindgren 2024-02-13  264  	if (!port_match)
+a2020a9ccacd63 Tony Lindgren 2024-02-13  265  		return -ENOMEM;
+a2020a9ccacd63 Tony Lindgren 2024-02-13  266  
+a2020a9ccacd63 Tony Lindgren 2024-02-13  267  	/* Translate a hardware addressing style console=DEVNAME:0.0 */
+a2020a9ccacd63 Tony Lindgren 2024-02-13  268  	return serial_base_add_one_prefcon(port_match, drv->dev_name, port->line);
+a2020a9ccacd63 Tony Lindgren 2024-02-13  269  }
 
 -- 
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
