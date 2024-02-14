@@ -1,113 +1,141 @@
-Return-Path: <linux-kernel+bounces-65479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3992E854D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:04:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EDA7854D9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:04:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9967285874
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:04:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41E5D1C21F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2D75EE78;
-	Wed, 14 Feb 2024 16:04:14 +0000 (UTC)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A135FF13;
+	Wed, 14 Feb 2024 16:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N4oUyYkl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40CD5BACD;
-	Wed, 14 Feb 2024 16:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627F85F48C
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707926654; cv=none; b=u2lFJ1l3sJhsy/p+QustzquT3VITxHxMJ8ZhDOoLnPWY0fm0oVnwMQJNJScffNW2f/rOcrxRKN909qYnRlFY9JrR7B7aUpnK0eCDqff4QS0qhhgPAGqJOU7G4FB5Ak28B5hvWhf83WR0cmx+5jojn8J/j6vNh66mqn4jpto/h1E=
+	t=1707926656; cv=none; b=sZSaR6pcG9P8OfRebhUSYwjS3PlUFKr/5asgtSjO5oohxiMS87mrcWlSIUlLqAqpHB+LJ0U1OcqWly+WfSGaw6oZR7orBI8ZdFp7RC/ltf9V4RYirfYvNcf4yTYOgPWvLTPDLoLY04pxbqOIzYz1YF/4Dum5nFHPRB+x6eVqrbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707926654; c=relaxed/simple;
-	bh=19v6gx2DJfVlZZULMPm1mh6gRX7ouK7EO3zKbiGfPkE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YOr1eFEb+qIz+SuMsCZ6EGP/8H2HECBxPNO7jz6LhbOovBQ7F4Ij9Tt1Q/CowFI7EPGfZL4AMZgptmq2oIn2xEI+Qr3o3/4Jvfeor7QfA8AzTf3bu3t3xvqR+0K99sgJD/vK/AkUuodsQn3e99yZqfsZcRkqZPJS1hs4Gm96NzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc73148611so2273767276.3;
-        Wed, 14 Feb 2024 08:04:12 -0800 (PST)
+	s=arc-20240116; t=1707926656; c=relaxed/simple;
+	bh=dhfPmhc19ws+8B+oLEigyKsvrbjeXwEIDd9y5ctR7zk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hyWAJgRuGm06M71zC/RjsRAxLlnwsDkavhA41E1DbbwPdbZUSnAz5nbDpn2RULOF9wHM1V63NzgdZ57vVQ1vwUlJX9IidkYc9SQxAmMfCfCnCcrfoWePGRQbj+ujQdo4vJ7ub5KAZSuGEEnqyuobiQFF3PFOfduhCcchb4reVEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N4oUyYkl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707926653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oUeWFwwvdEOL3h1AzebEsOOFcCr3CfteSwgIpDiWPf4=;
+	b=N4oUyYklQKaHv2cinapcBi0iUrpiUMowttqQiHBVrrQl1nSW/euqxQmFXEb0GWBrO8zhe2
+	iiwMP5+ePFduiwH69KpwRuzXHqVIw1aR4NDLYpoGuY2m+6k6Plxsrun0yr8qiWDTghMrp4
+	inXnFS3LGZPHi9P9PYmM+TZZAlrnjUE=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-aODYwfgFNmCMomYPvizGdQ-1; Wed, 14 Feb 2024 11:04:11 -0500
+X-MC-Unique: aODYwfgFNmCMomYPvizGdQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d0a329e86cso57406061fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 08:04:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707926650; x=1708531450;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KMfOvZOGSbuvehiEEFO5HBvjvnOP6eC+Oce6QL/RRnw=;
-        b=ifcYXkA5/JFYDfoVGslMDOhU/odQ7LSo1Di0c26W1pJGMFmaZY075sbifW5aEVctMT
-         wnbO9QVImnLBe54H3C0YjCqKtvYBmErni5IaiuxTbtAtS7atKtK8Otu72QmdmfQ6Nd6j
-         OwkEP6vMQr/9Y4s/z3T2oUjjVf72ufYQnmmkfqD87eAoe/MHoMV2OLwlTzDJt0AQYtPo
-         43HcFmrTdHc1chXz+nakIwaYYXHK1SbsfuRngMTT13oe3qFXEZcJfE60c6AuWk50tO/M
-         kekmQp/FSDFZSrgEPXSNrI4jkn/1vAxrsNqZSvkT8MFsGYmsVzdzr88nQ8FR7sf6hXxL
-         DNIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWw2B4AE7AEzCZ8fcM68IHqGwP7+2GXznTkwPsHHDIB4eHSyfq8NpcOIVYZuKOpUxjPpcbzr0fsb6ZYp7LudDyY8jACgAzrzlePr3+kzR0ACJyGhoHaL8EOsnYC7t8duNOfF2oOiDBOcA==
-X-Gm-Message-State: AOJu0Yz5SlT7XQ192PVLOD7gNLzj1ZfCG1cEndi9IbQ1Kp3m5muvijbP
-	IoykGY08nq+rtohG4W5Wdrt6r3sMSIlDs7Q4V1l0KTcq4LrFMqrA2BBNEloUc5w=
-X-Google-Smtp-Source: AGHT+IGiK8YwR2fVLu7BTjJDcw8P88LTxkfFm9rVN6YNcRTWdanUEPTG3virTbVasP10GpRsS8QlMQ==
-X-Received: by 2002:a5b:b09:0:b0:dcb:abbc:f597 with SMTP id z9-20020a5b0b09000000b00dcbabbcf597mr2474904ybp.54.1707926650515;
-        Wed, 14 Feb 2024 08:04:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXKRTMcbbNUwTcfmX06Nskl6VHDi+yIceB82eglvJb8YIweB8fdO+61+pyiaXMj0LonKfhN8wJQu9/5QGxTLOVbyAfJ/69mu7I3O/zqoXYFprCtq0v2PHDO4FIFVfHtQzpgErSnTgI7pA==
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id s17-20020a258311000000b00dc2310abe8bsm2093263ybk.38.2024.02.14.08.04.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 08:04:10 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so2227841276.2;
+        d=1e100.net; s=20230601; t=1707926649; x=1708531449;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oUeWFwwvdEOL3h1AzebEsOOFcCr3CfteSwgIpDiWPf4=;
+        b=Q6RU4/zJPwrDo8hiRy/2ADxL99enVjoxsTIhw/fjkvCjhMs2QTu2ZHbqrCxPEQCwYX
+         m3iByfB/0d2xLmZmhdwfmIcFu+ZCmoTOmeYZEnIMHRi+5+k8KINPOVlwks/1bBi3IkQc
+         A4KYqXC9FvjjyI1HyWZLOg1WSFNErbUSdLRNlPH+sJoeiIvaJoUMkNFWVbdU/+rX38yP
+         BBNRsZeJXGw748qE842zMA2eqx4q8dLzyDZ/4Ign2EUEUIv8i3KqSB+7AYtHbAf7m98h
+         JBICUDVDZHbkiM4BGPrsoXiS3cOPCGWP1nKy72AkG146a0QpQ9VqFsAcv3lAyzolela7
+         hKYg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3ad3CqTHwFMdgyePWtbcG98zCPCWs/PepDY2NOTE8d/Z32vzzILM3XS6pOahTvBCSXLFNMZfLwal+390miXMnMz4CtBlmtsL3Q2U4
+X-Gm-Message-State: AOJu0YwI3z8bCVOJ11RhFnDjrT9PJ0N2nZzuwS2wUChX67jLn4dSSra4
+	yUrUCPInzTOTjCM5f56JEasoDK5yEyL4fpYdGrz+SdZ615qAJFzs83Fk9L/AmLBd398mThCMhws
+	MUn4frdMhLkpFzE7A5syazy5IoI0IAhXo7/j51RB2uHTiqpM47edJ2sX4oy/J7vEdic6sGg==
+X-Received: by 2002:ac2:547c:0:b0:511:72f5:8219 with SMTP id e28-20020ac2547c000000b0051172f58219mr2363771lfn.29.1707926649744;
         Wed, 14 Feb 2024 08:04:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU1j25HUwlctFF6fmmez8QN9u/90D4Up3jCD2ikYt6Brlw8mzyQu9hqoB4P2e66/QYb/IQQgoe5vsi3UkiCOwq+P3Zx9CWX8lQ6yU6HZfbYmCXcfHgVSRJj+saY1NPo4ylvU95RcAvjyw==
-X-Received: by 2002:a5b:8c5:0:b0:dcd:b432:9bd0 with SMTP id
- w5-20020a5b08c5000000b00dcdb4329bd0mr1529064ybq.56.1707926649493; Wed, 14 Feb
- 2024 08:04:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFyKxl6BLOZ++hl9NgIaQs2rHs1zcml1wjPnjX4efI52CVOB/wUvqJKRSMm5yykeB+McLTC8g==
+X-Received: by 2002:ac2:547c:0:b0:511:72f5:8219 with SMTP id e28-20020ac2547c000000b0051172f58219mr2363750lfn.29.1707926649419;
+        Wed, 14 Feb 2024 08:04:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXx/7vmvr0a63CuE0VBXn+uSO10OQ33XUP3zGswqeYiE/uyRa+mnlWMAdGnDf6h7P919O/JA2fhBwyhmGTqK6O13ggtFxyR5VOuhW6UhFsufA1EbirdoHw60ccGKHjkj7wCaN/qAw4I64gpuB2xFDRlmV0jeBFQFh3EJhh1GA4biJKCY8ks6ZjIuOEQZZwe94AX/rMKnbnh1QkPHfSkM3hJoz7v5LoyO+4lHlCrKRG9tAbU42OoIaEAyUCm8W0M+tlCtdp48eK8+eTgFfkTVls=
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id eq23-20020a056512489700b00511503f9ac5sm305033lfb.231.2024.02.14.08.04.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 08:04:08 -0800 (PST)
+Message-ID: <e752d061-0e94-48c2-ba17-3111a847785d@redhat.com>
+Date: Wed, 14 Feb 2024 17:04:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214155438.155139-1-krzysztof.kozlowski@linaro.org> <20240214155438.155139-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240214155438.155139-2-krzysztof.kozlowski@linaro.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 Feb 2024 17:03:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVqOecSzjPqGiQ6t--o55NmY+BfA6KfGrDkt6Xx-nj8Jw@mail.gmail.com>
-Message-ID: <CAMuHMdVqOecSzjPqGiQ6t--o55NmY+BfA6KfGrDkt6Xx-nj8Jw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: auxdisplay: hit,hd44780: use defines
- for GPIO flags
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Robin van der Gracht <robin@protonic.nl>, 
-	Paul Burton <paulburton@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] `lis3lv02d_i2c_suspend()` causes `unbalanced
+ disables for regulator-dummy` and `Failed to disable Vdd_IO: -EIO`
+To: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Mark Brown <broonie@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+ Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, LKML <linux-kernel@vger.kernel.org>
+References: <5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de>
+ <ZcTmdg2qTq0bP0ul@finisterre.sirena.org.uk>
+ <6e20e772-e50e-4600-8325-1878badbbdc8@leemhuis.info>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <6e20e772-e50e-4600-8325-1878badbbdc8@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 4:54=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> Improve example DTS readability by using known defines for GPIO flags.
->
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->
-> Changes in v2:
-> 1. None
+Hi,
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On 2/14/24 16:34, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 08.02.24 15:34, Mark Brown wrote:
+>> On Fri, Feb 02, 2024 at 12:38:04PM +0100, Paul Menzel wrote:
+>>
+>>> Testing commit 2f189493ae32 (i2c: i801: Add lis3lv02d for Dell XPS 15 7590)
+>>> [1], it’s very likely this commit, it turns out, that Linux logs the warning
+>>> below during ACPI S3 suspend:
+> 
+> Mark, many thx for your reply:
+> 
+>> The driver is just buggy here AFAICT,
+> 
+> /me reads that as "buggy even before 2f189493ae32, that commit just
+> exposed the problem"
+> 
+>> it's powering off the device in
+>> both runtime suspend and runtime resume so if the device is runtime
+>> suspended when system suspend happens then it'll power off the device
+>> again.  The runtime suspend and system suspend need to talk to each
+>> other here.
+> 
+> Well, that was 6 days ago and nothing further happened. Makes me wonder:
+> Who will look into this? And when?
 
-Gr{oetje,eeting}s,
+I have a laptop with a lis3lv02d where I can try to reproduced Paul's
+problem. I expect this to reproduce on any Dell with the lis3lv02d 
+so reverting 2f189493ae32 won't help, it fixes the problem on
+Paul's model but not on other Dell models which use the lis3lv02d
+driver.
 
-                        Geert
+Anways I plan to look at this sometime next week.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Regards,
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Hans
+
+
 
