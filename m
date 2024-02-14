@@ -1,101 +1,110 @@
-Return-Path: <linux-kernel+bounces-65495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8659C854DD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:12:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CE6854DD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 17:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5C21F2A722
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:12:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E93CF1C28147
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A1F5FDD4;
-	Wed, 14 Feb 2024 16:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UebVZdfJ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E2960256;
+	Wed, 14 Feb 2024 16:13:13 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5EF604B6;
-	Wed, 14 Feb 2024 16:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75DC5FF0B;
+	Wed, 14 Feb 2024 16:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707927131; cv=none; b=HyohgiaWeWFFY5vvqe5mL2FC0qRacg1yz8qlRo2rtWt+jGg00lehMEwyjdZK+hK93obwFhnbZJ+PgWKaL/oP+5TFjW7+2iz74L/q5xR2WFUCxCTrfXrUGHiKqPLOLZoTCpHWtXhQ91wE+tEgr8to7DNUzCu1cEsQ5I1KngVaR5I=
+	t=1707927193; cv=none; b=jeWk60HZnB0cTLi4IWF/2VxFYX6gO0uj3z+adoTJ5CZMg3XswmRHY8lSglwZh50XoOELvzPRv9Ruos2RZFpVplnqTTwsSVzU+U67B3Y9kDQOiL4SkGTqti2cXVfZ0TuagFF+MqmWlrl48F1j7/OtCgyakMknhhBGb54NdqRtLio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707927131; c=relaxed/simple;
-	bh=gSThZwejcTydlpa5yt9Mu7vqKpHzCMm1GI7XI1eporY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ou0T1F/noLnC9Qz3NWymJx+jhzLPiKVJ6kuW0fOcO7zgVlmqMRjQE6usXLTTXio2ANDO0sGfZxtLouy7lS6qrcD5qOE1EYgqoTKg59vIbPLG+YV5+eT7w7x6sSqnh3PEHIOT4mZbq6Jd05SVKsULB2UmfXb0FFvL4PSD4g4J0ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UebVZdfJ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B27F640E016C;
-	Wed, 14 Feb 2024 16:12:06 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id UwAYWp2wEcKO; Wed, 14 Feb 2024 16:12:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707927124; bh=8p8+PjeYQWOHmY4XijZVp9W+Tfjle55KoxOqokZR4dw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UebVZdfJFD52AOX+YSF2fFQFkyTHssd/MmL4XMlUa+E5iKvj9pzOyBLfNhbfyUkGE
-	 0VRsqxIkX8P/n9sv0pp/r4eAHHpwK/Iy77uYMfvCTwjjjejwEcjO13/EWzr2ZDOZKN
-	 4OS5/jITCp7Gt8g1s3zUq1ELXhRdwX6R5FQ5JvUcJZpdH5ZCx/+x9cptclReOx/9X8
-	 OmBDEwtxa2yUnaNYa/ipjdW3OBqnEFdlnifprLzJxYie3myJ8+hHtEvFJDfSmAS9yo
-	 ROxTtq0zavHPnuMhQooZEe/64phvu1/6yT0u/PgFuD92PbCmLrBWJ1REXXvse74QLH
-	 Qy2SS5HYD3rNIXrRpz/8hqtH4tXpPwY1C/8WQ9IAqQ4izfh/5sr/1I9Du+LM+muIzX
-	 sokCLNFmsTNpDqdCcQjZC6DftNKCaAoew5sCWE9R0nID7eg9N6aLiDIwakav0EpcAn
-	 q0Xg1bYMKqlsGE6v+LF5fKa8Ged36f5r7oW08yU9GOk8GnFmB5dYoUYwCuxvXWTlMG
-	 Gsi3e8kDc5EYljriKKpd/h5V2AUP/4OGznNWCGM8fYeYmoItdsV1DraI+6TL+zZkJl
-	 Y0khj2w+2EwaNda89/JBpIYecyuz71NTI8YzjTNBfcVd/5Mkb/Z7X5/1zK+fIXr5FM
-	 +PNJTb6Ag9HAITUVOGiQncGo=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 045AD40E01BB;
-	Wed, 14 Feb 2024 16:11:54 +0000 (UTC)
-Date: Wed, 14 Feb 2024 17:11:54 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214161154.GEZczmStsolnCCP080@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214090630.GAZcyClhFloQfHEqrC@fat_crate.local>
- <9a82e9af-24c0-4277-b4d0-a708bba2cc88@amd.com>
- <20240214154909.GCZczg9Zfb_PXu2qV2@fat_crate.local>
- <4107582e-03e7-4edf-8c50-6bf693f2d18e@amd.com>
+	s=arc-20240116; t=1707927193; c=relaxed/simple;
+	bh=gKGPpN82UO99dZXmEZzyw8Ch/RLfAFBr6rDbmHC+BAA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JGbLdOOFG6NCMxnUZ9+XJ9jCS63s88ZKukY4h6+JgWnzsJ7hkM0ZPR3+JEgrwCY648OhdFq0I6OM9PS8REARGxVphriIlYtZescsKceHvLKgx5O2rzmjAetTk9qd6C5+YQCugPQAb426M2f4XQUdm/U8Ho1WKgW9d2wIl+2HuGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TZjng1VVBz6K7rL;
+	Thu, 15 Feb 2024 00:09:43 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 98CB41400CA;
+	Thu, 15 Feb 2024 00:13:09 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
+ 2024 16:13:09 +0000
+Date: Wed, 14 Feb 2024 16:13:08 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: David Lechner <dlechner@baylibre.com>
+CC: Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>, "Michael
+ Hennerich" <Michael.Hennerich@analog.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] iio: adc: ad7944: add driver for
+ AD7944/AD7985/AD7986
+Message-ID: <20240214161308.00003ddb@Huawei.com>
+In-Reply-To: <CAMknhBG3J-fW8o6DaAE34GD-_oNk6pnMpV4SnoA26gVmHWJP6g@mail.gmail.com>
+References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com>
+	<20240206-ad7944-mainline-v1-2-bf115fa9474f@baylibre.com>
+	<20240210174729.7c6cb953@jic23-huawei>
+	<CAMknhBG3J-fW8o6DaAE34GD-_oNk6pnMpV4SnoA26gVmHWJP6g@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4107582e-03e7-4edf-8c50-6bf693f2d18e@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Feb 14, 2024 at 11:01:36AM -0500, Yazen Ghannam wrote:
-> "then be" -> "then"
+On Sun, 11 Feb 2024 11:03:43 -0600
+David Lechner <dlechner@baylibre.com> wrote:
 
-Fixed.
+> On Sat, Feb 10, 2024 at 11:47=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
+rg> wrote:
+> >
+> > On Tue,  6 Feb 2024 11:26:00 -0600
+> > David Lechner <dlechner@baylibre.com> wrote:
+> > =20
+> > > This adds a driver for the Analog Devices Inc. AD7944, AD7985, and
+> > > AD7986 ADCs. These are a family of pin-compatible ADCs that can sample
+> > > at rates up to 2.5 MSPS.
+> > >
+> > > The initial driver adds support for sampling at lower rates using the
+> > > usual IIO triggered buffer and can handle all 3 possible reference
+> > > voltage configurations.
+> > >
+> > > Signed-off-by: David Lechner <dlechner@baylibre.com> =20
+> >
+> >
+> > The one thing in here that will probably bite if this gets much use of
+> > different boards is the use of non multiple of 8 word sizes.
+> >
+> > Often we can get away with padding those with trailing clocks.
+> > Any idea if that is safe here? =20
+>=20
+> We can probably get away with it on these chips. The ultimate goal
+> here, though, is to get these chips working a max sample rate which
+> only has a few 10s of nanoseconds of wiggle room between SPI
+> transfers. So I would rather have a bit more play in the timing than
+> try to support generic SPI controllers.
+>=20
+Would just be a case of providing a fallback. If you have a good spi
+controller then you get better data rats.
 
-> Otherwise, looks good.
+Meh, can be added later when someone needs this. We've done that a few
+times before.
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jonathan
 
