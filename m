@@ -1,91 +1,86 @@
-Return-Path: <linux-kernel+bounces-65380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A777854C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:04:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECCCC854C27
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C3191C26F17
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:04:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A91A1C264D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53525B67A;
-	Wed, 14 Feb 2024 15:04:23 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA2453E34
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D195BAC2;
+	Wed, 14 Feb 2024 15:05:05 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 6791C5B5DB
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 15:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923063; cv=none; b=shZGHbPlFxIQ2uFxAGMl2bDkRbHAQ5vkI67HZF4uYfccdS+DPuTyVetVBdmYDDI3sjoavxdbY0JZTxsxQlVm/CFBUqPEh1INLwu4g2+jBiM4+Kl6GRzmp0jP06r9y2SqAjpmEZtmNyFZCSNtr7RcOgnM9daX0GSqMSlUQeKXhgA=
+	t=1707923105; cv=none; b=kMzwsr3FPoOiohu1o7ZJDR8t3Vfhlpo0T6na3OMDfBg8x3zF0ne9LiGcDP6GJ/7lwKepBwmCvnsdJpZj1kpJx12t2pvEkm7GlEogb6iHTZoWjF2p2gqAFoZ4D5qllNZ9SxvVFQVjICllEv34bcrfteGmknpsU+Mc7wdjEuvmO2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923063; c=relaxed/simple;
-	bh=09SyK5r/P9n+Beu+pmBHhdk02BIJkQ+zPdGY8S+fkJw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jbf6K4IyEPcfBlT3vvIM+D0csXh87LAxBiTCxGVc3rCIl/3g4NtcbFCy7BaK73KGFEhXDctM1O7EN50QCcqQup8BJKTfe8Jggm6BfC1MuerdzHsdkV1d+yAmfSneQ8TiHtLC9dx3vqG/DkCXASw4LJpw8wDfSsOwJbgnYwkhj6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36422f71c3fso9568265ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 07:04:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707923061; x=1708527861;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O3LH6TBYOOzcaF8RvQJ7tLm9fKBFbm0Mfdb4zQWz77g=;
-        b=PhTgm/i8p9OqL2Ef/66ymBAwNqqMQSscMO4AdBQHyxm7Y9g5rK9e6+z4TQ2UCUjkzT
-         pSHDrG6z4OUv8Pix3fPmbL0fUxv83b0i0jPjG8ucIDYDZFUx3/TLW142tToi1D29TVAv
-         PcMGURbAZtSVGMmNP4fKHxah9clQGfMqiVh6qtRBsWpZWKm+uuNVrk7kfbZTzbjRVbNB
-         PZOdnZ4GeaD7rGaTPZS6ZZfUl+IsPU3G3XmlB5jiROU5esNl8FfmjonKhu1JxLm2qONl
-         crrU3NSz99mkIwkVyJ3HJXS16ybrw5+yMsqvnOHYF4wW7QRQ8kM8TnGPQsBeqAJoUp0r
-         fYpw==
-X-Gm-Message-State: AOJu0Yx7Gw4ZZw93HJHNl0SjBkmyJ0ACAMUXhJjtWsYyWN9/D2HZXrW1
-	SE1j3BGxJT9yYc75l2UAR4roJw8OsiVRHVmtAHXOzyNFhaFPgdc4i3hQvPJ5+97F1cM1j0WBb1z
-	VS6EymCsPFh0BKmPiliYEZOn7tK8GuZnXvuMHd28q6ByAHrhflsPjuoEL5A==
-X-Google-Smtp-Source: AGHT+IEzw7z+AvohmDX4e1SLnYoxthXdIQd/0SB5vSxXsMVMPTZMaT/OKhm2ybzsBBTA90Tio0uVBTa5Egfcqdhtktgzh5KH+w5F
+	s=arc-20240116; t=1707923105; c=relaxed/simple;
+	bh=77hqZacp7RPt/Y7Aykf062O5VL0oTkoRQ9q8TQoSnXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hlaeMRgpzD2VNI2kW2R7Er+aMEBLTQ5WkFUprDfEvBF4wR8+b6yJXuFeKn72Fy4mzMiFslKQLq1opAJR6P3B1k/dID2vqRdDXo1Javu4moc9rOD/yggamlzNzhYrq/tNbG3mC9yRjaRU/hjeKF2a6Su1UafoypAZ8v2w3q6g6DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 403091 invoked by uid 1000); 14 Feb 2024 10:04:56 -0500
+Date: Wed, 14 Feb 2024 10:04:56 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+Cc: tern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+  linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+  quic_ppratap@quicinc.com, quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Subject: Re: [PATCH] usb-storage: Add US_FL_FIX_INQUIRY quirk for Intenso
+ Twist Line USB 3.2
+Message-ID: <39cd8789-7764-4904-8cb9-21f239b3c04c@rowland.harvard.edu>
+References: <20240214111721.18346-1-quic_selvaras@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218a:b0:363:a059:670b with SMTP id
- j10-20020a056e02218a00b00363a059670bmr182822ila.4.1707923054430; Wed, 14 Feb
- 2024 07:04:14 -0800 (PST)
-Date: Wed, 14 Feb 2024 07:04:14 -0800
-In-Reply-To: <000000000000b8f8610609479fa3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6947d061158d228@google.com>
-Subject: Re: [syzbot] Test for fd7b34375c1c8ce29c93
-From: syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214111721.18346-1-quic_selvaras@quicinc.com>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Wed, Feb 14, 2024 at 03:17:21AM -0800, Selvarasu Ganesan wrote:
+> The Intenso Twist Line USB 3.2 flash drive fails to respond to the
+> INQUIRY data stage request for a 36 bulk in request from the host. This
+> commit adds the US_FL_FIX_INQUIRY flag to fake the INQUIRY command for
+> this device, preventing a storage enumeration failure.
+> 
+> USBMON log:
+> ffffff8a3ee06a00 3192811972 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+> ffffff8a3ee06a00 3192862051 C Ci:2:009:0 -2 0
+> ffffff8a3ee06a00 3192862185 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+> ffffff8a3ee06a00 3192912299 C Ci:2:009:0 -2 0
+> ffffff8a3ee06e00 3193040068 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> ffffff8a3ee06e00 3193040214 C Ci:2:003:0 0 4 = 880b0700
+> ffffff8a3ee06e00 3193040279 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+> ffffff8a3ee06e00 3193040427 C Ci:2:002:0 0 4 = 00010000
+> ffffff8a3ee06e00 3193040470 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+> ffffff8a3ee06e00 3193040672 C Ci:2:002:0 0 4 = 03050000
+> ffffff892b309500 3193824092 S Ci:2:009:0 s a1 fe 0000 0000 0001 1 <
+> ffffff892b309500 3193824715 C Ci:2:009:0 0 1 = 00
+> ffffff892b309500 3193825060 S Bo:2:009:2 -115 31 = 55534243 01000000 24000000 80000612 00000024 00000000 00000000 000000
+> ffffff892b309500 3193825150 C Bo:2:009:2 0 31 >
+> ffffff8b8419d400 3193825737 S Bi:2:009:1 -115 36 <
+> ffffff8a3ee06400 3194040175 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> ffffff8a3ee06400 3194040372 C Ci:2:003:0 0 4 = 880b0700
+> ffffff89bee5b100 3194040591 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+> ffffff89bee5b100 3194040681 C Ci:2:002:0 0 4 = 00010000
+> ffffff89bee5b100 3194040999 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+> ffffff89bee5b100 3194041083 C Ci:2:002:0 0 4 = 03050000
+> ffffff8a3ee06a00 3195040349 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
 
-***
+This is very surprising.  A mass-storage device that doesn't respond to 
+INQUIRY commands won't work with Windows or Mac OSX.  Have you tried 
+testing the device with those operating systems to see what they send 
+and how it responds?
 
-Subject: Test for fd7b34375c1c8ce29c93
-Author: syoshida@redhat.com
-
-#syz test
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 93ecfceac1bc..fd20aae30be2 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -1227,7 +1227,7 @@ static void sk_psock_verdict_data_ready(struct sock *sk)
- 		rcu_read_lock();
- 		psock = sk_psock(sk);
- 		if (psock)
--			psock->saved_data_ready(sk);
-+			sk_psock_data_ready(sk, psock);
- 		rcu_read_unlock();
- 	}
- }
-
+Alan Stern
 
