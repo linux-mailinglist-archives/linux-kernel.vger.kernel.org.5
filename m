@@ -1,76 +1,114 @@
-Return-Path: <linux-kernel+bounces-64938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDF28544E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:19:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D5B8544E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 10:19:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E921F2AACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:19:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25B121C215E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 09:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7081173D;
-	Wed, 14 Feb 2024 09:19:00 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9935612B8A;
+	Wed, 14 Feb 2024 09:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGX+vX+j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049AB12B61
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF98112B6F
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 09:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707902340; cv=none; b=uCKVLhYoBANEcZp65+QRE2jD3ODrmZsV3EfC/IBY5/qhs+PGwRPOwbqi2NhViILdTRgeQptdleA8TMQ5QflVTnfLAVQ+4Di+H4vdqm9WmJD+Aj3omNAuyYA/BNGvpD39oIuI91R3YFyQoMWUCZIrrIqx6J8rWv3eI2Fy2K+JWXg=
+	t=1707902354; cv=none; b=l9yEHIHhyL4ouVxB4HUnIeA4nejR6axAZZbPukQ0JKecIdVUjWGT8N2sZhbAykHPMm6kXAK8ye5dL81HrhiCYl4VIY2ip4Dyh8nl1S2AZct8e8PzDhDUWBG/AtK3ZT6qOszSNvyBbWQeDZaAjloyWm4gRcux5IwZqSRo34uyTjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707902340; c=relaxed/simple;
-	bh=gWbUd0drnRSDrqgqJIa+9c4urnKTHYxtuJvzbpSWmIo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cnBxS56WIXGrzECvfHYxTdZs9CbcT/9sZeru0m0XIhz+5TXDUoPi9rX7+Px9hdQZLzb2OgqHJ+ruzAV0g3/cOkWKgON0uDUVIBZwzl9+XNcZgHFqxOwqe6k4KBieTnerFwJ9bsrlXbKQfijuClH48Kzgqs3pLULZyGVBnTGM3cI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c488098701so11077639f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 01:18:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707902338; x=1708507138;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gWbUd0drnRSDrqgqJIa+9c4urnKTHYxtuJvzbpSWmIo=;
-        b=Y1UsAUZeraKcNetmGKaCoYpx6Im9XawVJ1x6lqe9oe+BI3K3X2X2oLOM63wcdgRepf
-         189MLwXcXSSTs4wUOKcxkzn2jTQRcdskoycYm8xY2PT8NtFoW1DeWDml5mXt3P5d4K55
-         SzWGdWDtQ3ECxwnNnwCZ4NSH0qterTVCz98XBQg81VhB2xWtzjpiMp9oH7L/M3c3CCJZ
-         OyU8mEh9WQmQF6FWMhs368dtinxoAyA6iZ0/CR9I9RzdNYpNjFNlnVgFHiyLODcRy+qX
-         ukwuLIQBussUKXUxCgGZSyEFdcsunhLnN9JwagnagFN3EEDb8Pg3hBgoCnA+WQjxn9C3
-         AKfg==
-X-Gm-Message-State: AOJu0YxMZDiccEOTeLnOtfMX0brYTlKJ81djVh6LcS3X/611gzYUVaky
-	UYTeC82h8iThyjl7u2TKnRnKLVIV1i3QNxv4sQhdKlFDIsEJu9A+p8oL0sJXrYgzVWDUH72xk6W
-	6nH8fmoBBazho08dNxuOKPtEjpFO4aEzuKApLUE5BzfiV1kYRJot2/LZVxg==
-X-Google-Smtp-Source: AGHT+IFXVGkWLQi0Atk6MC6pZu/s3FpmjZsd4gVvKtLm36/j1vbsteGFPODF5/vR5C4RtKqHrznURdmHHrln0b6yySTIRcjjxJ3+
+	s=arc-20240116; t=1707902354; c=relaxed/simple;
+	bh=YCSAwDQum/HxDd2CoT/zfQABImWt9YwxCQNEzNNOs6o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GTJUqJTnXwB94vcb8KU7OeMT4P+y4BYOKzz2eSJYyU+ov5Dii2PsS9N7JcUQBmwnVu7FBzSiDxm5GoCflfdrNl6o2ViZjIybsudV6rPjJqrh2RR06QlzAd5UrFbnVtHQkBfsse+hiJZ6qC4v3eByA+kImi2torjtin4MeouPB88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGX+vX+j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D38C433C7;
+	Wed, 14 Feb 2024 09:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707902353;
+	bh=YCSAwDQum/HxDd2CoT/zfQABImWt9YwxCQNEzNNOs6o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OGX+vX+jqWd4FMHHYyQs7KvfeIWQXq1ET9WH4GMh4nM/EhaJ/n2zF99u0VXsLZgrj
+	 3T16McQ+pNGc7vqJFEp2tPHoMRjrzaKwHisxxuPoZ5k2lFmj+W3A9ldEh7OXjlSdBS
+	 N6f41/3AKiOQdCkLbbpUb+8oVxFYRI0G+KxGSnIkwPWFSAEuj7B24mL2r7plqCs4Od
+	 z9ofPvVPtrQA/S4DWaWAfADk6auEhY2MHTXLNf72xShUkWCBBwmRsT5/rAKQkxVuGk
+	 o64HlApoifdeC5kjuP/ahD/6L/E2o19Fq8owNeYIFs7d4svhK5Esdl64v0nsk04Qdl
+	 na15RMV3D7Q9A==
+Date: Wed, 14 Feb 2024 09:19:09 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Andreas Schwab <schwab@suse.de>
+Cc: linux-riscv@lists.infradead.org, Palmer Dabbelt <palmer@dabbelt.com>,
+	Yunhui Cui <cuiyunhui@bytedance.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: use KERN_INFO in do_trap
+Message-ID: <20240214-exclusion-pluck-fcb6352a8393@spud>
+References: <mvmh6ic1y75.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a09:b0:360:134:535e with SMTP id
- s9-20020a056e021a0900b003600134535emr98559ild.1.1707902338123; Wed, 14 Feb
- 2024 01:18:58 -0800 (PST)
-Date: Wed, 14 Feb 2024 01:18:58 -0800
-In-Reply-To: <000000000000d42dae0611477922@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002cd15c06115400d6@google.com>
-Subject: Re: [syzbot] #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
- for-kernelci
-From: syzbot <syzbot+ebbab3e04c88fa141e6b@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7nijc44WcYvCtDli"
+Content-Disposition: inline
+In-Reply-To: <mvmh6ic1y75.fsf@suse.de>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-***
+--7nijc44WcYvCtDli
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Subject: #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-Author: kadlec@blackhole.kfki.hu
+On Tue, Feb 13, 2024 at 10:59:58AM +0100, Andreas Schwab wrote:
+> Print the instruction dump with info instead of emergency level like the
+> rest of the output when printing the information for an unhandled signal.
 
+I'm not entirely sure that this is true, __show_regs() prints with
+KERN_DEFAULT, but this certainly is more consistent than it was before.
+Dumping at EMERG doesn't make sense to me though, so
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  arch/riscv/kernel/traps.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index a1b9be3c4332..142f5f5168fb 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -121,7 +121,7 @@ void do_trap(struct pt_regs *regs, int signo, int cod=
+e, unsigned long addr)
+>  		print_vma_addr(KERN_CONT " in ", instruction_pointer(regs));
+>  		pr_cont("\n");
+>  		__show_regs(regs);
+> -		dump_instr(KERN_EMERG, regs);
+> +		dump_instr(KERN_INFO, regs);
+>  	}
+> =20
+>  	force_sig_fault(signo, code, (void __user *)addr);
+
+
+--7nijc44WcYvCtDli
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZcyFjQAKCRB4tDGHoIJi
+0ocxAQDIDrzXGnsjXbqIAyAI1TJRyReiKYUuA7v74VxwywCPJgD8DRsTyGfmrBJF
+zc+tsX0xyLCpEcYQjJd9jXUpZ91/xgc=
+=uk/t
+-----END PGP SIGNATURE-----
+
+--7nijc44WcYvCtDli--
 
