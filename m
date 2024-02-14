@@ -1,177 +1,170 @@
-Return-Path: <linux-kernel+bounces-65976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBE985549C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:21:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 502278554A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 22:22:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 408151C22875
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:21:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBB80B23FB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 21:22:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A107C13F001;
-	Wed, 14 Feb 2024 21:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF9C13EFF4;
+	Wed, 14 Feb 2024 21:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E88bNEtL"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="bPl+nWhq"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C03213DB8A
-	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB6113EFEF
+	for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707945661; cv=none; b=dG8m6WzRTKecsYg3sH+0NAOsYkwBCBlAzxkRd15kx896UGHcox9q1bp1yAJd8mVQz2HvhuXk0/xjMNnfbLIEkNRGpwN4fNHb01QyQNxNPRr5Cr5+l4OI2g5AGEwsX2otO2BT067AD38+7UyitAs3nK1y9SY07h6v69CkiAms0P8=
+	t=1707945719; cv=none; b=nblm4t3NmPrjaX0NiO7nhrxTfV5VPx4W3lhrqScBnBKKvxh2L0/E7vnlIt5R0Ka/czeUBzWkLyAhyXYXQaByvThRK/a1KgAeQz1aUeDDDKk7/oOKSnOtqLjzKVNdg3RGMzFfJlDyCA3syCzNFxayeEtLz5AvNbFNHXC+HpE2G4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707945661; c=relaxed/simple;
-	bh=UH20tkUJPZTtnE+bVLwhS0oDXXvWrOablcK+6ybpZF8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=afD07rYE7frTtnfCcrPs2b+QxMsdCt+K5tLXqekD8mkqR/YaUW7yUTcfONcZ7zkHGpetXZ5rLMKtnzGIqUeou1pojaogCBE/6COpp5ia3QBWRIZAlbXF93YtN8CRLQfcrKf3u2pU3UxVLvYGMfD4+BotTgAYi3hW2FZX0pzkk1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E88bNEtL; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-511a04c837bso198766e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:21:00 -0800 (PST)
+	s=arc-20240116; t=1707945719; c=relaxed/simple;
+	bh=b0xMIcRt9SLSL0Q4PzKXSxEAiCcZcUoeIRlPO4qsUAY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VrubVh9b6WzV9wskAaG+N1EuTqcDzTuTM7iBhHCvhOtDybtp6PISxC2zBnGk5wxCxRyDQNQsbkOqHD6+osZv1vxLClqJaPy1M5It6yeRwQ5hhW+ZrnR2gcUm8kNJECNJOjsUYfaMiVrKWbU4hB9Ycj5upomIPcvLGM1spPSmzzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=bPl+nWhq; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607815b5772so2406697b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 13:21:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707945658; x=1708550458; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KOS2B7sbqxhq5r87RRG1TrTI32jzxgx2gbxZryh0k5k=;
-        b=E88bNEtL97yVZVZz8p+PQ7XWCH4i6plpMWfAlyDVX35zqJVlHQUq/pklvZvW7o7QDW
-         flG0flAZU+38fmy3jePSLUqyiTPEoeL9PkDBbm/NDwvsekzmBLLVACk9wZmFPyf0N2hw
-         GQpJBI3v0LBefbxo3IbNsLl5AbKTAR04Mk3SxbcojwtwJpk8QLAjTEyHagEfqzAAu3ow
-         faqnzJK10h8sY2vApYfUfJ4XeRgvK8tsEL3OVCaM3FiZa0276f4j1fkq72KHuRv7jcrJ
-         fBADUWjMetJugX7fLIc8Oo013zn2wyrpT6X1Ij6QC4nuf9QbwMmrbR0tY9WNNE5vmERj
-         KMCw==
+        d=paul-moore.com; s=google; t=1707945716; x=1708550516; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ludDExKUqMptEvphl/NE5ulFWudwk9xh8twHjzhcpOg=;
+        b=bPl+nWhq6aBeZ7cbSJ46V+E5Gzs5+Wt/QU83LXFm47Uest2ir9SF6GisGm3KrjiFRw
+         D/VxIEHk0xY7G+MC6kz3Zq2Ffx4j2naZg03wkFHINrhZIvIAud2kHg2CKffL+Jnzr6uo
+         Vsnc9KxYhGX1ThowbdztncNBEkBoVQmIR4Eix3MJ/GteXiiIhYohtfRC81+ITlAuNFUv
+         VaiOE2AYJ8gmwvtgctO9+OhI2e17f3H39B+IVWSGeLDDdOY63tFQ0gZlA7lvg4E+HOA7
+         N41/f0I/9sQkEquBGt7IAQ+ubz2r3MNGY4xg2usprjiJZlfWc4EyxeFhR9tMpzcTCiOu
+         O2QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707945658; x=1708550458;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KOS2B7sbqxhq5r87RRG1TrTI32jzxgx2gbxZryh0k5k=;
-        b=naMHScmihY3KMJNwJ5jGCuwKppUj9IVrAqSsQXKuJ/5xM9hIj/gsrhfBAPmFuaCbMX
-         vp7LS7ewd3NREBMAGlaJtuHtbNFxP371DFZ0bE6WqnUxKCIyfLyK5x68he45CxlLplDa
-         2A5NIRSxUOezF3kQ0Nh/GTlcfiak3lfJP201WxytZ6WCdCTtuHck04BZtQ/HTX3Zi7kA
-         rkrFOCABd1IabC7h3SIz7z3RUArWruhhebiQRzm9iYGKGUs9uNxUcQXXMcNqOL7+5JWm
-         zJzc8EM9U+/mw/vwQpoexShs089vEELs1Tc7NXcgF3G4mAuY/C1N11ItsSJ+BAAWMTYW
-         DwSw==
-X-Forwarded-Encrypted: i=1; AJvYcCWa3vJCL1tWeroM7hxIRM4qx08AIWSUqoR1DCv8GU99CEIS0wQ+o2rIepYqIe+8yoMfueXdZVwTdsCo8HxaXRi1o6DIArTZkPjeaFhR
-X-Gm-Message-State: AOJu0YwzAp3wWPXrMfDsyusge9fGDZO5/jP2OjSm+wtTBGowNt5hqhx9
-	1qGJzNt66VWNIQ32ZipvzvinJXBVExm9vC35N3Wa6M+oKXNUJUU4SpSNpO429oQ=
-X-Google-Smtp-Source: AGHT+IESSnAcoYGoUyHNkZHb6JzZCxOglkyOOBU1GX+rmYmsiuzPmbFGDYr5lywvK7ZqTp+8RlXZYA==
-X-Received: by 2002:a05:6512:2354:b0:511:940b:fc62 with SMTP id p20-20020a056512235400b00511940bfc62mr27362lfu.1.1707945658283;
-        Wed, 14 Feb 2024 13:20:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUpvVKqGEGGnhNvXeluHoQkMPQaJN6hxC2jAk15VH9Gua3GJH/JM21CZRj07Hi1c4NzVC6baHex9pWOcG+YMKMCwcnf4njUApyuUS7olSB0BHtSPvq6rR3ZudCE5qtQM/MkZlN+Gh8DEhkr9dvCzXOLdOs9rMJeg62UOvRPDifj7T4HNCJIr+rCjtGay6b3qg/oFO4A3aETiIrfciJD5hE3ZM/eJRf8dGi26pcBkEYxsi4HbydC5h6R0ZABUkS/T0V6DeRuAd8RdbrXd0wODs6WUfwUYP813cuhXumb3Cvz8R/HCRFT/J2wIpVzWxlwzq4A1zPJt57ESL9SaHZ3F5e+ILy1JPfXQaTC0KUGkQgEc11RKPVigY3I8Md1YbEI9AxrVLPQa+juP+QnWkNZlsVBtvwA8ZuXzse689jmrSAqCB1eQoOOG9/JckadZiRG5KpVS+wReXo1EsT7uaFPyLjLWCyUGxvWFsfnmI19Zh6O
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id vw7-20020a170907a70700b00a3d73e6b2f9sm294407ejc.46.2024.02.14.13.20.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 13:20:57 -0800 (PST)
-Message-ID: <ad20b872-0b50-4a16-b342-582d2f33eeca@linaro.org>
-Date: Wed, 14 Feb 2024 22:20:55 +0100
+        d=1e100.net; s=20230601; t=1707945716; x=1708550516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ludDExKUqMptEvphl/NE5ulFWudwk9xh8twHjzhcpOg=;
+        b=GWiugWRfN/oNVVvkbPP+hNM8d7aCLvO/3oHXaFuoe9ikbKRZFDn88Vo7O//w6sicPx
+         q+cDwBRKB0RbTCak04C8yOIyfuIyyq+LyLQ2QWTSHxFzsOUJexWRMm/4JRh4xomHz3Fp
+         1zt4yphx2wWn3c288bQkfStGf3DAbPeXQ84+SJx8cQWnMhL1XJSOCIK+9WOFxPz13LO+
+         0ppK8fYey1s3IWedpWjpv51c22nYmDxmt4e1VVFG0+irAZ/KACIYssOpQDI4Rjkeo8eC
+         nLDqeBhQIYTe9WcHHF7FxHBgMJdPwdXLPIEAlEeHbojQRikydf9wfSaiIlCmJJlJwwZU
+         pfjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdg7e1FrJMSS88IW3xy/T/5gRJOVl530qXyLOLm+vieCN20El7kujM9lPA2GqrkoDpBZDyNA2ox9zFdSfZhvwEW9iOaR0rUriCYDHk
+X-Gm-Message-State: AOJu0YzoteUjirWxXTDp+GCu6tgcqArxLsOrx9zDtj3rLaI3y4AIQNTP
+	JwykXrkqDCHvxP+OxiiqArBtCTPV3BAvxjJbnUgMXHqF4/PxRwlPYcIVyb7kPFmA8S55G5pAill
+	x5ztqoa08ctgEfr4X/4PjfIZBEDH48xNESzqK
+X-Google-Smtp-Source: AGHT+IGpDAmB1ikTVU1E5KjthEFFmc/sTniREdzcyKzjsKUMtOXwCK5kuZpdwNzeTiBcIUEmSY5KYid4S5OCYvYRXxc=
+X-Received: by 2002:a0d:d7c4:0:b0:607:75e7:a66a with SMTP id
+ z187-20020a0dd7c4000000b0060775e7a66amr2644503ywd.22.1707945716175; Wed, 14
+ Feb 2024 13:21:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 20/20] media: venus: pm_helpers: Use reset_bulk API
-Content-Language: en-US
-To: Philipp Zabel <p.zabel@pengutronix.de>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Dikshita Agarwal <quic_dikshita@quicinc.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-20-3dac84b88c4b@linaro.org>
- <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <a25224f5d28aa65e8bfd14fe0a8f599b9f9e3f40.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
+ <20240115181809.885385-13-roberto.sassu@huaweicloud.com> <305cd1291a73d788c497fe8f78b574d771b8ba41.camel@linux.ibm.com>
+ <CAHC9VhQ7DgPJtNTRCYneu_XnpRmuwfPCW+FqVuS=k6U5-F6pJw@mail.gmail.com>
+ <05ad625b0f5a0e6c095abee5507801da255b36cd.camel@huaweicloud.com>
+ <CAHC9VhR2M_MWHs34kn-WH3Wr0sgT09WKveecy7onkFhUb1-gEg@mail.gmail.com> <63afc94126521629bb7656b6e6783d6614ee898a.camel@linux.ibm.com>
+In-Reply-To: <63afc94126521629bb7656b6e6783d6614ee898a.camel@linux.ibm.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 14 Feb 2024 16:21:45 -0500
+Message-ID: <CAHC9VhQGiSq2LTm7TBvCwDB_NcMe_JjORLbuHVfC4UpJQi_N4g@mail.gmail.com>
+Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
+To: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, 
+	brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, 
+	kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, 
+	serge@hallyn.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, 
+	dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, 
+	eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, 
+	mic@digikod.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Stefan Berger <stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14.02.2024 14:31, Philipp Zabel wrote:
-> Hi Konrad,
-> 
-> On Fr, 2024-02-09 at 22:10 +0100, Konrad Dybcio wrote:
->> All of the resets are toggled together. Use the bulk api to save on some
->> code complexity.
->>
->> The delay between resets is now correctly determined by the reset
->> framework.
-> 
-> If this is a recent change, could you reference the commit?
+On Wed, Feb 14, 2024 at 3:07=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
+ote:
+> On Tue, 2024-02-13 at 10:33 -0500, Paul Moore wrote:
+> > On Tue, Feb 13, 2024 at 7:59=E2=80=AFAM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > On Mon, 2024-02-12 at 16:16 -0500, Paul Moore wrote:
+> > > > On Mon, Feb 12, 2024 at 4:06=E2=80=AFPM Mimi Zohar <zohar@linux.ibm=
+com> wrote:
+> > > > > Hi Roberto,
+> > > > >
+> > > > >
+> > > > > > diff --git a/security/security.c b/security/security.c
+> > > > > > index d9d2636104db..f3d92bffd02f 100644
+> > > > > > --- a/security/security.c
+> > > > > > +++ b/security/security.c
+> > > > > > @@ -2972,6 +2972,23 @@ int security_file_open(struct file *file=
+)
+> > > > > >       return fsnotify_perm(file, MAY_OPEN);  <=3D=3D=3D  Confli=
+ct
+> > > > >
+> > > > > Replace with "return fsnotify_open_perm(file);"
+> > > > >
+> > > > > >  }
+> > > > > >
+> > > > >
+> > > > > The patch set doesn't apply cleaning to 6.8-rcX without this
+> > > > > change.  Unless
+> > > > > there are other issues, I can make the change.
+> > > >
+> > > > I take it this means you want to pull this via the IMA/EVM tree?
+> > >
+> > > Not sure about that, but I have enough changes to do to make a v10.
+>
+> @Roberto:  please add my "Reviewed-by" to the remaining patches.
+>
+> >
+> > Sorry, I should have been more clear, the point I was trying to
+> > resolve was who was going to take this patchset (eventually).  There
+> > are other patches destined for the LSM tree that touch the LSM hooks
+> > in a way which will cause conflicts with this patchset, and if
+> > you/Mimi are going to take this via the IMA/EVM tree - which is fine
+> > with me - I need to take that into account when merging things in the
+> > LSM tree during this cycle.  It's not a big deal either way, it would
+> > just be nice to get an answer on that within the next week.
+>
+> Similarly there are other changes for IMA and EVM.  If you're willing to =
+create
+> a topic branch for just the v10 patch set that can be merged into your tr=
+ee and
+> into my tree, I'm fine with your upstreaming v10. (I'll wait to send my p=
+ull
+> request after yours.)  Roberto will add my Ack's to the integrity, IMA, a=
+nd EVM
+> related patches.  However if you're not willing to create a topic branch,=
+ I'll
+> upstream the v10 patch set.
 
-It's a series that recently landed in -next [1]
+I'm not a big fan of sharing topic branches across different subsystem
+trees, I'd much rather just agree that one tree or another takes the
+patchset and the others plan accordingly.  Based on our previous
+discussions I was under the impression that you wanted me to merge
+this patchset into lsm/dev, but it looks like that is no longer the
+case - which is okay by me.
 
-[...]
+Assuming Roberto gets a v10 out soon, do you expect to merge the v10
+patchset and send it up during the upcoming merge window (for v6.9),
+or are you expecting to wait until after the upcoming merge window
+closes and target v6.10?  Once again, either is fine, I'm just trying
+to coordinate this with other patches.
 
-> 
-> Since VIDC_RESETS_NUM_MAX is only 2, I don't think a separate
-> allocation is worth it.
-
-It's 2 today, anyway. I wanted to keep it flexible
-
-[...]
-
->> +	ret = reset_control_bulk_reset(res->resets_num, core->resets);
->> +	if (ret)
->> +		dev_err(core->dev, "Failed to toggle resets: %d\n", ret);
->>  
->> -err:
->>  	return ret;
-> 
-> Could be simplified to:
-> 
-> 	return reset_control_bulk_reset(res->resets_num, core-
->> resets);
-
-I intentionally kept the if (ret) to print a specific error message
-in case the call fails, this driver doesn't go a good job of telling
-the user/developer what went wrong.
-
-Konrad
+--=20
+paul-moore.com
 
