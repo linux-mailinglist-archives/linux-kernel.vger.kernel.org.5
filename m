@@ -1,261 +1,135 @@
-Return-Path: <linux-kernel+bounces-65414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58D52854C99
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:25:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 017EB854C97
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 16:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F3252847E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:25:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1FD71F2138F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 15:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55535D47E;
-	Wed, 14 Feb 2024 15:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bs1V3cMj"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EF05C90D;
+	Wed, 14 Feb 2024 15:24:45 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4D75C615;
-	Wed, 14 Feb 2024 15:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F36AB5C615;
+	Wed, 14 Feb 2024 15:24:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707924292; cv=none; b=FO8Cj9Fm8MgulVaYS/EhpbQnafYFX9zgKAt2NnTny5l6ETtDis90cjBPyM0TSSq2c9V9yyBjIF+g7+JFTpjaJLhpB4O9f+eJ4pkG13BvBXohOPUqGAWcA7Bu+3n7BSbSmwIm5vmmIzan8m6T403mF9JdM3RtQsJuC4Z53SU+cvI=
+	t=1707924285; cv=none; b=LiEh+jnjVNLmCKQEQHgBa3Ar96ycPyvinv/8PunXOcCQ5n/+ruSXBvHll0SxM+83OYnvu5GmAiT/Gmv+V+3+6scizq+koasZSOqWNLy4X/cpjbf3DypxqOQWL1aNtxdwPcmyvDjg2dHUbPTqrM2e+6Oi0qUhzqBjhAHw4g4J/w8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707924292; c=relaxed/simple;
-	bh=hsmgrocu2TlA5mNcB9avYgNTU+aJwAqfDaROUoUtFBI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=le6sBX5ZClNcDVvI6w00qICrFWfd3D6Pc66onizQHdpSOrCQcerLF0Mifyoz1Rsm7uKTJ/6IPUrU75t3SsACz1NWIv8FVRUfdyIJBWeQMb6ZlMOtC3cicWzEob1mFJKeKh9Gp5SJ35tmX0HpfhQ6B+5wN0Jtirz/K1J7LCGn3wU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bs1V3cMj; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d10d2da73dso21750011fa.1;
-        Wed, 14 Feb 2024 07:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707924289; x=1708529089; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fuwSFUqzOZOBAkEnYyxbOsr/zGOfZNawxJtBP6SyZdg=;
-        b=Bs1V3cMjjTGKL7zJpQ3ypVw5oQOft449/jK1+c1PHwu5weGFaGs/vi1nif5Km0q5UF
-         WowKBuouOBIWXZGplN8C8qKxCJaLR36FjWaNIFfdPxBbpjdKIHz+AgW9d9QTXt2E0wfJ
-         NEcA1894rihDgCFXj0Tjezgm9btQD3KZlu3m2DiuMOoqzYUuL1cgF01YA9AbbNoPVbDP
-         bqAkd7hX4Cuawut4DU0ZuCxg3cry1W4F01uTiX139d2EZsnUtlm545tbwUAvbR89gxw5
-         eRYQjIBv6B20yZLAl02zH39zR1skKS24pbs3gMSAGjJmhxfgzgFJDT4apmutUgZw+WGN
-         Fhpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707924289; x=1708529089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fuwSFUqzOZOBAkEnYyxbOsr/zGOfZNawxJtBP6SyZdg=;
-        b=LxCrgSNMwkM7XvFr6WYZEWM2V9r8pJQYnGBR45lIMSN89VAY1JMuWW/C0sg7AijlCj
-         OZ+xwFiFvun0wjX2vUkqBgF7KhQtzmUTC82AodyPxYWsvliJ2iD/tHHnhi1POgYmPStQ
-         j3bqqqntnFwsGyst9HaoSgwpa1wGptmj+txI3bj1Eyf7eB84s/YGz15hVQxchivESQgI
-         mkqMgP9KL9dtZViaaX6rFmZ5CQOYoH7F2GtjIasbKrp+qW8Ga9haF9vtt/47Ep4MnslB
-         MlT0nIoB2r8X4dvpGqBgZKDlanxsEZjlyTFUs0Y0EY1w3Nc82lc4oVbDy9/W7HfRi0C5
-         fHAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMVApru9MpyX/zAHrLMfSRtY6BYwXLoXRkW8gtxg91/YZKMk3GpVpUJv5OdiMReLQgoaoEcHsCh3vSfR+DT5nrrsr7fzkTcBnWpg==
-X-Gm-Message-State: AOJu0YyrY91J+qs3fD2VTuA7/l7PmgCXGqWNASis7kkA1KMEoZXO1KBK
-	MvSvb9/8PfdvJtrWeLcdSqwO1Lyo6JnIThn8XztJhGtK/kDCLSPnYxG8nFoVBuzc8WOTjc3HUhD
-	ZGc5gOcQZaBTeJ18HoP2cGXeTag==
-X-Google-Smtp-Source: AGHT+IG2va23w/89C0WPeIAZPgXAyjUpjpvM8HEUvRUre91O4NK5Yw/wausM2RYayzMAYIV8Ir2myA3y/iqTsms3dp8=
-X-Received: by 2002:a05:6512:32b2:b0:511:96d0:5ae1 with SMTP id
- q18-20020a05651232b200b0051196d05ae1mr2218236lfe.40.1707924288744; Wed, 14
- Feb 2024 07:24:48 -0800 (PST)
+	s=arc-20240116; t=1707924285; c=relaxed/simple;
+	bh=L5cnEPgQBCTKATmDrlFkB5ENVPxihI25y/FHUbAZsmc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=KKXRN0leKqSplbb8E1wFXYLgDUAS+Ez+kDZFt1ipgMCJmopXfi2oLI9LRSWRFHqA2Vz27FEXVnXcTNFfH7hRkMxlj5aj7Y4DYIYOPUEwxz90a6vcag4noMyvvD1y75hS52qMHAGgeHPpN7ZXbPf9bc9Zd/omh3KAlFCd3XuzLYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1613C433C7;
+	Wed, 14 Feb 2024 15:24:43 +0000 (UTC)
+Date: Wed, 14 Feb 2024 10:26:14 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Kalle Valo <kvalo@kernel.org>, Catalin
+ Marinas <catalin.marinas@arm.com>
+Subject: [PATCH] tracing: Inform kmemleak of saved_cmdlines allocation
+Message-ID: <20240214102614.1a1405be@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com> <20240213124143.1484862-24-ardb+git@google.com>
-In-Reply-To: <20240213124143.1484862-24-ardb+git@google.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Wed, 14 Feb 2024 10:24:37 -0500
-Message-ID: <CAMzpN2jt3nTmDJ4y6zRFJMSGTcD8eQJY_MjbsnJ7my3hH8d9HA@mail.gmail.com>
-Subject: Re: [PATCH v4 11/11] x86/startup_64: Drop global variables keeping
- track of LA57 state
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13, 2024 at 7:42=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
-> wrote:
->
-> From: Ard Biesheuvel <ardb@kernel.org>
->
-> On x86_64, the core kernel is entered in long mode, which implies that
-> paging is enabled. This means that the CR4.LA57 control bit is
-> guaranteed to be in sync with the number of paging levels used by the
-> kernel, and there is no need to store this in a variable.
->
-> There is also no need to use variables for storing the calculations of
-> pgdir_shift and ptrs_per_p4d, as they are easily determined on the fly.
->
-> This removes the need for two different sources of truth for determining
-> whether 5-level paging is in use: CR4.LA57 always reflects the actual
-> state, and never changes from the point of view of the 64-bit core
-> kernel. The only potential concern is the cost of CR4 accesses, which
-> can be mitigated using alternatives patching based on feature detection.
->
-> Note that even the decompressor does not manipulate any page tables
-> before updating CR4.LA57, so it can also avoid the associated global
-> variables entirely. However, as it does not implement alternatives
-> patching, the associated ELF sections need to be discarded.
->
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/x86/boot/compressed/misc.h         |  4 --
->  arch/x86/boot/compressed/pgtable_64.c   | 12 ----
->  arch/x86/boot/compressed/vmlinux.lds.S  |  1 +
->  arch/x86/include/asm/pgtable_64_types.h | 58 ++++++++------------
->  arch/x86/kernel/cpu/common.c            |  2 -
->  arch/x86/kernel/head64.c                | 33 +----------
->  arch/x86/mm/kasan_init_64.c             |  3 -
->  arch/x86/mm/mem_encrypt_identity.c      |  9 ---
->  8 files changed, 27 insertions(+), 95 deletions(-)
->
-> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/m=
-isc.h
-> index bc2f0f17fb90..2b15ddd0e177 100644
-> --- a/arch/x86/boot/compressed/misc.h
-> +++ b/arch/x86/boot/compressed/misc.h
-> @@ -16,9 +16,6 @@
->
->  #define __NO_FORTIFY
->
-> -/* cpu_feature_enabled() cannot be used this early */
-> -#define USE_EARLY_PGTABLE_L5
-> -
->  /*
->   * Boot stub deals with identity mappings, physical and virtual addresse=
-s are
->   * the same, so override these defines.
-> @@ -178,7 +175,6 @@ static inline int count_immovable_mem_regions(void) {=
- return 0; }
->  #endif
->
->  /* ident_map_64.c */
-> -extern unsigned int __pgtable_l5_enabled, pgdir_shift, ptrs_per_p4d;
->  extern void kernel_add_identity_map(unsigned long start, unsigned long e=
-nd);
->
->  /* Used by PAGE_KERN* macros: */
-> diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compre=
-ssed/pgtable_64.c
-> index 51f957b24ba7..ae72f53f5e77 100644
-> --- a/arch/x86/boot/compressed/pgtable_64.c
-> +++ b/arch/x86/boot/compressed/pgtable_64.c
-> @@ -9,13 +9,6 @@
->  #define BIOS_START_MIN         0x20000U        /* 128K, less than this i=
-s insane */
->  #define BIOS_START_MAX         0x9f000U        /* 640K, absolute maximum=
- */
->
-> -#ifdef CONFIG_X86_5LEVEL
-> -/* __pgtable_l5_enabled needs to be in .data to avoid being cleared alon=
-g with .bss */
-> -unsigned int __section(".data") __pgtable_l5_enabled;
-> -unsigned int __section(".data") pgdir_shift =3D 39;
-> -unsigned int __section(".data") ptrs_per_p4d =3D 1;
-> -#endif
-> -
->  /* Buffer to preserve trampoline memory */
->  static char trampoline_save[TRAMPOLINE_32BIT_SIZE];
->
-> @@ -125,11 +118,6 @@ asmlinkage void configure_5level_paging(struct boot_=
-params *bp, void *pgtable)
->                         native_cpuid_eax(0) >=3D 7 &&
->                         (native_cpuid_ecx(7) & (1 << (X86_FEATURE_LA57 & =
-31)))) {
->                 l5_required =3D true;
-> -
-> -               /* Initialize variables for 5-level paging */
-> -               __pgtable_l5_enabled =3D 1;
-> -               pgdir_shift =3D 48;
-> -               ptrs_per_p4d =3D 512;
->         }
->
->         /*
-> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compr=
-essed/vmlinux.lds.S
-> index 083ec6d7722a..06358bb067fe 100644
-> --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> @@ -81,6 +81,7 @@ SECTIONS
->                 *(.dynamic) *(.dynsym) *(.dynstr) *(.dynbss)
->                 *(.hash) *(.gnu.hash)
->                 *(.note.*)
-> +               *(.altinstructions .altinstr_replacement)
->         }
->
->         .got.plt (INFO) : {
-> diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/a=
-sm/pgtable_64_types.h
-> index 38b54b992f32..6a57bfdff52b 100644
-> --- a/arch/x86/include/asm/pgtable_64_types.h
-> +++ b/arch/x86/include/asm/pgtable_64_types.h
-> @@ -6,7 +6,10 @@
->
->  #ifndef __ASSEMBLY__
->  #include <linux/types.h>
-> +#include <asm/alternative.h>
-> +#include <asm/cpufeatures.h>
->  #include <asm/kaslr.h>
-> +#include <asm/processor-flags.h>
->
->  /*
->   * These are used to make use of C type-checking..
-> @@ -21,63 +24,50 @@ typedef unsigned long       pgprotval_t;
->  typedef struct { pteval_t pte; } pte_t;
->  typedef struct { pmdval_t pmd; } pmd_t;
->
-> -#ifdef CONFIG_X86_5LEVEL
-> -extern unsigned int __pgtable_l5_enabled;
-> -
-> -#ifdef USE_EARLY_PGTABLE_L5
-> -/*
-> - * cpu_feature_enabled() is not available in early boot code.
-> - * Use variable instead.
-> - */
-> -static inline bool pgtable_l5_enabled(void)
-> +static __always_inline __pure bool pgtable_l5_enabled(void)
->  {
-> -       return __pgtable_l5_enabled;
-> -}
-> -#else
-> -#define pgtable_l5_enabled() cpu_feature_enabled(X86_FEATURE_LA57)
-> -#endif /* USE_EARLY_PGTABLE_L5 */
-> +       unsigned long r;
-> +       bool ret;
->
-> -#else
-> -#define pgtable_l5_enabled() 0
-> -#endif /* CONFIG_X86_5LEVEL */
-> +       if (!IS_ENABLED(CONFIG_X86_5LEVEL))
-> +               return false;
-> +
-> +       asm(ALTERNATIVE_TERNARY(
-> +               "movq %%cr4, %[reg] \n\t btl %[la57], %k[reg]" CC_SET(c),
-> +               %P[feat], "stc", "clc")
-> +               : [reg] "=3D&r" (r), CC_OUT(c) (ret)
-> +               : [feat] "i"  (X86_FEATURE_LA57),
-> +                 [la57] "i"  (X86_CR4_LA57_BIT)
-> +               : "cc");
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-This should be more like _static_cpu_has(), where the runtime test is
-out of line in a discardable section, and the inline part is just a
-JMP or NOP.
+The allocation of the struct saved_cmdlines_buffer structure changed from:
 
-Brian Gerst
+        s = kmalloc(sizeof(*s), GFP_KERNEL);
+	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
+
+to:
+
+	orig_size = sizeof(*s) + val * TASK_COMM_LEN;
+	order = get_order(orig_size);
+	size = 1 << (order + PAGE_SHIFT);
+	page = alloc_pages(GFP_KERNEL, order);
+	if (!page)
+		return NULL;
+
+	s = page_address(page);
+	memset(s, 0, sizeof(*s));
+
+	s->saved_cmdlines = kmalloc_array(TASK_COMM_LEN, val, GFP_KERNEL);
+
+Where that s->saved_cmdlines allocation looks to be a dangling allocation
+to kmemleak. That's because kmemleak only keeps track of kmalloc()
+allocations. For allocations that use page_alloc() directly, the kmemleak
+needs to be explicitly informed about it.
+
+Add kmemleak_alloc() and kmemleak_free() around the page allocation so
+that it doesn't give the following false positive:
+
+unreferenced object 0xffff8881010c8000 (size 32760):
+  comm "swapper", pid 0, jiffies 4294667296
+  hex dump (first 32 bytes):
+    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
+  backtrace (crc ae6ec1b9):
+    [<ffffffff86722405>] kmemleak_alloc+0x45/0x80
+    [<ffffffff8414028d>] __kmalloc_large_node+0x10d/0x190
+    [<ffffffff84146ab1>] __kmalloc+0x3b1/0x4c0
+    [<ffffffff83ed7103>] allocate_cmdlines_buffer+0x113/0x230
+    [<ffffffff88649c34>] tracer_alloc_buffers.isra.0+0x124/0x460
+    [<ffffffff8864a174>] early_trace_init+0x14/0xa0
+    [<ffffffff885dd5ae>] start_kernel+0x12e/0x3c0
+    [<ffffffff885f5758>] x86_64_start_reservations+0x18/0x30
+    [<ffffffff885f582b>] x86_64_start_kernel+0x7b/0x80
+    [<ffffffff83a001c3>] secondary_startup_64_no_verify+0x15e/0x16b
+
+Link: https://lore.kernel.org/linux-trace-kernel/87r0hfnr9r.fsf@kernel.org/
+
+Fixes: 44dc5c41b5b1 ("tracing: Fix wasted memory in saved_cmdlines logic")
+Reported-by: Kalle Valo <kvalo@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_sched_switch.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/trace/trace_sched_switch.c b/kernel/trace/trace_sched_switch.c
+index e4fbcc3bede5..de4182224ea2 100644
+--- a/kernel/trace/trace_sched_switch.c
++++ b/kernel/trace/trace_sched_switch.c
+@@ -9,6 +9,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/uaccess.h>
+ #include <linux/ftrace.h>
++#include <linux/kmemleak.h>
+ #include <trace/events/sched.h>
+ 
+ #include "trace.h"
+@@ -190,6 +191,7 @@ static void free_saved_cmdlines_buffer(struct saved_cmdlines_buffer *s)
+ 	int order = get_order(sizeof(*s) + s->cmdline_num * TASK_COMM_LEN);
+ 
+ 	kfree(s->map_cmdline_to_pid);
++	kmemleak_free(s);
+ 	free_pages((unsigned long)s, order);
+ }
+ 
+@@ -210,6 +212,7 @@ static struct saved_cmdlines_buffer *allocate_cmdlines_buffer(unsigned int val)
+ 
+ 	s = page_address(page);
+ 	memset(s, 0, sizeof(*s));
++	kmemleak_alloc(s, size, 1, GFP_KERNEL);
+ 
+ 	/* Round up to actual allocation */
+ 	val = (size - sizeof(*s)) / TASK_COMM_LEN;
+-- 
+2.43.0
+
 
