@@ -1,182 +1,136 @@
-Return-Path: <linux-kernel+bounces-65294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05954854ABB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:50:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AC7B854AC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 14:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 088202858D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:50:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54905B23980
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 13:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1702654BDE;
-	Wed, 14 Feb 2024 13:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E0854BDE;
+	Wed, 14 Feb 2024 13:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VQ3gJj7H"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rO2Y0P/r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DD81CABA;
-	Wed, 14 Feb 2024 13:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753ED1CABA;
+	Wed, 14 Feb 2024 13:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707918617; cv=none; b=IuJ8V84HkDw8Cr/PbJObI6EP6XPHDC6nNZMINAVycqnYJte+NY9zs+BhfSpPOXB6KmoCb0vizABG7iSHjuS9ea0JCl/a8i7N7jWrDFD6bVsL8xBJQXDxYbuHXR52oi8YsuHsa14pxZ2OiL/um6FRWJug2Bp1pNYPFWWKFtUrk7Y=
+	t=1707918707; cv=none; b=h+Yo1DRkcuCIptGZu+MhkwjXSuo2s/3ctEiDuR+fHFjlUifktHOjclxro0Wk4aYochd0cuPREkrszIkhh99FmGSstqdtboNl9nSnC7SsqbAUkc5huyksK13u0PtNV4sk19eBWkd7M+MNvgj0V1wlQYZ0OYcN709EmL/iK5erRBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707918617; c=relaxed/simple;
-	bh=2zSiHcUofHHkfA9c7NZI3mbaPTePHSRW8IdwMe4QS0s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=awHCTEdRWInwmzgUPCFY1IFFD/piPWaXyWCFRjrWzuGKmy1seZXd/iYHQ4FrOu+nHWGCEdTivuo7Q8tGkNYDkXkrSSYBEq3unYscfljggLuSo1JBlsT1+VbxDPYMCWYcRO/oJ4sOtFlhWq8O22PcrQCF3fT38c4hfIYxWz9RoH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VQ3gJj7H; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707918615; x=1739454615;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2zSiHcUofHHkfA9c7NZI3mbaPTePHSRW8IdwMe4QS0s=;
-  b=VQ3gJj7HR63l+c8MAGxNWgdYLLPeDrT4LcS6j+NrpCOvYIWHeVohgs1W
-   E667x3W2B121nsy6lmxqyxd7TVxZz1Dghl6JIVjr5COtvsgdkREDzsaJs
-   PU+3kX1jUw1//cwe0lvSvDzRINMfSa0g5u9e1EQJmoaYLd2moXjSZL75u
-   y6n7WvaGw4GTqwA6EvreReYw43wk0gTgCszacjmjBwVH4xe2mZKy7J2hO
-   fe175yQWBsXyKyYoT6B7FORgODVhnVnnwGysrRjCJvOJEUJcAkQhtC6uR
-   d7KS+iFPhxmnamogDncNzX6NvYo7uLns/UtazlVcYHuKnBZubZblhxKAK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="2104930"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="2104930"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 05:50:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="935616681"
-X-IronPort-AV: E=Sophos;i="6.06,159,1705392000"; 
-   d="scan'208";a="935616681"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Feb 2024 05:50:12 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id D3940195; Wed, 14 Feb 2024 15:50:10 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rengarajan S <rengarajan.s@microchip.com>,
-	linux-serial@vger.kernel.org,
+	s=arc-20240116; t=1707918707; c=relaxed/simple;
+	bh=Qq4RI3/eNvGIvnkvbEhKzEkeUXbVPZq7+5c0G9BM++I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LA93RMMLJwUrJ9peN0K4SSJ5/9Tp6Jnse0x7sVG+iABrQjbhOUGKJJ5SRUGWi8T5IHkrY7PoRExlNh1XU+Fhq9U/57LiiI90bLUvPsL5N6ojXFHjcuU+2QtpK5X+UWeGxvM9Szpw7H61DuOpDq5af8DmHeqesxJGht46SjbNgjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rO2Y0P/r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3A38C433F1;
+	Wed, 14 Feb 2024 13:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707918706;
+	bh=Qq4RI3/eNvGIvnkvbEhKzEkeUXbVPZq7+5c0G9BM++I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rO2Y0P/rIMwckSI4l41akdMEhZtEl+Kno80nEh/FOlEu7LHwVqzr0gHSGb4rxy46h
+	 wbIn8eX2z8YkjpATs0FKPYzqCLGxqDHTm8cq8aFD6cJcrHNFv38mSRCd6GK3LEcSaU
+	 iR6e45a8NtmMSeCggrS/dEcwl/FPrhMXzzm4LfIzJ3FRVh/ANgrmWP/c8fJr3sawIp
+	 u7gI3lmObcKNatscXsV6qohUPs/nwil/IKwjHFjnszp10/MitkFSNiZEwf0c465CDs
+	 wX+BNxgYVQfwmiCR7EhqC9Ij0lDBz3uRo3SirfmLB1C7ZPp1QbOyeoXwe3k5LGZsKV
+	 oL0mcq15CVDTQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1raFgD-000000005BW-1E73;
+	Wed, 14 Feb 2024 14:52:06 +0100
+Date: Wed, 14 Feb 2024 14:52:05 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: Rob Clark <robdclark@gmail.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Cc: Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
-	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] serial: 8250_pci1xxxx: Drop quirk from 8250_port
-Date: Wed, 14 Feb 2024 15:50:09 +0200
-Message-ID: <20240214135009.3299940-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+Subject: Re: drm/msm: DisplayPort regressions in 6.8-rc1
+Message-ID: <ZczFhVjHIm55JTfO@hovoldconsulting.com>
+References: <ZctVmLK4zTwcpW3A@hovoldconsulting.com>
+ <343710b1-f0f4-5c05-70e6-3c221cdc9580@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <343710b1-f0f4-5c05-70e6-3c221cdc9580@quicinc.com>
 
-We are not supposed to spread quirks in 8250_port module especially
-when we have a separate driver for the hardware in question.
+On Tue, Feb 13, 2024 at 10:00:13AM -0800, Abhinav Kumar wrote:
 
-Move quirk from generic module to the driver that uses it.
+> I do agree that pm runtime eDP driver got merged that time but I think 
+> the issue is either a combination of that along with DRM aux bridge 
+> https://patchwork.freedesktop.org/series/122584/ OR just the latter as 
+> even that went in around the same time.
 
-While at it, move IO to ->set_divisor() callback as it has to be from
-day 1. ->get_divisor() is not supposed to perform any IO as UART port:
-- might not be powered on
-- is not locked by a spin lock
+Yes, indeed there was a lot of changes that went into the MSM drm driver
+in 6.8-rc1 and since I have not tried to debug this myself I can't say
+for sure which change or changes that triggered this regression (or
+possibly regressions).
 
-Fixes: 1ed67ecd1349 ("8250: microchip: Add 4 Mbps support in PCI1XXXX UART")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_pci1xxxx.c | 25 ++++++++++++++++++-------
- drivers/tty/serial/8250/8250_port.c     |  6 ------
- 2 files changed, 18 insertions(+), 13 deletions(-)
+The fact that the USB-C/DP PHY appears to be involved
+(/soc@0/phy@88eb000) could indeed point to the series you mentioned.
 
-diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
-index 55eada1dba56..2fbb5851f788 100644
---- a/drivers/tty/serial/8250/8250_pci1xxxx.c
-+++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
-@@ -94,7 +94,6 @@
- #define UART_BIT_SAMPLE_CNT_16			16
- #define BAUD_CLOCK_DIV_INT_MSK			GENMASK(31, 8)
- #define ADCL_CFG_RTS_DELAY_MASK			GENMASK(11, 8)
--#define UART_CLOCK_DEFAULT			(62500 * HZ_PER_KHZ)
- 
- #define UART_WAKE_REG				0x8C
- #define UART_WAKE_MASK_REG			0x90
-@@ -227,13 +226,10 @@ static unsigned int pci1xxxx_get_divisor(struct uart_port *port,
- 	unsigned int uart_sample_cnt;
- 	unsigned int quot;
- 
--	if (baud >= UART_BAUD_4MBPS) {
-+	if (baud >= UART_BAUD_4MBPS)
- 		uart_sample_cnt = UART_BIT_SAMPLE_CNT_8;
--		writel(UART_BIT_DIVISOR_8, (port->membase + FRAC_DIV_CFG_REG));
--	} else {
-+	else
- 		uart_sample_cnt = UART_BIT_SAMPLE_CNT_16;
--		writel(UART_BIT_DIVISOR_16, (port->membase + FRAC_DIV_CFG_REG));
--	}
- 
- 	/*
- 	 * Calculate baud rate sampling period in nanoseconds.
-@@ -249,6 +245,11 @@ static unsigned int pci1xxxx_get_divisor(struct uart_port *port,
- static void pci1xxxx_set_divisor(struct uart_port *port, unsigned int baud,
- 				 unsigned int quot, unsigned int frac)
- {
-+	if (baud >= UART_BAUD_4MBPS)
-+		writel(UART_BIT_DIVISOR_8, port->membase + FRAC_DIV_CFG_REG);
-+	else
-+		writel(UART_BIT_DIVISOR_16, port->membase + FRAC_DIV_CFG_REG);
-+
- 	writel(FIELD_PREP(BAUD_CLOCK_DIV_INT_MSK, quot) | frac,
- 	       port->membase + UART_BAUD_CLK_DIVISOR_REG);
- }
-@@ -619,6 +620,17 @@ static int pci1xxxx_setup(struct pci_dev *pdev,
- 
- 	port->port.flags |= UPF_FIXED_TYPE | UPF_SKIP_TEST;
- 	port->port.type = PORT_MCHP16550A;
-+	/*
-+	 * 8250 core considers prescaller value to be always 16.
-+	 * The MCHP ports support downscaled mode and hence the
-+	 * functional UART clock can be lower, i.e. 62.5MHz, than
-+	 * software expects in order to support higher baud rates.
-+	 * Assign here 64MHz to support 4Mbps.
-+	 *
-+	 * The value itself is not really used anywhere except baud
-+	 * rate calculations, so we can mangle it as we wish.
-+	 */
-+	port->port.uartclk = 64 * HZ_PER_MHZ;
- 	port->port.set_termios = serial8250_do_set_termios;
- 	port->port.get_divisor = pci1xxxx_get_divisor;
- 	port->port.set_divisor = pci1xxxx_set_divisor;
-@@ -732,7 +744,6 @@ static int pci1xxxx_serial_probe(struct pci_dev *pdev,
- 
- 	memset(&uart, 0, sizeof(uart));
- 	uart.port.flags = UPF_SHARE_IRQ | UPF_FIXED_PORT;
--	uart.port.uartclk = UART_CLOCK_DEFAULT;
- 	uart.port.dev = dev;
- 
- 	if (num_vectors == max_vec_reqd)
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index c37905ea3cae..d59dc219c899 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2699,12 +2699,6 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
- 		max = (port->uartclk + tolerance) / 16;
- 	}
- 
--	/*
--	 * Microchip PCI1XXXX UART supports maximum baud rate up to 4 Mbps
--	 */
--	if (up->port.type == PORT_MCHP16550A)
--		max = 4000000;
--
- 	/*
- 	 * Ask the core to calculate the divisor for us.
- 	 * Allow 1% tolerance at the upper limit so uart clks marginally
--- 
-2.43.0.rc1.1.gbec44491f096
+> Thats why perhaps this issue was not seen with the chromebooks we tested 
+> on as they do not use pmic_glink (aux bridge).
+> 
+> So we will need to debug this on sc8280xp specifically or an equivalent 
+> device which uses aux bridge.
 
+I've hit the NULL-pointer deference three times now in the last few days
+on the sc8280xp CRD. But since it doesn't trigger on every boot it seems
+you need to go back to the series that could potentially have caused
+this regression and review them again. There's clearly something quite
+broken here.
+
+> On 2/13/2024 3:42 AM, Johan Hovold wrote:
+
+> > Since 6.8-rc1 the internal eDP display on the Lenovo ThinkPad X13s does
+> > not always show up on boot.
+
+> > 	[    6.007872] [drm:drm_bridge_attach [drm]] *ERROR* failed to attach bridge /soc@0/phy@88eb000 to encoder TMDS-31: -16
+	
+> > and this can also manifest itself as a NULL-pointer dereference:
+> > 
+> > 	[    7.339447] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+> > 	
+> > 	[    7.643705] pc : drm_bridge_attach+0x70/0x1a8 [drm]
+> > 	[    7.686415] lr : drm_aux_bridge_attach+0x24/0x38 [aux_bridge]
+> > 	
+> > 	[    7.769039] Call trace:
+> > 	[    7.771564]  drm_bridge_attach+0x70/0x1a8 [drm]
+> > 	[    7.776234]  drm_aux_bridge_attach+0x24/0x38 [aux_bridge]
+> > 	[    7.781782]  drm_bridge_attach+0x80/0x1a8 [drm]
+> > 	[    7.786454]  dp_bridge_init+0xa8/0x15c [msm]
+> > 	[    7.790856]  msm_dp_modeset_init+0x28/0xc4 [msm]
+> > 	[    7.795617]  _dpu_kms_drm_obj_init+0x19c/0x680 [msm]
+> > 	[    7.800731]  dpu_kms_hw_init+0x348/0x4c4 [msm]
+> > 	[    7.805306]  msm_drm_kms_init+0x84/0x324 [msm]
+> > 	[    7.809891]  msm_drm_bind+0x1d8/0x3a8 [msm]
+> > 	[    7.814196]  try_to_bring_up_aggregate_device+0x1f0/0x2f8
+> > 	[    7.819747]  __component_add+0xa4/0x18c
+> > 	[    7.823703]  component_add+0x14/0x20
+> > 	[    7.827389]  dp_display_probe+0x47c/0x568 [msm]
+> > 	[    7.832052]  platform_probe+0x68/0xd8
+> > 
+> > Users have also reported random crashes at boot since 6.8-rc1, and I've
+> > been able to trigger hard crashes twice when testing an external display
+> > (USB-C/DP), which may also be related to the DP regressions.
+
+Johan
 
