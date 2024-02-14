@@ -1,145 +1,112 @@
-Return-Path: <linux-kernel+bounces-65798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-65799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DC68551FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:22:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D693855202
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 19:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A60ED1F254AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:22:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5899E28BB9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Feb 2024 18:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E42128367;
-	Wed, 14 Feb 2024 18:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBBE12837B;
+	Wed, 14 Feb 2024 18:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="MjhLPVc7"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="geaqp6/G"
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7FA84FC8;
-	Wed, 14 Feb 2024 18:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6436C127B74;
+	Wed, 14 Feb 2024 18:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707934930; cv=none; b=InJNymaWay5pny0IIydhgBX1nIjKC5eFgmjOIqYddtcEY4qkm+VhVW59k0mkLL7AOrn/avbWLhcVHDc016JPd/X22BPv70TxXOCP2PpdZLLpsC7+fqzQpU/GwX9HKu2vjJMbhlHjZ78r3K8mfKESAajPs4Gk0XqThBmuKzcPGKQ=
+	t=1707934943; cv=none; b=ssmjPiXj8eVw/w+dLT12sbZwUgAicatgYgb/ePU8301LjGJKaEkK9RVljFgITEWCLQL8BWViWh/3u/aBByyVVBQ4s7MuGsAZM/VCkDHAOwmz83Ph1Y60FH8vV52y68/ro+FZY6ulftk3Z5wslIT3VDRWYG7GOcm70XyI4Z9krFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707934930; c=relaxed/simple;
-	bh=BlohAVdQg8aAH/rGOpb+k4F3aQG8n4xB4MOCoRmKlwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QEM9TEr04LEYK94v0L9/3loyT5XGM3vB3jqU6xpn3Ss574EsqlHZfCfYJXgX0EfpwG9y7EK0Hu29SYRWSX35ueKAGm5XuYUkvEHIsI7iH+fb5q3k+QboKFa5gBdt2PS2y55wlW2Y2iu04LS8BMM7rJA2UtC3ykyPQZNVcRXD3Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=MjhLPVc7; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9ACBA40E016C;
-	Wed, 14 Feb 2024 18:22:05 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id UgydcL41a98H; Wed, 14 Feb 2024 18:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1707934923; bh=p2c24939mDKGPdH1u5xSSWo661pqweRtr5XTtkyBFbo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MjhLPVc747FOTzTmEA0/xcn2DQ0Cxp6GbcTDTOzWA8OBwIXjkTNrQCiqgnE8vzIy3
-	 dDKeYst96NkCiGu37tiu0YcjieDyBcqCXP52C5aowrXWoT/Tdt03saDjXkY/VruF7P
-	 97zA0ZNe5kX8I9DTpwl/eV8TA0reAg46uZLJDlcppZY2muvtZhi8smQqMMU+R6B6kZ
-	 AtclW4XSJ2HvzKO7ahFQslP7YkelX7FjoNyKVyGWEycbIO9XqiYqQ0P7v25raITprI
-	 NVwOnxEtGNHrZhhkGR3l4DU70omHAmwlYYj1HyLosw1jv7SX+LPk+HMfstJRX8lg9F
-	 unuCW3/xfZPU3XE7VuYaMuecG/leUFc8WdZkcu4zNYDxm37/HehZ71ME8N2SF1aQ6r
-	 uZFZFUPL7gUHNHJV7fWTAAXFidh/NfWxFlOGLl5/LVtPO5AST6A6yfEj2Yk1uJwJlD
-	 WrDgz9KX8D+KH/OQRloR7Hlqg1/n9Rmx4nyO5fS2PRj9TLV0rItoL1KG82UmHSW7Km
-	 N4RUVdRLQkdU8BJatfm0Nt6uCZ+l6+N42RzgjPcnLflGKR8xFIWfeISXV96FwXFPaD
-	 /mTrWy+J6xuUly4cYo++OfZT3SnKaphRTNwnXlpgTXiSkF0T6HYX0Aqxiv7BZ2b7AS
-	 8SBClTS+kraSblHjcOL0hAkI=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	s=arc-20240116; t=1707934943; c=relaxed/simple;
+	bh=cxi0K/MaHmKgVzvoFzOwJIVgRtJ/p17H3LH1t03e15I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lSRQlEbR5NTUi3vvaWhEyTRsWNpR2IWkRJogUjjONquSl1+vGijyb36PNQvbwFBY+Qz5eit6Xt0/4JsEQdoVxtXoffd/d9ZjbvzUjuThqhkkMtjy+5pTmwxcHJB8AyKfHbSpkwQ4D2dHJEBU/ap8niGjrhsyU6irubVoFQnkAjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=geaqp6/G; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 39E2A40E01A9;
-	Wed, 14 Feb 2024 18:21:54 +0000 (UTC)
-Date: Wed, 14 Feb 2024 19:21:48 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com,
-	naveenkrishna.chatradhi@amd.com, sathyapriya.k@amd.com
-Subject: Re: [PATCH 2/2] RAS: Introduce the FRU Memory Poison Manager
-Message-ID: <20240214182148.GFZc0EvDru3gmS2jFL@fat_crate.local>
-References: <20240214033516.1344948-1-yazen.ghannam@amd.com>
- <20240214033516.1344948-3-yazen.ghannam@amd.com>
- <20240214092839.GBZcyHxzsaz9NcijyV@fat_crate.local>
- <76fe899b-73ea-4f6b-9821-84240d89b0cb@amd.com>
- <20240214175035.GKZcz9a0CieQSsMEmC@fat_crate.local>
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 8E7BB1A18DE;
+	Wed, 14 Feb 2024 19:22:15 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1707934936; bh=tJbAk1tSLxXQwFrYiEG2aQGZJ0OdusHW11rdVdqo1Ws=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=geaqp6/G7md2TmsavAUsI4+sweFqr6tph+mLkunwt57KrfLl0l568VIoLZ9J+8WXV
+	 Sc2MZPHxcQtHU4LJ59amKoBviPzCyL0uooAgStwFy4O1YVaPHHLFlOiiLKWDEhpEcb
+	 6U5bYPKSmDK+DNlwiOhlj2LU3wtqYTGKBCtC/2Nqq792MwBFNTAxgHTr96AOFJn8nf
+	 7pvC5kRnqVKzePShzkggY4ysSROZofcgpLj+RZY2dy+x/kD2XILZ41ruwGyuh8Y4bt
+	 aexbTONqgfDbUQ869P8q3MFkHDwjs5zZYZxWUurYEX+T0tdrfV+jM8fU8fh+xtS4ha
+	 YDQ5Oy4dwvbHg==
+Date: Wed, 14 Feb 2024 19:22:14 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Jonathan Corbet
+ <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND
+ 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter
+ Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
+ <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>, Kees Cook <keescook@chromium.org>, "Masami
+ Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
+ <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
+ <zegao2021@gmail.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>, Kai Huang <kai.huang@intel.com>, David
+ Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
+ (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
+ <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH v1 0/8] x86_64 SandBox Mode arch hooks
+Message-ID: <20240214192214.78734652@meshulam.tesarici.cz>
+In-Reply-To: <c424618c-d6c6-430a-8975-8851a617204e@intel.com>
+References: <20240214113516.2307-1-petrtesarik@huaweicloud.com>
+	<c424618c-d6c6-430a-8975-8851a617204e@intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240214175035.GKZcz9a0CieQSsMEmC@fat_crate.local>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 06:50:35PM +0100, Borislav Petkov wrote:
-> On Wed, Feb 14, 2024 at 09:28:54AM -0500, Yazen Ghannam wrote:
-> > > That's a good thing to have here.
+On Wed, 14 Feb 2024 06:52:53 -0800
+Dave Hansen <dave.hansen@intel.com> wrote:
+
+> On 2/14/24 03:35, Petr Tesarik wrote:
+> > This patch series implements x86_64 arch hooks for the generic SandBox
+> > Mode infrastructure.  
 > 
-> Up to here. __packed still needs clarification.
+> I think I'm missing a bit of context here.  What does one _do_ with
+> SandBox Mode?  Why is it useful?
 
-Yap, that is plain old __packed, as we just established:
+I see, I split the patch series into the base infrastructure and the
+x86_64 implementation, but I forgot to merge the two recipient lists.
+:-(
 
----
+Anyway, in the long term I would like to work on gradual decomposition
+of the kernel into a core part and many self-contained components.
+Sandbox mode is a useful tool to enforce isolation.
 
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index 99499a37e9d5..a67a4b67cf9d 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -53,8 +53,6 @@
- #include <asm/cpu_device_id.h>
- #include <asm/mce.h>
- 
--#pragma pack(1)
--
- /* Validation Bits */
- #define FMP_VALID_ARCH_TYPE		BIT_ULL(0)
- #define FMP_VALID_ARCH			BIT_ULL(1)
-@@ -78,7 +76,7 @@ struct cper_sec_fru_mem_poison {
- 	u32 fru_id_type;
- 	u64 fru_id;
- 	u32 nr_entries;
--};
-+} __packed;
- 
- /* FRU Descriptor ID Types */
- #define FPD_HW_ID_TYPE_MCA_IPID		0
-@@ -93,7 +91,7 @@ struct cper_fru_poison_desc {
- 	u64 hw_id;
- 	u32 addr_type;
- 	u64 addr;
--};
-+} __packed;
- 
- /* Collection of headers and sections for easy pointer use. */
- struct fru_rec {
-@@ -101,10 +99,7 @@ struct fru_rec {
- 	struct cper_section_descriptor	sec_desc;
- 	struct cper_sec_fru_mem_poison	fmp;
- 	struct cper_fru_poison_desc	entries[];
--};
--
--/* Reset to default packing */
--#pragma pack()
-+} __packed;
- 
- /*
-  * Pointers to the complete CPER record of each FRU.
+In its current form, sandbox mode is too limited for that, but I'm
+trying to find some balance between "publish early" and reaching a
+feature level where some concrete examples can be shown. I'd rather
+fail fast than maintain hundreds of patches in an out-of-tree branch
+before submitting (and failing anyway).
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Petr T
 
