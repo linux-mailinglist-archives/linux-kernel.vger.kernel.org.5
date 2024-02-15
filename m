@@ -1,179 +1,181 @@
-Return-Path: <linux-kernel+bounces-67399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E69856AEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:25:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 456F8856AEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE821C225B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:25:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1011C21F7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0432A136997;
-	Thu, 15 Feb 2024 17:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EBC136999;
+	Thu, 15 Feb 2024 17:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b="1VDP+dix"
-Received: from cmx-torrgo001.bell.net (mta-tor-005.bell.net [209.71.212.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="KBtxMHqC"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BDC13698B;
-	Thu, 15 Feb 2024 17:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.71.212.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4CE136661
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:25:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017927; cv=none; b=ACPPePT6WejiKzsUb+nf49jabthcYULm/f+zHJNdGekW/TlUuL4RtZdBSE+Ot19NaQKQRveLuNER8C05QLzGqXqn+81OLxt9V/7k6oVhQ407LV7V2GqSrq+k9kIW+etiilSc+Jcx8RjAdD7uSCAYUTiyl2pXnGqCCbJoeQJ1xA0=
+	t=1708017951; cv=none; b=lkbp0zHLGyQC1yvdVIhnupcBMLoze++YSuq/WWTDEymxPxMZ0cbU7IeZATKmmapuPsRBZjvBQ0gVJrOAhBYYvlzUi9SOQsQy827jz5am6fVqCc/vHacE8gJurfNqFWRz/4RPrQ3deHKDu7rvf04yH3Kqwqp7EQg5EuMEd5gP4ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017927; c=relaxed/simple;
-	bh=YGF+xg9Zw2HpAEfB/LLNS8J3xoEcd0UnFW42VadKhTk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L8z8VSzpyFvjV2E2E6y6eym/y3JoMgSlfVg6kq3LVXG0X6/dXKNoar8vkFzo5+ujZ+QDo8QJ39dBnqiT9pN/WgvB0hXjUWwppKwnDecdwXX4JennF/fkvgt2lTdwzbgKWpCdA+5MRDZBSfWwZZzK2vh7bAcKj8apR7kjiL3DC6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net; spf=pass smtp.mailfrom=bell.net; dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b=1VDP+dix; arc=none smtp.client-ip=209.71.212.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bell.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bell.net; s=selector1; t=1708017925; 
-        bh=zaQaPX04GVXGx4EuNSfjTExmNxEJBUFZt8AtN9ccB6o=;
-        h=Message-ID:Date:MIME-Version:Subject:To:References:From:In-Reply-To:Content-Type;
-        b=1VDP+dixUeia2IAQ9nB44o3THF6eg+UXEi6JjWzO2edlDbvoFxxbfOfXiW+tuVLSlmuHGtKqFQQ6yB3dNyPaMioiNOIjtt7blMrsiGUQ09MJPr7aptIdokZF5oNi6X82QbGL8g9HBPvjEl/eMTnRUq3t/DnEI9RYALb74/LPr7+mjj1hTuKaFgUKOOOJ32I1rG3qhXlFLvk4nqVDd24X/JwcQt1paJvGjeN4ao6gDfFJ1sP7/FRUb7kCJALj+9StLtChltJaHUE5TKgiWy9G9AjFYUbwMCpA0TrzxygBA8fRqEM/P3+JPD0Ss4hINOW7pfeBMb+ILdPMrVBKBZgjqA==
-X-RG-SOPHOS: Clean
-X-RG-VADE-SC: 0
-X-RG-VADE: Clean
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 65CD68AA000FB6F2
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgedvledrvddtgddutddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuefgnffnpdfqfgfvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhohhhnucffrghvihguucetnhhglhhinhcuoegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvtheqnecuggftrfgrthhtvghrnhepjeelffffjeehgffgueehleegfeegueeigedtkeffgeduueetffegffejudekgfeunecukfhppedugedvrdduvdeirdduuddvrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheplgduledvrdduieekrddvrdeglegnpdhinhgvthepudegvddruddviedrudduvddrvdeffedpmhgrihhlfhhrohhmpegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvthdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepffgrvhhiugdrnfgrihhghhhtseetvegfnfetuedrvefqofdprhgtphhtthhopeflrghmvghsrdeuohhtthhomhhlvgihsehhrghnshgvnhhprghrthhnvghrshhhihhprdgtohhmpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegthhgrrhhlihgvsehrihhvohhsihhntgdrtghomhdprhgtphhtthhopegurghvvgdrrghnghhlihhnsegs
-	vghllhdrnhgvthdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from [192.168.2.49] (142.126.112.233) by cmx-torrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
-        id 65CD68AA000FB6F2; Thu, 15 Feb 2024 12:25:03 -0500
-Message-ID: <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
-Date: Thu, 15 Feb 2024 12:25:03 -0500
+	s=arc-20240116; t=1708017951; c=relaxed/simple;
+	bh=v5JNUzQrlc/Ze3O2xGRTThncYAxGfewIlMkjSF3Zios=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jQb+xkDYc9WLLy3rIcrHfXADmhxCAqYcf8Q9A3SwGvz1Pbo7yGdBj7nDOoHc6sIt38GziGVhXr8IpEl6AtlTSiKnpgzN+Jg5oF24tYM7iYdpH0HImU6NS5lyKPxmlGT0eRyg+3rLM7qgO0WAEfhvj5BzfAjwjmV8Xuqs3/qiTxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=KBtxMHqC; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d0cdbd67f0so15644461fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:25:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1708017946; x=1708622746; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cuuhvY1knev/MlE0VuD+OUGRlkZI73nAFQGnaq1zL0U=;
+        b=KBtxMHqCVMh5xPPcV57Mh1w2jL5TdymJRJhKtgk+r9qRE2j2Ew/E5a6q5yl/+JI1Lm
+         c442uJREe0uBvvW6fTWe/XhPPNkHn8lnC8WQvTp9ypWAH83+2NiXN4Vyd41OC978M5fu
+         cr+W5XV4wtlj0K4jrUaIlQTqYdbSI3rrVJh+NbCZUN6z1gmjIe0FsO/ANwjJrU4riEMf
+         12YuKUkkv88qI5iHrrQKQVbLCOjrYwaqD1Nlbw5mvAZJZM2iQawpR9CnhQGPEQ1GRMwI
+         NTjj24IChQLnX91BEQ4elM2ztFQRi5k9OrfCRDY2IOKDndUq56vgduCHoAKtsYZqCcBl
+         +mEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708017946; x=1708622746;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuuhvY1knev/MlE0VuD+OUGRlkZI73nAFQGnaq1zL0U=;
+        b=e7MbzvrAEvSuIp8A+b2wIc8s7w6uNPo/NS+3yLDX8j1NEz1P07RZza4kXzsq5P5f11
+         QoMt2u3ggdxF+E+kAsfvN/OepWYPywHO6QT/jfRkIZk1oPJfAP45bzDwP9DRjovuZfds
+         YsmTTbIT6v2Imf352vtuAYFuBJr6a/iy4sa16cIL97lArCKJya2/rgYRZ0kDbq83CVNl
+         ryilGWOhAABH2Q3sDEGeuk5rlVR++qDxqJCeEM/ycH8CKWce7xqnbtgGQqADmM0JdZpR
+         0Wp4OMDNBmkrH6OrOUIdjWZP0X45QjIZ2NHkQfd67IL39KUD22P/eERAkkd/FuNnKR+7
+         ZUjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXpyDZjDq4xYWNQLath4uS4ve9lOFXNXlHnyYPt3VI3z34CxqfxykzXFnNJYse7ymAl/dsvab62JDhibMc21QVfR0aJsp2o7A6bSuBk
+X-Gm-Message-State: AOJu0Yz/5W18wZysCJBQIlDYkT604Pl4P+elvwwowIQKKKZ4hpvcNXrW
+	9zcGeO5bIiaq9N/uTgIdK0yuSGb6DpmOY16WcG+BMU/L+a3+Tb6w93kCsuUyckKpBhYMaPvmTnE
+	2
+X-Google-Smtp-Source: AGHT+IHzhRx80m5IBOtXuSj/+pQiwLJQtSioIzJZd/nWxl+IXjeO2sK+5VQ6E+UDzeoRGOcklOLO0A==
+X-Received: by 2002:a2e:bb85:0:b0:2d1:1e3c:5739 with SMTP id y5-20020a2ebb85000000b002d11e3c5739mr1696957lje.31.1708017945695;
+        Thu, 15 Feb 2024 09:25:45 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 18-20020a05600c231200b00411a0477755sm5667334wmo.9.2024.02.15.09.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 09:25:44 -0800 (PST)
+Date: Thu, 15 Feb 2024 18:25:42 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llu@fiberby.dk
+Subject: Re: [PATCH net-next 2/3] net: sched: cls_api: add filter counter
+Message-ID: <Zc5JFhLI_KZtdy5P@nanopsycho>
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <20240215160458.1727237-3-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, David Laight
- <David.Laight@ACULAB.COM>, Charlie Jenkins <charlie@rivosinc.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
- <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
- <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
- <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
- <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
-From: John David Anglin <dave.anglin@bell.net>
-Autocrypt: addr=dave.anglin@bell.net; keydata=
- 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
- T70V9SSrl2hiw38vRzsl
-In-Reply-To: <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240215160458.1727237-3-ast@fiberby.net>
 
-On 2024-02-15 12:06 p.m., Guenter Roeck wrote:
-> On 2/15/24 08:51, John David Anglin wrote:
->> On 2024-02-15 10:44 a.m., Guenter Roeck wrote:
->>> On 2/15/24 02:27, David Laight wrote:
->>>> ...
->>>>> It would be worthwhile tracking this down since there are
->>>>> lots of unaligned data accesses (8-byte accesses on 4-byte aligned addresses)
->>>>> when running the kernel in 64-bit mode.
->>>>
->>>> Hmmm....
->>>> For performance reasons you really don't want any of them.
->>>> The misaligned 64bit fields need an __attribute((aligned(4)) marker.
->>>>
->>>> If the checksum code can do them it really needs to detect
->>>> and handle the misalignment.
->>>>
->>>> The misaligned trap handler probably ought to contain a
->>>> warn_on_once() to dump stack on the first such error.
->>>> They can then be fixed one at a time.
->>>>
->>>
->>> Unaligned LDD at unwind_once+0x4a8/0x5e0
->>>
->>> Decoded:
->>>
->>> Unaligned LDD at unwind_once (arch/parisc/kernel/unwind.c:212 arch/parisc/kernel/unwind.c:243 arch/parisc/kernel/unwind.c:371 
->>> arch/parisc/kernel/unwind.c:445)
->>>
->>> Source:
->>>
->>> static bool pc_is_kernel_fn(unsigned long pc, void *fn)
->>> {
->>>         return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
->> This looks wrong to me.  Function descriptors should always be 8-byte aligned.  I think this
->> routine should return false if fn isn't 8-byte aligned.
+Thu, Feb 15, 2024 at 05:04:43PM CET, ast@fiberby.net wrote:
+>Maintain a count of filters per block.
 >
-> Below you state "Code entry points only need 4-byte alignment."
+>Counter updates are protected by cb_lock, which is
+>also used to protect the offload counters.
 >
-> I think that contradicts each other. Also, the calling code is,
-> for example,
->     pc_is_kernel_fn(pc, syscall_exit)
+>Signed-off-by: Asbj�rn Sloth T�nnesen <ast@fiberby.net>
+>---
+> include/net/sch_generic.h |  2 ++
+> net/sched/cls_api.c       | 20 ++++++++++++++++++++
+> 2 files changed, 22 insertions(+)
 >
-> I fail to see how this can be consolidated if it is ok
-> that syscall_exit is 4-byte aligned but, at the same time,
-> must be 8-byte aligned to be considered to be a kernel function.
-In the above call, syscall_exit is treated as a function pointer. It points to an 8-byte aligned
-function descriptor.  The descriptor holds the actual address of the function.  It only needs
-4-byte alignment.
+>diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+>index 46a63d1818a0..7af0621db226 100644
+>--- a/include/net/sch_generic.h
+>+++ b/include/net/sch_generic.h
+>@@ -427,6 +427,7 @@ struct tcf_proto {
+> 	 */
+> 	spinlock_t		lock;
+> 	bool			deleting;
+>+	bool			counted;
+> 	refcount_t		refcnt;
+> 	struct rcu_head		rcu;
+> 	struct hlist_node	destroy_ht_node;
+>@@ -476,6 +477,7 @@ struct tcf_block {
+> 	struct flow_block flow_block;
+> 	struct list_head owner_list;
+> 	bool keep_dst;
+>+	atomic_t filtercnt; /* Number of filters */
+> 	atomic_t skipswcnt; /* Number of skip_sw filters */
+> 	atomic_t offloadcnt; /* Number of oddloaded filters */
+> 	unsigned int nooffloaddevcnt; /* Number of devs unable to do offload */
+>diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+>index 397c3d29659c..c750cb662142 100644
+>--- a/net/sched/cls_api.c
+>+++ b/net/sched/cls_api.c
+>@@ -411,11 +411,13 @@ static void tcf_proto_get(struct tcf_proto *tp)
+> }
+> 
+> static void tcf_chain_put(struct tcf_chain *chain);
+>+static void tcf_block_filter_cnt_update(struct tcf_block *block, bool *counted, bool add);
+> 
+> static void tcf_proto_destroy(struct tcf_proto *tp, bool rtnl_held,
+> 			      bool sig_destroy, struct netlink_ext_ack *extack)
+> {
+> 	tp->ops->destroy(tp, rtnl_held, extack);
+>+	tcf_block_filter_cnt_update(tp->chain->block, &tp->counted, false);
+> 	if (sig_destroy)
+> 		tcf_proto_signal_destroyed(tp->chain, tp);
+> 	tcf_chain_put(tp->chain);
+>@@ -2364,6 +2366,7 @@ static int tc_new_tfilter(struct sk_buff *skb, struct nlmsghdr *n,
+> 	err = tp->ops->change(net, skb, tp, cl, t->tcm_handle, tca, &fh,
+> 			      flags, extack);
+> 	if (err == 0) {
+>+		tcf_block_filter_cnt_update(block, &tp->counted, true);
+> 		tfilter_notify(net, skb, n, tp, block, q, parent, fh,
+> 			       RTM_NEWTFILTER, false, rtnl_held, extack);
+> 		tfilter_put(tp, fh);
+>@@ -3478,6 +3481,23 @@ int tcf_exts_dump_stats(struct sk_buff *skb, struct tcf_exts *exts)
+> }
+> EXPORT_SYMBOL(tcf_exts_dump_stats);
+> 
+>+static void tcf_block_filter_cnt_update(struct tcf_block *block, bool *counted, bool add)
 
-Descriptors need 8-byte alignment for efficiency on 64-bit parisc. The pc and gp are accessed
-using ldd instructions.
+Can't you move this up to avoid forward declaration?
 
-Dave
 
--- 
-John David Anglin  dave.anglin@bell.net
-
+>+{
+>+	lockdep_assert_not_held(&block->cb_lock);
+>+
+>+	down_write(&block->cb_lock);
+>+	if (*counted != add) {
+>+		if (add) {
+>+			atomic_inc(&block->filtercnt);
+>+			*counted = true;
+>+		} else {
+>+			atomic_dec(&block->filtercnt);
+>+			*counted = false;
+>+		}
+>+	}
+>+	up_write(&block->cb_lock);
+>+}
+>+
+> static void tcf_block_offload_inc(struct tcf_block *block, u32 *flags)
+> {
+> 	if (*flags & TCA_CLS_FLAGS_IN_HW)
+>-- 
+>2.43.0
+>
 
