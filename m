@@ -1,169 +1,112 @@
-Return-Path: <linux-kernel+bounces-66993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E31F8564AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:43:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97971856490
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5343BB2F40E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:36:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAAD31C219ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F31130AF7;
-	Thu, 15 Feb 2024 13:36:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C66130AEE;
+	Thu, 15 Feb 2024 13:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gywuzh24"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="IY4OVNa0"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B8612BF3D;
-	Thu, 15 Feb 2024 13:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50CB12BF3D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708004179; cv=none; b=gicxQXISt3sKlCxGrWlHZwBJLiK6zMCBbZBMGuW6iDFcgieGjplTrYONMUpPTbGUq1Wd07DZxDHcn9lrnrUCzqQ0niK1dKBSZu/O3JkoD2H12fMOQaEi2Ggw3D2xNRku1lTaTsIg9G2XfXdwJsz52cNj4K6/mdgGD5KAsBzquJI=
+	t=1708004205; cv=none; b=GdJdXZWueyrRLyLS79JJCJ+i3UebWyvQKVybR70MNEHAXfck9bHBOSdHcRMZzX5ooEjSwz34Xc3tuptKRDwFNwIJgwcqKF0RDLip4LWIqFc+B/NdaAFRCkGDEtbEmAvr2POdfRhvDC9fsd/eMBKj92SSDVwI96wl/XUKu3kIO0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708004179; c=relaxed/simple;
-	bh=wKwVgYFc688UeLNGciCD/DyW+yTu3pIXDuMz+D2rtjg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2rwiaJWTh6ea7Mdp0ixt7Bir3cem8oOcIf2Xs/iDpWbdeqdjA6rY2lEhSlO3kXLNB4jkS6XuUExn84nJ+NmDs0ZBog60mIfltqpbMTrIlVruzlFARa3WsYL5rfyNXNWsvoZwqku91FMGf2uV2BoryTB+5ko/m0lELRRPKsfy+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gywuzh24; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708004178; x=1739540178;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=wKwVgYFc688UeLNGciCD/DyW+yTu3pIXDuMz+D2rtjg=;
-  b=gywuzh24ibV/kWXPBHYJiMDdmkU4YhqjvGX+vlF+C7ro7sF6ZyD4k2NO
-   bSzfEXzdfNygtynjYmtR8EYjlQ9pVDAbSv72QU2tdTqxZXaUeCUwpacDw
-   3zEXmRJisUDGj4d3s9y1QFY+wFWSezlrMDbi+MPlHMkx2cZBs8LRnsUZ0
-   8OfQtL9UhvjX1ted14EulZoDb5aJapVj6C9bvb4myy3v2/FcqlKby0qjj
-   AxCHxBTbHnb8tJIM58Pi4lK1GzmMZVO4drQ6l96iIMH9BwgZHn4ArAU/O
-   lmqx5LVIGOZjXxXfJvuYSyLMLk2CVDybrJMWKgGvuFt9l3bmqW4iQoh7V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2234316"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="2234316"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:36:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935667293"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="935667293"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:36:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rabuP-00000004ngF-005z;
-	Thu, 15 Feb 2024 15:36:13 +0200
-Date: Thu, 15 Feb 2024 15:36:12 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
-Message-ID: <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
-References: <20240208070529.28562-1-raag.jadav@intel.com>
- <20240208070529.28562-2-raag.jadav@intel.com>
- <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
- <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
- <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
- <Zcz-csPY5x29DP7v@smile.fi.intel.com>
- <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
+	s=arc-20240116; t=1708004205; c=relaxed/simple;
+	bh=+qesoz2V42RgfnQKUGiS5UYjIIFWsK48uyeINtqXE/A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BWDoUwr9QXaCGJxIsGFy8vs3NcaWSR+7xAOosbcf3u6uB5X5JefwLTQGrguHxDiMReihs4mHjQAQx6s9tt7l8nQ9CmNsDy1b3O8b06jxrkCNn6ZUazAUq+2/ueLlL0zpSrwNAuL+cjvMGHPySZOvHvW30X/SMtNUBAxqCLC8CIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=IY4OVNa0; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-561f78f1ba1so940146a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:36:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1708004201; x=1708609001; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kSAPglM2wZ+xLjfRrMYJKrvwCFVOGwCTlmuHoEDAY3I=;
+        b=IY4OVNa0hihlnbwP70YHsBdcI2BzPlAKrsg/qokuZRhUvP9s82dAMSHruJ2z6p/3GA
+         KV3PD7KImFwQsfHaNMpgdBNZVtVYG7LshSc799Owvsn8V8yzoZBi267aAjG2rsCaE3US
+         mVSlhjM/cDhdG+l139cr4O4sWiS2F67SXD25oL7MHhBW61d7olpTMDmJVVFhHpUovZfO
+         VeeJ9WoIWTRDZ1ngyOqwX/Ia+q7xUZBE0FCWMr77kQx+dsq92Xu5xHVyZvDtJqH+DqVM
+         959w0q5tBVNY8XOjZjrXtVbbeatTnRNewH6skM1WkZzCJ1sJjNrqXkp/FIXCnAi1MeyS
+         fQCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708004201; x=1708609001;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kSAPglM2wZ+xLjfRrMYJKrvwCFVOGwCTlmuHoEDAY3I=;
+        b=u3UcQWvshaQNzL+J9VBjyJapqwKnTSbvjxsZ3o8/pv+p9ttJAUF+PbSl3G9gOlIM58
+         MSCK4xXG+5Gb3ujhLD4ihwE1yh6o+FFbll9TuJzveb0hQArPIf0relvfcsfx/pkAI8dK
+         +EdU/wdI+KDgl5OvmHohZG2HuXtlGxVrYYXEkay6ZqszNhAzMdDWyomcmAuzLPmGUWQs
+         aRDuXdxZetnKPdOpmxJMJG6ScjMPgD8ppmM/0F8QCZj2dur1jQLft+oyQ3bgHM5JCtVX
+         z077GuwoL3NcQnPZ6T/8ymwrlRqYgk1ersxJCpE5ofOd9y6ZoChDEnIMYBRcmhBCj3Yp
+         suyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyG0Q0awL0Bz+C7Sh0bUaoVdfYkcK4/9lRHvlp1O8dnHGethKD31VCyhIIbTR+4sw0INEQS900utFiLx0uzoFMCrnziWFQEsXWVB7t
+X-Gm-Message-State: AOJu0YwzMZPk5zrolNaNJnU3woFqV3fXEgzmAthzhS1tJ1BcjeL4RX8y
+	H9XMXCoam6QUdY1gEcjz/GwQF7yywfIVsCxGa9zCRBBRRA1lPbaL0hrkHPmj3KQ=
+X-Google-Smtp-Source: AGHT+IFWwIf8yc8YxM5C/1EMQUcZSLV33IwQsH6D1RK7xkbn7UQ2/OWS+wm0Vwr/2+XrMlsQVNBxUw==
+X-Received: by 2002:a17:907:76e5:b0:a3d:8035:fdd1 with SMTP id kg5-20020a17090776e500b00a3d8035fdd1mr1467797ejc.76.1708004200904;
+        Thu, 15 Feb 2024 05:36:40 -0800 (PST)
+Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
+        by smtp.gmail.com with ESMTPSA id w24-20020a170906131800b00a3d22f53210sm542350ejb.188.2024.02.15.05.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 05:36:40 -0800 (PST)
+From: Max Kellermann <max.kellermann@ionos.com>
+To: hpa@zytor.com,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is disabled
+Date: Thu, 15 Feb 2024 14:36:31 +0100
+Message-Id: <20240215133631.136538-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 15, 2024 at 10:22:57AM +0100, Uwe Kleine-König wrote:
-> On Wed, Feb 14, 2024 at 07:54:58PM +0200, Andy Shevchenko wrote:
-> > On Wed, Feb 14, 2024 at 06:45:48PM +0100, Uwe Kleine-König wrote:
-> > > On Thu, Feb 08, 2024 at 07:04:33PM +0200, Andy Shevchenko wrote:
-> > > > On Thu, Feb 08, 2024 at 08:46:44AM +0100, Uwe Kleine-König wrote:
-> > > > > On Thu, Feb 08, 2024 at 12:35:25PM +0530, Raag Jadav wrote:
-> > > > > > pcim_iomap_table() fails only if pcim_iomap_regions() fails. No need to
-> > > > > > check for failure if the latter is already successful.
-> > > > > 
-> > > > > Is this really true? pcim_iomap_table() calls devres_alloc_node() which
-> > > > > might fail if the allocation fails. (Yes, I know
-> > > > > https://lwn.net/Articles/627419/, but the rule is still to check for
-> > > > > errors, right?)
-> > > > 
-> > > > We do not add a dead code to the kernel, right?
-> > > > 
-> > > > > What am I missing?
-> > > > 
-> > > > Mysterious ways of the twisted PCI devres code.
-> > > > Read the above commit message again :-)
-> > > > 
-> > > > For your convenience I can elaborate. pcim_iomap_table() calls _first_
-> > > > devres_find() which _will_ succeed if the pcim_iomap_regions() previously
-> > > > succeeded. Does it help to understand how it designed?
-> > > 
-> > > I assume you're saying that after pcim_iomap_regions() succeeded it's
-> > > already known that pcim_iomap_table() succeeds (because the former
-> > > already called the latter).
-> > > 
-> > > I'm still concerned here. I agree that error checking might be skipped
-> > > if it's clear that no error can happen (the device cannot disappear
-> > > between these two calls, can it?), 
-> > 
-> > It depends. If you call it in some asynchronous callbacks which may be run
-> > after PCI device disappears, then indeed, it's problematic. But you probably
-> > will have much bigger issue at that point already.
-> > 
-> > In ->probe() it's guaranteed to work as I suggested (assuming properly working
-> > hardware).
-> 
-> Assuming properly working hardware allows to drop many error checks :-)
+When KVM is disabled, the POSTED_INTR_* macros do not exist, and the
+build fails.
 
-Yes, and we have some checks are being not implemented ("dropped"), but here is
-the thing: this is a PCI device and surprise removal (while it's not possible
-for the on-die devices) should be handled differently, not related to this code
-anyway. Malicious hardware is out of scope either.
+Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ arch/x86/entry/entry_fred.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> > > but for me as an uninitiated pci code
-> > > reader, I wonder about
-> > > 
-> > > 	dwc->base = pcim_iomap_table(pci)[0];
-> > > 
-> > > without error checking. (OTOH, if pcim_iomap_table() returned NULL, the
-> > > "[0]" part is already problematic.)
-> > 
-> > Seems it's your problem, many drivers use the way I suggested.
-> > 
-> > > I'd like to have a code comment here saying that pcim_iomap_table()
-> > > won't return NULL.
-> > 
-> > Why? It's redundant. If you use it, you should know this API.
-> > So, the bottom line, does this API needs better documentation?
-> 
-> If a driver author knows it while writing the code, it's obvious. But if
-> the driver author looks again in 2 years or someone else (e.g. me with
-> the PWM maintainer hat on and with little pci experience) that knowledge
-> might be faded.
-
-This is widely used pattern. Anybody who works with Git should know how
-to use `git grep` tool. If in doubts, always can ask in the mailing lists.
-I still consider it redundant.
-
-P.S. That's what you call "bikeshedding" (done by yourself here)?
-
-
-
+diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+index ac120cbdaaf2..660b7f7f9a79 100644
+--- a/arch/x86/entry/entry_fred.c
++++ b/arch/x86/entry/entry_fred.c
+@@ -114,9 +114,11 @@ static idtentry_t sysvec_table[NR_SYSTEM_VECTORS] __ro_after_init = {
+ 
+ 	SYSVEC(IRQ_WORK_VECTOR,			irq_work),
+ 
++#if IS_ENABLED(CONFIG_KVM)
+ 	SYSVEC(POSTED_INTR_VECTOR,		kvm_posted_intr_ipi),
+ 	SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	kvm_posted_intr_wakeup_ipi),
+ 	SYSVEC(POSTED_INTR_NESTED_VECTOR,	kvm_posted_intr_nested_ipi),
++#endif
+ };
+ 
+ static bool fred_setup_done __initdata;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
 
