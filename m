@@ -1,136 +1,127 @@
-Return-Path: <linux-kernel+bounces-67310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C0C856995
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:30:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB0385699B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7F74B21FDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:29:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A5512927F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC673134CC4;
-	Thu, 15 Feb 2024 16:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10485135419;
+	Thu, 15 Feb 2024 16:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1nLqiiP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="labn/+XR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A738134739;
-	Thu, 15 Feb 2024 16:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C43134743
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014586; cv=none; b=OlnIfmsBvlwfw7jypr3N7ekLu8NLNIdMgvF1iQtmnXJnH3HnxQzof1MiDi72IUNJS0PVzGeziFGF5Ot62fvP49s1ORxSAXy+OGVVwlA/927H595tY+haW1ZH2X0QAE3RJN0WRuXRg4mAcRYmtT7skVwWGhiy8VLw3oytvfLAKjU=
+	t=1708014686; cv=none; b=eQdDzLuUeIwUob71caQYMyuJaSsxL0uA+hrneE4lsq7gaNx8Tweeac9YY987dzEkbKmwCBekL9tOYK1Eq1J7olD1wILE+flkiEDcEu0aAXMql8fXjX4jzOxZFQorRnADVMjCNsA3ZH3vg+TEfKO06CNwsYgO11i7PJmGlXMAWEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014586; c=relaxed/simple;
-	bh=xpMCGqwTxgUJyuySQdpmgx/+9jeLznpOpOU3fi5NUlw=;
-	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
-	 In-Reply-To; b=I9hbivp3L8Uy7L7ZSJszxn/YoHV+WzYtYkfExvk6npCKHwbazFTvBWJdzqsVvc7cAvqhhHzWvn59+xa5CR+UhhtorcTv44YXhozAIn/1Up3b8xB/wuoPaHXo+VG7N/Qsc0UvQXSJEPySVbH0snqEJUqiqFQqikdpF9mPq4EJOmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s1nLqiiP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC3ECC433F1;
-	Thu, 15 Feb 2024 16:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708014585;
-	bh=xpMCGqwTxgUJyuySQdpmgx/+9jeLznpOpOU3fi5NUlw=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=s1nLqiiPVk4EeZbWMEb93s1oFad4QsucBcR5DtkpsSl2RCAwsjmYK662tUsXHN3kj
-	 aBVTiNgVslX8e75hX4vznqC1kL+2z126Gczfvu6oHByBV1XA68r/h90+Tf2AUSOWgt
-	 exQblEzu2gpC9V7wT71ewdnaNu9MzdmsDh8wY9WBy4iS5baUFrM6libK3aif+p5EKr
-	 5D6KTuXxvk53i9Wruq2TVqq9UtRcGiB3PB8s2LpnnLRDJ5TUL/4hbzJgdnB7PfYX7v
-	 RZueBdOKMBr/REVPprmArSHuRnZoyDZKjNtWi70cyqmyi1Wzia9pG8zZ3FLGKB2Vip
-	 PBca0AuNItqsg==
-Content-Type: multipart/signed;
- boundary=d8fe15f87fbebbfb1a05ad0234592c7c1f29a5ff64a6a3d68c8a574e83bd;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date: Thu, 15 Feb 2024 17:29:42 +0100
-Message-Id: <CZ5SMYXNTTOP.3MZ8P9N5BY4SH@kernel.org>
-Subject: Re: [PATCH v2 3/3] arm64: dts: ti: Add support for TI J722S
- Evaluation Module
-Cc: <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <u-kumar1@ti.com>, <j-choudhary@ti.com>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Vignesh Raghavendra" <vigneshr@ti.com>, "Vaishnav Achath"
- <vaishnav.a@ti.com>, "Andrew Davis" <afd@ti.com>, <nm@ti.com>,
- <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
- <kristo@kernel.org>, <robh+dt@kernel.org>
-X-Mailer: aerc 0.16.0
-References: <20240206100608.127702-1-vaishnav.a@ti.com>
- <20240206100608.127702-4-vaishnav.a@ti.com>
- <CZ386ITQ83KH.1KNOV5MXLXPBF@kernel.org>
- <45bd5618-2e22-4715-9724-92f1d4b84608@ti.com>
- <40e15761-70b3-4343-a4b3-653bc4e6637e@ti.com>
-In-Reply-To: <40e15761-70b3-4343-a4b3-653bc4e6637e@ti.com>
+	s=arc-20240116; t=1708014686; c=relaxed/simple;
+	bh=noOgBvZR7qeQQFGTupjWTHAu2G8dM4lHizJLkWAvvb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NnANUgHqljB8/n1Tpw+ZU5ws9k+MeKhdJ/a9xTaWqeYlW8I+iiFFEOhqcPyYIUFOn+BpxzIM5ncSIXC7e/wvjZgqzAv3v/6+vGuiXiIPPk6/+SyaTsf0np9on992Hn/gI9F8siopKxpVKeqTQ5mo5XcwTSe2QDx9/qI+ar1wnfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=labn/+XR; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708014685; x=1739550685;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=noOgBvZR7qeQQFGTupjWTHAu2G8dM4lHizJLkWAvvb4=;
+  b=labn/+XRXDs8LTeFdRO1epMBSPmLYjdLnRMdXnZwubbWviP1Go8cn2UZ
+   8Mq+eLjCZtYmGjZz5vIT/lLf+j+yCUxMLz4Ljq4lrqw+7+0PcKLl4eEH6
+   aVD8pStPs3sruviKdZlY1y9BSV66UP8lsjAIqrX2V9ZXBbx2Bzjaa7vDy
+   qCzhe16+xgZsnGkHuLOWEVXYcirIVPfiJd8SZkbg1TKM1NzU9sfYCCBYe
+   rcn8KV7+As9DuIHMrayLPXJ8hJ2TIcOxY7SdLZy5Uba5PsYET7WCjpOHs
+   3pg2yPwSms0XahRQWMfqYAgsaZqXD4jZ5qVq6WwiQ7TDge4owriNsfxS2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="24575960"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="24575960"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 08:31:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="34620382"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 15 Feb 2024 08:31:19 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1raedU-0000dU-2l;
+	Thu, 15 Feb 2024 16:31:03 +0000
+Date: Fri, 16 Feb 2024 00:29:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/WFAMNAE-next20240215 1/1]
+ include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer
+ types ('struct bpf_prog_array *' and 'struct bpf_prog_array_tag *')
+Message-ID: <202402160049.31LWdQ1F-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---d8fe15f87fbebbfb1a05ad0234592c7c1f29a5ff64a6a3d68c8a574e83bd
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240215
+head:   34a5c90f36e0238bfc95cda9e2eccf7e610bff1a
+commit: 34a5c90f36e0238bfc95cda9e2eccf7e610bff1a [1/1] treewide: Address -Wflexible-array-member-not-at-end warnings
+config: arm-randconfig-001-20240215 (https://download.01.org/0day-ci/archive/20240216/202402160049.31LWdQ1F-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240216/202402160049.31LWdQ1F-lkp@intel.com/reproduce)
 
-Hi,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402160049.31LWdQ1F-lkp@intel.com/
 
-On Wed Feb 14, 2024 at 10:42 AM CET, Vignesh Raghavendra wrote:
-> On 14/02/24 13:13, Vaishnav Achath wrote:
-> > On 12/02/24 21:32, Michael Walle wrote:
-> >> On Tue Feb 6, 2024 at 11:06 AM CET, Vaishnav Achath wrote:
-> >>> +# Boards with J722s SoC
-> >>> +dtb-$(CONFIG_ARCH_K3) +=3D k3-j722s-evm.dtb
-> >>
-> >> I'm a bit confused by your names. What are the new/correct ones now?
-> >> Some seem to use the amXX names and some the jXX ones. I've read [1]
-> >> and it appears it was suggested to use the am67 names for the device
-> >> trees. Esp. because there is already, am62, am64, am65, am68 and
-> >> am69 in as names for the device trees.
-> >>
-> >> The TRM you've linked in the cover letter doesn't shed much light
-> >> either. It just lists both.
-> >>
-> >=20
-> > Both names are correct, for other Jacinto devices J721S2 and J784S4, th=
-e
-> > industrial variants (AM68, AM69 respectively) and those boards were
-> > announced at a later point of time and since the automotive/J7 variants
-> > were introduced first, the SoC dtsi and files have the J7XX names, for
-> > AM62/AM64 there is no confusion in naming, in this case the initial TRM
-> > itself mentions J722S and AM67 variants with similar capabilities, the
-> > reasoning behind continuing with the J722S name is because the initial
-> > support is being added for J722S EVM (the top marking on the SoC packag=
-e
-> > populated on the EVM say XJ722SAMW, this can be seen in the schematics
-> > also), please let know if this clarifies the confusion.
-> >=20
->
-> AM64,AM62x/A/P are from different product line (Sitara) and don't have
-> any other aliases.
->
-> On the other hand, Jacinto SoCs have both J7xx variant and AM6xx part
-> numbers. Its being really unpredictable wrt when AM6xx variants of
-> Jacinto devices come out. So as a general rule, we name the DTS files
-> based on the name of the first device that comes out in the market which
-> has consistently been J7xx.
+All warnings (new ones prefixed by >>):
 
-Thanks for the explanation. I just noticed that any k3-am6[89]*
-device trees will include the j7xx SoC dtsi. That would have been my
-next question: Boards with the AMxx will have the "correct" name
-k3-amNN-*.
+   In file included from security/device_cgroup.c:8:
+>> include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer types ('struct bpf_prog_array *' and 'struct bpf_prog_array_tag *') [-Wcompare-distinct-pointer-types]
+           return array != &bpf_empty_prog_array.hdr;
+                  ~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 warning generated.
 
--michael
 
---d8fe15f87fbebbfb1a05ad0234592c7c1f29a5ff64a6a3d68c8a574e83bd
-Content-Type: application/pgp-signature; name="signature.asc"
+vim +191 include/linux/bpf-cgroup.h
 
------BEGIN PGP SIGNATURE-----
+de9cbbaadba5ad Roman Gushchin 2018-08-02  178  
+b741f1630346de Roman Gushchin 2018-09-28  179  int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
+b741f1630346de Roman Gushchin 2018-09-28  180  int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+b741f1630346de Roman Gushchin 2018-09-28  181  				     void *value, u64 flags);
+b741f1630346de Roman Gushchin 2018-09-28  182  
+46531a30364bd4 Pavel Begunkov 2022-01-27  183  /* Opportunistic check to see whether we have any BPF program attached*/
+46531a30364bd4 Pavel Begunkov 2022-01-27  184  static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+46531a30364bd4 Pavel Begunkov 2022-01-27  185  					   enum cgroup_bpf_attach_type type)
+46531a30364bd4 Pavel Begunkov 2022-01-27  186  {
+46531a30364bd4 Pavel Begunkov 2022-01-27  187  	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+46531a30364bd4 Pavel Begunkov 2022-01-27  188  	struct bpf_prog_array *array;
+46531a30364bd4 Pavel Begunkov 2022-01-27  189  
+46531a30364bd4 Pavel Begunkov 2022-01-27  190  	array = rcu_access_pointer(cgrp->bpf.effective[type]);
+46531a30364bd4 Pavel Begunkov 2022-01-27 @191  	return array != &bpf_empty_prog_array.hdr;
+46531a30364bd4 Pavel Begunkov 2022-01-27  192  }
+46531a30364bd4 Pavel Begunkov 2022-01-27  193  
 
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZc479hIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvtvBAD/Q6zUsGrsdv2dI2Lie45k5Qcf7kNAr1qK
-LgqLuy/NP4ABAM+pdNE3IZ1Y5tNuoJ7txSvxjr4/Ns+fFKB88i39r+UL
-=LpmB
------END PGP SIGNATURE-----
+:::::: The code at line 191 was first introduced by commit
+:::::: 46531a30364bd483bfa1b041c15d42a196e77e93 cgroup/bpf: fast path skb BPF filtering
 
---d8fe15f87fbebbfb1a05ad0234592c7c1f29a5ff64a6a3d68c8a574e83bd--
+:::::: TO: Pavel Begunkov <asml.silence@gmail.com>
+:::::: CC: Alexei Starovoitov <ast@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
