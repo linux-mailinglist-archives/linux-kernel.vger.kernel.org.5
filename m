@@ -1,206 +1,132 @@
-Return-Path: <linux-kernel+bounces-67391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320A6856ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CAD856AD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 573F81C239AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:20:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 451FA1C213D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05824136980;
-	Thu, 15 Feb 2024 17:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDGde8LK"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF90E13667C;
+	Thu, 15 Feb 2024 17:20:44 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86115135A47;
-	Thu, 15 Feb 2024 17:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497F413665F
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017606; cv=none; b=RqqB7N5dQCeQAMjm24CtkP4DhQypRsNkQfSMadyv0AnQqf1NGM++FRWnwrDsfYSFlrVTDF2qACilemBS4AouwvWIUVzzYXdT1UszLUicUNdPbMQYu/AUtWMOKL0232uL634tcUJyNdO6iDm0dE/6xTPDQNPrVX14UN68rzuWYV4=
+	t=1708017644; cv=none; b=nwKlBwH1yBE0p5EDB3by1uI7w4uuT6JiA4Gy38fDYR7+ZKlWXx08GfLVHiWhwKmi3gPXgUI6dTjaAcKTkJKQoq25ipqfqEy33+axrHOu/wUHJl0jIqn+vSvMLohMqZLqSau1jNJ3jllKCVqlknWl7aXbkjf1MgeLoV69p0jVx6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017606; c=relaxed/simple;
-	bh=dVETtyeLtR2My/4QlLj70COlAQIwHB4SgtL2Kzh7V9k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pgfHDZ8AX8LVCyYm5oUAGiQ1GU8v0+WJgnrUeQ/pAfW1NbjrlSFhYp2IMzDURdIQGwPGTxiCuapVdS/N2k9fTAr5RQNuUT+ZFFHEYoj07T+cZnHQI90UG7aRL2udedicMi9akAlzfcpaNHQ8H+1AsBBFNrD/sXk0RSKAEoSafy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDGde8LK; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41202eae372so9086835e9.0;
-        Thu, 15 Feb 2024 09:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708017603; x=1708622403; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Omd5ccM95usrHn5L6mpoqqeGE9+GSJ9q916jIPFa6vk=;
-        b=KDGde8LKEZnfz9eIRueUmLmCGFWcoXluZvB/QcSx4XV5yFysHe4SD0X4W7bZVcGdbO
-         qr2BDbkvmVX7ydQN8rV+WNl/57DzLgoq50lZaSYDWH5zPsFJfZTb22awXarELaM9ZbC3
-         u+pLGOldITJ52VlHMQqxsN+6shwue8Pf7wpcBbZeQ7oC90W6fZkB5QetENn9TK1qIVZW
-         ePAnwvtZkg/R31bL80Hgjrqpq0UJRIgF0Kbt63JMQ/QrLxNSo9jhyQevT78I+YVl5tO1
-         2/pduNDy0OgZtAd0C8BgHxzqtbUD7hCzdeeVdRDuSMfcNYNq/NikoIwBK+9LElrxHI/U
-         9esA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708017603; x=1708622403;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Omd5ccM95usrHn5L6mpoqqeGE9+GSJ9q916jIPFa6vk=;
-        b=f91pIUPveRqnmjCPg83WpmYeDjDPLo4nFmg90atrKx5c9l2hJI25S5QXQf3fIlZm1V
-         TiXf3cH0Lr3ROpwBS/a66iTi7Y9M6MEpe422MEv4RfKIWQ0aDUewg1EZvUBoGPjG3drj
-         FCfsxKpz13laGc/4Z0vkavH5Ce8g70h4mzeUTHqadc+NC4VKry9lIs/pYhvD9QgTUdK9
-         MdxlraZ4YA7WsHu6qmrQ2OK34jG/dHRgc9wcpXcwvr2/o4FeeEQC0SQiJZBACu94vpzx
-         Fj001xZHCQmurp5a+jpB29qVE4Z8pPxZdUUtYng+yF11rgrcw30OtQ2a4u2rzIAQJ003
-         N4UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIdhonCPgR8lkJkankpBnGS30CzD9/uYQrl5WmnTbIGTApjDSx0MQU3xMg7kYVg40Zv3ySsdw4kw++QLdDFKlvNuDoUOCdFolmrA0FbE0bJwAlSNRxU65NpGPoLjBrBxw2fwOl8S1v
-X-Gm-Message-State: AOJu0YwYRaH9tnhHuguwyACL7wPLb8ytfyK4tmYZgEDH6PBZXhERa+Q1
-	PDaS9n3FhjX33C7HbG4r54mPuVxNkczA9Ksgk5WOox4dRW4KyrbW
-X-Google-Smtp-Source: AGHT+IGmfLVdR5bxJM/dsQRRY8Tki3/u77x1ze6iXFkZgjQouJHtpmGke1UfDnSwmSUZk1P8Eq4BmA==
-X-Received: by 2002:a05:600c:4896:b0:411:defc:c7df with SMTP id j22-20020a05600c489600b00411defcc7dfmr1910145wmp.24.1708017602474;
-        Thu, 15 Feb 2024 09:20:02 -0800 (PST)
-Received: from [192.168.90.166] (146.red-83-35-56.dynamicip.rima-tde.net. [83.35.56.146])
-        by smtp.gmail.com with ESMTPSA id fa25-20020a05600c519900b0041228b2e179sm1346006wmb.39.2024.02.15.09.20.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 09:20:02 -0800 (PST)
-Message-ID: <795736e9c25b836c5939d9117a3a2580ed4e22f8.camel@gmail.com>
-Subject: Re: [PATCH] drivers: iio: pressure: Add SPI support for BMP38x and
- BMP390
-From: Angel Iglesias <ang.iglesiasg@gmail.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org
-Cc: lars@metafoo.de, andriy.shevchenko@linux.intel.com, 579lpy@gmail.com, 
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 15 Feb 2024 18:20:00 +0100
-In-Reply-To: <20240215164332.506736-1-vassilisamir@gmail.com>
-References: <20240215164332.506736-1-vassilisamir@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (by Flathub.org) 
+	s=arc-20240116; t=1708017644; c=relaxed/simple;
+	bh=DhCOBaollMnNcyIsBNcsmF0ZLgDsp0XSt2/+v5C7ZBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=POlXXgg74bJm46VB4tFL2XBDscgBD6mMAB2ZzE39oeUR1rn9oM+1b0ePQC/NTeD2/86a8imVvNOTBD0Eu34UzQIhvPsAKYqkc49aRvfbxa5BNCphC/bh2RKoZqjwxFm6IBB0DBJY8DNVTRqLPbo+BuqxelbRQhPoDhR1KkEl2ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rafPE-00023i-Ge; Thu, 15 Feb 2024 18:20:16 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rafPD-000vTS-Ev; Thu, 15 Feb 2024 18:20:15 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rafPD-005VOO-1D;
+	Thu, 15 Feb 2024 18:20:15 +0100
+Date: Thu, 15 Feb 2024 18:20:15 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
+Message-ID: <likebxfhlcg6equjhxnf7cimsgac4qvoge3bf65qyir6apwq4n@iotwg6zjjr6c>
+References: <20240208070529.28562-1-raag.jadav@intel.com>
+ <20240208070529.28562-2-raag.jadav@intel.com>
+ <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
+ <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
+ <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
+ <Zcz-csPY5x29DP7v@smile.fi.intel.com>
+ <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
+ <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nzhwffwfhtbddob5"
+Content-Disposition: inline
+In-Reply-To: <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Thu, 2024-02-15 at 17:43 +0100, Vasileios Amoiridis wrote:
-> According to the datasheet of BMP38x and BMP390 devices, in SPI
-> operation, the first byte that returns after a read operation is
-> garbage and it needs to be dropped and return the rest of the
-> bytes.
 
-Hey good catch! It flew past me when I added this devices because I tested =
-only
-on i2c at the time.
+--nzhwffwfhtbddob5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Kind regards,
-Angel
+Hello Andy,
 
-> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
-> ---
-> =C2=A0drivers/iio/pressure/bmp280-spi.c | 47 ++++++++++++++++++++++++++++=
-++-
-> =C2=A0drivers/iio/pressure/bmp280.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
-> =C2=A02 files changed, 48 insertions(+), 1 deletion(-)
+On Thu, Feb 15, 2024 at 03:36:12PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 15, 2024 at 10:22:57AM +0100, Uwe Kleine-K=F6nig wrote:
+> > If a driver author knows it while writing the code, it's obvious. But if
+> > the driver author looks again in 2 years or someone else (e.g. me with
+> > the PWM maintainer hat on and with little pci experience) that knowledge
+> > might be faded.
 >=20
-> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp=
-280-
-> spi.c
-> index 433d6fac83c4..c4b4a5d67f94 100644
-> --- a/drivers/iio/pressure/bmp280-spi.c
-> +++ b/drivers/iio/pressure/bmp280-spi.c
-> @@ -35,6 +35,32 @@ static int bmp280_regmap_spi_read(void *context, const=
- void
-> *reg,
-> =C2=A0	return spi_write_then_read(spi, reg, reg_size, val, val_size);
-> =C2=A0}
-> =C2=A0
-> +static int bmp380_regmap_spi_read(void *context, const void *reg,
-> +				=C2=A0 size_t reg_size, void *val, size_t
-> val_size)
-> +{
-> +	struct spi_device *spi =3D to_spi_device(context);
-> +	u8 ret[BMP380_SPI_MAX_REG_COUNT_READ + 1];
-> +	ssize_t status;
-> +	u8 buf;
-> +
-> +	memcpy(&buf, reg, reg_size);
-> +	buf |=3D 0x80;
-> +
-> +	/*
-> +	 * According to the BMP380, BMP388, BMP390 datasheets, for a basic
-> +	 * read operation, after the write is done, 2 bytes are received and
-> +	 * the first one has to be dropped. The 2nd one is the requested
-> +	 * value.
-> +	 */
-> +	status =3D spi_write_then_read(spi, &buf, 1, ret, val_size + 1);
-> +	if (status)
-> +		return status;
-> +
-> +	memcpy(val, ret + 1, val_size);
-> +
-> +	return 0;
-> +}
-> +
-> =C2=A0static struct regmap_bus bmp280_regmap_bus =3D {
-> =C2=A0	.write =3D bmp280_regmap_spi_write,
-> =C2=A0	.read =3D bmp280_regmap_spi_read,
-> @@ -42,10 +68,18 @@ static struct regmap_bus bmp280_regmap_bus =3D {
-> =C2=A0	.val_format_endian_default =3D REGMAP_ENDIAN_BIG,
-> =C2=A0};
-> =C2=A0
-> +static struct regmap_bus bmp380_regmap_bus =3D {
-> +	.write =3D bmp280_regmap_spi_write,
-> +	.read =3D bmp380_regmap_spi_read,
-> +	.reg_format_endian_default =3D REGMAP_ENDIAN_BIG,
-> +	.val_format_endian_default =3D REGMAP_ENDIAN_BIG,
-> +};
-> +
-> =C2=A0static int bmp280_spi_probe(struct spi_device *spi)
-> =C2=A0{
-> =C2=A0	const struct spi_device_id *id =3D spi_get_device_id(spi);
-> =C2=A0	const struct bmp280_chip_info *chip_info;
-> +	struct regmap_bus *bmp_regmap_bus;
-> =C2=A0	struct regmap *regmap;
-> =C2=A0	int ret;
-> =C2=A0
-> @@ -58,8 +92,19 @@ static int bmp280_spi_probe(struct spi_device *spi)
-> =C2=A0
-> =C2=A0	chip_info =3D spi_get_device_match_data(spi);
-> =C2=A0
-> +	switch (chip_info->chip_id[0]) {
-> +	case BMP380_CHIP_ID:
-> +	case BMP390_CHIP_ID:
-> +		bmp_regmap_bus =3D &bmp380_regmap_bus;
-> +		break;
-> +	default:
-> +		bmp_regmap_bus =3D &bmp280_regmap_bus;
-> +		break;
-> +	}
-> +
-> +
-> =C2=A0	regmap =3D devm_regmap_init(&spi->dev,
-> -				=C2=A0 &bmp280_regmap_bus,
-> +				=C2=A0 bmp_regmap_bus,
-> =C2=A0				=C2=A0 &spi->dev,
-> =C2=A0				=C2=A0 chip_info->regmap_config);
-> =C2=A0	if (IS_ERR(regmap)) {
-> diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.=
-h
-> index 4012387d7956..ca482b7e4295 100644
-> --- a/drivers/iio/pressure/bmp280.h
-> +++ b/drivers/iio/pressure/bmp280.h
-> @@ -191,6 +191,8 @@
-> =C2=A0#define BMP380_TEMP_SKIPPED		0x800000
-> =C2=A0#define BMP380_PRESS_SKIPPED		0x800000
-> =C2=A0
-> +#define BMP380_SPI_MAX_REG_COUNT_READ=C2=A0=C2=A0 3
-> +
-> =C2=A0/* BMP280 specific registers */
-> =C2=A0#define BMP280_REG_HUMIDITY_LSB		0xFE
-> =C2=A0#define BMP280_REG_HUMIDITY_MSB		0xFD
+> This is widely used pattern. Anybody who works with Git should know how
+> to use `git grep` tool. If in doubts, always can ask in the mailing lists.
 
+IMHO you're assuming to much. If someone sees this pattern and quickly
+looks at the implementation of pcim_iomap_table() they might (as I did)
+conclude that this call should be error checked. If they send a patch in
+say 2 years I think I won't remember this discussion/patch and happily
+accept this patch. And I probably won't get enough doubts to start
+grepping around.
+
+> I still consider it redundant.
+>=20
+> P.S. That's what you call "bikeshedding" (done by yourself here)?
+
+I can understand that you consider that bikeshedding given that for you
+it's obvious that the second function cannot fail. For me it's not and I
+take this as a hint that it's not obvious for everyone.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--nzhwffwfhtbddob5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXOR84ACgkQj4D7WH0S
+/k7egQgAomdmzTMreh6wBaC9N99w6iyzXtHVBFeEUMU42kCw/Wyp1/JUwDkbzoQN
+YT86ZJQ/4y1lECvtsogD3H10f/OCuJgizYgyFdf3oKTVvl5CvkiPjjHFnwXmgwP6
+m2K2F9v49C/oQ0ZB5wFAdJOcbwhIf2NJczBaAuuhH+qt14aknkmRogP2TfBFHljM
+IsktlhR4/S/lFypmxf6fcKQp5VHSL4naDyMQt2AfC3uvZeEiSKL0VapFhIIe912L
+atvbzMhxUnutQRP0mvc9uDc6zVI+8JUQD7pn3iWd938dkQ/kDQwV6x1rsFDi59PT
+zcn5n804FbnTzDB9YYgeGqevKnCrIA==
+=VoYV
+-----END PGP SIGNATURE-----
+
+--nzhwffwfhtbddob5--
 
