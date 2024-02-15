@@ -1,251 +1,274 @@
-Return-Path: <linux-kernel+bounces-67577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E229E856DB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:27:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F40856DB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BFE01F2616B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:27:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 285721F26CB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E693513959E;
-	Thu, 15 Feb 2024 19:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F55613A246;
+	Thu, 15 Feb 2024 19:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="MjBYuDLz"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESSBPCq6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456002CCA0
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:27:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBF04369A;
+	Thu, 15 Feb 2024 19:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025264; cv=none; b=bYW5IhrNZ1R2GUqghEYxLOPVTvHEJ03ilXnH19TxzhcaXjC7F3DGOr0k5PLAzX4ABpLx6eUGVxLz9MeFUz/why6Q3DSrTYNoOjbAHRglTsS7w2Heq+L6P5ZnscHqn5nFmFElhIHEvK4n9mstIjusfYgqg75zV3a0ENw06ugWt8M=
+	t=1708025278; cv=none; b=TDs1FiGK95YqX0ZFMsapsiNuBtT2YedLcDdc6wveNMUHHyVj+i9r5j5BiFx2TEPRg6p1Otboyi1PB6udFJ2isGsxW4OkQ3MYMecntPXyt1qVNPhw6wl4VOslfAVx9IrtL0SFPzCOPkQrDKOcqP7FUfv7GPN1fGgESCAxcPjCYOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025264; c=relaxed/simple;
-	bh=5TR1oCPOkXVaeDffsc1FVeVKfFzq83Qqlu3wZRI3FdU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nq3aH77s11g1NhcBo0HHAutHtfLdAlzv/YwATKBXsyviezqr+FRMKJ+c20qSUvikrYMqElgGVhgDI96KjAULAt3j+3Hp9icwM0V1JktAp4FJ3hHXL3HT/La833tjO7FWi/udVI/JabKsq1BGJE5C3VbDikXy8zsD38nSJFzw+To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=MjBYuDLz; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so1384408276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:27:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1708025262; x=1708630062; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ytCVFAeDFYVnYYzv1oG63mMpfHc63c4vVSRKBgLJFVI=;
-        b=MjBYuDLzdK+iGo4uxVQ6UAgRsCwB5Jqhj9CY9xZPLIeYdTNoBkL+hBkl4RV0QxgFM5
-         vXvobpoeTllisHk0Vgmlkpyz9taca6ML4O8RIgFLPUU8RqLk+JEjhzy34SCuOtiheBKc
-         aX7OLbBUtOPl5pBprOQXanYOutEguoNfIbCSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708025262; x=1708630062;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ytCVFAeDFYVnYYzv1oG63mMpfHc63c4vVSRKBgLJFVI=;
-        b=noHvD39epp725zX0anTtQV0vL1sDfmaxCrqdn4kS3cvL0307+K3fBtT/K6IXk+RIcS
-         z9UjlTIi+G9JcJVYq1xckJONIEvObICCYfC21oaajnv4JPtMwoLQPd/JDl0ivfeh52om
-         7pi1OHRIba3K0T6d4tDJB5RlGnntlKhiLQtoqbL106l5gNgBJXnh6zzrp3/CoXopKU+N
-         VvnYcS4lUo+Mhwbs/XVqABo4NtKwQEtM9X7UjD5ZAek1Y2482sT0Je1YruXQPlD/xCje
-         L7182iY2F/j0OaygRaOuyqdcfX8DwYWI2G+wPDqAYU5Le+R39kvmONRBLuP3Ir3ZVp3q
-         UDHg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/iH5V+t0mCm7ZYu7OpnNridgzfv6yxABTnQ3nfz4Dwr0HRGcVX7KGs0Eaylu8zzAIY1oDHd3IzU339f/Yu5nQPCy6JEMJaw2YOuWa
-X-Gm-Message-State: AOJu0Ywlzlv8ooyrtVkrEOOD/VRiWHbq8LvRVSa28Q1NbtFGDdf/n82W
-	qNiuQtW6xVLCuMmMHajwL5nilX4pq6QCIESdlnFRX128hYehkJHOZxc5JwOV7A==
-X-Google-Smtp-Source: AGHT+IFhJ+UYshiYS9uRnUt+wgoDptBTxAljTNs+nlDr/5lmMC1kiaFXtgVqI4oqrtv6Dtx+ST/iHQ==
-X-Received: by 2002:a81:af68:0:b0:607:f1a5:93ca with SMTP id x40-20020a81af68000000b00607f1a593camr666299ywj.12.1708025262144;
-        Thu, 15 Feb 2024 11:27:42 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l10-20020ac848ca000000b0042dc8f512d7sm837615qtr.31.2024.02.15.11.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 11:27:41 -0800 (PST)
-Message-ID: <d4619f25-12d8-4f95-8e5e-e83516e8230a@broadcom.com>
-Date: Thu, 15 Feb 2024 11:27:39 -0800
+	s=arc-20240116; t=1708025278; c=relaxed/simple;
+	bh=B78tA8mwIJHcwuf2kjNoy1MeVZF1wEVHnLOpPqSiT6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z/YL5jQO0ffedJKpRONiTKUqCKsv+aCSskkD9BY8lWIoWqnTljHb0hRDEOut9rSkbfq759C3EDJcDEZzhYsNsOOGno4k75nthjzL61Yh3prZz7QRogOAf6OVHp9hnzLcd6nRYmpYc4qw+OKYz+GNEBAzzpx8EsrSMPNIOgtFfpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESSBPCq6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DCCBC433C7;
+	Thu, 15 Feb 2024 19:27:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708025277;
+	bh=B78tA8mwIJHcwuf2kjNoy1MeVZF1wEVHnLOpPqSiT6Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ESSBPCq6Mv09IKJYpnk+10FnNRAqmX1wv+FDoOylq3zXzhHDIPbmL35QKW0qOOL44
+	 e/MzsY4QXAz1EBrUnfP+RPWibnwRFcVMHII27qacd/1jKbv5aG798jc0ED5ClHO1oB
+	 1bAYTYN2OCUi2AiusQ1IKRcW1YUaurJBuqCtM7nnOJiBU+jk9dbp5lTLueW4HiUNqV
+	 ZBboK1JdCnD/aiNj4rV0m9f40N6LhfN2pK9AGCsvnz/LP7lUJX+Pi3a7PA9M8I5tHn
+	 6HeSZBPQRabsIAgV89MOfsnO6E5Ns4GQF4nNMfG5WMHWoqfAujfDYccHMO9a261IvL
+	 cMdGdzThwyXSg==
+Date: Thu, 15 Feb 2024 19:27:52 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Durai Manickam KR <durai.manickamkr@microchip.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Ludovic Desroches <ludovic.desroches@microchip.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>, dmaengine@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dma: convert atmel-dma.txt to YAML
+Message-ID: <20240215-broken-emu-64a6dabc43e2@spud>
+References: <20240215-dmac-v1-1-8f1c6f031c98@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] serial: 8250_bcm7271: Replace custom unit
- definitions
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
- Al Cooper <alcooperx@gmail.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Jiri Slaby <jirislaby@kernel.org>
-References: <20240215160234.653305-1-andriy.shevchenko@linux.intel.com>
- <7132d989-533f-47ef-803b-6001de3aff33@broadcom.com>
- <Zc5kTdkTqXEE6cA3@smile.fi.intel.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- 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
-In-Reply-To: <Zc5kTdkTqXEE6cA3@smile.fi.intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000009c9560611709f49"
-
---00000000000009c9560611709f49
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 2/15/24 11:21, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 10:35:11AM -0800, Florian Fainelli wrote:
->> On 2/15/24 08:02, Andy Shevchenko wrote:
-> 
-> ...
-> 
->>> -#define KHZ    1000
->>> -#define MHZ(x) ((x) * KHZ * KHZ)
->>>    static const u32 brcmstb_rate_table[] = {
->>> -	MHZ(81),
->>> -	MHZ(108),
->>> -	MHZ(64),		/* Actually 64285715 for some chips */
->>> -	MHZ(48),
->>> +	81 * HZ_PER_MHZ,
->>> +	108 * HZ_PER_MHZ,
->>> +	64 * HZ_PER_MHZ,		/* Actually 64285715 for some chips */
->>> +	48 * HZ_PER_MHZ,
->>
->> The previous notation was IMHO more readable,
-> 
-> I tend to disagree as we read in plain text "frequency is 64 MHz",
-> the patch follows natural language.
-> 
->> can we meet in the middle and do:
->>
->> #define MHZ(x)	((x) * HZ_PER_MHZ
->>
->> and avoid touching the tables entirely?
-> 
-> I don't like the intermediate layer which hides the implementation of MHZ().
-> What does it do exactly? You need to look at the internals, with the patch
-> applied you immediately see that these are just constants.
-> 
-
-OK, I suppose today's color is blue for the bike shed.
-
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/iXZ72FAuAF0yk9f"
+Content-Disposition: inline
+In-Reply-To: <20240215-dmac-v1-1-8f1c6f031c98@microchip.com>
 
 
---00000000000009c9560611709f49
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+--/iXZ72FAuAF0yk9f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIkAR0WhQ1xsB1Tw
-G4TpjoucLgGw7lmwrnZ8cppHTIffMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDIxNTE5Mjc0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA+9NlkGvKX49lCQd0A/knwVdX94uahu04h
-pZswR49EP9iLQn47cyfocsAk8ewtqnR4YVuV499v8v03rYXtlsSkcQYXIPTrYHgh+BmxafTA80+D
-DoQ2IuJtJPLYmXXos3PO548IB7g6+PNA9Dhyv247UhGCl3JOmoDnfDmkPFtDWNtnXXxD16l8/Gnk
-iRZ/bxxYjSr6Hj3QQOUJZrSjtl26HQ5KPEWOOhbvqJff9K7SC7reE2wFyzB1IPMWcPcBMr/+SeQ8
-9P3agOqGRU5L6KOqi8sFtm1PLId6xKP0UoaNxcw5H47w6beEbHDHru5wkkX/FOndbhrmlzP7d0S5
-xbv8
---00000000000009c9560611709f49--
+On Thu, Feb 15, 2024 at 04:15:44PM +0530, Durai Manickam KR wrote:
+> Added a description, required properties and appropriate compatibles
+> for all the SoCs that are supported by microchip.
+>=20
+> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
+> ---
+>  .../devicetree/bindings/dma/atmel-dma.txt          | 42 -------------
+>  .../bindings/dma/microchip,at91-dma.yaml           | 71 ++++++++++++++++=
+++++++
+>  2 files changed, 71 insertions(+), 42 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/dma/atmel-dma.txt b/Docume=
+ntation/devicetree/bindings/dma/atmel-dma.txt
+> deleted file mode 100644
+> index f69bcf5a6343..000000000000
+> --- a/Documentation/devicetree/bindings/dma/atmel-dma.txt
+> +++ /dev/null
+> @@ -1,42 +0,0 @@
+> -* Atmel Direct Memory Access Controller (DMA)
+> -
+> -Required properties:
+> -- compatible: Should be "atmel,<chip>-dma".
+> -- reg: Should contain DMA registers location and length.
+> -- interrupts: Should contain DMA interrupt.
+> -- #dma-cells: Must be <2>, used to represent the number of integer cells=
+ in
+> -the dmas property of client devices.
+> -
+> -Example:
+> -
+> -dma0: dma@ffffec00 {
+> -	compatible =3D "atmel,at91sam9g45-dma";
+> -	reg =3D <0xffffec00 0x200>;
+> -	interrupts =3D <21>;
+> -	#dma-cells =3D <2>;
+> -};
+> -
+> -DMA clients connected to the Atmel DMA controller must use the format
+> -described in the dma.txt file, using a three-cell specifier for each cha=
+nnel:
+> -a phandle plus two integer cells.
+> -The three cells in order are:
+> -
+> -1. A phandle pointing to the DMA controller.
+> -2. The memory interface (16 most significant bits), the peripheral inter=
+face
+> -(16 less significant bits).
+> -3. Parameters for the at91 DMA configuration register which are device
+> -dependent:
+> -  - bit 7-0: peripheral identifier for the hardware handshaking interfac=
+e. The
+> -  identifier can be different for tx and rx.
+> -  - bit 11-8: FIFO configuration. 0 for half FIFO, 1 for ALAP, 2 for ASA=
+P.
+> -
+> -Example:
+> -
+> -i2c0@i2c@f8010000 {
+> -	compatible =3D "atmel,at91sam9x5-i2c";
+> -	reg =3D <0xf8010000 0x100>;
+> -	interrupts =3D <9 4 6>;
+> -	dmas =3D <&dma0 1 7>,
+> -	       <&dma0 1 8>;
+> -	dma-names =3D "tx", "rx";
+> -};
+> diff --git a/Documentation/devicetree/bindings/dma/microchip,at91-dma.yam=
+l b/Documentation/devicetree/bindings/dma/microchip,at91-dma.yaml
+> new file mode 100644
+> index 000000000000..a0a582902e4d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/microchip,at91-dma.yaml
+
+Filename matching the compatible please.
+
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/microchip,at91-dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Atmel Direct Memory Access Controller (DMA)
+> +
+> +maintainers:
+> +  - Ludovic Desroches <ludovic.desroches@microchip.com>
+> +  - Tudor Ambarus <tudor.ambarus@linaro.org>
+> +
+> +description: |
+
+The | is not needed.
+
+> +  The Atmel Direct Memory Access Controller (DMAC) transfers data from a=
+ source
+> +  peripheral to a destination peripheral over one or more AMBA buses. On=
+e channel
+> +  is required for each source/destination pair. In the most basic config=
+uration,
+> +  the DMAC has one master interface and one channel. The master interfac=
+e reads
+> +  the data from a source and writes it to a destination. Two AMBA transf=
+ers are
+> +  required for each DMAC data transfer. This is also known as a dual-acc=
+ess transfer.
+> +  The DMAC is programmed via the APB interface.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - atmel,at91sam9g45-dma
+> +          - atmel,at91sam9rl-dma
+> +  reg:
+> +    description: Should contain DMA registers location and length.
+
+Drop the description from these common properties.
+
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Should contain the DMA interrupts associated to the DMA=
+ channels.
+> +    maxItems: 1
+> +
+> +  "#dma-cells":
+> +    description:
+> +      Must be <2>, used to represent the number of integer cells in the =
+dmas
+> +      property of client devices.
+
+You've lost the description of how these cells work, which is somewhat
+unique and needs to be preserved.
+This is the only property that needs a description.
+
+> +    const: 2
+> +
+> +  clocks:
+> +    description: Should contain a clock specifier for each entry in cloc=
+k-names.
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    description: Should contain the clock of the DMA controller.
+> +    const: dma_clk
+
+This is a new addition? You should call out in the commit message wat
+you've added that was not in th text binding.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - "#dma-cells"
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dma0: dma-controller@ffffec00 {
+
+Drop the label, its not used.
+
+Thanks,
+Conor.
+
+> +            compatible =3D "atmel,at91sam9g45-dma";
+> +            reg =3D <0xffffec00 0x200>;
+> +            interrupts =3D <21>;
+> +            #dma-cells =3D <2>;
+> +            clocks =3D <&pmc 2 20>;
+> +            clock-names =3D "dma_clk";
+> +    };
+> +
+> +...
+>=20
+> ---
+> base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
+> change-id: 20240214-dmac-5f48fd7f3b9d
+>=20
+> Best regards,
+> --=20
+> Durai Manickam KR <durai.manickamkr@microchip.com>
+>=20
+
+--/iXZ72FAuAF0yk9f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5luAAKCRB4tDGHoIJi
+0pZ7AP9n//Tc16Y7sathkrqYZctgnGZndX8EG6lO9YREEHFWSgEA9A8snBLnm4Gz
+wPMTjmPK3L6Re/0FWReZcHxvibMJeAU=
+=4pGP
+-----END PGP SIGNATURE-----
+
+--/iXZ72FAuAF0yk9f--
 
