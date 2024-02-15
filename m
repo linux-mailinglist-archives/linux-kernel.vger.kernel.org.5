@@ -1,104 +1,147 @@
-Return-Path: <linux-kernel+bounces-66616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB43855F0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:20:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE1A855F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB352857F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:20:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D30561F21407
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE75569D18;
-	Thu, 15 Feb 2024 10:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="UF3wu1BC"
-Received: from out203-205-251-36.mail.qq.com (out203-205-251-36.mail.qq.com [203.205.251.36])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB30067E85;
+	Thu, 15 Feb 2024 10:19:26 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC9669D04
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18406350A
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992429; cv=none; b=r4LDSXELfz3ELs8wbIXpUGrcwHcHReq4y5tjpEfaeXOrQct/GZqVQJX6+shP53zbL3AHw1RMYyafBLv4BPZxQqsot/JKXB+HVNtSYQjsXX/hB5ceru5oyzXIJvwJ8bkrpnVxy/4M49ye8Rtk6KyV39/1zze5avjIVX8+YamB7o4=
+	t=1707992366; cv=none; b=rvLjD2D1wjtSHtvqRgJpB96qD/L63522h4sAhMbhADY74aGVkpZV/HCW2/jfa21bMajoIwUlk5IYuCMFef/XN+3+RavsDPnwCFEESvLutx7/UwHvYYLxhZ91iJRDTt/yG2RRe/kHXxWhmZk2axOitkfNI8JPashhk7vGmVuFPaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992429; c=relaxed/simple;
-	bh=ZdU4VeykU7M6Jfyac4J8/7W6yBvqeGFfqKVnXNdpFxk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Yq49jpKdCX+tcWJtCsuizFy375xHBg/6A0j+GySPWy0iJZuSJy95TvhZQK1XiyUtyxsWt2/EbPEm6E2bPCTiyF1JtPdWUxiNhBOsEFE2omNZ5ooHf0wfaaHOmNY0uBfUYEUQaNgFMBCLNhR8wWLl2dvnR3IOoNOa7TomzeYT05M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=UF3wu1BC; arc=none smtp.client-ip=203.205.251.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1707992117; bh=rxnDnn266sMDmHizmjyIVYluJ3+8lsiRplWvAA8yAew=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=UF3wu1BCkdt9Wkhz6SB3mqLssmKh7tfHg1Y3pm6fj0LXgrBYNmQTK9g/EcT1X3qkq
-	 UQTYNHbS4wYdBhypW7QRMZq9hbXULC3t7IBSIxUpRhmqPmhMi5bdTD03v2ixBsHEdu
-	 gACQl26bEbASIh1zVk8RwPnUW3lGAZIofll3+Ni8=
-Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 3D00B63E; Thu, 15 Feb 2024 18:15:16 +0800
-X-QQ-mid: xmsmtpt1707992116t3wprnbpf
-Message-ID: <tencent_4E674FD48DC125910DEA92045DEADDA11907@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j82obyJWxrAi/6twAtn+h3mqbpRlOmLdB8QCxLBkaXTeXTApWnbU
-	 85jma3daH0AlwaqYNY18pDO3kZx13eDH1Adhx0fSsJMhKaB4656dEJfN/p6qTY8lhLl84DKOAi+9
-	 3a4aiTnjLl55Al6UaOr7eENlv4oN1RfIWERStf4U5oqZT6jyim5J0qVzaXX/qFbwSTHxgkRe3uVj
-	 pBK8er5ck/vEnmNrJOHBNMt268rdrA9qkbsCur7GuSvL2aHSn345PXGtJLpokSULLmrGkALK/HC9
-	 ORB1T8SDFUNaMJ+7DUIMTSMg1W/Q9SAe16kL53h3zDDaYGQXfj+vgzPcnJZmOpze2gnQlZonhq2h
-	 CHCHZH4jZ4qDi6JaSuk8Spc5e5cWjQAeEzkvx0jyhTLhAEzs6tflWp9wvOUAZN2bAM4qXWFg4SBU
-	 w80ByGa+nV4J6xBBojb6GSbCh4Zr5DxQgKS5W724NtMpiHpg2+lmgBpub7SEt10jc1HCybUFKHiZ
-	 gowLIcVwQRV0GyUHRWFQvgkWSytH7T+XMKEDxr1RI937CmZrUGVOXR5JJXEH7Xe4n79io/b5j9Ep
-	 lonCxSb1KRFaYRVeu1Kkxbp6NoRjP1HKUP+jaeBUX5rbq/ewEdWzM6K/oEeuijzFZkei9fkmeJxN
-	 zdOHo2r7bqk4aSUsQOewO4Oen9CtlDbR7WVGn2IYfABnFs8ksEHEQvdBdHDRdd5sYqiU/EU1vF0q
-	 cboAmOvYzJiQjzPrRULq+V6ZP2mM7oim6NdCRiQQa3eNjWH//5sTZcALlLl4pj1Z7WaVWAJxoX0/
-	 7m7qnN785QardhKPyTydQumkNTo8Nak9fuzLai2ofnsQ5xIIjrk4l1xZ3kxOrVsAAPebCI4o8Ovf
-	 I4thKlgmUq87Db/vMCBcRy+Fdt+TtOM1k5QUFGkXh/BUg5o/IP3dr4g98kzAkaSa4/BmPjyUJo1o
-	 3co7EXS5ieNjWF9M1bsTNuNyx46HtK
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+0f999d26a4fd79c3a23b@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [dri?] KASAN: slab-use-after-free Read in drm_atomic_helper_wait_for_vblanks (2)
-Date: Thu, 15 Feb 2024 18:15:16 +0800
-X-OQ-MSGID: <20240215101515.556063-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000ec4c32061143ec95@google.com>
-References: <000000000000ec4c32061143ec95@google.com>
+	s=arc-20240116; t=1707992366; c=relaxed/simple;
+	bh=u3rr8q+SLGsobq+2sOE/JWMdQphGfdS+OP4Y4ErJR1o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lUUi9obnFdP9xBKBAbakF6JeAshpMB8xJaWPui/D2ERhORXM7nUcTVVTpBaX4skDdAYav9ZrDgUbgZkiJn+xkl6dDokn2Z/4CIRfOFv1GTS/Wk+B7foBiDL8Tw+cPySbstYRjoi45+yqs2wLXVZn6bsbnMEqg2c0laBYxMG0vYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raYpm-0006ML-Vw; Thu, 15 Feb 2024 11:19:15 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raYpm-000reV-AH; Thu, 15 Feb 2024 11:19:14 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1raYpm-00041o-0n;
+	Thu, 15 Feb 2024 11:19:14 +0100
+Message-ID: <d51dbac55d3677031bfab8bfe959f7b556b1c373.camel@pengutronix.de>
+Subject: Re: [PATCH 19/23] gpio: nomadik: grab optional reset control and
+ deassert it at probe
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: =?ISO-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Date: Thu, 15 Feb 2024 11:19:14 +0100
+In-Reply-To: <20240214-mbly-gpio-v1-19-f88c0ccf372b@bootlin.com>
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
+	 <20240214-mbly-gpio-v1-19-f88c0ccf372b@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-please test uaf in drm_atomic_helper_wait_for_vblanks
+On Mi, 2024-02-14 at 17:24 +0100, Th=C3=A9o Lebrun wrote:
+> Fetch a reference to the optional shared reset control and deassert it
+> if it exists.
+>=20
+> Optional because not all platforms that use this driver have a reset
+> attached to the reset block. Shared because some platforms that use the
+> reset (at least Mobileye EyeQ5) share the reset across banks.
+>=20
+> Do not keep a reference to the reset control as it is not needed
+> afterwards; the driver does not handle suspend, does not use runtime PM
+> and does not register a remove callback.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+I suppose you don't care that the reset is only ever deasserted once
+and never asserted again on this hardware, but for shared reset
+controls the expectation is that deassert/assert calls are balanced:
 
-diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-index 39ef0a6addeb..b16ff9020097 100644
---- a/drivers/gpu/drm/drm_atomic_helper.c
-+++ b/drivers/gpu/drm/drm_atomic_helper.c
-@@ -1743,7 +1743,9 @@ EXPORT_SYMBOL(drm_atomic_helper_wait_for_flip_done);
- void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
- {
- 	struct drm_device *dev = old_state->dev;
-+	static DEFINE_MUTEX(lock);
- 
-+	mutex_lock(&lock);
- 	drm_atomic_helper_commit_modeset_disables(dev, old_state);
- 
- 	drm_atomic_helper_commit_planes(dev, old_state, 0);
-@@ -1757,6 +1759,7 @@ void drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
- 	drm_atomic_helper_wait_for_vblanks(dev, old_state);
- 
- 	drm_atomic_helper_cleanup_planes(dev, old_state);
-+	mutex_unlock(&lock);
- }
- EXPORT_SYMBOL(drm_atomic_helper_commit_tail);
- 
+https://docs.kernel.org/driver-api/reset.html?highlight=3Dbalanced#assertio=
+n-and-deassertion
 
+So maybe this warrants a comment in the code. Or do you mean to
+suppress unbind via suppress_bind_attrs to explain away any missing
+cleanup?
+
+> The operation is done in nmk_gpio_populate_chip(). This function is
+> called by either gpio-nomadik or pinctrl-nomadik, whoever comes first.
+> This is here for historic reasons and could probably be removed now; it
+> seems gpio-ranges enforces the ordering to be pinctrl-first. It is not
+> the topic of the present patch however.
+>=20
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  drivers/gpio/gpio-nomadik.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>=20
+> diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
+> index 21bb6d6363fc..b623c093b54d 100644
+> --- a/drivers/gpio/gpio-nomadik.c
+> +++ b/drivers/gpio/gpio-nomadik.c
+> @@ -513,12 +513,14 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct=
+ device_node *np,
+>  {
+>  	struct nmk_gpio_chip *nmk_chip;
+>  	struct platform_device *gpio_pdev;
+> +	struct reset_control *reset;
+>  	struct gpio_chip *chip;
+>  	struct resource *res;
+>  	struct clk *clk;
+>  	void __iomem *base;
+>  	uintptr_t flags;
+>  	u32 id, ngpio;
+> +	int ret;
+> =20
+>  	gpio_pdev =3D of_find_device_by_node(np);
+>  	if (!gpio_pdev) {
+> @@ -576,6 +578,19 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct =
+device_node *np,
+>  	clk_prepare(clk);
+>  	nmk_chip->clk =3D clk;
+> =20
+> +	reset =3D devm_reset_control_get_optional_shared(&gpio_pdev->dev, NULL)=
+;
+> +	if (IS_ERR(reset)) {
+> +		dev_err(&pdev->dev, "failed getting reset control: %ld\n",
+> +			PTR_ERR(reset));
+> +		return ERR_CAST(reset);
+
+Consider using dev_err_probe() here.
+
+regards
+Philipp
 
