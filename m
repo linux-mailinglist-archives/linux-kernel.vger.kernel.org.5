@@ -1,160 +1,96 @@
-Return-Path: <linux-kernel+bounces-67241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 122B085687F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:51:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36C3856882
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A081C2084F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861A71F229E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80425134730;
-	Thu, 15 Feb 2024 15:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B810134733;
+	Thu, 15 Feb 2024 15:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="O/EJRg6V"
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pBAzmmSJ"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBE012BF03;
-	Thu, 15 Feb 2024 15:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF41C1754B;
+	Thu, 15 Feb 2024 15:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012224; cv=none; b=qwTuVPjAeHqU2ehFzWlY8vIMTcPirw1MlpVFAnNpsNtTG7AJ30RgN7UvDfKZX+bwe8yGAmW/byjIxH+R3JxNAUc7Yf9Ysz8LOkoeZ4t48vIHG8g2xh7dI2POjFBx3uIkz9gc/dRiNlCB+GVmP6DDDsOeDI7mEUAHwlzfQ0EzK6w=
+	t=1708012250; cv=none; b=J/BR1BAl5/84D02As2Cc0IsvDo+qClaP31AG08PPIT4WJaD99sPcPRlrkukSNVR1LRfcqS6VFMU2Jn5fyLyZ9ljnL6dkxrkNLOi7itpuq8N9C9EBVCPW3e8B1x5IZU2aUzui2OEJQZHiTi1Yz0UXmjxdMFElXvPFjf2Zu48D0+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012224; c=relaxed/simple;
-	bh=nRsOhffUEUuRhmS+8HSepxdFjF49Sg5dDRzWq3AYXBE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JJYJ1uPq/keTl2HajSCH4zyigDxc6OQDqdKzwbqZmvqRPCkf7DSE4E4zTO2gvhiJwppqIago4jfeGPPyXlr/olTB1Chqq4xlRonziRru8yOYCIyXFDdFh+sh3ENXz4jdfM9xM4U26oFmGuXkapAR4eYM/rOaBePpphIwc/v8ezw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=O/EJRg6V; arc=none smtp.client-ip=52.119.213.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1708012223; x=1739548223;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GOmRYqtgssrc+Ztwxp13mDL5XOVk9YlZb1c27Zd3aaQ=;
-  b=O/EJRg6VuRkk0gEkOELFMHYz8MUZ2/N/ODw/BoVaRuNI2L0h2CT6ocEw
-   GCLEfS2bJqyFzXWyylqL6tU9dCt08gzUZOtMc2Wdd/9JipyQbvse0Punu
-   OBuccVuL2f39HGPu59oC2gnSJHQn8YP0ik7i3+iCkCFR3x3I6V4u1YvqB
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.06,162,1705363200"; 
-   d="scan'208";a="185053725"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:50:20 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:31897]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.209:2525] with esmtp (Farcaster)
- id 129ec688-a7b3-4980-8268-483dcdf08da3; Thu, 15 Feb 2024 15:50:18 +0000 (UTC)
-X-Farcaster-Flow-ID: 129ec688-a7b3-4980-8268-483dcdf08da3
-Received: from EX19D001UWA002.ant.amazon.com (10.13.138.236) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 15 Feb 2024 15:50:18 +0000
-Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
- EX19D001UWA002.ant.amazon.com (10.13.138.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 15 Feb 2024 15:50:18 +0000
-Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
- by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Thu, 15 Feb 2024 15:50:18 +0000
-Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
-	id F14604266; Thu, 15 Feb 2024 15:50:17 +0000 (UTC)
-From: Maximilian Heyne <mheyne@amazon.de>
-To: 
-CC: <ravib@amazon.com>, Maximilian Heyne <mheyne@amazon.de>,
-	<stable@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
-	<adilger.kernel@dilger.ca>, Yongqiang Yang <xiaoqiangnk@gmail.com>,
-	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] ext4: fix corruption during on-line resize
-Date: Thu, 15 Feb 2024 15:50:09 +0000
-Message-ID: <20240215155009.94493-1-mheyne@amazon.de>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708012250; c=relaxed/simple;
+	bh=LggeN6h+WHY+0T/ae++CkDBWkvkomh6pdok7J2AYD5I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VjR243y+Okh91WdVHJOAVv3tNJI90HaPHT3uEf/r7vXi3ZzE2LI59BKF6z/a5/sTxTV7SG43JOCKMGqDH9brrEhPKxnEJvr8ktDozxS+f4pMK/UO82ZnV5Z04ZmML3rrbsX9lItdOFMobDb96Fjddv0bCJfEUzTi9b9K7XzSCf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pBAzmmSJ; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A11D60007;
+	Thu, 15 Feb 2024 15:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708012241;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mtk48EznKmDX1rPnpNxOjf1ZSd+O3CpXHfHOgLG93Fs=;
+	b=pBAzmmSJkIrrpIJCmMkXFXnnZuhytoqQDfJaAm7OvCfh1ZOEySWkDW33bzn32d82aX+A25
+	8Y7cbAG6EqXMtDc53kf6t7tzT8ogGzFOuEqFH21ckm/vMOf6Cru83EWMYGYBtbkucF5+gX
+	zAtyq8DGJxi57xI2fyuAB6KF4Pv9wzlUvbSXKKW1jFxFm/ngLQs9bN8a/nJbsqSv0h/E6K
+	qKNQna6AHP+zyHtk1aAbmVIxrTazWmZ+9AUWf4eGoYt2ma3wtfxdOVLDHpUfEiipqdJqU8
+	1T4XqNDFx/K7KuaNQIr4RJsiRxDdwuYImgyPgmsaiakzeciMOnR+BuHzDzZa8A==
+Message-ID: <02c155ff-f880-4e88-b600-9d632019729f@bootlin.com>
+Date: Thu, 15 Feb 2024 16:50:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] wifi: nl80211/wilc1000: force WLAN_AKM_SUITE_SAE to
+ big endian in NL80211_CMD_EXTERNAL_AUTH
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Ajay Singh <ajay.kathat@microchip.com>, Kalle Valo <kvalo@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Igor Mitsyanko <imitsyanko@quantenna.com>,
+ Sergey Matyukevich <geomatsi@gmail.com>, kernel test robot <lkp@intel.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>
+References: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+In-Reply-To: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
 
-We observed a corruption during on-line resize of a file system that is
-larger than 16 TiB with 4k block size. With having more then 2^32 blocks
-resize_inode is turned off by default by mke2fs. The issue can be
-reproduced on a smaller file system for convenience by explicitly
-turning off resize_inode. An on-line resize across an 8 GiB boundary (the
-size of a meta block group in this setup) then leads to a corruption:
+On 2/15/24 15:13, Alexis Lothoré wrote:
+> This small series is the follow-up to discussions started around a sparse
+> warning in wilc1000 driver ([1]) and implements the solution suggested by
+> Johannes. It moves a historically needed conversion to be32 in nl80211 (in
+> NL80211_CMD_EXTERNAL_AUTH, specifically on NL80211_ATTR_AKM_SUITES property
+> _only_ when it is set to WLAN_AKM_SUITE_SAE) The user scenario affected by
+> this update is a connect process on a WPA3-protected access point with
+> authentication offloaded to user-space. Two drivers are affected by the
+> update: wilc1000 and qtnfmac. wilc1000 case is handled by a small
+> companion patch which also fixes the sparse warning.
 
-  dev=/dev/<some_dev> # should be >= 16 GiB
-  mkdir -p /corruption
-  /sbin/mke2fs -t ext4 -b 4096 -O ^resize_inode $dev $((2 * 2**21 - 2**15))
-  mount -t ext4 $dev /corruption
+Adding Claudio Beznea (co-maintainer for WILC), who got lost when I prepared the
+series, sorry.
 
-  dd if=/dev/zero bs=4096 of=/corruption/test count=$((2*2**21 - 4*2**15))
-  sha1sum /corruption/test
-  # 79d2658b39dcfd77274e435b0934028adafaab11  /corruption/test
+Also, my mail provider returns error 550 (No Such User Here) for quantenna
+driver maintainer (<imitsyanko@quantenna.com>, taken from MAINTAINERS). I've
+seen no recent activity from him on the ML, is he still around ?
 
-  /sbin/resize2fs $dev $((2*2**21))
-  # drop page cache to force reload the block from disk
-  echo 1 > /proc/sys/vm/drop_caches
-
-  sha1sum /corruption/test
-  # 3c2abc63cbf1a94c9e6977e0fbd72cd832c4d5c3  /corruption/test
-
-2^21 = 2^15*2^6 equals 8 GiB whereof 2^15 is the number of blocks per
-block group and 2^6 are the number of block groups that make a meta
-block group.
-
-The last checksum might be different depending on how the file is laid
-out across the physical blocks. The actual corruption occurs at physical
-block 63*2^15 = 2064384 which would be the location of the backup of the
-meta block group's block descriptor. During the on-line resize the file
-system will be converted to meta_bg starting at s_first_meta_bg which is
-2 in the example - meaning all block groups after 16 GiB. However, in
-ext4_flex_group_add we might add block groups that are not part of the
-first meta block group yet. In the reproducer we achieved this by
-substracting the size of a whole block group from the point where the
-meta block group would start. This must be considered when updating the
-backup block group descriptors to follow the non-meta_bg layout. The fix
-is to add a test whether the group to add is already part of the meta
-block group or not.
-
-Fixes: 01f795f9e0d67 ("ext4: add online resizing support for meta_bg and 64-bit file systems")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
----
- fs/ext4/resize.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 4d4a5a32e310..3c0d12382e06 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -1602,7 +1602,8 @@ static int ext4_flex_group_add(struct super_block *sb,
- 		int gdb_num = group / EXT4_DESC_PER_BLOCK(sb);
- 		int gdb_num_end = ((group + flex_gd->count - 1) /
- 				   EXT4_DESC_PER_BLOCK(sb));
--		int meta_bg = ext4_has_feature_meta_bg(sb);
-+		int meta_bg = ext4_has_feature_meta_bg(sb) &&
-+			      gdb_num >= le32_to_cpu(es->s_first_meta_bg);
- 		sector_t padding_blocks = meta_bg ? 0 : sbi->s_sbh->b_blocknr -
- 					 ext4_group_first_block_no(sb, 0);
- 
 -- 
-2.40.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
