@@ -1,198 +1,125 @@
-Return-Path: <linux-kernel+bounces-66476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31BDE855D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:03:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4F1855BC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8D712834ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:03:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 617E21C21F24
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0B11BDD6;
-	Thu, 15 Feb 2024 08:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D68DF71;
+	Thu, 15 Feb 2024 07:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="l/9auz30"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="V7+8B+sz"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6F7219EB;
-	Thu, 15 Feb 2024 08:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC7E3C17
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707987507; cv=none; b=gh5iIlZnuHOYJU/b5NxKISPbo13DhAYrFGPbHq7RI6Ot58jbnBSJg7QskIv0c9j5ejxcQw6RfqkAe2eIa7AOHuUyxam1qLPtCBvemwtID8uh7O/j/wRKh+E7K9uLqQN2Cq+yKj1tK0x0jGdKluvYZNqU5YdKqNAaJ+9AHfA7VN8=
+	t=1707982977; cv=none; b=tv7yxafUQNmT4keYQG/Qb5HNjTmcawOLzlWhZhfbBRylKDTvuBNNl5gtnhZGtv7fJPDoew22sbK5SFavBlY+G607pVWDC1qZzQoXSrsS14LGIieQQd6J0vMiVEG9IrKPKFxFlscSx2UMRTzQTfNxppEgX/e0GgvaobZ9sVTSQcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707987507; c=relaxed/simple;
-	bh=taIMkmgjssmhEC0ZPe6RFUXMNpIm1p4svqj+IoHOQQ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=KFdBNGqUKCfUyl9VBj85pNH3eJaxlMDnb328T+AGhV+aha+cfArpTGqeQBhZ7tEqG4VpmVkCa4EYrGvGvFX5N9zSlVN5iKwi0kIANixOE34ujnkseMURWdaBy9CjEHXEXGOU1gDQdSu7D3pC0xWACkJwNh9osTfqaXn7FtRGiss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=l/9auz30; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41F6icwN032668;
-	Thu, 15 Feb 2024 08:57:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2023-11-20;
- bh=6KDNlbJKwQaVVi8iZUM/SOJEGq248dU9EixloG0v3NY=;
- b=l/9auz3098bmaqsmPhx4befqpe7lUC7sQOXfkoPnsyctLv1Mn2GvtGrEEonNUz/PRSbK
- vkoPUnDqB5/H1Lk/xiL6Lc4SqkVXy7tfnjLgoenQFTXxoazXYiJbiBRxjYk2nnH5T4Rq
- HhbT71dBV/BV4j2Wes908/FuKQwl6HyKQh0F5RTCQRhT1RuKJgGGBHNKvfC/BScXz9JZ
- 9frLvvg3KxAX9Bl1nZzTkXX4Iwpbgg80Y642hf2JK84tqnFcGXsgTYTi1rVsZuxLisB+
- jF2cGjfsiR8pT25+Oq2XdO/lPWQtElYb/JAjr1I+equ0+Pqtn/ClljB17fD/Pp9uB7oe Mw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91w6sm14-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 08:57:46 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41F75mac015097;
-	Thu, 15 Feb 2024 08:57:45 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5yka73wa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 08:57:45 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41F8vDd5033748;
-	Thu, 15 Feb 2024 08:57:44 GMT
-Received: from mihai.localdomain (ban25x6uut25.us.oracle.com [10.153.73.25])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w5yka73cg-9;
-	Thu, 15 Feb 2024 08:57:44 +0000
-From: Mihai Carabas <mihai.carabas@oracle.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: kvm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, pbonzini@redhat.com, wanpengli@tencent.com,
-        vkuznets@redhat.com, rafael@kernel.org, daniel.lezcano@linaro.org,
-        akpm@linux-foundation.org, pmladek@suse.com, peterz@infradead.org,
-        dianders@chromium.org, npiggin@gmail.com, rick.p.edgecombe@intel.com,
-        joao.m.martins@oracle.com, juerg.haefliger@canonical.com,
-        mic@digikod.net, mihai.carabas@oracle.com, arnd@arndb.de,
-        ankur.a.arora@oracle.com
-Subject: [PATCH v4 8/8] cpuidle: replace with HAS_CPU_RELAX with HAS_WANTS_IDLE_POLL
-Date: Thu, 15 Feb 2024 09:41:50 +0200
-Message-Id: <1707982910-27680-9-git-send-email-mihai.carabas@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1707982910-27680-1-git-send-email-mihai.carabas@oracle.com>
-References: <1707982910-27680-1-git-send-email-mihai.carabas@oracle.com>
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_08,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- phishscore=0 adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402150069
-X-Proofpoint-ORIG-GUID: dNXyji989GyJZ4dchNZTScxbHZCJTiW7
-X-Proofpoint-GUID: dNXyji989GyJZ4dchNZTScxbHZCJTiW7
+	s=arc-20240116; t=1707982977; c=relaxed/simple;
+	bh=7ATovh8Zrf+AwZ4JzRRGlxF09Y1ihfaCoTBUGRElC5o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CQretYk1OwDmXHo0JOak4IeCNmd6xFFJzoYX0OklZLQsrx465EV+69OS9xHht70Wn1nZ0S9PGSCTIqwHN3JncdtweJv7TXM6REZnZMjl4jVz4sVXoDsmVeM/YTlhR08LklZHO4Ec5f8lrnhAPogy6KU5M9vCx9Ubkqs9V2JE0VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=V7+8B+sz; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4c03beb85f4so184491e0c.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:42:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707982974; x=1708587774; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m3gVXOoEIsBekobrNYILlo8Y5CWblU12NL0RUb1vlGw=;
+        b=V7+8B+szq5a/CqDzoO2AESzjfnYpBoOnGWJXiEhPfZDVQ0gs8YdIo7xmEJDI7KQCcf
+         jeKlbM86BkFXbs7mdzCJFsujQ7HuwCYPitRDl37ztiFc6+0rMfw1GBU71nQKaTKPUl6y
+         PdgadwkS+znM89ZhZIwWeLdWSi5lyxAWeP40bSd6vNKf8tK/g6JjVNz0Th0hjA/PUKxR
+         qz+Oc8Lo3fkmyNMI+2YZGPg0pqK27qV6Lflgl+cpdQL/6qz7ZQzTJEp+0LpZnnv3o+oi
+         4llbRVGX6n8CjA2z125QRi8G93NYnSSkSF7z3d7kW2kNuQ75LM20D2POI696MkqLREVj
+         ET1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707982974; x=1708587774;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m3gVXOoEIsBekobrNYILlo8Y5CWblU12NL0RUb1vlGw=;
+        b=IOWPYccOBCIcsbq9x1eehOcUpyWxdkxH3yiuoKrmzx6gzX1qSJr7ah/sHFEOzAs1Lj
+         OitYyAELd/MCkhKIaZlV6RM/EbmXNDZMgENBjJIoyDiMyu8oKCyTh1I3NGUl4A8v6iNQ
+         95ItnN+oqSmHwV1K5g6HTNgBJIRK5U9xpvUwhy2YsPl9dha+rFznvB1Q92+SU32RvORH
+         x7AdKTDStCRceOf00qWOOo6ggajze0solA3z/a/aZPQN+Zy5ekUjhrQNa5UxAJrbcGCv
+         VkiQ81vfYdB+5zS7KLMvzbnMOP5K6y0ElkD7ZuqWta07DRAt0xwyDNVgMwvZn+MXr340
+         c0qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUsEoXPjtaorBjxvJfh9OXwj+a2seVhuP5SaO1f1fc99fg9uzvnBUrpYCyVm0BXsViLVtprPzHqoWE/6PUwtHHl0V5BzQqAH70n2u6y
+X-Gm-Message-State: AOJu0YzYIl7Dy2mkrcDFyO/34zhmvs13Iqa2JwOUYOywchUYSAIVzK37
+	Qf/3xPOGpfH1yMnX+UPn1xUKYMK1z6GIM/sWl5e9o7X6T0w3nPr6CXI5Y1oTft9Ib5BTmaVFV+I
+	Z1IqftNcsDTkmbLv2NITJZQ8XhNSxjI+YKzaUzw==
+X-Google-Smtp-Source: AGHT+IFAlRhKqIPfjRV7uMjuMrLjenZLw85BDQYZzQiiiKcQEWhjQrfyP3Pz1uxk1YHe2aHokf1HB+xX/1qJrqagbxA=
+X-Received: by 2002:a1f:dd02:0:b0:4c0:1937:d29d with SMTP id
+ u2-20020a1fdd02000000b004c01937d29dmr910895vkg.6.1707982974572; Wed, 14 Feb
+ 2024 23:42:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240214085248.6534-1-brgl@bgdev.pl>
+In-Reply-To: <20240214085248.6534-1-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 15 Feb 2024 08:42:43 +0100
+Message-ID: <CAMRc=Mcn_vGBy0h6ZmiD922JUYRuXDSPSn19Wk5RRyFrU+31Fw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sysfs: fix inverted pointer logic
+To: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Replace ARCH_HAS_CPU_RELAX with ARCH_WANTS_IDLE_POLL for clarity as it controls
-the building of poll_state.
+On Wed, Feb 14, 2024 at 9:52=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The logic is inverted, we want to return if the chip *IS* NULL.
+>
+> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_devi=
+ce with SRCU")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/15671341-0b29-40e0-b487-0a4cdc=
+414d8e@moroto.mountain/
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/gpio/gpiolib-sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+> index 6285fa5afbb1..e4a6df2b317d 100644
+> --- a/drivers/gpio/gpiolib-sysfs.c
+> +++ b/drivers/gpio/gpiolib-sysfs.c
+> @@ -801,7 +801,7 @@ void gpiochip_sysfs_unregister(struct gpio_device *gd=
+ev)
+>         guard(srcu)(&gdev->srcu);
+>
+>         chip =3D rcu_dereference(gdev->chip);
+> -       if (chip)
+> +       if (!chip)
+>                 return;
+>
+>         /* unregister gpiod class devices owned by sysfs */
+> --
+> 2.40.1
+>
 
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Ankur arora <ankur.a.arora@oracle.com>
-Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
----
- arch/Kconfig                  | 2 +-
- arch/arm64/Kconfig            | 2 +-
- arch/x86/Kconfig              | 2 +-
- drivers/acpi/processor_idle.c | 4 ++--
- drivers/cpuidle/Makefile      | 2 +-
- include/linux/cpuidle.h       | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+Patch applied.
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 5b2e8a88853c..e7659a3a7d58 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1363,7 +1363,7 @@ config RELR
- config ARCH_HAS_MEM_ENCRYPT
- 	bool
- 
--config ARCH_HAS_CPU_RELAX
-+config ARCH_WANTS_IDLE_POLL
- 	bool
- 
- config ARCH_HAS_CC_PLATFORM
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index bc628a3165eb..7c963f7c10e4 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -107,7 +107,7 @@ config ARM64
- 	select ARCH_WANT_LD_ORPHAN_WARN
- 	select ARCH_WANTS_NO_INSTR
- 	select ARCH_WANTS_THP_SWAP if ARM64_4K_PAGES
--	select ARCH_HAS_CPU_RELAX
-+	select ARCH_WANTS_IDLE_POLL
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARM_AMBA
- 	select ARM_ARCH_TIMER
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8c4312133832..90f5d16be8c0 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -73,7 +73,7 @@ config X86
- 	select ARCH_HAS_CPU_CACHE_INVALIDATE_MEMREGION
- 	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_HAS_CPU_PASID		if IOMMU_SVA
--	select ARCH_HAS_CPU_RELAX
-+	select ARCH_WANTS_IDLE_POLL
- 	select ARCH_HAS_CURRENT_STACK_POINTER
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEBUG_VM_PGTABLE	if !X86_PAE
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index 55437f5e0c3a..6a0a1f16a5c3 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -36,7 +36,7 @@
- #include <asm/cpu.h>
- #endif
- 
--#define ACPI_IDLE_STATE_START	(IS_ENABLED(CONFIG_ARCH_HAS_CPU_RELAX) ? 1 : 0)
-+#define ACPI_IDLE_STATE_START	(IS_ENABLED(CONFIG_ARCH_WANTS_IDLE_POLL) ? 1 : 0)
- 
- static unsigned int max_cstate __read_mostly = ACPI_PROCESSOR_MAX_POWER;
- module_param(max_cstate, uint, 0400);
-@@ -787,7 +787,7 @@ static int acpi_processor_setup_cstates(struct acpi_processor *pr)
- 	if (max_cstate == 0)
- 		max_cstate = 1;
- 
--	if (IS_ENABLED(CONFIG_ARCH_HAS_CPU_RELAX)) {
-+	if (IS_ENABLED(CONFIG_ARCH_WANTS_IDLE_POLL)) {
- 		cpuidle_poll_state_init(drv);
- 		count = 1;
- 	} else {
-diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-index d103342b7cfc..23f48d99f0f2 100644
---- a/drivers/cpuidle/Makefile
-+++ b/drivers/cpuidle/Makefile
-@@ -7,7 +7,7 @@ obj-y += cpuidle.o driver.o governor.o sysfs.o governors/
- obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
- obj-$(CONFIG_DT_IDLE_STATES)		  += dt_idle_states.o
- obj-$(CONFIG_DT_IDLE_GENPD)		  += dt_idle_genpd.o
--obj-$(CONFIG_ARCH_HAS_CPU_RELAX)	  += poll_state.o
-+obj-$(CONFIG_ARCH_WANTS_IDLE_POLL)	  += poll_state.o
- obj-$(CONFIG_HALTPOLL_CPUIDLE)		  += cpuidle-haltpoll.o
- 
- ##################################################################################
-diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
-index 3183aeb7f5b4..53e55a91d55d 100644
---- a/include/linux/cpuidle.h
-+++ b/include/linux/cpuidle.h
-@@ -275,7 +275,7 @@ static inline void cpuidle_coupled_parallel_barrier(struct cpuidle_device *dev,
- }
- #endif
- 
--#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_HAS_CPU_RELAX)
-+#if defined(CONFIG_CPU_IDLE) && defined(CONFIG_ARCH_WANTS_IDLE_POLL)
- void cpuidle_poll_state_init(struct cpuidle_driver *drv);
- #else
- static inline void cpuidle_poll_state_init(struct cpuidle_driver *drv) {}
--- 
-1.8.3.1
-
+Bart
 
