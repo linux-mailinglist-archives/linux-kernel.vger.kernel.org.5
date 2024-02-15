@@ -1,123 +1,107 @@
-Return-Path: <linux-kernel+bounces-67428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C587856B65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:46:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6F4856B76
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27F921F22355
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:46:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FC1EB220D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E6D137C35;
-	Thu, 15 Feb 2024 17:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D06E1386BA;
+	Thu, 15 Feb 2024 17:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="od8eOLiE"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qi6EPdrC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFB21369AB;
-	Thu, 15 Feb 2024 17:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EA9132C04;
+	Thu, 15 Feb 2024 17:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019181; cv=none; b=CKjjobuqmWrZKMvwOYtRfufHMPZSf6GTttnJfOCIKTj65At8V6p9zWc3KbjUCMKoZShWFJqdl8KtK5nWoTv6ty35TH5tI8mlVCKsLzGrxWZt7Y/oo33PlbN/mUVvk3LizZNyS6HH96pzyCeeOmqv1HrMJC0raQm3u+Eeq/uUPAA=
+	t=1708019203; cv=none; b=pUw7oHNiZpavvR8xGhHkRj7IOhd1Yisu2zNmfh0VjB6jbm/WGV8HCglGsg65ovNlfThvLvg/LO6KM47+XNpvn6hmPIFRcAlnBtoMGQXebTnepVrELCTsHmaMp2D+3TIRWP/B+25LotiNgb2iALCKDhxnqYZpKBjpF8bVO7WyFe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019181; c=relaxed/simple;
-	bh=tSVwzJYE9mMhTP4PRPrJFe7vbFAidXXe9lT6bNV75jA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hk3vWjUdcjKBKPaJOG1NIaG/73AZT1a/7jAEGxS+VRVb3k+z2uMlkqYm4WAtJxaqaKWyL3P2WloKlo/FN4esqWJU6/rBC39m4tRFynTHMrK3zG5XmzNPWMOo2wKTgSmAkdkeWlXvp2Z0X2QjLUBgWo+k7iCzutJgGVfOz+FtqRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=od8eOLiE; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B0EC8240002;
-	Thu, 15 Feb 2024 17:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708019176;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=inH8EjjrxlOBnJ9O5h+irj6SqwiMSYBxDH0OH8nLG0A=;
-	b=od8eOLiECnaDNLhsK97ovwmZovi+OYGOWZvJEle+XxC1RECogVyhPrpR6DAxahyqcuJXLi
-	4bYPCe04UCrdEK1ybZNKSKNV0KESVI0c8btHLeJbauEN0NU2vn3WRfdf+CIK6lKWaPYige
-	jwDl3wjhlgn4idv9iFOj4Wj/8DWtEOeykZbM5cSCWJXLh4r5kr84XSQ/2uTZ7UbcnWzERO
-	+CLGKxUN3Im1ZM0sBJ00W8OGbjudjEVw2JOm03ugtvoorwu97/ZiRdCIYzS3ItxWYwDZju
-	cR49LC4DmHxkO3dYTL4Ad9s2sz4TWnpbBF+d7ENqiLUjs2C/epqVz6P23t797A==
-Date: Thu, 15 Feb 2024 18:46:12 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vadim Fedorenko
- <vadim.fedorenko@linux.dev>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
- <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 RESEND 3/6] bitmap: Make bitmap_onto() available to
- users
-Message-ID: <20240215184612.438bd4f2@bootlin.com>
-In-Reply-To: <Zcptyd/AWrDD3EAL@yury-ThinkPad>
-References: <20240212075646.19114-1-herve.codina@bootlin.com>
-	<20240212075646.19114-4-herve.codina@bootlin.com>
-	<ZcoOpPb9HfXOYmAr@smile.fi.intel.com>
-	<20240212143753.620ddd6e@bootlin.com>
-	<ZcokwpMb6SFWhLBB@smile.fi.intel.com>
-	<20240212152022.75b10268@bootlin.com>
-	<Zcos9F3ZCX5c936p@smile.fi.intel.com>
-	<Zcptyd/AWrDD3EAL@yury-ThinkPad>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1708019203; c=relaxed/simple;
+	bh=3SmWmcck5G21RkHFmC4DweIdttsir78RJ8t2utgkGNQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XB6SJ5Q0pAvWsA8RlMLi9Uqp2kpTJzQF/Tu/OQiMVD5yZMNagaQVmgJktGH9c5+7kRIH2VS5Bkgz6ZlmTvQo9uRLmHG+7TBmyYQIGOGM0ISX/cVnV9M/Z5iyz2kUlpcybl44erp3zocChi+PkQeURUce7XuKgGg9M8s6rnFe4dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qi6EPdrC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1690C433F1;
+	Thu, 15 Feb 2024 17:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708019202;
+	bh=3SmWmcck5G21RkHFmC4DweIdttsir78RJ8t2utgkGNQ=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=Qi6EPdrCc9v89k+Gm73FXJRcklShAe0JaStEoTGaOsHOZx4A6nJXfUYHCZxr1eYwa
+	 5DSX3gfAdzLA++F72H7WqmfSwfNZMDydaRqr5fs7lHXvWX8msxP3RVnqRZWSkCYF9X
+	 qCHY6jcWZQjpX15S1u7w9OD63YARQWxjOLk3ThEgU/XqEzjARRV0pCvVhB5s2nQ9Lh
+	 g8e70In+BINtknlacjzN0NGu8FtK9Lbg1wgq08dAaNXLwp7XjRXeDG15W4DhdtjSAo
+	 0aIATAYjiCCE5VWtfGaQiIss1ecWHhvt533cUwmF6i2ewOB7mycLbxqX6H1QALLowr
+	 RcB78yQblUDdg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9081DC4829E;
+	Thu, 15 Feb 2024 17:46:42 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH 0/3] mmc: add hi3798mv200 specific extensions of DWMMC
+Date: Fri, 16 Feb 2024 01:46:41 +0800
+Message-Id: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAFOzmUC/x3MPQqAMAxA4atIZgNpVPy5ijhom2qGqrQggnh3i
+ +M3vPdAkqiSYCgeiHJp0mPPMGUBdpv3VVBdNjBxTYYNLjWGYHHTqu27cDERzk1bkThvmC3k8Iz
+ i9f6n4/S+HxbAM4FkAAAA
+To: Ulf Hansson <ulf.hansson@linaro.org>, 
+ Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
+ tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708019203; l=1049;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=3SmWmcck5G21RkHFmC4DweIdttsir78RJ8t2utgkGNQ=;
+ b=iDJmQqTXs95Iec5RYgBkbeSZNLygTPRYG7YrVtIPzwwKnTycoUIsL5xoH+f3o+MFsRz0AY/z3
+ hPEFez78WuhDTV2TNtdCfyP+ZoRA1tu2zw+hH8asPLXEDBC5PvPIlWu
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-Hi Andy, Yury,
+it's modified from hi3798cv200 driver, but quite a lot of code gets
+rewritten because of the hardware differences. Actually cv200 DWMMC core
+is called HIMCIV200 while mv200 DWMMC core is called HIMCIV300 in
+downstream.
 
-On Mon, 12 Feb 2024 11:13:13 -0800
-Yury Norov <yury.norov@gmail.com> wrote:
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Yang Xiwen (3):
+      mmc: dw_mmc: add support for hi3798mv200
+      dt-bindings: mmc: dw-mshc-hi3798cv200: convert to YAML
+      dt-bindings: mmc: dw-mshc-hi3798cv200: rename to dw-mshc-histb
 
-..
-
-> 
-> That's I agree. Scatter/gather from your last approach sound better.
-> Do you plan to send a v2?
-> 
-..
-> 
-> I think your scatter/gather is better then this onto/off by naming and
-> implementation. If you'll send a v2, and it would work for Herve, I'd
-> prefer scatter/gather. But we can live with onto/off as well.
-> 
-
-Andy, I tested your bitmap_{scatter,gather}() in my code.
-I simply replaced my bitmap_{onto,off}() calls by calls to your helpers and
-it works perfectly for my use case.
-
-I didn't use your whole patch
-  "[PATCH v1 2/5] lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers"
-because it didn't apply on a v6.8-rc1 based branch.
-I just manually extracted the needed functions for my tests and I didn't look
-at the lib/test_bitmap.c part.
-
-Now what's the plan ?
-Andy, do you want to send a v2 of this patch or may I get the patch, modify it
-according to reviews already present in v1 and integrate it in my current
-series ?
-
-Yury, any preferences ?
+ .../bindings/mmc/hi3798cv200-dw-mshc.txt           |  40 ----
+ .../devicetree/bindings/mmc/histb-dw-mshc.yaml     | 130 +++++++++++
+ drivers/mmc/host/Kconfig                           |   9 +
+ drivers/mmc/host/Makefile                          |   1 +
+ drivers/mmc/host/dw_mmc-hi3798mv200.c              | 238 +++++++++++++++++++++
+ 5 files changed, 378 insertions(+), 40 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240121-b4-mmc-hi3798mv200-a5730edf122c
 
 Best regards,
-Hervé
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yang Xiwen <forbidden405@outlook.com>
+
 
