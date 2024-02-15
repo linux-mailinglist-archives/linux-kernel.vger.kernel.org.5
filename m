@@ -1,171 +1,230 @@
-Return-Path: <linux-kernel+bounces-67715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCFD4856F99
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D24E0856FA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E22F1C21BEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:51:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 029F31C221F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36E1141995;
-	Thu, 15 Feb 2024 21:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3609C13DBBE;
+	Thu, 15 Feb 2024 21:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bVcwh3MF"
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XEuIaBAO";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XEuIaBAO"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D536A349;
-	Thu, 15 Feb 2024 21:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A15B13F006;
+	Thu, 15 Feb 2024 21:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708033912; cv=none; b=Yke2Qh8RpuI7zuUQrJPPv1b8CUJM5yApVLjfbvSuSxWhNWdGL0Que7e0wokDsu137IDn+jsAjhywOx/uHDhbSEo1mS5UzT3yHRkR5UdoxEwatm1uzIPVy19g39VWJuqAZnV1Ke7Jd7DrQShglY7b8vlglOkz6taYkrKc9Piqf/Y=
+	t=1708034102; cv=none; b=cBj7xjeFX0CnaRmLo5+GMu814IteGRvAbFFAmyxA5v/sdHC9G/2mVdWmxWVwNovDFNwcr+TT6AFc3XT5N29EZoowDvlXIc0ps0q7nRZz6Nx3oTdtvdJYqPdVMy3uiD7piwKTRsn3rvKwC1f/cN8Vtu8s81h1m/n3sYegrxpFwBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708033912; c=relaxed/simple;
-	bh=O42nuhICBihJWnszpZZ0NOG3Cl71f3VoQR7IUUPNH9U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bjl2X0dYF2a6VrnigOWMhTDRtT3HVjmH1LMyxvMtWXYiiC1EoARKwAR4OE+KrbP05Gery+qN7anxmpVDtjutghMz9Luz0HbugfTBAafdhomDYPHclcPnBnrELVYfpGuUR+RUEN+aUGy2NBSGc/PVhhdcIjv455HHefmGLKng8IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bVcwh3MF; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-36426ae1c5eso4365335ab.3;
-        Thu, 15 Feb 2024 13:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708033908; x=1708638708; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=IPmAvIsDewbgoAF8s7naRSTRLzReKRtE3k+XB4aF880=;
-        b=bVcwh3MFe8+fviF2XNZIbtKbNA2tT1mhU+S2LSr4AYoqFj2n2/WTtdqpcFzxm8Jlbb
-         Il0rtgpVFC/+FlNpZYxMOXZMXRiEhBLN5VaxUNzcFU+PpuD1RwyNnWlPXtuF2jHzujxM
-         ULyV57OCsO83ras1/R8P621TXuoaCetwoKIsvTDkky8HP0aTlRLWY30MytPOyuQufIOW
-         362AQYIXNBa4gDOkTvE3Qc0KMe+aMKt+QGocBRqjXWWQO3RYKhBTdnERB8tBdJxWQQI8
-         gOIzYGx8SR+J9abJez4xm4LhiRy2ZaC8Kp8fSXwB/tcHKcsVj8f2SA3BaItpPidoaabe
-         xmOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708033908; x=1708638708;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IPmAvIsDewbgoAF8s7naRSTRLzReKRtE3k+XB4aF880=;
-        b=XmTwXYneooL5MOwAWL51zbTgDOV7PHSU+ECQOw+s0xEZ8QdsGktWoKqVkvqph3CzeM
-         vHT4GEvgG2RU7TRUrGdPC5yOwrwid6TNhR+py/3nXIX3OddWX0Nr54PliZ59KNfdM3s7
-         3pEygfiSnzTT5CuRAdG6NtOsF3JKCeQl5qZ3ZvCwS6bieJHHfOS8dIV13RhVUmR7ZxqD
-         AqNxqc1il54EtFaxZAZj0QGzrVctsJzpEnbYq2nvLaZ3Y0Yf83rU4kPciH9u+lKxtqb9
-         dMc4CStkpJbS7WNGALHgO3s0z/FSW518qdrZLsWuOClciPVXd5/pltUiGE9esilTYfXB
-         KbTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWafvSQ5HQi3ui13epYxZhfGq/aXbCof+ohCpHysPRUx9bLltgZGBanqTRPgcXOjzKfT9DvqV/ZVA+vuvvKThHLCXsCoFaI4zS8r08Ea4xFLt8o8TloPEWdpWb6q+3ugodPRAsHqhToMcj
-X-Gm-Message-State: AOJu0Yx9BHo2yHmFtiCPNX7NZ4wFuN9gsoMjIbYjhM5eHhQsKvMDhnas
-	enphrN7P1Xsxy7JOsi+6ZgXKRBJDkiBpiJJRtusgyb+u1xBwdGRqx48A7qFW
-X-Google-Smtp-Source: AGHT+IEX1+8EidKV0XMDVUGs/HwRHakCT7CjDaHuFK48a3BEAjjXcnYdXVrIefUBlEWoXEedo4TzQA==
-X-Received: by 2002:a92:c6c7:0:b0:363:be58:cdb0 with SMTP id v7-20020a92c6c7000000b00363be58cdb0mr3227415ilm.6.1708033907744;
-        Thu, 15 Feb 2024 13:51:47 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h63-20020a638342000000b005d8b2f04eb7sm1843319pge.62.2024.02.15.13.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 13:51:46 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Helge Deller <deller@gmx.de>
-Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-	linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Sven Schnelle <svens@stackframe.org>,
-	John David Anglin <dave.anglin@bell.net>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	David Laight <David.Laight@ACULAB.COM>
-Subject: [PATCH] parisc: Fix unwinder
-Date: Thu, 15 Feb 2024 13:51:45 -0800
-Message-Id: <20240215215145.2103639-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708034102; c=relaxed/simple;
+	bh=EB3SfacV8ivD3eAhKkH8T1nctItZs4WuWtn0yuuD5oQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ERMyOzAoHeyB7sZ8mBHak1f2Qe4Acir//PxV+OVOLTvuICh1rBWB4TaSDDr2SBbbnAyHkxuVPfslvb5oi2r73hhs4BZOwDawvLxqR1cSM167Tly291JhIGU6MC38N9+mTq0g92NU0wrFpmcXuyhIhXGV05lFQeggRF/luN0VsxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XEuIaBAO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XEuIaBAO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6268E1FB3E;
+	Thu, 15 Feb 2024 21:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708034098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=78B4kvvPSh8JDp9MHEmUxKS9HotTbXRsyldcw+EPHkU=;
+	b=XEuIaBAOxeePupxKYra105qK2slJRCLUXGOEKQ/xnXZZAwW+48by16u68ar6eWKoaSYpjc
+	Tn/7hEvXdWLkIhptV62iov5EAoxylOrXOVNApwCagldQRDJOnig0gYDPyKJkkVw/yS/2ue
+	VFnq+zX2B3UORW2oSne33WmHN03TH+E=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708034098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=78B4kvvPSh8JDp9MHEmUxKS9HotTbXRsyldcw+EPHkU=;
+	b=XEuIaBAOxeePupxKYra105qK2slJRCLUXGOEKQ/xnXZZAwW+48by16u68ar6eWKoaSYpjc
+	Tn/7hEvXdWLkIhptV62iov5EAoxylOrXOVNApwCagldQRDJOnig0gYDPyKJkkVw/yS/2ue
+	VFnq+zX2B3UORW2oSne33WmHN03TH+E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38FD213A82;
+	Thu, 15 Feb 2024 21:54:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QXBuDTKIzmWKTwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 15 Feb 2024 21:54:58 +0000
+Date: Thu, 15 Feb 2024 22:54:53 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <Zc6ILbveSQvDtayj@tiehlicka>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-32-surenb@google.com>
+ <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=XEuIaBAO
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[73];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,google.com,linux-foundation.org,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.51
+X-Rspamd-Queue-Id: 6268E1FB3E
+X-Spam-Flag: NO
 
-Debugging shows a large number of unaligned access traps in the unwinder
-code. Code analysis reveals a number of issues with this code:
+On Thu 15-02-24 15:33:30, Kent Overstreet wrote:
+> On Thu, Feb 15, 2024 at 09:22:07PM +0100, Vlastimil Babka wrote:
+> > On 2/15/24 19:29, Kent Overstreet wrote:
+> > > On Thu, Feb 15, 2024 at 08:47:59AM -0800, Suren Baghdasaryan wrote:
+> > >> On Thu, Feb 15, 2024 at 8:45 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >> >
+> > >> > On Thu 15-02-24 06:58:42, Suren Baghdasaryan wrote:
+> > >> > > On Thu, Feb 15, 2024 at 1:22 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >> > > >
+> > >> > > > On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
+> > >> > > > [...]
+> > >> > > > > @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
+> > >> > > > >  #ifdef CONFIG_MEMORY_FAILURE
+> > >> > > > >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
+> > >> > > > >  #endif
+> > >> > > > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > >> > > > > +     {
+> > >> > > > > +             struct seq_buf s;
+> > >> > > > > +             char *buf = kmalloc(4096, GFP_ATOMIC);
+> > >> > > > > +
+> > >> > > > > +             if (buf) {
+> > >> > > > > +                     printk("Memory allocations:\n");
+> > >> > > > > +                     seq_buf_init(&s, buf, 4096);
+> > >> > > > > +                     alloc_tags_show_mem_report(&s);
+> > >> > > > > +                     printk("%s", buf);
+> > >> > > > > +                     kfree(buf);
+> > >> > > > > +             }
+> > >> > > > > +     }
+> > >> > > > > +#endif
+> > >> > > >
+> > >> > > > I am pretty sure I have already objected to this. Memory allocations in
+> > >> > > > the oom path are simply no go unless there is absolutely no other way
+> > >> > > > around that. In this case the buffer could be preallocated.
+> > >> > >
+> > >> > > Good point. We will change this to a smaller buffer allocated on the
+> > >> > > stack and will print records one-by-one. Thanks!
+> > >> >
+> > >> > __show_mem could be called with a very deep call chains. A single
+> > >> > pre-allocated buffer should just do ok.
+> > >> 
+> > >> Ack. Will do.
+> > > 
+> > > No, we're not going to permanently burn 4k here.
+> > > 
+> > > It's completely fine if the allocation fails, there's nothing "unsafe"
+> > > about doing a GFP_ATOMIC allocation here.
+> > 
+> > Well, I think without __GFP_NOWARN it will cause a warning and thus
+> > recursion into __show_mem(), potentially infinite? Which is of course
+> > trivial to fix, but I'd myself rather sacrifice a bit of memory to get this
+> > potentially very useful output, if I enabled the profiling. The necessary
+> > memory overhead of page_ext and slabobj_ext makes the printing buffer
+> > overhead negligible in comparison?
+> 
+> __GFP_NOWARN is a good point, we should have that.
+> 
+> But - and correct me if I'm wrong here - doesn't an OOM kick in well
+> before GFP_ATOMIC 4k allocations are failing?
 
-- handle_interruption is passed twice through
-  dereference_kernel_function_descriptor()
-- ret_from_kernel_thread, syscall_exit, intr_return,
-  _switch_to_ret, and _call_on_stack are passed through
-  dereference_kernel_function_descriptor() even though they are
-  not declared as function pointers.
+Not really, GFP_ATOMIC users can compete with reclaimers and consume
+those reserves.
 
-To fix the problems, drop one of the calls to
-dereference_kernel_function_descriptor() for handle_interruption,
-and compare the other pointers directly.
+> I'd expect the system to
+> be well and truly hosed at that point.
 
-Fixes: 6414b30b39f9 ("parisc: unwind: Avoid missing prototype warning for handle_interruption()")
-Fixes: 8e0ba125c2bf ("parisc/unwind: fix unwinder when CONFIG_64BIT is enabled")
-Cc: Helge Deller <deller@gmx.de>
-Cc: Sven Schnelle <svens@stackframe.org>
-Cc: John David Anglin <dave.anglin@bell.net>
-Cc: Charlie Jenkins <charlie@rivosinc.com>
-Cc: David Laight <David.Laight@ACULAB.COM>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-Tested using qemu with B160L (32 bit) and C3700 (64 bit) machines.
+It is OOMed...
+ 
+> If we want this report to be 100% reliable, then yes the preallocated
+> buffer makes sense - but I don't think 100% makes sense here; I think we
+> can accept ~99% and give back that 4k.
 
- arch/parisc/kernel/unwind.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
-index 27ae40a443b8..f7e0fee5ee55 100644
---- a/arch/parisc/kernel/unwind.c
-+++ b/arch/parisc/kernel/unwind.c
-@@ -228,10 +228,8 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
- #ifdef CONFIG_IRQSTACKS
- 	extern void * const _call_on_stack;
- #endif /* CONFIG_IRQSTACKS */
--	void *ptr;
- 
--	ptr = dereference_kernel_function_descriptor(&handle_interruption);
--	if (pc_is_kernel_fn(pc, ptr)) {
-+	if (pc_is_kernel_fn(pc, handle_interruption)) {
- 		struct pt_regs *regs = (struct pt_regs *)(info->sp - frame_size - PT_SZ_ALGN);
- 		dbg("Unwinding through handle_interruption()\n");
- 		info->prev_sp = regs->gr[30];
-@@ -239,13 +237,13 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
- 		return 1;
- 	}
- 
--	if (pc_is_kernel_fn(pc, ret_from_kernel_thread) ||
--	    pc_is_kernel_fn(pc, syscall_exit)) {
-+	if (pc == (unsigned long)&ret_from_kernel_thread ||
-+	    pc == (unsigned long)&syscall_exit) {
- 		info->prev_sp = info->prev_ip = 0;
- 		return 1;
- 	}
- 
--	if (pc_is_kernel_fn(pc, intr_return)) {
-+	if (pc == (unsigned long)&intr_return) {
- 		struct pt_regs *regs;
- 
- 		dbg("Found intr_return()\n");
-@@ -257,14 +255,14 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
- 	}
- 
- 	if (pc_is_kernel_fn(pc, _switch_to) ||
--	    pc_is_kernel_fn(pc, _switch_to_ret)) {
-+	    pc == (unsigned long)&_switch_to_ret) {
- 		info->prev_sp = info->sp - CALLEE_SAVE_FRAME_SIZE;
- 		info->prev_ip = *(unsigned long *)(info->prev_sp - RP_OFFSET);
- 		return 1;
- 	}
- 
- #ifdef CONFIG_IRQSTACKS
--	if (pc_is_kernel_fn(pc, _call_on_stack)) {
-+	if (pc == (unsigned long)&_call_on_stack) {
- 		info->prev_sp = *(unsigned long *)(info->sp - FRAME_SIZE - REG_SZ);
- 		info->prev_ip = *(unsigned long *)(info->sp - FRAME_SIZE - RP_OFFSET);
- 		return 1;
+Think about that from the memory reserves consumers. The atomic reserve
+is a scarse resource and now you want to use it for debugging purposes
+for which you could have preallocated.
 -- 
-2.39.2
-
+Michal Hocko
+SUSE Labs
 
