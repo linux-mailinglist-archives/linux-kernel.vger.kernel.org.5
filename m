@@ -1,140 +1,110 @@
-Return-Path: <linux-kernel+bounces-66979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B3C85645C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:29:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D27ED85646D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856CE1F229F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:29:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9571C21B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0CB12FF88;
-	Thu, 15 Feb 2024 13:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26828130AEC;
+	Thu, 15 Feb 2024 13:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fIi2kKdx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BqGCzj/G"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BDE130AD3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A04130AC4
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003750; cv=none; b=GLziREP125nAHoB45ma1l7xYJzeqpQHvkVWowJmvJwiK8jEIs4kVmWggNRvE/ok/GSd2C9JPAkBpfLnD/8JpfmpzxQInSMfpwodA1P6iAAIhPQRiQPhFMwhAbptHn2qfcRfO8H3GWUnQ/6jcRsyNMwPg1I2l25tYOMetzAliBWw=
+	t=1708003911; cv=none; b=P79RdVzBa/7Dm+lit5THwmRD+YMM39lj3Q4sbtNo+5JMmFZN1o133DD+T+TtcEYcJkesdR8wWcKwL6TW66OD9hFjKGpu42mrTr054c2NGbKZhg/Bo06QOSb8mKgsPN24RDaKGPG7ZGJIjme1aQH0xYMF8Yc/xGDumsp/Y86AkJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003750; c=relaxed/simple;
-	bh=5eeVkjyvudX/pKW1hZPYEgCAdxgDwkfCTULdfvhHo34=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XZUiRrvS2rw4LZWl4AOcl7OsEVcPsFtX+Id7Twxrg3cPsnom89g6WNwTV33jfLqBslH6/6vhQDmuSSBaUDVzQPSnYNwaXNWm5pnhHW1uz3ZxS736nbis+xSkiYDBlr16Lz4lEcm5DYyyVg1EDrzO+v0YOM8PS20uLWMb1/IKnRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fIi2kKdx; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708003747;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5eeVkjyvudX/pKW1hZPYEgCAdxgDwkfCTULdfvhHo34=;
-	b=fIi2kKdxi6c/z2Gze5kvSwiUpHLV/+S9QQMNDg2AlLKsU7MhInBbwm0CH0iy18lD667IB2
-	teiScUIRzzJdTo+CHSrwvC9Yeb3Sfl3dSguWg76oiYopwdNmcIw+N3pPylK4VbbKsuFmoL
-	GPpVWfZHiMP+FLdn+rdkiTQsrF6ZHcc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-207-guwUvk8nN-yG5PPP6LDCyg-1; Thu, 15 Feb 2024 08:29:06 -0500
-X-MC-Unique: guwUvk8nN-yG5PPP6LDCyg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a2bc664528fso61754666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:29:06 -0800 (PST)
+	s=arc-20240116; t=1708003911; c=relaxed/simple;
+	bh=lUl0Pib7si2dQHCXFrZb+InEVOkZVwOiAw43kh+jhak=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dhCB6t2bezkuT8Rs3vHAWhw6Or8wJzqwqi9utx5sKDexguU9N92WXCzpP7geD8OGiQPc5+Xp/quRGOzscDmT4jBH62IPiLXccJGA2cWQkdNvwEv6Cj5BnpQDykQLOrrXtmMOC004ptvc6oFwpvGzubX3PNdeSB4lV9wrBgt3CJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BqGCzj/G; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso806110276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708003909; x=1708608709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yGh//nbX6ksAbjoH86pu+1OoxjeTYU/3tdUOfH2WwY4=;
+        b=BqGCzj/G9jhFSsh2Za755/LzU6uyT+nqeNHXOXWrVvZpkLqcH6kmzgf4tPtVkwkEU0
+         wyf4WLzEQMX1M5SRb9clyi+Wdlay+Rj3eHfkjDTKRJCeBQ5oJAaHdR739mCMQ0siELsY
+         pMJ4k9VWaGRJ5KWxpNJKYgc2ezLDBvP27pFM9/oAuXmwlEVFp9qUZnpYcCWRIHkcj3AB
+         vZ2lGqYF2zsUly9WRW5AgoT6GXIqqR4cK0IiLdb30LSDU5k9ul21dtva44MEhEtMEhsa
+         4JFzDwH3I9iI/ebxA/XSbuogUGtrJJo0jsA7Qcel1rqwY+WfQASMKFs9+z71WRRioqem
+         0bXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708003745; x=1708608545;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708003909; x=1708608709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5eeVkjyvudX/pKW1hZPYEgCAdxgDwkfCTULdfvhHo34=;
-        b=Q8xl9SLiH76w7CeR8E4yBAnRb85HbVVfIRnv+Ox0zX6XwSRDAIxHDnqK79U4wVKwMs
-         08jBNo4hHmeUEKfK5UKk4L1iCLwS5gi5iLcoLtbnZfYWDzQsNqNdJ1XfcB2zl6juJqZP
-         oJ0M8WLwU9nf5rDq2BOHYBk9eOl6/eoFAAorLdqplE6IxhH0foqDd5jbuzhrKDXWuzSx
-         6gyHRRw55uvp/pSOqsfohmLbCa//RpyFYAoYXez5RuqgJWD3otuMR93HoZIr2ZfaXkeY
-         uqPW9jD5uuAoizs2wCZ6cq2G8N9w01zZS64fI4pGv4Vm9q1tOUOa31tp3HIsVUm4ZZVN
-         ooGA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0M/3jtR6m6OY7bm8Nho7uDLKIQjFkqkct5dUUfKQAhGwPy5bvGfZZg11Ctsrx43Xfe1uJEOC5SUqsgAdSLvrOD1zNNS4gik/OPF+4
-X-Gm-Message-State: AOJu0Yy37Bjhu7/hham2ByXdDAuM5BLZEm0opuuF1N9FwMwamc+31jBa
-	jdt3MoJbCX6mWDh35N8kD2rTv8PRxdXpAQo6i+f85GKdm0ISbfcm520b7l3zm6Vr46Sg034VVbG
-	zfQ9Z1X6yyTZ/s7Q59jF2SQs1PFs2/+WpBHiKXDgis5TvnYCkJBQgLFh0V07vkQ==
-X-Received: by 2002:a17:906:24d7:b0:a3d:3781:6edc with SMTP id f23-20020a17090624d700b00a3d37816edcmr1280806ejb.55.1708003745155;
-        Thu, 15 Feb 2024 05:29:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHenfB7DY75o/58zvNxuONlHdNOgFk3aJKOzSO8iJ3lT0l6WsgAs9wbABWWtdZ7pihKzcwGfA==
-X-Received: by 2002:a17:906:24d7:b0:a3d:3781:6edc with SMTP id f23-20020a17090624d700b00a3d37816edcmr1280785ejb.55.1708003744827;
-        Thu, 15 Feb 2024 05:29:04 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id vh2-20020a170907d38200b00a3d784f1daesm539293ejc.132.2024.02.15.05.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 05:29:04 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id EC50910F59BF; Thu, 15 Feb 2024 14:29:03 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, Lorenzo Bianconi
- <lorenzo@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] page_pool: disable direct recycling based on
- pool->cpuid on destroy
-In-Reply-To: <8aa809c0-585f-4750-98d4-e19165c6ff73@intel.com>
-References: <20240215113905.96817-1-aleksander.lobakin@intel.com>
- <87v86qc4qd.fsf@toke.dk> <8aa809c0-585f-4750-98d4-e19165c6ff73@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Thu, 15 Feb 2024 14:29:03 +0100
-Message-ID: <87plwxdffk.fsf@toke.dk>
+        bh=yGh//nbX6ksAbjoH86pu+1OoxjeTYU/3tdUOfH2WwY4=;
+        b=ayKbVLcFHHcRS9bYpKcrnv+bVDM2bccnz18rcELQ1+1hI6uKkrTbez+ECkI9XGdCzP
+         J5SdVDrhtBsBIH+KX2lNoJnE+GX005IwJEkK04Ma8vX8c63VZ84HbxDb6TzeybEHkwsD
+         qNfQx1dm0tghye4cUREV6gbq0PAzgnGjDVGq5Ja9fLXXL/oR1Ahfc3DequCXVNRph4Nf
+         /8ckjaANqvDiTFRbuA2q/ecrK+OHMnHkbvCK3IWg0zyDdswtokc+Bl89fV1M1Jl4KSOK
+         hFU0W47vHbgjbT09uMncG+U1/gM5Mw21e+yDk2rBCUH+pZQN0zgjsp0EYv94CXB1KtCH
+         D7KA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNwOKW80rD0ZdY7ySxawnySv4p2WVLXFKUUy+MomlL2COEZWonzpy3VeFPOvUPl/nWorB2L0Ks8H0vBB0vwhKObABMsTLGOI5t7W7s
+X-Gm-Message-State: AOJu0YyJOh/DSFJGk6qfIJi7Xx8BITV199PWFgIM8L0DVm/m7v8ModPb
+	lQsMExqz2+x/N/ii8d2soNTrX0oCGCMMVWOgZZM04c0wDhSKi/zGXLYh9tVTdZz5Zmbwg0As6OP
+	qf3/rOgFVruAZTa6vIu4zn9mF/E/7vTc9GdAQbA==
+X-Google-Smtp-Source: AGHT+IHl3qgWvQCqRJMe39KHtu2wuTpCX4Lckf3lqFQQ+kVziMGrJ7Juv/tfm7isqbWZN8sE5IWX6zuYqEnZ+zYcRZE=
+X-Received: by 2002:a25:b949:0:b0:dcb:b41c:77ef with SMTP id
+ s9-20020a25b949000000b00dcbb41c77efmr1387473ybm.24.1708003908799; Thu, 15 Feb
+ 2024 05:31:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
+In-Reply-To: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 15 Feb 2024 14:31:37 +0100
+Message-ID: <CACRpkdYm0dNZZvzAZ-VQ+MaHeL7NmGCmCVw42WMx6BFf4Lw0Pw@mail.gmail.com>
+Subject: Re: [PATCH] backlight: ktd2801: depend on GPIOLIB
+To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>, 
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@kernel.org>, 
+	Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
+	linux-leds@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+On Tue, Feb 13, 2024 at 7:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
+@skole.hr> wrote:
 
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Thu, 15 Feb 2024 13:05:30 +0100
+> LEDS_EXPRESSWIRE depends on GPIOLIB, and so must anything selecting it:
 >
->> Alexander Lobakin <aleksander.lobakin@intel.com> writes:
->>=20
->>> Now that direct recycling is performed basing on pool->cpuid when set,
->>> memory leaks are possible:
->>>
->>> 1. A pool is destroyed.
->>> 2. Alloc cache is emptied (it's done only once).
->>> 3. pool->cpuid is still set.
->>> 4. napi_pp_put_page() does direct recycling basing on pool->cpuid.
->>> 5. Now alloc cache is not empty, but it won't ever be freed.
->>=20
->> Did you actually manage to trigger this? pool->cpuid is only set for the
->> system page pool instance which is never destroyed; so this seems a very
->> theoretical concern?
+> WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
+>   Depends on [n]: NEW_LEDS [=3Dy] && GPIOLIB [=3Dn]
+>   Selected by [m]:
+>   - BACKLIGHT_KTD2801 [=3Dm] && HAS_IOMEM [=3Dy] && BACKLIGHT_CLASS_DEVIC=
+E [=3Dm]
 >
-> To both Lorenzo and Toke:
->
-> Yes, system page pools are never destroyed, but we might latter use
-> cpuid in non-persistent PPs. Then there will be memory leaks.
-> I was able to trigger this by creating bpf/test_run page_pools with the
-> cpuid set to test direct recycling of live frames.
->
->>=20
->> I guess we could still do this in case we find other uses for setting
->> the cpuid; I don't think the addition of the READ_ONCE() will have any
->> measurable overhead on the common arches?
->
-> READ_ONCE() is cheap, but I thought it's worth mentioning in the
-> commitmsg anyway :)
+> Fixes: 66c76c1cd984 ("backlight: Add Kinetic KTD2801 backlight support")
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
 
-Right. I'm OK with changing this as a form of future-proofing if we end
-up finding other uses for setting the cpuid field, so:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Technically you can also select GPIOLIB, because it is available on
+all platforms, so it may be easier for users, but then you never know
+which GPIOs you get in practice.
 
+Yours,
+Linus Walleij
 
