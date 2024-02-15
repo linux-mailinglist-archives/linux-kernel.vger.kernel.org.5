@@ -1,116 +1,242 @@
-Return-Path: <linux-kernel+bounces-66964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32195856424
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:16:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7194856432
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE85D1F2992C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:16:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2E87B2CC1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB0912FF92;
-	Thu, 15 Feb 2024 13:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B02E12FF97;
+	Thu, 15 Feb 2024 13:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FC/fPhSz"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AQ2tRBCo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nCcc9m7Z";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AQ2tRBCo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nCcc9m7Z"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D48012CDBE;
-	Thu, 15 Feb 2024 13:16:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B036512FB3A;
+	Thu, 15 Feb 2024 13:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002968; cv=none; b=bpqJnC2yMSdEgiyjKnQBHXl3PkevbfzIWOlma9zj2toIziNvj6S/9ViA100gTxcapS2j+1ne5paEb3kYacAgGKvke5YG/qL+ry2YX8+S6QfiX8na9RtA9jYUMpjxSSbpkRwnBaiL/DcntxqBK/WssqEfzsaV24Vvl3z4I1p427I=
+	t=1708003006; cv=none; b=jhwegj7Xhril0LZ7nk34ZbSHXXxCuyJSVe3URdfGT2T+7wq0bjcAroyuz+zmk0W44oh36mm3FKp77RfY/tqZWDbQtEicFd1H+ZliHfjqrRaVAFkwNGfOJHyInq18WqthUM5CMe3S+XnhYCheWDyobnkA9aBEOjaQbE2+H8YYwqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002968; c=relaxed/simple;
-	bh=ZMcH2cl5HrhWXR1rAuN3t1R9ANzFaFtZb+vIKIdyJjA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nyvCLuYYyZ6m+JK6mGi8wiGCppezcoVf69ND4nvVbjtkkh67XsqNbwIJfJwqTP38sjQQaXkw2o69qjSWDcoj5beCR5CMqf6tmH/gt6qUYtLw7nVtzBMa/4oJxCKipc68jcm5sHAgWvJ0Jdc3DSk/Zl76fpjNjhJfSmCJcdX0aYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FC/fPhSz; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-411e5f21c0bso7381605e9.0;
-        Thu, 15 Feb 2024 05:16:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708002965; x=1708607765; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IeBmJwr+NavRsk9se4OE6Y3WMAt4IgfjmriUd2t4/J8=;
-        b=FC/fPhSzmFYwocM5/rRGynGlOuyg3CLsaBj5jhFj7okhsDU/wZtjqS1+lOt49PV/vx
-         wZC0P/6kNLmEryT4jkOS6+emGQULU3gXAfKoc2/ZpF/Y5UmA6YX9k0QAS3fUOscLcEBu
-         Qab5/O4Z/6nqtq2pk/t50drRCAEOMfL2T4ZFzMUkq7ZLAEZjhlJGukqA21NVl6SiNKO9
-         +MWI3aNbw8VFo1PkQDSzPP3JgifEvgaUN1vt3J3Aq3oU/emm4g4/Y9SED01hcMSQ5AOj
-         b0ljT02Fi4PZPppQxDlkOLeuN+Jdku2sCIiaRLCmx+iwoXFD+/+W5PIUgEZ61CZuCk18
-         Es5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708002965; x=1708607765;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IeBmJwr+NavRsk9se4OE6Y3WMAt4IgfjmriUd2t4/J8=;
-        b=vaiTXGuXSXaI+rnj5dPc+2xVt37PffGqar/kEjGOnkKjTefAZG9etNfMoJhWLPQhre
-         v3ELrTI74xUM+b3joaBpmFEtMi8J+9tw18teRHV35vVxCZR+u9BG7dj+MpTvWjp8Pyhg
-         yboYkXUgF652KzVo3X7IpO5nsdCUaPdACbgHdjlLyxwRZOR1dWBMok+nqRJWVLE1Ls9F
-         Lc9miKWHdP4oFpxduLpNkMpOIo8egVQIdbxtoy8pILU4JeWDEu+FIx5ZcmSGfy0HcxUU
-         qhKBCyHZifRPTstQ0nsPh2FXnes5qVBrLXPcLZnp4ngD+CzsNdOdGA2HAEBX7QFAxpLg
-         0O6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXj91uNSe8Jc6L/RzxU9dnmh6voWJAkrRdqwvzVeRmCfgA9MNCPS8PFLqTlYKLFkdWDpxqR28DQH7D5Y89BFkqzIW0PQKW3Biz4T6SmuMxwQbvP2949idkT03mno8thnVtdPwPbwUQM
-X-Gm-Message-State: AOJu0YwcWIXW0aOI7/ibykcV9MoOJzBHi4MR1lkKqBfiQvuMudrDVzIi
-	k7y9kso6k53xusoFNvXYzUBKBw69kUxQ85GubjQ+u/DI8NDcdLGE
-X-Google-Smtp-Source: AGHT+IHbRc99z02i6FWnbm8IHOkzsWaPAjvDKMTyyG22n1oYGUQohBURcNvbbdhi4AcrDHd6DcT3Mg==
-X-Received: by 2002:a05:600c:46cd:b0:410:cf60:d857 with SMTP id q13-20020a05600c46cd00b00410cf60d857mr1331806wmo.18.1708002965162;
-        Thu, 15 Feb 2024 05:16:05 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b00411e1574f7fsm5011002wmj.44.2024.02.15.05.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 05:16:04 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] spi: dw: remove redundant assignment to variable len
-Date: Thu, 15 Feb 2024 13:16:03 +0000
-Message-Id: <20240215131603.2062332-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708003006; c=relaxed/simple;
+	bh=tXS8kJ3cnmxGedEbNbJt3O6eJ/O5HF6b+PwyDoj/d8g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pHWi+voHkSyhyHRiNEBJ0bYfSvA3W7fWy6ro8vl6z2iNPXYGJvJSosQre5VWzzwhhptxZOhbnYeqcmoxcAuytg1tyk2Vdp0Y5/mO+np48H8gtz/UPuvehBCQU7Bc2vnKWmp+K2S2O6KJse+9NdZ1gPgNyZYyDmg1BmWBHVUOkuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AQ2tRBCo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nCcc9m7Z; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AQ2tRBCo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nCcc9m7Z; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D5BAA1F894;
+	Thu, 15 Feb 2024 13:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708003002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XC9ny37YeuymNCw5oL8/H8lTvfpocVvdYjSKBeF69HM=;
+	b=AQ2tRBCoH9bn0soo15rveqhmk1m6ldqFwAIV9VZLxH8JM/tj+p/QWLGOIDyZrazdliZZ9C
+	wgii2W4yF3TOAFwElVJxrerWp8SEcNQ0760Wt1sco0PZvYyKy5c0EH52amvAerCkS2dC6X
+	ttPYNs2wONV0DC0O+YoD8ODXHK8CsTQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708003002;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XC9ny37YeuymNCw5oL8/H8lTvfpocVvdYjSKBeF69HM=;
+	b=nCcc9m7Zprgg/pMz6zOF6/4Wvt+f28PdzYLjqNehO9SMLYKloee3Krfl1LZxZLYrPkGu4b
+	syTKURCaERdud9CA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708003002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XC9ny37YeuymNCw5oL8/H8lTvfpocVvdYjSKBeF69HM=;
+	b=AQ2tRBCoH9bn0soo15rveqhmk1m6ldqFwAIV9VZLxH8JM/tj+p/QWLGOIDyZrazdliZZ9C
+	wgii2W4yF3TOAFwElVJxrerWp8SEcNQ0760Wt1sco0PZvYyKy5c0EH52amvAerCkS2dC6X
+	ttPYNs2wONV0DC0O+YoD8ODXHK8CsTQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708003002;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XC9ny37YeuymNCw5oL8/H8lTvfpocVvdYjSKBeF69HM=;
+	b=nCcc9m7Zprgg/pMz6zOF6/4Wvt+f28PdzYLjqNehO9SMLYKloee3Krfl1LZxZLYrPkGu4b
+	syTKURCaERdud9CA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C811B139D0;
+	Thu, 15 Feb 2024 13:16:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id uHPTMLoOzmX6FwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 15 Feb 2024 13:16:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4B2E7A0809; Thu, 15 Feb 2024 14:16:38 +0100 (CET)
+Date: Thu, 15 Feb 2024 14:16:38 +0100
+From: Jan Kara <jack@suse.cz>
+To: Chuck Lever <cel@kernel.org>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	hughd@google.com, akpm@linux-foundation.org,
+	Liam.Howlett@oracle.com, oliver.sang@intel.com, feng.tang@intel.com,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Subject: Re: [PATCH RFC 7/7] libfs: Re-arrange locking in offset_iterate_dir()
+Message-ID: <20240215131638.cxipaxanhidb3pev@quack3>
+References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
+ <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AQ2tRBCo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nCcc9m7Z
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D5BAA1F894
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-The variable id len being initialized with a value that is never read,
-it is being re-assigned later on in a for-loop. The initialization is
-redundant and can be removed.
+On Tue 13-02-24 16:38:08, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Liam says that, unlike with xarray, once the RCU read lock is
+> released ma_state is not safe to re-use for the next mas_find() call.
+> But the RCU read lock has to be released on each loop iteration so
+> that dput() can be called safely.
+> 
+> Thus we are forced to walk the offset tree with fresh state for each
+> directory entry. mt_find() can do this for us, though it might be a
+> little less efficient than maintaining ma_state locally.
+> 
+> Since offset_iterate_dir() doesn't build ma_state locally any more,
+> there's no longer a strong need for offset_find_next(). Clean up by
+> rolling these two helpers together.
+> 
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
-Cleans up clang scan build warning:
-drivers/spi/spi-dw-dma.c:580:17: warning: Although the value stored
-to 'len' is used in the enclosing expression, the value is never
-actually read from 'len' [deadcode.DeadStores]
+Well, in general I think even xas_next_entry() is not safe to use how
+offset_find_next() was using it. Once you drop rcu_read_lock(),
+xas->xa_node could go stale. But since you're holding inode->i_rwsem when
+using offset_find_next() you should be protected from concurrent
+modifications of the mapping (whatever the underlying data structure is) -
+that's what makes xas_next_entry() safe AFAIU. Isn't that enough for the
+maple tree? Am I missing something?
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/spi/spi-dw-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+								Honza
 
-diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
-index 0ecbb6c36e23..f4c209e5f52b 100644
---- a/drivers/spi/spi-dw-dma.c
-+++ b/drivers/spi/spi-dw-dma.c
-@@ -577,7 +577,7 @@ static int dw_spi_dma_transfer_one(struct dw_spi *dws,
- 	sg_init_table(&tx_tmp, 1);
- 	sg_init_table(&rx_tmp, 1);
- 
--	for (base = 0, len = 0; base < xfer->len; base += len) {
-+	for (base = 0; base < xfer->len; base += len) {
- 		/* Fetch next Tx DMA data chunk */
- 		if (!tx_len) {
- 			tx_sg = !tx_sg ? &xfer->tx_sg.sgl[0] : sg_next(tx_sg);
+> ---
+>  fs/libfs.c |   39 +++++++++++++++++----------------------
+>  1 file changed, 17 insertions(+), 22 deletions(-)
+> 
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index f073e9aeb2bf..6e01fde1cf95 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -436,23 +436,6 @@ static loff_t offset_dir_llseek(struct file *file, loff_t offset, int whence)
+>  	return vfs_setpos(file, offset, MAX_LFS_FILESIZE);
+>  }
+>  
+> -static struct dentry *offset_find_next(struct ma_state *mas)
+> -{
+> -	struct dentry *child, *found = NULL;
+> -
+> -	rcu_read_lock();
+> -	child = mas_find(mas, ULONG_MAX);
+> -	if (!child)
+> -		goto out;
+> -	spin_lock(&child->d_lock);
+> -	if (simple_positive(child))
+> -		found = dget_dlock(child);
+> -	spin_unlock(&child->d_lock);
+> -out:
+> -	rcu_read_unlock();
+> -	return found;
+> -}
+> -
+>  static bool offset_dir_emit(struct dir_context *ctx, struct dentry *dentry)
+>  {
+>  	unsigned long offset = dentry2offset(dentry);
+> @@ -465,13 +448,22 @@ static bool offset_dir_emit(struct dir_context *ctx, struct dentry *dentry)
+>  static void *offset_iterate_dir(struct inode *inode, struct dir_context *ctx)
+>  {
+>  	struct offset_ctx *octx = inode->i_op->get_offset_ctx(inode);
+> -	MA_STATE(mas, &octx->mt, ctx->pos, ctx->pos);
+> -	struct dentry *dentry;
+> +	struct dentry *dentry, *found;
+> +	unsigned long offset;
+>  
+> +	offset = ctx->pos;
+>  	while (true) {
+> -		dentry = offset_find_next(&mas);
+> +		found = mt_find(&octx->mt, &offset, ULONG_MAX);
+> +		if (!found)
+> +			goto out_noent;
+> +
+> +		dentry = NULL;
+> +		spin_lock(&found->d_lock);
+> +		if (simple_positive(found))
+> +			dentry = dget_dlock(found);
+> +		spin_unlock(&found->d_lock);
+>  		if (!dentry)
+> -			return ERR_PTR(-ENOENT);
+> +			goto out_noent;
+>  
+>  		if (!offset_dir_emit(ctx, dentry)) {
+>  			dput(dentry);
+> @@ -479,9 +471,12 @@ static void *offset_iterate_dir(struct inode *inode, struct dir_context *ctx)
+>  		}
+>  
+>  		dput(dentry);
+> -		ctx->pos = mas.index + 1;
+> +		ctx->pos = offset;
+>  	}
+>  	return NULL;
+> +
+> +out_noent:
+> +	return ERR_PTR(-ENOENT);
+>  }
+>  
+>  /**
+> 
+> 
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
