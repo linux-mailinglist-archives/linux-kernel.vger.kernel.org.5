@@ -1,94 +1,132 @@
-Return-Path: <linux-kernel+bounces-67368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1463856A87
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:06:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E8F856A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8406BB20C5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:06:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2F2A1F238F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8269136676;
-	Thu, 15 Feb 2024 17:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8888A1369AB;
+	Thu, 15 Feb 2024 17:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uuL2/XHj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eDTIumQm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BE912DD9A;
-	Thu, 15 Feb 2024 17:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C737C12DD9A;
+	Thu, 15 Feb 2024 17:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708016768; cv=none; b=sMdwbwRRrkLiCwdc2V03yNNxaw7ULy0pKaE6wUutmuDsSXufX5k762saOG1WP5J57W7hvZDCYn3gicEbbkFmspml5uMO73JJVPCJ9END1hEpBlIaOdxHtFALjA7tCUKuuz8y1vwc7GB3uFTQ+LBf6GuwMJczfHj11kf0UZJBVRM=
+	t=1708016771; cv=none; b=dhTwKbu8Z4/a7O9aMb/p5RGDnvzRMaThsR4hwN6dJoMS/RbIAHIpLoeyeug2mdrwJcnuJgsBKC1Eh/fjAhgi86CsKcrAmK4b1zOiNdo/H7CLREUToWmVQAMUS46vJwHrbWikJvFzUxrmNHhQxQHIDFMlYCXZRlEwQCwY4L63zCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708016768; c=relaxed/simple;
-	bh=nq34IP6sfpD54hsEtrN2j/P+4DNp6g4tkl0Jwz9sTNw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=BeFUc+99OUCTTP/0rnar5a65dcjfEEf4LHMFRHzrr7HfAF0Htf0gLGbsd7zqZDyjX50pq8SfA45elWnwq/CXlqKO8g6Wi401EXElm0HcJsreFe8ZxICpRR0Mya0f3u5xhOgpSMP4EzkExCvcPenpYlOhKziy6QdNDszqd87P6UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uuL2/XHj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B88AC433C7;
-	Thu, 15 Feb 2024 17:06:07 +0000 (UTC)
+	s=arc-20240116; t=1708016771; c=relaxed/simple;
+	bh=KElkYGBiD4v/kDlWoYsOgMzKDGtsKxpQOCFbAZgDAVI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SX9Lj4T8Wzggc9Qfri9F0SWXn0vtJRlApiAmMn/4xhd/vbpd44komN2qUkKeH9rgU9rDs9WoPwhby321hudCTeZhaEc2rGOFjHtOYnPm3GrN8eDayO0Ry+8qmsz7SkamOsUASEt4DW86iedBRNtOr4GmtTx3op2bbzLg/MJGvj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eDTIumQm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60A6FC433C7;
+	Thu, 15 Feb 2024 17:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708016767;
-	bh=nq34IP6sfpD54hsEtrN2j/P+4DNp6g4tkl0Jwz9sTNw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=uuL2/XHjxDow0CBItd3NuPU14AW2Kvom1K9Wr9j5a43WNbnXKxS6qLs96rgU+lH1b
-	 vYmgKOnPyo1KlOXrOx2rf3woeVDCKAsWKmnttNrVV1Jo5T14L2WXDu0TYPazgiMNVX
-	 cIiQLkeo7lUq7u6QEcgmVUUWkN5Q6F98aLQbtxVr+xFE8r53AynGns+s0Rvq/VRrCm
-	 lw1l5c5W3akEl8k39a6ztwOy3nsGhR9j0EGi6CvA2qt07+VBbt037uX3kPZl3GvY6b
-	 DgKqCyFiw7gPCIV1YPCq3qdxrZsWswZb4+cXHIXesWd2nQ6lOD/p1N93dMixc3IBUq
-	 WGDLgvYo1uQWA==
-Date: Thu, 15 Feb 2024 11:06:05 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 00/18] Add suspend to ram support for PCIe on J7200
-Message-ID: <20240215170605.GA1294576@bhelgaas>
+	s=k20201202; t=1708016771;
+	bh=KElkYGBiD4v/kDlWoYsOgMzKDGtsKxpQOCFbAZgDAVI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eDTIumQmpuZVkJkzWHyYLh0IuxXqavUkd4qjsMqzWFvyYWz4KeoQ+TwHO9smxpUYI
+	 YIC4RqUQj0sxEFYKk9ygbusIsvORwn6Iu5Yj5Sm9ffDC1bt3whW4vUHSyUlaWKbutR
+	 l0CM8rWQ3N6I3GITQlC423KdwEoWnVbcDCQCoizqTTqWAXU5o8UUN7Rn63hYNXfv4i
+	 3iQUBhPGRSj8Om7WGtuLeI9ouBEN+10/CTzy73L/OyERIEWJOfXUZhBg1mVJw+BY24
+	 NnBy1pVp75czHbx8XEp00QMdjeAXYLp58h1zdpeYo+ZKvysjlueBrIAF4IAssTEYK3
+	 8CkXtqv+UfKhA==
+Date: Thu, 15 Feb 2024 17:06:06 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: neil.armstrong@linaro.org, quic_jesszhan@quicinc.com, sam@ravnborg.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quentin.schulz@theobroma-systems.com,
+	Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH 2/3] dt-bindings: display: ltk500hd1829: add variant
+ compatible for ltk101b4029w
+Message-ID: <20240215-boat-grid-d50f0eccec67@spud>
+References: <20240215090515.3513817-1-heiko@sntech.de>
+ <20240215090515.3513817-3-heiko@sntech.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uAgW2Em0kHJeJUhg"
+Content-Disposition: inline
+In-Reply-To: <20240215090515.3513817-3-heiko@sntech.de>
+
+
+--uAgW2Em0kHJeJUhg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 04:17:45PM +0100, Thomas Richard wrote:
-> This add suspend to ram support for the PCIe (RC mode) on J7200 platform.
+On Thu, Feb 15, 2024 at 10:05:14AM +0100, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+>=20
+> Add the compatible for the ltk101b4029w panel, that is really similar
+> to the ltk500hd1829.
 
->       PCI: cadence: extract link setup sequence from cdns_pcie_host_setup()
->       PCI: cadence: set cdns_pcie_host_init() global
->       PCI: j721e: add reset GPIO to struct j721e_pcie
->       PCI: j721e: add suspend and resume support
+Please mention what makes the devices incompatible. "really similar" is
+vague and could be used for a device that was only cosmetically
+different.
 
-The drivers/pci/ subject line pattern is:
+With that,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-  PCI: <driver>: <Capitalized verb>
+Cheers,
+Conor.
 
-e.g.,
+>=20
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> ---
+>  .../bindings/display/panel/leadtek,ltk500hd1829.yaml          | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/panel/leadtek,ltk5=
+00hd1829.yaml b/Documentation/devicetree/bindings/display/panel/leadtek,ltk=
+500hd1829.yaml
+> index c5944b4d636c5..d589f16772145 100644
+> --- a/Documentation/devicetree/bindings/display/panel/leadtek,ltk500hd182=
+9.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/leadtek,ltk500hd182=
+9.yaml
+> @@ -14,7 +14,9 @@ allOf:
+> =20
+>  properties:
+>    compatible:
+> -    const: leadtek,ltk500hd1829
+> +    enum:
+> +      - leadtek,ltk101b4029w
+> +      - leadtek,ltk500hd1829
+>    reg: true
+>    backlight: true
+>    reset-gpios: true
+> --=20
+> 2.39.2
+>=20
 
-  PCI: cadence: Extract link setup sequence from cdns_pcie_host_setup()
+--uAgW2Em0kHJeJUhg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5EfgAKCRB4tDGHoIJi
+0mg8AQDnVMCCNnW/BjpK3m7RSYd2PlygPSQcY9KfMc/u+FOnmAD+JfhDWteO5rdB
+4I4vgyPxLWbg0qw+KHEZIn4ucWBjmwY=
+=AQS2
+-----END PGP SIGNATURE-----
+
+--uAgW2Em0kHJeJUhg--
 
