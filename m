@@ -1,142 +1,161 @@
-Return-Path: <linux-kernel+bounces-66626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F11BD855F29
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:30:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFA2855F2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BF982894BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:30:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AC681F21F38
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8996A000;
-	Thu, 15 Feb 2024 10:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC1D78669;
+	Thu, 15 Feb 2024 10:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vdRLr0SL"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HlAD6v4t"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5486169DF0;
-	Thu, 15 Feb 2024 10:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6229077F22;
+	Thu, 15 Feb 2024 10:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992993; cv=none; b=mtNXoYtHMaTTDRbEVhUztX6y3HH67phcWFGNtocXk0wDerZkLMZ8DkavWonkWHNgKK5v0F65+kgNklWKIv2T+fu2P1KU/yWJjb7qk7vd21YcKeJ3fZX3ZncEqYI9KjFfTdsEwzviZX8OHcJs3ZqRKg3vNJOW2YjOd+hBmnRscGE=
+	t=1707993053; cv=none; b=c5jfRpK30uYGs77G2mycKJdapHprdc8lPgz4eYC3WX6TmgSMwJGUxfClWypuYEW9vL6QtIvUwZoocgcqC7xUzLRCYyHfN84TGc58KQQefvPrnV23/41CoWC/QCtPT2qTriBLB5eMw2kziDAuIqENHliNMaawVfeRcfzpEQjopRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992993; c=relaxed/simple;
-	bh=lCKAiQ1BgMuFxaAEpE7w6O8TyAdEMRj0SufRx1KfSQ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=IECVQNsISilyOGDd8fkIN+TQiYjrFm9jf+qBRzsZ9uqhiiNbwLMmk7l9iF5/YEDH06fLORX7bIXDqWdVwIANFVfdMeNOUFPyTfkEAJCcYKvOkyq2R0uT7ez2zoUtuCD8BKipZxqAMo7pJep1tQMuxGodqFNM1vy1Og7aXQkfDAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vdRLr0SL; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707992983;
-	bh=lCKAiQ1BgMuFxaAEpE7w6O8TyAdEMRj0SufRx1KfSQ4=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=vdRLr0SLlXy+WD9tG1YIsF9FZLOC9Ck90t/SzhMX1YTkqmHPhs3662tv1zeYOqzbP
-	 gYtysHX1iaaVtaO/quHSWYrygrR/LZnsDrz2jmC2XeFBBTMJQGMVeRlMy+k2mI27yH
-	 b5D8CRBLTfu3XdhTzjoQox4Ip+SS+xFBhwK/S9MEYK9VIPQIptvPEoB5bk6Ng7xvKY
-	 bISZqW458jcqsXYHaX5zaRxjaw4fz1lgmf0kUQOI+5YJ+u8z2VqBbh/dL3D8S5nTnp
-	 ZGO1hMVhNcG6Kat2SZ1QQGw0OEypsUHoGLTyD2uURgDOsSRpsrYzmFfV5MVgNtYaUq
-	 MmVdQ4+9Z39ZA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 178123780FC7;
-	Thu, 15 Feb 2024 10:29:43 +0000 (UTC)
-Message-ID: <4dcfaf49-aaac-4980-a149-02fec3109f31@collabora.com>
-Date: Thu, 15 Feb 2024 11:29:42 +0100
+	s=arc-20240116; t=1707993053; c=relaxed/simple;
+	bh=kCRokLOhZl6yvnHX5JwFP41xHOBcBkNACEwai6IqO9Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oMRLWm4poPRWuFVtBUa7vnG0aoOtvFh0s3Dbiwq4TDtu1aj9Q3eT4wy4FAtBUnF4fbC8kVGtG9FHCQ4CS/ybgPd/MM52+xePWuFEw8Up4J+yboevDsgEmDWy23SapeRdI2FmS31YBJFotreMST94YzPtRTuG76ea4BcuHvOxhVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HlAD6v4t; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FAUd3K118472;
+	Thu, 15 Feb 2024 04:30:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707993039;
+	bh=+n90dqjXRjOMQb16XVs2S115NbnHy10Ajvp1/zZckt0=;
+	h=From:To:CC:Subject:Date;
+	b=HlAD6v4tAnROGB3f2SP9GOuyeVwg8A6jRaOFZD5n7VSV9fzGYTqMTvLE821UgGLQ9
+	 AKPXsiy49hqjCW0DEET0nQQwbou09r4Q3gsk0Cj4xN1XWEpur8kxUaZiWqp6lh3J/X
+	 nhv8EDBkvrNZNLXRA+CC9zIrY444j63iU/bspG9E=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FAUdKQ025689
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 15 Feb 2024 04:30:39 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
+ Feb 2024 04:30:38 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 15 Feb 2024 04:30:38 -0600
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FAUcvk018921;
+	Thu, 15 Feb 2024 04:30:38 -0600
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 41FAUc2u031768;
+	Thu, 15 Feb 2024 04:30:38 -0600
+From: MD Danish Anwar <danishanwar@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Tero
+ Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        Roger
+ Quadros <rogerq@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH v5 0/3] Add AM64x ICSSG Ethernet support
+Date: Thu, 15 Feb 2024 16:00:33 +0530
+Message-ID: <20240215103036.2825096-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/9] media: platform: mtk-mdp3: drop calling
- cmdq_pkt_finalize()
-Content-Language: en-US
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- Moudy Ho <moudy.ho@mediatek.com>
-References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
- <20240215004931.3808-7-chunkuang.hu@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240215004931.3808-7-chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
-> Because client driver has the information of struct cmdq_client, so
-> it's not necessary to store struct cmdq_client in struct cmdq_pkt.
-> cmdq_pkt_finalize() use struct cmdq_client in struct cmdq_pkt, so it's
-> going to be abandoned. Therefore, use cmdq_pkt_eoc() and cmdq_pkt_nop()
-> to replace cmdq_pkt_finalize().
+Hi All,
 
-No, it's not because cmdq_pkt_finalize() has cmdq_client, but because we want
-finer grain control over the CMDQ packets, as not all cases require the NOP
-packet to be appended after EOC.
+This series adds support for ICSSG ethernet on AM64x. 
+This series is based on the latest next-20240214 linux-next.
 
-Besides, honestly I'm not even sure if the NOP is always required in MDP3, so...
+AM64x EVM has three ethernet ports. One is dedicated to CPSW and one is
+dedicated to ICSSG1. The remaining port is muxed between CPSW and ICSSG1
+ICSSG1 ports. The ICSSG1 node is added in the k3-am642-evm.dts. By default
+the muxed port is used by CPSW so 2nd ICSSG1 port is disabled in the
+k3-am642-evm.dts. But overlay k3-am642-evm-icssg1-dualemac.dtso can be
+applied to use muxed port as ICSSG1.
 
-..Moudy, you know the MDP3 way better than anyone else - can you please
-check if NOP is actually needed here?
+This is the v5 of the series [v1].
 
-Thanks!
-Angelo
+Changes from v4 to v5:
+*) Added Roger's RB tag in patch 1/3 and 3/3
+*) Modified commit message of patch 3/3
+*) Dropped ti,syscon-rgmii-delay property from patch 2/3 as it is no
+   longer needed.
+*) Reverted the renaming of mdio-mux nodes back to 'mdio-mux-1' and
+   'mdio-mux-2' from 'mdio-mux@1' and 'mdio-mux@0' as the later was
+   throwing DTBS_CHECK warnings.
 
-> 
-> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
->   drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c | 3 ++-
->   drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c | 2 ++
->   drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h | 1 +
->   3 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-> index 6adac857a477..a420d492d879 100644
-> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-> @@ -471,7 +471,8 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
->   		dev_err(dev, "mdp_path_config error\n");
->   		goto err_free_path;
->   	}
-> -	cmdq_pkt_finalize(&cmd->pkt);
-> +	cmdq_pkt_eoc(&cmd->pkt);
-> +	cmdq_pkt_nop(&cmd->pkt, mdp->cmdq_shift_pa);
->   
->   	for (i = 0; i < num_comp; i++)
->   		memcpy(&comps[i], path->comps[i].comp,
-> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-> index 94f4ed78523b..2214744c937c 100644
-> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
-> @@ -231,6 +231,8 @@ static int mdp_probe(struct platform_device *pdev)
->   		goto err_put_scp;
->   	}
->   
-> +	mdp->cmdq_shift_pa = cmdq_get_shift_pa(mdp->cmdq_clt->chan);
-> +
->   	init_waitqueue_head(&mdp->callback_wq);
->   	ida_init(&mdp->mdp_ida);
->   	platform_set_drvdata(pdev, mdp);
-> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-> index 7e21d226ceb8..ed61e0bb69ee 100644
-> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-> @@ -83,6 +83,7 @@ struct mdp_dev {
->   	u32					id_count;
->   	struct ida				mdp_ida;
->   	struct cmdq_client			*cmdq_clt;
-> +	u8					cmdq_shift_pa;
->   	wait_queue_head_t			callback_wq;
->   
->   	struct v4l2_device			v4l2_dev;
+Changes from v3 to v4:
+*) Dropped ethernet3 alias from k3-am642-evm.dts as suggested by Roger.
+*) Dropped extra blank lines from k3-am642-evm.dts.
+*) Updated commit message of patch 3/3
+*) Updated licensing header in k3-am642-evm-icssg1-dualemac.dtso.
+*) Fixed up alias for ethernet1 to icssg1_emac1 in
+   k3-am642-evm-icssg1-dualemac.dtso as suggested by Roger.
+*) Renamed 'mdio-mux-1' and 'mdio-mux-2' to 'mdio-mux@1' and 'mdio-mux@0'
+   respectively as suggested by Roger.
+
+Changes from v2 to v3:
+*) No functional changes.
+*) Rebased on latest linux-next (next-20240122) after 6.8-rc1.
+
+Changes from v1 to v2:
+*) Fixed aliases section in k3-am642-evm.dts
+*) Fixed firmware-names in k3-am642-evm.dts
+*) Changed icssg1_phy1 to ethernet-phy@f from ethernet-phy@0 as suggested
+   by Andrew L.
+*) Changed makefile to handle overlays using CONFIG_OF_ALL_DTBS as
+   suggested by Nishant and Andrew Davis.
+*) Fixed aliases section in k3-am642-evm-icssg1-dualemac.dtso
+*) Fixed pinctrl in k3-am642-evm-icssg1-dualemac.dtso
+*) Updated commit message of patch 3/3 of the series to warn about adding
+   label name to 'mdio-mux-1' node.
+
+[v1] https://lore.kernel.org/all/20231207081917.340167-1-danishanwar@ti.com/
+[v2] https://lore.kernel.org/all/20231212165832.3933335-1-danishanwar@ti.com/
+[v3] https://lore.kernel.org/all/20240122113045.1711818-1-danishanwar@ti.com/
+[v4] https://lore.kernel.org/all/20240205090546.4000446-1-danishanwar@ti.com/
+
+Thanks and Regards,
+MD Danish Anwar
+
+MD Danish Anwar (2):
+  arm64: dts: ti: k3-am642-evm: add ICSSG1 Ethernet support
+  arm64: dts: ti: k3-am642-evm: add overlay for ICSSG1 2nd port
+
+Suman Anna (1):
+  arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+
+ arch/arm64/boot/dts/ti/Makefile               |  5 +
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 24 +++++
+ .../dts/ti/k3-am642-evm-icssg1-dualemac.dtso  | 79 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       | 97 ++++++++++++++++++-
+ 4 files changed, 204 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+
+base-commit: 2c3b09aac00d7835023bbc4473ee06696be64fa8
+-- 
+2.34.1
 
 
