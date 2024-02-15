@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-66760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0FF85613B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:16:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A65585613A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25DE0287F4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:16:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1AEE1F24177
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57ED12D760;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEE312D74F;
 	Thu, 15 Feb 2024 11:15:16 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D55D12BF05;
-	Thu, 15 Feb 2024 11:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F0412C532;
+	Thu, 15 Feb 2024 11:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707995715; cv=none; b=gXNkkgiCUG0lK02OySZa+z1naBugDA3LAC9aWvGpskKybE2liII8WiVpClF1jdxcO+/owM0zJKInROEClB0p1wEr+fpxabL1DBQ/xOY3KaI+lI6rtxM8cnTg9x6EO8yhLJVA90SKaKS2UFDJY2O/hHm+OEgMaaSprBFwQlnvep4=
+	t=1707995715; cv=none; b=E6NohPQ9AH3dpBl+TChsqB9mbZ+0xg5gmASpqE7UHwcTDW6U696vwtyad+UafFafegKm+I4oCuU4qid/NH+PT8o0wD+S8qHPXMa1/OGIa5dL93KUNywfIPEvm9TzcmUX4a+ARxPV3/jjgQnFloxiNkqcN7SdDJxfXsCyN1QUOeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707995715; c=relaxed/simple;
-	bh=N5l9dwasajZRidn0Y/AifiSIBfBEAWedzmBCz8qcSkU=;
+	bh=2ZqvWaibSJUGCap2j4MZEnm9w210JyUd2HxsQ8YYE3k=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mE5Vla8SDRiXHC9F/6w/SjKAEPb6zOLHNK0IrHyHz1ZQ39rzVhDC8qRoBFOg7CND3AapMEXzyRXhV8gy6iqfnFzWaCQ/nvBy2HKdLCf4jXxBOUf3ro7UcWtBJWKuAuYNMEjIAUlgSIIF5ixM+Bl/+Gjy8nKpRr6kVd8Qye7ZFcQ=
+	 MIME-Version:Content-Type; b=Pwe7UKdaeDJz80Q0unEsuAlslTwMHNecHZr8Bm2T2gVwwMiVZEeZ2XTNHaCo8HnvjLR0NWM503IW5Tblt4XZs6t4p1n0RfUapC+eGSC4bN8ie7vyoajvZ1+eNhJV8Je+1ysHccHOC4SW0y3MZY2IxQgJriz+MEG3sV2vbqsYgnA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TbC7M0BGZz6K8vB;
-	Thu, 15 Feb 2024 19:11:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TbC7N09lhz6K8sv;
+	Thu, 15 Feb 2024 19:11:44 +0800 (CST)
 Received: from lhrpeml500006.china.huawei.com (unknown [7.191.161.198])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8F7851400CD;
-	Thu, 15 Feb 2024 19:15:10 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 84C721400D4;
+	Thu, 15 Feb 2024 19:15:11 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 15 Feb 2024 11:15:09 +0000
+ 15.1.2507.35; Thu, 15 Feb 2024 11:15:10 +0000
 From: <shiju.jose@huawei.com>
 To: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
 	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
@@ -56,9 +56,9 @@ CC: <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
 	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
 	<linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH v6 06/12] memory: scrub: Add scrub subsystem driver supports configuring memory scrubs in the system
-Date: Thu, 15 Feb 2024 19:14:48 +0800
-Message-ID: <20240215111455.1462-7-shiju.jose@huawei.com>
+Subject: [RFC PATCH v6 07/12] cxl/memscrub: Register CXL device patrol scrub with scrub configure driver
+Date: Thu, 15 Feb 2024 19:14:49 +0800
+Message-ID: <20240215111455.1462-8-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20240215111455.1462-1-shiju.jose@huawei.com>
 References: <20240215111455.1462-1-shiju.jose@huawei.com>
@@ -75,634 +75,292 @@ X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
 
 From: Shiju Jose <shiju.jose@huawei.com>
 
-Add scrub driver supports configuring the memory scrubs in the system.
-The scrub driver provides the interface for registering the scrub devices
-and supports configuring memory scrubs in the system.
-Driver exposes the sysfs scrub control attributes to the user in
-/sys/class/scrub/scrubX/regionN/
+Register with the scrub configure driver to expose the sysfs attributes
+to the user for configuring the CXL device memory patrol scrub. Add the
+callback functions to support configuring the CXL memory device patrol
+scrub.
 
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- .../ABI/testing/sysfs-class-scrub-configure   |  91 +++++
- drivers/memory/Kconfig                        |   1 +
- drivers/memory/Makefile                       |   1 +
- drivers/memory/scrub/Kconfig                  |  11 +
- drivers/memory/scrub/Makefile                 |   6 +
- drivers/memory/scrub/memory-scrub.c           | 367 ++++++++++++++++++
- include/memory/memory-scrub.h                 |  78 ++++
- 7 files changed, 555 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-scrub-configure
- create mode 100644 drivers/memory/scrub/Kconfig
- create mode 100644 drivers/memory/scrub/Makefile
- create mode 100755 drivers/memory/scrub/memory-scrub.c
- create mode 100755 include/memory/memory-scrub.h
+ drivers/cxl/Kconfig         |   6 ++
+ drivers/cxl/core/memscrub.c | 201 +++++++++++++++++++++++++++++++++++-
+ 2 files changed, 204 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-scrub-configure b/Documentation/ABI/testing/sysfs-class-scrub-configure
-new file mode 100644
-index 000000000000..d2d422b667cf
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-scrub-configure
-@@ -0,0 +1,91 @@
-+What:		/sys/class/scrub/
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The scrub/ class subdirectory belongs to the
-+		scrubber subsystem.
-+
-+What:		/sys/class/scrub/scrubX/
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrub{0,1,2,3,...} directories
-+		correspond to each scrub device.
-+
-+What:		/sys/class/scrub/scrubX/name
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) name of the memory scrub device
-+
-+What:		/sys/class/scrub/scrubX/regionN/
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrubX/region{0,1,2,3,...}
-+		directories correspond to each scrub region under a scrub device.
-+		Scrub region is a physical address range for which scrub may be
-+		separately controlled. Regions may overlap in which case the
-+		scrubbing rate of the overlapped memory will be at least that
-+		expected due to each overlapping region.
-+
-+What:		/sys/class/scrub/scrubX/regionN/addr_base
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The base of the address range of the memory region
-+		to be scrubbed.
-+		On reading, returns the base of the memory region for
-+		the actual address range(The platform calculates
-+		the nearest patrol scrub boundary address from where
-+		it can start scrub).
-+
-+What:		/sys/class/scrub/scrubX/regionN/addr_size
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The size of the address range to be scrubbed.
-+		On reading, returns the size of the memory region for
-+		the actual address range.
-+
-+What:		/sys/class/scrub/scrubX/regionN/enable
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) Enable/Disable scrub the memory region.
-+		1 - enable the memory scrub.
-+		0 - disable the memory scrub.
-+
-+What:		/sys/class/scrub/scrubX/regionN/enable_background_scrub
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) Enable/Disable background scrubbing if supported.
-+		1 - enable background scrubbing.
-+		0 - disable background scrubbing.
-+
-+What:		/sys/class/scrub/scrubX/regionN/rate_available
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported range for the scrub rate)
-+		by the scrubber for a memory region.
-+		The unit of the scrub rate vary depends on the scrub.
-+
-+What:		/sys/class/scrub/scrubX/regionN/rate
-+Date:		January 2024
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The scrub rate in the memory region specified
-+		and it must be with in the supported range by the scrub.
-+		The unit of the scrub rate vary depends on the scrub.
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 8efdd1f97139..d2e015c09d83 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -227,5 +227,6 @@ config STM32_FMC2_EBI
+diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+index 873bdda5db32..ec9a1877b663 100644
+--- a/drivers/cxl/Kconfig
++++ b/drivers/cxl/Kconfig
+@@ -162,11 +162,17 @@ config CXL_SCRUB
+ 	bool "CXL: Memory scrub feature"
+ 	depends on CXL_PCI
+ 	depends on CXL_MEM
++	depends on SCRUB
+ 	help
+ 	  The CXL memory scrub control is an optional feature allows host to
+ 	  control the scrub configurations of CXL Type 3 devices, which
+ 	  support patrol scrub and/or DDR5 ECS(Error Check Scrub).
  
- source "drivers/memory/samsung/Kconfig"
- source "drivers/memory/tegra/Kconfig"
-+source "drivers/memory/scrub/Kconfig"
++	  Register with the scrub configure driver to expose sysfs attributes
++	  to the user for configuring the CXL device memory patrol and DDR5 ECS
++	  scrubs. Provides the interface functions to support configuring the
++	  CXL memory device patrol and ECS scrubs.
++
+ 	  Say 'y/n' to enable/disable the CXL memory scrub driver that will
+ 	  attach to CXL.mem devices for memory scrub control feature. See
+ 	  sections 8.2.9.9.11.1 and 8.2.9.9.11.2 in the CXL 3.1 specification
+diff --git a/drivers/cxl/core/memscrub.c b/drivers/cxl/core/memscrub.c
+index a3a371c5aa7b..a1fb40f8307f 100644
+--- a/drivers/cxl/core/memscrub.c
++++ b/drivers/cxl/core/memscrub.c
+@@ -6,14 +6,19 @@
+  *
+  *  - Provides functions to configure patrol scrub
+  *    and DDR5 ECS features of the CXL memory devices.
++ *  - Registers with the scrub driver to expose
++ *    the sysfs attributes to the user for configuring
++ *    the memory patrol scrub and DDR5 ECS features.
+  */
  
- endif
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index d2e6ca9abbe0..4b37312cb342 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
+ #define pr_fmt(fmt)	"CXL_MEM_SCRUB: " fmt
  
- obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
- obj-$(CONFIG_TEGRA_MC)		+= tegra/
-+obj-$(CONFIG_SCRUB)		+= scrub/
- obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
- obj-$(CONFIG_FPGA_DFL_EMIF)	+= dfl-emif.o
- 
-diff --git a/drivers/memory/scrub/Kconfig b/drivers/memory/scrub/Kconfig
-new file mode 100644
-index 000000000000..fa7d68f53a69
---- /dev/null
-+++ b/drivers/memory/scrub/Kconfig
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Memory scrub driver configurations
-+#
-+
-+config SCRUB
-+	bool "Memory scrub driver"
-+	help
-+	  This option selects the memory scrub subsystem, supports
-+	  configuring the parameters of underlying scrubbers in the
-+	  system for the DRAM memories.
-diff --git a/drivers/memory/scrub/Makefile b/drivers/memory/scrub/Makefile
-new file mode 100644
-index 000000000000..1b677132ca13
---- /dev/null
-+++ b/drivers/memory/scrub/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for memory scrub drivers
-+#
-+
-+obj-$(CONFIG_SCRUB)		+= memory-scrub.o
-diff --git a/drivers/memory/scrub/memory-scrub.c b/drivers/memory/scrub/memory-scrub.c
-new file mode 100755
-index 000000000000..a160b7a047e4
---- /dev/null
-+++ b/drivers/memory/scrub/memory-scrub.c
-@@ -0,0 +1,367 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Memory scrub driver supports configuring
-+ * the memory scrubs.
-+ *
-+ * Copyright (c) 2023 HiSilicon Limited.
-+ */
-+
-+#define pr_fmt(fmt)     "MEM SCRUB: " fmt
-+
-+#include <linux/acpi.h>
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/platform_device.h>
-+#include <linux/kfifo.h>
-+#include <linux/spinlock.h>
+ #include <cxlmem.h>
 +#include <memory/memory-scrub.h>
+ 
+ /* CXL memory scrub feature common definitions */
+ #define CXL_SCRUB_MAX_ATTR_RANGE_LENGTH	128
++#define CXL_MEMDEV_MAX_NAME_LENGTH	128
+ 
+ static int cxl_mem_get_supported_feature_entry(struct cxl_memdev *cxlmd, const uuid_t *feat_uuid,
+ 					       struct cxl_mbox_supp_feat_entry *feat_entry_out)
+@@ -63,6 +68,8 @@ static int cxl_mem_get_supported_feature_entry(struct cxl_memdev *cxlmd, const u
+ #define CXL_MEMDEV_PS_GET_FEAT_VERSION	0x01
+ #define CXL_MEMDEV_PS_SET_FEAT_VERSION	0x01
+ 
++#define CXL_PATROL_SCRUB	"cxl_patrol_scrub"
 +
-+/* memory scrubber config definitions */
-+#define SCRUB_ID_PREFIX "scrub"
-+#define SCRUB_ID_FORMAT SCRUB_ID_PREFIX "%d"
-+#define SCRUB_DEV_MAX_NAME_LENGTH	128
-+#define SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH	64
-+
-+static DEFINE_IDA(scrub_ida);
-+
-+struct scrub_device {
-+	char name[SCRUB_DEV_MAX_NAME_LENGTH];
-+	int id;
-+	struct device dev;
-+	char region_name[SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH];
-+	int region_id;
-+	struct attribute_group group;
-+	const struct attribute_group *groups[2];
-+	const struct scrub_ops *ops;
-+};
-+
-+#define to_scrub_device(d) container_of(d, struct scrub_device, dev)
-+
-+static ssize_t name_show(struct device *dev, struct device_attribute *attr, char *buf)
+ static const uuid_t cxl_patrol_scrub_uuid =
+ 	UUID_INIT(0x96dad7d6, 0xfde8, 0x482b, 0xa7, 0x33, 0x75, 0x77, 0x4e,     \
+ 		  0x06, 0xdb, 0x8a);
+@@ -159,9 +166,8 @@ static int cxl_mem_ps_get_attrs(struct device *dev,
+ 	return 0;
+ }
+ 
+-static int __maybe_unused
+-cxl_mem_ps_set_attrs(struct device *dev, struct cxl_memdev_ps_params *params,
+-		     u8 param_type)
++static int cxl_mem_ps_set_attrs(struct device *dev,
++				struct cxl_memdev_ps_params *params, u8 param_type)
+ {
+ 	struct cxl_memdev_ps_set_feat_pi set_pi = {
+ 		.pi.uuid = cxl_patrol_scrub_uuid,
+@@ -232,11 +238,192 @@ cxl_mem_ps_set_attrs(struct device *dev, struct cxl_memdev_ps_params *params,
+ 	return 0;
+ }
+ 
++static int cxl_mem_ps_enable_read(struct device *dev, u64 *val)
 +{
-+	return sprintf(buf, "%s\n", to_scrub_device(dev)->name);
-+}
-+static DEVICE_ATTR_RO(name);
-+
-+static struct attribute *scrub_dev_attrs[] = {
-+	&dev_attr_name.attr,
-+	NULL
-+};
-+
-+static umode_t scrub_dev_attr_is_visible(struct kobject *kobj,
-+					 struct attribute *attr, int n)
-+{
-+	if (attr != &dev_attr_name.attr)
-+		return 0;
-+
-+	return attr->mode;
-+}
-+
-+static const struct attribute_group scrub_dev_attr_group = {
-+	.attrs		= scrub_dev_attrs,
-+	.is_visible	= scrub_dev_attr_is_visible,
-+};
-+
-+static const struct attribute_group *scrub_dev_attr_groups[] = {
-+	&scrub_dev_attr_group,
-+	NULL
-+};
-+
-+static void scrub_dev_release(struct device *dev)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+
-+	ida_free(&scrub_ida, scrub_dev->id);
-+	kfree(scrub_dev);
-+}
-+
-+static struct class scrub_class = {
-+	.name = "scrub",
-+	.dev_groups = scrub_dev_attr_groups,
-+	.dev_release = scrub_dev_release,
-+};
-+
-+static umode_t scrub_attr_visible(struct kobject *kobj,
-+				  struct attribute *a, int attr_id)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
-+
-+	if (!scrub_dev->ops)
-+		return 0;
-+
-+	return scrub_dev->ops->is_visible(dev, attr_id, region_id);
-+}
-+
-+static ssize_t scrub_attr_show(struct device *dev, int attr_id,
-+			       char *buf)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
-+	int ret;
-+	u64 val;
-+
-+	ret = scrub_dev->ops->read(dev, attr_id, region_id, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sprintf(buf, "%lld\n", val);
-+}
-+
-+static ssize_t scrub_attr_show_hex(struct device *dev, int attr_id,
-+				   char *buf)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
-+	int ret;
-+	u64 val;
-+
-+	ret = scrub_dev->ops->read(dev, attr_id, region_id, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sprintf(buf, "0x%llx\n", val);
-+}
-+
-+static ssize_t scrub_attr_show_string(struct device *dev, int attr_id,
-+				      char *buf)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
++	struct cxl_memdev_ps_params params;
 +	int ret;
 +
-+	ret = scrub_dev->ops->read_string(dev, attr_id, region_id, buf);
-+	if (ret < 0)
++	ret = cxl_mem_ps_get_attrs(dev, &params);
++	if (ret) {
++		dev_err(dev, "Get CXL patrol scrub params fail ret=%d\n", ret);
 +		return ret;
-+
-+	return strlen(buf);
-+}
-+
-+static ssize_t scrub_attr_store(struct device *dev, int attr_id,
-+				const char *buf, size_t count)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
-+	long val;
-+	int ret;
-+
-+	ret = kstrtol(buf, 10, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = scrub_dev->ops->write(dev, attr_id, region_id, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static ssize_t scrub_attr_store_hex(struct device *dev, int attr_id,
-+				    const char *buf, size_t count)
-+{
-+	struct scrub_device *scrub_dev = to_scrub_device(dev);
-+	int region_id = scrub_dev->region_id;
-+	int ret;
-+	u64 val;
-+
-+	ret = kstrtou64(buf, 16, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = scrub_dev->ops->write(dev, attr_id, region_id, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static ssize_t show_scrub_attr(struct device *dev, char *buf, int attr_id)
-+{
-+	switch (attr_id) {
-+	case scrub_addr_base:
-+	case scrub_addr_size:
-+		return scrub_attr_show_hex(dev, attr_id, buf);
-+	case scrub_enable:
-+	case scrub_rate:
-+		return scrub_attr_show(dev, attr_id, buf);
-+	case scrub_rate_available:
-+		return scrub_attr_show_string(dev, attr_id, buf);
 +	}
++	*val = params.enable;
 +
-+	return -ENOTSUPP;
++	return 0;
 +}
 +
-+static ssize_t store_scrub_attr(struct device *dev, const char *buf,
-+				size_t count, int attr_id)
++static int cxl_mem_ps_enable_write(struct device *dev, long val)
 +{
-+	switch (attr_id) {
-+	case scrub_addr_base:
-+	case scrub_addr_size:
-+		return scrub_attr_store_hex(dev, attr_id, buf, count);
-+	case scrub_enable:
-+	case scrub_enable_background_scrub:
-+	case scrub_rate:
-+		return scrub_attr_store(dev, attr_id, buf, count);
-+	}
-+
-+	return -ENOTSUPP;
-+}
-+
-+#define SCRUB_ATTR_RW(attr)						\
-+static ssize_t attr##_show(struct device *dev,				\
-+			   struct device_attribute *attr, char *buf)	\
-+{									\
-+	return show_scrub_attr(dev, buf, (scrub_##attr));	\
-+}									\
-+static ssize_t attr##_store(struct device *dev,			\
-+			    struct device_attribute *attr,		\
-+			    const char *buf, size_t count)		\
-+{									\
-+	return store_scrub_attr(dev, buf, count, (scrub_##attr));\
-+}									\
-+static DEVICE_ATTR_RW(attr)
-+
-+#define SCRUB_ATTR_RO(attr)						\
-+static ssize_t attr##_show(struct device *dev,				\
-+			   struct device_attribute *attr, char *buf)	\
-+{									\
-+	return show_scrub_attr(dev, buf, (scrub_##attr));	\
-+}									\
-+static DEVICE_ATTR_RO(attr)
-+
-+#define SCRUB_ATTR_WO(attr)						\
-+static ssize_t attr##_store(struct device *dev,			\
-+			    struct device_attribute *attr,		\
-+			    const char *buf, size_t count)		\
-+{									\
-+	return store_scrub_attr(dev, buf, count, (scrub_##attr));\
-+}									\
-+static DEVICE_ATTR_WO(attr)
-+
-+SCRUB_ATTR_RW(addr_base);
-+SCRUB_ATTR_RW(addr_size);
-+SCRUB_ATTR_RW(enable);
-+SCRUB_ATTR_RW(enable_background_scrub);
-+SCRUB_ATTR_RW(rate);
-+SCRUB_ATTR_RO(rate_available);
-+
-+static struct attribute *scrub_attrs[] = {
-+	&dev_attr_addr_base.attr,
-+	&dev_attr_addr_size.attr,
-+	&dev_attr_enable.attr,
-+	&dev_attr_enable_background_scrub.attr,
-+	&dev_attr_rate.attr,
-+	&dev_attr_rate_available.attr,
-+	NULL,
-+};
-+
-+static struct device *
-+scrub_device_register(struct device *dev, const char *name, void *drvdata,
-+		      const struct scrub_ops *ops,
-+		      int region_id,
-+		      struct attribute_group *attr_group)
-+{
-+	struct scrub_device *scrub_dev;
-+	struct device *hdev;
-+	int err;
-+
-+	scrub_dev = kzalloc(sizeof(*scrub_dev), GFP_KERNEL);
-+	if (!scrub_dev)
-+		return ERR_PTR(-ENOMEM);
-+	hdev = &scrub_dev->dev;
-+
-+	scrub_dev->id = ida_alloc(&scrub_ida, GFP_KERNEL);
-+	if (scrub_dev->id < 0) {
-+		kfree(scrub_dev);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	snprintf((char *)scrub_dev->region_name, SCRUB_MAX_SYSFS_ATTR_NAME_LENGTH,
-+		 "region%d", region_id);
-+	if (attr_group) {
-+		attr_group->name = (char *)scrub_dev->region_name;
-+		scrub_dev->groups[0] = attr_group;
-+		scrub_dev->region_id = region_id;
-+	} else {
-+		scrub_dev->group.name = (char *)scrub_dev->region_name;
-+		scrub_dev->group.attrs = scrub_attrs;
-+		scrub_dev->group.is_visible = scrub_attr_visible;
-+		scrub_dev->groups[0] = &scrub_dev->group;
-+		scrub_dev->ops = ops;
-+		scrub_dev->region_id = region_id;
-+	}
-+
-+	hdev->groups = scrub_dev->groups;
-+	hdev->class = &scrub_class;
-+	hdev->parent = dev;
-+	dev_set_drvdata(hdev, drvdata);
-+	dev_set_name(hdev, SCRUB_ID_FORMAT, scrub_dev->id);
-+	snprintf(scrub_dev->name, SCRUB_DEV_MAX_NAME_LENGTH, "%s", name);
-+	err = device_register(hdev);
-+	if (err) {
-+		put_device(hdev);
-+		return ERR_PTR(err);
-+	}
-+
-+	return hdev;
-+}
-+
-+static void devm_scrub_release(void *dev)
-+{
-+	struct device *hdev = dev;
-+
-+	device_unregister(hdev);
-+}
-+
-+/**
-+ * devm_scrub_device_register - register hw scrubber device
-+ * @dev: the parent device
-+ * @name: hw scrubber name attribute
-+ * @drvdata: driver data to attach to created device
-+ * @ops: pointer to scrub_ops structure (optional)
-+ * @region_id: region ID
-+ * @attr_group: input attribute group (optional)
-+ *
-+ * Returns the pointer to the new device. The new device is automatically
-+ * unregistered with the parent device.
-+ */
-+struct device *
-+devm_scrub_device_register(struct device *dev, const char *name,
-+			   void *drvdata,
-+			   const struct scrub_ops *ops,
-+			   int region_id,
-+			   struct attribute_group *attr_group)
-+{
-+	struct device *hdev;
++	struct cxl_memdev_ps_params params;
 +	int ret;
 +
-+	if (!dev || !name)
-+		return ERR_PTR(-EINVAL);
-+
-+	hdev = scrub_device_register(dev, name, drvdata, ops,
-+				     region_id, attr_group);
-+	if (IS_ERR(hdev))
-+		return hdev;
-+
-+	ret = devm_add_action_or_reset(dev, devm_scrub_release, hdev);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return hdev;
-+}
-+EXPORT_SYMBOL_GPL(devm_scrub_device_register);
-+
-+static int __init memory_scrub_control_init(void)
-+{
-+	int err;
-+
-+	err = class_register(&scrub_class);
-+	if (err) {
-+		pr_err("couldn't register memory scrub control sysfs class\n");
-+		return err;
++	params.enable = val;
++	ret = cxl_mem_ps_set_attrs(dev, &params, CXL_MEMDEV_PS_PARAM_ENABLE);
++	if (ret) {
++		dev_err(dev, "CXL patrol scrub enable fail, enable=%d ret=%d\n",
++		       params.enable, ret);
++		return ret;
 +	}
 +
 +	return 0;
 +}
-+subsys_initcall(memory_scrub_control_init);
-diff --git a/include/memory/memory-scrub.h b/include/memory/memory-scrub.h
-new file mode 100755
-index 000000000000..3d7054e98b9a
---- /dev/null
-+++ b/include/memory/memory-scrub.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Memory scrub controller driver support to configure
-+ * the controls of the memory scrub and enable.
-+ *
-+ * Copyright (c) 2023 HiSilicon Limited.
-+ */
 +
-+#ifndef __MEMORY_SCRUB_H
-+#define __MEMORY_SCRUB_H
++static int cxl_mem_ps_rate_read(struct device *dev, u64 *val)
++{
++	struct cxl_memdev_ps_params params;
++	int ret;
 +
-+#include <linux/types.h>
++	ret = cxl_mem_ps_get_attrs(dev, &params);
++	if (ret) {
++		dev_err(dev, "Get CXL patrol scrub params fail ret=%d\n", ret);
++		return ret;
++	}
++	*val = params.rate;
 +
-+enum scrub_types {
-+	scrub_common,
-+	scrub_max,
-+};
++	return 0;
++}
 +
-+enum scrub_attributes {
-+	scrub_addr_base,
-+	scrub_addr_size,
-+	scrub_enable,
-+	scrub_enable_background_scrub,
-+	scrub_rate,
-+	scrub_rate_available,
-+	max_attrs,
-+};
++static int cxl_mem_ps_rate_write(struct device *dev, long val)
++{
++	struct cxl_memdev_ps_params params;
++	int ret;
++
++	params.rate = val;
++	ret = cxl_mem_ps_set_attrs(dev, &params, CXL_MEMDEV_PS_PARAM_RATE);
++	if (ret) {
++		dev_err(dev, "Set CXL patrol scrub params for rate fail ret=%d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int cxl_mem_ps_rate_available_read(struct device *dev, char *buf)
++{
++	struct cxl_memdev_ps_params params;
++	int ret;
++
++	ret = cxl_mem_ps_get_attrs(dev, &params);
++	if (ret) {
++		dev_err(dev, "Get CXL patrol scrub params fail ret=%d\n", ret);
++		return ret;
++	}
++
++	sysfs_emit(buf, "%s\n", params.rate_avail);
++
++	return 0;
++}
 +
 +/**
-+ * struct scrub_ops - scrub device operations
-+ * @is_visible: Callback to return attribute visibility. Mandatory.
-+ *		Parameters are:
-+ *		@dev:	pointer to hardware scrub device
-+ *		@attr:	scrub attribute
-+ *		@region_id: memory region id
-+ *		The function returns the file permissions.
-+ *		If the return value is 0, no attribute will be created.
-+ * @read:	Read callback for data attributes. Mandatory if readable
-+ *		data attributes are present.
-+ *		Parameters are:
-+ *		@dev:	pointer to hardware scrub device
-+ *		@attr:	scrub attribute
-+ *		@region_id:
-+ *			memory region id
-+ *		@val:	pointer to returned value
-+ *		The function returns 0 on success or a negative error number.
-+ * @read_string: Read callback for string attributes. Mandatory if string
-+ *		attributes are present.
-+ *		Parameters are:
-+ *		@dev:	pointer to hardware scrub device
-+ *		@attr:	scrub attribute
-+ *		@region_id:
-+ *			memory region id
-+ *		@buf:	pointer to buffer to copy string
-+ *		The function returns 0 on success or a negative error number.
-+ * @write:	Write callback for data attributes. Mandatory if writeable
-+ *		data attributes are present.
-+ *		Parameters are:
-+ *		@dev:	pointer to hardware scrub device
-+ *		@attr:	scrub attribute
-+ *		@region_id:
-+ *			memory region id
-+ *		@val:	value to write
-+ *		The function returns 0 on success or a negative error number.
++ * cxl_mem_patrol_scrub_is_visible() - Callback to return attribute visibility
++ * @dev: Pointer to scrub device
++ * @attr: Scrub attribute
++ * @region_id: ID of the memory region
++ *
++ * Returns: 0 on success, an error otherwise
 + */
-+struct scrub_ops {
-+	umode_t (*is_visible)(struct device *dev, u32 attr, int region_id);
-+	int (*read)(struct device *dev, u32 attr, int region_id, u64 *val);
-+	int (*read_string)(struct device *dev, u32 attr, int region_id, char *buf);
-+	int (*write)(struct device *dev, u32 attr, int region_id, u64 val);
++static umode_t cxl_mem_patrol_scrub_is_visible(struct device *dev,
++					       u32 attr_id, int region_id)
++{
++	const struct cxl_patrol_scrub_context *cxl_ps_ctx = dev_get_drvdata(dev);
++
++	if (attr_id == scrub_rate_available ||
++	    attr_id == scrub_rate) {
++		if (!cxl_ps_ctx->scrub_cycle_changeable)
++			return 0;
++	}
++
++	switch (attr_id) {
++	case scrub_rate_available:
++		return 0444;
++	case scrub_enable:
++	case scrub_rate:
++		return 0644;
++	default:
++		return 0;
++	}
++}
++
++/**
++ * cxl_mem_patrol_scrub_read() - Read callback for data attributes
++ * @dev: Pointer to scrub device
++ * @attr: Scrub attribute
++ * @region_id: ID of the memory region
++ * @val: Pointer to the returned data
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++static int cxl_mem_patrol_scrub_read(struct device *dev, u32 attr,
++				     int region_id, u64 *val)
++{
++
++	switch (attr) {
++	case scrub_enable:
++		return cxl_mem_ps_enable_read(dev->parent, val);
++	case scrub_rate:
++		return cxl_mem_ps_rate_read(dev->parent, val);
++	default:
++		return -ENOTSUPP;
++	}
++}
++
++/**
++ * cxl_mem_patrol_scrub_write() - Write callback for data attributes
++ * @dev: Pointer to scrub device
++ * @attr: Scrub attribute
++ * @region_id: ID of the memory region
++ * @val: Value to write
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++static int cxl_mem_patrol_scrub_write(struct device *dev, u32 attr,
++				      int region_id, u64 val)
++{
++	switch (attr) {
++	case scrub_enable:
++		return cxl_mem_ps_enable_write(dev->parent, val);
++	case scrub_rate:
++		return cxl_mem_ps_rate_write(dev->parent, val);
++	default:
++		return -ENOTSUPP;
++	}
++}
++
++/**
++ * cxl_mem_patrol_scrub_read_strings() - Read callback for string attributes
++ * @dev: Pointer to scrub device
++ * @attr: Scrub attribute
++ * @region_id: ID of the memory region
++ * @buf: Pointer to the buffer for copying returned string
++ *
++ * Returns: 0 on success, an error otherwise
++ */
++static int cxl_mem_patrol_scrub_read_strings(struct device *dev, u32 attr,
++					     int region_id, char *buf)
++{
++	switch (attr) {
++	case scrub_rate_available:
++		return cxl_mem_ps_rate_available_read(dev->parent, buf);
++	default:
++		return -ENOTSUPP;
++	}
++}
++
++static const struct scrub_ops cxl_ps_scrub_ops = {
++	.is_visible = cxl_mem_patrol_scrub_is_visible,
++	.read = cxl_mem_patrol_scrub_read,
++	.write = cxl_mem_patrol_scrub_write,
++	.read_string = cxl_mem_patrol_scrub_read_strings,
 +};
 +
-+struct device *
-+devm_scrub_device_register(struct device *dev, const char *name,
-+			   void *drvdata, const struct scrub_ops *ops,
-+			   int region_id,
-+			   struct attribute_group *attr_group);
-+#endif /* __MEMORY_SCRUB_H */
+ int cxl_mem_patrol_scrub_init(struct cxl_memdev *cxlmd)
+ {
++	char scrub_name[CXL_MEMDEV_MAX_NAME_LENGTH];
+ 	struct cxl_patrol_scrub_context *cxl_ps_ctx;
+ 	struct cxl_mbox_supp_feat_entry feat_entry;
+ 	struct cxl_memdev_ps_params params;
++	struct device *cxl_scrub_dev;
+ 	int ret;
+ 
+ 	ret = cxl_mem_get_supported_feature_entry(cxlmd, &cxl_patrol_scrub_uuid,
+@@ -261,6 +448,14 @@ int cxl_mem_patrol_scrub_init(struct cxl_memdev *cxlmd)
+ 	}
+ 	cxl_ps_ctx->scrub_cycle_changeable =  params.scrub_cycle_changeable;
+ 
++	snprintf(scrub_name, sizeof(scrub_name), "%s_%s",
++		 CXL_PATROL_SCRUB, dev_name(&cxlmd->dev));
++	cxl_scrub_dev = devm_scrub_device_register(&cxlmd->dev, scrub_name,
++						   cxl_ps_ctx, &cxl_ps_scrub_ops,
++						   0, NULL);
++	if (IS_ERR(cxl_scrub_dev))
++		return PTR_ERR(cxl_scrub_dev);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_NS_GPL(cxl_mem_patrol_scrub_init, CXL);
 -- 
 2.34.1
 
