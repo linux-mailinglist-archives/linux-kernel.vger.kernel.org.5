@@ -1,102 +1,289 @@
-Return-Path: <linux-kernel+bounces-67592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDDCA856DD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:35:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E202B856DD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F2D9B27701
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:34:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F2C91C241DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4062013A27E;
-	Thu, 15 Feb 2024 19:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E65913A891;
+	Thu, 15 Feb 2024 19:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ifH4v4Cu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hcxBanyL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7562E13A249;
-	Thu, 15 Feb 2024 19:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE9C1386AE;
+	Thu, 15 Feb 2024 19:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025672; cv=none; b=aZsJ/079jAjk1UOnBjat8Z0RXZkDfat4NjujjUy85z9HuGrFjxByosWCywiWHSPaPQ6hymzoTenY/4pnRi8rTPD/0egCKw8FoQcqpUWBWHzSjeleSJrCITQrJVewWBUhN+HqMVN1pmV14WXwe2dpriY1fO5W7v4kxbscFTdMRaU=
+	t=1708025685; cv=none; b=gaQrmeVk1pLVDo2rhRRGIdgMoBcEfe856gzg3pLXd5lKSX+aT3dT5aSRBmFgzXX9jCBMDoTD6bDRf86fSCohxhs1tr1kDojGCK4uNldLvMlKsqWHQ61LSQPReQ5nPx3OnejUB8FHmCcyD4TKmpAzAarH5/+VELCQcOzrNThE5m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025672; c=relaxed/simple;
-	bh=0xDmjRzOIFe1GDF6uU0h8F9gRo4dQvRi6OpVT2WbXoc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=B1JA68yFOaRm57Lzum42/gT4aV3uccznYMpx1+ZQDdalq5PrVUrBZl22oUaIIAQO2hHeo+xPfVfM9ffhJrxDIwkUvBhszk2PKwTUuuvX8auumKQeed6/BUKecILep88OWrJkuTjF4jpvIdVzp+nIUNNUFJftEMuduRy6NsTxZWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ifH4v4Cu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56592C433C7;
-	Thu, 15 Feb 2024 19:34:31 +0000 (UTC)
+	s=arc-20240116; t=1708025685; c=relaxed/simple;
+	bh=yRnLyISh3ozdfGzOQyeO/YUOe2fAUcXlNVFlHde4M6M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n8JKyHnbp8JR0XmavFbLGW2e7DBZiIiyUqfxabCczRpW24VXAoIPEkSPXWROAKZEVZLxA98MOYuvLTEH3b+qeDA/Twr7C45siYm23ZfB7x2jiAriJrG+6+DWAl9n7vx9wGh75Dby8uUiA5UR0WSqat9rUpZnJerS1Ot3LMqvZZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hcxBanyL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D989C433C7;
+	Thu, 15 Feb 2024 19:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708025672;
-	bh=0xDmjRzOIFe1GDF6uU0h8F9gRo4dQvRi6OpVT2WbXoc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ifH4v4CuOKoHeSu/KbrmZyJJSKHAp0/ypLuYrTQ+s8V5B6NVQVLvvWxUVhT6xqNBH
-	 5ETEDqAFSrjnQHN4872ksk1llIV7eJW+v0GFPvZpn/vGLzqzES2UdzN8HzsgzGRD8e
-	 r1moDpqIxtzllc0aruFZhGFDnLYUi+E7hqhEuoytzf0t0/Ipr0PFktEfbwurq04cJ3
-	 lmidBin+tzBTqhjzuK34M1EH+qDaph3XZJ7DT0tlsnBtjFsjg3XuuXJagZnLrDvsGA
-	 pSo5zNZjV4pLSZTtOX+T9KeiKJ4ow/8QlEp67JFYKOf42kSKOl/XFaHBLJLLI8zyDl
-	 e4iTc4+1wpBhg==
-Date: Thu, 15 Feb 2024 20:34:28 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa@kernel.org>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>
-Subject: [GIT PULL] i2c-host fixes for v6.8-rc5
-Message-ID: <6utwghfmlmpaasdtoel5faalrrnfhyg3iupeditg4w7bgd7g35@cxplq2kipgfb>
+	s=k20201202; t=1708025684;
+	bh=yRnLyISh3ozdfGzOQyeO/YUOe2fAUcXlNVFlHde4M6M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hcxBanyLQEEN6fX42vS/bUklK63T/N6Rwy5XBP0I5CnNlTL7f1HtGGJLePgvd/uO4
+	 3/1JJYefxII4USHvReXc3uKbI2dZgEGsyR4smQXzrUvoXR0P9jhtBchK1CUhwMwKo3
+	 QZP5/c37D/Zg1bI4rE7nO7Ur+AUmtAC7i/CWwbHzKQ2/6tq3pKNSAEe+5rVphEXPdr
+	 2h5lbxOXn8jZCGwUELfWVzg0X9A0h3p+JOXzR2TRL3GUicxZ83I26A5/v5bdYKNfHi
+	 QtkONIKQdtF3KlCs8Z/XOKqRn/J8mYzjWShJAk9KwLh0HemfW92ggpIDKpPVWJdf/8
+	 YK1J1J8qEQZbQ==
+Date: Thu, 15 Feb 2024 19:34:39 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Durai Manickam KR <durai.manickamkr@microchip.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: dma: convert atmel-xdma.txt to YAML
+Message-ID: <20240215-snowstorm-quack-fdb7f9c35c2e@spud>
+References: <20240215-xdma-v1-1-1139960cf096@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2uNUAPuRLcz3Tc2D"
+Content-Disposition: inline
+In-Reply-To: <20240215-xdma-v1-1-1139960cf096@microchip.com>
+
+
+--2uNUAPuRLcz3Tc2D
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Wolfram,
+On Thu, Feb 15, 2024 at 04:25:15PM +0530, Durai Manickam KR wrote:
+> Added a description, required properties and appropriate compatibles
+> for all the SoCs that are supported by microchip for the XDMAC.
+>=20
+> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
+> ---
+>  .../devicetree/bindings/dma/atmel-xdma.txt         | 54 ---------------
+>  .../bindings/dma/microchip,at91-xdma.yaml          | 77 ++++++++++++++++=
+++++++
+>  2 files changed, 77 insertions(+), 54 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Docum=
+entation/devicetree/bindings/dma/atmel-xdma.txt
+> deleted file mode 100644
+> index 76d649b3a25d..000000000000
+> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> +++ /dev/null
+> @@ -1,54 +0,0 @@
+> -* Atmel Extensible Direct Memory Access Controller (XDMAC)
+> -
+> -* XDMA Controller
 
-This week, I'm submitting three fixes: two address hardware
-issues with the i801 and qcom-gen devices, and the third resolves
-a compilation error that occurs when including both pasemi and
-apple i2c in compile tests on PowerPC.
+> -- interrupts: Should contain DMA interrupt.
+> -- #dma-cells: Must be <1>, used to represent the number of integer cells=
+ in
+> -the dmas property of client devices.
+> -  - The 1st cell specifies the channel configuration register:
+> -    - bit 13: SIF, source interface identifier, used to get the memory
+> -    interface identifier,
+> -    - bit 14: DIF, destination interface identifier, used to get the per=
+ipheral
+> -    interface identifier,
+> -    - bit 30-24: PERID, peripheral identifier.
+> -
+> -Example:
+> -
+> -dma1: dma-controller@f0004000 {
+> -	compatible =3D "atmel,sama5d4-dma";
+> -	reg =3D <0xf0004000 0x200>;
+> -	interrupts =3D <50 4 0>;
+> -	#dma-cells =3D <1>;
+> -};
+> -
+> -
+> -* DMA clients
+> -DMA clients connected to the Atmel XDMA controller must use the format
+> -described in the dma.txt file, using a one-cell specifier for each chann=
+el.
+> -The two cells in order are:
+> -1. A phandle pointing to the DMA controller.
+> -2. Channel configuration register. Configurable fields are:
+> -    - bit 13: SIF, source interface identifier, used to get the memory
+> -    interface identifier,
+> -    - bit 14: DIF, destination interface identifier, used to get the per=
+ipheral
+> -    interface identifier,
+> -  - bit 30-24: PERID, peripheral identifier.
+> -
+> -Example:
+> -
+> -i2c2: i2c@f8024000 {
+> -	compatible =3D "atmel,at91sam9x5-i2c";
+> -	reg =3D <0xf8024000 0x4000>;
+> -	interrupts =3D <34 4 6>;
+> -	dmas =3D <&dma1
+> -		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
+> -		 | AT91_XDMAC_DT_PERID(6))>,
+> -	       <&dma1
+> -		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
+> -		| AT91_XDMAC_DT_PERID(7))>;
+> -	dma-names =3D "tx", "rx";
+> -};
+> diff --git a/Documentation/devicetree/bindings/dma/microchip,at91-xdma.ya=
+ml b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
+> new file mode 100644
+> index 000000000000..0bd79c7b5e6f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/microchip,at91-xdma.yaml#
 
-Thanks,
-Andi
+Filename matching a compatible please.
 
-The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Atmel Extensible Direct Memory Access Controller (XDMAC)
+> +
+> +maintainers:
+> +  - Durai Manickam KR <durai.manickamkr@microchip.com>
+> +
+> +description: |
 
-  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
+The | is not needed, you've no formatting to preserve.
 
-are available in the Git repository at:
+> +  The Atmel Extensible Direct Memory Access Controller (XDMAC) performs =
+peripheral
+> +  data transfer and memory move operations over one or two bus ports thr=
+ough the
+> +  unidirectional communication channel. Each channel is fully programmab=
+le and
+> +  provides both peripheral or memory-to-memory transfers.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - atmel,sama5d4-dma
+> +          - microchip,sama7g5-dma
+> +          - microchip,sam9x7-dma
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags/i2c-host-fixes-6.8-rc5
+The text binding says:
+> -- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
+> -  "microchip,sama7g5-dma" or
+> -  "microchip,sam9x7-dma", "atmel,sama5d4-dma".
+That's not what you have here at all.
 
-for you to fetch changes up to eb9f7f654f251b57db310eab90bbae5876898ae3:
+> +      - items:
+> +          - const: atmel,sama5d4-dma
+> +          - const: microchip,sam9x60-dma
 
-  i2c: i801: Fix block process call transactions (2024-02-14 22:15:38 +0100)
+This looks backwards.
 
-----------------------------------------------------------------
-Three fixes are included here. Two are strictly hardware-related
-for the i801 and qcom-geni devices. Meanwhile, a fix from Arnd
-addresses a compilation error encountered during compile test on
-powerpc.
+> +  reg:
+> +    description: Should contain DMA registers location and length.
+> +    maxItems: 1
 
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      i2c: pasemi: split driver into two separate modules
+Same comments here about descriptions for well known properties as the
+other DMA controller.
 
-Jean Delvare (1):
-      i2c: i801: Fix block process call transactions
+> +
+> +  interrupts:
+> +    description: Should contain the DMA interrupts associated to the DMA=
+ channels.
+> +    maxItems: 1
+> +
+> +  "#dma-cells":
+> +    description: |
+> +      Must be <1>, used to represent the number of integer cells in the =
+dmas
+> +      property of client device.
+> +      -The 1st cell specifies the channel configuration register:
+> +      -bit 13: SIF, source interface identifier, used to get the memory
+> +               interface identifier,
+> +      -bit 14: DIF, destination interface identifier, used to get the pe=
+ripheral
+> +               interface identifier,
+> +      -bit 30-24: PERID, peripheral identifier.
+> +    const: 1
+> +
+> +  clocks:
+> +    description: Should contain a clock specifier for each entry in cloc=
+k-names.
+> +    maxItems: 1
 
-Viken Dadhaniya (1):
-      i2c: i2c-qcom-geni: Correct I2C TRE sequence
+And here about adding properties. Please explain in your commit message
+where the new properties came from.
 
- drivers/i2c/busses/Makefile          |  6 ++----
- drivers/i2c/busses/i2c-i801.c        |  4 ++--
- drivers/i2c/busses/i2c-pasemi-core.c |  6 ++++++
- drivers/i2c/busses/i2c-qcom-geni.c   | 14 +++++++-------
- 4 files changed, 17 insertions(+), 13 deletions(-)
+> +
+> +  clock-names:
+> +    description: Should contain the clock of the DMA controller.
+> +    const: dma_clk
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - "#dma-cells"
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dma0: dma-controller@f0004000 {
+
+And same here about the label :)
+
+Cheers,
+Conor.
+
+> +            compatible =3D "atmel,sama5d4-dma";
+> +            reg =3D <0xffffec00 0x200>;
+> +            interrupts =3D <50 4 0>;
+> +            #dma-cells =3D <1>;
+> +            clocks =3D <&pmc 2 20>;
+> +            clock-names =3D "dma_clk";
+> +    };
+> +
+> +...
+>=20
+> ---
+> base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+> change-id: 20240215-xdma-36e8bdbf8141
+>=20
+> Best regards,
+> --=20
+> Durai Manickam KR <durai.manickamkr@microchip.com>
+>=20
+
+--2uNUAPuRLcz3Tc2D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5nTwAKCRB4tDGHoIJi
+0mWeAQDyxMRExEs8PvvE6a8W3mU1c68idO13L6qbJOJZzZggbwD+PeCtNY1Irgpl
+9q5poFzXZZ7w/mux7+IUq6SBm6lUzA4=
+=pFvp
+-----END PGP SIGNATURE-----
+
+--2uNUAPuRLcz3Tc2D--
 
