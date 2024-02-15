@@ -1,281 +1,155 @@
-Return-Path: <linux-kernel+bounces-66501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E771C855DE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:25:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E508855D8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B997EB2FA77
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:13:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9863B281C7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B558171B0;
-	Thu, 15 Feb 2024 09:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B8617586;
+	Thu, 15 Feb 2024 09:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jLp2V/qV"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="ieQ5BDR8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CtUvaV0g"
+Received: from flow7-smtp.messagingengine.com (flow7-smtp.messagingengine.com [103.168.172.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6389817585;
-	Thu, 15 Feb 2024 09:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58CC14006;
+	Thu, 15 Feb 2024 09:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988421; cv=none; b=Nlbs2/S0WKfUSld9GDjEvJl7sD3z0Z99m4gtHL3gYvOqEQ+yGU3ITBaSzT1n/6iYa9Wws+UBWXvnRUukLq8tSpxsLuA1WzQWa9VI6xDQEoNx2HW16IsaMHOjVonzJJjK6JJPO55iyL9BG5pvf4dcfJhhFozglhDm2ANaObTw0OQ=
+	t=1707988433; cv=none; b=Jx18HbnF9LZPgieQW+KfyNJj5n4c2BCLAI42Y+HjK8feLDtu1T8DW2GkKbqu6j1T1QfM38aY5n87lI9W8mnqczEGTZpB/EyO3VKZ4IqGn+gTHJioYD0FpkTIqqRC4xECqlaXBOEDyAIaEhCbkiTfSgcxSCZmgfQ1gf+JmBDYEQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988421; c=relaxed/simple;
-	bh=nW9UnCQTNOoFfohP8hTXiKV7UvgAUgtPFbT08m9LL3Q=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qcuZkAtb9T9zguf5/a4gbDbl+vS+cYtGqpvsu7rIvo13K5XQM5coXskPUwu+AwpSSiWYV5070YFWr7ql612w7fNBoDWvF2l69hnpFe2by6TmmSjNDlc/522AhHTGxS9tbxoE8cVWyDqOioxpiKAm4MrjMv4ww455zNfIc5loPRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jLp2V/qV; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41F9DWBV055880;
-	Thu, 15 Feb 2024 03:13:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707988412;
-	bh=HK2jGaqe1B73/CKo9oLFbqeMHRqjhANdj2JYm1spQ4g=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=jLp2V/qVP+59xdlbu99/3t853hK/nnfLyklukdV+adyQo7mFrYy1xDwUnN7Z8p4Ke
-	 VH4DNnjCsokqs+NtWdso2oHlGc+Np7SEGauP+hdYodBRh8GmGSZhvrMLCsx48254s5
-	 wsTbdGuOQH9x1qc6lZtmCAaOBsFEMme4wVPmT1Bs=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41F9DWQG049150
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 03:13:32 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 03:13:32 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 03:13:32 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41F9DVMV039681;
-	Thu, 15 Feb 2024 03:13:31 -0600
-Date: Thu, 15 Feb 2024 14:43:30 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Markus Schneider-Pargmann <msp@baylibre.com>
-CC: Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen
- Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo
-	<kristo@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, Andrew Davis
-	<afd@ti.com>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/3] cpufreq: ti-cpufreq: Support nvmem for chip version
-Message-ID: <20240215091330.bzprmfsz2dw2j7xa@dhruva>
-References: <20240206145721.2418893-1-msp@baylibre.com>
- <20240206145721.2418893-3-msp@baylibre.com>
+	s=arc-20240116; t=1707988433; c=relaxed/simple;
+	bh=O/RwfPbZqb3ZvLhvEoH0BjeWEPwr1fYoyD00l7xYTL8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b0keAoOUf5JU3bIfNMhlZniBYIgeC2YSDWuatgHiJfCGGfpJFxMCFRUwwT9wOLOqpHZkAw68HH1+jVR3FjmAwfTsqoCnBg5c/KnUMCQg32TSdFjtY+oexG3HbZwHDm/eNmkXWpSWjvJNFUXEpqGZ9r2dn2Y1OcZelBF6WEBJ1NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=ieQ5BDR8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CtUvaV0g; arc=none smtp.client-ip=103.168.172.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.nyi.internal (Postfix) with ESMTP id AD7AC2000F8;
+	Thu, 15 Feb 2024 04:13:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 15 Feb 2024 04:13:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1707988430; x=1707995630; bh=IC4m81oUgj
+	/tsdcLSrr2mqEGqSm9cd9fjfFWN3WrsQE=; b=ieQ5BDR8Bs4J8ZW50oIAXYAsao
+	UTrP6+iqpCdYfl+BE1ZU/iYQi40eFNZfAq5UehitINaslGjEjsylvNqg556xqtwP
+	vqT+ZXXZBsftS3968V0CdX63apikIw4AQ9rJTEg3DdarH/SuLjhlB7ApJVFu+WFZ
+	kisOFmznpVnDsSjXEvGiu90SF45Lcq0Xi/Wb894yfokeS34EKk3oskqJx5aTWTBB
+	V+/kyYYmMN1buQBiJdJwFSDH7D3kBl5sebixEGOd1v/ImizfbqiExBSA66SHJiYl
+	i3RwJIx90b6ybiWlmaN11RZFlwBGq2pypHKtv/3zXDgk0Ry3pT0oYaDMTp3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1707988430; x=1707995630; bh=IC4m81oUgj/tsdcLSrr2mqEGqSm9
+	cd9fjfFWN3WrsQE=; b=CtUvaV0g2T8ifSQZWiCIE5LJK6NMOZ6lk3NlNBEvB7Ii
+	EHgTyVtYplEvuHy3DgmnELZpfTCAqBCmDhsGt3KnkxzTwRY2FroxVx0P2UiKiwH/
+	LGOk6Rki59VnzjG5qLmD4reI5GOxpjBoXK5krsGOCrwWk/cnRK86I/ZswQ9KFjNY
+	H/U0irm1accRpX/HGUkFk9o1PFVBGPIwersMNqtlJ7MXffDsXtDuOJkC5ETruE3x
+	3OSdI4ypz4DPoWJRHV0T+a98R5UlD9NGUCnITheXZPucfvVI+u8gd8JHOjEEk9OA
+	AbD9Xol0TDQLGhl4rsLl3++2COhaeAzrLU1ZmwSYxA==
+X-ME-Sender: <xms:zdXNZVmfO_RiDekOPDAVHtBn-NPqX5mTVRePn0b8oEulTwg_4jK5sg>
+    <xme:zdXNZQ3rjuquUHhf6-zg5hAltWOcuNtIUNdGxUYOp_gpCKbCctkDGNvt6PNbbQD8s
+    G6uYzluW9mMRQ>
+X-ME-Received: <xmr:zdXNZboaZDO3YBGaO93LVD-TAUt6mh-DX_MbjxhsG5YEbl4KnC2sT9J2CSMfM2nYs8-XqlYvkMhE1fo0-r-o1D84nJWqhpJT4w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfmjfcu
+    oehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehueehgfdtle
+    dutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgrihhnpehk
+    vghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:zdXNZVnp_QUPhQz5CwySBHttpZNc1Xf-eWBRj2HJftKiRY9eINUqgA>
+    <xmx:zdXNZT0VEjVElFQlldwJh3isoTCKVkLLONzjR30Hm-FdC4oTDXMXhA>
+    <xmx:zdXNZUt16tIgFkoSN1XNMWaPLzG1Kt1Er7MMDoekQC7K2CEpyLgtyw>
+    <xmx:ztXNZWxfD0c6ofm_OMoiqXqAu-hjN5NFNX9jucnst7Hz7n8kGiKzBGEGti4>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Feb 2024 04:13:48 -0500 (EST)
+Date: Thu, 15 Feb 2024 10:13:47 +0100
+From: Greg KH <greg@kroah.com>
+To: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Jon Hunter <jonathanh@nvidia.com>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	wkarny@gmail.com, qyousef@layalina.io, tglx@linutronix.de,
+	rafael@kernel.org, viresh.kumar@linaro.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+	Thierry Reding <treding@nvidia.com>,
+	Sasha Levin <sashal@nvidia.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	Shardar Mohammed <smohammed@nvidia.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Linux kernel regressions list <regressions@lists.linux.dev>
+Subject: Re: [PATCH] sched/fair: Fix frequency selection for non invariant
+ case
+Message-ID: <2024021545-rise-plot-24c3@gregkh>
+References: <20240114183600.135316-1-vincent.guittot@linaro.org>
+ <6ec54a8f-a602-4f33-96ce-0204f07046e1@nvidia.com>
+ <CAHk-=wgjiVanO4ZS1hy2sfAFTN_pYtQqVQb_g+dbrP34M6xTDw@mail.gmail.com>
+ <CAKfTPtA8W+SijB9D3GtNbC7o_XHUV-umcL6chJQbMDxWeX7exg@mail.gmail.com>
+ <42052f23-d582-4533-a09d-a1de437836b7@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240206145721.2418893-3-msp@baylibre.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <42052f23-d582-4533-a09d-a1de437836b7@leemhuis.info>
 
-Hi,
-
-On Feb 06, 2024 at 15:57:20 +0100, Markus Schneider-Pargmann wrote:
-> Support using nvmem-cells 'chipvariant' and 'chipspeed' instead of
-> syscon. This makes it more flexible and moves more configuration into
-> the devicetree.
+On Thu, Feb 15, 2024 at 09:45:01AM +0100, Thorsten Leemhuis wrote:
+> Linus, what...
 > 
-> If nvmem-cells are present, probing will fail if the configuration of
-> these cells is broken. If nvmem-cells is not present syscon will be
-> used.
+> On 14.02.24 18:22, Vincent Guittot wrote:
+> > On Wed, 14 Feb 2024 at 18:20, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> >> On Wed, 14 Feb 2024 at 09:12, Jon Hunter <jonathanh@nvidia.com> wrote:
+> >>> We have also observed a performance degradation on our Tegra platforms
+> >>> with v6.8-rc1. Unfortunately, the above change does not fix the problem
+> >>> for us and we are still seeing a performance issue with v6.8-rc4. For
+> >>> example, running Dhrystone on Tegra234 I am seeing the following ...
+> >>> [...]
+> >>> If I revert this change and the following ...
+> >>>   b3edde44e5d4 ("cpufreq/schedutil: Use a fixed reference frequency")
+> >>>   f12560779f9d ("sched/cpufreq: Rework iowait boost")
+> >>>   9c0b4bb7f630 ("sched/cpufreq: Rework schedutil governor
+> >>> ... then the perf is similar to where it was ...
+> >>
+> >> Ok, guys, this whole scheduler / cpufreq rewrite seems to have been
+> >> completely buggered.
+> >> [...]
+> > This should fix it:
+> > https://lore.kernel.org/lkml/20240117190545.596057-1-vincent.guittot@linaro.org/
 > 
-> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> ---
->  drivers/cpufreq/ti-cpufreq.c | 105 ++++++++++++++++++++++-------------
->  1 file changed, 66 insertions(+), 39 deletions(-)
+> ...do you want me to do in situations like this? I'm asking, as I see
+> situations like this frequently -- e.g. people reporting problems a
+> second, third, or fourth time while the fix is already sitting in -next
+> for a few days.
 > 
-> diff --git a/drivers/cpufreq/ti-cpufreq.c b/drivers/cpufreq/ti-cpufreq.c
-> index 46c41e2ca727..3ee72b1309f0 100644
-> --- a/drivers/cpufreq/ti-cpufreq.c
-> +++ b/drivers/cpufreq/ti-cpufreq.c
-> @@ -10,6 +10,7 @@
->  #include <linux/io.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
-> +#include <linux/nvmem-consumer.h>
->  #include <linux/init.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> @@ -65,6 +66,7 @@ struct ti_cpufreq_soc_data {
->  
->  struct ti_cpufreq_data {
->  	struct device *cpu_dev;
-> +	struct device *dev;
->  	struct device_node *opp_node;
->  	struct regmap *syscon;
->  	const struct ti_cpufreq_soc_data *soc_data;
-> @@ -244,31 +246,40 @@ static struct ti_cpufreq_soc_data am625_soc_data = {
->  static int ti_cpufreq_get_efuse(struct ti_cpufreq_data *opp_data,
->  				u32 *efuse_value)
->  {
-> +	struct device_node *np = opp_data->opp_node;
+> Want me to list them in the weekly reports so that you can cherry-pick
+> them from -next if you want?
 
-Umm.. slightly confused, where is *np being used?
+Poke the maintainer to get off their butt and submit the pull request to
+Linus (note, this is me in this case...)
 
->  	struct device *dev = opp_data->cpu_dev;
->  	u32 efuse;
->  	int ret;
->  
-> -	ret = regmap_read(opp_data->syscon, opp_data->soc_data->efuse_offset,
-> -			  &efuse);
-> -	if (ret == -EIO) {
-> -		/* not a syscon register! */
-> -		void __iomem *regs = ioremap(OMAP3_SYSCON_BASE +
-> -				opp_data->soc_data->efuse_offset, 4);
-> -
-> -		if (!regs)
-> -			return -ENOMEM;
-> -		efuse = readl(regs);
-> -		iounmap(regs);
-> +	ret = nvmem_cell_read_u32(opp_data->dev, "chipspeed", &efuse);
-> +	if (ret && (ret != -ENOENT || !opp_data->syscon))
-> +		return dev_err_probe(dev, ret,
-> +				     "Failed to read nvmem cell 'chipspeed': %pe",
-> +				     ERR_PTR(ret));
-> +
-> +	if (ret) {
-> +		ret = regmap_read(opp_data->syscon, opp_data->soc_data->efuse_offset,
-> +				  &efuse);
-> +		if (ret == -EIO) {
-> +			/* not a syscon register! */
-> +			void __iomem *regs = ioremap(OMAP3_SYSCON_BASE +
-> +					opp_data->soc_data->efuse_offset, 4);
-> +
-> +			if (!regs)
-> +				return -ENOMEM;
-> +			efuse = readl(regs);
-> +			iounmap(regs);
-> +			}
-> +		else if (ret) {
+I'll get it into the next -rc, sorry for the delay, other things got in
+the way, my fault.
 
-else should be enough I guess, no need of elif?
-
-> +			dev_err(dev,
-> +				"Failed to read the efuse value from syscon: %d\n",
-> +				ret);
-> +			return ret;
->  		}
-> -	else if (ret) {
-> -		dev_err(dev,
-> -			"Failed to read the efuse value from syscon: %d\n",
-> -			ret);
-> -		return ret;
-> -	}
->  
-> -	efuse = (efuse & opp_data->soc_data->efuse_mask);
-> -	efuse >>= opp_data->soc_data->efuse_shift;
-> +		efuse = (efuse & opp_data->soc_data->efuse_mask);
-> +		efuse >>= opp_data->soc_data->efuse_shift;
-> +	}
->  
->  	*efuse_value = opp_data->soc_data->efuse_xlate(opp_data, efuse);
->  
-> @@ -285,30 +296,41 @@ static int ti_cpufreq_get_efuse(struct ti_cpufreq_data *opp_data,
->  static int ti_cpufreq_get_rev(struct ti_cpufreq_data *opp_data,
->  			      u32 *revision_value)
->  {
-> +	struct device_node *np = opp_data->opp_node;
-
-where is this used? Atleast, in this patch I don't see it...
-
->  	struct device *dev = opp_data->cpu_dev;
->  	u32 revision;
->  	int ret;
->  
-> -	ret = regmap_read(opp_data->syscon, opp_data->soc_data->rev_offset,
-> -			  &revision);
-> -	if (ret == -EIO) {
-> -		/* not a syscon register! */
-> -		void __iomem *regs = ioremap(OMAP3_SYSCON_BASE +
-> -				opp_data->soc_data->rev_offset, 4);
-> -
-> -		if (!regs)
-> -			return -ENOMEM;
-> -		revision = readl(regs);
-> -		iounmap(regs);
-> +	ret = nvmem_cell_read_u32(opp_data->dev, "chipvariant", &revision);
-> +	if (ret && (ret != -ENOENT || !opp_data->syscon))
-> +		return dev_err_probe(dev, ret,
-> +				     "Failed to read nvmem cell 'chipvariant': %pe",
-> +				     ERR_PTR(ret));
-> +
-> +	if (ret) {
-> +		ret = regmap_read(opp_data->syscon, opp_data->soc_data->rev_offset,
-> +				  &revision);
-> +		if (ret == -EIO) {
-> +			/* not a syscon register! */
-> +			void __iomem *regs = ioremap(OMAP3_SYSCON_BASE +
-> +					opp_data->soc_data->rev_offset, 4);
-> +
-> +			if (!regs)
-> +				return -ENOMEM;
-> +			revision = readl(regs);
-> +			iounmap(regs);
-> +			}
-> +		else if (ret) {
-
-Do you really have to? This code will reach only if(ret) is satisfied,
-the elif feels redundant. Else should be fine
-
-> +			dev_err(dev,
-> +				"Failed to read the revision number from syscon: %d\n",
-> +				ret);
-> +			return ret;
->  		}
-> -	else if (ret) {
-> -		dev_err(dev,
-> -			"Failed to read the revision number from syscon: %d\n",
-> -			ret);
-> -		return ret;
-> +
-> +		revision = (revision >> REVISION_SHIFT) & REVISION_MASK;
->  	}
->  
-> -	*revision_value = BIT((revision >> REVISION_SHIFT) & REVISION_MASK);
-> +	*revision_value = BIT(revision);
->  
->  	return 0;
->  }
-> @@ -392,9 +414,14 @@ static int ti_cpufreq_probe(struct platform_device *pdev)
->  		goto register_cpufreq_dt;
->  	}
->  
-> -	ret = ti_cpufreq_setup_syscon_register(opp_data);
-> -	if (ret)
-> -		goto fail_put_node;
-> +	opp_data->dev = &pdev->dev;
-> +	opp_data->dev->of_node = opp_data->opp_node;
-> +
-> +	if (!of_property_read_bool(opp_data->opp_node, "nvmem-cells")) {
-> +		ret = ti_cpufreq_setup_syscon_register(opp_data);
-> +		if (ret)
-> +			goto fail_put_node;
-> +	}
-
-Mostly looks okay, with above comments addressed:
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+greg k-h
 
