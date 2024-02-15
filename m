@@ -1,115 +1,125 @@
-Return-Path: <linux-kernel+bounces-66569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB89C855E66
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:40:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01614855E70
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC811F2426C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:40:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94FA1F243EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDE41B978;
-	Thu, 15 Feb 2024 09:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30445027F;
+	Thu, 15 Feb 2024 09:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BKs045jm"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ho3gUMdC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBCB1B952;
-	Thu, 15 Feb 2024 09:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D06A482C7;
+	Thu, 15 Feb 2024 09:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707990027; cv=none; b=nFP+eOmLuUe+ccfkCy3B0u8Rt6dx13qAXQ9BW03lk9vP8mwWIVLRZIGlY8jVvBJXdw1WfiPWfDBi1ProhCI0+NJ2pQGvTrw7IacEtFWfVjgk40bpPYiN//uVNhnAr7+/qViJW0no+I4vl/nJJnhrYyDVtd2Z6Zp0I3lIxluoKiA=
+	t=1707990250; cv=none; b=g8KYUglBytp92XU+cyOSyOin0BlaDVNZvOAK72uM4MISZjspp1v3vpbtNppsELbfHkTColPenhsETC4nlCqooZ4qXwLPz+K907vYS7g8yjrn6J84bGsglIBru6wgR6pRIGPL8v6UQ+txKgD9A3w9cMdZXnlpmOXbILb/uJyQX3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707990027; c=relaxed/simple;
-	bh=jF7g/BNY1ew/ksUnMTv0LSyOc1c7mlln2aCKdpP95RY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Hxg8CN7OYT4lFSnQF0AdfPtzi0+/OSRx31/RRBSQeTDjt6BNZu1czF9f1RP4AlU/luKrdGfh/BK2mqMT8OaxFAj38+okS7M5GIWLkaOJpOuSjYAjBpzaHn4hKU9PtbgZ261M0WPP6OdWYsAt5c77zIX0j8Itb+oTC0kZWMBF5ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BKs045jm; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5600c43caddso733302a12.2;
-        Thu, 15 Feb 2024 01:40:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707990023; x=1708594823; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=jF7g/BNY1ew/ksUnMTv0LSyOc1c7mlln2aCKdpP95RY=;
-        b=BKs045jmn+XPcC/qtrGRgFGrFwNEC0woHPLcpU/7OaLvR8VgoqUT0i7BO190op+bBi
-         iLfJ3KDngIiqppHnasK4i2wOtgycecq2Fzlo5pdJa/5HpCO4Ex9D2QRZnfbqWE0/2iEm
-         sA2QGF45wPORWmM/mkK8UVVuyMhcpik7ju3/4Sh7al+XZyupsmqtlgLBWK6tXt++Zp18
-         2x+a6wTnkLXMJPQopjWa2OYAQSUTnGsS6cKpCwh2KWr4BDJhtKfDwqlMxLW+gtK+J9mY
-         alboXoTWcBU7E//JjaRsjQNN/uF52bgNHktY/95oCPBAfGLlqDS+6ksFXD73jxvbWf8X
-         ZQZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707990023; x=1708594823;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jF7g/BNY1ew/ksUnMTv0LSyOc1c7mlln2aCKdpP95RY=;
-        b=G67JKf28V8Q5NJCIuoPPBK0uz2bS+gOKw1Q+QgQr1uY6sC6NGcQK5qRF5X8CCNXJHf
-         HNEUf8MYxkWT/c0iYBstNHQAtSbqILWud3qP2oP7V/vqxyfa5I2nw1fOg0xZdwXxBcA9
-         NcVhVRhRInge8QAtGJ4jvhwdBmzbEToxDPE7ChLp4IhJYyHw6eNU86rEJiVTitT0oO7z
-         qNufWbDHRtkTXQorNi3E+ohtfKMb+V8snVV/lT60tubED0JTQtM01Gu35WLGM/C+vEvb
-         IQdJmLaSnKMPc0B3O2ft8rrncLSLtxtZD5ntps+IpOi7ZxLZL5NeeN5zJFQ0hortmEL7
-         MHGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDw1cKFZWpp7UAYepkWTIONkl0384r2VX9XVslDllVfuRZxLJrpjnxEFT9kxAEKVUiHUQj24V4l2LSTphO5+/4Z8GNw343Ip/VAV401nnrTHDrI+J9GYw4II5gc4ALy29AVDWXnFmWH6yrqKq9GrQ7TItXDblkUMAC/W+NlNdPxJ5C5auUWFQ=
-X-Gm-Message-State: AOJu0YzHzrGn7IF4hTYPyTQx2wHnRJDDvBK0sWpeHCa933JJPZE+Pfga
-	T+nij0QYBVwoX3zj2Tszptfyr6pLRHZR7JtK4+BsKG3ehOlX/8EC
-X-Google-Smtp-Source: AGHT+IF7eZeenH3Tp8rtyK0+O82Ksc4ZZLSvY+q0z2/DD+UkdP7PUH+0s6Pg+tGjJfC9XxbAIPoU6Q==
-X-Received: by 2002:a17:906:da03:b0:a3d:1249:25dd with SMTP id fi3-20020a170906da0300b00a3d124925ddmr780139ejb.15.1707990023176;
-        Thu, 15 Feb 2024 01:40:23 -0800 (PST)
-Received: from [192.168.3.32] (cpe-94-253-164-151.zg.cable.xnet.hr. [94.253.164.151])
-        by smtp.gmail.com with ESMTPSA id v28-20020a50955c000000b0056003b75400sm396834eda.44.2024.02.15.01.40.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 01:40:22 -0800 (PST)
-Message-ID: <db20d64b-cf76-4a93-896e-e501f0e1720c@gmail.com>
-Date: Thu, 15 Feb 2024 10:40:20 +0100
+	s=arc-20240116; t=1707990250; c=relaxed/simple;
+	bh=NWspp6vFhXCaH1t40eZE2OkjP7lfHkq9fLzAHD5BjZc=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gwX4Y8lXTolsRzi+UKCq/ZB47M2XwiJOWa6rDceAQBzv701oqfuV1YkZJUg1dF/qpBaHeEbGgeI13xCoab0CKbQHPQmPGNEjrFyIdJjK2aCCK7v6Ad4J1vf6u/zJCALXTKt2E5enUcmDK95tqKLfm0qLklJa1/f5hDFKzW4Z1RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ho3gUMdC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74155C433F1;
+	Thu, 15 Feb 2024 09:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707990249;
+	bh=NWspp6vFhXCaH1t40eZE2OkjP7lfHkq9fLzAHD5BjZc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ho3gUMdC01T2IXbfggxAQMxOzxsSXLUKmRlBBcT3ak83XcVCjGhzMn7/YyKQcKKBz
+	 w3SmhRGG9h1p9y4v+1MvS9fXDSw3AvGfr3/DWNvMOKOoMtcJ4QxzQMa6BKzKL/n5hM
+	 VsXGXQLLFkK98cJgJu3BpdR5EIE+kwpu2/a4yih8aYhiC6c9BW4o2mIKlFwU86TiVc
+	 yvUnkwPhw9Yp5WPiqX56/ttlTufO+XbGPCQZfUaZxSh4u8NY1Lsf8nZpzM26c8VmGr
+	 jJP04Jk/NvqpZRaOFeqQ19Dhxqe5S6SZGm+o9i4+kwptkfBuvWO1CRM0H37ndL6jSQ
+	 x5IHJTVn7nfOA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raYHn-003Qt3-48;
+	Thu, 15 Feb 2024 09:44:07 +0000
+Date: Thu, 15 Feb 2024 09:44:06 +0000
+Message-ID: <86sf1u3vvd.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/23] KVM: arm64: vgic: Use atomics to count LPIs
+In-Reply-To: <Zc1GMFjvy_f1KsXr@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<20240213093250.3960069-8-oliver.upton@linux.dev>
+	<861q9f56x6.wl-maz@kernel.org>
+	<Zc0HIorNZG9KG5Mg@linux.dev>
+	<86wmr64xyo.wl-maz@kernel.org>
+	<Zc1GMFjvy_f1KsXr@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom: ipq4019: add QCA8075 PHY Package nodes
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Christian Marangi <ansuelsmth@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240211202700.17810-1-ansuelsmth@gmail.com>
- <55fded4e-1c14-4f1d-a1b7-08fdbf05bfe7@linaro.org>
-Content-Language: en-US
-From: Robert Marko <robimarko@gmail.com>
-In-Reply-To: <55fded4e-1c14-4f1d-a1b7-08fdbf05bfe7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+On Wed, 14 Feb 2024 23:01:04 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Wed, Feb 14, 2024 at 08:01:19PM +0000, Marc Zyngier wrote:
+> > > > Of course, we only have 3 marks, so that's a bit restrictive from a
+> > > > concurrency perspective, but since most callers hold a lock, it should
+> > > > be OK.
+> > > 
+> > > They all hold *a* lock, but maybe not the same one! :)
+> > 
+> > Indeed. But as long as there isn't more than 3 locks (and that the
+> > xarray is OK being concurrently updated with marks), we're good!
+> 
+> Oh, you mean to give each existing caller their own mark?
 
-On 12. 02. 2024. 12:05, Konrad Dybcio wrote:
-> On 11.02.2024 21:26, Christian Marangi wrote:
->> Add QCA8075 PHY Package nodes. The PHY nodes that were previously
->> defined never worked and actually never had a driver to correctly setup
->> these PHY.
-> Missing Fixes tag?
->
-> Also, could you please give me a link to the series that fixed this
-> on the kernel side?
+Well, each caller "class". Where "class" means "holding look
+'foo'". Same lock, same mark. With a maximum of 3 (and I think we can
+get away with 2).
 
-Hi Konrad,
-Support for this PHY and PHY package concept was added in:
-https://patchwork.kernel.org/project/netdevbpf/cover/20240206173115.7654-1-ansuelsmth@gmail.com/
+> > > Maybe we should serialize the use of markers on the LPI list on the
+> > > config_lock. A slight misuse, but we need a mutex since we're poking at
+> > > guest memory. Then we can go through the whole N-dimensional locking
+> > > puzzle and convince ourselves it is still correct.
+> > 
+> > Maybe. This thing is already seeing so many abuses that one more may
+> > not matter much. Need to see how it fits in the whole hierarchy of
+> > GIC-related locks...
+> 
+> It doesn't work. We have it that the config_lock needs to be taken
+> outside the its_lock.
+> 
+> Too many damn locks!
 
-Series has been merged couple of days ago so its in linux-next already.
+Well, the joys of emulating highly complex HW with a braindead
+programming interface. I'd explore the above suggestion to avoid
+introducing a new lock, if at all possible.
 
-Regards,
-Robert
+Thanks,
 
->
-> Konrad
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
