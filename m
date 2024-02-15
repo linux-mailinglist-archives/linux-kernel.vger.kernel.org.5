@@ -1,121 +1,132 @@
-Return-Path: <linux-kernel+bounces-67215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D7E856811
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:40:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A145F85680A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19F9C1F2F22D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:40:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA6B28B118
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BBB135A65;
-	Thu, 15 Feb 2024 15:37:58 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B4413398A;
+	Thu, 15 Feb 2024 15:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnRNpVvc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E2D13541C
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.139.111.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CD6133417;
+	Thu, 15 Feb 2024 15:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011478; cv=none; b=r9Hqpgi6c9/d7QGLPnscRONalSLgfOqfTfEAYfwbfYkXg1Mncz8VKmlxIFGcjl+DJKWmVINDOZZvYxUdTLR5ZFCPyLocskeFc0P+nc5vBq54lJV2pXaYvM6HqX1oDvPQ1Xvfc0Df13ZHa6TWYdmDcCfscbVuDx8nYNDsTf24bqI=
+	t=1708011468; cv=none; b=Kvnyl7+WOhRaIAQUR2Ip05KVYhBibN9ScMKUD9JkI7WIMusXXnFe4PMGcOXEMBTW4PfrqBQ5Y3qm1NcBcAHrwVy8cXh1AQy60oNyDQ7lizPgBcwK77u3YeH1MS7HDN5lGBUvHNPL71yPScsYRjSzE4sbAjPjsOdK0jil3xUsJKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011478; c=relaxed/simple;
-	bh=efCocjGDk1w3W9iKbxUAnx77/Ju+MiN+a2dnJUfXKoY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kNEqCTY6cyWKbERD4EYh//pi1ovlxQ753fh6bUolKax/SaVGNVMDw8v9ufKNlgekHJQLAnRw5iujCmEmymdknDcoM38J4JaEpj+qsLVOrz2COaOczm5ukiFKiVRT/yKPJtkOVzzT0pL83Fuv7rsdnqElXYdoHclo22mzNBvPgxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=205.139.111.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-128-YVyoMV41MumVIiMbfc3cWQ-1; Thu,
- 15 Feb 2024 10:37:46 -0500
-X-MC-Unique: YVyoMV41MumVIiMbfc3cWQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 809ED1C0983D;
-	Thu, 15 Feb 2024 15:37:46 +0000 (UTC)
-Received: from gentoo.redhat.com (unknown [10.45.226.49])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DE04A112131D;
-	Thu, 15 Feb 2024 15:37:45 +0000 (UTC)
-From: Alexey Gladkov <legion@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: [RFC PATCH v1 5/5] fbcon: Allow to get max font width and height
-Date: Thu, 15 Feb 2024 15:37:24 +0000
-Message-ID: <1985617597448ffc0eb4d242cd22d1250542b433.1708011391.git.legion@kernel.org>
-In-Reply-To: <cover.1708011391.git.legion@kernel.org>
-References: <cover.1708011391.git.legion@kernel.org>
+	s=arc-20240116; t=1708011468; c=relaxed/simple;
+	bh=epnqDWcnhsCvgG8kTNd2ESNKS8KdAlToJJsau8BMXIc=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fqd7swddS0Lf7lOsvRQauWLqkCngJsv+xOfXzbCgvFHkqdAk+Lf5lYpHzrjxhmC0M9oGVB26o2zAuWh0ik/Rf/U9HBQRidgp5L+ysdSsfECUGYp59ubxihxd8fI1wHqT5PEpSVeQsaPtCH3yNF8xjtKxJQb4J/t0hLNlM7C4HMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnRNpVvc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EA5C433F1;
+	Thu, 15 Feb 2024 15:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708011467;
+	bh=epnqDWcnhsCvgG8kTNd2ESNKS8KdAlToJJsau8BMXIc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fnRNpVvcgGMxdGApcy7TF29tirSa8C8+JxMTmSMPju7g0ZJMbUtGqichvYZSP+Cvy
+	 1UH+zm1VYtXWmZZCvRHHCVY6ThHOj9dYo5g5wrQlVV82SfTl/uN1iCQuDsV1B6gp96
+	 AaxASn+DTHmY5GpcHLPBZh8yYNrbY/ExsiDEte20tS2y2HBGiZzycjx5ynhNtNjtxB
+	 abStxkeTu28p/IN886ODSYyYVYcojM592btmkZHl60Ivou0y71N1TJlqfhU8lWaP9N
+	 Cy8xkYpxZQqqnKpUcWwdmsMt0GGz2J/kiNioZSSyJhypqNSEy6V8/YkmshLMV/YJlR
+	 6qlD14QTLTErw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rado1-003YAI-Iw;
+	Thu, 15 Feb 2024 15:37:45 +0000
+Date: Thu, 15 Feb 2024 15:37:45 +0000
+Message-ID: <86jzn54u2e.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/23] KVM: arm64: Improvements to LPI injection
+In-Reply-To: <Zc0JG8pNRanuXzvR@linux.dev>
+References: <20240213093250.3960069-1-oliver.upton@linux.dev>
+	<86y1bn3pse.wl-maz@kernel.org>
+	<Zc0JG8pNRanuXzvR@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- drivers/video/fbdev/core/fbcon.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+On Wed, 14 Feb 2024 18:40:27 +0000,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Wed, Feb 14, 2024 at 05:43:13PM +0000, Marc Zyngier wrote:
+> > On Tue, 13 Feb 2024 09:32:37 +0000,
+> > Oliver Upton <oliver.upton@linux.dev> wrote:
+> > > 
+> > > For full details on the what/why, please see the cover letter in v1.
+> > > 
+> > > Apologies for the delay on v2, I wanted to spend some time to get a
+> > > microbenchmark in place to slam the ITS code pretty hard, and based on
+> > > the results I'm glad I did.
+> > 
+> > [...]
+> > 
+> > Buglets and potential improvements aside, I like the smell of this. At
+> > least the first handful of patches could easily be taken as a separate
+> > improvement series.
+> > 
+> > Let me know how you'd like to play this.
+> 
+> Yeah, I think there's 3 independent series here if we want to take the
+> initial improvements:
+> 
+>  - Address contention around vgic_get_irq() / vgic_put_irq() with the
+>    first 10 patches. Appears there is violent agreement these are good
+>    to go.
+> 
+>  - Changing out the translation cache into a per-ITS xarray
+> 
+>  - A final series cleaning up a lot of the warts we have in LPI
+>    management, like vgic_copy_lpi_list(). I believe we can get rid of
+>    the lpi_list_lock as well, but this needs to be ordered after the
+>    first 2.
+> 
+> I'd really like to de-risk the performance changes from the cleanups, as
+> I'm convinced they're going to have their own respective piles of bugs.
+> 
+> How does that sound?
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 1183e7a871f8..6f9015868cac 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -101,6 +101,9 @@ enum {
- 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
- };
- 
-+#define FBCON_MAX_FONT_WIDTH 32
-+#define FBCON_MAX_FONT_HEIGHT 32
-+
- static struct fbcon_display fb_display[MAX_NR_CONSOLES];
- 
- static struct fb_info *fbcon_registered_fb[FB_MAX];
-@@ -2458,6 +2461,17 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 	return ret;
- }
- 
-+
-+static int fbcon_font_info(struct vc_data *vc, struct console_font *font)
-+{
-+	font->width = FBCON_MAX_FONT_WIDTH;
-+	font->height = FBCON_MAX_FONT_HEIGHT;
-+	font->charcount = 512;
-+
-+	return 0;
-+}
-+
-+
- /*
-  *  User asked to set font; we are guaranteed that charcount does not exceed 512
-  *  but lets not assume that, since charcount of 512 is small for unicode support.
-@@ -2485,7 +2499,8 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
- 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
- 		return -EINVAL;
- 
--	if (font->width > 32 || font->height > 32)
-+	if (font->width > FBCON_MAX_FONT_WIDTH ||
-+	    font->height > FBCON_MAX_FONT_HEIGHT)
- 		return -EINVAL;
- 
- 	/* Make sure drawing engine can handle the font */
-@@ -3160,6 +3175,7 @@ static const struct consw fb_con = {
- 	.con_scroll 		= fbcon_scroll,
- 	.con_switch 		= fbcon_switch,
- 	.con_blank 		= fbcon_blank,
-+	.con_font_info 		= fbcon_font_info,
- 	.con_font_set 		= fbcon_set_font,
- 	.con_font_get 		= fbcon_get_font,
- 	.con_font_default	= fbcon_set_def_font,
+Yup, I'd be on board with that. If you can respin the first part with
+bugs fixed and without the stats, that'd be great. We can further
+bikeshed on the rest in the 6.10 time frame.
+
+Also please Cc: Eric Auger, as he dealt with a lot of the ITS
+save/restore stuff.
+
+Thanks,
+
+	M.
+
 -- 
-2.43.0
-
+Without deviation from the norm, progress is not possible.
 
