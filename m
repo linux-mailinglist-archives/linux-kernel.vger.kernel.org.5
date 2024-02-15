@@ -1,110 +1,131 @@
-Return-Path: <linux-kernel+bounces-66829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573A08561FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC2A85620C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD2621F26D2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:45:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E7801F2645D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5416A12B144;
-	Thu, 15 Feb 2024 11:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC7D12B144;
+	Thu, 15 Feb 2024 11:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yk7bxDLh"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="R3cxt7VX"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0926712AACF
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6E757872
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707997518; cv=none; b=pVfXHJaXFNdsgmb2ah4YD6LQJJd+Ios8OCf3Q9Gx0vNPkyCaRHcQbTYzueI2Im9z40QE0Mr+RXEchOuEqMCXNiqEIog529wfV5Za15+/HFIuc7soU7UFlVNVCKRZBJ7ew6S7eZuK4nFOdPXbaEvGrGixwMBMdguUfi1BXN0Wuz8=
+	t=1707997667; cv=none; b=G7QC2gOqOPzoW0ZDMeoMmk8aIDUTWk3qvARgyvuyfoHZBlDi9hD16Y/dDcfu83PfNMpp436LgAD96KIJNpI08qQbd0zr4viOv62Yt8gTxt2zlnjZC1odMmfuTYM3ak8c/2ZK3yfHJba5k+Tth04dYHN7AmtpSuWFvLEpKubHfCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707997518; c=relaxed/simple;
-	bh=j7GNB4Q4AhYzbK2faRKG2Sks0J//rYWYKwaeX8FNhr0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M0ICY+c6ukwiwxAB7cjLMmhVee2jEzHfgQ7qMYtwKEEo6lxNM1ynB6fxjcAbspLEW1CccDUdAvO/tcbqg1Zo//syLx+grl3xR/BruSyJySxXilJeBXUJEj+WD9VnONz2l4qG2BTdAPnWhz8BdG6Uy2i2CRxQRm25Zly1YoxuDCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yk7bxDLh; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33b29b5ea96so369879f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:45:16 -0800 (PST)
+	s=arc-20240116; t=1707997667; c=relaxed/simple;
+	bh=LN1fd7tD77fB42zqbauIV0Aa4K8khZa+u2KvtOVoSpw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W22T6xwmoXLpkkSGyqsgwpV5HR2S6TnM06ETP2oY11mhB6VMUocvTZpglyB7MKHh64MRaMTj1eenuv5PEQnkfgHrv1R9tqTfsbbStDGV71WS0wtQYYQz139I0NCFu5BslEif2hozaC2KMfHgFEIIe57pP1ke/iiezDCnohOXtLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=R3cxt7VX; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-411ef179d2eso5847555e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:47:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707997515; x=1708602315; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAMbc/YPnpoMjMEiasdWUqQDRgzhyEzAGoC9QPe3Et4=;
-        b=yk7bxDLh+0aVntbj0opPwQqsNce2qiqr2rrVq/aF28sPBaiQ+dMsuvMuOdJMsoC7JQ
-         rgUBgEE0RxTL4YLfqs/NGC9jQKS5q66BdEvDaencMuWxfrEGO+SKt3dFBkMCgGjxqP2F
-         E/YzBmneiJCE0OyH0nVkcWmsfULEUjdYznN8881jsFSEFjbyaOluGe/TFueVh8FIos1q
-         XHLoeA3b+pt1ZXXvMIpDHlGI1sFeR9jT6iO6ffdKLt3XVSwm6nLjv316spUMo19Q+IT1
-         VXvbli9A6oe8jSar7Frt2DiQDkdaLyEyjA7ARscmHD2uXDT7nDb45RKGtxMtO6Miu+0M
-         nI7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707997515; x=1708602315;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1707997664; x=1708602464; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CAMbc/YPnpoMjMEiasdWUqQDRgzhyEzAGoC9QPe3Et4=;
-        b=erakoRUMGdz8OCE6sq2pcYoLFKdfDU3hijpiz3W4vI7TsYNzxUigZmAz1fQypsRxO8
-         XfJqQqoyvisAHEokV6w3NsVd4isgkDB72wc0hAcGeG2z9MMRP2qEXJFuBEUHjsbba0S9
-         m2Rgkwxc0EVpkIetFNPDek8LTfdN0UPtVnmbMqMck8v0ltNrPRl3m4JUOtelmkzIDhqm
-         9wBslnPAnvwvpmnG3dlPKh7EHRbNDTXldgH+EcZ5+YT/OWlvKp0sG9SdqhKwUD3gyBPs
-         7iyIK6FAPT1E1aWKugFLgaxPniErYlAuAc6cLIj15ntzBpuQSd4C2axThJHQl6RYLI+o
-         e8Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCXA7d51Pk8uZ/UA4jQXJpY/XtbgDyNhoRdMXOEGL7irRVQRArBjK0AvtPELqxKnQP/nOHuViuf0ARtnu6VBvn5miY/YFkJ3SfbqNexu
-X-Gm-Message-State: AOJu0YwWjxBNIkoZYPWWLWSkD6YTnA9ZIfayqE3DLSVPYgVWTdtecyKD
-	WmLKj9dn8LbyRqZUmpi0H8awB0cJIFXYTiitPAqf91EhCH9mEfn6wDdy+IYDaPA=
-X-Google-Smtp-Source: AGHT+IEgp8vZ+7lAbMO2u7bbQBv282Nn/wkCHud0PkjZdrb0T2lOyr54bPl93Gxx9sDkVIqYAtM6Xg==
-X-Received: by 2002:a5d:4048:0:b0:33b:2138:623c with SMTP id w8-20020a5d4048000000b0033b2138623cmr4454343wrp.16.1707997515250;
-        Thu, 15 Feb 2024 03:45:15 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id f22-20020a7bcd16000000b00411d1ce4f9dsm4823998wmj.34.2024.02.15.03.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 03:45:14 -0800 (PST)
-Date: Thu, 15 Feb 2024 11:45:13 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Fenglin Wu <quic_fenglinw@quicinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	ChiYuan Huang <cy_huang@richtek.com>,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: ktd2692: add gpiolib dependency
-Message-ID: <20240215114513.GD9758@aspen.lan>
-References: <20240213165602.2230970-1-arnd@kernel.org>
+        bh=jDZkTUXyfxckUhrTkjTJWxTxMlTrhxiy3HMA9uLoreY=;
+        b=R3cxt7VXCBQuF4hl4JzL4rf35exxSu35UqPADRG3pSLGH/5NgUP81TpdFw+ABphBUj
+         dXU4i3155dzdiCjLzA9wbcTVBB5VUc9FH95diRNnQD8eqKN9JPfb1dZAhxBqQrOKqWvR
+         sJosQF+E+5OFzhgd+x0DA4cQUApqHphtfCVuu/gNnzwbPEghDbuo0p8und9Sk8zctlq5
+         YhUZkzSbvAAlrcDCNssVbk0zD+ATffYIp9J9s5DRPV5lJ/Ijzw/O71toOD5D78AElUKn
+         clHbwP1pq3CsOvWfapTLoid6N9++6d/3ZJG59q9RwO4x84+neSZcQr2Yp3uZuJfs8Y0p
+         F/1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707997664; x=1708602464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jDZkTUXyfxckUhrTkjTJWxTxMlTrhxiy3HMA9uLoreY=;
+        b=sLKedPXhofAwbJoU/OgE7dJwWQh0VOxkDiHG6TLohq6VYG8AFezSPKRG20y2YLvBR0
+         emEDq6jd0+OKf6WcsSS1OlQQhsWVIGO74PzOwv/BDK1GmT0bnqdl712cG4cNmVrmG6Do
+         qptbYOVo+sN2b8GW+xGA/ReddkDlHxIE1QzNKzzteJJ511XJkFuBelB94SLKlPdiUVdQ
+         kX1+8CIG3svVWkm0CFXa6tYrsfScItyPT78Dv5QiVnkKRKG3i9BivM/fH4GDDHv3ycxZ
+         7cwFrH+2/uyW+h7rJAARzeugGrGr7CLEGgAUHTMKh2xgxgSOx1Rd8YrHhykx1f7a1cnv
+         b/ew==
+X-Forwarded-Encrypted: i=1; AJvYcCWQsqBHpUyM0q7A+xGCEtpqrhCtYgKy4XWDWP4Bdg7+f0AOmFxVc3OKFgG5tnKAGHHa5uenKIpYu7Xk7xIdp9KPS+KjZEbhTlLIJKc8
+X-Gm-Message-State: AOJu0YwmhijTAjrYEg8z/mVYuDnJKlzBoZhpXKLj97cibbsmKMJN8ABm
+	6sGMAAMsZjUmKylk7zO0alkAWogd4ukeje+h2JqmRMjhnvC1jiVhlwVXVe+yhsJRT32mceS4odT
+	BeeNW1AIfKrzZSQdLe8vduL/R9Lz+ZYOHhKXr0A==
+X-Google-Smtp-Source: AGHT+IEPa0xe746/mLrXSvxwPwOUcEJ2izyVagCxfrOZJvxe8P6kn5FD8DsuToN4BWhfhL8fRGnF9fn34vnFWVpVl0k=
+X-Received: by 2002:a5d:66c2:0:b0:336:76de:c171 with SMTP id
+ k2-20020a5d66c2000000b0033676dec171mr1213235wrw.62.1707997663921; Thu, 15 Feb
+ 2024 03:47:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213165602.2230970-1-arnd@kernel.org>
+References: <20240214142247.920076071@linuxfoundation.org>
+In-Reply-To: <20240214142247.920076071@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Thu, 15 Feb 2024 20:47:32 +0900
+Message-ID: <CAKL4bV6VJexFZwG4fHjZQ7eqSzUee3+VZH2baxvJqJqSneNj7w@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/124] 6.6.17-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 05:55:50PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hi Greg
+
+On Wed, Feb 14, 2024 at 11:30=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> The expresswire module requires gpiolib, so anything selecting it
-> also needs this dependency:
+> This is the start of the stable review cycle for the 6.6.17 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
->   Depends on [n]: NEW_LEDS [=y] && GPIOLIB [=n]
->   Selected by [y]:
->   - LEDS_KTD2692 [=y] && NEW_LEDS [=y] && LEDS_CLASS_FLASH [=y] && OF [=y]
+> Responses should be made by Fri, 16 Feb 2024 14:22:24 +0000.
+> Anything received after that time might be too late.
 >
-> Fixes: e59a15af7aa6 ("leds: ktd2692: Convert to use ExpressWire library")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.17-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+6.6.17-rc2 tested.
 
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-Daniel.
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+
+[    0.000000] Linux version 6.6.17-rc2rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Thu Feb 15 19:52:35 JST 2024
+
+Thanks
+
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
