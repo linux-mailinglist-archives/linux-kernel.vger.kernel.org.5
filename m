@@ -1,91 +1,135 @@
-Return-Path: <linux-kernel+bounces-67315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8BE8569A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:35:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E29BA8569AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7A61F22F77
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:35:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B544B22613
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D688E135A69;
-	Thu, 15 Feb 2024 16:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43CE135A68;
+	Thu, 15 Feb 2024 16:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tENlyL1U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DqT8yqjQ"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ADB1754B;
-	Thu, 15 Feb 2024 16:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A401754B
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014952; cv=none; b=MjW30Qi63k/VH9UlJ5fmeguZZWtRwhSGoJ15fXz1YWSzEXr5iBiJyzZr0sRyyxlUeDdvT1OvhC1ysoaeb2em0KT5g1DvPmJ9YFRRacuzKIlDBbD0f2G8b0ZTKY3pXiAB8PTU0FG9wLKcg2nfWk/OC0E62oDiVE3zAV4peJmYcTU=
+	t=1708015035; cv=none; b=VypzbJRRNrmtynwK+vwLyYtWAsgHeEYTDYSpwd9VAVYVB85g2+uJHq+HYhigWTeA2kd2IruLybf8JR9bDm4hKxuP+iVDWgmnz0hocoGZh75aNNi0kC6+D/5a+/Rpp+XklG9cSztSKnZjovlPU92t5l78pFAxrpn5yyAzdXsUTW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014952; c=relaxed/simple;
-	bh=+zLAj2dv1mxs8pQKcOIXqeYT4laZWT/mVwhK3HGd0EI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WuLL3ghJ3W/n6MApfcxI7nrNkdBMR4UtPORJ4/nOKdVlrYE1rXP0rRPRVQHI3Kv22DMKi7yPrgVEcoDPnThIhfd0Gn5BlVRZJH4XErpFHgeMtdH/hNKRsZwFkjKCHl3+JOP1QVFRSqGNPrYcGuMlNp182VsuEojTgdHyCHtpvOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tENlyL1U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14BCFC433C7;
-	Thu, 15 Feb 2024 16:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708014951;
-	bh=+zLAj2dv1mxs8pQKcOIXqeYT4laZWT/mVwhK3HGd0EI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tENlyL1UhctC1ji35rmACH436KEsEf4wY7vf0fttSzkY8KreDcVR/jZml77spbPUH
-	 rgub6XHTDa0aqSrzK8aUSw4xUBinSCzAt4NlclazOXyL0V2PqC/+MiYDKxwr5H9bnt
-	 OEm6HW4sobAE76phqUDf7Pj2GXYUE07BiLTzEXozU9MkEYMilt4jW6ZZuW4p6toTud
-	 W7d98aimoio4WX+HHTuI4obLTqDf1T+46JUITse0X/YyCk+GBWaMy2+L9MhyJZ4X+f
-	 OPcIx3ZE6DyFSiE7a9CB64Ne5Z29MHA2w0FjcArhgyWeQB9KmbTCJImnIAgkgj0ZEe
-	 8uL9RNKVccbqQ==
-Date: Thu, 15 Feb 2024 16:35:45 +0000
-From: Will Deacon <will@kernel.org>
-To: Nicolin Chen <nicolinc@nvidia.com>
-Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, kbusch@kernel.org,
-	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
-Subject: Re: [PATCH v1 0/2] nvme-pci: Fix dma-iommu mapping failures when
- PAGE_SIZE=64KB
-Message-ID: <20240215163544.GA821@willie-the-truck>
-References: <cover.1707851466.git.nicolinc@nvidia.com>
- <20240214164138.GA31927@willie-the-truck>
- <Zc0bLAIXSAqsQJJv@Asurada-Nvidia>
- <20240215142208.GA753@willie-the-truck>
+	s=arc-20240116; t=1708015035; c=relaxed/simple;
+	bh=D3SjFKHEqf5L12pfvficEa9lk8RaZ3EWL64Cv3Zonw0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T6Me3Vv9a2CnBTXabeMTRyOlTwUqASvERMJg6u4uOz00s1oZXo17E0XYbB6mQkr8L5lH/rG4UoAR3U5oBJKWuLfJSGMNZ3uSQ9a2F55/G9PXHuqia7OzRGAS2/DyaKdacAjqaF7KhcpwuX/ShfBwqy0XNOp5Czqpxe5pYLIB20c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DqT8yqjQ; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7873eaa0ce7so2195785a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:37:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708015032; x=1708619832; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KmHGzp5FxmeS/Awr4jPPRzY9AtNn0hlFjjkqswS8JcA=;
+        b=DqT8yqjQTcUOQ6T/uhSiKgh+Wg/wWyMMrJD7qQTwYL6598OfD+g0cqST3dAgjSKlSO
+         WuUGZjz33BI3RgAoFsgfGbHqoFJjsEI4Zbc6GNzBAeVtMjh3OhIM5hphbs8Dpiu7gdND
+         lF2vvh8Xv3/jpGXcB5/lOzKwZ+wWqtntMlwzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708015032; x=1708619832;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KmHGzp5FxmeS/Awr4jPPRzY9AtNn0hlFjjkqswS8JcA=;
+        b=nJe0uXxUU9p0KeHsbCbToIvwWGtVuEnHtGbeh2xyLQcHjLlOAlUrCnNQ10ePrM94Ou
+         yR9lH7q/+Dywga6495j4G+BbvPWQUNKpBsaAeesCn1+zqt1VsQUmcsg0vOKoNjSqBlyZ
+         X3KZYm4s8lgr9nf6sTiJx5SLY5TifAFMvTnGX91XuHQ671bWYnYkG7Y85UTH6SFuHp99
+         8bdGvRISdQKY2QGNwg9fl7d1TWfTKPYyiuC/x/U0v95ggusL+KFdCpP5WGZIyg17XwjG
+         wLwAGShDebjNEBTTfSiyf6hOU9vqw4TuxXA3xORVEMP2whjXN0yFV3kSHcmvfKj6fdcO
+         9Xxg==
+X-Forwarded-Encrypted: i=1; AJvYcCXDchQooW4+LF1dLScaOPaoVvc4oQlyXpX02WBQCfepECq8Qf/xRXjO1ge7gVF7jrG8p2lGqUacHQ4OGgXSOQw5a4vQ1l/dvDdxJ5bM
+X-Gm-Message-State: AOJu0YztXzlyx9YwfN9ldWOO2+X3Q7+59yrLZMY91PgOqdoHnAONvMwr
+	bVLRjVd9CReQYPSkJJqzb0Nzw2ONQ5I5EG417hOZiJ9AlGiLK5IOJx6cVKpkJY1Ee8XLQeFnVTy
+	JjWVV
+X-Google-Smtp-Source: AGHT+IHfGTm8RqvNAFP+x47Ld9i8pr0cYAUsX61M+v0Geho3BEtySwESeCTTPjHbGFI81lv1ZgJpxQ==
+X-Received: by 2002:ad4:596c:0:b0:68e:f0a5:26d0 with SMTP id eq12-20020ad4596c000000b0068ef0a526d0mr2200109qvb.47.1708015031871;
+        Thu, 15 Feb 2024 08:37:11 -0800 (PST)
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com. [209.85.160.176])
+        by smtp.gmail.com with ESMTPSA id nz11-20020a0562143a8b00b0068f2b0f2549sm258105qvb.88.2024.02.15.08.37.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 08:37:11 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-428405a0205so432001cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:37:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVZK4MRr5DafJhAZ7FHyiUbri1McXnkBNQNQA71KPjqL0yiISMVtFgYbdqtOvGjIuAiEbLEqZHWY+R/SU59WNCxYVb07WZNxpb+0fHu
+X-Received: by 2002:ac8:1247:0:b0:42c:1aba:c8c4 with SMTP id
+ g7-20020ac81247000000b0042c1abac8c4mr13457qtj.12.1708015030579; Thu, 15 Feb
+ 2024 08:37:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215142208.GA753@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240214072435.1496536-2-hsinyi@chromium.org> <CAD=FV=VmDZvWVJ+DKN5bMPvJaLouNq26=Qyd4N9O+a0FeWCJpA@mail.gmail.com>
+In-Reply-To: <CAD=FV=VmDZvWVJ+DKN5bMPvJaLouNq26=Qyd4N9O+a0FeWCJpA@mail.gmail.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 15 Feb 2024 08:36:54 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xeq59G_teWKj4LkUCMxQqVh4Hzjp1hWRU4VDBAUW9TqA@mail.gmail.com>
+Message-ID: <CAD=FV=Xeq59G_teWKj4LkUCMxQqVh4Hzjp1hWRU4VDBAUW9TqA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "drm/panel-edp: Add auo_b116xa3_mode"
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 02:22:09PM +0000, Will Deacon wrote:
-> On Wed, Feb 14, 2024 at 11:57:32AM -0800, Nicolin Chen wrote:
-> > On Wed, Feb 14, 2024 at 04:41:38PM +0000, Will Deacon wrote:
-> > > On Tue, Feb 13, 2024 at 01:53:55PM -0800, Nicolin Chen wrote:
-> > And it seems to get worse, as even a 64KB mapping is failing:
-> > [    0.239821] nvme 0000:00:01.0: swiotlb buffer is full (sz: 65536 bytes), total 32768 (slots), used 0 (slots)
-> > 
-> > With a printk, I found the iotlb_align_mask isn't correct:
-> >    swiotlb_area_find_slots:alloc_align_mask 0xffff, iotlb_align_mask 0x800
-> > 
-> > But fixing the iotlb_align_mask to 0x7ff still fails the 64KB
-> > mapping..
-> 
-> Hmm. A mask of 0x7ff doesn't make a lot of sense given that the slabs
-> are 2KiB aligned. I'll try plugging in some of the constants you have
-> here, as something definitely isn't right...
+Hi,
 
-Sorry, another ask: please can you print 'orig_addr' in the case of the
-failing allocation?
+On Wed, Feb 14, 2024 at 1:41=E2=80=AFPM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Hi,
+>
+> On Tue, Feb 13, 2024 at 11:24=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.or=
+g> wrote:
+> >
+> > This reverts commit 70e0d5550f5cec301ad116703b840a539fe985dc.
+> >
+> > The overridden mode fixes the panel glitching issue on mt8186 chromeboo=
+k.
+> > However, it causes the internal display not working on mt8173 chromeboo=
+k.
+> > Revert the overridden mode for now to let mt8173 have a functional disp=
+lay.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> >  drivers/gpu/drm/panel/panel-edp.c | 19 ++-----------------
+> >  1 file changed, 2 insertions(+), 17 deletions(-)
+>
+> Given that the breakage for affected mt8173 Chromebooks is pretty bad
+> (black screen), I'll plan to just wait an extra day for any screams
+> and then I'll apply to drm-misc-fixes.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Thanks!
+It caused a merge conflict against drm-misc-fixes since other panels
+have been added in the meantime. I'm going to stick this in
+drm-misc-next to avoid the merge headache. If someone is affected and
+really wants this in fixes, please shout and we can figure out how to
+make it happen.
 
-Will
+1a5e81de180e Revert "drm/panel-edp: Add auo_b116xa3_mode"
+
+-Doug
 
