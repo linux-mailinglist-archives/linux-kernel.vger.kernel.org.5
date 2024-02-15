@@ -1,153 +1,82 @@
-Return-Path: <linux-kernel+bounces-66621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCB8B855F1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:25:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B6B855F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 171A61C21AEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:25:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70034288B46
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1A969965;
-	Thu, 15 Feb 2024 10:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A346997C;
+	Thu, 15 Feb 2024 10:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lYrNatWY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="I0ProOXR"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3922F67E7C
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC4E69940;
+	Thu, 15 Feb 2024 10:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992699; cv=none; b=kpTZCXuiH0VBmp2G8P46q7PHvp4eUOz/DhCB5Jh0Y17tfHSyg/LIqSzPuFAwAB5P+JAbntdCf6iyXGY1ioJwpjadsTKV9qAfAu2Z5SUox371ErVg8sKpMCVChNbxNOvQkkfOtIl5/Ob+DMZ55rDhOZE0qK5/KbJ1gwbR4F5FS+g=
+	t=1707992767; cv=none; b=qGEPZpi7hyTkl3ssgJulGwkFty/b9tA7ufni1tF0HbJ0dTEDQT5dLNa5pYoDMPy5Fhap0shqFUleKm4bF9UKf5LoYolC/Sl5NGdnUdQHUCJSVM2KsekyV4HVqpmzY5YwMuzpo2crBcleOAwJenIRsatsl/IyYJJGs0X2WnizGmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992699; c=relaxed/simple;
-	bh=EwTmMAAMBHJ/7Fdsm8CudM1CTIgpHEqpKsIwBjpniro=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AfnUfOZclpeo7w01t65F5IlvM5ljxITO2tEW4iLJGQlaaGzsBl8fSXigfEmaGKdjiMjUcQxY65zdqvEwUq8b0ojh12VQgjH899bIoDLKyVWKviykynWsjnloTvI25eVTNc0Wx9Lr+okZxkS1GlgpI0G5+IVNs8Md//URuzLdJyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lYrNatWY; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707992696; x=1739528696;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=EwTmMAAMBHJ/7Fdsm8CudM1CTIgpHEqpKsIwBjpniro=;
-  b=lYrNatWYojyWa0L3+yXdk2WRb6YcZt0xkyvQ/OiA6MvZcj3TeHsYu78d
-   fWpCs3MTsG8qxXbfMOLzi467oqoUcMqEbZPCazKLzxg7DId+B378Dkszc
-   iEZaL6+927oxSAs1BjTlALM1D1pmmO6mU35aUn7FZvBoBMAPeDQWtx4vI
-   8BCPcGvwu/f+ciA/AuEhZxhbdPTMDCHYtRAbhGYBhWOLCeR1IPY99sQE5
-   3OCr67EXbJDnf2RA4BixSFujch305daCsRl/rLerx3FAU2jmw6719Lvhi
-   oMhvWJ5r5FE4mCPKzEirfpU+VbUCiRrhOKmqglfd19a/UNOh8iaoA5Giw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5846383"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="5846383"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 02:24:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="8207115"
-Received: from kraszkow-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.13])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 02:24:50 -0800
-From: Jani Nikula <jani.nikula@intel.com>
-To: Doug Anderson <dianders@chromium.org>, Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, eizan@chromium.org, Ankit Nautiyal
- <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, David
- Airlie <airlied@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Imre
- Deak <imre.deak@intel.com>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, Sam
- Ravnborg <sam@ravnborg.org>, Stanislav Lisovskiy
- <stanislav.lisovskiy@intel.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
- not powered
-In-Reply-To: <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
- <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
- <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
-Date: Thu, 15 Feb 2024 12:24:47 +0200
-Message-ID: <87sf1u58k0.fsf@intel.com>
+	s=arc-20240116; t=1707992767; c=relaxed/simple;
+	bh=y/P4R4hDfJZr0gCFtDW2pgobuhwlFJX18ctbuXp2Rto=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UwoGoPG5PLKTaIOJ2zfsNH+rC7rVkvw/bl7yw0mXD8p8io/LHKs+EQ3fywYeczHB78CVyVU3/78WAmtDuHAQxcGv6iAp5AHp3ZQXXI7/9alw0JmEcyOPhEPSnlRWmoH91zr1WIhe3Ga6MePsq4BGCo0XhmqUttWiDQ5YxrsLEQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=I0ProOXR; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1707992756; bh=y/P4R4hDfJZr0gCFtDW2pgobuhwlFJX18ctbuXp2Rto=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=I0ProOXReh5OzzHB5mQQtlUKAJkkwkTPoB4VNzi3fjdWqcnFutbS55EeKWyftZ431
+	 bi6OYPmYG24K6xbCHqPsYI6YEohYVfgje2cccptDFGLwn+ZjfkNBhMKNxqZkpI+YWV
+	 LfO/fq02Sf7d9uq6fwUIC/t2p3UqEqTWBSizl474=
+Received: from [28.0.0.1] (unknown [49.93.119.4])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 8FA0E60122;
+	Thu, 15 Feb 2024 18:25:55 +0800 (CST)
+Message-ID: <447f4279-aea9-4f35-b87e-a3fc8c6c20ac@xen0n.name>
+Date: Thu, 15 Feb 2024 18:25:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/6] LoongArch: Add pv ipi support on LoongArch VM
+Content-Language: en-US
+From: WANG Xuerui <kernel@xen0n.name>
+To: Bibo Mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org
+References: <20240201031950.3225626-1-maobibo@loongson.cn>
+ <0f4d83e2-bff9-49d9-8066-9f194ce96306@xen0n.name>
+In-Reply-To: <0f4d83e2-bff9-49d9-8066-9f194ce96306@xen0n.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
-> Hi,
->
-> On Tue, Feb 13, 2024 at 10:25=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.or=
-g> wrote:
->>
->> On Wed, Feb 14, 2024 at 2:23=E2=80=AFPM Douglas Anderson <dianders@chrom=
-ium.org> wrote:
->> >
->> > If an eDP panel is not powered on then any attempts to talk to it over
->> > the DP AUX channel will timeout. Unfortunately these attempts may be
->> > quite slow. Userspace can initiate these attempts either via a
->> > /dev/drm_dp_auxN device or via the created i2c device.
->> >
->> > Making the DP AUX drivers timeout faster is a difficult proposition.
->> > In theory we could just poll the panel's HPD line in the AUX transfer
->> > function and immediately return an error there. However, this is
->> > easier said than done. For one thing, there's no hard requirement to
->> > hook the HPD line up for eDP panels and it's OK to just delay a fixed
->> > amount. For another thing, the HPD line may not be fast to probe. On
->> > parade-ps8640 we need to wait for the bridge chip's firmware to boot
->> > before we can get the HPD line and this is a slow process.
->> >
->> > The fact that the transfers are taking so long to timeout is causing
->> > real problems. The open source fwupd daemon sometimes scans DP busses
->> > looking for devices whose firmware need updating. If it happens to
->> > scan while a panel is turned off this scan can take a long time. The
->> > fwupd daemon could try to be smarter and only scan when eDP panels are
->> > turned on, but we can also improve the behavior in the kernel.
->> >
->> > Let's let eDP panels drivers specify that a panel is turned off and
->> > then modify the common AUX transfer code not to attempt a transfer in
->> > this case.
->> >
->> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->> > ---
->>
->> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
->
-> Thanks for the review!
->
-> Given that this touches core DRM code and that I never got
-> confirmation that Jani's concerns were addressed with my previous
-> response, I'm still going to wait a little while before applying. I'm
-> on vacation for most of next week, but if there are no further replies
-> between now and then I'll plan to apply this to "drm-misc-next" the
-> week of Feb 26th. If someone else wants to apply this before I do then
-> I certainly won't object. Jani: if you feel this needs more discussion
-> or otherwise object to this patch landing then please yell. Likewise
-> if anyone else in the community wants to throw in their opinion, feel
-> free.
+On 2/15/24 18:11, WANG Xuerui wrote:
+> Sorry for the late reply (and Happy Chinese New Year), and thanks for 
+> providing microbenchmark numbers! But it seems the more comprehensive 
+> CoreMark results were omitted (that's also absent in v3)? While the 
 
-Sorry for dropping the ball after my initial response. I simply have not
-had the time to look into this.
+Of course the benchmark suite should be UnixBench instead of CoreMark. 
+Lesson: don't multi-task code reviews, especially not after consuming 
+beer -- a cup of coffee won't fully cancel the influence. ;-)
 
-It would be great to get, say, drm-misc maintainer ack on this before
-merging. It's not fair for me to stall this any longer, I'll trust their
-judgement.
+-- 
+WANG "xen0n" Xuerui
 
-Reasonable?
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
-
-BR,
-Jani.
-
-
---=20
-Jani Nikula, Intel
 
