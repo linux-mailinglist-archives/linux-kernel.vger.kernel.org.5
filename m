@@ -1,130 +1,139 @@
-Return-Path: <linux-kernel+bounces-66903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACF1485635F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F84E856366
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68653288C3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:38:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0C9028141B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70BE712EBC9;
-	Thu, 15 Feb 2024 12:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E790412CDA9;
+	Thu, 15 Feb 2024 12:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hrMhz0kT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="sd11SsMk"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCBB12E1FB;
-	Thu, 15 Feb 2024 12:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8066B12C53F;
+	Thu, 15 Feb 2024 12:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708000706; cv=none; b=srGfhePGblmYGVt0KoJcZ3LIQC70/EZ96kAseaznuXX7DQ9RAeNqFeir//3iPi4BsmyFD7RKgGgUKYnOwfrNslvAFYhQR1Xu5k17xtY5RtWOxtdBak15fNQRxFn/j1zYWs8x8q4MdkbKosCMuyFb1LYsjqPBNHoJPd8uCT9a8vU=
+	t=1708000762; cv=none; b=BppmrqlGhZw6WK+GRrJiH3gqP2gsrrdbd8WUoYQpY5nsKEz76FUDzcw5G1G2XBdCZWF16Sa8uT6yqxEH0uMzWKoALDH8LQZF0B+s1nn0y6N05cVqtcmGr9c1LsoieqNuFsm/uzbnIRHODTne8JhfvgrodrFLrrBtwSN9iO3Ay+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708000706; c=relaxed/simple;
-	bh=wX8xUiIMHpOyqdGdolyWgF5hNZn2Vqj8dYkmFKwuuDQ=;
+	s=arc-20240116; t=1708000762; c=relaxed/simple;
+	bh=0CrNpBu4yIiHyPyXquDCtohQJsa75tOaNepCV6CAu00=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b/ba81O9TlG6nFNkudHg/FmkKJXrJAU2rmyYgwHuVAG9AtsSRzgq/fVGdGvZrT1lhBp/Gcc048rBi7B8ygkVvyxLVDMXDTClZPEV8SZTUP0BoHrwdrBvLOF+Lm6lEFPPVaoaoK/h6nYyLZvRo8LinqtU70KlSK3F6k+iMKvr+7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hrMhz0kT; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708000705; x=1739536705;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=wX8xUiIMHpOyqdGdolyWgF5hNZn2Vqj8dYkmFKwuuDQ=;
-  b=hrMhz0kTTyRHcOYHmZzRwSQRH+m0k8yKAufCMcYyCrbuXICn2fWRhQ+3
-   AteNkByHBBXN4LQmHCsAZVe2ouhT41M6mT0FdWC+Xjitv6sYAIzJNrQEX
-   D6hsr1wZcHKeVO41TCFcgVPJvKYkWUiFevZoR/kVFvJHZrzELxtamp5RA
-   bEIg6E/4Y79UftZ1SUPxDNfyqeoXixzP2X0hhQElKRC1C87YRK8U97P8t
-   3TgRWD2BFXNub7zL4QGOA6F2406P8RcGJ9G1L2HvDhIKvmTTIG9F3ADfh
-   jxR8oa5QEJlwCwpW7ivTMCvkQxQRdjSECas+I084hTAhoR2JoPxW5DGAb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5051960"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="5051960"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:38:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912159489"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="912159489"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:38:21 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rab0N-00000004n1N-1fm1;
-	Thu, 15 Feb 2024 14:38:19 +0200
-Date: Thu, 15 Feb 2024 14:38:18 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH v2 00/15] auxdisplay: linedisp: Clean up and add new
- driver
-Message-ID: <Zc4FutGKA0gUFvev@smile.fi.intel.com>
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
- <Zcz--YJmWLm0ikUT@smile.fi.intel.com>
- <CAMuHMdW5nwtuZpTyf+_41bcHeR+MA6Ko2++JiC8Xz6u1tDNQ_Q@mail.gmail.com>
- <CAMuHMdWKAf_Yi59RWoA5=K=ajS0-+Vn8tgwzy5tAzLmqizZLtg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TbVPLP51TEAaZ03ExhoOuPNPi4yIa10xtrCtDNfgB9HzjmgR1mRF2Q1n9/Tj/5s8QE9WEaCbn6MljQtlpWqjDX9ZaO2ltxcXZNOPRIL/lJdvcxWrxwGyZw3M/lEUNAPn2/TUYtp1gw6Z6qCprMKl8nFfuj8e16VjuXXFxmi/ELg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=sd11SsMk; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
+	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=0CrNpBu4yIiHyPyXquDCtohQJsa75tOaNepCV6CAu00=; b=sd11SsMkQ7iHgV+GJrN30/KviA
+	Ulaemp9KMtn0zGIpbsKHlRcgGL+MuRyMF/fNH766IcBjNz+clfzEX/3xfZMmWBCipji5Ja7sld+V6
+	Cwm853qVchFUeMqUQF3kEHFE6XLuz1dWZ/rNDIWV4HBWTRLDySwMmfcNOTEtuS6ZPrEibBiJiEsyJ
+	wR6qal0PCvWcXs2bzBLUjW69kESa9SKVAvFUni36VuEFT7ZxlFhPvJRWoLRFCEazY0Hb9rCF+Xadu
+	SFKO8+qAVrz2uZ3iRQaRDbx2BvTN0AwfzcuoQZIPs1cpo2DDGQmn7SD+kRlkvUCR/73Cr3rgABHb8
+	6GS4VQZw==;
+Received: from [2001:9e8:9e8:801:6f0:21ff:fe91:394] (port=48468 helo=bergen.fjasle.eu)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <nicolas@fjasle.eu>)
+	id 1rab10-00BKdV-Oh;
+	Thu, 15 Feb 2024 13:38:58 +0100
+Date: Thu, 15 Feb 2024 13:38:52 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] Documentation: kbuild: explain handling optional
+ dependencies
+Message-ID: <Zc4F3JttXSsBsw-P@bergen.fjasle.eu>
+References: <20230917192009.254979-1-arnd@kernel.org>
+ <CAK7LNASua5xkkg84s4o4GZ00hFRc10V9BmqyxfWfPi=JVFYC8g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SLx/gfFA9UUD09BZ"
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASua5xkkg84s4o4GZ00hFRc10V9BmqyxfWfPi=JVFYC8g@mail.gmail.com>
+X-Operating-System: Debian GNU/Linux trixie/sid
+Jabber-ID: nicolas@jabber.no
+
+
+--SLx/gfFA9UUD09BZ
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWKAf_Yi59RWoA5=K=ajS0-+Vn8tgwzy5tAzLmqizZLtg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 12:05:37PM +0100, Geert Uytterhoeven wrote:
-> On Wed, Feb 14, 2024 at 7:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Feb 14, 2024 at 6:57 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Feb 12, 2024 at 07:01:33PM +0200, Andy Shevchenko wrote:
-> > > > Add a new initial driver for Maxim MAX6958/6959 chips.
-> > > > While developing that driver I realised that there is a lot
-> > > > of duplication between ht16k33 and a new one. Hence set of
-> > > > cleanups and refactorings.
-> > > >
-> > > > Note, the new driver has minimum support of the hardware and
-> > > > I have plans to cover more features in the future.
-> > > >
-> > > > In v2:
-> > > > - updated DT bindings to follow specifications and requirements (Krzysztof)
-> > > > - unified return code variable (err everywhere)
-> > > > - left patches 10 and 13 untouched, we may amend later on (Robin)
-> > >
-> > > Geert, I would like to apply at least the first 13 patches.
-> > > Do you have any comments or even possibility to perform a regression test?
+On Mon 25 Sep 2023 16:06:41 GMT, Masahiro Yamada wrote:
+> On Mon, Sep 18, 2023 at 4:20=E2=80=AFAM Arnd Bergmann <arnd@kernel.org>=
+=20
+> wrote:
 > >
-> > I'll try to give it a try on my Adafruit Quad 14-segment display tomorrow...
-> 
-> With the missing return-statement added, the ht16k33 driver builds
-> and works fine: the kernel version is happily scrolling by.
-> I didn't test userspace line display control, as there is an issue
-> with the uSD interface on my OrangeCrab, preventing it from booting
-> into userspace.
-> 
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > This problem frequently comes up in randconfig testing, with
+> > drivers failing to link because of a dependency on an optional
+> > feature.
+> >
+> > The Kconfig language for this is very confusing, so try to
+> > document it in "Kconfig hints" section.
+> >
+> > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> > Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > v2: fix typos pointed out by Nicolas Schier
+>=20
+>=20
+> Applied to linux-kbuild. Thanks.
 
-Thank you!
+Hi Masahiro,
 
-So far I have applied patches 1-6,8-9 with the respective suggestions
-implemented.
+this patch seems to got lost, or did you intentionally removed it=20
+again?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Kind regards,
+Nicolas
 
+--SLx/gfFA9UUD09BZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXOBdcACgkQB1IKcBYm
+EmmJNxAAkHRogwZILhoqFWK3tgngdLB7MkwI0nI7N136dpjW/zatqutnBvWxpBrz
+boH70WhEOieibR17yLtVsvtC7AH4TOwhtSvsfENy/IsCOvZZTdox30+eFMfBORrA
+SfcsROlP6AuXSjw42UdXvPneGL3rjX3VOQvMDtGgdI72GQm9xkUDmtCxVZC/bSU8
+NEx785JyhiTOmsHHO6AWOoZoh3lRe844TSEtekxF+apXEWJF+pr6br0CR1TyNnNY
+RG4Rsq4gJ7BLlb0ts8Cnld6mdyW6CikKlYkd2ru7aBEvyhLxSdF+oA7/I7agIQju
+Rgg0DSsYgSCeA+WWEneK+BE8dBRG6yfZ7M+Tu2GOSNSGOykDZyUeYmBai0lLNU++
+LoI/awE66lLgmAAfXtlXkOIO0anaEiE4t3i6vLRDKaPDXsFbeY25dM0sqwyzdAHS
+6pESnrbxdwxUl63THX+9jrYkiu2ji0axErUTn3XwmMLGw88CNm+ZkeI2db48WgVf
+sJNjhbfVpKOaJTaPQBcO+flFXWOlc2wFE1e8Q96wjJI5tOnlKthGdQ5xJTMTGF0x
+G2TANEw4Neo7hRwOImrcXolFrdoI4/BcRe3qotDQeHLn61jpvBSN1BTog/iREcZh
+i/gQQS4m1kmZOk0/quveFrKCBNtW57pP2jTP2tf3hhnjDZuQuQY=
+=KLro
+-----END PGP SIGNATURE-----
+
+--SLx/gfFA9UUD09BZ--
 
