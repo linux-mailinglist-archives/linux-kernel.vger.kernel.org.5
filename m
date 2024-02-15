@@ -1,96 +1,188 @@
-Return-Path: <linux-kernel+bounces-67242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36C3856882
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:51:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 142D1856887
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861A71F229E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A74B81F22ED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B810134733;
-	Thu, 15 Feb 2024 15:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pBAzmmSJ"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8279613398F;
+	Thu, 15 Feb 2024 15:51:24 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF41C1754B;
-	Thu, 15 Feb 2024 15:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D51C132C04;
+	Thu, 15 Feb 2024 15:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012250; cv=none; b=J/BR1BAl5/84D02As2Cc0IsvDo+qClaP31AG08PPIT4WJaD99sPcPRlrkukSNVR1LRfcqS6VFMU2Jn5fyLyZ9ljnL6dkxrkNLOi7itpuq8N9C9EBVCPW3e8B1x5IZU2aUzui2OEJQZHiTi1Yz0UXmjxdMFElXvPFjf2Zu48D0+o=
+	t=1708012284; cv=none; b=cbvPegUikBirbeR2vbrD6LkH1VumJoUu4phbXpjoCBIbf4FuIqMeYyPXpMiOs4dfHTbf70A+MhlmBNfzU0bbEMvaisZ7uZggOLBBhWvF2b5mU7IgLP30GRbM2TKDeJFD7aT5kCu625Ar4hibyJmGCQndlgvliXfyRt/FrgcM29I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012250; c=relaxed/simple;
-	bh=LggeN6h+WHY+0T/ae++CkDBWkvkomh6pdok7J2AYD5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VjR243y+Okh91WdVHJOAVv3tNJI90HaPHT3uEf/r7vXi3ZzE2LI59BKF6z/a5/sTxTV7SG43JOCKMGqDH9brrEhPKxnEJvr8ktDozxS+f4pMK/UO82ZnV5Z04ZmML3rrbsX9lItdOFMobDb96Fjddv0bCJfEUzTi9b9K7XzSCf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pBAzmmSJ; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A11D60007;
-	Thu, 15 Feb 2024 15:50:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708012241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mtk48EznKmDX1rPnpNxOjf1ZSd+O3CpXHfHOgLG93Fs=;
-	b=pBAzmmSJkIrrpIJCmMkXFXnnZuhytoqQDfJaAm7OvCfh1ZOEySWkDW33bzn32d82aX+A25
-	8Y7cbAG6EqXMtDc53kf6t7tzT8ogGzFOuEqFH21ckm/vMOf6Cru83EWMYGYBtbkucF5+gX
-	zAtyq8DGJxi57xI2fyuAB6KF4Pv9wzlUvbSXKKW1jFxFm/ngLQs9bN8a/nJbsqSv0h/E6K
-	qKNQna6AHP+zyHtk1aAbmVIxrTazWmZ+9AUWf4eGoYt2ma3wtfxdOVLDHpUfEiipqdJqU8
-	1T4XqNDFx/K7KuaNQIr4RJsiRxDdwuYImgyPgmsaiakzeciMOnR+BuHzDzZa8A==
-Message-ID: <02c155ff-f880-4e88-b600-9d632019729f@bootlin.com>
-Date: Thu, 15 Feb 2024 16:50:39 +0100
+	s=arc-20240116; t=1708012284; c=relaxed/simple;
+	bh=yVKTAQEqhVLDFhjTI4RFrtCwasTL1xa0TV6A9KwOrUM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KQfIXICMsPU8G+3tAtoygW4ej6+rTd0uH1GTDhgGerXVRuZCdCRZMLLRP0e+WsHUVczxYObOD4GawHD2QIY5746E2YbX472NnUBg9apXVWI9AWkyPtIo4BI7EtFiKVzIp+T44DqnBbrVFJv5tQhfTnYkE1MUFUlVeCTPEgYmFvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="13503042"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="13503042"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:51:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="826428480"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="826428480"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:51:14 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rae10-00000004phE-0vqi;
+	Thu, 15 Feb 2024 17:51:10 +0200
+Date: Thu, 15 Feb 2024 17:51:09 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v3 18/18] PCI: j721e: add suspend and resume support
+Message-ID: <Zc4y7Tj2K2pTQ4HY@smile.fi.intel.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-18-5c2e4a3fac1f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] wifi: nl80211/wilc1000: force WLAN_AKM_SUITE_SAE to
- big endian in NL80211_CMD_EXTERNAL_AUTH
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Ajay Singh <ajay.kathat@microchip.com>, Kalle Valo <kvalo@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- Igor Mitsyanko <imitsyanko@quantenna.com>,
- Sergey Matyukevich <geomatsi@gmail.com>, kernel test robot <lkp@intel.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>
-References: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-In-Reply-To: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
+In-Reply-To: <20240102-j7200-pcie-s2r-v3-18-5c2e4a3fac1f@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 2/15/24 15:13, Alexis Lothoré wrote:
-> This small series is the follow-up to discussions started around a sparse
-> warning in wilc1000 driver ([1]) and implements the solution suggested by
-> Johannes. It moves a historically needed conversion to be32 in nl80211 (in
-> NL80211_CMD_EXTERNAL_AUTH, specifically on NL80211_ATTR_AKM_SUITES property
-> _only_ when it is set to WLAN_AKM_SUITE_SAE) The user scenario affected by
-> this update is a connect process on a WPA3-protected access point with
-> authentication offloaded to user-space. Two drivers are affected by the
-> update: wilc1000 and qtnfmac. wilc1000 case is handled by a small
-> companion patch which also fixes the sparse warning.
+On Thu, Feb 15, 2024 at 04:18:03PM +0100, Thomas Richard wrote:
+> From: Th�o Lebrun <theo.lebrun@bootlin.com>
+> 
+> Add suspend and resume support. Only the rc mode is supported.
+> 
+> During the suspend stage PERST# is asserted, then deasserted during the
+> resume stage.
 
-Adding Claudio Beznea (co-maintainer for WILC), who got lost when I prepared the
-series, sorry.
+..
 
-Also, my mail provider returns error 550 (No Such User Here) for quantenna
-driver maintainer (<imitsyanko@quantenna.com>, taken from MAINTAINERS). I've
-seen no recent activity from him on the ML, is he still around ?
+> +#include <linux/clk-provider.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+> @@ -18,10 +19,13 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+
+> +#include <linux/container_of.h>
+
+Unordered.
+
+..
+
+> +	ret = j721e_pcie_ctrl_init(pcie);
+> +	if (ret < 0) {
+> +		dev_err(dev, "j721e_pcie_ctrl_init failed\n");
+
+Is there any guarantee this won't spam logs?
+
+> +		return ret;
+> +	}
+
+..
+
+> +	/*
+> +	 * This is not called explicitly in the probe, it is called by
+> +	 * cdns_pcie_init_phy.
+
+cdns_pcie_init_phy()
+
+> +	 */
+> +	ret = cdns_pcie_enable_phy(pcie->cdns_pcie);
+> +	if (ret < 0) {
+> +		dev_err(dev, "cdns_pcie_enable_phy failed\n");
+> +		return -ENODEV;
+
+A potential log spammer?
+
+> +	}
+
+> +	if (pcie->mode == PCI_MODE_RC) {
+> +		struct cdns_pcie_rc *rc = cdns_pcie_to_rc(cdns_pcie);
+> +
+> +		ret = clk_prepare_enable(pcie->refclk);
+> +		if (ret < 0) {
+> +			dev_err(dev, "clk_prepare_enable failed\n");
+
+Ditto.
+
+> +			return -ENODEV;
+
+Why is the error code shadowed?
+
+> +		}
+
+..
+
+> +		if (pcie->reset_gpio) {
+> +			usleep_range(100, 200);
+
+fsleep()
+
+> +			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
+> +		}
+
+> +		ret = cdns_pcie_host_link_setup(rc);
+> +		if (ret < 0) {
+> +			clk_disable_unprepare(pcie->refclk);
+> +			return ret;
+> +		}
+> +
+> +		/*
+> +		 * Reset internal status of BARs to force reinitialization in
+> +		 * cdns_pcie_host_init().
+> +		 */
+> +		for (enum cdns_pcie_rp_bar bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
+> +			rc->avail_ib_bar[bar] = true;
+> +
+> +		ret = cdns_pcie_host_init(rc);
+> +		if (ret)
+
+No clock disabling?
+
+> +			return ret;
+> +	}
+
 
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With Best Regards,
+Andy Shevchenko
+
 
 
