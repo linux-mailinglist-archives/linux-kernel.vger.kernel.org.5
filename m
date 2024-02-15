@@ -1,166 +1,124 @@
-Return-Path: <linux-kernel+bounces-67571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8E9856DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:23:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA068856DA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA8BD284C54
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:23:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8651F2826C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B03139598;
-	Thu, 15 Feb 2024 19:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4135013959C;
+	Thu, 15 Feb 2024 19:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="n5jF2kOw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LNYC7ovG";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="n5jF2kOw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LNYC7ovG"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dNJArDt/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF9B6136983;
-	Thu, 15 Feb 2024 19:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CB31369AD;
+	Thu, 15 Feb 2024 19:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025019; cv=none; b=BlK+UHtnClfrth+pklDxMD+0smi9sOPemE0AWOMC7xSVAZ4dg3gH7QRUkx8O+XZ/3zndvfaosNcvLZ+pmMQnGnypctxxtsJkojAR3cwKSwRJWe1PrgXxOb5B0lpZ7ZwM/LZro1NIoJMcoChUoPWqZnAiW8hnnHWTIw+rSAhxOME=
+	t=1708025163; cv=none; b=MQAcN7OvBntRGitmzhOE97OdQwYjSARtD5Y/eo79X3ErulqZnZRefDm1V80W9pM1SwY71yOP3gd69/Heck+3BGw9Cyv8nCyqKjH3Pkxpm68+I4nYOGXIa/yDhOatPS4GftM5ulfHwCN9GWTUBZfjmXvXkA93Jv6M+lED8Oz3MUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025019; c=relaxed/simple;
-	bh=5FzjDGGdF/LEJ1+yyKQUEfGfpUmI8UPYzcH+PLbeksU=;
+	s=arc-20240116; t=1708025163; c=relaxed/simple;
+	bh=kw3PXLxpfNXJjUQgkeonBF2W/U8/1JoSX62FFxlxwlA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QTqw9bX+uKMx3BDwSgY2QTWeWrHy+2tOg6D8uXVfIN251CnHFaqWCXazI1F5zfAl/L70Fa6skdJtrMxx8qpgTX/mEU0O38KQD8H4nESw9o7odqArRTGQ9x+WQ3azHC8UfQZQvt1IziH0tsXiKraTPgCXRe2cRX5jD4TradmwiSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=n5jF2kOw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LNYC7ovG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=n5jF2kOw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LNYC7ovG; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from kitsune.suse.cz (unknown [10.100.12.127])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9BE6E1F8C5;
-	Thu, 15 Feb 2024 19:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708025015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fa6fwskS/XeiRHwRWUxIzXg8lpFOjokK1ZaMlxoJ2Js=;
-	b=n5jF2kOwc96NXtoFvQ1Hkh5Mh9MbyJm7BrMp6hp76bEoK8o/S4LqzLkHiyIhIEVMNzXUFE
-	Eb/Im8zINT9e1syoklSHnFRaYWvyaIZhsPI3q6pvMa3WE7L94HAIVaK48VGnnbgC4X0Bbe
-	JRwG8uVPISOsNDaIPHr3Y4BTpxbFi2c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708025015;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fa6fwskS/XeiRHwRWUxIzXg8lpFOjokK1ZaMlxoJ2Js=;
-	b=LNYC7ovG2ARcRpqnpuw0r2PZgT8nAQqOgtZ39N0lUO4LMO3/EH/MNGCYdmsfbaUrBbyQ2M
-	O+ABg1wn8TZxNiBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708025015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fa6fwskS/XeiRHwRWUxIzXg8lpFOjokK1ZaMlxoJ2Js=;
-	b=n5jF2kOwc96NXtoFvQ1Hkh5Mh9MbyJm7BrMp6hp76bEoK8o/S4LqzLkHiyIhIEVMNzXUFE
-	Eb/Im8zINT9e1syoklSHnFRaYWvyaIZhsPI3q6pvMa3WE7L94HAIVaK48VGnnbgC4X0Bbe
-	JRwG8uVPISOsNDaIPHr3Y4BTpxbFi2c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708025015;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fa6fwskS/XeiRHwRWUxIzXg8lpFOjokK1ZaMlxoJ2Js=;
-	b=LNYC7ovG2ARcRpqnpuw0r2PZgT8nAQqOgtZ39N0lUO4LMO3/EH/MNGCYdmsfbaUrBbyQ2M
-	O+ABg1wn8TZxNiBA==
-Date: Thu, 15 Feb 2024 20:23:34 +0100
-From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests: powerpc: Add header symlinks for building
- papr character device tests
-Message-ID: <20240215192334.GT9696@kitsune.suse.cz>
-References: <20240215165527.23684-1-msuchanek@suse.de>
- <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=W21xpQBJ9j1nIiGiZPBMzEJJMJz6KvNQJq4bFkoBYGZqcTk1QOcD2TKCr+rOdt5O7KTkrKVugnrfPVK7YK4spSDUqLU6mi5ill+jHak5QZfQI6oGCUqI9DkmRppV08/wg+ZtImRlZQZtlwLegt1HMqVYlOvy7Zr3lsfj0xpTHJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dNJArDt/; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708025163; x=1739561163;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kw3PXLxpfNXJjUQgkeonBF2W/U8/1JoSX62FFxlxwlA=;
+  b=dNJArDt/OYIOlQ6RApj82K0golsYYxI9ppAoPT9zX7QNFob9jmnwOYjG
+   oHS962X8Q/nJhAQrU2qaN95yUs3QM8NbfyXNjLhHKZVfpvBraT8UW+/JB
+   my2m9fdO5vaqnOWcaEuVKzAFJwZKdeuLrRfjC8ISZllfls6+/gC+oASAD
+   wp2G6nQMCxmBeZPNkZC3QzT7+0pROTLG7Vd6F++6KWtGPEfHDfthfYwRT
+   Tg60soeQPPQ73eVBpQBV+SJmafYWkVX6Sy2IIpkET5kDak6aHnw54CmsY
+   9pyqa09kKc6zeH5SihvvBHfLovR+HvPN3kG39ly7nA1QZj5XF5rUcsQ/8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5946777"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="5946777"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:26:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912216071"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="912216071"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:25:59 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rahMq-00000004sDn-3umS;
+	Thu, 15 Feb 2024 21:25:56 +0200
+Date: Thu, 15 Feb 2024 21:25:56 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com,
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
+Message-ID: <Zc5lRMQwROtVJdhV@smile.fi.intel.com>
+References: <20240208070529.28562-1-raag.jadav@intel.com>
+ <20240208070529.28562-2-raag.jadav@intel.com>
+ <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
+ <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
+ <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
+ <Zcz-csPY5x29DP7v@smile.fi.intel.com>
+ <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
+ <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
+ <likebxfhlcg6equjhxnf7cimsgac4qvoge3bf65qyir6apwq4n@iotwg6zjjr6c>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[lists.ozlabs.org,ellerman.id.au,gmail.com,csgroup.eu,kernel.org,linux.ibm.com,vger.kernel.org];
-	 BAYES_HAM(-0.00)[30.55%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.10
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <likebxfhlcg6equjhxnf7cimsgac4qvoge3bf65qyir6apwq4n@iotwg6zjjr6c>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 15, 2024 at 01:13:34PM -0600, Nathan Lynch wrote:
-> Michal Suchanek <msuchanek@suse.de> writes:
-> >
-> > Without the headers the tests don't build.
-> >
-> > Fixes: 9118c5d32bdd ("powerpc/selftests: Add test for papr-vpd")
-> > Fixes: 76b2ec3faeaa ("powerpc/selftests: Add test for papr-sysparm")
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> >  tools/testing/selftests/powerpc/include/asm/papr-miscdev.h | 1 +
-> >  tools/testing/selftests/powerpc/include/asm/papr-sysparm.h | 1 +
-> >  tools/testing/selftests/powerpc/include/asm/papr-vpd.h     | 1 +
-> >  3 files changed, 3 insertions(+)
-> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-miscdev.h
-> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-sysparm.h
-> >  create mode 120000
-> > tools/testing/selftests/powerpc/include/asm/papr-vpd.h
+On Thu, Feb 15, 2024 at 06:20:15PM +0100, Uwe Kleine-König wrote:
+> On Thu, Feb 15, 2024 at 03:36:12PM +0200, Andy Shevchenko wrote:
+> > On Thu, Feb 15, 2024 at 10:22:57AM +0100, Uwe Kleine-König wrote:
+> > > If a driver author knows it while writing the code, it's obvious. But if
+> > > the driver author looks again in 2 years or someone else (e.g. me with
+> > > the PWM maintainer hat on and with little pci experience) that knowledge
+> > > might be faded.
+> > 
+> > This is widely used pattern. Anybody who works with Git should know how
+> > to use `git grep` tool. If in doubts, always can ask in the mailing lists.
 > 
-> I really hope making symlinks into the kernel source isn't necessary. I
-> haven't experienced build failures with these tests. How are you
-> building them?
+> IMHO you're assuming to much. If someone sees this pattern and quickly
+> looks at the implementation of pcim_iomap_table() they might (as I did)
+> conclude that this call should be error checked. If they send a patch in
+> say 2 years I think I won't remember this discussion/patch and happily
+> accept this patch. And I probably won't get enough doubts to start
+> grepping around.
 > 
-> I usually do something like (on a x86 build host):
+> > I still consider it redundant.
+> > 
+> > P.S. That's what you call "bikeshedding" (done by yourself here)?
 > 
-> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- ppc64le_defconfig
-> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- headers
-> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- -C tools/testing/selftests/powerpc/
-> 
-> without issue.
+> I can understand that you consider that bikeshedding given that for you
+> it's obvious that the second function cannot fail. For me it's not and I
+> take this as a hint that it's not obvious for everyone.
 
-I am not configuring the kernel, only building the tests, and certainly
-not installing headers on the system.
+The bottom line that PCI devres code should be refactored. And IIRC somebody
+is doing that job, not sure at which stage it is now.
 
-Apparently this is what people aim to do, and report bugs when it does
-not work: build the kselftests as self-contained testsuite that relies
-only on standard libc, and whatever it brought in the sources.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-That said, the target to install headers is headers_install, not
-headers. The headers target is not documented, it's probably meant to be
-internal to the build system. Yet it is not enforced that it is built
-before building the selftests.
 
-Thanks
-
-Michal
 
