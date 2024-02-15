@@ -1,169 +1,82 @@
-Return-Path: <linux-kernel+bounces-67519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02AFC856CCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:36:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FEED856CC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FADD290BE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:36:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 421831F26AAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC5413A891;
-	Thu, 15 Feb 2024 18:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HPZiK8qO"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123D113A249;
+	Thu, 15 Feb 2024 18:34:09 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F3B139565
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A17139597
 	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022050; cv=none; b=WXj31KIi7XVyWcSMrFmDWb6zs1YCsHBOISglurTmJHc2c/8tSjmkVPFq2MKKHWmRRaIiTM9g0McaMKTiNIV4EdOclk59AncB3/UuwHDXDZm44ippezfvyZi7R+TjaYQEXhnG6wharUbAAKxrzM/ZhEpD+s6hl34HbTKzbh2Qsek=
+	t=1708022048; cv=none; b=e6dDkmuN0k11ao5fJS32fiyED+uUTBSzprPDIfotx+6jZVXTcKprDO8wh9XF3hlIq+VXeeSs5Gjjld63Lydi7kuEozzzfl1EV4qVKMLgr+owYHw0Qpeg+4rmBDPAQP0qczqihQd/neWNtsfIgoRJya/+94M9SMFiw6Wz0vuEdDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022050; c=relaxed/simple;
-	bh=EkHV+pK0QXOWaf9RwSvvipbxHFbyApBZyCN11/BLKS4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N/x2fHMy73dGLhf0tC3+OARZ9YQkJKcuh9xUpMRwHYDDuWNyJwNiM+iIY+ljnWEcL/UiyaA3QYrWqiLW0ovzFZL5jT81rgyLAJNXvEYXQ/9rLr0mjbciWicc4i7fb8822EfENrThtFQlXRqUsYCFCoga4u95vJzy2VRktTMaRUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HPZiK8qO; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso1282717276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:34:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708022047; x=1708626847; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c/zbyo2KXw6JhtuTeO6vuT3ARKuU8XObNaLi3n/GNPQ=;
-        b=HPZiK8qOi6j8eHtrVWkMY3/y5zdg/R+snoTpxl7otDapqq8U5nGISzOlEkPxZVJOdI
-         XR6njoQyRhO65h5YNcGuFvkesKajuM20CnxqrI9baL2knQfhsz9i1+UJTfO/Fwv2mWTf
-         ktaaM3njCRzf4blGVz++m8/G8b/gI10LhL7Lo9omGw4CKaE33N35IUtraESVDyXf3BoB
-         +kSU70ufu2xuFOyyFPJ3MNb80cNFbgtERN/ovjHCNXsLMp8aiUnGWyQ+KIEnZK5WjyH6
-         fjfew7jLvJTyZxNKc/fe0U0yIcdA0rN1LrHpAsojFlar/bktGjvn9Bhpp1YDl4RdPR2v
-         cRdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708022047; x=1708626847;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c/zbyo2KXw6JhtuTeO6vuT3ARKuU8XObNaLi3n/GNPQ=;
-        b=AF1PfP8DapZ/egYdb9mnzxMLiCThQyA0tK9+3/aV+7oFDtLD2J1HFDkKp7OKxPwZpz
-         IH9g900RH7lxlLrkAXVsllgiLtdBBYJfop8RkC5F/hUW5dIHI0pKu0WTjsdXahHehe1S
-         bLStSpUHPGEjYo/rXR1lnaY6v3EFxuN4X2UCTeccnoT0SDoPqUvuacPud5141M1+mc7j
-         9+QyqI4RJxskkpRE93gidk348DUMBKea4yJVKRuYoueXVTMiJQmBzoEhazeTzeuLj8n1
-         qb7dQuS9ephph3n1EBfO43yK1EuLEzTRb5BXEgdBRtOm1z/iEy+5oPSkaVa079gP0Yga
-         kbUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIU7pEPBFBuInN3mCpWdzkPiTu5GFWLIuKYuhMQHd8i/a1ZjcyIax/CfjMD6v6FrwylKlqJxyO4khQ1dky0/JLrfNyNyAXAhvUhwk3
-X-Gm-Message-State: AOJu0YzUUulXU4dV8GQCmJeqjXG+6wza0wHVrH6P8PT3nZlzv0j5gab/
-	MLN2T872zp4CyT/Hi/WCmjIhCX98107UN4Oc9RHfEQxtppmoPGKfQ692e0JHju8oZWdaoBKe8E5
-	emUmujxukSSOHP/bFaEXNWVPWuo+QEhU809Nd
-X-Google-Smtp-Source: AGHT+IEt7T1ebO4wrqtMW0nsnctPBGiEDzeC44EjMTKbens2LRTQqSvb2ncntkrHv+IFqf/aB+CXdxd6L9MiMSXl2r0=
-X-Received: by 2002:a25:bac5:0:b0:dc6:a223:bb3b with SMTP id
- a5-20020a25bac5000000b00dc6a223bb3bmr2333936ybk.46.1708022046848; Thu, 15 Feb
- 2024 10:34:06 -0800 (PST)
+	s=arc-20240116; t=1708022048; c=relaxed/simple;
+	bh=no/blXCb0vQawIseQkgHar47hmhAMUTDnXZAbG+6kqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FRp2ldSmu0f84NX5AfGs2dnlxmBUtaC3kfy1pOb+JWRhXTylTBSsoF0vqK/cmNmHqWptfPhD0UXGuIuZhH3qrVMqMFJ8u9biV7z7tVCAjKgYggbXs54jRlSyJaDaoD6fLXve688tamMhUVUwS/m2FrUBdtEOO2NV9LXABMdhYWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38715C433C7;
+	Thu, 15 Feb 2024 18:34:03 +0000 (UTC)
+Date: Thu, 15 Feb 2024 18:34:00 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 07/18] arm64/mm: Convert READ_ONCE(*ptep) to
+ ptep_get(ptep)
+Message-ID: <Zc5ZGNaYp5dFND1_@arm.com>
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-8-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-32-surenb@google.com>
- <Zc3X8XlnrZmh2mgN@tiehlicka> <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
- <Zc4_i_ED6qjGDmhR@tiehlicka> <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
- <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
-In-Reply-To: <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 15 Feb 2024 10:33:53 -0800
-Message-ID: <CAJuCfpFCu73eCMo-hd=vvvMhGjEuOwvkcGb2DuDssHC5soNFGw@mail.gmail.com>
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215103205.2607016-8-ryan.roberts@arm.com>
 
-On Thu, Feb 15, 2024 at 10:29=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Feb 15, 2024 at 08:47:59AM -0800, Suren Baghdasaryan wrote:
-> > On Thu, Feb 15, 2024 at 8:45=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Thu 15-02-24 06:58:42, Suren Baghdasaryan wrote:
-> > > > On Thu, Feb 15, 2024 at 1:22=E2=80=AFAM Michal Hocko <mhocko@suse.c=
-om> wrote:
-> > > > >
-> > > > > On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
-> > > > > [...]
-> > > > > > @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodem=
-ask_t *nodemask, int max_zone_idx)
-> > > > > >  #ifdef CONFIG_MEMORY_FAILURE
-> > > > > >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_po=
-isoned_pages));
-> > > > > >  #endif
-> > > > > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > > > > > +     {
-> > > > > > +             struct seq_buf s;
-> > > > > > +             char *buf =3D kmalloc(4096, GFP_ATOMIC);
-> > > > > > +
-> > > > > > +             if (buf) {
-> > > > > > +                     printk("Memory allocations:\n");
-> > > > > > +                     seq_buf_init(&s, buf, 4096);
-> > > > > > +                     alloc_tags_show_mem_report(&s);
-> > > > > > +                     printk("%s", buf);
-> > > > > > +                     kfree(buf);
-> > > > > > +             }
-> > > > > > +     }
-> > > > > > +#endif
-> > > > >
-> > > > > I am pretty sure I have already objected to this. Memory allocati=
-ons in
-> > > > > the oom path are simply no go unless there is absolutely no other=
- way
-> > > > > around that. In this case the buffer could be preallocated.
-> > > >
-> > > > Good point. We will change this to a smaller buffer allocated on th=
-e
-> > > > stack and will print records one-by-one. Thanks!
-> > >
-> > > __show_mem could be called with a very deep call chains. A single
-> > > pre-allocated buffer should just do ok.
-> >
-> > Ack. Will do.
->
-> No, we're not going to permanently burn 4k here.
+On Thu, Feb 15, 2024 at 10:31:54AM +0000, Ryan Roberts wrote:
+> There are a number of places in the arch code that read a pte by using
+> the READ_ONCE() macro. Refactor these call sites to instead use the
+> ptep_get() helper, which itself is a READ_ONCE(). Generated code should
+> be the same.
+> 
+> This will benefit us when we shortly introduce the transparent contpte
+> support. In this case, ptep_get() will become more complex so we now
+> have all the code abstracted through it.
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-We don't need 4K here. Just enough to store one line and then print
-these 10 highest allocations one line at a time. This way we can also
-change that 10 to any higher number we like without any side effects.
-
->
-> It's completely fine if the allocation fails, there's nothing "unsafe"
-> about doing a GFP_ATOMIC allocation here.
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
