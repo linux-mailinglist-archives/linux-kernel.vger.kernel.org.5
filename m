@@ -1,180 +1,156 @@
-Return-Path: <linux-kernel+bounces-67384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE4C856ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:16:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D25D856AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E025A1C231FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:16:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47ED928B8AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC98E13698F;
-	Thu, 15 Feb 2024 17:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB9CA13667D;
+	Thu, 15 Feb 2024 17:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="crXxaNt4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tw5zFj2V";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3aZQNKOD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rqsige/G"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aWANoxYD"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02411136672;
-	Thu, 15 Feb 2024 17:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B1513399E;
+	Thu, 15 Feb 2024 17:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017390; cv=none; b=d7n7v0IgwxODJUyFs/h5MudHeeo6hwZKMMG29dDpiIixdm9QzBxOdGAO8SvS/f87sbvX9pvcPwG3Si0YUY4znRL8DYASZ2if9ojT6wmE7mW0w492gnWBCj1AwbV7nLDWR0uNYw5R2MgkYCzFGNf6d9YnoWIAqz7uizYjiGaZkiQ=
+	t=1708017475; cv=none; b=uFJwldy4fYPQMvMiZAgdV+SNLd3SylGcKzWB+SPJ5/fNCUgnMRPs/ZvFJmxplX2/QRh7IH+RHVNwSgLR1ncy5ew3jf02vVx+lbMcfTNDOuNM6W9wKoDNCmteBNg+fSdBXrLjxDE4ZF5GYEegkL1KQlZhAzUwvUBwiI8NUNk6HnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017390; c=relaxed/simple;
-	bh=FnWRM4ezUayH/+nfUHMLdLr9sMm6ZfP4bx8t1CPLEqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZMZhPFU1Z4IJhfTNCdGdqjz/9ZRPKqAwXYYQYe25fUVVZVXOcKITh2cLIBk01MYjuur0Gl3VCsoYibwTtbbvTjFhO8cZ8lY7MYXLZrRqrAmjROkcWrfl2kildVwRg7BETIKihUneQHeGRnH/Ox0wIw9fRr+kk6+AdJgF429r4E0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=crXxaNt4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tw5zFj2V; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3aZQNKOD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rqsige/G; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 53CFF1FD72;
-	Thu, 15 Feb 2024 17:16:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708017384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mN7N6sR+6YLENx+tkwEFlJDkjcUq22eMFFhbhlDssyE=;
-	b=crXxaNt4lz+6l+N1R7/8qInOvrZc42YDVwOgn7kmGjjKgGPBh08qU9C2tVz6gWWL/1c5/8
-	GXr08GIve9b2Kij0ykGJdztHaTEXbZu8crqH377qaY63BT+dkl/QFxO7obovljjRvA00mQ
-	GzdFHnUlI/7KlOtp/r6bz78eVOy4rwg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708017384;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mN7N6sR+6YLENx+tkwEFlJDkjcUq22eMFFhbhlDssyE=;
-	b=tw5zFj2V2oD3MPiFJMvYDH/qkPCwX9pSObaRuCoL8AaH2cSC6HH/onlR9PsN6KPIrxL/Lc
-	nOL9N5eUyK2R/GCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708017383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mN7N6sR+6YLENx+tkwEFlJDkjcUq22eMFFhbhlDssyE=;
-	b=3aZQNKODUKOoV8JVnld6mFSn3VKkr/j1RwTX53xoftbrWHoE1SUX720mKlEsfM99xJlQ8q
-	/EX2kXq8WzII6GZaWu9tXxubeDE9aAieAYOc8XVDKsfgX7KhsKSM2pKcoIhbSrm9Ebr25Z
-	1Z8vsp9Wp0YXiMQqdoR0nZYgz6QnML0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708017383;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mN7N6sR+6YLENx+tkwEFlJDkjcUq22eMFFhbhlDssyE=;
-	b=rqsige/GL0a+boAWmMzPwVHF8fyiQZ1F3UuvQ19UTSuX1g1/q7hrGjDdVIZ4UljyUXWR1b
-	tfJI2RMdF+bSFvDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4087F139D0;
-	Thu, 15 Feb 2024 17:16:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id sym6D+dGzmVzTAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 15 Feb 2024 17:16:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A7C03A0809; Thu, 15 Feb 2024 18:16:22 +0100 (CET)
-Date: Thu, 15 Feb 2024 18:16:22 +0100
-From: Jan Kara <jack@suse.cz>
-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-Cc: Jan Kara <jack@suse.cz>, Chuck Lever <cel@kernel.org>,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, hughd@google.com,
-	akpm@linux-foundation.org, oliver.sang@intel.com,
-	feng.tang@intel.com, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, maple-tree@lists.infradead.org,
-	linux-mm@kvack.org, lkp@intel.com
-Subject: Re: [PATCH RFC 7/7] libfs: Re-arrange locking in offset_iterate_dir()
-Message-ID: <20240215171622.gsbjbjz6vau3emkh@quack3>
-References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
- <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
- <20240215131638.cxipaxanhidb3pev@quack3>
- <20240215170008.22eisfyzumn5pw3f@revolver>
+	s=arc-20240116; t=1708017475; c=relaxed/simple;
+	bh=tfaViPks8NnM283/X+IeiZHNZJ7mRUXnXQTI9qhFnNU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=t4Izb1BCIRI+vzw8a/VV+TJ31eVG2QRD+L076X8lthc6iwPd604bT4cOHEpwaKecvNoBOsXCZqIvcoX9kXD0JS/sA0ZJXxSdaXAsXY41CTfGPRVu4VztJPfiM7WP9L87NIgzZ9FP+8/Hof1S0D4hN2tdE8Tz0rviIXpQnaT2f0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aWANoxYD; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-511a4a1c497so1245138e87.3;
+        Thu, 15 Feb 2024 09:17:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708017471; x=1708622271; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H34U5Vbhdh0VVX7V6tBXcBBMhZVVWdzHO2tS/G9vxsA=;
+        b=aWANoxYDdxSHqOZ4/dmVvI+NsM8jhc8P8oGIIawFFnH6+mIBZ2UIypvbdJr2vnedBJ
+         OGsYDrOd44IUBoxLQa3jXEHpahtMx4sbBCmqHLR8hmf47QmLVRgwsTUHumEo9QqxeYKv
+         fVu5zEo/u9jsRsubL5CtWdaljD1Y0IEnMBJS1AmuwG17YYP2Yr38NEqCjKuPwo0zGrje
+         b5JfTkmP1oprbymcGtpYqyCT7c9wpYwGLyChDi6aale7rQ9Mv3lYPns9yc01PSxy4hg0
+         NM36Cth8NrYzSIpw1VGRAv+wGzeOa782aUm2wQY+J1jjHCsIoqfl9gg9zBD+3vsghCmN
+         vyIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708017471; x=1708622271;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H34U5Vbhdh0VVX7V6tBXcBBMhZVVWdzHO2tS/G9vxsA=;
+        b=A/HL3yUxy99jWPaSdhLYTn97tkmu+JLsHVQ6zdZ4lBONEuz6yCuLgUD0bTETFHEMYO
+         mdPe7EjNB1zxSJhKxpozOSgaArlxAk3HHhmcHkIChfhzL0iyekEz5Ct0qvG0FbEcnWui
+         m10cwuDUsC0/l9iUG/QtWzyx5GgBliRMrkfnguaTCjcYHntiIY3TEgfsx777dbFc9kCh
+         J+w+YSMk1EeK5Oth6xVvcfabbYZ4/PmaiWl7JA6G7aOm8M6C4QRGoYcHiEhWPlTZeBBi
+         7+EuY/YpANmGqZyj8nJ0gdBkgVOJkPpjXeGkocwHT/xdIyEK30CcQ73rg+ErqjZ32XLZ
+         9OZw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXRq/Zw/CSIWM0wnJJryoAPwSAFGOrE5tTmGay84bES+Zc1+dcQepqGwllM1LPZdtloAYIVoPsKDcuY741Kk1LGbujxhcE7ik71keEOnKI1SY7zGRWszfzuuM1bleh8IKN2BxjuziMhoGTtZUSGxW84ZQ/n74r9XpaM4g++DhpkMHh4qNtCQ==
+X-Gm-Message-State: AOJu0YyQ4NaRJZoZ8y8YHxOatLayRcnQywhlFMJZAU9roTpmzbB2tmCm
+	u7tHmxos0kiS7yon1gseIFeBsz4W2dtfPNev5znw1T7WVlO6hrTC
+X-Google-Smtp-Source: AGHT+IHHcZ1//S93h4fbmeMpKxoOUOaImluG4dEHXvLHUuc5pEbhKBnFGfiMd6XylvzjlNMhDqLQ0w==
+X-Received: by 2002:a05:6512:31d1:b0:512:8d6d:4804 with SMTP id j17-20020a05651231d100b005128d6d4804mr934022lfe.15.1708017470617;
+        Thu, 15 Feb 2024 09:17:50 -0800 (PST)
+Received: from localhost ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id m26-20020a05651202fa00b00511a289c0c9sm308209lfq.306.2024.02.15.09.17.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 09:17:50 -0800 (PST)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+	Stephen Rothwell <sfr@rothwell.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mips@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] MIPS: Fix missing proto and passing arg warnings
+Date: Thu, 15 Feb 2024 20:17:25 +0300
+Message-ID: <20240215171740.14550-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215170008.22eisfyzumn5pw3f@revolver>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.71
-X-Spamd-Result: default: False [-3.71 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.11)[-0.569];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu 15-02-24 12:00:08, Liam R. Howlett wrote:
-> * Jan Kara <jack@suse.cz> [240215 08:16]:
-> > On Tue 13-02-24 16:38:08, Chuck Lever wrote:
-> > > From: Chuck Lever <chuck.lever@oracle.com>
-> > > 
-> > > Liam says that, unlike with xarray, once the RCU read lock is
-> > > released ma_state is not safe to re-use for the next mas_find() call.
-> > > But the RCU read lock has to be released on each loop iteration so
-> > > that dput() can be called safely.
-> > > 
-> > > Thus we are forced to walk the offset tree with fresh state for each
-> > > directory entry. mt_find() can do this for us, though it might be a
-> > > little less efficient than maintaining ma_state locally.
-> > > 
-> > > Since offset_iterate_dir() doesn't build ma_state locally any more,
-> > > there's no longer a strong need for offset_find_next(). Clean up by
-> > > rolling these two helpers together.
-> > > 
-> > > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> > 
-> > Well, in general I think even xas_next_entry() is not safe to use how
-> > offset_find_next() was using it. Once you drop rcu_read_lock(),
-> > xas->xa_node could go stale. But since you're holding inode->i_rwsem when
-> > using offset_find_next() you should be protected from concurrent
-> > modifications of the mapping (whatever the underlying data structure is) -
-> > that's what makes xas_next_entry() safe AFAIU. Isn't that enough for the
-> > maple tree? Am I missing something?
-> 
-> If you are stopping, you should be pausing the iteration.  Although this
-> works today, it's not how it should be used because if we make changes
-> (ie: compaction requires movement of data), then you may end up with a
-> UAF issue.  We'd have no way of knowing you are depending on the tree
-> structure to remain consistent.
+After getting my local tree rebased onto the kernel 6.8-rc3 the MIPS32
+kernel build procedure produced a couple of warnings which I suggest to
+fix in the framework of this series.
 
-I see. But we have versions of these structures that have locking external
-to the structure itself, don't we? Then how do you imagine serializing the
-background operations like compaction? As much as I agree your argument is
-"theoretically clean", it seems a bit like a trap and there are definitely
-xarray users that are going to be broken by this (e.g.
-tag_pages_for_writeback())...
+A first warning is of the "no previous prototype for `<func>`" type. In
+particular my arch-specific code has the mips_cm_l2sync_phys_base() method
+re-defined, but even though the function is global it' prototype isn't
+declared anywhere. Fix that by adding the method prototype declaration to
+the mips/include/asm/mips-cm.h header file. A similar solution was
+provided for the methods:
+__mips_cm_l2sync_phys_base()
+mips_cm_phys_base()
+__mips_cm_phys_base()
+too (Please see the patches 1/4 and 2/4 notes section for an alternative
+suggestion of the way to fix the warning).
 
-								Honza
+One more case of the denoted warning I spotted in the self-extracting
+kernel (so called zboot) with the debug printouts enabled. In particular
+there are several putc() method re-definitions available in:
+arch/mips/boot/compressed/uart-prom.c
+arch/mips/boot/compressed/uart-16550.c
+arch/mips/boot/compressed/uart-alchemy.c
+All of these files lacked the prototype declaration what caused having the
+"no previous prototype for ‘putc’" printed on my build with the next
+configs enabled:
+CONFIG_SYS_SUPPORTS_ZBOOT=y
+CONFIG_SYS_SUPPORTS_ZBOOT_UART_PROM=y
+CONFIG_ZBOOT_LOAD_ADDRESS=0x85100000
+CONFIG_DEBUG_ZBOOT=y
+
+The second warning is of the "passing argument <x> of ‘<func>’ from
+incompatible pointer type" type which I discovered in the
+drivers/tty/mips_ejtag_fdc.c driver. The problem most likely happened due
+to the commit ce7cbd9a6c81 ("tty: mips_ejtag_fdc: use u8 for character
+pointers").
+
+That's it for today.) Thanks for review in advance. Any tests are very
+welcome.
+
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Stephen Rothwell <sfr@rothwell.id.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (4):
+  mips: cm: Add __mips_cm_l2sync_phys_base prototype declaration
+  mips: cm: Add CM GCR and L2-sync base address getters declarations
+  mips: zboot: Fix "no previous prototype" build warning
+  tty: mips_ejtag_fdc: Fix passing incompatible pointer type warning
+
+ arch/mips/boot/compressed/uart-16550.c   |  2 ++
+ arch/mips/boot/compressed/uart-alchemy.c |  2 ++
+ arch/mips/boot/compressed/uart-prom.c    |  2 ++
+ arch/mips/include/asm/mips-cm.h          | 16 ++++++++++++++++
+ arch/mips/kernel/mips-cm.c               |  2 +-
+ drivers/tty/mips_ejtag_fdc.c             |  2 +-
+ 6 files changed, 24 insertions(+), 2 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.43.0
+
 
