@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-67820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 448D185716A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:18:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDE485716C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:19:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68EDE1C218B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:18:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14C10281B56
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F02B14C59C;
-	Thu, 15 Feb 2024 23:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E10114D44C;
+	Thu, 15 Feb 2024 23:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J67+WqLJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PVh08EVe"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51D214A4C9
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6108014AD24
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708038885; cv=none; b=kphL5IjI8qtSvNR3bQQLe73WFLlx1vmTgKG1iywqnyPrrGvAxQH4Fr83gBjS4nPfOpJYK1dskOvZK61GC1M/+FXNsX+qt4igigV3/CZnaoV3fS2jFXDz43s0csBVdz0wmlN0UniZgI5OjhWUv+ZwAVMuiWd8Fc+B4AT+5QxZFYU=
+	t=1708038887; cv=none; b=SO827y/gPA8hQVS/H/XetiTszVnvIa17ITCCoOSkHjo9dOT4zEViHsj/O4UQIDxpUExUcLlJceia502JT8as+7aRx3YoHah3IPNCGraAXG/LVAFtrB5yOUAdAZKbnRlVH885DIUuKaTs3re2H5135sKd3iKY9tT57IFofLMBo+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708038885; c=relaxed/simple;
-	bh=VO9DQY6lGtiG1eC5gi6w3K4FE6tMMi6+Q5ti33XNprc=;
+	s=arc-20240116; t=1708038887; c=relaxed/simple;
+	bh=fQLzGTXW5Y/EBT0eWnQYJ+GT+r/+mVoQa4wR7CvVXl4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JqbkO8CciD7zEOoEuPQ2wt61aJ5HfhK+Agm4cJjOgc4Auwtdm6tKVrWiqqz1dpW4AfjMU+2fgbR06CZSi0HYj7oqDODJ9WcbJYlToXmJ0aTH1dYlcfgL8f3m1Jyj6e6Rdeag6K6vQrr5J/D/hdY7oPcmD8JxUX+HxNJbEe140T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J67+WqLJ; arc=none smtp.client-ip=198.175.65.21
+	 MIME-Version:Content-Type; b=VqK7ZWSOf56zozTbSD4G3ID/AAGKr/+LVfoefbuJwgPdvcYyhrUKAtuhGritUXQ/cQXskQSJMReG7utUqc5Sv/P8WhejOnz2u7uIo4c/nrz3KudXwhgYFrpbE72O36muAS6NlzIPKoVoX8oVPL5Kqohe/qWhnNJjfu7xJYaW/9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PVh08EVe; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708038884; x=1739574884;
+  t=1708038885; x=1739574885;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VO9DQY6lGtiG1eC5gi6w3K4FE6tMMi6+Q5ti33XNprc=;
-  b=J67+WqLJBRvfQDvEc8w0q2MZpIfq4EbTbPasgs/MIL1ucB8F0t1Izdph
-   AnoHk+OtNrZDygV6IAuvYp8yCy8sWoy/baVZcWtvChTcHLCrq3d+4y9zn
-   fp4WczYl9+n75Oxx7eiC/yHofsFcD/FRMEqA8Zh9mics4TpIQ2UaHM8NP
-   GlPhKHi4fW7tTrsQfUdjda6UA+PdasrkVhfYTlaw49GODv1fHT0Kd5g+n
-   6W0fn4gsGIDvGJbj7tPdKSXSGwIowtmkR/xrfqx6pNfhWDsoIGM7T+qBq
-   /e6EfL9jU3eLeccw/BK8klCptxvVd8cXu7dCH1BcoCo1EX5YgfR5Csqbb
+  bh=fQLzGTXW5Y/EBT0eWnQYJ+GT+r/+mVoQa4wR7CvVXl4=;
+  b=PVh08EVezN8JnrhzLkbq0lM+KeuoNBnEybXTIw8rqwcf5mwgy9AVdhxE
+   vyRjbcM8wg1LqUif4GKWl6o3aQyK25+ji/te3cLD/K8kbvVe+eA4l25yf
+   g4gVQQZeHdXVY5FINTevT6rbZAXB/Gi7sIPhoVQZGJUnVG/xKRpTsGDGq
+   +GP5+HtTCHH0mzmEped4jGp3lcpD2Ye+Icd2mbsf+A45ed+UzZ9HbOhrY
+   CxEzJFfOfzM3bVzrcYVUkGHGxcQDJ0b3Nzrpgh1YQpFWklZdOuKfH7156
+   7MHa+aHKiioT6vPPN+n+TQaKy9m57yl/FQqbPxD0rX149sCtWFpXiy34u
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2066382"
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2066396"
 X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="2066382"
+   d="scan'208";a="2066396"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:42 -0800
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912250203"
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912250207"
 X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="912250203"
+   d="scan'208";a="912250207"
 Received: from yshin-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.95.133])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:41 -0800
 From: Rick Edgecombe <rick.p.edgecombe@intel.com>
@@ -72,9 +72,9 @@ To: Liam.Howlett@oracle.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Cc: rick.p.edgecombe@intel.com
-Subject: [RFC PATCH 6/8] x86/mm: Implement HAVE_ARCH_UNMAPPED_AREA_VMFLAGS
-Date: Thu, 15 Feb 2024 15:13:30 -0800
-Message-Id: <20240215231332.1556787-7-rick.p.edgecombe@intel.com>
+Subject: [RFC PATCH 7/8] x86/mm: Care about shadow stack guard gap during placement
+Date: Thu, 15 Feb 2024 15:13:31 -0800
+Message-Id: <20240215231332.1556787-8-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
 References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
@@ -103,79 +103,66 @@ placed, mmap() may place the shadow stack in the PAGE_SIZE free area. Then
 the mapping that is supposed to have a guard gap will not have a gap to
 the adjacent VMA.
 
-Add x86 arch implementations of arch_get_unmapped_area_vmflags/_topdown()
-so future changes can allow the the guard gap of type of vma being placed
-to be taken into account. This will be used for shadow stack memory.
+Now that the vm_flags is passed into the arch get_unmapped_area()'s, and
+vm_unmapped_area() is ready to consider it, have VM_SHADOW_STACK's get
+guard gap consideration for scenario 2.
 
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/x86/include/asm/pgtable_64.h |  1 +
- arch/x86/kernel/sys_x86_64.c      | 29 ++++++++++++++++++++++-------
- 2 files changed, 23 insertions(+), 7 deletions(-)
+ arch/x86/kernel/sys_x86_64.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index a629b1b9f65a..eb09a11621ad 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -244,6 +244,7 @@ extern void cleanup_highmap(void);
- 
- #define HAVE_ARCH_UNMAPPED_AREA
- #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
-+#define HAVE_ARCH_UNMAPPED_AREA_VMFLAGS
- 
- #define PAGE_AGP    PAGE_KERNEL_NOCACHE
- #define HAVE_PAGE_AGP 1
 diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
-index c783aeb37dce..f92780cf9662 100644
+index f92780cf9662..3b78fdc235fc 100644
 --- a/arch/x86/kernel/sys_x86_64.c
 +++ b/arch/x86/kernel/sys_x86_64.c
-@@ -119,9 +119,9 @@ static void find_start_end(unsigned long addr, unsigned long flags,
+@@ -119,6 +119,14 @@ static void find_start_end(unsigned long addr, unsigned long flags,
  		*end = task_size_64bit(addr > DEFAULT_MAP_WINDOW);
  }
  
--unsigned long
--arch_get_unmapped_area(struct file *filp, unsigned long addr,
--		unsigned long len, unsigned long pgoff, unsigned long flags)
-+extern unsigned long
-+arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr, unsigned long len,
-+		       unsigned long pgoff, unsigned long flags, vm_flags_t vm_flags)
- {
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
-@@ -157,10 +157,10 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
- 	return vm_unmapped_area(&info);
- }
++static inline unsigned long stack_guard_placement(vm_flags_t vm_flags)
++{
++	if (vm_flags & VM_SHADOW_STACK)
++		return PAGE_SIZE;
++
++	return 0;
++}
++
+ extern unsigned long
+ arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr, unsigned long len,
+ 		       unsigned long pgoff, unsigned long flags, vm_flags_t vm_flags)
+@@ -144,12 +152,13 @@ arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr, unsigned l
+ 			return addr;
+ 	}
  
--unsigned long
--arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
--			  const unsigned long len, const unsigned long pgoff,
--			  const unsigned long flags)
-+extern unsigned long
-+arch_get_unmapped_area_topdown_vmflags(struct file *filp, unsigned long addr0,
-+			  unsigned long len, unsigned long pgoff,
-+			  unsigned long flags, vm_flags_t vm_flags)
- {
- 	struct vm_area_struct *vma;
- 	struct mm_struct *mm = current->mm;
-@@ -230,3 +230,18 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
- 	 */
- 	return arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
- }
-+
-+unsigned long
-+arch_get_unmapped_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	return arch_get_unmapped_area_vmflags(filp, addr, len, pgoff, flags, 0);
-+}
-+
-+unsigned long
-+arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr,
-+			  const unsigned long len, const unsigned long pgoff,
-+			  const unsigned long flags)
-+{
-+	return arch_get_unmapped_area_topdown_vmflags(filp, addr, len, pgoff, flags, 0);
-+}
+-	info.flags = 0;
++	info.flags = VM_UNMAPPED_START_GAP_SET;
+ 	info.length = len;
+ 	info.low_limit = begin;
+ 	info.high_limit = end;
+ 	info.align_mask = 0;
+ 	info.align_offset = pgoff << PAGE_SHIFT;
++	info.start_gap = stack_guard_placement(vm_flags);
+ 	if (filp) {
+ 		info.align_mask = get_align_mask();
+ 		info.align_offset += get_align_bits();
+@@ -191,7 +200,7 @@ arch_get_unmapped_area_topdown_vmflags(struct file *filp, unsigned long addr0,
+ 	}
+ get_unmapped_area:
+ 
+-	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
++	info.flags = VM_UNMAPPED_AREA_TOPDOWN | VM_UNMAPPED_START_GAP_SET;
+ 	info.length = len;
+ 	if (!in_32bit_syscall() && (flags & MAP_ABOVE4G))
+ 		info.low_limit = SZ_4G;
+@@ -199,6 +208,7 @@ arch_get_unmapped_area_topdown_vmflags(struct file *filp, unsigned long addr0,
+ 		info.low_limit = PAGE_SIZE;
+ 
+ 	info.high_limit = get_mmap_base(0);
++	info.start_gap = stack_guard_placement(vm_flags);
+ 
+ 	/*
+ 	 * If hint address is above DEFAULT_MAP_WINDOW, look for unmapped area
 -- 
 2.34.1
 
