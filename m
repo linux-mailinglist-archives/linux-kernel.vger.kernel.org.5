@@ -1,105 +1,118 @@
-Return-Path: <linux-kernel+bounces-67599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C87856DE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:40:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E0DA856DFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDBB11F22BCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 226A02835F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881D113A257;
-	Thu, 15 Feb 2024 19:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9039513A86F;
+	Thu, 15 Feb 2024 19:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JNiBl6sS"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="INZoQ/FA"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80AAF136983
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EE813A25D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708026046; cv=none; b=N05+X+68lQ01hel2cIJMtbqNDzChXEOSkAual7p1fwJiGMBtKU8j8lDx3Cp3iCBEbfgPQy47ucA2cCkVbYTXDk+4GMmKKxvuewT2wUhyWkptG8MqDYTea3xJ9kfNELzb0/FCUUS5BYeE7rEGmeIoRWrtkr8kIUEvThPu4zRFSOU=
+	t=1708026221; cv=none; b=tGZvqKn2shgCNLV6Do9amJL7BcfRHExGKgWhLNQZwN6u1oxAJvVWG9m1e5idCRujB/CuYcvRYWKmjy8+cMorOiWBIZ8OAcp3WzNKwQd4g0qS/lWKPDZUO0BowLr0S04h3rflZfp5MHfvOVFDgmzEoweXsqYFsQ4fI0xCvoxPHPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708026046; c=relaxed/simple;
-	bh=jokuoCNs89OtbgBuZAnY+h16wX3YDNSNuOYB2bmOCdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tl9397RsgNGkkqZBInJpNPlSq8rzNHAhoT6AOgc9ROKN7MflH9NcJCq8cKQk4NjvNqcWcRA+yKDiMRriN9Q8tvsPPLFR6MCGKiXIaO3sLXTSIDvvcZIIekVhrY6LSeb6l6zMBC30+XHRK2tOBQiC0mdW6MAzbQ9YysrqsUj+nq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JNiBl6sS; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d51ba18e1bso12879825ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:40:45 -0800 (PST)
+	s=arc-20240116; t=1708026221; c=relaxed/simple;
+	bh=HDDFchT229HxwZ+4S2Oyhh6QwaUnpPOF1xD3S5Yhof8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XVvhXHBptJQJkuxjQecdWv2NKJJ8WE2vg4HCFRpLNxFPaRJzm6VFxN68n3Lr2OWmDOLU1+t5fhhWzp+1CXafWUTrt8EREiMQaraer/46VqxcMCf412E13QEnlu7Ym9kUgwtTm0jR5QCkiLZUPF71PdodQKdPMiKlzmRD4K2R5Pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=INZoQ/FA; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-411de7c6b3dso9848655e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:43:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708026045; x=1708630845; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N45lPs3M9TrNxSLc9/f/ZRjzHt59sujwqrGC6tXBgWE=;
-        b=JNiBl6sSNFysLdej+LyFOyX1xlFxK9H27wtXxtlXKL4/utIkKlaCOs0xLToapqzrq+
-         naEXDSOqeGHSPkvq5MXpXtFsvskgxCJqeX8Bcb142GFDbNlxqMrKGLbK0hiWCpNd88IE
-         XKFrZjr+81oI3v9C86fDJ6EFjIDUeiXCzZwVs=
+        d=gmail.com; s=20230601; t=1708026218; x=1708631018; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7D3Hve9+ECAggWL+Tt6SbntilYeA7K9pgcMz0v6dHa4=;
+        b=INZoQ/FA8tl9BlvvOFbLhWKl+0iobU8yPNJBetgQmI6LhMOWfFGVt1HFLa43vTtbXr
+         N6yXn+cFH0Yy+IoHfASBNuGuGHtQczdZCdKKitNLCsRjQoDsG+LitELQIpuUDA445z29
+         wFcX2rH8h9AjfFIfRyylIRvuMzj2eLlANYM8RfpocjTg6C/9iZTeVJ9Pjb6TL8kNaGBL
+         tqKSN3P7+C9FWPb2p6Ps6Tb65ysEnXxwkby0lOiWjm6rDS6Br+S9P9qgWgAS1t4ApFpt
+         PMvP/yhLfkH8D40/dQiyItiyv3p2j419iBUSoQICWRMCsBqjptCAOwv3uAdpRUuBVbL8
+         sckQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708026045; x=1708630845;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N45lPs3M9TrNxSLc9/f/ZRjzHt59sujwqrGC6tXBgWE=;
-        b=RK/mkQqWp6GKEbP4DVqdHN/Wa7NRH3FTVAy1FXFh3a4U/QNBqmukvnO0NgGx3cyl/r
-         Kt6bocXVrfZcbUCUBF1LKo5hagIcbhYMIIBPlfN+VBPJWukI6FWcZODCMiDc0VffQgNm
-         yGTKv9uc/Q/mWGHJwnYHQsxb0xwgkQ5BsiLrSugchzzxyY+4JCihdz+QoiLldiS0KlK9
-         uPoZxDdLpXgGFahpUTKvMHjNd5tm2w19+IjpEwiAzordJoOWB0pKJSSdTqlrVcWVy5n4
-         iSL94I4ZGkHM9AuZUiLJzSDz+AJ0lubGLaJcJupFJutdb9E+kKXFg7hBjNAKd2onb3by
-         M9UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEKD4CpWfxjXR3wpvFdlv2y5rlQkvkX/wTfv6zgCDKPgzbD8qCBFXMqXnDqTVVKAJKS/E9G3JkCecqHrmh2gzCM++u1nQ9OoaCZkN6
-X-Gm-Message-State: AOJu0YztzWUGmK6bMdhE/ng1DgSpgSm4vjgoX7DjBtUFzXBc3kObUZzr
-	4YYV9P0LVCDtLkY1pdQEUXPazRNng9kZ5HKj+KiE0Zi65deFfj03OgV3RZvJ/Q==
-X-Google-Smtp-Source: AGHT+IFx9b8jYULzNHxK13eAZ7tnM5C0S0j71SlJw2uZYPQ138X7hnoC7MKrw3Y2FjevZ5APngnOvA==
-X-Received: by 2002:a17:902:c1cc:b0:1da:1e0a:eeff with SMTP id c12-20020a170902c1cc00b001da1e0aeeffmr2681211plc.67.1708026044715;
-        Thu, 15 Feb 2024 11:40:44 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001db2b8b2da7sm1618299pli.122.2024.02.15.11.40.44
+        d=1e100.net; s=20230601; t=1708026218; x=1708631018;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7D3Hve9+ECAggWL+Tt6SbntilYeA7K9pgcMz0v6dHa4=;
+        b=NBJXfFYhJOq7QctA+6lq0eLvbII1vIo6MAVgWB/DRY8VDf/9YKOFGEXa0Iz4nZ+EXC
+         taKz8b9G/N0wYazVH2+TmdVsF8kc+LRDCiXTnbBhHQM1xkTWDcjGMtEj2f8QzHYRT2KW
+         1/M9QfQObfVK8SpWeCLP5PkbEeybanwIHWBBm+7OVXqYm7CczSvRilFrb0B0ZziYGp+4
+         VzBgYhhk1Ht89q4o1wJa6mSnhqCq1gFkPhIouwJqvqhDQT8Val0y9Rwxxkf2UFS6os+z
+         ybdyzZEWkVRzazVQL69+S91Gg4qfwUqXb4ZpkgQGKV888Dnuio9e+fjo0pV+8Wb1SWf7
+         cfVg==
+X-Forwarded-Encrypted: i=1; AJvYcCV40Il7rqtEZgd16siJXVGfzojKBL2v0sr3DcXSqz+WqbZhlzi3iS6nSrruseF6VUDtkH0AlcVun+iaLyhCDq9JMwcYjBgHkNNo86dI
+X-Gm-Message-State: AOJu0YxK+HHCgoTk2TON/DIpBvMgrsz1yaL4a7q8D4zwCQtRQuHKk7ZM
+	QttuUUVOHriwVz0k3nZTAR8zjTWDT+wUWWRueUVL0O/mBE/jeDez
+X-Google-Smtp-Source: AGHT+IE4y+314+eegQYovl6v69vxT7kokVg98vDhwNONtKWxXDw7xVMWeBJpuZ/HTGCVKOJ71i2H4Q==
+X-Received: by 2002:a05:6000:2cc:b0:33d:1665:b2b0 with SMTP id o12-20020a05600002cc00b0033d1665b2b0mr463406wry.53.1708026218325;
+        Thu, 15 Feb 2024 11:43:38 -0800 (PST)
+Received: from aaron-macbookpro.. (host-92-14-37-217.as13285.net. [92.14.37.217])
+        by smtp.gmail.com with ESMTPSA id bu23-20020a056000079700b0033b7d9c14desm85706wrb.5.2024.02.15.11.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 11:40:44 -0800 (PST)
-Date: Thu, 15 Feb 2024 11:40:43 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Michal Hocko <mhocko@suse.com>, corbet@lwn.net,
-	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, security@kernel.org,
-	Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
-Message-ID: <202402151134.4ED3C9070@keescook>
-References: <2024021430-blanching-spotter-c7c8@gregkh>
- <Zc5PycMenLBYECAn@tiehlicka>
- <2024021518-stature-frightful-e7fc@gregkh>
+        Thu, 15 Feb 2024 11:43:37 -0800 (PST)
+From: Aaron Parfitt <aaronparfitt123@gmail.com>
+To: gregkh@linuxfoundation.org
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	philipp.g.hortmann@gmail.com,
+	Aaron Parfitt <aaronparfitt123@gmail.com>
+Subject: [PATCH v2] Staging: rtl8192e: rtl819x_HTProc: Removed braces from single statement block in ht_on_assoc_rsp
+Date: Thu, 15 Feb 2024 19:40:47 +0000
+Message-ID: <20240215194045.37205-3-aaronparfitt123@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021518-stature-frightful-e7fc@gregkh>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 07:20:09PM +0100, Greg Kroah-Hartman wrote:
-> Here's an example of what the CVE announcement is going to look like for
-> a "test" that we have been doing for our scripts
-> 	https://lore.kernel.org/linux-cve-announce/2024021353-drainage-unstuffed-a7c0@gregkh/T/#u
-> ...
-> the latest release is impossible, the individual change to resolve this
-> issue can be found at:
-> 	https://git.kernel.org/stable/linux/c/f08adf5add9a071160c68bb2a61d697f39ab0758
+Remove braces from single statement blocks in the rtl8192e staging
+driver to clear checkpatch.pl warnings, improving code readability
+and adhering to coding style guidelines.
 
-This is the "original fix", a v5.16 commit, which was backported to all
-the stables. For this case, that seems fine (it's pretty easy to grep
-the stable trees for the SHA).
+Changelog since v1:
+- Updated the subject line to make it more unique and descriptive.
+- Refined the patch description for clarity and conciseness.
+- Incorporated feedback from Philipp to improve code style compliance.
 
-In the case of a fix only being in -stable, what will be listed for
-SHAs here? Each stable SHA? Something else?
+Signed-off-by: Aaron Parfitt <aaronparfitt123@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 6d0912f90198..49b882c363bf 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -480,9 +480,9 @@ void ht_on_assoc_rsp(struct rtllib_device *ieee)
+ 	}
+ 
+ 	ht_info->current_mpdu_density = pPeerHTCap->MPDUDensity;
+-	if (ht_info->iot_action & HT_IOT_ACT_TX_USE_AMSDU_8K) {
++	if (ht_info->iot_action & HT_IOT_ACT_TX_USE_AMSDU_8K)
+ 		ht_info->current_ampdu_enable = false;
+-	}
++
+ 	ht_info->cur_rx_reorder_enable = 1;
+ 
+ 	if (pPeerHTCap->MCS[0] == 0)
 -- 
-Kees Cook
+2.43.0
+
 
