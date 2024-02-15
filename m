@@ -1,127 +1,162 @@
-Return-Path: <linux-kernel+bounces-66551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39230855E49
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:36:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5C4855E41
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79DA0B304BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28A2EB324EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF16517745;
-	Thu, 15 Feb 2024 09:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A11217C61;
+	Thu, 15 Feb 2024 09:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cG8ZiY/T"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BhTmjOIQ"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825F21BC3C;
-	Thu, 15 Feb 2024 09:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6947EDDA5
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707989563; cv=none; b=UqoYUav0A/S4vs8U6W+obt5480IxHUUNies7F4dQUBQ0dev50LUsm7XDdAcj34FqFJsO4t/eiZ4CVeHHgjml2HZOZFV/udPMzPkyORN+Fa1omaTko93Hv4VyFlM6jncebh27gxrld0CCxWELx1lVMgH2xf9Kv1VzCLrrifvG0Ws=
+	t=1707989544; cv=none; b=PpEIgZ/TowZTvkVSkVbYT/t0s1MI+SIC2TSvlCbDeCoIL1NWeuOvm+plW4q1nt2EBVTEPGjbsgoDmyQXJPmkdR9d7pSfySxW65vL3SkSGrBQq2t7ZGYNS66rasvUj6dMEUo5MkZHXF/jWTw7XDLeB2PSadLp9DWCNZ17bHW+jzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707989563; c=relaxed/simple;
-	bh=1hpSQbpkIw0+P3onlkNPtfkGkPgtz2wSsdJChOLmuhk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ccUKEnzGiuT2AB3phwNeTPSy9NVirJBL6Ik85AQsAX0aUrpQv9Xy/bKdgG+lE2wAimK03q/L2H0h0VcFfLT93+tq5SOpw4PhikyAOOtBOhQU7q1rFqfsrhyTyPaNTXDeyfgZ86y7H2iVIijtU/inpFaaY7RQux1xFnIxsxxgepQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=cG8ZiY/T; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41F9WIeg079935;
-	Thu, 15 Feb 2024 03:32:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707989538;
-	bh=sjYVLw1rUUvV7fpxEZp2wtym68kPwovkcx9LV5NGMHk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=cG8ZiY/TJWtbOqBTvGiPWe3sBoE5CbFhw+IvF9An+6hcnsyDbzCW9smkXUIC9zu8S
-	 g7XGuGmi8QzgTs4jwcnbiairQ9o938aFE+S8t0jzkxpur7I+/n2kG6dXMTMQainSDN
-	 doVLUjTWtYDdDbqZY/k2iQIL5wKnArPO3/u+h/Lg=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41F9WIqi112265
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 03:32:18 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 03:32:17 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 03:32:17 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41F9WEds109957;
-	Thu, 15 Feb 2024 03:32:15 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Francesco Dolcini <francesco@dolcini.it>
-CC: Vignesh Raghavendra <vigneshr@ti.com>,
-        Francesco Dolcini
-	<francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: Set VDD CORE minimum voltage to 0.75V
-Date: Thu, 15 Feb 2024 15:02:10 +0530
-Message-ID: <170798813445.1487216.11059927145774998794.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213155622.18309-1-francesco@dolcini.it>
-References: <20240213155622.18309-1-francesco@dolcini.it>
+	s=arc-20240116; t=1707989544; c=relaxed/simple;
+	bh=t8fjnbGI5gCrFfnFsadlQGU4sXRofYXA6zNJI24MqTw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cozsx5cupn5qZZHTNltdBuYeX3DvO9/lDyfjhmOMz770TpyEs/9jsEe4Xu/4uBBP2HYwVaqfQQsGQs7Ur/Bp+E3dDgmqyeG6OKpTkEm+ebj7a6KYjK5qCygoDO21SdpzeSmYUeYsw3z3byNpI5khRHMbhqd/JtIhs3QCQr0RJFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BhTmjOIQ; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso426842276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:32:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707989541; x=1708594341; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xhsL/cUAT42+vhfZnH+MnscoqoxI62SZOZMcf2180Ao=;
+        b=BhTmjOIQCLkZdId60uaR6cEW8Lj2t9+jOOCJ0tj43srt+SyBfBc76ASRp80I2vJP9l
+         8GmEBVCwP5fFKDa4+pZw9fQIIXEezxinoRkq5OuW/8NrkZWCER1JXCu0V5A5qwutvjUl
+         /l8ZR4CfN5XZtaYpP95gGBGZzLB2TpMZmtEArns1V1eg1iX8fLuGtmNBWU962cTUu/6v
+         YQvm7HuXneV9dJYEjUGiRsVMGtbz7RHoAVx3SYrlXlAN7vzVoHGXBpHL3ITyabsJF8qq
+         D7slb8ZjwczuiJNOzBQisdqQK8Ad4Et0Lra1I0zmuAq/mCeiMNdCtC2qITbJpE6qtIj/
+         hUsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707989541; x=1708594341;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xhsL/cUAT42+vhfZnH+MnscoqoxI62SZOZMcf2180Ao=;
+        b=LUIRnG/53bvk9v91K3vXJCTm3F9B9CpqAKzfq6yZgv4ui2ZFgvTLlEuHswHnx84NqV
+         hMqqyNNfDmLa0XcSoikXEzLg+GhfSa5ghTHNxlDJOnwhtHSVZpXc7WXC6bwGAfk1YnbK
+         3mXspnLTxqfUbi5iZdaXSQE7AFJ4ojt3dtS7eAM0lzaosJfObJ5rMHQ8SxVa6xY45y1J
+         KkAQezOd5FiYeHsfYc1JyRfQwsXPqmMIjh9k0U3DridlbwqDikfsQ7UiWJA7LtNZnGKN
+         dcZcy0dSCl8plBiB2bu6gyUGb3/b4SK3ON7/MZwoSXf3Uy8IcZ9n+tR1C4t+5RA3IptJ
+         kMrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWvxXBRkOTR7u085J+N4jt2W5Y45DkWgn5dO4ktmM3vaL7WqpLNCgTnW0bE/pqTKhv/qKX21OrQi5kSWAU2aQEQ/+x6VvwPHZZjJlab
+X-Gm-Message-State: AOJu0YxSAq7afD+iFzd9lGuW+Ru/5ODfiTfqT8Pe2pFAGwyIhx84R+EN
+	gUEUBDvyC+NjTZqUc58w8jEryJ7AyaKRdR/DdlvEo37X6h/cYF+hOrHjd7AZAEfj33RtEi5p2fz
+	hVkPLRAekdVgn1o7Ny+3cL/YBLxZXeMYXEY8MTA==
+X-Google-Smtp-Source: AGHT+IGo2HcfVD2s8rsl4Q6UKE4zYlvCOdCjsO2WiOwy9pC6rfEmy2MtkOAphVrWtXxWh32cSnZlcfv9SsjiJWqGlD8=
+X-Received: by 2002:a25:d68b:0:b0:dc6:aed5:718a with SMTP id
+ n133-20020a25d68b000000b00dc6aed5718amr968831ybg.26.1707989541228; Thu, 15
+ Feb 2024 01:32:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240215-topic-sm8650-gpu-v2-0-6be0b4bf2e09@linaro.org>
+ <20240215-topic-sm8650-gpu-v2-2-6be0b4bf2e09@linaro.org> <CAA8EJprpYEhGi5b+uWGWtOa+qbSwUR8C0j9NLC+ah_-nvy-=Ng@mail.gmail.com>
+ <ffb16ef6-fc9a-42b1-b9c3-4e8f6b52d849@linaro.org>
+In-Reply-To: <ffb16ef6-fc9a-42b1-b9c3-4e8f6b52d849@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 15 Feb 2024 11:32:10 +0200
+Message-ID: <CAA8EJpobWYu8LoHZarOw82z78=kLJrKH0P4ncK6sX7zE1nHuqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+To: neil.armstrong@linaro.org
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Francesco Dolcini,
+On Thu, 15 Feb 2024 at 11:29, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> On 15/02/2024 10:25, Dmitry Baryshkov wrote:
+> > On Thu, 15 Feb 2024 at 11:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> >>
+> >> Document the GPU SMMU found on the SM8650 platform.
+> >>
+> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> >> ---
+> >>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 7 +++++--
+> >>   1 file changed, 5 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> >> index a4042ae24770..3ad5c850f3bf 100644
+> >> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> >> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> >> @@ -93,6 +93,7 @@ properties:
+> >>                 - qcom,sm8350-smmu-500
+> >>                 - qcom,sm8450-smmu-500
+> >>                 - qcom,sm8550-smmu-500
+> >> +              - qcom,sm8650-smmu-500
+> >>             - const: qcom,adreno-smmu
+> >>             - const: qcom,smmu-500
+> >>             - const: arm,mmu-500
+> >> @@ -508,7 +509,10 @@ allOf:
+> >>     - if:
+> >>         properties:
+> >>           compatible:
+> >> -          const: qcom,sm8550-smmu-500
+> >> +          contains:
+> >> +            enum:
+> >> +              - qcom,sm8550-smmu-500
+> >> +              - qcom,sm8650-smmu-500
+> >
+> > Doesn't this cause warnings for non-GPU SMMU on this platform?
+>
+> No because it doesn't add those to required, it simply allows clock the properties.
 
-On Tue, 13 Feb 2024 16:56:22 +0100, Francesco Dolcini wrote:
-> Set VDD_CORE minimum voltage to 0.75V, TI AM62 can run at either 0.75V
-> or 0.85V depending on the actual speed grade and on the maximum
-> configured speed (1.4GHz frequency requires 0.85V).
-> 
-> The actual value is programmed into the PMIC EEPROM during manufacturing
-> (according to the SOC speed grade) and this ensure that both the voltage
-> values are valid and therefore the OS will not overwrite the value
-> programmed into the PMIC.
-> 
-> [...]
+Can we further constrain this branch so that it is applicable only to
+the Adreno SMMUs (and enforce requirement)? And maybe constrain the
+second if-branch so that it doesn't apply to the Adreno SMMUs?
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+>
+> >
+> >>       then:
+> >>         properties:
+> >>           clock-names:
+> >> @@ -544,7 +548,6 @@ allOf:
+> >>                 - qcom,sdx65-smmu-500
+> >>                 - qcom,sm6350-smmu-500
+> >>                 - qcom,sm6375-smmu-500
+> >> -              - qcom,sm8650-smmu-500
+> >>                 - qcom,x1e80100-smmu-500
+> >>       then:
+> >>         properties:
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> >
+> >
+>
 
-[1/1] arm64: dts: ti: verdin-am62: Set VDD CORE minimum voltage to 0.75V
-      commit: 2af8358ad64fb4bf012a6dc2917fbfc78a2093b2
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
-
+-- 
+With best wishes
+Dmitry
 
