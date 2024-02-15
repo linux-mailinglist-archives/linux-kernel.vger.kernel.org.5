@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-66557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1FF4855E4D
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23123855E4C
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D4951F23D24
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:37:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D32B3281985
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172231B952;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2196C1B956;
 	Thu, 15 Feb 2024 09:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="RG4slG63"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="TQG+iyxn"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57C917741
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8523417BA6
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707989823; cv=none; b=mVW8D1D1Std04weHUPI3dZCfmEwd9tOJC+ENNzfJcP1i920gsuk21kN+RcntiIoXsAWQp9vw8428qL5duh9NQKmM+qFNn1azCQsjw/kTjwQgTENazMm1Ajzklmpq6L8rWnmeYjcF9SMokxHY06pWbsaJXGHn0D9H206utYLZOVI=
+	t=1707989823; cv=none; b=tCiZQn5YHzHOy63+b+dartyquc8zEOB4xkR2wkdV5tBg+HRZxucsXL6XwsIisrGFt9H8/C6k17ZXGNO63BFvoHC0RtbZq4XmFM3NmZV3XHAZ7xhydup3V8raT/SPaXfmynccc6sW6EnsyF6KkTXOYiCMVIi71irzMB/h/PY5g9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1707989823; c=relaxed/simple;
-	bh=aHKYH9vQ7JcKnIwHUJk+K0PHkYd1aK39zza+S+q5sZc=;
+	bh=xUBeVNY5mqTWjVsqFsHwlt9icptll46YRyGdat/hD6s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sjaCNOOuH3X55naYBpChwUx84//A8ZrrHrWbGa6DZmLj0OPuHmQzTobjiWRA8YB0YU96+tv3BeAqwRvt6SpgGXsJ8lURv52JxTRKO/dxOVrKO/ZoGNkIPR0YMpEq3olzmZ2dYJF8XhWEgvkbrX7wl+RSZ4rKyczHvkhTK4wsICU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=RG4slG63; arc=none smtp.client-ip=209.85.218.46
+	 MIME-Version; b=QQUUlCHALk2Kx1GjCxTxNdYWdWW2O6oOPLec7kcgMI3GBWgZSwRlRg0DHQYxDT2jPQPNjw1vTo25TVVRr4CgDLDxqOjvbsL9g+PAY8cuYg5rM/uf4A2e7+T9BGdllJoUu45w8lDJM56hqhvigq1yOuShg7tlbswmDeQ7QpL6HEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=TQG+iyxn; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3da5bf7f9cso26000166b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:37:00 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a30f7c9574eso82267666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:37:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1707989818; x=1708594618; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1707989819; x=1708594619; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m7dUZOBLu7d+3R+DKHO2TzD/GDIM7CR+ZFQySZN2YdQ=;
-        b=RG4slG634Nd/V5uD81rPAdcXUVt/QNjQV8C1lWfF2KjNp1tbz7pppnO5EKBvpYzBF0
-         nK0cbP3PTk1KOZFRCKkhvMsPJ+F/LoBNMVjs16XWI1SkF8xiKf1f4kzzkLLA7n7wvg6O
-         YbgKdlbaabWtUCxofsIlCjNy2mJBxCqgel4W9l6n44FMUyCzHl0HBbTfKDAPt7gp+5oz
-         FGgZghhljJtlLzy/7J5NzQG98aIRV3Dr7nXjoWSJmZ9TNYKNCTD83TTRpyiuqRNgeiHV
-         H9xtXa3HGK3aBOi61jz9qSBGaqP1p7/B3gGhumJPozxgiNl8V4HQO3aBI55Jgy7BWkP2
-         g9zg==
+        bh=GL6ddD5YKfOqRj2RNy6xNtOts5S4Jrg36FUNpDVDuuc=;
+        b=TQG+iyxnc/h06yz/3oGbWd5uEICugybXWLY+DMR1HZM9OXiQOmAIVM/Mt5DSyaxZKA
+         UT236ix3YDlFcspWvEMqo8PLTQX/5nJolB7Ga8pYCWb/KU5Twr7ILXTU4wdYtlbrB78p
+         BKmPvKvWHSB4bMT4Ffq2pv8xhRG0lAp5bs2nCacyAoBt061MhDHOMQI7i9q+sbGEmgjW
+         snuqUevNA3esDClhjSwTUrHUSZvuHihi41qFaq5bWfuYK8RvgeRoAC++81Amu9Q2Jh7s
+         10a8g9jHsRVJmgzftATFe9T5qSkLSyG2IMwm+WBSLhDlAvcbCfnmyhAJgS8+kd5dj05u
+         ak1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707989818; x=1708594618;
+        d=1e100.net; s=20230601; t=1707989819; x=1708594619;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m7dUZOBLu7d+3R+DKHO2TzD/GDIM7CR+ZFQySZN2YdQ=;
-        b=dM13CgCUEevSHn2uKOfOHqKrpDlynEya83Yjq2zQ1YHT6NKQNxAEbbZuMKAVXHQaJ9
-         RwTdbSbzsZ7VOPo5lAJGI1EwUQ8kydc/Or3l3MDHRumlIthQ48iL0wA5dCdtTlegT5CP
-         thDjOWADXxeKq2Vv9Uuk8pACAjpsvUQPwum3M8CGXQHV5/oivmjqjD4+M+gf6O+qH09i
-         py/l6EwjdZpotEcAtGicmjPnLj8Ckly5TzQCFHXsgTrexXg75ZT8Z1j1fko/h7HrXpUy
-         iPi5yvCmCSfJkC2WX6cl2NC4PF+6Q/TMYH61qPJMon/cwOrGo2/vfoiIHRE8K+ZFbuH4
-         wjsQ==
-X-Gm-Message-State: AOJu0YxYg1OVXy5JB2J5zpN1gjdFbMTBwLbIXe8NhpXtVVlDCpxqmw23
-	KBmNLKteq48LfS4qOvbCH2X93Ov6Xe/hxakMKe0x1wtoUk2kLVxG+0sKjpnFyPRKfWnOmIV9RmY
-	Z
-X-Google-Smtp-Source: AGHT+IFUXii2K0AUUpMDVe1jokORv8xAqgKb9r+fePYUohnjQor5QUILIeJjCrEzoMJ9tSh3SHsKWw==
-X-Received: by 2002:a17:906:7196:b0:a3d:1899:ec3 with SMTP id h22-20020a170906719600b00a3d18990ec3mr884874ejk.35.1707989818387;
+        bh=GL6ddD5YKfOqRj2RNy6xNtOts5S4Jrg36FUNpDVDuuc=;
+        b=S08FcO0oel/EOCeIlE5U1c7SjZndG7QC92HvAehvE+q8j3bVRZ3f/noYCZMj5D0+Uz
+         GXOXZvS/GXGHqbzklwxPr0Gcq1vrgxJoRai8iVtjJuxZgfDQedQzCuKi/Cv2crXYKMoH
+         jZFwD+zlyWPtFvgtXQd5uGv2j1GzKdXB22rHahVznD4TWVGIZ9HPoNPGwd4UiPdMBtl3
+         RIIUlD3pqtW2j9ieiT20QDE1dSHh2my+hkQUFdtWH11D1TxVODWj2iGGt60usmFaY3Rz
+         +Gk+aOty+uF8XEDlgdStet/faXChdAh2ZwMURD+vqsHPKQyIoZcrD+ISsdj5fTciu1gf
+         7LYw==
+X-Gm-Message-State: AOJu0YyiiAccA958jgKLPWsb/5u84offjo5a84m8yfCLfawzaDGrXqYZ
+	A6ckKz69jUxkTDszLcVdy8xCaSRybfntpf/9wKJcUTy8b9ZUT0BKcFqDt9HBv085Snj9NxH0qRn
+	O
+X-Google-Smtp-Source: AGHT+IFKovbvRD4nM7jYJAm/c/6mKzcl/mhel0DkVeHVpthVNm9Y0BUq/Ofiw38jouZkypaeeI6laQ==
+X-Received: by 2002:a17:906:f9ca:b0:a3d:2cce:a8df with SMTP id lj10-20020a170906f9ca00b00a3d2ccea8dfmr758183ejb.36.1707989818839;
         Thu, 15 Feb 2024 01:36:58 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id rg14-20020a1709076b8e00b00a3d09d09e90sm362059ejc.59.2024.02.15.01.36.57
+        by smtp.gmail.com with ESMTPSA id rg14-20020a1709076b8e00b00a3d09d09e90sm362059ejc.59.2024.02.15.01.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 01:36:57 -0800 (PST)
+        Thu, 15 Feb 2024 01:36:58 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v1 3/8] include linux/wordpart.h in various sources that need it
-Date: Thu, 15 Feb 2024 10:36:41 +0100
-Message-Id: <20240215093646.3265823-4-max.kellermann@ionos.com>
+Subject: [PATCH v1 4/8] linux/random.h: reduce dependencies on linux/kernel.h
+Date: Thu, 15 Feb 2024 10:36:42 +0100
+Message-Id: <20240215093646.3265823-5-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215093646.3265823-1-max.kellermann@ionos.com>
 References: <20240215093646.3265823-1-max.kellermann@ionos.com>
@@ -83,229 +83,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-After commit edf2f6fb51bc ("kernel.h: Move upper_*_bits() and
-lower_*_bits() to wordpart.h"), the lower/upper_*_bits functions can
-be found in that header, and all sources that use those functions
-should include the header that provides it.
+This header doesn't need kernel.h at all, but if we remove it, the
+build breaks because kernel.h includes limits.h and log2.h, which
+random.h needs.
 
-This is just the beginning, many more sources are still missing, but a
-large patch adding the "#include" everywhere (700+ sources) would be
-hard to review.
-
-(Found with "git grep -E '\b(upper|lower)_(16|32)_bits\('")
+list.h is also removed because it is not needed at all.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- arch/arm64/include/asm/syscall.h   | 1 +
- arch/arm64/kvm/handle_exit.c       | 1 +
- drivers/bus/uniphier-system-bus.c  | 1 +
- drivers/irqchip/irq-gic-v3-its.c   | 1 +
- drivers/spi/spi-pci1xxxx.c         | 1 +
- fs/ext4/super.c                    | 1 +
- fs/hfs/hfs_fs.h                    | 1 +
- fs/hfsplus/hfsplus_fs.h            | 1 +
- fs/notify/fanotify/fanotify_user.c | 1 +
- fs/open.c                          | 1 +
- fs/ufs/util.h                      | 1 +
- include/linux/dma-fence.h          | 1 +
- include/linux/qed/common_hsi.h     | 1 +
- include/rdma/uverbs_ioctl.h        | 2 +-
- include/soc/fsl/bman.h             | 2 ++
- include/soc/fsl/qman.h             | 1 +
- 16 files changed, 17 insertions(+), 1 deletion(-)
+ include/linux/random.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index ab8e14b96f68..e5f462cc1a54 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -8,6 +8,7 @@
- #include <uapi/linux/audit.h>
- #include <linux/compat.h>
- #include <linux/err.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
+diff --git a/include/linux/random.h b/include/linux/random.h
+index b0a940af4fff..3183025ddda9 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -4,8 +4,8 @@
+ #define _LINUX_RANDOM_H
  
- typedef long (*syscall_fn_t)(const struct pt_regs *regs);
+ #include <linux/bug.h>
+-#include <linux/kernel.h>
+-#include <linux/list.h>
++#include <linux/limits.h> // for U32_MAX
++#include <linux/log2.h> // for is_power_of_2()
  
-diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
-index 617ae6dea5d5..91bd5b701acf 100644
---- a/arch/arm64/kvm/handle_exit.c
-+++ b/arch/arm64/kvm/handle_exit.c
-@@ -10,6 +10,7 @@
+ #include <uapi/linux/random.h>
  
- #include <linux/kvm.h>
- #include <linux/kvm_host.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- #include <asm/esr.h>
- #include <asm/exception.h>
-diff --git a/drivers/bus/uniphier-system-bus.c b/drivers/bus/uniphier-system-bus.c
-index cb5c89ce7b86..964f31287d3c 100644
---- a/drivers/bus/uniphier-system-bus.c
-+++ b/drivers/bus/uniphier-system-bus.c
-@@ -10,6 +10,7 @@
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- /* System Bus Controller registers */
- #define UNIPHIER_SBC_BASE	0x100	/* base address of bank0 space */
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 201055382bd1..94f917352ac6 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -29,6 +29,7 @@
- #include <linux/percpu.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- #include <linux/irqchip.h>
- #include <linux/irqchip/arm-gic-v3.h>
-diff --git a/drivers/spi/spi-pci1xxxx.c b/drivers/spi/spi-pci1xxxx.c
-index 969965d7bc98..775673861c79 100644
---- a/drivers/spi/spi-pci1xxxx.c
-+++ b/drivers/spi/spi-pci1xxxx.c
-@@ -9,6 +9,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/iopoll.h>
- #include <linux/irq.h>
-+#include <linux/kernel.h> // for upper_32_bits(), lower_32_bits()
- #include <linux/module.h>
- #include <linux/msi.h>
- #include <linux/pci_regs.h>
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index e487623f9456..6a7686343bd0 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -48,6 +48,7 @@
- #include <linux/fsnotify.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- #include "ext4.h"
- #include "ext4_extents.h"	/* Needed for trace points definition */
-diff --git a/fs/hfs/hfs_fs.h b/fs/hfs/hfs_fs.h
-index b5a6ad5df357..514d3856aa27 100644
---- a/fs/hfs/hfs_fs.h
-+++ b/fs/hfs/hfs_fs.h
-@@ -20,6 +20,7 @@
- #include <linux/mutex.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include <linux/workqueue.h>
- 
- #include <asm/byteorder.h>
-diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
-index 7ededcb720c1..79cac82d050e 100644
---- a/fs/hfsplus/hfsplus_fs.h
-+++ b/fs/hfsplus/hfsplus_fs.h
-@@ -21,6 +21,7 @@
- #include <linux/mutex.h>
- #include <linux/buffer_head.h>
- #include <linux/blkdev.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include "hfsplus_raw.h"
- 
- #define DBG_BNODE_REFS	0x00000001
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index fbdc63cc10d9..9ca5adbf39ae 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -20,6 +20,7 @@
- #include <linux/memcontrol.h>
- #include <linux/statfs.h>
- #include <linux/exportfs.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- #include <asm/ioctls.h>
- 
-diff --git a/fs/open.c b/fs/open.c
-index a7d4bb2c725f..b006de16a15a 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -34,6 +34,7 @@
- #include <linux/compat.h>
- #include <linux/mnt_idmapping.h>
- #include <linux/filelock.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- #include "internal.h"
- 
-diff --git a/fs/ufs/util.h b/fs/ufs/util.h
-index 0ecd2ed792f5..0d4b89794cc5 100644
---- a/fs/ufs/util.h
-+++ b/fs/ufs/util.h
-@@ -9,6 +9,7 @@
- 
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
- #include "swab.h"
- 
- /*
-diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-index e06bad467f55..02ad83247ea8 100644
---- a/include/linux/dma-fence.h
-+++ b/include/linux/dma-fence.h
-@@ -22,6 +22,7 @@
- #include <linux/printk.h>
- #include <linux/rcupdate.h>
- #include <linux/timekeeping.h>
-+#include <linux/wordpart.h> // for lower_32_bits()
- 
- struct dma_fence;
- struct dma_fence_ops;
-diff --git a/include/linux/qed/common_hsi.h b/include/linux/qed/common_hsi.h
-index 827624840ee2..fa9cc2be077f 100644
---- a/include/linux/qed/common_hsi.h
-+++ b/include/linux/qed/common_hsi.h
-@@ -11,6 +11,7 @@
- #include <asm/byteorder.h>
- #include <linux/bitops.h>
- #include <linux/slab.h>
-+#include <linux/wordpart.h> // for lower_32_bits(), upper_32_bits()
- 
- /* dma_addr_t manip */
- #define PTR_LO(x)		((u32)(((uintptr_t)(x)) & 0xffffffff))
-diff --git a/include/rdma/uverbs_ioctl.h b/include/rdma/uverbs_ioctl.h
-index 06287de69cd2..5ed57a660ead 100644
---- a/include/rdma/uverbs_ioctl.h
-+++ b/include/rdma/uverbs_ioctl.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
--/*
-+ /*
-  * Copyright (c) 2017, Mellanox Technologies inc.  All rights reserved.
-  */
- 
-diff --git a/include/soc/fsl/bman.h b/include/soc/fsl/bman.h
-index 173e4049d963..b01d8c0ac204 100644
---- a/include/soc/fsl/bman.h
-+++ b/include/soc/fsl/bman.h
-@@ -31,6 +31,8 @@
- #ifndef __FSL_BMAN_H
- #define __FSL_BMAN_H
- 
-+#include <linux/wordpart.h> // for upper_32_bits()
-+
- /* wrapper for 48-bit buffers */
- struct bm_buffer {
- 	union {
-diff --git a/include/soc/fsl/qman.h b/include/soc/fsl/qman.h
-index 0d3d6beb7fdb..c5230a844114 100644
---- a/include/soc/fsl/qman.h
-+++ b/include/soc/fsl/qman.h
-@@ -33,6 +33,7 @@
- 
- #include <linux/bitops.h>
- #include <linux/device.h>
-+#include <linux/wordpart.h> // for upper_32_bits()
- 
- /* Hardware constants */
- #define QM_CHANNEL_SWPORTAL0 0
 -- 
 2.39.2
 
