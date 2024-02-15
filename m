@@ -1,90 +1,107 @@
-Return-Path: <linux-kernel+bounces-66268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A081E855985
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:36:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823DE855988
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:37:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0337DB27A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:36:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B55B71C21301
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466576FB0;
-	Thu, 15 Feb 2024 03:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2269D6FB8;
+	Thu, 15 Feb 2024 03:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="cjQTs2Lu"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fG4wDTPv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710BEB660;
-	Thu, 15 Feb 2024 03:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591AF6107;
+	Thu, 15 Feb 2024 03:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707968207; cv=none; b=TC5mlZK/dxGqTS3XVDz0X7Byou/wSvvh64hWSMEFdgV0aEn9siVUUM4R1DLdSzna9yCsqplhUsHMx7YeQnG6STArF6PXR/y0TUs28awKvKrMRbV9gYEJw7eZl59gPbqy1S39UHkYHL93Wx0mR7LuUG2N3vIAcZIVvobCwD1X65Y=
+	t=1707968267; cv=none; b=MQdnvkTkmBHXMHNA7cI7L1KrXZGKOhSR+gS3S9FdcK9xc6vHPEu/UdRhFZhoYAyWuQfFbIqUTuqANObjoJqJPMPt+5eDILRuX5C5Z4bZy8oyWVVJB4W6nmwJ6nyMktp2ml8oNkL8i1VKw7V51Ns6MHk8zB7X3wIk5bMye2n7BPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707968207; c=relaxed/simple;
-	bh=uBVWc3WnQiSE73f2SM93QqQjzcXOnbEklnqmtdVl140=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=vFQs7DwV811fojiNUFEhtoj9zBYczat34D0tvmd4utnihjw6TwRowX3m0f3I9FnqIVpjKMe3/c5wQmCens8fhoLhcCR2nAq9BWyMWcKU90dt224EORFlDaCM/Vk0huU8l4xqUE8nCXOQOV7Q6DHBKYhq1qcVcyyI/ghaVoj5p94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=cjQTs2Lu; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1707968201;
-	bh=s71VglVzXMHExQHV0flXdlMkL0Er5JOLuJrclNyZ2YU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=cjQTs2LumNQvps0w1v9ahJISdsxPzj0e6mQz9zzTwySFqnU8I+6KL4Q/lm609CWco
-	 /71QVSEkdXue7HIPavkyUqbFSTskV3H32oYe8Fw2xFlwSe/8gdtDf3QidhKtPwVqz5
-	 DQjGPi8tRyygya1FfuaPpxDs2N4v2Lgu9ulVOOHzx/F2UrpaZEN+NIgHkoq5Vz7Zs0
-	 J2566AhsAZOR0kre8HKjn1OxEOmd8Y7iniRdfcWfTQ4ED30GRX/iW+iXM/4OMavMyp
-	 HKwobuQXiN8IxYHYIy7GpK1P9NCb6plTcoPwXYTog8Nb2IG3+r+MnBXk4RXbCu+iRj
-	 Fg10tpZIFsqxA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tb12K1Jrjz4wcN;
-	Thu, 15 Feb 2024 14:36:41 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Randy Dunlap <rdunlap@infradead.org>, Stephen Rothwell
- <sfr@canb.auug.org.au>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Gaurav Batra
- <gbatra@linux.ibm.com>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: Tree for Feb 14
- (arch/powerpc/platforms/pseries/pci_dlpar.o)
-In-Reply-To: <c501ff0a-170b-42a8-a5b7-623ebb6c7fba@infradead.org>
-References: <20240214151426.0a398cf0@canb.auug.org.au>
- <c501ff0a-170b-42a8-a5b7-623ebb6c7fba@infradead.org>
-Date: Thu, 15 Feb 2024 14:36:41 +1100
-Message-ID: <8734tu760m.fsf@mail.lhotse>
+	s=arc-20240116; t=1707968267; c=relaxed/simple;
+	bh=RJHn7Ly5U/f25LfzqZOi+nH7XZAa0NPMODFDLRz/l1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WHB/CDQcO+UrMI/hxulcLIrhtr1XkmTGXii15BLH7IGLHhrtwqvpm0HuQFL2KlflkbKo1dUVo6gZGNpHIMuPjX9A2D60pssLCThPCGV3AWdnAjRZuNSja8aMkzqEGHtjgEfAfRm8s/FdV3QbZd4Qpj74E+ExdSr9rFcCyeJuTyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fG4wDTPv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43CDAC433F1;
+	Thu, 15 Feb 2024 03:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707968266;
+	bh=RJHn7Ly5U/f25LfzqZOi+nH7XZAa0NPMODFDLRz/l1M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fG4wDTPvk7DStsx7NpwPwtcVITPiEguqg3TwWhn+bT2+PhFLTqj1B44Xt0aoYB/7K
+	 LNhjTPCPYvWcMKdtTwLm+TVebEbxnB83oy19Ih0usZKVAPq5NNBG+M5uN8EeAI/kZM
+	 xsT1X60FbMoBraI44RolYCuOR+O5loEkPH3IBgwQ8LXNVUstmRG6pcIV9anHx6OQWJ
+	 EYWKBGP/CuTwnvD1TCk+a/nssOeD1uGzjdUMOPh2OeVW/PBxGQvntSD7jnmBc/UxbJ
+	 U7pI0D3kuysXtu70nAMDBQQK5dTjRyCJWPDohbvjWBMcJTtDULp9HWbFTqghpPKxlb
+	 oGjhRDerpW0iw==
+Date: Thu, 15 Feb 2024 11:37:42 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
+	Julius Werner <jwerner@chromium.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	kernel@collabora.com, chrome-platform@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable
+ cbmem in the arm64 defconfig
+Message-ID: <Zc2HBmDPJnHt0WJC@google.com>
+References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 
-Randy Dunlap <rdunlap@infradead.org> writes:
-> On 2/13/24 20:14, Stephen Rothwell wrote:
->> Hi all,
->> 
->> Changes since 20240213:
->> 
->
-> on powerpc64:
-> when CONFIG_IOMMU_API is not set.
->
->
-> powerpc64-linux-ld: arch/powerpc/platforms/pseries/pci_dlpar.o: in function `init_phb_dynamic':
-> pci_dlpar.c:(.text+0xc4): undefined reference to `ppc_iommu_register_device'
-> powerpc64-linux-ld: arch/powerpc/platforms/pseries/pci_dlpar.o: in function `remove_phb_dynamic':
-> pci_dlpar.c:(.text+0x248): undefined reference to `ppc_iommu_unregister_device'
+On Mon, Feb 12, 2024 at 09:50:04AM -0500, Nícolas F. R. A. Prado wrote:
+> This series adds the missing pieces to the coreboot bus and the module
+> alias generation to allow coreboot modules to be automatically loaded
+> when matching devices are detected.
+> 
+> The configs for cbmem coreboot entries are then enabled in the arm64
+> defconfig, as modules, to allow reading logs from coreboot on arm64
+> Chromebooks, which is useful for debugging the boot process.
+> 
+> [...]
+> 
+> ---
+> Nícolas F. R. A. Prado (4):
+>       firmware: coreboot: Generate modalias uevent for devices
+>       firmware: coreboot: Generate aliases for coreboot modules
+>       firmware: coreboot: Replace tag with id table in driver struct
+>       arm64: defconfig: Enable support for cbmem entries in the coreboot table
+> 
+>  arch/arm64/configs/defconfig                   |  3 +++
 
-I'm pretty sure I reverted the commit causing that, the revert will be
-in today's linux-next.
+Hi Catalin and Will,
 
-cheers
+Is it OK to you if I pick the 4th patch (which touches the above files) to
+chrome-platform-firmware tree for the next merge window?
+
+>  include/linux/mod_devicetable.h                | 10 ++++++++++
+>  scripts/mod/devicetable-offsets.c              |  3 +++
+>  scripts/mod/file2alias.c                       | 10 ++++++++++
+
+Hi Masahiro,
+
+Is it OK to you if I pick the 2nd patch (which touches the above files) to
+chrome-platform-firmware tree for the next merge window?
 
