@@ -1,253 +1,216 @@
-Return-Path: <linux-kernel+bounces-67423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA52856B4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:40:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4154E856B53
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BFC51F23478
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:40:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECCE22874FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179D21386C0;
-	Thu, 15 Feb 2024 17:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FDD1369AC;
+	Thu, 15 Feb 2024 17:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQET31Um"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="k/me+Qkz";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="QSzvMtUR"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D3C138490;
-	Thu, 15 Feb 2024 17:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708018788; cv=none; b=kJf0IZSaSmt+N3II3FHItaiSf34zVFanzFsJFgYgVdlZIfN1wonCEDKKcoveRCY0Q70y+TUoB2SAdgjGvwkG0cwl6Oj4XwvGknGcsmv4092ng/8xdOJDhOOGcQU81tTUBSCPZP+WAItZNpbAoTk6urWLDr12qbmrLAWnMR1+CVE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708018788; c=relaxed/simple;
-	bh=DepMm0E1rykVEHl91v/EejSEa+JDtowq+qU872OTaog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RtOT02ZZtq/mcYFo4/lS0ZXnf9wsNtBDhUPGeCvv/4A3p2gFqGtpWxxhLk/wmsX6lNPesTQs4iuaqn/L6M9oG+fTFRGcntOH4jdjCxttSdpVRtvLOf9FRe48y7tlDIg1pv1e0jknWdsV+3BCqc3wlEsySGbs02v8yEleAxiFGzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fQET31Um; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so1291412e87.2;
-        Thu, 15 Feb 2024 09:39:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFD71353FA;
+	Thu, 15 Feb 2024 17:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708018872; cv=fail; b=XkwmuRiR5mL8SSXitiJNsLL7ByN4U5IrZVPoWT8Wm73lY1+xGKK63gzCr710CPTtYDaWIMu15jo9vfM5L6o9U8F0aN1Xru/dySwIQoBKLPsUR6hbkGA+zCdG3xgZI7mcF0B6wuX7VBbEhRrpN2z6bEqiVGbhS+h0m/XrH84mfvg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708018872; c=relaxed/simple;
+	bh=wIIUe2KrDfd8ND2KQFXDkvsyavcDU32ja/vZc2Cxg/E=;
+	h=Date:From:To:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=PCXAiZeyalJyYMhLt6TEkX/gLpuD9JszE1rttZATnbFxe5txp3ktXvcHrH0BfxEDD3A7tKm8oFhFg2+x5W8JhnGX3IDTIP1VS694lMdfrDb6VbHa4OD0GgZWZbRsjDBE6XyA82QT2D8zotqphVsAOwaG1NdxINqXH7shNFY0ZJY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=k/me+Qkz; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=QSzvMtUR; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFSsKV030976;
+	Thu, 15 Feb 2024 17:40:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=h3kRXbbfShnPo5eHRC6SrH7leCR0t7kDuKP8L6FJBsQ=;
+ b=k/me+QkzO1kRgxPUbK5u6USe6NLRrpjoZJgcEXMlfF2eIt+WmiHMSFIdURQ1dAbR+WXg
+ OSlaa8IViCDZ5gu6cQy/keaNwx2ADJ84Iw+/SA/par+Z2NwH39K1219vCwqwl8yLQ9ap
+ pHj9d653J2MpmkZIY0uqAnFFGZGcA+Q3VE0y7rb+l43YseyuXiBXsDMFlKwkV7Th1MXZ
+ P7zzLr7jgo2jpLfTZLjYky+jp7MqfKED4+XAX7MlP4ZUkTwNFuGN0CDx6V5zpijY7e5O
+ sd2kyQUuwSc+0zMx7ZuYEjNukYSpXgROI+PFX0UoL/+L9BXe3wNqgfq2+78+CEjdN7NE nA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w9301jt84-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 17:40:50 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FHUab6031570;
+	Thu, 15 Feb 2024 17:40:50 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykauw4s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 17:40:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TNhXyecaAowy2AhznonmjWNlOBtbQYbF2uizeTQXvvojNzgXZaenD592NwhVibOKs+huvWKvXdi+9qPeEaydmoFrQC/75TAl4xHh6E51efAXC0qj+sZMzjCFVhtqErUuqMmIBqkMFoV4TQEH3XMf1rei4RSoazVQvDermwVE2mup7AlhjTzJUu/VfnVq9ZY9l4tyRTjs952t/7Q4Zgb22FBngecZvvwZ6bPjS7WyxoSzjNbyyE5cYAC8LgnlznGVuQmqLrGVpqHcOhGNm6tAAL/zKPgKX/mJz69A8PSjJg7cvmz16hcQbV9Cg8gcXgV6cNYUXQ04RvJmn2bUYS6YSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h3kRXbbfShnPo5eHRC6SrH7leCR0t7kDuKP8L6FJBsQ=;
+ b=BTNbS7PNB7dyBAfYdllIQ2T59TExk8q37rzRMwGEwZQdvwYF9HsGkKtcWQy777Gbe6qh0ZFbvT1D0Nx+v+xauqIJXNBLKkbxvXUFzlESby/sW7FlpXuyw2UGOyHxSF92g8RKF293fc8jlpHUlFAuVhg11CqOUA+ov/hlLAFj3tfN1YEAHFt1oiwys9o0oReeLKSNClcf46CEbByJ0OFXPPQtwyMOCa8asVLXQ/8HKbz0IXuSk+PnGyRTnxgqlFWq8rlPZFhqVhv2T+R/FyOh/M6QN0idBP+SJXCnwSGWfa8gzSM9pdblMP3vsyf0wqQhLfkEs6ZHW1pOipnFJVadCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708018784; x=1708623584; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g1ki9zK7OcLCmqsO7Ewd3y2YJoqglQbEuSLuAip6u9k=;
-        b=fQET31Um4+3b6Inowc9NZrgNFFLgqrwVPE3Vn3wA08moGsfYOBnh9wMNGiUPNf+e9R
-         WwXCXA+zvhx+4ZUI+GFEtkkwa0JsWSBv1jszxIReQj4aYG7wwTZ83GFHDzJFMlk51H4u
-         Fx9jIeHUIG8QZ0BpY0q/+Muic8HHxPNEo0VUi/bkqCSu7/RryHp+vpBTgZx0j1J3bj5l
-         EC6+v0yBFZ1FB1EjErplCuxWlohWXl0ZDW1ttjYaTiipVXPaK6xrNTdZimqlXQMzwXPC
-         D5HwWbWaINkvlQeAiV8H9Hm7n/9FuI++DrgSF16qesM+CO/Khe74Pc+iLQhgLoYwdMX+
-         pYmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708018784; x=1708623584;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g1ki9zK7OcLCmqsO7Ewd3y2YJoqglQbEuSLuAip6u9k=;
-        b=RKskyCGtRmybQyQG0i7g0R4iAsRie03YfEwyFLn8w3UR4WzDaJRKzWta+K2ukrZuh8
-         mjMn8tuSMU7a5SwkK91K0U8FYVX1rSYPgxs2h67xe6+9quLbI6wACsMrPFmDgKvBiEs5
-         sq4PAKk0y2MlLi2OEqnFlw0tYbjn+yeq61g8lKrxvnvCcQqVASDLgyBa3hl/l1uvL+Mg
-         tz2O7rrCRGxR7Gnbe+I5L9bQYBmdXuRoAsFsCojVaKmMF0Zy6/2srzP4HqkuBuvz7WZz
-         6XUODKiCibRXfHcRLucOjTtcuc9Df/a3LErwnnSnZxNVncTTTLilr1XAOb3PV9X/mhFN
-         i7gA==
-X-Forwarded-Encrypted: i=1; AJvYcCUB/qrD/FbFkLCi+vGVulHVI7utn+M4A4cr6Xdz8J3lbd9F54/gQ8OJMB1uFfEc9OS7Vl7rSV3YHTgzOsWg1JPp/o1OfGX/llA8w71z
-X-Gm-Message-State: AOJu0Yx6A/02BmgN5qMq3hdcYb2yc7x6JmvnE3/stEo27Cu7LbSPNyJM
-	IumhHYom1jqPrSwyMjS49UkvoILnxzaJcfgyet3R9Gg6YwTNRj4W
-X-Google-Smtp-Source: AGHT+IEOAuW75/Z347ixI4RTdUIvVIqm8O4WQjbwpKWvkWS8noyX3FQEWifQ4dByJEDwos73dXtPzw==
-X-Received: by 2002:ac2:4ac9:0:b0:511:8bc0:9231 with SMTP id m9-20020ac24ac9000000b005118bc09231mr1767732lfp.55.1708018783678;
-        Thu, 15 Feb 2024 09:39:43 -0800 (PST)
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id h32-20020a0564020ea000b00561e675a3casm736119eda.68.2024.02.15.09.39.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 09:39:43 -0800 (PST)
-Date: Thu, 15 Feb 2024 19:39:40 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, linus.walleij@linaro.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4 12/15] net: dsa: vsc73xx: introduce tag 8021q
- for vsc73xx
-Message-ID: <20240215173940.4jscb7dk6wnkdsyg@skbuf>
-References: <20240213220331.239031-1-paweldembicki@gmail.com>
- <20240213220331.239031-1-paweldembicki@gmail.com>
- <20240213220331.239031-13-paweldembicki@gmail.com>
- <20240213220331.239031-13-paweldembicki@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3kRXbbfShnPo5eHRC6SrH7leCR0t7kDuKP8L6FJBsQ=;
+ b=QSzvMtURv+M3Cw65LdV+8IczIhrFnLY08qQry10lISORISjBRScEvrC2WLhD47tFUPJlF2sPxelePKLPswKMnMV8ny4fIVm0ncGD3uCq9rbBK3GX2Dkujkzo7vcKyeYNjVbX5+BI2sbXS6rRjaPKG23eJAqlVYDWfdL9Uiz/MRQ=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by BLAPR10MB5347.namprd10.prod.outlook.com (2603:10b6:208:328::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.30; Thu, 15 Feb
+ 2024 17:40:48 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7292.029; Thu, 15 Feb 2024
+ 17:40:48 +0000
+Date: Thu, 15 Feb 2024 12:40:45 -0500
+From: Chuck Lever <chuck.lever@oracle.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jan Kara <jack@suse.cz>,
+        Chuck Lever <cel@kernel.org>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, hughd@google.com, akpm@linux-foundation.org,
+        oliver.sang@intel.com, feng.tang@intel.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Subject: Re: [PATCH RFC 7/7] libfs: Re-arrange locking in offset_iterate_dir()
+Message-ID: <Zc5MnXdxASGiE3lK@tissot.1015granger.net>
+References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
+ <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
+ <20240215131638.cxipaxanhidb3pev@quack3>
+ <20240215170008.22eisfyzumn5pw3f@revolver>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215170008.22eisfyzumn5pw3f@revolver>
+X-ClientProxiedBy: CH0PR03CA0225.namprd03.prod.outlook.com
+ (2603:10b6:610:e7::20) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213220331.239031-13-paweldembicki@gmail.com>
- <20240213220331.239031-13-paweldembicki@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|BLAPR10MB5347:EE_
+X-MS-Office365-Filtering-Correlation-Id: f10bf4d2-f73a-41d9-d133-08dc2e4d3f20
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	e2eNkvz0qyT97lhUwGE/NWbGspwQ8E/nsM0R0Wpu4pXglM1xASQ7KqltIIlTWCjnrTRO01pRIW8C4Xdkju3Gxz1IBgr1yCrvkmVa3X1o2/v9AfTsrD72Gs7JBGJgm0f3wOlXw9pG0gThhuYojxrkMEOTdmOJxNuCfWAsZZHlo5kKOZ+DLIpXZgsfrlpuWE9Q9HsY6u7IQSoqD7LBms5jK/JeUqfI58O285oa0DjHSagVZdD611Uuqh/zwaSZWWObWH0QqZVej9M/JeKtT0IkJU9x9zJ8XESPYShX/FNCaKXQlkkRtS5FEEVHGuXNLOvPyVOy8yjwG4G8sgIs7ouLwlD2ylk3pfz0y8vOBzk4D8rsSCyQLtJLwdWWcLByqaUCI7amBp1+keXG9zZxQ0uILVtcg6iKI1Wu+dbb9TLC2ptSkqDllUiLCMcLPzJgyy8ln9XBC04x3qVLKSqV2foWwWnxsYW2Bv1dmTvJJ8BPoRt914Tk50AX6SAKgsWr31/blDgm2WD4aPz1LZwe5seO/b8/LOK2znosB98UV/72hCFnPbU3MIc+MRtPUSgCXoZy1ozwfyBHzWH5ECXB2GvGG27Bi7jY7F/FDCABmJI3iKg=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39860400002)(366004)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(478600001)(41300700001)(44832011)(2906002)(7416002)(66476007)(5660300002)(66946007)(8936002)(8676002)(66556008)(6486002)(6506007)(6512007)(9686003)(6666004)(316002)(110136005)(26005)(83380400001)(38100700002)(86362001)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?odjVjMzcMmZ5hcngCRqVfTPbB2Bi8CWIdJfIjXjv6ibG47AKk2ho8GwmnYZ4?=
+ =?us-ascii?Q?f3fKDes+miJEBVLcUrb0fqU1/hN8MVi3MJXBluEwQYBFDM2AYh/lbyclE5+R?=
+ =?us-ascii?Q?oQ/oqyFHo30pCfjKFym6wix3kMgsF6c3aKISyULSkHTSBa3J/35fN769XO1S?=
+ =?us-ascii?Q?5NQ5IKL69c1BuminDtSks6l5ffEaWU/Ccqr9Ay0fi1l/K1GUqvS4ZoAI7MRq?=
+ =?us-ascii?Q?bSHrvz9WUqvIfuM68eakuut8uFlNxKobNUPcxhS7oVmsEZAHR4o8Kr14So22?=
+ =?us-ascii?Q?0/hOev3OL9J4mJ4DjfzZH5L0E4x2y9zi3oAHZAo1cVkI9dfz+tmdERTCEiNy?=
+ =?us-ascii?Q?6oGyH90HIrXhO1d96ttNNyvmUS9lj1QkPVx5p37dSQ6fn1cln9km00wmm7U6?=
+ =?us-ascii?Q?7EZCzyNJKUdUCbRxXi9j/tLS3BkNW/RfZ9OLn6Qr+utXBiSIZ5IniTojxLSb?=
+ =?us-ascii?Q?45DB9oUEIWdOnjmeYN6gdcHMT4XXZboy7CeKuhNLV/YExJhal1Pic92Iv9vg?=
+ =?us-ascii?Q?qzXWnUG5hBhpZmakNZ7zBFFPLx7VGwNV3vUQGHqyvy9eNqYBgxFQmyk35KEF?=
+ =?us-ascii?Q?lijkmMlPPguPD9fqx6QOe6e0+eVUGQOttJJvjjM4kKIx32JOG3dtV0YlVbWQ?=
+ =?us-ascii?Q?k3OPVroVElxEzruIpxpsT0eQTHA2n4bI1jUsud9RQDwi+sKGsWGKY434Mf8i?=
+ =?us-ascii?Q?pOVPDW6wd9kgXsjKdNLoPZ/JKTk870ftpqrXkKtpZCpp9BAxCIDpqS5VO78Y?=
+ =?us-ascii?Q?4nJ9gYMRD/mF9kNqH1yn0QYiSrNqVoMELxaXbqof2qFopptlxNHAHR4f+2b4?=
+ =?us-ascii?Q?Jh8ZXSvaPBzHCCMWNn6OaBGR3+8v9VZl/gTUdXQHa5a35aGJhyTohNVQPf2c?=
+ =?us-ascii?Q?aLR4iQ1xJQ9CCca64yzZC3ygEedqPnwEQKVhQbRwE+PFHS0pLFxB7OTpjRah?=
+ =?us-ascii?Q?enzJg/zL0GpNZOU9KDQr8H8Uc+U0V1wE1NBLi0DY9iz3+yFBgIbGH+sY3QFD?=
+ =?us-ascii?Q?Wu51EfmPKHaFGcBqm6vDLSz25D13LP+OUb7SrN0OCUR8AkoVxxCAaYBt/LwC?=
+ =?us-ascii?Q?MMhwvg6hzsgDdkzcFo1C0LkOzbAzmyan3AXI09bTFbvN2PV4SEgCeUyejeii?=
+ =?us-ascii?Q?4y5KLxpRL61Ox7wVSASxj+/ec30xOM3N2ioI4nsUpgMb0EoTJve/cvbTWyzp?=
+ =?us-ascii?Q?P9hU06N9S7+EGbeW86emTqxp1RM2dmeF66cgac8v6t5NXgLawI3tYnIaZu9e?=
+ =?us-ascii?Q?LrawxQGAeXmvkg7hhiA2PFTFbMC81cPIZet36ecTlyomYaqT6/+bomnU2TzZ?=
+ =?us-ascii?Q?usBL9z1YSJ6Ff3e4tz9T7o45A23u5+8kXPeKWItRgJ3DeXOIenLH5Er0u/0L?=
+ =?us-ascii?Q?T9IJd+N949sqvRaYdHGhAfXMrdKt7RT6mF8D4Y+gDo5KLgyiN1HEGU6YnusS?=
+ =?us-ascii?Q?XCQdm4cKIN+QXJahAm+3szdBHDWyP/CpuD/tEvZhQAC0M6UV7e7aeN2YP+Ak?=
+ =?us-ascii?Q?sh9Is8JfHAK2dLjTeXppqyr102L9jMGtZCYjA91965L1L1ZsewmG0Dp44lFt?=
+ =?us-ascii?Q?ugbcSJTAeI+pOzr6kJyjiuQYHoRy791It+i5g4sDL50kY2+jO1pC3my2If2z?=
+ =?us-ascii?Q?VQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	zLIj32fh7nUXwIF0t+WwhXrkCEorCKqjvMlfRyFoqstFxik42No5at3mgpc1bHrsKBxtsg+xqUQZv+DangX/2NDjG6yCSsytKozmpEV4jGJQIYvvJJbgkmfxXZkQuZDZ6MjmXtv2GxCka7/x4BhhjLOdbiqahhkzH3Vg/YVTRqs66x7ewmYVziv/Gmbo7YY6f9GpCu+m29mY3cPlaxGUZahydvExhs0sI1sxI4huSrBTeqvJwPgH1hPVTrjntVQ40PtSvci1fZrhJacWA8kMadGuoTT1CHy179HZa+3Jsu/Co8y8ZgF2RL9eFmkmr8+YkvYJ7UJHEkxf2rvJL5OE6Tr2b8/+GZ14TyiZiEU8bZp4FUEA0uE2Xn+7f5470WBUyHFAR7v4Fcaz9H5Thabblgrj1NeQDYRTpyknRXEuLWLceYXbxwvEyNc5HI4XIHbELW1eQt6ndDINfSpjG3XKXEi/n+gHPn6EeMVkZp0Y9ttN6AwARJxJ/9CevsiL5Zw0kZrddWzAKSk99KMVvpXaCWNeUm03+q8KZH34PFTlV7FdeoabGqD8ZxJnFM3uBTuJ0QamTa0fAmrWj0xdjd77fLDX5sx6GkgS5AC+wYBf/nQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f10bf4d2-f73a-41d9-d133-08dc2e4d3f20
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 17:40:48.7361
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mODeaKH3jL19JOkA5JI6hstugqmGJpHYS/XyJ101ZN/78loe9qCnNDJw7cwfNP+3Qh3oT3OarebV73rBFcDQbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5347
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_16,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402150142
+X-Proofpoint-GUID: PvIvs11Hhj82DLe_6KB-3r843ovobAXz
+X-Proofpoint-ORIG-GUID: PvIvs11Hhj82DLe_6KB-3r843ovobAXz
 
-On Tue, Feb 13, 2024 at 11:03:25PM +0100, Pawel Dembicki wrote:
-> This commit introduces a new tagger based on 802.1q tagging.
-> It's designed for the vsc73xx driver. The VSC73xx family doesn't have
-> any tag support for the RGMII port, but it could be based on VLANs.
+On Thu, Feb 15, 2024 at 12:00:08PM -0500, Liam R. Howlett wrote:
+> * Jan Kara <jack@suse.cz> [240215 08:16]:
+> > On Tue 13-02-24 16:38:08, Chuck Lever wrote:
+> > > From: Chuck Lever <chuck.lever@oracle.com>
+> > > 
+> > > Liam says that, unlike with xarray, once the RCU read lock is
+> > > released ma_state is not safe to re-use for the next mas_find() call.
+> > > But the RCU read lock has to be released on each loop iteration so
+> > > that dput() can be called safely.
+> > > 
+> > > Thus we are forced to walk the offset tree with fresh state for each
+> > > directory entry. mt_find() can do this for us, though it might be a
+> > > little less efficient than maintaining ma_state locally.
+> > > 
+> > > Since offset_iterate_dir() doesn't build ma_state locally any more,
+> > > there's no longer a strong need for offset_find_next(). Clean up by
+> > > rolling these two helpers together.
+> > > 
+> > > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> > 
+> > Well, in general I think even xas_next_entry() is not safe to use how
+> > offset_find_next() was using it. Once you drop rcu_read_lock(),
+> > xas->xa_node could go stale. But since you're holding inode->i_rwsem when
+> > using offset_find_next() you should be protected from concurrent
+> > modifications of the mapping (whatever the underlying data structure is) -
+> > that's what makes xas_next_entry() safe AFAIU. Isn't that enough for the
+> > maple tree? Am I missing something?
 > 
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-> ---
-> v4:
->   - rebase to net-next/main
-> v3:
->   - Introduce a patch after the tagging patch split
+> If you are stopping, you should be pausing the iteration.  Although this
+> works today, it's not how it should be used because if we make changes
+> (ie: compaction requires movement of data), then you may end up with a
+> UAF issue.  We'd have no way of knowing you are depending on the tree
+> structure to remain consistent.
 > 
->  include/net/dsa.h           |  2 ++
->  net/dsa/Kconfig             |  6 ++++
->  net/dsa/Makefile            |  1 +
->  net/dsa/tag_vsc73xx_8021q.c | 69 +++++++++++++++++++++++++++++++++++++
->  4 files changed, 78 insertions(+)
->  create mode 100644 net/dsa/tag_vsc73xx_8021q.c
+> IOW the inode->i_rwsem is protecting writes of data but not the
+> structure holding the data.
 > 
-> diff --git a/include/net/dsa.h b/include/net/dsa.h
-> index 7c0da9effe4e..b79e136e4c41 100644
-> --- a/include/net/dsa.h
-> +++ b/include/net/dsa.h
-> @@ -56,6 +56,7 @@ struct phylink_link_state;
->  #define DSA_TAG_PROTO_RTL8_4T_VALUE		25
->  #define DSA_TAG_PROTO_RZN1_A5PSW_VALUE		26
->  #define DSA_TAG_PROTO_LAN937X_VALUE		27
-> +#define DSA_TAG_PROTO_VSC73XX_8021Q_VALUE	28
->  
->  enum dsa_tag_protocol {
->  	DSA_TAG_PROTO_NONE		= DSA_TAG_PROTO_NONE_VALUE,
-> @@ -86,6 +87,7 @@ enum dsa_tag_protocol {
->  	DSA_TAG_PROTO_RTL8_4T		= DSA_TAG_PROTO_RTL8_4T_VALUE,
->  	DSA_TAG_PROTO_RZN1_A5PSW	= DSA_TAG_PROTO_RZN1_A5PSW_VALUE,
->  	DSA_TAG_PROTO_LAN937X		= DSA_TAG_PROTO_LAN937X_VALUE,
-> +	DSA_TAG_PROTO_VSC73XX_8021Q	= DSA_TAG_PROTO_VSC73XX_8021Q_VALUE,
->  };
->  
->  struct dsa_switch;
-> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-> index 8e698bea99a3..e59360071c67 100644
-> --- a/net/dsa/Kconfig
-> +++ b/net/dsa/Kconfig
-> @@ -166,6 +166,12 @@ config NET_DSA_TAG_TRAILER
->  	  Say Y or M if you want to enable support for tagging frames at
->  	  with a trailed. e.g. Marvell 88E6060.
->  
-> +config NET_DSA_TAG_VSC73XX_8021Q
-> +	tristate "Tag driver for Microchip/Vitesse VSC73xx family of switches, using VLAN"
-> +	help
-> +	  Say Y or M if you want to enable support for tagging frames with a
-> +	  custom VLAN-based header.
-> +
->  config NET_DSA_TAG_XRS700X
->  	tristate "Tag driver for XRS700x switches"
->  	help
-> diff --git a/net/dsa/Makefile b/net/dsa/Makefile
-> index 8a1894a42552..555c07cfeb71 100644
-> --- a/net/dsa/Makefile
-> +++ b/net/dsa/Makefile
-> @@ -37,6 +37,7 @@ obj-$(CONFIG_NET_DSA_TAG_RTL8_4) += tag_rtl8_4.o
->  obj-$(CONFIG_NET_DSA_TAG_RZN1_A5PSW) += tag_rzn1_a5psw.o
->  obj-$(CONFIG_NET_DSA_TAG_SJA1105) += tag_sja1105.o
->  obj-$(CONFIG_NET_DSA_TAG_TRAILER) += tag_trailer.o
-> +obj-$(CONFIG_NET_DSA_TAG_VSC73XX_8021Q) += tag_vsc73xx_8021q.o
->  obj-$(CONFIG_NET_DSA_TAG_XRS700X) += tag_xrs700x.o
->  
->  # for tracing framework to find trace.h
-> diff --git a/net/dsa/tag_vsc73xx_8021q.c b/net/dsa/tag_vsc73xx_8021q.c
-> new file mode 100644
-> index 000000000000..0bf150a10576
-> --- /dev/null
-> +++ b/net/dsa/tag_vsc73xx_8021q.c
-> @@ -0,0 +1,69 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/* Copyright (C) 2023 Pawel Dembicki <paweldembicki@gmail.com>
+> This is true for both xarray and maple tree.
 
-It's 2024 already :)
+Would it be appropriate to reorder this series so 7/7 comes before
+the transition to use Maple Tree?
 
-> + */
-> +#include <linux/dsa/8021q.h>
-> +
-> +#include "tag.h"
-> +#include "tag_8021q.h"
-> +
-> +#define VSC73XX_8021Q_NAME "vsc73xx-8021q"
-> +
-> +static struct sk_buff *vsc73xx_xmit(struct sk_buff *skb, struct net_device *netdev)
-> +{
-> +	struct dsa_port *dp = dsa_user_to_port(netdev);
-> +	u16 queue_mapping = skb_get_queue_mapping(skb);
-> +	u16 tx_vid = dsa_tag_8021q_standalone_vid(dp);
-> +	u8 pcp;
-> +
-> +	if (skb->offload_fwd_mark) {
-> +		unsigned int bridge_num = dsa_port_bridge_num_get(dp);
-> +		struct net_device *br = dsa_port_bridge_dev_get(dp);
-> +
-> +		if (br_vlan_enabled(br))
-> +			return skb;
-> +
-> +		tx_vid = dsa_tag_8021q_bridge_vid(bridge_num);
-> +	}
-> +
-> +	pcp = netdev_txq_to_tc(netdev, queue_mapping);
-> +
-> +	return dsa_8021q_xmit(skb, netdev, ETH_P_8021Q,
-> +			      ((pcp << VLAN_PRIO_SHIFT) | tx_vid));
-> +}
-> +
-> +static struct sk_buff *vsc73xx_rcv(struct sk_buff *skb, struct net_device *netdev)
-> +{
-> +	int src_port = -1, switch_id = -1, vbid = -1, vid = -1;
-> +
-> +	if (skb_vlan_tag_present(skb)) {
-> +		/* Normal traffic path. */
-> +		dsa_8021q_rcv(skb, &src_port, &switch_id, &vbid, &vid);
 
-dsa_8021q_rcv() also works with VLAN tags in the skb head, not in the
-hwaccel area. So please remove "if (skb_vlan_tag_present())" and the
-"else" clause, and let dsa_tag_8021q_find_user() below fail if it will.
-
-> +	} else {
-> +		netdev_warn(netdev, "Couldn't decode source port\n");
-> +		return NULL;
-> +	}
-> +
-> +	skb->dev = dsa_tag_8021q_find_user(netdev, src_port, switch_id, vid, vbid);
-> +	if (!skb->dev) {
-> +		netdev_warn(netdev, "Couldn't decode source port\n");
-> +		return NULL;
-> +	}
-> +
-> +	dsa_default_offload_fwd_mark(skb);
-> +
-> +	return skb;
-> +}
-> +
-> +static const struct dsa_device_ops vsc73xx_8021q_netdev_ops = {
-> +	.name			= VSC73XX_8021Q_NAME,
-> +	.proto			= DSA_TAG_PROTO_VSC73XX_8021Q,
-> +	.xmit			= vsc73xx_xmit,
-> +	.rcv			= vsc73xx_rcv,
-> +	.needed_headroom	= VLAN_HLEN,
-> +	.promisc_on_conduit	= true,
-> +};
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_VSC73XX_8021Q, VSC73XX_8021Q_NAME);
-> +
-> +module_dsa_tag_driver(vsc73xx_8021q_netdev_ops);
-> -- 
-> 2.34.1
-> 
+-- 
+Chuck Lever
 
