@@ -1,108 +1,159 @@
-Return-Path: <linux-kernel+bounces-66282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 672268559AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:14:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E478559B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CFB2817ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:14:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 261DA1C24482
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0791C79DF;
-	Thu, 15 Feb 2024 04:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF5F79F2;
+	Thu, 15 Feb 2024 04:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="e8lXUavu"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="H1WD5Njm"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DC06FD2
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 04:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC41B17C8;
+	Thu, 15 Feb 2024 04:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707970456; cv=none; b=P8bZMeg3tA9q1KkWN4PtfGs9qPQ8egpBaCsNYL4McyhFCyjlgjF+YBQW2TAGRRq8tI++iR1tPwWGPm+Y/kk7gCqOeUDTmbddUaPKix4jSlz09uW6L8rCSwTfphL4R2MmHoWPbbR4nRU5bwkn1xHy/Fx6NZOEBSutNh8slprf+04=
+	t=1707970676; cv=none; b=f9ejx9l/3ru7OoydOoMN0NCv3KIFBMyLgB7GIvAqLEr/1ADPYf5eo+ScI/8wuI4ArU/Q42iOXFdUI84RBXPSLmB3I9BP9ZDp3JuMgzPSJOmiE0OQwg/AgpjjyDuAZwQfd6qdZja1O8UQJ1q6ac3A9K5aqvEvrj58+KVW/vP8jC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707970456; c=relaxed/simple;
-	bh=GWOm6iTHQSxlAV00u0AtMXXNvT0ukROOnxRlWLQBnes=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HGP1BgWQQ49UXvsfSgHbHdHEi1Eij/b44AILauVwmOtGDiKsSR2H6jC2a/taZgKubCxvg5DjYIJaOW4nRoWonX9RKmM/Ucuw9hBz7zAIqHBz+w/A6G9Ok7cOYPtuR63RY9uBfP5GGpFtXdHpmTLKG+IfKrRQ1jXyrhiCI5jnDRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=e8lXUavu; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607d8506099so404447b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 20:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1707970454; x=1708575254; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GWOm6iTHQSxlAV00u0AtMXXNvT0ukROOnxRlWLQBnes=;
-        b=e8lXUavueGEtQ052xskHfhiRuD6fcWC9q0nypq2em8yk44LfdiIOeMon5dP6tVDSmp
-         muk61PqEbQn2RdE1g07QpIHTC0yWlHw/4vkr3mBTb1RVKS9U7+lOXjgiFU5pOifgVarY
-         i0FN7l+gSLKcYIux0MBLYqx1U6hADnhbx65aqTYrwxsdSxgEMFy+C4kakFE2Fe4THVQL
-         Bm5qN9rC3Xq6PuhNLg+puKZdRtPAXhfa7zsiq4Jz4lzuJVyZl+Qq82AegRkp/NiSvCrf
-         qydNEPrlWma7uRTmRNAlvW3Pl5+CPYKraeXyYIxdpCYmLH226rSAZEovvPGLXeTnwdFC
-         XkIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707970454; x=1708575254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GWOm6iTHQSxlAV00u0AtMXXNvT0ukROOnxRlWLQBnes=;
-        b=TqUPKSsVQJwV87BjheHEBEwfRSjnPhTg/Zt5GrUKiWrmp5d8Qs2kb0mSz5ZRDcO5X3
-         PB+L5PTKWhQyGS5UGfH9tjnYNx2KrBIAupvVfHnF7hE92PVYJPm8++NIY2SayqkE+SPc
-         SKrTil6b/AhDcaoDwzPYDFKvbGVSWMdG0tMAON/AopydRDWiCJHb8hpPwOUx5SiLd4Bo
-         Na9/mZE99J7/w/fbrgljm+NsKLMbMlDOd4ev14mFf4INn32isWTwZ05ns7/GgmF+M7Bf
-         hBIFGpfKHqE0DLO90CyEiY1O2T4nJBg8yMmjoOtAhQABF21J38HICONHQK3JdlRZL6ya
-         9iTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWctsVTAhoNaCythqFyVyZBUia6DwG7DTfBHRB0RzhodySUqUcJyGX2coZN6k7PWZLF9cYDtCsOlTwWgZ76bxV1Z9gZMturO4fEUL0E
-X-Gm-Message-State: AOJu0Yw9rJc93u4Z63Vxa+g/cfc90KmL+pFU27IDZ/U3WfIeTsXtzODZ
-	X/5gS7+sfS7mh1hH4+bh78DW3nSUMLRpQbd/OVumW13sYkjIMDAYn83sxvk4BMxBqnVyu6dLxNx
-	LZFl4v50OArrnnt3lV5Kp0TGx9UkLERm5TrZo/Q==
-X-Google-Smtp-Source: AGHT+IGli7KTi+oTy9r7ChRsf7LElU9R7/7skdQucQvdahbi2P7ubWtsnls70yhwQwNOiEhVx27u8rRA0Vp4oT8C8S0=
-X-Received: by 2002:a81:4886:0:b0:602:ccb6:5da6 with SMTP id
- v128-20020a814886000000b00602ccb65da6mr601453ywa.35.1707970453767; Wed, 14
- Feb 2024 20:14:13 -0800 (PST)
+	s=arc-20240116; t=1707970676; c=relaxed/simple;
+	bh=ZD8mgUoGZ9LuNUBrQoLP9k3Mcl+ZrUOcZSgTSYVRlDY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TQu3MygtcjU7OzWGliaqFx/kPXgD1YZRf4Qp/t+O+yMBu8JvY7PSq6wD5ocASxyWAwsXwHFzvJ1Lpai+JBVxPPKQqF4kBLDUJUucvuuBafcYCtOgCNx7iF7zHvZdIGIQkNolHs+uSqsDNaXKPb9W/KM7jg0pumH8qNPDCSGpKyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=H1WD5Njm; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41F4HEv0007469;
+	Wed, 14 Feb 2024 22:17:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707970634;
+	bh=Blh+w72b/pcek/m3Fb92pQ9DCthY9zPpigNvFxTetZI=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=H1WD5NjmeIg+S+AbXOlTk9Z2IJeqPqi+p6fEmaT6M426c1bimH7/VLBV8+E0KWpbJ
+	 k+A9W9zx8y9Z0DWD4WWXeoQ7mAEGdzPDKMgCp4eu2AxPIDoErwVjCkVk52WMow0b4X
+	 EAS94d+9Nkuds26xXh2Vn3Xj5oN9082mV2SozoSU=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41F4HEAZ027181
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 14 Feb 2024 22:17:14 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 14
+ Feb 2024 22:17:14 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 14 Feb 2024 22:17:14 -0600
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41F4H8NO050822;
+	Wed, 14 Feb 2024 22:17:09 -0600
+Message-ID: <52608865-b3db-45a9-907f-e954cce88b51@ti.com>
+Date: Thu, 15 Feb 2024 09:47:07 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240203-clone3-shadow-stack-v5-0-322c69598e4b@kernel.org> <20240203-clone3-shadow-stack-v5-3-322c69598e4b@kernel.org>
-In-Reply-To: <20240203-clone3-shadow-stack-v5-3-322c69598e4b@kernel.org>
-From: Deepak Gupta <debug@rivosinc.com>
-Date: Wed, 14 Feb 2024 20:14:02 -0800
-Message-ID: <CAKC1njQ26nN8ZYLvBYd8=vEbSHLC1aH-aOCoDdf35LhEQxNdsQ@mail.gmail.com>
-Subject: Re: [PATCH RFT v5 3/7] mm: Introduce ARCH_HAS_USER_SHADOW_STACK
-To: Mark Brown <broonie@kernel.org>
-Cc: "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>, Szabolcs Nagy <Szabolcs.Nagy@arm.com>, 
-	"H.J. Lu" <hjl.tools@gmail.com>, Florian Weimer <fweimer@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Kees Cook <keescook@chromium.org>, jannh@google.com, linux-kselftest@vger.kernel.org, 
-	linux-api@vger.kernel.org, David Hildenbrand <david@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] arm64: dts: ti: k3-j784s4: Add Wave5 Video
+ Encoder/Decoder Node
+Content-Language: en-US
+To: Brandon Brnich <b-brnich@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo
+	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Geert Uytterhoeven
+	<geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Darren Etheridge <detheridge@ti.com>
+References: <20240205194706.3605309-1-b-brnich@ti.com>
+ <20240205194706.3605309-2-b-brnich@ti.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20240205194706.3605309-2-b-brnich@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Feb 2, 2024 at 4:05=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> Since multiple architectures have support for shadow stacks and we need t=
-o
-> select support for this feature in several places in the generic code
-> provide a generic config option that the architectures can select.
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Acked-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+Hi Brandon
 
-Reviewed-by: Deepak Gupta <debug@rivosinc.com
+On 06/02/24 01:17, Brandon Brnich wrote:
+> This patch adds support for the Wave521cl on the J784S4-evm.
+> 
+> Signed-off-by: Brandon Brnich <b-brnich@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 18 ++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j784s4.dtsi      |  2 ++
+>  2 files changed, 20 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index f2b720ed1e4f..e628e748f215 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -662,6 +662,24 @@ main_i2c6: i2c@2060000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	vpu0: video-codec@4210000 {
+> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+> +		reg = <0x00 0x4210000 0x00 0x10000>;
+> +		interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 241 2>;
+> +		clock-names = "vcodec";
+
+Binding doesn't allow clock-names [0]
+
+[0] Documentation/devicetree/bindings/media/cnm,wave521c.yaml
+
+> +		power-domains = <&k3_pds 241 TI_SCI_PD_EXCLUSIVE>;
+> +	};
+> +
+> +	vpu1: video-codec@4220000 {
+> +		compatible = "ti,j721s2-wave521c", "cnm,wave521c";
+> +		reg = <0x00 0x4220000 0x00 0x10000>;
+> +		interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&k3_clks 242 2>;
+> +		clock-names = "vcodec";
+> +		power-domains = <&k3_pds 242 TI_SCI_PD_EXCLUSIVE>;
+> +	};
+> +
+>  	main_sdhci0: mmc@4f80000 {
+>  		compatible = "ti,j721e-sdhci-8bit";
+>  		reg = <0x00 0x04f80000 0x00 0x1000>,
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> index 4398c3a463e1..2f633721a0c6 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
+> @@ -235,6 +235,8 @@ cbass_main: bus@100000 {
+>  		ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
+>  			 <0x00 0x00600000 0x00 0x00600000 0x00 0x00031100>, /* GPIO */
+>  			 <0x00 0x01000000 0x00 0x01000000 0x00 0x0d000000>, /* Most peripherals */
+> +			 <0x00 0x04210000 0x00 0x04210000 0x00 0x00010000>, /* VPU0 */
+> +			 <0x00 0x04220000 0x00 0x04220000 0x00 0x00010000>, /* VPU1 */
+>  			 <0x00 0x0d000000 0x00 0x0d000000 0x00 0x01000000>, /* PCIe Core*/
+>  			 <0x00 0x10000000 0x00 0x10000000 0x00 0x08000000>, /* PCIe0 DAT0 */
+>  			 <0x00 0x18000000 0x00 0x18000000 0x00 0x08000000>, /* PCIe1 DAT0 */
+
+-- 
+Regards
+Vignesh
 
