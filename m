@@ -1,75 +1,62 @@
-Return-Path: <linux-kernel+bounces-67311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 089CD856997
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:30:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49EF85699A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4ADB2927FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:30:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B55E292814
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40803135A52;
-	Thu, 15 Feb 2024 16:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84AEB135419;
+	Thu, 15 Feb 2024 16:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QThizXhO"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Awe7U2hz"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9854B1353FB;
-	Thu, 15 Feb 2024 16:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0160D131E56;
+	Thu, 15 Feb 2024 16:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014629; cv=none; b=BhjYf/7WK1VTaYW9Z7TEEqSufvkxGTx7/GsUSUaEmFrWn27GJXp8zxXGwIUZ8EfFp2nIqard0oFi5Q9tzpiuvWTgF7bN3l9PZK6hO5n4KUJDHY3uDbL7SoPOqqONi2aetmfglxGXiWvJ8wjZLsgQuEWHfMTnUFLmsA6cRQX0CMY=
+	t=1708014669; cv=none; b=M3oE6sowOZ08k0f+WCycDolbZPOa9v5Sn5Tdol6EeIFOdbC8/dNpGmpQbKoRx0lqi9pO9GriGl77WPcuCMEYxQrVNNtS8vEjt+uvHLyH8nmAu4vnUk/xrmtamSS7ahzGFqyI8/wUBorTDbr2PDhfI9VcMMrqbjlzm7e8RpN8fOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014629; c=relaxed/simple;
-	bh=vFqF9N1EzbJYqmh428i581vtsdh+Mio0PRFpoThYTuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jkrlUGminAdwWlgfzftiWVijXRk4ycuQU+I5aRcBUmWZIOYTcfCJffMHKqd4muEZbZyDByeONRfzmjTjgT9Nu5obN117i63WfILT5WnwqkYHkVSJapgVMBPvyw0mGiPTr61Z9fiEJSgjJL1JzxeCzk+JY0wkoKH2dE4itL21sJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QThizXhO; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dba177c596so309385ad.0;
-        Thu, 15 Feb 2024 08:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708014627; x=1708619427; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ayerQMBhM1U86A9++70+9riJj0G7Pkbo3k+9s9+t700=;
-        b=QThizXhOJsjpMDFqrZVW5j+fyYLKhfpyNkmrPcCn0cTQRjq/qduOpItDOotxFbqHGN
-         xLTwo9IKThdyV8oFCZ904+RyG+a6/gH1atK0xvMQtPFeMz8XDDuXngth03/rfBhJtBeA
-         xZKEmVL/A8CtSnZaEH70IJfxYP0LNUuOEB1J7t/8ppfcfNC6bu2JT921PwQoCoAosn61
-         FPH5jg2OD8+N2mwUCxjjvIPbgtN1pNsmaucq5xnb35YoSTz1NZT3yYLvjJpLNgfsogop
-         csZBVqMjhyYtGbRW8slROT+WINrZ+dApSDco44Ft8nOKlWU23RBUJPyjV6RapDNR9Ou9
-         Ydww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708014627; x=1708619427;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ayerQMBhM1U86A9++70+9riJj0G7Pkbo3k+9s9+t700=;
-        b=uwqhZ0TO+Xb4N6PNn4ejs1NHf1bsIDbPIwuZ4dpXD8varxC0hIa3GZqj0j4CvJI0D+
-         t614NuO6/KWTZsbQV4rVDyhEDkSbctkkjTFfUS9NzMWKlarJxb8e6H5kP06BZheoCS+s
-         jY/mjd33eP9zu9oSVX5Nh8yFdfqZdJBgNxqjcAauGlCEJVyZxjRRVj08C10KOpD+MOnc
-         pc13RJA6Ve2Vln04Q+0EpUJ+jR6/FLUlbDCs4bsmhciIVLhmc9fAu9zY89hvtgOW/QqB
-         bRm92fPtkFBNxBkmL6ZFtYbii12kklkEWYphfKW8qgVqhWGke7sM1TbsarEkyPERUcPm
-         luQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpHDJlMvqKg45u5mXxpEnky9zAgy83QVS0smkX2/dndijeehijx0oHX5c3GTb6xifLjOZkg8cmdtySaDnZcJqAb1pyjjXWUEx8MEA4KhNOPuU3VtY+5qOChSyj8LWoD9xNsn47YC12YBP3
-X-Gm-Message-State: AOJu0YzWOd/3dLrqZhZ3UhKXhyfGsgcyMfqGqmGi0xWfF+mp/V/NpdE4
-	TvQgzk0P1tUUQqYNF08BpfF6kWcFJbW0DRqECTmBrqoP3fWlaV7B
-X-Google-Smtp-Source: AGHT+IHAeaVjh5D2KcdSIHCtvXcbpcXwDwMzldIx8xE4YHY+NLXQsfvOsGnGKeaYI9pA/rkgLqXZ4Q==
-X-Received: by 2002:a17:902:f7d1:b0:1d8:ff72:eef8 with SMTP id h17-20020a170902f7d100b001d8ff72eef8mr6350878plw.18.1708014625357;
-        Thu, 15 Feb 2024 08:30:25 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id jd22-20020a170903261600b001da2951a788sm940094plb.304.2024.02.15.08.30.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 08:30:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <0fa4d53a-6ce7-4f44-81b2-86282f0b9451@roeck-us.net>
-Date: Thu, 15 Feb 2024 08:30:22 -0800
+	s=arc-20240116; t=1708014669; c=relaxed/simple;
+	bh=z4ELZcom6+D3ZpA7axk9YIyGM84hcV7kqm6ACYOdTeo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ItA3X8A/ZPEH6b/LpUjPBW7p0CmZeoNvQvQlwMbzRKOP/RTHHwEBwOAT7l9tbOjwVidg/0kGFmiupHBGM6sk9poO026DfHUtnFIAlrzTd3jornNQO3ogWNIw4f132qw9DgfEUomspHeSKAaFne+cUagM7RxzUyjH8RRBZwFP6sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Awe7U2hz; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FG4xOX016707;
+	Thu, 15 Feb 2024 16:30:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=1+fPlBMNGxGtSyJRuRNoVCHqvex/12vd4Nel4vBMG/s=; b=Aw
+	e7U2hzwaxHEVta2DSISmeBhn6aJSrD6TST+TrLQ7J6nfktMLZOeKaNy96ei6s5MX
+	8s+w76UTmt8zVhxUP8leAP9fQZ7JmEV/SKc1wgDjWzDuh1YtsvrNRtkNiYaIVeRE
+	gX3eHvgSD1F6d/PwXhfDf9GO+HoVEgfxVB8PNzNXs/Zc5g7u93ZmPymp5uv69bOp
+	Cz5ctDd+XgCVEOdokzPhv6a34CJy6sSl1uQFF65Hk4aC7LTzJukhYA37Hzv3nk1y
+	DfcBmNZ4YPEm+h3jGZ1qS4HJuP2MVKb+3Z4w23jwsYySEEM+ekUailotegzg5N0s
+	sNgnlNC14I9t2DFErnDg==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9342jguw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 16:30:40 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41FGUd0I005146
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 16:30:40 GMT
+Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 15 Feb
+ 2024 08:30:39 -0800
+Message-ID: <aa76bbac-2f92-4c92-b78a-440a48ebfd4f@quicinc.com>
+Date: Thu, 15 Feb 2024 08:30:38 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,125 +64,277 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
+Subject: Re: [PATCH 3/3] drm/panel: ltk500hd1829: add panel type for
+ ltk101b4029w
 Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: John David Anglin <dave.anglin@bell.net>,
- David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
- <1d5e059e-5b31-415d-ae41-593415812e94@bell.net> <Zc2GfgiCpevtKTtS@ghost>
- <11fff7fe-ec4c-4340-a67f-d1d54d0712d8@roeck-us.net> <Zc4veRSmxHHqu/bB@ghost>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <Zc4veRSmxHHqu/bB@ghost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Heiko Stuebner <heiko@sntech.de>, <neil.armstrong@linaro.org>
+CC: <sam@ravnborg.org>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>, <tzimmermann@suse.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quentin.schulz@theobroma-systems.com>,
+        Heiko
+ Stuebner <heiko.stuebner@cherry.de>
+References: <20240215090515.3513817-1-heiko@sntech.de>
+ <20240215090515.3513817-4-heiko@sntech.de>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240215090515.3513817-4-heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1Rp6xcP08FMw69iGhsqisVqKcRu-EGhZ
+X-Proofpoint-GUID: 1Rp6xcP08FMw69iGhsqisVqKcRu-EGhZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_15,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 lowpriorityscore=0 priorityscore=1501 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150132
 
-On 2/15/24 07:36, Charlie Jenkins wrote:
-> On Thu, Feb 15, 2024 at 12:56:13AM -0800, Guenter Roeck wrote:
->> On 2/14/24 19:35, Charlie Jenkins wrote:
->>> On Wed, Feb 14, 2024 at 10:00:37PM -0500, John David Anglin wrote:
->>>> On 2024-02-14 8:58 p.m., Guenter Roeck wrote:
->>>>> Specifically: Yes, the carry/borrow bits should be restored. Question is
->>>>> if the Linux kernel's interrupt handler doesn't restore the carry bits
->>>>> or if the problem is on the qemu side.
->>>> The carry/borrow bits in the PSW should be saved and restored by the save_specials
->>>> and rest_specials macros.  They are defined in arch/parisc/include/asm/assembly.h.
->>>
->>> Why would they be needed to be restored in linux? The manual says "The
->>> PSW is set to the contents of the IPSW by the RETURN FROM INTERRUPTION
->>> instruction". This means that the PSW must be restored by the hardware.
->>>
->>> We can see the QEMU implementation in:
->>>
->>> rfi:
->>> https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/sys_helper.c#L93
->>>
->>> handling interrupt:
->>> https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/int_helper.c#L109
->>>
->>> However the implementation appears to be faulty. During an RFI, the PSW
->>> is always set to 0x804000e (regardless of what the PSW was before the
->>> interrupt).
->>>
->>
->> Not sure if I agree. The interrupt handler in Linux is the one which needs to set
->> IPSW. Looking into the code, I agree with Dave that the tophys macro seems to
->> clobber the carry bits before psw is saved, so they can not really be restored.
->> The only issue with that idea is that I can only reproduce the problem with
->> an interrupted ldd instruction but not, for example, with ldw. This is why it
->> would be really important to have someone with real hardware test this.
->>
->> Thanks,
->> Guenter
+
+
+On 2/15/2024 1:05 AM, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
-> Yes, we definitely feedback from somebody with access to hardware, but I
-> do not understand how "The PSW is set to the contents of the IPSW by the
-> RETURN FROM INTERRUPTION" could be interpreted as anything except that
-> the hardware is expected to over-write the contents of the PSW during
-> the rfi.
+> The ltk101b4029w ist a 10.1 inch DSI panel and shares the same supplies
+> and startup timings with the existing ltk500hd1829.
 > 
+> So simply add it as a variant with its own init sequence and display-mode.
+> 
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 
-Sure, I absolutely agree. But that assumes that IPSW is set correctly
-in the Linux interrupt handler. We do know that something odd happens
-when an unaligned ldd is encountered. At least for my part I don't know
-if the problem is in emulate_ldd() in the Linux kernel or in the ldd
-implementation and trap handling in qemu. I do know (from my logs)
-that qemu does see the correct PSW/IPSW values, because they do
-show up correctly in the Linux kernel when running the qemu emulation.
-Only it somehow gets lost when the Linux interrupt handler returns.
+Hi Heiko,
 
-Thanks.
-Guenter
+Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
+Thanks,
+
+Jessica Zhang
+
+> ---
+>   .../drm/panel/panel-leadtek-ltk500hd1829.c    | 196 ++++++++++++++++++
+>   1 file changed, 196 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> index 42f4e2584af18..7bc538b7c6b7c 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> @@ -43,6 +43,198 @@ struct ltk500hd1829 {
+>   	bool prepared;
+>   };
+>   
+> +static const struct ltk500hd1829_cmd ltk101b4029w_init[] = {
+> +	/* Page0 */
+> +	{ 0xE0, 0x00 },
+> +	/* PASSWORD */
+> +	{ 0xE1, 0x93 },
+> +	{ 0xE2, 0x65 },
+> +	{ 0xE3, 0xF8 },
+> +	{ 0x80, 0x03 }, /* 0X03:4-LANE; 0X02:3-LANE; 0X01:2-LANE */
+> +	/* Page1 */
+> +	{ 0xE0, 0x01 },
+> +	/* Set VCOM */
+> +	{ 0x00, 0x00 },
+> +	{ 0x01, 0x6F },
+> +	/* Set Gamma Power, VGMP,VGMN,VGSP,VGSN */
+> +	{ 0x17, 0x00 },
+> +	{ 0x18, 0xAF }, /* 4.3V */
+> +	{ 0x19, 0x01 }, /* 0.3V */
+> +	{ 0x1A, 0x00 },
+> +	{ 0x1B, 0xAF }, /* 4.3V */
+> +	{ 0x1C, 0x01 }, /* 0.3V */
+> +	/* Set Gate Power */
+> +	{ 0x1F, 0x3E }, /* VGH_R  = 15V */
+> +	{ 0x20, 0x28 }, /* VGL_R  = -12V */
+> +	{ 0x21, 0x28 }, /* VGL_R2 = -12V */
+> +	{ 0x22, 0x7E },
+> +	/* SETPANEL */
+> +	{ 0x35, 0x26 },
+> +	{ 0x37, 0x09 },
+> +	/* SET RGBCYC */
+> +	{ 0x38, 0x04 },
+> +	{ 0x39, 0x00 },
+> +	{ 0x3A, 0x01 },
+> +	{ 0x3C, 0x7C },
+> +	{ 0x3D, 0xFF },
+> +	{ 0x3E, 0xFF },
+> +	{ 0x3F, 0x7F },
+> +	/* Set TCON */
+> +	{ 0x40, 0x06 }, /* RSO = 800 RGB */
+> +	{ 0x41, 0xA0 }, /* LN = 640->1280 line */
+> +	{ 0x42, 0x81 },
+> +	{ 0x43, 0x08 }, /* VFP = 8 */
+> +	{ 0x44, 0x0B }, /* VBP = 12 */
+> +	{ 0x45, 0x28 }, /* HBP = 40 */
+> +	/* power voltage */
+> +	{ 0x55, 0x0F }, /* DCDCM = 0001, JD PWR_IC */
+> +	{ 0x57, 0x69 },
+> +	{ 0x59, 0x0A }, /* VCL = -2.9V */
+> +	{ 0x5A, 0x28 }, /* VGH = 15V */
+> +	{ 0x5B, 0x14 }, /* VGL = -11V */
+> +	/* Gamma */
+> +	{ 0x5D, 0x7C },
+> +	{ 0x5E, 0x65 },
+> +	{ 0x5F, 0x55 },
+> +	{ 0x60, 0x47 },
+> +	{ 0x61, 0x43 },
+> +	{ 0x62, 0x32 },
+> +	{ 0x63, 0x34 },
+> +	{ 0x64, 0x1C },
+> +	{ 0x65, 0x33 },
+> +	{ 0x66, 0x31 },
+> +	{ 0x67, 0x30 },
+> +	{ 0x68, 0x4E },
+> +	{ 0x69, 0x3C },
+> +	{ 0x6A, 0x44 },
+> +	{ 0x6B, 0x35 },
+> +	{ 0x6C, 0x31 },
+> +	{ 0x6D, 0x23 },
+> +	{ 0x6E, 0x11 },
+> +	{ 0x6F, 0x00 },
+> +	{ 0x70, 0x7C },
+> +	{ 0x71, 0x65 },
+> +	{ 0x72, 0x55 },
+> +	{ 0x73, 0x47 },
+> +	{ 0x74, 0x43 },
+> +	{ 0x75, 0x32 },
+> +	{ 0x76, 0x34 },
+> +	{ 0x77, 0x1C },
+> +	{ 0x78, 0x33 },
+> +	{ 0x79, 0x31 },
+> +	{ 0x7A, 0x30 },
+> +	{ 0x7B, 0x4E },
+> +	{ 0x7C, 0x3C },
+> +	{ 0x7D, 0x44 },
+> +	{ 0x7E, 0x35 },
+> +	{ 0x7F, 0x31 },
+> +	{ 0x80, 0x23 },
+> +	{ 0x81, 0x11 },
+> +	{ 0x82, 0x00 },
+> +	 /* Page2, for GIP */
+> +	{ 0xE0, 0x02 },
+> +	/* GIP_L Pin mapping */
+> +	{ 0x00, 0x1E },
+> +	{ 0x01, 0x1E },
+> +	{ 0x02, 0x41 },
+> +	{ 0x03, 0x41 },
+> +	{ 0x04, 0x43 },
+> +	{ 0x05, 0x43 },
+> +	{ 0x06, 0x1F },
+> +	{ 0x07, 0x1F },
+> +	{ 0x08, 0x35 },
+> +	{ 0x09, 0x1F },
+> +	{ 0x0A, 0x15 },
+> +	{ 0x0B, 0x15 },
+> +	{ 0x0C, 0x1F },
+> +	{ 0x0D, 0x47 },
+> +	{ 0x0E, 0x47 },
+> +	{ 0x0F, 0x45 },
+> +	{ 0x10, 0x45 },
+> +	{ 0x11, 0x4B },
+> +	{ 0x12, 0x4B },
+> +	{ 0x13, 0x49 },
+> +	{ 0x14, 0x49 },
+> +	{ 0x15, 0x1F },
+> +	/* GIP_R Pin mapping */
+> +	{ 0x16, 0x1E },
+> +	{ 0x17, 0x1E },
+> +	{ 0x18, 0x40 },
+> +	{ 0x19, 0x40 },
+> +	{ 0x1A, 0x42 },
+> +	{ 0x1B, 0x42 },
+> +	{ 0x1C, 0x1F },
+> +	{ 0x1D, 0x1F },
+> +	{ 0x1E, 0x35 },
+> +	{ 0x1F, 0x1F },
+> +	{ 0x20, 0x15 },
+> +	{ 0x21, 0x15 },
+> +	{ 0x22, 0x1f },
+> +	{ 0x23, 0x46 },
+> +	{ 0x24, 0x46 },
+> +	{ 0x25, 0x44 },
+> +	{ 0x26, 0x44 },
+> +	{ 0x27, 0x4A },
+> +	{ 0x28, 0x4A },
+> +	{ 0x29, 0x48 },
+> +	{ 0x2A, 0x48 },
+> +	{ 0x2B, 0x1F },
+> +	/* GIP Timing */
+> +	{ 0x58, 0x40 },
+> +	{ 0x5B, 0x30 },
+> +	{ 0x5C, 0x03 },
+> +	{ 0x5D, 0x30 },
+> +	{ 0x5E, 0x01 },
+> +	{ 0x5F, 0x02 },
+> +	{ 0x63, 0x14 },
+> +	{ 0x64, 0x6A },
+> +	{ 0x67, 0x73 },
+> +	{ 0x68, 0x05 },
+> +	{ 0x69, 0x14 },
+> +	{ 0x6A, 0x6A },
+> +	{ 0x6B, 0x08 },
+> +	{ 0x6C, 0x00 },
+> +	{ 0x6D, 0x00 },
+> +	{ 0x6E, 0x00 },
+> +	{ 0x6F, 0x88 },
+> +	{ 0x77, 0xDD },
+> +	{ 0x79, 0x0E },
+> +	{ 0x7A, 0x03 },
+> +	{ 0x7D, 0x14 },
+> +	{ 0x7E, 0x6A },
+> +	/* Page4 */
+> +	{ 0xE0, 0x04 },
+> +	{ 0x09, 0x11 },
+> +	{ 0x0E, 0x48 },
+> +	{ 0x2B, 0x2B },
+> +	{ 0x2D, 0x03 },
+> +	{ 0x2E, 0x44 },
+> +	/* Page0 */
+> +	{ 0xE0, 0x00 },
+> +	{ 0xE6, 0x02 },
+> +	{ 0xE7, 0x0C },
+> +};
+> +
+> +static const struct drm_display_mode ltk101b4029w_mode = {
+> +	.hdisplay	= 800,
+> +	.hsync_start	= 800 + 18,
+> +	.hsync_end	= 800 + 18 + 18,
+> +	.htotal		= 800 + 18 + 18 + 18,
+> +	.vdisplay	= 1280,
+> +	.vsync_start	= 1280 + 24,
+> +	.vsync_end	= 1280 + 24 + 4,
+> +	.vtotal		= 1280 + 24 + 4 + 8,
+> +	.clock		= 67330,
+> +	.width_mm	= 136,
+> +	.height_mm	= 218,
+> +};
+> +
+> +static const struct ltk500hd1829_desc ltk101b4029w_data = {
+> +	.mode = &ltk101b4029w_mode,
+> +	.init = ltk101b4029w_init,
+> +	.num_init = ARRAY_SIZE(ltk101b4029w_init),
+> +};
+> +
+>   /*
+>    * There is no description in the Reference Manual about these commands.
+>    * We received them from the vendor, so just use them as is.
+> @@ -510,6 +702,10 @@ static void ltk500hd1829_remove(struct mipi_dsi_device *dsi)
+>   }
+>   
+>   static const struct of_device_id ltk500hd1829_of_match[] = {
+> +	{
+> +		.compatible = "leadtek,ltk101b4029w",
+> +		.data = &ltk101b4029w_data,
+> +	},
+>   	{
+>   		.compatible = "leadtek,ltk500hd1829",
+>   		.data = &ltk500hd1829_data,
+> -- 
+> 2.39.2
+> 
 
