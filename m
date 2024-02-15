@@ -1,151 +1,132 @@
-Return-Path: <linux-kernel+bounces-66240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BFE58558F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:30:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0A08558F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7686F28F6FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:30:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 403591C22461
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A117364A;
-	Thu, 15 Feb 2024 02:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521B43FE4;
+	Thu, 15 Feb 2024 02:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="aYrZu5gx"
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="ZRbSjk+F"
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DE03FEF;
-	Thu, 15 Feb 2024 02:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EC939B
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707964208; cv=none; b=NEyf9Yc3S3G3zY4C1ydWC6J5FlLBUOfZZNuAgM9IhwjENh74+0nZM95CAMozOpxiRhRwOueGZoyhmsfdt0bSYzNsAy8hiUsFjcZ8df1IKlQa9UaEaDWhkw1OVKaQ9ft5ymKfjVxjJRoxhdUosjJcEUN5JeMyHzFeXnnv+HmhOXY=
+	t=1707964275; cv=none; b=IFtRJqpkhC1zBa3EomMpYmQKKcC7ftMKe9DoLwJ/HmK0pxDeWamKWNy650rM5IBwMFSfVk+XtA2al43uUhr7evgcc/L6SVjfAyu80dTthd5ozCWoeV/KRGIiBPHaKlZcDSm7iZlE8LhEMkryeaP5f1NwrgXXflLE+4SzNRwSbU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707964208; c=relaxed/simple;
-	bh=LVa6TQR2ubWCWAbXH9G7raC0OPAwoLfUp9WeQppAu/g=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=m11jK5u2EZToFq6FQ0rkazBJAETCg+WK2YYG1SnHr8KDHMHySAketH1/c43sAeiHDwW8NEJEg6fn9/4SWsIste1vKZ+9DJ0p5j5Ti27OTYaLTjSEDxrzLxvqJn1rW1W/lPlpIyRVDqcoW16VxwWszFjTIPPVbmn3k+zlHbtlzkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=aYrZu5gx; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1707964194;
-	bh=90YqM914shKUVf/nn8h70J6ciK5KWSzDwzEM9f+oKzc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=aYrZu5gxYRwUPGVKk/7mIVn1i14IjgI6BmCOcv/uUyS1E/LEfR4v3AoiV8ImdMvpX
-	 b83R6FdjM6lTXQMvrMO9gHo44v1t4xk1vXpjYsIlX2BRXu8t5JeDsxM6nh/AWRLfjE
-	 HmqRl3EahDyUwdji6P7lHC/Lk3pYUtzNtCZNRMTn7QXp5yawGFPiqo9AqjNWgUP/F/
-	 n8/pXXK6oqeIJc70K8WjqADD5xixdvW/17/lectvEtqa5YcvN0yxgRrUWKV6eRAi32
-	 rCyyjIuCpzbuwb7ejuyeNwms6R8cH3T79ZfvHyp9ZhIYAZFHeMr6lzj7Nuf9MtvHaE
-	 wv2KRLpA+t9eg==
+	s=arc-20240116; t=1707964275; c=relaxed/simple;
+	bh=fWwe+zyzz52O3D2v6MbdZs2U98vj/zxwa7T4woR+DOQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GFwN3aP3ODvkRpkCIF/6XD/iqxIHICCTwoQTsWTz2JID2C9DFM1QlpRPvU4Z/hHXiIsbeumBzqAzncYWw55faqFrhObVM34Jz0DU0YuuAzLlpIq20r9uGldU71FfwBnAnYbaums0axdUb+AVFRXSjNUsqSvuYolK37tbpDXqDjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=ZRbSjk+F; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1707964269;
+	bh=mN7k05qDsCZMvJ231ko7Ex1DhgQgMDJKRw5c4Jz+Jno=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ZRbSjk+F0dN7h56CW1VVMZbPdYMZNjqNRFpLazen7bRueZ0r5T1ywezmodVpyjVa9
+	 d92F0UbPkk9cWKe/PUaolTj0uuHCqNcK/ovV+hA+9r8vgDHeXTd6hLN6wCeRtjDm12
+	 wkrFjy7X7ibTf+qIS411Cy5ElqNoS0q5GnEN+y7jmi5FPb/ixivhx/JpCR66PfFpwA
+	 JP9jt3Lz0hSKEVJYKjPr8MT4mthYB057UdEkBZa4JxTJLbg6Uas//RbUT4CmRP2859
+	 ZbXPQ2xV1m3X13wKW1QvIjjvoRUVCp+CRxl7+/GFzsANQTLT9gMRfrag8IblLb8+dG
+	 7cgXHvEiWtt2Q==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZzYF2n1cz4wcN;
-	Thu, 15 Feb 2024 13:29:53 +1100 (AEDT)
-Date: Thu, 15 Feb 2024 13:29:52 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Greg KH
- <greg@kroah.com>
-Cc: Francesco Dolcini <francesco.dolcini@toradex.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Christoph Winklhofer
- <cj.winklhofer@gmail.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the w1 tree
-Message-ID: <20240215132952.6c83ab23@canb.auug.org.au>
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TZzZg5B7Nz4wxv;
+	Thu, 15 Feb 2024 13:31:07 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Shivaprasad G Bhat <sbhat@linux.ibm.com>, iommu@lists.linux.dev,
+ linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+ naveen.n.rao@linux.ibm.com, jgg@ziepe.ca, jroedel@suse.de,
+ tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
+ gregkh@linuxfoundation.org, sbhat@linux.ibm.com,
+ gbatra@linux.vnet.ibm.com, vaibhav@linux.ibm.com,
+ venkat88@linux.vnet.ibm.com
+Subject: Re: [PATCH v2] powerpc/iommu: Fix the iommu group reference leak
+ during platform domain attach
+In-Reply-To: <170793401503.7491.9431631474642074097.stgit@linux.ibm.com>
+References: <170793401503.7491.9431631474642074097.stgit@linux.ibm.com>
+Date: Thu, 15 Feb 2024 13:31:06 +1100
+Message-ID: <875xyq791x.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zKc9Ct.VwZnhFkAum=xP6yt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 
---Sig_/zKc9Ct.VwZnhFkAum=xP6yt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Shivaprasad G Bhat <sbhat@linux.ibm.com> writes:
+> The function spapr_tce_platform_iommu_attach_dev() is missing to call
+> iommu_group_put() when the domain is already set. This refcount leak
+> shows up with BUG_ON() during DLPAR remove operation as,
+>
+>   KernelBug: Kernel bug in state 'None': kernel BUG at arch/powerpc/platforms/pseries/iommu.c:100!
+>   Oops: Exception in kernel mode, sig: 5 [#1]
+>   LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=8192 NUMA pSeries
+>   <snip>
+>   Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_016) hv:phyp pSeries
+>   NIP:  c0000000000ff4d4 LR: c0000000000ff4cc CTR: 0000000000000000
+>   REGS: c0000013aed5f840 TRAP: 0700   Tainted: G          I         (6.8.0-rc3-autotest-g99bd3cb0d12e)
+>   MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 44002402  XER: 20040000
+>   CFAR: c000000000a0d170 IRQMASK: 0
+>   GPR00: c0000000000ff4cc c0000013aed5fae0 c000000001512700 c0000013aa362138
+>   GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000119c8afd0
+>   GPR08: 0000000000000000 c000001284442b00 0000000000000001 0000000000001003
+>   GPR12: 0000000300000000 c0000018ffff2f00 0000000000000000 0000000000000000
+>   GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>   GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>   GPR24: c0000013aed5fc40 0000000000000002 0000000000000000 c000000002757d90
+>   GPR28: c0000000000ff440 c000000002757cb8 c00000183799c1a0 c0000013aa362b00
+>   NIP [c0000000000ff4d4] iommu_reconfig_notifier+0x94/0x200
+>   LR [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200
+>   Call Trace:
+>   [c0000013aed5fae0] [c0000000000ff4cc] iommu_reconfig_notifier+0x8c/0x200 (unreliable)
+>   [c0000013aed5fb10] [c0000000001a27b0] notifier_call_chain+0xb8/0x19c
+>   [c0000013aed5fb70] [c0000000001a2a78] blocking_notifier_call_chain+0x64/0x98
+>   [c0000013aed5fbb0] [c000000000c4a898] of_reconfig_notify+0x44/0xdc
+>   [c0000013aed5fc20] [c000000000c4add4] of_detach_node+0x78/0xb0
+>   [c0000013aed5fc70] [c0000000000f96a8] ofdt_write.part.0+0x86c/0xbb8
+>   [c0000013aed5fce0] [c00000000069b4bc] proc_reg_write+0xf4/0x150
+>   [c0000013aed5fd10] [c0000000005bfeb4] vfs_write+0xf8/0x488
+>   [c0000013aed5fdc0] [c0000000005c0570] ksys_write+0x84/0x140
+>   [c0000013aed5fe10] [c000000000033358] system_call_exception+0x138/0x330
+>   [c0000013aed5fe50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
+>   --- interrupt: 3000 at 0x20000433acb4
+>   <snip>
+>   ---[ end trace 0000000000000000 ]---
+>
+> The patch makes the iommu_group_get() call only when using it there by
+> avoiding the leak.
+>
+> Fixes: a8ca9fc9134c ("powerpc/iommu: Do not do platform domain attach atctions after probe")
+> Reported-by: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>
+> Closes: https://lore.kernel.org/all/274e0d2b-b5cc-475e-94e6-8427e88e271d@linux.vnet.ibm.com
+> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+> ---
+> Changelog:
+> v1: https://lore.kernel.org/all/170784021983.6249.10039296655906636112.stgit@linux.ibm.com/
+>  - Minor refactor to call the iommu_group_get() only if required.
+>  - Updated the title, description and signature(Closes/Reported-by).
 
-Hi all,
+Sorry I already applied v1.
 
-After merging the w1 tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+If you send this as a patch on top of v1 with a new change log I can
+merge it as a cleanup/rework.
 
-drivers/w1/masters/w1-uart.c:314:24: error: initialization of 'size_t (*)(s=
-truct serdev_device *, const u8 *, size_t)' {aka 'long unsigned int (*)(str=
-uct serdev_device *, const unsigned char *, long unsigned int)'} from incom=
-patible pointer type 'ssize_t (*)(struct serdev_device *, const u8 *, size_=
-t)' {aka 'long int (*)(struct serdev_device *, const unsigned char *, long =
-unsigned int)'} [-Werror=3Dincompatible-pointer-types]
-  314 |         .receive_buf =3D w1_uart_serdev_receive_buf,
-      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/w1/masters/w1-uart.c:314:24: note: (near initialization for 'w1_uar=
-t_serdev_ops.receive_buf')
-
-Caused by commit
-
-  178cf9db9e6d ("w1: add UART w1 bus driver")
-
-interacting with commit
-
-  fed99212acae ("treewide, serdev: change receive_buf() return type to size=
-_t")
-
-from the tty tree.
-
-I have applied the following merge resolution patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 15 Feb 2024 13:23:35 +1100
-Subject: [PATCH] fixup for "w1: add UART w1 bus driver"
-
-interacting with "treewide, serdev: change receive_buf() return type to siz=
-e_t"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/w1/masters/w1-uart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/w1/masters/w1-uart.c b/drivers/w1/masters/w1-uart.c
-index 6950d29d7dac..a31782e56ba7 100644
---- a/drivers/w1/masters/w1-uart.c
-+++ b/drivers/w1/masters/w1-uart.c
-@@ -289,7 +289,7 @@ static int w1_uart_serdev_tx_rx(struct w1_uart_device *=
-w1dev,
- 	return ret;
- }
-=20
--static ssize_t w1_uart_serdev_receive_buf(struct serdev_device *serdev,
-+static size_t w1_uart_serdev_receive_buf(struct serdev_device *serdev,
- 					  const u8 *buf, size_t count)
- {
- 	struct w1_uart_device *w1dev =3D serdev_device_get_drvdata(serdev);
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zKc9Ct.VwZnhFkAum=xP6yt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXNdyAACgkQAVBC80lX
-0Gx0nggAlsDOQAnBfleT5Q1ZDV4jaUlLKb+L0t8Q/6kEqIrC3bzx6XAC7UNc2HMk
-5zngyK+OgfuKoluQ9WBYcoRPAYmoG0T78yuttueSuLLZ5qz0vfQJEd/fDVnMSG0V
-XFRWK2Hha8ezHBMVjtR5w7TWdtGOkMbGomO6QY4yGDm6HOeahF/9L/3GHURpHznV
-1bUeBbTYzbMc8TXm9nEC32FtkrE1uSegOjdhZZhIX7CNieuoBLJxXXyycuPlafG3
-SG6CBrxh8FWZ8AHgITq/dVjR0jw1CfFNc+CjFMj4/oOVtBfBHG1/l4Fbdx/FL7tB
-wynOk/EM8degtY+I1CWAwKSYdrrvSw==
-=x4BQ
------END PGP SIGNATURE-----
-
---Sig_/zKc9Ct.VwZnhFkAum=xP6yt--
+cheers
 
