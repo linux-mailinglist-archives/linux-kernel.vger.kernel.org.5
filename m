@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-67618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC62856E1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:57:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6A6856E1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16239B211A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:57:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED811C2201E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA5613A89D;
-	Thu, 15 Feb 2024 19:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F3413AA2A;
+	Thu, 15 Feb 2024 19:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4Oi28e5F";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ND6QAQo6"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ur49WNr3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5kmDE60Z"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4513213A892;
-	Thu, 15 Feb 2024 19:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE30213173A;
+	Thu, 15 Feb 2024 19:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708027020; cv=none; b=ZfaXDKbNslo2sJX/RT9dHjQ3kAqKmg4KMcPcqOdkTVRijsN9/v8j4bg02vWIr27n7ZUH3yJvVekRKY31YckAHUbyKeyMTF+T6mIqT8tvTO1vHFbQCSwxnoOyJmmzEhwcZZqBB3TDKyOUMjARN64ePcFfYAD8JBT3wbSz1Rp4gkE=
+	t=1708027021; cv=none; b=ltwcu61pbzrsAHM4jtS515lXMfiaKlHWGGlXqJj5z0ZkuA0yvsIF7pSa2cv6K7C38Xkd/UBfnC+IQhX9zYEsZGIQrdJCjTE0eE4Ldy+C8kAS8qWJslXsWzEianUsSTNCfzaSp9tB6dVssIem35+ZQeluDUVlFi0mD1hKPYtpCJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708027020; c=relaxed/simple;
-	bh=wKptZ5+eJl5ci++NzOa9RSvAO6eRqLXG+XKGBuxEkrk=;
+	s=arc-20240116; t=1708027021; c=relaxed/simple;
+	bh=MdkC8XE9kvkmc9XSw3q9ZgPGrZxIlfGqOovweariG3c=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=KzIPNAczIdS7yEACb8zJOw7Ub8SBBWt4HshlD/2SDVRoqNG0n1WiYpZ1d2BAzSdVKKYFBrOviLiCcaJziOm02VBb5qP871lNf15fYfMYYGLOZqRjEI+gcTLgevOI16T2atn3STAr4y7pkF/Kv8rbcVr3NNAGCGx6EHgD1vaaT1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4Oi28e5F; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ND6QAQo6; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=JP8ziPHNK9e3ik6ZtfKlPR7Pu6C4Q/H8jursQuFSEz/EL2PrkRjsi6Lb5oEKCRijzaec9n7G3tUIHx2p45lMCHn62QKrHA/Hr2mRsK3RgJyPi/aVHqFibr9VYWRMivbeI7MHaE+QDcBT4dGEoJyYhfXjQclx67dDOC0BHXqsK1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ur49WNr3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5kmDE60Z; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 15 Feb 2024 19:56:56 -0000
+Date: Thu, 15 Feb 2024 19:56:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708027017;
+	s=2020; t=1708027018;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Gp8pRjTfv1QNSZrrpl5DYHm5iswbLLmWrXHSIq3iwHU=;
-	b=4Oi28e5FLkAQ0DmzENQvaXxtLWKqvpZLEeN7mBd4A00w1lVNCofdNrG/Ac4Eev1crsaDib
-	Xgu/LSIQ7HEoDuY6XzSdtbHqE6cKBnsRPnMAxVpWhLaUFMXxRqf/3P60Zyj/wcHkdIN+X9
-	3RyeYwiUoEnGmX1tMy536pTsYZvUtQ1/J3TNg6pOey6/8smDtagUUXXH0hQ84amC43lGbg
-	st4R/HyygTWtVetgZPzDycy6HzeKrsmroJeB2FBPP3zyNj4Ptry3OLilQDP55uBMwg+COD
-	ZgIjjRQVtsD6pj6ymH2WhPq1pD/3+yzl/Yly+yEABMq8oM1McQ1RrgChbocStA==
+	bh=+WqI9nPtixyKncAra6ZweS8GANBLUa92oMGDlLFv3rc=;
+	b=ur49WNr3upAjaNjQbGrUAsw6vBCWNJAg81hxfTW/umjAvwlFIFbDHFAfhfuFbArO2yGpug
+	xLbUSEspRqTa0qSZDDDZvV3RQcSJbGaItSlPd6tONUNmcdFdC+THDmXkjPL+Z2tn5/c2Zq
+	pa8BEVa9rqajT5Mcykb173sngWCz2+L9ud3fQcyAuUL2dMOu98mFhf8d+T3zX0kIMUdHkY
+	OjkzIFbcwHhFfyJAsGtBw3tHkOnHG5aDshtPkTR3IaVbS+UPACQAN+jZ/XJyGiIK/iYsgV
+	tYgN6aecuegNVFs+2gm42ZhWkckU7lomJSyMK6WP0Ir6vlsb0Wya3tJIOB+80g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708027017;
+	s=2020e; t=1708027018;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Gp8pRjTfv1QNSZrrpl5DYHm5iswbLLmWrXHSIq3iwHU=;
-	b=ND6QAQo645tw4wiL8wFvLGq6ti3GCvCAvJixR+G2glfA+4HuxioDCoE7Zv7Hn9uJPFGXJx
-	g8GKH/sol8YwClBg==
+	bh=+WqI9nPtixyKncAra6ZweS8GANBLUa92oMGDlLFv3rc=;
+	b=5kmDE60Z9rJB1BLyE5jwsjoXe/mLelQ5D9zzG2W37r0O4cxOsVn1NjExws6JmFfiiZ4ceQ
+	eNAewuWDDXnuHiDQ==
 From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/msi] genirq/msi: Provide MSI_FLAG_PARENT_PM_DEV
+Subject: [tip: irq/msi] genirq/irqdomain: Reroute device MSI create_mapping
 Cc: Thomas Gleixner <tglx@linutronix.de>, Anup Patel <apatel@ventanamicro.com>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240127161753.114685-14-apatel@ventanamicro.com>
-References: <20240127161753.114685-14-apatel@ventanamicro.com>
+In-Reply-To: <20240127161753.114685-13-apatel@ventanamicro.com>
+References: <20240127161753.114685-13-apatel@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170802701641.398.9865476811780802677.tip-bot2@tip-bot2>
+Message-ID: <170802701742.398.8367609943575258696.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -80,59 +80,91 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the irq/msi branch of tip:
 
-Commit-ID:     9bbe13a5d414a7f8208dba64b54d2b6e4f7086bd
-Gitweb:        https://git.kernel.org/tip/9bbe13a5d414a7f8208dba64b54d2b6e4f7086bd
+Commit-ID:     e49312fe09df36cc4eae0cd6e1b08b563a91e1bc
+Gitweb:        https://git.kernel.org/tip/e49312fe09df36cc4eae0cd6e1b08b563a91e1bc
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 27 Jan 2024 21:47:41 +05:30
+AuthorDate:    Sat, 27 Jan 2024 21:47:40 +05:30
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 15 Feb 2024 17:55:41 +01:00
 
-genirq/msi: Provide MSI_FLAG_PARENT_PM_DEV
+genirq/irqdomain: Reroute device MSI create_mapping
 
-Some platform-MSI implementations require that power management is
-redirected to the underlying interrupt chip device. To make this work
-with per device MSI domains provide a new feature flag and let the
-core code handle the setup of dev->pm_dev when set during device MSI
-domain creation.
+Reroute interrupt allocation in irq_create_fwspec_mapping() if the domain
+is a MSI device domain. This is required to convert the support for wire
+to MSI bridges to per device MSI domains.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240127161753.114685-14-apatel@ventanamicro.com
+Link: https://lore.kernel.org/r/20240127161753.114685-13-apatel@ventanamicro.com
 
 ---
- include/linux/msi.h | 2 ++
- kernel/irq/msi.c    | 5 ++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ kernel/irq/irqdomain.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 36ba6a0..26d07e2 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -554,6 +554,8 @@ enum {
- 	MSI_FLAG_FREE_MSI_DESCS		= (1 << 6),
- 	/* Use dev->fwnode for MSI device domain creation */
- 	MSI_FLAG_USE_DEV_FWNODE		= (1 << 7),
-+	/* Set parent->dev into domain->pm_dev on device domain creation */
-+	MSI_FLAG_PARENT_PM_DEV		= (1 << 8),
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 8fee379..aeb4165 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -29,6 +29,7 @@ static int irq_domain_alloc_irqs_locked(struct irq_domain *domain, int irq_base,
+ 					unsigned int nr_irqs, int node, void *arg,
+ 					bool realloc, const struct irq_affinity_desc *affinity);
+ static void irq_domain_check_hierarchy(struct irq_domain *domain);
++static void irq_domain_free_one_irq(struct irq_domain *domain, unsigned int virq);
  
- 	/* Mask for the generic functionality */
- 	MSI_GENERIC_FLAGS_MASK		= GENMASK(15, 0),
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index 07e9daa..f90952e 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -845,8 +845,11 @@ static struct irq_domain *__msi_create_irq_domain(struct fwnode_handle *fwnode,
- 	domain = irq_domain_create_hierarchy(parent, flags | IRQ_DOMAIN_FLAG_MSI, 0,
- 					     fwnode, &msi_domain_ops, info);
+ struct irqchip_fwid {
+ 	struct fwnode_handle	fwnode;
+@@ -858,8 +859,13 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+ 	}
  
--	if (domain)
-+	if (domain) {
- 		irq_domain_update_bus_token(domain, info->bus_token);
-+		if (info->flags & MSI_FLAG_PARENT_PM_DEV)
-+			domain->pm_dev = parent->pm_dev;
-+	}
+ 	if (irq_domain_is_hierarchy(domain)) {
+-		virq = irq_domain_alloc_irqs_locked(domain, -1, 1, NUMA_NO_NODE,
+-						    fwspec, false, NULL);
++		if (irq_domain_is_msi_device(domain)) {
++			mutex_unlock(&domain->root->mutex);
++			virq = msi_device_domain_alloc_wired(domain, hwirq, type);
++			mutex_lock(&domain->root->mutex);
++		} else
++			virq = irq_domain_alloc_irqs_locked(domain, -1, 1, NUMA_NO_NODE,
++							    fwspec, false, NULL);
+ 		if (virq <= 0) {
+ 			virq = 0;
+ 			goto out;
+@@ -914,7 +920,7 @@ void irq_dispose_mapping(unsigned int virq)
+ 		return;
  
- 	return domain;
+ 	if (irq_domain_is_hierarchy(domain)) {
+-		irq_domain_free_irqs(virq, 1);
++		irq_domain_free_one_irq(domain, virq);
+ 	} else {
+ 		irq_domain_disassociate(domain, virq);
+ 		irq_free_desc(virq);
+@@ -1755,6 +1761,14 @@ void irq_domain_free_irqs(unsigned int virq, unsigned int nr_irqs)
+ 	irq_free_descs(virq, nr_irqs);
  }
+ 
++static void irq_domain_free_one_irq(struct irq_domain *domain, unsigned int virq)
++{
++	if (irq_domain_is_msi_device(domain))
++		msi_device_domain_free_wired(domain, virq);
++	else
++		irq_domain_free_irqs(virq, 1);
++}
++
+ /**
+  * irq_domain_alloc_irqs_parent - Allocate interrupts from parent domain
+  * @domain:	Domain below which interrupts must be allocated
+@@ -1907,9 +1921,9 @@ static int irq_domain_alloc_irqs_locked(struct irq_domain *domain, int irq_base,
+ 	return -EINVAL;
+ }
+ 
+-static void irq_domain_check_hierarchy(struct irq_domain *domain)
+-{
+-}
++static void irq_domain_check_hierarchy(struct irq_domain *domain) { }
++static void irq_domain_free_one_irq(struct irq_domain *domain, unsigned int virq) { }
++
+ #endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
+ 
+ #ifdef CONFIG_GENERIC_IRQ_DEBUGFS
 
