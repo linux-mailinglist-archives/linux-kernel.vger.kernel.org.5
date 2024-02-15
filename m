@@ -1,120 +1,88 @@
-Return-Path: <linux-kernel+bounces-67086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB7C85660D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5062856611
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DE0F1C22575
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:34:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82911287393
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01426132C0E;
-	Thu, 15 Feb 2024 14:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6096113246E;
+	Thu, 15 Feb 2024 14:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jfnLugIp"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcrWaRcV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09D969DF0;
-	Thu, 15 Feb 2024 14:33:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A560B4317F;
+	Thu, 15 Feb 2024 14:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708007636; cv=none; b=d7wpQ1dLefc89cOlagZQmLk8IaujAsmSoENKCsbagI1NYbQ/c+vbHfOvqkWKlY7Gsr3SB5K/QZ8amJgFvnEWd/I8u+exDmB4ZzbxrovH7d40Kk2gHbwUYP1N4tCaGWf2gFUpZ2huBgWhC3cKAI0qmNqw6vMQS/7ytAlsVzwHar8=
+	t=1708007725; cv=none; b=uYAm+DlsdVFYabLT+fwjK1XFgP5ieBJOV0yAFDCgwGfDbeLMdgk3bziXinYQGRb+ZkwIXxH2MdPEzB8sWdWn0lEGQIQTnt0yOVgGJ5Oh3q5BDV4Th61ZtApmsED2mpu6nM1AAb8E+tcfgB722D9YCXPfHe9hgwBksTuS+P8VL2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708007636; c=relaxed/simple;
-	bh=x/C4JrMOvi9rCj9I7QPAKYQAw03CTw9sUHduKSKVXmQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ucoBl5hC0jW3oQiw9j1OBOAKIaEA7rg6uG3bd+EO0icp92WljNqTHXP3Rqnx4BMeEpixmz+mvc4OcJGlQDFEgkK4SnD4VIzHwTDrB1QMASk8aLxsoDKrwY5WwqEnH+FpeX9skBZVBqkrUSQkDxxz07xCeZLVpWN9vYND+t6kaeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jfnLugIp; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 489A520002;
-	Thu, 15 Feb 2024 14:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708007625;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cdrzonxR0aohlaO272Q7MZrzcpjlQwtAuBm+FlVa2Zk=;
-	b=jfnLugIptfivZ7YdFpbIK7v/kS9Z5wDYbgN9JxdaFDSBKmFMzZioHeQjDfhB5IjWglucM4
-	Sqi0DuPcWmiN2jFy9WL98/pukDSqt8ZnZqlmQPyHcJCMqdvrB6agaUXCwMmTrc78hEyMwR
-	p9myXchCskW8S842CIb2DvZ0LqUh0ajdZvF7nyrRcMa4ZvEQomuyZsfYidc7uzMkZY7DK8
-	Cokymg3a2p/uT6FDqq/dh8gIDEao+tPQ4fDkDmU+TbMEqdjlRv/3Heh3apBXZUyneqM0pH
-	hM1waaf3aoSIhHIIFMwRm7PFg+qencCW54aQTPgtMaM6Kzg9nxdcDA7ca8g+Pw==
-Date: Thu, 15 Feb 2024 15:33:42 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Rob Herring <robh@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis
- Chamberlain <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 10/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240215153342.0be61fe0@kmaincent-XPS-13-7390>
-In-Reply-To: <377d2e0f-dc0c-400f-9c10-f4a158146ceb@lunn.ch>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
-	<20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
-	<20240209144349.GA3678044-robh@kernel.org>
-	<20240214141310.119364c4@kmaincent-XPS-13-7390>
-	<20240214164150.5be591d0@kmaincent-XPS-13-7390>
-	<20240215135130.GA4139246-robh@kernel.org>
-	<377d2e0f-dc0c-400f-9c10-f4a158146ceb@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708007725; c=relaxed/simple;
+	bh=WoZcdGwGPGkkIa7tREMPjbuwqHXBXFFy5cGKfsjId7o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nJvRvqr6F8g748C5VHDFrzYR2hp6CmmC8z1rPpLjyc1giP9ZR3TvFY+jlWefLolS8W7P+TiscD04w+6wsX2uP905FYB5/cnXiuseO7o0k/IR3bh7JWMojmlH2rmhenrOgjpQHsriTtm5f8QP8NMVJXlnlHxmK/e8bZj5pxq6NOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kcrWaRcV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD236C433F1;
+	Thu, 15 Feb 2024 14:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708007725;
+	bh=WoZcdGwGPGkkIa7tREMPjbuwqHXBXFFy5cGKfsjId7o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kcrWaRcVGu0m7bRyGMClZkT7wXGeVObhk6h9S2stUyzmE1VjU3gsS05sA0KifIOJk
+	 l6gmuyfmBpZk7gtTm2Ow96+msOXNDZZTR1Fcm+R9oS5dErj6PcLYszmpE6V0J0Tgfe
+	 Ali+mZ1U82roHDAjBNEPwnXB7O2DXju/994vrVXxGSd6DOplDvSP+R2v/2uUM0svJH
+	 7h5ll15XCpLvgXbyqjUAKBSLp79O8Yi++zC/6BA+B9QPvttSQPifCbnbrrBCiNmmww
+	 dXV1TI+5YGd81q/56ZGqMcuDsCHU3HoZ2OgJDdpKxXeYL8PVOn4q80EQ1rMOpMdM1a
+	 4/qF+TaE9VtYQ==
+Date: Thu, 15 Feb 2024 08:35:21 -0600
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>, Mark Brown <broonie@kernel.org>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH v2 01/17] dt-bindings: pinctrl: fsl,imx6ul-pinctrl:
+ convert to YAML
+Message-ID: <170800772112.14828.3515005867069429971.robh@kernel.org>
+References: <20240213010347.1075251-1-sre@kernel.org>
+ <20240213010347.1075251-2-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213010347.1075251-2-sre@kernel.org>
 
-On Thu, 15 Feb 2024 15:01:08 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
 
-> > > Not so much used indeed:
-> > > $ git log --grep=3D"Sponsored" | grep Sponsored    =20
-> > >     Sponsored by:  The FreeBSD Foundation
-> > >     Sponsored by:  The FreeBSD Foundation
-> > >     Sponsored by:  The FreeBSD Foundation
-> > >     Sponsored by:  The FreeBSD Foundation
-> > >     Sponsored-by: Google Chromium project
-> > >     Sponsored: Google ChromeOS
-> > >     Sponsored: Google ChromeOS
-> > >=20
-> > > Is it ok to keep it? =20
-> >=20
-> > IMO, its use should be documented like other tags, or it should not be=
-=20
-> > used. Just write a sentence to the same effect. =20
->=20
-> Or include a patch to document it :-)
+On Tue, 13 Feb 2024 02:00:50 +0100, Sebastian Reichel wrote:
+> Convert i.MX6UL pinctrl bindings to YAML.
+> 
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
+> ---
+>  .../bindings/pinctrl/fsl,imx6ul-pinctrl.txt   |  37 ------
+>  .../bindings/pinctrl/fsl,imx6ul-pinctrl.yaml  | 116 ++++++++++++++++++
+>  2 files changed, 116 insertions(+), 37 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
+> 
 
-It seems someone has already tried to send a patch to add this tag but it h=
-as
-not been accepted due to maintainers extra works bring by the tag:
-https://lore.kernel.org/lkml/20230817220957.41582-1-giulio.benetti@benettie=
-ngineering.com/
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-I will replace it by a small sentence then.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
 
