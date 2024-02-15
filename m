@@ -1,97 +1,198 @@
-Return-Path: <linux-kernel+bounces-66952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF2948563F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:04:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2821856414
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6050D1F2730A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:04:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C072B2AB4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DE312F582;
-	Thu, 15 Feb 2024 13:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1679712F596;
+	Thu, 15 Feb 2024 13:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YsIp3eIk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wSKuannf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WCfKjUK6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wSKuannf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WCfKjUK6"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300C858ABC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908AC80604;
+	Thu, 15 Feb 2024 13:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002254; cv=none; b=Hsy6rZZk7ct3lMTCOLkE0/U2BhWtV3eUgTWCJgozQY/50eMFlgBCsQO6t2Ucf0Ctakp7RY7f78u/SRAk/kTr3CvCEqTuH/JVxBorBRFi3CYbF/JBGT+Zhp5HOhJh1+20K4qXx8M4ZeJTNGjnjvYWcb8Bq4rJkFrq7O4pKhRDJDw=
+	t=1708002378; cv=none; b=cWmNRTf8+fopRGEm5gks1jPKdo8IzK0l9yXjkafjwV0JksP9qnLKh8BX1ViGINiG+w0e/bfhrVcfeSpbQSNBFJZpIxrmDZ6xzg5AFwlzqiO1bRechnMz3a07z9Bv3AyMQjDp5bev5zqCnobl4OO2P1yST4vxeYhrRmSZ6tOL3/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002254; c=relaxed/simple;
-	bh=jBnUeliIM+lDQOZgbKiGk7/I7UGsSjTUdVEOnfuW0DI=;
+	s=arc-20240116; t=1708002378; c=relaxed/simple;
+	bh=ts0vpuGjnXe4RUSIeouNSZC64LJaLpqK0xeoxa5y7Jg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rWrpw9uwmgzRtr1/aQb3i52IEXexqAj9/hDFXBFDGqvwUnQzmkxBsLN2Bp5MXdwuctvm72yGb6JmEbil6Y3YTb7V/3ySAVhg+98Z0+WcfWpVpBan2N05EXABhC24erMdb3LLd7atRcgiFuQ2+6YRq2aJctKa3P3Adw+qHuFnMO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YsIp3eIk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DC6C433F1;
-	Thu, 15 Feb 2024 13:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708002253;
-	bh=jBnUeliIM+lDQOZgbKiGk7/I7UGsSjTUdVEOnfuW0DI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YsIp3eIkzbep+978EXuSlQHGHFHXXIDpPXo9Ejb14D880tN9hQZY+DifP7prpJOmm
-	 K5ERDoCj0kVYv3MfsMalmvE7bKn4btkS+U6XXvSvV7vpLz+YRHRtcGX+1m18Y24Dj0
-	 2JhvTUS2aSexJuBXAtTrU5R4lPRgN5hx0bMnHboZiNaxfkcJObx6OF3xTS2pfRW9E/
-	 1w300QjJ3HoXOMXM+vvKEIQ9miCOPqz8fqvcBZEj6UjOazW9t9xxR2HcfcBTjUfKFP
-	 +D6pxbMeB4a5K4V0Ew02/DBXq76YuGMVSqVr+FrzqtVusaz05wSTQmnyQIS+UZpGG8
-	 ZYYeaOzSgNNlg==
-Date: Thu, 15 Feb 2024 13:04:09 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/sysreg: Add register fields for ID_AA64DFR1_EL1
-Message-ID: <d2722ae9-d29c-41f9-9eec-f829589adf6e@sirena.org.uk>
-References: <20240215065454.2489075-1-anshuman.khandual@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bnTH5n8RZNfVNc6PHmN9cEegX9PWh6k19X7c33t/zgzmodXw0NNHZBEskrtCCbh8smBSLTP/I3gCOZovHCQDaw/M6YhZhTySHll1Abql9HalfS2pE9oZbrT95WfZWBdF8No98wxnOmzld00nDIB4A+jgi/k0Bx0xl/cc68WFe14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wSKuannf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WCfKjUK6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wSKuannf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WCfKjUK6; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 66D68221F1;
+	Thu, 15 Feb 2024 13:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708002370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wqqEnx+8NJeNx4uDHqfPp5HohmNv2zWkv9TXmYpGhMk=;
+	b=wSKuannfMnE2Un+SV6gVG9snXmdpr2prZO87oxy7yyUZZA+AS4JYyyYo0KLFdf/y3Q9qR2
+	LpbWMfl8DKRoYdUrnbpoBOFcHUUu1Iazdpc/xRny/ML8QM18gytBx1B94EkytOaSb+QUeR
+	YobCLVCYBV0YXNJdx3UEIFIDsZ3C+EU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708002370;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wqqEnx+8NJeNx4uDHqfPp5HohmNv2zWkv9TXmYpGhMk=;
+	b=WCfKjUK61HWdfZ6MCqqdy6GGwqxVG2rJ0aEm4irLhQC19wZNNFD/zawc8u9CSSUb3d2EyI
+	L+RCu/+qzZKZsuCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708002370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wqqEnx+8NJeNx4uDHqfPp5HohmNv2zWkv9TXmYpGhMk=;
+	b=wSKuannfMnE2Un+SV6gVG9snXmdpr2prZO87oxy7yyUZZA+AS4JYyyYo0KLFdf/y3Q9qR2
+	LpbWMfl8DKRoYdUrnbpoBOFcHUUu1Iazdpc/xRny/ML8QM18gytBx1B94EkytOaSb+QUeR
+	YobCLVCYBV0YXNJdx3UEIFIDsZ3C+EU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708002370;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wqqEnx+8NJeNx4uDHqfPp5HohmNv2zWkv9TXmYpGhMk=;
+	b=WCfKjUK61HWdfZ6MCqqdy6GGwqxVG2rJ0aEm4irLhQC19wZNNFD/zawc8u9CSSUb3d2EyI
+	L+RCu/+qzZKZsuCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 58F2B139D0;
+	Thu, 15 Feb 2024 13:06:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 15GxFUIMzmWqFQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 15 Feb 2024 13:06:10 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 04F1CA0809; Thu, 15 Feb 2024 14:06:01 +0100 (CET)
+Date: Thu, 15 Feb 2024 14:06:01 +0100
+From: Jan Kara <jack@suse.cz>
+To: Chuck Lever <cel@kernel.org>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	hughd@google.com, akpm@linux-foundation.org,
+	Liam.Howlett@oracle.com, oliver.sang@intel.com, feng.tang@intel.com,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Subject: Re: [PATCH RFC 6/7] libfs: Convert simple directory offsets to use a
+ Maple Tree
+Message-ID: <20240215130601.vmafdab57mqbaxrf@quack3>
+References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
+ <170786028128.11135.4581426129369576567.stgit@91.116.238.104.host.secureserver.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+BKBLTtfgrcFZnRa"
-Content-Disposition: inline
-In-Reply-To: <20240215065454.2489075-1-anshuman.khandual@arm.com>
-X-Cookie: Pass with care.
-
-
---+BKBLTtfgrcFZnRa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <170786028128.11135.4581426129369576567.stgit@91.116.238.104.host.secureserver.net>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wSKuannf;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WCfKjUK6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,oracle.com:email,suse.cz:dkim,suse.com:email,intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.28)[74.38%]
+X-Spam-Score: -1.29
+X-Rspamd-Queue-Id: 66D68221F1
+X-Spam-Flag: NO
 
-On Thu, Feb 15, 2024 at 12:24:54PM +0530, Anshuman Khandual wrote:
+On Tue 13-02-24 16:38:01, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Test robot reports:
+> > kernel test robot noticed a -19.0% regression of aim9.disk_src.ops_per_sec on:
+> >
+> > commit: a2e459555c5f9da3e619b7e47a63f98574dc75f1 ("shmem: stable directory offsets")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> Feng Tang further clarifies that:
+> > ... the new simple_offset_add()
+> > called by shmem_mknod() brings extra cost related with slab,
+> > specifically the 'radix_tree_node', which cause the regression.
+> 
+> Willy's analysis is that, over time, the test workload causes
+> xa_alloc_cyclic() to fragment the underlying SLAB cache.
+> 
+> This patch replaces the offset_ctx's xarray with a Maple Tree in the
+> hope that Maple Tree's dense node mode will handle this scenario
+> more scalably.
+> 
+> In addition, we can widen the directory offset to an unsigned long
+> everywhere.
+> 
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202309081306.3ecb3734-oliver.sang@intel.com
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
->  Sysreg	ID_AA64DFR1_EL1	3	0	0	5	1
-> -Res0	63:0
-> +Field	63:56	ABL_CMPs
-> +Field	55:52	DPFZS
+OK, but this will need the performance numbers. Otherwise we have no idea
+whether this is worth it or not. Maybe you can ask Oliver Sang? Usually
+0-day guys are quite helpful.
 
-This is documented in the architecture as an enumeration, though I'm not
-immediately seeing what values to use.
+> @@ -330,9 +329,9 @@ int simple_offset_empty(struct dentry *dentry)
+>  	if (!inode || !S_ISDIR(inode->i_mode))
+>  		return ret;
+>  
+> -	index = 2;
+> +	index = DIR_OFFSET_MIN;
 
-Otherwise this looks good.
+This bit should go into the simple_offset_empty() patch...
 
---+BKBLTtfgrcFZnRa
-Content-Type: application/pgp-signature; name="signature.asc"
+> @@ -434,15 +433,15 @@ static loff_t offset_dir_llseek(struct file *file, loff_t offset, int whence)
+>  
+>  	/* In this case, ->private_data is protected by f_pos_lock */
+>  	file->private_data = NULL;
+> -	return vfs_setpos(file, offset, U32_MAX);
+> +	return vfs_setpos(file, offset, MAX_LFS_FILESIZE);
+					^^^
+Why this? It is ULONG_MAX << PAGE_SHIFT on 32-bit so that doesn't seem
+quite right? Why not use ULONG_MAX here directly?
 
------BEGIN PGP SIGNATURE-----
+Otherwise the patch looks good to me.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXOC8gACgkQJNaLcl1U
-h9AlYAf/a1uNyhXOXmf4IZzEnudRpCrRszj2uXZDgeE9CJfyleLiiCQHX3Wp6nAN
-QgIf7F/ufkNUFL8pu9rRJASURGtXoyh+ZPb+TPoH4vsnIDzyTdjhHp/8MgzhI/7Q
-htZlIoqxhzkJxch92UFYcn+OfI9eKaCYiUF/b2CzBjwy8THolRpAfqweTzOGkb0i
-jNzNejOZRHFp5ccSoY4uB/C1m2JN40PphYJNrTLkC7+HxJqTko5hPyUnR7YBkNE+
-EyivYZHZOsPXFkgBoN8+sqLkg5u8zKWWUNGwW7KEEtGo2WLx6raCFjFLPaA3rAMe
-EqIXUrn9xS0JuYQwvtW3vCYi0q9g6Q==
-=/8+k
------END PGP SIGNATURE-----
-
---+BKBLTtfgrcFZnRa--
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
