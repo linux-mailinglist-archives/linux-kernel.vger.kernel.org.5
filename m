@@ -1,239 +1,185 @@
-Return-Path: <linux-kernel+bounces-66231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7AA58558D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:52:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DFF58558D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73D79B24E59
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:52:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D02B1C22AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E857A3FEF;
-	Thu, 15 Feb 2024 01:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62CE21C06;
+	Thu, 15 Feb 2024 01:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="knnoSljP"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b="h1MXznkq"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2099.outbound.protection.outlook.com [40.107.215.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75898184E
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707961959; cv=none; b=aul2esPkPsvTowi/Co2M+Vwgu4VLSNauSryDyOIGQTa9gbtYCSQW5d/WD8PiCl/kyIc7350iYbUxjHg1/D/fRMrZa+pU8ighWaM+GTV/ENafMwl8eck76Mh9y12GLDZeHmXUeAMjpffH7A/TP1r7eBKu9AroPPbk2smWxZBrBDg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707961959; c=relaxed/simple;
-	bh=WM4lIFwJI9aZm3EQ8zP4FUSooeEH5PxJSUNKg7XTZcc=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mTUs3XDHqnMKLbduRn9ohfdBGjK28ntI3e+Yvf6lXj78V/QFispX4J5mbEBG8wezeeWsCHnzZh1UIJQA9uJxqcoRiih9UQrqb+1cKqGKssPJ3Ght3o3ZonO0JqL7+5gZyQcvsvquCeQgJKs/Zo4rZDNICkeYhiZP4yhM0cI3Zsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=knnoSljP; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51171c9f4c0so440990e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:52:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707961954; x=1708566754; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lUDhpSWaktAHgDMHaIrpDrRKHGUYByMrZIOMk1w7exc=;
-        b=knnoSljPUP+DM1q4EMtV2bDAAb6wIdB1rpq5jDDQp977DvZOKlJHbAOcoHZfTeY/hT
-         VlMqL+2IXbDcD+Xyax7DAc0CZc6hV/UkpDgJLcPE0NDSZr/L1qbCUHcbRIfNyI18WnSV
-         Eny5jKbXMoEjZaLIrpMF0G91ntEWWActU7VM0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707961954; x=1708566754;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lUDhpSWaktAHgDMHaIrpDrRKHGUYByMrZIOMk1w7exc=;
-        b=n6sUroGvsNb1W08jDI9E4oQjrUVnQZw1+LgHVaDB9BjpFiumqBhPuGoFDwygB1tVJ+
-         Mpm0CKN6NihAnD3n2E5gQexskFwajZhJ99dgDVCm3VfdZMgUJj55HPKhePVAqdVK26Mc
-         Zpl1QW4HNtEwgPU+dfTywbtPewpXl21hYI3iheXErWLw2pSc6+lzSbZ2fAu/oXAuQB0x
-         komvJWsFJlaZyBdVTiSO0qY7d2sCi2/Ge58mqwauIPYv1VSu8+KjGwC12nIajZihEzVB
-         J3u1hcDDkWGzbf77zHiSLBZH6GQMO1HoF3C6L6lMj6KIvNJavSI8vgtLBqWd7sVIQqVV
-         oo2w==
-X-Gm-Message-State: AOJu0YzMDH9E+iIO4/fWE0b0iModnBrZDTrG0y/25Gr6g6DlvSQPuyLV
-	eJIaS+V6RMBoKWaeD+mGl4b6yx/6qCjKBDhewXE/T6EvV55HRK6AlonjAv4Thk2du9hZsx+0Qum
-	eU/mlGwExWJfYp5PqhK/035Jcv7QnXZqPnT1w
-X-Google-Smtp-Source: AGHT+IGRTMpBbk9bxMzh6L25v7/Xsvqzk7aZ8aOwSIfCL6t8r+0G7VepodLsRuDT3PsIwVmpPB02ksb47t2sauMlvis=
-X-Received: by 2002:a05:6512:2c8f:b0:512:88a8:1520 with SMTP id
- dw15-20020a0565122c8f00b0051288a81520mr107848lfb.18.1707961954357; Wed, 14
- Feb 2024 17:52:34 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 14 Feb 2024 17:52:33 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D2C17C8;
+	Thu, 15 Feb 2024 01:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707962169; cv=fail; b=agiMG0exdk/XjS8x49Xbjvb4yuEmgPmizDm4g+/D7gTfdaZUJzgiGjQA0Sps2kN46Nv8Kfcs1hOteZ9lTTAQzrYTmVjiS2jIpyUtsyI4zb/oELFfPbxYzsOxAL2lLNPb03n/bH2CzqAqyHJHlzCJZbgvlCITEoxjVcjjNRPbDb0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707962169; c=relaxed/simple;
+	bh=GlvHYIbNt+s4/WW6jhR330/e71dpEO/qNL/YjEBiJkI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tf5chTApmmTI/WquEfsZ2DBcMuytf8q7ObKlAljMH0ajh8Oz6ExG0frCOkJtJVpkxRa+Q5d4i3K1IuEimUTc6ZWtZSmVVMHmRliXRbPxSnTu+3R593pJNryIjhD+q3TY5E/5TlZVgTgDGAH43TG/Hvab+N6moWoQiQuS55O3zgg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com; spf=pass smtp.mailfrom=aspeedtech.com; dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b=h1MXznkq; arc=fail smtp.client-ip=40.107.215.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FR9/nq9Nc8d/bw8akzQgZEDT+zJ36FGGwgR4Vl+0mLOFo47QPYHi+J/0uG70T12tR1YqHv9C8Ws2R+zayytHnbGndhCeZg+eT4O4zio2w0VkzTLslOW9paRh/+qc1rPEn8KAJZI5/Tn3u9jPAVE1Iwu06+nEkSN6FqmizOZwP4s6ntuOPowEWM+SM1jGd0VEVt72gltL6H8ZPHsVpYRVM31DtEj1vZWfloAYaWzhLOn/1h5FfgwMMQFenQx4hAGWf04El5oKPsR6tMKt8xidkDZ3ow1Eb1zrSD115pYV5BPMR6/8s+Pw7JOX6I+8QztEB870ODh8YvGNgUdnh80ydg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GlvHYIbNt+s4/WW6jhR330/e71dpEO/qNL/YjEBiJkI=;
+ b=ZP/qrLr0eNFkoK0WwnvPQhddNiUu77DrkyuIpdM64ztfYtVV2pkNV/oPpJC7V/m5bC/fZmOcEOYDm8vi8FMj16m2CWQ6nsk3WeurfID+5T9wwtJENRu577dS8xeSFLCAKfgfyf++U1iUm78q5hHBNbSBaqYSbhzSScoxGBwTrTIw+ANB8SIR6eKoMuRBYKGs/oPziZ9hp8Lu0eZURtYQI+9Cqw9oDBOb3PsmPidOocB9wd62BsQnjZC1DLmGOg1fzpvr9+FDXQZp8YzrJ6yt/wRjIVIIlgEdDlFpbInAwwB8AK0cyxYKm3SMP+6j0PbE9Qm9ppMK5b+Qc50h9OblQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GlvHYIbNt+s4/WW6jhR330/e71dpEO/qNL/YjEBiJkI=;
+ b=h1MXznkqhG1RMM4neFtv6eN9DBK1eKKyj1iGTWlMBrgkoSppqbe8yoH6g65y0nRQC23sq1FlfsORjp9fRXaRTidRwS8ApjEUqKxLkvKcyAhPGdehiW7HUh5iYHytD98lRDeUXdp1r0yXQQhbThn2qmecubD0EiobuPN0+TNkh0zPSJBZFndBBVKLYajEoBXATJlGJ8owqMVED9X7MMgxe7yGJ6c5fb8PL8V76BXLjl0EPT0/UYGnZBQjZonTlEApwyo2GxtcMrXVm3a8Qw2uNWWQeQCAmRnqDsP+qQJdS2jYWexj17HjzxEn3TVwUqLsnoeLRpuIGaIbOFdhfFQnHQ==
+Received: from TYZPR06MB6640.apcprd06.prod.outlook.com (2603:1096:400:44c::10)
+ by TYZPR06MB6893.apcprd06.prod.outlook.com (2603:1096:405:1f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Thu, 15 Feb
+ 2024 01:56:00 +0000
+Received: from TYZPR06MB6640.apcprd06.prod.outlook.com
+ ([fe80::e77d:5a7a:3205:d527]) by TYZPR06MB6640.apcprd06.prod.outlook.com
+ ([fe80::e77d:5a7a:3205:d527%4]) with mapi id 15.20.7292.026; Thu, 15 Feb 2024
+ 01:56:00 +0000
+From: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To: Conor Dooley <conor@kernel.org>
+CC: Manojkiran Eda <manojkiran.eda@gmail.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Joel
+ Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	"jk@codeconstruct.com.au" <jk@codeconstruct.com.au>, Patrick Rudolph
+	<patrick.rudolph@9elements.com>, Ryan Chen <ryan_chen@aspeedtech.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
+	<linux-aspeed@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "openbmc@lists.ozlabs.org"
+	<openbmc@lists.ozlabs.org>, "zev@bewilderbeest.net" <zev@bewilderbeest.net>
+Subject:
+ =?utf-8?B?UkU6IOWbnuimhjogW1BBVENIXSBBZGQgZVNQSSBkZXZpY2UgZHJpdmVyIChm?=
+ =?utf-8?Q?lash_channel)?=
+Thread-Topic:
+ =?utf-8?B?5Zue6KaGOiBbUEFUQ0hdIEFkZCBlU1BJIGRldmljZSBkcml2ZXIgKGZsYXNo?=
+ =?utf-8?Q?_channel)?=
+Thread-Index: AQHaXooDcj/dRKED5EijCru7OZnLmbEJqwsogAB/zICAAHchIA==
+Date: Thu, 15 Feb 2024 01:56:00 +0000
+Message-ID:
+ <TYZPR06MB6640F82C539F0B17BCDCC55E914D2@TYZPR06MB6640.apcprd06.prod.outlook.com>
+References: <20240213-espi_driver-v1-1-92741c812843@gmail.com>
+ <KL1PR06MB665234A65DB334B3BDF6AFA6914E2@KL1PR06MB6652.apcprd06.prod.outlook.com>
+ <20240214-yoyo-platinum-dcd0e7e16a22@spud>
+In-Reply-To: <20240214-yoyo-platinum-dcd0e7e16a22@spud>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR06MB6640:EE_|TYZPR06MB6893:EE_
+x-ms-office365-filtering-correlation-id: 2abd40f6-4f4e-4c2e-917e-08dc2dc94240
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ c2n+BwRRf9sNZ1TqJDHGwzFc7pvHkUd1Tkd23o+08H/jgNjAXydSLvou+guoWzf7KWZfWmed9dqaJQjb0sYQJq/Mvy/aSts4hXkgbY1Ufkm65x4MpKk1jlRsSIx9HM8rRNZQWMvlhpVgj3h5B7AAFMQzg5uMr+ciF/ArHfUkisX9dBMMGS461C5iYC8UkdtqPlOpeklOW9RGyUR3G2Kl7z+qUK3jMqYfu5olmBS2AsNJ8BQSBnBs8H+bJbG91mR4CB4vxennz1OMVc5z1GkKxCAtW8aW8l1ue8P/STlCh+g+9gr3IUbrdgwYWzFUFzZwEWsu9VHrM5/PQAjF7H58lTt1zY5iRjFk7GfzY9C6rwqOlSrg/lmqH8dNiJWbuDRJ7HV/UnkD8d/3ZBe6y7YXz+RdpB0UcQjx+LAlqNIhTkVJcHLi9O4vqs73IMBTG66jlEE3XCkF8n9zpkb8wK0KQBFCMn43OFC2a/4gRSPdubd2hRyb0NCc0ur23+r+szXg26Mo1rzqfs010aGUJGSyvqqstsVpuS2/GRCZ+HPmLjn5gUsVwSqpeQaNvZd1RzNwkO8adQJNBrCNEE3CN6SLc2xpFdOcqEquE6NoIuRr7HaOMXoOn8sVQIpA+MRxGbqH
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6640.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(346002)(39830400003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66446008)(66476007)(66556008)(316002)(54906003)(76116006)(6916009)(64756008)(55016003)(66946007)(8936002)(2906002)(7416002)(5660300002)(52536014)(38070700009)(4326008)(41300700001)(7696005)(86362001)(478600001)(33656002)(71200400001)(6506007)(9686003)(224303003)(26005)(83380400001)(122000001)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?UG84b0UwUDZENTRyTEdSTTNNVVlmRVdxWVc2RVRIWkJZVTFwVUFHbG5ESzY4?=
+ =?utf-8?B?WTlpQ3kwTnk0cjNaaWIxeGxWNFphbWRPQVF5QUF2RzFha0pVa0VCTUYzRC9n?=
+ =?utf-8?B?aU9uQnh6UHlBNUNYZFVxb21SYnhsR1ordkx6Z3U5VkVSeUd1ZTV4LzJBYzVD?=
+ =?utf-8?B?dVlMd2hOcGNWcjFJdGROd0FaL0ZRNkhveW9VYTY3WkpwQ2NjUmZWbzV6cHU3?=
+ =?utf-8?B?ajdBRmtNTld4eTQwSGtmMnBpUHhETitLZTVKOWRUc05SUTZZdlF3Sk43akVB?=
+ =?utf-8?B?UjV5N2orWTZXNUN3S21jUTB5VC9HRlpiSDhyeWdGWnlEc284cWh5bVJkR3lT?=
+ =?utf-8?B?cW52dGtPUk5wTXlpN0EwVVRTS1lSVk1OeWl6RDB2dWJybHVVRUV6OWROcVRF?=
+ =?utf-8?B?L3pDZ2hBSVpQZ1h0Qi9RRzlhalV0RVZRdlFQTVd5THJYUUlZL09GR015Q3Zi?=
+ =?utf-8?B?S0w5clp4M09OeHU1Zkw1ZGozYnUyUlJOV0VwZXQ2OTZXTTAzNW9pM29TMDZJ?=
+ =?utf-8?B?ZnJ6bkxxNkZnMUV1a2ZIK2dYc0gzVFRCV2RtdnBFa1l3MDJ6ZStJcWl3WUNy?=
+ =?utf-8?B?N2prWTRCOHQya0VyUFB3VnNLN0hTNEpPQmp3YVdwelkzODQvTTVGYlJJYzJM?=
+ =?utf-8?B?VG5BanU0MFFOWnVXdDdtZkVUTTdDTFpERTkwQm1HM0pIUVZ0cGlLbTFjLzBT?=
+ =?utf-8?B?V0F0TjdiUHl0VzNuNFV3eGllbS85ZExxT3hkZnhkbjVQV21xWllwbU1nbHc1?=
+ =?utf-8?B?cWJkaTNSRmV4QmowQ0Vwcnl0cGw2Uk1TNlhXQU15dURFTmJ3ZkFNSEZrVUxy?=
+ =?utf-8?B?K3pDTWdLTWIwa1dZMGxsVHhVeWxnUFIyOGt4d2FCdi9oa2w3ZDFkWGNuZzd5?=
+ =?utf-8?B?c3NVYjdzU0Q3bEc3SlpOb2FIRDNUd0QybVNzOHpMOW1qU0dFS0tJR3Z2S0JO?=
+ =?utf-8?B?dUtNRnd5TnFoTSs5WGNVVU4yK1JxdWdtelBwajc2aXZlWWRnUklXV3F1eGVN?=
+ =?utf-8?B?U0pRWWd0ZXlralNyRmV5V1NvSjlReDdBUDRvd2pXekw2MU95cUtOK25ZUjBy?=
+ =?utf-8?B?MjRMS0QzMS9zU2orV1ZEVG1QeXZrYmc0K1V1bitIV0Jkc0dHcUpPczErTXZu?=
+ =?utf-8?B?OEJMNkhNYkc0YlRSUldTcnhXcXBuUFNMNmIrdmdGZjJTZDhlcmY0ZUZ6RFNa?=
+ =?utf-8?B?WSt2YXAwRVA1Z1ltOXZNZXNuSUNKYXB3VWYwOEF1cU5OSkx2Z2VzWjdwWi9P?=
+ =?utf-8?B?bkgwenZRcW5ZVlRRKzZYWUhWMjB4MkpQcEo2amdmQjJJQ1pvbTQxajhId0RX?=
+ =?utf-8?B?aEN5NTJCYThudDRRWU1EMFFDaG9DVUpXNmpncE9xUHFVOHVzV0xUclVjZ0t2?=
+ =?utf-8?B?MDlTVXJzTVluZkVHcWRCVm8zUG9FdmZiUHpRZUZ0Y3R2MnBsR2lRdUwyN3JF?=
+ =?utf-8?B?UkhpaldLQ1ZDeDZWVjZQNlBUL1NneTluUDRrLzFzQTh1bVdIOEZnSnVHSnNU?=
+ =?utf-8?B?Y0I1b2ZxV2U3aFRqMGRpbzlXQkw4aGJ4aURXUU13WDQ5cVdVS1VTWVdINEFK?=
+ =?utf-8?B?UC9zOWNJa25PbVJyaDVpTUhKRTJ0Zmo1bTEwWUFycTROdVhmSDZaaDhpR2t5?=
+ =?utf-8?B?UXpDYytqWUU5a08xRUJnNGRRVHdYcTdtcVBHZHNiQVMyNy9pUys2ck5Bc1lu?=
+ =?utf-8?B?OHdVbmJBTEVzUU5oSXI4ZXY2dmE3c2Z1REN1SUJRMDQ3RmJoVE1pR3JBVDNY?=
+ =?utf-8?B?RVo0aVVyUFcxdDRrY0V1aWlGWkY3VW5mWERhNEdNMUhjczk4dXdwb2VoQmRT?=
+ =?utf-8?B?NEd6SkxPbk9VVTFycFA1SUd5WFFURUtPSWEvQStmR1paa2hYQlJIZGxwUXg2?=
+ =?utf-8?B?M3I4aWhBRVIyUkNMSFdZYUFUWjFQK29IZCtBaitBZk9OTXlYbUhweEt3UkZL?=
+ =?utf-8?B?VC9pN2VzaldrUVg2TlhwUGdETXdqU1RnSDcyOVROK252aGpyVWVDNWhPdXYy?=
+ =?utf-8?B?Z1pkMkdBVTZtNlhXQ2w5MzBLL0hkM1BKbUxsdGpoblB3WGZUckdaMTU4Tkpz?=
+ =?utf-8?B?c2J1Y1V1WHp1NWZuT1FPZDRGUklMaXMvYzJZOXJNNjFyamsxZWhkaGl1R2xs?=
+ =?utf-8?B?WWJGdkJGc0VhK1pYVWJBUFBMY2ROUFk4dzlTZDZUUHhDblRsMlFDN1hqeDNH?=
+ =?utf-8?B?alE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <46ac6ab8-b0a5-497d-91b6-1d2ced33184b@linaro.org>
-References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-14-swboyd@chromium.org>
- <46ac6ab8-b0a5-497d-91b6-1d2ced33184b@linaro.org>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Wed, 14 Feb 2024 17:52:33 -0800
-Message-ID: <CAE-0n52TzOAqN8Y7EdJPjDxY2iY-6Jr-Pq8fFMFtF-cXo5+OyA@mail.gmail.com>
-Subject: Re: [PATCH 13/22] dt-bindings: chrome: Add google,cros-ec-typec-switch
- binding
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, chrome-platform@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, 
-	Pin-yen Lin <treapking@chromium.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>, 
-	Tzung-Bi Shih <tzungbi@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6640.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2abd40f6-4f4e-4c2e-917e-08dc2dc94240
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2024 01:56:00.2719
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PJrE+Op/HyOL9F1NUq31o2pKXDwYGZ78/AirhvlnflzZ2UY37cSWVNRgXknOv+/D3q6wydPRFjE4Th9XJSyTqKf+qEXiEXUAKI3SzcPMXn0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6893
 
-Quoting Krzysztof Kozlowski (2024-02-11 05:34:25)
-> On 10/02/2024 08:09, Stephen Boyd wrote:
-> > Add a binding for the USB type-c switch controls found on some ChromeOS
-> > Embedded Controllers (ECs). When this device is a mode switch, it takes
-> > one DisplayPort (DP) port as input and some number (possibly zero) of
-> > USB SuperSpeed ports (bundles of USB SS lanes) as input, and muxes those
-> > lanes into USB type-c SuperSpeed lanes suitable for the SSTRX1/2 pins on
-> > a usb-c-connector. When this device is an orientation switch, it
-> > redirects the DP lanes to the proper USB type-c SSTRX lanes.
-> >
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> > Cc: Conor Dooley <conor+dt@kernel.org>
-> > Cc: Lee Jones <lee@kernel.org>
-> > Cc: Benson Leung <bleung@chromium.org>
-> > Cc: Guenter Roeck <groeck@chromium.org>
-> > Cc: Prashant Malani <pmalani@chromium.org>
-> > Cc: Tzung-Bi Shih <tzungbi@kernel.org>
-> > Cc: <devicetree@vger.kernel.org>
-> > Cc: <chrome-platform@lists.linux.dev>
-> > Cc: Pin-yen Lin <treapking@chromium.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > ---
-> >  .../chrome/google,cros-ec-typec-switch.yaml   | 365 ++++++++++++++++++
-> >  .../bindings/mfd/google,cros-ec.yaml          |   5 +
-> >  2 files changed, 370 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/chrome/google,cros-ec-typec-switch.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/chrome/google,cros-ec-typec-switch.yaml b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec-switch.yaml
-> > new file mode 100644
-> > index 000000000000..17a0ba928f5d
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/chrome/google,cros-ec-typec-switch.yaml
-> > @@ -0,0 +1,365 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/chrome/google,cros-ec-typec-switch.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Google Chrome OS EC(Embedded Controller) USB Type C Switch
-> > +
-> > +maintainers:
-> > +  - Benson Leung <bleung@chromium.org>
-> > +  - Prashant Malani <pmalani@chromium.org>
-> > +  - Stephen Boyd <swboyd@chromium.org>
-> > +
-> > +description:
-> > +  Chrome OS devices have an Embedded Controller(EC) which has access to USB
-> > +  Type C switching. This node is intended to allow the OS to control Type C
-> > +  signal muxing for USB-C orientation and alternate modes. The node for this
-> > +  device should be under a cros-ec node like google,cros-ec-spi.
-> > +
->
-> If this is USB Type C switch, then you miss reference to
-> usb-switch.yaml, but then ports look a bit different.
-
-Thanks for the pointer. I suspect that's in linux-next only? I'm going
-to move this to the cros-ec-typec.yaml file but I'll still need some
-sort of property like 'mode-switch' or 'orientation-switch' to describe
-what needs to be done in the kernel by changing lane assignments in the
-drm_bridge.
-
-One problem with those properties is that they're boolean for the whole
-device. If I have a google,cros-ec-typec node that has two input DP
-ports and two output USB-C ports then it may be that one port needs
-orientation switching and the other only needs to do mode switching.
-This needs to be expressed somehow and a top-level boolean property
-doesn't do that. It could be part of the DP endpoint node itself.
-
-Also I don't know how to indicate that mode switching can't be changed
-here directly. For example, on Trogdor the mode is switched by the EC,
-and the kernel can't change the mode. Changing DP lane assignments isn't
-going to change the situation either. The mode is still going to be
-something like DP+USB, or just DP, etc. Maybe there needs to be a
-different property, like 'dp-mode-lane-assignment = <array of ports>',
-that indicates which DP ports need to do lane assignment or
-'dp-orientation-lane-assignment = <array of ports>' for orientation
-control. Either way, I'm saying that 'mode-switch' and
-'orientation-switch' properties don't make any sense here. I was using
-them to wedge the code into the typec switch callbacks, but if I move
-this into the cros-ec-typec driver then I don't need them.
-
->
-> > +
-> > +  no-hpd:
-> > +    description: Indicates this device doesn't signal HPD for DisplayPort
-> > +    type: boolean
-> > +
-> > +  ports:
-[...]
-> > +
-> > +          endpoint@7:
-> > +            $ref: /schemas/graph.yaml#/$defs/endpoint-base
-> > +            description: USB-C data for EC's 7th type-c port
-> > +            unevaluatedProperties: false
-> > +            properties:
-> > +              data-lanes:
-> > +                $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +                description: |
-> > +                  An array of physical USB-C data lane indexes.
-> > +                  - 0 is SSRX1 lane
-> > +                  - 1 is SSTX1 lane
-> > +                  - 2 is SSTX2 lane
-> > +                  - 3 is SSRX2 lane
-> > +                minItems: 4
-> > +                maxItems: 4
-> > +                items:
-> > +                  maximum: 3
-> > +
-> > +        anyOf:
-> > +          - required:
-> > +              - endpoint@0
->
-> I don't get what you want to say here. This anyOf should have no effect.
-
-I'm trying to say that there should be at least one usb-c data lane
-output endpoint if there's a port@2 (usb-c output).
-
->
-> > +          - required:
-> > +              - endpoint@1
-> > +          - required:
-> > +              - endpoint@2
-[...]
->
-> > +
-> > +required:
-> > +  - compatible
-> > +  - ports
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        no-hpd: true
->
-> I don't understand this either. What is it for? Where did you see such
-> syntax?
-
-This is saying that if the no-hpd property is present then the port@0
-port (DP input port) is required. Otherwise no-hpd doesn't really make
-any sense because this device isn't muxing DP onto USB type-c connectors.
-
-I found this syntax by searching the schema website and reading this
-page[1]. The last yellow note about "country" not being a required
-property led me to this syntax.
-
-[1] https://json-schema.org/understanding-json-schema/reference/conditionals#ifthenelse
+PiANCj4gT24gV2VkLCBGZWIgMTQsIDIwMjQgYXQgMTE6MzQ6MzFBTSArMDAwMCwgQ2hpYVdlaSBX
+YW5nIHdyb3RlOg0KPiA+IFdlIGFwcHJlY2lhdGUgdGhhdCB5b3UgYXJlIHdpbGxpbmcgdG8gaGVs
+cCBvbiB0aGUgb3BlbiBzb3VyY2UgY29udHJpYnV0aW9uLg0KPiA+IEhvd2V2ZXIsIHBsZWFzZSBj
+by13b3JrIHdpdGggQXNwZWVkIGJlZm9yZSBzdWJtaXR0aW5nIGRyaXZlcnMgb2YgQXNwZWVkDQo+
+IEhXLg0KPiA+IE90aGVyd2lzZSwgYSBtaXNsZWFkaW5nIGRyaXZlciBvbiB0aGUgY29tbXVuaXR5
+IGFyZSBnb2luZyB0byBicmluZyB0b25zIG9mDQo+IGN1c3RvbWVyIGlzc3VlcyB0byBBc3BlZWQu
+DQo+IA0KPiBJdCBtYXkgbm90IGFwcGx5IGluIHRoaXMgcGFydGljdWxhciBjYXNlIGFzIEFzcGVl
+ZCBkaWQgd3JpdGUgdGhlIG9yaWdpbmFsIGRyaXZlcg0KPiBhbmQgaXQgaXMgcG9saXRlIHRvIHdv
+cmsgd2l0aCBwcmV2aW91cyBhdXRob3JzIHdoZW4gcmVzcGlubmluZyBhIHBhdGNoc2V0LCBidXQg
+aW4NCj4gZ2VuZXJhbCB0aGVyZSBpcyBubyBuZWVkIHRvIHdvcmsgd2l0aCBhIGhhcmR3YXJlIHZl
+bmRvciBiZWZvcmUgd3JpdGluZyBkcml2ZXJzDQo+IGZvciB0aGVpciBoYXJkd2FyZS4NCj4gDQo+
+IEJsb2NraW5nIGEgZHJpdmVyIGJlY2F1c2UgdGhhdCBjb21wYW55IG1pZ2h0IHJlY2VpdmUgbW9y
+ZSBzdXBwb3J0IHJlcXVlc3RzDQo+IGlzIG5vdCB0aGUga2VybmVsJ3MgcHJvYmxlbS4NCg0KSSBh
+Z3JlZSB3aXRoIHRoYXQgYW5kIEFzcGVlZCB3aWxsIG5vdCByZWZ1c2UgdG8gc3VwcG9ydC4NCg0K
+SG93ZXZlciwgaW4gdGhpcyBjYXNlLCB0aGUgYXV0aG9ycywgSUJNLCBhbmQgQXNwZWVkIGFscmVh
+ZHkgaGF2ZSBkaXNjdXNzaW9uIChhdCBsZWFzdCA0IHRpbWVzKSBiZWZvcmUgYW5kIGZvcmVzZWUg
+Imlzc3VlcyIgb24gcHJhY3RpY2FsIGVTUEkgU0FGUyB1c2UuDQpJZiB0aGVyZSBpcyBhbHJlYWR5
+IGEga25vd24gaXNzdWUgb2YgdGhlIGRyaXZlciwgd2h5IGlnbm9yaW5nIHRoZSBwcmV2aW91cyBk
+aXNjdXNzaW9uIGFuZCBwdXNoIGl0Pw0KQSBjb21wcm9taXNlIGlzIHRvIGFzayBmb3IgZHJpdmVy
+IHJlbmFtaW5nIHRvIGVzcGktbWFmcyB0byBhdm9pZCBjb25mdXNpb24uDQpPdGhlcndpc2Ugd2Ug
+bmVlZCB0byBleHBsYWluLCBhZ2Fpbiwgd2h5IHRoZSBkcml2ZXIgZG9lcyBub3QgZnVsZmlsbCB0
+aGUgU0FGUyBleHBlY3RhdGlvbi4NCg0KUmVnYXJkcywNCkNoaWF3ZWkNCg0K
 
