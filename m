@@ -1,203 +1,160 @@
-Return-Path: <linux-kernel+bounces-67079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786818565E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:24:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1122A8565EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4EC1C22AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:24:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDF8A28384D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE715131E52;
-	Thu, 15 Feb 2024 14:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21AC131E50;
+	Thu, 15 Feb 2024 14:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j7PC2yP2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qhNGsWxP"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3F512FB33;
-	Thu, 15 Feb 2024 14:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A21130AC3;
+	Thu, 15 Feb 2024 14:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708007049; cv=none; b=FTdwEpXZhbAKbeX7HAwuSAWKVFUbz46JpjZdGd5vYLr1+GBY7fzY2noMdjengAioJ3eCl1NMloyw4bVuSCD+bHD85Ljq/zHpIGO3rReUi1Ci1SE3qBUPpfRSb3tzsYhEhpNdNBRcM2xJy5/W9ZXr13Hjo/AhkFX8ro+GxtI7saI=
+	t=1708007218; cv=none; b=rMfq/LC/HxeVItdhQtuHCtPRghR982J+VMcmkgphHqrCCIodkmWxH7BKeE2XpcuJd8Cj2npi1C8ypqZTElQgoXlgHQyGebGx7EOiL9PLtLxwOYbaAU/UtwMBYDhPpZl88bVMzHT8Ly32aOgTz2kuVz67RyGQXvSrVkk7pFc8Wcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708007049; c=relaxed/simple;
-	bh=n4QN1QaOnHa9dWqkKphOT17gFQtTnkhJWHRJ7aqMprY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uQPQFQ6lHHQEmemjlOoowksuXFu7PX2ubnWkcua1RrIn5nzbuN4jaRm57SMtxddu65TekNuTE6+lOFGU485sPpJQBk6m2FSceHg3f5jdbXrgPC7LxLAXxuf9bYwBH4iqFboxwn+J0Nq0nfsQZrPDkLiZT8xLuRxbd13ldfgGhe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j7PC2yP2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D23BC433C7;
-	Thu, 15 Feb 2024 14:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708007048;
-	bh=n4QN1QaOnHa9dWqkKphOT17gFQtTnkhJWHRJ7aqMprY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j7PC2yP239Rulrb4Oc0X42S7d0fM0Qj3QMQ7xzjZKF6YFGVw1OWI0WKrgzuZCMR1u
-	 FZ21DlxMcKnKJmfKG2ILc8JfIxKYteCJwBlYJtO8NPD76hUWOJwMScsukUMbNQPkvW
-	 3TEa3/xe0SGtmFGuZPO+FxLf3K5zo9ILVYuFwg4pnJShUsfgTqYsdfoIu6kO16v1oN
-	 O1pZejF6PC71dGBeD3ggzxHxqGdteuIjhg5T/gOPSxqZilj0Bk6JpK9exc5X/FDjfh
-	 yEhuGn/4vntrq34XCOgVmOMZsMYwfwi9a5wQDA59IME5uJWA9JV8GO4J2/tyPDjFW5
-	 Xon+tLJr8u3Ig==
-Date: Thu, 15 Feb 2024 14:24:02 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org,
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
-	linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, quic_srichara@quicinc.com,
-	quic_varada@quicinc.com
-Subject: Re: [PATCH 1/5] spi: dt-bindings: add binding doc for spi-qpic-snand
-Message-ID: <20240215-upon-anime-af032e49e84d@spud>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-2-quic_mdalam@quicinc.com>
+	s=arc-20240116; t=1708007218; c=relaxed/simple;
+	bh=j9ITj3d8lRCK3n4rRoSOFa3j1UaG+SfaxitoJTBcDfs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=PQpSTfZlKiskjMJaKdvrlDLEpZTrFB1jG4VRVWe8eMLA/eT3p9SIWsq/X3GACQDgk0a9aUCyqSDPOtoeamjXku0PiNLgmS37Vr4puSB+4GWF7nhFI3XoY75NlsxFXXLFokoZ5kkoYJQ+S/ho0v2ME6V73h7MEZgMsxpEYBRueqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=qhNGsWxP; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FEQlNF031380;
+	Thu, 15 Feb 2024 08:26:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708007207;
+	bh=0aoAEQiGSIWc7BwNRPPsCsxo3a+QdD0m5M9Mc62tfDg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=qhNGsWxPsZ0CvcuTQCdUW75r84WOKH1B7EizWUtd1t17scBlTTXzsoEU42jm7j6Xe
+	 G3EZ3SwIEzjMbeb6G4PLAbFrYCzCjsYr8von6mf+v7NM005HwPF4mRFc68R5Rzk3we
+	 4xikvEmAV7x3fZbovLOQbFuvzsaUclHqw7NTvy9A=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FEQl47021598
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 15 Feb 2024 08:26:47 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
+ Feb 2024 08:26:47 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 15 Feb 2024 08:26:47 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FEQkBp067848;
+	Thu, 15 Feb 2024 08:26:47 -0600
+Message-ID: <e78406a7-189a-4847-8625-2a66dce818b5@ti.com>
+Date: Thu, 15 Feb 2024 08:26:46 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UDj3Iu6IuX6GpJeg"
-Content-Disposition: inline
-In-Reply-To: <20240215134856.1313239-2-quic_mdalam@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-am654: Drop ti,syscon-rgmii-delay from
+ ICSSG nodes
+To: MD Danish Anwar <danishanwar@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        Tero
+ Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
+        Roger
+ Quadros <rogerq@kernel.org>
+References: <20240215105407.2868266-1-danishanwar@ti.com>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240215105407.2868266-1-danishanwar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+On 2/15/24 4:54 AM, MD Danish Anwar wrote:
+> Drop ti,syscon-rgmii-delay from ICSSG0, ICSSG1 and ICSSG2 node as this
+> property is no longer used by ICSSG driver.
+> 
 
---UDj3Iu6IuX6GpJeg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I see a couple more instances in k3-am65-iot2050-common.dtsi.
 
-On Thu, Feb 15, 2024 at 07:18:52PM +0530, Md Sadre Alam wrote:
-> Add device-tree binding documentation for QCOM QPIC-SNAND-NAND Flash
-> Interface.
->=20
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Andrew
+
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 > ---
->  .../bindings/spi/qcom,spi-qpic-snand.yaml     | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/qcom,spi-qpic-s=
-nand.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.ya=
-ml b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-> new file mode 100644
-> index 000000000000..fa7484ce1319
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/qcom,spi-qpic-snand.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/qcom,spi-qpic-snand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm QPIC NAND controller
-> +
-> +maintainers:
-> +  - Md sadre Alam <quic_mdalam@quicinc.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,ipq9574-snand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 2
-> +    maxItems: 3
-> +
-> +  clock-names:
-> +    minItems: 2
-> +    maxItems: 3
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-controller.yaml#
-> +  - if:
-
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq9574-snand
-> +
-> +    then:
-> +      properties:
-> +        dmas:
-> +          items:
-> +            - description: tx DMA channel
-> +            - description: rx DMA channel
-> +            - description: cmd DMA channel
-> +
-> +        dma-names:
-> +          items:
-> +            - const: tx
-> +            - const: rx
-> +            - const: cmd
-
-None of this complexity here is needed, you have only one device in this
-binding and therefore can define these properties at the top level.
-
-Cheers,
-Conor.
-
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
-> +    qpic_nand: spi@79b0000 {
-> +        compatible =3D "qcom,ipq9574-snand";
-> +        reg =3D <0x1ac00000 0x800>;
-> +
-> +        clocks =3D <&gcc GCC_QPIC_CLK>,
-> +                 <&gcc GCC_QPIC_AHB_CLK>,
-> +                 <&gcc GCC_QPIC_IO_MACRO_CLK>;
-> +        clock-names =3D "core", "aon", "iom";
-> +
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        flash@0 {
-> +            compatible =3D "spi-nand";
-> +            reg =3D <0>;
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +            nand-ecc-engine =3D <&qpic_nand>;
-> +            nand-ecc-strength =3D <4>;
-> +            nand-ecc-step-size =3D <512>;
-> +            };
-> +        };
-> --=20
-> 2.34.1
->=20
-
---UDj3Iu6IuX6GpJeg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc4eggAKCRB4tDGHoIJi
-0vO4AQC/9EXBXWmYMmh41rKINWfmf2C0tle9Rbns/1KqqVSKAQD+Lo3EUIx5DARc
-ZjZm/tSapiiF/R0brf6h1Z0Dk28FfQQ=
-=mzbY
------END PGP SIGNATURE-----
-
---UDj3Iu6IuX6GpJeg--
+>   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 2 --
+>   arch/arm64/boot/dts/ti/k3-am654-idk.dtso    | 4 ----
+>   2 files changed, 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> index 0a6e75265ba9..bb0e29873df7 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+> @@ -68,7 +68,6 @@ icssg2_emac0: port@0 {
+>   				reg = <0>;
+>   				phy-handle = <&icssg2_phy0>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
+> @@ -76,7 +75,6 @@ icssg2_emac1: port@1 {
+>   				reg = <1>;
+>   				phy-handle = <&icssg2_phy1>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> index 8bdb87fcbde0..d4bc80032587 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+> @@ -72,7 +72,6 @@ icssg0_emac0: port@0 {
+>   				reg = <0>;
+>   				phy-handle = <&icssg0_phy0>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
+> @@ -80,7 +79,6 @@ icssg0_emac1: port@1 {
+>   				reg = <1>;
+>   				phy-handle = <&icssg0_phy1>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
+> @@ -140,7 +138,6 @@ icssg1_emac0: port@0 {
+>   				reg = <0>;
+>   				phy-handle = <&icssg1_phy0>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4110>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
+> @@ -148,7 +145,6 @@ icssg1_emac1: port@1 {
+>   				reg = <1>;
+>   				phy-handle = <&icssg1_phy1>;
+>   				phy-mode = "rgmii-id";
+> -				ti,syscon-rgmii-delay = <&scm_conf 0x4114>;
+>   				/* Filled in by bootloader */
+>   				local-mac-address = [00 00 00 00 00 00];
+>   			};
 
