@@ -1,183 +1,102 @@
-Return-Path: <linux-kernel+bounces-67332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5F8856A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:52:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14FFD856A3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D94E81F21081
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:52:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47DCF1C21DCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A927E136644;
-	Thu, 15 Feb 2024 16:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581B0136981;
+	Thu, 15 Feb 2024 16:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x8AaE/PO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XRxyCuYe";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HDp2IEKY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pC0Ba+7t"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZZw5XIyk"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE51E12EBDB
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A25136642;
+	Thu, 15 Feb 2024 16:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708015948; cv=none; b=bCG0UId++EoA4az2iWTku2NQGFf+vYJWC2Ha7gGZt2jbbCuoU7QAy2YucsitVnNwipqYg6GrXzD5s6mHHqEOCs6iYZQDy0X4qJnrFSBzJIKSJu//6KVLTWpeMT38wGz0/UR1Kuy5F3mezJO3ziTzaG3jP6VA1IdYDRK9f+oAcgU=
+	t=1708015983; cv=none; b=uIO7LPi82W5VFP+sHQns9NnHOR23khwFLs77cy28/MVSxyD/odSSbXBP82MTo9NrZ5dOvwGUnpwOH4F2cGku/NRrv6NDzBRVzg1aZ5tEwlz9g/z8CFscP3O2waLCrXkMKbcXYrk2bwjUFBBPTXxn8L0P/BDlGK7MgDbC8dzjSvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708015948; c=relaxed/simple;
-	bh=h9jfbXo112+uwPXFYGv/HtqdQCy5lFyT4ZOk3OCdz4I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NBdlfdi21ETzFXMJcziK0nxWjH6xoa6gNcXLnbMnK+FKQ7+OTH/VcH0e2yumH8bocwzTtTuhpKzyo3+6uv8+BtZ+TqzU6quaVO6nfGoUZNulHnjPK8T9Wgd+yomS7KQNAuP8rSwnYXIbxrG+sqiELNx0LXttFn/JjgbQyO1chNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x8AaE/PO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XRxyCuYe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HDp2IEKY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pC0Ba+7t; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E56E01F8C8;
-	Thu, 15 Feb 2024 16:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708015945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciAK3UmOQFXUXmlelpdBbf3qEyQO9Ipdb1FXEM6L3d0=;
-	b=x8AaE/PORJVyrTlOprVAqTjjDJiUubSBa5tOUR7SCM2njmQ+EcGzu2xYOhN1uRli6Gejci
-	wWvBEW43DYD+aAowQ8SbdGwfmT1oD1a3jZn4Ol9+C/eufQFZKFqZxRn+SLXpzVGl6OHoD+
-	AO7GjdeXm/Tq0FMS63iNbVqlCQjrRfg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708015945;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciAK3UmOQFXUXmlelpdBbf3qEyQO9Ipdb1FXEM6L3d0=;
-	b=XRxyCuYeRVThXkyrn6tVlQlY7IxhEivS38D9UH2LOxUNbAuP/oIL5zTq53Bg/uzAf/9m4q
-	A5TbgkjQ3Pd/a1Bg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708015944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciAK3UmOQFXUXmlelpdBbf3qEyQO9Ipdb1FXEM6L3d0=;
-	b=HDp2IEKYp5ziILDa1S7p964GU4PqGkWSCrinwGRifRNcEyhgZf+nWdKs453iqH1Z/Z7VxF
-	HvV32Wj4l1+JRpX0tLmW53sZIWWAKLAvOnP8Y6bW/q27tR1G6xwM2LTT3Pg9HHsfoWNmcw
-	K5yhUohvHnSf7Q4qSypmBuu7oOQlyyQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708015944;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciAK3UmOQFXUXmlelpdBbf3qEyQO9Ipdb1FXEM6L3d0=;
-	b=pC0Ba+7tkq7tljGcQXKb8aDqY3Vwi653EDo9pHaR2IYvFWGqHuIMDGIoTqIrFVBFlQFn3n
-	Xqtw40TxOeEfQODA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B245C13A53;
-	Thu, 15 Feb 2024 16:52:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HsooK0hBzmW3CwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 16:52:24 +0000
-Message-ID: <f7aa107d-600f-4ef0-a93d-970b3bb56c39@suse.cz>
-Date: Thu, 15 Feb 2024 17:52:24 +0100
+	s=arc-20240116; t=1708015983; c=relaxed/simple;
+	bh=3urhEffbny3eqMehm9nA/WWlSnq5YVWchMtHmZ8KO9c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J8LKT52SSEdnp4xTLSKUbNH4MExp1UwmewPJiOnOJ0dbxYHl2kKSLFE7FxLyr6QMrGc3tLZga8Bn5yLs8ysuw/IvN6q6cHolShFcNXxi59/NKGzkpYEVg+kAdKPL41lePCr8Xfj4BmjeyCcgwwvMmWPweUeelgPQfkl6UqKNNLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZZw5XIyk; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607e60d01b2so3235487b3.1;
+        Thu, 15 Feb 2024 08:53:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708015981; x=1708620781; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3urhEffbny3eqMehm9nA/WWlSnq5YVWchMtHmZ8KO9c=;
+        b=ZZw5XIykAKFEXT2I5UYYmc5dkhtuAPDQK+abq+VHLz3jZKfXffwc5urp9U0xI9AvgM
+         C0wlPjpsti9EkQ1n3mfpxPVhr28chhMHazi5aedVxA1Uvp8HdTT4V4wkv8hELKh4qboS
+         75O01CdAoI15t89enlt80+vn3MzYEUxWidf3YMimxtyU1YDL7/vAKLpvjTSthDDQ48Q/
+         sscGGoTHz1n8exOl52+qKe2OeJsyGlsvXsbpv9R+hJBxQQOVkCSiCBc6pZQ2rlP5tFNe
+         5SSwbQol6xjVkOcIDqgE+gdzqvwFG9cTTN8jCff9ErFOc2m5jwEHI/8Adzvy4Lhm196s
+         HXXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708015981; x=1708620781;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3urhEffbny3eqMehm9nA/WWlSnq5YVWchMtHmZ8KO9c=;
+        b=XDZ6hIWV8I+zuVBEJ7ZHlRZiW5FBxVTwsYs3jiFOmbzVnjYJ49Cki8x4HcfqH3gJne
+         QI44P82szsKRXXJZWb9Y04508VxXNFFSKFRPsZTB1UaysGEMaXgMRhHZJ1DIwPZo4Q01
+         UAWdPitHr+u9iUwm5HntH+x9aoEQs6g6iKdJp67hWh4uZbGf/LWF7zLaBZb9jsFFvgmm
+         ebgzmOIbbj9rE8KWdVzInEXj+E2CFKr3Rl01dXHu5Fp+QaNfkPbQjRSm/UaVnRsAm5dB
+         TpYbKIGoi023wVywcwwgtreUcKPfHRmNETH8HhclYwO6UGxgnzVzgKpCf6IPBpfgKEki
+         5H2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXMqXoSvOPtUuMNBagyNIY25YddB0KXkd/Rg6mv7Htmx3kxpi2Wxt9OcN8wZK/hdSkzSzPvsp8wmxU9gQERFwfdH/qGpMPA9XQBDq8qniNKFbfKmH/4OdPynud3MpusMCSh32bKKjAWgbI3SSU=
+X-Gm-Message-State: AOJu0YwVHdDR4H7lrT5n7nSl+DkBRQ5Ux1WzXv0lnpP8nMzLAGouHD/s
+	dXCZRAJBsUq/m6yrPKK6MymOJDZtMTtXTY7r053d1802AfunMhyPgrAvQ8oCQ6ZTRIpw1G6QrwE
+	HOLf5ugEAdDs1uzI/X7/3FntQuirV35ZLK+A=
+X-Google-Smtp-Source: AGHT+IGZoU0I6g032GfE3DGCx5tvFSzZ86o1eomPBrlDFGTbcCVUwTtXGhw/AytwPu1KUKaedi4kw48WtWiOF+MGhCA=
+X-Received: by 2002:a81:451e:0:b0:607:e8eb:678b with SMTP id
+ s30-20020a81451e000000b00607e8eb678bmr1001204ywa.28.1708015981050; Thu, 15
+ Feb 2024 08:53:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] mm/compaction: optimize >0 order folio compaction
- with free page split.
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts
- <ryan.roberts@arm.com>, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
- <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
- <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
- Adam Manzanares <a.manzanares@samsung.com>,
- "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-References: <20240214220420.1229173-1-zi.yan@sent.com>
- <20240214220420.1229173-4-zi.yan@sent.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240214220420.1229173-4-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=HDp2IEKY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pC0Ba+7t
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLfsxmn1qwoupcjwdqfx65548p)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.01)[45.74%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.01
-X-Rspamd-Queue-Id: E56E01F8C8
-X-Spam-Flag: NO
+References: <20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com>
+In-Reply-To: <20240212-rust-locks-get-mut-v2-1-5ccd34c2b70b@gmail.com>
+From: Wedson Almeida Filho <wedsonaf@gmail.com>
+Date: Thu, 15 Feb 2024 13:52:53 -0300
+Message-ID: <CANeycqpk14SVAH4=wU-sbDsEu1BQ7pbBtrt1pCuxm3yKdiwcmw@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: locks: Add `get_mut` method to `Lock`
+To: mathys35.gasnier@gmail.com
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/14/24 23:04, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> During migration in a memory compaction, free pages are placed in an array
-> of page lists based on their order.  But the desired free page order
-> (i.e., the order of a source page) might not be always present, thus
-> leading to migration failures and premature compaction termination.  Split
-> a high order free pages when source migration page has a lower order to
-> increase migration successful rate.
-> 
-> Note: merging free pages when a migration fails and a lower order free
-> page is returned via compaction_free() is possible, but there is too much
-> work.  Since the free pages are not buddy pages, it is hard to identify
-> these free pages using existing PFN-based page merging algorithm.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> Tested-by: Yu Zhao <yuzhao@google.com>
+On Mon, 12 Feb 2024 at 11:13, Mathys-Gasnier via B4 Relay
+<devnull+mathys35.gasnier.gmail.com@kernel.org> wrote:
+>
+> From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+>
+> Having a mutable reference guarantees that no other threads have
+> access to the lock, so we can take advantage of that to grant callers
+> access to the protected data without the the cost of acquiring and
+> releasing the locks. Since the lifetime of the data is tied to the
+> mutable reference, the borrow checker guarantees that the usage is safe.
+>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks!
-
+Reviewed-by: Wedson Almeida Filho <walmeida@microsoft.com>
 
