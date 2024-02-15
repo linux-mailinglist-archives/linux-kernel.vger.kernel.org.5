@@ -1,131 +1,224 @@
-Return-Path: <linux-kernel+bounces-67515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4C7856CC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:34:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 919F9856CC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E22B41C22DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:34:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47F1E28786C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B4B13EFF4;
-	Thu, 15 Feb 2024 18:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFED138486;
+	Thu, 15 Feb 2024 18:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="f0hAZFJH"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KtfxvaNd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C9D13956D
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C63A79958
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708021795; cv=none; b=iNwYs9m3BR5i3OONkufNnayn5pTh7P7V7u1zLDqlhjo5nE388ug+i669BAQJTfTRLEojQ6UBAZujrSc0yH0rXKAZpqXFqWrtcLkLAUL5PrKnI15wBhH0hXE4IQw3WvG7/t8E/qFFsRMYGA3G5F4A0OxmB6oeyaNLcE0n4YvBxtQ=
+	t=1708021909; cv=none; b=iB90AFaCbr/YOElMQazrmj65qGEkHpK+3zYBswOkHRJOwl70pa+clXoQFCH7+tXymiM90vBKQY9zmY9GINsf1LZt9yGIz4Wu6eOR0N/farOR0BAwiW35ioE2+f/itCqymZFQWOKxm+Sd7rtDsCga71Oq8gloTYWw4Ck16fFTDpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708021795; c=relaxed/simple;
-	bh=nqKSivlpykOU5aRvgMFi7Gq55Mo7pEcYs3weDz1dp+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oXvdac467oo6fknRLk3NII/Oc03zBmGc15thb0poEzii96IsdSKewIcKAIewWB1J80UFKHBNThy7w/5o+zrHk/pHB+83M4lSGOvsCxkgSAyf9Acr+S0FWK0rw1taKZuPyzmTDH4eGLQ0oRo90XndJ53j7QO0gCWUQDel/hZlmmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=f0hAZFJH; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Feb 2024 13:29:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708021790;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hhfBmJirNsqHXJktLhuMpinYcutoXu2NT5NVAvXIUmQ=;
-	b=f0hAZFJHOvaRSVjmLM0URBKbO2TqcjlWIG6gzkHjx3Rq8tk1kJMF+EE25IP8jdRKYN3Dfl
-	Bx8BonKRcNfBtJGsfFzfa//oBkb7e5ag/Ca9oOO5nGM2CIMRh64J6AlUyZjhzzwIjjk+Cr
-	CxUh4L9AQue2vyXrnfcADk++1zL8KH4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
-	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-Message-ID: <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-32-surenb@google.com>
- <Zc3X8XlnrZmh2mgN@tiehlicka>
- <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
- <Zc4_i_ED6qjGDmhR@tiehlicka>
- <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+	s=arc-20240116; t=1708021909; c=relaxed/simple;
+	bh=VuIUVWayapf/CPwBdlgdw2mp4l5hTiWPSbAsQcFP68E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V0JhWiHLw+UDloEg7JGi7MQd7Ptx/a2+4wyASMreUcZZLEQfHV0/EQy9E//bXc4tp5vUHT8Pd6AJXcBVjCNMJxO2z7HsAiTBg46ATkNqA6XfIJ8YBlEmlSUlctcxm/521qFYTlrIkSMrbsbS9MnTHd15z5eQJj5j7DfzP83qNgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KtfxvaNd; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708021907; x=1739557907;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=VuIUVWayapf/CPwBdlgdw2mp4l5hTiWPSbAsQcFP68E=;
+  b=KtfxvaNd5t1TBZgEeDJi3+Kf2QH9v7qoeorPtC6cnseoVvdJDVmcfK7t
+   s6LfMNluEtod/Ks7xrHHTgJbC4KiOdX9kIuKcgP/NRNKo9PjI6ZKXJH4M
+   SL6cjPzMJIue+ew/apjmFDtYMLunzOXHCPJ8sctwkwet1hikLKg60dgDg
+   yeK/C7PgO9bvKOVu1y+z6h4OVZ0emok+BHAMNwXItB6nwAhbiPWVSNnrG
+   WT0WuYEE6KhGu1/M28m5mSrOBKXRhAmMrptbp0ggu94qG71jmJK1Fikos
+   UhOkWeTSRmzf3FeSQHRU7B5vrMwf3ZAHjqWiTN1O2Ygl/Gslb/XM6xVFk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5939523"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="5939523"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:31:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="3637668"
+Received: from sgafur-mobl1.amr.corp.intel.com (HELO [10.209.97.128]) ([10.209.97.128])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:31:42 -0800
+Message-ID: <0c5431d984fe518f9f9b2f85639a6fc844115deb.camel@linux.intel.com>
+Subject: Re: [PATCH v4] mm: swap: async free swap slot cache entries
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Wei Xu
+ <weixugc@google.com>,  Yu Zhao <yuzhao@google.com>, Greg Thelen
+ <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>,  Yosry Ahmed
+ <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, Mel Gorman
+ <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, Nhat Pham
+ <nphamcs@gmail.com>, Kairui Song <kasong@tencent.com>, Barry Song
+ <v-songbaohua@oppo.com>
+Date: Thu, 15 Feb 2024 10:31:41 -0800
+In-Reply-To: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+References: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 15, 2024 at 08:47:59AM -0800, Suren Baghdasaryan wrote:
-> On Thu, Feb 15, 2024 at 8:45 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 15-02-24 06:58:42, Suren Baghdasaryan wrote:
-> > > On Thu, Feb 15, 2024 at 1:22 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
-> > > > [...]
-> > > > > @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
-> > > > >  #ifdef CONFIG_MEMORY_FAILURE
-> > > > >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
-> > > > >  #endif
-> > > > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > > > > +     {
-> > > > > +             struct seq_buf s;
-> > > > > +             char *buf = kmalloc(4096, GFP_ATOMIC);
-> > > > > +
-> > > > > +             if (buf) {
-> > > > > +                     printk("Memory allocations:\n");
-> > > > > +                     seq_buf_init(&s, buf, 4096);
-> > > > > +                     alloc_tags_show_mem_report(&s);
-> > > > > +                     printk("%s", buf);
-> > > > > +                     kfree(buf);
-> > > > > +             }
-> > > > > +     }
-> > > > > +#endif
-> > > >
-> > > > I am pretty sure I have already objected to this. Memory allocations in
-> > > > the oom path are simply no go unless there is absolutely no other way
-> > > > around that. In this case the buffer could be preallocated.
-> > >
-> > > Good point. We will change this to a smaller buffer allocated on the
-> > > stack and will print records one-by-one. Thanks!
-> >
-> > __show_mem could be called with a very deep call chains. A single
-> > pre-allocated buffer should just do ok.
-> 
-> Ack. Will do.
+On Wed, 2024-02-14 at 17:02 -0800, Chris Li wrote:
+> We discovered that 1% swap page fault is 100us+ while 50% of
+> the swap fault is under 20us.
+>=20
+> Further investigation shows that a large portion of the time
+> spent in the free_swap_slots() function for the long tail case.
+>=20
+> The percpu cache of swap slots is freed in a batch of 64 entries
+> inside free_swap_slots(). These cache entries are accumulated
+> from previous page faults, which may not be related to the current
+> process.
+>=20
+> Doing the batch free in the page fault handler causes longer
+> tail latencies and penalizes the current process.
+>=20
+> When the swap cache slot is full, schedule async free cached
+> swap slots in a work queue,=C2=A0before the next swap fault comes in.
+> If the next swap fault comes in very fast, before the async
+> free gets a chance to run. It will directly free all the swap
+> cache in the swap fault the same way as previously.
+>=20
+> Testing:
+>=20
+> Chun-Tse did some benchmark in chromebook, showing that
+> zram_wait_metrics improve about 15% with 80% and 95% confidence.
+>=20
+> I recently ran some experiments on about 1000 Google production
+> machines. It shows swapin latency drops in the long tail
+> 100us - 500us bucket dramatically.
+>=20
+> platform	(100-500us)	 	(0-100us)
+> A		1.12% -> 0.36%		98.47% -> 99.22%
+> B		0.65% -> 0.15%		98.96% -> 99.46%
+> C		0.61% -> 0.23%		98.96% -> 99.38%
+>=20
+> Signed-off-by: Chris Li <chrisl@kernel.org>
 
-No, we're not going to permanently burn 4k here.
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
 
-It's completely fine if the allocation fails, there's nothing "unsafe"
-about doing a GFP_ATOMIC allocation here.
+> ---
+> Changes in v4:
+> - Remove the sysfs interface file, according the feedback.
+> - Move the full condition test inside the spinlock.
+> - Link to v3: https://lore.kernel.org/r/20240213-async-free-v3-1-b89c3cc4=
+8384@kernel.org
+>=20
+> Changes in v3:
+> - Address feedback from Tim Chen, direct free path will free all swap slo=
+ts.
+> - Add /sys/kernel/mm/swap/swap_slot_async_fee to enable async free. Defau=
+lt is off.
+> - Link to v2: https://lore.kernel.org/r/20240131-async-free-v2-1-525f03e0=
+7184@kernel.org
+>=20
+> Changes in v2:
+> - Add description of the impact of time changing suggest by Ying.
+> - Remove create_workqueue() and use schedule_work()
+> - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b27799=
+2cb0@kernel.org
+> ---
+>  include/linux/swap_slots.h |  1 +
+>  mm/swap_slots.c            | 20 ++++++++++++++++++++
+>  2 files changed, 21 insertions(+)
+>=20
+> diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+> index 15adfb8c813a..67bc8fa30d63 100644
+> --- a/include/linux/swap_slots.h
+> +++ b/include/linux/swap_slots.h
+> @@ -19,6 +19,7 @@ struct swap_slots_cache {
+>  	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
+>  	swp_entry_t	*slots_ret;
+>  	int		n_ret;
+> +	struct work_struct async_free;
+>  };
+> =20
+>  void disable_swap_slots_cache_lock(void);
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 0bec1f705f8e..23dc04bce9ca 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -44,6 +44,7 @@ static DEFINE_MUTEX(swap_slots_cache_mutex);
+>  static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
+> =20
+>  static void __drain_swap_slots_cache(unsigned int type);
+> +static void swapcache_async_free_entries(struct work_struct *data);
+> =20
+>  #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_e=
+nabled)
+>  #define SLOTS_CACHE 0x1
+> @@ -149,6 +150,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+>  		spin_lock_init(&cache->free_lock);
+>  		cache->lock_initialized =3D true;
+>  	}
+> +	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
+>  	cache->nr =3D 0;
+>  	cache->cur =3D 0;
+>  	cache->n_ret =3D 0;
+> @@ -269,12 +271,27 @@ static int refill_swap_slots_cache(struct swap_slot=
+s_cache *cache)
+>  	return cache->nr;
+>  }
+> =20
+> +static void swapcache_async_free_entries(struct work_struct *data)
+> +{
+> +	struct swap_slots_cache *cache;
+> +
+> +	cache =3D container_of(data, struct swap_slots_cache, async_free);
+> +	spin_lock_irq(&cache->free_lock);
+> +	/* Swap slots cache may be deactivated before acquiring lock */
+> +	if (cache->slots_ret && cache->n_ret) {
+> +		swapcache_free_entries(cache->slots_ret, cache->n_ret);
+> +		cache->n_ret =3D 0;
+> +	}
+> +	spin_unlock_irq(&cache->free_lock);
+> +}
+> +
+>  void free_swap_slot(swp_entry_t entry)
+>  {
+>  	struct swap_slots_cache *cache;
+> =20
+>  	cache =3D raw_cpu_ptr(&swp_slots);
+>  	if (likely(use_swap_slot_cache && cache->slots_ret)) {
+> +		bool full;
+>  		spin_lock_irq(&cache->free_lock);
+>  		/* Swap slots cache may be deactivated before acquiring lock */
+>  		if (!use_swap_slot_cache || !cache->slots_ret) {
+> @@ -292,7 +309,10 @@ void free_swap_slot(swp_entry_t entry)
+>  			cache->n_ret =3D 0;
+>  		}
+>  		cache->slots_ret[cache->n_ret++] =3D entry;
+> +		full =3D cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE;
+>  		spin_unlock_irq(&cache->free_lock);
+> +		if (full)
+> +			schedule_work(&cache->async_free);
+>  	} else {
+>  direct_free:
+>  		swapcache_free_entries(&entry, 1);
+>=20
+> ---
+> base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
+> change-id: 20231216-async-free-bef392015432
+>=20
+> Best regards,
+
 
