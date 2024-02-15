@@ -1,147 +1,117 @@
-Return-Path: <linux-kernel+bounces-67252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A118568AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:02:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7E58568B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:03:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549371F23728
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:02:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6941F23886
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8488513475B;
-	Thu, 15 Feb 2024 16:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02BE1339A3;
+	Thu, 15 Feb 2024 16:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MupD0bbz"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TaUOWjhk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA5013399E;
-	Thu, 15 Feb 2024 16:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFC1350F6;
+	Thu, 15 Feb 2024 16:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012911; cv=none; b=Avz+LX4aJzIzyq7ra7wd4Jwp1t/QSOpjOCR58xVefsdjCvEyKYDLiHasfFkJaI2Zea/TysTnq17uRIN0dUOJxFr9i8b22fFHEITqGpUlEPWGWh/ulYhs6RNUW9AHotGDAf3rEsRy+SoZIA0X6mRs1oGIPiuqc1Tz3YSj2RBxH7w=
+	t=1708012920; cv=none; b=MJ8MU6M0n5Wxlmt6UUvUTABPvgCi/F1Bcp3OOFYlgvPniA4zBPJwNqEnJDcW6XWnGdsQM7KJL+vh3myyLonowEB4PpxReRXwY7/BIFDRxrKPW7W++uLe7Xnv3R4cJGzOyuQIe1yvMZyAP+7apuLFhOH09caz3ZvNRMhD36Da65o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012911; c=relaxed/simple;
-	bh=Xo9WnM9493Bm4oY4MEkdUim500HA8+J/7lGWj8KvKaU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K3B4nt1EvQ3u1o5sWpMYeNLB2/9zafBHUgb7/a4AkdwU00YOdAq2T/eBEDtBoLULVRZJbrsQQQG09ceZCQ1ASGA8/nQ97e7Oc4tPHaVLyqZFJBLQyh2xEfftFmzYk54L6hf8wyt6vu5JjT+V33gNDkKA9VSdnjm1a6AKUmBf86M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MupD0bbz; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFTS7Q006052;
-	Thu, 15 Feb 2024 16:01:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=saWiS+8K1cygqHiQXZAlnKyAJWO/e2zPPqHJyjJ7EyQ=;
- b=MupD0bbzprxVOlTYGacXFVKrsQ4lXxUz+uLbFX33oX6oAHdprRurmF+vs6iuZjf4ahGA
- EA86E6+7EoOxBh1QMJPnbjzxMBaa0/3fbOIXD7IjxNGpS5Tupn3w4bmA2YnPwawcA9x0
- o2RSMvgzLarmF5Xg7UqZJUhueb9oVI0gQV7sxvmQDhsIRoCzzM1CuJ5N/pXK7LSLDORG
- E3t+cqbz+L4DwAaQCTdM6ifiLQNZPPTp446Kma+WvjwvpZXkW5KKHWDNxL7gX6Kg49CM
- ozXPaM0Vcxhew9RNB5TNonzIdureRSOtklcrVpLRLc138ZS0zG8fs3SpBfc/Az4vdyzc Bg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w92s72h72-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 16:01:43 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FExkjD013877;
-	Thu, 15 Feb 2024 16:01:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apdkewc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 16:01:43 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FG1cZY031601;
-	Thu, 15 Feb 2024 16:01:42 GMT
-Received: from alaljime-dev-e4flex-vm.osdevelopmeniad.oraclevcn.com (alaljime-dev-e4flex-vm.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.106])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w6apdkep6-4;
-	Thu, 15 Feb 2024 16:01:42 +0000
-From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
-To: kvm@vger.kernel.org
-Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        mark.kanda@oracle.com, suravee.suthikulpanit@amd.com,
-        mlevitsk@redhat.com, alejandro.j.jimenez@oracle.com
-Subject: [RFC 3/3] x86: KVM: stats: Add a stat counter for GALog events
-Date: Thu, 15 Feb 2024 16:01:36 +0000
-Message-Id: <20240215160136.1256084-4-alejandro.j.jimenez@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
-References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+	s=arc-20240116; t=1708012920; c=relaxed/simple;
+	bh=pWw8ohlMdJOBYl5mwsS+UEZnUOAY6rOv2BrZBdYFroE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=USUcjXD+WiDPJzbUNOzxK45vLe0Y7YhW/Kbf71ZrX6tu9j9x6GLtrJsj45z2suFZxT4rr+HEL7/eThEyVJa+1+SfBLxKZc+Vwv7k9dE4Vg6cp2K4kxuwVbPnM4/Go6V5ZKo2nqpOAd476wibCQ95Ls/4hQM3hDE4iB417CjS3Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TaUOWjhk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DF5C433C7;
+	Thu, 15 Feb 2024 16:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708012919;
+	bh=pWw8ohlMdJOBYl5mwsS+UEZnUOAY6rOv2BrZBdYFroE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=TaUOWjhkb5mM0/BsHOScRRcw1Loz1te9kYIoI82lkP56F49Uzy9oG+HgmRR2cD0S0
+	 jYP3vTctJ84N23BibErGY4gMhi7ULXq3jshaOuJdvl13WzszMz9M3spY8VwUwSG1DP
+	 ATEIWlZ/hwegkwSNt3tPKxboCw5MkCRORCdUtTlPr/Na6ow4v2f0fvJbJPNKLAvjwu
+	 x3ouW88CaQfG/+ghH2q+QBA0mN37y77UO6x0DzXFu3kDWWKS9aiQpeIzbHjtU2raFk
+	 9J19JecmfXkwoKtOcoUcqHEYV5WF4iwo9vxzepup41U18GaLxltBu//PsWHna/zubC
+	 0tEepQWrESd4Q==
+Date: Thu, 15 Feb 2024 10:01:57 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>, bhelgaas@google.com,
+	robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
+	jonathanh@nvidia.com, Kishon Vijay Abraham I <kishon@kernel.org>,
+	catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
+	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+	digetx@gmail.com, mperttunen@nvidia.com, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V16 13/13] PCI: tegra: Add Tegra194 PCIe support
+Message-ID: <20240215160157.GA1291755@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_14,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402150128
-X-Proofpoint-GUID: twgFqR75LUrbW0Xlv5Pf4z4UXp1zkY80
-X-Proofpoint-ORIG-GUID: twgFqR75LUrbW0Xlv5Pf4z4UXp1zkY80
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17dadf66-055c-4796-a905-44e37b6fcfe3@nvidia.com>
 
-Export a per-vCPU binary stat counting GALog events received. Such events
-are specific to IOMMU AVIC, and their presence can be used to confirm that
-this capability is active. Also, exporting this statistic is useful to
-assert that device interrupts are being sent to specific vCPUs, confirming
-IRQ affinity settings.
+On Thu, Feb 15, 2024 at 04:55:47PM +0530, Vidya Sagar wrote:
+> On 15-02-2024 00:42, Bjorn Helgaas wrote:
+> > Hi Vidya, question about ancient history:
+> > 
+> > On Tue, Aug 13, 2019 at 05:06:27PM +0530, Vidya Sagar wrote:
+> > > Add support for Synopsys DesignWare core IP based PCIe host controller
+> > > present in Tegra194 SoC.
+> > > ...
+> > > +static int tegra_pcie_dw_host_init(struct pcie_port *pp)
+> > > +{
+> > > +     struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > +     struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+> > > +     u32 val, tmp, offset, speed;
+> > > +
+> > > +     tegra_pcie_prepare_host(pp);
+> > > +
+> > > +     if (dw_pcie_wait_for_link(pci)) {
+> > > +             /*
+> > > +              * There are some endpoints which can't get the link up if
+> > > +              * root port has Data Link Feature (DLF) enabled.
+> > > +              * Refer Spec rev 4.0 ver 1.0 sec 3.4.2 & 7.7.4 for more info
+> > > +              * on Scaled Flow Control and DLF.
+> > > +              * So, need to confirm that is indeed the case here and attempt
+> > > +              * link up once again with DLF disabled.
+> >
+> > This comment suggests that there's an issue with *Endpoints*, not an
+> > issue with the Root Port.  If so, it seems like this problem could
+> > occur with all Root Ports, not just Tegra194.  Do you remember any
+> > details about this?
+> > 
+> > I don't remember hearing about any similar issues, and this driver is
+> > the only place PCI_EXT_CAP_ID_DLF is referenced, so maybe it is
+> > actually something related to Tegra194?
+>
+> We noticed PCIe link-up issues with some endpoints. link-up at the physical
+> layer level but NOT at the Data link layer level precisely. We further
+> figured out that it is the DLFE DLLPs that the root port sends during the
+> link up process which are causing the endpoints get confused and preventing
+> them from sending the InitFC DLLPs leading to the link not being up at
+> Data Link Layer level.
 
-Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
----
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/svm/avic.c         | 4 +++-
- arch/x86/kvm/x86.c              | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
+Do you happen to remember any of the endpoints that have issues?
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index b6f18084d504..74e08b57f2e0 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1565,6 +1565,7 @@ struct kvm_vcpu_stat {
- 	u64 guest_mode;
- 	u64 notify_window_exits;
- 	u64 apicv_accept_irq;
-+	u64 ga_log_event;
- };
- 
- struct x86_instruction_info;
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index 4b74ea91f4e6..853cafe4a9af 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -165,8 +165,10 @@ int avic_ga_log_notifier(u32 ga_tag)
- 	 * bit in the vAPIC backing page. So, we just need to schedule
- 	 * in the vcpu.
- 	 */
--	if (vcpu)
-+	if (vcpu) {
- 		kvm_vcpu_wake_up(vcpu);
-+		++vcpu->stat.ga_log_event;
-+	}
- 
- 	return 0;
- }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 2ad70cf6e52c..6a1df29ae650 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -305,6 +305,7 @@ const struct _kvm_stats_desc kvm_vcpu_stats_desc[] = {
- 	STATS_DESC_IBOOLEAN(VCPU, guest_mode),
- 	STATS_DESC_COUNTER(VCPU, notify_window_exits),
- 	STATS_DESC_COUNTER(VCPU, apicv_accept_irq),
-+	STATS_DESC_COUNTER(VCPU, ga_log_event),
- };
- 
- const struct kvm_stats_header kvm_vcpu_stats_header = {
--- 
-2.39.3
+Could save some painful debugging if we trip over this issue on other
+systems.  We have seen a few cases where links wouldn't train at full
+speed unless they trained at a lower speed first, e.g.,
+imx6_pcie_start_link(), fu740_pcie_start_link().  I guess there are
+probably lots of edge cases that can cause link failures.
 
+Bjorn
 
