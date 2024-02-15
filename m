@@ -1,86 +1,116 @@
-Return-Path: <linux-kernel+bounces-66322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390E1855A76
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:32:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5A3855A88
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 301FEB225AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ABA01F2A4CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F32BA38;
-	Thu, 15 Feb 2024 06:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD5DD52A;
+	Thu, 15 Feb 2024 06:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WjNBhrru"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q7MD1s/u"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AD01C02
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8D1B67E;
+	Thu, 15 Feb 2024 06:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707978759; cv=none; b=mSoNuDLJY/SbAke3SDEJUnuz4cBRfd6m1kAKBjhSYlxFN+E3qXaKZNcVsGyH4lw9cej8be41aES2HwuPmQHR8FLULkWbAg9BJOc16PpK4am30FFO1E7bWBbwGBNqXC3iihspAzaKnB1XCXtOxD85JeKD0Cu1uyxahcVgeQIjpEQ=
+	t=1707979026; cv=none; b=FqT2/fz4Bcjlo2uUvY9ohnN0qgR66kYGeuV5+5zOHH/qd/dRG6Nn+E0nz5tKyiKg+NZWt/206+v8TRngtKbUZq949kjT4xJXiJ7KuY06fnHBg4IXKn5CfXi2EddkSQ6xZnTD/20+FUaEXBUMxtk66WyFL63s5pNHxxiwvHepjUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707978759; c=relaxed/simple;
-	bh=QYgsrze2ItFZa7cOnhg+Cy2fQUPDqBnyOLxWMOv/dbA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VseUj7rlmU/7+NO4jf0Mh6KtMCUpCO+SHOqVbq1GIljEiZZaoZdBQUPVqwiuofz18H6XI15yulsCiLBmXtk1aIUJmcwbUy4Z2TRMzbY9uTgBIeJoLgJ5cICRtkfm0OJ18TvpdMGtWGalwmORHC1iWjZSlVTy0/bMPpULk9CgLaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WjNBhrru; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Feb 2024 14:32:24 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707978754;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QYgsrze2ItFZa7cOnhg+Cy2fQUPDqBnyOLxWMOv/dbA=;
-	b=WjNBhrruJ37CnbDrPB/DQF+EHQIh+YeVP6uuJhMCtGcBqLgeKoifzgtvDXQAGPGuHJ3XlD
-	PlHPu7w1cjEiqMVmDTlKZrbW81U3vgp1TrIyWvpdoS9tuMOFQQuMXaxxZs47Sf4GeLR8sO
-	xji9sz4Fvy98M937HyjxU0rCkWKlqbY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Leo Yan <leo.yan@linux.dev>
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	James Clark <james.clark@arm.com>,
-	Mike Leach <mike.leach@linaro.org>, Guo Ren <guoren@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Ming Wang <wangming01@loongson.cn>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v1 0/4] perf parse-regs: Cleanup config and building
-Message-ID: <20240215063224.GA99827@debian-dev>
-References: <20240214113947.240957-1-leo.yan@linux.dev>
- <CAP-5=fXqdFrTDY2a2dXK1ehP2AbwPfPF8vYWXgeSMcKh4mS+ow@mail.gmail.com>
+	s=arc-20240116; t=1707979026; c=relaxed/simple;
+	bh=jt9l7liAr8Tzw3htgWauiN648rS7CE21DZGkIgEDjQ4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e3/qp1LcDUBqA+gy7nhhVwxmcWkNVBj40hb2Kae7VDmnixQqMk1eb79i0zTPYBIVXiawlPqxM/U3Eh2dtPeEDllaIi4azcpP0Lu+tENdSQ4s8CxMYXCsfhcyXINn56Dsh793MFU5lMcTcFpw7iljFPTZHI/4R2aXaoV/p37wgjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=q7MD1s/u; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=UJh+PesZmsu6jGo4CJstKu5HORejXqiKtJp5m+bTSkE=; b=q7MD1s/u22UXzodFg16cvPL1LC
+	4mR8jjvKPzzb1WE2g3gE7ivDBDUKhA+tmRhfL29mt/JywbF+xBOXdBElDU8HcYqxnZRCHZ8Z/Q4Rs
+	4R6Vl+7bWIMLtzKxFcO8IMZH6eQDA8tW+yViHoo2Rje4cB41NmrIiGcJh9+InRSqYAuDUa1Vr+X8b
+	ZBMaOFeqqOOGzE18C0H2urIKqIWuAxD0Dkn85zVNCNbjEamG0BG2IN9NDH9wRwIN3MaPtFGoc+HNU
+	gPSqbkNZTxp7jLIrkRlSvatpbUg8NBNOqKLqgVTlSyRytp58dyUgdOoDGX61Va0+LVl4PIgiPE9IT
+	nnOwbEnw==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raVMh-0000000F6qz-2N9y;
+	Thu, 15 Feb 2024 06:36:59 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: linux-mm@kvack.org
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>,
+	David Howells <dhowells@redhat.com>,
+	Brian Foster <bfoster@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: convert write_cache_pages() to an iterator v8
+Date: Thu, 15 Feb 2024 07:36:35 +0100
+Message-Id: <20240215063649.2164017-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXqdFrTDY2a2dXK1ehP2AbwPfPF8vYWXgeSMcKh4mS+ow@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Feb 14, 2024 at 02:42:55PM -0800, Ian Rogers wrote:
+Hi all,
 
-[...]
+this is an evolution of the series Matthew Wilcox originally sent in June
+2023, which has changed quite a bit since and now has a while based
+iterator.
 
-> Thanks Leo, this is great cleanup! Series:
-> Reviewed-by: Ian Rogers <irogers@google.com>
+Note that in this version two patches are so different from the previous
+version that I've not kept any Reviews or Acks for them, even if the
+final result look almost the same as the previous patches with the
+incremental patch on the list.
 
-Thanks a lot for reviewing, Ian!
+Changes since v7:
+ - drop the mapping_set_error removal in writepage_cb for now to get this
+   series merged.  I'll do a full audit of mapping_set_error.
 
-Leo
+Changes since v6:
+ - don't access folio->index after releasing the folio batch
+ - add a new patch to fix a pre-existing bug where a positive value is
+   passed to mapping_set_error
+
+Changes since v5:
+ - completely reshuffle the series to directly prepare for the
+   writeback_iter() style.
+ - don't require *error to be initialized on first call
+ - improve various comments
+ - fix a bisection hazard where write_cache_pages don't return delayed
+   error for a few commits
+ - fix a whitespace error
+ - drop the iomap patch again for now as the iomap map multiple blocks
+   series isn't in mainline yet
+
+Changes since v4:
+ - added back the (rebased) iomap conversion now that the conflict is in
+   mainline
+ - add a new patch to change the iterator
+
+Changes since v3:
+ - various commit log spelling fixes
+ - remove a statement from a commit log that isn't true any more with the
+   changes in v3
+ - rename a function
+ - merge two helpers
+
+Diffstat:
+ include/linux/pagevec.h   |   18 ++
+ include/linux/writeback.h |   12 +
+ mm/page-writeback.c       |  390 ++++++++++++++++++++++++++--------------------
+ 3 files changed, 250 insertions(+), 170 deletions(-)
 
