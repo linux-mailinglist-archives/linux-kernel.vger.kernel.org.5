@@ -1,146 +1,97 @@
-Return-Path: <linux-kernel+bounces-66951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CC86856404
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:09:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF2948563F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1526EB2A707
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:04:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6050D1F2730A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4590012F5A0;
-	Thu, 15 Feb 2024 13:03:56 +0000 (UTC)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DE312F582;
+	Thu, 15 Feb 2024 13:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YsIp3eIk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C3558ABC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300C858ABC
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002235; cv=none; b=MfKiwouiK0uo11arfUk6FSsRmL6U0MUR/+EHtUIc3OpT7+K9qRZIcoNnk6uomCvuCbEjnpEiXUGIiWvpH/snDFDPtGPYUF5xhbTmdJRBzjsC64SDg4ZF3/OJFVga7+08gKi2AjUGXAbX15gOGiO2jsT4rwH3GADWSxiMeVzSIOM=
+	t=1708002254; cv=none; b=Hsy6rZZk7ct3lMTCOLkE0/U2BhWtV3eUgTWCJgozQY/50eMFlgBCsQO6t2Ucf0Ctakp7RY7f78u/SRAk/kTr3CvCEqTuH/JVxBorBRFi3CYbF/JBGT+Zhp5HOhJh1+20K4qXx8M4ZeJTNGjnjvYWcb8Bq4rJkFrq7O4pKhRDJDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002235; c=relaxed/simple;
-	bh=g063c6mfbeUy0PcgSIIdWAMOgQxBDicgTnmvxo0W8cA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YZyz4y0bL9jYYxPKmkH7L1lj9nbDOaIlvz8WI1mmVHGoXlE7mzfmaQ8MHvxyCYHFv7muTBaIzkPvtzRO45v/wCyTZeRA3P47UHnE8iCcgtnSDlIytP+xlRbwNEN8EEYOLKg3Or5R90PNH2NZzauCeAdGJgcDt9oCc7NzzP5qSH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ac52:3a54:2a84:d65a])
-	by xavier.telenet-ops.be with bizsmtp
-	id nR3r2B00H0LVNSS01R3r79; Thu, 15 Feb 2024 14:03:52 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rabOy-000gx8-EY;
-	Thu, 15 Feb 2024 14:03:51 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rabP5-00HYHC-Ns;
-	Thu, 15 Feb 2024 14:03:51 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH resend] intel_th: Use bitfield helpers
-Date: Thu, 15 Feb 2024 14:03:50 +0100
-Message-Id: <b72856c9d2d3f9938ce7f3124a466754534981d9.1708002102.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708002254; c=relaxed/simple;
+	bh=jBnUeliIM+lDQOZgbKiGk7/I7UGsSjTUdVEOnfuW0DI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rWrpw9uwmgzRtr1/aQb3i52IEXexqAj9/hDFXBFDGqvwUnQzmkxBsLN2Bp5MXdwuctvm72yGb6JmEbil6Y3YTb7V/3ySAVhg+98Z0+WcfWpVpBan2N05EXABhC24erMdb3LLd7atRcgiFuQ2+6YRq2aJctKa3P3Adw+qHuFnMO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YsIp3eIk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DC6C433F1;
+	Thu, 15 Feb 2024 13:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708002253;
+	bh=jBnUeliIM+lDQOZgbKiGk7/I7UGsSjTUdVEOnfuW0DI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YsIp3eIkzbep+978EXuSlQHGHFHXXIDpPXo9Ejb14D880tN9hQZY+DifP7prpJOmm
+	 K5ERDoCj0kVYv3MfsMalmvE7bKn4btkS+U6XXvSvV7vpLz+YRHRtcGX+1m18Y24Dj0
+	 2JhvTUS2aSexJuBXAtTrU5R4lPRgN5hx0bMnHboZiNaxfkcJObx6OF3xTS2pfRW9E/
+	 1w300QjJ3HoXOMXM+vvKEIQ9miCOPqz8fqvcBZEj6UjOazW9t9xxR2HcfcBTjUfKFP
+	 +D6pxbMeB4a5K4V0Ew02/DBXq76YuGMVSqVr+FrzqtVusaz05wSTQmnyQIS+UZpGG8
+	 ZYYeaOzSgNNlg==
+Date: Thu, 15 Feb 2024 13:04:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sysreg: Add register fields for ID_AA64DFR1_EL1
+Message-ID: <d2722ae9-d29c-41f9-9eec-f829589adf6e@sirena.org.uk>
+References: <20240215065454.2489075-1-anshuman.khandual@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+BKBLTtfgrcFZnRa"
+Content-Disposition: inline
+In-Reply-To: <20240215065454.2489075-1-anshuman.khandual@arm.com>
+X-Cookie: Pass with care.
 
-Use the FIELD_{GET,PREP}() helpers, instead of open-coding the same
-operations.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Compile-tested only.
----
- drivers/hwtracing/intel_th/msu.c |  8 ++++----
- drivers/hwtracing/intel_th/pti.c | 13 +++++++------
- 2 files changed, 11 insertions(+), 10 deletions(-)
+--+BKBLTtfgrcFZnRa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/hwtracing/intel_th/msu.c b/drivers/hwtracing/intel_th/msu.c
-index 9621efe0e95c4df8..b6e76c5f8d2f38ea 100644
---- a/drivers/hwtracing/intel_th/msu.c
-+++ b/drivers/hwtracing/intel_th/msu.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
- 
-+#include <linux/bitfield.h>
- #include <linux/types.h>
- #include <linux/module.h>
- #include <linux/device.h>
-@@ -787,8 +788,8 @@ static int msc_configure(struct msc *msc)
- 	reg &= ~(MSC_MODE | MSC_WRAPEN | MSC_EN | MSC_RD_HDR_OVRD);
- 
- 	reg |= MSC_EN;
--	reg |= msc->mode << __ffs(MSC_MODE);
--	reg |= msc->burst_len << __ffs(MSC_LEN);
-+	reg |= FIELD_PREP(MSC_MODE, msc->mode);
-+	reg |= FIELD_PREP(MSC_LEN, msc->burst_len);
- 
- 	if (msc->wrap)
- 		reg |= MSC_WRAPEN;
-@@ -1699,8 +1700,7 @@ static int intel_th_msc_init(struct msc *msc)
- 	INIT_LIST_HEAD(&msc->iter_list);
- 
- 	msc->burst_len =
--		(ioread32(msc->reg_base + REG_MSU_MSC0CTL) & MSC_LEN) >>
--		__ffs(MSC_LEN);
-+		FIELD_GET(MSC_LEN, ioread32(msc->reg_base + REG_MSU_MSC0CTL));
- 
- 	return 0;
- }
-diff --git a/drivers/hwtracing/intel_th/pti.c b/drivers/hwtracing/intel_th/pti.c
-index 09132ab8bc23265a..eadc236ec43e0ad3 100644
---- a/drivers/hwtracing/intel_th/pti.c
-+++ b/drivers/hwtracing/intel_th/pti.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
- 
-+#include <linux/bitfield.h>
- #include <linux/types.h>
- #include <linux/module.h>
- #include <linux/device.h>
-@@ -152,12 +153,12 @@ static int intel_th_pti_activate(struct intel_th_device *thdev)
- 	u32 ctl = PTI_EN;
- 
- 	if (pti->patgen)
--		ctl |= pti->patgen << __ffs(PTI_PATGENMODE);
-+		ctl |= FIELD_PREP(PTI_PATGENMODE, pti->patgen);
- 	if (pti->freeclk)
- 		ctl |= PTI_FCEN;
--	ctl |= pti->mode << __ffs(PTI_MODE);
--	ctl |= pti->clkdiv << __ffs(PTI_CLKDIV);
--	ctl |= pti->lpp_dest << __ffs(LPP_DEST);
-+	ctl |= FIELD_PREP(PTI_MODE, pti->mode);
-+	ctl |= FIELD_PREP(PTI_CLKDIV, pti->clkdiv);
-+	ctl |= FIELD_PREP(LPP_DEST, pti->lpp_dest);
- 
- 	iowrite32(ctl, pti->base + REG_PTI_CTL);
- 
-@@ -179,8 +180,8 @@ static void read_hw_config(struct pti_device *pti)
- {
- 	u32 ctl = ioread32(pti->base + REG_PTI_CTL);
- 
--	pti->mode	= (ctl & PTI_MODE) >> __ffs(PTI_MODE);
--	pti->clkdiv	= (ctl & PTI_CLKDIV) >> __ffs(PTI_CLKDIV);
-+	pti->mode	= FIELD_GET(PTI_MODE, ctl);
-+	pti->clkdiv	= FIELD_GET(PTI_CLKDIV, ctl);
- 	pti->freeclk	= !!(ctl & PTI_FCEN);
- 
- 	if (!pti_mode[pti->mode])
--- 
-2.34.1
+On Thu, Feb 15, 2024 at 12:24:54PM +0530, Anshuman Khandual wrote:
 
+>  Sysreg	ID_AA64DFR1_EL1	3	0	0	5	1
+> -Res0	63:0
+> +Field	63:56	ABL_CMPs
+> +Field	55:52	DPFZS
+
+This is documented in the architecture as an enumeration, though I'm not
+immediately seeing what values to use.
+
+Otherwise this looks good.
+
+--+BKBLTtfgrcFZnRa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXOC8gACgkQJNaLcl1U
+h9AlYAf/a1uNyhXOXmf4IZzEnudRpCrRszj2uXZDgeE9CJfyleLiiCQHX3Wp6nAN
+QgIf7F/ufkNUFL8pu9rRJASURGtXoyh+ZPb+TPoH4vsnIDzyTdjhHp/8MgzhI/7Q
+htZlIoqxhzkJxch92UFYcn+OfI9eKaCYiUF/b2CzBjwy8THolRpAfqweTzOGkb0i
+jNzNejOZRHFp5ccSoY4uB/C1m2JN40PphYJNrTLkC7+HxJqTko5hPyUnR7YBkNE+
+EyivYZHZOsPXFkgBoN8+sqLkg5u8zKWWUNGwW7KEEtGo2WLx6raCFjFLPaA3rAMe
+EqIXUrn9xS0JuYQwvtW3vCYi0q9g6Q==
+=/8+k
+-----END PGP SIGNATURE-----
+
+--+BKBLTtfgrcFZnRa--
 
