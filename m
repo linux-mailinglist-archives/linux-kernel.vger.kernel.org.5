@@ -1,224 +1,175 @@
-Return-Path: <linux-kernel+bounces-67516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 919F9856CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC52C856CC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47F1E28786C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:35:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3CD629005E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFED138486;
-	Thu, 15 Feb 2024 18:31:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14B9136999;
+	Thu, 15 Feb 2024 18:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KtfxvaNd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ltWU3OnK"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C63A79958
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646FA2595
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708021909; cv=none; b=iB90AFaCbr/YOElMQazrmj65qGEkHpK+3zYBswOkHRJOwl70pa+clXoQFCH7+tXymiM90vBKQY9zmY9GINsf1LZt9yGIz4Wu6eOR0N/farOR0BAwiW35ioE2+f/itCqymZFQWOKxm+Sd7rtDsCga71Oq8gloTYWw4Ck16fFTDpQ=
+	t=1708022008; cv=none; b=MqjWHIaBHBzxjn8VdUurXAuco9tvHqGVEcuqS3IUXE7MPabtbfV4dWahOsH7lj8/mC6Rf/Kz5we9JG7YsJcCMwiOkgO523000Cy8njen7U5n/hWeprxFCoaEXc4+Ge0ishH9R/ka56t7boUxz5pjn6KK5s1dP3vGIM5sKXjZWAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708021909; c=relaxed/simple;
-	bh=VuIUVWayapf/CPwBdlgdw2mp4l5hTiWPSbAsQcFP68E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=V0JhWiHLw+UDloEg7JGi7MQd7Ptx/a2+4wyASMreUcZZLEQfHV0/EQy9E//bXc4tp5vUHT8Pd6AJXcBVjCNMJxO2z7HsAiTBg46ATkNqA6XfIJ8YBlEmlSUlctcxm/521qFYTlrIkSMrbsbS9MnTHd15z5eQJj5j7DfzP83qNgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KtfxvaNd; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708021907; x=1739557907;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=VuIUVWayapf/CPwBdlgdw2mp4l5hTiWPSbAsQcFP68E=;
-  b=KtfxvaNd5t1TBZgEeDJi3+Kf2QH9v7qoeorPtC6cnseoVvdJDVmcfK7t
-   s6LfMNluEtod/Ks7xrHHTgJbC4KiOdX9kIuKcgP/NRNKo9PjI6ZKXJH4M
-   SL6cjPzMJIue+ew/apjmFDtYMLunzOXHCPJ8sctwkwet1hikLKg60dgDg
-   yeK/C7PgO9bvKOVu1y+z6h4OVZ0emok+BHAMNwXItB6nwAhbiPWVSNnrG
-   WT0WuYEE6KhGu1/M28m5mSrOBKXRhAmMrptbp0ggu94qG71jmJK1Fikos
-   UhOkWeTSRmzf3FeSQHRU7B5vrMwf3ZAHjqWiTN1O2Ygl/Gslb/XM6xVFk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5939523"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="5939523"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:31:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="3637668"
-Received: from sgafur-mobl1.amr.corp.intel.com (HELO [10.209.97.128]) ([10.209.97.128])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:31:42 -0800
-Message-ID: <0c5431d984fe518f9f9b2f85639a6fc844115deb.camel@linux.intel.com>
-Subject: Re: [PATCH v4] mm: swap: async free swap slot cache entries
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Wei Xu
- <weixugc@google.com>,  Yu Zhao <yuzhao@google.com>, Greg Thelen
- <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>,  Yosry Ahmed
- <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, Mel Gorman
- <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, Nhat Pham
- <nphamcs@gmail.com>, Kairui Song <kasong@tencent.com>, Barry Song
- <v-songbaohua@oppo.com>
-Date: Thu, 15 Feb 2024 10:31:41 -0800
-In-Reply-To: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
-References: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1708022008; c=relaxed/simple;
+	bh=h7H4FBwDjtFZTfSMi65y7rCAC7HWqJMf/6EX7pmmTNA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ol4epbY9vy3KPT8wea5az9ATQrgpzF0O5xXtnVBUlE2JFEh0mgun0oqyLUv1WRCAamnC9T2Hz6TVvSRi4w/3DsRU80rriGM0vNsnQcSFpeEj+/8NPJdTu2UT0yCFSyvcx0ZleohTvpT9vud74d6saqm42zIogacimBTQwB3uNeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ltWU3OnK; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b7fc7642fcso431111e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708022005; x=1708626805; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Cgjd8j0lGhuZAEPZiz3aSk342Nhzq+fv9nQyppW3Ak=;
+        b=ltWU3OnKp4/3lUfq6gbTRBraf4nlO/dJ3zuK0NlTz4xkaBR9tb1WRSLg0yccEyxjby
+         6j+lWkZrmghJ7PQcL6JXjy5pGoVRBQdhmLD5cujYHx6LYK2yE0gSojPIJ/R2Qa6MLZi6
+         j2DRSww6Vm8EmMIrV3bU/756w9kH5FqmM1px2WhH7fGQAQuVI7wvDrv6FbBJWbbVzXJn
+         CvAbCzNF5lQJ4PaGhTVmQS5j3R5gvIlY9uFCYdXB+2OeNlXZ9UabbjY1zu8hlYAMol8R
+         AqZcyx00V5hTkkbyivnb3t/vHNXWpcRUmJw6gJq+Rd/hV0G9pWGoPoCQTxgw9BJ/0o3T
+         leKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708022005; x=1708626805;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7Cgjd8j0lGhuZAEPZiz3aSk342Nhzq+fv9nQyppW3Ak=;
+        b=YSfMEz+W7Z5N/t2zmT6C4tfecM0eLEzbG16LZSlrxolcxqqKrWmd6sGuyn+4YtU1w8
+         ZdUk9DcHQcwdPUVKkcjBD22V9TW27iSoScw6+QKdSozGaUWjySgvnGmW83ypoS+jATvC
+         Q/a1mdPiI2QCZsWo+opDOpQ/DJudY1hR2/xMyeCWBSkBLfgomnw37QLT0dbUWUSNzBLQ
+         q+jjS91ncCybJBtUAQLhaKN8b9vN0xykSoCId9KtBfFeLv7N0eXMAoxIBNDsbc6Qsq9t
+         3zbKPOI3gEm7oeSUJtrhZBihd8GAxUALBA3ClA/pc7I/B/GHi2/2JXD4mfTN0jaogI5M
+         RwOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWY/B97QFVkcRv5Oe54xLUKNC8N8CooKsQRiK3FitfjGxqdsSWm1IqOoOm85Rbb92TkAI4PacsSRa85JWdDMjUtIINWCtTWYaYtfc1f
+X-Gm-Message-State: AOJu0YwAKA+3yet7cTjR7vjvMfE/0QG3lq3lGlIkkP0znnIajUTmdaUB
+	CoxIUjWEfcrBx1Evlt0LNfsrwMbcoevxFIuGyaC+lWpE/bBQg97a+PrGRUqkS3/lF4tIG5u6iMw
+	pKbwOMMmxX5Oudtwg5fTuSzFia4Fiu4AD8ZKY
+X-Google-Smtp-Source: AGHT+IFZ4HJEjg3Vz6yIN4Fq5nuDkARCsLfavxqSX51nzgIKhdpi/duElUIGLxNB4uANcUpSVO57gRQ5qWXvql+avEI=
+X-Received: by 2002:a1f:4fc5:0:b0:4c0:1cc8:8821 with SMTP id
+ d188-20020a1f4fc5000000b004c01cc88821mr2433933vkb.9.1708022003768; Thu, 15
+ Feb 2024 10:33:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240214194432.makes.837-kees@kernel.org> <20240214194605.602505-3-keescook@chromium.org>
+In-Reply-To: <20240214194605.602505-3-keescook@chromium.org>
+From: Marco Elver <elver@google.com>
+Date: Thu, 15 Feb 2024 19:32:45 +0100
+Message-ID: <CANpmjNOf-+YH2qZPMQuLT5TigY4u41E+uw1XeqRMT8mHqFTn1w@mail.gmail.com>
+Subject: Re: [PATCH v7 3/3] overflow: Introduce wrapping_assign_add() and wrapping_assign_sub()
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>, Rasmus Villemoes <rasmus.villemoes@prevas.dk>, 
+	Eric Biggers <ebiggers@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-hardening@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2024-02-14 at 17:02 -0800, Chris Li wrote:
-> We discovered that 1% swap page fault is 100us+ while 50% of
-> the swap fault is under 20us.
->=20
-> Further investigation shows that a large portion of the time
-> spent in the free_swap_slots() function for the long tail case.
->=20
-> The percpu cache of swap slots is freed in a batch of 64 entries
-> inside free_swap_slots(). These cache entries are accumulated
-> from previous page faults, which may not be related to the current
-> process.
->=20
-> Doing the batch free in the page fault handler causes longer
-> tail latencies and penalizes the current process.
->=20
-> When the swap cache slot is full, schedule async free cached
-> swap slots in a work queue,=C2=A0before the next swap fault comes in.
-> If the next swap fault comes in very fast, before the async
-> free gets a chance to run. It will directly free all the swap
-> cache in the swap fault the same way as previously.
->=20
-> Testing:
->=20
-> Chun-Tse did some benchmark in chromebook, showing that
-> zram_wait_metrics improve about 15% with 80% and 95% confidence.
->=20
-> I recently ran some experiments on about 1000 Google production
-> machines. It shows swapin latency drops in the long tail
-> 100us - 500us bucket dramatically.
->=20
-> platform	(100-500us)	 	(0-100us)
-> A		1.12% -> 0.36%		98.47% -> 99.22%
-> B		0.65% -> 0.15%		98.96% -> 99.46%
-> C		0.61% -> 0.23%		98.96% -> 99.38%
->=20
-> Signed-off-by: Chris Li <chrisl@kernel.org>
+On Wed, 14 Feb 2024 at 20:46, Kees Cook <keescook@chromium.org> wrote:
+>
+> This allows replacements of the idioms "var += offset" and "var -=
+> offset" with the wrapping_assign_add() and wrapping_assign_sub() helpers
+> respectively. They will avoid wrap-around sanitizer instrumentation.
+>
+> Add to the selftests to validate behavior and lack of side-effects.
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+Reviewed-by: Marco Elver <elver@google.com>
 
 > ---
-> Changes in v4:
-> - Remove the sysfs interface file, according the feedback.
-> - Move the full condition test inside the spinlock.
-> - Link to v3: https://lore.kernel.org/r/20240213-async-free-v3-1-b89c3cc4=
-8384@kernel.org
->=20
-> Changes in v3:
-> - Address feedback from Tim Chen, direct free path will free all swap slo=
-ts.
-> - Add /sys/kernel/mm/swap/swap_slot_async_fee to enable async free. Defau=
-lt is off.
-> - Link to v2: https://lore.kernel.org/r/20240131-async-free-v2-1-525f03e0=
-7184@kernel.org
->=20
-> Changes in v2:
-> - Add description of the impact of time changing suggest by Ying.
-> - Remove create_workqueue() and use schedule_work()
-> - Link to v1: https://lore.kernel.org/r/20231221-async-free-v1-1-94b27799=
-2cb0@kernel.org
+> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: linux-hardening@vger.kernel.org
 > ---
->  include/linux/swap_slots.h |  1 +
->  mm/swap_slots.c            | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+)
->=20
-> diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
-> index 15adfb8c813a..67bc8fa30d63 100644
-> --- a/include/linux/swap_slots.h
-> +++ b/include/linux/swap_slots.h
-> @@ -19,6 +19,7 @@ struct swap_slots_cache {
->  	spinlock_t	free_lock;  /* protects slots_ret, n_ret */
->  	swp_entry_t	*slots_ret;
->  	int		n_ret;
-> +	struct work_struct async_free;
->  };
-> =20
->  void disable_swap_slots_cache_lock(void);
-> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
-> index 0bec1f705f8e..23dc04bce9ca 100644
-> --- a/mm/swap_slots.c
-> +++ b/mm/swap_slots.c
-> @@ -44,6 +44,7 @@ static DEFINE_MUTEX(swap_slots_cache_mutex);
->  static DEFINE_MUTEX(swap_slots_cache_enable_mutex);
-> =20
->  static void __drain_swap_slots_cache(unsigned int type);
-> +static void swapcache_async_free_entries(struct work_struct *data);
-> =20
->  #define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_e=
-nabled)
->  #define SLOTS_CACHE 0x1
-> @@ -149,6 +150,7 @@ static int alloc_swap_slot_cache(unsigned int cpu)
->  		spin_lock_init(&cache->free_lock);
->  		cache->lock_initialized =3D true;
->  	}
-> +	INIT_WORK(&cache->async_free, swapcache_async_free_entries);
->  	cache->nr =3D 0;
->  	cache->cur =3D 0;
->  	cache->n_ret =3D 0;
-> @@ -269,12 +271,27 @@ static int refill_swap_slots_cache(struct swap_slot=
-s_cache *cache)
->  	return cache->nr;
->  }
-> =20
-> +static void swapcache_async_free_entries(struct work_struct *data)
-> +{
-> +	struct swap_slots_cache *cache;
+>  include/linux/overflow.h | 32 ++++++++++++++++++++++++++++++
+>  lib/overflow_kunit.c     | 43 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 75 insertions(+)
+>
+> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+> index d3ff8e2bec29..dede374832c9 100644
+> --- a/include/linux/overflow.h
+> +++ b/include/linux/overflow.h
+> @@ -81,6 +81,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+>                 __val;                                          \
+>         })
+>
+> +/**
+> + * wrapping_assign_add() - Intentionally perform a wrapping increment assignment
+> + * @var: variable to be incremented
+> + * @offset: amount to add
+> + *
+> + * Increments @var by @offset with wrap-around. Returns the resulting
+> + * value of @var. Will not trip any wrap-around sanitizers.
+> + *
+> + * Returns the new value of @var.
+> + */
+> +#define wrapping_assign_add(var, offset)                               \
+> +       ({                                                              \
+> +               typeof(var) *__ptr = &(var);                            \
+> +               *__ptr = wrapping_add(typeof(var), *__ptr, offset);     \
+> +       })
 > +
-> +	cache =3D container_of(data, struct swap_slots_cache, async_free);
-> +	spin_lock_irq(&cache->free_lock);
-> +	/* Swap slots cache may be deactivated before acquiring lock */
-> +	if (cache->slots_ret && cache->n_ret) {
-> +		swapcache_free_entries(cache->slots_ret, cache->n_ret);
-> +		cache->n_ret =3D 0;
-> +	}
-> +	spin_unlock_irq(&cache->free_lock);
-> +}
+>  /**
+>   * check_sub_overflow() - Calculate subtraction with overflow checking
+>   * @a: minuend; value to subtract from
+> @@ -111,6 +127,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+>                 __val;                                          \
+>         })
+>
+> +/**
+> + * wrapping_assign_sub() - Intentionally perform a wrapping decrement assign
+> + * @var: variable to be decremented
+> + * @offset: amount to subtract
+> + *
+> + * Decrements @var by @offset with wrap-around. Returns the resulting
+> + * value of @var. Will not trip any wrap-around sanitizers.
+> + *
+> + * Returns the new value of @var.
+> + */
+> +#define wrapping_assign_sub(var, offset)                               \
+> +       ({                                                              \
+> +               typeof(var) *__ptr = &(var);                            \
+> +               *__ptr = wrapping_sub(typeof(var), *__ptr, offset);     \
+> +       })
 > +
->  void free_swap_slot(swp_entry_t entry)
->  {
->  	struct swap_slots_cache *cache;
-> =20
->  	cache =3D raw_cpu_ptr(&swp_slots);
->  	if (likely(use_swap_slot_cache && cache->slots_ret)) {
-> +		bool full;
->  		spin_lock_irq(&cache->free_lock);
->  		/* Swap slots cache may be deactivated before acquiring lock */
->  		if (!use_swap_slot_cache || !cache->slots_ret) {
-> @@ -292,7 +309,10 @@ void free_swap_slot(swp_entry_t entry)
->  			cache->n_ret =3D 0;
->  		}
->  		cache->slots_ret[cache->n_ret++] =3D entry;
-> +		full =3D cache->n_ret >=3D SWAP_SLOTS_CACHE_SIZE;
->  		spin_unlock_irq(&cache->free_lock);
-> +		if (full)
-> +			schedule_work(&cache->async_free);
->  	} else {
->  direct_free:
->  		swapcache_free_entries(&entry, 1);
->=20
-> ---
-> base-commit: eacce8189e28717da6f44ee492b7404c636ae0de
-> change-id: 20231216-async-free-bef392015432
->=20
-> Best regards,
+>  /**
+>   * check_mul_overflow() - Calculate multiplication with overflow checking
+>   * @a: first factor
+> diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
+> index d3fdb906d3fe..65e8a72a83bf 100644
+> --- a/lib/overflow_kunit.c
+> +++ b/lib/overflow_kunit.c
+[...]
+> +       /* wrapping_assign_{add,sub}() */                               \
+> +       check_self_op(fmt, assign_add, +=, p->a, p->b);                 \
+> +       check_self_op(fmt, assign_add, +=, p->b, p->a);                 \
+> +       check_self_op(fmt, assign_sub, -=, p->a, p->b);                 \
+>  }                                                                      \
 
+Merely a curiosity, and am not suggesting this for this patch: I
+wonder how much of this could be tested at compile-time. These are
+very primitive operations, so I suspect the compiler could either
+check these in a static_assert(), or if some of it isn't
+constexpr-friendly, after optimizations with a BUILD_BUG.
 
