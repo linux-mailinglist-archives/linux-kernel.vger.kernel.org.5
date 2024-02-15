@@ -1,174 +1,157 @@
-Return-Path: <linux-kernel+bounces-67563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE40856D82
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:18:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C14B0856D84
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AEA81F228B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:18:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45D1E28EAC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B30F13958A;
-	Thu, 15 Feb 2024 19:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8870B13A250;
+	Thu, 15 Feb 2024 19:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="D3+5OjrM"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04olkn2105.outbound.protection.outlook.com [40.92.73.105])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HohibbP7"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF38D12BEAF;
-	Thu, 15 Feb 2024 19:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.73.105
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708024680; cv=fail; b=ZN12qxSnCosLsaB7eNDI2QRd95uECYcBKlz7fFtN/iB3VNKufJpvPvFPXLZRdsKBga4i/XG6WlZDMQJaEs3NEUaJx3SVwhwh/KCuP+pGMrT0DNJNchtcRUTtii40Krm1q6TH+1fjWuk8GYgKv7gOTsOuMZ/VSii9sHNJcMig1k8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708024680; c=relaxed/simple;
-	bh=BUTp6l1OPP1f5Jngx5k43OXgqF4bQ2AvRAEboSnXzHw=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=nsDRic7EOSmoU0TPTouiWRSH0bDkBL7/APGyIyHbxy9nd1nG7vZxmI2eoLTODdcAJV4zLPatiMlHIvMcSLpHBJD3iX8uAqBDn18bvqqB/IWZWCPIlVitvJEjN2HOhzxujblREGG7j2UiSbYh7WX/oClaCGEYABQD4pKMgqrNa9w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=D3+5OjrM; arc=fail smtp.client-ip=40.92.73.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=So/jpOxhMeScO/KXLoov5jwTmvJbhylZlZB9ngcCE9VCwQcrA37sBii+C9Hk2GRPsXY38YV8ZeOjblNzra/0y/y5+32GW9zUZxrBC4/a654fUDP1GIa0zw/jJOy6B3yDZzPHq/RH2zI2TlYwyCgabLWsM+Yl1NVa7SAMyt9EcsLL1ovvmEz9p3+grXeH+lZTRvCX8V80DpVa9Q57H4kKKoo4nF6A167l7K+xgLhiqQIY0CZ6bSUHa+gVJyLoVZQ2/bHOyKLt51/7r77/ZtwNc6ONncdHTWP0n+nJMCE53W5xC3u8yJGLgOiCHSt94mYlhBuJ+dmyC2lvBc+BXfsCOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=clT4qt/TkJCdoqftxMl/h4sVvqEPAyVqVotivf4wvKU=;
- b=DZU50yl+2GfvXdUBZ3IJJxpC6qQwHAo5nGPG4PFfbyQYoOUS7zvDLAMrbl953MD8T6SoU9dXMXjEMv0R0VOGcRiLFvDFsTuHm/a8bcT39zJLPAevZF8btD5oQIRoMcl/g2IQ+B5G6LwiusiuLlNoO4zW1j2Wfz6E3Xb3+cCp/2lQE46p4NzhfIsrwWAuWJ3TnP33EswRzaSWRTUw5m5gZq9EZNeEo6vEpFWEM/lf7WC+FSZpEqUlqmpQrANuQ4KzCy9seB2hbZrDrvdGI1dEYYH9LkE8bQn1PCHUYgPosYSKbYmLY9Ch1UUGuBif6yyzI1WtLsDnwE1ys2iyqvjevg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=clT4qt/TkJCdoqftxMl/h4sVvqEPAyVqVotivf4wvKU=;
- b=D3+5OjrMqGQcFzM/WUvlE9+IXRsMCMQ36SYxUUPgAPYU7eH2fu97jpIPMVLPxliox9/Ridd8/P6SEq1yT/tnOvLvwzrgEzEeSgOsMLJ5tBr6M6WkrV/GKUZJDdi+U/6U1bB+/PTi1iz5B3v7yNn5i9R8os8wxdN4At9s5RsBwAnDVAiuGLNHAVQyTFUPU3zQrnvljNDXP+nNWf0ydVIF1svA+mocf6yqfrhoxhVv736adKqDhNMTQEJKZHb/Ka5cflOUdl7KJalerflKMUu5/CAaML3MYN9fQu4KMRmsPA+9QYdA5lHlpMlxO4CvwkXUO+hwP60jMbL+brNdKSc4nQ==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by AS8PR03MB7064.eurprd03.prod.outlook.com (2603:10a6:20b:29e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Thu, 15 Feb
- 2024 19:17:55 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::58d5:77b7:b985:3a18]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::58d5:77b7:b985:3a18%7]) with mapi id 15.20.7292.029; Thu, 15 Feb 2024
- 19:17:55 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ryabinin.a.a@gmail.com,
-	glider@google.com,
-	andreyknvl@gmail.com,
-	dvyukov@google.com,
-	vincenzo.frascino@arm.com,
-	corbet@lwn.net
-Cc: kasan-dev@googlegroups.com,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] kasan: Add documentation for CONFIG_KASAN_EXTRA_INFO
-Date: Thu, 15 Feb 2024 19:17:23 +0000
-Message-ID:
- <AM6PR03MB5848C52B871DA67455F0B2F2994D2@AM6PR03MB5848.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [7syb3p4o9NNOOt1pBPNJaw1LkI/E6JzT]
-X-ClientProxiedBy: LO4P123CA0627.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:294::15) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <20240215191723.35167-1-juntong.deng@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C131413956F
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708024686; cv=none; b=tnGshwLB1b4vBRb0zpNGLk3cbHbwysoy8C6rPcbBixzYDgpVGtkJumS82t2EANhR8U+fsiM5GC8Z6rk4lYwkvaIWxm47Mjl3HdSAJK9Ns0RDtSoJRaBSGglJuAZuywpbIylEN3QSmhTDCVtIOxLm2yPfBkghteNarAUsbyumG6g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708024686; c=relaxed/simple;
+	bh=o3id02ShTaAJP/qkPl05c1vDDNiTkgunU+ojuRRB+Nk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q2ETdp750bvrAeNHm0UwkYL+hv3c+ASgSOtWmkO7/YLIW91fTB/joRKbnHyuDeGzBWv4kzopy6EUk2YWzhrS8PPuSl/eSwVF+HZv1gqsqV989g54jz8t7AD4CNSRu5dZhof7zdquSqWYXxBNzYJsZqwAxOhCEzZswqKU4FlC8FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HohibbP7; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so1428972e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1708024682; x=1708629482; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KITCyNjL2swPBA9ngw1xqwUThE0CIbT81b+KJugWYzs=;
+        b=HohibbP7mBtJ0GZtU1qwGFCb0H4pFMoZtkl6cngQwpYZshPEynWs8JHESb1wvMoAgh
+         cjClGG5wvTLewfzfGOQ0f2gvDcLKjRtP3DFpmdl3Ei6m4HpiyrJAaWByLgHltnJVnBh8
+         pOEAmBqTgvIkNbJlLCSEPLvDOTu7AQIS2UXvE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708024682; x=1708629482;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KITCyNjL2swPBA9ngw1xqwUThE0CIbT81b+KJugWYzs=;
+        b=IPP8pobPrAa+Tf3jWNcRi4XYE+1235RaBa2jq6gBCyY+/PAPRJ0//oxqx12Ygg1L22
+         Z6rGLHqgkLoch/QfHWYuccqpjePlAK97vdhX3LpAjvwcjVfgXQF+smuHlCbVNhVYLmje
+         stWFFf6sSLIj2WkJ6tdO+Zv7m+3NdHZRqiH4TsZ+edz9vabQDvSDoBdysx5kd7fmHEwU
+         agDQgF6qKuIZfV7fAFzdnfZeCbS4cDGJ0aAuWMjUEfpgW7ayDSLUWNwPCeKqOtLmEik8
+         uPKH+6nE3Q4wu9E68jrlNLf0/uHi0UipAY+VxfEL3bipYPrUSskvIXansQqyUccW7Fel
+         crHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8UULQApu09o2W5byAMvnVoamKuqyKCGd78katblo6ae/QDZXp+Rij23uoD+g0u0ONi4wdZ+fWOob0+jejOmGqR0LdDwjhiZlzufXl
+X-Gm-Message-State: AOJu0YxfBjqhfL7qHvtlQKjPRmkRWApy2wPetk3i3Wz1ekarZfwPBow8
+	JNQgh7qZQG+8W32C8Sc15Ft/Au9gTRQZDhyv6pU1HOVwNiY7IO0msRbQyUPMHdFwjFH9kMdVCGW
+	lQgk=
+X-Google-Smtp-Source: AGHT+IH9rSGNatVnu6OzsnBVquogScvOTlsqtFxdyEYTppiYgsVaskYOo1mizpDhdAjtyaFKS8+e4w==
+X-Received: by 2002:ac2:446a:0:b0:511:879f:2a73 with SMTP id y10-20020ac2446a000000b00511879f2a73mr2011145lfl.7.1708024682533;
+        Thu, 15 Feb 2024 11:18:02 -0800 (PST)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id qo3-20020a170907874300b00a3da5bf6aa5sm619905ejc.211.2024.02.15.11.18.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 11:18:01 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so1636101a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:18:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWv7NWbB8jNPoWS2q5dFJMFMDvwBSE34XqxldZpe/sUG9D5tnIObIeI5x7E3XBvoz44YV+KxJ09kMkdYayuwLPYEMOo71ODxUGVHtjU
+X-Received: by 2002:aa7:c31a:0:b0:55f:d95c:923 with SMTP id
+ l26-20020aa7c31a000000b0055fd95c0923mr2173374edq.25.1708024681342; Thu, 15
+ Feb 2024 11:18:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AS8PR03MB7064:EE_
-X-MS-Office365-Filtering-Correlation-Id: b05df645-6d42-4c76-dd4e-08dc2e5ad044
-X-MS-Exchange-SLBlob-MailProps:
-	AlkLxVwsndmQJIsjirGokQVJ/lfvIDvZhrdTXLfBIxJFaJ+fkGENmPRMB/mYs8cowYRFp059SXgeymq7Ik6IUT4lbkOPrdRgOSqODAdpsDcWKhe5Fh5aRCPhY/icX48ePMLqki3vSrRuyH28r1mO0e/4SPzYJQL5TJt8vwxUnGg1oczeL6R8RkO7JjY2OODFEFtCJQO+m6eVl0sg6nf/gUBiYReETGebCEvJHQA1khRmIXSIFFq6qxPhsDU0oWhMAbFkLwa6c4X45YZRDSWALQfysRUlUZ306c1qSVaPslyz2u8YVJlH2C8oqXkXgKiPj3UgwwoZW0T8/k2SsqVNpF6vRXNRthgXcB4IR8AteQO7/jBqHFkSHf9ozfyD24RmeFBhOxMc7QWC3oGoiEFMiusHnuuEzGaEix9EsC08GMoaCZnWO9IAVOahWYqZ5jCBjEieBx9wwa7AlGl3a1F5ura5+l1JcA0csW3A3xXY5v7tNwXNlnw32+bJm5tvnuQh45brPfIOuRrsWgmNbPiEtUIrarDvAxte4NaegSHyysyywIz8WiqCPkmBFSXBy89Yw6zA8dJxTJFHOgj/a9zD17gdJkORm7HhrF+NVe9eJ+dtPfPvJU2zv8fHPI3l+61CNzrbIAjvQ6RdFq3qiLUQLubNDKfM+rqmfnjGYOr7ngl8CxSz0/F2v4eECIa6e19TCljpkYVDubSi+GM0Q3XNoiu5yTpRHdenj1ybn7RMMJ31ftccoDleDY04O+++YE2ofmgLG+r5US3NM87J+brTKCTT7QlAplEB
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YlTMErR6FDS9R1TOkNZ05GXB5XPOMaA/aDbNITeg+lqN1FnXf/HolqilEcUmoGedWhmbWYVNUI+yH83t8qaBXI/9x7frtGPuRqr6pp4Ppx/yCSRgMSBqWupGXV9ygQ89rlM+fcNqvhVFnKSXm0xB3sxcEfmT4yy9ufV/jYz+is2SyAVO8O75xoQOdjG4eMRJpq+SffaRIGRfMcCuqgYQMp9WWDuTp2yc2k0aza0sOE3WN8Oy+coTDCZ5RNd36EqMNft8eGXjpRiO2M7i6597WfgT31unf1HUbDeUoE1fe0pavvkTNsVvhDRl5F/czGcEYtWTDJFor4viOat67UtdqIBdRLXnT7fTEes8xAzZj9Bz4PFPO+4pE0UZavxmwLZBOfKxj1etyVqaNkAH45XuSs3DsdqfsEQ3tfgId9jmcFfeh7KQ5hNyboOTpQnPxZyY9sqf+IvNoEuCd7wvl+9QXh+PVgJ29boPTTyfzXcTD5PJVdYG68RtvAc8BPrYWoDSOsGFZD3PLknbZVcY4MJq0Qb2npLnFIIwI81Rpo8waX2VnS//lGa38GRkq0/WKf6v
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?9OzFaSswNo9G2D9txM7B7QtFuiUyLmwpsarR9TUcZ5sWYm4k0c8E4Ei9rd9S?=
- =?us-ascii?Q?nImPZ6P8zyKMykAG82p6NUnVmXfYhLzjElaU4swMWXkvCi8Pqpi9H5zJiqCJ?=
- =?us-ascii?Q?kAEU8pHQewJAsYWGf23YM9muhjt4DybOkrNSlev3WhUlR7YtnxV3yZ+JHI4B?=
- =?us-ascii?Q?XkQevuTjSz8zlvYw37Y518rAc345YrhLdn6si+W2atzRPPFSdcl0EqnEwqm5?=
- =?us-ascii?Q?JLs5QL1s27YoQvxDVGGvcj69Z4a2luZwmbXAcohAulmBtphQF881geD76VfD?=
- =?us-ascii?Q?Jqan/qQIuyOgRwvHboi03QddzQIt9eaC8t38eVTcaRZqZlPB1VgfDiKQrkoI?=
- =?us-ascii?Q?GEGrvV/E8XtKms+9gf12hf+6Z6wtma50m1fYJUZ7yjT++aVmuV/YQ1KAeG3A?=
- =?us-ascii?Q?s2AxAoX08OpQTn8K1WZmdKEIh6qVI0RT7oAfeS60iCGkcoLSOMoGPfbcza28?=
- =?us-ascii?Q?FK7HPI2W3oJqMnNYFHpFD/BUv/yUGTyFUz0UI+2p7NtOuSff8aH/I80OD9Ja?=
- =?us-ascii?Q?5GmEJLITPj3/wKnrrV3lylQ8mP089Ty0fVCBlLhrl83FXg/bP5egvyStYVkU?=
- =?us-ascii?Q?/SevW3p3hGA8Lf3Ew5eZU+nBu5i/JGIDmXtYGTbb3mjKbNvqezZyUQvwT4Z/?=
- =?us-ascii?Q?+fomMAiG+2pBfEJTZHw6D/bgnQHvK/AqB6RgCMgT6T+vLAGhHrEEfObmy+Px?=
- =?us-ascii?Q?yiw3q4uVMp0Uo9DcK4dpyrJSfGZO9Ztyedpovi/NSYtt7xUyRG+MiaDGKwa5?=
- =?us-ascii?Q?N6MQk+3n8tW2hyCrzcOdswZQWoexkPZ6Vh7KRG1WY8//jQMD6IydITBKsbCi?=
- =?us-ascii?Q?wYY24wcfalMZiIEplYD/WRcBQyqHefGvpOtAO9hSlet6qdAbo8zHAcnLlds7?=
- =?us-ascii?Q?FxmQ51YHqiMbbitH3ZRcLSOG2yy6TBEhUC6tfyvjjjN+spckjgbT2N4EJShL?=
- =?us-ascii?Q?fHw7yicnfBBkuZy/51/mPs7e7vE8VPbTqCEzplMOrZanxGs2FNs430Brmy3U?=
- =?us-ascii?Q?KJuURtKXNLSnmOgeQqUl5vD4eQEdA0AuMChjaipcO+qFXcwCOQ04IWRTCfHb?=
- =?us-ascii?Q?cblMck3Z3dPwAojTFXaIaSsc3GbF+RTQR9kQJc54hMJxq+9pERofF5PYXf2w?=
- =?us-ascii?Q?/1wqCaCaI9yMHqxajTiNSh2g0iXX0F5MTQrzhFbYVzrqvXRe1dGAPzEomtt9?=
- =?us-ascii?Q?FWygJWoM1+NRXu90FoasO9m4R/R9bpSyCs9MsXuuCZnsvGgW7CwJwgGCgZwA?=
- =?us-ascii?Q?DDmiEQl2X9o2qp96r2ko?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b05df645-6d42-4c76-dd4e-08dc2e5ad044
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 19:17:55.8135
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB7064
+References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+ <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
+ <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
+ <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
+ <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
+ <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
+ <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
+ <Zc3NvWhOK//UwyJe@tucnak> <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
+In-Reply-To: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 15 Feb 2024 11:17:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjLFrbAVq6bxjGk+cAuafRgW8-6fxjsWzdxngM-fy_cew@mail.gmail.com>
+Message-ID: <CAHk-=wjLFrbAVq6bxjGk+cAuafRgW8-6fxjsWzdxngM-fy_cew@mail.gmail.com>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
+ (and earlier)
+To: Jakub Jelinek <jakub@redhat.com>
+Cc: Uros Bizjak <ubizjak@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Sean Christopherson <seanjc@google.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-This patch adds CONFIG_KASAN_EXTRA_INFO introduction information to
-KASAN documentation.
+On Thu, 15 Feb 2024 at 10:25, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, 15 Feb 2024 at 00:39, Jakub Jelinek <jakub@redhat.com> wrote:
+> >
+> > Can it be guarded with
+> > #if GCC_VERSION < 140100
+>
+> Ack. I'll update the workaround to do that, and add the new and
+> improved bugzilla pointer.
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
-V1 -> V2: Fix run-on sentence.
+. and I also followed your suggestion to just consider any gcc-14
+snapshots as fixed. That seemed safe, considering that in practice the
+actual bug that Sean reported seems to not actually trigger with any
+gcc version 12.1+ as per your bisect (and my minimal testing).
 
- Documentation/dev-tools/kasan.rst | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+HOWEVER, when I was working through this, I noted that the *other*
+part of the workaround (the "missing volatile") doesn't seem to have
+been backported as aggressively.
 
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index a5a6dbe9029f..d7de44f5339d 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -277,6 +277,27 @@ traces point to places in code that interacted with the object but that are not
- directly present in the bad access stack trace. Currently, this includes
- call_rcu() and workqueue queuing.
- 
-+CONFIG_KASAN_EXTRA_INFO
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Enabling CONFIG_KASAN_EXTRA_INFO allows KASAN to record and report more
-+information. The extra information currently supported is the CPU number and
-+timestamp at allocation and free. More information can help find the cause of
-+the bug and correlate the error with other system events, at the cost of using
-+extra memory to record more information (more cost details in the help text of
-+CONFIG_KASAN_EXTRA_INFO).
-+
-+Here is the report with CONFIG_KASAN_EXTRA_INFO enabled (only the
-+different parts are shown)::
-+
-+    ==================================================================
-+    ...
-+    Allocated by task 134 on cpu 5 at 229.133855s:
-+    ...
-+    Freed by task 136 on cpu 3 at 230.199335s:
-+    ...
-+    ==================================================================
-+
- Implementation details
- ----------------------
- 
--- 
-2.39.2
+IOW, I find that "Mark asm goto with outputs as volatile" in the
+gcc-12 and gcc-13 branches, but not in gcc-11.
 
+So I did end up making the default "asm_goto_output()" macro always
+use "asm volatile goto()", so that we don't have to worry about the
+other gcc issue.
+
+End result: the extra empty asm barrier is now dependent on gcc
+version in my tree, but the manual addition of 'volatile' is
+unconditional.
+
+Because it looks to me like gcc-11.5 will have your fix for the pseudo
+ordering, but not Andrew Pinski's fix for missing a volatile.
+
+Anyway, since the version dependencies were complex enough, I ended up
+going with putting that logic in our Kconfig files, rather than making
+the gcc-specific header file an ugly mess of #if's.
+
+Our Kconfig files are pretty much designed for having complicated
+configuration dependencies, so it ends up being quite natural there:
+
+  config GCC_ASM_GOTO_OUTPUT_WORKAROUND
+        bool
+        depends on CC_IS_GCC && CC_HAS_ASM_GOTO_OUTPUT
+        # Fixed in GCC 14.1, 13.3, 12.4 and 11.5
+        # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113921
+        default y if GCC_VERSION < 110500
+        default y if GCC_VERSION >= 120000 && GCC_VERSION < 120400
+        default y if GCC_VERSION >= 130000 && GCC_VERSION < 130300
+
+and having those kinds of horrid expressions as preprocessor code
+included in every single compilation unit seemed just nasty.
+
+              Linus
 
