@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-67807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095C4857153
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:16:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFDC857158
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC14D2810B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:16:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABF7BB245DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E10A14830D;
-	Thu, 15 Feb 2024 23:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715091487DE;
+	Thu, 15 Feb 2024 23:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kJCS3n4D"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Kg34Uy9J"
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1410D1474A4;
-	Thu, 15 Feb 2024 23:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00ED81474C4;
+	Thu, 15 Feb 2024 23:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708038878; cv=none; b=Mlx/ego0ZV4SKJfUUHL53VO/0gP3KSLVT9ajUZnkMQXSWCwYIbVrYGNdxiKP8tH/dd3svQwPgyrPO/74RPQn6U3D/9cMKhInFUK90Q30P1cfxp9epOssyLPKhJuh2bStVncw138AcvODIoBoxOvwPmr/pEqYe8SJ6jVE1FXlkko=
+	t=1708038879; cv=none; b=qLAjBmL/AK8AM4r7l0SZva9OJnXnzgCjEZahkalm5TdwGeDIbVKD/VBfgPWU8U7ajzKgp5LWWgGkjXQvfDoku0dh2MlqhVD0MPt0dRBh/Qke9lX4F6sDAD8jyCrTSWiXTJaEuO/zS5i94MgjyEHjGlCyq53aI9ysg/p3B9JVcvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708038878; c=relaxed/simple;
-	bh=6qLIPqSabW6RW0OWsYRTTEWkOu71GbSE4Aw7FmVAmlc=;
+	s=arc-20240116; t=1708038879; c=relaxed/simple;
+	bh=+wrKDJnCE2zkQQ/ejXAW3OkteKB8kBUl4MJe6OLpHRw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RoKz6NSRPlK43T7iet7ITFdMLBy8Yrw0vJsEqsRvWzJLkXNq4IVL94Bya6laYddxyEgxTcbzboQKQktIOMLVaYGMPqwBudre/0ybBeyu5Ip6ayDTvDushlxjkJMF90kxmH71irykLvEWNdwND6lNskMMQbLJulFjqMbed7eg/oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kJCS3n4D; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=X4JKi00hp/Sai44027UU4M/hH3c2dlmQNcpmQv80D2V4lBwkG12ql6t4ThIiNr6ih7FVmT2qmptJ7mrSb5L/T1XGRHGSTA8mGo6hZ6u6UyPvlfpiFrA0Rqmfv6GhTPTDg+KC+I3hXqOUp8gvLp75rTXx7l/Bk4VBDJ5+cpDI1Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Kg34Uy9J; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
 Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FMkmQI018163;
-	Thu, 15 Feb 2024 23:14:31 GMT
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FMl39w018886;
+	Thu, 15 Feb 2024 23:14:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=gXqWIgZmXlBKbikHv5ne67VayakspN2QeljIzb45JEc=;
- b=kJCS3n4DMUtvYkKSf3Nfc0RPaE/oiv/K6CNuCsnMqQQqyeHiA9Bg1FQY3JVHleg0K3my
- k9TiOl4PGPUdxCI7y/Utg5Zi2Da8dQTnXgOEXFORq1eAWujBqrvmE+HrLm+e4xP1Wyge
- kLZFCH8sNQXKLYpXrAVYeb/G7STL36uPb2muF/elXu4jDYVuYYckiOaVxTJoAbseRvhv
- eaXrzPD8Rz+KIh3bkH7rqFacXw3e1fAjTdqI3Nqp3vYIJwJBcz6Vn0IkXtFABY3iicXr
- N/D4bhzLAoQOaZ7abzsjLat+EXBqsZxq960JL0Exwhrcw3uUEkySw0Djxm3ebWrp2Kfn Nw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9ugch28a-1
+ bh=fvkw34qL4rk0HGg2B+0ywRlkEipg9FXOfBEaoEyELT4=;
+ b=Kg34Uy9Joo0QI1QdShFbxf+ZAfdDkXCtNEZMfNsj0+TsaGxWKLuNEBSp4oLfwtUA4SUF
+ ebKzw5hJkcPorEWBaq06tl6hv+T9H6f93fBDrU22v8IxavQFO/twE4NBPmsKbMYpTf1t
+ oabgRhUXvV10T1jIvDP8llvcfGJ8SSRJaRmNhDxEbfO6VD0VbBhpdHMMpCiAYnbbtZT6
+ 9OpTwE8JV5Q9dZL4AXgSFkx82YcOhuNa1gvt5davYoh4YxNAsxMMxCfecIbFHklDssSY
+ i8i+tNqvh5gBYItvbDjoDnPGoh79vyeUUZVAS48LGVWmlV6h0xYfHrcXoKf/fDhWIplF iw== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9ugch28s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 23:14:32 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FLB5H4010083;
+	Thu, 15 Feb 2024 23:14:31 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npm7h4u-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 15 Feb 2024 23:14:31 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FLHWEQ009935;
-	Thu, 15 Feb 2024 23:14:30 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p637dv8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 23:14:30 +0000
 Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FNER0V14877348
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FNEStd20709930
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 23:14:30 GMT
+	Thu, 15 Feb 2024 23:14:31 GMT
 Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CE3E458045;
-	Thu, 15 Feb 2024 23:14:27 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id AB69E58054;
+	Thu, 15 Feb 2024 23:14:28 +0000 (GMT)
 Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2A14358050;
+	by IMSVA (Postfix) with ESMTP id F1C6058050;
 	Thu, 15 Feb 2024 23:14:27 +0000 (GMT)
 Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
 	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
@@ -71,9 +71,9 @@ To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
         herbert@gondor.apana.org.au, davem@davemloft.net
 Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v2 09/14] crypto: ecdh - Use properly formatted digits to check for valid key
-Date: Thu, 15 Feb 2024 18:14:08 -0500
-Message-ID: <20240215231414.3857320-10-stefanb@linux.ibm.com>
+Subject: [PATCH v2 10/14] crypto: ecc - Implement ecc_digits_to_bytes to convert digits to byte array
+Date: Thu, 15 Feb 2024 18:14:09 -0500
+Message-ID: <20240215231414.3857320-11-stefanb@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240215231414.3857320-1-stefanb@linux.ibm.com>
 References: <20240215231414.3857320-1-stefanb@linux.ibm.com>
@@ -85,8 +85,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: COvWtIQGoIFyGOrtHwxszZih0RV0XK8_
-X-Proofpoint-GUID: COvWtIQGoIFyGOrtHwxszZih0RV0XK8_
+X-Proofpoint-ORIG-GUID: cTTdaRoLdlx0xsX8gtPrGlw2PQ6VnaQg
+X-Proofpoint-GUID: cTTdaRoLdlx0xsX8gtPrGlw2PQ6VnaQg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-15_22,2024-02-14_01,2023-05-22_02
@@ -96,49 +96,43 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malware
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2402150181
 
-ecc_is_key_valid expects a key with the most significant digit in the last
-entry of the digit array. Currently a reverse key is passed to
-ecc_is_key_valid that then passes the rather simple test checking whether
-the private key is in range [2, n-3]. For all current ecdh-supported
-curves (NIST P192/256/384) the 'n' parameter is a rather large number,
-therefore easily passing this test. Fix the format of the digit by using
-ecc_digits_from_bytes to create a temporary private key and pass it to
-the test function. Keep the swapped key in ctx->private_key.
+Implement ecc_digits_to_bytes to convert an array of digits into an
+nbytes-sized byte array.
 
 Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 ---
- crypto/ecdh.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ include/crypto/internal/ecc.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/crypto/ecdh.c b/crypto/ecdh.c
-index 80afee3234fb..f187365db7b6 100644
---- a/crypto/ecdh.c
-+++ b/crypto/ecdh.c
-@@ -27,6 +27,8 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 			   unsigned int len)
- {
- 	struct ecdh_ctx *ctx = ecdh_get_ctx(tfm);
-+	u64 priv[ECC_MAX_DIGITS];
-+	unsigned int nbytes;
- 	struct ecdh params;
+diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h
+index b8ca5023b3b5..6229aa3f3218 100644
+--- a/include/crypto/internal/ecc.h
++++ b/include/crypto/internal/ecc.h
+@@ -75,6 +75,24 @@ static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
+ 	ecc_swap_digits(tmp, out, ndigits);
+ }
  
- 	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
-@@ -37,10 +39,13 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 		return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
- 				       ctx->private_key);
- 
--	memcpy(ctx->private_key, params.key, params.key_size);
-+	nbytes = ctx->ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
++/**
++ * ecc_digits_to_bytes() - Copy digits into a byte array of size nbytes
++ * @in:      Input digits array
++ * @ndigits: Number of digits in input digits array
++ * @out:     Output byte array
++ * @nbytes:  Number of bytes to copy into byte array
++ */
++static inline void ecc_digits_to_bytes(const u64 *in, unsigned int ndigits,
++				       u8 *out, unsigned int nbytes)
++{
++	unsigned int sz = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
++	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
++	unsigned int o = sz - nbytes;
 +
-+	memcpy(ctx->private_key, params.key, nbytes);
-+	ecc_swap_digits(ctx->private_key, priv, ctx->ndigits);
- 
- 	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
--			     ctx->private_key, params.key_size) < 0) {
-+			     priv, params.key_size) < 0) {
- 		memzero_explicit(ctx->private_key, params.key_size);
- 		return -EINVAL;
- 	}
++	ecc_swap_digits(in, (u64 *)tmp, ndigits);
++	memcpy(out, &tmp[o], nbytes);
++}
++
+ /**
+  * ecc_is_key_valid() - Validate a given ECDH private key
+  *
 -- 
 2.43.0
 
