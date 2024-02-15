@@ -1,116 +1,179 @@
-Return-Path: <linux-kernel+bounces-67105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB96A856685
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 496FB856688
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60AB71F27AFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27BB1F27C78
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602D4135A42;
-	Thu, 15 Feb 2024 14:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12F7132496;
+	Thu, 15 Feb 2024 14:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vDggIoqU";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Gl1Fw7AW"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ECIszJOQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137BA1350C8
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC43A132487;
+	Thu, 15 Feb 2024 14:48:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008408; cv=none; b=CB7oq3T9KwHhYxBQHvCwG1FPXu2b8TTzkuciW5xBPmFXfo30auQ/Gahu2NGIjT0AF+upWlsDufYIwtZR6FKSeTjuYIONEUNGO54aRn3YGDQGdsEgiT2rn6kT1CgiLWfo8xQoAQ2AJSHKU+lGzVkm5au5cf+XaN8xmT99cH8X+e8=
+	t=1708008489; cv=none; b=Kxsy9G5pE7oMRXmynqjYX/ylbv78Vl3zNCqh1kmm9Ei7lfscZ+NY3HEnx+K2LSUHDk3ZYPiSGtJiY3Iu8sD75cnVDK5/ldMm9gTXGjD5K7uShoKGDRTocA+s9m0z7N3He/zWC8rWckZ6TDDEhbMFpTBB3/EDQE+pEZQf8/IFUbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008408; c=relaxed/simple;
-	bh=EHRIQ+Pwu96xPVv3sgr0n4iDrs21tFEsr1wYg+lkbr0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Z7JHQz5Wguh7xqbJ1Bf/37bh3GLYVd9zTNXyIcqOrkVrHH9jLqvV+NnSZWgrZJmJ7jYWh9n1n0aN8e0vYbccrpaoZnOyaMe5vENdd+eL1XrAnFqvU6Y1QIJloydQ//RmJEbcO2zVwkV8CGOCRZKD3Ux5wY280TQpqwIx9Shpels=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vDggIoqU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Gl1Fw7AW; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708008404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r3UcZ+n3SU4Ya49g3SiL14FXqOPCAdpR0yWfzakXsOk=;
-	b=vDggIoqUWoAP/2TM8w9iPe8+nYmUGn8PnYLDoByWiKUBZx4mf0X+aM2ZtZFMoHdzNKpKmG
-	GcBd32OTk5vlB63Fkr71QP0XoMgkcwUlJJu9O1gKtMfuW7XXOws8A2iyzyvAigeDPoeA85
-	jec6H9iEfxaj3HPf7ZnwyuTYySfDqGYKMKVht1xXrIYmyFcnQ2QQ1+ekuyxK/O6uEYCqt5
-	4YldK/hBLK1GjB/TF+V7ZvAuj22RtkhcfMlYLWZCnK3/CFIttzlbkZJKFrqoz9+Y0ChoRk
-	JGLwygjFgUi2CnorDIST6Gq6yIPD8FflQ+MWjQVN5rb+9xVUehoJAm5JCtvqwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708008404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r3UcZ+n3SU4Ya49g3SiL14FXqOPCAdpR0yWfzakXsOk=;
-	b=Gl1Fw7AW41XM0MqKYMiPnMIudLGD1oWP+RCO0o1aEMj1LyROSWT5SH5wRRHVSFcqRBb7px
-	ndleIR/QXrLHmdCA==
-To: Ulf Hansson <ulf.hansson@linaro.org>, Daniel Lezcano
- <daniel.lezcano@linaro.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Daniel Bristot de Oliveira
- <bristot@redhat.com>
-Subject: Re: [RFD] Remove irq_timings
-In-Reply-To: <CAPDyKFoynM_gN=tzsWnE_xAgmy6R8Hie-_yO5zoJTjwNjR38Hg@mail.gmail.com>
-References: <875xyqg2yr.ffs@tglx>
- <79fadb9b-c4c8-4727-b812-7e519556cce1@linaro.org>
- <CAPDyKFoynM_gN=tzsWnE_xAgmy6R8Hie-_yO5zoJTjwNjR38Hg@mail.gmail.com>
-Date: Thu, 15 Feb 2024 15:46:44 +0100
-Message-ID: <87jzn5eqej.ffs@tglx>
+	s=arc-20240116; t=1708008489; c=relaxed/simple;
+	bh=0+eV2z62wC4M1HPoT2S+05ApoAOXW0O0QiIlxgy+rog=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pk1S2GbZcuB2aTTAz89FfBp+fvACRvkDP6d3ADnIO3bt0mqJg+O3hDq4tPR26fydpHQsSgwzV3LRPo+hmhIjiinni1A1rdWvKhpAxPczHNCqI56lfLcYcurtjiXoZB1qvR/fQE38KnYeu3Sau03JFQAbmEiGYdqMmlmOGrTs874=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ECIszJOQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C255C43390;
+	Thu, 15 Feb 2024 14:48:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708008488;
+	bh=0+eV2z62wC4M1HPoT2S+05ApoAOXW0O0QiIlxgy+rog=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ECIszJOQGoQ2anjbO4YmfzCJzHkllqvxa+8pVFJXr0jERLsNeBO/x6IXesUGya4IS
+	 vcAGz2L4L8JnS8CEFBkxqxu77+/Xwfy0ZrhzpADod4tkSt3TZqog28Fa7GlBPsCewj
+	 nJ8RGQRKYqghzEMiEtYzdYorMHitXDhbdboJQhVLfKOAQRmbrkfenEWAVohDJ2Ugj/
+	 CzsqGUoacwiG0+dMTg0HIJziyvrZHxYxv3Mtan2IpROHW+WpwsRVhtFvDDF9G/shmx
+	 sNFS/JU6oCOK3kEqrKV89yAXk7yQ0IoxnJJaLeMw63x/9ZNWmtsO6OQ9lE+boAKHeu
+	 Uah81SXH9lbrQ==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511a4a1c497so1020728e87.3;
+        Thu, 15 Feb 2024 06:48:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXSMoxJhe3bRPfzy/l+AXqU/fa/S8Mq2xknfNQmV0adDuNBGj6pHFE1pxadD4AymVdj+41+mq+wtAmMz0oledNdz1uenF/jhERgqi+wbZgMvDKxyvWqyB5wEjGBuX/FbV4tWzIoQf44
+X-Gm-Message-State: AOJu0YzsAIvVmwA0RfygjzvyxZZdqqdExj5mX5Zit3HwBbEuKF+JO/k+
+	KLebyiQkXpDxFK5v0aOK69luPbhe3Ay4ZM91DZ9SZ1nVFRMqciYRICWIKeRbUWbnPfK0XeDWzUm
+	LLeTE2nTVngkBiP2aavqLJaAdU4o=
+X-Google-Smtp-Source: AGHT+IEZw0KmJnT1uU8Ft00FTsupt30pFi4+zk6kJV4/CX34SXviVJUOot0Yh2Y2rwLBIufyF9SkYEGj4qQU6pesW0g=
+X-Received: by 2002:a05:6512:601:b0:511:ae21:97ab with SMTP id
+ b1-20020a056512060100b00511ae2197abmr1705357lfe.25.1708008486587; Thu, 15 Feb
+ 2024 06:48:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240109034755.100555-1-Smita.KoralahalliChannabasappa@amd.com> <20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
+In-Reply-To: <20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 15 Feb 2024 15:47:54 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXESytb-wD6ybRqrA+D0sOnfSRyFVLxEOyok7OqPofjCGw@mail.gmail.com>
+Message-ID: <CAMj1kXESytb-wD6ybRqrA+D0sOnfSRyFVLxEOyok7OqPofjCGw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] efi/cper, cxl: Make definitions and structures global
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc: linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-cxl@vger.kernel.org, Alison Schofield <alison.schofield@intel.com>, 
+	Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+	Yazen Ghannam <yazen.ghannam@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 15 2024 at 12:23, Ulf Hansson wrote:
-> On Wed, 14 Feb 2024 at 22:39, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->> On 14/02/2024 22:17, Thomas Gleixner wrote:
->> > Daniel!
->> >
->> > It's 7 years now that we merged irq timings into the kernel, but we
->> > still have zero users for this.
+On Tue, 9 Jan 2024 at 04:48, Smita Koralahalli
+<Smita.KoralahalliChannabasappa@amd.com> wrote:
 >
-> Wow, is it really 7 years since then. :-)
+> In preparation to add tracepoint support, move protocol error UUID
+> definition to a common location and make CXL RAS capability struct
+> global for use across different modules.
 >
->> >
->> > I'm tempted to declare this experiment failed and remove the whole thing
->> > for good.
->> >
->> > Comments?
->>
->> I worked on an irq cpuidle governor which had better results than the
->> menu governor and equal than the teo governor. But I never succeed to
->> have better results without putting some arbitrary when computing the
->> next event.
->>
->> At one moment, Daniel Bristot de Oliveira (Cc'ed) was thinking to may be
->> use it for the deadline scheduler.
->>
->> Ulf (Cc'ed) may be has a plan for the next event for the CPU cluster.
->
-> Yes, I still have that plan, but haven't been able to run some real tests yet.
->
->>
->> But if no one has plan to use it, there is no good reason to keep it and
->> I'm fine if we remove it.
->
-> Besides that the code isn't really used at the moment, is it also
-> blocking us from doing some cleanup/refactoring or other related code?
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 
-No. I just stumbled over it (again) and wondered whether it is ever
-going to be used or not. If not there is no point to carry dead weight
-around, but there is no hurry.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-Thanks,
-
-        tglx
-
+> ---
+> v2:
+>         No change.
+> ---
+>  drivers/firmware/efi/cper_cxl.c | 11 -----------
+>  drivers/firmware/efi/cper_cxl.h |  7 ++-----
+>  include/linux/cper.h            |  4 ++++
+>  include/linux/cxl-event.h       | 11 +++++++++++
+>  4 files changed, 17 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
+> index a55771b99a97..4fd8d783993e 100644
+> --- a/drivers/firmware/efi/cper_cxl.c
+> +++ b/drivers/firmware/efi/cper_cxl.c
+> @@ -18,17 +18,6 @@
+>  #define PROT_ERR_VALID_DVSEC                   BIT_ULL(5)
+>  #define PROT_ERR_VALID_ERROR_LOG               BIT_ULL(6)
+>
+> -/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
+> -struct cxl_ras_capability_regs {
+> -       u32 uncor_status;
+> -       u32 uncor_mask;
+> -       u32 uncor_severity;
+> -       u32 cor_status;
+> -       u32 cor_mask;
+> -       u32 cap_control;
+> -       u32 header_log[16];
+> -};
+> -
+>  static const char * const prot_err_agent_type_strs[] = {
+>         "Restricted CXL Device",
+>         "Restricted CXL Host Downstream Port",
+> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
+> index 86bfcf7909ec..6f8c00495708 100644
+> --- a/drivers/firmware/efi/cper_cxl.h
+> +++ b/drivers/firmware/efi/cper_cxl.h
+> @@ -7,14 +7,11 @@
+>   * Author: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+>   */
+>
+> +#include <linux/cxl-event.h>
+> +
+>  #ifndef LINUX_CPER_CXL_H
+>  #define LINUX_CPER_CXL_H
+>
+> -/* CXL Protocol Error Section */
+> -#define CPER_SEC_CXL_PROT_ERR                                          \
+> -       GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,   \
+> -                 0x4B, 0x77, 0x10, 0x48)
+> -
+>  #pragma pack(1)
+>
+>  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
+> diff --git a/include/linux/cper.h b/include/linux/cper.h
+> index c1a7dc325121..2cbf0a93785a 100644
+> --- a/include/linux/cper.h
+> +++ b/include/linux/cper.h
+> @@ -89,6 +89,10 @@ enum {
+>  #define CPER_NOTIFY_DMAR                                               \
+>         GUID_INIT(0x667DD791, 0xC6B3, 0x4c27, 0x8A, 0x6B, 0x0F, 0x8E,   \
+>                   0x72, 0x2D, 0xEB, 0x41)
+> +/* CXL Protocol Error Section */
+> +#define CPER_SEC_CXL_PROT_ERR                                          \
+> +       GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,   \
+> +                 0x4B, 0x77, 0x10, 0x48)
+>
+>  /*
+>   * Flags bits definitions for flags in struct cper_record_header
+> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> index 6ce839c59749..3a41dd5723e8 100644
+> --- a/include/linux/cxl-event.h
+> +++ b/include/linux/cxl-event.h
+> @@ -141,6 +141,17 @@ struct cxl_cper_event_rec {
+>         union cxl_event event;
+>  } __packed;
+>
+> +/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
+> +struct cxl_ras_capability_regs {
+> +       u32 uncor_status;
+> +       u32 uncor_mask;
+> +       u32 uncor_severity;
+> +       u32 cor_status;
+> +       u32 cor_mask;
+> +       u32 cap_control;
+> +       u32 header_log[16];
+> +};
+> +
+>  struct cxl_cper_event_info {
+>         struct cxl_cper_event_rec rec;
+>  };
+> --
+> 2.17.1
+>
+>
 
