@@ -1,388 +1,289 @@
-Return-Path: <linux-kernel+bounces-67535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584BF856D14
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:47:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8969856D29
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:55:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7862D1C23089
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:47:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C61ACB21D1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F9E139560;
-	Thu, 15 Feb 2024 18:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059731386C6;
+	Thu, 15 Feb 2024 18:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M2G2D+2g"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XkKcG2r3"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29D212DD9A;
-	Thu, 15 Feb 2024 18:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12ED21384B0;
+	Thu, 15 Feb 2024 18:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022857; cv=none; b=hGNrP3dcLhjdYiN7ICwkWjfVxWeQvEfimDYTRaEJtruSt/vq18Rzm+NObB59FA1iZlKr2FYcqa6yyEuqjea//I2VEL6bAxyegkg+eF55ApwF0SbqxguWkLvObxhYin4+xKUUeyLtcbfrAwBIOlbGQpaZsgjPiJUt5M5NKXI294M=
+	t=1708022967; cv=none; b=qZWreC07MYKghgab+VSfRYqPjdF18tOHkL8pqltarYGgCrzdJquSWn4raLDkq55nxVz6Smrh5ndvLv4Qh5O92IJ9wG3D3AkMQhX/X4+l28WxRk6ut416uCzze9vXCCMygn+WUDinOZiMI6rOqSE2pwRyyFCrJPUhLplWkoU5Wt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022857; c=relaxed/simple;
-	bh=0xDOg2u0V8uxNM+kqNyuZBvObXbz+y7zI30XTxDevLI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YIuuCnK+PJnPc8Nh1sg47YGk4uUiF38mibqJUlwSwGVv+fqvDsLDr/O/tmX/P0nU5Eqz4YkeuYOynPdcv+hcmbobPAgZHFWhPIMNOvZ67aHGopveZzHIBgdSgMtx3SRPJGBHDHGy8Tyn+f1qq5UqtZ3ofmkIPZliB9djHJgm3CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M2G2D+2g; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708022855; x=1739558855;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=0xDOg2u0V8uxNM+kqNyuZBvObXbz+y7zI30XTxDevLI=;
-  b=M2G2D+2gfEqsj8S58uuG0Q9EIZJceqfqYaeYNLBK92DydgFRqDbHjC3+
-   H/DwG6k66lPi49qgUHU8/p3ThEsIDDaKZkvPsZHgDoiCS7xdsc8sfSpXt
-   5rVdqFNBmek0sbVbNE70DZ2ezGysZksU0lRYEcVFhGbaitKKGm7GQsTWs
-   LvK1eis84GGdbx35qpfY8ZJjGBIcaYnHAYCqrwDkenTak8CMoCUiEk30i
-   iOC3J7TiZVYKcOaHmuvnsmrDdLbTJM/6rfkCMj1/KNgeOi4fFCOdCe9wG
-   gmieS6Un3DVc2YuXfuGaBYIPVA922Zs89/FcbNRQpRyNGXp9Ap12DB7jI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="19649948"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="19649948"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:47:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="826449228"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="826449228"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 15 Feb 2024 10:47:27 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 15 Feb 2024 20:47:26 +0200
-Date: Thu, 15 Feb 2024 20:47:26 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-	amd-gfx@lists.freedesktop.org,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
-	linux-renesas-soc@vger.kernel.org,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>,
-	Mark Pearson <mpearson-lenovo@squebb.ca>
-Subject: Re: [PATCH v6 3/5] drm: Add support to get EDID from ACPI
-Message-ID: <Zc5cPjpNZydqKeS8@intel.com>
-References: <20240214215756.6530-1-mario.limonciello@amd.com>
- <20240214215756.6530-4-mario.limonciello@amd.com>
- <Zc1JEg5mC0ww_BeU@intel.com>
- <9831e9bc-d55f-4a72-950a-684a757af59c@amd.com>
+	s=arc-20240116; t=1708022967; c=relaxed/simple;
+	bh=n+/caBm2MEV+X8kdsWDICyVxMjQFRoQwKdK3Leyl3PA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dEvjgW0M2YTgjpfpFaXO8WggdTU1Qyo3Qt9DLnHuGTjPCcJtTlvCuwx0oCbRTYosVLLVWS3Wzgl9f6XSSPjm6s1u1AzxJSOcY9BNFLhSc1ZMBaD/V1OUBg8ceDZ3ZwDXvc97Q2/K9qZKdH4dQOvSnpC5+4VSIaefPmJcC18a0kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XkKcG2r3; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d10f52e7d8so13287741fa.3;
+        Thu, 15 Feb 2024 10:49:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708022963; x=1708627763; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mjmxs1/XFDuKA1CW6hbrEvgCagLuf21iVpMkEqqePsA=;
+        b=XkKcG2r3V1g8aDLy+ENxK9H9cT+MUJhdWrfdgRJ2mr98+Dr7uszGzioWj2wMC/mXtA
+         oyyeL4rj1Y4wiPfXsHZecDVL5BVhGi8/wsJvHfgn1ZIU+uEJNb5+1WUTK6/bW0UBeb7B
+         x87aejwWm52ivRyr2ib9NLnp3cWNXbsgtUokEazqQb82eGBcA/4UcoEkXCX3athQMoFT
+         y3IX2VLgaic8MyX3JBGDrPC9ydiab3mcYva7y3jPeLPZhH+O9jBDoNqsep7n9dzVCkV8
+         4CKJPP8YJq/wOopZUvcQoS+9/AXCqbTSbB0xZ3rbiOgHM6hxT9Cq2koxJ/5bBBxhwhIv
+         SfKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708022963; x=1708627763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mjmxs1/XFDuKA1CW6hbrEvgCagLuf21iVpMkEqqePsA=;
+        b=QSMRcph06N0uAePmsveKtt5+bxf/BT74XqXWohh4DrkD/O0i3eveY4SWltUlAJU6iE
+         RJXNAjDuElyjE47I7wZU+F8xKSZnX17G+easrLR+hg0Y8i9zoI+B/8cpLoONnEjC3LaF
+         ywEKcKX7efRdvLyNexIeXUmVsq/hjlxUd4yFnrbtTnX2q+sPZEXn804uqTea5hsbLEO9
+         pjUk1WOe4WpOjCNGUHdtIYlflerXFAqb0YgVKTXY9OcbAP+21w6Zaof/x3mUY72/p2bY
+         SHVHuhp1X0Xjb/kDQEslJqD+wBL8SrSY9OVR6f/7GRHvpFWYapgnv7DOKHVUGraeafK/
+         YZUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlNdtFXHwg2KuEQGMoacKfIiNFxQtN9ypajSKjREbk9hg6tMCfUcMWk8oKjgaFHFK3KpXtkF2P2E/TRxFiRdF+xMDPUPaYNpL7h76vCfhdIBZ9CyVXB1VxO72WqlBgKEagzJIN
+X-Gm-Message-State: AOJu0Yx6COLa6rx/y1ew09EJiHeCOrqV85Sn8Ft+8/whQK5/Lb5JV/OA
+	9SIN8PUH6wAnzhXXu9w6LY7qlUbTGPj9Z2HoDv0KCn0eZNGDdyIaQQE7lBBtevUmxxYWBs7X3us
+	qkQezRHCFjZT6kquNx3mOz5fu0M4=
+X-Google-Smtp-Source: AGHT+IGack4lWALoh4qTHm0VjSJHKO55NNraNbak/+vWzwZN8buGh6WtX8PXLzJGtR+arpXe5iDmxgFjm6KIbx9RgDI=
+X-Received: by 2002:a2e:a706:0:b0:2d0:b646:3bc9 with SMTP id
+ s6-20020a2ea706000000b002d0b6463bc9mr1656235lje.23.1708022962756; Thu, 15 Feb
+ 2024 10:49:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9831e9bc-d55f-4a72-950a-684a757af59c@amd.com>
-X-Patchwork-Hint: comment
+References: <20240206182559.32264-1-ryncsn@gmail.com> <1d259a51-46e6-4d3b-9455-38dbcc17b168@redhat.com>
+In-Reply-To: <1d259a51-46e6-4d3b-9455-38dbcc17b168@redhat.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Fri, 16 Feb 2024 02:49:04 +0800
+Message-ID: <CAMgjq7Cy3njsQzGi5Wa_JaM4NaO4eDGO5D8cY+KEB0ERd_JrGw@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>, 
+	Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>, 
+	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 12:20:56PM -0600, Mario Limonciello wrote:
-> On 2/14/2024 17:13, Ville Syrjälä wrote:
-> > On Wed, Feb 14, 2024 at 03:57:54PM -0600, Mario Limonciello wrote:
-> >> Some manufacturers have intentionally put an EDID that differs from
-> >> the EDID on the internal panel on laptops.  Drivers that prefer to
-> >> fetch this EDID can set a bit on the drm_connector to indicate that
-> >> the DRM EDID helpers should try to fetch it and it is preferred if
-> >> it's present.
-> >>
-> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> >> ---
-> >>   drivers/gpu/drm/Kconfig     |   1 +
-> >>   drivers/gpu/drm/drm_edid.c  | 109 +++++++++++++++++++++++++++++++++---
-> >>   include/drm/drm_connector.h |   6 ++
-> >>   include/drm/drm_edid.h      |   1 +
-> >>   4 files changed, 109 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> >> index 872edb47bb53..3db89e6af01d 100644
-> >> --- a/drivers/gpu/drm/Kconfig
-> >> +++ b/drivers/gpu/drm/Kconfig
-> >> @@ -8,6 +8,7 @@
-> >>   menuconfig DRM
-> >>   	tristate "Direct Rendering Manager (XFree86 4.1.0 and higher DRI support)"
-> >>   	depends on (AGP || AGP=n) && !EMULATED_CMPXCHG && HAS_DMA
-> >> +	depends on (ACPI_VIDEO || ACPI_VIDEO=n)
-> >>   	select DRM_PANEL_ORIENTATION_QUIRKS
-> >>   	select DRM_KMS_HELPER if DRM_FBDEV_EMULATION
-> >>   	select FB_CORE if DRM_FBDEV_EMULATION
-> >> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> >> index 923c4423151c..cdc30c6d05d5 100644
-> >> --- a/drivers/gpu/drm/drm_edid.c
-> >> +++ b/drivers/gpu/drm/drm_edid.c
-> >> @@ -28,6 +28,7 @@
-> >>    * DEALINGS IN THE SOFTWARE.
-> >>    */
-> >>   
-> >> +#include <acpi/video.h>
-> >>   #include <linux/bitfield.h>
-> >>   #include <linux/cec.h>
-> >>   #include <linux/hdmi.h>
-> >> @@ -2188,6 +2189,58 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> >>   	return ret == xfers ? 0 : -1;
-> >>   }
-> >>   
-> >> +/**
-> >> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
-> >> + * @data: struct drm_connector
-> >> + * @buf: EDID data buffer to be filled
-> >> + * @block: 128 byte EDID block to start fetching from
-> >> + * @len: EDID data buffer length to fetch
-> >> + *
-> >> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
-> >> + *
-> >> + * Return: 0 on success or error code on failure.
-> >> + */
-> >> +static int
-> >> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> >> +{
-> >> +	struct drm_connector *connector = data;
-> >> +	struct drm_device *ddev = connector->dev;
-> >> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-> >> +	unsigned char start = block * EDID_LENGTH;
-> >> +	void *edid;
-> >> +	int r;
-> >> +
-> >> +	if (!acpidev)
-> >> +		return -ENODEV;
-> >> +
-> >> +	switch (connector->connector_type) {
-> >> +	case DRM_MODE_CONNECTOR_LVDS:
-> >> +	case DRM_MODE_CONNECTOR_eDP:
-> >> +		break;
-> >> +	default:
-> >> +		return -EINVAL;
-> >> +	}
-> > 
-> > We could have other types of connectors that want this too.
-> > I don't see any real benefit in having this check tbh. Drivers
-> > should simply notset the flag on connectors where it won't work,
-> > and only the driver can really know that.
-> 
-> Ack.
-> 
-> > 
-> >> +	/* fetch the entire edid from BIOS */
-> >> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-> >> +	if (r < 0) {
-> >> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
-> >> +		return r;
-> >> +	}
-> >> +	if (len > r || start > r || start + len > r) {
-> >> +		r = -EINVAL;
-> >> +		goto cleanup;
-> >> +	}
-> >> +
-> >> +	memcpy(buf, edid + start, len);
-> >> +	r = 0;
-> >> +
-> >> +cleanup:
-> >> +	kfree(edid);
-> >> +
-> >> +	return r;
-> >> +}
-> >> +
-> >>   static void connector_bad_edid(struct drm_connector *connector,
-> >>   			       const struct edid *edid, int num_blocks)
-> >>   {
-> >> @@ -2621,7 +2674,8 @@ EXPORT_SYMBOL(drm_probe_ddc);
-> >>    * @connector: connector we're probing
-> >>    * @adapter: I2C adapter to use for DDC
-> >>    *
-> >> - * Poke the given I2C channel to grab EDID data if possible.  If found,
-> >> + * If the connector allows it, try to fetch EDID data using ACPI. If not found
-> >> + * poke the given I2C channel to grab EDID data if possible.  If found,
-> >>    * attach it to the connector.
-> >>    *
-> >>    * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> >> @@ -2629,20 +2683,50 @@ EXPORT_SYMBOL(drm_probe_ddc);
-> >>   struct edid *drm_get_edid(struct drm_connector *connector,
-> >>   			  struct i2c_adapter *adapter)
-> >>   {
-> >> -	struct edid *edid;
-> >> +	struct edid *edid = NULL;
-> >>   
-> >>   	if (connector->force == DRM_FORCE_OFF)
-> >>   		return NULL;
-> >>   
-> >> -	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> >> -		return NULL;
-> >> +	if (connector->acpi_edid_allowed)
-> >> +		edid = _drm_do_get_edid(connector, drm_do_probe_acpi_edid, connector, NULL);
-> >> +
-> >> +	if (!edid) {
-> >> +		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> >> +			return NULL;
-> >> +		edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
-> >> +	}
-> >>   
-> >> -	edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
-> >>   	drm_connector_update_edid_property(connector, edid);
-> >>   	return edid;
-> >>   }
-> >>   EXPORT_SYMBOL(drm_get_edid);
-> >>   
-> >> +/**
-> >> + * drm_edid_read_acpi - get EDID data, if available
-> >> + * @connector: connector we're probing
-> >> + *
-> >> + * Use the BIOS to attempt to grab EDID data if possible.
-> >> + *
-> >> + * The returned pointer must be freed using drm_edid_free().
-> >> + *
-> >> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> >> + */
-> >> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector)
-> >> +{
-> >> +	const struct drm_edid *drm_edid;
-> >> +
-> >> +	if (connector->force == DRM_FORCE_OFF)
-> >> +		return NULL;
-> >> +
-> >> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector);
-> >> +
-> >> +	/* Note: Do *not* call connector updates here. */
-> >> +
-> >> +	return drm_edid;
-> >> +}
-> >> +EXPORT_SYMBOL(drm_edid_read_acpi);
-> >> +
-> >>   /**
-> >>    * drm_edid_read_custom - Read EDID data using given EDID block read function
-> >>    * @connector: Connector to use
-> >> @@ -2727,10 +2811,11 @@ const struct drm_edid *drm_edid_read_ddc(struct drm_connector *connector,
-> >>   EXPORT_SYMBOL(drm_edid_read_ddc);
-> >>   
-> >>   /**
-> >> - * drm_edid_read - Read EDID data using connector's I2C adapter
-> >> + * drm_edid_read - Read EDID data using BIOS or connector's I2C adapter
-> >>    * @connector: Connector to use
-> >>    *
-> >> - * Read EDID using the connector's I2C adapter.
-> >> + * Read EDID from BIOS if allowed by connector or by using the connector's
-> >> + * I2C adapter.
-> >>    *
-> >>    * The EDID may be overridden using debugfs override_edid or firmware EDID
-> >>    * (drm_edid_load_firmware() and drm.edid_firmware parameter), in this priority
-> >> @@ -2742,10 +2827,18 @@ EXPORT_SYMBOL(drm_edid_read_ddc);
-> >>    */
-> >>   const struct drm_edid *drm_edid_read(struct drm_connector *connector)
-> >>   {
-> >> +	const struct drm_edid *drm_edid = NULL;
-> >> +
-> >>   	if (drm_WARN_ON(connector->dev, !connector->ddc))
-> >>   		return NULL;
-> >>   
-> >> -	return drm_edid_read_ddc(connector, connector->ddc);
-> >> +	if (connector->acpi_edid_allowed)
-> > 
-> > That should probably be called 'prefer_acpi_edid' or something
-> > since it's the first choice when the flag is set.
-> 
-> OK.
-> 
-> > 
-> > But I'm not so sure there's any real benefit in having this
-> > flag at all. You anyway have to modify the driver to use this,
-> > so why not just have the driver do the call directly instead of
-> > adding this extra detour via the flag?
-> 
-> This was proposed by Maxime Ripard during v4.
-> 
-> https://lore.kernel.org/dri-devel/ysm2e3vczov7z7vezmexe35fjnkhsakud3elsgggedhk2lknlz@cx7j44y354db/
+On Thu, Feb 15, 2024 at 11:36=E2=80=AFPM David Hildenbrand <david@redhat.co=
+m> wrote:
+> On 06.02.24 19:25, Kairui Song wrote:
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+> > swapin the same entry at the same time, they get different pages (A, B)=
+.
+> > Before one thread (T0) finishes the swapin and installs page (A)
+> > to the PTE, another thread (T1) could finish swapin of page (B),
+> > swap_free the entry, then swap out the possibly modified page
+> > reusing the same entry. It breaks the pte_same check in (T0) because
+> > PTE value is unchanged, causing ABA problem. Thread (T0) will
+> > install a stalled page (A) into the PTE and cause data corruption.
+> >
+> > One possible callstack is like this:
+> >
+> > CPU0                                 CPU1
+> > ----                                 ----
+> > do_swap_page()                       do_swap_page() with same entry
+> > <direct swapin path>                 <direct swapin path>
+> > <alloc page A>                       <alloc page B>
+> > swap_read_folio() <- read to page A  swap_read_folio() <- read to page =
+B
+> > <slow on later locks or interrupt>   <finished swapin first>
+> > ...                                  set_pte_at()
+> >                                       swap_free() <- entry is free
+> >                                       <write to page B, now page A stal=
+led>
+> >                                       <swap out page B to same swap ent=
+ry>
+> > pte_same() <- Check pass, PTE seems
+> >                unchanged, but page A
+> >                is stalled!
+> > swap_free() <- page B content lost!
+> > set_pte_at() <- staled page A installed!
+> >
+> > And besides, for ZRAM, swap_free() allows the swap device to discard
+> > the entry content, so even if page (B) is not modified, if
+> > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+> > it may also cause data loss.
+> >
+> > To fix this, reuse swapcache_prepare which will pin the swap entry usin=
+g
+> > the cache flag, and allow only one thread to pin it. Release the pin
+> > after PT unlocked. Racers will simply busy wait since it's a rare
+> > and very short event.
+> >
+> > Other methods like increasing the swap count don't seem to be a good
+> > idea after some tests, that will cause racers to fall back to use the
+> > swap cache again. Parallel swapin using different methods leads to
+> > a much more complex scenario.
+> >
+> > Reproducer:
+> >
+> > This race issue can be triggered easily using a well constructed
+> > reproducer and patched brd (with a delay in read path) [1]:
+> >
+> > With latest 6.8 mainline, race caused data loss can be observed easily:
+> > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+> >    Polulating 32MB of memory region...
+> >    Keep swapping out...
+> >    Starting round 0...
+> >    Spawning 65536 workers...
+> >    32746 workers spawned, wait for done...
+> >    Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+> >    Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+> >    Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+> >    Round 0 Failed, 15 data loss!
+> >
+> > This reproducer spawns multiple threads sharing the same memory region
+> > using a small swap device. Every two threads updates mapped pages one b=
+y
+> > one in opposite direction trying to create a race, with one dedicated
+> > thread keep swapping out the data out using madvise.
+> >
+> > The reproducer created a reproduce rate of about once every 5 minutes,
+> > so the race should be totally possible in production.
+> >
+> > After this patch, I ran the reproducer for over a few hundred rounds
+> > and no data loss observed.
+> >
+> > Performance overhead is minimal, microbenchmark swapin 10G from 32G
+> > zram:
+> >
+> > Before:     10934698 us
+> > After:      11157121 us
+> > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+> >
+> > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronou=
+s device")
+> > Reported-by: "Huang, Ying" <ying.huang@intel.com>
+> > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.cc=
+r.corp.intel.com/
+> > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stres=
+s-race [1]
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> > Acked-by: Yu Zhao <yuzhao@google.com>
+> >
+> > ---
+> > Update from V1:
+> > - Add some words on ZRAM case, it will discard swap content on swap_fre=
+e so the race window is a bit different but cure is the same. [Barry Song]
+> > - Update comments make it cleaner [Huang, Ying]
+> > - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJae Pa=
+rk]
+> > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO in=
+stead of "direct swapin path" [Yu Zhao]
+> > - Update commit message.
+> > - Collect Review and Acks.
+> >
+> >   include/linux/swap.h |  5 +++++
+> >   mm/memory.c          | 15 +++++++++++++++
+> >   mm/swap.h            |  5 +++++
+> >   mm/swapfile.c        | 13 +++++++++++++
+> >   4 files changed, 38 insertions(+)
+> >
+> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > index 4db00ddad261..8d28f6091a32 100644
+> > --- a/include/linux/swap.h
+> > +++ b/include/linux/swap.h
+> > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+> >       return 0;
+> >   }
+> >
+> > +static inline int swapcache_prepare(swp_entry_t swp)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> >   static inline void swap_free(swp_entry_t swp)
+> >   {
+> >   }
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 7e1f4849463a..1749c700823d 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -3867,6 +3867,16 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >       if (!folio) {
+> >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+> >                   __swap_count(entry) =3D=3D 1) {
+> > +                     /*
+> > +                      * Prevent parallel swapin from proceeding with
+> > +                      * the cache flag. Otherwise, another thread may
+> > +                      * finish swapin first, free the entry, and swapo=
+ut
+> > +                      * reusing the same entry. It's undetectable as
+> > +                      * pte_same() returns true due to entry reuse.
+> > +                      */
+> > +                     if (swapcache_prepare(entry))
+> > +                             goto out;
+> > +
+>
+> Is there anything that guarantees that the following won't
+> happen concurrently, and if it would happen, could it be a problem?
+>
+> Other thread MADV_DONTNEED's the swap entry, swap slot is freed.
+> Some other page gets swapped out, reuses that swap slot.
 
-Which somewhat ignores Jani's concerns about potentially
-bogus EDIDs coming from ACPI, as well as not allowing
-the driver to dictate the priority between ACPI vs. DDC
-vs. whatever else methods are available. Eg. i915 has
-at least one other place where it could get the EDID.
-So I don't think i915 could use this version.
+Hi David,
 
-But as long we still have the individual methods available
-as separate exported functions I suppose drivers can still
-choose to stitch their own thing together.
+Thanks for adding more comments and sharing your thoughts!
 
-I just don't see much point in having that midlayer.
-I don't think drivers can just plug that thing straight
-into an existing vfunc or can they? If not, then they still
-have to implement the actual function where it gets called.
-And once you're doing that, calling two functions instead of
-one seems about the same amount of work as setting that flag.
+I'm not sure what you mean by "reuses that swap slot" here, I think
+you just mean reuse that swap entry (and the actual content on swap
+device)?
 
-But if people think it's actually useful for them
-I won't stand in the way.
+> We call swapcache_prepare() on that slot that is being reused
+> elsewhere. (possibly some other thread in the context of the reuses
+> swap slot might do the same!)
 
-> 
-> > 
-> >> +		drm_edid = drm_edid_read_acpi(connector);
-> >> +
-> >> +	if (!drm_edid)
-> >> +		drm_edid = drm_edid_read_ddc(connector, connector->ddc);
-> >> +
-> >> +	return drm_edid;
-> >>   }
-> >>   EXPORT_SYMBOL(drm_edid_read);
-> >>   
-> >> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> >> index fe88d7fc6b8f..74ed47f37a69 100644
-> >> --- a/include/drm/drm_connector.h
-> >> +++ b/include/drm/drm_connector.h
-> >> @@ -1886,6 +1886,12 @@ struct drm_connector {
-> >>   
-> >>   	/** @hdr_sink_metadata: HDR Metadata Information read from sink */
-> >>   	struct hdr_sink_metadata hdr_sink_metadata;
-> >> +
-> >> +	/**
-> >> +	 * @acpi_edid_allowed: Get the EDID from the BIOS, if available.
-> >> +	 * This is only applicable to eDP and LVDS displays.
-> >> +	 */
-> >> +	bool acpi_edid_allowed;
-> > 
-> > Aren't there other bools/small stuff in there for tighter packing?
-> 
-> Does the compiler automatically do the packing if you put bools nearby 
-> in a struct?  If so; TIL.
+I think this kind of swapcache_prepare() or false swapin read is
+already happening quite frequently by swap readaheads. I've seen swap
+cluster readahead mess up working set activation and memory policy
+already. Swap cluster readahead simply read in nearby entries of
+target entry, regardless of whether they are owned by the reader or
+not.
 
-Yes. Well, depends on the types and their alignment requirements
-of course, and/or whether you specified __packed or not.
+For this patch, similar issues also exist, I think it only hurts the
+performance, but that's a really rare thing to happen, so should not
+be a problem.
 
-You can use 'pahole' to find the holes in structures.
+>
+> We would detect later, that the PTE changed, but we would temporarily
+> mess with that swap slot that we might no longer "own".
+>
+> I was thinking about alternatives, it's tricky because of the concurrent
+> MADV_DONTNEED possibility. Something with another fake-swap entry type
+> (similar to migration entries) might work, but would require more changes=
+.
 
-> 
-> > 
-> >>   };
-> >>   
-> >>   #define obj_to_connector(x) container_of(x, struct drm_connector, base)
-> >> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> >> index 7923bc00dc7a..1c1ee927de9c 100644
-> >> --- a/include/drm/drm_edid.h
-> >> +++ b/include/drm/drm_edid.h
-> >> @@ -459,5 +459,6 @@ bool drm_edid_is_digital(const struct drm_edid *drm_edid);
-> >>   
-> >>   const u8 *drm_find_edid_extension(const struct drm_edid *drm_edid,
-> >>   				  int ext_id, int *ext_index);
-> >> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector);
-> >>   
-> >>   #endif /* __DRM_EDID_H__ */
-> >> -- 
-> >> 2.34.1
-> > 
+Yeah, in the long term I also think more work is needed for the swap subsys=
+tem.
 
--- 
-Ville Syrjälä
-Intel
+In my opinion, for this particular issue, or, for cache bypassed
+swapin, a new swap map value similar to SWAP_MAP_BAD/SWAP_MAP_SHMEM
+might be needed, that may even help to simplify the swap count release
+routine for cache bypassed swapin, and improve the performance.
 
