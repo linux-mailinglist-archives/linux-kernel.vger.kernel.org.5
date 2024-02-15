@@ -1,141 +1,279 @@
-Return-Path: <linux-kernel+bounces-67446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E03856BA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A3E856BA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EECC1F20F1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:54:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06FCA1F20FAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8FD213848A;
-	Thu, 15 Feb 2024 17:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF670137C3A;
+	Thu, 15 Feb 2024 17:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JZeoGVRo";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JZeoGVRo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="czuK4BaR"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FA6136672;
-	Thu, 15 Feb 2024 17:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019662; cv=none; b=YULz47o33N1YN14pUVUZV+QPod0kedw1oI/8llfwBD3UIMoAN59jl25jlp118LydFsjduFAeMSKiULPVdpj3LOlgRWThOGBjzBlTi219U2IWPoWLOd7A9hplSDRgjmkNNzdWJzFCcJ4LsB2z4u+eH4bLgn3IVoVg7pEIGv6CeqI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019662; c=relaxed/simple;
-	bh=qH7biky9xP1Y0Whpp5jMEnFaQMfBiSxbagBkTnig0Dc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jrXJ2or5yGSbdSFsfkwo61oZNLAUvRv/8ewyOkM9KPoTQrGmqvkzkbJYz9gPv22IKpIyTZpgrGZhGnTtewgekJ3Bz6S6x+X6U9OvxLoKb8/LuPP9KtIlWe4RNiOFU7jmowXRBWeR0z3DHIgYkjLVWILLv1UKIHNGdz8KVGLsOEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JZeoGVRo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JZeoGVRo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 696D32222A;
-	Thu, 15 Feb 2024 17:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708019658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0FF1UMj/P8d9MO82ReOemjt8jp7zZ5pQpvMdZhVLSKo=;
-	b=JZeoGVRoC7KYCmbBxlXZ4oHGzp9iL7vjK8rnIKwNtSu4LGfW9p1JWq52xQiGQme6BIf/WA
-	yfZP9Th4oLN2JUgUnkSro8xcDwXkeukOkOvJNbECq3Z9L313tWjUKFSWnT4zhqo67NAeTk
-	1ZgtjZ0hp+zRqBYAfIguKiPUMFqcmfw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708019658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0FF1UMj/P8d9MO82ReOemjt8jp7zZ5pQpvMdZhVLSKo=;
-	b=JZeoGVRoC7KYCmbBxlXZ4oHGzp9iL7vjK8rnIKwNtSu4LGfW9p1JWq52xQiGQme6BIf/WA
-	yfZP9Th4oLN2JUgUnkSro8xcDwXkeukOkOvJNbECq3Z9L313tWjUKFSWnT4zhqo67NAeTk
-	1ZgtjZ0hp+zRqBYAfIguKiPUMFqcmfw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 44EE713A82;
-	Thu, 15 Feb 2024 17:54:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PW3aDcpPzmXwGQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 15 Feb 2024 17:54:18 +0000
-Date: Thu, 15 Feb 2024 18:54:17 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, security@kernel.org,
-	Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>,
-	Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
-Message-ID: <Zc5PycMenLBYECAn@tiehlicka>
-References: <2024021430-blanching-spotter-c7c8@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B48B1339BB
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708019703; cv=fail; b=Wh67yW785CZPEIu4bevqCwpuCoD6W7qOOdlryWLvR8Puf7Mx8PVN3pgLv68CgTHnLRBBRYF6yNa972XXhBS7F3kUdYaKf5R0KJoaOmKbXRke49IJLVzr/uA8XIcRp4seiThg3QRPfR4NAAULTuValAa7sTqjeiLN0X6WGov8uL4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708019703; c=relaxed/simple;
+	bh=jblkFNsY6kX2oxNXAN0iEGVB3MkyH+DfdkVNnkBO4d8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=kG+oWjl7oBtsLiBHyDD5ayJjrW+fFB0IDeAjIsscTLRNp4WwGQiHJOXeznZj8jnHGA798Qs5awlguLDyQqIST4avrgJTgHVR4BzhLUorQIyiCrF0g/qj2M1lMKIus9iQXtRWSrNzklxtZzgL5YuLfvL7AdNhnxSBoUl/AWHTYik=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=czuK4BaR; arc=fail smtp.client-ip=40.107.93.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A93gn1jrB1qtluY0Pn7opGlfIHpuI0u0+RAlwlJ57Fmmp8ck6jYXQIRZa2cs1T9TuDSR0R9fe5phER3OxjF6I/snURMCD0jNP+gghhlyY+MKCaq+g8Ri+ueRquFVoSXKyhAj5VNhHnNL+mbavfJ/4XZcE2zrC7iGxrlbSEWrtrjWJ6qkpNXtKiw61Squ+jGW/imGNZWwJiP9+OfiPjx7dJm2/4DhXi8TeMzaBghT09bVu7CPqwwxwagOMLuXmoOw8dZzObbvSXPOpe6xejfkpDNEQCC4HVlbEUhNCThjuut+M2rmLxh0H+j9akKUot837NEHM0oUpAagMNz4Rh+Ieg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xDCe6dLJWMGRbrVpf9iiIoZsa8RGE41ln7bGvyzXwEE=;
+ b=Kihsw7osQEiZCdsYJNa1e04YE2KqoC3fL5+ge3j35wOZzeFeOhT9z1z08qvJALo7SMk05rUB57pPFxc4WjnIYFgry4BPwVLxG7QHtqTA2wj1VJlM8UfeCy3FN5ier+rgSVMbuiXKZNFkCaWCZeCNZaVYuLMl0Sp6vbLimgxbrSa1VDOi5lWPm+47h/ehLOSfzqfCrcVU+Yu8/95uEEv8clk5QpizGEa1JjCJrmPL/dZwREscHAuk0msjDkWrg1yQt4esZjWtGjyXYXxnJmPNlgEHrpFGQDGxDFWLnQa/A0AKDfXnBKUgwNr0CFmoPGI+GzdcbsjTjTnqGd4OK20XUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xDCe6dLJWMGRbrVpf9iiIoZsa8RGE41ln7bGvyzXwEE=;
+ b=czuK4BaRXT5f6e0hASQu6rdyjjAaz8pI+7IHsAXku718Gk9v1L9r1wy6N3T3jrYyAmEJOm4g6LyF7GhvHRYPScGGCDtFyh+MZSBQQN+dTr+sVVqFzdtXtYlv0YauJe1FGq+FrEWm/DOkKuWrLwk6mqAl7aMVkcL/pSYbAMox+EQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by CY8PR12MB8411.namprd12.prod.outlook.com (2603:10b6:930:6e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Thu, 15 Feb
+ 2024 17:54:59 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::3f6b:792d:4233:f994]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::3f6b:792d:4233:f994%6]) with mapi id 15.20.7316.012; Thu, 15 Feb 2024
+ 17:54:59 +0000
+Message-ID: <b117ccc0-6569-4753-9cb9-c304f9e50d30@amd.com>
+Date: Thu, 15 Feb 2024 12:54:54 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+Content-Language: en-US
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org
+Cc: Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
+ Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+ <0b94b25a-9ffa-41a5-b931-ad84e1892d36@amd.com>
+From: Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <0b94b25a-9ffa-41a5-b931-ad84e1892d36@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQBPR0101CA0328.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6c::20) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021430-blanching-spotter-c7c8@gregkh>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=JZeoGVRo
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-0.981];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[38.70%]
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 696D32222A
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|CY8PR12MB8411:EE_
+X-MS-Office365-Filtering-Correlation-Id: ebf1b3dd-963e-4c77-bd54-08dc2e4f39fa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6COrR2U8otOsmv9P06YkAe7pd0pXVjHMDG8LyihcIOqcjPAV9NYjoGNHFTWXRu9MrgWgEHhVuQOeGqe9qd0jccYg1NyZyjpjILfl8g3RbXj4vwxB/hAQUm4fv38nnfKMpcpi9BNn9FFHfWvRNRJeyD2eT4YSaQ/zeP866i1C0/DaDDwnWzeFiZhFtpcdnmYuffo0T7kUSgj6sV5HtJov2wQThXd2svHsxAc3I0p3slhmph5WkNltOxP/fL+1PSzvtvDbfFH7/qycJIa9vLjNzE+fAadjtyijJpe/zCWoKru0PfxCOsTKPcz+MBucbbuHJ9m/VLfxCB0o+VtC4L4k7ccG6y1uEbDdkiBBrHvGb6EabU+SL8rpRL0uVuV5OSjZAZrriE/HtQ2xFbG3Nhe2bZWp3sPyhdNX1bhkizxxn29u7nHHNvxjc24rIjjlfQGYF0Z+RqqXOts2Yx4lSxzzPHmkZ8DQeYSWX51IpwBDd1eu8XDTdFMOwV2hAn1R0CmlGeL3cFnBdx1x+UqlDjiVhCfSYoOQElpO/dVidVGQPJpuVqjrPH5IRD5u0cF9Keij
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(31686004)(54906003)(316002)(41300700001)(110136005)(66946007)(2906002)(66556008)(66476007)(4326008)(8936002)(5660300002)(8676002)(86362001)(31696002)(83380400001)(44832011)(6486002)(478600001)(6512007)(26005)(6666004)(53546011)(6506007)(36756003)(38100700002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?a2w4ZGZEN0JLK2Zpc3VQejBLWiszWSswd0d3cmFETWVaempRTGtHRjBmdDNU?=
+ =?utf-8?B?TzAzMjg3S2tYeUZkWW1ZZUZQMG02djhJT3ZsMXh0VHYvRUxyKzRvY3VwdFNQ?=
+ =?utf-8?B?cTRncHFMZ3ZWcXFhVkpSeXhuL0N6b3owa1pOMFN1eU1zQjJFRlFjWjlLck5i?=
+ =?utf-8?B?YzYvVXJUSEVEb3ZwM1FKd3BMZ3dvS2hNZkJOcmFlRXd0bmVMdjN1KzhCQzBr?=
+ =?utf-8?B?UFAyaGN6Yjd6bnpXVmY3QmhmS3ZMcGhITkhrT1BlejhLMHZXS0ZBVTU0dXFj?=
+ =?utf-8?B?RktKRGd4VytLQ0JRZTRXbGdVRG1rVVZabDBCaFJ2Wm1FSXNzK3FxbkJUdk40?=
+ =?utf-8?B?eUowQnlhS05maVJhUXMzZWJJTTZzVFBlNzRQZzBoNUNqN2tKT0dXbFF3K2JP?=
+ =?utf-8?B?di9wVXZCSjFxT2VHUnZrQzBJd09PbjRvVUxsZ0lSR3Z0MzhHdDJ2M1RvSHZY?=
+ =?utf-8?B?R2tnVFIxRnNLT3cwWmQwSmZGcWIvazRzcVpZTTZtY1lUdmZrVWVqRWZrb0RL?=
+ =?utf-8?B?NzBZWVJpVmlhaU5ENVJNWGJiYkxUYUJxU3ZDM3dDeVp0TnZNc05NTVE0bmdX?=
+ =?utf-8?B?Uk1IK29hejJhSHM5N2lLdXlaWG9GQ2QrZVVLTG9raFE3KzhJdnVzQmhGb0xU?=
+ =?utf-8?B?QmJ3VnVRY1o2dkYzaXdoT0V0a0NTeVFUY2YwbVY0Wlk0Mno1ZEprSHNYeEFD?=
+ =?utf-8?B?d3ErdUNjaHB5VEtkL2hyY0k2U0JQWnZDRytTbVBzMDBteDI3Mjk4cmYvMjVu?=
+ =?utf-8?B?TElqU3lTZTBCWkR5QzlBSWJTZ29mdzBpeTdBSU80TE9kcXZLNFIzUDV6eVNo?=
+ =?utf-8?B?dmFJQkxRRzE4UFhxR2xWZG03ZStIVWJKejF5OGh3YjgxOURXUkNtQldRUEti?=
+ =?utf-8?B?L2EyUXRjWXVST2piZm5tU1Mya0dic2F4S3p4SUJZeVF0eGt6ZVdyNCtDeXJy?=
+ =?utf-8?B?Q2ZZRnRHU3M0cjdaMzBzYkNOMllsZlpPNDViWHlZN2E0bmRrWk5yTUl5Mm1N?=
+ =?utf-8?B?THhTN0xINTh1c2l0dTNJMk43aFNuUjlVWnVnSGhDWk1OMmY3MndqNmYwOHN0?=
+ =?utf-8?B?cVM1SjlTRFFCRGY2NnlrSTFnQjdhaGFSb1B1UEVhZWhYNHdxeEpnTWRFMkli?=
+ =?utf-8?B?MHVpM0FKV1YxdTlBeGtGMmVkOVhVdHNESFhqMEc3WDRmU0ozMEhSQStHOEl3?=
+ =?utf-8?B?QWI5UU00Z3NkTjhFK1VEc1VkNlp6R0djY2VnenRMTlJFcUNaMW0xTHl6enNs?=
+ =?utf-8?B?Rzh6eFlreGE4RERjUTJ3V2JnMDFkWHpMbzhuc2E5M1B0SHFZelJaZ05QVHF5?=
+ =?utf-8?B?b0x3c3ZiYkJCS2IrbTB5Z1Zjd3VLb04vK2xzMjZwL1hKTWxVQXZmQ0JiOGVY?=
+ =?utf-8?B?bEVBcFJDSnBrRys2Szg4VjloYThkV1gxdmNidldHV2F1cVRxcWk4TWpMdm1D?=
+ =?utf-8?B?NHl3RFhKaXgrUzVjV1lUMSttT0x1bGZwS0tGVjNBWEVtRTdHaW9mMnhCSW51?=
+ =?utf-8?B?c0wrV1pGMGt1eWxYTXprL2FqR3dRY2xZdy9lVWRMMmhZRG9weFlPU08xaHc3?=
+ =?utf-8?B?RWJNRGVINzlaNTNGWE05a1ZmWVp4VTRDc3BHaXhWWFhIU2xBVjdLNVJqVndx?=
+ =?utf-8?B?MEpnY1h2eTIzRWVnelFMY0g1MW4rTWxNb1dPQzRCbEJlZWVqbnJYWldYcVla?=
+ =?utf-8?B?aERodUNRTml2aG1EczlWUzdjeWlmcERreVpHVmFHZVEzbEpkbTBmWVRFbnBP?=
+ =?utf-8?B?Vys5eWpDWGJZNnZaYkJRTmFaVjA3VU1BendqdjliRmRjdllNQ2RLN1dEVzBa?=
+ =?utf-8?B?UFNtbTBWenRNQlluVkkweHlSMlpGOTVYKzkwYXEzaHI3dkU0eFkvbTdDQTVD?=
+ =?utf-8?B?dTJWZW5jc1pncElmVktDVXhpTUtOaytWRlk2bC85VEFSVEZpRkJTcmtLT2FE?=
+ =?utf-8?B?ZXlNaG5VRVRlUHU2TnM0eWNJcjJYZWptaHhhZ2ZVU2JralZGOEkzQzhXb2Rv?=
+ =?utf-8?B?M0JaSFAvYWtCRW5QWjVLVHRzSHBScGlwQ3labHJDMUlCZTBHdFliWVRYTkk2?=
+ =?utf-8?B?UXd5b3ZlMzdTTU9mV3RIZE9zQmwwR1V4cEgxc2pLZTVXQkpxVllSYTEwMWlB?=
+ =?utf-8?Q?DwkL/cRspbVbPshzA5S2LR8eg?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebf1b3dd-963e-4c77-bd54-08dc2e4f39fa
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 17:54:59.0945
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RUgUzL3c0rCSRvunOLd3imn/xh4Wk/qTVF3pANFOq74fbYuYcoXzYa9Kxey8IUuxyXb8TThyIXcArN1yJXN7Kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8411
 
-On Wed 14-02-24 09:00:30, Greg KH wrote:
-[...]
-> +Process
-> +-------
-> +
-> +As part of the normal stable release process, kernel changes that are
-> +potentially security issues are identified by the developers responsible
-> +for CVE number assignments and have CVE numbers automatically assigned
-> +to them.  These assignments are published on the linux-cve-announce
-> +mailing list as announcements on a frequent basis.
-> +
-> +Note, due to the layer at which the Linux kernel is in a system, almost
-> +any bug might be exploitable to compromise the security of the kernel,
-> +but the possibility of exploitation is often not evident when the bug is
-> +fixed.  Because of this, the CVE assignment team is overly cautious and
-> +assign CVE numbers to any bugfix that they identify.  This
-> +explains the seemingly large number of CVEs that are issued by the Linux
-> +kernel team.
+On 2024-02-02 11:20, Mario Limonciello wrote:
+> On 2/2/2024 09:28, Hamza Mahfooz wrote:
+>> We want programs besides the compositor to be able to enable or disable
+>> panel power saving features. However, since they are currently only
+>> configurable through DRM properties, that isn't possible. So, to remedy
+>> that issue introduce a new "panel_power_savings" sysfs attribute.
+>>
 
-Does the process focus only on assigning CVE numbers to a given upstream
-commit(s) withou any specifics of the actual security threat covered by
-the said CVE?
--- 
-Michal Hocko
-SUSE Labs
+I've been trying to avoid looking at this too closely, partly because
+I want ABM enablement by default, with control for users. But the
+more I think about this the more uncomfortable I get. The key for my
+discomfort is that we're going around the back of DRM master to set
+a DRM property. This is apt to create lots of weird behaviors,
+especially if compositors also decide to implement support for the
+abm_level property and then potentially fight PPD, or other users
+of this sysfs.
+
+I'm also not sure a new sysfs is a good candidate for drm-fixes.
+
+Harry
+
+>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+> 
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+> 
+>> ---
+>> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
+>>      commit when setting the value, call sysfs_remove_group() in
+>>      amdgpu_dm_connector_unregister() and add some documentation.
+>> ---
+>>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
+>>   1 file changed, 76 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> index 8590c9f1dda6..3c62489d03dc 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
+>>       return ret;
+>>   }
+>>   +/**
+>> + * DOC: panel power savings
+>> + *
+>> + * The display manager allows you to set your desired **panel power savings**
+>> + * level (between 0-4, with 0 representing off), e.g. using the following::
+>> + *
+>> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
+>> + *
+>> + * Modifying this value can have implications on color accuracy, so tread
+>> + * carefully.
+>> + */
+>> +
+>> +static ssize_t panel_power_savings_show(struct device *device,
+>> +                    struct device_attribute *attr,
+>> +                    char *buf)
+>> +{
+>> +    struct drm_connector *connector = dev_get_drvdata(device);
+>> +    struct drm_device *dev = connector->dev;
+>> +    u8 val;
+>> +
+>> +    drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+>> +    val = to_dm_connector_state(connector->state)->abm_level ==
+>> +        ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
+>> +        to_dm_connector_state(connector->state)->abm_level;
+>> +    drm_modeset_unlock(&dev->mode_config.connection_mutex);
+>> +
+>> +    return sysfs_emit(buf, "%u\n", val);
+>> +}
+>> +
+>> +static ssize_t panel_power_savings_store(struct device *device,
+>> +                     struct device_attribute *attr,
+>> +                     const char *buf, size_t count)
+>> +{
+>> +    struct drm_connector *connector = dev_get_drvdata(device);
+>> +    struct drm_device *dev = connector->dev;
+>> +    long val;
+>> +    int ret;
+>> +
+>> +    ret = kstrtol(buf, 0, &val);
+>> +
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    if (val < 0 || val > 4)
+>> +        return -EINVAL;
+>> +
+>> +    drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+>> +    to_dm_connector_state(connector->state)->abm_level = val ?:
+>> +        ABM_LEVEL_IMMEDIATE_DISABLE;
+>> +    drm_modeset_unlock(&dev->mode_config.connection_mutex);
+>> +
+>> +    drm_kms_helper_hotplug_event(dev);
+>> +
+>> +    return count;
+>> +}
+>> +
+>> +static DEVICE_ATTR_RW(panel_power_savings);
+>> +
+>> +static struct attribute *amdgpu_attrs[] = {
+>> +    &dev_attr_panel_power_savings.attr,
+>> +    NULL
+>> +};
+>> +
+>> +static const struct attribute_group amdgpu_group = {
+>> +    .name = "amdgpu",
+>> +    .attrs = amdgpu_attrs
+>> +};
+>> +
+>>   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
+>>   {
+>>       struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
+>>   +    sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
+>>       drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
+>>   }
+>>   @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
+>>           to_amdgpu_dm_connector(connector);
+>>       int r;
+>>   +    if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
+>> +        r = sysfs_create_group(&connector->kdev->kobj,
+>> +                       &amdgpu_group);
+>> +        if (r)
+>> +            return r;
+>> +    }
+>> +
+>>       amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
+>>         if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
+> 
+
 
