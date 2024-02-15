@@ -1,122 +1,141 @@
-Return-Path: <linux-kernel+bounces-66971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E322856438
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:22:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC2885643A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:23:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B0741F28463
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:22:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20021C216E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A182130ACA;
-	Thu, 15 Feb 2024 13:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C16130AC9;
+	Thu, 15 Feb 2024 13:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AjE6WuUj"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="acPd2w66"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293AE12FF83;
-	Thu, 15 Feb 2024 13:22:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3286412FF96;
+	Thu, 15 Feb 2024 13:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003357; cv=none; b=qOCH4KstC4x5NtYl6d+L69GQ5ATe9mUzr6Ug/np7W4z0VTbo91EwWGzDO+nToQOHCMGbPlOJqvcjeEfZonkFbtDO/uttjx8VXEDv0CBZHJ/fCFfO2xrZrW2yZVrz16/gQ9jgiT+51FCCLzkDdb/qQBoWKxSexWsZ6rF3mNc59K0=
+	t=1708003380; cv=none; b=Zr7vzWtY5SyPKgtGpdQ68A8IHJRicB4ePNyUB9/TYsn0Pzsem0QLmQ+GPcwxXQsskgBPzpiBpZOgzEJU30jQGo+5qE06DnxqGKVYYWZEDbZ8tDboc8oNm1RinMV+hyBO6UVbGcqjmM+llqszqju88zJGtLiELbm1Wna9wYuoUD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003357; c=relaxed/simple;
-	bh=4aF+qj6JSTQ0807KgJV1vNLS92lk0xJGwBxRA6HChtI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=PvfWy2S+bggjHxtuGdtfYgqRzcB3dA/jz4OczOuog1C4IE0F6bCvvD4N1N+Fo0Tz3eonblitd6ITzolElX2ezT83mi1LQjvKLEpqW/Q7FCqY2H6y79yXG/tdXVjds9/QSRtT75Ya3J8mbgeULH2GuBWIv8LI3grEjD0eihWOo9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AjE6WuUj; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41211acfcfcso5778165e9.1;
-        Thu, 15 Feb 2024 05:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708003354; x=1708608154; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zk4/fN/6poQrSuP6ysDcE8oSR2rKxth24YP3yLSKdz8=;
-        b=AjE6WuUjX4IxGPClPwgosRsg+LnKz7UBBgmcLODk+CgOib4uFC0lfkhGiWS+M3GK5M
-         KlE8CmoCRqToOCk2LQpFhk8nDTQaEBMk/i3JxqYQbldYUUdQTfBo1vme54QlR9XV9n+3
-         J+uO7NxpkcQuNl66zLP0BoHgmptahcbFNEBx4N7awetGhyOV159DNPhBCx3lu1nc8TI2
-         jmdeF8HaQwaP6Qt19kN2C8eC/gojRDRa0FuVAX3rjmkwNr+Uvu8BiZB8fMlhgzj8/S5q
-         zAJYlN5gov/KxQ2SIjrk729MRvOPygQ+t6zRezeWZLKjcemc9UK8zIa9bXYMYZKpWwSv
-         mAWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708003354; x=1708608154;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zk4/fN/6poQrSuP6ysDcE8oSR2rKxth24YP3yLSKdz8=;
-        b=SDJcm1oC3hNnjO4/LNVcxljrjbAL7roiD++xHQl//Fhs+NqH88oLmltX7TH/gXmZJq
-         wd0D80UltXohnjv5qV+55CEdXFc0WuMGPf+8vFkRL7wmx0+QLCsA2WV7yJbezQWaYWBz
-         6txPhusVbS240Wox/vxQO8a/0x0Qsss4umcQFpFfSIfSnCqcTjv2NLIeZCSXgca94C9I
-         Elr8y7JqZG9UxSdz7r1rb4WFubkAHTr/AzknEXgSVNU749qX4WV4csx792jW+lgUjoZ7
-         H5xbYR7k3myUvLF7gd08VQv23G5UMLKoNbRQ9FjNrdmyMVXtYpR66ltGDdoRNQQszZhM
-         LTTg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6Zxb5fbaKhbByHuGVPtcNYZeS82XL1ZHhnzARmwgaExxi91S/JPxcIyJ+MvhSxsWJK7ytoazrIGelJ3atSiGl5N3mNHMt60D6N53GSmlW+KcybjV2jIaxgUY1waFrMiY9D9k8FhxW
-X-Gm-Message-State: AOJu0YzcTQK1HnmYNsWj4sFG0OOfTg5sGu/A2NM8/2ecrIVNUulEj1bO
-	RvmwnUG+WdWhvbcxazLJDsi6zAEQLtsuEbjsZyq0te6kQfcoICpM
-X-Google-Smtp-Source: AGHT+IFv3TPbz2dzqI8Cf8haH/DIkONUn8XWdSWuk1zHERmPAgW15QXkWNpUn5ANuU8S+PYkty6ubw==
-X-Received: by 2002:a5d:474b:0:b0:33d:52f:a2a8 with SMTP id o11-20020a5d474b000000b0033d052fa2a8mr1031244wrs.61.1708003354173;
-        Thu, 15 Feb 2024 05:22:34 -0800 (PST)
-Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id bx23-20020a5d5b17000000b0033cfbe7343asm1866651wrb.8.2024.02.15.05.22.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 05:22:33 -0800 (PST)
-Message-ID: <b2b1b20f-31f7-4c15-9d05-4421d890c6fe@gmail.com>
-Date: Thu, 15 Feb 2024 13:22:32 +0000
+	s=arc-20240116; t=1708003380; c=relaxed/simple;
+	bh=aprbRSSrNekh4TziwkCVNUHRLpaysztfD/0uIJPTDW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pgngwCBplxK1nQEXNKsGPH1eL5aqYwNCYQ70vQ2cuuFNubipXNuzv+sHoFAnzMcJnJYSu/GL6RibQ4VGlkFvruWXkjRcNOvj60hCP8pFk3iudJAseAyCiERhnXmHq2w85K8AiYcgUoj2MsZVafST/D6Z58yvbL5rMLtx5YSWLV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=acPd2w66; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70453C433F1;
+	Thu, 15 Feb 2024 13:22:58 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="acPd2w66"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708003376;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gH77Wpl45QrIFBHWb9b04lKTCLb8JnPiulNkEJpR7rI=;
+	b=acPd2w666YPwPoBmmYcpxXoBMPlZJs0SNmmkL9TCA+lQlT1Zm6T6KZ0f3iXVWWKih+FqKq
+	obzfyijfvmrEJfrm7VbRwPqyCWhN6RFDnIieWuohlqUjcsI92E/lTUYYvEGPPRKorkHo9a
+	lyUe3j2gHzo+XBDxJ4rVMOICfjWJT0k=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8cd6da92 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 15 Feb 2024 13:22:56 +0000 (UTC)
+Date: Thu, 15 Feb 2024 14:22:56 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: "x86@kernel.org" <x86@kernel.org>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 2/2] x86/coco: Require seeding RNG with RDRAND on CoCo
+ systems
+Message-ID: <Zc4QMAnrMiiCwkmX@zx2c4.com>
+References: <20240214195744.8332-1-Jason@zx2c4.com>
+ <20240214195744.8332-3-Jason@zx2c4.com>
+ <DM8PR11MB57501389AE5518CB26E037D7E74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] spi: dw: remove redundant assignment to variable
- len
-From: "Colin King (gmail)" <colin.i.king@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240215131603.2062332-1-colin.i.king@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20240215131603.2062332-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM8PR11MB57501389AE5518CB26E037D7E74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
 
-On 15/02/2024 13:16, Colin Ian King wrote:
-> The variable id len being initialized with a value that is never read,
+Hi Elena,
 
-should be "len is being.."
+On Thu, Feb 15, 2024 at 07:30:32AM +0000, Reshetova, Elena wrote:
+> Should we just go back to the approach to add one more check in random_init_early()
+> to panic in the CoCo case if both rdseed and rdrand fails to give us anything? 
 
-> it is being re-assigned later on in a for-loop. The initialization is
-> redundant and can be removed.
-> 
-> Cleans up clang scan build warning:
-> drivers/spi/spi-dw-dma.c:580:17: warning: Although the value stored
-> to 'len' is used in the enclosing expression, the value is never
-> actually read from 'len' [deadcode.DeadStores]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->   drivers/spi/spi-dw-dma.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
-> index 0ecbb6c36e23..f4c209e5f52b 100644
-> --- a/drivers/spi/spi-dw-dma.c
-> +++ b/drivers/spi/spi-dw-dma.c
-> @@ -577,7 +577,7 @@ static int dw_spi_dma_transfer_one(struct dw_spi *dws,
->   	sg_init_table(&tx_tmp, 1);
->   	sg_init_table(&rx_tmp, 1);
->   
-> -	for (base = 0, len = 0; base < xfer->len; base += len) {
-> +	for (base = 0; base < xfer->len; base += len) {
->   		/* Fetch next Tx DMA data chunk */
->   		if (!tx_len) {
->   			tx_sg = !tx_sg ? &xfer->tx_sg.sgl[0] : sg_next(tx_sg);
+Yea, no, definitely not. That is, in my opinion, completely backwards
+and leads to impossible maintainability. CoCo is not some special
+snowflake that gets to sprinkle random conditionals in generic code.
 
+First, consider the motivation for doing this:
+- This is to abort on a physical defective CPU bug -- presumably a
+  highly implausible thing to ever happen.
+- This is for a threat model that few people are really compelled by
+  anyway, e.g. it's whack-a-mole season with host->guest vectors.
+- This is for a single somewhat obscure configuration of a single
+  architecture with a feature only available on certain chipsets.
+- This is not an "intrinsic" problem that necessitates plumbing complex
+  policy logic all over the place, but for a very special
+  driver-specific case.
+
+Rather, what this patch does is...
+
+> Now with this patch, the logic becomes
+
+Your description actually wasn't quite accurate so I'll write it out
+(and I'll clarify in the commit message/comments for v3 - my fault for
+being vague):
+
+1. At early boot, x86/CoCo is initialized. As part of that
+   initialization, it makes sure it can get 256 bits of RDRAND output
+   and adds it to the pool, in exactly the same way that the SD card
+   driver adds inserted memory card serial numbers to the pool. If it
+   can't get RDRAND output, it means CoCo loses one of its "Co"s, and so
+   it panic()s.
+
+2. Later, the generic RNG initializes in random_init_early() and
+   random_init(), where it opportunistically tries to use everything it
+   can to get initialized -- architectural seed, architectural rand,
+   jitter, timers, boot seeds, *seeds passed from other drivers*, and
+   whatever else it can.
+
+Now what you're complaining about is that in this step 2, we wind up
+adding *even more* rdrand (though, more probably rdseed), in addition to
+what was already added in the platform-specific driver in step 1. Boo
+hoo? I can't see how that's a bad thing. Step 1 was CoCo's policy driver
+*ensuring* that it was able to push at least *something good* into the
+RNG, and taking a CoCo-specific policy decision (panic()ing) if it
+can't. Step 2 is just generic RNG stuff doing its generic RNG thing.
+
+You might also want to needle on the fact that if RDRAND is somehow
+intermittently physically defective, and so step 1 succeeds, but in step
+2, the RNG doesn't manage to get seeded by RDRAND and so initializes
+based on jitter or IRQs or something. Okay, fine, but who cares? First,
+you'd be talking here about a hugely unlikely defective hardware case,
+and second, the end state remains basically identical: there's a good
+seed from RDRAND and the RNG itself is able to initialize.
+
+So I really don't want to litter the generic code with a bunch of
+platform-specific hacks. The function add_device_randomness()
+specifically exists so that individual platforms and devices that have
+some unique insight into an entropy source or entropy requirements or
+policy or whatever else can do that in their own platform or device
+driver code where it belongs.
+
+Jason
 
