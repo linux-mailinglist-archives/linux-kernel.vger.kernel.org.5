@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-66466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3730B855D16
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7DB855D3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E21EF281887
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1589B2843F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4E71C6AF;
-	Thu, 15 Feb 2024 08:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC5313FE2;
+	Thu, 15 Feb 2024 08:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itAkpQ4s"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TDSHlRGv"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BBA41C683;
-	Thu, 15 Feb 2024 08:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DC41BF32
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707987378; cv=none; b=cyaNsJI6t7YNzAMYWHOLZ53G0LgxV7AnmfWOZEKHcN2LPpWu6gHNC/WsqsRcPMrj5VyEgx5aQD7ENx6ramHJtW4IHtAohoOG3X4Ze0DLS3v4JYbHViK3cEppNt0xUu9IZnZ/HCoUvEndG7FgpkQxxSn3QpiKY2CTHDjMZbo8xOQ=
+	t=1707987538; cv=none; b=c5L6W3JEwNBQXxC7zb3lDNZH8PrqaeXFSECU6fd09ZK7O6zK313lGKiUms6jiPLZLFh/jq060WiQyBRsqD0Y7TtRny3tWFK6+ItiIUyb9Vd03pJTTLDLowTafLEluBKDkSR2Wvsfd+eG82pQELA5VKIWL5AcJ6yWlSZ3gmgb1iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707987378; c=relaxed/simple;
-	bh=ALyl+bYujG8tsP4ZtTQd7/ial9uO/MFRzgKH335+l8c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=orFSCxRby7/ZOFNPQneePeBG9A+Nz4GM/+/UvKstYxPnV6rNHykIyn0vA0se0egpJVt+ltRcr/22cHBNuB7FpIV2KTg7AahmG2mESjgIOuY4CQrWpm8eo+BZYQPGNLFPPdoBXXSXJ0vyjyC9oFkqI2WgYXlZF3kEuADg68ZoQvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itAkpQ4s; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d91397bd22so4455095ad.0;
-        Thu, 15 Feb 2024 00:56:16 -0800 (PST)
+	s=arc-20240116; t=1707987538; c=relaxed/simple;
+	bh=dNYeOqFk3ZAXp+sfHqfy+SC1Wh73yci1bZ7gt+mg/ps=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=r1dAVObIHmPZpF3e1Lx2ED2ip0i2/zBHlvM42HTBKdFSxMCr7/UMNSS14rP8bA25jKlbqtUr4CScb1PTOCLWmQHr/6W2OxaiGpv9iM9HWU48FBMYPy0h84bj9RPLFbkIGCsGdQ/51Yk14ScDSRCSiLCxVPs85zGXKyCkeU+MnDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TDSHlRGv; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d1080cb9easo8109211fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:58:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707987376; x=1708592176; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=dewtdZMyloFiQnPyoazWlr4DOVfKVCdGKw6OrWcJ5MU=;
-        b=itAkpQ4sqx2WEdc2qlk53OcwIhunVvP6dFHzD7bYnCbfOuY8ucYeg85KUGkIYFQZTN
-         UdUZL3R1WhBOkU3yG4IbAOebZIVO/r7lJhwTq5Ed5nDQm8Msj4L6vhCE3K/d766T4+TT
-         Ii0vsFUeODTem6ZEeB/VcPlUmJ04A1KW1nCOxjIrcWZoDYVbSW9uf3QO38gYke6mgA8e
-         nYAj8Mm/kAKvyd0zDrvRqXHnT0MFghYkG1T5IoHj64BKq4r9ANZFLNhMKLCHue95pWtV
-         mxWK8eLfps8bLxsdfOGox1IRvaCpOW9BQPrPaZAFgeQPuf3IqRoEkq+Oud5th/tS0g0P
-         0jPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707987376; x=1708592176;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1707987534; x=1708592334; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dewtdZMyloFiQnPyoazWlr4DOVfKVCdGKw6OrWcJ5MU=;
-        b=azjjoCZJFJGU5UiOgUZD5H0AD+wPVrSsfyJlNVDAyHFwTboRjCR1fKXmNzULhS4i9b
-         AbkXGbritZFWsZ+PtUzqIiGeiCNB6/jtqpsqjPBx/AM3HqOh1oxptFS7zbHoGQDphY/c
-         QMsBnhDrrFXVakfo8QjHelvOVG8DpLNUQEdACFwuKr5j/tXVNw2BaiyQLbUxAAnp2C/j
-         FPqGt3bz2tfKskuXGOXza+FP6AFNMW8gPnqxALDP2vq1AiVJvrA2mqV2lZV2ue/yr41J
-         r4R+NHTuKQA0t2mfNeObgWKlhOPm9h5qgt34HaulDuFQ+rcbto33ohsJSJEYgUE7Fhhr
-         cHhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTGq5UersK08hcYPXXf8XGTWwowfckyitCtIEN0GwU5yj92BuNe4IzMstVRxCvOZmtkQfzQO+9KtZwhIWTJ6ZI2FrKbKR16EOwtVmhBFRZQ4vrb55Cd/oqkkj7kg0IqBhugohZcfxmIfQ1
-X-Gm-Message-State: AOJu0Yyva+b4ufyDMAAEtAnFvffwduO7Agn8ZY8AUAD5U8aori6pZyrB
-	SEJiUCPz1xgvMjmzKAq3UbZi9dPo4rChyINvEaJqJJQrC5XZFrl9
-X-Google-Smtp-Source: AGHT+IGFSL2kVJYOzCu+XqawyXqGFXkv5DfF1zrMocSiWHfo8iIjQ+gqS1j6eVV2c9cpOxjdzuGpsA==
-X-Received: by 2002:a17:90a:6c44:b0:298:db59:b6a7 with SMTP id x62-20020a17090a6c4400b00298db59b6a7mr1283667pjj.34.1707987375708;
-        Thu, 15 Feb 2024 00:56:15 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id qc14-20020a17090b288e00b0029900404e11sm893067pjb.27.2024.02.15.00.56.14
+        bh=thSm/NaAqUDsrmdo57qMDQ5CJPadtCEGhN2rge4I/tg=;
+        b=TDSHlRGvqmitp3cNGfyOrfonhROt6jXCQagHISJQa7Gji1oh/bdpq0QSDRhGFwTZsY
+         ITHVM59WCs/Opwa0dq7E2LyXHdqWvqjqJbc4qC/GnEzmiBtWkF8LG/hyugy/1muQB7Lw
+         /eXnONAdYyaMrfSfo1hD5H99JIo29M9ayVwFcubxMMVPuAh65oFi8bhga0tdEHDmmvKK
+         ifvQXkAJSl1RtX6lP9daqskNHSvS0srf2wNSDdHwbY+5egYiHOPp4mzkI5ZWGW+ALBR6
+         LvnoOlT9Hlxqm88nk6TD9+sFZt0JjRAylrfVZWJM3REulN7MFmRwsyYiPrOxyjWeiws+
+         v/5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707987534; x=1708592334;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=thSm/NaAqUDsrmdo57qMDQ5CJPadtCEGhN2rge4I/tg=;
+        b=POxNpwpEb0h+xI8vvmrboXEM1a0O6VhLviGmlUvtUF+W4bG/Ohe9WLm99SesThnCsR
+         fnAN8y7Pmec8Da9OxaltiWVOn7DKm2/sT2CpelJ3XQrpNkuhCbCCjm9NNBWtcxFtqsGS
+         t7OHovBzeZugg1rw0YhE1u5KtXPka1eel/zSZjnuoumf1uBSWcdEhnzvfixR/Ia62nwf
+         2stb+HXHVgr+4fZ06sCJnRM9Xz8VW2IbAB08Qb0YW1Q3CVMcYpJE2B9mrxPEJdvZag6X
+         /9aHCwXyiiR5YMV36lIEquzfW0XiJ/QnKC2XWP/vfa4YZm2Albj4OxXJWQF42biaQ6b3
+         v4wA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsfUQvLxcuQ+GZTtKBW2msAvqWC0dzWxgwQjgFw/G5nsn8qGEinFtYV/++CN5m3JzoERh6uDrmjdU4twTeURXEdC6DncALSnGEYD0Q
+X-Gm-Message-State: AOJu0YxCkKlTsjsqyKMdomyW11737uHpKVeNFM8WDrpbt4sl+c24gg0k
+	UL0vdfvAyn5NaWSeWxd5dBLVMmHibyL+St3ZncxSk2yMshx3eCp4pUwt2lI+6zE=
+X-Google-Smtp-Source: AGHT+IHKg6BKjhzeos5aBRrK7kpueZ7SscUJfjJ3GKRg9xsS0chtvU+B6KhAY4Ng3oin0rL4VZwv5g==
+X-Received: by 2002:a2e:8805:0:b0:2d1:1df8:9ddd with SMTP id x5-20020a2e8805000000b002d11df89dddmr706979ljh.27.1707987534530;
+        Thu, 15 Feb 2024 00:58:54 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4589:7160:c264:fa3b? ([2a01:e0a:982:cbb0:4589:7160:c264:fa3b])
+        by smtp.gmail.com with ESMTPSA id n16-20020a5d51d0000000b0033cefb84b16sm1101386wrv.52.2024.02.15.00.58.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 00:56:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <11fff7fe-ec4c-4340-a67f-d1d54d0712d8@roeck-us.net>
-Date: Thu, 15 Feb 2024 00:56:13 -0800
+        Thu, 15 Feb 2024 00:58:54 -0800 (PST)
+Message-ID: <6aea55e7-2ca6-444c-b111-e3cc45bd28a5@linaro.org>
+Date: Thu, 15 Feb 2024 09:58:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,104 +77,211 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- John David Anglin <dave.anglin@bell.net>
-Cc: David Laight <David.Laight@aculab.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
- <1d5e059e-5b31-415d-ae41-593415812e94@bell.net> <Zc2GfgiCpevtKTtS@ghost>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <Zc2GfgiCpevtKTtS@ghost>
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 3/5] drm: msm: add support for A750 GPU
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Clark
+ <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev
+References: <20240212-topic-sm8650-gpu-v1-0-708a40b747b5@linaro.org>
+ <20240212-topic-sm8650-gpu-v1-3-708a40b747b5@linaro.org>
+ <b5d76a25-045a-4acd-ad20-d28855b40222@linaro.org>
+ <bcad544c-7ca2-4b4f-805b-4ccaedbd091c@linaro.org>
+ <13d65685-b306-43ad-b9ca-a799f2cf73e5@linaro.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <13d65685-b306-43ad-b9ca-a799f2cf73e5@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2/14/24 19:35, Charlie Jenkins wrote:
-> On Wed, Feb 14, 2024 at 10:00:37PM -0500, John David Anglin wrote:
->> On 2024-02-14 8:58 p.m., Guenter Roeck wrote:
->>> Specifically: Yes, the carry/borrow bits should be restored. Question is
->>> if the Linux kernel's interrupt handler doesn't restore the carry bits
->>> or if the problem is on the qemu side.
->> The carry/borrow bits in the PSW should be saved and restored by the save_specials
->> and rest_specials macros.  They are defined in arch/parisc/include/asm/assembly.h.
+On 14/02/2024 22:43, Konrad Dybcio wrote:
+> On 12.02.2024 15:45, Neil Armstrong wrote:
+>> On 12/02/2024 11:46, Konrad Dybcio wrote:
+>>> On 12.02.2024 11:37, Neil Armstrong wrote:
+>>>> Add support for the A750 GPU found on the SM8650 platform
+>>>>
+>>>> Unlike the the very close A740 GPU on the SM8550 SoC, the A750 GPU
+>>>> doesn't have an HWCFG block but a separate register set.
+>>>>
+>>>> The missing registers are added in the a6xx.xml.h file that would
+>>>> require a subsequent sync and the non-existent hwcfg is handled
+>>>> in a6xx_set_hwcg().
+>>>
+>>> These should also be submitted to mesa to make sure the next header sync
+>>> doesn't wipe them
+>>
+>> Ack submitting them right now: https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/27576
 > 
-> Why would they be needed to be restored in linux? The manual says "The
-> PSW is set to the contents of the IPSW by the RETURN FROM INTERRUPTION
-> instruction". This means that the PSW must be restored by the hardware.
+> Thanks
 > 
-> We can see the QEMU implementation in:
+>>
+>>>
+>>> [...]
+>>>
+>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+>>>> @@ -958,10 +958,11 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>>>>        struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+>>>>        struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
+>>>>        const struct adreno_reglist *reg;
+>>>> +    bool skip_programming = !(adreno_gpu->info->hwcg || adreno_is_a7xx(adreno_gpu));
+>>>
+>>> is_a750?
+>>
+>> OK right, I was thinking of the next gpu which will probably also miss an hwcfg
+>>
+>>>
+>>>>        unsigned int i;
+>>>>        u32 val, clock_cntl_on, cgc_mode;
+>>>>    -    if (!adreno_gpu->info->hwcg)
+>>>> +    if (skip_programming)
+>>>>            return;
+>>>>          if (adreno_is_a630(adreno_gpu))
+>>>> @@ -982,6 +983,25 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>>>>                  state ? 0x5555 : 0);
+>>>>        }
+>>>>    +    if (!adreno_gpu->info->hwcg) {
+>>>
+>>> I don't think this block of code is reachable now, no?
+>>
+>> It is because we didn't skip when adreno_is_a7xx(adreno_gpu)
 > 
-> rfi:
-> https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/sys_helper.c#L93
+> Ahh I misread the brackets within the assignment
 > 
-> handling interrupt:
-> https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/int_helper.c#L109
+>>
+>>>
+>>> Maybe remove the skip_programming and if_a750 here?
+>> This would require:
+>>>> -    if (!adreno_gpu->info->hwcg || )
+>>>> +    if (!(adreno_gpu->info->hwcg || adreno_is_a750(adreno_gpu)))
+>>
+>> and:
+>>
+>>>> +    if (adreno_is_a750(adreno_gpu)) {
+>>
+>> But if the next gpu also doesn't have an hwcfg, we will need to use
+>> the current design...
+>>
+>> I just tried with:
+>> ====================><===============================
+>> @@ -961,7 +961,7 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>>          unsigned int i;
+>>          u32 val, clock_cntl_on, cgc_mode;
+>>
+>> -       if (!adreno_gpu->info->hwcg)
+>> +       if (!(adreno_gpu->info->hwcg || adreno_is_a750(adreno_gpu)))
+>>                  return;
+>>
+>>          if (adreno_is_a630(adreno_gpu))
+>> @@ -982,6 +982,25 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+>>                            state ? 0x5555 : 0);
+>>          }
+>>
+>> +       if (adreno_is_a750(adreno_gpu)) {
+>> +               gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 1);
+>> +               gpu_write(gpu, REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD, state ? 1 : 0);
+>> +
+>> +               if (state) {
+>> +                       gpu_write(gpu, REG_A7XX_RBBM_CGC_P2S_TRIG_CMD, 1);
+>> +
+>> +                       if (gpu_poll_timeout(gpu, REG_A7XX_RBBM_CGC_P2S_STATUS, val,
+>> +                                            val & A7XX_RBBM_CGC_P2S_STATUS_TXDONE, 1, 10)) {
+>> +                               dev_err(&gpu->pdev->dev, "RBBM_CGC_P2S_STATUS TXDONE Poll failed\n");
+>> +                               return;
+>> +                       }
+>> +
+>> +                       gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 0);
+>> +               }
+>> +
+>> +               return;
+>> +       }
+>> +
+>>          val = gpu_read(gpu, REG_A6XX_RBBM_CLOCK_CNTL);
+>>
+>>          /* Don't re-program the registers if they are already correct */
+>> ====================><===============================
+>>
+>> And it works fine, does it work it for you ?
 > 
-> However the implementation appears to be faulty. During an RFI, the PSW
-> is always set to 0x804000e (regardless of what the PSW was before the
-> interrupt).
-> 
+> Let's keep it as-is in the original submission, as I've mentioned, I had
+> misread the code
 
-Not sure if I agree. The interrupt handler in Linux is the one which needs to set
-IPSW. Looking into the code, I agree with Dave that the tophys macro seems to
-clobber the carry bits before psw is saved, so they can not really be restored.
-The only issue with that idea is that I can only reproduce the problem with
-an interrupted ldd instruction but not, for example, with ldw. This is why it
-would be really important to have someone with real hardware test this.
+Ack thanks
 
-Thanks,
-Guenter
+Neil
+
+> 
+> Konrad
+> 
+>>
+>>>
+>>>> +        gpu_write(gpu, REG_A7XX_RBBM_CLOCK_CNTL_GLOBAL, 1);
+>>>> +        gpu_write(gpu, REG_A7XX_RBBM_CGC_GLOBAL_LOAD_CMD, state ? 1 : 0);
+>>>> +
+>>>> +        if (state) {
+>>>> +            gpu_write(gpu, REG_A7XX_RBBM_CGC_P2S_TRIG_CMD, 1);
+>>>> +
+>>>> +            if (gpu_poll_timeout(gpu, REG_A7XX_RBBM_CGC_P2S_STATUS, val,
+>>>> +                         val & BIT(0), 1, 10)) {
+>>>
+>>> We should define that bit name (the err suggests it's
+>>> REG_A7XX_RBBM_GCC_P2S_STATUS_TXDONE or so)
+>>>
+>>> [...]
+>>>
+>>>> +static inline int adreno_is_a750(struct adreno_gpu *gpu)
+>>>> +{
+>>>> +    return gpu->info->chip_ids[0] == 0x43051401;
+>>>> +}
+>>>> +
+>>>>    /* Placeholder to make future diffs smaller */
+>>>
+>>> Please also remove this comment now that it's invalid
+>>
+>> Ack
+>>
+>>>
+>>> Konrad
+>>
+>> Thanks,
+>> Neil
+>>
 
 
