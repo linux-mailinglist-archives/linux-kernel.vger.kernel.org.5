@@ -1,162 +1,122 @@
-Return-Path: <linux-kernel+bounces-67678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D84A856F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD32856F08
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1E6D1C23965
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:00:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17B2A1C21BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0851C13DBA4;
-	Thu, 15 Feb 2024 21:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxURP0X0"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76DB13B2BF;
+	Thu, 15 Feb 2024 21:03:44 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E1D13B7BE;
-	Thu, 15 Feb 2024 21:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F6641C61
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708030824; cv=none; b=KWqDxy8KYUZTW1eMr9oYkdWiDa2lquDKp7IfrG6SBDzBu5EgTkoPAZO8/ZrFXi9RKkBtD6TlujsxUvxEN2eslB5cVVCe/bW05QEtj4xOHq3izclxD3VnOwxIF9m6d4DTTVJsKPKr5IPJR0KgyhjrX+Ega46Ri0GTaTNcxcClrCo=
+	t=1708031024; cv=none; b=YysIsC8udOMSot2tzbNgbhW7gWWDtiLhj0HvYp7UiqlbHS3C4CW993nh17RDytrpqZgC7NGxNnJn9mTUjIN4dJJcyxEX4cNcVTerpKfH1psvyyqGelX0+K/Civ2EcRQyNfVIWsvMM6YAq7tmaAWtsEn99lhu+p7zi5em62WYmzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708030824; c=relaxed/simple;
-	bh=53Mu9cGB5wb1HJfNAn5BsQa78TDz+/wkO5uV8c2hdn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GvWH2ratI1cbYizNlBsSjmvThsnyUjdPSRBjK9mrxDhharRxvG0g8qexnlQKzAWCN8IEvok2ha4QDXjU/yBKdem3yNbC1/KNrpCTA5KuEOmDYAJunPNHE6UZQu7GDelI++/Nq838gFuKsTarb+dtC3E5NTXAv2S89Vq+YNzh6vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BxURP0X0; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d8aadc624dso11402365ad.0;
-        Thu, 15 Feb 2024 13:00:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708030821; x=1708635621; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=fEgnRWaAtEdivkp/3IziVxJ4IsdiQ4k5jTNKo7VrRLA=;
-        b=BxURP0X0VyBfAKoueD6pNCRaZfVAX5AtenNG15B+XIHdMIDRZufyhy8oTB1xkXS1nK
-         5gjnRr5PLaF/mzM0nxAZdQiPV7DvUhqmR0Tsfkx3DGx+3lGihfMA8XyIM56bl/iGJo0z
-         wLea9UEc+UCf03NLIip7uv60b6vMN1TSKbhxgYd4o8V0fjIy2CweosGTB1CJzd26uCH8
-         g8aVH61qOLcHcjsq5o72NCrUzJpdm5FAaN6bHVTp/lv0WtefL+xg1DvMBjUFxqcpzwYn
-         xcp1UloUa1erfiljeXVMQVicqdwQ4yFhifRhi1gDT3Sa96vZgCk0B9Iy+WTOhiN1zWIz
-         r3rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708030821; x=1708635621;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fEgnRWaAtEdivkp/3IziVxJ4IsdiQ4k5jTNKo7VrRLA=;
-        b=gfAnuLCUxIq6O8e90jpUo6z2ry5STnd345t1w1mBZqBOjOXP9Bfxyj1rpzxJPqg9OM
-         E8McxNgecu2IJdtnELNVeP0HCTQaeDe8KmF6w9shZ2Dft39jMSAZ5h6d8aP6jcJoxHXN
-         acR+9YOljPDlgbMoSMpu2tkHwaOKsO3UGmRpfTBnT2l5ldjmHI2T9BMZ6xtrWKPSk4Kp
-         y0CESlayxxyXFxRFd1d5ex6W8U56VCgK9DUV1Kv9zpEod2om/Ettjg0rJj2YCQLYng5a
-         x0JSvLfp8Ku7kdYsKn+GMCYRn/9RUlN/5ZFt4+DLSfcQK5bc6jgCzNXuA8wn7qist91D
-         l37g==
-X-Forwarded-Encrypted: i=1; AJvYcCXKsvt0B4T1pbsFPm1xTSgV7azc0ChlJetxQWd+14/Hs47qPlblilgp3n9t8lSHbRnQbE+ts3n1ut9fMlIfk0++ZtDHHb/t0Ngc2q57
-X-Gm-Message-State: AOJu0YxW9/jCIgmSRZMCpfNj6xVmCxfyVAduFpmwViwOpiFO18UGo4pR
-	CM6J2oHTI9De6dynRXAPgV8/o2wVGWK2lIK1hyirQFqz0l0TBBWm
-X-Google-Smtp-Source: AGHT+IFVCP1SmmHnE4CKqqQYAQZhzEkkJgWrHJWUH/t9c8xbrhb/3k5bd0u1J8TAputAPiIZpBblqQ==
-X-Received: by 2002:a17:902:70c3:b0:1da:1559:cdc6 with SMTP id l3-20020a17090270c300b001da1559cdc6mr2848960plt.44.1708030820384;
-        Thu, 15 Feb 2024 13:00:20 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170902ef0400b001db3a0c52b1sm1701380plx.88.2024.02.15.13.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 13:00:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f61d981f-e548-4c59-a013-5f17bca869d5@roeck-us.net>
-Date: Thu, 15 Feb 2024 13:00:18 -0800
+	s=arc-20240116; t=1708031024; c=relaxed/simple;
+	bh=VhdfpZDcEIsddO/EyQfKPvU+8LMInwZEs57nuX4AZrs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UsxzVBYmSxR1HXb1sd+uD2JiHxlvRer/QLxjXnaqx2bTaSYGt4Y7BXjbX0tBcRboaBHhL9Sz5Blh+KxSnpRJ8m7VVRl7zvyEVpgD7Jzw5WDOIF9XBincEgwH4rjbxdaWDJcsqAJvk+bbyuZB45g4VBT03Dd9Q/ffmyscPqrAR00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raitC-0000gM-7x; Thu, 15 Feb 2024 22:03:26 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rait9-000xGR-RU; Thu, 15 Feb 2024 22:03:23 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rait9-005eCw-2Q;
+	Thu, 15 Feb 2024 22:03:23 +0100
+Date: Thu, 15 Feb 2024 22:03:23 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, 
+	Charles Keepax <ckeepax@opensource.cirrus.com>, kernel@pengutronix.de, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-kernel@vger.kernel.org, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Richard Fitzgerald <rf@opensource.cirrus.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, patches@opensource.cirrus.com, 
+	Fabio Estevam <festevam@gmail.com>, Gregory Clement <gregory.clement@bootlin.com>, 
+	linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 00/13] irqchip: Convert to platform remove callback
+ returning void
+Message-ID: <knhwqxhouaiehmnnz5oxaxibhq7usokefztae4pplqypwuzgye@mke2irokres4>
+References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: John David Anglin <dave.anglin@bell.net>,
- David Laight <David.Laight@ACULAB.COM>,
- Charlie Jenkins <charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
- <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
- <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
- <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
- <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
- <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
- <34c8d6f6-3449-4a5f-b8c8-50faf1621714@roeck-us.net>
- <405791f1-7e51-4ccd-8ec3-b0be6ee8f203@bell.net>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <405791f1-7e51-4ccd-8ec3-b0be6ee8f203@bell.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="543tsvzhxgimotst"
+Content-Disposition: inline
+In-Reply-To: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2/15/24 10:56, John David Anglin wrote:
-[ ... ]
->> It looks like commit 8e0ba125c2bf ("parisc/unwind: fix unwinder when
->> CONFIG_64BIT is enabled") might have messed this up. No idea how to fix
->> it properly, though.
-> This is Helge's code...  I'll let him fix it.
-> 
 
-I need the code anyway to be able to debug the other problem, so I'll give it
-a shot and send a patch. Helge can then go from there.
+--543tsvzhxgimotst
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Guenter
+Hello Thomas,
 
+On Fri, Dec 22, 2023 at 11:50:31PM +0100, Uwe Kleine-K=F6nig wrote:
+> this series converts all drivers below drivers/irqchip to use
+> .remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
+> callback that returns no value") for an extended explanation and the
+> eventual goal. The TL;DR; is to make it harder for driver authors to
+> leak resources.
+>=20
+> The drivers touched here are all fine though and don't return early in
+> .remove(). So all conversions in this series are trivial.
+
+I'm still waiting for this series to go in (or get review feedback). Is
+this still on your radar? You're the right maintainer to take this
+series, aren't you?
+
+The series still applies to today's next.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--543tsvzhxgimotst
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXOfBoACgkQj4D7WH0S
+/k52nAgArzzUUBfYS1wZr/tKGMqABl7rtsR1xpM2V3NdiROGvaYALX1/ROABy83V
+lo8pk8XNMuVzDEYFoMOjFhWeoT9jJ8qGk+emLXFs2gr1HwIDzptSP5nW3jSLgv1m
+Y/CnadQn2wbIyxPPxPxPglktJ6kPrVcg4pllVjhi6VrwuhIi8dItD9WDuf+qVaVe
+J0rHGiTF2iZvhcuIgIulliMcR9+5npsA14ZxonEQdHJ7f4Ew0LTijz14X8+rNZ4b
+3Fe8/jB2MGtwxlwK6eFGEfH5SWnWqltMR4yPzGVHNIqUHrSB3BVFWzDyNnW2EAfx
+d+1GXz634dPtW4JEgQNJRXcgS//+JQ==
+=O3pv
+-----END PGP SIGNATURE-----
+
+--543tsvzhxgimotst--
 
