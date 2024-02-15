@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-66642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C8CA855F65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BC9855F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FBA01C2309A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:35:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9FA1C20896
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D762812CDBC;
-	Thu, 15 Feb 2024 10:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D9D12DDBB;
+	Thu, 15 Feb 2024 10:32:49 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CE912CDA3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D372812D75D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993162; cv=none; b=LfiGzzo91RQE1toUsCYuKuqKSXSTLrjBE/zuq9/85RK1wQCE4nzkCjXUb13HFT9Js7hNDiuxdvF2ywnKmXJlKUFYuYaJGlzme8eJtbXWHO8sEL6QC22+v01KKLPsbmNWyi0zmYewawb0OxZkSrTPko4SVSAPylKcEgvmr245B+c=
+	t=1707993169; cv=none; b=fKMbWTNNmx35Bzf5FdO6a0DdCqIyDLzYq2l9gcgmgu86HHm3tnRWBbt3UjEdoskgdRhr7NOfWJDEVLXfqT76HbzfPIUcLb7FLM1XCCGAeTGvc/M825+f/INRyBgfohovWlOtbB+Wv7nORCslVdLeAIvBswVQytTgRy3ZUNAhIbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993162; c=relaxed/simple;
-	bh=2pMOLH70RyGBPdRH3ynfTXiJWugM9Ml+vZUSCzri78g=;
+	s=arc-20240116; t=1707993169; c=relaxed/simple;
+	bh=OAHXy2gdGDDW0ebIo3BAq4OM/BcS09YL/BhRhFAnEFs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e1mkN/fmVArKwmDAmR3uK5rBZy2N3hR3Mm2ddLD5yZgIAMyCjDeZq0uF0+UHQ/rGI32hI03dObzYZG59iIWJc81UtGhA7X5eZU/BMh37bo4K7es5QsS9Xh1gDC0clu730PPbRG3HGPXjXWd3397Tj9H3rHURgnH4IxvWS4EA7zA=
+	 MIME-Version; b=qO8hpuGlqHc+1/9YKDeZGhryc3gCldqG5QxsJ6JpqbbXR5J7UZ0/JBVVEwbC6wB8NKH3H6bdVBHduW0nRi1b7yEJgmGonUuNe/ybSEZGONkuUn1WXZHkK5k8AMISqufdqwlITluUqiC+iVMLdA4b5pdEV3+J0PY2a/bHUL5/4yY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DA741516;
-	Thu, 15 Feb 2024 02:33:21 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 222B7153B;
+	Thu, 15 Feb 2024 02:33:28 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 442213F7B4;
-	Thu, 15 Feb 2024 02:32:37 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18FC43F7B4;
+	Thu, 15 Feb 2024 02:32:43 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -60,9 +60,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 06/18] mm: Tidy up pte_next_pfn() definition
-Date: Thu, 15 Feb 2024 10:31:53 +0000
-Message-Id: <20240215103205.2607016-7-ryan.roberts@arm.com>
+Subject: [PATCH v6 08/18] arm64/mm: Convert set_pte_at() to set_ptes(..., 1)
+Date: Thu, 15 Feb 2024 10:31:55 +0000
+Message-Id: <20240215103205.2607016-9-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240215103205.2607016-1-ryan.roberts@arm.com>
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
@@ -74,35 +74,126 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that the all architecture overrides of pte_next_pfn() have been
-replaced with pte_advance_pfn(), we can simplify the definition of the
-generic pte_next_pfn() macro so that it is unconditionally defined.
+Since set_ptes() was introduced, set_pte_at() has been implemented as a
+generic macro around set_ptes(..., 1). So this change should continue to
+generate the same code. However, making this change prepares us for the
+transparent contpte support. It means we can reroute set_ptes() to
+__set_ptes(). Since set_pte_at() is a generic macro, there will be no
+equivalent __set_pte_at() to reroute to.
 
+Note that a couple of calls to set_pte_at() remain in the arch code.
+This is intentional, since those call sites are acting on behalf of
+core-mm and should continue to call into the public set_ptes() rather
+than the arch-private __set_ptes().
+
+Tested-by: John Hubbard <jhubbard@nvidia.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/linux/pgtable.h | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm64/include/asm/pgtable.h |  2 +-
+ arch/arm64/kernel/mte.c          |  2 +-
+ arch/arm64/kvm/guest.c           |  2 +-
+ arch/arm64/mm/fault.c            |  2 +-
+ arch/arm64/mm/hugetlbpage.c      | 10 +++++-----
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index b7ac8358f2aa..bc005d84f764 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -212,7 +212,6 @@ static inline int pmd_dirty(pmd_t pmd)
- #define arch_flush_lazy_mmu_mode()	do {} while (0)
- #endif
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index de034ca40bad..9a2df85eb493 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -1084,7 +1084,7 @@ static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+ #endif /* CONFIG_ARM64_MTE */
  
--#ifndef pte_next_pfn
- #ifndef pte_advance_pfn
- static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
- {
-@@ -221,7 +220,6 @@ static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
- #endif
+ /*
+- * On AArch64, the cache coherency is handled via the set_pte_at() function.
++ * On AArch64, the cache coherency is handled via the set_ptes() function.
+  */
+ static inline void update_mmu_cache_range(struct vm_fault *vmf,
+ 		struct vm_area_struct *vma, unsigned long addr, pte_t *ptep,
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index a41ef3213e1e..59bfe2e96f8f 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -67,7 +67,7 @@ int memcmp_pages(struct page *page1, struct page *page2)
+ 	/*
+ 	 * If the page content is identical but at least one of the pages is
+ 	 * tagged, return non-zero to avoid KSM merging. If only one of the
+-	 * pages is tagged, set_pte_at() may zero or change the tags of the
++	 * pages is tagged, set_ptes() may zero or change the tags of the
+ 	 * other page via mte_sync_tags().
+ 	 */
+ 	if (page_mte_tagged(page1) || page_mte_tagged(page2))
+diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+index aaf1d4939739..6e0df623c8e9 100644
+--- a/arch/arm64/kvm/guest.c
++++ b/arch/arm64/kvm/guest.c
+@@ -1072,7 +1072,7 @@ int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+ 		} else {
+ 			/*
+ 			 * Only locking to serialise with a concurrent
+-			 * set_pte_at() in the VMM but still overriding the
++			 * set_ptes() in the VMM but still overriding the
+ 			 * tags, hence ignoring the return value.
+ 			 */
+ 			try_page_mte_tagging(page);
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index a254761fa1bd..3235e23309ec 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -205,7 +205,7 @@ static void show_pte(unsigned long addr)
+  *
+  * It needs to cope with hardware update of the accessed/dirty state by other
+  * agents in the system and can safely skip the __sync_icache_dcache() call as,
+- * like set_pte_at(), the PTE is never changed from no-exec to exec here.
++ * like set_ptes(), the PTE is never changed from no-exec to exec here.
+  *
+  * Returns whether or not the PTE actually changed.
+  */
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 2892f925ed66..27f6160890d1 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -247,12 +247,12 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
  
- #define pte_next_pfn(pte) pte_advance_pfn(pte, 1)
--#endif
+ 	if (!pte_present(pte)) {
+ 		for (i = 0; i < ncontig; i++, ptep++, addr += pgsize)
+-			set_pte_at(mm, addr, ptep, pte);
++			set_ptes(mm, addr, ptep, pte, 1);
+ 		return;
+ 	}
  
- #ifndef set_ptes
- /**
+ 	if (!pte_cont(pte)) {
+-		set_pte_at(mm, addr, ptep, pte);
++		set_ptes(mm, addr, ptep, pte, 1);
+ 		return;
+ 	}
+ 
+@@ -263,7 +263,7 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+ 	clear_flush(mm, addr, ptep, pgsize, ncontig);
+ 
+ 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
+-		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
++		set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
+ }
+ 
+ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+@@ -471,7 +471,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ 
+ 	hugeprot = pte_pgprot(pte);
+ 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
+-		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
++		set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
+ 
+ 	return 1;
+ }
+@@ -500,7 +500,7 @@ void huge_ptep_set_wrprotect(struct mm_struct *mm,
+ 	pfn = pte_pfn(pte);
+ 
+ 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
+-		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
++		set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
+ }
+ 
+ pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
 -- 
 2.25.1
 
