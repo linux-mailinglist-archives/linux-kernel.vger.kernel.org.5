@@ -1,114 +1,137 @@
-Return-Path: <linux-kernel+bounces-67361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CEFF856A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:03:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DAB3856A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E81771F249A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:03:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A03111C227E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8644C136987;
-	Thu, 15 Feb 2024 17:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA5213699F;
+	Thu, 15 Feb 2024 17:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p6myUNPD"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bou2quAK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3297913248C;
-	Thu, 15 Feb 2024 17:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A2B136660;
+	Thu, 15 Feb 2024 17:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708016588; cv=none; b=qvQtTEbJt6yWTGX6KYmwJUwFvUu7ysD5B8n1pBKGyndd+TN6kF9gYrIyjNuqDtZW7IiqHXBk0bFzk4s2F6TMBeFLXU/NXJxEAYli8topMFE9EaUpjfdS3LimkI30Ss3e+mkRz20rZ4gYcCzPnUHta9pNP8XZ5no1UMuaJ3C6cVk=
+	t=1708016589; cv=none; b=EekP/gC7NXHjwGhGFhLtqp6m7DHiM7rooG4RbvcEB3QmwLTZsLcK1YHjzwDBuBdWtvcl6q8fuq5AVQyxxZP2q7q2du6zMmaKGAMhe4/Sj0s9bCr+LUHhCbS5QgekmYHTrYCZOdngYUIuk1QJRb292yawawlRNoXnUI35IkW5OvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708016588; c=relaxed/simple;
-	bh=sBjIQr0LJN1UQmJuAshlDh6mfxOXLwZHlVBLUfWTVko=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZszAHokXqaZ/3YgkF3JaGXMzfy07PMqQCGQypgnhcLN7qkd/ExjuFEcZ4n2Tcimyl3U7nojckPx2QHCLqjL4ni2RTS/ipIY0lpfKxXrUsYiAFE9ttbfP0/MBLDzWphSp7fscpdpdr9RYkAF5hdMTKWfjqvP7SlQ3dsa9T6QAGlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=p6myUNPD; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=u/mYX+MjRO3DI3EVu94sKRU6KZIW+DvzqhZHidC3ciA=; b=p6myUNPDNUYzlgNwueonruyCm5
-	4SKo1EIbhCRzoeTGWkgSaBgvgkrkdAdWwG2/AfEiwMJNu6/cS6fGxDvmhXF3pGcigG2QvXL66W4XL
-	gm3MYAy3QNwqqlc0jiuvCVDDGqNkyqFulx3c44UIeCWkbmwkeTWliz4033r1KEnpK3saUbdbqcXIY
-	QapD93pOZASpPAsxUwTOwZ5s1m9XcvDIgZSAF3GdljlGWs+B88xiPcngHoRmbvErdhroqW+xfMF9q
-	YAu9EKBF8s8C4jFNvGSuBdJzVAbENuxK2u6OG6O0FkYy5HUWBeiYOsQalJkZRDXcPfSche/WdsZEG
-	oJXZb9Tw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raf8a-0000000H6WZ-06MM;
-	Thu, 15 Feb 2024 17:03:04 +0000
-Message-ID: <dd8ee0cd-4b00-4b94-b3c9-51c9574dd01c@infradead.org>
-Date: Thu, 15 Feb 2024 09:03:03 -0800
+	s=arc-20240116; t=1708016589; c=relaxed/simple;
+	bh=VjV8BcdelqThJ3MbQmqnK86uf/IxokI/jkq4gMntqq0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DTTEVInqJitYGOB4Pu41khhWoCudwDIGADqeGf2iC6UFOOz3PT9L4T3NHPKSmha7B9FhlcjIySIb+uewQZHo7OEffbnpgCAzHpmPURiPsPur/xJaWGvPZVpT2QHxv+W4mJSOtMeRVcy6Jq42f4Gb3Na7+pW6R5wNCfpoDXnLokA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bou2quAK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66D91C433C7;
+	Thu, 15 Feb 2024 17:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708016588;
+	bh=VjV8BcdelqThJ3MbQmqnK86uf/IxokI/jkq4gMntqq0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Bou2quAKZgYkJwONG/1O7OaZ2gzBTNRXUgEgrqNg19OgXv1QWeq4K8wb7T4tjiONZ
+	 wf8g4XtT6G0fbmWM8ieic3rfmXs0fjVaFRq6qjA65f7oCJ7VAsuVrHAJFpQwRP/TPd
+	 smxs4kTbm9ehT1yAS7VCT5goKXpXzdS1SJnPRMdJ5DL9ca/pUO2hhEGSxVXI7QY+S5
+	 vyJz6v+qtb4HWWr++vC2m6eYRpzwyuJyKm6yMjV1xT5bm31hKDRBhj50FGUdtKAy73
+	 FvImMWTegnm1GcWXtSOtWW9xGQl/U8oWhwmQIE6c6dbVw8pf8pSWYD8ispkB2pNYey
+	 UO5tcDqIQ5lGg==
+Date: Thu, 15 Feb 2024 17:03:04 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Mihai Sain <mihai.sain@microchip.com>
+Cc: claudiu.beznea@tuxon.dev, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	andre.przywara@arm.com, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	cristian.birsan@microchip.com
+Subject: Re: [PATCH v3 2/3] ARM: dts: microchip: sama7g5: Add flexcom 10 node
+Message-ID: <20240215-lustily-flick-69cb48b123c3@spud>
+References: <20240215091524.14732-1-mihai.sain@microchip.com>
+ <20240215091524.14732-3-mihai.sain@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hexagon: select FRAME_POINTER instead of redefining it
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240215140702.1910276-1-masahiroy@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240215140702.1910276-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zfv+/8Ldmdc7cdaf"
+Content-Disposition: inline
+In-Reply-To: <20240215091524.14732-3-mihai.sain@microchip.com>
 
 
+--zfv+/8Ldmdc7cdaf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2/15/24 06:07, Masahiro Yamada wrote:
-> Because FRAME_POINTER is defined in lib/Kconfig.debug, the arch Kconfig
-> should select it.
-> 
-> Add 'select FRAME_POINTER' to HEXAGON. ARCH_WANT_FRAME_POINTERS must
-> also be selected to avoid the unmet dependency warning.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
+On Thu, Feb 15, 2024 at 11:15:23AM +0200, Mihai Sain wrote:
+> Add flexcom 10 node for usage on the SAMA7G54 Curiosity board.
+>=20
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 > ---
-> 
->  arch/hexagon/Kconfig | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-> index a880ee067d2e..e922026fef09 100644
-> --- a/arch/hexagon/Kconfig
-> +++ b/arch/hexagon/Kconfig
-> @@ -7,7 +7,9 @@ config HEXAGON
->  	select ARCH_32BIT_OFF_T
->  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->  	select ARCH_NO_PREEMPT
-> +	select ARCH_WANT_FRAME_POINTERS
->  	select DMA_GLOBAL_POOL
-> +	select FRAME_POINTER
->  	# Other pending projects/to-do items.
->  	# select HAVE_REGS_AND_STACK_ACCESS_API
->  	# select HAVE_HW_BREAKPOINT if PERF_EVENTS
-> @@ -43,9 +45,6 @@ config HEXAGON_PHYS_OFFSET
->  	help
->  	  Platforms that don't load the kernel at zero set this.
->  
-> -config FRAME_POINTER
-> -	def_bool y
-> -
->  config LOCKDEP_SUPPORT
->  	def_bool y
->  
+>  arch/arm/boot/dts/microchip/sama7g5.dtsi | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/microchip/sama7g5.dtsi b/arch/arm/boot/dts=
+/microchip/sama7g5.dtsi
+> index 269e0a3ca269..c030b318985a 100644
+> --- a/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> +++ b/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> @@ -958,6 +958,30 @@ i2c9: i2c@600 {
+>  			};
+>  		};
+> =20
+> +		flx10: flexcom@e2820000 {
+> +			compatible =3D "atmel,sama5d2-flexcom";
 
--- 
-#Randy
+My comment here was ignored:
+https://lore.kernel.org/all/20240214-robe-pregnancy-a1b056c9fe14@spud/
+
+> +			reg =3D <0xe2820000 0x200>;
+> +			clocks =3D <&pmc PMC_TYPE_PERIPHERAL 48>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +			ranges =3D <0x0 0xe2820000 0x800>;
+> +			status =3D "disabled";
+> +
+> +			i2c10: i2c@600 {
+> +				compatible =3D "microchip,sama7g5-i2c", "microchip,sam9x60-i2c";
+> +				reg =3D <0x600 0x200>;
+> +				interrupts =3D <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells =3D <1>;
+> +				#size-cells =3D <0>;
+> +				clocks =3D <&pmc PMC_TYPE_PERIPHERAL 48>;
+> +				atmel,fifo-size =3D <32>;
+> +				dmas =3D <&dma0 AT91_XDMAC_DT_PERID(26)>,
+> +					<&dma0 AT91_XDMAC_DT_PERID(25)>;
+> +				dma-names =3D "tx", "rx";
+> +				status =3D "disabled";
+> +			};
+> +		};
+> +
+>  		flx11: flexcom@e2824000 {
+>  			compatible =3D "atmel,sama5d2-flexcom";
+>  			reg =3D <0xe2824000 0x200>;
+> --=20
+> 2.43.0
+>=20
+
+--zfv+/8Ldmdc7cdaf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5DxwAKCRB4tDGHoIJi
+0vJsAQDeQhIb3G2vqcVcBI18bJC0ZUioeFGxbNSWOAUjN7G2mwD/XaLf8/ElSyxG
+SZ8uAxcymPu/A6opdb1qEBlCIoZjkQg=
+=gg+J
+-----END PGP SIGNATURE-----
+
+--zfv+/8Ldmdc7cdaf--
 
