@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-67115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B3648566A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:57:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A978566A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2D3A1F20FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:57:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C87B01C22B69
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBA61332AD;
-	Thu, 15 Feb 2024 14:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81365133416;
+	Thu, 15 Feb 2024 14:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="bztQzl4Z"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="TTCNhKuU"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFF0132C2F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B51B132C3E
 	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008979; cv=none; b=NT2NAl/qvlkuZh2ZbyBjQNSNlkOiF+JMjjD4GMRBI1ht043LhmKvu9FhkOl7rILvC+Q5LLOsP/2W9O/bx2vFVgLu2z8rAnGU9z81/dK78tUyNPE5ypPy994KfhtkqObXuCEfjjWM4WsfFwrDqg93MDIgUnRvtGDOjZyTgLJHLak=
+	t=1708008980; cv=none; b=HLSYA9hKPzqyafh6sZ1QA2LMyHjYT93XdT/leNM4NOjxxT7Aa1fCNK90b7rXsBrBgqX7R519G4pSzYDmhQ5QzhfKMcTXqPhyztqCu36rcKRMlh70IIy8nUCkDdBEWqiQnKd3AzzLkZ/Fq4GmCSRzPaLufUoPpGfKrQv2wzm6GKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008979; c=relaxed/simple;
-	bh=IpD67k2gO2M25PjFyFyPuo75aV97Zro4npvwo0DmQ38=;
+	s=arc-20240116; t=1708008980; c=relaxed/simple;
+	bh=0uXYMYmV0wyNfz0Ocw3x17eNVG1QKmSQ8m1yDzP5ZNQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bc7Tf3ENlFLg2KPEXMvAhcoUK5Kg6LlRWg9FY+8p6w4xWVvEsM1e+gfjH+YeX9O9f7L2yja25li5ekO7EkPKh12nvo+UexR8oKfnKhWZWaQD48y+tO2sg7uSjvw2lbPXzQzpRnEYpXN2fnYI+Lw1nFd2WpvNW6CMoKbgd6Qv4ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=bztQzl4Z; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=ILeGR8hihQ53olWtQsMh0QsE6DVIQW95h/hzI2G6VQgL/48qo7b2LCdiZMqx8Gby2Rll7MZSK85XYuyOxmnQJ35ksv/rD4jVEyO5YrtoIMcSYcBVzMWhy9ZIobeuWXYwrF8vbz5V3f48UcqzX3kzl/A+kSZ/q/IrMsmHjstZkFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=TTCNhKuU; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55f279dca99so1643198a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:56:16 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a36126ee41eso131434366b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:56:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1708008975; x=1708613775; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1708008976; x=1708613776; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GOKW+J+Ft2qh+SDtx4ZJQpIK78L9+qr7BGcqORkx+gI=;
-        b=bztQzl4ZWifAlujdj5vU9b7rCWYZYBstWPTPITzvBWGyN1/pHG0qScI55r+q8KaAx3
-         KHzVRcW3GzPEg7ORfzTUY0LUM3nGBbzwRU/YQ1Z+5/SFj0VS+5G7+NvvMnFY7rrg1HYU
-         4gpwyIDo4L6VIKhsq1MEKP2NyPNcqHFO3yi5w2sdB8ODUwYIpPOegcMBTbf8YrC+Mkz+
-         RnZKMnkTYQGf4Zyz81ky/hzMIxtMYoiZLyt8bCXppFg0EFZLC66bukU5zTkc+azqGr1J
-         nTv4YBvZPQGhgN+gMTg8TyLx4VnQguMv6nd896V5LXUS/kCp2QMDSBClfHNF+cWMok5F
-         kI8Q==
+        bh=f2uzIED0RGgrcDO6EVVxl3NNU/jaMuJjJACfUgXp0rs=;
+        b=TTCNhKuUQ1fkUvNebk7MVlAME5WV2aZhqGzzKw35BnzGGHDm30+w86cXjWCgiuiSXC
+         Ovb12GN32NNjyYBMhRBsau6Vb87rcNtlWwtakKdjAp+DSLpl5XLb6BRME/wTiyUE9gAM
+         r22axQD62xIqpFG0R1kTohREBL8xahLlO/clkUzh3aJamMq24P1Jyj+TtrNy6vLQ7b0M
+         sIy2QZSwf1sxxNX93yvbH1burJUn0fDJEe9EES8nEuVemS3AthDZjq0kKi0xSgXHzy3H
+         9Lz9jpaD2AwbL2IpIYStLLiLQjj4e3alYQAxwWCCT8KJyKyzeMlu9OLwTP/mwKOv3olw
+         Qz0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708008975; x=1708613775;
+        d=1e100.net; s=20230601; t=1708008976; x=1708613776;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GOKW+J+Ft2qh+SDtx4ZJQpIK78L9+qr7BGcqORkx+gI=;
-        b=vUrtpSxJPYIBFG3qktOguRsMsNlNRbVUKDwgYkgCgRjUyvi6J8ZCSi9DTAJFBBAFL5
-         LItniHAMG+5S4rO4N0nnd7InZUDzn0qlo+RW2E6VJe1T0t1N+MsK3BvMBlhVg0MQlqsL
-         Qkn7DUkeVV5oc/vqLoLARYytlpQeBSVrgm3hkLRcls7L0AnifwbHM12WxIP4eA3Ct83G
-         UfxgT23KrOqZz0gqKR9YO6akFYsRDyDY1C/2uYQw9nnIn0IIZC4fWjiz+9Ijk+yhXNVS
-         XcnBPTLrKkKF9ipZCT0tHiZuiGSj3q5A1THcNYKLBBqteKReZ5fAIo/S/MYjc9aIAPys
-         mD5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUCcAncWQI1m38cwMH15xWw74HokclRJup0MPtVO1aFTj6d+03mlxXWuDyxUUHa/TNiHS1Twnf9FHmSj2rfY2T0RpJDVynCvj81p3U6
-X-Gm-Message-State: AOJu0Yxd1fiimwArWZD1M2AfAH98hRfLepZmuZjzaLvBiwW+HemNHw8V
-	7WlgZ5UQOM9O8LaIiW0qrfWE3WpAf+hARTDt+uXdLI4koo+OhT03Jfh374mJoaw=
-X-Google-Smtp-Source: AGHT+IHmFd2m5CBKvzK5k3i8fLODdswNsgNMEnNccU6hMgsi68rJFyx72Ggm1uvQlSg441yXaAhOiw==
-X-Received: by 2002:a17:906:35c9:b0:a3b:b947:af77 with SMTP id p9-20020a17090635c900b00a3bb947af77mr1309692ejb.67.1708008975496;
-        Thu, 15 Feb 2024 06:56:15 -0800 (PST)
+        bh=f2uzIED0RGgrcDO6EVVxl3NNU/jaMuJjJACfUgXp0rs=;
+        b=KORUGzH6CX3s5M2DS6E5ReDpbYBAPiX/sExpQEgqQtcq7OsU5ZtDTUaesdFwo8c/cI
+         Kcfhy9zzv2wtBjIRKwV0vOUrdR9WuSq/jzOUjmrZQflSyWLsEenhFF2UiGfp3rWgT8lr
+         buolQvZj3T4IIRQtuc4BktgqpMPrkD56l3F5pt7wJ4Bg4b4L3AUigBkgPDjlmYssYIf3
+         ICWDS5HietWimNxxF1NU/4gcudbxhMcQnKkPVYGQ9xSBCp0Cv+ihQRfdJxEVfZjoFFYf
+         znzrgv3bynD5sIha5end9YCvNB71f3TqGIHRcIBQ7gAkp+3mrQ2CMjCqvLBThxTv3nfL
+         nYYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUY96Rh8XhcEPlG+7bIkLRT2zk4dOREv00MrdW5DpnCLy7cOHu4XQegaa8+NLYOi/A4j58qocPuPl2HPvuuCteQMWt0U7qmRSkNnFJv
+X-Gm-Message-State: AOJu0YxdaQk/oUOh46WRQG3AiQEr/AQLN8gmx42OUiJkAssISaDJVwKL
+	MgpDQ6xvU4a2i0lMTclq75rRC8quNj8lns1sUaZAAFDDvc7dGTQOiWzgy5pU3Xo=
+X-Google-Smtp-Source: AGHT+IEogiGpBqeDYKaXFqCb508Hw08QFq2QQBDux+q+ITm+88gc/oYv7hnWpDwgdVDup9PJgOOyvw==
+X-Received: by 2002:a17:906:4894:b0:a3d:bbea:da41 with SMTP id v20-20020a170906489400b00a3dbbeada41mr67225ejq.12.1708008976461;
+        Thu, 15 Feb 2024 06:56:16 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id s18-20020a170906169200b00a3d1897ab68sm631175ejd.113.2024.02.15.06.56.14
+        by smtp.gmail.com with ESMTPSA id s18-20020a170906169200b00a3d1897ab68sm631175ejd.113.2024.02.15.06.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 15 Feb 2024 06:56:15 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
@@ -71,9 +71,9 @@ To: akpm@linux-foundation.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v1 04/14] linux/mm.h: move section functions to mm/page_section.h
-Date: Thu, 15 Feb 2024 15:55:52 +0100
-Message-Id: <20240215145602.1371274-5-max.kellermann@ionos.com>
+Subject: [PATCH v1 05/14] linux/mm.h: move page_address() and others to mm/page_address.h
+Date: Thu, 15 Feb 2024 15:55:53 +0100
+Message-Id: <20240215145602.1371274-6-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240215145602.1371274-1-max.kellermann@ionos.com>
 References: <20240215145602.1371274-1-max.kellermann@ionos.com>
@@ -89,83 +89,183 @@ Prepare to reduce dependencies in linux/mm.h.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 ---
- include/linux/mm.h              | 18 +-----------------
- include/linux/mm/page_section.h | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+), 17 deletions(-)
- create mode 100644 include/linux/mm/page_section.h
+ include/linux/mm.h              | 56 +-------------------------
+ include/linux/mm/page_address.h | 71 +++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 55 deletions(-)
+ create mode 100644 include/linux/mm/page_address.h
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index decc0cb8ed32..84a49178b94a 100644
+index 84a49178b94a..2cc39916cf04 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -3,6 +3,7 @@
+@@ -2,7 +2,7 @@
+ #ifndef _LINUX_MM_H
  #define _LINUX_MM_H
  
- #include <linux/mm/page_kasan_tag.h>
-+#include <linux/mm/page_section.h>
+-#include <linux/mm/page_kasan_tag.h>
++#include <linux/mm/page_address.h>
+ #include <linux/mm/page_section.h>
  #include <linux/errno.h>
  #include <linux/mmdebug.h>
- #include <linux/gfp.h>
-@@ -1622,10 +1623,6 @@ static inline bool is_nommu_shared_mapping(vm_flags_t flags)
- }
+@@ -103,10 +103,6 @@ extern int mmap_rnd_compat_bits __read_mostly;
+ #define __pa_symbol(x)  __pa(RELOC_HIDE((unsigned long)(x), 0))
  #endif
  
--#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
--#define SECTION_IN_PAGE_FLAGS
+-#ifndef page_to_virt
+-#define page_to_virt(x)	__va(PFN_PHYS(page_to_pfn(x)))
 -#endif
+-
+ #ifndef lm_alias
+ #define lm_alias(x)	__va(__pa_symbol(x))
+ #endif
+@@ -210,14 +206,6 @@ int overcommit_kbytes_handler(struct ctl_table *, int, void *, size_t *,
+ int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
+ 
+-#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
+-#define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
+-#define folio_page_idx(folio, p)	(page_to_pfn(p) - folio_pfn(folio))
+-#else
+-#define nth_page(page,n) ((page) + (n))
+-#define folio_page_idx(folio, p)	((p) - &(folio)->page)
+-#endif
+-
+ /* to align the pointer to the (next) page boundary */
+ #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
+ 
+@@ -2117,44 +2105,6 @@ static inline int arch_make_folio_accessible(struct folio *folio)
+  */
+ #include <linux/vmstat.h>
+ 
+-static __always_inline void *lowmem_page_address(const struct page *page)
+-{
+-	return page_to_virt(page);
+-}
+-
+-#if defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL)
+-#define HASHED_PAGE_VIRTUAL
+-#endif
+-
+-#if defined(WANT_PAGE_VIRTUAL)
+-static inline void *page_address(const struct page *page)
+-{
+-	return page->virtual;
+-}
+-static inline void set_page_address(struct page *page, void *address)
+-{
+-	page->virtual = address;
+-}
+-#define page_address_init()  do { } while(0)
+-#endif
+-
+-#if defined(HASHED_PAGE_VIRTUAL)
+-void *page_address(const struct page *page);
+-void set_page_address(struct page *page, void *virtual);
+-void page_address_init(void);
+-#endif
+-
+-#if !defined(HASHED_PAGE_VIRTUAL) && !defined(WANT_PAGE_VIRTUAL)
+-#define page_address(page) lowmem_page_address(page)
+-#define set_page_address(page, address)  do { } while(0)
+-#define page_address_init()  do { } while(0)
+-#endif
+-
+-static inline void *folio_address(const struct folio *folio)
+-{
+-	return page_address(&folio->page);
+-}
+-
+ extern pgoff_t __page_file_index(struct page *page);
+ 
+ /*
+@@ -2217,10 +2167,6 @@ static inline void clear_page_pfmemalloc(struct page *page)
+  */
+ extern void pagefault_out_of_memory(void);
+ 
+-#define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
+-#define offset_in_thp(page, p)	((unsigned long)(p) & (thp_size(page) - 1))
+-#define offset_in_folio(folio, p) ((unsigned long)(p) & (folio_size(folio) - 1))
 -
  /*
-  * The identification function is mainly used by the buddy allocator for
-  * determining if two pages could be buddies. We are not really identifying
-@@ -1825,19 +1822,6 @@ static inline pg_data_t *folio_pgdat(const struct folio *folio)
- 	return page_pgdat(&folio->page);
- }
- 
--#ifdef SECTION_IN_PAGE_FLAGS
--static inline void set_page_section(struct page *page, unsigned long section)
--{
--	page->flags &= ~(SECTIONS_MASK << SECTIONS_PGSHIFT);
--	page->flags |= (section & SECTIONS_MASK) << SECTIONS_PGSHIFT;
--}
--
--static inline unsigned long page_to_section(const struct page *page)
--{
--	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
--}
--#endif
--
- /**
-  * folio_pfn - Return the Page Frame Number of a folio.
-  * @folio: The folio.
-diff --git a/include/linux/mm/page_section.h b/include/linux/mm/page_section.h
+  * Parameter block passed down to zap_pte_range in exceptional cases.
+  */
+diff --git a/include/linux/mm/page_address.h b/include/linux/mm/page_address.h
 new file mode 100644
-index 000000000000..e4558c2691b8
+index 000000000000..e1aaacc5003f
 --- /dev/null
-+++ b/include/linux/mm/page_section.h
-@@ -0,0 +1,23 @@
++++ b/include/linux/mm/page_address.h
+@@ -0,0 +1,71 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MM_PAGE_SECTION_H
-+#define _LINUX_MM_PAGE_SECTION_H
++#ifndef _LINUX_MM_PAGE_ADDRESS_H
++#define _LINUX_MM_PAGE_ADDRESS_H
 +
 +#include <linux/mm_types.h> // for struct page
-+#include <linux/mmzone.h> // for SECTIONS_*
++#include <linux/mm/page_kasan_tag.h> // needed by the page_to_virt() macro on some architectures (e.g. arm64)
++#include <asm/page.h> // for PAGE_MASK, page_to_virt()
 +
-+#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
-+#define SECTION_IN_PAGE_FLAGS
-+
-+static inline void set_page_section(struct page *page, unsigned long section)
-+{
-+	page->flags &= ~(SECTIONS_MASK << SECTIONS_PGSHIFT);
-+	page->flags |= (section & SECTIONS_MASK) << SECTIONS_PGSHIFT;
-+}
-+
-+static inline unsigned long page_to_section(const struct page *page)
-+{
-+	return (page->flags >> SECTIONS_PGSHIFT) & SECTIONS_MASK;
-+}
++#if defined(CONFIG_FLATMEM)
++#include <linux/mmzone.h> // for memmap (used by __pfn_to_page())
++#elif defined(CONFIG_SPARSEMEM_VMEMMAP)
++#include <asm/pgtable.h> // for vmemmap (used by __pfn_to_page())
++#elif defined(CONFIG_SPARSEMEM)
++#include <linux/mm/page_section.h> // for page_to_section() (used by __page_to_pfn())
 +#endif
 +
-+#endif /* _LINUX_MM_PAGE_SECTION_H */
++#ifndef page_to_virt
++#define page_to_virt(x)	__va(PFN_PHYS(page_to_pfn(x)))
++#endif
++
++#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
++#define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
++#define folio_page_idx(folio, p)	(page_to_pfn(p) - folio_pfn(folio))
++#else
++#define nth_page(page,n) ((page) + (n))
++#define folio_page_idx(folio, p)	((p) - &(folio)->page)
++#endif
++
++static __always_inline void *lowmem_page_address(const struct page *page)
++{
++	return page_to_virt(page);
++}
++
++#if defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL)
++#define HASHED_PAGE_VIRTUAL
++#endif
++
++#if defined(WANT_PAGE_VIRTUAL)
++static inline void *page_address(const struct page *page)
++{
++	return page->virtual;
++}
++static inline void set_page_address(struct page *page, void *address)
++{
++	page->virtual = address;
++}
++#define page_address_init()  do { } while(0)
++#endif
++
++#if defined(HASHED_PAGE_VIRTUAL)
++void *page_address(const struct page *page);
++void set_page_address(struct page *page, void *virtual);
++void page_address_init(void);
++#endif
++
++#if !defined(HASHED_PAGE_VIRTUAL) && !defined(WANT_PAGE_VIRTUAL)
++#define page_address(page) lowmem_page_address(page)
++#define set_page_address(page, address)  do { } while(0)
++#define page_address_init()  do { } while(0)
++#endif
++
++static inline void *folio_address(const struct folio *folio)
++{
++	return page_address(&folio->page);
++}
++
++#define offset_in_page(p)	((unsigned long)(p) & ~PAGE_MASK)
++#define offset_in_thp(page, p)	((unsigned long)(p) & (thp_size(page) - 1))
++#define offset_in_folio(folio, p) ((unsigned long)(p) & (folio_size(folio) - 1))
++
++#endif /* _LINUX_MM_PAGE_ADDRESS_H */
 -- 
 2.39.2
 
