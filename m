@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-66654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D88DB855F89
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF916855F8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770DC1F22074
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:39:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F2D81F21599
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B529B131734;
-	Thu, 15 Feb 2024 10:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2836024B26;
+	Thu, 15 Feb 2024 10:33:20 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074AC130E50
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF6384FC0
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993196; cv=none; b=No4i58qOCFk/hFPf4CRdE290bQF1VdRMEZ+GmtTKs2qcFGm+4e9hCKMqf0Ksfk33HFnJhDn15ycm1a8QNoJOyPFmtGrV4QIq2OCWGYD8odFFnXatJlRUb6lge9oJacWcFHv0dp2deXjLGtX00s8Rk1/dmUZ82+8s5lUzvrtoJgc=
+	t=1707993199; cv=none; b=fRouSnQaQBuWEi1EAz0GniIXYifCbss4HCkEAqolYa5j4awccZhG6kil8TuqxlpdlH9uBT0SegX9wzGul4H4ohiVLoXASLbajEVEADBjG2Q7RpLzk1V9SYyhb2AJtpxjSul+50vZL6VOSbZFSWh8r5qJjjIKLm9DhK7YBukA0jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993196; c=relaxed/simple;
-	bh=UQ5MbKtdXY2+2WI/a5CIOKIBnSOSlIvamDyhPiGi7rw=;
+	s=arc-20240116; t=1707993199; c=relaxed/simple;
+	bh=BKVaPuYqBaCIkAqRyGQu29xHpMe0/fa3OcqaDOFtyTk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J/LqXb3rhk4udjzf3/GVZRPY2jHlSlcHqTECQ1rS3mWMQi0+zjabyxjOir9jFJo6dsFGCiyIUFu/fNdfQD3Afh2H35kvSVP2PK8wXIExYsgsliiL68ck/KB+/pfs+wwEmDCYlSbLPGG1LfJ+QIzzi/ZYPtmm/lsStuDbt3koN5o=
+	 MIME-Version; b=VkazlLNyb6J5MgMuYGlhwSPYTA1s5KdSNlGPdYRVBKGSyAIIk4spvGECd9rMwx65eiFK1/8QLx0aow7k8YeEVH+ZpeT/BEOaIya5QdsLH5g/5rbTzOAHnLAj4GmCxNCDa+3nG3jtAcxfWf+ihl0BIvkxSjKk478a/jh9P6XmNEM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 871BF15BF;
-	Thu, 15 Feb 2024 02:33:55 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBA3215DB;
+	Thu, 15 Feb 2024 02:33:58 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B9B93F7B4;
-	Thu, 15 Feb 2024 02:33:11 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E26CB3F7B4;
+	Thu, 15 Feb 2024 02:33:14 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -60,9 +60,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 16/18] arm64/mm: Implement pte_batch_hint()
-Date: Thu, 15 Feb 2024 10:32:03 +0000
-Message-Id: <20240215103205.2607016-17-ryan.roberts@arm.com>
+Subject: [PATCH v6 17/18] arm64/mm: __always_inline to improve fork() perf
+Date: Thu, 15 Feb 2024 10:32:04 +0000
+Message-Id: <20240215103205.2607016-18-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240215103205.2607016-1-ryan.roberts@arm.com>
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
@@ -74,48 +74,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When core code iterates over a range of ptes and calls ptep_get() for
-each of them, if the range happens to cover contpte mappings, the number
-of pte reads becomes amplified by a factor of the number of PTEs in a
-contpte block. This is because for each call to ptep_get(), the
-implementation must read all of the ptes in the contpte block to which
-it belongs to gather the access and dirty bits.
-
-This causes a hotspot for fork(), as well as operations that unmap
-memory such as munmap(), exit and madvise(MADV_DONTNEED). Fortunately we
-can fix this by implementing pte_batch_hint() which allows their
-iterators to skip getting the contpte tail ptes when gathering the batch
-of ptes to operate on. This results in the number of PTE reads returning
-to 1 per pte.
+As set_ptes() and wrprotect_ptes() become a bit more complex, the
+compiler may choose not to inline them. But this is critical for fork()
+performance. So mark the functions, along with contpte_try_unfold()
+which is called by them, as __always_inline. This is worth ~1% on the
+fork() microbenchmark with order-0 folios (the common case).
 
 Acked-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Tested-by: John Hubbard <jhubbard@nvidia.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/arm64/include/asm/pgtable.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index a8f1a35e3086..d759a20d2929 100644
+index d759a20d2929..8310875133ff 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -1213,6 +1213,15 @@ static inline void contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
+@@ -1206,8 +1206,8 @@ extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+ 				unsigned long addr, pte_t *ptep,
+ 				pte_t entry, int dirty);
+ 
+-static inline void contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
+-					pte_t *ptep, pte_t pte)
++static __always_inline void contpte_try_unfold(struct mm_struct *mm,
++				unsigned long addr, pte_t *ptep, pte_t pte)
+ {
+ 	if (unlikely(pte_valid_cont(pte)))
  		__contpte_try_unfold(mm, addr, ptep, pte);
+@@ -1278,7 +1278,7 @@ static inline void set_pte(pte_t *ptep, pte_t pte)
  }
  
-+#define pte_batch_hint pte_batch_hint
-+static inline unsigned int pte_batch_hint(pte_t *ptep, pte_t pte)
-+{
-+	if (!pte_valid_cont(pte))
-+		return 1;
-+
-+	return CONT_PTES - (((unsigned long)ptep >> 3) & (CONT_PTES - 1));
-+}
-+
- /*
-  * The below functions constitute the public API that arm64 presents to the
-  * core-mm to manipulate PTE entries within their page tables (or at least this
+ #define set_ptes set_ptes
+-static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
++static __always_inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+ 				pte_t *ptep, pte_t pte, unsigned int nr)
+ {
+ 	pte = pte_mknoncont(pte);
+@@ -1360,8 +1360,8 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+ }
+ 
+ #define wrprotect_ptes wrprotect_ptes
+-static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+-				pte_t *ptep, unsigned int nr)
++static __always_inline void wrprotect_ptes(struct mm_struct *mm,
++				unsigned long addr, pte_t *ptep, unsigned int nr)
+ {
+ 	if (likely(nr == 1)) {
+ 		/*
 -- 
 2.25.1
 
