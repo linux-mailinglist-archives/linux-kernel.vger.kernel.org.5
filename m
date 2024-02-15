@@ -1,126 +1,162 @@
-Return-Path: <linux-kernel+bounces-67680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB01856F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:04:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0EA4856F0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26A831C2231B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:04:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 560A8283644
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8611C13B791;
-	Thu, 15 Feb 2024 21:03:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E74F41C61;
+	Thu, 15 Feb 2024 21:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WagP35sA"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Byb5wA+J"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAF341C61;
-	Thu, 15 Feb 2024 21:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A5213B2BF
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708031036; cv=none; b=X/dD+w8W1pFw2+0hr+/37X2ifrCJHI+XwnUuG+Fgz8WZRY2XdtyO06FCE2rWvisImqxoGx41pPTdCU+hULPOtntz6W9icbFMWARHmo6cKoT6ZjrzF2qQDEWJx33/O6StfpDh82hUIhYUm4goUBn6FuacZtC73HGYxYcC+uq3up0=
+	t=1708031123; cv=none; b=Lov7t1m5om0HT3P9T9bgJVMYf2ZekUo1vzxPiXxov1w9oHU8WvUei+or1WvbLGsYKAF7I2hbz937p+A7xHuwP9PMnQdBORz9MHRQAQjPnjAbDtaXFAgjP0KEQ2HsOW9ajVokTNyXPenK3LAmWI8+AkLiCvAunXidQr2ajYE6ew8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708031036; c=relaxed/simple;
-	bh=BJNmghe578Dr0q6jJp6nQZwXix12LotZLSHYuCxzj6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l37/zH/H0ho6t8a6K93OiWOXGwvSXPFBJkKkO8l7Ce+z7h4OYH+tgrzmHHWnHhBiGHr4e6EJ70vs9d9VGJn3KyWn6pSG3uyfRqcUHz8BKuywgEB84JvWBdKMWhJboM+LsMz3SUz+gayB/05qkSwBAf6e9EzanmXQUZi2MvsLng8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WagP35sA; arc=none smtp.client-ip=209.85.167.53
+	s=arc-20240116; t=1708031123; c=relaxed/simple;
+	bh=aMOIWeOt1jD9bnQnQmZK1m4Ewkdfriyjv1XCNsipuyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ab2xRcOw2lezg0Q/Z5QdceUj39iz0RTH22bOx8qHp7ek+lWdFdXn8HzRXvs5hNp33zpzDoh9L+wTmqUPqMD0XlWyS+oyH05ep4+YaujdEgXfNWaVefpcbv3THLOmS16TQGU/3GnSPHQ6ZCRcYhogQ58wtoWOpLIrKy319UtgmvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Byb5wA+J; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511976c126dso1776335e87.1;
-        Thu, 15 Feb 2024 13:03:55 -0800 (PST)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso61877a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708031033; x=1708635833; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ky2ZahidDUXO2cGFTczfagUmFQuczB83RWWZ7vrowF4=;
-        b=WagP35sAFLZFY3+tiWomwrXrqwaQTJtU7c6i4H3nT39tQ8hgl7Al3vjVrtrUW7wuwF
-         ffysSslhXKSRZqKQhercTGGYdfEgB869FZD0h2z9DEk1aIkncUiLePqOzrntbH5EeJL3
-         FipWfq97Bi+tM8y778HjTU2devVQHM1gBbEHTNdlzTUN4GYasFJ34T2pjWWkAWuyJy+W
-         EciUsMEZXjUiO4ywEE7+MIArD3Z4RnJzz0t5/kEFprwjqpksQY7Ix4+T6MbyykmIHAK+
-         HbRgLcgZIqFo0lW6l7Uk3UoEo6iVP/vvNpizypLLwURKA+yzfb/STQ1EQZS5z9kg8MNt
-         dpAw==
+        d=gmail.com; s=20230601; t=1708031121; x=1708635921; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kbAHpNS+oOLTU8LAj4t0HslhUKwQH1LKk3gZ3VuSClk=;
+        b=Byb5wA+JqjWnkgnRts+lSag4fj/lu+6CTrLKONoK7d/Gfkpop5hPHUdy22W4G/1vyS
+         spw00vq89Feo1CHo2pHp5TQ/XA9a4SDe4rSdlRCOfM48W0GtfJC1KLw58tGWkaiJasS7
+         gdj0flU1z58SwVMbbnWJRJTLn5dIwwlAv8ZhEdHnXrYmxbdQJfDdgOwVc/yhTFHBLCdp
+         TRVtzzbfV7OlRfpiLe9BDnmZKPIdWXZOwC8Peejtqhp9vkiYHCJp23UBZenGnU97bneD
+         892TmBLPcRBWNlVDwCZON8bPjDTQa062Tr+9KUWyT6StjIJsvl3r2LQbp+BU2ngE9Net
+         uOpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708031033; x=1708635833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ky2ZahidDUXO2cGFTczfagUmFQuczB83RWWZ7vrowF4=;
-        b=HGkDSkeWmYorRbqZ+hqm3hn5T9/PXpv6Rk6JQVml/FDVewmQiv92+WT9jEQMwlUjms
-         oelefI9wzIKKKix/efr/IZkcf9mvA1tIcrOEYd/OfO070KlIdr2uMMOOrwcfV17sOige
-         1VnjNNVkvRzDnPQpbRvfqWkup8aTJMksc2gYh7ospuny1uB7CJTzL/161QIb8y7dJ5/p
-         yAk23h39KrZI6jvtzvb/DfIuoZiPYqfTYrZv2HWH2NTkSjNeN5dfhmNdGy6uIJhTmfXS
-         oY0p7kxWyikLoa2yFtyQ/ohYH+dpLA7LuEZoXInHuKlht3IliC1GXdjvEFL28JKWzW4W
-         vd7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXjpFjmUHDrpCOnS/BObsmdAR1tgq4IaYsJZ965UTX4Gmkdx7bdFIDVz/phKFDHuzmbaB2wQshFh+GghZml/bwUOciWJHTFEqlH8s2SOVjdRPA4q2885RkivwtYy+2zcDcdXFCP
-X-Gm-Message-State: AOJu0Yy5ARX8MglQB/YlaTa5ca89yqmX2Kn5Fco3A6aKLZQcnzNDVCHe
-	znZtjjS8EDMErT7ksKTKNWqkVPQuiH23ny7o1nmlcA/4E4CY1Bw+6UGoJYdx
-X-Google-Smtp-Source: AGHT+IE0q8c+07du9QdFQWzS1GQSJ3+K8PVrqti7ePCn+9czzhmuN6wNeYywXIJZxS95bQrpPsWi0A==
-X-Received: by 2002:a05:6512:1192:b0:512:8aeb:aaa8 with SMTP id g18-20020a056512119200b005128aebaaa8mr1890037lfr.49.1708031033197;
-        Thu, 15 Feb 2024 13:03:53 -0800 (PST)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3d12d84cffsm903512ejb.167.2024.02.15.13.03.51
+        d=1e100.net; s=20230601; t=1708031121; x=1708635921;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kbAHpNS+oOLTU8LAj4t0HslhUKwQH1LKk3gZ3VuSClk=;
+        b=HfF7nriIAPDL8EPYCueIPaTHcBJZ+gwMix2hPWaOjuKoS/OfLp/rA/qF7gZM582Qsr
+         6E5m/iBIb/FMoaRfhoVWolaGgqtFXhxhVs9xmvkF1pJze0fZiznBA71OiqvV5LI/s1HB
+         QrHG0Eq8b7VqAOW1heRgijF9QmuHj96lAFWp+gsPZ9TwVkN5rufkGzTxizlzWFxDOpU5
+         bRkS2u17zuMTdgIPzn/fsgFoVwFzduCqND+FELYedrXt+6HO1FpVEC+bVCIgkAryIWlD
+         dUtWHUUyHAviecOks7foD6/oael1WCups6aWgvxDzKGjUiRNPo8HoWti8cjN+OuPzCt5
+         s3ZA==
+X-Gm-Message-State: AOJu0YwANYWvY9iZRYPJaA+tEG5wL4rpjvt5fEMQYN5ar4Pe/eA5DoO9
+	okoG8dDHZ8yhKBkv1aNzqdaZOl2FC/GmtCMeWabs8ncqt3rpnFpickO7gOTB
+X-Google-Smtp-Source: AGHT+IFu1e1GtjkpY/Ca22fHI2I9uZRfm6w3oOxLdm0dTC4dTB5bTHoZPfzj33IZsly09qCGn6w0rg==
+X-Received: by 2002:a17:902:8c96:b0:1d9:df95:89dd with SMTP id t22-20020a1709028c9600b001d9df9589ddmr2819585plo.47.1708031121123;
+        Thu, 15 Feb 2024 13:05:21 -0800 (PST)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:3772:8174:2d71:3b60])
+        by smtp.gmail.com with ESMTPSA id p9-20020a1709026b8900b001d8d90d4f67sm1677783plk.249.2024.02.15.13.05.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 13:03:52 -0800 (PST)
-Date: Thu, 15 Feb 2024 22:03:50 +0100
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 net-next 09/14] net: phy: marvell-88q2xxx: add cable
- test support
-Message-ID: <20240215210350.GB3103@debian>
-References: <20240213213955.178762-1-dima.fedrau@gmail.com>
- <20240213213955.178762-10-dima.fedrau@gmail.com>
- <fe604759-d1cd-4a4d-ba64-69936b3e6598@lunn.ch>
+        Thu, 15 Feb 2024 13:05:20 -0800 (PST)
+From: Daeho Jeong <daeho43@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v2] f2fs_io: add lseek command to execute lseek()
+Date: Thu, 15 Feb 2024 13:05:17 -0800
+Message-ID: <20240215210517.2383647-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe604759-d1cd-4a4d-ba64-69936b3e6598@lunn.ch>
+Content-Transfer-Encoding: 8bit
 
-Am Wed, Feb 14, 2024 at 06:54:58PM +0100 schrieb Andrew Lunn:
-> > +static int mv88q222x_cable_test_get_status(struct phy_device *phydev,
-> > +					   bool *finished)
-> > +{
-> > +	int ret;
-> > +	u32 dist;
-> > +
-> > +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_MMD_PCS_MV_TDR_STATUS);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	*finished = true;
-> 
-> That looks odd. Is there no status bit which says it has completed? Is
-> it guaranteed to complete within a fixed time? How is it guaranteed that
-> mv88q222x_cable_test_get_status() is called at the necessary delay after 
-> mv88q222x_cable_test_start()?
-> 
-According to the datasheet and the Marvell API bits(0:1) can be used to
-check if the test has completed. Sample code waits 500ms before checking
-the bits. If the test is not completed after the delay the corresponding
-function returns with an error.
+From: Daeho Jeong <daehojeong@google.com>
 
-I just used bits(7:4) where 2'b1000 means that the test is in progress,
-and setting *finished = false. I didn't introduced any delay, relying
-on the reschedule delay of the PHY state machine. I didn't notice any
-problems with this approach. Anyway if the test does not complete for
-whatever reasons we get stuck here, right ? Don't know if this can
-happen. Probably we should take the safer path described in the Marvell
-API.
+Added lseek command to support lseek() for SEEK_DATA and SEEK_HOLE.
 
-Dimitri
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2: add SEEK_SET, SEEK_CUR and SEEK_END
+---
+ tools/f2fs_io/f2fs_io.c | 47 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+
+diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
+index e7d286a..a5e151d 100644
+--- a/tools/f2fs_io/f2fs_io.c
++++ b/tools/f2fs_io/f2fs_io.c
+@@ -1630,6 +1630,52 @@ static void do_removexattr(int argc, char **argv, const struct cmd_desc *cmd)
+ 	exit(0);
+ }
+ 
++#define lseek_desc "do lseek for a file"
++#define lseek_help					\
++"f2fs_io lseek [whence] [offset] [file_path]\n\n"	\
++"Do lseek file data in file_path and return the adjusted file offset\n"	\
++"whence can be\n"					\
++"  set  : SEEK_SET, The file offset is set to offset bytes\n"	\
++"  cur  : SEEK_CUR, The file offset is set to its current location plus offset bytes\n"	\
++"  end  : SEEK_END, The file offset is set to the size of the file plus offset bytes\n"	\
++"  data : SEEK_DATA, set the file offset to the next data location from offset\n"	\
++"  hole : SEEK_HOLE, set the file offset to the next hole from offset\n"
++
++static void do_lseek(int argc, char **argv, const struct cmd_desc *cmd)
++{
++	int fd, whence;
++	off_t offset, ret;
++
++	if (argc != 4) {
++		fputs("Excess arguments\n\n", stderr);
++		fputs(cmd->cmd_help, stderr);
++		exit(1);
++	}
++
++	offset = atoi(argv[2]);
++
++	if (!strcmp(argv[1], "set"))
++		whence = SEEK_SET;
++	else if (!strcmp(argv[1], "cur"))
++		whence = SEEK_CUR;
++	else if (!strcmp(argv[1], "end"))
++		whence = SEEK_END;
++	else if (!strcmp(argv[1], "data"))
++		whence = SEEK_DATA;
++	else if (!strcmp(argv[1], "hole"))
++		whence = SEEK_HOLE;
++	else
++		die("Wrong whence type");
++
++	fd = xopen(argv[3], O_RDONLY, 0);
++
++	ret = lseek(fd, offset, whence);
++	if (ret < 0)
++		die_errno("lseek failed");
++	printf("returned offset=%ld\n", ret);
++	exit(0);
++}
++
+ #define CMD_HIDDEN 	0x0001
+ #define CMD(name) { #name, do_##name, name##_desc, name##_help, 0 }
+ #define _CMD(name) { #name, do_##name, NULL, NULL, CMD_HIDDEN }
+@@ -1671,6 +1717,7 @@ const struct cmd_desc cmd_list[] = {
+ 	CMD(listxattr),
+ 	CMD(setxattr),
+ 	CMD(removexattr),
++	CMD(lseek),
+ 	{ NULL, NULL, NULL, NULL, 0 }
+ };
+ 
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
