@@ -1,150 +1,119 @@
-Return-Path: <linux-kernel+bounces-66867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E77A8562D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:13:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0598562DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:15:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 430E11F2112B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:13:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5C41C219DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1401C12BF2A;
-	Thu, 15 Feb 2024 12:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A593112BF22;
+	Thu, 15 Feb 2024 12:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtzmAB6B"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZzlBc8bI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D0412AAE4;
-	Thu, 15 Feb 2024 12:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5449013AF0;
+	Thu, 15 Feb 2024 12:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707999225; cv=none; b=fxRDHNfK4Uix3TtlIIP2lhPojsu92AAeJg1HssIhP63qzS1jXvtdoo/DXY9dlbbhZsI14b+a2ljQVBy4fA9I2ncjbZYEKg4uRCEEUioTXl2i+wvybsSJ4fO8YI9SEa4baK0xhIzmYlXYFgBuQsegii6VcoYc8L8CGwvZxVq2hf8=
+	t=1707999304; cv=none; b=holwt3Si4cfS9/WC+N45B6AeydDVFbemCg1/j629njUAC2MqP4QZjp9bp6D1etMj9Xv8H0P7x/FACotxS8EImh/TrTzAYyZ4/Ev3W8B8CBDA+I2iSD8fClPTqgaCq0tSa00MEjvERU7U/ETZTXFXxNhG/FQyeWWJGF8epKhHXIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707999225; c=relaxed/simple;
-	bh=kCojogxkBPGCvdnlaw7v6wJGX03NJww1FMAv7kOWbCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zy+E97M/mpuTyCO0nPm7EMYOaLXIdnoLsCoushdr6OEdibhwUYjcssYJsR6650nxnnD2Ktai/5qjmc3fQVgekYLuV/qy3zckgLk3eHVQ1fyRqLdtXEzeQH4qCdAUtv0bikTsB22e/TQ9N8Ma5nxbyH4pMVyoT/SlBQ8Di4ZWEkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CtzmAB6B; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-411f895c8b6so6756495e9.1;
-        Thu, 15 Feb 2024 04:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707999222; x=1708604022; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oCltLUDIFGC1hblD4ry2SCiGjebPDwNZZNafoF/wgL0=;
-        b=CtzmAB6BELkn+4Jtfd2+Ii6h9MbgnTCgFsT7DZJH1iO79t58cb6EY/5BKTHyaDdzNf
-         OQboPpO3cQ9pWY9QAJuFDAuT15HIFEtUMLSCXZFa7waoe6+OeZMLjTud2GJr5Gnogh0f
-         G3Jl5UmlTYYErUDAYi00LrM/iAlqGrkM//SHXDyf4JBfL+mWRCjGdkNxIWJBCGqh61o7
-         Ehbw02SCxtIpXcIrzRR+cKpUqK0KG4Opek+bFLjFowMjYwTvCSACd/aD6SebpO4SAn2c
-         v+jYNuWRw70iTFuhqOl+Fs8iP0Jfor1TvmPF53HGnqr7aIAvoPeQdo5VdaryQ1GbCYRG
-         wtcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707999222; x=1708604022;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oCltLUDIFGC1hblD4ry2SCiGjebPDwNZZNafoF/wgL0=;
-        b=ZPp+cCf+ArpiHBLQo8w2/6lFjq7HqiMSeMTkAjYLAfX4X4dunxo28hQuv8E7DABPh4
-         yab1PWHry8h+TjT0ppDLAupEUBiEVq7RzAa7sNTQ7dHwSmvQBnfHr4l7f5v18iZswhP+
-         q6H4dyTpUzksSGET3nJsnOvioiphFW8w10hGvvqR9QeBVRq2eKBQKebBk02HiiLLx8DS
-         79jUhDOPt1tJvz3dMgyllJ5cOvTgkvESLZQTjO+rXDMy5ferGGj2Ss1sbyML3bEd8PbG
-         EGrsezjgOjzEmzq11PY+RD1ks96JQkYL5sTOgZZOq7PUOTpSXAm5XSuDahH04YcrG/hh
-         bzjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMrIqO+PSXOHKLA2LJm02IDJC2Bym7BuHOV1hm817bMugVs8WixixzAxTGBjYBBDSt3akSbufdu8m3fNWnXO5c91o3cxRuFGq5R4LL62XHQsslBNP3fOS3tyY7QCdAXnmVBnGA6TFsj6Nfkk9lepuU/1tKYPWvAMl16jVZiZEUB8MmwQ==
-X-Gm-Message-State: AOJu0YxvA0cD4BnmZiarcGOFooktcXAL/yLYrMMoZDMMVvmlM9l9RVvk
-	8zKFgGWCNbFnOIGuon9FitYle1RwGUORDUlV2QcKBXggabvwSZbQ1zTMglhXI8Y=
-X-Google-Smtp-Source: AGHT+IEtfVhmb+P56obMhgGA0oXzzNXX5d8Ra2/f7VPqZcMteJxF3blC5Ww4auJ+inj64e3MEA/aeA==
-X-Received: by 2002:a05:600c:198f:b0:411:e5c1:e573 with SMTP id t15-20020a05600c198f00b00411e5c1e573mr1149675wmq.7.1707999221569;
-        Thu, 15 Feb 2024 04:13:41 -0800 (PST)
-Received: from [192.168.176.154] ([5.14.144.108])
-        by smtp.gmail.com with ESMTPSA id i6-20020a05600c354600b00411ab6dad65sm1822214wmq.29.2024.02.15.04.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 04:13:41 -0800 (PST)
-Message-ID: <73d01418-65e2-4327-b6b3-c4de501c2920@gmail.com>
-Date: Thu, 15 Feb 2024 14:13:38 +0200
+	s=arc-20240116; t=1707999304; c=relaxed/simple;
+	bh=XQ1aJyK1SAN1DcXYLdO2xjFBiObgzNsn7YIjybWgQz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G36oG6nf8xJsGeL5OcVjKjbXnOAYoTN+2VCwlBjbAMkrW89XV3W1Xohs4FUfexlL2KpBbnXwqcAMJ0sWzZUlxfiLQX+ECylWJSyD18zt896Fmzg7a8CTiPYAb249IXeQ/77vgidIHcD4Buhlkq/Sikk/FJ2AMyVo6LuwhUiMp2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZzlBc8bI; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707999302; x=1739535302;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XQ1aJyK1SAN1DcXYLdO2xjFBiObgzNsn7YIjybWgQz4=;
+  b=ZzlBc8bIDFVEJHSipYQI0IQjzvQ+iVSfVKVnyEGc71nR05gcQr7alZes
+   toHhrENv2rIzAfjKvbR9g3ddqeVWqkfSlrFaahogn2nJG3ly5qAbPWAmP
+   M83Nr2eXpiUV78l8VgIcgvI0QNbhAek8DWACKBfSfYCsp4qp36Gsc79Uf
+   5exdOCXCtcrr6EqbZTgI4Wq1ga6bTnMfVCHCv31LhZ78rDioPJL4lpoFM
+   g5k0gO3x37hfXD6T/HEVFWZswjVmiXmkjK1xSIOrfWo0o0/99jAYD/zhQ
+   VAAeqbNZJKlyLnmicqE7QIT40acpebh0QjYSqzvjrk/rXaXxrrO4WIXbp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5049410"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="5049410"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:15:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912156489"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="912156489"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:14:59 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1raadk-00000004mh1-3guR;
+	Thu, 15 Feb 2024 14:14:56 +0200
+Date: Thu, 15 Feb 2024 14:14:56 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>
+Subject: Re: [PATCH v2 09/15] auxdisplay: linedisp: Add support for
+ overriding character mapping
+Message-ID: <Zc4AQFIgRg7lBS-7@smile.fi.intel.com>
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
+ <20240212170423.2860895-10-andriy.shevchenko@linux.intel.com>
+ <CAMuHMdV3TOXc-_L5qG7D_XyFUcgNOyCoOwBhFPqNFBfAVyVydA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] dt-bindings: iio: adc: ad7192: Add AD7194 support
-To: Conor Dooley <conor@kernel.org>
-Cc: alexandru.tachici@analog.com, alisa.roman@analog.com,
- conor+dt@kernel.org, devicetree@vger.kernel.org, dlechner@baylibre.com,
- jic23@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- krzysztof.kozlowski@linaro.org, lars@metafoo.de, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, michael.hennerich@analog.com,
- robh+dt@kernel.org
-References: <20240208172459.280189-1-alisa.roman@analog.com>
- <20240208172459.280189-5-alisa.roman@analog.com>
- <20240208-occupancy-shudder-514d8569e261@spud>
-Content-Language: en-US
-From: Alisa-Dariana Roman <alisadariana@gmail.com>
-In-Reply-To: <20240208-occupancy-shudder-514d8569e261@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdV3TOXc-_L5qG7D_XyFUcgNOyCoOwBhFPqNFBfAVyVydA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 08.02.2024 20:03, Conor Dooley wrote:
-> Hey,
-> 
-> On Thu, Feb 08, 2024 at 07:24:58PM +0200, Alisa-Dariana Roman wrote:
-> 
->> +patternProperties:
->> +  "^channel@([0-7a-f])$":
->> +    type: object
->> +    $ref: adc.yaml
->> +    unevaluatedProperties: false
->> +
->> +    properties:
->> +      reg:
->> +        description: The channel index.
->> +        minimum: 0
->> +        maximum: 7
-> 
-> There are only 8 possible channels, at indices 0 to 7, so why is the
-> pattern property more permissive than that? Shouldn't "^channel@[0-7]$"
-> suffice?
-> 
->> +
->> +       diff-channels:
-> 
->> +        description: |
->> +          The differential channel pair for Ad7194 configurable channels. The
->> +          first channel is the positive input, the second channel is the
->> +          negative input.
-> 
-> This duplicates the description in adc.yaml
-> 
->> +        items:
->> +          minimum: 1
->> +          maximum: 16
-> 
-> Hmm, this makes me wonder: why doesn't this match the number of channels
-> available and why is 0 not a valid channel for differential measurements?
-> 
-> Thanks,
-> Conor.
+On Thu, Feb 15, 2024 at 11:36:47AM +0100, Geert Uytterhoeven wrote:
+> On Mon, Feb 12, 2024 at 6:04 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
-Hello and thank you for the feedback!
+..
 
-I will change the pattern property and the description.
+> > +static const struct attribute_group linedisp_group = {
+> > +       .is_visible     = linedisp_attr_is_visible,
+> 
+> Shouldn't that be .is_bin_visible?
+> 
+> > +       .attrs          = linedisp_attrs,
+> 
+> Likewise, .bin_attrs?
+> But that is a pre-existing issue in the ht16k33 driver.
 
-Regarding the channels, I followed the existing style of the driver for 
-the AD7194 channels: one iio channel for each pseudo-differential input 
-channel(AINx - AINCOM), summing up to 16 channels; and one iio channel 
-for each differential channel (AINx - AINy), summing up to 8 channels. 
-For the diff-channels, I thought the possible values should be 1->16 
-corresponding to AIN1->AIN16 (I will add this to the description as 
-suggested by David).
+I was wondering myself, but we have no infrastructure for that
+(there are no DEVICE_BIN_ATTR_*() helpers, nor bin_attr member
+ in struct device attribute).
 
-Kind regards,
-Alisa-Dariana Roman
+As you pointed out, it's preexisted issue and should be addressed
+separately and not only in this driver.
+
+> > +};
+> > +__ATTRIBUTE_GROUPS(linedisp);
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
