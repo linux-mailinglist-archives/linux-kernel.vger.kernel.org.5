@@ -1,222 +1,162 @@
-Return-Path: <linux-kernel+bounces-67677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEB08856F01
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:59:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D84A856F06
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E42228344D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:59:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1E6D1C23965
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD4A13B7AE;
-	Thu, 15 Feb 2024 20:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0851C13DBA4;
+	Thu, 15 Feb 2024 21:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eYtDxik6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxURP0X0"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDA813B289;
-	Thu, 15 Feb 2024 20:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E1D13B7BE;
+	Thu, 15 Feb 2024 21:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708030774; cv=none; b=tyl1oLgON8Q1bzmqnRhJVMj6L9ymBojWfwOvl76WJRTrWF8elutmYj4IrzH8FL07QGJCLVG5cTIsX0swqrCAC4IGRnXOM4LHZobK8pQRYADr+5j5UN6QR4bUdghJfjavf9t3GDghBr1sutfvGCBcfHNzR0KZk868wAucPDxq+Mk=
+	t=1708030824; cv=none; b=KWqDxy8KYUZTW1eMr9oYkdWiDa2lquDKp7IfrG6SBDzBu5EgTkoPAZO8/ZrFXi9RKkBtD6TlujsxUvxEN2eslB5cVVCe/bW05QEtj4xOHq3izclxD3VnOwxIF9m6d4DTTVJsKPKr5IPJR0KgyhjrX+Ega46Ri0GTaTNcxcClrCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708030774; c=relaxed/simple;
-	bh=dzMOWydciWlsZQSBk3YqJpzmwB45g+fPik1wUBpE5hc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kDk+wMqSwcGSVsPY3hD2RvM2n1cWp92kYkz1b7eib8gnQez33xD8sPOct6jhpPnaLufNT84XGh8K1n6Hu3E5jNbe3fU2w7yC/QM3wt9TueOKZ3weCdisASx93HVGaXmE3EriJQz91t+UUl7aMcs0cIALXz+VHU8R1xLJjXN0x/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eYtDxik6; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708030772; x=1739566772;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dzMOWydciWlsZQSBk3YqJpzmwB45g+fPik1wUBpE5hc=;
-  b=eYtDxik6zRsLhHA1okIhsDjFHLLfjf/zqFagcc1ViLtc6TTUnpSbTKIV
-   8L0nIMIOpzgEqLo8GPz+dKoKXhk+iSL6DwaWILIleLHU09SNHU9zM2l1M
-   dGnddw+HBSrbGhvaA4V8iIyv07h9I7BZ3fPUc7aSwHZDBWGNveX+I1s/u
-   xIg2bBTDPOGFgKXZDyF0w6/znTBP4WS3Rk0cY2uDP3Y+h96/H3VihvQc7
-   Oyd6devShBa5E+6wof3oeKGjJRZLrMAgGwT3YntWS1YMA2Go0htIzJOby
-   pCQXrFhmlMv5/+m7QALKTIbSwNSBqeQbPdxKCf2Gflk5hVUL+QnDa1Hee
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2021958"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="2021958"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 12:59:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="3671651"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 15 Feb 2024 12:59:25 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1raipF-0000lM-1e;
-	Thu, 15 Feb 2024 20:59:21 +0000
-Date: Fri, 16 Feb 2024 04:59:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@linux.intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, amd-gfx@lists.freedesktop.org,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
-	linux-renesas-soc@vger.kernel.org,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>,
-	Mark Pearson <mpearson-lenovo@squebb.ca>,
-	Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
-Message-ID: <202402160459.DYHkPajY-lkp@intel.com>
-References: <20240214215756.6530-2-mario.limonciello@amd.com>
+	s=arc-20240116; t=1708030824; c=relaxed/simple;
+	bh=53Mu9cGB5wb1HJfNAn5BsQa78TDz+/wkO5uV8c2hdn4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GvWH2ratI1cbYizNlBsSjmvThsnyUjdPSRBjK9mrxDhharRxvG0g8qexnlQKzAWCN8IEvok2ha4QDXjU/yBKdem3yNbC1/KNrpCTA5KuEOmDYAJunPNHE6UZQu7GDelI++/Nq838gFuKsTarb+dtC3E5NTXAv2S89Vq+YNzh6vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BxURP0X0; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d8aadc624dso11402365ad.0;
+        Thu, 15 Feb 2024 13:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708030821; x=1708635621; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEgnRWaAtEdivkp/3IziVxJ4IsdiQ4k5jTNKo7VrRLA=;
+        b=BxURP0X0VyBfAKoueD6pNCRaZfVAX5AtenNG15B+XIHdMIDRZufyhy8oTB1xkXS1nK
+         5gjnRr5PLaF/mzM0nxAZdQiPV7DvUhqmR0Tsfkx3DGx+3lGihfMA8XyIM56bl/iGJo0z
+         wLea9UEc+UCf03NLIip7uv60b6vMN1TSKbhxgYd4o8V0fjIy2CweosGTB1CJzd26uCH8
+         g8aVH61qOLcHcjsq5o72NCrUzJpdm5FAaN6bHVTp/lv0WtefL+xg1DvMBjUFxqcpzwYn
+         xcp1UloUa1erfiljeXVMQVicqdwQ4yFhifRhi1gDT3Sa96vZgCk0B9Iy+WTOhiN1zWIz
+         r3rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708030821; x=1708635621;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fEgnRWaAtEdivkp/3IziVxJ4IsdiQ4k5jTNKo7VrRLA=;
+        b=gfAnuLCUxIq6O8e90jpUo6z2ry5STnd345t1w1mBZqBOjOXP9Bfxyj1rpzxJPqg9OM
+         E8McxNgecu2IJdtnELNVeP0HCTQaeDe8KmF6w9shZ2Dft39jMSAZ5h6d8aP6jcJoxHXN
+         acR+9YOljPDlgbMoSMpu2tkHwaOKsO3UGmRpfTBnT2l5ldjmHI2T9BMZ6xtrWKPSk4Kp
+         y0CESlayxxyXFxRFd1d5ex6W8U56VCgK9DUV1Kv9zpEod2om/Ettjg0rJj2YCQLYng5a
+         x0JSvLfp8Ku7kdYsKn+GMCYRn/9RUlN/5ZFt4+DLSfcQK5bc6jgCzNXuA8wn7qist91D
+         l37g==
+X-Forwarded-Encrypted: i=1; AJvYcCXKsvt0B4T1pbsFPm1xTSgV7azc0ChlJetxQWd+14/Hs47qPlblilgp3n9t8lSHbRnQbE+ts3n1ut9fMlIfk0++ZtDHHb/t0Ngc2q57
+X-Gm-Message-State: AOJu0YxW9/jCIgmSRZMCpfNj6xVmCxfyVAduFpmwViwOpiFO18UGo4pR
+	CM6J2oHTI9De6dynRXAPgV8/o2wVGWK2lIK1hyirQFqz0l0TBBWm
+X-Google-Smtp-Source: AGHT+IFVCP1SmmHnE4CKqqQYAQZhzEkkJgWrHJWUH/t9c8xbrhb/3k5bd0u1J8TAputAPiIZpBblqQ==
+X-Received: by 2002:a17:902:70c3:b0:1da:1559:cdc6 with SMTP id l3-20020a17090270c300b001da1559cdc6mr2848960plt.44.1708030820384;
+        Thu, 15 Feb 2024 13:00:20 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902ef0400b001db3a0c52b1sm1701380plx.88.2024.02.15.13.00.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 13:00:19 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f61d981f-e548-4c59-a013-5f17bca869d5@roeck-us.net>
+Date: Thu, 15 Feb 2024 13:00:18 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214215756.6530-2-mario.limonciello@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: John David Anglin <dave.anglin@bell.net>,
+ David Laight <David.Laight@ACULAB.COM>,
+ Charlie Jenkins <charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+ <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
+ <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
+ <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
+ <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
+ <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
+ <34c8d6f6-3449-4a5f-b8c8-50faf1621714@roeck-us.net>
+ <405791f1-7e51-4ccd-8ec3-b0be6ee8f203@bell.net>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <405791f1-7e51-4ccd-8ec3-b0be6ee8f203@bell.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Mario,
+On 2/15/24 10:56, John David Anglin wrote:
+[ ... ]
+>> It looks like commit 8e0ba125c2bf ("parisc/unwind: fix unwinder when
+>> CONFIG_64BIT is enabled") might have messed this up. No idea how to fix
+>> it properly, though.
+> This is Helge's code...  I'll let him fix it.
+> 
 
-kernel test robot noticed the following build warnings:
+I need the code anyway to be able to debug the other problem, so I'll give it
+a shot and send a patch. Helge can then go from there.
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.8-rc4 next-20240215]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
+Guenter
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/drm-Stop-using-select-ACPI_VIDEO-in-all-drivers/20240215-055936
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20240214215756.6530-2-mario.limonciello%40amd.com
-patch subject: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
-config: alpha-kismet-CONFIG_FB_BACKLIGHT-CONFIG_FB_ATMEL-0-0 (https://download.01.org/0day-ci/archive/20240216/202402160459.DYHkPajY-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20240216/202402160459.DYHkPajY-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402160459.DYHkPajY-lkp@intel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for FB_BACKLIGHT when selected by FB_ATMEL
-   .config:166:warning: symbol value 'n' invalid for RAPIDIO_DISC_TIMEOUT
-   .config:190:warning: symbol value 'n' invalid for FAT_DEFAULT_CODEPAGE
-   .config:241:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
-   .config:335:warning: symbol value 'n' invalid for AIC79XX_DEBUG_MASK
-   .config:344:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
-   .config:426:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
-   .config:596:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
-   .config:618:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
-   .config:712:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
-   .config:752:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
-   .config:770:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
-   .config:790:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
-   .config:810:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
-   .config:823:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
-   .config:860:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
-   .config:875:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
-   .config:884:warning: symbol value 'n' invalid for NET_EMATCH_STACK
-   .config:886:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
-   .config:917:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_Y
-   .config:1139:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
-   .config:1233:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
-   .config:1245:warning: symbol value 'n' invalid for USB_GADGET_STORAGE_NUM_BUFFERS
-   .config:1403:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
-   .config:1541:warning: symbol value 'n' invalid for WATCHDOG_OPEN_TIMEOUT
-   .config:1550:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
-   .config:1686:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
-   .config:1717:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
-   .config:1805:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
-   .config:1972:warning: symbol value 'n' invalid for KCOV_IRQ_AREA_SIZE
-   .config:2126:warning: symbol value 'n' invalid for RCU_FANOUT_LEAF
-   .config:2231:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
-   .config:2274:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
-   .config:2465:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
-   .config:2585:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
-   .config:2775:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
-   .config:2836:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
-   .config:2873:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
-   .config:2887:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
-   .config:2896:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
-   .config:2920:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
-   .config:3025:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
-   .config:3062:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
-   .config:3074:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
-   .config:3302:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
-   .config:3394:warning: symbol value 'n' invalid for MTD_REDBOOT_DIRECTORY_BLOCK
-   .config:3401:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
-   .config:3404:warning: symbol value 'n' invalid for INET_TABLE_PERTURB_ORDER
-   .config:3448:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
-   .config:3530:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
-   .config:3564:warning: symbol value 'n' invalid for UCLAMP_BUCKETS_COUNT
-   .config:3640:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
-   .config:3680:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
-   .config:3713:warning: symbol value 'n' invalid for DE2104X_DSL
-   .config:3724:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
-   .config:3970:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
-   .config:4097:warning: symbol value 'n' invalid for CMA_AREAS
-   .config:4114:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
-   .config:4149:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_X
-   .config:4265:warning: symbol value 'n' invalid for RIONET_RX_SIZE
-   .config:4408:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
-   .config:4445:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
-   .config:4551:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
-   .config:4565:warning: symbol value 'n' invalid for IBM_EMAC_TXB
-   .config:4947:warning: symbol value 'n' invalid for ARCH_MMAP_RND_BITS
-   .config:5030:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
-   .config:5051:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
-   .config:5144:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
-   .config:5208:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
-   .config:5301:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
-   .config:5319:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
-   .config:5392:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
-   .config:5433:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
-   .config:5568:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
-   .config:5575:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
-   .config:5607:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
-   .config:5699:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
-   .config:5706:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
-   .config:5729:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
-   .config:5933:warning: symbol value 'n' invalid for SERIAL_8250_RUNTIME_UARTS
-   .config:6028:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
-   .config:6099:warning: symbol value 'n' invalid for SND_MAX_CARDS
-   .config:6193:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
-   .config:6195:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
-   .config:6218:warning: symbol value 'n' invalid for RCU_BOOST_DELAY
-   .config:6553:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
-   .config:6639:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MAX
-   .config:6698:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
-   .config:6739:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
-   .config:6746:warning: symbol value 'n' invalid for DVB_MAX_ADAPTERS
-   .config:6761:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
-   .config:6879:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
-   .config:7073:warning: symbol value 'n' invalid for LOCKDEP_BITS
-   .config:7096:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_MAX_TAGS
-   .config:7104:warning: symbol value 'n' invalid for IBM_EMAC_RXB
-   .config:7163:warning: symbol value 'n' invalid for SERIAL_ARC_NR_PORTS
-   .config:7198:warning: symbol value 'n' invalid for SCSI_MESH_RESET_DELAY_MS
-   .config:7199:warning: symbol value 'n' invalid for RIONET_TX_SIZE
-   .config:7337:warning: symbol value 'n' invalid for SCSI_MPT3SAS_MAX_SGE
-   .config:7477:warning: symbol value 'n' invalid for PANEL_LCD
-   .config:7508:warning: symbol value 'n' invalid for RCU_FANOUT
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
