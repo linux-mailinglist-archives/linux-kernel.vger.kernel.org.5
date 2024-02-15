@@ -1,188 +1,150 @@
-Return-Path: <linux-kernel+bounces-67729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D25C856FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:01:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B808856FBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:01:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2401B21752
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:01:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 249EF1F24FAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC791420B8;
-	Thu, 15 Feb 2024 22:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08802145349;
+	Thu, 15 Feb 2024 22:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GW94aQAm"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mrTVD4SX"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7719013DB92;
-	Thu, 15 Feb 2024 22:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62351145343;
+	Thu, 15 Feb 2024 22:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708034473; cv=none; b=Q6AwkAsu8wmZ1ionzg8C2dnZbssV0C05f/CBU7lxTEuI4GiZcb+jR0lFLeTcd1H9cdNw7lceDkQ/8s3wZOGCYeh8hL8ure6HVNALVVmIaDyUZmpdVAA0qRzPmO9J2JDMwUHpTuRlV3UJs03hOUCVseAD1W3LDUMvvYlIjbzKQnI=
+	t=1708034485; cv=none; b=S+RopS1caIP32QPlaemdrWd/A6Ae2poJh/LCrKMT9ShSkJpWx5n8e2sn0ZcudgsDtjQ3AEC+uDNaDfJaYiSSNI8r9nO521lIBTVDsTyUHM/z91NqyhIvwC/iiavzJ10lgNdbygcuXvNVrnTrSiSWJzWM6X5oFUvhrFatxak0Ers=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708034473; c=relaxed/simple;
-	bh=r+fF7hspTcauMVJ6ENMToSqRGVf6qDI5uFjl4h27hAM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZlNVU/QdeSJRCul54X1ZyO6xtCUfMrqfkKv2TGq9QAAufeTIu8gwUoGdlzquzhJfwcj/ipb0XTEsV2bZ0DPDskMbohzYrhx4Lm6kWaML3OOhFdZwdgvmjehQjcClAyjbEIXdQPmMcMZ08bzy/2w4QiIVsizsHmk2W09Kz1d6Gdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GW94aQAm; arc=none smtp.client-ip=209.85.216.42
+	s=arc-20240116; t=1708034485; c=relaxed/simple;
+	bh=OcYqFODoDR5uTB4YAqC17ztNUWqOXrTuBR+Bfxt73ck=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DSzG4NdyVBDSdWRZC4p7xbONuMhN8e/FnzWoeDHIpH6JMEpOUgWdQ//L7Hf7+qfkSy3yeIZPjjI8tCx5eUw4wCljh1xHYW0uAERcLr8jpdBuSdxgoilrU9fgoFzoCUc61hpJ18kSyhLku5u/VTgdf1PXfgmUR2BrgqSivkGex3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mrTVD4SX; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-296cca9169bso1173304a91.3;
-        Thu, 15 Feb 2024 14:01:12 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1db559a5e1fso12581545ad.1;
+        Thu, 15 Feb 2024 14:01:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708034472; x=1708639272; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zMw8ym7Hes5nA0a7OJqANqfyz//pYIxa/w4OlCDzeSo=;
-        b=GW94aQAmzsoSd5vlP3RBwLdJgdtzvLK2Vca4Du4/QJ7+MOxbPM+DhVSrGHuL1spbdt
-         MjqSR8651mH4zaZIRdQ1OA7cdpRWKab3aX21Hz4gm9UmOiQIGxj7TPD785h575Zgzd2k
-         LfpXKKaVEkzDb2PjIj8qOQW2Chz4VutITKUPXr+u1sGXpsQB/6uRimYKgiH7VnT4En+8
-         7+AKEBfQKYLX5OFnz0i9iJtQsKPAbun25DOzKTE/7HVBKqh1OMA/xYJ1HaUh7DIknE0g
-         5658XqlMSNcaQH3pTKZFSvelbLsqspthoBObMIv4skuOOSslWoYc294AwLdRok4CqtIw
-         8zoQ==
+        d=gmail.com; s=20230601; t=1708034483; x=1708639283; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7c5OHGhHTojwaEyoQ5DwBBrFP7ln6xQB8UIBfm95hg0=;
+        b=mrTVD4SX0A6FsLnrXKz2dR2BZhgtmupj6N4nA9bLoLw/Gs72YKa7YNnjca4FZh2gzZ
+         yEz7c5N3fuytyIBA8qw7ayZT+79QJdBR4r3IH013PdoQZEWM1GB5h9NdT7tgwPcG4NC8
+         JX4g/jA/bWh6VxwHJ/YXvoC9mqaYIeE06Q+Z5AlKyTyqmKmXra2kl3Pn1ZHctzbXlP9l
+         ns9MKO1cP4xSwCYL398dMmnRfZ3MhbfRG3OMfKoM41leMc4rEqC+UUZMae+gVMjtaO4d
+         Y5iMe5OxCRMdHYBGhGR0j+QeKOlgFESYaqlt2Wby307LwkZFLDbInVYl0jsgn4/4B8Xg
+         g1Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708034472; x=1708639272;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zMw8ym7Hes5nA0a7OJqANqfyz//pYIxa/w4OlCDzeSo=;
-        b=a9pArIS5WsnjXDdgGzTPSSzsKGYDKExRBIQeKt7pwLZDI1CmSjCahdg3TjrpjbIf8p
-         KYnJSQANmAlt00fKpJOBK3KaW1iBb7OChmg/diKVTfeV21lLEWdXAwbdkCxRJy+9nUZF
-         R2JNDikOqTHBSz0rLErvm9wXJtHF5yxdh4J0GsmL9ETxysOhEd0gjBFZ7WuEdtEkTP5y
-         ySWZKdVPCV8mOEymb5SAIXeHSB5UGAlbavv15dHjBpifJ2rc9XUk43Vi7ehBKtaqh4+Z
-         +FY65Rz1gE0ARyvp7vnbReGiNa1zU2Y76qhOE7xDSYfEou15WDfj7jhJFxALmWvCTdrz
-         7s1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWuDpdoS/mNA1/457CpH8QJK/m3YVluaZ3m2MjyLR74M3eX/jnUDPmpnwSnOtwniMvztxf8J0qYYO5aJUk2/0Xh9NV5HwwEkyTP1hOrVuRXHoTfQykoToX7DWU4hp4zs11o66s9KmeE+TlMurX00zJzBRnz8fVpXwkFnoAytkLVt/xhQg==
-X-Gm-Message-State: AOJu0Yz7Q3HMYChJHh76XwuSfYZYlpsivoiHlIwlu/c8R4vJ/6QV0HMJ
-	ppu6y6QVs2aI8/ZWdWoM6HlWCb6MHkoYzymTxd8RMm0o7KTbdiZ05TIJyKGr/lQL1+7AF1bnlRz
-	ew/PHgpdJi1rKi48guNtfAbGM2w==
-X-Google-Smtp-Source: AGHT+IEi646NKnhmT37pZ1NAnDETQM7w7aM9iIytbbEJKQ+CWwALKbge6VymBHYk2T5dOZHHUtCJikXQx1ipCutpDHw=
-X-Received: by 2002:a17:90a:c08f:b0:299:21ef:6b5a with SMTP id
- o15-20020a17090ac08f00b0029921ef6b5amr1710226pjs.24.1708034471706; Thu, 15
- Feb 2024 14:01:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708034483; x=1708639283;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7c5OHGhHTojwaEyoQ5DwBBrFP7ln6xQB8UIBfm95hg0=;
+        b=YsxiBEd1AfatAbbpm2UA7A61pYM7zYaa2ap6/lGTUyHHfY3ipSgtrJPuYrZdrPIr0o
+         37e0eYYwSFD/AeWt414e7H/Z+mjvOaqsziLZFTJXKBIHhj1ev9+dCCACN2ta4EXq60y9
+         4k8cjNcfYKEl+nimaEyj8H+ih94qQVIG6pPIcDUTgm7014NKKTaL5CdyKbTfQRyh+Mkv
+         lwwVpn5m2Dfqstk7EXqGGg045J4trDiR5VTX3QXA9fQ3QggsabmblJJiz/3IUuxtE7d7
+         MDI7uFDmNMVK9j8iAW9WCWM7c4MQIeHeF0iccjUK+indNboUgy7ZCSZ7uxv7hVmq+DMX
+         SmmA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5E3FJnpjGmthmAvpcAOCTbb9hloJGoabqczNZD4ws5rnzOEVjMNg+b8oPDWBET8gqfQrg3Jotm9DrZMP7zl8YIH+cRJiMAXDNP/fXJFsQDx3riyjwyRGC7w9PC9Tknug6Ta+G
+X-Gm-Message-State: AOJu0Yx4DpZltqT8E5Wslcx5avs6jfn9Xod/HvKL8TZflAIEJu5Nvzuk
+	pfD5Cppv/k/GxsdboqO/FwR36ENAp7PEKa6cZpS5aqUJ/TYOmbPm
+X-Google-Smtp-Source: AGHT+IEVOQzSdXmkeTX6ct0Ep/o6OLg+ixSVI4b7xrZU0uKBOwyKAaybdG1GxRqNVHW2h9rr6EqF0Q==
+X-Received: by 2002:a17:903:2301:b0:1d9:7095:7e1f with SMTP id d1-20020a170903230100b001d970957e1fmr3998642plh.67.1708034483328;
+        Thu, 15 Feb 2024 14:01:23 -0800 (PST)
+Received: from jmaxwell.remote.csb ([203.220.178.35])
+        by smtp.gmail.com with ESMTPSA id mm4-20020a1709030a0400b001d916995423sm1683384plb.99.2024.02.15.14.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 14:01:22 -0800 (PST)
+From: Jon Maxwell <jmaxwell37@gmail.com>
+To: jesse.brandeburg@intel.com
+Cc: anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jmaxwell37@gmail.com
+Subject: [net-next v4] intel: make module parameters readable in sys filesystem
+Date: Fri, 16 Feb 2024 09:01:01 +1100
+Message-Id: <20240215220101.248023-1-jmaxwell37@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk> <20240207224546.44030-1-frut3k7@gmail.com>
- <20240207224546.44030-2-frut3k7@gmail.com> <cd8c2f79-2307-4ad8-90c7-747d40f14ede@linaro.org>
-In-Reply-To: <cd8c2f79-2307-4ad8-90c7-747d40f14ede@linaro.org>
-From: frut3k7 <frut3k7@gmail.com>
-Date: Thu, 15 Feb 2024 23:01:00 +0100
-Message-ID: <CAKEyCaAy9U_qQ=pXPYaGetEuuuVuoejxjKPrG92fBFauy1wwuw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: trivial-devices: Add qca,qca4024
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Robert Marko <robimarko@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Mark Brown <broonie@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Peter Yin <peteryin.openbmc@gmail.com>, 
-	Patrick Rudolph <patrick.rudolph@9elements.com>, Michal Simek <michal.simek@amd.com>, 
-	Marek Vasut <marex@denx.de>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Lukas Wunner <lukas@wunner.de>, Fabio Estevam <festevam@denx.de>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-The device I use has the QCA4024 chip connected via the spi controller:
-        blsp1_spi4: spi@78b8000 {
-            compatible =3D "qcom,spi-qup-v2.2.1";
-            #address-cells =3D <1>;
-            #size-cells =3D <0>;
-            reg =3D <0x78b8000 0x600>;
-            interrupts =3D <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
-            clocks =3D <&gcc GCC_BLSP1_QUP4_SPI_APPS_CLK>,
-                 <&gcc GCC_BLSP1_AHB_CLK>;
-            clock-names =3D "core", "iface";
-            dmas =3D <&blsp_dma 18>, <&blsp_dma 19>;
-            dma-names =3D "tx", "rx";
-            status =3D "disabled";
-        };
+Linux users sometimes need an easy way to check current values of module
+parameters. For example the module may be manually reloaded with different
+parameters. Make these visible and readable in the /sys filesystem to allow
+that. But don't make the "debug" module parameter visible as debugging is
+enabled via ethtool msglvl.
 
-and apart from setting the frequency and gpio there is nothing else:
-        &blsp1_spi4 {
-            status =3D "okay";
+Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+---
+V2: Remove the "debug" module parameter as per Andrew Lunns suggestion.
+V3: Correctly format v2.
+V4: Add ethtool msglvl to message. Remove deprecated ixgbe max_vfs
+ drivers/net/ethernet/intel/e100.c             | 4 ++--
+ drivers/net/ethernet/intel/igb/igb_main.c     | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-            pinctrl-0 =3D <&spi_3_pins &quartz_pins>;
-            pinctrl-names =3D "default";
+diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
+index 01f0f12035caeb7ca1657387538fcebf5c608322..3fcb8daaa2437fa3fe7b98ba9f606dbbb1844e58 100644
+--- a/drivers/net/ethernet/intel/e100.c
++++ b/drivers/net/ethernet/intel/e100.c
+@@ -171,8 +171,8 @@ static int debug = 3;
+ static int eeprom_bad_csum_allow = 0;
+ static int use_io = 0;
+ module_param(debug, int, 0);
+-module_param(eeprom_bad_csum_allow, int, 0);
+-module_param(use_io, int, 0);
++module_param(eeprom_bad_csum_allow, int, 0444);
++module_param(use_io, int, 0444);
+ MODULE_PARM_DESC(debug, "Debug level (0=none,...,16=all)");
+ MODULE_PARM_DESC(eeprom_bad_csum_allow, "Allow bad eeprom checksums");
+ MODULE_PARM_DESC(use_io, "Force use of i/o access mode");
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 4df8d4153aa5f5ce7ac9dd566180d552be9f5b4f..31d0a43a908c0a4eab4fe1147064a5f5677c9f0b 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -202,7 +202,7 @@ static struct notifier_block dca_notifier = {
+ #endif
+ #ifdef CONFIG_PCI_IOV
+ static unsigned int max_vfs;
+-module_param(max_vfs, uint, 0);
++module_param(max_vfs, uint, 0444);
+ MODULE_PARM_DESC(max_vfs, "Maximum number of virtual functions to allocate per physical function");
+ #endif /* CONFIG_PCI_IOV */
+ 
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index bd541527c8c74d6922e8683e2f4493d9b361f67b..7d09d89bb4c01d1d7b600724b6575892212b5e29 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -153,7 +153,7 @@ MODULE_PARM_DESC(max_vfs,
+ #endif /* CONFIG_PCI_IOV */
+ 
+ static bool allow_unsupported_sfp;
+-module_param(allow_unsupported_sfp, bool, 0);
++module_param(allow_unsupported_sfp, bool, 0444);
+ MODULE_PARM_DESC(allow_unsupported_sfp,
+ 		 "Allow unsupported and untested SFP+ modules on 82599-based adapters");
+ 
+-- 
+2.39.3
 
-            /* Qualcomm QCA4024 IoT */
-            iot@3 {
-                compatible =3D "qca,qca4024";
-                reg =3D <0>;
-                spi-max-frequency =3D <24000000>;
-            };
-        };
-
-        &tlmm {
-            spi_3_pins: spi-3-state {
-                spi-pins {
-                    pins =3D "gpio50", "gpio52", "gpio53";
-                    function =3D "blsp3_spi";
-                    drive-strength =3D <8>;
-                    bias-disable;
-                };
-
-                cs-pins {
-                    pins =3D "gpio22";
-                    function =3D "blsp3_spi2";
-                    drive-strength =3D <8>;
-                    bias-disable;
-                };
-            };
-
-            quartz_pins: quartz-state {
-                interrupt-pins {
-                    pins =3D "gpio48";
-                    function =3D "gpio";
-                    bias-disable;
-                    input;
-                };
-
-                reset-pins {
-                    pins =3D "gpio21";
-                    function =3D "gpio";
-                    bias-disable;
-                    output-high;
-                };
-            };
-        };
-
-On Thu, Feb 8, 2024 at 8:32=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 07/02/2024 23:45, Pawe=C5=82 Owoc wrote:
-> > Add Qualcomm QCA4024 to trivial devices.
-> >
-> > Signed-off-by: Pawe=C5=82 Owoc <frut3k7@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/D=
-ocumentation/devicetree/bindings/trivial-devices.yaml
-> > index 79dcd92c4a43..c6362e981920 100644
-> > --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> > +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> > @@ -309,6 +309,8 @@ properties:
-> >            - plx,pex8648
-> >              # Pulsedlight LIDAR range-finding sensor
-> >            - pulsedlight,lidar-lite-v2
-> > +            # Qualcomm QCA4024 Multi-mode Bluetooth and 802.15.4 SoC
-> > +          - qca,qca4024
->
->
-> As I wrote, Bluetooth chip is not a trivial device. This one
-> particular exposes several interfaces to the host, needs a clock and
-> power supply.
->
-> Best regards,
-> Krzysztof
->
 
