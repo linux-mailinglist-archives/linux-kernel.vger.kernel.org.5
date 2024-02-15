@@ -1,125 +1,169 @@
-Return-Path: <linux-kernel+bounces-66848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768B685628D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:08:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7721285625B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:58:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D223B30D3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D0B5283202
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63A12C53E;
-	Thu, 15 Feb 2024 11:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyqziwEu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C873A12BE9A;
+	Thu, 15 Feb 2024 11:58:45 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B348412BF3D;
-	Thu, 15 Feb 2024 11:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F367912B15B;
+	Thu, 15 Feb 2024 11:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998264; cv=none; b=dyNC1F4kg5QTGqMQ1hKgr7ZYZt+k9zG3+0aQy9g5HtVtb8XZOZAIOZkmXkI93Vz+x0AtUG6UobZpExU8RIT74Jhq5XkXg01xParqFm+lQBaYHJhmA8XIlj5aR/FOvSJg2sUgWPlBZyuE/i1FpGn+dmwIW1bNZogA1V9haUv7vWI=
+	t=1707998325; cv=none; b=HLvkEJVtPiPvniEnv9By31iVrnPZ6Mu/3YLnc7sh8zuHEfIzv1nEVcP5FZ296edT/C8k4jKYYOatgONLMLTXxMAF9ITJyEIvspKfM7dflOQbMPwDKnibGPd7SWjRfzP5j1c+8h8uIfFPIRNZKMo+sUvhNeHYyIJM7YSgC3OjMzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998264; c=relaxed/simple;
-	bh=ZjS4FGsh59FRrV3bPIOZFy21FV9/UD4J8wYNJ7V5MEQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IzNE1lCoUL9WYKK11XlRu5FB5ykvMcKT4+S4iDK7nExdVOgGlHzHkmmlS5a4gHoKLqGEMzoLcKwqh1auStdul1jJZwsw5XdDtEw+d1kkfWnVpGqxMbVevux6jSak0TXlbzTwOYnZWBvDVzivMkraQA+XCJ7LWEYB9SoV0TmGRvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fyqziwEu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227AEC433C7;
-	Thu, 15 Feb 2024 11:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707998264;
-	bh=ZjS4FGsh59FRrV3bPIOZFy21FV9/UD4J8wYNJ7V5MEQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fyqziwEu8JdiAmob0PH9svSFBnqigFzaCsruuY6/sSL8n/lx13X7r+aHvc1fR6ku0
-	 ItZYqHANHGzkuMaai6nZniqcTF0IqTmFZy0R6qtJguVrm1hHSwNtdZpkqPmttdPXGo
-	 XJ8puKluzojxXDHIQIJHsDA75WWcxlWlka7Yd8CQK9MULvbOGdm/+G3RIvIVlAq7FR
-	 GVwQrmyu742daoxjOCs9BO7VF3FrlNa3VSMbpuJYIbTnWUSE0neWsxZklEKiU/1/fd
-	 MgDmUWBG5Bg+CFmCTaeMP4Q4TBHmFm354vPdharLHmZedzJo+89/aOyGTdOQY/O2qM
-	 /WHWZ0IHsL82A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1raaN3-003U4v-Qq;
-	Thu, 15 Feb 2024 11:57:41 +0000
-Date: Thu, 15 Feb 2024 11:57:41 +0000
-Message-ID: <86mss23poq.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Anup Patel <apatel@ventanamicro.com>,	Paul Walmsley
- <paul.walmsley@sifive.com>,	Palmer Dabbelt <palmer@dabbelt.com>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,	Rob Herring
- <robh+dt@kernel.org>,	Atish Patra <atishp@atishpatra.org>,	Andrew Jones
- <ajones@ventanamicro.com>,	Sunil V L <sunilvl@ventanamicro.com>,	Saravana
- Kannan <saravanak@google.com>,	Anup Patel <anup@brainfault.org>,
-	linux-riscv@lists.infradead.org,	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,	devicetree@vger.kernel.org,	Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,	Frank Rowand
- <frowand.list@gmail.com>,	Conor Dooley <conor+dt@kernel.org>,
-	"Ahmed S.\ Darwish" <darwi@linutronix.de>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-In-Reply-To: <87bk8ig6t2.ffs@tglx>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
-	<CAK9=C2Vwtj2gZg-P73yLMxu0rPXQ3YrRRuxq6HcpHMXgs-jHaw@mail.gmail.com>
-	<87bk8ig6t2.ffs@tglx>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1707998325; c=relaxed/simple;
+	bh=K7xEpsB2cMveNQiHzXYyaP1JLMAMdzqrLnMo4zJBzco=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Mjug8V4lDVfv4U4jjuCWYyaDJ7uZFnDrtKs3exMYD/iZ70oyptrbKrPP/U+adUJlxHA1iUYcDxYXctcPWlO9d9u+QhSLlQnXdfUf3Zx8pqmooV3CSmNjE9xYPFO6Kp8fHCAN3aGpjGJvRwn7FiqF6Z/3U0kaPbR8e0EANLCDxR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TbD5W4fnRz6K8wc;
+	Thu, 15 Feb 2024 19:55:11 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 43C96140B55;
+	Thu, 15 Feb 2024 19:58:39 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 15 Feb
+ 2024 11:58:38 +0000
+Date: Thu, 15 Feb 2024 11:58:38 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+CC: <linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>, "Alison
+ Schofield" <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan Williams
+	<dan.j.williams@intel.com>, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v2 2/4] efi/cper, cxl: Make definitions and structures
+ global
+Message-ID: <20240215115838.000050b1@Huawei.com>
+In-Reply-To: <20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
+References: <20240109034755.100555-1-Smita.KoralahalliChannabasappa@amd.com>
+	<20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, apatel@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com, bjorn@kernel.org, robh+dt@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, darwi@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 14 Feb 2024 19:54:49 +0000,
-Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, 9 Jan 2024 03:47:53 +0000
+Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> wrote:
+
+> In preparation to add tracepoint support, move protocol error UUID
+> definition to a common location and make CXL RAS capability struct
+> global for use across different modules.
 > 
-> Anup!
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+> v2:
+> 	No change.
+> ---
+>  drivers/firmware/efi/cper_cxl.c | 11 -----------
+>  drivers/firmware/efi/cper_cxl.h |  7 ++-----
+>  include/linux/cper.h            |  4 ++++
+>  include/linux/cxl-event.h       | 11 +++++++++++
+>  4 files changed, 17 insertions(+), 16 deletions(-)
 > 
-> On Sat, Jan 27 2024 at 21:50, Anup Patel wrote:
-> >> Changes since v11:
-> >>  - Rebased on Linux-6.8-rc1
-> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert ARM
-> >>    MSI handling to per device MSI domains" series by Thomas.
-> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH19,
-> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
-> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@linutronix.de/)
-> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism.
-> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
-> >>    platform devices.
-> >
-> > I have rebased and included 13 patches (which add per-device MSI domain
-> > infrastructure) from your series [1]. In this series, the IMSIC driver
-> > implements the msi_parent_ops and APLIC driver implements wired-to-msi
-> > bridge using your new infrastructure.
-> >
-> > The remaining 27 patches of your series [1] requires testing on ARM
-> > platforms which I don't have. I suggest these remaining patches to
-> > go as separate series.
-> 
-> Of course. Darwi (in Cc) is going to work on the ARM parts when he
-> returns from vacation. I'm going to apply the infrastructure patches
-> (1-13) in the next days so they are out of the way for you and Darwi,
-> unless someone has any objections.
+> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
+> index a55771b99a97..4fd8d783993e 100644
+> --- a/drivers/firmware/efi/cper_cxl.c
+> +++ b/drivers/firmware/efi/cper_cxl.c
+> @@ -18,17 +18,6 @@
+>  #define PROT_ERR_VALID_DVSEC			BIT_ULL(5)
+>  #define PROT_ERR_VALID_ERROR_LOG		BIT_ULL(6)
+>  
+> -/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
+> -struct cxl_ras_capability_regs {
+> -	u32 uncor_status;
+> -	u32 uncor_mask;
+> -	u32 uncor_severity;
+> -	u32 cor_status;
+> -	u32 cor_mask;
+> -	u32 cap_control;
+> -	u32 header_log[16];
+> -};
+> -
+>  static const char * const prot_err_agent_type_strs[] = {
+>  	"Restricted CXL Device",
+>  	"Restricted CXL Host Downstream Port",
+> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
+> index 86bfcf7909ec..6f8c00495708 100644
+> --- a/drivers/firmware/efi/cper_cxl.h
+> +++ b/drivers/firmware/efi/cper_cxl.h
+> @@ -7,14 +7,11 @@
+>   * Author: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+>   */
+>  
+> +#include <linux/cxl-event.h>
+> +
+>  #ifndef LINUX_CPER_CXL_H
+>  #define LINUX_CPER_CXL_H
+>  
+> -/* CXL Protocol Error Section */
+> -#define CPER_SEC_CXL_PROT_ERR						\
+> -	GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,	\
+> -		  0x4B, 0x77, 0x10, 0x48)
+> -
+>  #pragma pack(1)
+>  
+>  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
+> diff --git a/include/linux/cper.h b/include/linux/cper.h
+> index c1a7dc325121..2cbf0a93785a 100644
+> --- a/include/linux/cper.h
+> +++ b/include/linux/cper.h
+> @@ -89,6 +89,10 @@ enum {
+>  #define CPER_NOTIFY_DMAR						\
+>  	GUID_INIT(0x667DD791, 0xC6B3, 0x4c27, 0x8A, 0x6B, 0x0F, 0x8E,	\
+>  		  0x72, 0x2D, 0xEB, 0x41)
+> +/* CXL Protocol Error Section */
+> +#define CPER_SEC_CXL_PROT_ERR						\
+> +	GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,	\
+> +		  0x4B, 0x77, 0x10, 0x48)
+>  
+>  /*
+>   * Flags bits definitions for flags in struct cper_record_header
+> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> index 6ce839c59749..3a41dd5723e8 100644
+> --- a/include/linux/cxl-event.h
+> +++ b/include/linux/cxl-event.h
+> @@ -141,6 +141,17 @@ struct cxl_cper_event_rec {
+>  	union cxl_event event;
+>  } __packed;
+>  
+> +/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
+> +struct cxl_ras_capability_regs {
+> +	u32 uncor_status;
+> +	u32 uncor_mask;
+> +	u32 uncor_severity;
+> +	u32 cor_status;
+> +	u32 cor_mask;
+> +	u32 cap_control;
+> +	u32 header_log[16];
+> +};
+> +
+>  struct cxl_cper_event_info {
+>  	struct cxl_cper_event_rec rec;
+>  };
 
-FWIW, I've fiven the first 13 patches a go on two of the most
-problematic platforms (Huawei's D05, and Marvell's McBin). Nothing
-immediately broke, so it's obviously perfect.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
