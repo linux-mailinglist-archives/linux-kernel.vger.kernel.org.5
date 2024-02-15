@@ -1,196 +1,187 @@
-Return-Path: <linux-kernel+bounces-66542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A287855E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:30:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4A5855E1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:30:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94BB51F21770
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:30:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0DAB1C2262F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A390D1802B;
-	Thu, 15 Feb 2024 09:30:19 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F58817730;
+	Thu, 15 Feb 2024 09:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bnrl+yuV"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6951755E;
-	Thu, 15 Feb 2024 09:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7AE17551
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707989419; cv=none; b=C71ZOkP/GuMLST6U06Kf2MYGpbx2BfJTbMPfswHf3GyeIjFxSmH68e//Y+7m3fMAeE0jhtCp9TvFeJNhKtJIWScrP4/bdtOfzV93h3m2QiaDfr5wK5PrKxhsVigI8wkGJ3/FxJtvxUfSCsr8zaqJ/5UgfPi29VNCWvVwHiu0CUY=
+	t=1707989403; cv=none; b=Ta7WWxuu0GAyTt/G/S/AAIS+MhORkYWfNlcmjUZSBjwBTrDm4A7ZfeklgNi2GsxvsJe+4zCUWfX4urEMzx/VJhqNyydW2UvmDeOsQn+AbfMnjom8eKanO3xjDIJR7iAsuvXVbTRqWd3EH0m9GjNMs9409YYBRuMDhYoD6m6EOro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707989419; c=relaxed/simple;
-	bh=Ik1XoRnguygiVaidD4Z1D3ctYb5//n0o9fEn7++ICzI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=utx8hq4QG7oQV7fNWSaT/ZWmBkYSyY6RrxsntwoHQqK13q2uOyA+v8jznLHCJF9re7JhI9Bjysk8x5+aYwaotMZb4xG/8Un4dcdDBwh9lKdC9Osi2jo7vN5Mhr6mlJlWmb8yqyHiXkS9dpri5QOTYOGRRmNJ1sv7VVq4iyXKEng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tb8XZ6KKxz9y4yW;
-	Thu, 15 Feb 2024 17:14:54 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id E5DA41408C5;
-	Thu, 15 Feb 2024 17:30:11 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwDnICWT2c1lIr+GAg--.1387S2;
-	Thu, 15 Feb 2024 10:30:11 +0100 (CET)
-Message-ID: <fefdfdf75163992ecba6292cfd6ad0e8321ee74a.camel@huaweicloud.com>
-Subject: Re: [PATCH v9 19/25] integrity: Move
- integrity_kernel_module_request() to IMA
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Stefan Berger <stefanb@linux.ibm.com>, Paul Moore <paul@paul-moore.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, chuck.lever@oracle.com, 
-	jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, 
-	tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, 
-	dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, 
-	jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org, 
-	casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu
-	 <roberto.sassu@huawei.com>
-Date: Thu, 15 Feb 2024 10:29:52 +0100
-In-Reply-To: <1d8f8990-43e2-4afc-835e-629c7328d497@linux.ibm.com>
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
-	 <20240115181809.885385-20-roberto.sassu@huaweicloud.com>
-	 <fd6ddc3d-e5d3-4b9c-b00b-ac2b1f22d653@linux.ibm.com>
-	 <CAHC9VhTY=X7z5SRQZzFe25FGB2E3FBBkuZ_YYA1+ETyr7pv=tA@mail.gmail.com>
-	 <7940b9d0-3133-4b08-b397-ad9ee34e3b34@linux.ibm.com>
-	 <b95967cd1aa2a4e751a8be3d23f72b7e1db0e4b6.camel@huaweicloud.com>
-	 <1d8f8990-43e2-4afc-835e-629c7328d497@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1707989403; c=relaxed/simple;
+	bh=sD1bsJwMjAFQ13ViHkkmSIV96Jgd7fYEtMS8umuilg0=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=JWjNWpjviA6Mfk5UX4QE9+a166l9Mx1eYcFVTmOO5OTmZ5npS1sVdiUFZX5GKkCKbfX4F279E8v/kjbW47QcAip0ZdH/SH+R42cbLPNU8D/YONrMXLKtddgPqnhVT0/IEO1b6F9HSuQdv3TGtL0Z4LuzCJO+gUge0rArSKRq3N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bnrl+yuV; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d10ad265d5so8299251fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:30:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707989399; x=1708594199; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VmOpXYe614s1w+uX5FaR6Zt6hCQGhtbYPhMdt0CcCLo=;
+        b=Bnrl+yuVCsqw4eTWMKo6rcjFfj4MQqkw+i/n6v+T8v8OCXrxgUBuKMVqLmaHDya5eH
+         3VBmEe0SCvNmIdoAE8KSgUBLeN6Zg42DSTF599MyMWXG6RfzAlbRzgEl5r85hXiZeelU
+         mYaSjXHG+ExizlKAMBBKdtXaq3UjA6zx6kpnN0FHlzIcBUxkV8D1CzHTFKR1xF3z5XjA
+         Vj5gKrFfdFfBqr+SNTaVp8c778+eO8cMRx+CQcRGEousHUs2jXYvnRjKGX2UGP+YgpBg
+         Z0GELztWnJvDypduvVMPc1vsQYeRe+cy42cWKl2EvbgOM0l40ujNS/d1dEc14jmFc49x
+         KOeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707989399; x=1708594199;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VmOpXYe614s1w+uX5FaR6Zt6hCQGhtbYPhMdt0CcCLo=;
+        b=AcrBFAE4Y9mm+LPy9oNDzSNYJXNwxb3XgeJe8Iv/pdOJeHK8Ur0uxhFu8ZwzlvKIV1
+         Q01b8uG5l2z35HJF2d8btKgbG/8j76ceKyDUIlFE+UEoIywbfeEBH5Kk0xZZ9nAbFMag
+         yFqaF9OPRy3ezHDSxdtIB1hB+yf8hREBgEmoMQaeFsq7/qVY/1QdZx/zwNDyYwzT6yC2
+         6vxC+AzkQWODrrah2apMYs/iAHIIAQjH2LwAHWLi6Wq8yKolemMR+9Ka0+BbDGongYJ9
+         j/0wFFLMlGxBjy0pdrYtF4wz5Cu76lDjocL+ZDxPLBSrkIfP+F8UekYsnNj7a9IoGuFm
+         sZaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUipYjUbensAYjkAvuup+gOb0ZU0xqaG34cAP67ZJG4D3l5X5xrWqt8TknoUu1/yskKpDzwmdBpjXiR7WLsNRAWJ6X3u5Yf2Jp0AFlW
+X-Gm-Message-State: AOJu0YzO2QuwU1jSSI9WelTZ3/8HBleT8/9hB8jWS9zgW8C8lrDHI8GO
+	vE9sY47YLVLTz/7otv/kE28tZSa6+Kd10N5OS4TKCUeZWB/4HMBfng2ey2oh7Vk=
+X-Google-Smtp-Source: AGHT+IEuFGqFxGBfmmBUmEzoDATve7jHeXbEQRCoqEiqnF8PVK28X2sVOXLp6dDGXz+4L0UUY8TwFA==
+X-Received: by 2002:a19:ca01:0:b0:511:79ac:ec0f with SMTP id a1-20020a19ca01000000b0051179acec0fmr963353lfg.26.1707989398807;
+        Thu, 15 Feb 2024 01:29:58 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4589:7160:c264:fa3b? ([2a01:e0a:982:cbb0:4589:7160:c264:fa3b])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c468c00b004120b4c57c9sm1398694wmo.4.2024.02.15.01.29.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 01:29:58 -0800 (PST)
+Message-ID: <ffb16ef6-fc9a-42b1-b9c3-4e8f6b52d849@linaro.org>
+Date: Thu, 15 Feb 2024 10:29:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwDnICWT2c1lIr+GAg--.1387S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4xJFyfZw1ftw4UZw1xAFb_yoWrGr1kpF
-	W8ta95CFWUXrn8C3W8tw1xurW3K3yxGrsrWrn8JryfCrn09rnFvr42yF43uFyfCr48Jr10
-	gws7t34Iv3s8A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5Ze2QAAso
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
+Content-Language: en-US, fr
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar
+ <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-msm@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
+References: <20240215-topic-sm8650-gpu-v2-0-6be0b4bf2e09@linaro.org>
+ <20240215-topic-sm8650-gpu-v2-2-6be0b4bf2e09@linaro.org>
+ <CAA8EJprpYEhGi5b+uWGWtOa+qbSwUR8C0j9NLC+ah_-nvy-=Ng@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CAA8EJprpYEhGi5b+uWGWtOa+qbSwUR8C0j9NLC+ah_-nvy-=Ng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-02-13 at 11:31 -0500, Stefan Berger wrote:
->=20
-> On 2/13/24 03:57, Roberto Sassu wrote:
-> > On Mon, 2024-02-12 at 15:28 -0500, Stefan Berger wrote:
-> > >=20
-> > > On 2/12/24 12:56, Paul Moore wrote:
-> > > > On Mon, Feb 12, 2024 at 12:48=E2=80=AFPM Stefan Berger <stefanb@lin=
-ux.ibm.com> wrote:
-> > > > > On 1/15/24 13:18, Roberto Sassu wrote:
-> > > >=20
-> > > > ...
-> > > >=20
-> > > > > > +/**
-> > > > > > + * ima_kernel_module_request - Prevent crypto-pkcs1pad(rsa,*) =
-requests
-> > > > > > + * @kmod_name: kernel module name
-> > > > > > + *
-> > > > > > + * We have situation, when public_key_verify_signature() in ca=
-se of RSA > + * algorithm use alg_name to store internal information in ord=
-er to
-> > > > > > + * construct an algorithm on the fly, but crypto_larval_lookup=
-() will try
-> > > > > > + * to use alg_name in order to load kernel module with same na=
-me.
-> > > > > > + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kerne=
-l modules,
-> > > > > > + * we are safe to fail such module request from crypto_larval_=
-lookup().
-> > > > > > + *
-> > > > > > + * In this way we prevent modprobe execution during digsig ver=
-ification
-> > > > > > + * and avoid possible deadlock if modprobe and/or it's depende=
-ncies
-> > > > > > + * also signed with digsig.
-> > > > >=20
-> > > > > This text needs to some reformulation at some point..
-> > > >=20
-> > > > There is no time like the present.  If you have a suggestion I woul=
-d
-> > > > love to hear it and I'm sure Roberto would too.
-> > > >=20
-> > >=20
-> > > My interpretation of the issue after possibly lossy decoding of the
-> > > above sentences:
-> > >=20
-> > > Avoid a deadlock by rejecting a virtual kernel module with the name
-> > > "crypto-pkcs1pad(rsa,*)". This module may be requested by
-> > > crypto_larval_lookup() while trying to verify an RSA signature in
-> > > public_key_verify_signature(). Since the loading of the RSA module ma=
-y
-> > > itself cause the request for an RSA signature verification it will
-> > > otherwise lead to a deadlock.
-> >=20
-> > I can be even more precise I guess (I actually reproduced it). >
-> > Avoid a verification loop where verifying the signature of the modprobe
-> > binary requires executing modprobe itself. Since the modprobe iint-
-> > > mutex is already held when the signature verification is performed, a
-> > deadlock occurs as soon as modprobe is executed within the critical
-> > region, since the same lock cannot be taken again.
->=20
-> When ecdsa is used for signing files it could get stuck as well and=20
-> would need this patch:
->=20
-> diff --git a/security/integrity/ima/ima_main.c=20
-> b/security/integrity/ima/ima_main.c
-> index 45f1a102c599..2e71dc977d43 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -1110,7 +1110,9 @@ EXPORT_SYMBOL_GPL(ima_measure_critical_data);
->    */
->   static int ima_kernel_module_request(char *kmod_name)
->   {
-> -       if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) =3D=3D 0)
-> +       if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) =3D=3D 0 ||
-> +           strncmp(kmod_name, "crypto-ecdsa-nist-p", 19) =3D=3D 0 ||
-> +           strcmp(kmod_name, "cryptomgr") =3D=3D 0)
->                  return -EINVAL;
->=20
->          return 0;
->=20
-> Rejecting cryptomgr seems necessary in the ecdsa case though I am not=20
-> sure what the side effects of rejecting it all the time could be.
+On 15/02/2024 10:25, Dmitry Baryshkov wrote:
+> On Thu, 15 Feb 2024 at 11:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> Document the GPU SMMU found on the SM8650 platform.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+>>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> index a4042ae24770..3ad5c850f3bf 100644
+>> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+>> @@ -93,6 +93,7 @@ properties:
+>>                 - qcom,sm8350-smmu-500
+>>                 - qcom,sm8450-smmu-500
+>>                 - qcom,sm8550-smmu-500
+>> +              - qcom,sm8650-smmu-500
+>>             - const: qcom,adreno-smmu
+>>             - const: qcom,smmu-500
+>>             - const: arm,mmu-500
+>> @@ -508,7 +509,10 @@ allOf:
+>>     - if:
+>>         properties:
+>>           compatible:
+>> -          const: qcom,sm8550-smmu-500
+>> +          contains:
+>> +            enum:
+>> +              - qcom,sm8550-smmu-500
+>> +              - qcom,sm8650-smmu-500
+> 
+> Doesn't this cause warnings for non-GPU SMMU on this platform?
 
-Thanks. Ok, let's find a proper way once IMA/EVM are moved to the LSM
-infrastructure.
+No because it doesn't add those to required, it simply allows clock the properties.
 
-Roberto
-
->     Stefan
->=20
-> >=20
-> > This happens when public_key_verify_signature(), in case of RSA
-> > algorithm, use alg_name to store internal information in order to
-> > construct an algorithm on the fly, but crypto_larval_lookup() will try
-> > to use alg_name in order to load a kernel module with same name.
-> >=20
-> > Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
-> > we are safe to fail such module request from crypto_larval_lookup(),
-> > and avoid the verification loop.
-> >=20
-> > Roberto
-> >=20
-> >=20
+> 
+>>       then:
+>>         properties:
+>>           clock-names:
+>> @@ -544,7 +548,6 @@ allOf:
+>>                 - qcom,sdx65-smmu-500
+>>                 - qcom,sm6350-smmu-500
+>>                 - qcom,sm6375-smmu-500
+>> -              - qcom,sm8650-smmu-500
+>>                 - qcom,x1e80100-smmu-500
+>>       then:
+>>         properties:
+>>
+>> --
+>> 2.34.1
+>>
+> 
+> 
 
 
