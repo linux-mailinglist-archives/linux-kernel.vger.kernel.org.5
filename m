@@ -1,92 +1,86 @@
-Return-Path: <linux-kernel+bounces-66913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08786856384
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:45:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB0A856391
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B3E71C23744
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:45:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7981F25F4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3F112E1D8;
-	Thu, 15 Feb 2024 12:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/MtHXi8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0F312DD80;
+	Thu, 15 Feb 2024 12:45:28 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1496812DDBB;
-	Thu, 15 Feb 2024 12:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7202912BF1E
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708001088; cv=none; b=TXBKvnHy0p4CypsMPfyaP9/fUJ/jFdvuv92ss1EztO4gOiRNGZUiHWXeUty5Dm6BU/8RAEDIg/esI6V39ZmundsUlX7kG7w1V/mbZMH+SZirr4oMG1v9H/AqcFNoyekXerWQ8TawwAhbZOunH2K7zWccwikdczR40Sp0GxeDzmA=
+	t=1708001127; cv=none; b=IYxeVMUdV2EgUR2DQUdp+9UicEwtzUxy5otttWVFkPi1KVTISoT6E4P7UMizqk0AGZK78CcJZYU46UAnHGol2u2XXRpm6W6/2eZW4paYvxQR+RIrYEtlscWD3PvvuqiBR1cZK/NQgKtNc96u4d2ItjGfw8XwnBXju1RonpATyDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708001088; c=relaxed/simple;
-	bh=EdmufWQaVwffxLhQdQ6E7nT/EWdxxAEZpxmh/Eg8Yig=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=US1h/SeB38LekCG3quvX+XG6lrK5NOjPSnuf6hfduD9V+wedKK2ISeTJnwpVQJz+iQU6f25lUOAULorz9Sse7Aeq1jqwZDQ5pGWRUqJgbxWR5WRWALM2HGU5Ds9sKCD1sXkJzXgzDAfQVme1I37JJo/toQioeGJjJI7l5nuy6Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/MtHXi8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE682C433F1;
-	Thu, 15 Feb 2024 12:44:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708001087;
-	bh=EdmufWQaVwffxLhQdQ6E7nT/EWdxxAEZpxmh/Eg8Yig=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V/MtHXi8TXRaLI/EM3ODSpXgDDCPQdOxCps6ATcUHyNUss4BXT8xxpK5xF3T1kfC9
-	 mqEue4P6Ypu8e1Rv1EHR22aX0fYeal74X2pwdhVjjyxiolwBB6qMuy0bygf16ZpUWx
-	 m1YuhBdq3iINziHsfVCE4ax6YK/pBnifXyBfgwMvRcLWQ/tg5w5y1OK6dPFRIMHP3O
-	 RCcZj+UmU1eS3Kt0UqPvGR0DJNIpuPmOtCGiHP44Jf9vyo0UOuHeBRRSTx65SDRA4t
-	 lngLtn4MGguAQ9dwGzrSPX9y0Hj91DqI1Bb1lyyuUn6e9nWZT6CkLjMcmxE3FV+fen
-	 gr6tApkDqqlmw==
-From: Will Deacon <will@kernel.org>
-To: Marc Zyngier <maz@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Easwar Hariharan <eahariha@linux.microsoft.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Rob Herring <robh@kernel.org>,
-	"moderated list:ARM64 PORT AARCH64 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andre Przywara <andre.przywara@arm.com>
-Cc: kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM Neoverse N2 errata
-Date: Thu, 15 Feb 2024 12:44:38 +0000
-Message-Id: <170799764265.3746091.15823620803100752366.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240214175522.2457857-1-eahariha@linux.microsoft.com>
-References: <20240214175522.2457857-1-eahariha@linux.microsoft.com>
+	s=arc-20240116; t=1708001127; c=relaxed/simple;
+	bh=UzKmg5Hhf+KMfuB37xNJBpKPXOndS3x3f0mxLQwSk9Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CS05Q5oOQJ/GP+75cGp48tVOwMWdNNxW0GWTfpiuM2SALOxeTv5GHZIUXAPuej8m4s6RPJL46fvODLYXjapfmIPR5Yg4mTz1kAnZvV+rgm/ItHbScw2FxEd9M8oQAW6dbgAmzJKFZuGdsKiOjY2a0KR4tf7T1DenrTHa+lsiuJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rab7B-0003jZ-Iz; Thu, 15 Feb 2024 13:45:21 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rab77-000t5u-9s; Thu, 15 Feb 2024 13:45:17 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rab77-0007iB-0k;
+	Thu, 15 Feb 2024 13:45:17 +0100
+Message-ID: <8981ec7d30444d2127ee97f5c804f8837ae5c6ce.camel@pengutronix.de>
+Subject: Re: [PATCH v3 2/4] reset: simple: add support for Sophgo SG2042
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com,  conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com,  paul.walmsley@sifive.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org,  haijiao.liu@sophgo.com,
+ xiaoguang.xing@sophgo.com, guoren@kernel.org,  jszhang@kernel.org,
+ inochiama@outlook.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Date: Thu, 15 Feb 2024 13:45:17 +0100
+In-Reply-To: <1cfd7b3ba447942784c4f7aa595e962399e9f617.1706577450.git.unicorn_wang@outlook.com>
+References: <cover.1706577450.git.unicorn_wang@outlook.com>
+	 <1cfd7b3ba447942784c4f7aa595e962399e9f617.1706577450.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, 14 Feb 2024 17:55:18 +0000, Easwar Hariharan wrote:
-> Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
-> implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
-> suffers from all the same errata.
-> 
-> 
+On Di, 2024-01-30 at 09:50 +0800, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+>=20
+> Reuse reset-simple driver for the Sophgo SG2042 reset generator.
+>=20
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 
-Applied to arm64 (for-next/fixes), thanks!
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-[1/1] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM Neoverse N2 errata
-      https://git.kernel.org/arm64/c/fb091ff39479
+regards
+Philipp
 
-Cheers,
--- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
 
