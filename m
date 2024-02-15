@@ -1,170 +1,149 @@
-Return-Path: <linux-kernel+bounces-66352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE540855B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:16:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD5A7855B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52CE5B22823
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:16:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C72E2934EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECF8DDC4;
-	Thu, 15 Feb 2024 07:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A33DDC5;
+	Thu, 15 Feb 2024 07:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhBDojdl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="eWAkTknL"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E2BB33C5;
-	Thu, 15 Feb 2024 07:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F4BBA38
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707981383; cv=none; b=nRpfNzLahTsMmUaeN2iqA9e3RgqibcRYEa5cEV0lpnrxR7FzUMY7pWgHo2MJgXRV6IQB3UxyiXzJcqinPpFy+hW/9x2K7Gl8akJ7KtK4/XHzQ66Pz3Po7PfcHLCWmwhSfv7jKfp7IX+u2fA9OCpAWk+I/ibWF7V+8JT+xXuTkTI=
+	t=1707981562; cv=none; b=Rd6AbC5YLW+7PRXg6Dj2WmOsGC8n8AGWe+GU3rkRIrFa8luz3if/uRKWnxkjMb/F2m+lrj9zJHndt4Ur+mXGbBPpzufVVqEvi0hTxLKxX/CH91tUqiJhkaLyrahdNlaMReGhXS+4YtS81iPymhnsIE/tc35xCDBdqSZ48HQqyiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707981383; c=relaxed/simple;
-	bh=zwf/v9ehW4cFJdu8wIHwRPfcAJT+SRSX3JvxeAL8Fqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MnddSgFxhOC2yCxEV85eGXYC2YN7UfpvZEGBpfjo6I55h7mEX/ukSveNAL2xKk/TSRQcIiTe1aSPRcxSU2776iRWVSX2qBC0+ITJR/205c0xlhi43bp4aVgb2/XhMYvPUfs9swXjhb/GrF83duhCjNxsB3ZLnBGVYj89+6z7krU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhBDojdl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0ADC433F1;
-	Thu, 15 Feb 2024 07:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707981382;
-	bh=zwf/v9ehW4cFJdu8wIHwRPfcAJT+SRSX3JvxeAL8Fqg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MhBDojdlLk13ZLeX/38gxdo8+tFWxfrLbHZzfVmPs6ZfvxlNA29dSN0FGj/Bk9hdH
-	 /0vlXfph4rwspX0Hj9F18zPgJVCp7kXWO1dSwJMaUcsS8eZw/pWTyX2XBP8HLb3EMY
-	 Tp0e/BO218uvTJABLZnKFYPyGpBYBQnu8AswWeP3/V35xm3EP4MfJIfOb8gqdouJCY
-	 K9zp9d63Fiu90s2vFCmboJ52ujsfVuxSgWMyLBH7xBSiKIOtIoRP07RQlNmxpryu3+
-	 mU8s7Oz3AxHQJaO5EVJcPM9OLURPFRsZ+f9zzaszI8UdG0yU2XwE8piIp61CAXXzyo
-	 f4K7av7rH+hpg==
-Date: Thu, 15 Feb 2024 15:16:13 +0800
-From: Peter Chen <peter.chen@kernel.org>
-To: Pawel Laszczak <pawell@cadence.com>
-Cc: gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, peter.chen@cixtech.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] usb: cdnsp: fixed issue with incorrect detecting CDNSP
- family controllers
-Message-ID: <20240215071613.GA1256251@nchen-desktop>
-References: <20240206104325.55456-1-pawell@cadence.com>
+	s=arc-20240116; t=1707981562; c=relaxed/simple;
+	bh=KVzvewPsv9+3Wm8MRBDTy7EAOEddn740aLx0PZgYJtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bZBFclYU5I0zo3OIESiVeCK48aklYpnKo0qnrsTSkd7dCgl/8pkFWZFB+EWirkldyGqHkkzH7xHLnk2mlOLZ4gl/JzAZs0b8HRaQNn92uPny4ZQGYQAd0Y1XMNZ+8G8edW5yEpNXXaJA6MdSJYoYj2vjQrXjpYS/JiKNkaN/0WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=eWAkTknL; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33cf6266c76so313410f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:19:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1707981558; x=1708586358; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WhVkc0N0FKzZDN5JV45vh1J18dPbZNmPhz6By8Ka/HI=;
+        b=eWAkTknLT2DsGK5kmxXr81MD8pI9jg2nlOFcbgICcCs4DlAC7gvN/q+1A6CiZVuq/K
+         jLmI3Dpt13CLVYFVTZ9kaj8wVPvNWzut7kh9MLMdMbyShU6TOQfN8m9kKxLDKpVlc2pN
+         oof20Cc6a4NdhZgA1bD6QqNGtrXOLKAQdaDri380AIBU0coi297WsbZfisk/GaRv0Rj4
+         8eNvQrqtAD1GVVYygkhuI9YMenS0X/RZJjYzHRCZSWsDaXpTojmcC0KkqxOnPxaaAfbH
+         nfGo6hkgT+wtlcIUtm9U4R8POAZZNM61gwrSJOSrziVFnzQH+qcMIpdGSR7oUdEhXY+F
+         8Y7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707981558; x=1708586358;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WhVkc0N0FKzZDN5JV45vh1J18dPbZNmPhz6By8Ka/HI=;
+        b=u4U6ohO1R5qb9g1TdbU9LTzgQ5FhktAFvsvijp5dfoLQ0nM/SiDqijmvc7rABNVDrp
+         MjhRj8HUBJ8DIp3hNVbwWk0OcXjNgkq0UjJECSF9QHMg3Qx3JyXlUWF9yqmhb1o+ydyH
+         yfxFLU2sREfoeBg0WJ8y1Cp6nOQdkpTgtLtW3l3gEmKCe35GMq/O7xaYwm12rNLcVNik
+         hNZRlrqpVIo99JWJzZM2FT1zzNTjt2tAvOzXWhNQTkRu9DTqgkFR1E61pniSfEwk0BfS
+         lcVTcG/wBWgCzjo7N2Ob5MiI6jVu1IKqPpB/8Dvbq0dhcbRhfsda4NPG3+QimRdtpZxg
+         dfMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYClVuQMx/FZyEEeKL1Q12AkDOMxqPQMIVgzGvx35O1CLpi6XdXI5+dsHwCicwcTtNdVCFhoAAusegEK4qE/VYfzjVPyt58dGji1DI
+X-Gm-Message-State: AOJu0YydmjmIPI9briKx+vAJS6XWNT89b5bsXSI1DUgXnZFNkdYxdfkK
+	i5NPhqD0QVA1ai/s4JBogVM6BHVl7UA14hb9VX/+EAkYzmXAdBkr0sg1hGog2m8=
+X-Google-Smtp-Source: AGHT+IGZgR8Guiifx2V11KnsdYQVVJY4trhOoaJbpDtdrp/av4ymNFtmRq3o0WjGU5EYYBJ0fWVhng==
+X-Received: by 2002:adf:f20e:0:b0:33b:2281:ef32 with SMTP id p14-20020adff20e000000b0033b2281ef32mr566925wro.69.1707981558319;
+        Wed, 14 Feb 2024 23:19:18 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id ay27-20020a5d6f1b000000b0033d06dfcf84sm507917wrb.100.2024.02.14.23.19.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 23:19:17 -0800 (PST)
+Message-ID: <20a20d63-3968-45e7-a4aa-0197c55e6656@tuxon.dev>
+Date: Thu, 15 Feb 2024 09:19:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206104325.55456-1-pawell@cadence.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] ARM: dts: microchip: sama7g5: Add flexcom 10 node
+Content-Language: en-US
+To: Mihai Sain <mihai.sain@microchip.com>, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ andre.przywara@arm.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: cristian.birsan@microchip.com
+References: <20240214080348.7540-1-mihai.sain@microchip.com>
+ <20240214080348.7540-3-mihai.sain@microchip.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20240214080348.7540-3-mihai.sain@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 24-02-06 11:43:25, Pawel Laszczak wrote:
-> Cadence have several controllers from 0x000403xx family but current
-> driver suuport detecting only one with DID equal 0x0004034E.
-> It causes that if someone use different CDNSP controller then driver
+Hi, Mihai,
 
-%s/use/uses
-
-> will use incorrect version and register space.
-> Patch fix this issue.
+On 14.02.2024 10:03, Mihai Sain wrote:
+> Add flexcom 10 node for usage on the SAMA7G54 Curiosity board.
 > 
-> cc: <stable@vger.kernel.org>
-> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 > ---
->  drivers/usb/cdns3/core.c |  1 -
->  drivers/usb/cdns3/drd.c  | 13 +++++++++----
->  drivers/usb/cdns3/drd.h  |  6 +++++-
->  3 files changed, 14 insertions(+), 6 deletions(-)
+>  arch/arm/boot/dts/microchip/sama7g5.dtsi | 26 ++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
-> index 33548771a0d3..465e9267b49c 100644
-> --- a/drivers/usb/cdns3/core.c
-> +++ b/drivers/usb/cdns3/core.c
-> @@ -395,7 +395,6 @@ static int cdns_role_set(struct usb_role_switch *sw, enum usb_role role)
->  	return ret;
->  }
+> diff --git a/arch/arm/boot/dts/microchip/sama7g5.dtsi b/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> index 269e0a3ca269..c90e404e8ed9 100644
+> --- a/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> +++ b/arch/arm/boot/dts/microchip/sama7g5.dtsi
+> @@ -958,6 +958,32 @@ i2c9: i2c@600 {
+>  			};
+>  		};
 >  
-> -
->  /**
->   * cdns_wakeup_irq - interrupt handler for wakeup events
->   * @irq: irq number for cdns3/cdnsp core device
-> diff --git a/drivers/usb/cdns3/drd.c b/drivers/usb/cdns3/drd.c
-> index 04b6d12f2b9a..ee917f1b091c 100644
-> --- a/drivers/usb/cdns3/drd.c
-> +++ b/drivers/usb/cdns3/drd.c
-> @@ -156,7 +156,8 @@ bool cdns_is_device(struct cdns *cdns)
->   */
->  static void cdns_otg_disable_irq(struct cdns *cdns)
->  {
-> -	writel(0, &cdns->otg_irq_regs->ien);
-> +	if (cdns->version)
-> +		writel(0, &cdns->otg_irq_regs->ien);
->  }
->  
->  /**
-> @@ -422,15 +423,20 @@ int cdns_drd_init(struct cdns *cdns)
->  
->  		cdns->otg_regs = (void __iomem *)&cdns->otg_v1_regs->cmd;
->  
-> -		if (readl(&cdns->otg_cdnsp_regs->did) == OTG_CDNSP_DID) {
-> +		state = readl(&cdns->otg_cdnsp_regs->did);
-
-Use a meaningful variable.
-
+> +		flx10: flexcom@e2820000 {
+> +			compatible = "atmel,sama5d2-flexcom";
+> +			reg = <0xe2820000 0x200>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 48>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0xe2820000 0x800>;
+> +			status = "disabled";
 > +
-> +		if (OTG_CDNSP_CHECK_DID(state)) {
->  			cdns->otg_irq_regs = (struct cdns_otg_irq_regs __iomem *)
->  					      &cdns->otg_cdnsp_regs->ien;
->  			cdns->version  = CDNSP_CONTROLLER_V2;
-> -		} else {
-> +		} else if (OTG_CDNS3_CHECK_DID(state)) {
->  			cdns->otg_irq_regs = (struct cdns_otg_irq_regs __iomem *)
->  					      &cdns->otg_v1_regs->ien;
->  			writel(1, &cdns->otg_v1_regs->simulate);
->  			cdns->version  = CDNS3_CONTROLLER_V1;
-> +		} else {
-> +			dev_err(cdns->dev, "not supporte DID=0x%08x\n", state);
-> +			return -EINVAL;
->  		}
->  
->  		dev_dbg(cdns->dev, "DRD version v1 (ID: %08x, rev: %08x)\n",
-> @@ -483,7 +489,6 @@ int cdns_drd_exit(struct cdns *cdns)
->  	return 0;
->  }
->  
-> -
->  /* Indicate the cdns3 core was power lost before */
->  bool cdns_power_is_lost(struct cdns *cdns)
->  {
-> diff --git a/drivers/usb/cdns3/drd.h b/drivers/usb/cdns3/drd.h
-> index cbdf94f73ed9..d72370c321d3 100644
-> --- a/drivers/usb/cdns3/drd.h
-> +++ b/drivers/usb/cdns3/drd.h
-> @@ -79,7 +79,11 @@ struct cdnsp_otg_regs {
->  	__le32 susp_timing_ctrl;
->  };
->  
-> -#define OTG_CDNSP_DID	0x0004034E
-> +/* CDNSP driver supports 0x000403xx Cadence USB controller family. */
-> +#define OTG_CDNSP_CHECK_DID(did) (((did) & GENMASK(31, 8)) == 0x00040300)
+> +			i2c10: i2c@600 {
+> +				compatible = "microchip,sama7g5-i2c", "microchip,sam9x60-i2c";
+> +				reg = <0x600 0x200>;
+> +				interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 48>;
+> +				atmel,fifo-size = <32>;
+> +				dmas = <&dma0 AT91_XDMAC_DT_PERID(25)>,
+> +					<&dma0 AT91_XDMAC_DT_PERID(26)>;
+> +				dma-names = "rx", "tx";
 
-GENMASK(19, 8)?
+Please use the same pattern used by the rest of the i2c flexcom nodes, meaning:
+				dma-names = "tx", "rx";
 
+and, with this, reverse the order of dmas, too.
+
+> +				atmel,use-dma-rx;
+> +				atmel,use-dma-tx;
+
+These are uart properties.
+
+> +				status = "disabled";
+> +			};
+> +		};
 > +
-> +/* CDNS3 driver supports 0x000402xx Cadence USB controller family. */
-> +#define OTG_CDNS3_CHECK_DID(did) (((did) & GENMASK(31, 8)) == 0x00040200)
->  
->  /*
->   * Common registers interface for both CDNS3 and CDNSP version of DRD.
-> -- 
-> 2.37.2
-> 
-
--- 
-
-Thanks,
-Peter Chen
+>  		flx11: flexcom@e2824000 {
+>  			compatible = "atmel,sama5d2-flexcom";
+>  			reg = <0xe2824000 0x200>;
 
