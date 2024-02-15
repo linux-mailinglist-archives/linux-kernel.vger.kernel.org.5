@@ -1,145 +1,151 @@
-Return-Path: <linux-kernel+bounces-67708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E54856F76
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:40:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E42D1856F79
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04CC41F221C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:40:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 998DD286033
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A4C13EFE5;
-	Thu, 15 Feb 2024 21:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6120B13EFE9;
+	Thu, 15 Feb 2024 21:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bmuoQToR"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z7b/kcNP"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BBE6A349
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8A613B7BE;
+	Thu, 15 Feb 2024 21:43:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708033241; cv=none; b=SjGaUB+A2vSGMBEUxhx7SflGhdXZ51kZ4zv6YY3o3TBSv9pWSgNhtl7wlHOFpqn4iuFjynrdjhHH0QplMlp+rGOU4LsVFGBaRvIdcyvDnp66C4eYFgUfHWf+w3RpqMBJ54IrUYpoNEUczwgozSgejtogFBUsuXKi/LE2RjzfCOo=
+	t=1708033429; cv=none; b=gKGIws6HTnCoMdOenFHfWg+H+wEWTenl2ynGQH79yTBkpeVgFAZdPjoVIHT5D8hSs0k5zB5g6ajrh3lmLvIr4ZUnt1acuG5DCQMaeQTUheKxRPK6AcNGCDch0Gf000l3KfCLwywU2i02DYvXO1RcBGGv9LvVd6gkZyznup+D5do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708033241; c=relaxed/simple;
-	bh=EuSAvfTrN6Jpz7JPkQ4Tz14+QLAIlExbrnob8HbYWVk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dHfORr5fau/3Q1qGZC9mQITJ33WbP7B9U+IPJi2ereML5i7wJNqdyAUJk2aSxv+w8yd3cL+vQJaf33mYjTr0/kwHoiWLkbSkDfu6+CFWXDfBbOkom9uAMDqz4IfU7toMwlarfJU2QTBvADMy1NVf+EmFJtbOrubY70Qvuw8sJTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bmuoQToR; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60495209415so14312967b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:40:39 -0800 (PST)
+	s=arc-20240116; t=1708033429; c=relaxed/simple;
+	bh=QaEZlqJFcTfiTUOyjsDsoswbJ0CUnBjYeZ73Th5EEfE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=F+2shX/gIbphkHkAMFOqbb8MkuRZZMrJbRfi/OOfRtHi+S4pOtO7sg58cRgBwcF85L7qnRALbWDWvGqbELD+QTlYe+705jvFftAG74FBaACw01XFQXNWhkxVtvUZC52MaNFh5GnUtNoHGs8n0j/oSVQ9lPmx9wE/51+4L/Pntd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z7b/kcNP; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33b28aadb28so713258f8f.3;
+        Thu, 15 Feb 2024 13:43:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708033238; x=1708638038; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YsnAtjU2mPAAfpNGCz4g3Dm6lnsvArvGReC4ZihyohI=;
-        b=bmuoQToRkiV5kMrr/IAaWFqtyr9IyXQ/31HQ5zGKTi38d+qJ3ovqhL2V9UiIIJIBG2
-         /jmlvmzNE4K3dT8XHneUa7j2ZvfVJlj89ni0RKrBLTpzseAOm/ihYIRd08XlJlBgZ4GH
-         bI0SoTj82aa+/k7syhdTrtulEg3I97n+kKwIw=
+        d=gmail.com; s=20230601; t=1708033426; x=1708638226; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a10Ci9q0vKOTRsi2gPzKUjUwhpFZoCzWi4g8A+iVQbI=;
+        b=Z7b/kcNP0VXMGOYKSi7gWcGluT6MhBpNqGm2hXk+ZUCxHFVRSBLV42FTKAzZ6xO00S
+         l+zTKwzeTGbXjr7j0MoyFquPzKLT6ZBsGjPASHdsqY6ymAbY0l5HLs6bQVnYwYzO/nNl
+         iJxqy+Thddzh982+CfHiKpJJmDv0wsgXU1+O5bNeeNIfuvnjg4U0Zg93l5z4BJkrGvWa
+         0nX+Htixt3Nh3aCL8qE+1GAJ0dkAG2ISgZQTJlLCZOyQcrEcmit/eeC+qT9hQ3pbx4Kj
+         rBkSFEz6aXHyQHGbx+sgOXIjEih/NQ56p3MiXSAxQQys7wdyhEWLcJLwG5w5GWk+90AT
+         5o9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708033238; x=1708638038;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YsnAtjU2mPAAfpNGCz4g3Dm6lnsvArvGReC4ZihyohI=;
-        b=eHxYFNmn2zqQUuAqPDyfIR1EaWzhATXiAx1Ecyph8oz1j+QNxIwP0SKUfagN/1bNct
-         S9C5YlQMzBEbjL6FBewAQIQpBOQxm6ZIS4XrzDSLM+Uhq4uaGw75K6wIcUywIw9hcMmE
-         ba1K8yLVL6DZ7o3sx/THAE4GRfDTLONjUDYwIuajlKt1m24ugy3lmQdmhHqJBFkH2Q09
-         VK6mGshehuivhhHhdxJYtPqciYT3gaEHmGqnyas6uWTY2gxs6gtmex7XMDblmWgkB5iS
-         EtZcKkF6n6ZEveg+VV9YkEGq8xN94q0yt0FUCeiWf0e6oKgRpfJrKLgzOSqb3zD3RBlU
-         wcsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWtFCuJA3cy5ZCEJtf+NT9wG7zyi9v23bOk4ivdrGydqg/nSYvQlmfAoFd1sDDPRwX9IhO1gNJJoxoXnk0CMPpYZX4Ow7w6HygpFmSd
-X-Gm-Message-State: AOJu0YwHP2ZIn0sshZ87Sh68oYFHDtDnolMHatRQ7BtMybB1hkH8PuTN
-	kp+Gt5RiKgso5834OtHfxeXw3f38c58WN9NzSMOcheDo1ABdgLpL48jwOs7FwgG2u7afRtE9GZD
-	pqg/LopJLTYp4UyLG+qzgzi2J1UUypFKiORD+
-X-Google-Smtp-Source: AGHT+IFFJZz1AixfEZPFjbq3GjjAIwjVyELh8m7QgICdJ6b2qqf0qObYoA8ml0cEwJpf0bLI9YyFSUr9jUhO6pHn2L0=
-X-Received: by 2002:a05:690c:86:b0:607:d9f7:e884 with SMTP id
- be6-20020a05690c008600b00607d9f7e884mr2877483ywb.4.1708033238558; Thu, 15 Feb
- 2024 13:40:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708033426; x=1708638226;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a10Ci9q0vKOTRsi2gPzKUjUwhpFZoCzWi4g8A+iVQbI=;
+        b=msjVx4vcU2jR65C8EMtjfQNBKG2a5ycqDx5Wdj4KQxahlt2FOxEWTp38phE4GwM4xy
+         SCmdrU6u6cgSrAihoBo7UFUOmClc0/ONKGF12SNyqZtw49BRBTlhYHfYN11EmphJUHXp
+         gYYd8tBLGNURRnBpNYrDzoBH5NlmxNuD1KX/Q7YbUKmjCycpeTN6Qh8jIo/eiojqEeV/
+         UDk7VyDr8Ibo3GUI5YuDjz177wb1dqqJEcJIYKKzPUkC/9afnBmZZtqdpIfhVqqSu4bk
+         b4gU8Lc0/wVaEUcfsvJEMD9e3txoEpi909CWcr6vPzg5tU6hJQlc1JvnvAA+kBk7uDUy
+         8nrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcTkpnuMija3WEUChkd+yRTSSrDIoOgxD+9flJXmeF5L9GRs9sEAo92OcWVeuiFoyV3arTj1FUvbC3/AQ6HjA2dYKfHvSj2nW8y517TgHHmsupHO5w5w/X0722keIK1PQLnMPA
+X-Gm-Message-State: AOJu0YwlCjOGCCTIWCuWuAExqZTjwHlL+7S0+8ubvoa6QNyfIjYUWjaD
+	n08DEP234kfgSptmWUxvs/Gya7T6dVgJyQDPnsDUVcTSDjyhSho/
+X-Google-Smtp-Source: AGHT+IHfgLD79KYgorlZdaTvX73xBlXRjpZdgwQp5SX3Eg5atbw0+Uw2AGN/UX8xO/2hsrCDjlrhfA==
+X-Received: by 2002:adf:979a:0:b0:33d:f4b:d484 with SMTP id s26-20020adf979a000000b0033d0f4bd484mr1681844wrb.16.1708033426035;
+        Thu, 15 Feb 2024 13:43:46 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id k3-20020a056000004300b0033b79d385f6sm284740wrx.47.2024.02.15.13.43.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 13:43:45 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Robert Marko <robimarko@gmail.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [net-next PATCH] net: phy: aquantia: add AQR813 PHY ID
+Date: Thu, 15 Feb 2024 22:43:30 +0100
+Message-ID: <20240215214331.18162-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240209223824.622869-1-abhishekpandit@chromium.org>
-In-Reply-To: <20240209223824.622869-1-abhishekpandit@chromium.org>
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Date: Thu, 15 Feb 2024 13:40:26 -0800
-Message-ID: <CANFp7mWoUFZ_J-yYqCj9AE_EymQBR_3czFHxLKvZ7ZmBJe-u7Q@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] usb: typec: ucsi: Adding support for UCSI 3.0
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: pmalani@chromium.org, jthies@google.com, 
-	"Christian A. Ehrhardt" <lk@c--e.de>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rajaram Regupathy <rajaram.regupathy@intel.com>, 
-	Saranya Gopal <saranya.gopal@intel.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 9, 2024 at 2:38=E2=80=AFPM Abhishek Pandit-Subedi
-<abhishekpandit@chromium.org> wrote:
->
->
-> Hi Heikki,
->
-> This series starts the work adding UCSI 3.0 support to the UCSI driver.
->
-> There's a couple of pieces to start here:
-> * Add version checks and limit read size on 1.2.
-> * Update Connector Status and Connector Capability structures.
-> * Expose Partner PD revision from Capability data.
->
-> These were tested against on a 6.6 kernel running a usermode PPM against
-> a Realtek Evaluation board.
->
-> One additional note: there are a lot more unaligned fields in UCSI now
-> and the struct definitions are getting a bit out of hand. We can discuss
-> alternate mechanisms for defining these structs in the patch that
-> changes these structures.
->
-> Thanks,
-> Abhishek
->
-> Changes in v5:
->   - Change min_t to clamp
->
-> Changes in v4:
->   - Added missing Tested-By tags from v1 and reviewed-by tags.
->   - Fix BCD translation of PD Major Rev
->   - Replace IS_MIN_VERSION macro and just compare version directly.
->
-> Changes in v3:
->   - Change include to asm/unaligned.h and reorder include.
->
-> Changes in v2:
->   - Changed log message to DEBUG
->   - Formatting changes and update macro to use brackets.
->   - Fix incorrect guard condition when checking connector capability.
->
-> Abhishek Pandit-Subedi (3):
->   usb: typec: ucsi: Limit read size on v1.2
->   usb: typec: ucsi: Update connector cap and status
->   usb: typec: ucsi: Get PD revision for partner
->
->  drivers/usb/typec/ucsi/ucsi.c | 49 +++++++++++++++++++++++--
->  drivers/usb/typec/ucsi/ucsi.h | 67 ++++++++++++++++++++++++++++++++---
->  2 files changed, 110 insertions(+), 6 deletions(-)
->
-> --
-> 2.43.0.687.g38aa6559b0-goog
->
+Aquantia AQR813 is the Octal Port variant of the AQR113. Add PHY ID for
+it to provide support for it.
 
-Hi Greg,
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+This is based on the AQR113 patch that has been already reviewed
+and accepted (still not in net-next as a rebase was needed)
 
-This series should be ready to merge. Please take a look.
+ drivers/net/phy/aquantia/aquantia_main.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Thanks,
-Abhishek
+diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
+index a6a7980585f5..71bfddb8f453 100644
+--- a/drivers/net/phy/aquantia/aquantia_main.c
++++ b/drivers/net/phy/aquantia/aquantia_main.c
+@@ -28,6 +28,7 @@
+ #define PHY_ID_AQR412	0x03a1b712
+ #define PHY_ID_AQR113	0x31c31c40
+ #define PHY_ID_AQR113C	0x31c31c12
++#define PHY_ID_AQR813	0x31c31cb2
+ 
+ #define MDIO_PHYXS_VEND_IF_STATUS		0xe812
+ #define MDIO_PHYXS_VEND_IF_STATUS_TYPE_MASK	GENMASK(7, 3)
+@@ -961,6 +962,25 @@ static struct phy_driver aqr_driver[] = {
+ 	.get_stats      = aqr107_get_stats,
+ 	.link_change_notify = aqr107_link_change_notify,
+ },
++{
++	PHY_ID_MATCH_MODEL(PHY_ID_AQR813),
++	.name		= "Aquantia AQR813",
++	.probe		= aqr107_probe,
++	.get_rate_matching = aqr107_get_rate_matching,
++	.config_init	= aqr107_config_init,
++	.config_aneg    = aqr_config_aneg,
++	.config_intr	= aqr_config_intr,
++	.handle_interrupt = aqr_handle_interrupt,
++	.read_status	= aqr107_read_status,
++	.get_tunable    = aqr107_get_tunable,
++	.set_tunable    = aqr107_set_tunable,
++	.suspend	= aqr107_suspend,
++	.resume		= aqr107_resume,
++	.get_sset_count	= aqr107_get_sset_count,
++	.get_strings	= aqr107_get_strings,
++	.get_stats	= aqr107_get_stats,
++	.link_change_notify = aqr107_link_change_notify,
++},
+ };
+ 
+ module_phy_driver(aqr_driver);
+@@ -979,6 +999,7 @@ static struct mdio_device_id __maybe_unused aqr_tbl[] = {
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR412) },
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113) },
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113C) },
++	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR813) },
+ 	{ }
+ };
+ 
+-- 
+2.43.0
+
 
