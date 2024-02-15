@@ -1,137 +1,79 @@
-Return-Path: <linux-kernel+bounces-66375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C92855BD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2196A855BD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBD5F1F24287
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:48:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86381F24CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70867111A0;
-	Thu, 15 Feb 2024 07:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921D81118A;
+	Thu, 15 Feb 2024 07:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IswGuisa"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="qajf8PZ6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4900EDDD2;
-	Thu, 15 Feb 2024 07:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2C8DDC4;
+	Thu, 15 Feb 2024 07:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707983317; cv=none; b=tdgxCUUFHZOmQL89YEnaMew5YuWG1iZenPwQAxA/ZKGHcWXZIRzotwIKknYzgsuMniUOlMU/kUTrcUPmOW7XofXzv8hj/sQr2+Bvqx+X4GzM9TB4Sjo5DH/VhPb85b90p8S83viPE5PTPIbwCaWorddSFwUl5KTqtLsp4tooIw0=
+	t=1707983332; cv=none; b=N3NaItBFVPEjBfiz9GmFvvwrqNAzOXkzDRR3qm5m01IxzdCVFtc0AMYJHPATUusqvYvyjYluWFbxFMznzMhLb+OzRTURJk9jEjbn/pSvNoxGVXZQcBhfD+nchXLX3vH2bMbLaLaFP6oFS/rcHP9hTJq4XThxkEFl/nMc9qXARzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707983317; c=relaxed/simple;
-	bh=1myF0+7CAQJlrW9WQP3I8BhY6dru7lL/Fpez2iZz7Uk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=I4mGjZrlRzBuTTxoA4X7wzXxcctFz8H8lDgNTwnUxvfeFY02srrQNZNXNW6t7jn3nly90FFvlXGkFJgAFwW4bdRc9I2WtT305+nyU5ZS1H1zfKQCscKecjQ9piq0onGicsr3QW0NfvK73kFHL0s6IC3NDsVxWvo7mvX+EvBrQJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IswGuisa; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e2e6bcc115so246639a34.3;
-        Wed, 14 Feb 2024 23:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707983315; x=1708588115; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MSaqb+bxw0CGDMOKNrR2CK7UsJmuYZviEvXzmRbWfBs=;
-        b=IswGuisa7fhC4cTSKF7WEvOTvTgxe0px/OGVFotK6hztVfsei3JGzWCyipLS3YdJGD
-         pXitCfB6MJb0EFYlUb0no0qjI6hp4uVhe8aTC4mTDr5/467D0YyMCAEgFIdydM0knZae
-         PZhA4h3joOb8FDNyR/+67pYnF8XwL3MoT0cNRvDSZCt326u9AxWbmPeXny3fJ6aswT7L
-         ik/8i8JRE8S8PDRIlO+nIGONoIfLvTJ8rbSbSvm6NjFjkKBg/pN+ix0pD+qUldnFibwl
-         LzTJ5R4ccplUYT+XgloRe2bp+7vyqbc2/+maadMKsbK9kz4jds6nda8r23ne/tBDzJgf
-         rf9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707983315; x=1708588115;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MSaqb+bxw0CGDMOKNrR2CK7UsJmuYZviEvXzmRbWfBs=;
-        b=LqYoJJXUkRU7ia8aYjiPTznaivRONRJQ20icXmw6Bs6MNIVWTTBE+/qbMc6OXbS9qs
-         KWagfpSWybN4XshgC4r+hyKmDHfD9uFWuNqINqp+Ba0RFK2Qdek5Pn3QcH4CUGJHQ/KC
-         Ob75/ohQs8vOuCH2jU5QrJSWBPYmDVXlbtw7YjHK5hD3E29Q4JcEnXH2AhrBV4WI1zVk
-         JwQ0NGVJvQsjI+1c25TE0l5UW2dcsCKw27vIZEBCEpGZn8NJh1KebrYzZQ/KgAHvMACq
-         FRuefDj9lHoWKDFHoYCwShg5LWcCqwxtrpe9MGa2cZJV5qv5QhlRjYrDh3EC6E29xM1v
-         5vCA==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Q9eyzHnf+ynwtk+/SAp5o1jvBWX3tZ1WLR/nyVcI54ZhOQ1u5c1d8RSq7iBcM+bDOX4OK+SCdjJQ04Vdp50wl2j59wC/xFZQ5v2oMktw2WUlqWAkmRJtT0mrrW6Sa4SwVSz8pBEXgvDB+BRkdcyP1W8hef4Nu4N17+zKtc+2bLZm/Moc
-X-Gm-Message-State: AOJu0YznMPm4dJU41mzxp6PtXCAuq3Zvofji0tlB6DafZPSz5F/8tieR
-	K+KAab250ZaUUg3Y335LwFGTuW3EPcHSlmgfr3oVgevngupoJPZW
-X-Google-Smtp-Source: AGHT+IH0ODOG4PT3r69euSPbO6oSs5a/IldFGsN/oMqdGOu5ZZ7gf0DkdnkUphYjxYEwxUGWsVyUHw==
-X-Received: by 2002:a05:6830:148c:b0:6e2:e7f1:4b36 with SMTP id s12-20020a056830148c00b006e2e7f14b36mr1123260otq.5.1707983315183;
-        Wed, 14 Feb 2024 23:48:35 -0800 (PST)
-Received: from mhkubun.hawaii.rr.com (076-173-166-017.res.spectrum.com. [76.173.166.17])
-        by smtp.gmail.com with ESMTPSA id j64-20020a638043000000b005d7994a08dcsm694240pgd.36.2024.02.14.23.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 23:48:34 -0800 (PST)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	lpieralisi@kernel.org,
-	kw@linux.com,
-	robh@kernel.org,
-	bhelgaas@google.com,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: [PATCH v2 1/1] PCI: hv: Fix ring buffer size calculation
-Date: Wed, 14 Feb 2024 23:48:23 -0800
-Message-Id: <20240215074823.51014-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+	s=arc-20240116; t=1707983332; c=relaxed/simple;
+	bh=gahLnnsNTqmUik4SdEeXvaqgZ4vCmG45RsllVXdj/mE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cKinLW2EWvU9GUsFMTzx2fgn3qCqwnNJN3HUcyaHa+lbPr2qperjTnzFYVVidwsKA+1FDxXZcchSdJkrrRoV+vEfo6En7vQ79IjYM77pSB2qkedg7t2YmZPiQaFMkGMoYqgNyq4TCUXqdmqQpGV6uE5Ytoeq8cL/jIgMUAva+Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=qajf8PZ6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6981C433C7;
+	Thu, 15 Feb 2024 07:48:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707983332;
+	bh=gahLnnsNTqmUik4SdEeXvaqgZ4vCmG45RsllVXdj/mE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qajf8PZ65kKGyotnqyIUZ3vlSkpstKVFTdqCpNtt11yZc3WQx0TBIeEixG38eBjtF
+	 dQqDmJTsG/G5wsnuGVF8KapV2qoQO5WOO8TzkkTkg7Dn5t3dStmcx0CXS5nF0PGms9
+	 s3OFz8TRzd2nuSJQYkDvFpQtkCeofc/Pulf3+EIQ=
+Date: Thu, 15 Feb 2024 08:48:49 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] ALSA: struct bus_type cleanup
+Message-ID: <2024021539-boxcar-shown-c829@gregkh>
+References: <20240214-bus_cleanup-alsa-v1-0-8fedbb4afa94@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214-bus_cleanup-alsa-v1-0-8fedbb4afa94@marliere.net>
 
-From: Michael Kelley <mhklinux@outlook.com>
+On Wed, Feb 14, 2024 at 04:28:27PM -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]).
+> 
+> ---
+> [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+> 
+> To: Johannes Berg <johannes@sipsolutions.net>
+> To: Jaroslav Kysela <perex@perex.cz>
+> To: Takashi Iwai <tiwai@suse.com>
+> Cc:  <linuxppc-dev@lists.ozlabs.org>
+> Cc:  <alsa-devel@alsa-project.org>
+> Cc:  <linux-sound@vger.kernel.org>
+> Cc:  <linux-kernel@vger.kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-For a physical PCI device that is passed through to a Hyper-V guest VM,
-current code specifies the VMBus ring buffer size as 4 pages.  But this
-is an inappropriate dependency, since the amount of ring buffer space
-needed is unrelated to PAGE_SIZE. For example, on x86 the ring buffer
-size ends up as 16 Kbytes, while on ARM64 with 64 Kbyte pages, the ring
-size bloats to 256 Kbytes. The ring buffer for PCI pass-thru devices
-is used for only a few messages during device setup and removal, so any
-space above a few Kbytes is wasted.
-
-Fix this by declaring the ring buffer size to be a fixed 16 Kbytes.
-Furthermore, use the VMBUS_RING_SIZE() macro so that the ring buffer
-header is properly accounted for, and so the size is rounded up to a
-page boundary, using the page size for which the kernel is built. While
-w/64 Kbyte pages this results in a 64 Kbyte ring buffer header plus a
-64 Kbyte ring buffer, that's the smallest possible with that page size.
-It's still 128 Kbytes better than the current code.
-
-Cc: <stable@vger.kernel.org> # 5.15.x
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-Changes in v2:
-* Use SZ_16K instead of 16 * 1024
----
- drivers/pci/controller/pci-hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 1eaffff40b8d..baadc1e5090e 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -465,7 +465,7 @@ struct pci_eject_response {
- 	u32 status;
- } __packed;
- 
--static int pci_ring_size = (4 * PAGE_SIZE);
-+static int pci_ring_size = VMBUS_RING_SIZE(SZ_16K);
- 
- /*
-  * Driver specific state.
--- 
-2.25.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
