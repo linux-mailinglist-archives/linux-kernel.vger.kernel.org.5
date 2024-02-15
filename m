@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-66602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABBD9855EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:12:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ECDF855EDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:11:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6733E1F22FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:12:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A531B2820EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CAB6A33E;
-	Thu, 15 Feb 2024 10:11:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA62B69D34;
+	Thu, 15 Feb 2024 10:11:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Z2vpxI5T"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="R+2DYQMu"
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C1269D24
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B7B69D0D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707991891; cv=none; b=sAH70Yki/Wl552SH9XRK80J7Z92KD+zWx7VRrLsn7XPrHtU6T80i10xL1Qsi1zsBnnaeKXzC/ega+Yeusero3mNwrAdKpjyT1gZWEBa1lSHhAD0F+yk+uCxUP+h1NjH2/o5AdUHX+CocV6qZaleYF/2ZMxL1oGV10Sjw0GdB/Sg=
+	t=1707991889; cv=none; b=Thq3vn2J8AMZWDQYCM1yox808q9mswLuf57cZPSVtMsBrjoeRnkL8KSaiJdPatoZpVzy87qYTnyHgpabGYa+OohX0s9GZ6bl8TWDFum1CJfy/URASp8fduKUH7jPawFxr3UEzDlRvTwiFZvDZWZKdVawW4cfZzD5lTssBclnkP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707991891; c=relaxed/simple;
-	bh=gWHBDgSOTYFMxv/jwjWssvJfrKCERyo80TlI8JemzRU=;
+	s=arc-20240116; t=1707991889; c=relaxed/simple;
+	bh=Tcf7gGmH1pUx273AfxUf0JZ683ChpZg2rGqMNjoeJqo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DrpgwQd3Zr5S5TVbvD3kR0p4TpopFXHGRUBoslT8uAZ3iCXtRpeFmfu/1X/WoGIr3VdLnWFLjfVYabxsxttSUiRsrMag1xEJci0P5lZDUzq7gcdI7MyHTjFNGY43cVHDGVQAsbH9pi4jYmgv4rMCt3lYJbvY3ebsRqyBGGG92WU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Z2vpxI5T; arc=none smtp.client-ip=210.61.82.184
+	 MIME-Version:Content-Type; b=Y9QXW+cu8T6eeMHFstvisswDKtX77ujegIXLnMbUo/SoOJ6wZG9G8TbL0TozBtGW/llpegMZFRk0AOWDEv2HS9YXVrJngcYVv3kkPWdDqiO50bf0cBl9Jg1JNnyMLbVyuNkNtqVvoWrK2+BcaNBFJMT1NreoRNFM02Ew2taAFJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=R+2DYQMu; arc=none smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 92515160cbea11eea2298b7352fd921d-20240215
+X-UUID: 925a641ccbea11eea2298b7352fd921d-20240215
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=j2PUb2FOAEIMk7MkRhuGPiTn5JVd27Vx1Ioy8tgssgE=;
-	b=Z2vpxI5TVF59snb5I0tYrFLp3FZ9GWz1388FxRUGGP9Fr3p+ZltBxsPC9CWJ800OEBcorXCtwZ5ab0YEgb5zJam7z+stpvxFvptU6qeS3ZdiR9yNigOcosGngijG5y7c+y55/8ZhAU2lQyFuYMXtCoxmt7P3poydgRQWg0GLksE=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=0UW764IqKZlZdsFXqAecqzBj01NU6yDWNFVceMLD5+8=;
+	b=R+2DYQMuhXLqZd12mJbCDvmcnLX0mCMIUyrOLl3v4PKwvNRTnaVPTm6jh8v03DZipvLa1Ii7+Nh41qvFChWANquBx0RiaWEpcAwqy6hXbcKTaR3fO9tszUyhtuLXgtAEWr4oPY2wu1his9PaHoRWPaH/fx8/xT6ff4yqo6l2rUA=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:39786f34-e60f-42a8-b9f1-e64855859b06,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:5a636b80-4f93-4875-95e7-8c66ea833d57,B
+X-CID-O-INFO: VERSION:1.1.37,REQID:cc6cc8f3-e1ea-4d82-a108-3e58c60053a8,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:b64d528f-e2c0-40b0-a8fe-7c7e47299109,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
 	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 92515160cbea11eea2298b7352fd921d-20240215
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: 925a641ccbea11eea2298b7352fd921d-20240215
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
 	(envelope-from <shawn.sung@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1044946201; Thu, 15 Feb 2024 18:11:23 +0800
+	with ESMTP id 88760807; Thu, 15 Feb 2024 18:11:23 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Thu, 15 Feb 2024 18:11:21 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -68,9 +68,9 @@ CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
 	<nancy.lin@mediatek.com>, <dri-devel@lists.freedesktop.org>,
 	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, Hsiao Chien Sung <shawn.sung@mediatek.com>
-Subject: [PATCH v5 02/13] drm/mediatek: Add OVL compatible name for MT8195
-Date: Thu, 15 Feb 2024 18:11:08 +0800
-Message-ID: <20240215101119.12629-3-shawn.sung@mediatek.com>
+Subject: [PATCH v5 03/13] drm/mediatek: Add missing plane settings when async update
+Date: Thu, 15 Feb 2024 18:11:09 +0800
+Message-ID: <20240215101119.12629-4-shawn.sung@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20240215101119.12629-1-shawn.sung@mediatek.com>
 References: <20240215101119.12629-1-shawn.sung@mediatek.com>
@@ -82,42 +82,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--4.645500-8.000000
-X-TMASE-MatchedRID: GIpmbigRs3bREKzvS64+oRWCVBr+Ay986SXuwUgGH0hbKBBN5zqG8AYB
-	5gsbo0L8o5qw/iFKtvYBtjkcfRMmqZH0YXYnbGozFEUknJ/kEl7dB/CxWTRRu+rAZ8KTspSzEi3
-	RtA+MN2j5QetUecY4pjewEY3isXHskmcADZfERrb7YScvHGI+s/9aJ3Fk8P+JAthyou0E3ktMyX
-	ZOCOvF4KWtbghw5BC9F0aD5ljt43pMcHZD6gqu7wxMjfifIXfowkvVoA11Twp+3BndfXUhXQ==
+X-TM-AS-Result: No-10--3.918200-8.000000
+X-TMASE-MatchedRID: 1uypKmLkdmcgNXYDo2rRhsLcTtMlPIaVKx5ICGp/WtGdCqKtxM6bh64N
+	WivjR4eGLYexjI/F2s67aBKK8e6y8yUtdpGicV4RA9lly13c/gHt/okBLaEo+NwQ5VDi3O9Bo8W
+	MkQWv6iXBcIE78YqRWo6HM5rqDwqt47Is4r3/A5IJ6yLwsxgF/630/ZW9qu348SPRFJwtcxhpr/
+	zo9DQwBPIqHmvLgj9d/1p729Dtsi3b8InIzH6cbZJKBVkiWQLYwZBgUyJVEbl6Fw8/PpTMRaVvm
+	iAyeA2kc5MSfkiJFI5p3LlElBHTlw==
 X-TM-AS-User-Approved-Sender: No
 X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--4.645500-8.000000
+X-TMASE-Result: 10--3.918200-8.000000
 X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	5F9259228736A3FBB0D90F4767931191BAC68F2D83900545EC1D59DE3F1F260F2000:8
+X-TM-SNTS-SMTP: 8B041C672F0B02B6BD49352870BD20393DEE1D2E9FBC513DD2A7637DE91263552000:8
 X-MTK: N
 
-Add OVL compatible name for MT8195.
-Without this commit, DRM won't work after modifying the device tree.
+Fix an issue that plane coordinate was not saved when
+calling async update.
+
+Fixes: 920fffcc8912 ("drm/mediatek: update cursors by using async atomic update")
 
 Reviewed-by: CK Hu <ck.hu@mediatek.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 2 ++
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index cc746de91834c..890e1e93a2227 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -762,6 +762,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[] = {
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8192-disp-ovl",
- 	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8195-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index ddc9355b06d51..f10d4cc6c2234 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -227,6 +227,8 @@ static void mtk_plane_atomic_async_update(struct drm_plane *plane,
+ 	plane->state->src_y = new_state->src_y;
+ 	plane->state->src_h = new_state->src_h;
+ 	plane->state->src_w = new_state->src_w;
++	plane->state->dst.x1 = new_state->dst.x1;
++	plane->state->dst.y1 = new_state->dst.y1;
+ 
+ 	mtk_plane_update_new_state(new_state, new_plane_state);
+ 	swap(plane->state->fb, new_state->fb);
 -- 
 2.18.0
 
