@@ -1,190 +1,175 @@
-Return-Path: <linux-kernel+bounces-66744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93EA68560F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:10:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E4368560FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ED6C1F2158B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:10:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A28A2904F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0097E127B6E;
-	Thu, 15 Feb 2024 11:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4230F12B172;
+	Thu, 15 Feb 2024 11:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rvNwiP/3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RhmoHrCn";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gb53DiWN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ofZsuqi3"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bfgrE8Jd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2631756B
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445D11756B;
+	Thu, 15 Feb 2024 11:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707995339; cv=none; b=VDeXrnc0Eo7mf3P7QZ+TCRT/3IgCddvX/JbCvJFz1Ty3NLeXqlY1gPnhh83x3Lr0sJWiWzOMRX8LxMfvcr2MZMIpw/fFYd565O27RdE+SLPoKY1980mVXCSF9mB9Hgo/Pubotsw2hcPKry8cBkq6l/fQ7H3C/i0DRfoMQT/q4+4=
+	t=1707995346; cv=none; b=ZA2/2363CO+DYo2IV+T5YLrMoyaI7kjNhApElL6MfoomTidCmigOYqrd97JD5T59J12mYTavAcO5p3XiW11quZTK/LUdCMygBNHgNoHrto1UbYR4gYqCKxbWkSBE8XiwAY7NAsHKY1EiY1D30uxepV3MF9/qBa2vESvBzNMKyMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707995339; c=relaxed/simple;
-	bh=iER6v7Usa2T+q1ikk7l6+8+K4Mj6aNJY46+g9WMWgHM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mf7ipqBzIutbpWbnl0Zxt3SYm5dpge0EQnPTPkveILterbF/lUFYS3rZ9l2qy5RQTJ4m2KB6hKjXENATO/d6htq9kbwoKi5+m6zMKvB+ip3+llA9Rl7lm/gtVerXNp+cuvNpsS0hkBt0iWNNhdGVgvsI7aAoAUgC4IcPo9bznTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rvNwiP/3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RhmoHrCn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gb53DiWN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ofZsuqi3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 378611F88D;
-	Thu, 15 Feb 2024 11:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707995335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yNzMHxBAyFcxiK8NqE8U/zOdXTEKzWGtfCbELGmErPE=;
-	b=rvNwiP/3LB1RrhJNrx1a4oKWumL4uDujW25MnBYW3yw5pRzB7KOhy9bDQ5Ayf80ISEWsnI
-	X7hMwthYYBTqUS7wJzxPs7a7yN8wplzGS70pBsf362TKOD0pKbtlhtG0sqk6MPcGkj1OiG
-	CrCNf6VuJhUdzwuwu+80ZxJEBVRl6MY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707995335;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yNzMHxBAyFcxiK8NqE8U/zOdXTEKzWGtfCbELGmErPE=;
-	b=RhmoHrCnWucj8m84cXpJLpXnMserY0FjZrDgWpihgW7aP9XEsCxEUsOGTx8GS3TiiCqn5p
-	rcJK6koeadnywYDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707995334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yNzMHxBAyFcxiK8NqE8U/zOdXTEKzWGtfCbELGmErPE=;
-	b=gb53DiWNqlhnu3FyDZHtDS4ITXSpTKBoMa7ZK8IhcSjJw/rIEi68UVlPvle3cq8DW4pzcN
-	Vh+203T75hHvcl3Rh86iHA2B0aUoSO2esCADErwd+sOtOnRc0eGn7Rb7AJqN8TYzLqgnYK
-	ytK6qwCrla2HYaRxBwcmwLgNkgFIWj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707995334;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yNzMHxBAyFcxiK8NqE8U/zOdXTEKzWGtfCbELGmErPE=;
-	b=ofZsuqi3y+wGTUHGvD4QofQ/HUQfQeNsNfnsYgMzPJeKQCiEwmJNc5sNzI6nnWXWC2OnFx
-	2/mge8GBHL9J8aAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 22AC213A53;
-	Thu, 15 Feb 2024 11:08:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gNIGCMbwzWV1NAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 11:08:54 +0000
-Message-ID: <9fc95f61-827f-40ee-a823-576cdcad7939@suse.cz>
-Date: Thu, 15 Feb 2024 12:08:53 +0100
+	s=arc-20240116; t=1707995346; c=relaxed/simple;
+	bh=5o9HX9pcCploLMCEfmoaEmIIHFQ5ybRnxDGqQXvAVyM=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=bo7NnvKXhEyzHV2BpH8yYDr2eucrMuyGO4WVqdiGAiiV30qgn+NvZetmpFRUfKyJVfxzYz5EU51C6MhjMmiFHTw/0i+Ov5J8pA4JeymV//g+Dw4ygGB/TgZBbLf9D7IJCTuwwcKpnhTlkt+kwziUuU3Cq4AclMWZA1coN/GH9w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bfgrE8Jd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE835C43394;
+	Thu, 15 Feb 2024 11:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707995345;
+	bh=5o9HX9pcCploLMCEfmoaEmIIHFQ5ybRnxDGqQXvAVyM=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=bfgrE8Jd4t7i1+Zp473GjEpaU7ujF4beXyEio9iFUfqKAGjQR64HFnHBI/ES1V9AH
+	 /shb9NgKBRM8QU4TEb3CtmykdyKAE/V8/Iy2x8wDGSPbG+bv+PdEfJi2xhJcI0mWUa
+	 CHZGPNo4rFfxyY3KbbvJ9d45TivPu2cujwFs27dnVzD0BeUJzoBTgzV7YdZZUEV7w/
+	 y/tcpTS58dmKzcGSOQPeT8zSI1JK2EpkIWeXxHCcLECigtyYV77gk/SlNDlRMoJoPw
+	 UI6dvERNyWX09ay6DVvxGF664R9dHkmRPnVZkc82YoQkZZljSKnwQaehefLhtbGiPW
+	 X6VPq0F4gEmUg==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 4/7] mm,page_owner: Implement the tracking of the
- stacks count
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-5-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240214170157.17530-5-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -7.01
-X-Spamd-Result: default: False [-7.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BAYES_HAM(-1.72)[93.30%];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] wifi: wilc1000: prevent use-after-free on vif when
+ cleaning up all interfaces
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240212-wilc_rework_deinit-v1-1-9203ae56c27f@bootlin.com>
+References: <20240212-wilc_rework_deinit-v1-1-9203ae56c27f@bootlin.com>
+To: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+Cc: linux-wireless@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ David Mosberger-Tang <davidm@egauge.net>, linux-kernel@vger.kernel.org,
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170799534217.3764215.15607229596917179924.kvalo@kernel.org>
+Date: Thu, 15 Feb 2024 11:09:03 +0000 (UTC)
 
-On 2/14/24 18:01, Oscar Salvador wrote:
-> Implement {inc,dec}_stack_record_count() which increments or
-> decrements on respective allocation and free operations, via
-> __reset_page_owner() (free operation) and __set_page_owner() (alloc
-> operation).
-> Newly allocated stack_record structs will be added to the list stack_list
-> via add_stack_record_to_list().
-> Modifications on the list are protected via a spinlock with irqs
-> disabled, since this code can also be reached from IRQ context.
+Alexis Lothoré <alexis.lothore@bootlin.com> wrote:
+
+> wilc_netdev_cleanup currently triggers a KASAN warning, which can be
+> observed on interface registration error path, or simply by
+> removing the module/unbinding device from driver:
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: Marco Elver <elver@google.com>
+> echo spi0.1 > /sys/bus/spi/drivers/wilc1000_spi/unbind
+> 
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in wilc_netdev_cleanup+0x508/0x5cc
+> Read of size 4 at addr c54d1ce8 by task sh/86
+> 
+> CPU: 0 PID: 86 Comm: sh Not tainted 6.8.0-rc1+ #117
+> Hardware name: Atmel SAMA5
+>  unwind_backtrace from show_stack+0x18/0x1c
+>  show_stack from dump_stack_lvl+0x34/0x58
+>  dump_stack_lvl from print_report+0x154/0x500
+>  print_report from kasan_report+0xac/0xd8
+>  kasan_report from wilc_netdev_cleanup+0x508/0x5cc
+>  wilc_netdev_cleanup from wilc_bus_remove+0xc8/0xec
+>  wilc_bus_remove from spi_remove+0x8c/0xac
+>  spi_remove from device_release_driver_internal+0x434/0x5f8
+>  device_release_driver_internal from unbind_store+0xbc/0x108
+>  unbind_store from kernfs_fop_write_iter+0x398/0x584
+>  kernfs_fop_write_iter from vfs_write+0x728/0xf88
+>  vfs_write from ksys_write+0x110/0x1e4
+>  ksys_write from ret_fast_syscall+0x0/0x1c
+> 
+> [...]
+> 
+> Allocated by task 1:
+>  kasan_save_track+0x30/0x5c
+>  __kasan_kmalloc+0x8c/0x94
+>  __kmalloc_node+0x1cc/0x3e4
+>  kvmalloc_node+0x48/0x180
+>  alloc_netdev_mqs+0x68/0x11dc
+>  alloc_etherdev_mqs+0x28/0x34
+>  wilc_netdev_ifc_init+0x34/0x8ec
+>  wilc_cfg80211_init+0x690/0x910
+>  wilc_bus_probe+0xe0/0x4a0
+>  spi_probe+0x158/0x1b0
+>  really_probe+0x270/0xdf4
+>  __driver_probe_device+0x1dc/0x580
+>  driver_probe_device+0x60/0x140
+>  __driver_attach+0x228/0x5d4
+>  bus_for_each_dev+0x13c/0x1a8
+>  bus_add_driver+0x2a0/0x608
+>  driver_register+0x24c/0x578
+>  do_one_initcall+0x180/0x310
+>  kernel_init_freeable+0x424/0x484
+>  kernel_init+0x20/0x148
+>  ret_from_fork+0x14/0x28
+> 
+> Freed by task 86:
+>  kasan_save_track+0x30/0x5c
+>  kasan_save_free_info+0x38/0x58
+>  __kasan_slab_free+0xe4/0x140
+>  kfree+0xb0/0x238
+>  device_release+0xc0/0x2a8
+>  kobject_put+0x1d4/0x46c
+>  netdev_run_todo+0x8fc/0x11d0
+>  wilc_netdev_cleanup+0x1e4/0x5cc
+>  wilc_bus_remove+0xc8/0xec
+>  spi_remove+0x8c/0xac
+>  device_release_driver_internal+0x434/0x5f8
+>  unbind_store+0xbc/0x108
+>  kernfs_fop_write_iter+0x398/0x584
+>  vfs_write+0x728/0xf88
+>  ksys_write+0x110/0x1e4
+>  ret_fast_syscall+0x0/0x1c
+>  [...]
+> 
+> David Mosberger-Tan initial investigation [1] showed that this
+> use-after-free is due to netdevice unregistration during vif list
+> traversal. When unregistering a net device, since the needs_free_netdev has
+> been set to true during registration, the netdevice object is also freed,
+> and as a consequence, the corresponding vif object too, since it is
+> attached to it as private netdevice data. The next occurrence of the loop
+> then tries to access freed vif pointer to the list to move forward in the
+> list.
+> 
+> Fix this use-after-free thanks to two mechanisms:
+> - navigate in the list with list_for_each_entry_safe, which allows to
+>   safely modify the list as we go through each element. For each element,
+>   remove it from the list with list_del_rcu
+> - make sure to wait for RCU grace period end after each vif removal to make
+>   sure it is safe to free the corresponding vif too (through
+>   unregister_netdev)
+> 
+> Since we are in a RCU "modifier" path (not a "reader" path), and because
+> such path is expected not to be concurrent to any other modifier (we are
+> using the vif_mutex lock), we do not need to use RCU list API, that's why
+> we can benefit from list_for_each_entry_safe.
+> 
+> [1] https://lore.kernel.org/linux-wireless/ab077dbe58b1ea5de0a3b2ca21f275a07af967d2.camel@egauge.net/
+> 
+> Fixes: 8399918f3056 ("staging: wilc1000: use RCU list to maintain vif interfaces list")
+> Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Note:
+Patch applied to wireless-next.git, thanks.
 
-> +static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask)
-> +{
-> +	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
-> +
-> +	if (!stack_record)
-> +		return;
-> +
-> +	/*
-> +	 * New stack_record's that do not use STACK_DEPOT_FLAG_GET start
-> +	 * with REFCOUNT_SATURATED to catch spurious increments of their
-> +	 * refcount.
-> +	 * Since we do not use STACK_DEPOT_FLAG_GET API, let us
-> +	 * set a refcount of 1 ourselves.
-> +	 */
-> +	if (refcount_read(&stack_record->count) == REFCOUNT_SATURATED) {
-> +		int old = REFCOUNT_SATURATED;
-> +
-> +		if (atomic_try_cmpxchg_relaxed(&stack_record->count.refs, &old, 1))
-> +			/* Add the new stack_record to our list */
-> +			add_stack_record_to_list(stack_record, gfp_mask);
-			
-			Not returning here...
+cb5942b77c05 wifi: wilc1000: prevent use-after-free on vif when cleaning up all interfaces
 
-> +	}
-> +	refcount_inc(&stack_record->count);
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240212-wilc_rework_deinit-v1-1-9203ae56c27f@bootlin.com/
 
-.. means we'll increase the count to 2 on the first store, so there's a
-bias. Which would be consistent with the failure and dummy stacks that also
-start with a refcount of 1. But then the stack count reporting should
-decrement by 1 to prevent confusion? (in the following patch). Imagine
-somebody debugging an allocation stack where there are not so many of them,
-but the allocation is large, and being sidetracked by an off-by-one error.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
