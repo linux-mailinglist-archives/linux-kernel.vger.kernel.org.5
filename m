@@ -1,140 +1,121 @@
-Return-Path: <linux-kernel+bounces-67108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A51FF85668D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 595DB85669C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 610F0282EB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:51:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C29C1C22FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:55:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D85C132481;
-	Thu, 15 Feb 2024 14:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744EC13248C;
+	Thu, 15 Feb 2024 14:55:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JeQXA7zR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nvpubKcC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B07130ADA;
-	Thu, 15 Feb 2024 14:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5201132461;
+	Thu, 15 Feb 2024 14:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008681; cv=none; b=j2Gl8S4xglwV8OWJmp3iy/Z7FHpFCQ3sCsmSM/TfTy7wIvmD12G+XeYSpglaotvT/Mxwyks2DX8W3KL/b/JsyICO57Nl9ph0LSPYU5o4W2hB/br5flhcO7frkOWHTErCgH56j3/egtCtLp97+/OF2qHaI7kUOfxrr6dhzRfTPHQ=
+	t=1708008924; cv=none; b=ltpuyi3uI3hFsJdw9yBfPeH/OkNoQOGEsWMXnpSoWbtEwiIHYg/vjfX5JAb3qNLjJ714Ar0lp1tRzxu4SGqLSJmJm5a4MUDTMhzfD9V/Ds3L0XuUx3UpRq0goo+xAOw7lVY4h4phlOZbAT4GcXe6/qJi5aVnjK+K+02UPfywRlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008681; c=relaxed/simple;
-	bh=B8mmg75WeEttw7pPxYccdGAOyO7FWsoSc/5kLKpImqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PSypx8M3gvgoxah2fCSEIjyKMnpef2/jiYPcR4vvyIR/YeMGKeGWeJRs8WfedkNP0Id4IQfUVejVvgwsl/dcIGF7NQwKtiEhIIc2uoG8oSM0M2Qoygy9Lhl1HaLdsgxb3I0KmlZFT2mtB6Kyetf5YlXutDo0554Qh29DZkxykTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JeQXA7zR; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708008680; x=1739544680;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=B8mmg75WeEttw7pPxYccdGAOyO7FWsoSc/5kLKpImqQ=;
-  b=JeQXA7zRp5CZ/JqxQh3BOssC3S/onpxMXXb8i3Aewq0/IjkXylCmLO6p
-   te+MJDhkd1+rt0AzUg3vUjQHZETaLQMy7xjoVmlZaXWXnXyyuPU3Nm3FQ
-   GzIeJS2S5kSmqOr2tu+G93NmyBzlNqBYUvahBWRG6N77rTKCGtP8GjC+R
-   wXvKI1Rm5Nni/z2bqctCgpxfC47QxWeQUx4p1rC/3WT+lAYYeECEvpWdH
-   JRy90jXxp6mIYipntWJGyOWaEClwmarWHq6Wm6gNSgz6KpnXOeO3A59n6
-   WRL8mH4KrzuEMCY4NkNwPgHMJ7BwwSBObmmcPcntBZuI5d8fFvN6P8Lio
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1968915"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="1968915"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:51:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935676974"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="935676974"
-Received: from wilesamy-mobl.amr.corp.intel.com (HELO [10.251.3.206]) ([10.251.3.206])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:51:18 -0800
-Message-ID: <361f7ae0-6de1-423c-bb64-82a5acccb502@linux.intel.com>
-Date: Thu, 15 Feb 2024 06:51:16 -0800
+	s=arc-20240116; t=1708008924; c=relaxed/simple;
+	bh=Xo56YjEkb3PoIIHlm3YyDfE/vrdIxz8HkhajQhUNEps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=raA/ZjlrUYDqP45nyhgNxBsiBmnw5qd4xi9IEtWmr3/BOQeq77nr7jZWh+JwYB/1LTY2mQXhGEQyD5eBAAmbC5DJPyPOa1bUKyG08AeMGAGnS7ARtBsI5wdol4Lkt6JBSM9y+6sBaHW3aigu1LneYelipE2l2YzWr5hLoIgabQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nvpubKcC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC676C433F1;
+	Thu, 15 Feb 2024 14:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708008924;
+	bh=Xo56YjEkb3PoIIHlm3YyDfE/vrdIxz8HkhajQhUNEps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nvpubKcC9wLxsXopx09TTB0HcsFo68c6NY/8G04efmt87QDcXjYURbeQT70FaEC5N
+	 Cl0FQ+XQP0egMm2vT93LbSZ2XipbsUQuFg5od7vJAw8rvJjvuvXswL3AgNdKBzQaWm
+	 6RFSPcl97dwXY+ohE18jYTt8aSdjd2l32CAamHdKgYsq6GZTFVN63xIhakw52tw/N6
+	 5eYW6tKp7FFZuNcVz1bhNme9jtwMAWLTt5T5SriSeyqSQS88wktpUyj90pCdee6sZV
+	 Sjvq0G58c/KBS/Be0My4tfU3aGvjmmmsjv+f5gfFl10L6AQEQvV9QK1///I7Mzlw2m
+	 t8FHEQEM41ifA==
+Date: Thu, 15 Feb 2024 08:55:20 -0600
+From: Rob Herring <robh@kernel.org>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/17] dt-bindings: soc: imx: fsl,imx-iomuxc-gpr: add
+ imx6
+Message-ID: <20240215145520.GA20171-robh@kernel.org>
+References: <20240213010347.1075251-1-sre@kernel.org>
+ <20240213010347.1075251-7-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: dwc: Use the correct sleep function in wait_for_link
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Jingoo Han <jingoohan1@gmail.com>,
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Johan Hovold <johan+linaro@kernel.org>
-References: <20240215-topic-pci_sleep-v1-1-7ac79ac9739a@linaro.org>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240215-topic-pci_sleep-v1-1-7ac79ac9739a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213010347.1075251-7-sre@kernel.org>
 
-
-On 2/15/24 2:39 AM, Konrad Dybcio wrote:
-> According to [1], msleep should be used for large sleeps, such as the
-> 100-ish ms one in this function. Comply with the guide and use it.
->
-> [1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Tue, Feb 13, 2024 at 02:00:55AM +0100, Sebastian Reichel wrote:
+> Add compatibles used by different i.MX6 variants to the i.MX IOMUX
+> Controller GPR binding.
+> 
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
 > ---
-> Tested on Qualcomm SC8280XP CRD
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
->  drivers/pci/controller/dwc/pcie-designware.h | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 250cf7f40b85..abce6afceb91 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -655,7 +655,7 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
->  		if (dw_pcie_link_up(pci))
->  			break;
->  
-> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> +		msleep(LINK_WAIT_MSLEEP_MAX);
->  	}
->  
->  	if (retries >= LINK_WAIT_MAX_RETRIES) {
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 26dae4837462..3f145d6a8a31 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -63,8 +63,7 @@
->  
->  /* Parameters for the waiting for link up routine */
->  #define LINK_WAIT_MAX_RETRIES		10
-> -#define LINK_WAIT_USLEEP_MIN		90000
-> -#define LINK_WAIT_USLEEP_MAX		100000
-> +#define LINK_WAIT_MSLEEP_MAX		100
+>  .../bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml   | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml b/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
+> index 1da1b758b4ae..8451cb4dd87c 100644
+> --- a/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
+> +++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml
+> @@ -17,7 +17,23 @@ properties:
+>    compatible:
+>      oneOf:
+>        - items:
+> -          - const: fsl,imx8mq-iomuxc-gpr
+> +          - enum:
+> +              - fsl,imx6q-iomuxc-gpr
+> +              - fsl,imx8mq-iomuxc-gpr
+> +          - const: syscon
+> +          - const: simple-mfd
+> +      - items:
+> +          - enum:
+> +              - fsl,imx6sl-iomuxc-gpr
+> +              - fsl,imx6sll-iomuxc-gpr
+> +              - fsl,imx6ul-iomuxc-gpr
+> +          - const: fsl,imx6q-iomuxc-gpr
+> +          - const: syscon
 
-Since 90 ms is an acceptable value, why not use it?
+A bit odd that imx6q is a simple-mfd above, but not here. I suppose 
+that could be valid if the variants here don't have sub-devices or they 
+do, but have a dependency on the parent.
 
->  
->  /* Parameters for the waiting for iATU enabled routine */
->  #define LINK_WAIT_MAX_IATU_RETRIES	5
->
-> ---
-> base-commit: 26d7d52b6253574d5b6fec16a93e1110d1489cef
-> change-id: 20240215-topic-pci_sleep-368108a1fb6f
->
-> Best regards,
+Acked-by: Rob Herring <robh@kernel.org>
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+> +      - items:
+> +          - enum:
+> +              - fsl,imx6sx-iomuxc-gpr
+> +              - fsl,imx7d-iomuxc-gpr
+> +          - const: fsl,imx6q-iomuxc-gpr
+>            - const: syscon
+>            - const: simple-mfd
+>        - items:
+> -- 
+> 2.43.0
+> 
 
