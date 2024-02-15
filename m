@@ -1,105 +1,145 @@
-Return-Path: <linux-kernel+bounces-66696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0565585604F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:56:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E803856054
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 377F71C20886
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:56:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B9A0281C1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04743132473;
-	Thu, 15 Feb 2024 10:41:25 +0000 (UTC)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF7E1384B7;
+	Thu, 15 Feb 2024 10:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="g1hJ/Hwe"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B6C12A14C;
-	Thu, 15 Feb 2024 10:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E887684FD1;
+	Thu, 15 Feb 2024 10:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993684; cv=none; b=OJ6GnDtkHsCNeRgXypXG/yw1Dx+aJPTRuxb+i0JKbZbXOlMA+aKrPzdFZmRfO13BZhvAtk3Ih/SrG6Voj99VF3st8vwsCl6EfZmdtfSyFVm62e4AAFges2u7r3qf9qjXZam9iVEl57aDe2UQGW4z8CEvCXtPytz5VMamac+HMto=
+	t=1707993692; cv=none; b=FdvTqti5rcpNUDAOLyfBPddC/QOPKOnhYWrAeaBeHL/uUVH5+9iVIqyZ5p72yfSmjr0qjfdwFZ5LQPHsjdJtR4LeY/Yq0Q/HlUncIN+D6R+7tJPAhmbSjVYnwv5KEWaGY1ZCN7e88WJdxrAib04zuFkBef1jzYFebH9SvDiznMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993684; c=relaxed/simple;
-	bh=hJ+JXqdOrEJnX3WT582TNr+VYiHYPK6HQI+HEvWK9t8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J5tmPXU7LJFVtGSszHFiLMr/TSxoWjDUCsoMj65TCToq07jwcEWwq+fFMUrNWKd5CRtZpWg0qCns76VKp6DnsU/XP0ZqIXLCBtHspGnhPjc3P5AdQgRS9dC/7CnINOOxUXRuxHH55258jGi3TnmciM0ebwuse5kHraRYSDfZu0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-607dca92fcaso2067987b3.1;
-        Thu, 15 Feb 2024 02:41:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707993681; x=1708598481;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BYNOg5Hl4Io6X5VDtgJ8P/zozWReiHM8av/Gg63dgE=;
-        b=VMLtCooVRK6mG4m2HErNLVX2jpS5NhTL4fGlSkvAcOke9QHUCGRhIAQGYIhYdcsblJ
-         O+ayHNA/T25TwHTcwzsCopxDaczl2K1Gz/+dY6nud3dZNWSPXxkGO8seWJPRsk4yhnjJ
-         5Fq1/TpblZvjKUFb5p4gEKd1SAJWi8ibkzaSAHSacHSh98p2RCujEo0L6Zj646CIXTab
-         8rPWxrCOM9jxIkVhrDw4ZKTHISL2lMsb3/7NmPFr+ZFGGwefpLz0SXZDyYlBOLFCB/nD
-         o+GqvkJ56ORSRaegz0esSqrJpZA0FyODMt4Gcr8vz+juaE/OiIA1lfTFTth/QLvcFpy4
-         P9QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWXiXzKqnDoQRvATAeXebTgPVKSJzRiW+cORH8Z6OWPMAUIQq1C2mJWVUR053fipKBozScLO56iHX+RacXS04+LnUNhfI6KVzF5wWGa
-X-Gm-Message-State: AOJu0Yyj7SFtae280Jhj1i93QxjetHwpireHPiM4HHe4V29vxDjQ3+9b
-	5fbp+CUMN7O5ki0G3VfCqI1+Fh2dS7m3iGR4y20LKw+glMJxfg6xI29mn/rofqzfRw==
-X-Google-Smtp-Source: AGHT+IHy211Eq9GaDDfwhv5mamwsT+hrL0Acdei4KfkR+rddVmeXsoGNVEt/hnCNlEo0PZXvNg9V2w==
-X-Received: by 2002:a81:8507:0:b0:607:c7b0:302e with SMTP id v7-20020a818507000000b00607c7b0302emr1333340ywf.27.1707993681088;
-        Thu, 15 Feb 2024 02:41:21 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id x13-20020a0dd50d000000b00604b1b977b9sm191958ywd.62.2024.02.15.02.41.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:41:20 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607bfa4c913so6817867b3.3;
-        Thu, 15 Feb 2024 02:41:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUe0LGeOk5yUaUT09KeCKnx4Wo89o0rlHElDX1U9Zey9MaqW8j8JgiABU7MJ+nTrVk3kFmvIRxr18hSlomlGIPwsKL8GBKEc2VvNTkA
-X-Received: by 2002:a25:b286:0:b0:dcc:6757:1720 with SMTP id
- k6-20020a25b286000000b00dcc67571720mr1193139ybj.32.1707993680622; Thu, 15 Feb
- 2024 02:41:20 -0800 (PST)
+	s=arc-20240116; t=1707993692; c=relaxed/simple;
+	bh=eVKgJ+PdR5o6UVkgqUdQLFko+Czs5USvovgYmgBi2Dc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ELx3YrNVZRhiAHEnSuQrJUxWO/W55nEsUsNdGeQMM0HLLOBmA5Pq1E5V1HyZJHLo8GaJUDRzchDFjvgLPNxY9hRCaFzottKTk/UaVhJ8PS+CF7zsRzqDkXNj42Hi8GH9/J/7cs406KX5jj8m544KSqkiRzKA0FyHufiq+azEAac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=g1hJ/Hwe; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 282AA240011;
+	Thu, 15 Feb 2024 10:41:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707993686;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eVKgJ+PdR5o6UVkgqUdQLFko+Czs5USvovgYmgBi2Dc=;
+	b=g1hJ/Hwe7l8CextjF6EYChrf3HeQbqFoxg96KtpO+dqy3f/NIh7H2IVvt7ciyU7AlWyiEM
+	9aydTbAdFrLGwKHwvMEsIN8Tonb5SIrmQd+Hk5sk8PNjJkN63tcsCFBdour9lG4okj0lIH
+	15l2A7F9/wmNIX17BR9cS/+BPoSGn4ug0Ef0+EfVUShLQuprbM6iSoreONOuj+D9suTYS+
+	p/a4Bj5r7eoq1AVfQktXq1llinvAsjKo0rDqTDKNKs/tdBcIwAfPFjBG9WDx6/WoFmBHsM
+	GdBsjc9FfSx3XWdqMZVG0R+JXfeBwdCG3glQaqd2A+fbdOcCj9Vd8hsIFDK+GQ==
+Date: Thu, 15 Feb 2024 11:41:23 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh@kernel.org>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan
+ Corbet <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
+ <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
+ <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v3 14/17] dt-bindings: net: pse-pd: Add
+ bindings for PD692x0 PSE controller
+Message-ID: <20240215114123.128e7907@kmaincent-XPS-13-7390>
+In-Reply-To: <Zc3IrO_MXIdLXnEL@pengutronix.de>
+References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
+	<20240208-feature_poe-v3-14-531d2674469e@bootlin.com>
+	<20240209145727.GA3702230-robh@kernel.org>
+	<ZciUQqjM4Z8Tc6Db@pengutronix.de>
+	<618be4b1-c52c-4b8f-8818-1e4150867cad@lunn.ch>
+	<Zc3IrO_MXIdLXnEL@pengutronix.de>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-12-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240212170423.2860895-12-andriy.shevchenko@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 11:41:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVD4VTgwU3KqTZxW0baJ8PzNwW3aU=_nJgWtVK9uhHsvg@mail.gmail.com>
-Message-ID: <CAMuHMdVD4VTgwU3KqTZxW0baJ8PzNwW3aU=_nJgWtVK9uhHsvg@mail.gmail.com>
-Subject: Re: [PATCH v2 11/15] auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> We will need the update functions to be defined before
-> ht16k33_linedisp_ops. Move the latter down in the code.
-> No functional change intended.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Thu, 15 Feb 2024 09:17:48 +0100
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> On Wed, Feb 14, 2024 at 06:41:54PM +0100, Andrew Lunn wrote:
+> > > Alternative A and B Overview
+> > > ----------------------------
+> > >=20
+> > > - **Alternative A:** Utilizes the data-carrying pairs for power
+> > > transmission in 10/100BaseT networks. The power delivery's polarity in
+> > > this alternative can vary based on the MDI (Medium Dependent Interfac=
+e)
+> > > or MDI-X (Medium Dependent Interface Crossover) configuration.
+> > >=20
+> > > - **Alternative B:** Delivers power over the spare pairs not used for
+> > > data in 10/100BaseT networks. Unlike Alternative A, Alternative B's
+> > > method separates power from data lines within the cable. Though it is
+> > > less influenced by data transmission direction, Alternative B includes
+> > > two configurations with different polarities, known as variant X and
+> > > variant S, to accommodate different network requirements and device
+> > > specifications. =20
+> >=20
+> > Thanks for this documentation.
+> >=20
+> > It might be worth pointing out that RJ-45 supports up to 4
+> > pairs. However, 10/100BaseT only makes use of two pairs for data
+> > transfer from the four. 1000BaseT and above make use of all four pairs
+> > for data transfer. If you don't know this, it is not so obvious what
+> > 'data-carrying pairs' and 'spare pairs' mean. =20
+>=20
+> @Kory, can you please update it.
+>=20
+> > And what happens for 1000BaseT when all four pairs are in use? =20
+>=20
+> Hm.. good question. I didn't found the answer in the spec. By combining a=
+ll
+> puzzle parts I assume, different Alternative configurations are designed
+> to handle conflict between "PSE Physical Layer classification" and PHY
+> autoneg.
 
-Gr{oetje,eeting}s,
+Oleksij how did you get the definition of Alternative A uses the "data-carr=
+ying"
+pairs for power transmission and Alternative B Delivers power over the "spa=
+re
+pairs"?
 
-                        Geert
+On my understanding of the 2022 standard the definition is:=20
+- Alternative A is for pinout conductors 1, 2, 3 and 6
+- Alternative B is for pinout conductors 4, 5, 7, 8.
 
+Then indeed if we are in 10/100BaseT Alternative A are "data-carrying
+pairs" and Alternative B are "spare pairs" but that's not the case on
+1000BaseT.
+
+You can see it in the figures in the paragraph 145.2.3.
+
+Regards,
 --=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
