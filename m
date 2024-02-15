@@ -1,244 +1,213 @@
-Return-Path: <linux-kernel+bounces-66379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F063C855BDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:54:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BFB855BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7020282B87
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF2C51F23DB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 07:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D598A111BD;
-	Thu, 15 Feb 2024 07:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB2912B69;
+	Thu, 15 Feb 2024 07:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="McNaqup1"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dv+0mG+C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64910DDD9
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73011DDAE;
+	Thu, 15 Feb 2024 07:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707983671; cv=none; b=IWeI44Dm1vcYtJDzrpIvsd95tpwWU/uav+WM2NC0B/JWCJ/lv5bqENh+Y0Q1NyA79qoQLp6B6z2A3hkJdQFj9ioouIBW5ov3ERU9/VAhrlovIfXxB84MvM44wXpLKT77hulo/Xt4knuCF246tcoHrJPw3aBxiEl3y48ukiXS2G0=
+	t=1707983799; cv=none; b=Wky1av8WlTdRI3xlBK0XJKSDAKlCtC8/whXTRxDz7+omxkQ6tKyxxyjBbyTIOnjulNkHchKvFlQygbzSCqJIlYkpHu8lz9m99ZwBMHrC0KTI6TpLYdUBErdk9BMdOFQf3wslczkjqgwthwgnweBFjf8u+o5NzictGZDzUiFYz1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707983671; c=relaxed/simple;
-	bh=a0CrsUvrlzjtAIzYyECsZveq3IHuby4CWNqAo1/tuCQ=;
+	s=arc-20240116; t=1707983799; c=relaxed/simple;
+	bh=xfCSlQh3j9vziRPtoUADhlf5DGySWnxhTzmYirfEjQo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ceb8/TuY1HXTXAjpJWp+7ro/Bz5rCYmkLPhFsK7pFoYo7Qiymws4LYZKH9uyJDon9ko/NK71ppwW8kiCjSp2wA90nwapwUXNvoGMJtLUOH3dvPTY+ywa4n7En884geJ+Hj7rX8t2K42Ct7rUjcg/Fm6q9fbld6C5PTFrebpg2B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=McNaqup1; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42dc7306ca1so95801cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 23:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707983668; x=1708588468; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rtgtlwF3ZegafmmTs7sJ+DY87IpwAYGQFQxo66uPYvY=;
-        b=McNaqup1OEXkodmRxwhZvx4IHD7Mjm/eegbvwyIbquhLzuULdQPokXzwmGR7PucNgp
-         4frss6uIjYRBGenxAm4Fayel0QSxFGYIszMPBr5IUiXSx7UmT/eco0XTN8UWqIO5P+pN
-         cMiX0Ws4tz6J98i2OjX+U1eG43fBwVwEd+CahWIjc1Nf+uY4VGiAH8qxAYX16NbkqDK8
-         MUKhbDurEUlcf4bJuI3nm+ugRQ2vFKXTLatEWOqSnWlT38Urhd8cxZWvHjKS16+O2u+z
-         ZRKXIexSeqHVDi96UUEcZV5m4HLfRt2lK/kb6IISCxUqBA7HobT0RTFjHqiTVojfS2Qh
-         R7MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707983668; x=1708588468;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rtgtlwF3ZegafmmTs7sJ+DY87IpwAYGQFQxo66uPYvY=;
-        b=A2CCNRkFG8JifRKQE93ckL5193A6LPkcJNOs6I0baIeB1zJcrFaz63SwbvM+/ACkxk
-         X5OA+PSAJtEIXlMxDDdoNO2xFxkXXuG+yVcP6evAr51X58NkkvR21sxERvvicWD7WQof
-         Gy62qS29MGatnRBvimNK4QWdTBcUGOrvR6dFDPwxotoFgmQU3MHsJkvRuD4FJgl8h7UP
-         h0ozKmsmXzcLDUrzWlP4Mtw1wNWcocPbA7S6DI+/Ht2XPi+uH5zgclamj5YvGvhJ5+OR
-         XrwV718ELpEttr1qta+EW64S9Aa8OiI1RDM8viZvTklvGl50YqDCgNr3tqg7o48GxDeZ
-         xOrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWldNLrxSCKuDteTNgGF5n1v65iigVl8Q0rRKiOmfopQ1Pnu0hy+gk7jQE0pNtCHoiANhBwj3PH+6BHSXhsLW0AT1Wyc6NvjUoSs+l
-X-Gm-Message-State: AOJu0Yz/Mgh1ZpR9NnG/JGCG4whBq2CCIkB1pDDvZILAVQUt5kT9keyA
-	KtFVxByLs4blnHvPGbHRN9Cv3gCXidON5l/WjudpoNuEJuaSLoW2ssOGwbadZRqnocYxJ6y2GXt
-	Eazw4uQ65yHeo2yDtxgpE16UKkv95RRXf3khu
-X-Google-Smtp-Source: AGHT+IH+mrNCXejOLadUwcLX8B40T+eYg6hObFaWOPHFLDcUd6aZ2iTgo2276ibfjcBs0TzV9c+XFeCg2y0P2ilNniI=
-X-Received: by 2002:a05:622a:85:b0:42d:a974:5b65 with SMTP id
- o5-20020a05622a008500b0042da9745b65mr583206qtw.17.1707983667966; Wed, 14 Feb
- 2024 23:54:27 -0800 (PST)
+	 To:Cc:Content-Type; b=R/v7kMpDtLXykGRurrEA+YgFrFo8eOwEHGYK/xTqgU2TSw/Y50eqG0VpJ97mYfqb2CZMPyduG7fq34xcI4/nlyOGe4LZysZqm13c4appGrqHm2Vn+nbtgVYfsrQX/FZ9kXpQqYjs915ngAbZM18UawNYWDZ+tiGexo3K6CsmJTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dv+0mG+C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C81B0C43141;
+	Thu, 15 Feb 2024 07:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707983798;
+	bh=xfCSlQh3j9vziRPtoUADhlf5DGySWnxhTzmYirfEjQo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Dv+0mG+Cl9GeB0FTjPzOM3gI5demZy+pHuklwpTeWX9PHyM5hxNMa39Viqa7xglJX
+	 AlkrOoDtYApixFgEZnN3tVpM6dzkB1H4gQOZVP2Wq7psPyHnhbQth19w9KXyluENcn
+	 jgiSJDDuVgyR54gj6VEhj4niffZDsywBBSerIIbnpLdSzZzcpURfVe4URlvBdNCIdz
+	 4YaTcJyzMNaoRyAs+8jU24i2ZrEdyal4CGLKbfnEA+5Qzu++ixaE2Fa0WinwWlMuTG
+	 wQnec8rXuPUCepgbz6k8nwm1SLUm9EmF3XMa3UPB4i+kZtMU0JIHulStOI/zhqPZP5
+	 z9rZrYs9tgSQA==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-511531f03f6so639974e87.0;
+        Wed, 14 Feb 2024 23:56:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVNMh/+roFBG3ssnL0lMR3HnbL2takR3P6GjdEhYak/WpqZ0ptrwpWiXOBAjOsS+lCnw3kWG7pvGh1qZwHCnt1jDUdv4coQvcZdFvOvkBxhTp8QqTuKXoKGIFbGM7UUBjkPD+7Yl0aV8uD7aukW3opdBYAQEyD0qmX+4AHnZAmxu1rgtZsRooYUTGgyULTYZh/tZJjmbxeyRXCXZQEwY7e+9LEo
+X-Gm-Message-State: AOJu0YwB1caySH3ncamAwBq8rnKzbhZMeromuLBbdi7Z0L05kGccana9
+	GYVaj7Dhx4W3R3EWQwNsuiwpupnA/3c+tPwR/kh+klE/zklw1p4Y1Y4y82gcCNVIFX5dZgwwbvg
+	Llsw+QN+fKf8MYkW+t8MuMmyM0JA=
+X-Google-Smtp-Source: AGHT+IFA6RWY4UG2hD5HrcveuMn0XzIXulhltm/OPlLpFX1tCGIskA3QzenmIrMy2g42ftRPvNAHNHzec8Ze0zvC/P8=
+X-Received: by 2002:ac2:43cd:0:b0:512:87a2:adf6 with SMTP id
+ u13-20020ac243cd000000b0051287a2adf6mr528637lfl.22.1707983796842; Wed, 14 Feb
+ 2024 23:56:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213075256.1983638-1-namhyung@kernel.org> <20240213075256.1983638-4-namhyung@kernel.org>
- <CAP-5=fVK3vvNoaGHPep8NCweGw9cztKBGQh5+0bVX91PhWp5Eg@mail.gmail.com> <CAM9d7ci=A9rwZxEYYQRi-Cncs7NSpRG+TaH5knTdEPZYxJWp9Q@mail.gmail.com>
-In-Reply-To: <CAM9d7ci=A9rwZxEYYQRi-Cncs7NSpRG+TaH5knTdEPZYxJWp9Q@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 14 Feb 2024 23:54:13 -0800
-Message-ID: <CAP-5=fWwRjnv=BSdz2GV+EfKUrtzMCSvheR38hkbFadKpvW2eQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] perf hist: Do not use event index in hpp__fmt()
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org
+References: <20240214221847.2066632-1-ross.philipson@oracle.com> <20240214221847.2066632-2-ross.philipson@oracle.com>
+In-Reply-To: <20240214221847.2066632-2-ross.philipson@oracle.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 15 Feb 2024 08:56:25 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH3Gvr3vDRLDdXuc0s7ZAQYE6+D7tmCRBjJWwWt2fn4-w@mail.gmail.com>
+Message-ID: <CAMj1kXH3Gvr3vDRLDdXuc0s7ZAQYE6+D7tmCRBjJWwWt2fn4-w@mail.gmail.com>
+Subject: Re: [PATCH v8 01/15] x86/boot: Place kernel_info at a fixed offset
+To: Ross Philipson <ross.philipson@oracle.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
+	linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com, 
+	mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de, 
+	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net, nivedita@alum.mit.edu, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, kanth.ghatraju@oracle.com, 
+	trenchboot-devel@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 9:26=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
+On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
 >
-> On Wed, Feb 14, 2024 at 4:08=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Mon, Feb 12, 2024 at 11:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > The __hpp__fmt() is to print period values in a hist entry.  It handl=
-es
-> > > event groups using linked pair entries.  Until now, it used event ind=
-ex
-> > > to print values of group members.  But we want to make it more robust
-> > > and support groups even if some members in the group were removed.
-> >
-> > I'm unclear how it breaks currently. The evsel idx is set the evlist
-> > nr_entries on creation and not updated by a remove. A remove may
-> > change a groups leader, should the remove also make the next entry's
-> > index idx that of the previous group leader?
+> From: Arvind Sankar <nivedita@alum.mit.edu>
 >
-> The evsel__group_idx() returns evsel->idx - leader->idx.
-> If it has a group event {A, B, C} then the index would be 0, 1, 2.
-> If it removes B, the group would be {A, C} with index 0 and 2.
-> The nr_members is 2 now so it cannot use index 2 for C.
+> There are use cases for storing the offset of a symbol in kernel_info.
+> For example, the trenchboot series [0] needs to store the offset of the
+> Measured Launch Environment header in kernel_info.
 >
-> Note that we cannot change the index of C because some information
-> like annotation histogram relies on the index.
 
-Ugh, the whole index thing is just messy - perhaps these days we could
-have a hashmap with the evsel as a key instead. I remember that I also
-forced the idx here:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/parse-events.c?h=3Dperf-tools-next#n2049
-If it were invariant that the idx were always the position of an event
-in the evlist then I think life would be easier, but that won't help
-for the arrays of counters that need the index to be constant. I guess
-this is why the previous work to do this skipped evsels rather than
-removed them.
+Why? Is this information consumed by the bootloader?
 
-Thanks,
-Ian
+I'd like to get away from x86 specific hacks for boot code and boot
+images, so I would like to explore if we can avoid kernel_info, or at
+least expose it in a generic way. We might just add a 32-bit offset
+somewhere in the first 64 bytes of the bootable image: this could
+co-exist with EFI bootable images, and can be implemented on arm64,
+RISC-V and LoongArch as well.
 
-
-> >
-> > > Let's use an index table from evsel to value array so that we can ski=
-p
-> > > dummy events in the output later.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/ui/hist.c | 34 ++++++++++++++++++++++++++++------
-> > >  1 file changed, 28 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/tools/perf/ui/hist.c b/tools/perf/ui/hist.c
-> > > index 5f4c110d840f..9c4c738edde1 100644
-> > > --- a/tools/perf/ui/hist.c
-> > > +++ b/tools/perf/ui/hist.c
-> > > @@ -48,15 +48,30 @@ static int __hpp__fmt(struct perf_hpp *hpp, struc=
-t hist_entry *he,
-> > >         if (evsel__is_group_event(evsel)) {
-> > >                 int idx;
-> > >                 struct hist_entry *pair;
-> > > -               int nr_members =3D evsel->core.nr_members;
-> > > +               int nr_members =3D evsel->core.nr_members - 1;
-> >
-> > A comment on the -1 would be useful.
+> Since commit (note: commit ID from tip/master)
 >
-> The 'nr_members' includes the leader which is already printed.
-> In this code, we want to print member events only, hence -1.
-> I'll add it to the comment.
+> commit 527afc212231 ("x86/boot: Check that there are no run-time relocations")
 >
-> Thanks,
-> Namhyung
+> run-time relocations are not allowed in the compressed kernel, so simply
+> using the symbol in kernel_info, as
 >
-> >
-> > Thanks,
-> > Ian
-> >
-> >
-> > >                 union {
-> > >                         u64 period;
-> > >                         double percent;
-> > >                 } *val;
-> > > +               struct evsel *member;
-> > > +               struct evsel **idx_table;
-> > >
-> > >                 val =3D calloc(nr_members, sizeof(*val));
-> > >                 if (val =3D=3D NULL)
-> > > -                       return 0;
-> > > +                       goto out;
-> > > +
-> > > +               idx_table =3D calloc(nr_members, sizeof(*idx_table));
-> > > +               if (idx_table =3D=3D NULL)
-> > > +                       goto out;
-> > > +
-> > > +               /*
-> > > +                * Build an index table for each evsel to the val arr=
-ay.
-> > > +                * It cannot use evsel->core.idx because removed even=
-ts might
-> > > +                * create a hole so the index is not consecutive anym=
-ore.
-> > > +                */
-> > > +               idx =3D 0;
-> > > +               for_each_group_member(member, evsel)
-> > > +                       idx_table[idx++] =3D member;
-> > >
-> > >                 /* collect values in the group members */
-> > >                 list_for_each_entry(pair, &he->pairs.head, pairs.node=
-) {
-> > > @@ -66,8 +81,15 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct=
- hist_entry *he,
-> > >                         if (!total)
-> > >                                 continue;
-> > >
-> > > -                       evsel =3D hists_to_evsel(pair->hists);
-> > > -                       idx =3D evsel__group_idx(evsel);
-> > > +                       member =3D hists_to_evsel(pair->hists);
-> > > +                       for (idx =3D 0; idx < nr_members; idx++) {
-> > > +                               if (idx_table[idx] =3D=3D member)
-> > > +                                       break;
-> > > +                       }
-> > > +
-> > > +                       /* this should not happen */
-> > > +                       if (idx =3D=3D nr_members)
-> > > +                               continue;
-> > >
-> > >                         if (fmt_percent)
-> > >                                 val[idx].percent =3D 100.0 * period /=
- total;
-> > > @@ -75,8 +97,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct =
-hist_entry *he,
-> > >                                 val[idx].period =3D period;
-> > >                 }
-> > >
-> > > -               /* idx starts from 1 to skip the leader event */
-> > > -               for (idx =3D 1; idx < nr_members; idx++) {
-> > > +               for (idx =3D 0; idx < nr_members; idx++) {
-> > >                         if (fmt_percent) {
-> > >                                 ret +=3D hpp__call_print_fn(hpp, prin=
-t_fn,
-> > >                                                           fmt, len, v=
-al[idx].percent);
-> > > @@ -89,6 +110,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct=
- hist_entry *he,
-> > >                 free(val);
-> > >         }
-> > >
-> > > +out:
-> > >         /*
-> > >          * Restore original buf and size as it's where caller expects
-> > >          * the result will be saved.
-> > > --
-> > > 2.43.0.687.g38aa6559b0-goog
-> > >
+>         .long   symbol
+>
+> will cause a linker error because this is not position-independent.
+>
+> With kernel_info being a separate object file and in a different section
+> from startup_32, there is no way to calculate the offset of a symbol
+> from the start of the image in a position-independent way.
+>
+> To enable such use cases, put kernel_info into its own section which is
+> placed at a predetermined offset (KERNEL_INFO_OFFSET) via the linker
+> script. This will allow calculating the symbol offset in a
+> position-independent way, by adding the offset from the start of
+> kernel_info to KERNEL_INFO_OFFSET.
+>
+> Ensure that kernel_info is aligned, and use the SYM_DATA.* macros
+> instead of bare labels. This stores the size of the kernel_info
+> structure in the ELF symbol table.
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: Ross Philipson <ross.philipson@oracle.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
+> ---
+>  arch/x86/boot/compressed/kernel_info.S | 19 +++++++++++++++----
+>  arch/x86/boot/compressed/kernel_info.h | 12 ++++++++++++
+>  arch/x86/boot/compressed/vmlinux.lds.S |  6 ++++++
+>  3 files changed, 33 insertions(+), 4 deletions(-)
+>  create mode 100644 arch/x86/boot/compressed/kernel_info.h
+>
+> diff --git a/arch/x86/boot/compressed/kernel_info.S b/arch/x86/boot/compressed/kernel_info.S
+> index f818ee8fba38..c18f07181dd5 100644
+> --- a/arch/x86/boot/compressed/kernel_info.S
+> +++ b/arch/x86/boot/compressed/kernel_info.S
+> @@ -1,12 +1,23 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>
+> +#include <linux/linkage.h>
+>  #include <asm/bootparam.h>
+> +#include "kernel_info.h"
+>
+> -       .section ".rodata.kernel_info", "a"
+> +/*
+> + * If a field needs to hold the offset of a symbol from the start
+> + * of the image, use the macro below, eg
+> + *     .long   rva(symbol)
+> + * This will avoid creating run-time relocations, which are not
+> + * allowed in the compressed kernel.
+> + */
+> +
+> +#define rva(X) (((X) - kernel_info) + KERNEL_INFO_OFFSET)
+>
+> -       .global kernel_info
+> +       .section ".rodata.kernel_info", "a"
+>
+> -kernel_info:
+> +       .balign 16
+> +SYM_DATA_START(kernel_info)
+>         /* Header, Linux top (structure). */
+>         .ascii  "LToP"
+>         /* Size. */
+> @@ -19,4 +30,4 @@ kernel_info:
+>
+>  kernel_info_var_len_data:
+>         /* Empty for time being... */
+> -kernel_info_end:
+> +SYM_DATA_END_LABEL(kernel_info, SYM_L_LOCAL, kernel_info_end)
+> diff --git a/arch/x86/boot/compressed/kernel_info.h b/arch/x86/boot/compressed/kernel_info.h
+> new file mode 100644
+> index 000000000000..c127f84aec63
+> --- /dev/null
+> +++ b/arch/x86/boot/compressed/kernel_info.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef BOOT_COMPRESSED_KERNEL_INFO_H
+> +#define BOOT_COMPRESSED_KERNEL_INFO_H
+> +
+> +#ifdef CONFIG_X86_64
+> +#define KERNEL_INFO_OFFSET 0x500
+> +#else /* 32-bit */
+> +#define KERNEL_INFO_OFFSET 0x100
+> +#endif
+> +
+> +#endif /* BOOT_COMPRESSED_KERNEL_INFO_H */
+> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> index 083ec6d7722a..718c52f3f1e6 100644
+> --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> @@ -7,6 +7,7 @@ OUTPUT_FORMAT(CONFIG_OUTPUT_FORMAT)
+>
+>  #include <asm/cache.h>
+>  #include <asm/page_types.h>
+> +#include "kernel_info.h"
+>
+>  #ifdef CONFIG_X86_64
+>  OUTPUT_ARCH(i386:x86-64)
+> @@ -27,6 +28,11 @@ SECTIONS
+>                 HEAD_TEXT
+>                 _ehead = . ;
+>         }
+> +       .rodata.kernel_info KERNEL_INFO_OFFSET : {
+> +               *(.rodata.kernel_info)
+> +       }
+> +       ASSERT(ABSOLUTE(kernel_info) == KERNEL_INFO_OFFSET, "kernel_info at bad address!")
+> +
+>         .rodata..compressed : {
+>                 *(.rodata..compressed)
+>         }
+> --
+> 2.39.3
+>
 
