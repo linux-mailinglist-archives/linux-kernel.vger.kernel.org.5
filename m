@@ -1,49 +1,72 @@
-Return-Path: <linux-kernel+bounces-67249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 460F48568A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:00:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8764C8568A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:02:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDFB6290485
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3884A290A17
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D391339B2;
-	Thu, 15 Feb 2024 16:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D64F1339A8;
+	Thu, 15 Feb 2024 16:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIivHZOk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="NFkFYSZL"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 898A8133993;
-	Thu, 15 Feb 2024 16:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A677D20B3D;
+	Thu, 15 Feb 2024 16:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012831; cv=none; b=CwF9s6hpq5AtyXnEPkGwCm4dEUacgWz3MX3WxDsR8qha1W2eF2V861TLhur9fcMbSK+JKYLRr+7Fw0olBHIEwterqq3ZeDNqz2FQK5KaJ/c8MTP+mzXlMFv/9JPzqZ8zZVlkP+3OSo47pFFbYTeNOQzUXeU7fZT1zPFQ7GhU4Ug=
+	t=1708012909; cv=none; b=BTLa1M6o0cKg6eFSGsgJCEdq+hGjFvouCieS7SiJJND3tBYitlGqyn4GgtJp93U2mWGWIEXC3ATehgO4m4xV8tJ4NxGcTL2kSAa4VG9oWqqacBgAKUAuT4NNZX03TxP0t6cbGTp/O6UqK4qtM8GzIrz+V83kszlNa4QgT5T3aq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012831; c=relaxed/simple;
-	bh=BXkarRnrP9ql3/F0jVVEdEj9rG4J9sjU6VHcSMrN6BE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=J/xcx0WbpHsSzJVWzds6Tar4pKAVoVOqSy7KVEWHJjQwgyY/1uG+7wDf35vkZJL1SUo/a4NGPbKnGsOl7itf1/Id4KDPpevtQPh81IgagWtkC1OEnDwEEvBUIB9uJPCZ1Dk+buCZ6IWhFhhUAMSBt6weGAEawUH74l43Tzkq+do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIivHZOk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0880FC43390;
-	Thu, 15 Feb 2024 16:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708012831;
-	bh=BXkarRnrP9ql3/F0jVVEdEj9rG4J9sjU6VHcSMrN6BE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=VIivHZOk6jxdd577mnEbjH+58sxhG9ymrK6rOXBZW7kMRtFsHr0HGn/MJSwbhY8VD
-	 E7AGjJJYShMFTUg13RLTln51ujBsl65c0aBFV2CbM+DydYXevhMaH+xnUwhT1NnekG
-	 rrFb8fEmd2EtM1XGhC1ncxwzY6NjxFyyrpxBYoggCIyvKFLUxvpAeNbGh5Gh0oeSH6
-	 cnKhHlyts4JZMJfbXXZjz/Eip2+jp7lCgohtWNC9uQkbZOoisTNoE/+A/LiMtLX0X8
-	 HQGF1yjK2m+0MP7+UYzr0UoW9KXDV0U2zyyXxNCS4K7vy1SoP1qhlPc9kGRwnB1Rz7
-	 5JHW71X5h7/SA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E50ACD8C978;
-	Thu, 15 Feb 2024 16:00:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708012909; c=relaxed/simple;
+	bh=V3kpBue3P3meAyX+1HSi9AH3VSVEyzeJ+FuYYhoELcE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lO4FXJyvjAjH0UDvaIDq/Z17eJ+etOAil441iNYg/UWMbKkhCxwiPrSIO53rFx9kXH2gOdDkMMK15iV/3ynZW6Tkp4OHC67rwYKG6wC7F7nownXFDX3Ks75TMu7RqXeXUYxaxv/8RRmSKbIUrffPv/3dXP1rArEUHMoizH8axG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=NFkFYSZL; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFTYlw030199;
+	Thu, 15 Feb 2024 16:01:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=+NjmOTX3CsrKN1v5/+XuTP0aoVY5fQmXlmcThaiCXH4=;
+ b=NFkFYSZLrPtrxgh2N8fN+nX/gLb4b2KU4Bk++MesbmxvSabk1AyZQHh3jHbi9OQGrGAF
+ YyG/Vtf/YAxVRgVlZZIZSD8gs5sopt5Ey0pauMOqN9149BYUygPxWcl3FoaWqBGeuy+O
+ 90n5DU9Xw9kBG5qj+NCX8pf/pW+H8X70rpgG6vCBWEaWbhoDukbH/AOcbU2pkLillhNF
+ c89HUllMJ8w33R5z2e9axw7mFw63LvoUkNB7f/mv62f3CUIprOz4CZ/p6an7fYJCR8zW
+ ZRsXA8FE/koV6iatHRKx1GgSJcCA/n+xPttM+n6tM18GR+AGbjjjD5LpsMXCcWJdwhJM oA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91f02t8u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 16:01:39 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFZh9Z013875;
+	Thu, 15 Feb 2024 16:01:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apdker0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 16:01:38 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FG1cZS031601;
+	Thu, 15 Feb 2024 16:01:38 GMT
+Received: from alaljime-dev-e4flex-vm.osdevelopmeniad.oraclevcn.com (alaljime-dev-e4flex-vm.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.249.106])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w6apdkep6-1;
+	Thu, 15 Feb 2024 16:01:38 +0000
+From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+To: kvm@vger.kernel.org
+Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        mark.kanda@oracle.com, suravee.suthikulpanit@amd.com,
+        mlevitsk@redhat.com, alejandro.j.jimenez@oracle.com
+Subject: [RFC 0/3] Export APICv-related state via binary stats interface
+Date: Thu, 15 Feb 2024 16:01:33 +0000
+Message-Id: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,44 +74,108 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] pppoe: Fix memory leak in pppoe_sendmsg()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170801283093.9967.12597229007790214662.git-patchwork-notify@kernel.org>
-Date: Thu, 15 Feb 2024 16:00:30 +0000
-References: <20240214085814.3894917-1-Ilia.Gavrilov@infotecs.ru>
-In-Reply-To: <20240214085814.3894917-1-Ilia.Gavrilov@infotecs.ru>
-To: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-Cc: mostrows@earthlink.net, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
- syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_14,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=939 adultscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150128
+X-Proofpoint-ORIG-GUID: j0Kt_fpUjNlkODnGPzdp7ycg9RdnpFVL
+X-Proofpoint-GUID: j0Kt_fpUjNlkODnGPzdp7ycg9RdnpFVL
 
-Hello:
+The goal of this RFC is to agree on a mechanism for querying the state (and
+related stats) of APICv/AVIC. I clearly have an AVIC bias when approaching this
+topic since that is the side that I have mostly looked at, and has the greater
+number of possible inhibits, but I believe the argument applies for both
+vendor's technologies.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Currently, a user or monitoring app trying to determine if APICv is actually
+being used needs implementation-specific knowlegde in order to look for specific
+types of #VMEXIT (i.e. AVIC_INCOMPLETE_IPI/AVIC_NOACCEL), checking GALog events
+by watching /proc/interrupts for AMD-Vi*-GA, etc. There are existing tracepoints
+(e.g. kvm_apicv_accept_irq, kvm_avic_ga_log) that make this task easier, but
+tracefs is not viable in some scenarios. Adding kvm debugfs entries has similar
+downsides. Suravee has previously proposed a new IOCTL interface[0] to expose
+this information, but there has not been any development in that direction.
+Sean has mentioned a preference for using BPF to extract info from the current
+tracepoints, which would require reworking existing structs to access some
+desired data, but as far as I know there isn't any work done on that approach
+yet.
 
-On Wed, 14 Feb 2024 09:01:50 +0000 you wrote:
-> syzbot reports a memory leak in pppoe_sendmsg [1].
-> 
-> The problem is in the pppoe_recvmsg() function that handles errors
-> in the wrong order. For the skb_recv_datagram() function, check
-> the pointer to skb for NULL first, and then check the 'error' variable,
-> because the skb_recv_datagram() function can set 'error'
-> to -EAGAIN in a loop but return a correct pointer to socket buffer
-> after a number of attempts, though 'error' remains set to -EAGAIN.
-> 
-> [...]
+Recently Joao mentioned another alternative: the binary stats framework that is
+already supported by kernel[1] and QEMU[2]. This RFC has minimal code changes to
+expose the relevant info based on the existing data types the framework already
+supports. If there is consensus on using this approach, I can expand the fd
+stats subsystem to include other data types (e.g. a bitmap type for exposing the
+inhibit reasons), as well as adding documentation on KVM explaining which stats
+are relevant for APICv and how to query them.
 
-Here is the summary with links:
-  - [net] pppoe: Fix memory leak in pppoe_sendmsg()
-    https://git.kernel.org/netdev/net/c/dc34ebd5c018
+A basic example of retrieving the stats via qmp-shell, showing both a VM and
+per-vCPU case:
 
-You are awesome, thank you!
+# /usr/local/bin/qmp-shell --pretty ./qmp-sock
+
+(QEMU) query-stats target=vm providers=[{'provider':'kvm','names':['apicv_inhibited']}]
+{
+    "return": [
+        {
+            "provider": "kvm",
+            "stats": [
+                {
+                    "name": "apicv_inhibited",
+                    "value": false
+                }
+            ]
+        }
+    ]
+}
+
+(QEMU) query-stats target=vcpu vcpus=['/machine/unattached/device[0]'] providers=[{'provider':'kvm','names':['apicv_accept_irq','ga_log_event']}]
+{
+    "return": [
+        {
+            "provider": "kvm",
+            "qom-path": "/machine/unattached/device[0]",
+            "stats": [
+                {
+                    "name": "ga_log_event",
+                    "value": 98
+                },
+                {
+                    "name": "apicv_accept_irq",
+                    "value": 166920
+                }
+            ]
+        }
+    ]
+}
+
+If other alternatives are preferred, please let's use this thread to discuss and
+I can take a shot at implementing the desired solution.
+
+Regards,
+Alejandro
+
+[0] https://lore.kernel.org/qemu-devel/7e0d22fa-b9b0-ad1a-3a37-a450ec5d73e8@amd.com/
+[1] https://lore.kernel.org/all/20210618222709.1858088-1-jingzhangos@google.com/
+[2] https://lore.kernel.org/qemu-devel/20220530150714.756954-1-pbonzini@redhat.com/
+
+Alejandro Jimenez (3):
+  x86: KVM: stats: Add a stat to report status of APICv inhibition
+  x86: KVM: stats: Add stat counter for IRQs injected via APICv
+  x86: KVM: stats: Add a stat counter for GALog events
+
+ arch/x86/include/asm/kvm_host.h |  3 +++
+ arch/x86/kvm/svm/avic.c         |  4 +++-
+ arch/x86/kvm/svm/svm.c          |  3 +++
+ arch/x86/kvm/vmx/vmx.c          |  2 ++
+ arch/x86/kvm/x86.c              | 12 +++++++++++-
+ 5 files changed, 22 insertions(+), 2 deletions(-)
+
+
+base-commit: 7455665a3521aa7b56245c0a2810f748adc5fdd4
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.3
 
 
