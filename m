@@ -1,170 +1,170 @@
-Return-Path: <linux-kernel+bounces-66522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9A1855DDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:23:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B72BD855E29
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D7D81C213F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:23:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 007A6B30908
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523101B299;
-	Thu, 15 Feb 2024 09:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sfOAoS4D";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sfOAoS4D"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984F11B959;
+	Thu, 15 Feb 2024 09:23:16 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6088179BD;
-	Thu, 15 Feb 2024 09:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA891B950
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988983; cv=none; b=tOhveFpdDCWzI4b6/ZpeEwsWCyI7m0c+Y6oxv4E2ZqzKSRcO3jPtU96ywiavfHvg7JuT0KNGDiOqplixrE3qasZhEkuc1WxNwoFiaJbwgC3KbNwBtjFqWhKMHVDHSfe6/ORQD7HE75nQ62qbPBUjRjhXMTTslwasak+gAZUXliE=
+	t=1707988996; cv=none; b=NM03kpDoBBLpKZMwR9I2huBzUw/OgQjVojXvnaMcFU68hP4lbTgNGgtajhLgV4DoD00zcStfn4K+7cPhlXP/fiEyY7bPjzS442HfSkGkvpgrFZ4O3n09qv5iOOOSTGZ12KEL6DiGIv3DREJbMZ6conJAxynKt6LV8AJ8BJ/WIP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988983; c=relaxed/simple;
-	bh=WNYLiPDN/h368EHdEX8l1z4Wuz1Yugs/kYjrmi7aM0g=;
+	s=arc-20240116; t=1707988996; c=relaxed/simple;
+	bh=jE1rZpY3SjNM/hr3FU2idYQaRSA7hffibi3C0fZZNdY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fKnOv20R6DpRqrDbTZs99vmTxy21ZQsPMRKKt2hVqKIypTlFjtxJ6MnSMTjF+FamvJMj+bDggn+dnFk30nzSHBqhPNScWKzbkbngzeQggUAPi54alleWJ0bqht25JLPo4y1Iu6pZ58ksWF69kqptF4Hw8QbGyionN3URK/aUtv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sfOAoS4D; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sfOAoS4D; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0F1001F871;
-	Thu, 15 Feb 2024 09:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707988978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P0wAra6NNdsmQy/QOu3XOOm75y+sycyf1CReKWa3x/A=;
-	b=sfOAoS4D29QnYtnKO07SRNn72nriTA9zXXwoZ0RnHp0XHtxokuQn7bDggRyH/dV5bo4PMY
-	m6GbhMwzRlnOtmD5aW0DXlvPon3YpJ50cKwL/qadfxvkMWtOESzhQ0uXkZ1xrF5HxAfde3
-	KNje8XIUO7zvXrtU2TUsUX4dAPtyxss=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707988978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P0wAra6NNdsmQy/QOu3XOOm75y+sycyf1CReKWa3x/A=;
-	b=sfOAoS4D29QnYtnKO07SRNn72nriTA9zXXwoZ0RnHp0XHtxokuQn7bDggRyH/dV5bo4PMY
-	m6GbhMwzRlnOtmD5aW0DXlvPon3YpJ50cKwL/qadfxvkMWtOESzhQ0uXkZ1xrF5HxAfde3
-	KNje8XIUO7zvXrtU2TUsUX4dAPtyxss=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CED2B13A53;
-	Thu, 15 Feb 2024 09:22:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gyDbMfHXzWUfGQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 15 Feb 2024 09:22:57 +0000
+	 Content-Type:Content-Disposition:In-Reply-To; b=G10In9od4pBtniUp1QxRCICvLFTNIyn8WH9eYrWIFp+36uIojdOs7TB6wSL5sBOJacVXoGkEjoDhwz/aNUTkTXuvI3MWe3L5Jne5qB5mbSqK9EQQnGS4N39fyzmIe7SL/2DuYjlgBRl1NqNgIEcdXzo5xYq+MUXaiO8UAuv3C0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raXxK-0001b0-QJ; Thu, 15 Feb 2024 10:22:58 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raXxJ-000r6J-Bz; Thu, 15 Feb 2024 10:22:57 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raXxJ-005Gfg-0v;
+	Thu, 15 Feb 2024 10:22:57 +0100
 Date: Thu, 15 Feb 2024 10:22:57 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz,
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-	paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-Message-ID: <Zc3X8XlnrZmh2mgN@tiehlicka>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-32-surenb@google.com>
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
+	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
+Message-ID: <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
+References: <20240208070529.28562-1-raag.jadav@intel.com>
+ <20240208070529.28562-2-raag.jadav@intel.com>
+ <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
+ <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
+ <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
+ <Zcz-csPY5x29DP7v@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="52elieucqt6bggmp"
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-32-surenb@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=sfOAoS4D
-X-Spamd-Result: default: False [1.65 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 BAYES_HAM(-0.04)[58.58%];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.65
-X-Rspamd-Queue-Id: 0F1001F871
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+In-Reply-To: <Zcz-csPY5x29DP7v@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
-[...]
-> @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
->  #ifdef CONFIG_MEMORY_FAILURE
->  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
->  #endif
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +	{
-> +		struct seq_buf s;
-> +		char *buf = kmalloc(4096, GFP_ATOMIC);
-> +
-> +		if (buf) {
-> +			printk("Memory allocations:\n");
-> +			seq_buf_init(&s, buf, 4096);
-> +			alloc_tags_show_mem_report(&s);
-> +			printk("%s", buf);
-> +			kfree(buf);
-> +		}
-> +	}
-> +#endif
 
-I am pretty sure I have already objected to this. Memory allocations in
-the oom path are simply no go unless there is absolutely no other way
-around that. In this case the buffer could be preallocated.
+--52elieucqt6bggmp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Michal Hocko
-SUSE Labs
+On Wed, Feb 14, 2024 at 07:54:58PM +0200, Andy Shevchenko wrote:
+> On Wed, Feb 14, 2024 at 06:45:48PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Feb 08, 2024 at 07:04:33PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Feb 08, 2024 at 08:46:44AM +0100, Uwe Kleine-K=F6nig wrote:
+> > > > On Thu, Feb 08, 2024 at 12:35:25PM +0530, Raag Jadav wrote:
+> > > > > pcim_iomap_table() fails only if pcim_iomap_regions() fails. No n=
+eed to
+> > > > > check for failure if the latter is already successful.
+> > > >=20
+> > > > Is this really true? pcim_iomap_table() calls devres_alloc_node() w=
+hich
+> > > > might fail if the allocation fails. (Yes, I know
+> > > > https://lwn.net/Articles/627419/, but the rule is still to check for
+> > > > errors, right?)
+> > >=20
+> > > We do not add a dead code to the kernel, right?
+> > >=20
+> > > > What am I missing?
+> > >=20
+> > > Mysterious ways of the twisted PCI devres code.
+> > > Read the above commit message again :-)
+> > >=20
+> > > For your convenience I can elaborate. pcim_iomap_table() calls _first_
+> > > devres_find() which _will_ succeed if the pcim_iomap_regions() previo=
+usly
+> > > succeeded. Does it help to understand how it designed?
+> >=20
+> > I assume you're saying that after pcim_iomap_regions() succeeded it's
+> > already known that pcim_iomap_table() succeeds (because the former
+> > already called the latter).
+> >=20
+> > I'm still concerned here. I agree that error checking might be skipped
+> > if it's clear that no error can happen (the device cannot disappear
+> > between these two calls, can it?),=20
+>=20
+> It depends. If you call it in some asynchronous callbacks which may be run
+> after PCI device disappears, then indeed, it's problematic. But you proba=
+bly
+> will have much bigger issue at that point already.
+>=20
+> In ->probe() it's guaranteed to work as I suggested (assuming properly wo=
+rking
+> hardware).
+
+Assuming properly working hardware allows to drop many error checks :-)
+
+> > but for me as an uninitiated pci code
+> > reader, I wonder about
+> >=20
+> > 	dwc->base =3D pcim_iomap_table(pci)[0];
+> >=20
+> > without error checking. (OTOH, if pcim_iomap_table() returned NULL, the
+> > "[0]" part is already problematic.)
+>=20
+> Seems it's your problem, many drivers use the way I suggested.
+>=20
+> > I'd like to have a code comment here saying that pcim_iomap_table()
+> > won't return NULL.
+>=20
+> Why? It's redundant. If you use it, you should know this API.
+> So, the bottom line, does this API needs better documentation?
+
+If a driver author knows it while writing the code, it's obvious. But if
+the driver author looks again in 2 years or someone else (e.g. me with
+the PWM maintainer hat on and with little pci experience) that knowledge
+might be faded.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--52elieucqt6bggmp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXN1/AACgkQj4D7WH0S
+/k5JrQf/Qt6r2gqZjxMeq4PGvF1ZTCfwDFGvIsSfsXifo93hI+YxWNxiNGkXqwol
+MPOMR2g6xorzUL0Jz/fJZjnD/KqhBfM8DcSDNTuXi5wdZshZrto0WKcTP8YwrSBH
+AQGVKClLGe1YXgo0Gzuc1IXACRNJrMjp3rEZsqUy4xANrvEXfMH1KYWzIC7k0P0b
+2Grc2iLKinIuyfv59cWZixH/wf1Fl0SdJWsrhQ8ltf1tar1zO988tbFC3Yy3/sst
++OLKIq/6iAc1iCc9wpzSCVC0kxaEgru2pgrX/BeW1tO9bDu5uBRv6jvqq51dLid6
+vTlKdejBqqBizFNTA4dsp29thDlICw==
+=fVEU
+-----END PGP SIGNATURE-----
+
+--52elieucqt6bggmp--
 
