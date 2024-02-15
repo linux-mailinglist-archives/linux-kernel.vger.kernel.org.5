@@ -1,110 +1,107 @@
-Return-Path: <linux-kernel+bounces-66981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27ED85646D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 246B1856471
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9571C21B59
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:31:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57FA51C2139E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26828130AEC;
-	Thu, 15 Feb 2024 13:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE90130AF9;
+	Thu, 15 Feb 2024 13:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BqGCzj/G"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lGbE+k79"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A04130AC4
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572CD130ACA;
+	Thu, 15 Feb 2024 13:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003911; cv=none; b=P79RdVzBa/7Dm+lit5THwmRD+YMM39lj3Q4sbtNo+5JMmFZN1o133DD+T+TtcEYcJkesdR8wWcKwL6TW66OD9hFjKGpu42mrTr054c2NGbKZhg/Bo06QOSb8mKgsPN24RDaKGPG7ZGJIjme1aQH0xYMF8Yc/xGDumsp/Y86AkJU=
+	t=1708003931; cv=none; b=O30jorAmf5HdZXKNUlV/vGpOGNktyuvMFl0fqGCb07m3AwcAtJhdzYRmx44VqWKUe6j0+Rgpyqz+q0N9kpbahWEtjjPENclcP+mL4rPtl/HoiCOyLLiUB1+12ECn79ozWqoXbXu/pvnzJb99SS9sEsBYl2BzZPLmoLRLanTjZrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003911; c=relaxed/simple;
-	bh=lUl0Pib7si2dQHCXFrZb+InEVOkZVwOiAw43kh+jhak=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dhCB6t2bezkuT8Rs3vHAWhw6Or8wJzqwqi9utx5sKDexguU9N92WXCzpP7geD8OGiQPc5+Xp/quRGOzscDmT4jBH62IPiLXccJGA2cWQkdNvwEv6Cj5BnpQDykQLOrrXtmMOC004ptvc6oFwpvGzubX3PNdeSB4lV9wrBgt3CJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BqGCzj/G; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso806110276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:31:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708003909; x=1708608709; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGh//nbX6ksAbjoH86pu+1OoxjeTYU/3tdUOfH2WwY4=;
-        b=BqGCzj/G9jhFSsh2Za755/LzU6uyT+nqeNHXOXWrVvZpkLqcH6kmzgf4tPtVkwkEU0
-         wyf4WLzEQMX1M5SRb9clyi+Wdlay+Rj3eHfkjDTKRJCeBQ5oJAaHdR739mCMQ0siELsY
-         pMJ4k9VWaGRJ5KWxpNJKYgc2ezLDBvP27pFM9/oAuXmwlEVFp9qUZnpYcCWRIHkcj3AB
-         vZ2lGqYF2zsUly9WRW5AgoT6GXIqqR4cK0IiLdb30LSDU5k9ul21dtva44MEhEtMEhsa
-         4JFzDwH3I9iI/ebxA/XSbuogUGtrJJo0jsA7Qcel1rqwY+WfQASMKFs9+z71WRRioqem
-         0bXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708003909; x=1708608709;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yGh//nbX6ksAbjoH86pu+1OoxjeTYU/3tdUOfH2WwY4=;
-        b=ayKbVLcFHHcRS9bYpKcrnv+bVDM2bccnz18rcELQ1+1hI6uKkrTbez+ECkI9XGdCzP
-         J5SdVDrhtBsBIH+KX2lNoJnE+GX005IwJEkK04Ma8vX8c63VZ84HbxDb6TzeybEHkwsD
-         qNfQx1dm0tghye4cUREV6gbq0PAzgnGjDVGq5Ja9fLXXL/oR1Ahfc3DequCXVNRph4Nf
-         /8ckjaANqvDiTFRbuA2q/ecrK+OHMnHkbvCK3IWg0zyDdswtokc+Bl89fV1M1Jl4KSOK
-         hFU0W47vHbgjbT09uMncG+U1/gM5Mw21e+yDk2rBCUH+pZQN0zgjsp0EYv94CXB1KtCH
-         D7KA==
-X-Forwarded-Encrypted: i=1; AJvYcCXNwOKW80rD0ZdY7ySxawnySv4p2WVLXFKUUy+MomlL2COEZWonzpy3VeFPOvUPl/nWorB2L0Ks8H0vBB0vwhKObABMsTLGOI5t7W7s
-X-Gm-Message-State: AOJu0YyJOh/DSFJGk6qfIJi7Xx8BITV199PWFgIM8L0DVm/m7v8ModPb
-	lQsMExqz2+x/N/ii8d2soNTrX0oCGCMMVWOgZZM04c0wDhSKi/zGXLYh9tVTdZz5Zmbwg0As6OP
-	qf3/rOgFVruAZTa6vIu4zn9mF/E/7vTc9GdAQbA==
-X-Google-Smtp-Source: AGHT+IHl3qgWvQCqRJMe39KHtu2wuTpCX4Lckf3lqFQQ+kVziMGrJ7Juv/tfm7isqbWZN8sE5IWX6zuYqEnZ+zYcRZE=
-X-Received: by 2002:a25:b949:0:b0:dcb:b41c:77ef with SMTP id
- s9-20020a25b949000000b00dcbb41c77efmr1387473ybm.24.1708003908799; Thu, 15 Feb
- 2024 05:31:48 -0800 (PST)
+	s=arc-20240116; t=1708003931; c=relaxed/simple;
+	bh=xP2x+0oCU2VUeBJg+acvjjGA26vEwKMDv8882I1yP2E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=QBPd4llGO8a6ybra+X6sxElKlxhikKF2ZHm/hONOeX+C2y2TSxXfasv5qVloCknkGqG99X986TcpgQWyjR+FExS8tPRNAhPZcuwg8mX8VP7n5xaWBUEyRfUSq1RRaiRst+jhFZbCmaMyUMSpuWEcaXvN42c/82rFPNzg13rb4e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lGbE+k79; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708003931; x=1739539931;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xP2x+0oCU2VUeBJg+acvjjGA26vEwKMDv8882I1yP2E=;
+  b=lGbE+k79nWmScRnYJNW4RCLDE4hwxz9s/yRkjA6yhfqw9Z8M232rj5ru
+   CHDupxg6iI1JBkmhlj+i2svKlZaB886t52rXEWxLpGTxkSZDxHN4OV/+L
+   W1/z01pYn5FRFniVlLo1S9oVpBJnNEbk6WYvc3d0JIXTh2Z62vV9rWYNi
+   QQt4sY43vgiua74EMQogqPEmh/ZOf/crDvDa2f8ozrQrvW0PgSGOr3Fk3
+   EYCisicUo+T2AfVwwn3G2+Z7VvQeXbrKBfRRnfHqaGBDLQWNFYExL70iF
+   nSjPDmpd53FVxyVKQwwx+XGV0RCap/JZ4dVVGHpzsOedy4U9JOTWL4mLj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2000321"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="2000321"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:32:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="3489788"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.150])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:32:05 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	dri-devel@lists.freedesktop.org,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/3] PCI LNKCTL2 RMW Accessor Cleanup
+Date: Thu, 15 Feb 2024 15:31:52 +0200
+Message-Id: <20240215133155.9198-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
-In-Reply-To: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 15 Feb 2024 14:31:37 +0100
-Message-ID: <CACRpkdYm0dNZZvzAZ-VQ+MaHeL7NmGCmCVw42WMx6BFf4Lw0Pw@mail.gmail.com>
-Subject: Re: [PATCH] backlight: ktd2801: depend on GPIOLIB
-To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Lee Jones <lee@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>, 
-	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@kernel.org>, 
-	Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
-	linux-leds@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 7:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
-@skole.hr> wrote:
+This series converts open-coded LNKCTL2 RMW accesses to use RMW
+accessor. These patches used to be part of PCIe BW controller series
+[1] which will require RMW ops to LNKCTL2 be properly locked.
 
-> LEDS_EXPRESSWIRE depends on GPIOLIB, and so must anything selecting it:
->
-> WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
->   Depends on [n]: NEW_LEDS [=3Dy] && GPIOLIB [=3Dn]
->   Selected by [m]:
->   - BACKLIGHT_KTD2801 [=3Dm] && HAS_IOMEM [=3Dy] && BACKLIGHT_CLASS_DEVIC=
-E [=3Dm]
->
-> Fixes: 66c76c1cd984 ("backlight: Add Kinetic KTD2801 backlight support")
-> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+However, since these RMW accessor patches are useful as cleanups on
+their own I chose to send them now separately to reduce the size of the
+BW controller series.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+[1] https://lore.kernel.org/linux-pci/20240105112547.7301-1-ilpo.jarvinen@linux.intel.com/
 
-Technically you can also select GPIOLIB, because it is available on
-all platforms, so it may be easier for users, but then you never know
-which GPIOs you get in practice.
+Ilpo Järvinen (3):
+  drm/radeon: Use RMW accessors for changing LNKCTL2
+  drm/amdgpu: Use RMW accessors for changing LNKCTL2
+  RDMA/hfi1: Use RMW accessors for changing LNKCTL2
 
-Yours,
-Linus Walleij
+ drivers/gpu/drm/amd/amdgpu/cik.c  | 41 +++++++++++--------------------
+ drivers/gpu/drm/amd/amdgpu/si.c   | 41 +++++++++++--------------------
+ drivers/gpu/drm/radeon/cik.c      | 40 +++++++++++-------------------
+ drivers/gpu/drm/radeon/si.c       | 40 +++++++++++-------------------
+ drivers/infiniband/hw/hfi1/pcie.c | 30 ++++++----------------
+ 5 files changed, 68 insertions(+), 124 deletions(-)
+
+-- 
+2.39.2
+
 
