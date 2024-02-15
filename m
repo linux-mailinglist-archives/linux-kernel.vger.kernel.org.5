@@ -1,156 +1,212 @@
-Return-Path: <linux-kernel+bounces-66728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F1148560C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 033888560CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:07:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8E431F21348
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:06:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80CC21F21551
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A833512C80F;
-	Thu, 15 Feb 2024 11:02:05 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0692612EBD5;
+	Thu, 15 Feb 2024 11:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OOHlvkaY"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00E912C803;
-	Thu, 15 Feb 2024 11:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976CB85263
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994925; cv=none; b=W6Kp0hlsfUYghS8jD2R1YnS6TfUjAlcGup7LZSFJNcAb463hRH6jBHw4vYPRGdirwegagT7lk25VwG9VanjNOqne7ic23d1M6HUf9/K4i89GWx+BtbK+8ZjIn1u45n1N701Pds113McozWsAnPlORYiN2uGXHHswZaESoVoPEog=
+	t=1707995016; cv=none; b=CSHyFyhOTLGxyN8zrDKab/pPKvYYnIKLhrItPEKpW3s/A0fQzmfrzP1J4WPGKuLgjsz9wggo+Ch4h1lpoAKm0/0gBgnX3gxu1ECg7X5cI5r6TVwfxQVHWUQwQ3yPq0pzH9yQXoGZB9o7F68uVAt4qo9uxrGtGcuBHrpHqOSsHr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994925; c=relaxed/simple;
-	bh=Hm8P6oyenZi1eBAN/OYEEjXEBmdCYWOQryV6DrT4dG4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a6zOK0f9u8GJSMylU6a+9nsTwrofYJ3us/7bwLSpSwFi6dq97P2cfKLXhGn3DqwGkjdp8erSHxglMVUXPQghZmFMsKmTSY0LNdGRZ1z3MybR9o4E0RWLHqE1YIXBrrdfWlv9dnmJ55ZGYIXqRRNp353yb7XEeQOHAIm7KqjGV1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60792653b94so7207997b3.3;
-        Thu, 15 Feb 2024 03:02:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707994921; x=1708599721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X2t28MWrQY7W2xrmkJ0+2MqE764Vph7M/VElh1kErvI=;
-        b=vwQyxUdgFU2pEm8C0wXUszuwAZKzfTR/npEJad27wvKl3HYYHcZEwW47dBMfgJSePB
-         fNMzFhHdjzdBMYZEm753jr6nGR2UEU/K5N0A3+TuGiXMAxtxsg7U7QKoffwdK0RQXTVB
-         gFO7ApP9zmwogmduUOBYFqtmiSXycGSdXQAwqk/wSoS3tKIcThiRRGEgrG3kl9tO7KjY
-         v16fdh3VOji3be1IyDoCNAXf/pSz/ibP4HD21+jzcyLzYhGC2HmSJZ4ehVgfxKeo1fCg
-         Uip5FE9zQvMrcadt2oxKpAyANNudsBH1bt3xOEcS0sGPnwHbybWvXrEklHNbNG8cVB7+
-         s4Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCUH7se4Fa6lu5WbVJ+3yfHyuFLPC/eGeJMaMYK+p3qF/N8LZtDzW/1wLGyHwzq8VNohPD+dZVhwK6A0zpYutfJqV/75C2tUGe9cYS5z
-X-Gm-Message-State: AOJu0Yz8IAziqXkiI3TSDg9V1ElY5dywEEjZweWHIyIl9Q0JrGNNOzoU
-	jqjwaLJx2s5fgD0p0G+/x0uBsIlEu3B9r2DQrO1CcyvLq2NGpSZOfafvb9H8KvMJBw==
-X-Google-Smtp-Source: AGHT+IFp/GUaVBX5zoCb3rmqVmvDAR+9wQUUZl43QSTZ+paxGWDoy+ekaDJYp4BvQJD2K89GA6zk0w==
-X-Received: by 2002:a81:a743:0:b0:607:9cf8:931f with SMTP id e64-20020a81a743000000b006079cf8931fmr1151829ywh.6.1707994921347;
-        Thu, 15 Feb 2024 03:02:01 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id t18-20020a81c252000000b006078c48a265sm193310ywg.6.2024.02.15.03.02.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 03:02:01 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60792653b94so7207757b3.3;
-        Thu, 15 Feb 2024 03:02:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUKI7tm2VPv3qye/uwdbsaZ0XY4xnDzzrOq2Np9woEkvG6jW3xP0V+6+yVBs0W/K2AA4jJJxuDBVMfzr4M8mPh939jJO3viX3Q7SeYR
-X-Received: by 2002:a81:ae1a:0:b0:607:835b:8cac with SMTP id
- m26-20020a81ae1a000000b00607835b8cacmr1048601ywh.42.1707994920654; Thu, 15
- Feb 2024 03:02:00 -0800 (PST)
+	s=arc-20240116; t=1707995016; c=relaxed/simple;
+	bh=kzVcnFNNmOzs8GOwtdRGbBUIEmsIgui7Ywhz5JyEn4I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fSBmaOPMAHXqtHGQpO3aycYGGQBjs8q6Lu/KRRXR9RNXa73d16k83MoY1bbdcQZYe2q4q30q2p6O+avCOKCPciT4lHvwstQlmJyXYAgY5qSPa2WEXsDdWfWH+4zvYbtaL27MZ2Q0o/VHqh1VaQzV8xq/j24BdCBtxXWkZXlUEGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OOHlvkaY; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707995012;
+	bh=kzVcnFNNmOzs8GOwtdRGbBUIEmsIgui7Ywhz5JyEn4I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OOHlvkaYWNTke3pqt/4FzLNGWD1eIML9eIavJsoffiGO3wXred/AEM1ag73zXgWHX
+	 pynJjtKjObXzNhw13Bx7Ff/zOAGLvtTGPN/G1TVDdakVqPzWJE6WKd/TiEfOge646C
+	 WrYA/0e/x9Bg1BcD6DEWikTlQGOVKdSAxcB+kQ698h3B5VfOGQk0gcLm5EvPlOaaZv
+	 gNnKjmB2G6f2vTvx9Ybs53sqA0w5OrGV1Vzghf6egNm4JO5wupYNeOn/FsvRhn6Iw3
+	 He3p+9CIYOkCW3TxsUeFR+aF5OWEwaXSbwdrQLxXK3fJQ1xenzlccAInyEBK0aA/QE
+	 hOTysuuzCOV3A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 71B223781144;
+	Thu, 15 Feb 2024 11:03:31 +0000 (UTC)
+Message-ID: <7664fece-c29a-4374-a59c-4ce8fe831494@collabora.com>
+Date: Thu, 15 Feb 2024 12:02:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-16-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240212170423.2860895-16-andriy.shevchenko@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 12:01:49 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUM1o7bEaUdU=CmcJakZ4kMvWPTrBZG+s=eK3xdc9WRFA@mail.gmail.com>
-Message-ID: <CAMuHMdUM1o7bEaUdU=CmcJakZ4kMvWPTrBZG+s=eK3xdc9WRFA@mail.gmail.com>
-Subject: Re: [PATCH v2 15/15] auxdisplay: Add driver for MAX695x 7-segment LED controllers
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 08/13] drm/mediatek: Support alpha blending in OVL
+Content-Language: en-US
+To: Hsiao Chien Sung <shawn.sung@mediatek.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Bibby Hsieh <bibby.hsieh@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
+ Sean Paul <seanpaul@chromium.org>, Fei Shao <fshao@chromium.org>,
+ Jason Chen <jason-ch.chen@mediatek.corp-partner.google.com>,
+ "Nancy . Lin" <nancy.lin@mediatek.com>, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240215101119.12629-1-shawn.sung@mediatek.com>
+ <20240215101119.12629-9-shawn.sung@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240215101119.12629-9-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Andy,
-
-On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Add initial driver for the MAX6958 and MAX6959 7-segment LED
-> controllers.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Thanks for your patch!
-
-> --- a/drivers/auxdisplay/Kconfig
-> +++ b/drivers/auxdisplay/Kconfig
-> @@ -187,6 +187,20 @@ config HT16K33
->           Say yes here to add support for Holtek HT16K33, RAM mapping 16*=
-8
->           LED controller driver with keyscan.
->
-> +config MAX6959
-> +       tristate "Maxim MAX6958/6959 7-segment LED controller with keysca=
-n"
-
-I'd drop the "with keyscan" for now...
-
-> +       depends on I2C
-> +       select REGMAP_I2C
-> +       select LINEDISP
-> +       help
-> +         If you say yes here you get support for the following Maxim chi=
-ps
-> +         (I2C 7-segment LED display controller with keyscan):
-> +         - MAX6958
-> +         - MAX6959 (debounce support)
-
-s/debounce/input/
-
+Il 15/02/24 11:11, Hsiao Chien Sung ha scritto:
+> Support "Pre-multiplied" and "None" blend mode on MediaTek's chips.
+> Before this patch, only the "Coverage" mode is supported.
+> 
+> Please refer to the description of the commit
+> "drm/mediatek: Support alpha blending in display driver"
+> for more information.
+> 
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 83 +++++++++++++++++++++----
+>   1 file changed, 72 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> index c42fce38a35eb..98c989fddcc08 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+> @@ -39,6 +39,7 @@
+>   #define DISP_REG_OVL_PITCH_MSB(n)		(0x0040 + 0x20 * (n))
+>   #define OVL_PITCH_MSB_2ND_SUBBUF			BIT(16)
+>   #define DISP_REG_OVL_PITCH(n)			(0x0044 + 0x20 * (n))
+> +#define OVL_CONST_BLEND					BIT(28)
+>   #define DISP_REG_OVL_RDMA_CTRL(n)		(0x00c0 + 0x20 * (n))
+>   #define DISP_REG_OVL_RDMA_GMC(n)		(0x00c8 + 0x20 * (n))
+>   #define DISP_REG_OVL_ADDR_MT2701		0x0040
+> @@ -52,13 +53,16 @@
+>   #define GMC_THRESHOLD_HIGH	((1 << GMC_THRESHOLD_BITS) / 4)
+>   #define GMC_THRESHOLD_LOW	((1 << GMC_THRESHOLD_BITS) / 8)
+>   
+> +#define OVL_CON_CLRFMT_MAN	BIT(23)
+>   #define OVL_CON_BYTE_SWAP	BIT(24)
+> -#define OVL_CON_MTX_YUV_TO_RGB	(6 << 16)
+> +#define OVL_CON_RGB_SWAP	BIT(25)
+>   #define OVL_CON_CLRFMT_RGB	(1 << 12)
+>   #define OVL_CON_CLRFMT_RGBA8888	(2 << 12)
+>   #define OVL_CON_CLRFMT_ARGB8888	(3 << 12)
+>   #define OVL_CON_CLRFMT_UYVY	(4 << 12)
+>   #define OVL_CON_CLRFMT_YUYV	(5 << 12)
+> +#define OVL_CON_MTX_YUV_TO_RGB	(6 << 16)
+> +#define OVL_CON_CLRFMT_PARGB8888	(OVL_CON_CLRFMT_ARGB8888 | OVL_CON_CLRFMT_MAN)
+>   #define OVL_CON_CLRFMT_RGB565(ovl)	((ovl)->data->fmt_rgb565_is_0 ? \
+>   					0 : OVL_CON_CLRFMT_RGB)
+>   #define OVL_CON_CLRFMT_RGB888(ovl)	((ovl)->data->fmt_rgb565_is_0 ? \
+> @@ -72,6 +76,22 @@
+>   #define	OVL_CON_VIRT_FLIP	BIT(9)
+>   #define	OVL_CON_HORZ_FLIP	BIT(10)
+>   
+> +static inline bool is_10bit_rgb(u32 fmt)
+> +{
+> +	switch (fmt) {
+> +	case DRM_FORMAT_XRGB2101010:
+> +	case DRM_FORMAT_ARGB2101010:
+> +	case DRM_FORMAT_RGBX1010102:
+> +	case DRM_FORMAT_RGBA1010102:
+> +	case DRM_FORMAT_XBGR2101010:
+> +	case DRM_FORMAT_ABGR2101010:
+> +	case DRM_FORMAT_BGRX1010102:
+> +	case DRM_FORMAT_BGRA1010102:
+> +		return true;
+> +	}
+> +	return false;
+> +}
 > +
-> +         This driver can also be built as a module. If so, the module
-> +         will be called max6959.
-
-> --- /dev/null
-> +++ b/drivers/auxdisplay/max6959.c
-
-> +/* Defines */
-> +#define MIN_BRIGHTNESS                 0x01
-> +#define MAX_BRIGHTNESS                 0x40
-
-Unused? (for now, until you add LED brightness support)
-
+>   static const u32 mt8173_formats[] = {
+>   	DRM_FORMAT_XRGB8888,
+>   	DRM_FORMAT_ARGB8888,
+> @@ -89,12 +109,20 @@ static const u32 mt8173_formats[] = {
+>   static const u32 mt8195_formats[] = {
+>   	DRM_FORMAT_XRGB8888,
+>   	DRM_FORMAT_ARGB8888,
+> +	DRM_FORMAT_XRGB2101010,
+>   	DRM_FORMAT_ARGB2101010,
+>   	DRM_FORMAT_BGRX8888,
+>   	DRM_FORMAT_BGRA8888,
+> +	DRM_FORMAT_BGRX1010102,
+>   	DRM_FORMAT_BGRA1010102,
+>   	DRM_FORMAT_ABGR8888,
+>   	DRM_FORMAT_XBGR8888,
+> +	DRM_FORMAT_XBGR2101010,
+> +	DRM_FORMAT_ABGR2101010,
+> +	DRM_FORMAT_RGBX8888,
+> +	DRM_FORMAT_RGBA8888,
+> +	DRM_FORMAT_RGBX1010102,
+> +	DRM_FORMAT_RGBA1010102,
+>   	DRM_FORMAT_RGB888,
+>   	DRM_FORMAT_BGR888,
+>   	DRM_FORMAT_RGB565,
+> @@ -254,9 +282,7 @@ static void mtk_ovl_set_bit_depth(struct device *dev, int idx, u32 format,
+>   	reg = readl(ovl->regs + DISP_REG_OVL_CLRFMT_EXT);
+>   	reg &= ~OVL_CON_CLRFMT_BIT_DEPTH_MASK(idx);
+>   
+> -	if (format == DRM_FORMAT_RGBA1010102 ||
+> -	    format == DRM_FORMAT_BGRA1010102 ||
+> -	    format == DRM_FORMAT_ARGB2101010)
+> +	if (is_10bit_rgb(format))
+>   		bit_depth = OVL_CON_CLRFMT_10_BIT;
+>   
+>   	reg |= OVL_CON_CLRFMT_BIT_DEPTH(bit_depth, idx);
+> @@ -274,7 +300,13 @@ void mtk_ovl_config(struct device *dev, unsigned int w,
+>   	if (w != 0 && h != 0)
+>   		mtk_ddp_write_relaxed(cmdq_pkt, h << 16 | w, &ovl->cmdq_reg, ovl->regs,
+>   				      DISP_REG_OVL_ROI_SIZE);
+> -	mtk_ddp_write_relaxed(cmdq_pkt, 0x0, &ovl->cmdq_reg, ovl->regs, DISP_REG_OVL_ROI_BGCLR);
 > +
-> +struct max6959_priv {
-> +       struct linedisp linedisp;
-> +
-> +       struct delayed_work work;
-> +
+> +	/*
+> +	 * The background color should be opaque black (ARGB),
+> +	 * otherwise there will be no effect with alpha blend
+> +	 */
+> +	mtk_ddp_write_relaxed(cmdq_pkt, 0xff000000, &ovl->cmdq_reg,
+> +			      ovl->regs, DISP_REG_OVL_ROI_BGCLR);
 
-IMHO these blank lines don't add any value.
+Multiple (all of?) OVL color registers, like{L0-3,EL0-2}_YUV1BIT_COLOR(x),
+ROI_BGCLR, L{0-3}_CLR and others do follow this exact layout:
 
-> +       struct regmap *regmap;
-> +};
+#define OVL_COLOR_ALPHA				GENMASK(31, 24)
+#define OVL_COLOR_GREEN				GENMASK(23, 16)
+#define OVL_COLOR_RED				GENMASK(15, 8)
+#define OVL_COLOR_BLUE				GENMASK(7, 0)
 
-Gr{oetje,eeting}s,
+..so we can define those as they're valid for multiple registers, and then
+we can use the definition instead of an apparently random value.
 
-                        Geert
+/*
+  * The background color should be opaque black (ARGB),
+  * otherwise there will be no effect with alpha blend
+  */
+mtk_ddp_write_relaxed(cmdq_pkt, OVL_COLOR_ALPHA, &ovl->cmdq_reg,
+		      ovl->regs, DISP_REG_OVL_ROI_BGCLR);
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Everything else looks ok.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Regards,
+Angelo
+
 
