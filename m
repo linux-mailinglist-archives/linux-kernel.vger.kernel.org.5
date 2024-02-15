@@ -1,59 +1,76 @@
-Return-Path: <linux-kernel+bounces-67566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FE63856D8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:21:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3126856D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EDD9288F51
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:21:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519F11F237F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AF1139594;
-	Thu, 15 Feb 2024 19:21:21 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216E2139596;
+	Thu, 15 Feb 2024 19:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ja3DCvoe"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17E0139587
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF391369B1;
+	Thu, 15 Feb 2024 19:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708024880; cv=none; b=Mjq3f3kTfc4hPhJT+y2FQqwx8toCSH7ir1gyzTmzxkudr3GYcC9nvcjHa5FAR4rFDtrPvtW0aQ62IFrlvxt95QA97mgmmu+fM5N6vKur6WYH9c2EhWpp37qbMG/WYf1L9Ox5xwXAcT98Pd97kuiyG7KE4xhhNm6IdWCpgFXU51A=
+	t=1708024917; cv=none; b=DS0plx/EG+ckRRhJgOUZAY+ZZPrKdKaGdm6KtjlFfhlIUwZRljgyhnt82GEaTEBr/56pgGVBo091wRvCPFOVLoH4y5mMO2bu4E+rpYbUvYznnC6oSUkwaZHz37iUoD1bO7vIBBGlZQ1Qajo768NY4IId0sxDel/n9/9/nobtN9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708024880; c=relaxed/simple;
-	bh=549+N3C6wlmLc9KrTSgg5zXq+E9UR6kzo8DVOvVQFEo=;
+	s=arc-20240116; t=1708024917; c=relaxed/simple;
+	bh=pi6oafJtMPxBMp6PVSY+x5ezA3F1flzUWJNhVutl05c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kUjbDtVgSNMttK0I59n1tgmaBB8HhOYJAHACpZao1juisjg2WTpzK79UoyfbEdTiV6whBti+mGpH5UhrNVwfQ4e86HkvPBJoB97vdCNI6vu/IYoHJ83foQXIrPD5iVuizO2IDcGThlra4DGMyHU+q/CTDgdV3WeEBWaWSbfl/No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852F2C433F1;
-	Thu, 15 Feb 2024 19:21:15 +0000 (UTC)
-Date: Thu, 15 Feb 2024 19:21:13 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 10/18] arm64/mm: New ptep layer to manage contig bit
-Message-ID: <Zc5kKSViCq8_77NW@arm.com>
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-11-ryan.roberts@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nhtGDcDNJTDi47cpl5EGnm15fHkspIRBumHTV8GS0MeicSvluXeTHMWIdJa9f7a+C107ta5qzjykcaqWrQNIudatSDVTgqzFZaKZteFE1u3SpenlJDySvD1ztISIR7gUtkasrMoP6QrcixkTb/YGGNPzbxFG5y+/DCtpTreDXE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ja3DCvoe; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708024916; x=1739560916;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pi6oafJtMPxBMp6PVSY+x5ezA3F1flzUWJNhVutl05c=;
+  b=Ja3DCvoe6v9pkKH63hmxuTMO4MVxMQgDU1qAB9FUHD9TO503y44b/3Uy
+   gNToGfpz8RcB2/pn8E/aWyFxlrq7b3vCSwmlzj+8c93ffL3pXPWt468wu
+   TMfYSTX3mmJOltvDaOxh2rmImQTpT5soHsZ/Ov1tTkIjyi/jFRfcxOfg5
+   53ylobbxHQdS73kUQ+CuVnm3wxAGh8YUA565hjL2CS9NCnANzAhAnMQL4
+   mt2bPAu5BQ1NSrCPMowUaZ/1VYbGupExLc6zKMsiC2k3FhBkIZfp7X3O5
+   /FG9l5GlFIcyzIQfCnO5KHGTCaObsjPeQ/EdLHDwnM2HPe5J7RaFIdE+N
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2255605"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="2255605"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:21:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912215539"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="912215539"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:21:52 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rahIs-00000004sAv-1OoV;
+	Thu, 15 Feb 2024 21:21:50 +0200
+Date: Thu, 15 Feb 2024 21:21:49 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Al Cooper <alcooperx@gmail.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: 8250_bcm7271: Replace custom unit
+ definitions
+Message-ID: <Zc5kTdkTqXEE6cA3@smile.fi.intel.com>
+References: <20240215160234.653305-1-andriy.shevchenko@linux.intel.com>
+ <7132d989-533f-47ef-803b-6001de3aff33@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,35 +79,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215103205.2607016-11-ryan.roberts@arm.com>
+In-Reply-To: <7132d989-533f-47ef-803b-6001de3aff33@broadcom.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 15, 2024 at 10:31:57AM +0000, Ryan Roberts wrote:
-> Create a new layer for the in-table PTE manipulation APIs. For now, The
-> existing API is prefixed with double underscore to become the
-> arch-private API and the public API is just a simple wrapper that calls
-> the private API.
-> 
-> The public API implementation will subsequently be used to transparently
-> manipulate the contiguous bit where appropriate. But since there are
-> already some contig-aware users (e.g. hugetlb, kernel mapper), we must
-> first ensure those users use the private API directly so that the future
-> contig-bit manipulations in the public API do not interfere with those
-> existing uses.
-> 
-> The following APIs are treated this way:
-> 
->  - ptep_get
->  - set_pte
->  - set_ptes
->  - pte_clear
->  - ptep_get_and_clear
->  - ptep_test_and_clear_young
->  - ptep_clear_flush_young
->  - ptep_set_wrprotect
->  - ptep_set_access_flags
-> 
-> Tested-by: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+On Thu, Feb 15, 2024 at 10:35:11AM -0800, Florian Fainelli wrote:
+> On 2/15/24 08:02, Andy Shevchenko wrote:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+..
+
+> > -#define KHZ    1000
+> > -#define MHZ(x) ((x) * KHZ * KHZ)
+> >   static const u32 brcmstb_rate_table[] = {
+> > -	MHZ(81),
+> > -	MHZ(108),
+> > -	MHZ(64),		/* Actually 64285715 for some chips */
+> > -	MHZ(48),
+> > +	81 * HZ_PER_MHZ,
+> > +	108 * HZ_PER_MHZ,
+> > +	64 * HZ_PER_MHZ,		/* Actually 64285715 for some chips */
+> > +	48 * HZ_PER_MHZ,
+> 
+> The previous notation was IMHO more readable,
+
+I tend to disagree as we read in plain text "frequency is 64 MHz",
+the patch follows natural language.
+
+> can we meet in the middle and do:
+> 
+> #define MHZ(x)	((x) * HZ_PER_MHZ
+> 
+> and avoid touching the tables entirely?
+
+I don't like the intermediate layer which hides the implementation of MHZ().
+What does it do exactly? You need to look at the internals, with the patch
+applied you immediately see that these are just constants.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
