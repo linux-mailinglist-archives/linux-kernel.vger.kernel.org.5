@@ -1,141 +1,186 @@
-Return-Path: <linux-kernel+bounces-66713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BB485608E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA76856092
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F73A1F2399E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:01:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDAB81F247F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0959A12E1C9;
-	Thu, 15 Feb 2024 10:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44F9128806;
+	Thu, 15 Feb 2024 10:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="PTvYSRzc"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Vm9wgtZz"
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C5F133422;
-	Thu, 15 Feb 2024 10:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B66912F367
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994057; cv=none; b=ottbys2YdDIGZsjR18wZj2eNgFoFbeQEifbs04Je7ffUbZgL15xZMqdlv+hCEzDHFNXIQyQxRMStWYexFhTiyhZdUk0hMOYT33wR9ZLtNA9DgAo6bd0jXgIzopEcJEosU6GhfDO9pmiFuWl8wSPZV6RG3q3scyacuJ9tRwK0Zog=
+	t=1707994227; cv=none; b=fcAG5gHHcuxoN+olLD2UcqhJhgHVdb/h4HuFKJyNoqCMc7s/EfuCAmX88x9Ax2G70p0DCOKpcaAMtjEBggG20LDmG8iko8tnW/w2g2dqqgkjSBJ+Rl6acwgSl5KBMQTmJY33KTxpNaAwu/yGH/3YhuChSu1YMkvNK1rIixSGxms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994057; c=relaxed/simple;
-	bh=RJDAsKe/aBk8AYh4rDTIh54ZmBRzY5mDVvLfCyAvXrQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=s/jpGRjOCb4A4nZXz76qe9QkNGF0keO79GjR8XsxJ/wHYzlGR7A3heoYtiPw4eV6nRWnbzk4HbPRr2gyRSWI+q8BdEklk3ynSQNaxL3cAqbcxBxmnZtNS8BeJkkEfIKwGhuGtBQtGJWdrSq5b5LnaCdj4sG3+qDRPP9b4mih4oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=PTvYSRzc; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 6B7EF120005;
-	Thu, 15 Feb 2024 13:47:25 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6B7EF120005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1707994045;
-	bh=ZMXILtHC08+ORAOMdLV08SaTMzWfQR2g0BN83OzVl4o=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=PTvYSRzcm7SkQ4jmbt1M7PmtlwMEnEvbr3WZmXhSFIcOFzc9cdquy/XKZkT5huX2u
-	 0AZXiOZOKzSsxdfYtEuxuMPmtsjkk3ZKiGom90RpxVZeu/6MD5eTQAZRtIKOnftDcy
-	 CWhPun885cAV33ZVNJurwC4znQqBfkk2r6qgmUb8Wm0rPu0rKlUsWPdbEt5nxSgw5q
-	 7j/JRhaqbHTm7ud9Mm3ggCE3NGiRTWXBuzEI4w8JjHjb/mr5JpWCjhQKVglj+v7Dw2
-	 yzWuiweq/lABslXYAN+1gr9/1wuUj6qvaOqTbgrjZujD6K2+w4cHGFx2eDqHZAOz//
-	 cNma5geBk27bQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 15 Feb 2024 13:47:25 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 15 Feb 2024 13:47:24 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1%7]) with mapi id
- 15.02.1118.040; Thu, 15 Feb 2024 13:47:24 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>
-CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
-	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
-	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
- driver
-Thread-Topic: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
- driver
-Thread-Index: AQHaXbqRFptCyAwKyUyy1Cn5x5FmZLEHrLEAgANeQYA=
-Date: Thu, 15 Feb 2024 10:47:24 +0000
-Message-ID: <20240215104719.njq6ie2niisntcnv@cab-wsm-0029881.sigma.sbrf.ru>
-References: <20240212135108.549755-1-avromanov@salutedevices.com>
- <ZcsYaPIUrBSg8iXu@Red>
-In-Reply-To: <ZcsYaPIUrBSg8iXu@Red>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <02AD52C50B92B74A88D1647594C86269@sberdevices.ru>
+	s=arc-20240116; t=1707994227; c=relaxed/simple;
+	bh=qMYEWneeTS1e+IMgvbdElteGWUWNf/LO/YAa5yYNKbk=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=tvK98sDVDk9ZxzdB9Cc0+9Kla3GD7GqLMm24G5scRwUPjmQvImLT+Megk3RWG8kPYswG5GuIaPtJV+Mb0+X5H9scmzfkKEiGU15PIpj02ys51m3OkLtHVhV4XffuY8n1aPJigZoWhsmenY2uFe8c1jxV6/lN90grdXXVt2cOfxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vm9wgtZz; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain; charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707994222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tDrgJC7hzHurmZ2XnlYtAZDoBfMM4U/XsubK9yFFoCo=;
+	b=Vm9wgtZzKYFyuphTro/pr6m6ImxEcuFX8SzrfmEdR+feYaOKmgKKECxQGgT9bJW4r6pZup
+	eydUOoFabVf9XQeh1ayo4PdPDH2Gf/rzyEZT4MWldGjqa8jZwVDAIZg9QTGVulWBHGuZ9e
+	1z/zZ/u+0jZlbvLzPbozgmThbZqveu8=
 Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183458 [Feb 15 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;cab-wsm-0029881.sigma.sbrf.ru:5.0.1,7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/15 04:37:00 #23614209
-X-KSMG-AntiVirus-Status: Clean, skipped
+Mime-Version: 1.0
+Subject: Re: [PATCH v1 1/2] padata: downgrade padata_do_multithreaded to serial execution for non-SMP
+Date: Thu, 15 Feb 2024 18:49:46 +0800
+Message-Id: <05F7392A-FCC9-48E3-92B3-3A43A9D0C987@linux.dev>
+References: <146c8a41-8864-4cff-80ce-173812441844@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Steffen Klassert <steffen.klassert@secunet.com>,
+ Daniel Jordan <daniel.m.jordan@oracle.com>, Jane Chu <jane.chu@oracle.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>,
+ Randy Dunlap <rdunlap@infradead.org>, kernel test robot <lkp@intel.com>,
+ Gang Li <ligang.bdlg@bytedance.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+In-Reply-To: <146c8a41-8864-4cff-80ce-173812441844@linux.dev>
+To: Gang Li <gang.li@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Feb 13, 2024 at 08:21:12AM +0100, Corentin Labbe wrote:
-> Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a 'ecrit :
-> > Hello!
-> >=20
-> > This patchset expand the funcionality of the Amlogic
-> > crypto driver by adding support for more SoC families:
-> > AXG, G12A, G12B, SM1, A1, S4.
-> >=20
-> > Also specify and enable crypto node in device tree
-> > for reference Amlogic devices.
-> >=20
-> > Tested on AXG, G12A/B, SM1, A1 and S4 devices via
-> > custom tests [1] and tcrypt module.
-> >=20
-> > ---
-> >=20
+
+
+> On Feb 13, 2024, at 23:15, Gang Li <gang.li@linux.dev> wrote:
 >=20
-> added patchs up to  "drivers: crypto: meson: process more than MAXDESCS d=
-escriptors"
+> =EF=BB=BF
+>=20
+>> On 2024/2/13 22:52, Muchun Song wrote:
+>>> On 2024/2/13 19:13, Gang Li wrote:
+>>> Randy Dunlap and kernel test robot reported a warning:
+>>>=20
+>>> ```
+>>> WARNING: unmet direct dependencies detected for PADATA
+>>>    Depends on [n]: SMP [=3Dn]
+>>>    Selected by [y]:
+>>>    - HUGETLBFS [=3Dy] && (X86 [=3Dy] || SPARC64 || ARCH_SUPPORTS_HUGETLB=
+FS [=3Dn] || BROKEN [=3Dn]) && (SYSFS [=3Dy] || SYSCTL [=3Dn])
+>>> ```
+>>>=20
+>>> hugetlb parallelization depends on PADATA, and PADATA depends on SMP.
+>>>=20
+>>> PADATA consists of two distinct functionality: One part is
+>>> padata_do_multithreaded which disregards order and simply divides
+>>> tasks into several groups for parallel execution. Hugetlb
+>>> init parallelization depends on padata_do_multithreaded.
+>>>=20
+>>> The other part is composed of a set of APIs that, while handling data in=
 
-Including this patch or not?
+>>> an out-of-order parallel manner, can eventually return the data with
+>>> ordered sequence. Currently Only `crypto/pcrypt.c` use them.
+>>>=20
+>>> All users of PADATA of non-SMP case currently only use
+>>> padata_do_multithreaded. It is easy to implement a serial one in
+>>> include/linux/padata.h. And it is not necessary to implement another
+>>> functionality unless the only user of crypto/pcrypt.c does not depend on=
 
---=20
-Thank you,
-Alexey=
+>>> SMP in the future.
+>>>=20
+>>> Fixes: a2cefb08be66 ("hugetlb: have CONFIG_HUGETLBFS select CONFIG_PADAT=
+A")
+>>> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Closes: https://lore.kernel.org/lkml/ec5dc528-2c3c-4444-9e88-d2c48395b43=
+3@infradead.org/
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Closes: https://lore.kernel.org/oe-kbuild-all/202402020454.6EPkP1hi-lkp@=
+intel.com/
+>>> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+>>> ---
+>>>   fs/Kconfig             |  2 +-
+>>>   include/linux/padata.h | 13 +++++++++----
+>>>   2 files changed, 10 insertions(+), 5 deletions(-)
+>>>=20
+>>> diff --git a/fs/Kconfig b/fs/Kconfig
+>>> index 4a51331f172e5..7963939592d70 100644
+>>> --- a/fs/Kconfig
+>>> +++ b/fs/Kconfig
+>>> @@ -261,7 +261,7 @@ menuconfig HUGETLBFS
+>>>       depends on X86 || SPARC64 || ARCH_SUPPORTS_HUGETLBFS || BROKEN
+>>>       depends on (SYSFS || SYSCTL)
+>>>       select MEMFD_CREATE
+>>> -    select PADATA
+>>> +    select PADATA if SMP
+>> I'd like to drop this dependence since HugeTLB does not depend
+>> on PADATA anymore. If some users take care about the kernel
+>> image size, it also can disable PADATA individually.
+>=20
+> Only CRYPTO_PCRYPT, HUGETLBFS and DEFERRED_STRUCT_PAGE_INIT select
+> PADATA. If drop this dependence, hugetlb init parallelization may not
+> work at all.
+
+Oh, right. In this case, maybe current choice is better.
+
+>=20
+> Maybe we can set PADATA enabled on default?
+>=20
+>>>       help
+>>>         hugetlbfs is a filesystem backing for HugeTLB pages, based on
+>>>         ramfs. For architectures that support it, say Y here and read
+>>> diff --git a/include/linux/padata.h b/include/linux/padata.h
+>>> index 8f418711351bc..7b84eb7d73e7f 100644
+>>> --- a/include/linux/padata.h
+>>> +++ b/include/linux/padata.h
+>>> @@ -180,10 +180,6 @@ struct padata_instance {
+>>>   #ifdef CONFIG_PADATA
+>>>   extern void __init padata_init(void);
+>>> -#else
+>>> -static inline void __init padata_init(void) {}
+>>> -#endif
+>>> -
+>>>   extern struct padata_instance *padata_alloc(const char *name);
+>>>   extern void padata_free(struct padata_instance *pinst);
+>>>   extern struct padata_shell *padata_alloc_shell(struct padata_instance *=
+pinst);
+>>> @@ -194,4 +190,13 @@ extern void padata_do_serial(struct padata_priv *pa=
+data);
+>>>   extern void __init padata_do_multithreaded(struct padata_mt_job *job);=
+
+>>>   extern int padata_set_cpumask(struct padata_instance *pinst, int cpuma=
+sk_type,
+>>>                     cpumask_var_t cpumask);
+>>> +#else
+>>> +static inline void __init padata_init(void) {}
+>>> +static inline void __init padata_do_multithreaded(struct padata_mt_job *=
+job)
+>>> +{
+>>> +    if (job->size)
+>> I think we could drop this check, at least now there is no users will
+>> pass a zero of ->size to this function, and even if someone does in the
+>> future, I think it is really a corner case, it is unnecessary to optimize=
+
+>> it and ->thread_fn is supporsed to handle case of zero size if it dose
+>> pass a zero size.
+>> Thanks.
+>>> +        job->thread_fn(job->start, job->start + job->size, job->fn_arg)=
+;
+>>> +}
+>>> +#endif
+>>> +
+>>>   #endif
 
