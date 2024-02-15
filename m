@@ -1,161 +1,107 @@
-Return-Path: <linux-kernel+bounces-66851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7DA856260
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:00:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6A8856267
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218731C21CB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:00:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07F4F282666
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C66612B171;
-	Thu, 15 Feb 2024 12:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IUvyYiIb";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hOTd6eh1";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IUvyYiIb";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hOTd6eh1"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE44869DFE
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB3612BE86;
+	Thu, 15 Feb 2024 12:01:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC2B219E0
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998403; cv=none; b=hDR/YM52ooF2jGHr//Rfds8aim7tLCl7X2PI5hYtJ3gKSfgXUDMLeCddg1aetRbYkh18FsuzvjoehxhLl0nvLZwVAcbja+WO9Y9/7+Ic0YU2T9va3hCRmhN+H9zVOY1ym7GUQ7Yhjnuozn2phh359etRlByPE6WGVhg9a/5uFXs=
+	t=1707998501; cv=none; b=Z3cYcuIqwd7y+P7qjHhH6mZHhbSirgFXrQhgwgjgTszWd4fXsYCJYYUpsqn6rj+9x7mHI2lbJhfnfCVeDLud7py93bbkgss6k9y1QT5/FT3DIeUGH5Wg1QW177yHus3zEQ5UWdjC+JDcpX1VTabHrhF0MnVdV1mWJ86uve3J5OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998403; c=relaxed/simple;
-	bh=Inw5I/nGOWvZ0fEa9macC4Z6ON+4wMS3Sgn0E/1NCZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PSfaO6s8TWq3AYhfL1KJGnKIZY6U6M3OfC1IjNzl7VAl0mslzY6SBWRtUh2kDYODa+YINsG2fzYdtZmVbZBoBldAGgZ574Bv3ycgHZnp/CTqmEgdEamg8tB4NRNzhzJxL8gJTQb2YAOyQRYvQ892p7RaHwQct8YRj9630Ab/HZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IUvyYiIb; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hOTd6eh1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IUvyYiIb; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hOTd6eh1; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0E84722208;
-	Thu, 15 Feb 2024 11:59:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707998399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rVGNjE+gWHjH3j3EbhyCn5oJEM5fskMFhXwVqjykBB8=;
-	b=IUvyYiIb6bx9LWePoXzwlZiyhLhBtCuFzkSFbb6ifzpNkBRyao+YGmQJEzewcwxF0WVh3Y
-	FgBhDL9hsqZpyY6uTEq/rOaqlfDexGhBYMbvdRfwCUSkpNdZDNhOf31vqom6Ahy1+x1+ov
-	ObLkRLW1DwNDygRQLTT5DYjIU4TZQ2Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707998399;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rVGNjE+gWHjH3j3EbhyCn5oJEM5fskMFhXwVqjykBB8=;
-	b=hOTd6eh14ayZfPBPxXJP1J75xpixKeZtKQcrBDNjsBjlwEuouG7q72DN6vw/XQTOhQ0Rji
-	I3Wu1j8PvySAcbCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707998399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rVGNjE+gWHjH3j3EbhyCn5oJEM5fskMFhXwVqjykBB8=;
-	b=IUvyYiIb6bx9LWePoXzwlZiyhLhBtCuFzkSFbb6ifzpNkBRyao+YGmQJEzewcwxF0WVh3Y
-	FgBhDL9hsqZpyY6uTEq/rOaqlfDexGhBYMbvdRfwCUSkpNdZDNhOf31vqom6Ahy1+x1+ov
-	ObLkRLW1DwNDygRQLTT5DYjIU4TZQ2Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707998399;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rVGNjE+gWHjH3j3EbhyCn5oJEM5fskMFhXwVqjykBB8=;
-	b=hOTd6eh14ayZfPBPxXJP1J75xpixKeZtKQcrBDNjsBjlwEuouG7q72DN6vw/XQTOhQ0Rji
-	I3Wu1j8PvySAcbCA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E6551346A;
-	Thu, 15 Feb 2024 11:59:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id FPQcIL78zWXqBwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Thu, 15 Feb 2024 11:59:58 +0000
-Date: Thu, 15 Feb 2024 13:01:04 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH v9 6/7] mm,page_owner: Filter out stacks by a threshold
-Message-ID: <Zc39AJ1H_zE4VSBG@localhost.localdomain>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-7-osalvador@suse.de>
- <bb7112a8-df8a-4df8-a8db-0cb4761720dd@suse.cz>
+	s=arc-20240116; t=1707998501; c=relaxed/simple;
+	bh=yeRfrgFGI1JNXuBvjNlNp7FlKvvlRC/kM8jgLEuiinY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ff9e/3u59MB8txUsZak3/9D7GqvQ6JNFqwMjIYF7PKz+mEF0l+hn/VqgYA0qs7Dinzw7N7bz3PeBNThHD146Hw0Re4tZFLVER4gn32ljxh+Mwqvk0xoFsyUw/eqQgyigktRd+jxZOe/9PCLqdxsjRlXSWgwS7MTNNusa7Q1zku8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B836F1FB;
+	Thu, 15 Feb 2024 04:02:18 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 559813F766;
+	Thu, 15 Feb 2024 04:01:36 -0800 (PST)
+Message-ID: <7f14727d-3ca6-45ec-9251-f166f74a8f7c@arm.com>
+Date: Thu, 15 Feb 2024 12:01:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb7112a8-df8a-4df8-a8db-0cb4761720dd@suse.cz>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=IUvyYiIb;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=hOTd6eh1
-X-Spamd-Result: default: False [-3.26 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.95)[99.77%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 0E84722208
-X-Spam-Level: 
-X-Spam-Score: -3.26
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] nvme-pci: Fix iommu map (via swiotlb) failures
+ when PAGE_SIZE=64KB
+Content-Language: en-GB
+To: Nicolin Chen <nicolinc@nvidia.com>, Keith Busch <kbusch@kernel.org>
+Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, will@kernel.org,
+ joro@8bytes.org, jgg@nvidia.com, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev, murphyt7@tcd.ie,
+ baolu.lu@linux.intel.com
+References: <cover.1707851466.git.nicolinc@nvidia.com>
+ <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
+ <Zcv7uI6VrMc2EuGT@kbusch-mbp> <ZcxZD2GXmR5+vC/k@Asurada-Nvidia>
+ <Zc1qpr4zCy1N0OND@kbusch-mbp> <Zc2XHbcXZzV2a61n@Asurada-Nvidia>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <Zc2XHbcXZzV2a61n@Asurada-Nvidia>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 12:12:56PM +0100, Vlastimil Babka wrote:
-> On 2/14/24 18:01, Oscar Salvador wrote:
-> > We want to be able to filter out the stacks based on a threshold we can
-> > can tune.
-> > By writing to 'count_threshold' file, we can adjust the threshold value.
-> > 
-> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+On 15/02/2024 4:46 am, Nicolin Chen wrote:
+> On Wed, Feb 14, 2024 at 06:36:38PM -0700, Keith Busch wrote:
+>> On Tue, Feb 13, 2024 at 10:09:19PM -0800, Nicolin Chen wrote:
+>>> On Tue, Feb 13, 2024 at 04:31:04PM -0700, Keith Busch wrote:
+>>>> On Tue, Feb 13, 2024 at 01:53:57PM -0800, Nicolin Chen wrote:
+>>>>> @@ -2967,7 +2967,7 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
+>>>>>                dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
+>>>>>        else
+>>>>>                dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+>>>>> -     dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
+>>>>> +     dma_set_min_align_mask(&pdev->dev, PAGE_SIZE - 1);
+>>>>>        dma_set_max_seg_size(&pdev->dev, 0xffffffff);
+>>>>
+>>>> I recall we had to do this for POWER because they have 64k pages, but
+>>>> page aligned addresses IOMMU map to 4k, so we needed to allow the lower
+>>>> dma alignment to efficiently use it.
+>>>
+>>> Thanks for the input!
+>>>
+>>> In that case, we might have to rely on iovad->granule from the
+>>> attached iommu_domain:
+>>
+>> I explored a bit more, and there is some PPC weirdness that lead to
+>> NVME_CTRL_PAGE_SIZE, I don't find the dma min align mask used in that
+>> path. It looks like swiotlb is the only user for this, so your original
+>> patch may be just fine.
 > 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Oh, that'll be great if we confirmed. And I think I forgot to add
+> CC line to the stable trees: the two patches should be applicable
+> cleanly to older kernels too. Let's wait for some day, so people
+> can give some tests and reviews. Then I will respin a v2 with the
+> CC line.
 
-Thanks
+Hmm, as far as I understand, NVME_CTRL_PAGE_SIZE represents the 
+alignment that NVMe actually cares about, so if specifying that per the 
+intended purpose of the API doesn't work then it implies the DMA layer 
+is still not doing its job properly, thus I'd rather keep digging and 
+try to fix that properly.
 
-> Again "- 1" here.
+FWIW I have a strong suspicion that iommu-dma may not be correctly doing 
+what it thinks it's trying to do, so I would definitely think it 
+worthwhile to give that a really close inspection in light of Will's 
+SWIOTLB fixes.
 
-Yes, I might just instead add this assigment in the previous patch,
-so no further modifications wrt. stack_count will be needed in this
-patch.
-
-Might be cleaner?
- 
-
--- 
-Oscar Salvador
-SUSE Labs
+Thanks,
+Robin.
 
