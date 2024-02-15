@@ -1,185 +1,158 @@
-Return-Path: <linux-kernel+bounces-66812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 953DC8561C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:37:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C44A88561C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CB88294920
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FC39294CD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27A2131E43;
-	Thu, 15 Feb 2024 11:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E246212AAE9;
+	Thu, 15 Feb 2024 11:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="a0ep//mH"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MX5vMfrw"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9E4131E2D;
-	Thu, 15 Feb 2024 11:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707996781; cv=fail; b=Nt47btmP42nBprgNrtdrb0HnHxr5FYo2b8vEkjszEhiTyZruUkALZqLGTuXaHNxWs51/DXiU+qauMMyu09iC7GGow21y7MgbaKJuhtTG32/UXpG/e3Gm1mCbD/sYzW6vrrOs+5KA6Mr48HtCg7lEBPddac3Ij698r97tvQuT4KQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707996781; c=relaxed/simple;
-	bh=Z+J45amBNDKTWsvLll8fDWyRtLwPalX5W8keus48IK4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CY0W/WM4eDCHahzXBFJtjRohsijQKB1c25cphalEmUrq43P+tK+MM0wVuRzY1BJyp6uW/6ioNOpG61P+B883pOeHalntw4wIz8pb5MwuUN+nPJP+KS/ywPfzftMQg3yUMhFTSKqX8/wXvKaRJyUgZPZPAeNytWT0sMNU0pjmpVo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=a0ep//mH; arc=fail smtp.client-ip=40.107.243.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMi+esLQAgjblL/n6JNpC55Vaqg76iXttJPJ1le1Cq3wNYRcj1uTQNy43gkPDrI6XNAJkzejSAbTAuHVLOjEy5f1QzOGrScW5HRskgI607e7mc1ukdT05pr7d8mSrU7X6JbohRWjhLM+r6RB3D1OwdTFW5raoL1cYN4L161RihINIVeN3UC1txroOIAVrF9H0SL3nZtlA/nPUifFReJn2khWXEXznHsKHEoabqbQ+fG/pQC55Nl7arIwgazL5jg4Oy/6G3Ygde8HQPB/c0WPBWhFueaXlmLv/X4SXNhbc2rJJBBOkp1v6AfcUC032xl5cmQFW5Db4zxQe92ta2EkSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5VWwGIqHnngs1QoNx8JMfi5AErKWM9Q23Vl8/MRxZGw=;
- b=MeefV723c8jhDyZ+Co8dCtDpUviu8Pp2reDymAZLc2SGlqOYyxRdU35ijWh0nmUVnOW3Vs3laaJZnic0T+2uPYIB5JjBBShUY7Zg6F+QCvwjjTmdx4Q78wAGxApvW8/ocf8/TSEuszIHtp2ouMXc6icnd9kfT2gwipqkN2fVAfTjB7gcOeohKCoAGfquFXsugbtElBDXm2fXGKyjIHUVK/729ZURMDivOqGlK0oy+i4qXZT1duVFXjb6/+nCpTBxd59aEVSq25pllHrW4/fmpPtbqCU+8ompMWIkUM5/6Kl2SRkfiRbGyl0jmMZrzxjkRRXCZzGXW5NwBo2skgAS8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5VWwGIqHnngs1QoNx8JMfi5AErKWM9Q23Vl8/MRxZGw=;
- b=a0ep//mHSRWCKkhGKOtKF4XSep9i4cKRJzy43eIeIDMej21Y/53cIQBfURDKrg7lcAr7fGycWiXDblC8hQDR6JphEc3hjWQXnHLuamsP0whqMGqdRCXUZCEaV8Lqby8H80JjVdM3yK6Bu35D5dte6FiEvDU20ZQG7iqZNJoMs64=
-Received: from DM6PR05CA0053.namprd05.prod.outlook.com (2603:10b6:5:335::22)
- by DS7PR12MB8417.namprd12.prod.outlook.com (2603:10b6:8:eb::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Thu, 15 Feb
- 2024 11:32:57 +0000
-Received: from SN1PEPF0002BA51.namprd03.prod.outlook.com
- (2603:10b6:5:335:cafe::74) by DM6PR05CA0053.outlook.office365.com
- (2603:10b6:5:335::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
- Transport; Thu, 15 Feb 2024 11:32:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA51.mail.protection.outlook.com (10.167.242.74) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Thu, 15 Feb 2024 11:32:56 +0000
-Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 15 Feb
- 2024 05:32:52 -0600
-From: Nikunj A Dadhania <nikunj@amd.com>
-To: <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>, <bp@alien8.de>,
-	<x86@kernel.org>, <kvm@vger.kernel.org>
-CC: <mingo@redhat.com>, <tglx@linutronix.de>, <dave.hansen@linux.intel.com>,
-	<pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
-	<nikunj@amd.com>
-Subject: [PATCH v8 16/16] x86/sev: Enable Secure TSC for SNP guests
-Date: Thu, 15 Feb 2024 17:01:28 +0530
-Message-ID: <20240215113128.275608-17-nikunj@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215113128.275608-1-nikunj@amd.com>
-References: <20240215113128.275608-1-nikunj@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FC312AACF;
+	Thu, 15 Feb 2024 11:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707996819; cv=none; b=aSd/wEG89m2DZwxw0KMMkWljwZLr9lByXhAjwy0f1MyUq76kuvTAoNHjvDMSI67wrsHJIRx+DqSKurAbuTdVV8K+Vc87IzYlG6ANh4n12zLrDpaeIZ/1F9nAzEjQMlHbYowx+tADlXHRpgYh4y/ekWaEmRrNC/MtiO2xh594BdA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707996819; c=relaxed/simple;
+	bh=5Mxr7TMKSWsl11qn4WggocCDFkTw3msUvohOG+7eml4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KFejLw/Rw06lWHNwpVfm1XCkcT9uotH7fBkl+H1AoLuBdOG/vCDS34z6WqOP9AvFvE6mNSAS6eShXTEAR3BCVlHFcT5SyPADZ84jPyhv8G+KqnuqNw8BziJV5eM54h0phBtM2l0RaYjkr0cbpYaKNHP6Whmu7ggGwOYM1aAC0xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MX5vMfrw; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FBX79G107037;
+	Thu, 15 Feb 2024 05:33:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1707996787;
+	bh=ABHkRW2SheIUF0P3f0D9642QH8CsZI9lD6RNSWt1xzU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=MX5vMfrwGgdQUAUzso/q6iFDNfLD8Je8/6enYBBsOT4e7sYSr012n10tcYu5jGlSZ
+	 Z3eERe0CILc0/zUYc/qD8mjQ/cWm2th5c6FnPdnialoX6VopbwEVyE62EJ3Kh7KUEb
+	 0ImxEdDURUYM7jHkkuuWlQaExlZXXiVrLeaBOSFY=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FBX6wS026115
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 15 Feb 2024 05:33:06 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
+ Feb 2024 05:33:06 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 15 Feb 2024 05:33:06 -0600
+Received: from [172.24.227.31] (uda0496377.dhcp.ti.com [172.24.227.31])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FBX1NF008649;
+	Thu, 15 Feb 2024 05:33:01 -0600
+Message-ID: <5c73328c-5a83-4937-aafe-af55d14fcb89@ti.com>
+Date: Thu, 15 Feb 2024 17:03:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA51:EE_|DS7PR12MB8417:EE_
-X-MS-Office365-Filtering-Correlation-Id: e890a8be-b9c5-4b51-cd3b-08dc2e19db40
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TFzXdzsv6J9PnxfRWlm9wiFUAl6FRLFZX/+/0Qiy6pzKOddH7opq+VJ18HFZtD06eF5N6hXkZeL8SK73E/F3QNBX/ilr/Ty6mUSqTI6Nx433iaMAG8kUz7rTtUMjT0JIzh0V7TRn0Y22vugz8BDcvlZL7oQuqxFhZtmi0aDKC9i2QXALbk0EeAXqfIpEAAqp+BKtdy50oy4oxrYBiPAbTxAOUOIfV0s+7zCjhKSbV9dEGvpzK1ry5aayv9ZDuOZw80799L/HI+3AIh18cn44cuiwWs8W7DhPDomXN3f2FiNvJOnko1SbesVBdvELPZZ8RMY+Ikd35oWrElkuxrBQBp1VVLqx2GGmaRbAN/VceRgdS2xKguhQkpj/XQl2Uyoisl9OiiukidOvUHRvV3uMPVcK9+rfeD32m+Dxyyl5pjdtcW5SH4C/B4WYFMrGF91xN0+/i31DA4m+7+hH2yVcIO1lJI/Rs5ci++hNN9K6NwUo6mRP+GK+Xb1Rm6L1BP18W9nZ8FfW9kf1S6wqVnwTCnJ5A//eWU5vy7mjBzGZpvJhWwkPKC8yQQh9vcKAWbPjfh2tjKLVme4H2XiXt+LbBqwTRlTZilpcPIT3/yUIAtwlUuXJsZxhAIzO+rE5zSX5HA83fXGs2zW2m3XbWnnDqPMsCwQ29nx3r5yOlviQzfc=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(36860700004)(186009)(46966006)(40470700004)(478600001)(41300700001)(4326008)(8936002)(7416002)(5660300002)(8676002)(2906002)(7696005)(54906003)(6666004)(70586007)(316002)(83380400001)(2616005)(336012)(70206006)(426003)(356005)(81166007)(36756003)(1076003)(82740400003)(26005)(110136005)(16526019);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 11:32:56.6660
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e890a8be-b9c5-4b51-cd3b-08dc2e19db40
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA51.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8417
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: ti,am65x-dss: Add support
+ for common1 region
+Content-Language: en-US
+To: Devarsh Thakkar <devarsht@ti.com>, <jyri.sarha@iki.fi>,
+        <tomi.valkeinen@ideasonboard.com>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>, <tzimmermann@suse.de>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
+CC: <praneeth@ti.com>, <j-luthra@ti.com>
+References: <20240215083205.2902634-1-devarsht@ti.com>
+ <20240215083205.2902634-2-devarsht@ti.com>
+From: Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20240215083205.2902634-2-devarsht@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Now that all the required plumbing is done for enabling SNP Secure TSC
-feature, add Secure TSC to snp features present list.
 
-Set the CPUID feature bit (X86_FEATURE_SNP_SECURE_TSC) when SNP guest is
-started with Secure TSC.
 
-Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-Tested-by: Peter Gonda <pgonda@google.com>
----
- arch/x86/boot/compressed/sev.c |  3 ++-
- arch/x86/mm/mem_encrypt.c      | 10 ++++++++--
- arch/x86/mm/mem_encrypt_amd.c  |  4 +++-
- 3 files changed, 13 insertions(+), 4 deletions(-)
+On 15/02/24 14:02, Devarsh Thakkar wrote:
+> TI keystone display subsystem present in AM65 and other SoCs such as AM62
+> support two separate register spaces namely "common" and "common1" which
+> can be used by two separate hosts to program the display controller as
+> described in respective Technical Reference Manuals [1].
+> 
+> The common1 register space has similar set of configuration registers as
+> supported in common register space except the global configuration
+> registers which are exclusive to common region.
+> 
+> This adds binding for "common1" register region too as supported by the
+> hardware.
+> 
+> [1]:
+> AM62x TRM:
+> https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
+> 
+> AM65x TRM:
+> https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
 
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index 073291832f44..d7e28084333a 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -379,7 +379,8 @@ static void enforce_vmpl0(void)
-  * by the guest kernel. As and when a new feature is implemented in the
-  * guest kernel, a corresponding bit should be added to the mask.
-  */
--#define SNP_FEATURES_PRESENT	MSR_AMD64_SNP_DEBUG_SWAP
-+#define SNP_FEATURES_PRESENT	(MSR_AMD64_SNP_DEBUG_SWAP |	\
-+				 MSR_AMD64_SNP_SECURE_TSC)
- 
- u64 snp_get_unsupported_features(u64 status)
- {
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 68aa06852466..350ba605509d 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -70,8 +70,14 @@ static void print_mem_encrypt_feature_info(void)
- 			pr_cont(" SEV-ES");
- 
- 		/* Secure Nested Paging */
--		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
--			pr_cont(" SEV-SNP");
-+		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
-+			pr_cont(" SEV-SNP\n");
-+			pr_cont("SNP Features active: ");
-+
-+			/* SNP Secure TSC */
-+			if (cpu_feature_enabled(X86_FEATURE_SNP_SECURE_TSC))
-+				pr_cont(" SECURE-TSC");
-+		}
- 
- 		pr_cont("\n");
- 		break;
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index cc936999efc8..7ee0a537a22e 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -500,8 +500,10 @@ void __init sme_early_init(void)
- 		ia32_disable();
- 
- 	/* Mark the TSC as reliable when Secure TSC is enabled */
--	if (sev_status & MSR_AMD64_SNP_SECURE_TSC)
-+	if (sev_status & MSR_AMD64_SNP_SECURE_TSC) {
-+		setup_force_cpu_cap(X86_FEATURE_SNP_SECURE_TSC);
- 		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
-+	}
- }
- 
- void __init mem_encrypt_free_decrypted_mem(void)
--- 
-2.34.1
+Can you add the TRM link for AM62A too?
 
+With that sorted,
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+> 
+> Fixes: 2d8730f1021f ("dt-bindings: display: ti,am65x-dss: Add dt-schema yaml binding")
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>> ---
+> V2: Add Acked-by tag
+> V3: Add Fixes tag
+> ---
+>  .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> index b6767ef0d24d..55e3e490d0e6 100644
+> --- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> +++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
+> @@ -37,6 +37,7 @@ properties:
+>        - description: OVR2 overlay manager for vp2
+>        - description: VP1 video port 1
+>        - description: VP2 video port 2
+> +      - description: common1 DSS register area
+>  
+>    reg-names:
+>      items:
+> @@ -47,6 +48,7 @@ properties:
+>        - const: ovr2
+>        - const: vp1
+>        - const: vp2
+> +      - const: common1
+>  
+>    clocks:
+>      items:
+> @@ -147,9 +149,10 @@ examples:
+>                      <0x04a07000 0x1000>, /* ovr1 */
+>                      <0x04a08000 0x1000>, /* ovr2 */
+>                      <0x04a0a000 0x1000>, /* vp1 */
+> -                    <0x04a0b000 0x1000>; /* vp2 */
+> +                    <0x04a0b000 0x1000>, /* vp2 */
+> +                    <0x04a01000 0x1000>; /* common1 */
+>              reg-names = "common", "vidl1", "vid",
+> -                    "ovr1", "ovr2", "vp1", "vp2";
+> +                    "ovr1", "ovr2", "vp1", "vp2", "common1";
+>              ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
+>              power-domains = <&k3_pds 67 TI_SCI_PD_EXCLUSIVE>;
+>              clocks =        <&k3_clks 67 1>,
 
