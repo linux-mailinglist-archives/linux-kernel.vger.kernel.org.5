@@ -1,62 +1,53 @@
-Return-Path: <linux-kernel+bounces-66847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D62C6856255
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:58:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7EDE85625F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:59:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EB781F27CB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFCFB1C22F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A3612B17F;
-	Thu, 15 Feb 2024 11:57:39 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBF212BE85;
+	Thu, 15 Feb 2024 11:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Bhfb5O98"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7179F12B171
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:57:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A76AF42041;
+	Thu, 15 Feb 2024 11:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998259; cv=none; b=gEgTnH/I+T4mHtLfi7itUVAsZG5/ItYeJaaxTSubf9pgFwfumI4xP6U97exqDPOtK9D+WidgcFbZjnsuzRhvoAnZ3awM087jjbEQI0s7CljW0OwV0ikBO4ZZrMOFiWFH/hOosPXC/j5TBsAW2yW6wi4XCSkpFoe4FKLGb9uusoM=
+	t=1707998389; cv=none; b=IJ7X3tK0ffNgyRI0yFz8HCxv2F7j/rPG3VrARRCPRCr10U1mIpZd63PN5ERssJ+ti49vIvB6oxen7jsTSyowO/c6F/+SvQMhU9qykAzrHc3a7JI9oRy8zYEQGiLQ9mthEY9aj/stIIlM+xM0/21xPpjyWcFNqsLlbb02vEBmR6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998259; c=relaxed/simple;
-	bh=WNgeeoZaOMOZt+4Bl0O7s3ta+T1aHv+7CYkip/mTMGc=;
+	s=arc-20240116; t=1707998389; c=relaxed/simple;
+	bh=dckH4nUEiMyTxqGtRHPrjbAcTVSEMyT4rF8LOmQLqc8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JI3mj3SaHt+0bp/emzROc0jlFZWKXA7lkZNIf0XK26JU3hRou7hGIsbuqT8jXxiKSPr+M4vY3654TNnjnMZtRzTSkDLa/tQPxwTL6xlZWzC4KodYgjm21FyY2Zn4QriN8BYmf9BQY+EhlZtmeXIWsGnt9qzu7G3DsO5t5gpklB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CA9F722205;
-	Thu, 15 Feb 2024 11:57:34 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 53DA21346A;
-	Thu, 15 Feb 2024 11:57:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id sGO6ES78zWVaBwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Thu, 15 Feb 2024 11:57:34 +0000
-Date: Thu, 15 Feb 2024 12:58:44 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH v9 5/7] mm,page_owner: Display all stacks and their count
-Message-ID: <Zc38dMg3t8L7xVyc@localhost.localdomain>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-6-osalvador@suse.de>
- <4f4f008b-bde1-4551-ae24-db2c0778eb27@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OCS2Xk7jIiasudCWB3vOaw4V6RXGwx24ZB/aKm2tol0jwms0b6/H+o5LHOcW94HCv7eYf/tjQuXmH3yEcIKG4xwI2B2cYqdK8dz1aVkj9w8rIIlmEN/MTfEXDYKcFbhARvQfdzUgmILeCb0xZBMNz8on6KH6zfko9H59dgPBB8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Bhfb5O98; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1288C433F1;
+	Thu, 15 Feb 2024 11:59:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707998389;
+	bh=dckH4nUEiMyTxqGtRHPrjbAcTVSEMyT4rF8LOmQLqc8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Bhfb5O985jewYkmWWRzcWM9AZOSahVw2KYiCX6koypcO4fWkBwROq0e214rwatSTV
+	 rSRMnJJOeLD0Qpd2G3LIOQJJLqDLMhAeBaLgRMsXdZ1ZkpLjx4wyyW648baodgQkXL
+	 FERw0Cikkn4yeNCgVHaobllR2352LHVjC3rwNchI=
+Date: Thu, 15 Feb 2024 12:59:46 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
+Message-ID: <2024021536-immortal-amnesty-e8d2@gregkh>
+References: <2024021430-blanching-spotter-c7c8@gregkh>
+ <20240214-swinging-indigo-koala-a56069@lemur>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,36 +56,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4f4f008b-bde1-4551-ae24-db2c0778eb27@suse.cz>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: CA9F722205
-X-Spam-Flag: NO
+In-Reply-To: <20240214-swinging-indigo-koala-a56069@lemur>
 
-On Thu, Feb 15, 2024 at 12:10:38PM +0100, Vlastimil Babka wrote:
-> On 2/14/24 18:01, Oscar Salvador wrote:
-> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> > Acked-by: Marco Elver <elver@google.com>
+On Wed, Feb 14, 2024 at 08:41:26AM -0500, Konstantin Ryabitsev wrote:
+> On Wed, Feb 14, 2024 at 09:00:30AM +0100, Greg Kroah-Hartman wrote:
+> > +A list of all assigned CVEs for the Linux kernel can be found in the
+> > +archives of the linux-cve mailing list, as seen on
+> > +https://lore.kernel.org/linux-cve-announce/.  To get notice of the
+> > +assigned CVEs, please subscribe to that mailing list.
 > 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks
-
-> > +	for (i = 0; i < nr_entries; i++)
-> > +		seq_printf(m, " %pS\n", (void *)entries[i]);
-> > +	seq_printf(m, "stack_count: %d\n\n", refcount_read(&stack_record->count));
+> Since the archives page doesn't carry any instructions on how to subscribe,
+> I think you should link to https://subspace.kernel.org/subscribing.html here,
+> e.g.:
 > 
-> So count - 1 here to report actual usage, as explained in reply to 4/7?
+> .. please `subscribe <https://subspace.kernel.org/subscribing.html>`_ to that
+> mailing list.
+> 
+> > +No CVEs will be assigned for any issue found in a version of the kernel
+> > +that is not currently being actively supported by the Stable/LTS kernel
+> > +team.  A list of the currently supported kernel branches can be found at
+> > +https://kernel.org/category/releases.html
+> 
+> Can just be https://kernel.org/releases.html
 
-Yes, will do.
+Many thanks for the changes, now made!
 
-
--- 
-Oscar Salvador
-SUSE Labs
+greg k-h
 
