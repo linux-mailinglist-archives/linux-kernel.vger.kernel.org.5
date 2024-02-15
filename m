@@ -1,139 +1,122 @@
-Return-Path: <linux-kernel+bounces-67195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DFB28567E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:35:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92CE8567E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:35:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C5652863C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:35:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DFCE1F2D8B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C8E133425;
-	Thu, 15 Feb 2024 15:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScmA7EFj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D42134CEF;
+	Thu, 15 Feb 2024 15:33:45 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DD9132C13;
-	Thu, 15 Feb 2024 15:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A36132C07;
+	Thu, 15 Feb 2024 15:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011172; cv=none; b=F9Ja7dl2nw213uMRPG76BFrLoDfn3roUwYMEQGvTzpg1JSPCh1TMw3Tagyrflt8Wk1SjmapKp3uCrM/QQnphPoQetASgd6tUjgQT07zb8cHi04CqNEogZqjgom3Vhc00nIaW18RAvzxIlp00bAXzd+Llu+7gB4ShiQfyID2bodE=
+	t=1708011224; cv=none; b=a8pT2GFHRE1lf8NTWvkUui5C//kHxvwrUdS+WVDfUeqBq75ALK1ttd2tZ0Ty0X2ub6PN48bU/PZkR0imM2ktD2MBqxz/yYw7G0veq2d+/4qZHom2Xc2eRHQbusPWaa2scLPSvrDer0bJBeHUq9qLGjqe8JUCBUxbstzra2kzLOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011172; c=relaxed/simple;
-	bh=w95nUrhyNSbM1lYPsRxeWQzJj/TfrgaNgfXeD6b7tPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=eNoXMLE0DD3u82e/ax8XabA2r4WyUTgytrbYu4PbQiMGobHrr4gbE3j2jlNuh2fpzn4l23gTgghA5Fib/cbbjE/9+Ll5jcJsOD6cwo/jRO+ad9s81BgTY5WFj0TBYxeyQGS8yh4+TdcEl+FNug9J8PhC5tlgEW317kqJunNOhpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScmA7EFj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C5AC433C7;
-	Thu, 15 Feb 2024 15:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708011172;
-	bh=w95nUrhyNSbM1lYPsRxeWQzJj/TfrgaNgfXeD6b7tPU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ScmA7EFjU/CbMaEttI/s+eQx+J5cBqq3fKTFxT5ulmtoIIxuxEMa8aglNkbmJ/ARw
-	 q36G/7RdGi+qPSTlaOzgSHQB5+InFg0ENo5Xf8M+yanAb4f4ubWr3sMwAzxsJ6VKL9
-	 Hy7c8tGma/I0DuVLAoot4SXa4b2QnYQxEp7WlilStp/MMFBPgVtutNQSBZdjdHplO+
-	 8IDwGUDed/g0fAYQ6+QW+zwdsgMs/AUoHV+n6/H+sTLCXwYs8AVdrvzscKeRYdRY1i
-	 QnZo2maIS9G6ugDzhDRq16Zi+CdAZaLILt/avwwJU6sZyhLGTpHyelsl752NSFKfjk
-	 xdI9WolG+03yg==
-Date: Thu, 15 Feb 2024 09:32:48 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [GIT PULL] Devicetree fixes for v6.8
-Message-ID: <20240215153248.GA181950-robh@kernel.org>
+	s=arc-20240116; t=1708011224; c=relaxed/simple;
+	bh=SxwsFb9cwiQ+hXGsatbtcT5oeuzbea3B5jrs8EcaAMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X3MNVA7Vh7ROuT8o+VksITVgOGr0E58pX9eMmUJD9REchCBDEsaC+ryfGSuQl4ik1geq5b4xUE2kHnBLCp0WZjeXhLOpod00iMUoucXJwy2h7YfJKcC+WbWCZBJq1fkAwInQne9sFivrMJky1K0Wr6MGVtHl3OXWrKJ71fWsdLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2230191"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="2230191"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:33:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912181253"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="912181253"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:33:36 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1radjw-00000004pTJ-2xfL;
+	Thu, 15 Feb 2024 17:33:32 +0200
+Date: Thu, 15 Feb 2024 17:33:32 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v3 07/18] phy: ti: phy-j721e-wiz: use dev_err_probe()
+ instead of dev_err()
+Message-ID: <Zc4uzCsKgx67xI3P@smile.fi.intel.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-7-5c2e4a3fac1f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240102-j7200-pcie-s2r-v3-7-5c2e4a3fac1f@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Linus,
+On Thu, Feb 15, 2024 at 04:17:52PM +0100, Thomas Richard wrote:
+> Use dev_err_probe() instead of dev_err() in wiz_clock_init() to simplify
+> the code and standardize the error output.
 
-Please pull DT fixes for 6.8.
+..
 
-Rob
+>  		ret = wiz_clock_register(wiz);
+>  		if (ret)
+> -			dev_err(dev, "Failed to register wiz clocks\n");
+> +			dev_err_probe(dev, ret, "Failed to register wiz clocks\n");
+>  		return ret;
+
+Maybe
+
+		if (ret)
+			return dev_err_probe(dev, ret, "Failed to register wiz clocks\n");
+
+		return 0;
+
+?
+
+..
+
+>  		if (!clk_node) {
+> -			dev_err(dev, "Unable to get %s node\n", node_name);
+>  			ret = -EINVAL;
+> +			dev_err_probe(dev, ret, "Unable to get %s node\n", node_name);
+>  			goto err;
+
+			ret = dev_err_probe(..., -EINVAL, ...);
+
+>  		}
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-The following changes since commit 716089b417cf98d01f0dc1b39f9c47e1d7b4c965:
-
-  of: unittest: Fix of_count_phandle_with_args() expected value message (2024-01-11 16:18:30 -0600)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.8-1
-
-for you to fetch changes up to 4e06ec0774f5bebf10e27bc7a5ace4b48ae0fa56:
-
-  dt-bindings: ufs: samsung,exynos-ufs: Add size constraints on "samsung,sysreg" (2024-02-13 10:32:13 -0600)
-
-----------------------------------------------------------------
-Devicetree fixes for v6.8:
-
-- Improve devlink dependency parsing for DT graphs
-
-- Fix devlink handling of io-channels dependencies
-
-- Fix PCI addressing in marvell,prestera example
-
-- A few schema fixes for property constraints
-
-- Improve performance of DT unprobed devices kselftest
-
-- Fix regression in DT_SCHEMA_FILES handling
-
-- Fix compile error in unittest for !OF_DYNAMIC
-
-----------------------------------------------------------------
-André Draszik (1):
-      dt-bindings: don't anchor DT_SCHEMA_FILES to bindings directory
-
-Christian A. Ehrhardt (1):
-      of: unittest: Fix compile in the non-dynamic case
-
-Nuno Sa (1):
-      of: property: fix typo in io-channels
-
-Nícolas F. R. A. Prado (1):
-      kselftest: dt: Stop relying on dirname to improve performance
-
-Radhey Shyam Pandey (1):
-      dt-bindings: xilinx: replace Piyush Mehta maintainership
-
-Rob Herring (4):
-      dt-bindings: display: nxp,tda998x: Fix 'audio-ports' constraints
-      dt-bindings: tpm: Drop type from "resets"
-      net: marvell,prestera: Fix example PCI bus addressing
-      dt-bindings: ufs: samsung,exynos-ufs: Add size constraints on "samsung,sysreg"
-
-Saravana Kannan (3):
-      of: property: Improve finding the consumer of a remote-endpoint property
-      of: property: Improve finding the supplier of a remote-endpoint property
-      of: property: Add in-ports/out-ports support to of_graph_get_port_parent()
-
- Documentation/devicetree/bindings/Makefile         |  5 +-
- .../devicetree/bindings/ata/ceva,ahci-1v84.yaml    |  3 +-
- .../bindings/display/bridge/nxp,tda998x.yaml       |  7 ++-
- .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    |  3 +-
- .../devicetree/bindings/net/marvell,prestera.yaml  |  4 +-
- .../bindings/reset/xlnx,zynqmp-reset.yaml          |  3 +-
- .../devicetree/bindings/tpm/tpm-common.yaml        |  2 +-
- .../bindings/ufs/samsung,exynos-ufs.yaml           |  9 ++-
- .../devicetree/bindings/usb/dwc3-xilinx.yaml       |  3 +-
- .../devicetree/bindings/usb/microchip,usb5744.yaml |  3 +-
- .../devicetree/bindings/usb/xlnx,usb2.yaml         |  3 +-
- drivers/of/property.c                              | 65 +++++++++-------------
- drivers/of/unittest.c                              | 12 +++-
- .../testing/selftests/dt/test_unprobed_devices.sh  | 13 +++--
- 14 files changed, 71 insertions(+), 64 deletions(-)
 
