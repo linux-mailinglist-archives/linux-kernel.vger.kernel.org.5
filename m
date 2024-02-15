@@ -1,184 +1,158 @@
-Return-Path: <linux-kernel+bounces-67825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3598B85717D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:21:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89157857181
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D230F283525
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:21:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F3FA1F217CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAAD145347;
-	Thu, 15 Feb 2024 23:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB02145B10;
+	Thu, 15 Feb 2024 23:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PKZRg9Yl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YsI4PMKX"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D4213AA4F;
-	Thu, 15 Feb 2024 23:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2831F13DBA4;
+	Thu, 15 Feb 2024 23:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708039288; cv=none; b=HgKmw8Lj82Tgxmc2bV6Am28DPOn6ySe1GnLHIpdXWOiU/e6YOk476POgaffkq6AGOuyrxVyj3u4ASewPgdCA+3Y/Tz1PK9gmlKHI0vi24TlQTRWnSFyPP9IaKZf9VK7tsikClIwR4B2GFYGqqa0D44Kgrgue28XmRJUxAI8CtUQ=
+	t=1708039315; cv=none; b=iyWvNl0mpi2gc4KKnubhDLV9nvO3qBo/H37k8uaU6zO1qcqE02CZI63G+C9zR/tOtZ1LHkJZT/C9YyhGAdt4PDkOWFEG92m9OsWK1v8eC1p57IrLoPVgmOmHXFq5jIq81XkQLjrP7dG9nz0zy1XGLs7+ilDLvCp/AVFbqR/QYqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708039288; c=relaxed/simple;
-	bh=7iJLw/6LPcevINvsicUat4ZsHVJ3XTY7Nx+EesDtbdc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g0xzXXiqH8eCFnGn3zmxWBUVuB2oVr8BreMCGeKpAYHbrFIuWXkvhuiQ/3gu1e0NbwPYq5NhMaR3fnUTfgFDHlLss6OoeNb58a5rT3/0Vj0cTCaxE+iBOdJ3GH4YxbrwwKwjCh8uDtOlJvGMnrHpLHzzwk4J9l4YMk33e1gHMpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PKZRg9Yl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EAE5C433F1;
-	Thu, 15 Feb 2024 23:21:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708039287;
-	bh=7iJLw/6LPcevINvsicUat4ZsHVJ3XTY7Nx+EesDtbdc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PKZRg9YlGF5yDV0vr9GDUjfS5j8SkYJfRBBInWE4tDM1CTtSYl1gFXShydBbVI7bY
-	 7YmtI/Il56ECCrfR7yarirDv3ZEMhRdUQRaYwX7QSPNA9zaB9B+KMzSadLFA/TRpNG
-	 9E6vT79qBLhN8LzeNvObmjPlopfyLooqyax6qz1GVP3QsBiDh+SxH/F9SH2elcjQ9k
-	 sTRnHQrMDIqAioVM1eVcWZcppzlbVdzFaVflE+xyl8q8L9xIeYt8EgsR+OoOmWOEXW
-	 ylHXGshIVK5PpmCY9Ow2Dr6/X6M8j2UWaNf8AaO38NwazJftHCKaSD9tv7DAG6ieZj
-	 uZsNhe3jUkZHg==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51182f8590bso1854648e87.0;
-        Thu, 15 Feb 2024 15:21:27 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWQ4zEsi7Qjo0XoJ/glC+mD+set9Drx8SIVlo3/rwkiWvUmou9bAOQ6wNEmLJSVXDOxuLGT85pJ+F3wYXdVpWHrE73a8RmN9zTbICf3a2a3Dlq5sIB2syFG5O8g02aLDsQJzwnVC2TrkKN5rcroYYwhSYOAUlCHus6g6Snx7+L/
-X-Gm-Message-State: AOJu0YwHq+s3BexQBSPR1Phzq5LnRp6ZeeIfKpjGEvSuOTtI8JJiAphN
-	MqB0Z9OQlkLxlnVGv4Ok+yQDJSzfrssu7A/IF290ILa4IoQxsfWMbER44aDeJPZH8PETUOG3Nzs
-	TKWjJfG/8pwywrnqSHHYgIjH5FLA=
-X-Google-Smtp-Source: AGHT+IGy+ro0gLdOQgR6w/ffrsZf/Qm7wt3zjX123wUPreRbqJOD3J6hNqRBaxU2o1QoV3B2+471el4akJoaXzGnsso=
-X-Received: by 2002:a19:e04c:0:b0:511:8691:62d4 with SMTP id
- g12-20020a19e04c000000b00511869162d4mr2289262lfj.41.1708039285682; Thu, 15
- Feb 2024 15:21:25 -0800 (PST)
+	s=arc-20240116; t=1708039315; c=relaxed/simple;
+	bh=PxZ0C5029R4CmL53vNyyyaYcbdLIwRGPgflhW6LzmCw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Trw4slXnMogdazZlkIXHQ5W1W2HANo+sRHaCncxSt+Np6x4g3xpwXJt3bt9sbbTKu29vKbkN6viQMhK3Y6ELNohDXHem1OM5g1CH7VdAxTthDwFpxi1kNgOPEmYa6k8ly3xxGe+J59RFSbn5+7gD9Pg2A8bfraeOP+FWQZosjJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YsI4PMKX; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-411d76c9ce3so11898565e9.3;
+        Thu, 15 Feb 2024 15:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708039312; x=1708644112; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6D72u9OCvXFc6xIZabN3BHkMoZhGyXgCQr1DeQ1S8gQ=;
+        b=YsI4PMKXbnwLvPqr03H140KZU9clMCADu5IwnJYSTDzSA29mJ00XrH7KyuLm97wa3/
+         0fjat+vU1MsSUVsK5pW9UhDQ9ZYzmyeKQggyK6Cz/sTJuve1VGKrJwL6kdBsI77SQ0B7
+         5DKGHx3/RalefnZRk03HDFiWSRFndpBpbF/Nj7C24oNmJPR+qCSa/z5YSQXrvkIB7HHe
+         mVKPNz0uauWxXlNVSt9TP9U8W4qMs+BtPcXbqh0B/cAYPw/VuIQDfTYfEiwwaUhtyZof
+         lUw6/5u7JUIeIRBGcQCbXtfESIuGIoSAywKROjMkt/3J1BdmstWei6qShM8LKOF+WVUW
+         T5sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708039312; x=1708644112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6D72u9OCvXFc6xIZabN3BHkMoZhGyXgCQr1DeQ1S8gQ=;
+        b=M2Zu19mnjhURIon53ooC7DswmL+zkVoa7oXeW8lsvx0uOmWY9gSWNBAp4dQccceRP4
+         h5y9ATYngf8Ks2un7aimwpjXHXga4Aa3k3la1UiHUei1+dPtehJ0LYVvC9GsG0TEeJxS
+         YaRC5uocBd2MHqzRexFvJmfvadAemIWe19r8ru9DFZpz3ZP1zHiAlZP3jmsMXRDQ8AP5
+         Q4ZDqkRQNAEA3xPVXX7WrYS0Hu1hn/iEnc3fDUchBmvh5Eu+7aUqa7uAc80udJvKiDwn
+         in2iLmTy3sx6RBStVZtgf5axEvabSh9BBPWnE7vMCfL5suVfxcZj81JDRaAl07IbOtAR
+         Uc5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUF280JdBT4HFIYN9DfiLWuLPMGFEgS7rNr/QbI+DwNMZG4czCo5MaPM+lBZoQMyQyDDqpzjQh7wHqVufjTbUd4IbEoxjSgB8pF+vEiaUivh3YtOX8J5tY87b2i9f74a8uv3ZxAD4tYbwaz9vaucWlY3oC+JT72GdcY7Fm13a7cLlfEIRs=
+X-Gm-Message-State: AOJu0YwAQ78Os5b5dfKprcZsmqZdmv/T7lNnszMlNj8f9gdg9eFtBWvy
+	872IAT3UuRriOF/jXsV0xO+R+MEzQc6t/Zbc1IusxOo0etWWu9Md
+X-Google-Smtp-Source: AGHT+IFM+Tkd6DmAKXKi//1/Ntx3dDJahu5QeiRyAdMYEH9RSkeO98alH8ZM5ZhVx6fRbAST+feLtw==
+X-Received: by 2002:a5d:5106:0:b0:33c:f574:3706 with SMTP id s6-20020a5d5106000000b0033cf5743706mr2319455wrt.63.1708039312294;
+        Thu, 15 Feb 2024 15:21:52 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05600c4fc800b00410e638357asm541891wmq.10.2024.02.15.15.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 15:21:51 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Johannes Berg <johannes@sipsolutions.net>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] wifi: mac80211: clean up assignments to pointer cache.
+Date: Thu, 15 Feb 2024 23:21:51 +0000
+Message-Id: <20240215232151.2075483-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215225116.3435953-1-boqun.feng@gmail.com>
-In-Reply-To: <20240215225116.3435953-1-boqun.feng@gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 16 Feb 2024 00:21:14 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
-Message-ID: <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
-Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
-To: Boqun Feng <boqun.feng@gmail.com>, Oliver Smith-Denny <osde@linux.microsoft.com>
-Cc: linux-arm-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-(cc Oliver)
+From: Colin Ian King <colin.i.king@intel.com>
 
-On Thu, 15 Feb 2024 at 23:51, Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
-> a trouble with the following firmware memory region setup:
->
->         [..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
->         [..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
->
+The assignment to pointer cache in function mesh_fast_tx_gc can
+be made at the declaration time rather than a later assignment.
+There are also 3 functions where pointer cache is being initialized
+at declaration time and later re-assigned again with the same
+value, these are redundant and can be removed.
 
-Which memory types were listed here?
+Cleans up code and three clang scan build warnings:
+warning: Value stored to 'cache' during its initialization is never
+read [deadcode.DeadStores]
 
-> , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
-> range will be omitted from the the linear map due to 64k round-up. And
-> a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
->
->         [...] Unable to handle kernel paging request at virtual address f=
-fff0000dfd80000
->
+Signed-off-by: Colin Ian King <colin.i.king@intel.com>
+---
+ net/mac80211/mesh_pathtbl.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-You trimmed all the useful information here. ACPI reclaim memory is
-reclaimable, but we don't actually do so in Linux. So this is not
-general purpose memory, it is used for a specific purpose, and the
-code that accesses it is assuming that it is accessible via the linear
-map. There are reason why this may not be the case, so the fix might
-be to use memremap() in the access instead.
+diff --git a/net/mac80211/mesh_pathtbl.c b/net/mac80211/mesh_pathtbl.c
+index 735edde1bd81..91b55d6a68b9 100644
+--- a/net/mac80211/mesh_pathtbl.c
++++ b/net/mac80211/mesh_pathtbl.c
+@@ -599,13 +599,12 @@ void mesh_fast_tx_cache(struct ieee80211_sub_if_data *sdata,
+ 
+ void mesh_fast_tx_gc(struct ieee80211_sub_if_data *sdata)
+ {
+ 	unsigned long timeout = msecs_to_jiffies(MESH_FAST_TX_CACHE_TIMEOUT);
+-	struct mesh_tx_cache *cache;
++	struct mesh_tx_cache *cache = &sdata->u.mesh.tx_cache;
+ 	struct ieee80211_mesh_fast_tx *entry;
+ 	struct hlist_node *n;
+ 
+-	cache = &sdata->u.mesh.tx_cache;
+ 	if (atomic_read(&cache->rht.nelems) < MESH_FAST_TX_CACHE_THRESHOLD_SIZE)
+ 		return;
+ 
+ 	spin_lock_bh(&cache->walk_lock);
+@@ -621,9 +620,8 @@ void mesh_fast_tx_flush_mpath(struct mesh_path *mpath)
+ 	struct mesh_tx_cache *cache = &sdata->u.mesh.tx_cache;
+ 	struct ieee80211_mesh_fast_tx *entry;
+ 	struct hlist_node *n;
+ 
+-	cache = &sdata->u.mesh.tx_cache;
+ 	spin_lock_bh(&cache->walk_lock);
+ 	hlist_for_each_entry_safe(entry, n, &cache->walk_head, walk_list)
+ 		if (entry->mpath == mpath)
+ 			mesh_fast_tx_entry_free(cache, entry);
+@@ -636,9 +634,8 @@ void mesh_fast_tx_flush_sta(struct ieee80211_sub_if_data *sdata,
+ 	struct mesh_tx_cache *cache = &sdata->u.mesh.tx_cache;
+ 	struct ieee80211_mesh_fast_tx *entry;
+ 	struct hlist_node *n;
+ 
+-	cache = &sdata->u.mesh.tx_cache;
+ 	spin_lock_bh(&cache->walk_lock);
+ 	hlist_for_each_entry_safe(entry, n, &cache->walk_head, walk_list)
+ 		if (rcu_access_pointer(entry->mpath->next_hop) == sta)
+ 			mesh_fast_tx_entry_free(cache, entry);
+@@ -650,9 +647,8 @@ void mesh_fast_tx_flush_addr(struct ieee80211_sub_if_data *sdata,
+ {
+ 	struct mesh_tx_cache *cache = &sdata->u.mesh.tx_cache;
+ 	struct ieee80211_mesh_fast_tx *entry;
+ 
+-	cache = &sdata->u.mesh.tx_cache;
+ 	spin_lock_bh(&cache->walk_lock);
+ 	entry = rhashtable_lookup_fast(&cache->rht, addr, fast_tx_rht_params);
+ 	if (entry)
+ 		mesh_fast_tx_entry_free(cache, entry);
+-- 
+2.43.0
 
-> To fix this, add ACPI_MEMORY_NVS into the linear map.
->
-
-There is a requirement in the arm64 bindings in the UEFI spec that
-says that mixed attribute mappings within a 64k page are not allowed.
-
-This is not a very clear description of the requirement or the issue
-it is intended to work around. In short, the following memory types
-are special
-
-=E2=80=93 EfiRuntimeServicesCode =E2=80=93 EfiRuntimeServicesData =E2=80=93=
- EfiReserved =E2=80=93
-EfiACPIMemoryNVS
-
-and care must be taken to ensure that allocations of these types are
-never mapped with mismatched attributes, which might happen on a 64k
-page size OS if a mapping is rounded outwards and ends up covering the
-adjacent region.
-
-The Tianocore reference implementation of UEFI achieves this by simply
-aligning all allocations of these types to 64k, so that the OS never
-has to reason about whether or not region A and region B sharing a 64k
-page frame could have mappings or aliases that are incompatible.
-(I.e., all mappings of A are compatible with all mappings of B)
-
-ACPI reclaim is just memory, EfiACPIMemoryNVS could have special
-semantics that the OS knows nothing about. That makes it unsafe to
-assume that we can simply create a cacheable and writable mapping for
-this memory.
-
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> Cc: stable@vger.kernel.org # 5.15+
-> ---
-> We hit this in an ARM64 Hyper-V VM when using 64k page size, although
-> this issue may also be fixed if the efi memory regions are all 64k
-> aligned, but I don't find this memory region setup is invalid per UEFI
-> spec, also I don't find that spec disallows ACPI_MEMORY_NVS to be mapped
-> in the OS linear map, but if there is any better way or I'm reading the
-> spec incorrectly, please let me know.
->
-
-I'd prefer fixing this in the firmware.
-
-> It's Cced stable since 5.15 because that's when Hyper-V ARM64 support is
-> added, and Hyper-V is the only one that hits the problem so far.
->
->  drivers/firmware/efi/efi-init.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-i=
-nit.c
-> index a00e07b853f2..9a1b9bc66d50 100644
-> --- a/drivers/firmware/efi/efi-init.c
-> +++ b/drivers/firmware/efi/efi-init.c
-> @@ -139,6 +139,7 @@ static __init int is_usable_memory(efi_memory_desc_t =
-*md)
->         case EFI_LOADER_CODE:
->         case EFI_LOADER_DATA:
->         case EFI_ACPI_RECLAIM_MEMORY:
-> +       case EFI_ACPI_MEMORY_NVS:
->         case EFI_BOOT_SERVICES_CODE:
->         case EFI_BOOT_SERVICES_DATA:
->         case EFI_CONVENTIONAL_MEMORY:
-> @@ -202,8 +203,12 @@ static __init void reserve_regions(void)
->                         if (!is_usable_memory(md))
->                                 memblock_mark_nomap(paddr, size);
->
-> -                       /* keep ACPI reclaim memory intact for kexec etc.=
- */
-> -                       if (md->type =3D=3D EFI_ACPI_RECLAIM_MEMORY)
-> +                       /*
-> +                        * keep ACPI reclaim and NVS memory and intact fo=
-r kexec
-> +                        * etc.
-> +                        */
-> +                       if (md->type =3D=3D EFI_ACPI_RECLAIM_MEMORY ||
-> +                           md->type =3D=3D EFI_ACPI_MEMORY_NVS)
->                                 memblock_reserve(paddr, size);
->                 }
->         }
-> --
-> 2.43.0
->
->
 
