@@ -1,117 +1,104 @@
-Return-Path: <linux-kernel+bounces-66205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A173D855880
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:59:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B13C855882
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B87928F58C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD0C71F26CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C73137E;
-	Thu, 15 Feb 2024 00:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D2E1373;
+	Thu, 15 Feb 2024 01:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZMf6Eq5R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lAr9KvXK"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D85A59;
-	Thu, 15 Feb 2024 00:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EA7818
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707958745; cv=none; b=kAa+bauCpxeXEZCk4eixAxA815zUk1jR+JYaIvAECg3aWxak7V66FSevvyUYMZA2Does/LpxmN+5gYtZXh4CrEDYdgQbJKroIyFUm7eBAl+5xnCyefymKibwbmnqnmX/f5++a8gAgR0uUZvxFR01LTWJRTQISsLVYXuuYkYNqVE=
+	t=1707958810; cv=none; b=SdkkjVcnJGR41saMsfOddYio46smgVKV4eBg34TU6B1iLeZNvy/jDYwcPwHur1WE4YtIpuZjOVGTHuk1xTS2IdNvOUH1cFNkqpUw0faq1VYBqlpIFsvoBSd4kZqN08r9TT5aJmNeIbW3YGne/PeYZ+SEm+29xStYxtB4nu7TNeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707958745; c=relaxed/simple;
-	bh=Nl+odjlfK+R+k/m+CZLLi9s6iAFfj0YBGYAq3Za4WGA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kZSk4RywuHBbmpCFW7+iHXBQdNPF0tJdYTZ1Paat/+B6PJcQsvGIsHQmQHsmDOSBWdPK8PrPDOmEWANjfpO3UkoRkacVGMhb+3NGHlpZ6QDyxjcAWHV3x77+SFcr2Ye7rk93vBoBabxSpDhcdv6dwnZZdaEPOsjn1MxE9xXaqoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZMf6Eq5R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DE8AC433F1;
-	Thu, 15 Feb 2024 00:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707958744;
-	bh=Nl+odjlfK+R+k/m+CZLLi9s6iAFfj0YBGYAq3Za4WGA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZMf6Eq5RsvfPskmrJzatmYAiSPCm41VIsaNzxFrS0QiNVtEA2VPMn8J7L8y1+pejr
-	 WuJsto4TmDDe5hdsHhdUrNBvNL3/yNSaDj0oLMpmz/VdDaUfrHZl6fWRtN3gSnC2ky
-	 ykmOESm2qcDTvwibwgOoQ4SwG2Ss1zHETKGb5rOZUNv+s2DLmvHUErat+yqt3n+n1S
-	 OcsInxQJwNmzMBmlK6l7RV4jmrVRCroySN8v0LgilU2biEn7gvTVJHbZZPYPiv78mb
-	 fkWnpwTS2wMQLMBLKEAHNME6yx5OmVQFLLWG2PxsiyLBHlqDj2rJ8o/W+uDONbh4QQ
-	 TvJi3MTFT1xfA==
-Date: Wed, 14 Feb 2024 16:59:02 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v7 00/13] Introduce PHY listing and
- link_topology tracking
-Message-ID: <20240214165902.55bf3a04@kernel.org>
-In-Reply-To: <20240213150431.1796171-1-maxime.chevallier@bootlin.com>
-References: <20240213150431.1796171-1-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1707958810; c=relaxed/simple;
+	bh=7ekzgG3CaaN8Upth91WUvnRta1oqNcnH4L+iJ4pODBU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LT+EkxH4DWfZxOlt6xw3iXx4pdAthNn/LWQjNyxpWkEFGQybwa2ot0Tieq1W/S/04d8aasavJP3IkcJ882rOdsTUz3Jops/W7dZGLUtXqGWiETNgFHexTmP/GVJxsfqmtFBonbssB0IqwH9eV1zPqzPvj734/vjryGVTzIyy+I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lAr9KvXK; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e0a461e125so360216b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707958809; x=1708563609; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4YwMoxpPdGIXr65qlRk5ePgKg8TaGLQF6RmLNsWlQrs=;
+        b=lAr9KvXKWB7GQoTN8FeQY/M1Md6EJeMV2WRkbAxuURGsWqX6CZNXwiwPEwXsdmtFqN
+         MwXzsPp6wCndeaSZMf6Bbu+HjPzFBStYfeagqXXtlFo2jngSLctujL1Mc6YzLM2QBykX
+         d0rt4jLY1rGCNpC8SuMAzqLQ0mhvPRWtL1L6Ijei4ScAi9+pfiMk1mFIswKHjjp6K/pv
+         rkwsyD6yGheSJqDJ4+Afve/Tj7senUTa20iNW7dLjBVHWFmKnGGTGyWBWBhmzPaDWm3n
+         fxS23O1L2FWf8y92204hlP9LTUiS23Gja9/nsPbfQYbO67ClEu/nQZzRMCw7eghuWzQZ
+         ZQJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707958809; x=1708563609;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4YwMoxpPdGIXr65qlRk5ePgKg8TaGLQF6RmLNsWlQrs=;
+        b=wh/intIP2f/qn0LnP2WNC94qjhOYUbVHj3XFx33UUvOC6Q8Qr6pHbLgAnpcidV3rWT
+         z7K0NfthmIuj/OpPpvltcu0dgWQ3SCohAIIuZCIt4jOZlwp/5PRIc8b681sR4ot1kKqT
+         0EKP+Ju0ZWsjYIuVnO97m7be5gXqGc/VU5S7YoLv/sKNTI20sVCgfM74igZ//pEsBlAC
+         Xy9SqUuCvtpyEErVcMoEtA5+yliDN4IQXNZ8wrpwnutAXULt7wIg6uiI7BPbADqhj3if
+         dbAb3NbjuYbhGkasyiB91f8fkVnJ1TnpCk1E0XDdFjALTn06OV2rpBZ3/vV+O5CA01s/
+         c0iw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaXn7Mv/Sh1HJeV6pCUuqeT6RFjQJt9esrjj1j5/YoYM3v65s7uFUC+IlhZUo/x5ye8EPBo3DUtgSYvKdoNH9sE4VjUtDPbKaQalC+
+X-Gm-Message-State: AOJu0Yw6OucjUBR/cNUYe+4eDVVPec9oJJxNbTbO0rOCOpamAwSwlb6n
+	r+YeiYz1LzVIR85ZrP3XZSjj97rR8RFkvs3chT7BSvQ7X7QsjXkvyvnUVMQ4TXcwW4bWZOCxxlr
+	Tpw==
+X-Google-Smtp-Source: AGHT+IHbgxWGeAcTLvyyR5JGefTEZ9NtWIBrEe+y525as1+L1R1b5n5OWHixhWFd8MZyMusPNUnZI0T78SM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:4f8f:b0:6e0:e2f8:cf40 with SMTP id
+ ld15-20020a056a004f8f00b006e0e2f8cf40mr40419pfb.0.1707958808772; Wed, 14 Feb
+ 2024 17:00:08 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Wed, 14 Feb 2024 17:00:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+Message-ID: <20240215010004.1456078-1-seanjc@google.com>
+Subject: [PATCH 0/2] KVM: x86: Fix dirty logging of emulated atomics
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Matlack <dmatlack@google.com>, Pasha Tatashin <tatashin@google.com>, 
+	Michael Krebs <mkrebs@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 13 Feb 2024 16:04:17 +0100 Maxime Chevallier wrote:
-> This is V7 for the link topology addition, allowing to track all PHYs
-> that are linked to netdevices.
-> 
-> The main change in V7 is the protection of the main internal API
-> entrypoints (link_topo_init/cleanup, link_topo_add/del_phy) by
-> IS_REACHABLE(CONFIG_PHYLIB).
-> 
-> That's restrictive, but it looks difficult to do otherwise while still keep the
-> data structure opaque and not add dependency clutter with PHYLIB.
-> 
-> As you can tell, I'm unsure about this, so please don't hesitate to
-> comment on that part :)
-> 
-> The other changes are very minor, the only one is a call to netdev_put
-> in the .done() netlink callback.
-> 
-> As a remainder, here's what the PHY listings would look like :
->  - eth0 has a 88x3310 acting as media converter, and an SFP module with
->    an embedded 88e1111 PHY
->  - eth2 has a 88e1510 PHY
+Fix a bug in KVM's emulator where the target page of an atomic write isn't
+marked dirty, and enhance the dirty_log_test selftest to serve as
+a regression test by conditionally doing forced emulation of guest writes.
 
-Needs a rebase, core has been busy lately:
+Note, the selftest depends on several patches that are sitting in
+`kvm-x86 pmu`, so I'll likely take the selftest through that branch (eww).
 
-Applying: net: phy: Introduce ethernet link topology representation
-Using index info to reconstruct a base tree...
-M	MAINTAINERS
-M	drivers/net/phy/Makefile
-M	drivers/net/phy/phy_device.c
-M	include/linux/netdevice.h
-M	include/linux/phy.h
-M	net/core/dev.c
-Falling back to patching base and 3-way merge...
-Auto-merging net/core/dev.c
-CONFLICT (content): Merge conflict in net/core/dev.c
-Auto-merging include/linux/phy.h
-Auto-merging include/linux/netdevice.h
-Auto-merging drivers/net/phy/phy_device.c
-Auto-merging drivers/net/phy/Makefile
-Auto-merging MAINTAINERS
-Recorded preimage for 'net/core/dev.c'
+Sean Christopherson (2):
+  KVM: x86: Mark target gfn of emulated atomic instruction as dirty
+  KVM: selftests: Test forced instruction emulation in dirty log test
+    (x86 only)
+
+ arch/x86/kvm/x86.c                           | 10 ++++++
+ tools/testing/selftests/kvm/dirty_log_test.c | 36 ++++++++++++++++++--
+ 2 files changed, 43 insertions(+), 3 deletions(-)
+
+
+base-commit: 7455665a3521aa7b56245c0a2810f748adc5fdd4
 -- 
-pw-bot: cr
+2.43.0.687.g38aa6559b0-goog
+
 
