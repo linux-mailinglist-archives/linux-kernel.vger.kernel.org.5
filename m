@@ -1,157 +1,141 @@
-Return-Path: <linux-kernel+bounces-67134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE34F8566D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:03:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CF58566C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69AD628780A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:03:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C989D1C20B4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCD413248B;
-	Thu, 15 Feb 2024 15:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BvCcjRui"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822B713329D;
+	Thu, 15 Feb 2024 15:01:23 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFA1132481
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F947131E3D;
+	Thu, 15 Feb 2024 15:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708009389; cv=none; b=oseT6sqnkzyzwz0TEzu1O8rRHb+aI+2DoK8irItmu2duIZRcgLUPiRSbMEm7hAlvwCkW0htSwtWarXb5YvF/bdi4ZMMLsNNHprHcYawXctktMl0kRQRFh03Vj6hllWdJcPsFTW815NUx9BZwwIiqXNzFse2YwjBOgBgDScdwu1Y=
+	t=1708009283; cv=none; b=qJten8rPfNtTil7J6xT6AwRjUL3NyiSXj8q1/8Iz2wtG/HoFiKUTslrnjcebcxKZLSfqtjaG5NH2tlzFH+RcvJuCBKDBVhGZYTY6zoj9JOt8r/spuz2FKABA/oGeshO//ikcCgmROkPOxjLCeglGYfgJ4A8bYE5kagpJ7tzaBes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708009389; c=relaxed/simple;
-	bh=H/soAYrrSeRXs7NdxjAoiXIbfPiwXFyYm3AeSchaEI4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BSFOBWfJqXjlMHDN/5wUq3UCjkAwMaaKyVj/6sEWaMKRCE4GmJ8XsYj/i6j7oQyvCfXvdQKzxlB4swGI2vPRp5JpxVZAZhvEPrDSUGhjsJ/MwEXkuxXwGAtnAbHf71+FLeA0naZ73Y1sZy1ULOZbYHJ9phPd+/9TeO/p67RDHVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=BvCcjRui; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso883506276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708009387; x=1708614187; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QFQm0M3CmcqPtJRvHCagf6VByOoqALYCn6DYTnpLumI=;
-        b=BvCcjRuitUc+Jbgo0sp3PCdep+zPiLjHHISuCWRbRj5zlagvp1mRDi5h0MkuTvX0//
-         kKFmWQ84wtQUvVFX7M4QQpgxJ8rFy4t+zIfZk3S6KuKig1e9Rv9NFUfX0McHjF0scydJ
-         LL1qIK01pmxD2GLJOi+LuF3xy+NJOI3IQ5LUTpb44+zeKcv8z54CH0STHOGFzUXfBAMS
-         TAq+ZWy6N164kUht9XRqx+J1c3iTspPw5VqXXl2gajHwj538dfYf0cEmYjWTqLRtOehu
-         89KfbYiyM4ZLFNX7XgOMClOoY+pgxGHsk+QeanDljYRohIPxXvnng7wisUlrJlDutl7h
-         W1lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708009387; x=1708614187;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QFQm0M3CmcqPtJRvHCagf6VByOoqALYCn6DYTnpLumI=;
-        b=HASV/s+Z68fvuRqcHpJGBe3g3uKGFAth4Z7MMIIUpwveseVq2Y3kYOJk1nJB9URBBd
-         7FPjVjMNc9kh8l4eSJ22XXCJyNVX2SQLyvz79zd5lEBk16urR4fSScW1mxVCLAGgHUyY
-         W+zCvy9OfVUI9hmPuHUXiC6fwfShYekILU8lMiy/IsnFvxypat03nnjg72dHRLkZtTms
-         YRmYIsc3kUOTFmdPm3dnwyzGqdHd6AeF3TgApM69tCTwk26ka9qyi/t1slanWQjrn1ll
-         WRg/R5GqTe+9TlPeJXjh1xJKcbtAVxooGQpK9sPMslAKyCFBgfUTiVmQMnHOLqluDdm0
-         dxkg==
-X-Forwarded-Encrypted: i=1; AJvYcCURVVEl1BFPiRkdDnVRFvssXZiK5SGv/4V+29SAW3HI41+3e/ygPwNXYrRx9IPmOPJFF7ni2qRlSnSvHQBw+96Ksy6vxNg83nVMiQNJ
-X-Gm-Message-State: AOJu0YxleqzJoZpI08x6f4IcH9w9tWrbnZglYYjNEwaZTIxIbMJvtGIV
-	IRl6Kb9aKrUR5I8Q1krOt+tCE4kGbwvaYvyvCxiIXWQ4PTCKe9RUji3PLclHUtQnPynfNeW6gk7
-	nsvCrlJGa4wlsHV4Y1f+ccJi5j7b1O3EpEr7M
-X-Google-Smtp-Source: AGHT+IFDJqcQ/zvtSSzS7L8oaKPQoNT7OfyWLmtX0/ZWHRG8kJBAwvm75pg5JW6QaleHBtWyvIXsCWPJtgsfjWAGRcM=
-X-Received: by 2002:a5b:692:0:b0:dc7:4935:a889 with SMTP id
- j18-20020a5b0692000000b00dc74935a889mr1745565ybq.50.1708009385102; Thu, 15
- Feb 2024 07:03:05 -0800 (PST)
+	s=arc-20240116; t=1708009283; c=relaxed/simple;
+	bh=idPar8TnYrcn1/ehunJjNHy7HB5Glf8ubsjkXlG3MF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Q7GVdUPhoW1MZ3jxQayIwDJnuCy3VtlaOaOvhhxuAPnfqMeP00mq58Ln5pZT9PpOO6CYmBOYP2ZG7tb32kaA8C1yrMrfVGXOM2Q1yP8XNSKJyA9EYdzvx04xfYMKh08Y0F+AyETv/7IJ0lB1mxD0P6hmVg30N05C68nYd22mJHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9CB4C433F1;
+	Thu, 15 Feb 2024 15:01:20 +0000 (UTC)
+Date: Thu, 15 Feb 2024 10:02:54 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 21/36] function_graph: Add selftest for passing local
+ variables
+Message-ID: <20240215100254.2891c5da@gandalf.local.home>
+In-Reply-To: <170723228217.502590.6615001674278328094.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723228217.502590.6615001674278328094.stgit@devnote2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115181809.885385-1-roberto.sassu@huaweicloud.com>
- <20240115181809.885385-13-roberto.sassu@huaweicloud.com> <305cd1291a73d788c497fe8f78b574d771b8ba41.camel@linux.ibm.com>
- <CAHC9VhQ7DgPJtNTRCYneu_XnpRmuwfPCW+FqVuS=k6U5-F6pJw@mail.gmail.com>
- <05ad625b0f5a0e6c095abee5507801da255b36cd.camel@huaweicloud.com>
- <CAHC9VhR2M_MWHs34kn-WH3Wr0sgT09WKveecy7onkFhUb1-gEg@mail.gmail.com>
- <63afc94126521629bb7656b6e6783d6614ee898a.camel@linux.ibm.com>
- <CAHC9VhQGiSq2LTm7TBvCwDB_NcMe_JjORLbuHVfC4UpJQi_N4g@mail.gmail.com> <6ffcd054ff81d64b92b52baf097ed21f8ea4d870.camel@linux.ibm.com>
-In-Reply-To: <6ffcd054ff81d64b92b52baf097ed21f8ea4d870.camel@linux.ibm.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 15 Feb 2024 10:02:53 -0500
-Message-ID: <CAHC9VhSQCAUDV7_LgvWw-=u2sxixr-=yKkvoOM7LGxmSy0HzYw@mail.gmail.com>
-Subject: Re: [PATCH v9 12/25] security: Introduce file_post_open hook
-To: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, 
-	brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, 
-	kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, 
-	serge@hallyn.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, 
-	dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, 
-	eparis@parisplace.org, casey@schaufler-ca.com, shuah@kernel.org, 
-	mic@digikod.net, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, 
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 3:18=E2=80=AFAM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
-> On Wed, 2024-02-14 at 16:21 -0500, Paul Moore wrote:
-> > I'm not a big fan of sharing topic branches across different subsystem
-> > trees, I'd much rather just agree that one tree or another takes the
-> > patchset and the others plan accordingly.
->
-> Just curious why not?
+On Wed,  7 Feb 2024 00:11:22 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-I don't like the idea of cross-tree dependencies, I realize the term
-"dependency" isn't a great fit for a shared topic branch - no one
-needs to feel the need to explain how pulls and merges work - but it's
-the conceptual idea of there being a dependency across different trees
-that bothers me.  I also tend to dislike the idea that a new feature
-*absolutely* *must* *be* *in* *a* *certain* *release* to the point
-that we need to subvert our normal processes to make it happen.
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> Add boot up selftest that passes variables from a function entry to a
+> function exit, and make sure that they do get passed around.
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v2:
+>   - Add reserved size test.
+>   - Use pr_*() instead of printk(KERN_*).
+> ---
+>  kernel/trace/trace_selftest.c |  169 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index f0758afa2f7d..4d86cd4c8c8c 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -756,6 +756,173 @@ trace_selftest_startup_function(struct tracer *trace, struct trace_array *tr)
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE
+> +
+> +#define BYTE_NUMBER 123
+> +#define SHORT_NUMBER 12345
+> +#define WORD_NUMBER 1234567890
+> +#define LONG_NUMBER 1234567890123456789LL
+> +
+> +static int fgraph_store_size __initdata;
+> +static const char *fgraph_store_type_name __initdata;
+> +static char *fgraph_error_str __initdata;
+> +static char fgraph_error_str_buf[128] __initdata;
+> +
+> +static __init int store_entry(struct ftrace_graph_ent *trace,
+> +			      struct fgraph_ops *gops)
+> +{
+> +	const char *type = fgraph_store_type_name;
+> +	int size = fgraph_store_size;
+> +	void *p;
+> +
+> +	p = fgraph_reserve_data(gops->idx, size);
+> +	if (!p) {
+> +		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
+> +			 "Failed to reserve %s\n", type);
+> +		fgraph_error_str = fgraph_error_str_buf;
+> +		return 0;
+> +	}
+> +
+> +	switch (fgraph_store_size) {
+> +	case 1:
+> +		*(char *)p = BYTE_NUMBER;
+> +		break;
+> +	case 2:
+> +		*(short *)p = SHORT_NUMBER;
+> +		break;
+> +	case 4:
+> +		*(int *)p = WORD_NUMBER;
+> +		break;
+> +	case 8:
+> +		*(long long *)p = LONG_NUMBER;
+> +		break;
+> +	}
+> +
 
-Further, I believe that shared topic branches also discourages
-cooperation and collaboration.  With a topic branch, anyone who wants
-to build on top of it simply merges the topic branch and off they go;
-without a shared topic branch there needs to be a discussion about
-which other patches are affected, which trees are involved, who is
-going to carry the patches, when are they going up to Linus, etc.  As
-someone who feels strongly that we need more collaboration across
-kernel subsystems, I'm always going to pick the option that involves
-developers talking with other developers outside their immediate
-subsystem.
+What would be an interesting test is to run all versions together. That is,
+to attach a callback that stores a byte, a callback that stores a short, a
+callback that stores a word and a callback that stores a long, and attach
+them all to the same function.
 
-Hopefully that makes sense.
+I guess we can add that as a separate patch.
 
-> > Based on our previous
-> > discussions I was under the impression that you wanted me to merge
-> > this patchset into lsm/dev, but it looks like that is no longer the
-> > case - which is okay by me.
->
-> Paul, I don't recall saying that.  Please go ahead and upstream it.  Robe=
-rto can
-> add my acks accordingly.
+-- Steve
 
-I believe it was during an off-list chat when we were discussing an
-earlier revision of the patchset, however, as I said earlier I'm not
-bothered by who merges the patches, as long as they eventually end up
-in Linus' tree I'm happy :)  I *really* want to stress that last bit,
-if you and Roberto have stuff queued for the IMA/EVM tree that depends
-on this patchset, please go ahead and merge it; you've got my ACKs on
-the patches that need them, and I believe I've reviewed most of the
-other patches that don't require my ACK.  While there are a some LSM
-related patches that would sit on top of this patchset, there is
-nothing that is so critical that it must go in now.
 
-If I don't hear anything back from you, I'll go ahead and merge these
-into lsm/dev later tonight (probably in about ~12 hours from this
-email as I have some personal commitments early this evening) just so
-we can get them into linux-next as soon as possible.
-
---=20
-paul-moore.com
+> +	return 1;
+> +}
+> +
 
