@@ -1,95 +1,118 @@
-Return-Path: <linux-kernel+bounces-67185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EDF58567B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:32:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5D58567D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F050E1F29ACD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:32:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 196A02844B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3CD1350D0;
-	Thu, 15 Feb 2024 15:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XaXK9VJD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923E5136997;
+	Thu, 15 Feb 2024 15:30:58 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EDF134CFC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9E8136995;
+	Thu, 15 Feb 2024 15:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011038; cv=none; b=bzS7mdHHufibRlavLs60bzAsUbghs3WSxp8Uc9wYmEgsGevwT9FjKOuPulnXL1KHoocvfe2qdsDF3VXOlc6mgx1ab+AHTV9NOoaGeIh6fM/652qSRkZ3AwuBF8ftA75X36esxvm1CgJDRCMq6ww+BTOlUuZPI/3jRpz+kvhuiC8=
+	t=1708011058; cv=none; b=nw8FN7YBtnPoI4BNWgDecZEA1N3TBryJ0LnKrnd9nIxgCrFMNQciKf+WaptbeL3jAuLAJfSh/1yzVwQZ8b0NBScJUiD3+6G6l3c1WCIOiKgT5Ahbv6NdIelCvEnrWFbdrgVSeQaF2GA5xnyHw7DT9O746NZsAKYLdm9YTLkvVGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011038; c=relaxed/simple;
-	bh=DbE0ieED+HtfD8QG3lqb3hQnxTvX/FWkbK6tlbU4Buc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ZLvZT5LdSwlJBwtQwO5XFluWuo1s7JR5CITLA7Lko69Qp1gZzCUIFciwVOwIUjmx83feT3OReKWl5g4+YR+IYuhXv1fkqrAUOyoso7RkmBJpO2o+iiUZzAcFhi/GGZQ1GhlZqvXC8GJBtfKU/XbZy8uLFM0XAE4SNtwv+me0eIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XaXK9VJD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6088FC43399;
-	Thu, 15 Feb 2024 15:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708011038;
-	bh=DbE0ieED+HtfD8QG3lqb3hQnxTvX/FWkbK6tlbU4Buc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XaXK9VJDPssYLaTCCqex2Bm6lc8B0zXIRpnh+Xtl3AjJOtK/HRTSiswDcy4v6REiI
-	 cDIzDRg1ZGumA5yXad94yDVJAywjBZp96KBNAV536cTvbLGTxmCdSJu1Jvx6DSeM6d
-	 U97E/f+2GTWF6C0que44obmKt/Q6qJBRDstBS2faKzhBviV90PasMzMa1WCdb3x5e0
-	 ahgnJqha53UfuIt3CB6JqZ307QMaMA/xDBcgQkbAzIjQI8KdxTWnDP7PxxmnqlMIc0
-	 gP7wsUq58qLxEt/8AO9cIlFIdlGG7XaiU6KKiiqkgzhnS/Ii9vOOFcMhn3muPHy4go
-	 liXZEvJioj2Vg==
-From: Mark Brown <broonie@kernel.org>
-To: J Keerthy <j-keerthy@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <5e8781d31c983caf6bdabe36c5552077422cb8da.1708002575.git.geert+renesas@glider.be>
-References: <5e8781d31c983caf6bdabe36c5552077422cb8da.1708002575.git.geert+renesas@glider.be>
-Subject: Re: [PATCH v2] regulator: lp87565: Use bitfield helpers
-Message-Id: <170801103713.74704.11455835771424834467.b4-ty@kernel.org>
-Date: Thu, 15 Feb 2024 15:30:37 +0000
+	s=arc-20240116; t=1708011058; c=relaxed/simple;
+	bh=B0r36ErVVXrTrtr7W/g+NKVHw+xBL+tNCmApTVuv35A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZIf1jHJKbRXij+w/SF3xU3zYB5RK7En4+i+4cs65QG/bRVR3pOR0wHhxs0vblOQK0B9s7ov4TvMGZP7y3erJE1zWzJ10SKuAV0NOjNTjhxVMw558iUJgNRQZI43zo3eIi9KxIWib+/qhguiKlIod2p/8zJU17wzgJfL10/YrSLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2229489"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="2229489"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:30:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912180958"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="912180958"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:30:49 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1radhF-00000004pR2-0Whi;
+	Thu, 15 Feb 2024 17:30:45 +0200
+Date: Thu, 15 Feb 2024 17:30:44 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v3 04/18] i2c: omap: wakeup the controller during
+ suspend() callback
+Message-ID: <Zc4uJBUuBzpNgxDP@smile.fi.intel.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-4-5c2e4a3fac1f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102-j7200-pcie-s2r-v3-4-5c2e4a3fac1f@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, 15 Feb 2024 14:10:50 +0100, Geert Uytterhoeven wrote:
-> Use the FIELD_PREP() helper, instead open-coding the same operation.
+On Thu, Feb 15, 2024 at 04:17:49PM +0100, Thomas Richard wrote:
+> A device may need the controller up during suspend_noirq() or
+> resume_noirq().
+> But if the controller is autosuspended, there is no way to wakeup it during
+> suspend_noirq() or resume_noirq() because runtime pm is disabled at this
+> time.
 > 
+> The suspend() callback wakes up the controller, so it is available until
+> its suspend_noirq() callback (pm_runtime_force_suspend()).
+> During the resume, it's restored by resume_noirq() callback
+> (pm_runtime_force_resume()). Then resume() callback enables autosuspend.
 > 
+> So the controller is up during a little time slot in suspend and resume
+> sequences even if it's not used.
 
-Applied to
+..
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+> +	/*
+> +	 * If the controller is autosuspended, there is no way to wakeup it once
+> +	 * runtime pm is disabled (in suspend_late()).
+> +	 * But a device may need the controller up during suspend_noirq() or
+> +	 * resume_noirq().
+> +	 * Wakeup the controller while runtime pm is enabled, so it is available until
+> +	 * its suspend_noirq(), and from resume_noirq().
+> +	 */
 
-Thanks!
+It's a bit random line lengths...
+Can you repack this to be more condensed?
 
-[1/1] regulator: lp87565: Use bitfield helpers
-      commit: 5319aaa9bb121b4a4fddabf207eae9c57dc62e19
+-- 
+With Best Regards,
+Andy Shevchenko
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
 
