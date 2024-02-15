@@ -1,351 +1,151 @@
-Return-Path: <linux-kernel+bounces-67637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2EC856E58
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:11:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322BB856E59
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A15F6B21B07
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:11:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46411F237B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E8313AA49;
-	Thu, 15 Feb 2024 20:10:54 +0000 (UTC)
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6ACE13AA39;
+	Thu, 15 Feb 2024 20:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CVEBMI2W"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21D241A81;
-	Thu, 15 Feb 2024 20:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D842341A81
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708027853; cv=none; b=YGFZkw/RsnK/PXvvGZ6Jtzt7/BL23h5pElCyILpUTz27GGMDHqeEfC4MUnmW3oWRVZ7BlQDw96F5Fm2LE8T0Xn2SOfaRg0Z5eDhjeavdrHZqpRp4N+ceAl75PaDcPb2kH1gg1ls6+x06+/iHWWxahuAJmq/1myyOaq7ZdatwKgE=
+	t=1708027860; cv=none; b=FzjCwLHOhaLVcF/FhPOSNLLe/cS1tuNPTQv7WuT5JNQcckCOqfODcEDvHBoUI5MdNfCXywWfQVVfNkxzEQRPgtDAAxrEaLCRDfZO3XrtNmLjckMRWuSbUluyK6W1+T5PbRnlTC806SK1UFIwzrscGsBR9XYexYqwZIjAyMQv9ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708027853; c=relaxed/simple;
-	bh=KWacMN9bKt8TXc2E1qM1MQU5P2gj1Hsam/+L01L4dKc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TykVS5OdMk5BbnOKWlkH8tz6sZ8dQlTo8yB+EIzNTEWRphLtucsHyWnDM1qTxuOboP+atylSAaJlikSuAPCsWS2UeEAezgZdv0EieRWBT5Dmhpq0cGHPD4lZAGzMVzwn+5yNXcCijn2/09/00TJATWk6STqYrVPivWcPuNm1VV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1708027860; c=relaxed/simple;
+	bh=L1miiKpB/+MLq5mIW3X4o0VGLTONgRex6fAxxjHMNRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nqzg+rZ678M5iQ/drw8Q8fyY0YSvjagCEUa6sfopDU2XpO/jUqAC3r67cfmAsajb7qb2Zb2mVEdm70n6YOu5O8Agl9uP7yXtHbj6gyl60ZG7O5OrM/VpQW2ahpDaK3qKN6U+uiprWKyxYQ/KCUqnz+OTg1dtUqLYL0geaIhqRXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CVEBMI2W; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59d8455a001so164702eaf.0;
-        Thu, 15 Feb 2024 12:10:51 -0800 (PST)
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dca1efad59so1180638a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708027858; x=1708632658; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RYLTFvOYvCyE+kba2OweNWpInmcv7a9h94/NURW8+cU=;
+        b=CVEBMI2WEWR5sHcHcjzxK3ZVY/NM4XYV7Tm8MGRywJTY3ZOyhEJJ5VjfUwGlsUrOQn
+         IZW2/RRxH+BAYIRJn3lFS5C7rUfmZqTaaKLV6pJXe/1sCa64QPaf9nL3Nwse0whKxBwS
+         Pwr3WvxPDIsKljoyGpCebJF0OuvBodYD+mmgTuuE09Y3mQ8eTbqwjqzOyFuNdxp4/rOw
+         Eg0/8rVW6hkTNcF8r4n40F0zSx681cByZTOHMjRW8ugn4jbSlHskRM+s9nIryWnqgtuO
+         hgmCHaWzRQ/do7C8ElGTrDWio0hoDol6vfRIjbitd+mMrlFsrkZZIddCSrGyab7QIpxY
+         7Hwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708027851; x=1708632651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V5QgqQoXz8wizig56vqi0Oac+indEXSPpBlHYNqWGu8=;
-        b=UY3NiuWZk29xW0BRkoQ44vxNCLg/rvszwHUxKby9x63trdrYtydkVvUY1/tZntEDm1
-         MQoWWHZJFbAWEsH8XINTXww38aHxyvyFovq2Y6gwvXmrRZXLdE+71HKA3iix+/cSpkxt
-         k8S6HA1Yt3HlSM0WHdWYwihrK4Ac+1w9Kv4ZJWHiDSrfuLx3XwvpEN+m/We5q1wkDaAv
-         BeoHX7sq5EU1ShxYwk6TBwjNKI5e1F9C86J5/i+TC9rz7ispJxKSzkcpWaQJ8njBm+Xv
-         Y6eV2+dcM9acxfVhvu5MvlLvxShPy1k5R6QJwauZTXiCqPB8EIZRz/TrGx2l6oTCbbUe
-         yZ3w==
-X-Forwarded-Encrypted: i=1; AJvYcCUqeQiV2wpLNTEY3QFABvo47g6vaDGT2Fu9HcTyuuNs+lkHq+HBeGjbqKGUdplB6kRXRBYAENgPLYfbS4vudJHiY/O1R/VtN0EzdZV7XYmrfTfqiiA/zVPzr+p3Sw1kXJDVZO2mLntUR2VjE33rpqAW9E47tEwDsbC5Sp3FcjgZPgGo7oLJCqiVekl6Y2dXcDq7cBC6xMfpKvKt6FDeCQT+gdJSvzQRFO2DN5jtpCmO88UdcH/t111L/N8qO7v3RLEOhoHiTnIkiRakaYhni1YRfJSFrWaL9LWsI9SMNLE2hrHSfQ0adbOZMxJg5NYW6L7OioLQCw==
-X-Gm-Message-State: AOJu0YyIV4HBAGGNY9mQelxNqloQxUZ+6Ov8iWHXXclIA0UUe6wn9L34
-	nfSeVrmGC0vCvBzY/jm9V8TsnNu/1vbjDv3hOwaX1Jkzgrgq/qCJbtblKnVg6AshSS3D6dwOV78
-	6wtCkQ9+gZJvkDti+z0QG1B8Au5g=
-X-Google-Smtp-Source: AGHT+IHkVX1K8sj+CkxR6/GyZWC/g8VGhJA3m1sRCcpy+7lmARmO8dgH6PnptuwtNDNHiVSlDhhEi0CLuZvIHBcTUt0=
-X-Received: by 2002:a05:6820:134d:b0:59f:881f:9318 with SMTP id
- b13-20020a056820134d00b0059f881f9318mr3192843oow.0.1708027850728; Thu, 15 Feb
- 2024 12:10:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708027858; x=1708632658;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RYLTFvOYvCyE+kba2OweNWpInmcv7a9h94/NURW8+cU=;
+        b=tY+utRvWO2Qysi0KyIiqflWyfzQjNWzxYMBTHe4hGWT9MoexPcsxhQ+WpmrJfPfHpy
+         T6zchKKPIHT6wIitfI74Q7+s0hKEWRPhOWmorrzw2YDr71CQEc96c+W50Y3u5yIp4I1m
+         Rx2XJ67c7NmzXtC0UGFnkl8OKxxxbyL4YqUfmorPwRMeJrY5ndTPPhcMWJiQoQdaE7Wo
+         vSWez4MkRz+O015wqnu3CUG/ZK6+tM1Ju/ipiraWDAeAHiaKfXu//gaNsRV8en3JyHm0
+         yahYe8HL4zNnBkTPg5Fl1hoZ7zOte/VL/p1YEjz2JM1bPRr99+r9zDR+36zcvRIjbCKR
+         mHBQ==
+X-Gm-Message-State: AOJu0YxvQ2tw8O8efhXXOvk1X6RLZctzGm3Sb98HJtF+Z2Pg3s/1v6+4
+	mHH7/QgfsqxBsSIwYl1eMgvYgU8OYuYgxA+2sxULHMzs2hwHQdvHMHQrHTqB
+X-Google-Smtp-Source: AGHT+IF/f1VEogR6Uy8rp0FVSURwgFmslmsw9/F+c36lGr0fuaLy2YqoQeWhc9ydqLeBf6xnhL/51Q==
+X-Received: by 2002:a17:90b:2398:b0:299:3174:74df with SMTP id mr24-20020a17090b239800b00299317474dfmr203778pjb.20.1708027857570;
+        Thu, 15 Feb 2024 12:10:57 -0800 (PST)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:3772:8174:2d71:3b60])
+        by smtp.gmail.com with ESMTPSA id st13-20020a17090b1fcd00b00298ca3a93f1sm3842499pjb.4.2024.02.15.12.10.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 12:10:57 -0800 (PST)
+From: Daeho Jeong <daeho43@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs_io: add lseek command to execute lseek()
+Date: Thu, 15 Feb 2024 12:10:53 -0800
+Message-ID: <20240215201053.2364270-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmP-0027YJ-EW@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1rVDmP-0027YJ-EW@rmk-PC.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 15 Feb 2024 21:10:39 +0100
-Message-ID: <CAJZ5v0hY_LXp41WMVPhiLosPe7YVzF38Uz=EhmJqVwqFn==Upw@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 01/15] ACPI: Only enumerate enabled (or functional)
- processor devices
-To: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024 at 5:49=E2=80=AFPM Russell King <rmk+kernel@armlinux.o=
-rg.uk> wrote:
->
-> From: James Morse <james.morse@arm.com>
->
-> Today the ACPI enumeration code 'visits' all devices that are present.
->
-> This is a problem for arm64, where CPUs are always present, but not
-> always enabled. When a device-check occurs because the firmware-policy
-> has changed and a CPU is now enabled, the following error occurs:
-> | acpi ACPI0007:48: Enumeration failure
->
-> This is ultimately because acpi_dev_ready_for_enumeration() returns
-> true for a device that is not enabled. The ACPI Processor driver
-> will not register such CPUs as they are not 'decoding their resources'.
->
-> ACPI allows a device to be functional instead of maintaining the
-> present and enabled bit, but we can't simply check the enabled bit
-> for all devices since firmware can be buggy.
->
-> If ACPI indicates that the device is present and enabled, then all well
-> and good, we can enumate it. However, if the device is present and not
-> enabled, then we also check whether the device is a processor device
-> to limit the impact of this new check to just processor devices.
->
-> This avoids enumerating present && functional processor devices that
-> are not enabled.
->
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Co-developed-by: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
-> Changes since RFC v2:
->  * Incorporate comment suggestion by Gavin Shan.
-> Changes since RFC v3:
->  * Fixed "sert" typo.
-> Changes since RFC v3 (smaller series):
->  * Restrict checking the enabled bit to processor devices, update
->    commit comments.
->  * Use Rafael's suggestion in
->    https://lore.kernel.org/r/5760569.DvuYhMxLoT@kreacher
->  * Updated with a fix - see:
->    https://lore.kernel.org/all/Zbe8WQRASx6D6RaG@shell.armlinux.org.uk/
-> ---
->  drivers/acpi/acpi_processor.c | 11 +++++++++
->  drivers/acpi/device_pm.c      |  2 +-
->  drivers/acpi/device_sysfs.c   |  2 +-
->  drivers/acpi/internal.h       |  4 ++-
->  drivers/acpi/property.c       |  2 +-
->  drivers/acpi/scan.c           | 46 +++++++++++++++++++++++++++--------
->  6 files changed, 53 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 4fe2ef54088c..cf7c1cca69dd 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -626,6 +626,17 @@ static struct acpi_scan_handler processor_handler =
-=3D {
->         },
->  };
->
-> +bool acpi_device_is_processor(const struct acpi_device *adev)
-> +{
-> +       if (adev->device_type =3D=3D ACPI_BUS_TYPE_PROCESSOR)
-> +               return true;
-> +
-> +       if (adev->device_type !=3D ACPI_BUS_TYPE_DEVICE)
-> +               return false;
-> +
-> +       return acpi_scan_check_handler(adev, &processor_handler);
-> +}
-> +
->  static int acpi_processor_container_attach(struct acpi_device *dev,
->                                            const struct acpi_device_id *i=
-d)
->  {
-> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> index 3b4d048c4941..e3c80f3b3b57 100644
-> --- a/drivers/acpi/device_pm.c
-> +++ b/drivers/acpi/device_pm.c
-> @@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
->                 return -EINVAL;
->
->         device->power.state =3D ACPI_STATE_UNKNOWN;
-> -       if (!acpi_device_is_present(device)) {
-> +       if (!acpi_dev_ready_for_enumeration(device)) {
->                 device->flags.initialized =3D false;
->                 return -ENXIO;
->         }
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index 23373faa35ec..a0256d2493a7 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_devi=
-ce *acpi_dev, char *modalia
->         struct acpi_hardware_id *id;
->
->         /* Avoid unnecessarily loading modules for non present devices. *=
-/
-> -       if (!acpi_device_is_present(acpi_dev))
-> +       if (!acpi_dev_ready_for_enumeration(acpi_dev))
->                 return 0;
->
->         /*
-> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> index 6588525c45ef..1bc8b6db60c5 100644
-> --- a/drivers/acpi/internal.h
-> +++ b/drivers/acpi/internal.h
-> @@ -62,6 +62,8 @@ void acpi_sysfs_add_hotplug_profile(struct acpi_hotplug=
-_profile *hotplug,
->  int acpi_scan_add_handler_with_hotplug(struct acpi_scan_handler *handler=
-,
->                                        const char *hotplug_profile_name);
->  void acpi_scan_hotplug_enabled(struct acpi_hotplug_profile *hotplug, boo=
-l val);
-> +bool acpi_scan_check_handler(const struct acpi_device *adev,
-> +                            struct acpi_scan_handler *handler);
->
->  #ifdef CONFIG_DEBUG_FS
->  extern struct dentry *acpi_debugfs_dir;
-> @@ -121,7 +123,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
->  void acpi_device_remove_files(struct acpi_device *dev);
->  void acpi_device_add_finalize(struct acpi_device *device);
->  void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
-> -bool acpi_device_is_present(const struct acpi_device *adev);
->  bool acpi_device_is_battery(struct acpi_device *adev);
->  bool acpi_device_is_first_physical_node(struct acpi_device *adev,
->                                         const struct device *dev);
-> @@ -133,6 +134,7 @@ int acpi_bus_register_early_device(int type);
->  const struct acpi_device *acpi_companion_match(const struct device *dev)=
-;
->  int __acpi_device_uevent_modalias(const struct acpi_device *adev,
->                                   struct kobj_uevent_env *env);
-> +bool acpi_device_is_processor(const struct acpi_device *adev);
->
->  /* ---------------------------------------------------------------------=
------
->                                    Power Resource
-> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> index a6ead5204046..9f8d54038770 100644
-> --- a/drivers/acpi/property.c
-> +++ b/drivers/acpi/property.c
-> @@ -1486,7 +1486,7 @@ static bool acpi_fwnode_device_is_available(const s=
-truct fwnode_handle *fwnode)
->         if (!is_acpi_device_node(fwnode))
->                 return false;
->
-> -       return acpi_device_is_present(to_acpi_device_node(fwnode));
-> +       return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode)=
-);
->  }
->
->  static const void *
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index e6ed1ba91e5c..fd2e8b3a5749 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device =
-*adev)
->         int error;
->
->         acpi_bus_get_status(adev);
-> -       if (acpi_device_is_present(adev)) {
-> +       if (acpi_dev_ready_for_enumeration(adev)) {
->                 /*
->                  * This function is only called for device objects for wh=
-ich
->                  * matching scan handlers exist.  The only situation in w=
-hich
-> @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *ad=
-ev, void *not_used)
->         int error;
->
->         acpi_bus_get_status(adev);
-> -       if (!acpi_device_is_present(adev)) {
-> +       if (!acpi_dev_ready_for_enumeration(adev)) {
->                 acpi_scan_device_not_enumerated(adev);
->                 return 0;
->         }
-> @@ -1917,11 +1917,6 @@ static bool acpi_device_should_be_hidden(acpi_hand=
-le handle)
->         return true;
->  }
->
-> -bool acpi_device_is_present(const struct acpi_device *adev)
-> -{
-> -       return adev->status.present || adev->status.functional;
-> -}
-> -
->  static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler=
-,
->                                        const char *idstr,
->                                        const struct acpi_device_id **matc=
-hid)
-> @@ -1942,6 +1937,18 @@ static bool acpi_scan_handler_matching(struct acpi=
-_scan_handler *handler,
->         return false;
->  }
->
-> +bool acpi_scan_check_handler(const struct acpi_device *adev,
-> +                            struct acpi_scan_handler *handler)
-> +{
-> +       struct acpi_hardware_id *hwid;
-> +
-> +       list_for_each_entry(hwid, &adev->pnp.ids, list)
-> +               if (acpi_scan_handler_matching(handler, hwid->id, NULL))
-> +                       return true;
-> +
-> +       return false;
-> +}
-> +
->  static struct acpi_scan_handler *acpi_scan_match_handler(const char *ids=
-tr,
->                                         const struct acpi_device_id **mat=
-chid)
->  {
-> @@ -2405,16 +2412,35 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
->   * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready fo=
-r enumeration
->   * @device: Pointer to the &struct acpi_device to check
->   *
-> - * Check if the device is present and has no unmet dependencies.
-> + * Check if the device is functional or enabled and has no unmet depende=
-ncies.
->   *
-> - * Return true if the device is ready for enumeratino. Otherwise, return=
- false.
-> + * Return true if the device is ready for enumeration. Otherwise, return=
- false.
->   */
->  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
->  {
->         if (device->flags.honor_deps && device->dep_unmet)
->                 return false;
->
-> -       return acpi_device_is_present(device);
-> +       /*
-> +        * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to ret=
-urn
-> +        * (!present && functional) for certain types of devices that sho=
-uld be
-> +        * enumerated. Note that the enabled bit should not be set unless=
- the
-> +        * present bit is set.
-> +        *
-> +        * However, limit this only to processor devices to reduce possib=
-le
-> +        * regressions with firmware.
-> +        */
-> +       if (!device->status.present)
-> +               return device->status.functional;
-> +
-> +       /*
-> +        * Fast path - if enabled is set, avoid the more expensive test t=
-o
-> +        * check whether this device is a processor.
-> +        */
-> +       if (device->status.enabled)
-> +               return true;
-> +
-> +       return !acpi_device_is_processor(device);
->  }
->  EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
->
-> --
+From: Daeho Jeong <daehojeong@google.com>
 
-I can queue this up for 6.9 as it looks like the rest of the series
-will still need some work.  What do you think?
+Added lseek command to support lseek() for SEEK_DATA and SEEK_HOLE.
+
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ tools/f2fs_io/f2fs_io.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
+index e7d286a..b5c5b97 100644
+--- a/tools/f2fs_io/f2fs_io.c
++++ b/tools/f2fs_io/f2fs_io.c
+@@ -1630,6 +1630,43 @@ static void do_removexattr(int argc, char **argv, const struct cmd_desc *cmd)
+ 	exit(0);
+ }
+ 
++#define lseek_desc "do lseek for SEEK_DATA or SEEK_HOLE for a file"
++#define lseek_help					\
++"f2fs_io lseek [whence] [offset] [file_path]\n\n"	\
++"Do lseek file data in file_path\n"			\
++"whence can be\n"					\
++"  data     : SEEK_DATA, return the file offset to the next data location from offset\n"\
++"  hole     : SEEK_HOLE, return the file offset to the next hole from offset\n"
++
++static void do_lseek(int argc, char **argv, const struct cmd_desc *cmd)
++{
++	int fd, whence;
++	off_t offset, ret;
++
++	if (argc != 4) {
++		fputs("Excess arguments\n\n", stderr);
++		fputs(cmd->cmd_help, stderr);
++		exit(1);
++	}
++
++	offset = atoi(argv[2]);
++
++	if (!strcmp(argv[1], "data"))
++		whence = SEEK_DATA;
++	else if (!strcmp(argv[1], "hole"))
++		whence = SEEK_HOLE;
++	else
++		die("Wrong whence type");
++
++	fd = xopen(argv[3], O_RDONLY, 0);
++
++	ret = lseek(fd, offset, whence);
++	if (ret < 0)
++		die_errno("lseek failed");
++	printf("returned offset=%ld\n", ret);
++	exit(0);
++}
++
+ #define CMD_HIDDEN 	0x0001
+ #define CMD(name) { #name, do_##name, name##_desc, name##_help, 0 }
+ #define _CMD(name) { #name, do_##name, NULL, NULL, CMD_HIDDEN }
+@@ -1671,6 +1708,7 @@ const struct cmd_desc cmd_list[] = {
+ 	CMD(listxattr),
+ 	CMD(setxattr),
+ 	CMD(removexattr),
++	CMD(lseek),
+ 	{ NULL, NULL, NULL, NULL, 0 }
+ };
+ 
+-- 
+2.43.0.687.g38aa6559b0-goog
+
 
