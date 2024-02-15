@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-66418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA2F855C7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:30:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07D62855CD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8DCFB24065
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:30:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2D21B2FFD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20B912B9C;
-	Thu, 15 Feb 2024 08:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26129134CA;
+	Thu, 15 Feb 2024 08:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fN3IDMiz"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ImEJ3zz0"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D17BA2D
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950B312B7C;
+	Thu, 15 Feb 2024 08:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707985839; cv=none; b=YU4K+WX1s8LA9ufgzQr3nhLTeR4KRtKG7q3LM8cGdGrazQooQxAJrw1Zsia5KG6jHsPqRGda9w2QQJIdfBYTPbhPV8XQyMuYSIZUXqnwT/dm1jbU7o7Chapk7YXng8VSpP5bjFxVbT7kwX0lh3OEN/vJgOP/boGZ6XQd9HIJjwY=
+	t=1707986149; cv=none; b=Pe34JytdlXjYAa59i5m+SzjiQMjAMpVH5FqG0/w1L+d6IfAkKTQDe3UWxqDSvS3ujYPCzbEehvw/ED16EfwUrc17MF82A/c0qfoc1l8z6XxQJKVDAqfdAcjZL8uVg9f72i1LrkPTb/ih1l+lrj/9cd8Dj9fj2fQAWX9kEMfQ9LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707985839; c=relaxed/simple;
-	bh=1FErbeV7rDxJ3T33wNluzYc7xE7Yp3tChjafe08OaDw=;
+	s=arc-20240116; t=1707986149; c=relaxed/simple;
+	bh=FhFRsdnjiIq6sjb+TJlazH/LxV6WTSCnRl8GCpI2gTg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u1mshGc/ncPMsPXt2U3VTAUL9S/6my5oh/MXn+OGtdF5Gc2WtMpP0vsJ5Ua1bhyyh/Q7CxuPdBzv/uImxxRAjI7NiUQk2cB1zxUg5Y0NK5HrlRFowKf81rBX8mcaY0RgYzwUHASqssELZIY2cBWp4Vc6kJ2d5jKEdFtoCZAD1iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fN3IDMiz; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d208be133bso4243021fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:30:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1707985834; x=1708590634; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u01OPchu6bUpfA6vVMG2NSsakOHo3YJiJaGyU+KJbK0=;
-        b=fN3IDMizYF902kkXyJMzp+aNdOWJr2972TOkLKFdjuNTjY5bNHqFqEkakHrc+LwCM6
-         N5t/Wf49u3wCQeSnr2w6XIunCAKRH7S2QlC9MfFBsIQXlAb1PXSUlsZ1P4h08xlrMrui
-         CiqUoD4WxzWpt20uPHsaQN7knopOZ+KDX6R5Vi5ihmBbVbDYkoFFcaTdJIHWHxdfudq+
-         L0bCV5/j5Y8dDQjaaC4y6Kuw/9Xx7o3oxIVeva4CDmxelU0jpEJEUilECI2AxLwYbdb7
-         8G6L8J0nRzNgye9yA0JXupjLfR+8kUW537Nrv9RBSibqTkJfHI1DIWcs02xtPbVhJXbB
-         zx1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707985834; x=1708590634;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u01OPchu6bUpfA6vVMG2NSsakOHo3YJiJaGyU+KJbK0=;
-        b=nstrfqbBmJJRTSmw3Kplj7wfrv6odbJWdKWV0YS9poMWEjkOKQONjucSU2c9Jt1E4E
-         ec6FTka8ZF0YHfEbuwMKJGIdk+syWPmvIjy3rMtDql2yVWXmZ8whFjWH8ZMUaFTqKcdq
-         qjUY3vRfslfNyUhzwR75zOcBofGzv783a6WWmZp62qqzAyhZnfSwseUX27l0AWgSoM9x
-         1msnHVDqHI+CFYaz26mx9qJuYJuJZiKqEB6pUsdOg4BpBIJUdujg0Y6+lpW7p09XydGr
-         7AzDJkcQPzvxC0KfT7MP+7GdJMWapoLqPSFdykog4Ob1aDXcLWujzHQSggw+GhsYUcQn
-         2TDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUsHwmcan9TuXvv0U8sNNbcD9Sg9rE7w2HcF+qakJZXRxY0NAiBy9wyW82AzWdcjm0VlKysSr2aPj2cbf/ZWjRXr9R98A+2eMVFzWlm
-X-Gm-Message-State: AOJu0Yz6oCt3DBZRRjRmEdF/vs4ycJ6GbnJeFB994HiHrzYDMr8eabzk
-	shkSDdEaIFEX8JkxJfnPXOE5MDcQT1yop7+23XaywNw+ZSpqrmWEiGCjTZqoSzo=
-X-Google-Smtp-Source: AGHT+IFI5uSgyr8F2pW+SOMbZvcJtu+xeGNnJO3cQtbYYUlBCoRjc8aOpVcvhcr3QwyGP0kUS/WNoQ==
-X-Received: by 2002:a05:651c:198d:b0:2d0:b464:a9b1 with SMTP id bx13-20020a05651c198d00b002d0b464a9b1mr978863ljb.4.1707985833711;
-        Thu, 15 Feb 2024 00:30:33 -0800 (PST)
-Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [85.187.217.136])
-        by smtp.gmail.com with ESMTPSA id w22-20020a2e3016000000b002d07edd950fsm178610ljw.121.2024.02.15.00.30.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 00:30:33 -0800 (PST)
-Message-ID: <897ae219-d443-4154-86c2-a280fac93565@suse.com>
-Date: Thu, 15 Feb 2024 10:30:31 +0200
+	 In-Reply-To:Content-Type; b=OKnqgLA5un6rBtTaRIkAM4pRxDgrRereLOdTNYOlOgCSGmBT0qB9292bfznFuS4jyTPre/wFBm9+kPMhooL+PZpA5xLtU7VezPv4nsfFo/x64UJOddX72ySxbiAi4j4Z+2FQOnMlG4wfa8EsNEWF+QH1Sjtm3lITDB5xHcqaZ0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ImEJ3zz0; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41F7X8ES008393;
+	Thu, 15 Feb 2024 08:35:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8vUYrjsku4Wxx92le0TgU8L8Gm2U7l/97SGNJHzGThY=;
+ b=ImEJ3zz0udDpnz/XprPjZctP5Ik0OSGdAE1JxQK58tfXcKv4hTvbM6KMZmRCM/6Dduv2
+ jDjz+oPvnrZBDkNOQnSpctDTV1FkTlZt/A1O6i0bdrCsQ/2pTu5eUNDf0j/7G4xdLpJr
+ 2w3cCeDwMk3jB8RM9dx2sBI0QZX8WAzkTu0MQflui19FpedGZi+Y8kepB2echMMZsDSz
+ BKLZ676ddhpcJmFz7Zs4bsRn11WTe6NQkx5OiExXX9vbvhmCi24ZdrWzVsl0XuMD0q9P
+ JpA1E2kffSp5/j15GoJI93sqbYyaw5Fj3yfubQfRg+Ibvco38Dp7m7YN+bYoeUteg3er Lw== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9eapsj4d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 08:35:46 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41F6NdPK009896;
+	Thu, 15 Feb 2024 08:30:45 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npm34wj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 08:30:45 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41F8Udrw36700636
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 08:30:41 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5C5C2004E;
+	Thu, 15 Feb 2024 08:30:39 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 987DB20063;
+	Thu, 15 Feb 2024 08:30:39 +0000 (GMT)
+Received: from [9.155.206.240] (unknown [9.155.206.240])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Feb 2024 08:30:39 +0000 (GMT)
+Message-ID: <9b93b9c0-4b0f-4654-b9e6-4fc045cb6817@linux.ibm.com>
+Date: Thu, 15 Feb 2024 09:30:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,74 +75,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
- used at runtime
+Subject: Re: [PATCH] net/iucv: fix the allocation size of iucv_path_table
+ array
 Content-Language: en-US
-To: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org
-Cc: linux-tip-commits@vger.kernel.org, Josh Poimboeuf <jpoimboe@kernel.org>,
- "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
-References: <20231010171020.462211-4-david.kaplan@amd.com>
- <170774721951.398.8999401565129728535.tip-bot2@tip-bot2>
- <20240215032049.GA3944823@dev-arch.thelio-3990X>
-From: Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20240215032049.GA3944823@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thorsten Winkler <twinkler@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20240214163240.2537189-1-agordeev@linux.ibm.com>
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20240214163240.2537189-1-agordeev@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CNnHr_4rpEWXkhzxgecqzKTJh15Axrt7
+X-Proofpoint-ORIG-GUID: CNnHr_4rpEWXkhzxgecqzKTJh15Axrt7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_08,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=925 clxscore=1015
+ malwarescore=0 priorityscore=1501 phishscore=0 adultscore=0 spamscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402150066
 
 
 
-On 15.02.24 г. 5:20 ч., Nathan Chancellor wrote:
-> On Mon, Feb 12, 2024 at 02:13:39PM -0000, tip-bot2 for Josh Poimboeuf wrote:
->> The following commit has been merged into the x86/bugs branch of tip:
->>
->> Commit-ID:     4461438a8405e800f90e0e40409e5f3d07eed381
->> Gitweb:        https://git.kernel.org/tip/4461438a8405e800f90e0e40409e5f3d07eed381
->> Author:        Josh Poimboeuf <jpoimboe@kernel.org>
->> AuthorDate:    Wed, 03 Jan 2024 19:36:26 +01:00
->> Committer:     Borislav Petkov (AMD) <bp@alien8.de>
->> CommitterDate: Mon, 12 Feb 2024 11:42:15 +01:00
->>
->> x86/retpoline: Ensure default return thunk isn't used at runtime
->>
->> Make sure the default return thunk is not used after all return
->> instructions have been patched by the alternatives because the default
->> return thunk is insufficient when it comes to mitigating Retbleed or
->> SRSO.
->>
->> Fix based on an earlier version by David Kaplan <david.kaplan@amd.com>.
->>
->>    [ bp: Fix the compilation error of warn_thunk_thunk being an invisible
->>          symbol, hoist thunk macro into calling.h ]
->>
->> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
->> Co-developed-by: Borislav Petkov (AMD) <bp@alien8.de>
->> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
->> Link: https://lore.kernel.org/r/20231010171020.462211-4-david.kaplan@amd.com
->> Link: https://lore.kernel.org/r/20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local
+On 14.02.24 17:32, Alexander Gordeev wrote:
+> iucv_path_table is a dynamically allocated array of pointers to
+> struct iucv_path items. Yet, its size is calculated as if it was
+> an array of struct iucv_path items.
 > 
-> This warning is now getting triggered for me in some of my builds,
-> specifically from Alpine Linux's configuration. A minimal reproducer on
-> top of defconfig:
+> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> ---
+>  net/iucv/iucv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> $ echo 'CONFIG_X86_KERNEL_IBT=n
-> CONFIG_UNWINDER_ORC=n
-> CONFIG_UNWINDER_FRAME_POINTER=y' >arch/x86/configs/repro.config
-> 
+> diff --git a/net/iucv/iucv.c b/net/iucv/iucv.c
+> index 9e62783e6acb..5b56ae6612dd 100644
+> --- a/net/iucv/iucv.c
+> +++ b/net/iucv/iucv.c
+> @@ -156,7 +156,7 @@ static char iucv_error_pathid[16] = "INVALID PATHID";
+>  static LIST_HEAD(iucv_handler_list);
+>  
+>  /*
+> - * iucv_path_table: an array of iucv_path structures.
+> + * iucv_path_table: array of pointers to iucv_path structures.
+>   */
+>  static struct iucv_path **iucv_path_table;
+>  static unsigned long iucv_max_pathid;
+> @@ -545,7 +545,7 @@ static int iucv_enable(void)
+>  
+>  	cpus_read_lock();
+>  	rc = -ENOMEM;
+> -	alloc_size = iucv_max_pathid * sizeof(struct iucv_path);
+> +	alloc_size = iucv_max_pathid * sizeof(*iucv_path_table);
+>  	iucv_path_table = kzalloc(alloc_size, GFP_KERNEL);
+>  	if (!iucv_path_table)
+>  		goto out;
 
 
-I was able to reproduce this and it seems to go away if KERNEL_IBT=y. 
-When looking at the disassembly of do_one_initcall it seems the 2 return 
-sites are not patched at all, I see:
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
 
-    0xffffffff81001284 <+84>:	call   0xffffffff81f2d000 
-<__x86_indirect_thunk_array+96>
-
-
-    0xffffffff810012e7 <+183>:	jmp    0xffffffff81f2d760 
-<__x86_return_thunk>
-
-The former should be rewritten to an indirect call as per 
-patch_retpoline and the latter should be rewritten altogether. I wonder 
-if objtool ignores the function for some reason ...
-
+Good catch, thank you.
+As we allocate a more than we need, I don't this
+needs to be backported to stable. Do you agree?
 
