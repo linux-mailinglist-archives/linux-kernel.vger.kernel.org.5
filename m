@@ -1,340 +1,148 @@
-Return-Path: <linux-kernel+bounces-67533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA72856D02
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30434856D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:46:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06401C23D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:45:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6318D1C21795
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF481386BB;
-	Thu, 15 Feb 2024 18:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E91B1386B3;
+	Thu, 15 Feb 2024 18:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qqfk8Pod"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlew/9Ss"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81D91369AC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD831386AE;
+	Thu, 15 Feb 2024 18:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022731; cv=none; b=uXLvh4dmIPIZbVQ/fsWVCIJarAg6K+MkAqNDrYekyMxhrYziHu5N+f/QWXwyrDkFZ8vIxyO/VytHhVomORVhhUIkXZr7YqSW8BDA6sgaxNwuKuSXZsajjRVQrwzinDe4XJY6VuXSPXl+M7tXprpCmIk8RyWOS9NGQwd4w+f4g+8=
+	t=1708022778; cv=none; b=PWvioEkvOAP7srhtjigSi2Mq3hjl1qjWjiOVDy2vmzbeGElzASF5Czi/H7Y4kGMK94wyF2AbcmmIIVUyGZTajyYFaTx0sM+m5hF4kAhrkkkYOLTddT0V7sYY1SRe/UxZpCGY+QU2oZC+bh+UC1p2quNeIn4j7Iy6liH+MRSJOlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022731; c=relaxed/simple;
-	bh=UOeiFxBa6qkD5GL0C7Hexl1Pj7GUKu+u7H599BzMonQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=r7oKpi17KgKMycjb7TdYFDb46leunte7UIuGj59A+enLYJTg9SF4X8Ak9vLFe30wGw9tcTQnPvS4LjYc5OdyUbY+dP/NaAo0a8FD8a5/qfd7ncd56JrbKkRFXOF33ECHL97ni0F0ODtqLABYeUk0H+wdUpa1n3w6HcJv9oQ07kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qqfk8Pod; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b5d1899eso3003538276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708022729; x=1708627529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=es2Z8u6824g77CxfRGV/9UPwzp6tSbCJdwnZIQFRqkQ=;
-        b=Qqfk8Podgz1i60TAcI8G+9q5bijlyK+JU6d41/AzQBG9EfrA/N9X8nkel4XcknAeGp
-         iit6O42Kx5X3NV7qr8Iht55mBHE2FWIqpJo03jlQk35pTWL2XaduTC1WQlvUf3+L/Qoj
-         3QQUmkeLw33gu37uBS54ihJvmRrflVD3xsCBLmOoR9AIm9VXw9zZ//FtsKzJ3uNkEFyB
-         F41mQ5igbxDQiTv3ZnKQhmxEYAvvhHaOkbtFDC9TJOWahn6GxGM1Jh1MVjOVPF1WhkZS
-         PJ7YNGEBcd7vOAUDug3F6y7TYLpcQziMQGSCpufO9lfHtGMGz/Cn7KvtAxpBX1UoWG2j
-         6zGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708022729; x=1708627529;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=es2Z8u6824g77CxfRGV/9UPwzp6tSbCJdwnZIQFRqkQ=;
-        b=CinysLT0FXVRK2LgiRH+R+Ug+ErBFe6xJjsqfsl+9phxe7s2QmItAnFpDM3Lj3f/4s
-         JLbJisaDWjIGxOCG5thrYx4E3JnR/Hp6RRb6BEcruBxx2vaF4m5h25OLzMiUMkqXsoWr
-         p4vkz657xGIFCCjvTLnOVS7/KhTq1pLLUBdCkt/dNHItE96MtlVI9ki/ZlJqFOq3q2NS
-         72s76VBdMtyJ+VEanx2quZ7owP6JWJ3qBJNjviVNOrjjvRs0sYfr0mXRYNJ8rpxMhPnB
-         7APyOnMIqrICW5gf3/3iiDecXIMSM/YakYO6jgLBYxuEfkmLf+WT5PlStUFphrGQaMpS
-         FMxw==
-X-Forwarded-Encrypted: i=1; AJvYcCV9q+Uom4QKBcZbQTd9Hq2XCLsHavyGEAJBKLo3VnBswQw2m/3IM3YUqW/aPnU4Qlf5bQC1t0cVlY2w7OhtA6K+9KNlmVxdywzlcTep
-X-Gm-Message-State: AOJu0Yxvy56bLhVVAMFKuGSjkgjB7ZikHBMDH0UDgdRewSA2aTtA1qhl
-	QW3E8EvQDh34sGbVmmKzeMhNtYoMgUcN+sdqPjk9JBxuMXwsVCPYM/zz+N0OsfJLz0HngAgcUKf
-	5vA==
-X-Google-Smtp-Source: AGHT+IE7n09VM6PDbu4AAFi/LoNJGkG79DodiNLPnLaY+HtysoZAZhU/auqUHuRtOKX8nI9xHjPD3v/5T7s=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:eb07:0:b0:dc6:b7c2:176e with SMTP id
- d7-20020a25eb07000000b00dc6b7c2176emr1071480ybs.4.1708022728842; Thu, 15 Feb
- 2024 10:45:28 -0800 (PST)
-Date: Thu, 15 Feb 2024 10:45:27 -0800
-In-Reply-To: <CALzav=c0MFB7UG7yaXB3bAFampYO_xN=5Pjao6La55wy4cwjSw@mail.gmail.com>
+	s=arc-20240116; t=1708022778; c=relaxed/simple;
+	bh=gsqZ97hpL+qwMfZA8WVX81FYsijpd+FqSBNu6MOGT5Q=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=qAJwdq3WQ1WBgriHtOm4eBDb99xMmU/JzijwQROsg4stjJW+EtV1HYhOgwEUjhbPVhsp5gla1lnMajdCkFujINTuos63d9wBcR9N+zjvvu69o/ZG+SstBusYLvp75WsCgjQDjvpUTm2GTXEb6elg/REn4SegOnHVZaYNBLNgiOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlew/9Ss; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96D28C433F1;
+	Thu, 15 Feb 2024 18:46:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708022778;
+	bh=gsqZ97hpL+qwMfZA8WVX81FYsijpd+FqSBNu6MOGT5Q=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=tlew/9Ss3MNeqTJjIN56A8/T4CV50IX+T+8/QuKNeBr2PrLn/b03nxDIcysewSSUP
+	 87YhpUZQLyvyD2TXT4uTypFyRDmBO5POpMKbjd6Imog0bX3VxTf89FWuqkIHeawruf
+	 bXcPq0w66y+ixEhBDm9LJmvT16eVIaHMyBAYNBXube5cx+w/b3KwUwuXmVtC20OcAD
+	 JF/bWuQlZxMcNeFIUzpVC3ay6Re0pFwTP3gLamR2XrJChchXT2vNed7HMoabh/Z1r1
+	 qTRDStwaafgan4QrGrDGyrFKjuFKb4UzknD33Vs1MknEmOelP40bi6+c+DTOu8FwBF
+	 pX3mthT+ykz7w==
+Date: Thu, 15 Feb 2024 12:46:16 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215010004.1456078-1-seanjc@google.com> <20240215010004.1456078-2-seanjc@google.com>
- <CALzav=c0MFB7UG7yaXB3bAFampYO_xN=5Pjao6La55wy4cwjSw@mail.gmail.com>
-Message-ID: <Zc5bx4p6z8e3CmKK@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Mark target gfn of emulated atomic
- instruction as dirty
-From: Sean Christopherson <seanjc@google.com>
-To: David Matlack <dmatlack@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Pasha Tatashin <tatashin@google.com>, Michael Krebs <mkrebs@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Luis Chamberlain <mcgrof@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, Jonathan Corbet <corbet@lwn.net>, 
+ netdev@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Russell King <linux@armlinux.org.uk>, devicetree@vger.kernel.org, 
+ Andrew Lunn <andrew@lunn.ch>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Dent Project <dentproject@linuxfoundation.org>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, 
+ Russ Weight <russ.weight@linux.dev>, Eric Dumazet <edumazet@google.com>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Jakub Kicinski <kuba@kernel.org>
+In-Reply-To: <20240215-feature_poe-v4-11-35bb4c23266c@bootlin.com>
+References: <20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com>
+ <20240215-feature_poe-v4-11-35bb4c23266c@bootlin.com>
+Message-Id: <170802277529.323906.8697693998570251856.robh@kernel.org>
+Subject: Re: [PATCH net-next v4 11/17] dt-bindings: net: pse-pd: Add
+ another way of describing several PSE PIs
 
-On Thu, Feb 15, 2024, David Matlack wrote:
-> On Wed, Feb 14, 2024 at 5:00=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > When emulating an atomic access on behalf of the guest, mark the target
-> > gfn dirty if the CMPXCHG by KVM is attempted and doesn't fault.  This
-> > fixes a bug where KVM effectively corrupts guest memory during live
-> > migration by writing to guest memory without informing userspace that t=
-he
-> > page is dirty.
-> >
-> > Marking the page dirty got unintentionally dropped when KVM's emulated
-> > CMPXCHG was converted to do a user access.  Before that, KVM explicitly
-> > mapped the guest page into kernel memory, and marked the page dirty dur=
-ing
-> > the unmap phase.
-> >
-> > Mark the page dirty even if the CMPXCHG fails, as the old data is writt=
-en
-> > back on failure, i.e. the page is still written.  The value written is
-> > guaranteed to be the same because the operation is atomic, but KVM's AB=
-I
-> > is that all writes are dirty logged regardless of the value written.  A=
-nd
-> > more importantly, that's what KVM did before the buggy commit.
-> >
-> > Huge kudos to the folks on the Cc list (and many others), who did all t=
-he
-> > actual work of triaging and debugging.
-> >
-> > Fixes: 1c2361f667f3 ("KVM: x86: Use __try_cmpxchg_user() to emulate ato=
-mic accesses")
->=20
-> I'm only half serious but... Should we just revert this commit?
 
-No.
+On Thu, 15 Feb 2024 17:02:52 +0100, Kory Maincent wrote:
+> PSE PI setup may encompass multiple PSE controllers or auxiliary circuits
+> that collectively manage power delivery to one Ethernet port.
+> Such configurations might support a range of PoE standards and require
+> the capability to dynamically configure power delivery based on the
+> operational mode (e.g., PoE2 versus PoE4) or specific requirements of
+> connected devices. In these instances, a dedicated PSE PI node becomes
+> essential for accurately documenting the system architecture. This node
+> would serve to detail the interactions between different PSE controllers,
+> the support for various PoE modes, and any additional logic required to
+> coordinate power delivery across the network infrastructure.
+> 
+> The old usage of "#pse-cells" is unsuficient as it carries only the PSE PI
+> index information.
+> 
+> This patch is sponsored by Dent Project <dentproject@linuxfoundation.org>.
+> 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+> 
+> Changes in v3:
+> - New patch
+> 
+> Changes in v4:
+> - Remove $def
+> - Fix pairset-names item list
+> - Upgrade few properties description
+> - Update the commit message
+> ---
+>  .../bindings/net/pse-pd/pse-controller.yaml        | 84 +++++++++++++++++++++-
+>  1 file changed, 81 insertions(+), 3 deletions(-)
+> 
 
-> This commit claims that kvm_vcpu_map() is unsafe because it can race
-> with mremap(). But there are many other places where KVM uses
-> kvm_vcpu_map() (e.g. nested VMX). It seems like KVM is just not
-> compatible with mremap() until we address all the users of
-> kvm_vcpu_map(). Patching _just_ emulator_cmpxchg_emulated() seems
-> silly but maybe I'm missing some context on what led to commit
-> 1c2361f667f3 being written.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The short version is that it's a rather trivial vector for userspace to tri=
-gger
-UAF.  E.g. map non-refcounted memory into a guest and then unmap the memory=
-.
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:74:19: [error] string value is redundantly quoted with any quotes (quoted-strings)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:75:19: [error] string value is redundantly quoted with any quotes (quoted-strings)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:84:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:86:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:87:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:88:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:89:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:90:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:91:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:92:111: [warning] line too long (111 > 110 characters) (line-length)
+/Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:93:111: [warning] line too long (111 > 110 characters) (line-length)
 
-We tried to fix the nVMX usage, but that proved to be impractical[1].  We h=
-aven't
-forced the issue because it's not obvious that there's meaningful exposure =
-in
-practice, e.g. unless userspace is hiding regular memory from the kernel *a=
-nd*
-oversubscribing VMs, a benign userspace won't be affected.  But at the same=
- time,
-we don't have high confidence that the unsafe behavior can't be exploited i=
-n
-practice.
+dtschema/dtc warnings/errors:
 
-What I am pushing for now is an off-by-default module param to let userspac=
-e
-opt-in to unsafe mappings such as these[2].  Because if KVM starts allowing
-non-refcounted struct page memory, the ability to exploit these flaws skyro=
-ckets.
-(Though this reminds me that I need to take another look at whether or not =
-allowing
-non-refcounted struct page memory is actually necessary).
+doc reference errors (make refcheckdocs):
+Warning: Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml references a file that doesn't exist: Documentation/networking/pse-pd/pse-pi.rst
+Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml: Documentation/networking/pse-pd/pse-pi.rst
 
-[1] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com
-[2] https://lore.kernel.org/all/20230911021637.1941096-4-stevensd@google.co=
-m
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240215-feature_poe-v4-11-35bb4c23266c@bootlin.com
 
-> kvm_vcpu_map/unmap() might not be the best interface, but it serves as
-> a common choke-point for mapping guest memory to access in KVM. This
-> is helpful for avoiding missed dirty logging updates (obviously) and
-> will be even more helpful if we add support for freezing guest memory
-> and "KVM Userfault" (as discussed in the 1/3 PUCK). I think we all
-> agree we should do more of this (common choke points), not less. If
-> there's a usecase for mremap()ing guest memory, we should make
-> kvm_vcpu_map() play nice with mmu_notifiers.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-I agree, but KVM needs to __try_cmpxchg_user() use anyways, when updating g=
-uest
-A/D bits in FNAME(update_accessed_dirty_bits)().  And that one we *definite=
-ly*
-don't want to revert; see commit 2a8859f373b0 ("KVM: x86/mmu: do compare-an=
-d-exchange
-of gPTE via the user address") for details on how broken the previous code =
-was.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-In other words, reverting to kvm_vcpu_{un,}map() *probably* isn't wildly un=
-safe,
-but it also doesn't really buy us anything, and long term we have line of s=
-ight
-to closing the holes for good.  And unlike the nVMX code, where it's reason=
-able
-for KVM to disallow using non-refcounted memory for VMCS pages, disallowing=
- such
-memory for emulated atomic accesses is less reasonable.
+pip3 install dtschema --upgrade
 
-Rather than revert, to make this more robust in the longer term, we can add=
- a
-wrapper in KVM to mark the gfn dirty.  I didn't do it here because I was hu=
-stling
-to get this minimal fix posted.
-
-E.g.
-
---
-Subject: [PATCH] KVM: x86: Provide a wrapper for __try_cmpxchg_user() to ma=
-rk
- the gfn dirty
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/paging_tmpl.h |  4 ++--
- arch/x86/kvm/x86.c             | 25 +++++++++----------------
- arch/x86/kvm/x86.h             | 19 +++++++++++++++++++
- 3 files changed, 30 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.=
-h
-index 4d4e98fe4f35..a8123406fe99 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -246,11 +246,11 @@ static int FNAME(update_accessed_dirty_bits)(struct k=
-vm_vcpu *vcpu,
- 		if (unlikely(!walker->pte_writable[level - 1]))
- 			continue;
-=20
--		ret =3D __try_cmpxchg_user(ptep_user, &orig_pte, pte, fault);
-+		ret =3D kvm_try_cmpxchg_user(ptep_user, &orig_pte, pte, fault,
-+					   vcpu, table_gfn);
- 		if (ret)
- 			return ret;
-=20
--		kvm_vcpu_mark_page_dirty(vcpu, table_gfn);
- 		walker->ptes[level - 1] =3D pte;
- 	}
- 	return 0;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3ec9781d6122..bedb51fbbad3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7946,8 +7946,9 @@ static int emulator_write_emulated(struct x86_emulate=
-_ctxt *ctxt,
- 				   exception, &write_emultor);
- }
-=20
--#define emulator_try_cmpxchg_user(t, ptr, old, new) \
--	(__try_cmpxchg_user((t __user *)(ptr), (t *)(old), *(t *)(new), efault ##=
- t))
-+#define emulator_try_cmpxchg_user(t, ptr, old, new, vcpu, gfn)		  \
-+	(kvm_try_cmpxchg_user((t __user *)(ptr), (t *)(old), *(t *)(new), \
-+			      efault ## t, vcpu, gfn))
-=20
- static int emulator_cmpxchg_emulated(struct x86_emulate_ctxt *ctxt,
- 				     unsigned long addr,
-@@ -7960,6 +7961,7 @@ static int emulator_cmpxchg_emulated(struct x86_emula=
-te_ctxt *ctxt,
- 	u64 page_line_mask;
- 	unsigned long hva;
- 	gpa_t gpa;
-+	gfn_t gfn;
- 	int r;
-=20
- 	/* guests cmpxchg8b have to be emulated atomically */
-@@ -7990,18 +7992,19 @@ static int emulator_cmpxchg_emulated(struct x86_emu=
-late_ctxt *ctxt,
-=20
- 	hva +=3D offset_in_page(gpa);
-=20
-+	gfn =3D gpa_to_gfn(gpa);
- 	switch (bytes) {
- 	case 1:
--		r =3D emulator_try_cmpxchg_user(u8, hva, old, new);
-+		r =3D emulator_try_cmpxchg_user(u8, hva, old, new, vcpu, gfn);
- 		break;
- 	case 2:
--		r =3D emulator_try_cmpxchg_user(u16, hva, old, new);
-+		r =3D emulator_try_cmpxchg_user(u16, hva, old, new, vcpu, gfn);
- 		break;
- 	case 4:
--		r =3D emulator_try_cmpxchg_user(u32, hva, old, new);
-+		r =3D emulator_try_cmpxchg_user(u32, hva, old, new, vcpu, gfn);
- 		break;
- 	case 8:
--		r =3D emulator_try_cmpxchg_user(u64, hva, old, new);
-+		r =3D emulator_try_cmpxchg_user(u64, hva, old, new, vcpu, gfn);
- 		break;
- 	default:
- 		BUG();
-@@ -8009,16 +8012,6 @@ static int emulator_cmpxchg_emulated(struct x86_emul=
-ate_ctxt *ctxt,
-=20
- 	if (r < 0)
- 		return X86EMUL_UNHANDLEABLE;
--
--	/*
--	 * Mark the page dirty _before_ checking whether or not the CMPXCHG was
--	 * successful, as the old value is written back on failure.  Note, for
--	 * live migration, this is unnecessarily conservative as CMPXCHG writes
--	 * back the original value and the access is atomic, but KVM's ABI is
--	 * that all writes are dirty logged, regardless of the value written.
--	 */
--	kvm_vcpu_mark_page_dirty(vcpu, gpa_to_gfn(gpa));
--
- 	if (r)
- 		return X86EMUL_CMPXCHG_FAILED;
-=20
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 2f7e19166658..2fabc7cd7e39 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -290,6 +290,25 @@ static inline bool kvm_check_has_quirk(struct kvm *kvm=
-, u64 quirk)
- 	return !(kvm->arch.disabled_quirks & quirk);
- }
-=20
-+
-+
-+/*
-+ * Mark the page dirty even if the CMPXCHG fails (but didn't fault), as th=
-e old
-+ * old value is written back on failure.  Note, for live migration, this i=
-s
-+ * unnecessarily conservative as CMPXCHG writes back the original value an=
-d the
-+ * access is atomic, but KVM's ABI is that all writes are dirty logged,
-+ * regardless of the value written.
-+ */
-+#define kvm_try_cmpxchg_user(ptr, oldp, nval, label, vcpu, gfn) \
-+({								\
-+	int ret;						\
-+								\
-+	ret =3D __try_cmpxchg_user(ptr, oldp, nval, label);	\
-+	if (ret >=3D 0)						\
-+		kvm_vcpu_mark_page_dirty(vcpu, gfn);		\
-+	ret;							\
-+})
-+
- void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc=
-_eip);
-=20
- u64 get_kvmclock_ns(struct kvm *kvm);
-
-base-commit: 6769ea8da8a93ed4630f1ce64df6aafcaabfce64
---=20
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
