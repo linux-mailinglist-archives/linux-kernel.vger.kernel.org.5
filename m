@@ -1,67 +1,62 @@
-Return-Path: <linux-kernel+bounces-66972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC2885643A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:23:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A372085643D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20021C216E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E070284411
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C16130AC9;
-	Thu, 15 Feb 2024 13:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCF3130AC9;
+	Thu, 15 Feb 2024 13:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="acPd2w66"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hBdxRXDT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3286412FF96;
-	Thu, 15 Feb 2024 13:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77E312BF3D;
+	Thu, 15 Feb 2024 13:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003380; cv=none; b=Zr7vzWtY5SyPKgtGpdQ68A8IHJRicB4ePNyUB9/TYsn0Pzsem0QLmQ+GPcwxXQsskgBPzpiBpZOgzEJU30jQGo+5qE06DnxqGKVYYWZEDbZ8tDboc8oNm1RinMV+hyBO6UVbGcqjmM+llqszqju88zJGtLiELbm1Wna9wYuoUD0=
+	t=1708003418; cv=none; b=qBKdMNHOMz9iDF+L0GNuoq1q1LBUcvCG+UKqps4acwzXP2wyjABmJ6FhMse79/Z02p6tNTBz2Y+zZxyPyhW2Qu6wEDTfYDIeV6NU9UvnHsr12Og4zBixUJtr75/G+a0uy3XPamQfe2e4E30zy/guPgGoed82bM7iRmVz+vi/m/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003380; c=relaxed/simple;
-	bh=aprbRSSrNekh4TziwkCVNUHRLpaysztfD/0uIJPTDW8=;
+	s=arc-20240116; t=1708003418; c=relaxed/simple;
+	bh=6jdrHUpTR12o6zcCwnI0EmRbmFBouErFnPWURWeH5q0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pgngwCBplxK1nQEXNKsGPH1eL5aqYwNCYQ70vQ2cuuFNubipXNuzv+sHoFAnzMcJnJYSu/GL6RibQ4VGlkFvruWXkjRcNOvj60hCP8pFk3iudJAseAyCiERhnXmHq2w85K8AiYcgUoj2MsZVafST/D6Z58yvbL5rMLtx5YSWLV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=acPd2w66; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70453C433F1;
-	Thu, 15 Feb 2024 13:22:58 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="acPd2w66"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1708003376;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gH77Wpl45QrIFBHWb9b04lKTCLb8JnPiulNkEJpR7rI=;
-	b=acPd2w666YPwPoBmmYcpxXoBMPlZJs0SNmmkL9TCA+lQlT1Zm6T6KZ0f3iXVWWKih+FqKq
-	obzfyijfvmrEJfrm7VbRwPqyCWhN6RFDnIieWuohlqUjcsI92E/lTUYYvEGPPRKorkHo9a
-	lyUe3j2gHzo+XBDxJ4rVMOICfjWJT0k=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8cd6da92 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Thu, 15 Feb 2024 13:22:56 +0000 (UTC)
-Date: Thu, 15 Feb 2024 14:22:56 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "x86@kernel.org" <x86@kernel.org>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Daniel P =?utf-8?B?LiBCZXJyYW5nw6k=?= <berrange@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 2/2] x86/coco: Require seeding RNG with RDRAND on CoCo
- systems
-Message-ID: <Zc4QMAnrMiiCwkmX@zx2c4.com>
-References: <20240214195744.8332-1-Jason@zx2c4.com>
- <20240214195744.8332-3-Jason@zx2c4.com>
- <DM8PR11MB57501389AE5518CB26E037D7E74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fneh0CQjDvZdcymO1jQTaXK5wl8sTG+SqE2QlCB64FS7F5G3Cvf7lYIt4uMVNDtVk7VzBEuCTkeNAd+QYY3Cw3WU9rb3wc0uEQjTmxwLdi2S9zh7C8B7AY4PyBG4El7+OTryu/QiIURLhEA9m6BHXPck/PsChv12W87D0DbksEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hBdxRXDT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A6DCC433F1;
+	Thu, 15 Feb 2024 13:23:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708003417;
+	bh=6jdrHUpTR12o6zcCwnI0EmRbmFBouErFnPWURWeH5q0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hBdxRXDTAvoqW/fU3000WkufRKm4HgTzTbRMB9KZVHVslbwbCiMmQj2PvQ5UWm50K
+	 uHnYwR9E1kAXMJkmg8Y4nlpS/Voxsh6SUgf1IlW4Kvvgp3rTkXuLOD5TxVyHhWA4FN
+	 xBUjGasB1POqXSzw8b2cmITWSFF7A78YYwnZMAKcJGuuYdVSWJpOUWR5rVKarK85zv
+	 ay6bdoFOEDzv13ivhw89tM7wB+pgdAbsBzVZ2lml6497xvT8xdE1DZ3CooTA2ZaZZc
+	 ipSskdjzmZWNk1OsBwbaWE5VamNLojk283MHuYPe2ikQjPFMJL76dFMd27f3poZLnn
+	 LT5H2q2BFovJA==
+Date: Thu, 15 Feb 2024 07:23:34 -0600
+From: Rob Herring <robh@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: linux-iio@vger.kernel.org,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: add ad7944 ADCs
+Message-ID: <20240215132334.GA3847183-robh@kernel.org>
+References: <20240206-ad7944-mainline-v1-0-bf115fa9474f@baylibre.com>
+ <20240206-ad7944-mainline-v1-1-bf115fa9474f@baylibre.com>
+ <CAMknhBGG_RS1t0OJw6_UnNQ_=S4YgN4i1YN26V8n=f9y28J9hQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,72 +65,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DM8PR11MB57501389AE5518CB26E037D7E74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMknhBGG_RS1t0OJw6_UnNQ_=S4YgN4i1YN26V8n=f9y28J9hQ@mail.gmail.com>
 
-Hi Elena,
+On Tue, Feb 06, 2024 at 11:34:13AM -0600, David Lechner wrote:
+> On Tue, Feb 6, 2024 at 11:26 AM David Lechner <dlechner@baylibre.com> wrote:
+> >
+> > This adds a new binding for the Analog Devices, Inc. AD7944, AD7985, and
+> > AD7986 ADCs.
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >  .../devicetree/bindings/iio/adc/adi,ad7944.yaml    | 231 +++++++++++++++++++++
+> >  MAINTAINERS                                        |   8 +
+> >  2 files changed, 239 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
+> > new file mode 100644
+> > index 000000000000..a023adbeba42
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7944.yaml
+> 
+> ...
+> 
+> 
+> +  adi,reference:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [ internal, internal-buffer, external ]
+> +    default: internal
+> 
+> ...
+> 
+> > +allOf:
+> > +  # ref-supply is only used for external reference voltage
+> > +  - if:
+> > +      not:
+> > +        required:
+> > +          - adi,reference
+> > +    then:
+> > +      properties:
+> > +        ref-supply: false
+> > +    else:
+> > +      if:
+> > +        properties:
+> > +          adi,reference:
+> > +            const: external
+> > +      then:
+> > +        required:
+> > +          - ref-supply
+> > +      else:
+> > +        properties:
+> > +          ref-supply: false
+> 
+> This seems like something that could potentially be improved in the
+> dtschema tooling. Since adi,reference has a default of "internal", I
+> would expect:
+> 
+>      if:
+>        properties:
+>          adi,reference:
+>            const: external
 
-On Thu, Feb 15, 2024 at 07:30:32AM +0000, Reshetova, Elena wrote:
-> Should we just go back to the approach to add one more check in random_init_early()
-> to panic in the CoCo case if both rdseed and rdrand fails to give us anything? 
+         required:
+           - adi,reference
 
-Yea, no, definitely not. That is, in my opinion, completely backwards
-and leads to impossible maintainability. CoCo is not some special
-snowflake that gets to sprinkle random conditionals in generic code.
+>      then:
+>        required:
+>          - ref-supply
+>      else:
+>        properties:
+>          ref-supply: false
+> 
+> to be sufficient here. However, currently, if the adi,reference
+> property is omitted from the dts/dtb, the condition here evaluates to
+> true and unexpectedly (incorrectly?) the validator requires the
+> ref-supply property.
 
-First, consider the motivation for doing this:
-- This is to abort on a physical defective CPU bug -- presumably a
-  highly implausible thing to ever happen.
-- This is for a threat model that few people are really compelled by
-  anyway, e.g. it's whack-a-mole season with host->guest vectors.
-- This is for a single somewhat obscure configuration of a single
-  architecture with a feature only available on certain chipsets.
-- This is not an "intrinsic" problem that necessitates plumbing complex
-  policy logic all over the place, but for a very special
-  driver-specific case.
+That's just how json-schema works. With the above, it should work for 
+you.
 
-Rather, what this patch does is...
+However, redesigning the binding would make things simpler. Just make 
+'ref-supply' being present mean external ref. No 'ref-supply' is then 
+internal. Then you just need a boolean for 'internal-buffer' mode and:
 
-> Now with this patch, the logic becomes
+dependentSchemas:
+  ref-supply:
+    not:
+      required: ['adi,internal-buffer-ref']
 
-Your description actually wasn't quite accurate so I'll write it out
-(and I'll clarify in the commit message/comments for v3 - my fault for
-being vague):
-
-1. At early boot, x86/CoCo is initialized. As part of that
-   initialization, it makes sure it can get 256 bits of RDRAND output
-   and adds it to the pool, in exactly the same way that the SD card
-   driver adds inserted memory card serial numbers to the pool. If it
-   can't get RDRAND output, it means CoCo loses one of its "Co"s, and so
-   it panic()s.
-
-2. Later, the generic RNG initializes in random_init_early() and
-   random_init(), where it opportunistically tries to use everything it
-   can to get initialized -- architectural seed, architectural rand,
-   jitter, timers, boot seeds, *seeds passed from other drivers*, and
-   whatever else it can.
-
-Now what you're complaining about is that in this step 2, we wind up
-adding *even more* rdrand (though, more probably rdseed), in addition to
-what was already added in the platform-specific driver in step 1. Boo
-hoo? I can't see how that's a bad thing. Step 1 was CoCo's policy driver
-*ensuring* that it was able to push at least *something good* into the
-RNG, and taking a CoCo-specific policy decision (panic()ing) if it
-can't. Step 2 is just generic RNG stuff doing its generic RNG thing.
-
-You might also want to needle on the fact that if RDRAND is somehow
-intermittently physically defective, and so step 1 succeeds, but in step
-2, the RNG doesn't manage to get seeded by RDRAND and so initializes
-based on jitter or IRQs or something. Okay, fine, but who cares? First,
-you'd be talking here about a hugely unlikely defective hardware case,
-and second, the end state remains basically identical: there's a good
-seed from RDRAND and the RNG itself is able to initialize.
-
-So I really don't want to litter the generic code with a bunch of
-platform-specific hacks. The function add_device_randomness()
-specifically exists so that individual platforms and devices that have
-some unique insight into an entropy source or entropy requirements or
-policy or whatever else can do that in their own platform or device
-driver code where it belongs.
-
-Jason
+Rob
 
