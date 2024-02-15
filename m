@@ -1,183 +1,138 @@
-Return-Path: <linux-kernel+bounces-66311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8435D855A2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:44:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 886ED855A31
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48666B236F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:44:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D2C290B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F198BA3F;
-	Thu, 15 Feb 2024 05:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07187BA2D;
+	Thu, 15 Feb 2024 05:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3/oZTxB7"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2057.outbound.protection.outlook.com [40.107.94.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="SwQK8Itp"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D681923CE;
-	Thu, 15 Feb 2024 05:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707975841; cv=fail; b=u5AVbVC4beCPjeKc+9pPnDjUbmDwosHgV8S00xk2cF/xgZ+SIs9NA3hJUKdc+nDlV9v7UH16My79IE6xA8QzYixUlgSoeadcifdKaENGvZnfoKVXg+Z+ne7EU9NwVp9q0pwmdyRPRROHVZuIT3bPk5/jX5sHBZOH0rVgMJA0IoA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707975841; c=relaxed/simple;
-	bh=B4vXT2bXj5lr76UAeT2Fvs3quf6D4wUZZfVJWAlA4Xs=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SBaHFLxojy6ndJ0G6aA3y78k2o59nGbiOQsjiWcs80SmmxkMBHXs7WlPksJLMZB5NabWe5AEwD69pOiAkjOOjebWaK0QjGysLdcL3rj6bokt31js07Z9oZPB24pQZxcwGy5bs1Nhv7VetdJQcfAc4lxNiED3RJAytuSHWB1nG84=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3/oZTxB7; arc=fail smtp.client-ip=40.107.94.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLudgX5lAHK/7y7hsp1rKKFe9MLSs9QzvxAUUrylqNxgsPwOlK1nn7/OKkFyP58ziap+ZaJ/PZNJ35n/FEpBlsGT9PW/ftG+HpJ60NoBHIJw2Of3EyqHZK10zvKP4J+ua3Hgvh4RSW/IaMq3C/oLvUbVBzxGz7HspFcG0AdxrZZpUGmMpz1F+ejVOKzLPj+YwVb7kjxI9+08FHynATDIKccWJc/zYoB115n5EHehSyt0Cm7wm7tvcL38VK4ScprDSwjntgErWVaQ9FQzaSwptCCqsjBbLFMwGErZQetlqFZfltrTHZ5gQpTIQ+kEMg20fYr+xXLvUNCLzKfIQxKPhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QY3saeXHBbPSgf/WJm53pvklYN2EVZeow0PGjT/qbOk=;
- b=jIfenDEYSoQADB2i1ftspONAY4OeD8HrO9d4Qiugxldg2+yCdEUiYskY1e9wu0iCz96d26h4u88ksh9A32yWl/SqcDx/m3k2bqiXJiY66S8Lch/GqjFtxYjucH6XhFmyuuTp+CGkoMSpdnQ8F4QbnRoTmxdArUAJa1Y5kMXAaPMuKZqcrkYt2Dwi5qvMOMc/pXOKY5ewDfAeZqYuPLr3wediBJwUGZ1hxlsADMWuTYH86QR+Ec85/0+k6FGRVxhauG0DS4PecXBDhf8hu42V7hBqTKPEv3Ea7Ms8CJ5utGnSDfSqkpWpP6x2iqjhRxHSzP8gORN4BWLJ3xVFUW4CnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QY3saeXHBbPSgf/WJm53pvklYN2EVZeow0PGjT/qbOk=;
- b=3/oZTxB7Zl2rvF5BulpYMjNE8YL9jm1y03OQxTPQtyYA2lGta2hL66ehiaNhW0K7Qzpr/JSE1WDPnUX6hky8QKmeg+gZHNNUoG5TAB6hu/NbmjXSN757tV0ppQPXAxQuHerKbwcU5ybN3r0hfimyWJeelP7N3/AQAWfs9HjkTbQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com (2603:10b6:208:399::8)
- by CH2PR12MB4326.namprd12.prod.outlook.com (2603:10b6:610:af::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.25; Thu, 15 Feb
- 2024 05:43:57 +0000
-Received: from BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2]) by BL1PR12MB5946.namprd12.prod.outlook.com
- ([fe80::1602:61fd:faf5:d6e2%5]) with mapi id 15.20.7292.027; Thu, 15 Feb 2024
- 05:43:57 +0000
-Message-ID: <6a8d100c-57a5-4c92-b744-453c106352ad@amd.com>
-Date: Thu, 15 Feb 2024 11:13:45 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/3] net: macb: queue tie-off or disable during
- WOL suspend
-To: claudiu beznea <claudiu.beznea@tuxon.dev>, nicolas.ferre@microchip.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, linux@armlinux.org.uk
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, git@amd.com
-References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
- <20240130104845.3995341-2-vineeth.karumanchi@amd.com>
- <d8c48839-8b22-47ad-b270-e96a1ad1adee@tuxon.dev>
-From: "Karumanchi, Vineeth" <vineeth.karumanchi@amd.com>
-Content-Language: en-US
-In-Reply-To: <d8c48839-8b22-47ad-b270-e96a1ad1adee@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0187.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:e8::14) To BL1PR12MB5946.namprd12.prod.outlook.com
- (2603:10b6:208:399::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2438F68
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707976111; cv=none; b=Saf2p1SxUo7zfIEdVnfTPbE5CDhuJ2m8oMcWM6yRVeTKz7eWHRVGG0n7nv8SGghxC/IRmHjKofV/SjWdx9CGstZOFHtBfBq5zhwipyeunugBdfuMMG/4NL7RSNIYsxun2LCkpde9Npzba9Zc7jn4w9+92Zyk7aB4H8z41xam2sA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707976111; c=relaxed/simple;
+	bh=Wy0+n9JgqrY/lECFwTB8y+8bzYPNJDBhqzCYO+LmmYI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ii7mTnWaeK5IOvvDxafIUh1hif3vc3jvSJ4GC/XbyzbSl+kJKlBpFiebQXTUxf4QkG9q3Z+aKW6ttDmgyez0+3yMED+OvrS1NdcUv7O9D/bxau2cDNbPG6vyIViKSbcr3FzLGl29zmsQ6+otk/q2oMXIAE9RdqeVZEqr6G4o8+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=SwQK8Itp; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5114fa38434so543550e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:48:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1707976107; x=1708580907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kCR9TmSawra5wUvs4oISeBGT3tqyzqaDdzBDeohv99Y=;
+        b=SwQK8ItpNEsH1bs+vbCEMNvTKQagz7fZinP0etl/v1SuVNXNLvHE0x+LqDBFq0Pms3
+         UWY19UyP+R8zzpkbCo2d/K0QlttHkhfZlLOuCYrG0uVdRZ8D18i0ZfSzMBUxESoiTAVF
+         7DuNglli+v1IvatQtgW3EGQ1K0e6hdQWF1vQ1hwAan4oWCeFTE1kqrzPCuEPgUSo9O0G
+         NOpUu0sNzLBUlwo1Nj/wykWei7Zs7KODSSbNJuL/6EpMYhGXvNkWH8xGzzFzSeZPKch3
+         eKvUmQvAyzGc5C76xRUuBtvV3+srkpjGTjMdyL4LG4uNUO4xC20oPUc9yODyEHRD+wIq
+         G27w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707976107; x=1708580907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kCR9TmSawra5wUvs4oISeBGT3tqyzqaDdzBDeohv99Y=;
+        b=YmquXXohOzcuevBGeQwKnqN4S/4BU9RVDr/nqyrWTnf3GZmPY/Zx/jg2/AYNTLleVS
+         ElOwe6aOJJ00cOTIWeE5rkC7bWYeQ7fUHfYsY8OoURZ3NvSW/gkwQYWYk3HFDsAaDxvp
+         1mBL6Rw6Ux17Dx943V1/iBcSlc6mRcVarkkKm/Xgd1zwqTzPxkUiI9q3ayeMHLzw0qPQ
+         WpnmtAe1iZS3fc0DghI+LA+M7ZSyeiUmcv5b9YLp+Iaz3b2k/a7f0NU6ZRIKcQD6wzwK
+         7qBWXIMALMjA4zItmmc/vhpT6bfrMQSP/qnLvxzfbC9U8OuapLEloupoFBftvhgAgxGK
+         HbIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWSKAgFBDepprNQ52fqviFueTkgK08QEKGVxLqq42KmqjugBsEg9ujNQqvYUSMQcs9Y3IEDTA/IuL6TVKki7Ex8FBwzHt05wZ+AEFrw
+X-Gm-Message-State: AOJu0Yxc2OaJghgBwQDCAP/QLvBlAFmeGWVMMLbRvCa+KpGZNNFERvkx
+	Ezaf8a1GMMEmj7dX72itYOFBSgSHWn9g6ximgoWqEE/pkjw0/bAhXvP5sUQwNPW/wHZ8qLz9+H+
+	4ITn+QzbKyNGpISlik26cWpRDX/UbkIdtZzZpgw==
+X-Google-Smtp-Source: AGHT+IFXK7zSd2x0PSl1ap8TU3fQMItsMd1vzwFvuhYCp/fEDN7sIyRsPKR8EwxhBD/qfurWwSMNwN2P4fLnuwKJ9SA=
+X-Received: by 2002:a05:6512:67:b0:511:82b5:b484 with SMTP id
+ i7-20020a056512006700b0051182b5b484mr605399lfo.64.1707976107190; Wed, 14 Feb
+ 2024 21:48:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5946:EE_|CH2PR12MB4326:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48b7cd3e-a0ff-4dc3-731e-08dc2de91a26
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yc6Eh3yB7qw2TswAbBYDLbzpxhIJKshtnFf55hKtclqc8jkRzn0qLGkOS7DATM/h/Ar0iunPItcO6pd8sFCUZx4uzQ6/TJCSrCOoEN2MlgK05LY8MaMloxoMF23CR+QRW0UCo81uNwf+j1dgxJaoNoI4BS4QDJ5d93aa3au92307IScfDtjhUJDn9RkIHNkZz2o7DCBM5wAKYPGAGNK6fd2ryfipPQR+NPW4JanfwFA/Y2YEOTN3jOLe/CTcSxpTdwYXmhzDFR+RNsCsiTOaq8OAjCaGW41380PdnvRvEaXnJ615DYPzC7vX6Oyx7/ND+NQB+32J0fuGWz9gR8mtJSYdWqmar+8ryK+eSH30ncCVgtprghjc7fr3X4bnYGbRohC7xDiwSifPQaKawX4/IEdWCDMSblLbyYwW+7vUVuAc3MsRmDftY4QFXOsqeyy0lAqnUx6lHP0Jo+IgLCHy4j/rkF3xz1XXCC7UiVMOCi1A9+Xh59uh85r6gIAJWi8Rcx7ckFmt/tGxlFIvrjgr40q0xcYd+iSePtSd+tM59nZn91+4+zm0+HZdqJxUgp08cidw6itxuhTy4KIGCYAQc+fBT2N6krjUIcs21NKdP0A=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5946.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(39860400002)(396003)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(921011)(8676002)(53546011)(2616005)(41300700001)(4326008)(6512007)(66476007)(8936002)(66556008)(6506007)(66946007)(6486002)(316002)(6666004)(36756003)(38100700002)(31696002)(26005)(86362001)(478600001)(2906002)(4744005)(31686004)(7416002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Tnlnc3FxRXZ0RFpXU3YwaTFTTitWWG9tb0Zpbml2Ymo3eXpVQ1VtQjdUVTQr?=
- =?utf-8?B?azZ6dVFFenFQY0ppdVRXY0o1NDgyU2ZPYU1iUERaMU91YzQrcnliSXlOZTdx?=
- =?utf-8?B?cFBiMFNVQjRkWkYrcDMreGZvZy96cjFNNENRbXl4RDErWCtYYzlOTlJvN1hG?=
- =?utf-8?B?ZUZnSUN6MlJEdlkvZnpYSHp5a0l4M3JWUkpyNmRlbDFvT2x2K05HS01DbFdn?=
- =?utf-8?B?YXFNTExrNk1vZEwvYVN6RGE5aDJUZFJpbTNJaThBYXFlZGRwQm13ZFNNbGJz?=
- =?utf-8?B?TnNSUlViQWJ6OGtuZjFpUnBJVWQwenYwcy9mUzR6Zk1xblBNQ1pJMHZvdDRV?=
- =?utf-8?B?bGhFcnAzRTVudlNyK1BkeXY4TFcyOVpFdWpXRDB1VTc4cUpqRnhSS2wxVlow?=
- =?utf-8?B?dUJBSm1SUjRlVDdDclpZMVYzWm9QWXc3VWpXeGc2dFZUbk1DVW1nQ2VaTERz?=
- =?utf-8?B?M3hBZFJVSGNmc1FTMTFLbUJqNktHSnRMamlKNmZhTGV0UEh2U1pxYjZwSHRX?=
- =?utf-8?B?RE4zVjJNK0wwTnZNa3lPMjRiK0g1eURySVYvZzdUTjdRRHpvSmtBakQ1L2w5?=
- =?utf-8?B?NzNTSU9TWXhJTklXSFd5MDE0Wk0zZEV0RUk5MXFhMS9GQUh1bzE5S3ZEMjNO?=
- =?utf-8?B?WlFaR2ZmSWxaaHVyM2E1YnFSUGp4MG84WUwxN3hmNlNmZURLZ3VmdVZaNFJC?=
- =?utf-8?B?TTFQNUlIMkhkV0JjM0hTajBrL0hPcHl0L1EwTDhXSTF0eWRNbUlWTkNDeFYx?=
- =?utf-8?B?d2ZwakthWjdmbXkybnJFSzF0bi9RTWMyV01TVlYxQ1JrajFtcmtGdEZXUjI2?=
- =?utf-8?B?NGlDRjVaa09RYWhqQkMwUXhUVXB6Zllrcmx5MHFzOVJjNWcwQUhDcFI3bDBU?=
- =?utf-8?B?MmZSRmg4UGhMRXMyQm1KSE1qa25QS0c2NG9hR1RIS0lWRnFSbTh5K0pWM0ZV?=
- =?utf-8?B?aUxhL3VOVFVGVTZJNC9JR1Q1Ukdob21MUnhkUEtWeEsrZCt3ZUVvQUVBTkV3?=
- =?utf-8?B?amhKWDNMQThzSlVHVncxNXBhZzk2SzBHUzd6WDVQcU1mc0FCc1ZuenRMS3FI?=
- =?utf-8?B?YnNqWHZHRzVnY21zZVdqaDlIUG9Rc2pEUmZMYWxqL1Yra3RpN3QwaW80ZUV2?=
- =?utf-8?B?L1ZRSXhKZUh0S2g2SEVaRktUZUJzdjk2YUt2N1hxSXFoWXRCczB3ekFYWHVO?=
- =?utf-8?B?WWI2Rmk0QmJJYkdNN3dBcE5YaFhUcDdCMHJIeld0N2xEWitmaHhUcUdQTEVT?=
- =?utf-8?B?NFFMcHMwK0lvWjhtVXdPOTcvRk9aSVRLc0VIZzhXME1vUWM3VVFxc2RhSkI4?=
- =?utf-8?B?S1pFTjU4TFdTUitXTGxuNDFsMnFFd01qNlBSbCtXNjJjOGRiYU9QS2JFTnQw?=
- =?utf-8?B?ZnJ2eHU1N3hoQTV1VXFXVEVLZ2VOQ25vOHQ4b2dWOWVkczlFUkQwdUp2OEgz?=
- =?utf-8?B?bG9uekRmWERMdTNWN2NWbERWRWJYTUZRWE42Zk9QMFlqa1FtVnNUa2VQdVRu?=
- =?utf-8?B?S0lRVllXd0ZiMUhvWXJ2WHRFK2lQZG0wS0poNHN4eWtkSldnZzJtWVdYcDh4?=
- =?utf-8?B?QkNYd1pVMFBiSENhYTNOdjlqWlIvcnNHVHRSMThDb0ZtN1hHcHQzUEtUZ0ww?=
- =?utf-8?B?T2xnQzJkdDVnaVI2czc3akwwVDVCMVBpUnAzRnRqenpqTFhSSEVTUks1UEZx?=
- =?utf-8?B?b2hlMWhDdXZWeE1VOVJxbUxzL3ZTYWJPUW1OQ0dCZ3lIMDV4QVdSaEgwRFBE?=
- =?utf-8?B?VCsxQ05zdmVtQzJRZUM4QjZWcFBUYk03QytEVkordGFkWUJuNEI0SkY2M3ln?=
- =?utf-8?B?bG1ncEM2T3hQaFkzMDlDdmpLVis2SFJyekJiTmpUQ3BrTDNBblRFV0hQTGJs?=
- =?utf-8?B?NVZrUkJIREpkdkRycEhuVEFSZHl4MTB4YUN4dXQwZjdQRnRseUVESUhNTkNG?=
- =?utf-8?B?ODBPbW1sUnJyRWRLdmxPalBkeXJ3WTZLTWFLZHZ0blVMRW8zNVp3aHNJQzRP?=
- =?utf-8?B?eUlRcG91V1ZMbW4zOUg0MzdBUy8zaE82UTN5cEUvSlpGblpIK0ZtV0VzOGFD?=
- =?utf-8?B?TlpuZ0lEcmg2clZ4N3krUHIwRkV6d29jb1lXTnlqNWNiWUhieWgvam9Sa1lv?=
- =?utf-8?Q?KoYtzqhKcYwdqFIIOwtjMVfpS?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48b7cd3e-a0ff-4dc3-731e-08dc2de91a26
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5946.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 05:43:57.0235
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FaDz5HdRDvUKvmJZHow2QbK5iLXe7X/6CwbAtGHc49WDRIRqSnd9aKvhItSKeXjH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4326
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <CAK9=C2Vwtj2gZg-P73yLMxu0rPXQ3YrRRuxq6HcpHMXgs-jHaw@mail.gmail.com> <87bk8ig6t2.ffs@tglx>
+In-Reply-To: <87bk8ig6t2.ffs@tglx>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Thu, 15 Feb 2024 11:18:15 +0530
+Message-ID: <CAK9=C2WsSSHgDF+7ruxx_QF0Lk+Dsx2F2Y-_NabnxrJ_qWhgGQ@mail.gmail.com>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Marc Zyngier <maz@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Atish Patra <atishp@atishpatra.org>, 
+	Andrew Jones <ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
+	Saravana Kannan <saravanak@google.com>, Anup Patel <anup@brainfault.org>, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, "Ahmed S. Darwish" <darwi@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Claudiu,
+On Thu, Feb 15, 2024 at 1:24=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> Anup!
+>
+> On Sat, Jan 27 2024 at 21:50, Anup Patel wrote:
+> >> Changes since v11:
+> >>  - Rebased on Linux-6.8-rc1
+> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert =
+ARM
+> >>    MSI handling to per device MSI domains" series by Thomas.
+> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH1=
+9,
+> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@=
+linutronix.de/)
+> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism=
+.
+> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
+> >>    platform devices.
+> >
+> > I have rebased and included 13 patches (which add per-device MSI domain
+> > infrastructure) from your series [1]. In this series, the IMSIC driver
+> > implements the msi_parent_ops and APLIC driver implements wired-to-msi
+> > bridge using your new infrastructure.
+> >
+> > The remaining 27 patches of your series [1] requires testing on ARM
+> > platforms which I don't have. I suggest these remaining patches to
+> > go as separate series.
+>
+> Of course. Darwi (in Cc) is going to work on the ARM parts when he
+> returns from vacation. I'm going to apply the infrastructure patches
+> (1-13) in the next days so they are out of the way for you and Darwi,
+> unless someone has any objections.
+>
+> Thanks for picking this up and driving it forward!
 
-On 2/3/2024 9:08 PM, claudiu beznea wrote:
-<...>
->>   		queue->tx_skb = NULL;
->> @@ -2568,6 +2574,16 @@ static int macb_alloc_consistent(struct macb *bp)
->>   	if (bp->macbgem_ops.mog_alloc_rx_buffers(bp))
->>   		goto out_err;
->>   
->> +	/* Required for tie off descriptor for PM cases */
->> +	if (!(bp->caps & MACB_CAPS_QUEUE_DISABLE)) {
->> +		bp->rx_ring_tieoff = dma_alloc_coherent(&bp->pdev->dev,
->> +							macb_dma_desc_get_size(bp),
->> +							&bp->rx_ring_tieoff_dma,
->> +							GFP_KERNEL);
->> +		if (!bp->rx_ring_tieoff)
->> +			goto out_err;
-> You also need to free the previously allocated rx buffers.
+Thanks Thomas, I will be sending v13 of this series next week.
 
-Are you referring to (bp->macbgem_ops.mog_alloc_rx_buffers(bp)) allocation ?
-It was freed in macb_free_consistent():
-			 ...
-			 bp->macbgem_ops.mog_free_rx_buffers(bp);
-			 ...
+For the time being, I will carry the 13 infrastructure patches in
+this series until they land in upstream Linux so that it is easier
+for people to try this series.
 
-Please let me know if you are referring to different buffers.
-
-
-> 
->> +	}
->> +
->>   	return 0;
->>   
-
--- 
-🙏 vineeth
+Regards,
+Anup
 
