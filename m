@@ -1,132 +1,109 @@
-Return-Path: <linux-kernel+bounces-66739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA138560E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:08:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36CB08560E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75853287E80
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:08:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69C971C2097B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5ADF12AAF4;
-	Thu, 15 Feb 2024 11:05:52 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4502012B159;
+	Thu, 15 Feb 2024 11:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="bkfbM1j0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024D576C8C;
-	Thu, 15 Feb 2024 11:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F5B657A0;
+	Thu, 15 Feb 2024 11:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707995152; cv=none; b=U+Hu+30jBRg5EIi3Z++lAct5UTtcdT1Zq7iw3sn/BFUMK280UVdOEb1MaqnwSGfO/JdkPwhFA9h+/5nKcdm5hzc6O94sTg/H00MsUlHNbCU6XWFtuPUjX2TN1VCwMkpHg7w1RSOhYSB5TReosyBby/f/UJ9U/0rezddgvU5lHcs=
+	t=1707995198; cv=none; b=P1YAEa6h9jg3TMgk/L82Zb4vKBGHTHONCVO/ynF7nnmy3KheuTI8+9cMgPTl9Hi0CXE9m7IQrRDDjJ6KdCZJLaGBEh0rQvyzu0seTZnmd3O4BkXjfcLsMzWr+BRZfRvxDc/6bg6bogcJumTTZlUBH3X+ltDY1AwaU5x60Jdc97k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707995152; c=relaxed/simple;
-	bh=5ekBSyvELx3BO6/6jIyAyalwkqThpZC74REXt7qyDQ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n1p00L6/9xrWzJgVJFM2Q3e4KClc0/h5OWWmr4x0ZUXFYlMdZrQqsnX5l81fhvp+hKyMKpYGZkYB3ayNlqFxp5COSSbvJB052DhIGHyzKtxmg1+YtIqo8yzDCje1B0LNzbswxrNV9KFfjuIuKttPvY/7gbzuhSbLO+gfK2Y8+9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60782336a3aso5774597b3.2;
-        Thu, 15 Feb 2024 03:05:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707995149; x=1708599949;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A+7wkmLkp5lZjNrOOOOBAQUeYNVQkdS7K3E0ywuDQwI=;
-        b=JoeQjp2gqFlCAaEU/6eLbE+6GQHocU2y8UXozneuLvMZUFMykLT6RXiPZuDwVm1kjn
-         XQEJpnMEJE2sxoqvYqD1jWB3RD1zGMtatG2ti5XojmcniIKUWgIlR21tI8iCwwBTtOoj
-         iMuCKVAIIdG3+GpdjBe9b3CP9xC4fwsKE7fu9SEJ7WBdVD+ljSAApP5hmiL/E4zUTTI8
-         vT+fQLPWLYvpS6AVpOX045OCghlBR9xQWdoVk5lIh/xjtj/rrKcxgUlI4S/onsRhycll
-         vPOpbrsRu4xMOCybVRATNnSyO9PJZV91PgCGdeT4fJoFc2Is2323Kf9ueDCi3yygeRFQ
-         8kuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMQTNAko87HpMlxJwClC+8xP66xswamMoADeRTRiuXkwuoxf6wLAutRdQWyNW92YCXSk4zLWFWSbulk92+d8ep8gprRSh4oAedeo8p
-X-Gm-Message-State: AOJu0YwFlJAsgyAm7k67rZiWHqAxxYecM4Vt0Q9wlhG0Noo3tSQSJkQH
-	BnMfyKj63X1WKb+nfgn3dKFEnyM31kpcsDXYqOK8wg2I6vGR6DYvnNe2C0FN8FIq6A==
-X-Google-Smtp-Source: AGHT+IGnNdqJLfjzbChqNyYA/zoE6OGIrLSpzK0xWny88j2canhxM5lnVldxioslJFvadEA0w3y+3A==
-X-Received: by 2002:a81:5293:0:b0:607:923a:d2bb with SMTP id g141-20020a815293000000b00607923ad2bbmr1306180ywb.20.1707995149489;
-        Thu, 15 Feb 2024 03:05:49 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id x200-20020a81a0d1000000b00607cd5e6dbcsm195012ywg.137.2024.02.15.03.05.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 03:05:49 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcbc00f6c04so634791276.3;
-        Thu, 15 Feb 2024 03:05:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV0IFFoovwCLhIqlcfXE1SkHf5kLq4fCWL7/BfOHjCatwJ6UtczBs+3wss8ElLkrvelr4glIPjwPmzCXCmt6jyTC+15s2qvO51aG8FE
-X-Received: by 2002:a25:ad4b:0:b0:dcc:6112:f90d with SMTP id
- l11-20020a25ad4b000000b00dcc6112f90dmr1063026ybe.62.1707995149001; Thu, 15
- Feb 2024 03:05:49 -0800 (PST)
+	s=arc-20240116; t=1707995198; c=relaxed/simple;
+	bh=+6f1RjKwFKHZixh15TYArKSQpcNXqz9ekQ2XC+tFlWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QCFMq7FeSCmoanxbjflteW/Wj6+N+vGpaYzfkpzXpfrxbYTocNuDqcu8emYfh+BUPd58lztAdlB6DoLYZ6KuGve8FyM4+JHZ/uZ4ilUMIDI8GpGAIBA0XkfaBpgZzElSX2V4OKb3dyWZ5ZqkjK4JfYGSyzhVRvhSo7+2/UDiRk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=bkfbM1j0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39266C433F1;
+	Thu, 15 Feb 2024 11:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707995197;
+	bh=+6f1RjKwFKHZixh15TYArKSQpcNXqz9ekQ2XC+tFlWM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bkfbM1j03Xn2tLhferLdzpwA8mvcu5xz9iPxpo+a7uNtPCdHmafXlWfYvvZNaVoFi
+	 41Rm546gcGXlNPKE9oP/lpZoFFcCyI+EArUmHilcTlVggFsigBBjY8KEuLwkXhqi3C
+	 UjDP0RqCBjia3enJec7y5MNDD19d81J+NDRIh9V4=
+Date: Thu, 15 Feb 2024 12:06:34 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 6.1 00/65] 6.1.78-rc2 review
+Message-ID: <2024021517-robust-tuition-4ce0@gregkh>
+References: <20240214142941.551330912@linuxfoundation.org>
+ <6e281665-10d8-4db7-98cf-45829d3abf06@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
- <Zcz--YJmWLm0ikUT@smile.fi.intel.com> <CAMuHMdW5nwtuZpTyf+_41bcHeR+MA6Ko2++JiC8Xz6u1tDNQ_Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdW5nwtuZpTyf+_41bcHeR+MA6Ko2++JiC8Xz6u1tDNQ_Q@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 12:05:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWKAf_Yi59RWoA5=K=ajS0-+Vn8tgwzy5tAzLmqizZLtg@mail.gmail.com>
-Message-ID: <CAMuHMdWKAf_Yi59RWoA5=K=ajS0-+Vn8tgwzy5tAzLmqizZLtg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] auxdisplay: linedisp: Clean up and add new driver
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e281665-10d8-4db7-98cf-45829d3abf06@nvidia.com>
 
-Hi Andy,
+On Thu, Feb 15, 2024 at 11:04:11AM +0000, Jon Hunter wrote:
+> 
+> On 14/02/2024 14:30, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 6.1.78 release.
+> > There are 65 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 16 Feb 2024 14:28:54 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.78-rc2.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> 
+> No new regressions for Tegra ...
+> 
+> Test results for stable-v6.7:
+>     10 builds:	10 pass, 0 fail
+>     26 boots:	26 pass, 0 fail
+>     116 tests:	115 pass, 1 fail
+> 
+> Linux version:	6.7.5-rc2-gc94a8b48bd4b
+> Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+>                 tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+>                 tegra20-ventana, tegra210-p2371-2180,
+>                 tegra210-p3450-0000, tegra30-cardhu-a04
+> 
+> Test failures:	tegra186-p2771-0000: pm-system-suspend.sh
+> 
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-On Wed, Feb 14, 2024 at 7:45=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Wed, Feb 14, 2024 at 6:57=E2=80=AFPM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Feb 12, 2024 at 07:01:33PM +0200, Andy Shevchenko wrote:
-> > > Add a new initial driver for Maxim MAX6958/6959 chips.
-> > > While developing that driver I realised that there is a lot
-> > > of duplication between ht16k33 and a new one. Hence set of
-> > > cleanups and refactorings.
-> > >
-> > > Note, the new driver has minimum support of the hardware and
-> > > I have plans to cover more features in the future.
-> > >
-> > > In v2:
-> > > - updated DT bindings to follow specifications and requirements (Krzy=
-sztof)
-> > > - unified return code variable (err everywhere)
-> > > - left patches 10 and 13 untouched, we may amend later on (Robin)
-> >
-> > Geert, I would like to apply at least the first 13 patches.
-> > Do you have any comments or even possibility to perform a regression te=
-st?
->
-> I'll try to give it a try on my Adafruit Quad 14-segment display tomorrow=
-..
+You sent 2 of these, one without a failure, and one with?
 
-With the missing return-statement added, the ht16k33 driver builds
-and works fine: the kernel version is happily scrolling by.
-I didn't test userspace line display control, as there is an issue
-with the uSD interface on my OrangeCrab, preventing it from booting
-into userspace.
+confused,
 
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+greg k-h
 
