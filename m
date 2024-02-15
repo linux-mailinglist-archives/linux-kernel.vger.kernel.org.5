@@ -1,242 +1,271 @@
-Return-Path: <linux-kernel+bounces-66685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85195856032
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:52:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B79E85603E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 105341F27258
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:52:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 216992895FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:53:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66431136641;
-	Thu, 15 Feb 2024 10:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BA384FC2;
+	Thu, 15 Feb 2024 10:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UzvQjEur"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="U9KIv3uh"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B78131740;
-	Thu, 15 Feb 2024 10:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C209384FC0;
+	Thu, 15 Feb 2024 10:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993599; cv=none; b=oWQpeAo+jXXUyDWv8XCENA15B1QOvhSna9v/nk9Lhsqz+go5aKRNty60zbsHHOw9ceIR5wEynLWN2sLCq0uVe3DQTUXPZeVuX/biD4XPkOW3Bc93Vgl+Hk9aUIYEfuyWDShvuYLuEgmll1NJNb4C6EElFig6WBr9yWzRf5APKZE=
+	t=1707993640; cv=none; b=mnxu7SKwngeK+VNBRwOcCKIgKeaM0TS9dCllHW6B5gPgQcjq9g8kiHMKoxQn1fXlJ0IvppP88rvWIspiQrxUTuQBD8/jDb3KgFztS8VQBNi9IpUfGg9nfyGzmCBnZaPB83C4/k4OEw0VtAJgtPvWHjtPBlKzGjbYwhuwTbYSx0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993599; c=relaxed/simple;
-	bh=PWvpQJPxH3xmC8dQKZixZdp+i+vn1PGn7VfkDpTt55g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=vA3VBMFLvadwYFx0Z4rZEB5U/XothujyO4XDmFbK1fuhBb8KIRTZpCnTtYO/iuOJNDN+qoQQxaQo/VgNbWpPkSiSKAaY3YEec68KMEcrejzoxRhwM77FmcJa32Nh50Qb5HEDp+Hx1lC0DhOrEXR+fWm3093lbs5uZVGBQwfgssc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UzvQjEur; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FAM7sw031367;
-	Thu, 15 Feb 2024 10:39:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references; s=
-	qcppdkim1; bh=nqQ2C714mkmBgSBS/ZClViH3gWgHWlEzu2KUBDeXZfY=; b=Uz
-	vQjEurdou77XyMh5cZhpcJfaVac/WwF9bvxlqGV5QZBFMTZGScRU4w0q2VgGEcYH
-	9lctyJoEH7yFyO+7YsUG9kfxBdTXJ+g2JKRETqhr3WGJgL73w7zJC8I6rmr3jqM+
-	saonZsKJjt5oBssfxRLajkmtSLa0xPEoqAsdsF+dT1NsIppGBVp/ZDT2fE++RGa3
-	RWL1+c0YbTjUwzQAhp/SJXbHrD4baiA4NtSSkmKjkYP9EjeEYaq/bQ9UoK11yRLl
-	TxihFe0d5IGHR3JR7oQyxFVMrzc12SqVqUnjJRHyxLW8LwVm88oteNT7auRcGepz
-	0rhG6eoKnM7XU+rN+0Og==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9342hjmd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 10:39:38 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41FAdXBx013846;
-	Thu, 15 Feb 2024 10:39:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3w627mab7e-1;
-	Thu, 15 Feb 2024 10:39:33 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FAdXkM013834;
-	Thu, 15 Feb 2024 10:39:33 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-riteshk-hyd.qualcomm.com [10.147.241.247])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 41FAdXTT013826;
-	Thu, 15 Feb 2024 10:39:33 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2314801)
-	id E0D5E601431; Thu, 15 Feb 2024 16:09:31 +0530 (+0530)
-From: Ritesh Kumar <quic_riteshk@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com,
-        geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
-        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
-        m.szyprowski@samsung.com
-Cc: Ritesh Kumar <quic_riteshk@quicinc.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, quic_abhinavk@quicinc.com,
-        quic_rajeevny@quicinc.com, quic_vproddut@quicinc.com
-Subject: [PATCH v3 2/2] arm64: dts: qcom: qcm6490-idp: add display and panel
-Date: Thu, 15 Feb 2024 16:09:29 +0530
-Message-Id: <20240215103929.19357-3-quic_riteshk@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240215103929.19357-1-quic_riteshk@quicinc.com>
-References: <20240215103929.19357-1-quic_riteshk@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SKuUTy1KAZjSvVts8D14l_l3ZTjT8FpH
-X-Proofpoint-GUID: SKuUTy1KAZjSvVts8D14l_l3ZTjT8FpH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_10,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 lowpriorityscore=0 priorityscore=1501 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402150084
+	s=arc-20240116; t=1707993640; c=relaxed/simple;
+	bh=Cd4xi9HhZEMAGJT2YQ0prCB+BmIoBoWmUrLCsLhn0aM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ortjjR2ymbBVj+PHUpY8oXs/r/uU6xxCK900kBjS5Letzw4q5fCWD3YqyANlHrAuwMNPo+gwp4+hka63TW1J8as1vFoKo3jguBqgDpCzz75MQz3kTszE0gXbVqjU0hZ2zlW8Co8mxnHZ5JlolgFzlgl7sl0jd126O4AUVrOXrDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=U9KIv3uh; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707993636;
+	bh=Cd4xi9HhZEMAGJT2YQ0prCB+BmIoBoWmUrLCsLhn0aM=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=U9KIv3uhtMwUspJbyLete/tC9XPq1pMA/XhjUfDof9wK78Ug2zLTD2aBCzMm3jXKN
+	 rwXQOus4f2twEzAWuoipJ0WD4cOAeVVZUzX3pe9V/tXitreMgw0Pol+lgzBqWYFkKy
+	 DmHPyZnh96x06yLQyj3G6+YXENFLmelB9pYBae5U0VHvT2P0pC5zwkyF8KKbP+OQBH
+	 nITptUjHkS/ABd+utumI7AXkST6DATejNc8SqhkLYFf+isk4DIkmA/nPWzoyhu8b36
+	 x7P1UIpYYEc62rXo1wlnCKYz6NiaUC/fWzYXZVZbekUjx/3bhxQ1KDfSWcMexgVAgG
+	 6KRnvNZ3/Mtnw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5D01A3780FC7;
+	Thu, 15 Feb 2024 10:40:36 +0000 (UTC)
+Message-ID: <c87af05e-9017-4806-88b1-7aa65f2b7070@collabora.com>
+Date: Thu, 15 Feb 2024 11:40:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] soc: mediatek: cmdq: Remove unused helper funciton
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
+ <20240215004931.3808-2-chunkuang.hu@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240215004931.3808-2-chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Enable Display Subsystem with Novatek NT36672E Panel
-on qcm6490 idp platform.
+Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
+> cmdq_pkt_create(), cmdq_pkt_destroy(), and cmdq_pkt_flush_async()
+> are not used by all client drivers (MediaTek drm driver and
+> MediaTek mdp3 driver),
+> 
 
-Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
+Hello CK,
 
----
-v2: Fixed review comments from Dmitry and Konrad
-      - moved pinctrl-names after pinctrl-0 property.
-      - removed gpu disablement change after validating gpu.
-    Rebased the patch
-      - rebased the patch to resolve conflicts.
-v3: Fixed review comments from Dmitry
-      - renamed panel supply to regulator-lcd-disp-bias.
-      - moved backlight as per sort order.
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 92 ++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
+We can technically force the hand to say that this is true - but only because
+these two functions are copy-pasted in both mediatek-drm and MDP3 drivers with
+no meaningful changes, as in, the only change is that `pkt` is supposed to be
+preallocated in both of the variants, while the one in mtk-cmdq-helper allocates
+it on its own.
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index 502a5a383bde..6d6506726827 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -10,6 +10,7 @@
- #define PM7250B_SID1 9
- 
- #include <dt-bindings/leds/common.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include "sc7280.dtsi"
- #include "pm7250b.dtsi"
-@@ -35,10 +36,29 @@
- 		serial0 = &uart5;
- 	};
- 
-+	pm8350c_pwm_backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pm8350c_pwm 3 65535>;
-+		enable-gpios = <&pm8350c_gpios 7 GPIO_ACTIVE_HIGH>;
-+		pinctrl-0 = <&pmic_lcd_bl_en>;
-+		pinctrl-names = "default";
-+	};
-+
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
- 
-+	lcd_disp_bias: regulator-lcd-disp-bias {
-+		compatible = "regulator-fixed";
-+		regulator-name = "lcd_disp_bias";
-+		regulator-min-microvolt = <5500000>;
-+		regulator-max-microvolt = <5500000>;
-+		gpio = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-0 = <&lcd_disp_bias_en>;
-+		pinctrl-names = "default";
-+	};
-+
- 	reserved-memory {
- 		xbl_mem: xbl@80700000 {
- 			reg = <0x0 0x80700000 0x0 0x100000>;
-@@ -421,7 +441,79 @@
- 	};
- };
- 
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_dsi {
-+	vdda-supply = <&vreg_l6b_1p2>;
-+	status = "okay";
-+
-+	panel@0 {
-+		compatible = "novatek,nt36672e";
-+		reg = <0>;
-+
-+		reset-gpios = <&tlmm 44 GPIO_ACTIVE_HIGH>;
-+
-+		vddi-supply = <&vreg_l8c_1p62>;
-+		avdd-supply = <&lcd_disp_bias>;
-+		avee-supply = <&lcd_disp_bias>;
-+
-+		backlight = <&pm8350c_pwm_backlight>;
-+
-+		port {
-+			panel0_in: endpoint {
-+				remote-endpoint = <&mdss_dsi0_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&mdss_dsi0_out {
-+	remote-endpoint = <&panel0_in>;
-+	data-lanes = <0 1 2 3>;
-+};
-+
-+&mdss_dsi_phy {
-+	vdds-supply = <&vreg_l10c_0p88>;
-+	status = "okay";
-+};
-+
-+&pm7250b_gpios {
-+	lcd_disp_bias_en: lcd-disp-bias-en-state {
-+		pins = "gpio2";
-+		function = "func1";
-+		bias-disable;
-+		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
-+		input-disable;
-+		output-enable;
-+		power-source = <0>;
-+	};
-+};
-+
-+&pm8350c_gpios {
-+	pmic_lcd_bl_en: pmic-lcd-bl-en-state {
-+		pins = "gpio7";
-+		function = "normal";
-+		bias-disable;
-+		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
-+		output-low;
-+		power-source = <0>;
-+	};
-+
-+	pmic_lcd_bl_pwm: pmic-lcd-bl-pwm-state {
-+		pins = "gpio8";
-+		function = "func1";
-+		bias-disable;
-+		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
-+		output-low;
-+		power-source = <0>;
-+	};
-+};
-+
- &pm8350c_pwm {
-+	pinctrl-0 = <&pmic_lcd_bl_pwm>;
-+	pinctrl-names = "default";
- 	status = "okay";
- 
- 	multi-led {
--- 
-2.17.1
+Code duplication is something that we want to avoid, not something that we want
+to embrace: removing those functions from cmdq-helper with the plan to keep
+duplicating them in each MediaTek driver that uses CMDQ packets is plain wrong.
+
+This - especially because I'm sure that we will see yet another copy-paste of
+those two functions in a future ISP driver, bringing the duplication count to
+3 (or actually, 3 by 2 functions = 6 times).
+
+On the other hand, removing the cmdq_pkt_flush_async() function is something
+that I *do* support, as it's only doing two simple calls that are not even
+specific to cmdq, but more like "generic stuff".
+
+In short, as it is right now, this is a NACK - but if you change this commit to
+remove only cmdq_pkt_flush_async() I would agree.
+
+The right thing to do is to remove the duplicated functions:
+  - mtk_drm_cmdq_pkt_create()
+  - mtk_drm_cmdq_pkt_destroy()
+  - mdp_cmdq_pkt_create()
+  - mdp_cmdq_pkt_destroy()
+
+..and migrate both drivers to use the common cmdq helper code instea, but that's
+something that can come later.
+
+For now, you can simply perform the ->cl removal on all duplicated functions, then
+we can migrate them all to the common helper, removing duplication all along.
+
+Regards,
+Angelo
+
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+>   drivers/soc/mediatek/mtk-cmdq-helper.c | 59 --------------------------
+>   include/linux/soc/mediatek/mtk-cmdq.h  | 40 -----------------
+>   2 files changed, 99 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> index b0cd071c4719..67e17974d1e6 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -105,50 +105,6 @@ void cmdq_mbox_destroy(struct cmdq_client *client)
+>   }
+>   EXPORT_SYMBOL(cmdq_mbox_destroy);
+>   
+> -struct cmdq_pkt *cmdq_pkt_create(struct cmdq_client *client, size_t size)
+> -{
+> -	struct cmdq_pkt *pkt;
+> -	struct device *dev;
+> -	dma_addr_t dma_addr;
+> -
+> -	pkt = kzalloc(sizeof(*pkt), GFP_KERNEL);
+> -	if (!pkt)
+> -		return ERR_PTR(-ENOMEM);
+> -	pkt->va_base = kzalloc(size, GFP_KERNEL);
+> -	if (!pkt->va_base) {
+> -		kfree(pkt);
+> -		return ERR_PTR(-ENOMEM);
+> -	}
+> -	pkt->buf_size = size;
+> -	pkt->cl = (void *)client;
+> -
+> -	dev = client->chan->mbox->dev;
+> -	dma_addr = dma_map_single(dev, pkt->va_base, pkt->buf_size,
+> -				  DMA_TO_DEVICE);
+> -	if (dma_mapping_error(dev, dma_addr)) {
+> -		dev_err(dev, "dma map failed, size=%u\n", (u32)(u64)size);
+> -		kfree(pkt->va_base);
+> -		kfree(pkt);
+> -		return ERR_PTR(-ENOMEM);
+> -	}
+> -
+> -	pkt->pa_base = dma_addr;
+> -
+> -	return pkt;
+> -}
+> -EXPORT_SYMBOL(cmdq_pkt_create);
+> -
+> -void cmdq_pkt_destroy(struct cmdq_pkt *pkt)
+> -{
+> -	struct cmdq_client *client = (struct cmdq_client *)pkt->cl;
+> -
+> -	dma_unmap_single(client->chan->mbox->dev, pkt->pa_base, pkt->buf_size,
+> -			 DMA_TO_DEVICE);
+> -	kfree(pkt->va_base);
+> -	kfree(pkt);
+> -}
+> -EXPORT_SYMBOL(cmdq_pkt_destroy);
+> -
+>   static int cmdq_pkt_append_command(struct cmdq_pkt *pkt,
+>   				   struct cmdq_instruction inst)
+>   {
+> @@ -426,19 +382,4 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
+>   }
+>   EXPORT_SYMBOL(cmdq_pkt_finalize);
+>   
+> -int cmdq_pkt_flush_async(struct cmdq_pkt *pkt)
+> -{
+> -	int err;
+> -	struct cmdq_client *client = (struct cmdq_client *)pkt->cl;
+> -
+> -	err = mbox_send_message(client->chan, pkt);
+> -	if (err < 0)
+> -		return err;
+> -	/* We can send next packet immediately, so just call txdone. */
+> -	mbox_client_txdone(client->chan, 0);
+> -
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(cmdq_pkt_flush_async);
+> -
+>   MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
+> index 649955d2cf5c..6c42d817d368 100644
+> --- a/include/linux/soc/mediatek/mtk-cmdq.h
+> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
+> @@ -59,21 +59,6 @@ struct cmdq_client *cmdq_mbox_create(struct device *dev, int index);
+>    */
+>   void cmdq_mbox_destroy(struct cmdq_client *client);
+>   
+> -/**
+> - * cmdq_pkt_create() - create a CMDQ packet
+> - * @client:	the CMDQ mailbox client
+> - * @size:	required CMDQ buffer size
+> - *
+> - * Return: CMDQ packet pointer
+> - */
+> -struct cmdq_pkt *cmdq_pkt_create(struct cmdq_client *client, size_t size);
+> -
+> -/**
+> - * cmdq_pkt_destroy() - destroy the CMDQ packet
+> - * @pkt:	the CMDQ packet
+> - */
+> -void cmdq_pkt_destroy(struct cmdq_pkt *pkt);
+> -
+>   /**
+>    * cmdq_pkt_write() - append write command to the CMDQ packet
+>    * @pkt:	the CMDQ packet
+> @@ -266,19 +251,6 @@ int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr);
+>    */
+>   int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
+>   
+> -/**
+> - * cmdq_pkt_flush_async() - trigger CMDQ to asynchronously execute the CMDQ
+> - *                          packet and call back at the end of done packet
+> - * @pkt:	the CMDQ packet
+> - *
+> - * Return: 0 for success; else the error code is returned
+> - *
+> - * Trigger CMDQ to asynchronously execute the CMDQ packet and call back
+> - * at the end of done packet. Note that this is an ASYNC function. When the
+> - * function returned, it may or may not be finished.
+> - */
+> -int cmdq_pkt_flush_async(struct cmdq_pkt *pkt);
+> -
+>   #else /* IS_ENABLED(CONFIG_MTK_CMDQ) */
+>   
+>   static inline int cmdq_dev_get_client_reg(struct device *dev,
+> @@ -294,13 +266,6 @@ static inline struct cmdq_client *cmdq_mbox_create(struct device *dev, int index
+>   
+>   static inline void cmdq_mbox_destroy(struct cmdq_client *client) { }
+>   
+> -static inline  struct cmdq_pkt *cmdq_pkt_create(struct cmdq_client *client, size_t size)
+> -{
+> -	return ERR_PTR(-EINVAL);
+> -}
+> -
+> -static inline void cmdq_pkt_destroy(struct cmdq_pkt *pkt) { }
+> -
+>   static inline int cmdq_pkt_write(struct cmdq_pkt *pkt, u8 subsys, u16 offset, u32 value)
+>   {
+>   	return -ENOENT;
+> @@ -384,11 +349,6 @@ static inline int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
+>   	return -EINVAL;
+>   }
+>   
+> -static inline int cmdq_pkt_flush_async(struct cmdq_pkt *pkt)
+> -{
+> -	return -EINVAL;
+> -}
+> -
+>   #endif /* IS_ENABLED(CONFIG_MTK_CMDQ) */
+>   
+>   #endif	/* __MTK_CMDQ_H__ */
 
 
