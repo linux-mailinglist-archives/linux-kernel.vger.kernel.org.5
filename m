@@ -1,166 +1,114 @@
-Return-Path: <linux-kernel+bounces-67659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 313FF856EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:39:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78701856EAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8509B211E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:39:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1961C20A3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B20A13B29D;
-	Thu, 15 Feb 2024 20:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB5813B29F;
+	Thu, 15 Feb 2024 20:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4ejrwaK"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VxgP7QgG"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26D613AA42
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97AE132469;
+	Thu, 15 Feb 2024 20:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708029560; cv=none; b=r2PhMQC19UH5+hdAx1dNouGW1nx1nlg9K76OQvBTxCINmCjCqQDzkqL4dYwtySg/MO8wukR1XwQ+f1h+h2i5C6EM2vAY4dsdGv9eEnCkxbZfDDjO6WbsSnNf0Y5i2FNEdoKXaZtvjCHfrV7HYcarzx4ZN+jIOuuTOx2GU0k+W5g=
+	t=1708029597; cv=none; b=TVjprB2ptQ87ehtrZnpJ/rZiENDQwg155y+rHLlPTuEr1t5/IhW+6G148fzqEczgrZToi4th6u9lOUHAYPN06Lm7cgGqpblqq0LhbH+oJ/8NPBSt1SysIdT/fw2DhLvEoxBiz/NL5G8jD1oGKT9svsxXyOfmETBP0qOrlB97iig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708029560; c=relaxed/simple;
-	bh=oZB9UxxjYJZ4A86GMlPL+c0aJyRyUWLlESSlMqLoAac=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ogu+o6YHkIUr91QBeIPwAwKVL6kbVv2BPO+zK0wc5Hm3o2vWJMGDwPt2aq8EAcvl6vrV6HkKw69eodOJiLVt7V7HuZadCz/q9Q71IxbST4TSxvbuHc3B+CX1VEOlsl7LtkvN6/2fmxnjctTLdF/lAPY5CA9mQWzZTwJlirEG2WU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4ejrwaK; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4c02dfa01a8so411534e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:39:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708029558; x=1708634358; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KP8/sXQUg6d+/tAlWscHgJtEUS3CFlZkJ/dGjgcRmF8=;
-        b=f4ejrwaKwRqg7Z5vpUG5eZGZKqz4rZt8PbISZNcAjaTyOJMRoGwib8qO/PLSKxyl7G
-         YdZJR6yo1s02r65Kb0jv6NnaFI6jxw7g82MDPmO6IKlovqu443E5MBCLErBjSLbzgujt
-         191zPt6AYiPtVbFUqC3O3YB1K2PeV+EKYAQnbr+m7LlvKbOKDkD7CRXTr1NetfTO1f8W
-         tDU9ENPbthhxQ0QjXb02wiXMNgy1SYpQP3NGjdVpvF8BvyCZSiMybN6leWcNLs4st+Re
-         EYjpMRiT7k4OTwFd1cUODf6toyJj4mvIJSmU1QIOi4uYTrRlZNBOj5xHJ260K6UstG3v
-         PFgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708029558; x=1708634358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KP8/sXQUg6d+/tAlWscHgJtEUS3CFlZkJ/dGjgcRmF8=;
-        b=DzrvgIOCrmnzhrw7qA4Usyx958T4hGV/3JPYlipJvAuaeynUkGkAfbwqi/vDtXT8RJ
-         CHf1YT2s7vNgvYZur0SGILyWNFTpcDpAqLpSvpqedkEbpvOg3a3hvP3LNiNSn+hmVSiv
-         4ZtsISBBERm1XVyW/r+WwJULk9JdZYLEqxWGtx1y1z9nzEbIkMoxQNcaDCNKnsL3bbRo
-         NSulEnaS7yfzYTZxvFgXwegrB18wyooz3Uv9YqFlsH8RhzYAXTAqWfhh3FtilvK0Qv/c
-         PQjCFfciTrFrEuXYq/TiGenT45FVt65y9hpAp9SEWC9ObSFMLADB8cJBhb61ihVhj44p
-         NZSg==
-X-Gm-Message-State: AOJu0YyFNPhhyZ9tODohYh1MVLWwHzAE2gprDkWhI4sb005AyBPNBpbf
-	7X0Q6VkJ/PYojoEN4+4ytpuwy554PZtP9AWVfC/cmmxPdSGwLlwP4OD0QsJpJDj/8X/Fvfg+B7h
-	NFXy8yG49VSe1NhlFQKTXqRsjc6Q=
-X-Google-Smtp-Source: AGHT+IGZeFq7SGMN9pvV+zTmQwR7jHhUTJ7ig1DtH3MAruI0U2O4Ew2wALWOgV5FjRM6w/Nx6JO01FVY6D241zI5kaw=
-X-Received: by 2002:a1f:dd04:0:b0:4c0:309b:2755 with SMTP id
- u4-20020a1fdd04000000b004c0309b2755mr2533048vkg.3.1708029557760; Thu, 15 Feb
- 2024 12:39:17 -0800 (PST)
+	s=arc-20240116; t=1708029597; c=relaxed/simple;
+	bh=biYF8TzBmTBfUehzYOJvS+68v778LfcH2oFqG0FepeQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IC4eg4FhMSeriOJ09LvnhOUyZ6L8Kh9tpYVSB0ljKCeVoEgj1w4aAsk0wO5EpUWtUryukkugaNMyEbp8yZX4OhB/wRL+GnJD700T3YqD4ayg+d9x40m5qpLbpyE1BdKRRM7l3kBLQ5CqAJZ26LVA/fYXQU5eKznaLEJOTwLdFrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VxgP7QgG; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFSxL3031050;
+	Thu, 15 Feb 2024 20:39:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-11-20;
+ bh=dZqIRhOjiKqSt7dvw8csIF1s9y8sRAbgBVziurwX4LM=;
+ b=VxgP7QgG2FkmX/tsRB/ecCvmacRm/aPTCuPrkF6MwxMbrF2Wvn4eLZXkhHNKtREBx7O1
+ 4nDmxzMdHE9WBnA8VTmAnS89KrFEHxS8zmbyL53mL8oU0mvqZiEO6Vr8Oj502sEvS85c
+ C4daiTgKsnNI7ifYVaZ34iQj+plXsJxTEdQ3715apjWjrRud8rX/4OQp+snG0qRlO5/j
+ OZpJyrJ28slecTC60huO7wD4jhKgDbEnR0cKz8J7kKwDsXMELyRZ813Dki9A076Db2f7
+ ZM7IqeCdgEoEBTMOPs2g4V2eaqywHphtby3PtEx1acP27x8QZs0YyeBqD20XDujnvOBe lg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w9301k7rt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 20:39:35 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FJ8Y38015017;
+	Thu, 15 Feb 2024 20:39:34 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykats5k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 20:39:34 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FKdVPP012444;
+	Thu, 15 Feb 2024 20:39:34 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w5ykats32-3;
+	Thu, 15 Feb 2024 20:39:34 +0000
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] scsi: jazz_esp: only build if SCSI core is builtin
+Date: Thu, 15 Feb 2024 15:39:24 -0500
+Message-ID: <170802930866.3317154.3155585946655239383.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20240214055953.9612-1-rdunlap@infradead.org>
+References: <20240214055953.9612-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215201053.2364270-1-daeho43@gmail.com> <Zc51zeFF3DrUXMem@google.com>
-In-Reply-To: <Zc51zeFF3DrUXMem@google.com>
-From: Daeho Jeong <daeho43@gmail.com>
-Date: Thu, 15 Feb 2024 12:39:06 -0800
-Message-ID: <CACOAw_z99UEofyh2PjRe8UfaqGBxwaGd392jHN42JM-bzLZnHw@mail.gmail.com>
-Subject: Re: [PATCH] f2fs_io: add lseek command to execute lseek()
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	kernel-team@android.com, Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_19,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150166
+X-Proofpoint-GUID: SXDJDdr1S211bZff-c_hDDqI3aYVnPb1
+X-Proofpoint-ORIG-GUID: SXDJDdr1S211bZff-c_hDDqI3aYVnPb1
 
-On Thu, Feb 15, 2024 at 12:36=E2=80=AFPM Jaegeuk Kim <jaegeuk@kernel.org> w=
-rote:
->
-> On 02/15, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
-> >
-> > Added lseek command to support lseek() for SEEK_DATA and SEEK_HOLE.
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >  tools/f2fs_io/f2fs_io.c | 38 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 38 insertions(+)
-> >
-> > diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
-> > index e7d286a..b5c5b97 100644
-> > --- a/tools/f2fs_io/f2fs_io.c
-> > +++ b/tools/f2fs_io/f2fs_io.c
-> > @@ -1630,6 +1630,43 @@ static void do_removexattr(int argc, char **argv=
-, const struct cmd_desc *cmd)
-> >       exit(0);
-> >  }
-> >
-> > +#define lseek_desc "do lseek for SEEK_DATA or SEEK_HOLE for a file"
-> > +#define lseek_help                                   \
-> > +"f2fs_io lseek [whence] [offset] [file_path]\n\n"    \
-> > +"Do lseek file data in file_path\n"                  \
-> > +"whence can be\n"                                    \
->
-> Can we also have all the other options as well?
+On Tue, 13 Feb 2024 21:59:53 -0800, Randy Dunlap wrote:
 
-Sounds good.
+> JAZZ_ESP is a bool kconfig symbol that selects SCSI_SPI_ATTRS.
+> When CONFIG_SCSI=m, this results in SCSI_SPI_ATTRS=m while
+> JAZZ_ESP=y, which causes many undefined symbol linker errors.
+> 
+> Fix this by only offering to build this driver when CONFIG_SCSI=y.
+> 
+> 
+> [...]
 
->
-> > +"  data     : SEEK_DATA, return the file offset to the next data locat=
-ion from offset\n"\
-> > +"  hole     : SEEK_HOLE, return the file offset to the next hole from =
-offset\n"
-> > +
-> > +static void do_lseek(int argc, char **argv, const struct cmd_desc *cmd=
-)
-> > +{
-> > +     int fd, whence;
-> > +     off_t offset, ret;
-> > +
-> > +     if (argc !=3D 4) {
-> > +             fputs("Excess arguments\n\n", stderr);
-> > +             fputs(cmd->cmd_help, stderr);
-> > +             exit(1);
-> > +     }
-> > +
-> > +     offset =3D atoi(argv[2]);
-> > +
-> > +     if (!strcmp(argv[1], "data"))
-> > +             whence =3D SEEK_DATA;
-> > +     else if (!strcmp(argv[1], "hole"))
-> > +             whence =3D SEEK_HOLE;
-> > +     else
-> > +             die("Wrong whence type");
-> > +
-> > +     fd =3D xopen(argv[3], O_RDONLY, 0);
-> > +
-> > +     ret =3D lseek(fd, offset, whence);
-> > +     if (ret < 0)
-> > +             die_errno("lseek failed");
-> > +     printf("returned offset=3D%ld\n", ret);
-> > +     exit(0);
-> > +}
-> > +
-> >  #define CMD_HIDDEN   0x0001
-> >  #define CMD(name) { #name, do_##name, name##_desc, name##_help, 0 }
-> >  #define _CMD(name) { #name, do_##name, NULL, NULL, CMD_HIDDEN }
-> > @@ -1671,6 +1708,7 @@ const struct cmd_desc cmd_list[] =3D {
-> >       CMD(listxattr),
-> >       CMD(setxattr),
-> >       CMD(removexattr),
-> > +     CMD(lseek),
-> >       { NULL, NULL, NULL, NULL, 0 }
-> >  };
-> >
-> > --
-> > 2.43.0.687.g38aa6559b0-goog
-> >
+Applied to 6.8/scsi-fixes, thanks!
+
+[1/1] scsi: jazz_esp: only build if SCSI core is builtin
+      https://git.kernel.org/mkp/scsi/c/9ddf190a7df7
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
