@@ -1,107 +1,274 @@
-Return-Path: <linux-kernel+bounces-66854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6A8856267
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:01:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873D085626C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07F4F282666
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12C8E1F21855
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB3612BE86;
-	Thu, 15 Feb 2024 12:01:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC2B219E0
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A109A12BEAF;
+	Thu, 15 Feb 2024 12:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="zK2Kc5Jf"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05357219E0;
+	Thu, 15 Feb 2024 12:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998501; cv=none; b=Z3cYcuIqwd7y+P7qjHhH6mZHhbSirgFXrQhgwgjgTszWd4fXsYCJYYUpsqn6rj+9x7mHI2lbJhfnfCVeDLud7py93bbkgss6k9y1QT5/FT3DIeUGH5Wg1QW177yHus3zEQ5UWdjC+JDcpX1VTabHrhF0MnVdV1mWJ86uve3J5OY=
+	t=1707998547; cv=none; b=owHb0aM9GUXRSNIi4W9+4iZz6Yec9a21WL1BO7gVJcbKNJ9BytR14XN0EVTptb97eBVL6hYNVQgwx2rXnZHAHky5Cs61OdfLtrIe1aTw/+suNYDaoKIOsrXgNOYCxIjjiXVLNLxiWlrv+CQrU2eoZCc4I9WtoZkbTGMRdxVrO70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998501; c=relaxed/simple;
-	bh=yeRfrgFGI1JNXuBvjNlNp7FlKvvlRC/kM8jgLEuiinY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ff9e/3u59MB8txUsZak3/9D7GqvQ6JNFqwMjIYF7PKz+mEF0l+hn/VqgYA0qs7Dinzw7N7bz3PeBNThHD146Hw0Re4tZFLVER4gn32ljxh+Mwqvk0xoFsyUw/eqQgyigktRd+jxZOe/9PCLqdxsjRlXSWgwS7MTNNusa7Q1zku8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B836F1FB;
-	Thu, 15 Feb 2024 04:02:18 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 559813F766;
-	Thu, 15 Feb 2024 04:01:36 -0800 (PST)
-Message-ID: <7f14727d-3ca6-45ec-9251-f166f74a8f7c@arm.com>
-Date: Thu, 15 Feb 2024 12:01:34 +0000
+	s=arc-20240116; t=1707998547; c=relaxed/simple;
+	bh=C1yoGhOuFqXhiUyUou0BMV7c6tIj5s7JmMbgvjVR7jQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BX1hy0mXXkdzCNECMCE7xaN/nUU35IxsKHmkvae4v46RI5TIVM36ek+FVqSDBUbDh3Us1fsrPff7j7s+J3IfTFBaN7nf8IewlQR2Qc37JSNsEEQm45k7oePIUYh4cUZmX0R1s+VG+9flOGJvu3tflHEG6UD1NYmxsUCXDfhM70k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=zK2Kc5Jf; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707998542;
+	bh=C1yoGhOuFqXhiUyUou0BMV7c6tIj5s7JmMbgvjVR7jQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=zK2Kc5JfLBU+NLuGLInn85iRJ4Ru0l5lREe+4N2i/GPdiJmUIdodM9oVsBm7t/AmF
+	 ZpId8bOcH4FCXP/7vn3HFpe9OPJ3PbQ4OuNgZku9BKJbvXHIPfDiScAHKZeFk7yk4n
+	 p56QilzqUWmF4+BphMXSJ/GO/v/k7dHQN2j6B19MW7v5hZD4MjG2RHJxt6iM3kn2cE
+	 9VQBZ5w1Y56kF7B8OHqK3rkOlMdGAiRf8XkZdG4F2+jV3YzZlzSiWZSfclJtFjOZ7h
+	 itVb8G0YnCERrCEwg5Pk+qJQ527wGYJz6DC4oEMHecOSLaBKiuPhwRyzIDcYGZ74dT
+	 5hRYFho/iLj8A==
+Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 59BE537820AD;
+	Thu, 15 Feb 2024 12:02:16 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: kernel@collabora.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests/bpf: Move test_dev_cgroup to prog_tests
+Date: Thu, 15 Feb 2024 17:01:42 +0500
+Message-ID: <20240215120233.308986-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] nvme-pci: Fix iommu map (via swiotlb) failures
- when PAGE_SIZE=64KB
-Content-Language: en-GB
-To: Nicolin Chen <nicolinc@nvidia.com>, Keith Busch <kbusch@kernel.org>
-Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, will@kernel.org,
- joro@8bytes.org, jgg@nvidia.com, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev, murphyt7@tcd.ie,
- baolu.lu@linux.intel.com
-References: <cover.1707851466.git.nicolinc@nvidia.com>
- <60bdcc29a2bcf12c6ab95cf0ea480d67c41c51e7.1707851466.git.nicolinc@nvidia.com>
- <Zcv7uI6VrMc2EuGT@kbusch-mbp> <ZcxZD2GXmR5+vC/k@Asurada-Nvidia>
- <Zc1qpr4zCy1N0OND@kbusch-mbp> <Zc2XHbcXZzV2a61n@Asurada-Nvidia>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <Zc2XHbcXZzV2a61n@Asurada-Nvidia>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 15/02/2024 4:46 am, Nicolin Chen wrote:
-> On Wed, Feb 14, 2024 at 06:36:38PM -0700, Keith Busch wrote:
->> On Tue, Feb 13, 2024 at 10:09:19PM -0800, Nicolin Chen wrote:
->>> On Tue, Feb 13, 2024 at 04:31:04PM -0700, Keith Busch wrote:
->>>> On Tue, Feb 13, 2024 at 01:53:57PM -0800, Nicolin Chen wrote:
->>>>> @@ -2967,7 +2967,7 @@ static struct nvme_dev *nvme_pci_alloc_dev(struct pci_dev *pdev,
->>>>>                dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
->>>>>        else
->>>>>                dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
->>>>> -     dma_set_min_align_mask(&pdev->dev, NVME_CTRL_PAGE_SIZE - 1);
->>>>> +     dma_set_min_align_mask(&pdev->dev, PAGE_SIZE - 1);
->>>>>        dma_set_max_seg_size(&pdev->dev, 0xffffffff);
->>>>
->>>> I recall we had to do this for POWER because they have 64k pages, but
->>>> page aligned addresses IOMMU map to 4k, so we needed to allow the lower
->>>> dma alignment to efficiently use it.
->>>
->>> Thanks for the input!
->>>
->>> In that case, we might have to rely on iovad->granule from the
->>> attached iommu_domain:
->>
->> I explored a bit more, and there is some PPC weirdness that lead to
->> NVME_CTRL_PAGE_SIZE, I don't find the dma min align mask used in that
->> path. It looks like swiotlb is the only user for this, so your original
->> patch may be just fine.
-> 
-> Oh, that'll be great if we confirmed. And I think I forgot to add
-> CC line to the stable trees: the two patches should be applicable
-> cleanly to older kernels too. Let's wait for some day, so people
-> can give some tests and reviews. Then I will respin a v2 with the
-> CC line.
+Move test_dev_cgroup to prog_tests to be able to run it with test_progs.
+Replace dev_cgroup.bpf.o with skel header file, dev_cgroup.skel.h and
+load program from it accourdingly.
 
-Hmm, as far as I understand, NVME_CTRL_PAGE_SIZE represents the 
-alignment that NVMe actually cares about, so if specifying that per the 
-intended purpose of the API doesn't work then it implies the DMA layer 
-is still not doing its job properly, thus I'd rather keep digging and 
-try to fix that properly.
+  ./test_progs -t test_dev_cgroup
+  mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+  64+0 records in
+  64+0 records out
+  32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+  dd: failed to open '/dev/full': Operation not permitted
+  dd: failed to open '/dev/random': Operation not permitted
+  #365     test_dev_cgroup:OK
+  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 
-FWIW I have a strong suspicion that iommu-dma may not be correctly doing 
-what it thinks it's trying to do, so I would definitely think it 
-worthwhile to give that a really close inspection in light of Will's 
-SWIOTLB fixes.
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+While converting from skeleton APIs, I didn't found direct alternative
+of bpf_prog_attach(fd, cgroup_fd, BPF_CGROUP_DEVICE). So I've kept
+using the bpf_prog_attach() in this patch.
+---
+ .../bpf/prog_tests/test_dev_cgroup.c          | 67 +++++++++++++++
+ tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
+ 2 files changed, 67 insertions(+), 85 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+ delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
 
-Thanks,
-Robin.
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+new file mode 100644
+index 0000000000000..ee37ce52dec9f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2017 Facebook
++ */
++
++#include <test_progs.h>
++#include <time.h>
++#include "cgroup_helpers.h"
++#include "dev_cgroup.skel.h"
++
++#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
++
++void test_test_dev_cgroup(void)
++{
++	int cgroup_fd, err, duration = 0;
++	struct dev_cgroup *skel;
++	__u32 prog_cnt;
++
++	skel = dev_cgroup__open_and_load();
++	if (CHECK(!skel, "skel_open_and_load", "failed\n"))
++		goto cleanup;
++
++	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
++	if (CHECK(cgroup_fd < 0, "cgroup_setup_and_join", "failed: %d\n", cgroup_fd))
++		goto cleanup;
++
++	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
++			      BPF_CGROUP_DEVICE, 0);
++	if (CHECK(err, "bpf_attach", "failed: %d\n", err))
++		goto cleanup;
++
++	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
++	if (CHECK(err || prog_cnt != 1, "bpf_query", "failed: %d %d\n", err, prog_cnt))
++		goto cleanup;
++
++	/* All operations with /dev/zero and /dev/urandom are allowed,
++	 * everything else is forbidden.
++	 */
++	CHECK(system("rm -f /tmp/test_dev_cgroup_null"), "rm",
++	      "unexpected rm on _null\n");
++	CHECK(!system("mknod /tmp/test_dev_cgroup_null c 1 3"),
++	      "mknod", "unexpected mknod on _null\n");
++	CHECK(system("rm -f /tmp/test_dev_cgroup_null"), "rm",
++	      "unexpected rm on _null\n");
++
++	/* /dev/zero is whitelisted */
++	CHECK(system("rm -f /tmp/test_dev_cgroup_zero"), "rm",
++	      "unexpected rm on _zero\n");
++	CHECK(system("mknod /tmp/test_dev_cgroup_zero c 1 5"),
++	      "mknod", "unexpected mknod on _zero\n");
++	CHECK(system("rm -f /tmp/test_dev_cgroup_zero"), "rm",
++	      "unexpected rm on _zero\n");
++
++	CHECK(system("dd if=/dev/urandom of=/dev/zero count=64"), "dd",
++	      "unexpected dd on /dev/zero\n");
++
++	/* src is allowed, target is forbidden */
++	CHECK(!system("dd if=/dev/urandom of=/dev/full count=64"), "dd",
++	      "unexpected dd on /dev/full\n");
++
++	/* src is forbidden, target is allowed */
++	CHECK(!system("dd if=/dev/random of=/dev/zero count=64"), "dd",
++	      "unexpected dd on /dev/zero\n");
++
++cleanup:
++	cleanup_cgroup_environment();
++	dev_cgroup__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
+deleted file mode 100644
+index adeaf63cb6fa3..0000000000000
+--- a/tools/testing/selftests/bpf/test_dev_cgroup.c
++++ /dev/null
+@@ -1,85 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/* Copyright (c) 2017 Facebook
+- */
+-
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <errno.h>
+-#include <assert.h>
+-#include <sys/time.h>
+-
+-#include <linux/bpf.h>
+-#include <bpf/bpf.h>
+-#include <bpf/libbpf.h>
+-
+-#include "cgroup_helpers.h"
+-#include "testing_helpers.h"
+-
+-#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
+-
+-#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+-
+-int main(int argc, char **argv)
+-{
+-	struct bpf_object *obj;
+-	int error = EXIT_FAILURE;
+-	int prog_fd, cgroup_fd;
+-	__u32 prog_cnt;
+-
+-	/* Use libbpf 1.0 API mode */
+-	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+-
+-	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
+-			  &obj, &prog_fd)) {
+-		printf("Failed to load DEV_CGROUP program\n");
+-		goto out;
+-	}
+-
+-	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+-	if (cgroup_fd < 0) {
+-		printf("Failed to create test cgroup\n");
+-		goto out;
+-	}
+-
+-	/* Attach bpf program */
+-	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
+-		printf("Failed to attach DEV_CGROUP program");
+-		goto err;
+-	}
+-
+-	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
+-			   &prog_cnt)) {
+-		printf("Failed to query attached programs");
+-		goto err;
+-	}
+-
+-	/* All operations with /dev/zero and and /dev/urandom are allowed,
+-	 * everything else is forbidden.
+-	 */
+-	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+-	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
+-	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
+-
+-	/* /dev/zero is whitelisted */
+-	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+-	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
+-	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
+-
+-	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
+-
+-	/* src is allowed, target is forbidden */
+-	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
+-
+-	/* src is forbidden, target is allowed */
+-	assert(system("dd if=/dev/random of=/dev/zero count=64"));
+-
+-	error = 0;
+-	printf("test_dev_cgroup:PASS\n");
+-
+-err:
+-	cleanup_cgroup_environment();
+-
+-out:
+-	return error;
+-}
+-- 
+2.42.0
+
 
