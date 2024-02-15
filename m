@@ -1,220 +1,115 @@
-Return-Path: <linux-kernel+bounces-66949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDE988563EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:03:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96888563CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B05328A54C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:03:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCB431C237A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BFA12FB2A;
-	Thu, 15 Feb 2024 13:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E866912F39C;
+	Thu, 15 Feb 2024 12:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CRTGEx/j"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="KSpbnvKz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A770212BF06;
-	Thu, 15 Feb 2024 13:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C566212B162;
+	Thu, 15 Feb 2024 12:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002156; cv=none; b=L2mQ4DPWuK29N3WnwoywNRIpgxzpLX3nNRF5xfgSyjVxb198OT9E8mIFmWVouajHs2U3rCwLF4tCuWOoGdUp5DSJVXiNOn7E07BfuYXe5KZN6CEmkIcsqXDquUABVTD1Uc49IUeLRgHjlLJZTYmA8p1XIUouKCZLmt7HVXbqin8=
+	t=1708001933; cv=none; b=g7LnPkp9zdptm+dEvjlHPSoVDldGhB9UO0iVCOjedJXyNjuXDq2BeOPIZq5hwCCfJPPNO82DarpU2bIGJLjC8EX37ZW6a4X5hWQSHMGNvAB+Mzt2AJkmNR1e8XikL7GIsgp1MtBAnm80Ub74A1yobmBjHJxfgtRCZVCrrw1elww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002156; c=relaxed/simple;
-	bh=rFnluREXCTsXDodZeJ12RC10HbHmX2bC2fcQYUPV5bQ=;
+	s=arc-20240116; t=1708001933; c=relaxed/simple;
+	bh=Ad/rzeg0qm+b8E72/V5gLfBzXXiMiZDjEciTC6pPZ+M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nysj6F2uEfvgk80cONQPZrz98nE7qTKVutq1yFi5WzLpvlJ/UOnP38xJJ+Z9zJfeGdB4TV79fjqSJZM8PDFtaVwDC0IePv7OdwtHajiZhNof3YByJXjzYRofpSGxNxAGHGF7ggL+LMKR36H7wl9V6TbhD/H6hgFsujT9W0MptYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CRTGEx/j; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708002154; x=1739538154;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rFnluREXCTsXDodZeJ12RC10HbHmX2bC2fcQYUPV5bQ=;
-  b=CRTGEx/jtbXPFdhSZh4sUI9T2F1lsYycMKmkCQescyPWJEY08dkT2RcZ
-   YGbyYbkFEVARjalMhNaCTGvRUhwYVr4BZ34/p+CwgYJECGOUyLJPv+KYd
-   VGTnjqaiAmfz7R78aVMsHqVxzfjjb/xP33pEDU9O0DdopdVz+REFLMZnF
-   OiflknJNiP9Fr1TLX+/p5nqw0jKV0nzIVTA4HSOX4pui9GJG0EiSQZMeV
-   3CNapgRqOhfNCJVgxM74IbbF60X+Lco2VgkLt4Vz4GD467RzqcpGFpNQL
-   J6a3SnEGuAB0BnHl+lBFaHBlpoklOnvXx3AEpcdmEVfY77PKzMuUUco/n
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="27534020"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="27534020"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:02:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="3596575"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa010.jf.intel.com with ESMTP; 15 Feb 2024 05:02:32 -0800
-Date: Thu, 15 Feb 2024 20:58:43 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Li RongQing <lirongqing@baidu.com>,
-	Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Move "KVM no-APIC vCPU" key management
- into local APIC code
-Message-ID: <Zc4Kgz9et4uzlp/a@yilunxu-OptiPlex-7050>
-References: <20240209222047.394389-1-seanjc@google.com>
- <20240209222047.394389-2-seanjc@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TSPzFhM8yRiRu6RBOr3xgTR6MdWOx0oM+9uqm8MocUHPTo31Cj1TqPVwJ29SBa9TeN96MVlPq4iNUMKiFHFMl3V8x8DiIPesQG5vQ4fNm5KSIF/Cac52RnE2azZQ41fSrCUUpp5nMUs3XiX+moWwjGGaRmmAltduOnSauaARehA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=KSpbnvKz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C564EC433F1;
+	Thu, 15 Feb 2024 12:58:50 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="KSpbnvKz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1708001929;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dsxfcdPhD8kEeco8ZBp7CrkSEujEWrVukxbbEuEYW4M=;
+	b=KSpbnvKzEbTsf3lyoqZVbKXYcOb0fjXmc8hoHRG/bglLZ20AuWeR/meJcQb1fLN8cv2zVb
+	c9rvaJgbwrw8hLuUNPNSafs3KnvRFXTKZCvBZ9xeeQryDN1c+qySTFjzPpkmvSeAzss8Ii
+	/DRRfnIN6ggqZ3N21gDSKiNZTK5rA78=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e0407208 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 15 Feb 2024 12:58:48 +0000 (UTC)
+Date: Thu, 15 Feb 2024 13:58:47 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Nakajima, Jun" <jun.nakajima@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] x86/random: Retry on RDSEED failure
+Message-ID: <Zc4Kh6IPHYM56IcS@zx2c4.com>
+References: <DM8PR11MB5750C7D16DC566CD1329D5A5E77C2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <CAHmME9q-eUXnXnpaDu0VOQemOYysst7SaJ-=b8-vCFP9h50Szg@mail.gmail.com>
+ <20240201045710.GD2356784@mit.edu>
+ <CAHmME9oqM2a766dBK22-yKr8=2-icg=UkQzmBOF8G5Zh_Y9E9w@mail.gmail.com>
+ <DM8PR11MB57505F657A8F08E15DC34673E7422@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <DM8PR11MB57503A2BB6F74618D64CC44AE74E2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <Zcz2r51Tbb44ywjl@zx2c4.com>
+ <DM8PR11MB57503E654C8A0E9A41CB68AFE74E2@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <Zc0VW_NQGLWCSJwF@zx2c4.com>
+ <DM8PR11MB5750D504AC62AA407441901BE74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240209222047.394389-2-seanjc@google.com>
+In-Reply-To: <DM8PR11MB5750D504AC62AA407441901BE74D2@DM8PR11MB5750.namprd11.prod.outlook.com>
 
-On Fri, Feb 09, 2024 at 02:20:46PM -0800, Sean Christopherson wrote:
-> Move incrementing and decrementing of kvm_has_noapic_vcpu into
-> kvm_create_lapic() and kvm_free_lapic() respectively to fix a benign bug
-> bug where KVM fails to decrement the count if vCPU creation ultimately
-  ^
+On Thu, Feb 15, 2024 at 07:07:45AM +0000, Reshetova, Elena wrote:
+> > You said that RDRAND is faster than the bus, so failures won't be
+> > observable, while RDSEED is not because it requires collecting entropy
+> > from the ether which is slow. That makes intuitive sense on a certain
+> > dumb simplistic level: AES is just an algorithm so is fast, while
+> > entropy collection is a more physical thing so is slow. But if you read
+> > the implementation details, RDRAND is supposed to reseed after 511
+> > calls. So what's to stop you from exhausting RDSEED in one place, while
+> > also getting RDRAND to the end of its 511 calls, and *then* having your
+> > victim make the subsequent RDRAND call, which tries to reseed (or is in
+> > progress of doing so), finds that RDSEED is out of batteries, and
+> > underflows? What's the magic detail that makes this scenario not
+> > possible?
+> 
+> This was on my list of scenarios to double check whenever it is possible
+> or not, and the answer is that it is not possible (at least for Intel).
+> This scenario is also briefly described in the public doc [1]:
+> 
+> " Note that the conditioner does not send the same seed values to both the
+>  DRBG and the ENRNG. This pathway can be thought of as an alternating
+> switch, with one seed going to the DRGB and the next seed going to the ENRNG. 
+> *This construction ensures* that a software application can never obtain the
+>  value used to seed the DRBG, *nor can it launch a Denial of Service (DoS) 
+> attack against the DRBG through repeated executions of the RDSEED instruction.*"
 
-remove the duplicate word, others LGTM.
+Interesting, and good to hear. So also implicit must be that the time
+required by 511 calls to RDRAND exceeds the reseeding time, so that you
+couldn't exhaust the seeds indirectly by flushing RDRAND.
 
-Reviewed-by: Xu Yilun <yilun.xu@linux.intel.com>
-
-> fails, e.g. due to a memory allocation failing.
-> 
-> Note, the bug is benign as kvm_has_noapic_vcpu is used purely to optimize
-> lapic_in_kernel() checks, and that optimization is quite dubious.  That,
-> and practically speaking no setup that cares at all about performance runs
-> with a userspace local APIC.
-> 
-> Reported-by: Li RongQing <lirongqing@baidu.com>
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/lapic.c | 27 ++++++++++++++++++++++++++-
->  arch/x86/kvm/x86.c   | 29 +++--------------------------
->  2 files changed, 29 insertions(+), 27 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 3242f3da2457..681f6d82d015 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -124,6 +124,9 @@ static inline int __apic_test_and_clear_vector(int vec, void *bitmap)
->  	return __test_and_clear_bit(VEC_POS(vec), (bitmap) + REG_POS(vec));
->  }
->  
-> +__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
-> +EXPORT_SYMBOL_GPL(kvm_has_noapic_vcpu);
-> +
->  __read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_hw_disabled, HZ);
->  __read_mostly DEFINE_STATIC_KEY_DEFERRED_FALSE(apic_sw_disabled, HZ);
->  
-> @@ -2466,8 +2469,10 @@ void kvm_free_lapic(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_lapic *apic = vcpu->arch.apic;
->  
-> -	if (!vcpu->arch.apic)
-> +	if (!vcpu->arch.apic) {
-> +		static_branch_dec(&kvm_has_noapic_vcpu);
->  		return;
-> +	}
->  
->  	hrtimer_cancel(&apic->lapic_timer.timer);
->  
-> @@ -2809,6 +2814,11 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
->  
->  	ASSERT(vcpu != NULL);
->  
-> +	if (!irqchip_in_kernel(vcpu->kvm)) {
-> +		static_branch_inc(&kvm_has_noapic_vcpu);
-> +		return 0;
-> +	}
-> +
->  	apic = kzalloc(sizeof(*apic), GFP_KERNEL_ACCOUNT);
->  	if (!apic)
->  		goto nomem;
-> @@ -2844,6 +2854,21 @@ int kvm_create_lapic(struct kvm_vcpu *vcpu, int timer_advance_ns)
->  	static_branch_inc(&apic_sw_disabled.key); /* sw disabled at reset */
->  	kvm_iodevice_init(&apic->dev, &apic_mmio_ops);
->  
-> +	/*
-> +	 * Defer evaluating inhibits until the vCPU is first run, as this vCPU
-> +	 * will not get notified of any changes until this vCPU is visible to
-> +	 * other vCPUs (marked online and added to the set of vCPUs).
-> +	 *
-> +	 * Opportunistically mark APICv active as VMX in particularly is highly
-> +	 * unlikely to have inhibits.  Ignore the current per-VM APICv state so
-> +	 * that vCPU creation is guaranteed to run with a deterministic value,
-> +	 * the request will ensure the vCPU gets the correct state before VM-Entry.
-> +	 */
-> +	if (enable_apicv) {
-> +		apic->apicv_active = true;
-> +		kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
-> +	}
-> +
->  	return 0;
->  nomem_free_apic:
->  	kfree(apic);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index b66c45e7f6f8..59119157bd20 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12053,27 +12053,9 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  	if (r < 0)
->  		return r;
->  
-> -	if (irqchip_in_kernel(vcpu->kvm)) {
-> -		r = kvm_create_lapic(vcpu, lapic_timer_advance_ns);
-> -		if (r < 0)
-> -			goto fail_mmu_destroy;
-> -
-> -		/*
-> -		 * Defer evaluating inhibits until the vCPU is first run, as
-> -		 * this vCPU will not get notified of any changes until this
-> -		 * vCPU is visible to other vCPUs (marked online and added to
-> -		 * the set of vCPUs).  Opportunistically mark APICv active as
-> -		 * VMX in particularly is highly unlikely to have inhibits.
-> -		 * Ignore the current per-VM APICv state so that vCPU creation
-> -		 * is guaranteed to run with a deterministic value, the request
-> -		 * will ensure the vCPU gets the correct state before VM-Entry.
-> -		 */
-> -		if (enable_apicv) {
-> -			vcpu->arch.apic->apicv_active = true;
-> -			kvm_make_request(KVM_REQ_APICV_UPDATE, vcpu);
-> -		}
-> -	} else
-> -		static_branch_inc(&kvm_has_noapic_vcpu);
-> +	r = kvm_create_lapic(vcpu, lapic_timer_advance_ns);
-> +	if (r < 0)
-> +		goto fail_mmu_destroy;
->  
->  	r = -ENOMEM;
->  
-> @@ -12194,8 +12176,6 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
->  	srcu_read_unlock(&vcpu->kvm->srcu, idx);
->  	free_page((unsigned long)vcpu->arch.pio_data);
->  	kvfree(vcpu->arch.cpuid_entries);
-> -	if (!lapic_in_kernel(vcpu))
-> -		static_branch_dec(&kvm_has_noapic_vcpu);
->  }
->  
->  void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> @@ -12472,9 +12452,6 @@ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
->  	return (vcpu->arch.apic_base & MSR_IA32_APICBASE_BSP) != 0;
->  }
->  
-> -__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_has_noapic_vcpu);
-> -EXPORT_SYMBOL_GPL(kvm_has_noapic_vcpu);
-> -
->  void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
->  {
->  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> -- 
-> 2.43.0.687.g38aa6559b0-goog
-> 
-> 
+Jason
 
