@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-66419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DAD4855C7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:32:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E758855C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07311C21E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:32:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B5328142D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832EF125B6;
-	Thu, 15 Feb 2024 08:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46E912E6D;
+	Thu, 15 Feb 2024 08:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8QsKOXK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lhw7ewat"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9AE0B67D;
-	Thu, 15 Feb 2024 08:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A73171A7;
+	Thu, 15 Feb 2024 08:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707985951; cv=none; b=scFJ6IA2rSFVXstrJY6Gse8NZy1XolZC6a0kLymwkagHGUMrdSAWeREiFNVIOOpSt0GCKyQ4owJIs1v1SYSR2XB6GukXtDUwr6EP/QL5uDa8E5dHz3YiklFtjTN6LhpVZNFj4N4gbUphhdcU/Kg1qHFJyqeEZfz69glzt8A9Vmo=
+	t=1707986009; cv=none; b=EHWJsIjUs19zMUjMpDGObuZqDvkfbnbmmeANdn7DrBfvn39EtPyzAEqrrkq+8pUjJ7yH08/l4LJ2b6URrR1rHIQ57kG3D0BaO1lvo1ZiaMpSre+flH5Ssp2FdcGigrS5Tg3+CUbkc3OLKEx/r1DYNX9GtYa9BMF5pEyIgTOET3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707985951; c=relaxed/simple;
-	bh=UGfF3lZh/KRtVtdUp6G6TZfp0sNrsZF0XSORI0xUMqc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t/mRUZrrHF+pyq17F9j9WVDurhskwxTAgFPiUdXnmEVxM4Lm9lb3ddsJX301A9dSwrhOWLMvzp65P83dvV2YgNX+VaLAZCRm8ZQBrIYswJ4RFExOWBpwWm4FMZFl5LjiDrVyo8FlHv+JRDfbE6NER3W90Sn5AAeJaIlCiPJQN+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8QsKOXK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A71FC433F1;
-	Thu, 15 Feb 2024 08:32:28 +0000 (UTC)
+	s=arc-20240116; t=1707986009; c=relaxed/simple;
+	bh=ATjsM1v1rtS8D/Phyv7flUsDtfA5NO7irfbWAKzdNXs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e8Xl5ZLYzht9vGiM7qfPHaSrMDZQmTr++bdHtJ3lqJxgvCAKWhOhWqgVO1828FB0IqVMKMXrzPThx4IDdx7ATLHOPmIoh1s8JxdUwU5YxSL8D4S3KCNYi+yS3mjvplxrJTWAiXmx/lmT4eBSewIfInqJyuxDz4Trjx/kaW9bhDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lhw7ewat; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A97C433F1;
+	Thu, 15 Feb 2024 08:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707985951;
-	bh=UGfF3lZh/KRtVtdUp6G6TZfp0sNrsZF0XSORI0xUMqc=;
+	s=k20201202; t=1707986008;
+	bh=ATjsM1v1rtS8D/Phyv7flUsDtfA5NO7irfbWAKzdNXs=;
 	h=From:To:Cc:Subject:Date:From;
-	b=i8QsKOXKyHAd6n28S9dhVqcePsxd7+GXhKkS0K6gYkoj6rN9LqZ0Rc0QgZiG1WZJu
-	 EW3mQrItGu4KHyMPz12l9rhBTpYClYR4MN+UWhFyF1dTjO/Z/DieqmrTYwjY1F21id
-	 tad+V68IP0d5n4lIQjhUELQMdh+lojWDIc/fUYYhfz5hshSl4mv8ruEG+ntj/ZDng5
-	 8gUJqbVJBI77WMkSVfI9ims40OuBZUZ+VfhwskM2AkUgnfekCz2pnukWlZEp7kVUIG
-	 6zElqNqeDA4KRJ+rVBGNOml2711HtD7oE0KnGfTja69xEjloD3YPq8j8nAD5LwmfeI
-	 koCu3N2PTpowQ==
+	b=Lhw7ewatBIg8dmBvwogTtKZnJQY2QT/5QEdoQ/yUTf7x1G2+OroRp6XUj4dhwmRrO
+	 RT9pjrBxbsN3tYav+1VUtOqAWIgjZWbmfRaPIiQ32J9J1Xda5X2bwLuG92bcFcW27o
+	 Js4TXZekrA49gXaYuwqlyFXx0/8E8LPaiY1ufYNuDNKzVNWQ8IMRtT0zmUPqfnYroA
+	 lZdkESi/UVMm5pqf+VePcLfh9+BCl14xoXuKtxajN8jcaRxtd2KK748eSQDuW/Nn8G
+	 4ACJTzjqMgaUwBEpzBvBg1ai/xDP4BDuolhh6Ar9Wk52rdhnk1N3xdRO0nSqOpRiXI
+	 wXzJdxmk7Py6A==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	=?UTF-8?q?Pierre-Cl=C3=A9ment=20Tosi?= <ptosi@google.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	linux-kbuild@vger.kernel.org,
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Jingyu Wang <jingyuwang_vip@163.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-pm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] kallsyms: ignore ARMv4 thunks along with others
-Date: Thu, 15 Feb 2024 09:32:08 +0100
-Message-Id: <20240215083225.3976252-1-arnd@kernel.org>
+Subject: [PATCH] cpufreq: qcom-hw: add CONFIG_COMMON_CLK dependency
+Date: Thu, 15 Feb 2024 09:33:14 +0100
+Message-Id: <20240215083322.4002782-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -64,51 +64,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-lld is now able to build ARMv4 and ARMv4T kernels, which means it can
-generate thunks for those (__ARMv4PILongThunk_*, __ARMv4PILongBXThunk_*)
-that can interfere with kallsyms table generation since they do not get
-ignore like the corresponding ARMv5+ ones are:
+It is still possible to compile-test a kernel without CONFIG_COMMON_CLK
+for some ancient ARM boards or other architectures, but this causes a
+link failure in the qcom-cpufreq-hw driver:
 
-Inconsistent kallsyms data
-Try "make KALLSYMS_EXTRA_PASS=1" as a workaround
+ERROR: modpost: "devm_clk_hw_register" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+ERROR: modpost: "devm_of_clk_add_hw_provider" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+ERROR: modpost: "of_clk_hw_onecell_get" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
 
-Replace the hardcoded list of thunk symbols with a more general regex that
-covers this one along with future symbols that follow the same pattern.
+Add a Kconfig dependency here to make sure this always work. Apparently
+this bug has been in the kernel for a while without me running into it
+on randconfig builds as COMMON_CLK is almost always enabled.
 
-Fixes: 5eb6e280432d ("ARM: 9289/1: Allow pre-ARMv5 builds with ld.lld 16.0.0 and newer")
-Fixes: efe6e3068067 ("kallsyms: fix nonconverging kallsyms table with lld")
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+I have cross-checked by building an allmodconfig kernel with COMMON_CLK
+disabled, which showed no other driver having this problem.
+
+Fixes: 4370232c727b ("cpufreq: qcom-hw: Add CPU clock provider support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: use a regular expression instead of listing each one.
----
- scripts/mksysmap | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/cpufreq/Kconfig.arm | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/mksysmap b/scripts/mksysmap
-index 9ba1c9da0a40..57ff5656d566 100755
---- a/scripts/mksysmap
-+++ b/scripts/mksysmap
-@@ -48,17 +48,8 @@ ${NM} -n ${1} | sed >${2} -e "
- / __kvm_nvhe_\\$/d
- / __kvm_nvhe_\.L/d
- 
--# arm64 lld
--/ __AArch64ADRPThunk_/d
--
--# arm lld
--/ __ARMV5PILongThunk_/d
--/ __ARMV7PILongThunk_/d
--/ __ThumbV7PILongThunk_/d
--
--# mips lld
--/ __LA25Thunk_/d
--/ __microLA25Thunk_/d
-+# lld arm/aarch64/mips thunks
-+/ __[[:alnum:]]*Thunk_/d
- 
- # CFI type identifiers
- / __kcfi_typeid_/d
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index f911606897b8..a0ebad77666e 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -173,6 +173,7 @@ config ARM_QCOM_CPUFREQ_NVMEM
+ config ARM_QCOM_CPUFREQ_HW
+ 	tristate "QCOM CPUFreq HW driver"
+ 	depends on ARCH_QCOM || COMPILE_TEST
++	depends on COMMON_CLK
+ 	help
+ 	  Support for the CPUFreq HW driver.
+ 	  Some QCOM chipsets have a HW engine to offload the steps
 -- 
 2.39.2
 
