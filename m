@@ -1,92 +1,80 @@
-Return-Path: <linux-kernel+bounces-66702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1964285605F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB50856060
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75CC6288671
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:58:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22CAE1C20C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E092F12BF15;
-	Thu, 15 Feb 2024 10:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68FA512C53E;
+	Thu, 15 Feb 2024 10:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KI35Qn12";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KQCiYYIe";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KI35Qn12";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KQCiYYIe"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bv9bzlUb"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B28A12BEAB
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0903A12BEAB
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993807; cv=none; b=Z4G35hkB5rIsCUIHKY4xDrdSGh6J/LmXSUakQm/nsMZAHOcuq0AJEaAJ9eQ68kiHEeViwtftg94r7pIZy1SSGYURMfdQ9ITiFp3++cTgW23qy3NxeGJDiybu5jnVr53rXeXPDTB0xZPbu3QmdKnlb5tUatlhveknrKFVNVVqiB0=
+	t=1707993815; cv=none; b=E/YZky+QCN5K3zbtFtsQMQqk7S0U6VedNB/pIYjGKwj8L//shhvvcqb/Syq6BBZvMvucdiCaAbsxTbbeBldPwMc60S1SlSmsy9w2BWma1axmoELW/wvEJny7YkaubMNmaFBhztkZzTEYNJ3UGNneJ1v1rQWbbwUzlApdU0ydGHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993807; c=relaxed/simple;
-	bh=aFSQulMeyo4/QHvqW8B8dxT0k+X9xP+M+5qjKcwSajc=;
+	s=arc-20240116; t=1707993815; c=relaxed/simple;
+	bh=wNVNKPD5nlL/jQNU+UDaWazzhxNcqjxS6/daQXHRG14=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dOyD3vrKTgdJyYQe1qkNZyq9U7p6/R+SF+mMxlG0n2qh1qbq38UkIlJJgnhNwnN4bmC2atbP/jbqddgOJozUwEkmybM9/zRz7ZwivJir5UCQI1U+uxD7Aa/DmZ7ZqGf4HlCpCqLROqSPwbTuZPoWrFWpoFoUNlMELqKLmNewALg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KI35Qn12; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KQCiYYIe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KI35Qn12; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KQCiYYIe; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 84EE51F88B;
-	Thu, 15 Feb 2024 10:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707993796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	 In-Reply-To:Content-Type; b=Dstzxx3FVr7Tyl8EciAdXq88E6xJgjZ53bi6vwl482YnhUb0IskXpzrppPzfttCTm2vUhWseVxQZAMFLy+533MSuzouqAjoBEJysLaRtwTMmGZB4eI0sC6IBRDyy8UB4isuEPkbAERgLEquBqNQTCvhVlgnrJmrlvviF8ULh7YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bv9bzlUb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707993812;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=288n+FGoThYvjHnUnq89Nh/a/z6Cws0UYcrsQ/yco4Q=;
-	b=KI35Qn12481Ln2ZZewWVpteK+lENtR7HPTOvfza89bRj6j53RQX9gYenYbtICoge+38xZL
-	hK4VHT0LebTZFw+9i9B9HBaSg8DwPyUCWdNsx+2gftIp1Li0Ol3HbANb1LJSvOE8TyBQpq
-	HnE8KTLqXTc2Y9PNmtouYP1b1/nWU3s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707993796;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=288n+FGoThYvjHnUnq89Nh/a/z6Cws0UYcrsQ/yco4Q=;
-	b=KQCiYYIeIn7g+piswyKNBgJa6zCseAbyyqGnxoPfw+mpeWbD0So/Ul19mqgWiS49p37Sgc
-	c4C3CUhLOUXCt7Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707993796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=288n+FGoThYvjHnUnq89Nh/a/z6Cws0UYcrsQ/yco4Q=;
-	b=KI35Qn12481Ln2ZZewWVpteK+lENtR7HPTOvfza89bRj6j53RQX9gYenYbtICoge+38xZL
-	hK4VHT0LebTZFw+9i9B9HBaSg8DwPyUCWdNsx+2gftIp1Li0Ol3HbANb1LJSvOE8TyBQpq
-	HnE8KTLqXTc2Y9PNmtouYP1b1/nWU3s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707993796;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=288n+FGoThYvjHnUnq89Nh/a/z6Cws0UYcrsQ/yco4Q=;
-	b=KQCiYYIeIn7g+piswyKNBgJa6zCseAbyyqGnxoPfw+mpeWbD0So/Ul19mqgWiS49p37Sgc
-	c4C3CUhLOUXCt7Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6D0D713A53;
-	Thu, 15 Feb 2024 10:43:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xmfcGcTqzWW9LQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 10:43:16 +0000
-Message-ID: <a5242c82-8373-44ee-b1af-ba98de5075f4@suse.cz>
-Date: Thu, 15 Feb 2024 11:43:16 +0100
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=9s31E6Mq5aIvde8oGi3wYEyTZeK5CoMIgMhF7GJXA6U=;
+	b=Bv9bzlUb5Bz+Ro41c0zYSRB91QZdvwxERbwvFHuv/302PQvhPIWIxc6w2QT3XBi4nzSDd8
+	FoXbXtL8G69fKOpENF3lbFrDosg3IW9QkHZZLpkXAHR7D2MMVjP/ESR2EM4OoCdm4qI3HA
+	XxENcFVlONLIF0Ataz9vr1n6G0lACMo=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-356-feeYfA6IOg-n5CLOpuYHxQ-1; Thu, 15 Feb 2024 05:43:30 -0500
+X-MC-Unique: feeYfA6IOg-n5CLOpuYHxQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-78346521232so87723585a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:43:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707993810; x=1708598610;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9s31E6Mq5aIvde8oGi3wYEyTZeK5CoMIgMhF7GJXA6U=;
+        b=P84C6cpeeToxjNQ4LP4Fw/oxjtPsxNkerA5o1ym3nvAVR2NggepPredJCBsD8JW2gk
+         nb4Kw9UilKfn+45bePBCdgVtA39GFSNtx0hXQTR319hgXrJcRy0rspDgoMjSfnOXeS15
+         nH3GQE26saCVN+oJsUFlrNnOq3nmv+1FTSDPXoFaIUQxot9vy4Enm3f57tEM0KNIwziv
+         coEDkuDxayHOu3hp6PAqZfs4M566xRy3SRWSJsQC9BjYT8fne4yITjNu61X21O98Ax6V
+         rj53YkLae2UQj9rsR4ZoLWNCe6WmbkP1aAFMYUJKyVwr8sFP7RUPUDWdqWJd079rYpaP
+         TUkg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBdebjr//hSV0Wa9RNUsKvBRAlf7hmhsN1NUJTbazGqkOUC1bXgPwo4pK3EJq0bsZpxmMm0f5UPR1VxjVsHJsA9nvaNLjT3FpwkMSb
+X-Gm-Message-State: AOJu0YwmaZcBNbzFaL0C3eHSprCJ202POo3Vkj91aN9dIFU4Zr/XlhLY
+	MiSw0JK5JqFNL1X+Os6RPS3rZyU/UAO1LhEmesQHqEyemrt8PcGVVdM0rvszQuRFhcVhv5kgf5J
+	YydgZvquRXdRotQfJ5pR/GB86ywvrk6eGZ6gbsqwRkb0xEEWkn2MzeeD3tp+ffA==
+X-Received: by 2002:ad4:5bca:0:b0:68c:bbb8:7b5b with SMTP id t10-20020ad45bca000000b0068cbbb87b5bmr1434260qvt.32.1707993809842;
+        Thu, 15 Feb 2024 02:43:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5H/zRi11bkj5uzU7XPORXiVCqTWZ4w0qR956GKlSvrZASPF3G5Ijgb6Eigj5w0Tt9EZhPag==
+X-Received: by 2002:ad4:5bca:0:b0:68c:bbb8:7b5b with SMTP id t10-20020ad45bca000000b0068cbbb87b5bmr1434228qvt.32.1707993809518;
+        Thu, 15 Feb 2024 02:43:29 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id lu7-20020a0562145a0700b0068efbe2235asm535657qvb.54.2024.02.15.02.43.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 02:43:29 -0800 (PST)
+Message-ID: <b956a94f-8731-4b14-b8c2-ed6b33a67182@redhat.com>
+Date: Thu, 15 Feb 2024 11:43:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,98 +82,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 2/7] lib/stackdepot: Move stack_record struct
- definition into the header
+Subject: Re: [PATCH v6 06/18] mm: Tidy up pte_next_pfn() definition
 Content-Language: en-US
-To: Marco Elver <elver@google.com>
-Cc: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-3-osalvador@suse.de>
- <CANpmjNPypJM5icG9M5yP5-psSofbA7D35eaKx+E6NyCsHMa=qg@mail.gmail.com>
- <a310c3cf-049d-4067-b950-f6abf9b5b098@suse.cz>
- <CANpmjNOgiqcXx1T=-W6QL6RuYsZSLOdSjGH9iLVJru_3=15Bnw@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CANpmjNOgiqcXx1T=-W6QL6RuYsZSLOdSjGH9iLVJru_3=15Bnw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+ James Morse <james.morse@arm.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-7-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240215103205.2607016-7-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KI35Qn12;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=KQCiYYIe
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[suse.de,linux-foundation.org,vger.kernel.org,kvack.org,suse.com,gmail.com,google.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.50
-X-Rspamd-Queue-Id: 84EE51F88B
-X-Spam-Flag: NO
 
-On 2/15/24 10:33, Marco Elver wrote:
-> On Thu, 15 Feb 2024 at 10:30, Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 2/15/24 09:16, Marco Elver wrote:
->> > On Wed, 14 Feb 2024 at 18:00, Oscar Salvador <osalvador@suse.de> wrote:
->> >>
->> >> In order to move the heavy lifting into page_owner code, this one
->> >> needs to have access to the stack_record structure, which right now
->> >> sits in lib/stackdepot.c.
->> >> Move it to the stackdepot.h header so page_owner can access
->> >> stack_record's struct fields.
->> >>
->> >> Signed-off-by: Oscar Salvador <osalvador@suse.de>
->> >> Reviewed-by: Marco Elver <elver@google.com>
->> >> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->> >> ---
->>
->> >>  #define DEPOT_POOLS_CAP 8192
->> >> -/* The pool_index is offset by 1 so the first record does not have a 0 handle. */
->> >> +/* The pool_index is offset by 1 so the first record does not have a 0 handle */
->> >
->> > Why this comment change? We lost the '.' -- for future reference, it'd
->> > be good to ensure unnecessary changes don't creep into the diff. This
->> > is just nitpicking,
->>
->> Agree with this part.
->>
->> > and I've already reviewed this change, so no need
->> > to send a v+1.
->>
->> But confused by this remark. There is a number of nontrivial changes in the
->> series from v8, and IIRC v8 was dropped from mm/ meanwhile, so a v+1 of the
->> whole series is expected and not fixups. Which means including patches that
->> were already reviewed. That's the usual process.
+On 15.02.24 11:31, Ryan Roberts wrote:
+> Now that the all architecture overrides of pte_next_pfn() have been
+> replaced with pte_advance_pfn(), we can simplify the definition of the
+> generic pte_next_pfn() macro so that it is unconditionally defined.
 > 
-> This is already v9. Of course, still need to look at rest of v9 and if
-> there are major changes needed then a v10 is needed.
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   include/linux/pgtable.h | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index b7ac8358f2aa..bc005d84f764 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -212,7 +212,6 @@ static inline int pmd_dirty(pmd_t pmd)
+>   #define arch_flush_lazy_mmu_mode()	do {} while (0)
+>   #endif
+>   
+> -#ifndef pte_next_pfn
+>   #ifndef pte_advance_pfn
+>   static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
+>   {
+> @@ -221,7 +220,6 @@ static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
+>   #endif
+>   
+>   #define pte_next_pfn(pte) pte_advance_pfn(pte, 1)
+> -#endif
+>   
+>   #ifndef set_ptes
+>   /**
 
-Ah sorry I misunderstood you completely. What you meant v10 isn't needed for
-the missing "." and I thought you were saying v9 already wasn't needed (for
-this particular patch).
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
