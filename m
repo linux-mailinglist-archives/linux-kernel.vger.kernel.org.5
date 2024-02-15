@@ -1,524 +1,222 @@
-Return-Path: <linux-kernel+bounces-67761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B381857045
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:15:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FA0857059
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 229A5B23C79
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:14:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEC14283743
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97690151CD1;
-	Thu, 15 Feb 2024 22:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A5A1419B5;
+	Thu, 15 Feb 2024 22:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kQtbPlQM"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="fhY1q3cI"
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD9714A4C4;
-	Thu, 15 Feb 2024 22:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A9011419AE
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708034916; cv=none; b=o3JuFYrFN+RKRMb3JdeBlYO9GNGQNaILBeh1s5RE2D6IYPCbol2G7s3H1UM395cs+7ksukt4GQ4n3ZA6R4yT25u9JfQYl/OmoRv4aX5L+vq0/5Kwnr5IyYrj1+obswFAwJ5o6bJOD2tHJViWiZNJfZjFZXs6i0+FVRUZRaRgeOU=
+	t=1708035006; cv=none; b=uYvkrGMDeyRfzyFPMU+Pw8ROhhAqgIbZYlbcLrJjoDI2Tm9XtkJNOkI2XmRrE7nUZzWnrh1lFfn2u2al/J7ryQ77vOaBQ53gfTj8fSxPfSUMISgr6VI2WmNytA+iQGezGGdxkh67muQDPacFlySmlumTIMDq+eEbDtVo/2FJpyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708034916; c=relaxed/simple;
-	bh=r7i6r1TAnXFKp6Ud7ZNcT3dqvowjChmj4bvNXv7VZl8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WQ7vmF1Vb2uenz0Hbmo8JI2Nmx6ZiYuBIvQmautwJZ986+sXqn1+TcWIjtBsWpED3H5Pn2a1lwHOvYG1Okwdxzd5JLjeWfTatILvWN8Xb0R0btlUx0z9SbUhR5outCLSPN1U192gNcRcI9zncNuJnOunwHoIl9jxMLgfQhy1a6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kQtbPlQM; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FKYRVv017474;
-	Thu, 15 Feb 2024 22:08:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=GgJ7F+dcd0WCLJ0MXE682Wr0l+kLhInQlwRytq3asIY=;
- b=kQtbPlQMw61Mp2OWBXpSBFk5rh6FkKKimdufv5nJ66EHXHdo52il3I2ABhCLHYn1An6d
- seC8bBdXsYTY9MoqliuAfrPUQ06pOH9IZqHHplag3vrgkR6+wbEjeiEcE8hAi3Ci/1FF
- qMRaGTdT2cxC3LOTiSyZWz9QcWco75a796MzG8bEBsFgM6RPzPNrp8reWG3bKA/8VbSw
- yfltFIaDo89DS9damn0QTBRfKhq4OfgtmdgVQNzv30loDbycEw2QSsoZbYAOFpdmOH/s
- fvVjzIAlFME1tujEe/gTlXVom8IiPJt/oC85Y0eRTvExHc9ipQ2/ODxyRKdLrOknzjq1 Dw== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9q0v5yjp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 22:08:17 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FKZ6JT009680;
-	Thu, 15 Feb 2024 22:08:16 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npm7822-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 22:08:16 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FM8D2e62783830
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 22:08:16 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 95CC35807D;
-	Thu, 15 Feb 2024 22:08:13 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 44D275807A;
-	Thu, 15 Feb 2024 22:08:13 +0000 (GMT)
-Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.14.18])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 15 Feb 2024 22:08:13 +0000 (GMT)
-From: Eddie James <eajames@linux.ibm.com>
-To: linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        andi.shyti@kernel.org, eajames@linux.ibm.com, alistair@popple.id.au,
-        joel@jms.id.au, jk@ozlabs.org, sboyd@kernel.org,
-        mturquette@baylibre.com, robh@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Subject: [PATCH 33/33] i2c: fsi: Add interrupt support
-Date: Thu, 15 Feb 2024 16:07:59 -0600
-Message-Id: <20240215220759.976998-34-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240215220759.976998-1-eajames@linux.ibm.com>
-References: <20240215220759.976998-1-eajames@linux.ibm.com>
+	s=arc-20240116; t=1708035006; c=relaxed/simple;
+	bh=XKZTT0r2VF1mOrkTIHurFMCFMBi4nc11Dx3zMuZ+GJc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CN9L+/q9J9TDBZ7xtXiHsgux1LgR39y6O9S/CXF+oHnoNvLDPrNicQ0Axy3bOIlFExRnF3MYEDMzgfBLvE3j/vacU+vtJCyctKSoP6/0EgZbXZdTJG+VjF8Xrv04Vv/wEetuys1YtYjtc8wGUcQYhmq9TStzkfbp6jrVv69AxbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=fhY1q3cI; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6818a9fe380so8320276d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1708035004; x=1708639804; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QTxIYqJ3x31ED8bUCDRgY/wdq652mHn9cxxt/lUG8NU=;
+        b=fhY1q3cIEJbL97jp7ultHGcLvG50zrntsLvw82Hv1NJszqCM3s0ZXqoqTqugNtw+zJ
+         5BxgdnDdwbZ31MNjyOgcDgyn86nzG9G4LElJVFd2nD2kR/FCfpWJM7nrcD3Z1m1GL570
+         6iucJ/V4GxwgdsacwN/bOx23cTCPIw1B5iELI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708035004; x=1708639804;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QTxIYqJ3x31ED8bUCDRgY/wdq652mHn9cxxt/lUG8NU=;
+        b=u1y9etaOynTxWKkl1FdJxu9lQp5sVKhW/BuRPiBohH4wnzAMq8M3kZEv3t5P4+Ywin
+         Gq4VwK5C7AxYdQ2Dl3PfHOjQ2N2uo+qlXAuyZvgk6NnQIgbDqDTzHoOuqosV+yUdLN+o
+         3CZAZN+nimzcz4Kl21cYYlQtS/LMVm7XTa7Wl5TqTj/EtEc6z2MrMD+DgtEEgtfdjk+u
+         0ZzNjLZqQmkFh0WBNoJNKjqYe7wQginhiExmd5vgB8IGIlelXeE0XmhZo11VHifE/JDN
+         UYaGKbeu0/Ubr8QFPETRF/Ny7JTAdiexx2j2rdt8R7oMb4Ls9jmghYkdLN0BP0MHptIn
+         UPWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGyKNNIOnyIpUH6eBqHqI76Aywv5+5L3st9UZeGWOmAjpfR8ncuZ0MJCG3AD+1HMHfT8vHDxk/fPeWQe2QN0ulgx1uUO+yeapEJw2d
+X-Gm-Message-State: AOJu0YxDchaVpxYi+4GfknY71iCeokJaQOyx+0DVQ2oSiRpEy9hJcEE3
+	gUpLb5AUusssEpifCyEkCu8ALTVo9jTrc6TDm57dtJhdU1n4Pn5orXTJgGsbDA==
+X-Google-Smtp-Source: AGHT+IGQrqQvMK34zypx4IWdSO0rTS5t9aksnt5rbwJ+mOFPlD07cQiF6PSLrJQfaJrAKzi4Ei/Rbw==
+X-Received: by 2002:a05:6214:e6d:b0:68f:1aa7:12be with SMTP id jz13-20020a0562140e6d00b0068f1aa712bemr3225295qvb.23.1708035003813;
+        Thu, 15 Feb 2024 14:10:03 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id lb7-20020a056214318700b0068cb0453881sm1085393qvb.96.2024.02.15.14.10.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 14:10:02 -0800 (PST)
+Message-ID: <7582ca22-7093-46f2-8e76-0af2d227d778@broadcom.com>
+Date: Thu, 15 Feb 2024 14:10:00 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LODkJAAOMushShHGwjpoPCDld1qWtOWv
-X-Proofpoint-GUID: LODkJAAOMushShHGwjpoPCDld1qWtOWv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_20,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- suspectscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402150171
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] net: bcmasp: Sanity check is off by one
+To: Justin Chen <justin.chen@broadcom.com>, netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Hangyu Hua <hbh25y@gmail.com>,
+ "open list:BROADCOM ASP 2.0 ETHERNET DRIVER"
+ <bcm-kernel-feedback-list@broadcom.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240215182732.1536941-1-justin.chen@broadcom.com>
+ <20240215182732.1536941-3-justin.chen@broadcom.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAyxcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFrZXktdXNhZ2UtbWFz
+ a0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2RpbmdAcGdwLmNvbXBn
+ cG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29tLmNvbQUbAwAAAAMW
+ AgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagBQJk1oG9BQkj4mj6AAoJEIEx
+ tcQpvGag13gH/2VKD6nojbJ9TBHLl+lFPIlOBZJ7UeNN8Cqhi9eOuH97r4Qw6pCnUOeoMlBH
+ C6Dx8AcEU+OH4ToJ9LoaKIByWtK8nShayHqDc/vVoLasTwvivMAkdhhq6EpjG3WxDfOn8s5b
+ Z/omGt/D/O8tg1gWqUziaBCX+JNvrV3aHVfbDKjk7KRfvhj74WMadtH1EOoVef0eB7Osb0GH
+ 1nbrPZncuC4nqzuayPf0zbzDuV1HpCIiH692Rki4wo/72z7mMJPM9bNsUw1FTM4ALWlhdVgT
+ gvolQPmfBPttY44KRBhR3Ipt8r/dMOlshaIW730PU9uoTkORrfGxreOUD3XT4g8omuvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <20240215182732.1536941-3-justin.chen@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000af20e0061172e30c"
 
-Optionally support interrupts from the I2C controller so that
-the driver can wait rather than poll the status register.
+--000000000000af20e0061172e30c
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/i2c/busses/i2c-fsi.c   | 215 ++++++++++++++++++++++++++++++---
- include/trace/events/i2c_fsi.h |  45 +++++++
- 2 files changed, 245 insertions(+), 15 deletions(-)
- create mode 100644 include/trace/events/i2c_fsi.h
+On 2/15/24 10:27, Justin Chen wrote:
+> A sanity check for OOB write is off by one leading to a false positive
+> when the array is full.
+> 
+> Fixes: 9b90aca97f6d ("net: ethernet: bcmasp: fix possible OOB write in bcmasp_netfilt_get_all_active()")
+> Signed-off-by: Justin Chen <justin.chen@broadcom.com>
 
-diff --git a/drivers/i2c/busses/i2c-fsi.c b/drivers/i2c/busses/i2c-fsi.c
-index 33f4e64cb60b..096edeaa3312 100644
---- a/drivers/i2c/busses/i2c-fsi.c
-+++ b/drivers/i2c/busses/i2c-fsi.c
-@@ -23,6 +23,7 @@
- #include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/slab.h>
-+#include <linux/wait.h>
- 
- #define FSI_ENGID_I2C		0x7
- 
-@@ -87,6 +88,7 @@
- #define I2C_INT_STOP_ERR	BIT(7)
- #define I2C_INT_BUSY		BIT(6)
- #define I2C_INT_IDLE		BIT(5)
-+#define I2C_INT_ANY		GENMASK(15, 7)
- 
- /* status register */
- #define I2C_STAT_INV_CMD	BIT(31)
-@@ -148,21 +150,35 @@
- /* choose timeout length from legacy driver; it's well tested */
- #define I2C_ABORT_TIMEOUT	msecs_to_jiffies(100)
- 
-+struct fsi_i2c_port;
-+
- struct fsi_i2c_master {
- 	struct fsi_device	*fsi;
-+	struct fsi_i2c_port	*port;
- 	struct mutex		lock;
-+	wait_queue_head_t	wait;
- 	u32			clock_div;
- 	u8			fifo_size;
-+	bool			interrupts;
- 	bool			skip_stop;
-+	bool			abort;
- };
- 
- struct fsi_i2c_port {
- 	struct i2c_adapter	adapter;
- 	struct fsi_i2c_master	*master;
-+	struct i2c_msg		*msgs;
-+	int			nmsgs;
-+	int			rc;
-+	int			i;
- 	u16			port;
- 	u16			xfrd;
-+	bool			wake;
- };
- 
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/i2c_fsi.h>
-+
- static int fsi_i2c_read_reg(struct fsi_device *fsi, unsigned int reg,
- 			    u32 *data)
- {
-@@ -192,7 +208,7 @@ static int fsi_i2c_dev_init(struct fsi_i2c_master *i2c)
- 	u32 watermark;
- 	int rc;
- 
--	/* since we use polling, disable interrupts */
-+	/* start with interrupts disabled */
- 	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, 0);
- 	if (rc)
- 		return rc;
-@@ -236,22 +252,24 @@ static int fsi_i2c_set_port(struct fsi_i2c_port *port)
- 	return fsi_i2c_write_reg(fsi, I2C_FSI_RESET_ERR, 0);
- }
- 
--static int fsi_i2c_start(struct fsi_i2c_port *port, struct i2c_msg *msg,
--			 bool stop)
-+static int fsi_i2c_start(struct fsi_i2c_port *port)
- {
- 	u32 cmd = I2C_CMD_WITH_START | I2C_CMD_WITH_ADDR;
-+	struct i2c_msg *msg = &port->msgs[port->i];
- 
- 	port->xfrd = 0;
- 
- 	if (msg->flags & I2C_M_RD)
- 		cmd |= I2C_CMD_READ;
- 
--	if (stop || msg->flags & I2C_M_STOP)
-+	if ((port->i == (port->nmsgs - 1)) || (msg->flags & I2C_M_STOP))
- 		cmd |= I2C_CMD_WITH_STOP;
- 
- 	cmd |= FIELD_PREP(I2C_CMD_ADDR, msg->addr);
- 	cmd |= FIELD_PREP(I2C_CMD_LEN, msg->len);
- 
-+	trace_i2c_fsi_start(port, cmd);
-+
- 	return fsi_i2c_write_reg(port->master->fsi, I2C_FSI_CMD, cmd);
- }
- 
-@@ -489,11 +507,38 @@ static int fsi_i2c_abort(struct fsi_i2c_port *port)
- 	if (i2c->skip_stop)
- 		return 0;
- 
-+	if (i2c->interrupts) {
-+		i2c->abort = true;
-+		port->wake = false;
-+
-+		rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, I2C_INT_ANY);
-+		if (rc)
-+			return rc;
-+	}
-+
- 	/* write stop command */
- 	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_CMD, cmd);
- 	if (rc)
- 		return rc;
- 
-+	if (i2c->interrupts) {
-+		rc = wait_event_interruptible_timeout(i2c->wait, port->wake, I2C_ABORT_TIMEOUT);
-+		if (rc > 0)
-+			return port->rc;
-+
-+		fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, 0);
-+
-+		if (!rc) {
-+			rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &status);
-+			if (!rc && (status & I2C_STAT_CMD_COMP))
-+				rc = 0;
-+			else
-+				rc = -ETIMEDOUT;
-+		}
-+
-+		return rc;
-+	}
-+
- 	/* wait until we see command complete in the master */
- 	start = jiffies;
- 	do {
-@@ -564,8 +609,59 @@ static int fsi_i2c_handle_status(struct fsi_i2c_port *port,
- 	return 0;
- }
- 
--static int fsi_i2c_wait(struct fsi_i2c_port *port, struct i2c_msg *msg,
--			unsigned long timeout)
-+static int fsi_i2c_wait_irq(struct fsi_i2c_port *port, unsigned long timeout)
-+{
-+	int rc;
-+
-+	port->wake = false;
-+
-+	rc = fsi_i2c_write_reg(port->master->fsi, I2C_FSI_INT_MASK, I2C_INT_ANY);
-+	if (rc)
-+		return rc;
-+
-+	rc = wait_event_interruptible_timeout(port->master->wait, port->wake, timeout);
-+	if (rc > 0) {
-+		rc = port->rc;
-+
-+		if (port->master->abort) {
-+			int rc2 = fsi_i2c_abort(port);
-+
-+			if (rc2)
-+				return rc2;
-+		}
-+
-+		return rc;
-+	}
-+
-+	/*
-+	 * The interrupt handler should turn off interrupts once it's done, but in this
-+	 * case we timed out or were interrupted, so mask them off here.
-+	 */
-+	fsi_i2c_write_reg(port->master->fsi, I2C_FSI_INT_MASK, 0);
-+
-+	if (!rc) {
-+		u32 status;
-+
-+		rc = fsi_i2c_read_reg(port->master->fsi, I2C_FSI_STAT, &status);
-+		if (!rc && (status & I2C_STAT_ANY_RESP)) {
-+			rc = fsi_i2c_handle_status(port, &port->msgs[port->i], status);
-+			if (rc < 0)
-+				return rc;
-+
-+			/* cmd complete and all data xfrd */
-+			if (rc == port->msgs[port->i].len)
-+				return 0;
-+
-+			rc = -ETIMEDOUT;
-+		} else {
-+			rc = -ETIMEDOUT;
-+		}
-+	}
-+
-+	return rc;
-+}
-+
-+static int fsi_i2c_wait_poll(struct fsi_i2c_port *port, unsigned long timeout)
- {
- 	unsigned long start = jiffies;
- 	u32 status;
-@@ -578,12 +674,12 @@ static int fsi_i2c_wait(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			return rc;
- 
- 		if (status & I2C_STAT_ANY_RESP) {
--			rc = fsi_i2c_handle_status(port, msg, status);
-+			rc = fsi_i2c_handle_status(port, &port->msgs[port->i], status);
- 			if (rc < 0)
- 				return rc;
- 
- 			/* cmd complete and all data xfrd */
--			if (rc == msg->len)
-+			if (rc == port->msgs[port->i].len)
- 				return 0;
- 
- 			/* need to xfr more data, but maybe don't need wait */
-@@ -601,9 +697,7 @@ static int fsi_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- {
- 	struct fsi_i2c_port *port = i2c_get_adapdata(adap);
- 	unsigned long start_time;
--	struct i2c_msg *msg;
- 	int rc;
--	int i;
- 
- 	mutex_lock(&port->master->lock);
- 
-@@ -611,21 +705,28 @@ static int fsi_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 	if (rc)
- 		goto unlock;
- 
--	for (i = 0; i < num; i++) {
--		msg = msgs + i;
-+	port->master->port = port;
-+	port->master->abort = false;
-+	port->msgs = msgs;
-+	port->nmsgs = num;
-+	for (port->i = 0; port->i < num; ++port->i) {
- 		start_time = jiffies;
- 
--		rc = fsi_i2c_start(port, msg, i == num - 1);
-+		rc = fsi_i2c_start(port);
- 		if (rc)
- 			goto unlock;
- 
--		rc = fsi_i2c_wait(port, msg,
--				  adap->timeout - (jiffies - start_time));
-+		if (port->master->interrupts)
-+			rc = fsi_i2c_wait_irq(port, adap->timeout - (jiffies - start_time));
-+		else
-+			rc = fsi_i2c_wait_poll(port, adap->timeout - (jiffies - start_time));
- 		if (rc)
- 			goto unlock;
- 	}
- 
- unlock:
-+	port->msgs = NULL;
-+	port->master->port = NULL;
- 	mutex_unlock(&port->master->lock);
- 	return rc ? : num;
- }
-@@ -636,6 +737,85 @@ static u32 fsi_i2c_functionality(struct i2c_adapter *adap)
- 		I2C_FUNC_SMBUS_EMUL | I2C_FUNC_SMBUS_BLOCK_DATA;
- }
- 
-+static irqreturn_t fsi_i2c_irq(int irq, void *data)
-+{
-+	struct fsi_i2c_master *i2c = data;
-+	struct fsi_i2c_port *port;
-+	struct i2c_msg *msg;
-+	u32 status;
-+	int rc;
-+
-+	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, 0);
-+	if (rc)
-+		return IRQ_NONE;
-+
-+	if (!i2c->port)
-+		return IRQ_HANDLED;
-+
-+	port = i2c->port;
-+	rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &status);
-+	if (rc)
-+		goto wake;
-+
-+	trace_i2c_fsi_irq(port, status);
-+
-+	if (i2c->abort) {
-+		if (status & I2C_STAT_CMD_COMP) {
-+			port->wake = true;
-+			goto done;
-+		} else {
-+			rc = fsi_i2c_error_status_to_rc(status);
-+			goto wake;
-+		}
-+	}
-+
-+	if (status & I2C_STAT_ERR) {
-+		i2c->abort = true;
-+		i2c->skip_stop = status & I2C_STAT_SKIP_STOP;
-+		rc = fsi_i2c_error_status_to_rc(status);
-+		goto wake;
-+	}
-+
-+	if (!port->msgs || port->i >= port->nmsgs) {
-+		rc = -ENODEV;
-+		goto wake;
-+	}
-+
-+	msg = &port->msgs[port->i];
-+	if (status & I2C_STAT_DAT_REQ) {
-+		u8 fifo_count = FIELD_GET(I2C_STAT_FIFO_COUNT, status);
-+
-+		if (msg->flags & I2C_M_RD)
-+			rc = fsi_i2c_read_fifo(port, msg, fifo_count);
-+		else
-+			rc = fsi_i2c_write_fifo(port, msg, fifo_count);
-+	} else if (status & I2C_STAT_CMD_COMP) {
-+		if (port->xfrd < msg->len) {
-+			rc = -ENODATA;
-+		} else {
-+			++port->i;
-+			if (port->i < port->nmsgs) {
-+				rc = fsi_i2c_start(port);
-+			} else {
-+				port->wake = true;
-+				goto done;
-+			}
-+		}
-+	}
-+
-+	if (!rc)
-+		rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, I2C_INT_ANY);
-+
-+wake:
-+	if (rc)
-+		port->wake = true;
-+done:
-+	port->rc = rc;
-+	if (port->wake)
-+		wake_up_interruptible_all(&i2c->wait);
-+	return IRQ_HANDLED;
-+}
-+
- static struct i2c_bus_recovery_info fsi_i2c_bus_recovery_info = {
- 	.recover_bus = i2c_generic_scl_recovery,
- 	.get_scl = fsi_i2c_get_scl,
-@@ -683,6 +863,7 @@ static int fsi_i2c_probe(struct device *dev)
- 		return -ENOMEM;
- 
- 	mutex_init(&i2c->lock);
-+	init_waitqueue_head(&i2c->wait);
- 	i2c->fsi = to_fsi_dev(dev);
- 	i2c->clock_div = I2C_DEFAULT_CLK_DIV;
- 
-@@ -707,6 +888,10 @@ static int fsi_i2c_probe(struct device *dev)
- 	if (rc)
- 		return rc;
- 
-+	rc = fsi_device_request_irq(i2c->fsi, fsi_i2c_irq, i2c);
-+	if (!rc)
-+		i2c->interrupts = true;
-+
- 	ports = FIELD_GET(I2C_STAT_MAX_PORT, stat) + 1;
- 	dev_dbg(dev, "I2C master has %d ports\n", ports);
- 
-diff --git a/include/trace/events/i2c_fsi.h b/include/trace/events/i2c_fsi.h
-new file mode 100644
-index 000000000000..691fb2adf454
---- /dev/null
-+++ b/include/trace/events/i2c_fsi.h
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM i2c_fsi
-+
-+#if !defined(_TRACE_I2C_FSI_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_I2C_FSI_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(i2c_fsi_irq,
-+	TP_PROTO(const struct fsi_i2c_port *port, uint32_t status),
-+	TP_ARGS(port, status),
-+	TP_STRUCT__entry(
-+		__field(int, bus)
-+		__field(int, msg_idx)
-+		__field(uint32_t, status)
-+	),
-+	TP_fast_assign(
-+		__entry->bus = port->adapter.nr;
-+		__entry->msg_idx = port->i;
-+		__entry->status = status;
-+	),
-+	TP_printk("i2c-%d status: %08x", __entry->bus, __entry->status)
-+);
-+
-+TRACE_EVENT(i2c_fsi_start,
-+	TP_PROTO(const struct fsi_i2c_port *port, uint32_t command),
-+	TP_ARGS(port, command),
-+	TP_STRUCT__entry(
-+		__field(int, bus)
-+		__field(int, msg_idx)
-+		__field(uint32_t, command)
-+	),
-+	TP_fast_assign(
-+		__entry->bus = port->adapter.nr;
-+		__entry->msg_idx = port->i;
-+		__entry->command = command;
-+	),
-+	TP_printk("i2c-%d command: %08x", __entry->bus, __entry->command)
-+);
-+
-+#endif
-+
-+#include <trace/define_trace.h>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.39.3
+Florian
 
+
+--000000000000af20e0061172e30c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGsea++rbw453x+y
+wtqpEyFX+sx7XwgvmkJLaPQKg9T2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDIxNTIyMTAwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC4eR0SqEDYf5XriPqJlh7PA+vP1Echvdi6
+wynhYUBCsxhlE+Ll6NVTaC7xPNN/zkMEB29kfDJpWXNZFy0I9cP1aNNOJr8PLjEN3H2XOv3u5EeY
+ofROD9NnIbGMxCevstUKK5aQ+Ac9kqi6YTkqX8tlg0u/IZfVxE42CMBDX5HNnEhdSlbPWrgIejZx
+NWS/O5cn0Tm1NPHOe1dvIcey0JsUnZ7M2XGnpSxapegZlELE6Hiq2NS60C8ZtAFqdtPFs8TtPfP5
+4qu9YMnfxFP+htNIKdOk9k0XHndbNVA6W3vdPu/XDoZUvlJv3V8HH7VxEjA3crYwnY6XrSm8cTF8
+tvzJ
+--000000000000af20e0061172e30c--
 
