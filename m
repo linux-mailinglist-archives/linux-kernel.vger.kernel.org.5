@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-66615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1D9855F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:20:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7D7855F86
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D7F1F21882
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:20:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49165B2CC06
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272EA69965;
-	Thu, 15 Feb 2024 10:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DCB69965;
+	Thu, 15 Feb 2024 10:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Satc0Gr7"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qAe9h4xU"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9032669D00
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CB967C44
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992403; cv=none; b=VejIcHoTS3AeLLJSXCNp6ImriJOjTF7mS4fgRN09yATq/+8FEwRw7gnINEYHmnX6FpY9VB/9ruLXALaoRm/fCCIuZwmSr/5JxnMXlx1FBVCXnZ77qkHbiAWqeTM60450kgFBIF+QfZZfsCRlL7R3cNEvp6U/s88XryY01RdNnDE=
+	t=1707992511; cv=none; b=FepVnFXr5QQd0nIN4mcS9Fqu+mYhL7hdEO9EXAudzAiSznTSPzYFjT/K8LwSAqoS460xyU6jrtaZHierYLq3KiWoMVxOsP5yYYgpaACDYHR1Kep95dZDUqDuA7iGxZIwVwT+CUCOBMcbGye/thhtJYnWYWlRCSQmvTlCbehAfF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992403; c=relaxed/simple;
-	bh=6T+B23RM48DgKeyvyI3A1orWH9VcY1C1hi6ykGKmpV4=;
+	s=arc-20240116; t=1707992511; c=relaxed/simple;
+	bh=YT83jAApk16SoeiAMl/v7WhogysHMW2ucF4uBrLYJgg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hdCM1i5XbPzcD0gQTJJ+LA2rLSdVOZrHRslmBwSgx/YG54jAWRX+J4qpEBlxuZTyelF4Zv50Z/uSSl8IRnShOrI4RroGAlchzWDzkQx1pDJ1AaCNduYVMkwF7v1XXxq09/0NFc/GVn8e1B3HALrBLEqwe2lRSdeZqzXU7amUIp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Satc0Gr7; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-411e71d8a2bso4986875e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:20:00 -0800 (PST)
+	 In-Reply-To:Content-Type; b=ULo9kWJqARMehmK1GNZYAJZos0L1ouSF6iwISlMfZ5XuHFm9EMBuJq8XODrk2p4NHCTPPozzIK6jRv8ThuI/5+xladPdU5WBj2BLgfRkzrB0UGRhcb4Ay0Ht8C+ZEJ3047W5gEfydwoVFPZ1zNHuECmINWBBh7qBkijb3X/K+A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qAe9h4xU; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so1005142a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:21:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1707992399; x=1708597199; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1707992508; x=1708597308; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=S3f0rb4C5lvPslwqInmE+iQAff85wgbT5AhACglF67s=;
-        b=Satc0Gr7dlkIf4mTMylvPBzcysXP5Y0We7A2r+7GRPVKq0ypgv6NB+ymw81vh29Nf+
-         5B+1Q+sQz/8x+cUC1zc2ul+wcXyWcWqKva7+TEAE5A2q24sAixzu0aRMUsFAqNFwLuDr
-         VmIrEYo1uh0aAZRqDThQCrbb/KdDQsRjVONkpmnnct1cWsyeJHxhXlydF1DQdS0q5/eG
-         OuxvAfva4GXpcHJxtpd+b1NQVUwXaOmnWDuVWwDXW77oupIbE835nIJVh7EAeaXM2q9o
-         k0ysVx+jBM2BvslKpXrg9vtE4Wp6rS3cHpUntG230L34nIJ8WwCJaNAApMQYeV0+b53k
-         N/oQ==
+        bh=Ciw4pOtP95/auA7ToeOHSPYuZOxAhM3oTuFVWwrCe4I=;
+        b=qAe9h4xU3pMbFl23XO/ZRH6n82/1CKM2lo537rbZeqm43te562ztbUeDff6kWIRf0C
+         7M5/g81oe68UHsfpziByW4UkYpBdhCdpokZwzFcwxJ70wP5JOSH4MilRmWkiLKbgVfbp
+         dBv/ZCTTOK58R6uL0ysfDOi9J7OMnI3JlpJS7yYYmKpPh+EEXl+GgKgzBqMSAojfefTY
+         GJOLsH96vhnt0APzgjq4/xkUIRBduTRfWRm3Rx8XV6XRKcxSoTjuph+piV0dfZtzswZr
+         /RxuqTklo0odpllCRQvQqBlKZm5yrYyd+kEos58S1Rsq3DmxMJZizwZBmBKQHpgge5kC
+         4fXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707992399; x=1708597199;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1707992508; x=1708597308;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S3f0rb4C5lvPslwqInmE+iQAff85wgbT5AhACglF67s=;
-        b=WG/C3nz52pNgKq+JPqk8Bbe9VwQoO/iTUwiKqTicOMLrE53K93gJdPIbmJ4XLWurYG
-         75xYvT0wf6ZCnPG/35kExxNivCUaZfH5MPzY4tZ+NsshLlvIbsMkXQ6HsHDc6ld3KpCN
-         BCUXesmQsdlg6sQ7hkaN3QJ7AwFbg5tPPB6kcAQpxlK4WIoxBHi1Wq/EL/ERd/CC/s2Q
-         j6yUaYtTndHLM04Qi6h9vxPPQ14v52W/TejILEFkdVv4crxIifGe+50lyb6IeILthtB9
-         nwRLh+TkmTdzo9faY1VaAPUGtPx8GGlgiPXpwssGDoF6WHJ6plFEb/4yeTY9XObyK4lA
-         2xPg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9p2YGQx2D8jKJIoGYmXWoF3xLhCV52sowHWdqKaprKSFe0RVONfROmJVJ3M5GYgOsLEFgZKN7ZMgp819JpfnJGZEtpkdNuaOOoRC+
-X-Gm-Message-State: AOJu0YwQpgyfDcPbo/DAloMYwxBPwd8f89j0hOpc+XrsQ6nZ8qDgsvi7
-	T/7rtUfkH7lDOLASCzRJfRUjT2jTdm4NOXmDHdtdob03sQx/tZuChW2leHu8/qI=
-X-Google-Smtp-Source: AGHT+IEMO7O+5pkB5+NxkwSGjJ6icX5ZUnJ2Axo2drnnhvTA2O1MS5a8l4X/yqzJHPWAoy7WsV1Yxg==
-X-Received: by 2002:a05:600c:1f8d:b0:410:c5a9:a24a with SMTP id je13-20020a05600c1f8d00b00410c5a9a24amr908467wmb.20.1707992398598;
-        Thu, 15 Feb 2024 02:19:58 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.20])
-        by smtp.gmail.com with ESMTPSA id t12-20020a05600c198c00b004107686650esm1518508wmq.36.2024.02.15.02.19.57
+        bh=Ciw4pOtP95/auA7ToeOHSPYuZOxAhM3oTuFVWwrCe4I=;
+        b=K1vm2+a0ORrH4KeybKAko36nFTZgpxI17w25tC27W0+yGzofDchbLIClzoha3lUP8U
+         ODOgTb3fREMEn3CyfnE09IXy8Ememyb2iRpLVEbY9eAv+WTPFvM7CCUXbNGglL9ep1s+
+         Y9RknUdyCqVfH3FfNKKzPnCHPKXOIWeuGcjFws2U7e4vNiBApSP2hwK0DUafIpPM9ShK
+         jwFeXnh4PWtK/34h5X3l9sJbMym6eewtAayN6tvyxpQKzQZrI1qPdL7dIJjMOFv1Gdr3
+         zPmDikdzMuboB657pgbbpGPbjKpkAjQCDDDFpKhyaDOowpm3v4kGitrn65PuU3VBKmzU
+         ARpw==
+X-Forwarded-Encrypted: i=1; AJvYcCXWu5tlF7F0YY2OSWzXMXmPAvFLiqjJVed0cVPxGcQ+jJnM475SIWVPiaRntrYe0pwon8BAvCviVAMXuDPHVQ1xU21ajGHNB3KPSuqC
+X-Gm-Message-State: AOJu0YxfoEpCd+l81VKvWH+uGnKiSAnOggPV0XvX4iLe2ypEfcii7ozT
+	q/OlC36+6f4eY3VVyDyks9ruuzp1RxLIBL7dQKJG3AwtacQNGqueL2LP558jT9I=
+X-Google-Smtp-Source: AGHT+IEjU1fLiIjBQfeIMSUt81GJzz0CYW7vyVaEhVKuxOdlx7UsMzgiXgzjyjabpUtPbw2S8mJrAQ==
+X-Received: by 2002:aa7:d518:0:b0:561:fec0:cd44 with SMTP id y24-20020aa7d518000000b00561fec0cd44mr1251437edq.27.1707992507614;
+        Thu, 15 Feb 2024 02:21:47 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id em2-20020a056402364200b005639fbc1ff4sm405940edb.43.2024.02.15.02.21.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:19:57 -0800 (PST)
-Message-ID: <0815e67c-36b8-4626-90a2-f11607915da2@tuxon.dev>
-Date: Thu, 15 Feb 2024 12:19:56 +0200
+        Thu, 15 Feb 2024 02:21:47 -0800 (PST)
+Message-ID: <3a040d65-4843-4e7d-818e-2523d112c74a@linaro.org>
+Date: Thu, 15 Feb 2024 11:21:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,59 +75,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/3] net: macb: queue tie-off or disable during
- WOL suspend
+Subject: Re: [PATCH v2 2/3] PCI: qcom: Read back PARF_LTSSM register
 Content-Language: en-US
-To: "Karumanchi, Vineeth" <vineeth.karumanchi@amd.com>,
- nicolas.ferre@microchip.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, linux@armlinux.org.uk
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, git@amd.com
-References: <20240130104845.3995341-1-vineeth.karumanchi@amd.com>
- <20240130104845.3995341-2-vineeth.karumanchi@amd.com>
- <d8c48839-8b22-47ad-b270-e96a1ad1adee@tuxon.dev>
- <6a8d100c-57a5-4c92-b744-453c106352ad@amd.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <6a8d100c-57a5-4c92-b744-453c106352ad@amd.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Johan Hovold <johan+linaro@kernel.org>
+References: <20240214222819.GA1269395@bhelgaas>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240214222819.GA1269395@bhelgaas>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi, Vineeth,
-
-On 15.02.2024 07:43, Karumanchi, Vineeth wrote:
-> Hi Claudiu,
+On 14.02.2024 23:28, Bjorn Helgaas wrote:
+> On Wed, Feb 14, 2024 at 10:35:16PM +0100, Konrad Dybcio wrote:
+>> On 12.02.2024 22:17, Bjorn Helgaas wrote:
+>>> Maybe include the reason in the subject?  "Read back" is literally
+>>> what the diff says.
+>>>
+>>> On Sat, Feb 10, 2024 at 06:10:06PM +0100, Konrad Dybcio wrote:
+>>>> To ensure write completion, read the PARF_LTSSM register after setting
+>>>> the LTSSM enable bit before polling for "link up".
+>>>
+>>> The write will obviously complete *some* time; I assume the point is
+>>> that it's important for it to complete before some other event, and it
+>>> would be nice to know why that's important.
+>>
+>> Right, that's very much meaningful on non-total-store-ordering
+>> architectures, like arm64, where the CPU receives a store instruction,
+>> but that does not necessarily impact the memory/MMIO state immediately.
 > 
-> On 2/3/2024 9:08 PM, claudiu beznea wrote:
-> <...>
->>>           queue->tx_skb = NULL;
->>> @@ -2568,6 +2574,16 @@ static int macb_alloc_consistent(struct macb *bp)
->>>       if (bp->macbgem_ops.mog_alloc_rx_buffers(bp))
->>>           goto out_err;
->>>   +    /* Required for tie off descriptor for PM cases */
->>> +    if (!(bp->caps & MACB_CAPS_QUEUE_DISABLE)) {
->>> +        bp->rx_ring_tieoff = dma_alloc_coherent(&bp->pdev->dev,
->>> +                            macb_dma_desc_get_size(bp),
->>> +                            &bp->rx_ring_tieoff_dma,
->>> +                            GFP_KERNEL);
->>> +        if (!bp->rx_ring_tieoff)
->>> +            goto out_err;
->> You also need to free the previously allocated rx buffers.
+> I was hinting that maybe we could say what the other event is, or what
+> problem this solves?  E.g., maybe it's as simple as "there's no point
+> in polling for link up until after the PARF_LTSSM store completes."
 > 
-> Are you referring to (bp->macbgem_ops.mog_alloc_rx_buffers(bp)) allocation ?
-> It was freed in macb_free_consistent():
->              ...
->              bp->macbgem_ops.mog_free_rx_buffers(bp);
->              ...
+> But while the read of PARF_LTSSM might reduce the number of "is the
+> link up" polls, it probably wouldn't speed anything up otherwise, so I
+> suspect there's an actual functional reason for this patch, and that's
+> what I'm getting at.
 
-You're right, my bad.
+So, the register containing the "enable switch" (PARF_LTSSM) can (due
+to the armv8 memory model) be "written" but not "change the value of
+memory/mmio from the perspective of other (non-CPU) memory-readers
+(such as the MMIO-mapped PCI controller itself)".
 
-> 
-> Please let me know if you are referring to different buffers.
+In that case, the CPU will happily continue calling qcom_pcie_link_up()
+in a loop, waiting for the PCIe controller to bring the link up, however
+the PCIE controller may have never received the PARF_LTSSM "enable link"
+write by the time we decide to time out on checking the link status.
 
-I was referring to bp->macbgem_ops.mog_alloc_rx_buffers but hat is covered
-as you pointed out.
+It may also never happen for you, but that's exactly like a classic race
+condition, where it may simply not manifest due to the code around the
+problematic lines hiding it. It may also only manifest on certain CPU
+cores that try to be smarter than you and keep reordering/delaying
+instructions if they don't seem immediately necessary.
 
-Thank you,
-Claudiu Beznea
+Konrad
 
