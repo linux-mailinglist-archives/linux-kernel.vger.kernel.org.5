@@ -1,113 +1,117 @@
-Return-Path: <linux-kernel+bounces-67831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7681857198
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:28:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D9285719B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66E961F2160C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:28:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 969C21F23273
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD44813B299;
-	Thu, 15 Feb 2024 23:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B1A145B07;
+	Thu, 15 Feb 2024 23:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M+OESzYP"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f82Gd9Uv"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2727E145B00;
-	Thu, 15 Feb 2024 23:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3BD1EA80;
+	Thu, 15 Feb 2024 23:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708039688; cv=none; b=kloVPUVNzYDrOPTmcBXPlyvAxN0bNnURURSPZiw4mkQYIRDRB64XvwG4sSnhpxr8hw2QC8C/7CnCH3qMOJdW7PJXagJREnfVr06Mi2BvmpWHcTA5Y8iNVcfHr9EgB9t4KJ8Q+SR84Z6/jC0JIxvZvtc5pP2RUtbuHk2sJgDWf5U=
+	t=1708039790; cv=none; b=lcneXx6q9i5WDqSrJkgMpyreTaws91euWPptYdLrBBbxzB7pDAyq/cjkmgDK8JezBph1SHO5FoMS7DR9C4Asj578RqTMy+cKhxn/ZhSj7sEImDhkC5XUsoK8aiaNzihJdLiM04POtgIaeMCWRoAbqpd3F+ZljvdR7GjNcv8/C6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708039688; c=relaxed/simple;
-	bh=n4G9uH3FuaxtaDs7VOwu4MfOMqdQcRQMlzTGYWvdfQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ef2y4MEmJqVRzfihv3VyPzlngNOHSU7JEPbYqaHasMvT0zllXaHgvm4e/znc9qca5oH/BY4scEsU5bnRcUq7DOiBH1/4k1Z8mb3as9WJS0rk26HnEIymbHPaHPV0YiPfKfdn7N77DdKaSJCXtEoD7sRrcfBS3sbq68Ddwfhuimg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=M+OESzYP; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=iZftUgWZ8SaYplQOiYsHmVonfTNje6FlH1kX5tBg4q0=; b=M+OESzYPxVIuS6O1CdH67Duf+9
-	kyjCRsoAhQJRvHmRrKo76p3rthULUdPAw1J38+cKiv7k4uBzgVmBp83wuLQB+qFDV+YY17Gnvh6ow
-	n26onabl/V+XNMrl+i/25k0/NBlI9QYceFv3UMfg1i6lj6PCPbekfKuueeZCVagrwgSs17X4tTYDf
-	wb8A50LLrRcmj9TKiq7xmQNXAh+kgRg3pfprDyycjhS7ETCxVqemt52Sl5OtFnMllfT1Y1bM/x+Wn
-	WHCuB7oM4Ei4nSWgxbN4BQw7f3/ASRm2L1hCy+zzX8CSTB1o+3ml5fzUpgt65p/JE7phabjSFLyyC
-	1hwKeeMw==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ral95-00000000TEr-1QJz;
-	Thu, 15 Feb 2024 23:27:59 +0000
-Message-ID: <b3f86324-afa2-49b7-9565-28f41aaf3334@infradead.org>
-Date: Thu, 15 Feb 2024 15:27:57 -0800
+	s=arc-20240116; t=1708039790; c=relaxed/simple;
+	bh=/U6IZO/xhZz9Yo64LAlsJtuJI0I8mp7MDfTv/IwTguI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=dr8PxQb8lZsvLBT4zO0JJfTgi19ZPfSV56yQ0k1rsqbos0mBT6KqNxih8jgj0dvPaF74cisMKYFcr4WKs0MNugmQ4Gm15Q7zKLe01sebV+H9Aeg05PqBsCy7gY5mj6J8z7q48e41UzciaKnuwl5DdunNco2XQFPhFuM4TDTTbH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f82Gd9Uv; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33b29b5ea96so711645f8f.0;
+        Thu, 15 Feb 2024 15:29:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708039787; x=1708644587; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j5Bj9xsaXMX+Tu65Jo5x7Ok2Dy8ft8+EqH3kfAe/1a0=;
+        b=f82Gd9UvJ3dFSvPSZRdKjB6pg06fYTvu7JQEzdG7U4BJDQ2nJxleYtX+zIeaNF4SZ7
+         h0UhAVCc9HjPaxxUPTx6Dw3lQKxXV9/l9fJparwKLJw6gzJeigu2jbDxdaeCe1J3gvZj
+         73pUboey5syyoTIiaEd2QC6rFmWpY2/QsxmseLLTwOAGYK8TT+5fVVF9SBnazAkHWbFj
+         IrVgaobxzhkX0vJ8CyDlUA9qcbhEOhBDIBkAZwNWJD3fFinlpw/5Sm0WzdIFbHPDogCP
+         aspcCadhToElOIolES/ReDLvhPUOcMPaByx/u6aE+y4gdIl+e+ZodwZeMyF/UhfZaMbl
+         ehgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708039787; x=1708644587;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j5Bj9xsaXMX+Tu65Jo5x7Ok2Dy8ft8+EqH3kfAe/1a0=;
+        b=e7h55BkG8gSy7D/HZZjTBDaQuXCuA/Gav30Pl00d5iEdpEtnqlj3lQMoqFzyaKcE7n
+         Y7rLxPEvBhcHrv7hdELhn9PN/YzyPOmNZJ5MNKxioiHJ5oNfROQQ0eUiT4+aN+O6EySU
+         9kEsT4XKikd8vgzOri3BVjuE4Vyjg2gSH+g7hmU1n51aNKlZVnr2py0JCo0ZEo2hZLqh
+         LKoLtPkLhcORroPGKwu2KbZA1ijR8Tb7rycLVPUhoG/A8xZm77iwyTyVCDClVoOu/Sxu
+         brREk0V4T9Ty2ae4acryiRvZEz30SW13seBF+H3IEImkguDnrwUtNF/M6R79DZxYV3UD
+         liHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjxBVjUewC+yP8IZUJcnmj7koLkw0cMd9VT+e9zTmzynJ8vWyzOZ3XlEwgpD5mRA1Ck+P7jd0L9OCPBb57SBpem7Gdj0oNMFXC57djNZHgGm93mzZ8EXhyJ9qmK/nHLCb/he28B6VGPt0M
+X-Gm-Message-State: AOJu0Yw2B9L6c4cIaF5UYnWJBCrHAfxNGklHxrnEUGPsW4ubYq8nojeu
+	yMwgoTth1OBFarkmb80XCv9dd9OR67Y6BssOvg+jzF1++HvkNL9C
+X-Google-Smtp-Source: AGHT+IFClw2R/gW7b2Gk9VgkZuerndh8UZ6w1NSexmCjQ9JO9ycquNjWnTRLIHCIgXks/FEKHA6Rmg==
+X-Received: by 2002:adf:cf04:0:b0:33b:6959:c766 with SMTP id o4-20020adfcf04000000b0033b6959c766mr2630764wrj.29.1708039786517;
+        Thu, 15 Feb 2024 15:29:46 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id t12-20020a5d460c000000b0033b48190e5esm455092wrq.67.2024.02.15.15.29.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 15:29:45 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	linux-serial@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] serial: lpc32xx_hs: remove redundant check and assignment of hsu_rate
+Date: Thu, 15 Feb 2024 23:29:44 +0000
+Message-Id: <20240215232944.2075789-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] alpha: merge two entries for CONFIG_ALPHA_GAMMA
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240215141120.1911369-1-masahiroy@kernel.org>
- <20240215141120.1911369-2-masahiroy@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240215141120.1911369-2-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Variable hsu_rate is being checked for an upper limit and is assigned
+a value that is never read. The if statement and assignment are
+redundant and can be removed.
 
-On 2/15/24 06:11, Masahiro Yamada wrote:
-> There are two entries for CONFIG_ALPHA_GAMMA, with the second one
-> 7 lines below. Merge them together.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/alpha/Kconfig | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-> index 70e8343d00ba..581ca8c73d67 100644
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -390,16 +390,12 @@ config ALPHA_PRIMO
->  	  Say Y if you have an AS 1000 5/xxx or an AS 1000A 5/xxx.
->  
->  config ALPHA_GAMMA
-> -	bool "EV5 CPU(s) (model 5/xxx)?"
-> -	depends on ALPHA_SABLE
-> +	bool "EV5 CPU(s) (model 5/xxx)?" if ALPHA_SABLE
-> +	depends on ALPHA_SABLE || ALPHA_GAMMA
+Cleans up clang scan build warning:
+drivers/tty/serial/lpc32xx_hs.c:237:3: warning: Value stored
+to 'hsu_rate' is never read [deadcode.DeadStores]
 
-	depends on ALPHA_SABLE || ALPHA_LYNX
-??
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/tty/serial/lpc32xx_hs.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> +	default ALPHA_LYNX
->  	help
->  	  Say Y if you have an AS 2000 5/xxx or an AS 2100 5/xxx.
->  
-> -config ALPHA_GAMMA
-> -	bool
-> -	depends on ALPHA_LYNX
-> -	default y
-> -
->  config ALPHA_T2
->  	bool
->  	depends on ALPHA_SABLE || ALPHA_LYNX
-
+diff --git a/drivers/tty/serial/lpc32xx_hs.c b/drivers/tty/serial/lpc32xx_hs.c
+index ec20329f0603..269efc5e2d51 100644
+--- a/drivers/tty/serial/lpc32xx_hs.c
++++ b/drivers/tty/serial/lpc32xx_hs.c
+@@ -233,8 +233,6 @@ static unsigned int __serial_get_clock_div(unsigned long uartclk,
+ 
+ 		hsu_rate++;
+ 	}
+-	if (hsu_rate > 0xFF)
+-		hsu_rate = 0xFF;
+ 
+ 	return goodrate;
+ }
 -- 
-#Randy
+2.39.2
+
 
