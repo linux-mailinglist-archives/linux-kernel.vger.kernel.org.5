@@ -1,161 +1,147 @@
-Return-Path: <linux-kernel+bounces-66436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748F6855CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA22A855CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72C91C2AFB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:41:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18F6F1C22253
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F89F1426B;
-	Thu, 15 Feb 2024 08:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="l55KvUAU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B8113AC6;
+	Thu, 15 Feb 2024 08:41:56 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395C813AF0;
-	Thu, 15 Feb 2024 08:41:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A38134AE;
+	Thu, 15 Feb 2024 08:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707986467; cv=none; b=CtvJyDZN0n49BnJDWcsAD/Ux9+RfX8ZcX/j+7aNCOPO4rQ4bf/zkavvkYiKm2Wlt9mezo/8tcF3yqvvbKIgVcD9l+r3xJG3vPGHvz2lSqXRYSbojVBS9cQNyMBBmaw8tnQm6POHmDjBoTB7Mxmmm1UikMSUxdsijzHpXDs/zHu8=
+	t=1707986516; cv=none; b=IsJTngyAQF4MMmrb+sAX330cnmzk6zRAXFcgnIc990pp1w028OaX9NpkLGZpRD74kEp6dEQWlRTtUNlOIM5ODz45/JtcwNFkGZzXGkQSdJHf6SGWTovxxMWk4mE4y9oSlOav1kWkhLx0e6h6smCIGTL4pQXdgEl6ad+jaft7gMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707986467; c=relaxed/simple;
-	bh=xfJAiAtdOwGcuyj3soNnB/AjhKb5oEC0svUBOQX2UY4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W21jIPvvcHw92N4yweJkp5t5KExclUj8KA7VSZ/sJ6A5TwcXljumchcmSAJCx/IVF+xyJjVLTmHYjqEZI6nT6A3fdhLn0sXlcSzz29BL+AvVSL8KtPd5RxBReyxwKN0gz50sfiP5VCwmmaCwDo4SYW7cJNDuj9RlV0rZaAV178c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=l55KvUAU; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707986465; x=1739522465;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xfJAiAtdOwGcuyj3soNnB/AjhKb5oEC0svUBOQX2UY4=;
-  b=l55KvUAUfq1XSoY5ef95lgQWnabIa8q+RYq35pQz9HtWbNheJ9CZAbdY
-   SrofNPe6nJEJavslanOBR6qcbiUXFlkdpUYe2yzqQJdPNXoCaPqlzfy9W
-   WEzs5wy6fvBkVKUV5rjy19N9WKejxHdgctnU+4s4xPZLr2ISCAUJbKXjQ
-   4m8DUJ1JDAKokMC60Z/uAaFkbD0FRohlez+yGnGe1FaQspdj9j8I5+Ume
-   f6ejKM+zgcHGY//j6HYoYP8gKBhjoovpiJT+kG3iuln8nzu401uVC9lc0
-   igaz/S+EKm35cUgjhi01BK72Ah0hTUDS/JKcgXY+uVYKM7PMcIDaBQCBX
-   Q==;
-X-CSE-ConnectionGUID: lRbneegbRjG0wscWWaorRg==
-X-CSE-MsgGUID: QlpATd2hTxyIJ0LhmhhBsQ==
-X-IronPort-AV: E=Sophos;i="6.06,161,1705388400"; 
-   d="scan'208";a="16278838"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 01:41:04 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 15 Feb 2024 01:41:02 -0700
-Received: from localhost (10.10.85.11) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 15 Feb 2024 01:41:02 -0700
-Date: Thu, 15 Feb 2024 09:41:01 +0100
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <lars.povlsen@microchip.com>,
-	<Steen.Hegelund@microchip.com>, <daniel.machon@microchip.com>,
-	<UNGLinuxDriver@microchip.com>
-CC: <u.kleine-koenig@pengutronix.de>, <rmk+kernel@armlinux.org.uk>,
-	<jacob.e.keller@intel.com>, <yuehaibing@huawei.com>,
-	<vladimir.oltean@nxp.com>, <netdev@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v2] net: sparx5: Add spinlock for frame transmission
- from CPU
-Message-ID: <20240215084101.bunwttvbsx4ecmad@DEN-DL-M31836.microchip.com>
-References: <20240215083333.2139380-1-horatiu.vultur@microchip.com>
+	s=arc-20240116; t=1707986516; c=relaxed/simple;
+	bh=PcyfrcT0IrCS8x6Y/PVw4INOqDeIejn279MqRbP73tM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GrrmWbf/ETatMxXkbHSMHIzQ0kMLUytfsahg4KC44zrAa1xtZna5SvF6Rl1IxA7DNl1AFxleWCEeit8bJV5wOQ1c5WAPuRm7FS/bCn38jp6DUlOMAHFrOvuNyxVD3hI4HqrnRS6Q95gx4DlqDCOavoIV4nIaRQx5uCkjwm+4L5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F2E5C433C7;
+	Thu, 15 Feb 2024 08:41:54 +0000 (UTC)
+Message-ID: <27ef9490-a56b-46bf-84bd-bc2ec08896af@xs4all.nl>
+Date: Thu, 15 Feb 2024 09:41:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20240215083333.2139380-1-horatiu.vultur@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: v4l2-mem2mem: fix mem order in last buf
+Content-Language: en-US, nl
+To: Randy Li <ayaka@soulik.info>,
+ Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc: mchehab@kernel.org, Hsia-Jun Li <randy.li@synaptics.com>,
+ sebastian.fricke@collabora.com, alexious@zju.edu.cn,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240210180414.49184-1-randy.li@synaptics.com>
+ <a43eaa0cfedeccc85410d2e26f296bda8de635cd.camel@collabora.com>
+ <1f80b5ea-1209-438f-b07f-3a4a308ee35d@soulik.info>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <1f80b5ea-1209-438f-b07f-3a4a308ee35d@soulik.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The 02/15/2024 09:33, Horatiu Vultur wrote:
-> Both registers used when doing manual injection or fdma injection are
-> shared between all the net devices of the switch. It was noticed that
-> when having two process which each of them trying to inject frames on
-> different ethernet ports, that the HW started to behave strange, by
-> sending out more frames then expected. When doing fdma injection it is
-> required to set the frame in the DCB and then make sure that the next
-> pointer of the last DCB is invalid. But because there is no locks for
-> this, then easily this pointer between the DCB can be broken and then it
-> would create a loop of DCBs. And that means that the HW will
-> continuously transmit these frames in a loop. Until the SW will break
-> this loop.
-> Therefore to fix this issue, add a spin lock for when accessing the
-> registers for manual or fdma injection.
+On 15/02/2024 04:16, Randy Li wrote:
 > 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Reviewed-by: Daniel Machon <daniel.machon@microchip.com>
-
-Argh... I forgot to add the Fixes tag:
-Fixes: f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
-
-> ---
-> v1->v2:
-> - target net instead of net-next
-> ---
->  drivers/net/ethernet/microchip/sparx5/sparx5_main.c   | 1 +
->  drivers/net/ethernet/microchip/sparx5/sparx5_main.h   | 1 +
->  drivers/net/ethernet/microchip/sparx5/sparx5_packet.c | 2 ++
->  3 files changed, 4 insertions(+)
+> On 2024/2/15 04:38, Nicolas Dufresne wrote:
+>> Hi,
+>>
+>>>   media: v4l2-mem2mem: fix mem order in last buf
+>> mem order ? Did you mean call order ?
+> std::memory_order
+>>
+>> Le dimanche 11 février 2024 à 02:04 +0800, Hsia-Jun Li a écrit :
+>>> From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
+>>>
+>>> The has_stopped property in struct v4l2_m2m_ctx is operated
+>>> without a lock protecction. Then the userspace calls to
+>>                   protection   When ?                   ~~
+> Access to those 3 booleans you mentioned later.
+>>> v4l2_m2m_encoder_cmd()/v4l2_m2m_decoder_cmd() may lead to
+>>> a critical section issue.
+>> As there is no locking, there is no critical section, perhaps a better phrasing
+>> could help.
 > 
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-> index d1f7fc8b1b71a..3c066b62e6894 100644
-> --- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-> @@ -757,6 +757,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, sparx5);
->  	sparx5->pdev = pdev;
->  	sparx5->dev = &pdev->dev;
-> +	spin_lock_init(&sparx5->tx_lock);
->  
->  	/* Do switch core reset if available */
->  	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
-> index 6f565c0c0c3dc..316fed5f27355 100644
-> --- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
-> @@ -280,6 +280,7 @@ struct sparx5 {
->  	int xtr_irq;
->  	/* Frame DMA */
->  	int fdma_irq;
-> +	spinlock_t tx_lock; /* lock for frame transmission */
->  	struct sparx5_rx rx;
->  	struct sparx5_tx tx;
->  	/* PTP */
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c b/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
-> index 6db6ac6a3bbc2..ac7e1cffbcecf 100644
-> --- a/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
-> @@ -244,10 +244,12 @@ netdev_tx_t sparx5_port_xmit_impl(struct sk_buff *skb, struct net_device *dev)
->  	}
->  
->  	skb_tx_timestamp(skb);
-> +	spin_lock(&sparx5->tx_lock);
->  	if (sparx5->fdma_irq > 0)
->  		ret = sparx5_fdma_xmit(sparx5, ifh, skb);
->  	else
->  		ret = sparx5_inject(sparx5, ifh, skb, dev);
-> +	spin_unlock(&sparx5->tx_lock);
->  
->  	if (ret == -EBUSY)
->  		goto busy;
-> -- 
-> 2.34.1
+> "concurrent accesses to shared resources can lead to unexpected or erroneous behavior, so parts of the program where the shared resource is accessed need to be protected in ways that avoid the
+> concurrent access."
+> 
+> It didn't say we need a lock here.
+> 
+>>> Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
+>>> ---
+>>>   drivers/media/v4l2-core/v4l2-mem2mem.c | 4 ++--
+>>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>> index 75517134a5e9..f1de71031e02 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+>>> @@ -635,9 +635,9 @@ void v4l2_m2m_last_buffer_done(struct v4l2_m2m_ctx *m2m_ctx,
+>>>                      struct vb2_v4l2_buffer *vbuf)
+>>>   {
+>>>       vbuf->flags |= V4L2_BUF_FLAG_LAST;
+>>> -    vb2_buffer_done(&vbuf->vb2_buf, VB2_BUF_STATE_DONE);
+>>> -
+>>>       v4l2_m2m_mark_stopped(m2m_ctx);
+>>> +
+>>> +    vb2_buffer_done(&vbuf->vb2_buf, VB2_BUF_STATE_DONE);
+>> While it most likely fix the issue while testing, since userspace most likely
+>> polls on that queue and don't touch the driver until the poll was signalled, I
+>> strongly believe this is insufficient. When I look at vicodec and wave5, they
+>> both add a layer of locking on top of the mem2mem framework to fix this issue.
+> 
+> Maybe a memory barrier is enough. Since vb2_buffer_done() itself would invoke the (spin)lock operation.
+> 
+> When the poll() returns in userspace, the future operation for those three boolean variables won't happen before the lock.
+> 
+>> I think this is unfortunate, but v4l2_m2m_mark_stopped() is backed by 3 booleans
+>> accessed in many places that aren't in any known atomic context. I think it
+>> would be nice to remove the spurious locking in drivers and try and fix this
+>> issue in the framework itself.
+> I tend to not introduce more locks here. There is a spinlock in m2m_ctx which is a pain in the ass, something we could reuse it to save our CPU but it just can't be access.
+
+I think the root cause is something else.
+
+Let me say first of all that swapping the order of the two calls does make sense:
+before returning the buffer you want to mark the queue as stopped.
+
+But the real problem is that for drivers using the mem2mem framework the streaming
+ioctls can be serialized with a different lock than the VIDIOC_DE/ENCODER_CMD ioctls.
+
+The reason for that is that those two ioctls are not marked with INFO_FL_QUEUE,
+but I think they should. These ioctls are really part of the streaming ioctls
+and should all use the same lock.
+
+Note that for many drivers the same mutex is used for the streaming ioctls as for
+all other ioctls, but it looks like at least the venus driver uses separate mutexes.
+
+With that change in v4l2-core/v4l2-ioctl.c I don't believe any locking is needed,
+since it should always be serialized by the same top-level mutex.
+
+The v4l2_ioctl_get_lock() function in v4l2-ioctl.c is the one that selects which
+mutex to use for a given ioctl.
+
+Regards,
+
+	Hans
+
+>>
+>> Nicolas
+>>
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(v4l2_m2m_last_buffer_done);
+>>>   
 > 
 
--- 
-/Horatiu
 
