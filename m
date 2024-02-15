@@ -1,123 +1,169 @@
-Return-Path: <linux-kernel+bounces-66553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCBF855E45
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:34:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD37855E69
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2083B1F21E88
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:34:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28F95B23C5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E76917745;
-	Thu, 15 Feb 2024 09:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC98317745;
+	Thu, 15 Feb 2024 09:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IzFwUeDS"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Sck4AG5c"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33EF51643A
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF1B1755E
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707989637; cv=none; b=qUtmUMMzd2gazJj1Z4Fru+GyfKPMi6lHBEerwqUlG8A5q0uBZmz+JSvkkat0GTzpzAiuYSPHTll/n9lPSS/LD4mTbZRlTm9ABKnAPQIoN8jTimqoYtrwYNBNzUtgnnDGJc5RDMtgtBsRgU3YPBgdzWE33hUC0G8lG/0Jgekzrqw=
+	t=1707989820; cv=none; b=Un3/HSm2HtJ/gNfKvC44T8F2bf+LXJob8CMWwNJ0FjQVoG1UbVGZbDCdluGUxISXtO15AFrRM2qnav2eDf5SmKUEzaS4lVbluyqVNn6qhNICqH/kf087Lgx9F+juihbpKxFGelj/JELzazJx6t5Oo1MPHFa/G9KTDSeDnnG+wTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707989637; c=relaxed/simple;
-	bh=J5qD1qIcL0GtDZlsLjMP1uObwBbpaGL6EoEe3uAZyq0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pZZY03okNB3wGnu3EdyUTcRXbTSN050Mpd2ex4k/qcBGWhvvWMQCFmJMwkBe18UkrLOpPtPt4/O8TwUFC74IWBReWlOwyOkcYwsMBR2gnF7GkW1dZXvTj1pkVf8nhs8RrCnOVfc4evQvatRWCCsSG8XUZ6wHOn9aVsuEaOSvBEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IzFwUeDS; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4c081a16e6dso221404e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:33:55 -0800 (PST)
+	s=arc-20240116; t=1707989820; c=relaxed/simple;
+	bh=2rROApjeULcWm5YZtvXRyCJkPvF/dmaTKpH9lduEtuM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oMCQKCjpfMSC3NyoidXyK2wn8o8AIzBwnb4npsRXnFm0u3JtwredeowAzfEWa8r4vAVh9X1j6HuiGLCfBZwB3uQ3sO8ucergygsjyt/r9bYJDVooOs6D6fj8zXxMRAel50Ls4FYISZ16oyLgUwRqX0YK7mafJFrL8Cq1i0F9dns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Sck4AG5c; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26f73732c5so80765266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:36:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707989635; x=1708594435; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=V8s0NxRvI+mjl5XkkaP3mvBN6LNvbOLcAfquE2r5eZI=;
-        b=IzFwUeDSu8hXpAAGgZRa6xjIX2hIaQqafKCHblmI0E90rd/p1dJcAG75GEsL7Xw59t
-         fK/I+7VGObADHVlUZPi6wh6bBtHITwg1Ow2yJhfYVG2zXZjgdF7sV8WxVY+zwFUUMFYp
-         Dh15mG62vXMixsJ2wtB+IlPybK9Ka7kPYWIgmQhj3x6Jo/eHJseyRBogBwFSprbepWRi
-         F15HexV6DH2Gy4RFC2xoqaVU2Nw2TYlE4qAKTDFSL9uXqobkv28LNWlLlQQ7PqzvVHN7
-         ttzMeW/M3iaZsRTckhbHlgzsThGxywc7saSnwvPPrQk/3SM2Vm6gHUe9H5sYpzk3M3Fg
-         uMow==
+        d=ionos.com; s=google; t=1707989815; x=1708594615; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4mhB0ezCOBSXBZ2GLWIr8E8PDduAjFjCZEKH4zIQhuc=;
+        b=Sck4AG5cK8Rypc0jG6Xh8q9gXtMgZDTLTPzyEOAoPX0LYo7FLwhOgMk0W+CZaVKD9T
+         6Mj7femXkrA/4EvGBvNvzAAP5nN8NhCWwaY96UPnaS+hQj67xE8vgJlDAE45LqvahW/U
+         TaDRTpJFylHOANUTe8Lte/idmEGz2mRruIvsVroVAUG/LPT9aLgWpfAl52a9n3OgGk9f
+         1OygQjiPxeYI07FreQbTOzAk06MwL7yrKPNQ01oPClQHFnnXnocKfJ8i+CLIORsmrSq5
+         2z6ktMHm7MCWS/oGo+tZgpLTeAe8fo4NmoeEZHHfcmIjZQGc5sIgF85vSqG62tcsL28N
+         AwHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707989635; x=1708594435;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1707989815; x=1708594615;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=V8s0NxRvI+mjl5XkkaP3mvBN6LNvbOLcAfquE2r5eZI=;
-        b=IuCI+LVaiY0ztyfA+CdXAjeNAGAaKrsqhPf4Nqfn4pHyKL8IZ/DkZzKjx+VzP+bUPF
-         /b0N/wHtXSzcnYR6afsvzzslnvSlWQ1t1QJufFL8Dwl8qi64jIGenQ2mYakuZ3jcmi/v
-         9+cnto/SxN7s0rIgjA3rQsxey2kwXWevsxQQWQ6roKrJdOsV/4CVpLo/rwQUzVxYG1Qr
-         9SPAwbEB6Yx5I2YCH9xr7UfmYRzShgCJvL7Ha5mCHp5Y2BA6yel7M6QI6Za+YMcTkxR3
-         XjSs0Da4+fgCLvVj49Z+BDBMcuwY2Tz+5XDIlq6N5byk7t8QqXr6JdumQcJLNeO7OZRx
-         07fg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7mB0qBVL7/IbJdEFUz6ENaCsbenmOfgUWLaPyEq6uyeQeEgGGle9OJ6bgyOLb1T5bqRS8s0cFX/osISUB50s3qsG/2fvVVN/Kgujb
-X-Gm-Message-State: AOJu0YxxPyeD+aRAybJdklFdAGqeqe+xCf66fbARZAEH3sIuQWGBCHSu
-	9az8FesadgFcTHta2XbBR4gpVfvRXRsyXl6UqFhghMOt+OynqT9bwusvuoJVKkBMPcfpNFfa/8j
-	12go/A1zw5k565+fYnhiKWhQG+gKCOdl1+psh
-X-Google-Smtp-Source: AGHT+IElxHBxZPPrDv/wuxMTC9HS3F+Al5XcXpij5VChL1txzlpGTpCPvZpdQ+kn1EdxDYRzRCWxa1OgWoaaU0+6Mf8=
-X-Received: by 2002:a1f:6681:0:b0:4b7:19fd:9558 with SMTP id
- a123-20020a1f6681000000b004b719fd9558mr815574vkc.11.1707989634396; Thu, 15
- Feb 2024 01:33:54 -0800 (PST)
+        bh=4mhB0ezCOBSXBZ2GLWIr8E8PDduAjFjCZEKH4zIQhuc=;
+        b=YYNXFLVWOHXmiXGjogG32d7wjGBPCG1NHUUxYqYbIQoVqSIqYAYbIZJV11C88n2C24
+         EXkwOH/RTXivZXBWSnwOs/fRxXwk2dqVhVO7VMcV9g0koH45dhc6b+8BTfPoWiNNW+tU
+         sXvFpb5wGWX7F37DVhseJV4DxQ1fxopy2IavppeClFyqwl4WjuNq/EEMwwSgOHYGZiU6
+         WoNri3Lx2MlaGXrDo8OIJRc/eLEcOYGdrrWzf1cBVeN6LtNJXbN3slKAbc7oBwP2Deis
+         xDnasWlSACgu0SJacbZtsQQc8EN8IcrgJHGYzV16sKmbHfNa3WuNxzF7ZBHAhARRTcfh
+         Zgfg==
+X-Gm-Message-State: AOJu0YywpXDz+jryf8BJQGukdZVcZsd4lBkpZiwdvb4/vsToCi7j+YVr
+	tmrZ1D9+rrGueF2fGffOApho7x7CcQQ70MBQ5mAtQrFDoYyOio3Y00gfkRi+wjMBkG8HxQ5kVOu
+	0
+X-Google-Smtp-Source: AGHT+IElyxp0WqitR5EToNjrVTh8K9nBVJxo7w7ff05naiPfgRzUrXLnerr98VUEir4Gypl0TVHBpQ==
+X-Received: by 2002:a17:906:e246:b0:a38:89df:6142 with SMTP id gq6-20020a170906e24600b00a3889df6142mr850617ejb.24.1707989815123;
+        Thu, 15 Feb 2024 01:36:55 -0800 (PST)
+Received: from raven.intern.cm-ag (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
+        by smtp.gmail.com with ESMTPSA id rg14-20020a1709076b8e00b00a3d09d09e90sm362059ejc.59.2024.02.15.01.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 01:36:54 -0800 (PST)
+From: Max Kellermann <max.kellermann@ionos.com>
+To: linux-kernel@vger.kernel.org
+Cc: Max Kellermann <max.kellermann@ionos.com>
+Subject: [PATCH v1 0/8] Fast kernel headers: split linux/kernel.h
+Date: Thu, 15 Feb 2024 10:36:38 +0100
+Message-Id: <20240215093646.3265823-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214170157.17530-1-osalvador@suse.de> <20240214170157.17530-3-osalvador@suse.de>
- <CANpmjNPypJM5icG9M5yP5-psSofbA7D35eaKx+E6NyCsHMa=qg@mail.gmail.com> <a310c3cf-049d-4067-b950-f6abf9b5b098@suse.cz>
-In-Reply-To: <a310c3cf-049d-4067-b950-f6abf9b5b098@suse.cz>
-From: Marco Elver <elver@google.com>
-Date: Thu, 15 Feb 2024 10:33:15 +0100
-Message-ID: <CANpmjNOgiqcXx1T=-W6QL6RuYsZSLOdSjGH9iLVJru_3=15Bnw@mail.gmail.com>
-Subject: Re: [PATCH v9 2/7] lib/stackdepot: Move stack_record struct
- definition into the header
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Oscar Salvador <osalvador@suse.de>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Michal Hocko <mhocko@suse.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 15 Feb 2024 at 10:30, Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 2/15/24 09:16, Marco Elver wrote:
-> > On Wed, 14 Feb 2024 at 18:00, Oscar Salvador <osalvador@suse.de> wrote:
-> >>
-> >> In order to move the heavy lifting into page_owner code, this one
-> >> needs to have access to the stack_record structure, which right now
-> >> sits in lib/stackdepot.c.
-> >> Move it to the stackdepot.h header so page_owner can access
-> >> stack_record's struct fields.
-> >>
-> >> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> >> Reviewed-by: Marco Elver <elver@google.com>
-> >> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> >> ---
->
-> >>  #define DEPOT_POOLS_CAP 8192
-> >> -/* The pool_index is offset by 1 so the first record does not have a 0 handle. */
-> >> +/* The pool_index is offset by 1 so the first record does not have a 0 handle */
-> >
-> > Why this comment change? We lost the '.' -- for future reference, it'd
-> > be good to ensure unnecessary changes don't creep into the diff. This
-> > is just nitpicking,
->
-> Agree with this part.
->
-> > and I've already reviewed this change, so no need
-> > to send a v+1.
->
-> But confused by this remark. There is a number of nontrivial changes in the
-> series from v8, and IIRC v8 was dropped from mm/ meanwhile, so a v+1 of the
-> whole series is expected and not fixups. Which means including patches that
-> were already reviewed. That's the usual process.
+This patch set aims to clean up the linux/kernel.h header and reduce
+dependencies on it by moving parts out.
 
-This is already v9. Of course, still need to look at rest of v9 and if
-there are major changes needed then a v10 is needed.
+(These patches were part of my previous "fast kernel headers" pull
+request which was found hard to review due to its huge size.  I'm now
+trying to resend smaller chunks of it, hoping they are easier to
+review.)
+
+Max Kellermann (8):
+  include/linux/goldfish.h: include linux/wordpart.h instead of
+    linux/kernel.h
+  include/drm/drm_fixed.h: include linux/wordpart.h instead of
+    linux/kernel.h
+  include linux/wordpart.h in various sources that need it
+  linux/random.h: reduce dependencies on linux/kernel.h
+  linux/kernel.h: move might_sleep(), ... to sched/debug_atomic_sleep.h
+  linux/kernel.h: move READ and WRITE to direction.h
+  linux/kernel.h: move VERIFY_OCTAL_PERMISSIONS() to octal_permissions.h
+  linux/kernel.h: move PTR_IF() to ptr_util.h
+
+ arch/arc/kernel/perf_event.c             |   1 +
+ arch/arm64/include/asm/syscall.h         |   1 +
+ arch/arm64/kvm/handle_exit.c             |   1 +
+ drivers/bus/uniphier-system-bus.c        |   1 +
+ drivers/edac/thunderx_edac.c             |   1 +
+ drivers/gpio/gpio-sim.c                  |   1 +
+ drivers/gpu/drm/i915/i915_driver.c       |   1 +
+ drivers/hwmon/occ/common.c               |   1 +
+ drivers/input/misc/iqs7222.c             |   1 +
+ drivers/irqchip/irq-gic-v3-its.c         |   1 +
+ drivers/media/platform/amphion/vpu_dbg.c |   1 +
+ drivers/memstick/core/memstick.c         |   1 +
+ drivers/memstick/host/jmb38x_ms.c        |   1 +
+ drivers/memstick/host/r592.c             |   1 +
+ drivers/memstick/host/rtsx_pci_ms.c      |   1 +
+ drivers/memstick/host/rtsx_usb_ms.c      |   1 +
+ drivers/memstick/host/tifm_ms.c          |   1 +
+ drivers/pinctrl/pinctrl-ingenic.c        |   1 +
+ drivers/soc/aspeed/aspeed-uart-routing.c |   1 +
+ drivers/spi/spi-pci1xxxx.c               |   1 +
+ fs/ext4/super.c                          |   1 +
+ fs/hfs/hfs_fs.h                          |   1 +
+ fs/hfsplus/hfsplus_fs.h                  |   1 +
+ fs/notify/fanotify/fanotify_user.c       |   1 +
+ fs/open.c                                |   1 +
+ fs/overlayfs/copy_up.c                   |   1 +
+ fs/ufs/util.h                            |   1 +
+ fs/xfs/xfs_error.c                       |   1 +
+ include/drm/drm_fixed.h                  |   2 +-
+ include/linux/clk.h                      |   1 +
+ include/linux/direction.h                |   9 ++
+ include/linux/dma-fence.h                |   1 +
+ include/linux/goldfish.h                 |   2 +-
+ include/linux/gpio/consumer.h            |   2 +-
+ include/linux/kernel.h                   | 125 -----------------------
+ include/linux/mmu_notifier.h             |   1 +
+ include/linux/moduleparam.h              |   2 +-
+ include/linux/nd.h                       |   1 +
+ include/linux/octal_permissions.h        |  20 ++++
+ include/linux/pm.h                       |   1 +
+ include/linux/ptr_util.h                 |   7 ++
+ include/linux/pwm.h                      |   2 +
+ include/linux/qed/common_hsi.h           |   1 +
+ include/linux/random.h                   |   4 +-
+ include/linux/rcutiny.h                  |   1 +
+ include/linux/sched.h                    |   1 +
+ include/linux/sched/debug_atomic_sleep.h | 114 +++++++++++++++++++++
+ include/linux/sched/mm.h                 |   2 +-
+ include/linux/sysfs.h                    |   1 +
+ include/linux/uaccess.h                  |   1 +
+ include/linux/uio.h                      |   2 +-
+ include/linux/wait.h                     |   1 +
+ include/linux/wait_bit.h                 |   1 +
+ include/rdma/uverbs_ioctl.h              |   3 +-
+ include/soc/fsl/bman.h                   |   2 +
+ include/soc/fsl/qman.h                   |   1 +
+ security/landlock/object.c               |   1 +
+ security/landlock/ruleset.c              |   1 +
+ 58 files changed, 207 insertions(+), 134 deletions(-)
+ create mode 100644 include/linux/direction.h
+ create mode 100644 include/linux/octal_permissions.h
+ create mode 100644 include/linux/ptr_util.h
+ create mode 100644 include/linux/sched/debug_atomic_sleep.h
+
+-- 
+2.39.2
+
 
