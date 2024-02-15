@@ -1,132 +1,95 @@
-Return-Path: <linux-kernel+bounces-67209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A145F85680A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:38:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B55856808
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:38:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA6B28B118
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:38:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B991C20F58
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B4413398A;
-	Thu, 15 Feb 2024 15:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnRNpVvc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0398E1353E5;
+	Thu, 15 Feb 2024 15:36:57 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CD6133417;
-	Thu, 15 Feb 2024 15:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883B1132481;
+	Thu, 15 Feb 2024 15:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011468; cv=none; b=Kvnyl7+WOhRaIAQUR2Ip05KVYhBibN9ScMKUD9JkI7WIMusXXnFe4PMGcOXEMBTW4PfrqBQ5Y3qm1NcBcAHrwVy8cXh1AQy60oNyDQ7lizPgBcwK77u3YeH1MS7HDN5lGBUvHNPL71yPScsYRjSzE4sbAjPjsOdK0jil3xUsJKk=
+	t=1708011416; cv=none; b=gWM1VSsX5fnW+LUHuyPEI4UClnkR+9fPtbNWH3uBlYaMlgoAaVDH/clKxgdy5KhT73ak5Cr0b7qiJ/uEWxGLr7ADlpKvKwyDYY7bndwvYjroQqhdtlMZnsIyjchXYVP5PbsrkmtxO2GOs6dy2xjdewo5otnZ5103G2mBV7EgyOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011468; c=relaxed/simple;
-	bh=epnqDWcnhsCvgG8kTNd2ESNKS8KdAlToJJsau8BMXIc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fqd7swddS0Lf7lOsvRQauWLqkCngJsv+xOfXzbCgvFHkqdAk+Lf5lYpHzrjxhmC0M9oGVB26o2zAuWh0ik/Rf/U9HBQRidgp5L+ysdSsfECUGYp59ubxihxd8fI1wHqT5PEpSVeQsaPtCH3yNF8xjtKxJQb4J/t0hLNlM7C4HMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnRNpVvc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EA5C433F1;
-	Thu, 15 Feb 2024 15:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708011467;
-	bh=epnqDWcnhsCvgG8kTNd2ESNKS8KdAlToJJsau8BMXIc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fnRNpVvcgGMxdGApcy7TF29tirSa8C8+JxMTmSMPju7g0ZJMbUtGqichvYZSP+Cvy
-	 1UH+zm1VYtXWmZZCvRHHCVY6ThHOj9dYo5g5wrQlVV82SfTl/uN1iCQuDsV1B6gp96
-	 AaxASn+DTHmY5GpcHLPBZh8yYNrbY/ExsiDEte20tS2y2HBGiZzycjx5ynhNtNjtxB
-	 abStxkeTu28p/IN886ODSYyYVYcojM592btmkZHl60Ivou0y71N1TJlqfhU8lWaP9N
-	 Cy8xkYpxZQqqnKpUcWwdmsMt0GGz2J/kiNioZSSyJhypqNSEy6V8/YkmshLMV/YJlR
-	 6qlD14QTLTErw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rado1-003YAI-Iw;
-	Thu, 15 Feb 2024 15:37:45 +0000
-Date: Thu, 15 Feb 2024 15:37:45 +0000
-Message-ID: <86jzn54u2e.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/23] KVM: arm64: Improvements to LPI injection
-In-Reply-To: <Zc0JG8pNRanuXzvR@linux.dev>
-References: <20240213093250.3960069-1-oliver.upton@linux.dev>
-	<86y1bn3pse.wl-maz@kernel.org>
-	<Zc0JG8pNRanuXzvR@linux.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708011416; c=relaxed/simple;
+	bh=RRjgbqQNeV1LQqQ3WnLweLVY4UkjS1hhaS8MNsvQOJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LgwxtWELGTVUvaasL6mVwQgm9+JqE3vIHMc2mMkMsETF8ukaDs7oz9khSgkKmt/qSEClCUwVu2KnjxOFu+jcvsUiDIG+KayaZ2h5bIZ8xJrkt3AsBbemWG72mF4HorudmOR036eAS0qzO3TGHSF4hIjDbHRjX4sQIOunLZB1+jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C5DC433C7;
+	Thu, 15 Feb 2024 15:36:54 +0000 (UTC)
+Date: Thu, 15 Feb 2024 10:38:27 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 22/36] function_graph: Add a new entry handler with
+ parent_ip and ftrace_regs
+Message-ID: <20240215103827.2c7bd2bf@gandalf.local.home>
+In-Reply-To: <170723229401.502590.8644663781359457778.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723229401.502590.8644663781359457778.stgit@devnote2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kvmarm@lists.linux.dev, kvm@vger.kernel.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7bit
 
-On Wed, 14 Feb 2024 18:40:27 +0000,
-Oliver Upton <oliver.upton@linux.dev> wrote:
-> 
-> On Wed, Feb 14, 2024 at 05:43:13PM +0000, Marc Zyngier wrote:
-> > On Tue, 13 Feb 2024 09:32:37 +0000,
-> > Oliver Upton <oliver.upton@linux.dev> wrote:
-> > > 
-> > > For full details on the what/why, please see the cover letter in v1.
-> > > 
-> > > Apologies for the delay on v2, I wanted to spend some time to get a
-> > > microbenchmark in place to slam the ITS code pretty hard, and based on
-> > > the results I'm glad I did.
-> > 
-> > [...]
-> > 
-> > Buglets and potential improvements aside, I like the smell of this. At
-> > least the first handful of patches could easily be taken as a separate
-> > improvement series.
-> > 
-> > Let me know how you'd like to play this.
-> 
-> Yeah, I think there's 3 independent series here if we want to take the
-> initial improvements:
-> 
->  - Address contention around vgic_get_irq() / vgic_put_irq() with the
->    first 10 patches. Appears there is violent agreement these are good
->    to go.
-> 
->  - Changing out the translation cache into a per-ITS xarray
-> 
->  - A final series cleaning up a lot of the warts we have in LPI
->    management, like vgic_copy_lpi_list(). I believe we can get rid of
->    the lpi_list_lock as well, but this needs to be ordered after the
->    first 2.
-> 
-> I'd really like to de-risk the performance changes from the cleanups, as
-> I'm convinced they're going to have their own respective piles of bugs.
-> 
-> How does that sound?
+On Wed,  7 Feb 2024 00:11:34 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-Yup, I'd be on board with that. If you can respin the first part with
-bugs fixed and without the stats, that'd be great. We can further
-bikeshed on the rest in the 6.10 time frame.
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Add a new entry handler to fgraph_ops as 'entryregfunc'  which takes
+> parent_ip and ftrace_regs. Note that the 'entryfunc' and 'entryregfunc'
+> are mutual exclusive. You can set only one of them.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
 
-Also please Cc: Eric Auger, as he dealt with a lot of the ITS
-save/restore stuff.
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> @@ -1070,6 +1075,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
+>  struct fgraph_ops {
+>  	trace_func_graph_ent_t		entryfunc;
+>  	trace_func_graph_ret_t		retfunc;
+> +	trace_func_graph_regs_ent_t	entryregfunc;
 
-Thanks,
+if entryfunc and entryregfunc are mutually exclusive, then why not make them
+into a union?
 
-	M.
+struct fgraph_ops {
+	union {
+		trace_func_graph_ent_t		entryfunc;
+		trace_func_graph_regs_ent_t	entryregfunc;
+	};
+	trace_func_graph_ret_t		retfunc;
 
--- 
-Without deviation from the norm, progress is not possible.
+-- Steve
+
+	
+
+>  	struct ftrace_ops		ops; /* for the hash lists */
+>  	void				*private;
+>  	int				idx;
 
