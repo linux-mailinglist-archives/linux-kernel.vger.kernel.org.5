@@ -1,289 +1,103 @@
-Return-Path: <linux-kernel+bounces-67593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E202B856DD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:35:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1E9856DD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:36:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F2C91C241DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 441581F220B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E65913A891;
-	Thu, 15 Feb 2024 19:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C52A613959D;
+	Thu, 15 Feb 2024 19:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hcxBanyL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="B98oXX2W"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE9C1386AE;
-	Thu, 15 Feb 2024 19:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B601386AE
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025685; cv=none; b=gaQrmeVk1pLVDo2rhRRGIdgMoBcEfe856gzg3pLXd5lKSX+aT3dT5aSRBmFgzXX9jCBMDoTD6bDRf86fSCohxhs1tr1kDojGCK4uNldLvMlKsqWHQ61LSQPReQ5nPx3OnejUB8FHmCcyD4TKmpAzAarH5/+VELCQcOzrNThE5m0=
+	t=1708025774; cv=none; b=dkfDxhxkaQU99kiUW4SidF8RIJL/HI5zWxeXVdOxkKDvwH1FLp6wKjrQOYLTxUdOjIUqYn1VzL3CHZlsEpYHkY7sqnGLT+SBXSXCjGjHsTzC1phiwFTF5wpdwnIHv1iRaAUhjFoKwMb2+ybynGgaCeaLH2IZ6UrZZzQLwtrczVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025685; c=relaxed/simple;
-	bh=yRnLyISh3ozdfGzOQyeO/YUOe2fAUcXlNVFlHde4M6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n8JKyHnbp8JR0XmavFbLGW2e7DBZiIiyUqfxabCczRpW24VXAoIPEkSPXWROAKZEVZLxA98MOYuvLTEH3b+qeDA/Twr7C45siYm23ZfB7x2jiAriJrG+6+DWAl9n7vx9wGh75Dby8uUiA5UR0WSqat9rUpZnJerS1Ot3LMqvZZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hcxBanyL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D989C433C7;
-	Thu, 15 Feb 2024 19:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708025684;
-	bh=yRnLyISh3ozdfGzOQyeO/YUOe2fAUcXlNVFlHde4M6M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hcxBanyLQEEN6fX42vS/bUklK63T/N6Rwy5XBP0I5CnNlTL7f1HtGGJLePgvd/uO4
-	 3/1JJYefxII4USHvReXc3uKbI2dZgEGsyR4smQXzrUvoXR0P9jhtBchK1CUhwMwKo3
-	 QZP5/c37D/Zg1bI4rE7nO7Ur+AUmtAC7i/CWwbHzKQ2/6tq3pKNSAEe+5rVphEXPdr
-	 2h5lbxOXn8jZCGwUELfWVzg0X9A0h3p+JOXzR2TRL3GUicxZ83I26A5/v5bdYKNfHi
-	 QtkONIKQdtF3KlCs8Z/XOKqRn/J8mYzjWShJAk9KwLh0HemfW92ggpIDKpPVWJdf/8
-	 YK1J1J8qEQZbQ==
-Date: Thu, 15 Feb 2024 19:34:39 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Durai Manickam KR <durai.manickamkr@microchip.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: dma: convert atmel-xdma.txt to YAML
-Message-ID: <20240215-snowstorm-quack-fdb7f9c35c2e@spud>
-References: <20240215-xdma-v1-1-1139960cf096@microchip.com>
+	s=arc-20240116; t=1708025774; c=relaxed/simple;
+	bh=jPsjwpCsPFtie3aL5I4bnB621QVnfCINJSy3+00awoI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Beql+2FjwaKhasHMGDIt/rCrWOxC/TxnyvVFm06XobuoLLebUOBq1sYh1lsBchobYhTFl4UEgaJTrCunamWjhX5dE9zi64mdcpb2rJ6CPGPKFBnbdgqawLODUs2xTj0ruYWotx084kOkEUlBI2yTLba3ulQ/3eRSemHd/+FIXzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=B98oXX2W; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d11c55d7f2so18444221fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:36:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1708025770; x=1708630570; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V5YGsYL4MexNc49XeQvb25R/CmGSgGiGGhpjv3r0dFM=;
+        b=B98oXX2WpikdhgxRcBFknuVGuvcl4tit/ma4U3TEmOtn0h44NyNe65LuVSUJ5Or3Az
+         nSneXl+C8evWyy2FPzHxpiX6SYK2Ys4sbz+gLHx4bZuddmV5zB9rnNqlj6CrkZxkxdVq
+         tSeoaVNCLWkFyx/AEjg9HwIQCl9wXP9R+vGz7j6s9+BAjnwpT3PYIv8S2pYLk1LDfxm9
+         F0EgHM1TqcEMNZNTEnw+9e+HCSTgpKWzIASyZhPRF/T/pYnJaNy/8PlJZK94YkonRE9q
+         s2kfHImy7Kr7+GDq7Chp9kz32mSV23kFxMcOG9jCXy4LMxfLwO4C+UtzZR+9akQbCRau
+         N7cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708025770; x=1708630570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V5YGsYL4MexNc49XeQvb25R/CmGSgGiGGhpjv3r0dFM=;
+        b=pd00kftpXCPhH5MTu1gOXAnDBHpuHG6iM6ZhrBXQAknLsW5hyEUdShGOSICMAIbWQQ
+         Sro/pyqC+aoMmAZs15yN1i89FKjGNMO8BFdygR73JLwCIUHx2LzTMcfQ+bCB6ip9tB8S
+         tuNUq2rOXuLy12d5TfQaQkSEiRX5RNW8zl4F92BuucU/oYAjINR3lVsvQTj7rTCL6qlr
+         VYcCJQehPDGYtNuqw+Ud+sKNQr1sJZKg1/O2KRLMa80say2PNXQ8JWN1wVAXOJelP4bh
+         iaZ7/9sG6JFIPZh0LOzrvMpajVHPBngd19CgpP2TOgGp3yFhe9B7dIL2+Q9r415bQHtE
+         Gx7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUvybZ3I9rStP63JAB5VXTVT2jzwEvO6YooolCPGn/WMxo/+NscEm46rW7NZQ0Pwg4QLi0ufU0Q1nwXn7eNX6/Xvc2cSg1ATRWMkQ3X
+X-Gm-Message-State: AOJu0YyIa6o0CcXFVpUr9gGicmBffMylHFQIaPWDdEFBoXjQDjjkLItg
+	Abm5Htk0d6tjgN37oW5VRiQo2jt2YrghJ7A2Rfh+avHfOJO8J15OlW1I9OkRsuQI3tWZHo19kRq
+	vqaoOOJXBLzliPtE2vRCG5lvD/rtY2yJD4igURA==
+X-Google-Smtp-Source: AGHT+IE3fm9OGO/kR/idSF9H8ByFMb/mw9m08bcxZR9I435MatzVxuon1xBWUvPmSxShuXEB5wmZs22NzOP1a1LdWXw=
+X-Received: by 2002:a2e:9e8a:0:b0:2d0:b025:f1ee with SMTP id
+ f10-20020a2e9e8a000000b002d0b025f1eemr1854739ljk.21.1708025769727; Thu, 15
+ Feb 2024 11:36:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2uNUAPuRLcz3Tc2D"
-Content-Disposition: inline
-In-Reply-To: <20240215-xdma-v1-1-1139960cf096@microchip.com>
-
-
---2uNUAPuRLcz3Tc2D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240215145602.1371274-1-max.kellermann@ionos.com>
+ <20240215145602.1371274-7-max.kellermann@ionos.com> <Zc5lUbCU6xNXv6jC@casper.infradead.org>
+In-Reply-To: <Zc5lUbCU6xNXv6jC@casper.infradead.org>
+From: Max Kellermann <max.kellermann@ionos.com>
+Date: Thu, 15 Feb 2024 20:35:58 +0100
+Message-ID: <CAKPOu+9z0T=dvXMA6YUkuaTnEHwz02jRWdCdAOJ+4spyknMJ0w@mail.gmail.com>
+Subject: Re: [PATCH v1 06/14] linux/mm.h: move page_size() to mm/page_size.h
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 04:25:15PM +0530, Durai Manickam KR wrote:
-> Added a description, required properties and appropriate compatibles
-> for all the SoCs that are supported by microchip for the XDMAC.
->=20
-> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> ---
->  .../devicetree/bindings/dma/atmel-xdma.txt         | 54 ---------------
->  .../bindings/dma/microchip,at91-xdma.yaml          | 77 ++++++++++++++++=
-++++++
->  2 files changed, 77 insertions(+), 54 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Docum=
-entation/devicetree/bindings/dma/atmel-xdma.txt
-> deleted file mode 100644
-> index 76d649b3a25d..000000000000
-> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-> +++ /dev/null
-> @@ -1,54 +0,0 @@
-> -* Atmel Extensible Direct Memory Access Controller (XDMAC)
-> -
-> -* XDMA Controller
+On Thu, Feb 15, 2024 at 8:26=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+> We're really close to eliminating page_size().  Just 23 callers left.
+> As such, it would be a mistake to name the header after it.  I don't
+> particularly like how you're splitting up mm.h; I think the real problem
+> is all the code that says "Oh, I'm allocating memory, I should include
+> mm.h" instead of including gfp.h or slab.h.
 
-> -- interrupts: Should contain DMA interrupt.
-> -- #dma-cells: Must be <1>, used to represent the number of integer cells=
- in
-> -the dmas property of client devices.
-> -  - The 1st cell specifies the channel configuration register:
-> -    - bit 13: SIF, source interface identifier, used to get the memory
-> -    interface identifier,
-> -    - bit 14: DIF, destination interface identifier, used to get the per=
-ipheral
-> -    interface identifier,
-> -    - bit 30-24: PERID, peripheral identifier.
-> -
-> -Example:
-> -
-> -dma1: dma-controller@f0004000 {
-> -	compatible =3D "atmel,sama5d4-dma";
-> -	reg =3D <0xf0004000 0x200>;
-> -	interrupts =3D <50 4 0>;
-> -	#dma-cells =3D <1>;
-> -};
-> -
-> -
-> -* DMA clients
-> -DMA clients connected to the Atmel XDMA controller must use the format
-> -described in the dma.txt file, using a one-cell specifier for each chann=
-el.
-> -The two cells in order are:
-> -1. A phandle pointing to the DMA controller.
-> -2. Channel configuration register. Configurable fields are:
-> -    - bit 13: SIF, source interface identifier, used to get the memory
-> -    interface identifier,
-> -    - bit 14: DIF, destination interface identifier, used to get the per=
-ipheral
-> -    interface identifier,
-> -  - bit 30-24: PERID, peripheral identifier.
-> -
-> -Example:
-> -
-> -i2c2: i2c@f8024000 {
-> -	compatible =3D "atmel,at91sam9x5-i2c";
-> -	reg =3D <0xf8024000 0x4000>;
-> -	interrupts =3D <34 4 6>;
-> -	dmas =3D <&dma1
-> -		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
-> -		 | AT91_XDMAC_DT_PERID(6))>,
-> -	       <&dma1
-> -		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
-> -		| AT91_XDMAC_DT_PERID(7))>;
-> -	dma-names =3D "tx", "rx";
-> -};
-> diff --git a/Documentation/devicetree/bindings/dma/microchip,at91-xdma.ya=
-ml b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
-> new file mode 100644
-> index 000000000000..0bd79c7b5e6f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/microchip,at91-xdma.yaml#
+Yes, a lot of source files do that, but that mistake is not something
+I'm addressing in this patch series; another patch series I posted two
+weeks ago is about that.
+This series is only about making sources lighter which currently
+indeed need mm.h.
 
-Filename matching a compatible please.
+> But if you must split it like this, at least call it folio_size.h
 
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel Extensible Direct Memory Access Controller (XDMAC)
-> +
-> +maintainers:
-> +  - Durai Manickam KR <durai.manickamkr@microchip.com>
-> +
-> +description: |
-
-The | is not needed, you've no formatting to preserve.
-
-> +  The Atmel Extensible Direct Memory Access Controller (XDMAC) performs =
-peripheral
-> +  data transfer and memory move operations over one or two bus ports thr=
-ough the
-> +  unidirectional communication channel. Each channel is fully programmab=
-le and
-> +  provides both peripheral or memory-to-memory transfers.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - atmel,sama5d4-dma
-> +          - microchip,sama7g5-dma
-> +          - microchip,sam9x7-dma
-
-The text binding says:
-> -- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
-> -  "microchip,sama7g5-dma" or
-> -  "microchip,sam9x7-dma", "atmel,sama5d4-dma".
-That's not what you have here at all.
-
-> +      - items:
-> +          - const: atmel,sama5d4-dma
-> +          - const: microchip,sam9x60-dma
-
-This looks backwards.
-
-> +  reg:
-> +    description: Should contain DMA registers location and length.
-> +    maxItems: 1
-
-Same comments here about descriptions for well known properties as the
-other DMA controller.
-
-> +
-> +  interrupts:
-> +    description: Should contain the DMA interrupts associated to the DMA=
- channels.
-> +    maxItems: 1
-> +
-> +  "#dma-cells":
-> +    description: |
-> +      Must be <1>, used to represent the number of integer cells in the =
-dmas
-> +      property of client device.
-> +      -The 1st cell specifies the channel configuration register:
-> +      -bit 13: SIF, source interface identifier, used to get the memory
-> +               interface identifier,
-> +      -bit 14: DIF, destination interface identifier, used to get the pe=
-ripheral
-> +               interface identifier,
-> +      -bit 30-24: PERID, peripheral identifier.
-> +    const: 1
-> +
-> +  clocks:
-> +    description: Should contain a clock specifier for each entry in cloc=
-k-names.
-> +    maxItems: 1
-
-And here about adding properties. Please explain in your commit message
-where the new properties came from.
-
-> +
-> +  clock-names:
-> +    description: Should contain the clock of the DMA controller.
-> +    const: dma_clk
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - "#dma-cells"
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    dma0: dma-controller@f0004000 {
-
-And same here about the label :)
-
-Cheers,
-Conor.
-
-> +            compatible =3D "atmel,sama5d4-dma";
-> +            reg =3D <0xffffec00 0x200>;
-> +            interrupts =3D <50 4 0>;
-> +            #dma-cells =3D <1>;
-> +            clocks =3D <&pmc 2 20>;
-> +            clock-names =3D "dma_clk";
-> +    };
-> +
-> +...
->=20
-> ---
-> base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-> change-id: 20240215-xdma-36e8bdbf8141
->=20
-> Best regards,
-> --=20
-> Durai Manickam KR <durai.manickamkr@microchip.com>
->=20
-
---2uNUAPuRLcz3Tc2D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5nTwAKCRB4tDGHoIJi
-0mWeAQDyxMRExEs8PvvE6a8W3mU1c68idO13L6qbJOJZzZggbwD+PeCtNY1Irgpl
-9q5poFzXZZ7w/mux7+IUq6SBm6lUzA4=
-=pFvp
------END PGP SIGNATURE-----
-
---2uNUAPuRLcz3Tc2D--
+Okay, I will rename it for v2.
 
