@@ -1,220 +1,285 @@
-Return-Path: <linux-kernel+bounces-67585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AFD7856DC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:32:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC82D856DCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B00F71F21CA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:32:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16511C24030
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FEA13A242;
-	Thu, 15 Feb 2024 19:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B9913959D;
+	Thu, 15 Feb 2024 19:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SwmmPbss"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GC0GKqpX"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E0F139563;
-	Thu, 15 Feb 2024 19:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC0D139597
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025547; cv=none; b=tmn/pw9HSlcngSdxN/w6jI7p+tiWHTSE7zZcfVpsyqN36yl2mvJX6a5GNQ6fLFK+pP94Ppyn/8rmqCPkMUEmgK98wi5cei8298NWu+nRpJWnZn0EMLTGjPD07gXNfeDvDqSNd81q9ofQVh533LMN7PnPEvd07GYsWzR5iyu63Jg=
+	t=1708025558; cv=none; b=CXwUtTxKz4AgVsbZnocIjXmc0VycYOHEF0cTB5L46KuW16G5FuwOrkl0QaOhV7ztoPMPBJEaNwu7FqxUNepryXGqckBm9p/+9tejxv76nqvWA5IaFVqUwy0M23Ul3PYC7160yd9V2ODfa+9hWBTGFruz2K72rPZsW19XwYEd88Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025547; c=relaxed/simple;
-	bh=4BcRq9RX6jvxRs95r4FuuTxSOinBoyMKdffw3BOH7Ow=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WoILwVFIphp2IN/GLsWbwO1zgRpSrZe1FY43cEbZhcv8VRTbDpXLm2qWKoSqC/kVPNZDSJszchrJ/cdLlia3iFErIiOKh1pUqFBbyjiZYjv2ipDtKmSdt0RkqlXBjEYqQVW2jfVJwO/AF6VCyPTkI6hcE0T/FcKJfDWo/oXwXJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SwmmPbss; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51171c9f4c0so1619770e87.3;
-        Thu, 15 Feb 2024 11:32:24 -0800 (PST)
+	s=arc-20240116; t=1708025558; c=relaxed/simple;
+	bh=rvIGIWHcBrZr24YyvIEFJSm+SW5cOYp6J1lQY8lUQpU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hpTd6rZpTm4bSfKRvu35fcd6GmDZdZYuDO4UeTmbY8tZhnXu4XiAuqM5SDc9JP4uyXbj+1MMAf3dVM4q0Bpo09unJZeWIXG1QenQCU02FvEz8tt7K9t/eMdJAs7+krbe8eGdG5QjcCvTKyeX5PK6vF0t8DHMTqoZHJHXWYHDXE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GC0GKqpX; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so189931fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:32:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708025542; x=1708630342; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4cviBjUGytaBcj0BpbY2tvrc6kLUHG8Yt6uoKR87Yo=;
-        b=SwmmPbssJKmA4OhI0MB7j+Wmn3nCMib3h+gkoT1CsT6xqowttNNz/XZqcFVjtg7EGP
-         Brs/+JR3FILGEgNmlODi02xWbQCw8uCow9ubliFow5iVl1XYVIj+mdTUketk98J7bGrR
-         fx0CHEmnti7/z4pvclaYSssw4Mk3hUJh40HEJmgBrUYOdCNMb+HUWkp+gPOWdGYQfVOY
-         LAu20eQPbSqxVahaL1skYeUXUesmdmvnfR4zRFnbvE9EUcxi9GRg9kMpwth0dTDjcylN
-         kqZYMNmnqFBC90cHg4hAIs/dISUatEYbT0QAu2nm+6PAffHaybAKgjKtjYFblS9+iddR
-         D8gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708025542; x=1708630342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1708025554; x=1708630354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f4cviBjUGytaBcj0BpbY2tvrc6kLUHG8Yt6uoKR87Yo=;
-        b=lvRyQUdo24W3agsWI8RErOW1RSD80AlvmrPO8NFdYybQ7LWopW9JvQT1GjVrHLco7Q
-         FkB5E7Ll0GkwDtJIp0q5vKsGTivbYZwGCVcnF8YT/6ki+ISFGyqulurUT+icGfJc854D
-         EA8wgnzS1C0xMkRLB7PuyWzL6eKL4nxoANG0fdF79+gOD4EMUVrMk3+QoHkq4rPBbGEX
-         SAy4X9U3J3t2h7cGsFQ2Iwm3x/ksqUQWkveTKUrSU3b1DmXzNJWnKcKeqbN2MsZkq8tw
-         1iHgS4jxFOOzSHU3/a3x54jo3zHMOLRNm0Hjg46AwUNiRztu/THlrv+QmYve4EWoxtyV
-         ivew==
-X-Forwarded-Encrypted: i=1; AJvYcCVsHT/STXXZGfugL2fsjgBM/ZYsOuoeLw12clggV4K28hsIPKbKwSEOP8DVWTEM0uGQqrjMrKWi5uUHz4xa7RJ8R5xqsaHq38eH2G7wLt6x2NZ+Vlm6Au9UVXJqRZjPdUNP9DZTRO4N4MTq
-X-Gm-Message-State: AOJu0Yyz72J7FZ2YU7KW9ldhnXzkKH1jB9lAsN/7m9V/fhdUIQXn1nz4
-	CwnkRQip5SaX5NyB+59ke+K3N5teoN8Hlo824j/n0Z2/2LMj9qCa
-X-Google-Smtp-Source: AGHT+IERNQxo7hlRTgv+smihgExCW08qYzdRyPrURdgmn33GLfYE38cuaymZxnYxZPv3vY2YZoOERg==
-X-Received: by 2002:a05:6512:6ce:b0:512:8a57:d047 with SMTP id u14-20020a05651206ce00b005128a57d047mr2139221lff.47.1708025542029;
-        Thu, 15 Feb 2024 11:32:22 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id m9-20020a056512114900b005128d529bf0sm164982lfg.115.2024.02.15.11.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 11:32:21 -0800 (PST)
-Date: Thu, 15 Feb 2024 22:32:18 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andy@black.fi.intel.com>
-Cc: Serge Semin <Sergey.Semin@baikalelectronics.ru>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, 
-	Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	Maxime Ripard <mripard@kernel.org>, Will Deacon <will@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 1/4] serial: 8250: Add 8250 port clock update method
-Message-ID: <raryiklwhctwxcfj3ulbnjcl32owagiccmxpwzmszlh3vm343y@h2ehupm7uiga>
-References: <20200723003357.26897-1-Sergey.Semin@baikalelectronics.ru>
- <20200723003357.26897-2-Sergey.Semin@baikalelectronics.ru>
- <ZczD7KPbeRnY4CFc@black.fi.intel.com>
+        bh=3dGnDa/Oz3aEvOxHec4vMljI2UxK10cMnGt8HfSxrBg=;
+        b=GC0GKqpXS9v+UFITQw2SuziwFv/s+HFJOgIAea5us3rJloUo5CCA8fG1QC5ToNsHR0
+         aFNzqGMU7vg1cnJOfaJnRRUPPUeYBNE6b4i9BdkJ1CJgZhdGzct6S6QFSnEYpmb81/2O
+         +8raWO8DZT/YDQEY42Fn2GiKqtM7cMev2htLQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708025554; x=1708630354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3dGnDa/Oz3aEvOxHec4vMljI2UxK10cMnGt8HfSxrBg=;
+        b=a7g6lVtELetT87pbvqhPNiB3f2GKvbWZ9Cz0OCWXAYtyr9g5ho8cDY5YYsCtzMsc2i
+         OkeIPKAZVZRkO9nbgprjCXyfwcubEtQ2U1ss95XAg36qz/vsD/9FXbkXvgbey6bNuHYs
+         qFBEScXfaXdOo3GnmjDzdwFfcT+9wsuzFYX29xKD8IPfyyNPifbGnOKMxE1sqL1F9fFf
+         SoDtaAJZEzuB+3SHsr5hjxlVtgGmdajPATpZKtGFjIoYS4a5IKIZOWQ+EeAJPHdcqZhw
+         rgfaD0bWLm6vRDAgUaC3/Rd4mmPFVG6SbP38Rim4GkGWtx+M4X1OqzOGiQGjxujypKha
+         76CA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnI5drLimC9uC8U7+6yxJNFu2LQtnS2VJdD8C4/o7Fa04qdxO2JdfxZzl9OEJ2eLu7HbtjYVpYAwBxY4sbMqNHHiNVTIs91vKIS23a
+X-Gm-Message-State: AOJu0Yz2zlScGYFU2dy4Cam4jZlaEcuCvKRQFyE46sVvQG0KljGyXfx5
+	a8I5DeCisaNY2R0w78EQjGKBqkn1/wBRyNaWUX77PAiKtC9a0+U+YSF9AOJ1bPv8VAMLqIZk7JW
+	6K2zDPStjuhDbf3KOvG78l8B7QTJqAu/4foNC
+X-Google-Smtp-Source: AGHT+IEVbBEHs+8TzdHU5nFoCSTlxCJ4YDxFneMchfi70LsN6iQzikVAXO5XF8i9r0M5Lp7YPsvU1djqtN1VwoTTOPw=
+X-Received: by 2002:a2e:9792:0:b0:2d0:f872:6f16 with SMTP id
+ y18-20020a2e9792000000b002d0f8726f16mr1952684lji.16.1708025554250; Thu, 15
+ Feb 2024 11:32:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZczD7KPbeRnY4CFc@black.fi.intel.com>
+References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
+ <20240215034528.240-1-hdanton@sina.com> <87h6iaf7di.wl-tiwai@suse.de>
+ <CAG-rBigFG-U-sKY77CvzghGzs+1Xm3YXzBF6N4ti0+h6UdAb8Q@mail.gmail.com> <875xypk6d6.wl-tiwai@suse.de>
+In-Reply-To: <875xypk6d6.wl-tiwai@suse.de>
+From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+Date: Thu, 15 Feb 2024 12:32:22 -0700
+Message-ID: <CAJZwx_n6sGfgNgm-WKoHEgY-=L0r1HbbZc8p5LroF0etMSx=gg@mail.gmail.com>
+Subject: Re: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sven van Ashbrook <svenva@chromium.org>, Hillf Danton <hdanton@sina.com>, 
+	LKML <linux-kernel@vger.kernel.org>, Brian Geffon <bgeffon@google.com>, 
+	linux-sound@vger.kernel.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andy,
+On Thu, Feb 15, 2024 at 10:03=E2=80=AFAM Takashi Iwai <tiwai@suse.de> wrote=
+:
+>
+> On Thu, 15 Feb 2024 17:07:38 +0100,
+> Sven van Ashbrook wrote:
+> >
+> > Hi Takashi,
+> >
+> > On Thu, Feb 15, 2024 at 3:40=E2=80=AFAM Takashi Iwai <tiwai@suse.de> wr=
+ote:
+> > >
+> > > Yes, the main problem is the indefinite hang from
+> > > dma_alloc_noncontiguous().
+> >
+> > We have a publicly-visible test [1] which readily triggers the
+> > indefinite hang on non-iommu Intel SoCs such as JasperLake.
+> > As noted in the commit message, iommu SoCs are not currently
+> > affected.
+> >
+> > > So, is the behavior more or less same even if you pass
+> > > __GFP_RETRY_MAYFAIL to dma_alloc_noncontiguous()?  Or is this flag
+> > > already implicitly set somewhere in the middle?  It shouldn't hang
+> > > indefinitely, but the other impact to the system like OOM-killer
+> > > kickoff may be seen.
+> >
+> > My incomplete understanding:
+> >
+> > Alsa specifies __GFP_RETRY_MAYFAIL because it wants to prevent triggeri=
+ng
+> > the OOM killer.
+>
+> Ah I forgot that we set that bit commonly in the flag.
+>
+> > This was __GFP_NORETRY in the not-too-distant past [2],
+> > but that failed too quickly, which resulted in permanent loss of audio =
+due
+> > to failed firmware dma sg allocations.
+>
+> Hm, the change in commit a61c7d88d38c assumed that __GFP_RETRY_MAYFAIL
+> shouldn't have that big impact.  If the hang really happens with a
+> high order allocation, it's dangerous to use it in other code
+> allocations than noncontiguous case (i.e. SNDRV_DMA_TYPE_DEV and co).
+> In the tight memory situation, a similar problem can be triggered
+> quite easily, then.
+>
+> > In the iommu case, dma_alloc_noncontiguous() implements a backoff [3] l=
+oop
+> > which ORs in __GFP_NORETRY except for minimum order allocations. We obs=
+erve
+> > experimentally that __GFP_RETRY_MAYFAIL does not get "stuck" on minimum=
+ order
+> > allocations. So the iommu case is not affected.
+> >
+> > In the non-iommu case however, dma_alloc_noncontiguous() actually becom=
+es a
+> > contiguous allocator, with no backoff loop. The commit introducing it [=
+4]
+> > states "This API is only properly implemented for dma-iommu and will si=
+mply
+> > return a contigious chunk as a fallback." In this case we observe the i=
+ndefinite
+> > hang.
+> >
+> > The alsa fallback allocator is also not affected by the problem, as it =
+does
+> > not specify __GFP_RETRY_MAYFAIL. Except in the XENPV case.
+>
+> So it sounds like that we should go back for __GFP_NORETRY in general
+> for non-zero order allocations, not only the call you changed, as
+> __GFP_RETRY_MAYFAIL doesn't guarantee the stuck.
+>
+> How about the changes like below?
 
-On Wed, Feb 14, 2024 at 03:45:16PM +0200, Andy Shevchenko wrote:
-> On Thu, Jul 23, 2020 at 03:33:54AM +0300, Serge Semin wrote:
-> > Some platforms can be designed in a way so the UART port reference clock
-> > might be asynchronously changed at some point. In Baikal-T1 SoC this may
-> > happen due to the reference clock being shared between two UART ports, on
-> > the Allwinner SoC the reference clock is derived from the CPU clock, so
-> > any CPU frequency change should get to be known/reflected by/in the UART
-> > controller as well. But it's not enough to just update the
-> > uart_port->uartclk field of the corresponding UART port, the 8250
-> > controller reference clock divisor should be altered so to preserve
-> > current baud rate setting. All of these things is done in a coherent
-> > way by calling the serial8250_update_uartclk() method provided in this
-> > patch. Though note that it isn't supposed to be called from within the
-> > UART port callbacks because the locks using to the protect the UART port
-> > data are already taken in there.
-> 
-> ...
-> 
-> > +/*
-> > + * Note in order to avoid the tty port mutex deadlock don't use the next method
-> > + * within the uart port callbacks. Primarily it's supposed to be utilized to
-> > + * handle a sudden reference clock rate change.
-> > + */
-> > +void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
-> > +{
-> > +	struct uart_8250_port *up = up_to_u8250p(port);
-> > +	unsigned int baud, quot, frac = 0;
-> > +	struct ktermios *termios;
-> > +	unsigned long flags;
-> > +
-> > +	mutex_lock(&port->state->port.mutex);
-> > +
-> > +	if (port->uartclk == uartclk)
-> > +		goto out_lock;
-> > +
-> > +	port->uartclk = uartclk;
-> > +	termios = &port->state->port.tty->termios;
-> > +
-> > +	baud = serial8250_get_baud_rate(port, termios, NULL);
-> > +	quot = serial8250_get_divisor(port, baud, &frac);
-> > +
-> > +	serial8250_rpm_get(up);
-> > +	spin_lock_irqsave(&port->lock, flags);
-> > +
-> > +	uart_update_timeout(port, termios->c_cflag, baud);
-> > +
-> > +	serial8250_set_divisor(port, baud, quot, frac);
-> > +	serial_port_out(port, UART_LCR, up->lcr);
-> > +	serial8250_out_MCR(up, UART_MCR_DTR | UART_MCR_RTS);
-> > +
-> > +	spin_unlock_irqrestore(&port->lock, flags);
-> > +	serial8250_rpm_put(up);
-> > +
-> > +out_lock:
-> > +	mutex_unlock(&port->state->port.mutex);
-> 
+We are concerned that the below proposed change might break the fix
+introduced by commit a61c7d88d38c ("FROMGIT: ALSA: memalloc: use
+__GFP_RETRY_MAYFAIL for DMA mem allocs"). More specifically in the
+IOMMU case with a large allocation, the fallback algorithm in the DMA
+IOMMU allocator[1] will not try really hard and hence may fail
+prematurely when it gets to minimum order allocations. This will
+result in no audio when there is significant load on physical memory.
 
-> While looking for something else I have stumbled over this function.
-> My Q is, since it has some duplications with
-> serial8250_do_set_termios(), can we actually call the latter (or
-> derevative that can be called in both) in the above code instead of
-> duplicating some lines?
-> 
-> 	if (port UART clock has to be updated)
-> 	  call (unlocked version of) serial8250_do_set_termios()
-> 
-> Serge, what do you think?
+Thanks and Regards,
+Karthikeyan.
 
-What an old thread you've digged out.)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/iommu/dma-iommu.c?h=3Dv6.8-rc4#n903
 
-Well, AFAIR I didn't create a common baud-rate/clock-update method
-because the baud-rate change was just a two stages action:
-1. calculate divisor+quot couple based on the new clock,
-2. update the divisor+quot (+ update the timeout).
-The first stage didn't need to have the IRQsafe lock being held and
-the runtime-PM being enabled, meanwhile the later one needed those.
-So unless the nested locking or try-lock-based pattern is implemented
-each stage required dedicated function introduced, which would have
-been an overkill for that. But even if I got to implement the
-try-lock-based solution with a single function containing both stages
-I still couldn't avoid having the serial8250_get_baud_rate() and
-serial8250_get_divisor() methods executed in the atomic context, which
-isn't required for them and which would needlessly pro-long the CPU
-executing with the IRQs disabled. As you well know it's better to
-speed up the atomic context execution as much as possible. 
-
-Secondly I didn't know much about the tty/serial subsystem internals
-back then. So I was afraid to break some parts I didn't aware of if
-the baud-rate/ref-clock change code had some implicit dependencies
-from the surrounding code and vice-versa (like the LCR DLAB flag
-state).
-
-Finally frankly it didn't seem like that much worth bothering about.
-Basically AFAICS there were only four methods which invocation I
-would have needed to move to a separate function:
-
-serial8250_get_baud_rate();
-serial8250_get_divisor();
-// spin-lock
-uart_update_timeout(port, termios->c_cflag, baud);
-serial8250_set_divisor(port, baud, quot, frac);
-// spin-unlock
-
-So I decided to take a simplest and safest path, and created a
-dedicated method for the just the ref-clock updates case leaving the
-baud-rate change task implemented in the framework of the standard
-serial8250_do_set_termios() method.
-
-
-Regarding doing vise-versa and calling the serial8250_do_set_termios()
-method from serial8250_update_uartclk() instead. To be honest I didn't
-consider that option. That might work though, but AFAICS the
-serial8250_do_set_termios() function will do much more than it's
-required in case if the ref-clock has changed.
-
--Serge(y)
-
-> 
-> > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+>
+> And, Kai, could you verify whether this change with the recent kernel
+> code won't give significant regressions for the issues you tried to
+> address with commit a61c7d88d38c?
+>
+>
+> thanks,
+>
+> Takashi
+>
+> --- a/sound/core/memalloc.c
+> +++ b/sound/core/memalloc.c
+> @@ -19,17 +19,22 @@
+>  #include <sound/memalloc.h>
+>  #include "memalloc_local.h"
+>
+> -#define DEFAULT_GFP \
+> -       (GFP_KERNEL | \
+> -        __GFP_RETRY_MAYFAIL | /* don't trigger OOM-killer */ \
+> -        __GFP_NOWARN)   /* no stack trace print - this call is non-criti=
+cal */
+> -
+>  static const struct snd_malloc_ops *snd_dma_get_ops(struct snd_dma_buffe=
+r *dmab);
+>
+>  #ifdef CONFIG_SND_DMA_SGBUF
+>  static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size=
+_t size);
+>  #endif
+>
+> +/* default GFP bits for our allocations */
+> +static gfp_t default_gfp(size_t size)
+> +{
+> +       /* don't allocate intensively for high-order pages */
+> +       if (size > PAGE_SIZE)
+> +               return GFP_KERNEL | __GFP_NOWARN | __GFP_NORETRY;
+> +       else
+> +               return GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL;
+> +}
+> +
+>  static void *__snd_dma_alloc_pages(struct snd_dma_buffer *dmab, size_t s=
+ize)
+>  {
+>         const struct snd_malloc_ops *ops =3D snd_dma_get_ops(dmab);
+> @@ -281,7 +286,7 @@ static void *do_alloc_pages(struct device *dev, size_=
+t size, dma_addr_t *addr,
+>                             bool wc)
+>  {
+>         void *p;
+> -       gfp_t gfp =3D GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+> +       gfp_t gfp =3D default_gfp(size);
+>
+>   again:
+>         p =3D alloc_pages_exact(size, gfp);
+> @@ -466,7 +471,7 @@ static const struct snd_malloc_ops snd_dma_iram_ops =
+=3D {
+>   */
+>  static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+> -       return dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAU=
+LT_GFP);
+> +       return dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, defau=
+lt_gfp(size));
+>  }
+>
+>  static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
+> @@ -511,7 +516,7 @@ static int snd_dma_wc_mmap(struct snd_dma_buffer *dma=
+b,
+>  #else
+>  static void *snd_dma_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+> -       return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP=
+);
+> +       return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, default_gfp=
+(size));
+>  }
+>
+>  static void snd_dma_wc_free(struct snd_dma_buffer *dmab)
+> @@ -546,7 +551,7 @@ static void *snd_dma_noncontig_alloc(struct snd_dma_b=
+uffer *dmab, size_t size)
+>                 return snd_dma_sg_fallback_alloc(dmab, size);
+>  #endif
+>         sgt =3D dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.di=
+r,
+> -                                     DEFAULT_GFP, 0);
+> +                                     default_gfp(size), 0);
+>  #ifdef CONFIG_SND_DMA_SGBUF
+>         if (!sgt && !get_dma_ops(dmab->dev.dev))
+>                 return snd_dma_sg_fallback_alloc(dmab, size);
+> @@ -783,7 +788,7 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma=
+_buffer *dmab, size_t size)
+>         while (size > 0) {
+>                 chunk =3D min(size, chunk);
+>                 if (sgbuf->use_dma_alloc_coherent)
+> -                       p =3D dma_alloc_coherent(dmab->dev.dev, chunk, &a=
+ddr, DEFAULT_GFP);
+> +                       p =3D dma_alloc_coherent(dmab->dev.dev, chunk, &a=
+ddr, default_gfp(size));
+>                 else
+>                         p =3D do_alloc_pages(dmab->dev.dev, chunk, &addr,=
+ false);
+>                 if (!p) {
+> @@ -871,7 +876,7 @@ static void *snd_dma_noncoherent_alloc(struct snd_dma=
+_buffer *dmab, size_t size)
+>         void *p;
+>
+>         p =3D dma_alloc_noncoherent(dmab->dev.dev, size, &dmab->addr,
+> -                                 dmab->dev.dir, DEFAULT_GFP);
+> +                                 dmab->dev.dir, default_gfp(size));
+>         if (p)
+>                 dmab->dev.need_sync =3D dma_need_sync(dmab->dev.dev, dmab=
+->addr);
+>         return p;
 
