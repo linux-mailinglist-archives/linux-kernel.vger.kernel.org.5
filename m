@@ -1,96 +1,91 @@
-Return-Path: <linux-kernel+bounces-67314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBEFB85699F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:32:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F8BE8569A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149211C23E01
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:32:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7A61F22F77
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA17135419;
-	Thu, 15 Feb 2024 16:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D688E135A69;
+	Thu, 15 Feb 2024 16:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O0DKPwfb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tENlyL1U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD61A131E56;
-	Thu, 15 Feb 2024 16:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ADB1754B;
+	Thu, 15 Feb 2024 16:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014768; cv=none; b=YJW04wX3bNV3dkan0fMx1MxZeQi8Jh02Q8HS5BR/A9LNi+Xl0+2/l2w6tvjCUlvP7ltQ+YRw9uRfvlIM6pCsNzubWUMDOY0nD3VdZrwxJGmb0AQtLJhCib1nW1Wt7gccF4+npofwiICvHKLauMSTNwx/19uht6gruo9A6q11krU=
+	t=1708014952; cv=none; b=MjW30Qi63k/VH9UlJ5fmeguZZWtRwhSGoJ15fXz1YWSzEXr5iBiJyzZr0sRyyxlUeDdvT1OvhC1ysoaeb2em0KT5g1DvPmJ9YFRRacuzKIlDBbD0f2G8b0ZTKY3pXiAB8PTU0FG9wLKcg2nfWk/OC0E62oDiVE3zAV4peJmYcTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014768; c=relaxed/simple;
-	bh=Ab/m3FXZDk4BTfQ0FyXmzh0a7uFDpqU4kjKXHTawJTE=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=r8cqjQJbrfVqZ1WPi64Zyb3AFKYbe+POmCdaME5EDk8T8CkBla8PjOHukyx6kr3J9RBe76IOIaCLUCC1CYdbSy9JEZseDabYlj07IcpsjmgS0//B2wwnCM1Hqb8s388jyU5wpof1mL92LuVNSXC04rUbX09RHb22/Fdmr8Hae6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O0DKPwfb; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708014767; x=1739550767;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Ab/m3FXZDk4BTfQ0FyXmzh0a7uFDpqU4kjKXHTawJTE=;
-  b=O0DKPwfbhE/zySf+C7zJnPmOkX6b/mbzocFCqVSvzKwOPcXfQeRXTysD
-   gEvwNoOtIes/C1HBsE0CfT1ahTNgTbrdN5mQ2Su8BnzHje/pi4Ox8kxNy
-   5MH2CjkP3e0O4UA4vdnfZdouRhd0t0nW/XQK8OCX91eSjUGGJdiluUfIF
-   k4JXP8PLAXJv56KR472c/GnEkWGGdRuhS+U73fxRYmIJODI/f1DELLbg7
-   NXKM1xBZhUBri+gYW6wXZd2o4PqeNp56jhfFGQPRtqbdP/fHUGSDFInkV
-   4yh/LgfSNw7EqDXhyiIs6BB0XKQRf+sXB2HSA/mB+kdDngDPolas9xjDQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="12739599"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="12739599"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 08:32:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="3505815"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.32.150])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 08:32:43 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 15 Feb 2024 18:32:38 +0200 (EET)
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, Al Cooper <alcooperx@gmail.com>, 
-    Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-    Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 1/1] serial: 8250_bcm7271: Replace custom unit
- definitions
-In-Reply-To: <20240215160234.653305-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <ab7d7ca2-f516-68b5-b80a-fb3b5db4cb1e@linux.intel.com>
-References: <20240215160234.653305-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1708014952; c=relaxed/simple;
+	bh=+zLAj2dv1mxs8pQKcOIXqeYT4laZWT/mVwhK3HGd0EI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WuLL3ghJ3W/n6MApfcxI7nrNkdBMR4UtPORJ4/nOKdVlrYE1rXP0rRPRVQHI3Kv22DMKi7yPrgVEcoDPnThIhfd0Gn5BlVRZJH4XErpFHgeMtdH/hNKRsZwFkjKCHl3+JOP1QVFRSqGNPrYcGuMlNp182VsuEojTgdHyCHtpvOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tENlyL1U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14BCFC433C7;
+	Thu, 15 Feb 2024 16:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708014951;
+	bh=+zLAj2dv1mxs8pQKcOIXqeYT4laZWT/mVwhK3HGd0EI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tENlyL1UhctC1ji35rmACH436KEsEf4wY7vf0fttSzkY8KreDcVR/jZml77spbPUH
+	 rgub6XHTDa0aqSrzK8aUSw4xUBinSCzAt4NlclazOXyL0V2PqC/+MiYDKxwr5H9bnt
+	 OEm6HW4sobAE76phqUDf7Pj2GXYUE07BiLTzEXozU9MkEYMilt4jW6ZZuW4p6toTud
+	 W7d98aimoio4WX+HHTuI4obLTqDf1T+46JUITse0X/YyCk+GBWaMy2+L9MhyJZ4X+f
+	 OPcIx3ZE6DyFSiE7a9CB64Ne5Z29MHA2w0FjcArhgyWeQB9KmbTCJImnIAgkgj0ZEe
+	 8uL9RNKVccbqQ==
+Date: Thu, 15 Feb 2024 16:35:45 +0000
+From: Will Deacon <will@kernel.org>
+To: Nicolin Chen <nicolinc@nvidia.com>
+Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, kbusch@kernel.org,
+	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
+Subject: Re: [PATCH v1 0/2] nvme-pci: Fix dma-iommu mapping failures when
+ PAGE_SIZE=64KB
+Message-ID: <20240215163544.GA821@willie-the-truck>
+References: <cover.1707851466.git.nicolinc@nvidia.com>
+ <20240214164138.GA31927@willie-the-truck>
+ <Zc0bLAIXSAqsQJJv@Asurada-Nvidia>
+ <20240215142208.GA753@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1190146347-1708014758=:1019"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215142208.GA753@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Feb 15, 2024 at 02:22:09PM +0000, Will Deacon wrote:
+> On Wed, Feb 14, 2024 at 11:57:32AM -0800, Nicolin Chen wrote:
+> > On Wed, Feb 14, 2024 at 04:41:38PM +0000, Will Deacon wrote:
+> > > On Tue, Feb 13, 2024 at 01:53:55PM -0800, Nicolin Chen wrote:
+> > And it seems to get worse, as even a 64KB mapping is failing:
+> > [    0.239821] nvme 0000:00:01.0: swiotlb buffer is full (sz: 65536 bytes), total 32768 (slots), used 0 (slots)
+> > 
+> > With a printk, I found the iotlb_align_mask isn't correct:
+> >    swiotlb_area_find_slots:alloc_align_mask 0xffff, iotlb_align_mask 0x800
+> > 
+> > But fixing the iotlb_align_mask to 0x7ff still fails the 64KB
+> > mapping..
+> 
+> Hmm. A mask of 0x7ff doesn't make a lot of sense given that the slabs
+> are 2KiB aligned. I'll try plugging in some of the constants you have
+> here, as something definitely isn't right...
 
---8323328-1190146347-1708014758=:1019
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sorry, another ask: please can you print 'orig_addr' in the case of the
+failing allocation?
 
-On Thu, 15 Feb 2024, Andy Shevchenko wrote:
+Thanks!
 
-> Replace custom unit definitions that are available via units.h.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-1190146347-1708014758=:1019--
+Will
 
