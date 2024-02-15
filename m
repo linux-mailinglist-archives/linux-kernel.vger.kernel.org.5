@@ -1,121 +1,125 @@
-Return-Path: <linux-kernel+bounces-66843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1884185624D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:57:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768B685628D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:08:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8A14288E72
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D223B30D3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DEA12BE9F;
-	Thu, 15 Feb 2024 11:56:37 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63A12C53E;
+	Thu, 15 Feb 2024 11:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyqziwEu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD7F412B14C
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B348412BF3D;
+	Thu, 15 Feb 2024 11:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998197; cv=none; b=f7aj3DWPUnsM3FOXZzwXpiQdSUhWrUJ3mytEEesgS6cOD9QcHl5JiGNfEtUGQjABaEMP3gF+NpsF04LeIrJ4/TrwUEl7iRvEBLCofOjOwW2xlkDGpgFTSDKebIhST6xdawm4lttLaXt5Bw8uc2frLqEWVDLOnPDYSSNRBcn7kEE=
+	t=1707998264; cv=none; b=dyNC1F4kg5QTGqMQ1hKgr7ZYZt+k9zG3+0aQy9g5HtVtb8XZOZAIOZkmXkI93Vz+x0AtUG6UobZpExU8RIT74Jhq5XkXg01xParqFm+lQBaYHJhmA8XIlj5aR/FOvSJg2sUgWPlBZyuE/i1FpGn+dmwIW1bNZogA1V9haUv7vWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998197; c=relaxed/simple;
-	bh=iQTZVfX1cNJJ5WOHk+XpvjTf0FitnxvY81VtHXx2k8w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HZPurUgRpsF7F9Gq89xH6MFWmL06TpAPMv56uffpZy2raQ4TtNpXqfe6KdTmklHwvDUyFH613xl1zHMgzgxZSrsDx3bD+1e9eC4Ql365UYWz9pmpJw72/Ux3Hu5uUFS+b0wp4D7/xFDqOC+dSu9HcYUBs12Wiq6rIw/hq2iw0Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2A4A422205;
-	Thu, 15 Feb 2024 11:56:33 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A3AD91346A;
-	Thu, 15 Feb 2024 11:56:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id IP28JPD7zWUrBwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Thu, 15 Feb 2024 11:56:32 +0000
-Date: Thu, 15 Feb 2024 12:57:39 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH v9 4/7] mm,page_owner: Implement the tracking of the
- stacks count
-Message-ID: <Zc38M2CR2coppMFH@localhost.localdomain>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-5-osalvador@suse.de>
- <9fc95f61-827f-40ee-a823-576cdcad7939@suse.cz>
+	s=arc-20240116; t=1707998264; c=relaxed/simple;
+	bh=ZjS4FGsh59FRrV3bPIOZFy21FV9/UD4J8wYNJ7V5MEQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IzNE1lCoUL9WYKK11XlRu5FB5ykvMcKT4+S4iDK7nExdVOgGlHzHkmmlS5a4gHoKLqGEMzoLcKwqh1auStdul1jJZwsw5XdDtEw+d1kkfWnVpGqxMbVevux6jSak0TXlbzTwOYnZWBvDVzivMkraQA+XCJ7LWEYB9SoV0TmGRvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fyqziwEu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227AEC433C7;
+	Thu, 15 Feb 2024 11:57:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707998264;
+	bh=ZjS4FGsh59FRrV3bPIOZFy21FV9/UD4J8wYNJ7V5MEQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fyqziwEu8JdiAmob0PH9svSFBnqigFzaCsruuY6/sSL8n/lx13X7r+aHvc1fR6ku0
+	 ItZYqHANHGzkuMaai6nZniqcTF0IqTmFZy0R6qtJguVrm1hHSwNtdZpkqPmttdPXGo
+	 XJ8puKluzojxXDHIQIJHsDA75WWcxlWlka7Yd8CQK9MULvbOGdm/+G3RIvIVlAq7FR
+	 GVwQrmyu742daoxjOCs9BO7VF3FrlNa3VSMbpuJYIbTnWUSE0neWsxZklEKiU/1/fd
+	 MgDmUWBG5Bg+CFmCTaeMP4Q4TBHmFm354vPdharLHmZedzJo+89/aOyGTdOQY/O2qM
+	 /WHWZ0IHsL82A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raaN3-003U4v-Qq;
+	Thu, 15 Feb 2024 11:57:41 +0000
+Date: Thu, 15 Feb 2024 11:57:41 +0000
+Message-ID: <86mss23poq.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Anup Patel <apatel@ventanamicro.com>,	Paul Walmsley
+ <paul.walmsley@sifive.com>,	Palmer Dabbelt <palmer@dabbelt.com>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,	Rob Herring
+ <robh+dt@kernel.org>,	Atish Patra <atishp@atishpatra.org>,	Andrew Jones
+ <ajones@ventanamicro.com>,	Sunil V L <sunilvl@ventanamicro.com>,	Saravana
+ Kannan <saravanak@google.com>,	Anup Patel <anup@brainfault.org>,
+	linux-riscv@lists.infradead.org,	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,	devicetree@vger.kernel.org,	Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,	Frank Rowand
+ <frowand.list@gmail.com>,	Conor Dooley <conor+dt@kernel.org>,
+	"Ahmed S.\ Darwish" <darwi@linutronix.de>
+Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
+In-Reply-To: <87bk8ig6t2.ffs@tglx>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+	<CAK9=C2Vwtj2gZg-P73yLMxu0rPXQ3YrRRuxq6HcpHMXgs-jHaw@mail.gmail.com>
+	<87bk8ig6t2.ffs@tglx>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9fc95f61-827f-40ee-a823-576cdcad7939@suse.cz>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2A4A422205
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, apatel@ventanamicro.com, paul.walmsley@sifive.com, palmer@dabbelt.com, bjorn@kernel.org, robh+dt@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, darwi@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Thu, Feb 15, 2024 at 12:08:53PM +0100, Vlastimil Babka wrote:
-> On 2/14/24 18:01, Oscar Salvador wrote:
-> > Implement {inc,dec}_stack_record_count() which increments or
-> > decrements on respective allocation and free operations, via
-> > __reset_page_owner() (free operation) and __set_page_owner() (alloc
-> > operation).
-> > Newly allocated stack_record structs will be added to the list stack_list
-> > via add_stack_record_to_list().
-> > Modifications on the list are protected via a spinlock with irqs
-> > disabled, since this code can also be reached from IRQ context.
-> > 
-> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> > Reviewed-by: Marco Elver <elver@google.com>
+On Wed, 14 Feb 2024 19:54:49 +0000,
+Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks!
-
-
-> > +		if (atomic_try_cmpxchg_relaxed(&stack_record->count.refs, &old, 1))
-> > +			/* Add the new stack_record to our list */
-> > +			add_stack_record_to_list(stack_record, gfp_mask);
-> 			
-> 			Not returning here...
+> Anup!
 > 
-> > +	}
-> > +	refcount_inc(&stack_record->count);
+> On Sat, Jan 27 2024 at 21:50, Anup Patel wrote:
+> >> Changes since v11:
+> >>  - Rebased on Linux-6.8-rc1
+> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert ARM
+> >>    MSI handling to per device MSI domains" series by Thomas.
+> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH19,
+> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
+> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@linutronix.de/)
+> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism.
+> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
+> >>    platform devices.
+> >
+> > I have rebased and included 13 patches (which add per-device MSI domain
+> > infrastructure) from your series [1]. In this series, the IMSIC driver
+> > implements the msi_parent_ops and APLIC driver implements wired-to-msi
+> > bridge using your new infrastructure.
+> >
+> > The remaining 27 patches of your series [1] requires testing on ARM
+> > platforms which I don't have. I suggest these remaining patches to
+> > go as separate series.
 > 
-> ... means we'll increase the count to 2 on the first store, so there's a
-> bias. Which would be consistent with the failure and dummy stacks that also
-> start with a refcount of 1. But then the stack count reporting should
-> decrement by 1 to prevent confusion? (in the following patch). Imagine
-> somebody debugging an allocation stack where there are not so many of them,
-> but the allocation is large, and being sidetracked by an off-by-one error.
+> Of course. Darwi (in Cc) is going to work on the ARM parts when he
+> returns from vacation. I'm going to apply the infrastructure patches
+> (1-13) in the next days so they are out of the way for you and Darwi,
+> unless someone has any objections.
 
-Good catch Vlastimil!
-Yes, we should substract one from the total count in stack_print.
+FWIW, I've fiven the first 13 patches a go on two of the most
+problematic platforms (Huawei's D05, and Marvell's McBin). Nothing
+immediately broke, so it's obviously perfect.
+
+Thanks,
+
+	M.
 
 -- 
-Oscar Salvador
-SUSE Labs
+Without deviation from the norm, progress is not possible.
 
