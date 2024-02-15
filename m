@@ -1,212 +1,196 @@
-Return-Path: <linux-kernel+bounces-67713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7D5856F90
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:51:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238B9856F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:51:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D9ED1F21B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:50:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73A21F21F96
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8701420D1;
-	Thu, 15 Feb 2024 21:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5F414533F;
+	Thu, 15 Feb 2024 21:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Edmgj46n";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CyfgUjX1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Dt8snzWR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fMBcDkXf"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tVtTbNfR";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="tZPljd1N";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tVtTbNfR";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="tZPljd1N"
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DF76A349;
-	Thu, 15 Feb 2024 21:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3396A349;
+	Thu, 15 Feb 2024 21:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708033843; cv=none; b=g7W9zGlNXcvwdO6qF9Fvyk7EOTMcOmgOtp6Ce7C0LYtQ2uYY0GHWgXQ+FFCBClYZlqhFSPtXG49DjwZGQpS8Cu28TnhScQqibPYxR4HYPR8+6YPRvNXKrr8ekTkx2xhOsZKRkTpziitsDtA2YbJnxT1hxzMc2Qo1zRgYQAvIE4g=
+	t=1708033850; cv=none; b=on5K2tiAS02wo5YXeq7CyBCL6BshpRLxbA7PJ6YPyrmV9QS2D+2mwcDUIGiUe6cLdmZVn3pjN+vRPKMBUE/8KMnnobal/1Nl5RP96AEB6ceo8uHcJSkuJL4YPqUJYFrunPmq/0tBHP/LzGgzD9duHXH7bgMYE8T9r4S1zxPQMkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708033843; c=relaxed/simple;
-	bh=M5gdYQ4piUl+0+Cj4QZUYsVYsHtsk558gXiu5u6jrOU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rbdUFqUJEKhQI/fowwdyoyfjJVgK+htHagwWT9JfXCs0+VZUxTWpUMprHDSZXZabyp88fLzZ38/M8Bp4lPRLDC2jIOzrSm/ZRyS4dLodrgpqcBkqtAL7zg2MnVlnnxIsYT0LRACpspgs+iQpSZFbooDgZKIC9Z//fcDycVNM6ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Edmgj46n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CyfgUjX1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Dt8snzWR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fMBcDkXf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1708033850; c=relaxed/simple;
+	bh=idON+bbZYzmEzPH9UvpHCpG1kmGpuXvEU2Wog5Zspi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AhDgblSkSI4HQ/CdIGV1Aq2R/KNA6LqRGnV30tnD33XZV4OPZS8ByOG3D3yokUnmwrgZRo+l4TQgwNgIATeAwPBGGV0VYDZYivlPMwlzpQ64Ef9JB4NmGF/4rfPdAR55TUK/P0iOyMeOXCP4GSfvQ0JoQl7AOI9bcrn/+ZwO7bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tVtTbNfR; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=tZPljd1N; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tVtTbNfR; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=tZPljd1N; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from kitsune.suse.cz (unknown [10.100.12.127])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C4D9C22056;
-	Thu, 15 Feb 2024 21:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708033838; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 783AF22056;
+	Thu, 15 Feb 2024 21:50:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708033846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PV2jhmuXtgna00Xa5XigbZslr56lI5Yx29VeaYM+7Zs=;
-	b=Edmgj46nkQwX4hkEiqNNmlqFUjqk6QdiDJIx2824hQeWuM0T5ckRuEzFPW6OLjQ1Ilcjxy
-	rsLZNRdn07GLchwBR6I+DTrLu2oPmG8wCuNGI2/VuOAyifQNAMKrYF6QxXY34IxRbs5trw
-	QTutvQ28lyxpaJ7x7HWXIv27a6rUPNs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708033838;
+	bh=O8vOtgPGN8KarkiUSv9tkZ442Q2uoVcZR5ZzpfSk2J8=;
+	b=tVtTbNfR2gczusynP3FlmOwd3jeTBTgFpYvLQmDBfMTSPJZp3ZkG00DUmCUiu0uqDnmEam
+	LSS1TMaWG6sCFGMQE6fCJ6PQazrirE1OOWFXStFWtjLSkaRL6Sv8NZhQWasf6F/xT/MomH
+	dWFbxePSmV2QzHqyWg/gcyqEDg9uKNI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708033846;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PV2jhmuXtgna00Xa5XigbZslr56lI5Yx29VeaYM+7Zs=;
-	b=CyfgUjX1BLTALID9hEdUAVE0y33o5d942E1u9kjOUb6ETdEOWaAQbBwUvnixG0Sw95rehn
-	v/izwNk1+5r4FOCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708033837; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=O8vOtgPGN8KarkiUSv9tkZ442Q2uoVcZR5ZzpfSk2J8=;
+	b=tZPljd1Noigoc3Od96osNrNXdRHbvlLZVShmeKIkUZNFxC7btrFqgx22IlzlgevnemIoGe
+	Fmy65eCgTECw8jCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708033846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PV2jhmuXtgna00Xa5XigbZslr56lI5Yx29VeaYM+7Zs=;
-	b=Dt8snzWRDzt5u+n7VObmiYvxWro4RymUpbiy9sw6TJUMHM7ygUD5jEAxWkRS7EzXUv8zi7
-	ktWK6jolt9A0D7NGfbauD2ABizMFXygQsNOY5kcVfPjw/IQVTSy3RBsMvbGiWV66IpKOLm
-	+RXZxjZszD7RZGyYJUHBpVyt5gyyCrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708033837;
+	bh=O8vOtgPGN8KarkiUSv9tkZ442Q2uoVcZR5ZzpfSk2J8=;
+	b=tVtTbNfR2gczusynP3FlmOwd3jeTBTgFpYvLQmDBfMTSPJZp3ZkG00DUmCUiu0uqDnmEam
+	LSS1TMaWG6sCFGMQE6fCJ6PQazrirE1OOWFXStFWtjLSkaRL6Sv8NZhQWasf6F/xT/MomH
+	dWFbxePSmV2QzHqyWg/gcyqEDg9uKNI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708033846;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PV2jhmuXtgna00Xa5XigbZslr56lI5Yx29VeaYM+7Zs=;
-	b=fMBcDkXfHOR+SAskPJRLfaYNJtLmrqLqJTOD9a9kdNJtFih9vtJOhzZxQryT203bFs1NmW
-	kiz2q60HV/OG58Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3743813A82;
-	Thu, 15 Feb 2024 21:50:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6IIYDS2HzmWgTgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 21:50:37 +0000
-Message-ID: <ab4b1789-910a-4cd6-802c-5012bf9d8984@suse.cz>
-Date: Thu, 15 Feb 2024 22:50:36 +0100
+	bh=O8vOtgPGN8KarkiUSv9tkZ442Q2uoVcZR5ZzpfSk2J8=;
+	b=tZPljd1Noigoc3Od96osNrNXdRHbvlLZVShmeKIkUZNFxC7btrFqgx22IlzlgevnemIoGe
+	Fmy65eCgTECw8jCw==
+Date: Thu, 15 Feb 2024 22:50:45 +0100
+From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org, Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: powerpc: Add header symlinks for building
+ papr character device tests
+Message-ID: <20240215215045.GU9696@kitsune.suse.cz>
+References: <20240215165527.23684-1-msuchanek@suse.de>
+ <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+ <20240215192334.GT9696@kitsune.suse.cz>
+ <87a5o1ikk0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/35] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
- obj_ext creation
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-8-surenb@google.com>
- <fbfab72f-413d-4fc1-b10b-3373cfc6c8e9@suse.cz>
- <tbqg7sowftykfj3rptpcbewoiy632fbgbkzemgwnntme4wxhut@5dlfmdniaksr>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <tbqg7sowftykfj3rptpcbewoiy632fbgbkzemgwnntme4wxhut@5dlfmdniaksr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a5o1ikk0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Dt8snzWR;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=fMBcDkXf
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.00 / 50.00];
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
 	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.00)[26.94%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_CC(0.00)[google.com,linux-foundation.org,suse.com,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.00
-X-Rspamd-Queue-Id: C4D9C22056
+	 FREEMAIL_CC(0.00)[lists.ozlabs.org,ellerman.id.au,gmail.com,csgroup.eu,kernel.org,linux.ibm.com,vger.kernel.org];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spam-Score: -3.10
 
-On 2/15/24 22:37, Kent Overstreet wrote:
-> On Thu, Feb 15, 2024 at 10:31:06PM +0100, Vlastimil Babka wrote:
->> On 2/12/24 22:38, Suren Baghdasaryan wrote:
->> > Slab extension objects can't be allocated before slab infrastructure is
->> > initialized. Some caches, like kmem_cache and kmem_cache_node, are created
->> > before slab infrastructure is initialized. Objects from these caches can't
->> > have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
->> > caches and avoid creating extensions for objects allocated from these
->> > slabs.
->> > 
->> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> > ---
->> >  include/linux/slab.h | 7 +++++++
->> >  mm/slub.c            | 5 +++--
->> >  2 files changed, 10 insertions(+), 2 deletions(-)
->> > 
->> > diff --git a/include/linux/slab.h b/include/linux/slab.h
->> > index b5f5ee8308d0..3ac2fc830f0f 100644
->> > --- a/include/linux/slab.h
->> > +++ b/include/linux/slab.h
->> > @@ -164,6 +164,13 @@
->> >  #endif
->> >  #define SLAB_TEMPORARY		SLAB_RECLAIM_ACCOUNT	/* Objects are short-lived */
->> >  
->> > +#ifdef CONFIG_SLAB_OBJ_EXT
->> > +/* Slab created using create_boot_cache */
->> > +#define SLAB_NO_OBJ_EXT         ((slab_flags_t __force)0x20000000U)
->> 
->> There's
->>    #define SLAB_SKIP_KFENCE        ((slab_flags_t __force)0x20000000U)
->> already, so need some other one?
+On Thu, Feb 15, 2024 at 01:39:27PM -0600, Nathan Lynch wrote:
+> Michal Suchánek <msuchanek@suse.de> writes:
+> > On Thu, Feb 15, 2024 at 01:13:34PM -0600, Nathan Lynch wrote:
+> >> Michal Suchanek <msuchanek@suse.de> writes:
+> >> >
+> >> > Without the headers the tests don't build.
+> >> >
+> >> > Fixes: 9118c5d32bdd ("powerpc/selftests: Add test for papr-vpd")
+> >> > Fixes: 76b2ec3faeaa ("powerpc/selftests: Add test for papr-sysparm")
+> >> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> >> > ---
+> >> >  tools/testing/selftests/powerpc/include/asm/papr-miscdev.h | 1 +
+> >> >  tools/testing/selftests/powerpc/include/asm/papr-sysparm.h | 1 +
+> >> >  tools/testing/selftests/powerpc/include/asm/papr-vpd.h     | 1 +
+> >> >  3 files changed, 3 insertions(+)
+> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-miscdev.h
+> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-sysparm.h
+> >> >  create mode 120000
+> >> > tools/testing/selftests/powerpc/include/asm/papr-vpd.h
+> >> 
+> >> I really hope making symlinks into the kernel source isn't necessary. I
+> >> haven't experienced build failures with these tests. How are you
+> >> building them?
+> >> 
+> >> I usually do something like (on a x86 build host):
+> >> 
+> >> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- ppc64le_defconfig
+> >> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- headers
+> >> $ make ARCH=powerpc CROSS_COMPILE=powerpc64le-linux- -C tools/testing/selftests/powerpc/
+> >> 
+> >> without issue.
+> >
+> > I am not configuring the kernel, only building the tests, and certainly
+> > not installing headers on the system.
 > 
-> What's up with the order of flags in that file? They don't seem to
-> follow any particular ordering.
+> OK, but again: how do you provoke the build errors, exactly? Don't make
+> us guess please.
 
-Seems mostly in increasing order, except commit 4fd0b46e89879 broke it for
-SLAB_RECLAIM_ACCOUNT?
+cd tools/testing/selftests/powerpc/
 
-> Seems like some cleanup is in order, but any history/context we should
-> know first?
+make -k
 
-Yeah noted, but no need to sidetrack you.
+> > Apparently this is what people aim to do, and report bugs when it does
+> > not work: build the kselftests as self-contained testsuite that relies
+> > only on standard libc, and whatever it brought in the sources.
+> >
+> > That said, the target to install headers is headers_install, not
+> > headers. The headers target is not documented, it's probably meant to be
+> > internal to the build system. Yet it is not enforced that it is built
+> > before building the selftests.
+> 
+> <shrug> the headers target is used in Documentation/dev-tools/kselftest.rst:
+> 
+> """
+> To build the tests::
+> 
+>   $ make headers
+>   $ make -C tools/testing/selftests
+> """
+
+Indeed so it's not supposed to work otherwise. It would be nice if it
+did but might be difficult to achieve with plain makefiles.
+
+'headers' is not in 'make help' output but whatever.
+
+Thanks
+
+Michal
 
