@@ -1,99 +1,113 @@
-Return-Path: <linux-kernel+bounces-67790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 940768570C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:53:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F379B8570CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5001F2277F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:53:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FC471F2316D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02AA14534A;
-	Thu, 15 Feb 2024 22:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22FCF13DBB3;
+	Thu, 15 Feb 2024 22:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="pmAz6Pz7"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C67213B2BF;
-	Thu, 15 Feb 2024 22:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s7GjinpF"
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DDB13DBA4
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708037619; cv=none; b=gK0zHn9YaZTmuPy7RQ5cLU051IGlFUc3c7mNsetlxzyaULXP2VvtCfnCBtDaYn2c6/XhxuVfbDPrljZ7aDqhfT6EZp3aLpH18yBhoTz7nIlHxM9E2t3ewQDxpMfv2xEacPKD6ifjFJXl67oL5qkRz5BreMUBxL7WCrGU4F170SQ=
+	t=1708037680; cv=none; b=W+Yju1dpTAwzuWDPV9t6Juv7J7D7Jpk/eeZcF1MWx7w0aRLxQBIAltf++FjDsm34lWYPVdRHBobObuHHlTnMkwb+e2n+tNHkyObbAasf5aObiGSvL9jHhs6aDadK+ZNp2UmtA3JNhlhbPqDaC5AJ+03Kj7Eeu4bzOoRLgkQL6bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708037619; c=relaxed/simple;
-	bh=rUWuyqvYLXDrlUVnh5hZsDQvx7f4dgjjbHfhFcrcDdE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZBuvY/R/RbUBE3ZOtbGrxFLMgB1aiwkiece18xOndttr+pfKXtI2BE/bY4ofs3nLXhqHY8JirJc4ZMveJQ+4noUK3aPqxTjhokEvQRJzExuFjyDQND8BRcggwVzwsEzn37jNHNKolRskAY7Nf5pVp+mb1+xt/XB78wULPvEVxxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=pmAz6Pz7; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.201.39] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id C773020B2000;
-	Thu, 15 Feb 2024 14:53:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C773020B2000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1708037617;
-	bh=CiJoh5nLY9w4ZLUhjoAD3yt82tHarGa4oEGpH+oxCsw=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=pmAz6Pz7oV3RhM3USNZQ0wb8AA62St+0eW+k3/jxNYTU1MCMDqmOa/BW7BjQyyqQ6
-	 4mWlylw5SlV3mGkk4ZPGx3pQ6gEhp4dcMfoFBMMEsP0J3jlYtMu6ORVw3EHK52kFWJ
-	 Gm/s6nKNiwerC7Qvsu4XUFEMxAS21wKxGkl1Yknw=
-Message-ID: <b99a7196-011e-4f08-83ec-e63a690ab919@linux.microsoft.com>
-Date: Thu, 15 Feb 2024 14:53:36 -0800
+	s=arc-20240116; t=1708037680; c=relaxed/simple;
+	bh=vpFxO4vaBL6utiq3PQIPAVgPBDoFbQo1foIo5AqK8Qc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TPnz+knajRjFhlxtNKF1BmuhwFV/nRaGEsYPsZycjZDYh+CINgp0frNPer/1v0Px1fxmvFFYf7uLIiNDM8e0xiCQN8859age0NYp9b+bnh305C9FRvKowWEaJSPrmNO6DqYL4jvatHjC+iC9IdxAbbk0XzF7SXCz0MRsbDAVnlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s7GjinpF; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 17:54:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708037676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZDSi9l3t5jb4xqm42oA6b90TgSdD5o5/qEQqj726Xko=;
+	b=s7GjinpFAKYCSUH++IShUfbdX2oRHH7jMoJOiFXnURQJriQJpk2c1g6IKodkBsWFrf3tMo
+	lRA7KcUWR9thLhS4EQcOGTvPoXKrv2i+J/AXkZWZfF3jhzdVpibqSVtKnHN1t1gucGHdc8
+	uhGVZUZbURioLMmI/fU2b1rDFnFpKMs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>, 
+	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
+	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <ojym6woqflzp6qarjgfubzq6wjgcju4cv4t3kfpfk77xhnxt3t@xmuarv3rdqsq>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-32-surenb@google.com>
+ <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+ <Zc6ILbveSQvDtayj@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: Subscribe Microsoft Azure Cobalt 100 to ARM
- Neoverse N2 errata
-Content-Language: en-US
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
- Andre Przywara <andre.przywara@arm.com>, Rob Herring <robh@kernel.org>,
- Zenghui Yu <yuzenghui@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
- "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>, stable@vger.kernel.org
-References: <20240212232909.2276378-1-eahariha@linux.microsoft.com>
- <ZcqtUxhqUbYoRH-G@linux.dev>
- <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
-In-Reply-To: <18b3ac3e-2bfc-4fce-9be4-3e75e487f9fc@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zc6ILbveSQvDtayj@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-On 2/13/2024 4:19 PM, Easwar Hariharan wrote:
-> On 2/12/2024 3:44 PM, Oliver Upton wrote:
->> Hi Easwar,
->>
->> On Mon, Feb 12, 2024 at 11:29:06PM +0000, Easwar Hariharan wrote:
->>> Add the MIDR value of Microsoft Azure Cobalt 100, which is a Microsoft
->>> implemented CPU based on r0p0 of the ARM Neoverse N2 CPU, and therefore
->>> suffers from all the same errata.
->>
->> Can you comment at all on where one might find this MIDR? That is, does
->> your hypervisor report the native MIDR of the implementation or does it
->> repaint it as an Arm Neoverse N2 (0x410FD490)?
+On Thu, Feb 15, 2024 at 10:54:53PM +0100, Michal Hocko wrote:
+> On Thu 15-02-24 15:33:30, Kent Overstreet wrote:
+> > If we want this report to be 100% reliable, then yes the preallocated
+> > buffer makes sense - but I don't think 100% makes sense here; I think we
+> > can accept ~99% and give back that 4k.
 > 
-> We will check on the Microsoft hypervisor's plans, and get back to you.
-> 
-> Notwithstanding that, we do have baremetal use cases for Microsoft Azure Cobalt 100
-> as well where this MIDR value will show through.
-> 
+> Think about that from the memory reserves consumers. The atomic reserve
+> is a scarse resource and now you want to use it for debugging purposes
+> for which you could have preallocated.
 
-<snip>
+_Memory_ is a finite resource that we shouldn't be using unnecessarily. 
 
-We checked in with our Microsoft hypervisor colleagues, and they do repaint the
-Azure Cobalt 100 as an Arm Neoverse N2, but again, we do have baremetal use cases. 
+We don't need this for the entire time we're under memory pressure; just
+the short duration it takes to generate the report, then it's back
+available for other users.
 
-Thanks,
-Easwar
+You would have us dedicate 4k, from system bootup, that can never be
+used by other users.
 
+Again: this makes no sense. The whole point of having watermarks and
+shared reserves is so that every codepath doesn't have to have its own
+dedicated, private reserve, so that we can make better use of a shared
+finite resource.
 
