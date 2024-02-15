@@ -1,152 +1,276 @@
-Return-Path: <linux-kernel+bounces-67653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C4A856E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:28:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA03856E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F063E1F23C31
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:28:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28851C21C9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0808313AA4D;
-	Thu, 15 Feb 2024 20:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9F213AA41;
+	Thu, 15 Feb 2024 20:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="BGij8Gri"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (2048-bit key) header.d=bluemarch.art header.i=@bluemarch.art header.b="mYE5qO/Y"
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557FF136995;
-	Thu, 15 Feb 2024 20:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3608713475C
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708028874; cv=none; b=LI8TzEedIC1f2rnKuKGDLuI41ASpF/Fedv3VpPHEoSCNJvZcjE107r6bRCqGl5J7ZRSnv5QM93/iY6Ac1qqS4M3NIPM2twZ31OyA82MzH0hOa6Z9J6v8HEUHSZyDU7Dp/86Fl4GIC9zj3G7e+ZfHdI3/kU0dDRSQMaII+IKVNm8=
+	t=1708029134; cv=none; b=eiqiIEYUx3Suez7wsNkzjO45CaueK7IapMHZszIZTRh/QYGM4gZVroZxa7gTiaPP7rT/Z1Acr5sHSm4TjIleEgePTviin0dvZ3LBa18mDPAMpaxQGicm30ZIhQmuWn2fns9PgfPq7WPkGhjs497sC35D9drIPxSE4ZAcEJrJBkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708028874; c=relaxed/simple;
-	bh=qmikj9StrfDnc2GSsAOFnjLrFISUQoPjOilbFetrIeA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G8VilouqxYBs7IjyOsH7VFpuBdUcCZiiVwYgAUtzNXx/ZH442bo8aobm8PPOr430PvhtMmwfp6i5C3ipIHmsJvYw4qcPBMgbkkXbhDY4HHE0v0JgkKQRobUyE2apr7GNbTk6el6kW4vezHbkNcIEHSfM2oJQC3qKQuT6Kz0/cQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=BGij8Gri; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708028858; x=1708633658; i=w_armin@gmx.de;
-	bh=qmikj9StrfDnc2GSsAOFnjLrFISUQoPjOilbFetrIeA=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=BGij8GriOFfvQenjLAJB6yfs8l1v2Ve6gasklkgJPGtDwvaHEbUeSKou+I9ThO7p
-	 +hm/elIGKgze9zxb/n28VBgN9b+4u4cF4ZmBj5zYedK6evAzNqy7s7GxAijkf5oe1
-	 N9oh4LLd85qekQ4JYlh13hXQ4FhG71jfyKDZYV9yDUDNjB13zTjANS2ShYAtesSZZ
-	 Nc/y6Xk21qtaQk4hgb/CFR7HjAOYCZCCJjMqqEqIjB/55hAuSLUzcaxy8t89mKEjk
-	 XsdnHI7yl1FBHKjBwW+xIr/hPJqEFr8rEGld3RyxZQe0N1+5g74I+OVwV+qgd+4oS
-	 WvoxYwsTk2PrGsUo+g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.14] ([141.30.226.119]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYvcA-1rWC5q1L0a-00Uuiy; Thu, 15
- Feb 2024 21:27:38 +0100
-Message-ID: <80bc19ce-7111-4a5d-b875-2712bdf2bb72@gmx.de>
-Date: Thu, 15 Feb 2024 21:27:36 +0100
+	s=arc-20240116; t=1708029134; c=relaxed/simple;
+	bh=alYX9l5ihaVBaKIi+9pQiYMRCaQnGW959MWcxLzpRUo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d+hb1FmPEFxRrWyoc9n6jeF9HDHsuU+i+1rwxnVYxSn6iIZfgCwP7ydM3Zp5zhYTNFlCm61ZixSZCl5ygEwuBy9OUI9KUKqDxyiQ1B18a5xjC10JhGNWGRP7w4fZRyoT0XIED6DM2uFWEhTQyP5425Ge0qEoJgl93XMIUk5toDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bluemarch.art; spf=pass smtp.mailfrom=bluemarch.art; dkim=pass (2048-bit key) header.d=bluemarch.art header.i=@bluemarch.art header.b=mYE5qO/Y; arc=none smtp.client-ip=51.77.79.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bluemarch.art
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bluemarch.art
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bluemarch.art;
+	s=protonmail; t=1708029121; x=1708288321;
+	bh=9g+lp3rZeGt27Gj1YiW60NvlnC1RHxMjnZp9mYyOWa0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=mYE5qO/YQk4s9tOFJeoUJQgOMYz64cVGRIce+Nc6c8lx1/5IehYdkpWbeif7vQQKD
+	 XVQQYr1vyKwP4ebssVhHZ0dUiWd7rSrW2dRE9Dc9dsEWKPCBrSu8QcyGK2Ir135/FS
+	 aea8FER+/1EA1mHDATGTaoFM+nvGsp/1QhI7C277y6YpJUHbt8ezBn0e+Fq3w7ZiWc
+	 BkxpSglsXrcF9J/+ICRaBuS6Rfjc/6ZW6wNGLyntujiBrQtOytDAnaLWAVyHU85j5z
+	 fXMNO4EjmKbkGKctPoZUyDdU39cyRQttETYKJj42dv8oGgosofT/46wro472u0q6ou
+	 9v0d3xrBoSEEA==
+Date: Thu, 15 Feb 2024 20:31:43 +0000
+To: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, jwoithe@just42.net, hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, W_Armin@gmx.de
+From: Szilard Fabian <szfabian@bluemarch.art>
+Cc: Szilard Fabian <szfabian@bluemarch.art>
+Subject: [PATCH v4] platform/x86/fujitsu-laptop: Add battery charge control support
+Message-ID: <20240215203012.228758-2-szfabian@bluemarch.art>
+In-Reply-To: <20240207023031.56805-2-szfabian@bluemarch.art>
+References: <20240129163502.161409-2-szfabian@bluemarch.art> <20240129175714.164326-2-szfabian@bluemarch.art> <20240207023031.56805-2-szfabian@bluemarch.art>
+Feedback-ID: 87830438:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] platform/x86: wmi: Check if event data is not NULL
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: corentin.chary@gmail.com, luke@ljones.dev,
- Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>
-References: <20240214070433.2677-1-W_Armin@gmx.de>
- <20240214070433.2677-3-W_Armin@gmx.de>
- <e03b600e-6ad2-1dd1-c4af-56ebfce51f12@linux.intel.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <e03b600e-6ad2-1dd1-c4af-56ebfce51f12@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6rLYDnFHbyQu96y3zjDa+xc37kvxsfJKJncFYPgotzj2QHYoZBK
- OHq6vIWfWgt8Y+2qxmhV5ws2aZkXQPdnv4SczaPBYHPE9VkQ94diRRf8oHGFZqsaE4scbA+
- tM5+3fNZvQraXOkCVJOpYoHHHyDqUxB1D5adsbV89eLQjh1wNQ17zm7/djkKnVztQ6iBayJ
- S7fGvqMdRAyuxbScpOSGw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LBrINFF4lHU=;uBCImhl1dHbQ5kqWIGChyM7Nz8l
- Bvnws1BHOGVfo9JKbEtDKHVON4ZMaTEtsaI3Q+bcwuS2a9OBEouRgNKqsF5R55B+sKNDkI1Wl
- YifBil68Rs9jgJAHnh80tzauR4DYHiPfvzLaPpcrBj4MFAnz8UitaZHwA/Tr3uvf9kze5sPNO
- 8/NQQPWNg41/m6XK8+aDKZseB0Cb7F5prpeN/gV8zr818cMCFNdkD9CgO8hi3OhR/HYIJe1u+
- MT+Xwm/PVoHdpqJStN/0YjwjPCwtFllOeCbRg23YcS0aANyCTpSkAp1Bsps0PYjI/5oNdPRRP
- CT+N1m0SXe7IDk9dZkHROr8EzEJFIcRHbjk+Sfty2Ze6Qvm7RYpz73GHYvcznNHuh1uhZrn7o
- VGA6mZyCGR/oveDvxOU/nQWZjD513HqrXGF1vuwo189h26P+4Cg0CokDqc9YY9pdXQBYOKUsr
- HblGGKfR5rAGd/56/Sk7WxSdqHeQwegMStFZsgLmK27d5qi6VMiPckQICVza4Yf2989XjpW1z
- PJVUsStyb9ByUfCGg7ON3GDP7DldWRkcZIZtPJzntzeAjYQaisj9CUJ3AZL2V+ggZxox16HLt
- ovjyVzuzesSkiQ+EmmBv/E3ofgFMO8AAeycD/ks8rC5DtJaemOo/SecyCRMUqkFoPE2ejOVOV
- pq9FVrXfqgvjGK27rqTGvtII+su+TQtFSSVp7q1F5/rPItXI2nRY4CXB92yZVJkGixBmJ+AVQ
- kW9a3pL69l7EQQLAXVDwD1nogSFmElpQglI6aIoiFjxtTxGP2r9PNpKr+vZyrA4dsts7PTW6V
- yV8Pfpw3Qfu/SrQpls4rYktplXFUrkD3uFpKTF8QMAfWg=
 
-Am 15.02.24 um 13:31 schrieb Ilpo J=C3=A4rvinen:
+This patch adds battery charge control support on Fujitsu notebooks
+via the S006 method of the FUJ02E3 ACPI device. With this method it's
+possible to set charge_control_end_threshold between 50 and 100%.
 
-> On Wed, 14 Feb 2024, Armin Wolf wrote:
->
->> WMI event drivers which do not have no_notify_data set expect
->> that each WMI event contains valid data. Evaluating _WED however
->> might return no data, which can cause issues with such drivers.
->>
->> Fix this by validating that evaluating _WED did return data.
->>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->> ---
->>   drivers/platform/x86/wmi.c | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
->> index 34d8f55afaad..8a916887c546 100644
->> --- a/drivers/platform/x86/wmi.c
->> +++ b/drivers/platform/x86/wmi.c
->> @@ -1211,6 +1211,7 @@ static void wmi_notify_driver(struct wmi_block *w=
-block)
->>   {
->>   	struct wmi_driver *driver =3D drv_to_wdrv(wblock->dev.dev.driver);
->>   	struct acpi_buffer data =3D { ACPI_ALLOCATE_BUFFER, NULL };
->> +	union acpi_object *obj =3D NULL;
->>   	acpi_status status;
->>
->>   	if (!driver->no_notify_data) {
->> @@ -1219,12 +1220,18 @@ static void wmi_notify_driver(struct wmi_block =
-*wblock)
->>   			dev_warn(&wblock->dev.dev, "Failed to get event data\n");
->>   			return;
->>   		}
->> +
->> +		obj =3D data.pointer;
->> +		if (!obj) {
->> +			dev_warn(&wblock->dev.dev, "Event contains not event data\n");
->> +			return;
->> +		}
->>   	}
->>
->>   	if (driver->notify)
->> -		driver->notify(&wblock->dev, data.pointer);
->> +		driver->notify(&wblock->dev, obj);
->>
->> -	kfree(data.pointer);
->> +	kfree(obj);
-> Hi Armin,
->
-> While looking into this patch, I failed to connect the mention of
-> no_notify_data in the commit message with the code change that does
-> nothing differently based no_notify_data being set or not, AFAICT.
->
-> It could be just that you need to explain things better in the commit
-> message, I'm not sure.
+Tested on Lifebook E5411 and Lifebook U728. Sadly I can't test this
+patch on a dual battery one, but I didn't find any clue about
+independent battery charge control on dual battery Fujitsu notebooks
+either. And by that I mean checking the DSDT table of various Lifebook
+notebooks and reverse engineering FUJ02E3.dll.
 
-Here the _WED ACPI control method is only evaluated if driver->no_notify_d=
-ata is not set.
-So the returned ACPI object should only be validated in this case, as we p=
-ass NULL otherwise.
+Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
+---
+v4:
+* formatting fixes
+* replaced sprintf() with sysfs_emit()
 
-Armin Wolf
+v3:
+* added additional error handling
+* removed if statement with device_create_file(), just returning that
+  function instead
+* added bool charge_control_supported into struct fujitsu_laptop
+* added a 'charge_control_add' and 'charge_control_remove' function to be
+  called from acpi_fujitsu_laptop_add() and acpi_fujitsu_laptop_remove()
+* moved FUJ02E3 S006 probing logic from the ACPI battery hooks to the new
+  'charge_control_*' functions
+
+v2:
+Forgot to sign-off the original commit. Fixed, sorry for the
+inconvenience.
+---
+ drivers/platform/x86/fujitsu-laptop.c | 125 ++++++++++++++++++++++++++
+ 1 file changed, 125 insertions(+)
+
+diff --git a/drivers/platform/x86/fujitsu-laptop.c b/drivers/platform/x86/f=
+ujitsu-laptop.c
+index 085e044e888e..69f9730bb14a 100644
+--- a/drivers/platform/x86/fujitsu-laptop.c
++++ b/drivers/platform/x86/fujitsu-laptop.c
+@@ -49,6 +49,8 @@
+ #include <linux/kfifo.h>
+ #include <linux/leds.h>
+ #include <linux/platform_device.h>
++#include <linux/power_supply.h>
++#include <acpi/battery.h>
+ #include <acpi/video.h>
+=20
+ #define FUJITSU_DRIVER_VERSION=09=09"0.6.0"
+@@ -97,6 +99,10 @@
+ #define BACKLIGHT_OFF=09=09=09(BIT(0) | BIT(1))
+ #define BACKLIGHT_ON=09=09=090
+=20
++/* FUNC interface - battery control interface */
++#define FUNC_S006_METHOD=09=090x1006
++#define CHARGE_CONTROL_RW=09=090x21
++
+ /* Scancodes read from the GIRB register */
+ #define KEY1_CODE=09=09=090x410
+ #define KEY2_CODE=09=09=090x411
+@@ -132,6 +138,7 @@ struct fujitsu_laptop {
+ =09spinlock_t fifo_lock;
+ =09int flags_supported;
+ =09int flags_state;
++=09bool charge_control_supported;
+ };
+=20
+ static struct acpi_device *fext;
+@@ -164,6 +171,118 @@ static int call_fext_func(struct acpi_device *device,
+ =09return value;
+ }
+=20
++/* Battery charge control code */
++static ssize_t charge_control_end_threshold_store(struct device *dev,
++=09=09=09=09struct device_attribute *attr,
++=09=09=09=09const char *buf, size_t count)
++{
++=09int value, ret;
++
++=09ret =3D kstrtouint(buf, 10, &value);
++=09if (ret)
++=09=09return ret;
++
++=09if (value < 50 || value > 100)
++=09=09return -EINVAL;
++
++=09int cc_end_value, s006_cc_return;
++
++=09cc_end_value =3D value * 0x100 + 0x20;
++=09s006_cc_return =3D call_fext_func(fext, FUNC_S006_METHOD,
++=09=09=09=09=09CHARGE_CONTROL_RW, cc_end_value, 0x0);
++
++=09if (s006_cc_return < 0)
++=09=09return s006_cc_return;
++
++=09/*
++=09 * The S006 0x21 method returns 0x00 in case the provided value
++=09 * is invalid.
++=09 */
++=09if (s006_cc_return =3D=3D 0x00)
++=09=09return -EINVAL;
++
++=09return count;
++}
++
++static ssize_t charge_control_end_threshold_show(struct device *dev,
++=09=09=09=09struct device_attribute *attr,
++=09=09=09=09char *buf)
++{
++=09int status;
++
++=09status =3D call_fext_func(fext, FUNC_S006_METHOD,
++=09=09=09=09CHARGE_CONTROL_RW, 0x21, 0x0);
++
++=09if (status < 0)
++=09=09return status;
++
++=09return sysfs_emit(buf, "%d\n", status);
++}
++
++static DEVICE_ATTR_RW(charge_control_end_threshold);
++
++/* ACPI battery hook */
++static int fujitsu_battery_add_hook(struct power_supply *battery,
++=09=09=09       struct acpi_battery_hook *hook)
++{
++=09return device_create_file(&battery->dev,
++=09=09=09=09  &dev_attr_charge_control_end_threshold);
++}
++
++static int fujitsu_battery_remove_hook(struct power_supply *battery,
++=09=09=09=09  struct acpi_battery_hook *hook)
++{
++=09device_remove_file(&battery->dev,
++=09=09=09   &dev_attr_charge_control_end_threshold);
++
++=09return 0;
++}
++
++static struct acpi_battery_hook battery_hook =3D {
++=09.add_battery =3D fujitsu_battery_add_hook,
++=09.remove_battery =3D fujitsu_battery_remove_hook,
++=09.name =3D "Fujitsu Battery Extension",
++};
++
++/*
++ * These functions are intended to be called from acpi_fujitsu_laptop_add =
+and
++ * acpi_fujitsu_laptop_remove.
++ */
++static int fujitsu_battery_charge_control_add(struct acpi_device *device)
++{
++=09struct fujitsu_laptop *priv =3D acpi_driver_data(device);
++
++=09priv->charge_control_supported =3D false;
++
++=09/*
++=09 * Check if the S006 0x21 method exists by trying to get the current
++=09 * battery charge limit.
++=09 */
++=09int s006_cc_return;
++
++=09s006_cc_return =3D call_fext_func(fext, FUNC_S006_METHOD,
++=09=09=09=09=09CHARGE_CONTROL_RW, 0x21, 0x0);
++
++=09if (s006_cc_return < 0)
++=09=09return s006_cc_return;
++
++=09if (s006_cc_return =3D=3D UNSUPPORTED_CMD)
++=09=09return -ENODEV;
++
++=09priv->charge_control_supported =3D true;
++=09battery_hook_register(&battery_hook);
++
++=09return 0;
++}
++
++static void fujitsu_battery_charge_control_remove(struct acpi_device *devi=
+ce)
++{
++=09struct fujitsu_laptop *priv =3D acpi_driver_data(device);
++
++=09if (priv->charge_control_supported)
++=09=09battery_hook_unregister(&battery_hook);
++}
++
+ /* Hardware access for LCD brightness control */
+=20
+ static int set_lcd_level(struct acpi_device *device, int level)
+@@ -839,6 +958,10 @@ static int acpi_fujitsu_laptop_add(struct acpi_device =
+*device)
+ =09if (ret)
+ =09=09goto err_free_fifo;
+=20
++=09ret =3D fujitsu_battery_charge_control_add(device);
++=09if (ret < 0)
++=09=09pr_warn("Unable to register battery charge control: %d\n", ret);
++
+ =09return 0;
+=20
+ err_free_fifo:
+@@ -851,6 +974,8 @@ static void acpi_fujitsu_laptop_remove(struct acpi_devi=
+ce *device)
+ {
+ =09struct fujitsu_laptop *priv =3D acpi_driver_data(device);
+=20
++=09fujitsu_battery_charge_control_remove(device);
++
+ =09fujitsu_laptop_platform_remove(device);
+=20
+ =09kfifo_free(&priv->fifo);
+--=20
+2.43.1
+
 
 
