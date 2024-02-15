@@ -1,148 +1,123 @@
-Return-Path: <linux-kernel+bounces-66836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283438562C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:13:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC30856237
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:54:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62254B27145
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB8A2281E86
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFC47484;
-	Thu, 15 Feb 2024 11:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0E712B164;
+	Thu, 15 Feb 2024 11:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T3FWjtI1"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ujw1fa04"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4424512B146
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D07012B141;
+	Thu, 15 Feb 2024 11:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707997904; cv=none; b=LuN9VnpXJsMDxef7okrZn0tXnvydNWf+gFXRCgXTcm/OXKdLeqacLpAjn1Sq3Mmi9HoncGo9WPomhc0tmiAswU0l+bN3NHNYF5umDNbawSjmNQN7hzi30TPIidUMp06iY/HGpjAH5TZN8gSEyypnPyvz79jKNxY4JSIDSdsRaSY=
+	t=1707998055; cv=none; b=sMPr2JggLu32ayBZ4VonbDcW6BS6WT5osUe6/HcaR2xNzxeJ7J4w7Dsf2zJnoaUguvEilGSc8XD/WPNfqyiQRt8/kYGs0d8103b8h8awFjEvqr1vdByviL5ARIBL5x/dUxtdOYf+Pwc0N0SGs1oQk4q4wwtsnly2733FebG1NBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707997904; c=relaxed/simple;
-	bh=LfXbtTyJfdBafr8Nmb/3/6uRpRigTCz4GIYDnBXXRhQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rgu68Z8BaqUeE/BLtW/R4Z8bCv5EOc+dGXfKpgfM69DES6kvOrm4TdsuZmDDSbuflvMLqsADrxuNTCQyq7LNT6Nu7kZCfs68OJWposalStS196MTpqbdlMexEZaWZYjXIxSXE0fxgpVF2COu4M7Z1GifkZH9Sf346j03D/ad/oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T3FWjtI1; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5639c8cc449so1018562a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707997900; x=1708602700; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7H+soaEw6AcQrP6dkKX2lz7OFWQ/K5+K149F+3iyFsI=;
-        b=T3FWjtI1j78RvW3MYl5zOur1ThCwbbEe3dQ34YI4GuINLrckDKdd6aL3FBphqzn8kk
-         MvqdWGydX8ZAU/rpbnCbd4uxNMDHOO6eymqpEDHzxWQKSEv84MElvnY2KhNCNhZMqad8
-         tdsUVFBf3gtWwF6eQiklV5agAXBV48R8SM9acFTfLYJEv+Ro1IOokgTow9TaYJIo/8Pd
-         AWt6RWZsG36eP1GhxZ/LtKrGl5LxriDPbV1lDbMUAyjEZwBasrWRcOMUxAz+FhxVbi/Z
-         4NTXKoz+uU5rdRCjx3xvXefo2FEHnQH2TMOiFj54Z9IlwUY5rotp93N7v1LD8J18tpat
-         Z3ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707997900; x=1708602700;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7H+soaEw6AcQrP6dkKX2lz7OFWQ/K5+K149F+3iyFsI=;
-        b=sVQqfieg1bRRPun6NbEv0dvqvqvo3G2+uLcXz4naZ9gqyL6Cm3aOzpOzxelkGWqVJ+
-         uXSvjD9EceTLKWmHM5fVbj+gvlvAQK5RuReSMjn27ZH4i4RsG0R0D/+1Jo8p/Z1+NENP
-         QEi31SYwteA2WiGilkIvC5vRJZ3DwN3FUr31eSMUPDUoR/ItUmB2oYkEVYOqzy8nHVyW
-         Z7vq5gQqVnfCjnXG59z3RlvFP2py6dI5paDpvw6qtF+uxhHH3MSFUdVvhAplKzGZNsaL
-         23N/TIgN9VqOfyiDTjH3W/pG0VV4PVe1GiDC1DFEgTKYjmHr9im2tovWEJ16EeVLgRh2
-         BM4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXj7dFMHLOLHWyrsjt3M5qGdNQm5zXt6Usx+YNxn2K0hMeIXodo1VqKJoqVCXYkaaMgWP2fH695k5je4y9r0ha4hStCpGm6rJBMKemY
-X-Gm-Message-State: AOJu0YwAAT8lKMP29ti4H4QKOV4MCDl+4Z/Za0PR2lirSfAalCkrB9Wv
-	7QQErh3pKO8DzVX4HNQPyN0FtDeGEwJoanMp/LB3pLxyOMknMWCIHm+8s2Zb2q4=
-X-Google-Smtp-Source: AGHT+IFjyC4fiPAQVmXxyzWZpj/0Aye/E/BmLR4+E7Dz0O8nwav1eQvhRJqj2FBIT0xcCBO7N91rEA==
-X-Received: by 2002:a17:906:a8c:b0:a3d:14d0:f253 with SMTP id y12-20020a1709060a8c00b00a3d14d0f253mr1169320ejf.9.1707997900535;
-        Thu, 15 Feb 2024 03:51:40 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id ss11-20020a170907c00b00b00a3c625064e5sm462042ejc.100.2024.02.15.03.51.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 03:51:40 -0800 (PST)
-Message-ID: <bfdb5271-8c1e-48f0-8589-deaddf50117c@linaro.org>
-Date: Thu, 15 Feb 2024 12:51:38 +0100
+	s=arc-20240116; t=1707998055; c=relaxed/simple;
+	bh=NV2hzdoGCwcXaZvnSTHWeivjwUKQ5fCdHMa1ytWL9Ew=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gVgCtuknnkgrL6B3eGvoiQdKHjNZlbjOLy5t5UB8XK/QV/WMyhIqO9nNGhCeLaI8vTtdTOssQz3kXS/cxfDRdxacEf8YNu6t/OksQwExKSiiAObFeG6gO0Hx6GUee0kPoUkwyPEA9DEHsGr47Gb/s7Waqqvr4vFArSVa2/szJpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ujw1fa04; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7178DC433F1;
+	Thu, 15 Feb 2024 11:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707998054;
+	bh=NV2hzdoGCwcXaZvnSTHWeivjwUKQ5fCdHMa1ytWL9Ew=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ujw1fa04OqwNguPaySPQK3c1jL3GBB0QSGhKd77GINexFekhSXGQjYFk9HtPEUPpC
+	 i+ghfyQNW/bGyXscOyk6pNz1FaxFm3+DJ9NVcGH+pXCIQGPnmuWli3p1zb1X/3teyx
+	 1N5eVmvsbXkx6OhrOLrrk7Yqk4hdsgrYlW6h6HWs9ME4bTYKmLl6RIXAEU5cyD0nXb
+	 LqJNMf4slvJB1yRfM8l4k5BPMKh7lPX51iYwWIwPnt0yMSIMBdDp4Nb4qOTos/Ted6
+	 8j6e82K+MKVm5CWj3H0HX7ooHE1UCOmSv0Q8jLTqFzYWR38QWQgl6MKZjPIG6XVztK
+	 9ezq0lC6PQmwQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1raaJg-003Tzt-51;
+	Thu, 15 Feb 2024 11:54:12 +0000
+Date: Thu, 15 Feb 2024 11:54:11 +0000
+Message-ID: <86o7ci3puk.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,	Paul Walmsley
+ <paul.walmsley@sifive.com>,	Thomas Gleixner <tglx@linutronix.de>,	Rob
+ Herring <robh+dt@kernel.org>,	Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,	Frank Rowand <frowand.list@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>,	Atish Patra <atishp@atishpatra.org>,	Andrew Jones
+ <ajones@ventanamicro.com>,	Sunil V L <sunilvl@ventanamicro.com>,	Saravana
+ Kannan <saravanak@google.com>,	Anup Patel <anup@brainfault.org>,
+	linux-riscv@lists.infradead.org,	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,	devicetree@vger.kernel.org
+Subject: Re: [PATCH v12 04/25] genirq/irqdomain: Add DOMAIN_BUS_DEVICE_IMS
+In-Reply-To: <20240127161753.114685-5-apatel@ventanamicro.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+	<20240127161753.114685-5-apatel@ventanamicro.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] PCI: qcom: reshuffle reset logic in 2_7_0 .init
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Johan Hovold <johan+linaro@kernel.org>
-References: <20240212211432.GA1145620@bhelgaas>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240212211432.GA1145620@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: apatel@ventanamicro.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, bjorn@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 12.02.2024 22:14, Bjorn Helgaas wrote:
-> Would be nice to have a hint in the subject line about what this does.
-> Also capitalize to match the others ("PCI: qcom: <Capitalized verb>").
-> 
-> On Sat, Feb 10, 2024 at 06:10:05PM +0100, Konrad Dybcio wrote:
->> At least on SC8280XP, if the PCIe reset is asserted, the corresponding
->> AUX_CLK will be stuck at 'off'. This has not been an issue so far,
->> since the reset is both left de-asserted by the previous boot stages
->> and the driver only toggles it briefly in .init.
->>
->> As part of the upcoming suspend prodecure however, the reset will be
->> held asserted.
-> 
-> s/prodecure/procedure/
+On Sat, 27 Jan 2024 16:17:32 +0000,
+Anup Patel <apatel@ventanamicro.com> wrote:
+>=20
+> From: Thomas Gleixner <tglx@linutronix.de>
+>=20
+> Add a new domain bus token to prepare for device MSI which aims to replace
+> the existing platform MSI maze.
+>=20
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  include/linux/irqdomain_defs.h | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/include/linux/irqdomain_defs.h b/include/linux/irqdomain_def=
+s.h
+> index c29921fd8cd1..4c69151cb9d2 100644
+> --- a/include/linux/irqdomain_defs.h
+> +++ b/include/linux/irqdomain_defs.h
+> @@ -26,6 +26,7 @@ enum irq_domain_bus_token {
+>  	DOMAIN_BUS_DMAR,
+>  	DOMAIN_BUS_AMDVI,
+>  	DOMAIN_BUS_PCI_DEVICE_IMS,
+> +	DOMAIN_BUS_DEVICE_IMS,
 
-Before I get around to resending, does the commit look fine otherwise?
+Only a personal taste, but since we keep calling it "device MSI",
+which it really is, I find it slightly odd to name the token
+"DEVICE_IMS".
 
-Konrad
+=46rom what I understand, IMS is PCIe specific. Platform (and by
+extension device) MSI extends far beyond PCIe. So here, DEVICE_MSI
+would make a lot more sense and avoid confusion.
+
+But hey, I don't have much skin in this game, and I can probably
+mentally rotate the acronym...
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
 
