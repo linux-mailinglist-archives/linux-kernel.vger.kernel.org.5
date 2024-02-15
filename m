@@ -1,149 +1,238 @@
-Return-Path: <linux-kernel+bounces-67287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14EE485692C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:14:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8EE885692A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 478AF1C22D9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:14:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60895282ED7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4F4138487;
-	Thu, 15 Feb 2024 16:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C152A136998;
+	Thu, 15 Feb 2024 16:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="K4d7CeIH"
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sAaTsuOo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iqKsAvd/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sAaTsuOo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iqKsAvd/"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B7D137C5E
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C39132493
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708013307; cv=none; b=qLsCjIbxNmcCnvovtw+ZR5a//Rbydr3q6nlksCqYyfwc138E0aYn02Rc+SCn2OQ9kii7MoTOm98SIbwEW6IvA6tAlRkVnPurL5PCTeLwQlxJtfLnuWmQdKC6kFQDurXLF57gku15ceKVtD1s5+IXHYvKTyqnx80+bchePNs7h9E=
+	t=1708013260; cv=none; b=hcdwYpa+foPp0f1OYm46+rQfDdnLXWOe6VNh5iTjl/yUQNohpHCAEt6Z3Cztt2esjZpJ4s25J+q/1t9vH5i/sEe1CxreMzLhmv3YfLd0gGGwD6+6voMPkjIT8ixHKFoy3o6GrbNYdL7YIh0A+VKOiRZsaI4VMP5mqTIeWHFgME4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708013307; c=relaxed/simple;
-	bh=ur7gFVD70mLlwTc0wM06u3j1P5Yr4YCTQ5oi2mHpDZY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UJodG2l5nsOpzYMMzx9a89cWNiMdEIrgtJ9/nMcjUSnDcfGl0XfOS6OsQHEgIc1SvjtzMA86WpMQsghzfCtS8fK4YS13VkPkV0gXRLUeKu3cAMfuuLPiSmTV9wnTSrKGN7vnygAz7EX59V1e8WYeiv6b/vVCSnggIwW5fMcYtxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=K4d7CeIH; arc=none smtp.client-ip=185.67.36.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 7FA32240103
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:08:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1708013297; bh=ur7gFVD70mLlwTc0wM06u3j1P5Yr4YCTQ5oi2mHpDZY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=K4d7CeIHp5bVoLYhZFXM8a5mzWQhV+21BofAx3N1nnU+IBpNUsIgfLY2ImAdzA86+
-	 oXaDhkretH0gZd4Coo18EdKs+/e4ypEmDD6HOr4xpJ0iJELbfGQX9CHNI/K43XdpO2
-	 dTy/VS9ELeZn7WmM7u/f9tGMxf6grOAH+fhbSDfoHjvF5UtfRakY1KGw3IHX3B4mS/
-	 TFzt+BGGPw5qjgf3rcwhXAxDWmgnX2y+uD43lrRfHF/LuhPIIOLQWDGUeX3YZGlBC6
-	 H0xbdf+biBJKVlpafZbf7fBlDNhGcHmSF+qVIT1Rf/bqDtQkcMw3DoAQzUHAu7lKTV
-	 UW6owzfI/NwPg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TbKjT3ttfz9rxD;
-	Thu, 15 Feb 2024 17:08:13 +0100 (CET)
-From: Yueh-Shun Li <shamrocklee@posteo.net>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Mark Brown <broonie@kernel.org>
-Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] minmax: substitute local variables using __UNIQUE_ID()
-Date: Thu, 15 Feb 2024 16:07:21 +0000
-Message-ID: <20240215160726.2254451-1-shamrocklee@posteo.net>
+	s=arc-20240116; t=1708013260; c=relaxed/simple;
+	bh=cFkg1NFdHZsMSWSF0TXSI9aqTMhPctGcVI+y8TWc5G0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MR2YndrdxOsV4ivRlFQMDakjGfutkLEc2lozcLXY3VgWOwo+lWvKhhgN4eJN1OwJIKBrUbSBmVtf/BdwN0Q7rZn4pYptD0DFcR9OYoHsdxpDX3e/BUSxGk17w6JqnIhC+InG/EDh5NLdwmWNgSTv2vp9Pg3pYqWHgFU035MzYgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sAaTsuOo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iqKsAvd/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sAaTsuOo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iqKsAvd/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BC6CD1F8BD;
+	Thu, 15 Feb 2024 16:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708013256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3aB1O/XufYYPRfT2DCizHtazLUMIEGEshtMYMYqQ3Y=;
+	b=sAaTsuOolJA7WH22a80PJT82B1Q2K1Bv9f6lSI8om+Ges4rttWumugW2DwUBcg/X6QaFMt
+	GBNCkwhNQGCsH6K3ZBAGX3YywGGwtp5CT5lJWBMwqzHFe6uxd7XWgq0ANKZL8JbtOBdILD
+	ARc8fdYscDtSvR3YZLx9RKzuPcTWBjk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708013256;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3aB1O/XufYYPRfT2DCizHtazLUMIEGEshtMYMYqQ3Y=;
+	b=iqKsAvd/rVBbS4oTm+QGapY4qfLETqvB1Bb+E/cp2PXXY3momkbYlVRYfteePXfUmVlMeO
+	Yqp6+YleRvmhMhCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708013256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3aB1O/XufYYPRfT2DCizHtazLUMIEGEshtMYMYqQ3Y=;
+	b=sAaTsuOolJA7WH22a80PJT82B1Q2K1Bv9f6lSI8om+Ges4rttWumugW2DwUBcg/X6QaFMt
+	GBNCkwhNQGCsH6K3ZBAGX3YywGGwtp5CT5lJWBMwqzHFe6uxd7XWgq0ANKZL8JbtOBdILD
+	ARc8fdYscDtSvR3YZLx9RKzuPcTWBjk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708013256;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3aB1O/XufYYPRfT2DCizHtazLUMIEGEshtMYMYqQ3Y=;
+	b=iqKsAvd/rVBbS4oTm+QGapY4qfLETqvB1Bb+E/cp2PXXY3momkbYlVRYfteePXfUmVlMeO
+	Yqp6+YleRvmhMhCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 969BC13A82;
+	Thu, 15 Feb 2024 16:07:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QONoJMg2zmVIfwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 16:07:36 +0000
+Message-ID: <7d2b44bb-e3b0-435d-98ff-670b5029bd93@suse.cz>
+Date: Thu, 15 Feb 2024 17:07:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/3] mm/compaction: add support for >0 order folio
+ memory compaction.
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts
+ <ryan.roberts@arm.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
+ <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
+ <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+References: <20240214220420.1229173-1-zi.yan@sent.com>
+ <20240214220420.1229173-3-zi.yan@sent.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240214220420.1229173-3-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=sAaTsuOo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="iqKsAvd/"
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLfsxmn1qwoupcjwdqfx65548p)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: BC6CD1F8BD
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spam-Flag: NO
 
-Substitute identifier names of local variables used in macro
-definitions inside minmax.h with those generated by __UNIQUE_ID(prefix)
-to eliminate passible naming collisions.
+On 2/14/24 23:04, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Before last commit, memory compaction only migrates order-0 folios and
+> skips >0 order folios.  Last commit splits all >0 order folios during
+> compaction.  This commit migrates >0 order folios during compaction by
+> keeping isolated free pages at their original size without splitting them
+> into order-0 pages and using them directly during migration process.
+> 
+> What is different from the prior implementation:
+> 1. All isolated free pages are kept in a NR_PAGE_ORDERS array of page
+>    lists, where each page list stores free pages in the same order.
+> 2. All free pages are not post_alloc_hook() processed nor buddy pages,
+>    although their orders are stored in first page's private like buddy
+>    pages.
+> 3. During migration, in new page allocation time (i.e., in
+>    compaction_alloc()), free pages are then processed by post_alloc_hook().
+>    When migration fails and a new page is returned (i.e., in
+>    compaction_free()), free pages are restored by reversing the
+>    post_alloc_hook() operations using newly added
+>    free_pages_prepare_fpi_none().
+> 
+> Step 3 is done for a latter optimization that splitting and/or merging
+> free pages during compaction becomes easier.
+> 
+> Note: without splitting free pages, compaction can end prematurely due to
+> migration will return -ENOMEM even if there is free pages.  This happens
+> when no order-0 free page exist and compaction_alloc() return NULL.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Tested-by: Yu Zhao <yuzhao@google.com>
 
-Identifier names like __x, __y and __tmp are everywhere inside the
-kernel source. This patch ensures that macros provided by minmax.h
-will work even when identifiers of these names appear in the expanded
-input arguments.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
----
- include/linux/minmax.h | 41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+Noticed a possible simplification:
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 2ec559284a9f..70b740b76f73 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -129,10 +129,14 @@
-  * @x: value1
-  * @y: value2
-  */
--#define min_not_zero(x, y) ({			\
--	typeof(x) __x = (x);			\
--	typeof(y) __y = (y);			\
--	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
-+#define min_not_zero(x, y) \
-+	__min_not_zero_impl(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y))
-+#define __min_not_zero_impl(x, y, __x, __y)                          \
-+	({                                                           \
-+		typeof(x) __x = (x);                                 \
-+		typeof(y) __y = (y);                                 \
-+		__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); \
-+	})
- 
- /**
-  * clamp - return a value clamped to a given range with strict typechecking
-@@ -185,13 +189,19 @@
-  * typeof() keeps the const qualifier. Use __unqual_scalar_typeof() in order
-  * to discard the const qualifier for the __element variable.
-  */
--#define __minmax_array(op, array, len) ({				\
--	typeof(&(array)[0]) __array = (array);				\
--	typeof(len) __len = (len);					\
--	__unqual_scalar_typeof(__array[0]) __element = __array[--__len];\
--	while (__len--)							\
--		__element = op(__element, __array[__len]);		\
--	__element; })
-+#define __minmax_array(op, array, len)                            \
-+	__minmax_array_impl(op, array, len, __UNIQUE_ID(__array), \
-+			    __UNIQUE_ID(__len), __UNIQUE_ID(__element))
-+#define __minmax_array_impl(op, array, len, __array, __len, __element) \
-+	({                                                             \
-+		typeof(&(array)[0]) __array = (array);                 \
-+		typeof(len) __len = (len);                             \
-+		__unqual_scalar_typeof(__array[0])                     \
-+			__element = __array[--__len];                  \
-+		while (__len--)                                        \
-+			__element = op(__element, __array[__len]);     \
-+		__element;                                             \
-+	})
- 
- /**
-  * min_array - return minimum of values present in an array
-@@ -267,7 +277,12 @@ static inline bool in_range32(u32 val, u32 start, u32 len)
-  * @a: first value
-  * @b: second value
-  */
--#define swap(a, b) \
--	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-+#define swap(a, b) __swap_impl(a, b, __UNIQUE_ID(__tmp))
-+#define __swap_impl(a, b, __tmp)       \
-+	do {                           \
-+		typeof(a) __tmp = (a); \
-+		(a) = (b);             \
-+		(b) = __tmp;           \
-+	} while (0)
- 
- #endif	/* _LINUX_MINMAX_H */
--- 
-2.42.0
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -447,6 +447,8 @@ extern void prep_compound_page(struct page *page, unsigned int order);
+>  
+>  extern void post_alloc_hook(struct page *page, unsigned int order,
+>  					gfp_t gfp_flags);
+> +extern bool free_pages_prepare_fpi_none(struct page *page, unsigned int order);
+> +
+>  extern int user_min_free_kbytes;
+>  
+>  extern void free_unref_page(struct page *page, unsigned int order);
+> @@ -481,7 +483,7 @@ int split_free_page(struct page *free_page,
+>   * completes when free_pfn <= migrate_pfn
+>   */
+>  struct compact_control {
+> -	struct list_head freepages;	/* List of free pages to migrate to */
+> +	struct list_head freepages[NR_PAGE_ORDERS];	/* List of free pages to migrate to */
+>  	struct list_head migratepages;	/* List of pages being migrated */
+>  	unsigned int nr_freepages;	/* Number of isolated free pages */
+>  	unsigned int nr_migratepages;	/* Number of pages to migrate */
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 7ae4b74c9e5c..e6e2ac722a82 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1179,6 +1179,12 @@ static __always_inline bool free_pages_prepare(struct page *page,
+>  	return true;
+>  }
+>  
+> +__always_inline bool free_pages_prepare_fpi_none(struct page *page,
+> +			unsigned int order)
+> +{
+> +	return free_pages_prepare(page, order, FPI_NONE);
+
+Seems like free_pages_prepare() currently only passes  fpi_flags to
+should_skip_kasan_poison() and that ignores them. You could remove the
+parameter from both and declare and use free_pages_prepare(page, order)
+directly.
+
+> +}
+> +
+>  /*
+>   * Frees a number of pages from the PCP lists
+>   * Assumes all pages on list are in same zone.
 
 
