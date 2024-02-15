@@ -1,154 +1,134 @@
-Return-Path: <linux-kernel+bounces-67001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 499908564A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:41:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC5108564B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BF7C1C21275
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:41:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36DB0B243F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3017E131723;
-	Thu, 15 Feb 2024 13:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D59B130E24;
+	Thu, 15 Feb 2024 13:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fdRiLU63"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1e/2dlz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5A612F5BB;
-	Thu, 15 Feb 2024 13:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D012712FF7F;
+	Thu, 15 Feb 2024 13:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708004475; cv=none; b=iq8sWj3cB/XhssynJ63EZ5JTNFYngrYB9QniRRDWk55hNgOEA3IQv3sxK84FO9p+vprTfdjP8dFHmEl9RbqPPIOqcJhBP10lnRjJv4bgUIVzgvGxLdXBlj4MZrbATkFxj+v2J/lKc8CJYj0G8s4+fzJsf4vkzce+1tGYfWu7h8M=
+	t=1708004234; cv=none; b=tMVHMT/pXj+zQc65LYji7SkUCkS+Jcwmw4IKOYAkrENY58dxbtTtr3pWTtkgCvOeD+Crs0mrz+b/Ux82I8zYVV8btj4KhxtrOhJvjKLlbh7+Xl/q7vuegTzpM7lemq9dDhal2yOvH6Orf1Lxb0zb5lC0c2hlD8JvKo3GMKEx4dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708004475; c=relaxed/simple;
-	bh=ERzAARGdkYek7a8RWsQHxBtyT1ON3LOa2GCXXf3xHmI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Scye8cDeruaDHXfW9auMlXMSD/jE/YcI6yzD+zOyyZsnIyGfcHZXyym303TIzhVslSJugnBlfCwPdgqKjcgOm68Z/nMfqExEYnAuHz4FzybardGKhUE/3z1dn1tf6g18rd2vBFf+Qfi5Mqq3t/AklyMnjRmdiH7NNjeuIK0k2gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fdRiLU63; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FCgX0N028489;
-	Thu, 15 Feb 2024 13:41:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=RRmyacOzbnm8G8/TfM9F5VaEBokOpdiiuqMXlQmyfIM=;
- b=fdRiLU63FohITYvxkf0yViHroj8cH4iEqyVkU4NrR+uh5Ds+FfPoQoi6VXAKkOdmRUQP
- f9r5Juj76v5bDOfEIlQY/tbI7VEI9FcevL/qwQP+h+/S+mbttu3ahoiyIhoJHJael9XG
- jeRWbmH7tJvZrV/hlWvmnoCKWosIj1HgvnoYeF3HieYcOQhpNMU/pcDhA2AQrG/oSRoO
- UuRs+7vIBrRIEbLtZZ65y8nirClAR5LfCEgPQzUmRmROomIuCFajkMaroMtYK8TK98Ew
- ZN/uvTOi55YozQpdZQFNrprHciGlJtITiy/njIHd8r2hMDZP0X1MbOxlBhIP4JXVvY/M uw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9jut1hwr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 13:41:12 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FCfYEr009886;
-	Thu, 15 Feb 2024 13:37:04 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p634gf8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 13:37:04 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FDawfB62915008
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 13:37:01 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DB2C52004B;
-	Thu, 15 Feb 2024 13:36:57 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B2F602005A;
-	Thu, 15 Feb 2024 13:36:57 +0000 (GMT)
-Received: from [9.152.224.128] (unknown [9.152.224.128])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 15 Feb 2024 13:36:57 +0000 (GMT)
-Message-ID: <47789946-0ffe-462e-9e2e-43b03ea41fe0@linux.ibm.com>
-Date: Thu, 15 Feb 2024 14:36:57 +0100
+	s=arc-20240116; t=1708004234; c=relaxed/simple;
+	bh=PFVxtk7+DZ0DWAk3Wc+rdZQ+V9hnlPmccXAlqx5M7eM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jND8xivFnD5gg0Yy0KodKllxWqDb2Bmtruk42LgYrPPkKQGZVdab8gvMQ1Fct3Bl5nSz+17dDtstr2EnsYe3CySbckdViNd7FRk+Ze1hOr0jf3PKSgL1Zqe6qDVlmuLCURgdIGS+EIabPMfibxLvcwTSfBhd4TvFuT1jeS2rlfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1e/2dlz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0BCDC433C7;
+	Thu, 15 Feb 2024 13:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708004234;
+	bh=PFVxtk7+DZ0DWAk3Wc+rdZQ+V9hnlPmccXAlqx5M7eM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S1e/2dlz+50J6jjmgBIN2URUTZmnc7ALcdTSep8FsCPgGRXiqVXjl56plOSsa/KNI
+	 cqiE0wvyF9OIFjSYsjxZmyalEAo5zkmZxWEAgKH0rtMCmwutb5YOz8Ky/ieebDD7GD
+	 lyp1UgYX/iJrdSFGDzzoo5Su0p0ucadd8TKNsp4Ybbxyc1ZuL6qNA6E6SzYzHyTtvf
+	 tnQqhvjWIJgUdDkXfDzN67YkP16WScFIk3xKlo3+SQEQ5ZqaOc059N4Mruat2t5EcC
+	 4nRILszRrDisu93gYIg/K45KMDHqWopKEneSp8qnYsDDw5Sy4e+Kv7bRZ6Y7TM1XNh
+	 NQKGKhq+/dTNw==
+Date: Thu, 15 Feb 2024 14:37:10 +0100
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] page_pool: disable direct recycling based on
+ pool->cpuid on destroy
+Message-ID: <Zc4Tht2TAkFOhq9Y@lore-desk>
+References: <20240215113905.96817-1-aleksander.lobakin@intel.com>
+ <87v86qc4qd.fsf@toke.dk>
+ <8aa809c0-585f-4750-98d4-e19165c6ff73@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/af_iucv: fix virtual vs physical address confusion
-Content-Language: en-US
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Thorsten Winkler <twinkler@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20240215080500.2616848-1-agordeev@linux.ibm.com>
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20240215080500.2616848-1-agordeev@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6Wyj8PHle2IkM-Ef66rK71eMEPS9-5_N
-X-Proofpoint-GUID: 6Wyj8PHle2IkM-Ef66rK71eMEPS9-5_N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_12,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 adultscore=0 bulkscore=0 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402150109
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JwdDwmzJQxeHUrty"
+Content-Disposition: inline
+In-Reply-To: <8aa809c0-585f-4750-98d4-e19165c6ff73@intel.com>
 
 
+--JwdDwmzJQxeHUrty
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 15.02.24 09:05, Alexander Gordeev wrote:
-> Fix virtual vs physical address confusion. This does not fix a bug
-> since virtual and physical address spaces are currently the same.
-> 
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> ---
->  net/iucv/af_iucv.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/iucv/af_iucv.c b/net/iucv/af_iucv.c
-> index 498a0c35b7bb..4aa1c72e6c49 100644
-> --- a/net/iucv/af_iucv.c
-> +++ b/net/iucv/af_iucv.c
-> @@ -1060,13 +1060,12 @@ static int iucv_sock_sendmsg(struct socket *sock, struct msghdr *msg,
->  			int i;
->  
->  			/* skip iucv_array lying in the headroom */
-> -			iba[0].address = (u32)(addr_t)skb->data;
-> +			iba[0].address = (u32)virt_to_phys(skb->data);
->  			iba[0].length = (u32)skb_headlen(skb);
->  			for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
->  				skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
->  
-> -				iba[i + 1].address =
-> -					(u32)(addr_t)skb_frag_address(frag);
-> +				iba[i + 1].address = (u32)virt_to_phys(skb_frag_address(frag));
->  				iba[i + 1].length = (u32)skb_frag_size(frag);
->  			}
->  			err = pr_iucv->message_send(iucv->path, &txmsg,
-> @@ -1162,13 +1161,12 @@ static void iucv_process_message(struct sock *sk, struct sk_buff *skb,
->  			struct iucv_array *iba = (struct iucv_array *)skb->head;
->  			int i;
->  
-> -			iba[0].address = (u32)(addr_t)skb->data;
-> +			iba[0].address = (u32)virt_to_phys(skb->data);
->  			iba[0].length = (u32)skb_headlen(skb);
->  			for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
->  				skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
->  
-> -				iba[i + 1].address =
-> -					(u32)(addr_t)skb_frag_address(frag);
-> +				iba[i + 1].address = (u32)virt_to_phys(skb_frag_address(frag));
->  				iba[i + 1].length = (u32)skb_frag_size(frag);
->  			}
->  			rc = pr_iucv->message_receive(path, msg,
+> From: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> Date: Thu, 15 Feb 2024 13:05:30 +0100
+>=20
+> > Alexander Lobakin <aleksander.lobakin@intel.com> writes:
+> >=20
+> >> Now that direct recycling is performed basing on pool->cpuid when set,
+> >> memory leaks are possible:
+> >>
+> >> 1. A pool is destroyed.
+> >> 2. Alloc cache is emptied (it's done only once).
+> >> 3. pool->cpuid is still set.
+> >> 4. napi_pp_put_page() does direct recycling basing on pool->cpuid.
+> >> 5. Now alloc cache is not empty, but it won't ever be freed.
+> >=20
+> > Did you actually manage to trigger this? pool->cpuid is only set for the
+> > system page pool instance which is never destroyed; so this seems a very
+> > theoretical concern?
+>=20
+> To both Lorenzo and Toke:
+>=20
+> Yes, system page pools are never destroyed, but we might latter use
+> cpuid in non-persistent PPs. Then there will be memory leaks.
+> I was able to trigger this by creating bpf/test_run page_pools with the
+> cpuid set to test direct recycling of live frames.
 
+what about avoiding the page to be destroyed int this case? I do not like t=
+he
+idea of overwriting the cpuid field for it.
 
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Regards,
+Lorenzo
 
-I would have preferred to do all the translations in __iucv_* functions in iucv.c,
-but I understand that for __iucv_message_receive() this would mean significant changes. 
+>=20
+> >=20
+> > I guess we could still do this in case we find other uses for setting
+> > the cpuid; I don't think the addition of the READ_ONCE() will have any
+> > measurable overhead on the common arches?
+>=20
+> READ_ONCE() is cheap, but I thought it's worth mentioning in the
+> commitmsg anyway :)
+>=20
+> >=20
+> > -Toke
+> >=20
+>=20
+> Thanks,
+> Olek
+
+--JwdDwmzJQxeHUrty
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZc4ThgAKCRA6cBh0uS2t
+rMKzAQCWGs8izokKKobJ1o5bjr0dNcsLSO9pBKgU1pZJzetrwQEA6Vm0zCDsUzog
+/Eh2aXqvy9gf0llzRVEpBYYSeLz0zgA=
+=r6Tb
+-----END PGP SIGNATURE-----
+
+--JwdDwmzJQxeHUrty--
 
