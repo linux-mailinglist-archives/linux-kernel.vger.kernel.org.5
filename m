@@ -1,113 +1,185 @@
-Return-Path: <linux-kernel+bounces-67499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505C6856C88
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:28:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F89856CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A051F21A0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:28:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 715821F26294
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9B81419BE;
-	Thu, 15 Feb 2024 18:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19FB213A25A;
+	Thu, 15 Feb 2024 18:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="el+YSwMe"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YH4PhfY9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F7D13B7A3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6150F1386C4
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708021563; cv=none; b=KkX0vz4qkrb/zpkpge1/lTGmk/lobmPvx5HZJabgOM0bp3hqD2woNRuoq8Qk1jyxoPMg1oaFN1c+RlyZFyXS6fJSLI4bF/6dbJThZMmFgdaAng7CGu4WdTgZn2BYVJ8p6SjsDM5ul0wsCSvXtgSn20HP2joLUUX1IRZARDsTUj4=
+	t=1708021651; cv=none; b=TJLq9DmcuWSZ/czxa8WAyk3BwMhZWhxc69JTKRBpse1/vM9H3GzqnvewOHzx4bLIMlEUyOAMExwEM5UiK07szGRRD/rvq5wQQq4eJopxiNegImmE/weFGSF3DnWDToKDHbhHcuQotspBhGEcP+AzRMgDsz1rw5YGfSaCHF76F4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708021563; c=relaxed/simple;
-	bh=dk7nldjBHf2OhhUJm5xdgR4jejE5bUggZf5m/L2de8I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QPU0aQZLJf5cScoD+IzP0ADtaekCk0WKRenpByHfAsKg0W5eWX4J0FBNmLZhPozjqNe6XQFUlTdmvrXOXQpCgoNlLpzRbKKHknX3QtT88rdMBwmKWSe2ZanjQV3ZNHvNBBc7d7Q++dBdbFVnfR/fIDqq6x4Rg0iPqyWgjZkQcak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=el+YSwMe; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d002bc6f7so115747666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:26:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708021559; x=1708626359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4sjjC6lYZHHWcZkiJkEdyU7XkS4SkECfb3ViIZBKdrI=;
-        b=el+YSwMetnVQOm6Ng602mTNUm2syJGnqaMdy0M0M0zx5SFhwOb2cDP7ZN9W2io9m0M
-         NsUFcpM0cMvIGY3ucIQpsawuiDgYLXaoS1cqkLEl/jKZ6h4GeAc0r+5RBnT3AxTCeLgk
-         8t0jnDZXBIMStqpKMhKMaKK0p6Ph3dVtW+KdI=
+	s=arc-20240116; t=1708021651; c=relaxed/simple;
+	bh=2wCnvjkhvn5BKoVcdNdw7iQW17hpGsSpN4YYTCOKtus=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cCjoWDcqYPLyAaaUKmGG8etqDWXENaoqd5WAYmDMGbNfGNlz5qG5AnVfPYbJSVjnl+gQVDeFlf5HeF6/u7vo66oiHGKRic7YyaknAHQqKEAr+Q55V8CVwN7v6ga4n9+aee5TNL5B1jHb1F5JsCcJMoJJooNiYHNRRAXmtECkoOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YH4PhfY9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708021646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5rcuei6vVHQzEyNnihSudUV2QF1nleva1UrlbPjP+8U=;
+	b=YH4PhfY9hnjyophTCH+oPPxrmHCjBS+U+PO+g15wFlxQDwHSzwLA4bm20+giq3hVMzKpfm
+	qabzGeuf6RiYyDCmyRnJiH71lgkYLU4+Yj/GFlKWVAZr6iV02zuYyCtT7qiCzmlJPSL/BW
+	iCA9qfx/zRBlOrFIs/ApCsissBqoW2Q=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-627-kkZf-YuxPDuqXdVo2Gnz0w-1; Thu, 15 Feb 2024 13:27:25 -0500
+X-MC-Unique: kkZf-YuxPDuqXdVo2Gnz0w-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c045f4a135so1533442b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:27:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708021559; x=1708626359;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4sjjC6lYZHHWcZkiJkEdyU7XkS4SkECfb3ViIZBKdrI=;
-        b=p/P9uMBjU688h9VHT2Q04oxjqM14JyCXcKgQs+ts8iLSlp+iLEyejlYPVQZhjcIdGT
-         4vkSKCF0akKnSZMsQ+Pz155Qsz/Gbsq8LOu1hu/cgB4lIVeJEGz1X3/udKg/5qzXDF4C
-         C+zTBuyHnTp7eP2jQv0cZMT0itxp9ToAh0Xfn6nWPI/8E2MkzMMZFZUVQjrb2UduRvbM
-         oe5URZiETst3SrgdrGw0P6ff4t0EgH2fkOqIbYEtL0PRGW0iE0AEKAF6+UCOrFnF1jQX
-         WXFUjHpxgKSf3pef72BaBpdfMvAQNpd+JpFJQGutQTUVS0HtEE4xOBl0qa7m2trQjgoM
-         shQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXK8XsZmDnchJm5hEuydHGCuD5OfztV44sz5JjuzgkB3RY6FtCfRR7o7MtTRdBm/7Vo/1C6He936blOt6+TKuBmHvKofD05b5TVM8vR
-X-Gm-Message-State: AOJu0YxTs5MB+bg1hQmQMuBHjn7w1psWd52eBoj0HF24wVCSZ2NYX/MP
-	mGR1qGEq/GCEZCKEHBCzaKuL5oc1uZ0xidZkt1V1Mv06NnfS1unIkVKAa9iQLmN/PykBscxDiLK
-	pOVM=
-X-Google-Smtp-Source: AGHT+IHMhZvO1+oru/8r10lDFJWoz9eMi/4EiTq2VMQEKvrfYlX5lEKb8ARORXLnRGJbZLRCN6Oa8w==
-X-Received: by 2002:a17:906:ae48:b0:a3c:de7:f59a with SMTP id lf8-20020a170906ae4800b00a3c0de7f59amr1895327ejb.60.1708021558794;
-        Thu, 15 Feb 2024 10:25:58 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id hd16-20020a170907969000b00a385535a02asm806128ejc.171.2024.02.15.10.25.57
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1708021645; x=1708626445;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5rcuei6vVHQzEyNnihSudUV2QF1nleva1UrlbPjP+8U=;
+        b=dQSlay4axgVP2TNJMf1Eloj2qwEKcUVu40SyncLpye5hZ6mqXmjCaHNSbsWZCzNC0m
+         M7MrqO32w0s/Mfb4ucQRwjD24gHKFiwdwWcVALk+6U7iwdyB/0TIINNcJAMsuBH1XyLh
+         /ZFtFo6K/BNPzAAP8rhoI2EQb/WnW2MYTnWTPjaV09Tru+ES9oojxjlUg3C/igb47qUE
+         7NzVeKjMZovpRIJ+NZ1e2GjwRRK6YqJP14FOE80DH8Cdj4mZpIUSUbaiWZOOpeEjh/74
+         UtdBUK/F77IRXGUuB0+6pFPPRqZz+5gqoU5Aq7DOllrcJuCHz7lWL7yvlrjMQU5yMxjx
+         0xLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBRoiEu3TkwqN3kpY4hRk8mSUL7Hjn/LILnEIKPE91bD+op40sSPTiIrxnOYB/E/aMkLoKV+VXgVAKwgAGssx+a88acUarfBbcvtWZ
+X-Gm-Message-State: AOJu0YyAOrjTAWv+OotZWMlXLxNJBj/vRhDrIi/C1Je7iw5jODJXMx4n
+	H/IoQr8/MW8/6ase4GSoDbTkpOVmtY/wgpoFX5pVLyO5LTZGqOrVl87+uQIZ1p5aoOE2N1pXsyD
+	FdGTtzCHUH/mZuoZtVhD7LKQKHK1Rv7NyLLp9St5vI+EkBTgPVrXbZWgULvopTw==
+X-Received: by 2002:aca:1204:0:b0:3c0:4056:a2ed with SMTP id 4-20020aca1204000000b003c04056a2edmr2420207ois.52.1708021644919;
+        Thu, 15 Feb 2024 10:27:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGZKI2Y5bw/n2gWg9WROC85Pjasnt5QCGU2b+OlWiTw1ItcyAVVMjpne9JYAbwflkR7xSrc1g==
+X-Received: by 2002:aca:1204:0:b0:3c0:4056:a2ed with SMTP id 4-20020aca1204000000b003c04056a2edmr2420190ois.52.1708021644653;
+        Thu, 15 Feb 2024 10:27:24 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id q15-20020a05622a030f00b0042c7f028606sm795543qtw.32.2024.02.15.10.27.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 10:25:57 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so1771430a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:25:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU61meHaU0n7IWwWlPWhNfxgIcFcAvT0sNi4vkxlx4XHlABmsusuleRQw8+lg0lAbMdwaL2fFlmvRjl9jBVLwwn5znUuCG3tueKMd5q
-X-Received: by 2002:aa7:cf8d:0:b0:560:14c4:58fe with SMTP id
- z13-20020aa7cf8d000000b0056014c458femr1868778edx.29.1708021557034; Thu, 15
- Feb 2024 10:25:57 -0800 (PST)
+        Thu, 15 Feb 2024 10:27:24 -0800 (PST)
+Message-ID: <94ae4343-487a-4782-8b15-6f1201eed882@redhat.com>
+Date: Thu, 15 Feb 2024 19:27:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
- <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
- <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
- <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com> <Zc3NvWhOK//UwyJe@tucnak>
-In-Reply-To: <Zc3NvWhOK//UwyJe@tucnak>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 15 Feb 2024 10:25:40 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
-Message-ID: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
-Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
- (and earlier)
-To: Jakub Jelinek <jakub@redhat.com>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Sean Christopherson <seanjc@google.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] KVM: selftests: aarch64: Add invalid filter test
+ in pmu_event_filter_test
+Content-Language: en-US
+To: Shaoqin Huang <shahuang@redhat.com>, Oliver Upton
+ <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>,
+ kvmarm@lists.linux.dev
+Cc: James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240202025659.5065-1-shahuang@redhat.com>
+ <20240202025659.5065-6-shahuang@redhat.com>
+From: Eric Auger <eauger@redhat.com>
+In-Reply-To: <20240202025659.5065-6-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Feb 2024 at 00:39, Jakub Jelinek <jakub@redhat.com> wrote:
->
-> Can it be guarded with
-> #if GCC_VERSION < 140100
+Hi Shaoqin,
 
-Ack. I'll update the workaround to do that, and add the new and
-improved bugzilla pointer.
+On 2/2/24 03:56, Shaoqin Huang wrote:
+> Add the invalid filter test includes sets the filter beyond the event
+s/includes/which
+> space and sets the invalid action to double check if the
+> KVM_ARM_VCPU_PMU_V3_FILTER will return the expected error.
+> 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  .../kvm/aarch64/pmu_event_filter_test.c       | 36 +++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> index d280382f362f..68e1f2003312 100644
+> --- a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> @@ -7,6 +7,7 @@
+>   * This test checks if the guest only see the limited pmu event that userspace
+>   * sets, if the guest can use those events which user allow, and if the guest
+>   * can't use those events which user deny.
+> + * It also checks that setting invalid filter ranges return the expected error.
+>   * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+>   * is supported on the host.
+>   */
+> @@ -183,6 +184,39 @@ static void for_each_test(void)
+>  		run_test(t);
+>  }
+>  
+> +static void set_invalid_filter(struct vpmu_vm *vm, void *arg)
+> +{
+> +	struct kvm_pmu_event_filter invalid;
+> +	struct kvm_device_attr attr = {
+> +		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
+> +		.addr	= (uint64_t)&invalid,
+> +	};
+> +	int ret = 0;
+> +
+> +	/* The max event number is (1 << 16), set a range largeer than it. */
+in  practice it is 16b on ARMv8.1 and 10b on ARMv8.0 but obvioulsy the
+check below works for both ;-)
 
-Thanks for fixing this so quickly.
+larger typ
+> +	invalid = __DEFINE_FILTER(BIT(15), BIT(15)+1, 0);
+space between "+"
+> +	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
+kvm_device_attr_set() as commented by Oliver
+> +	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter range "
+> +		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
+> +		    ret, errno);
+> +
+> +	ret = 0;
+> +
+> +	/* Set the Invalid action. */
+> +	invalid = __DEFINE_FILTER(0, 1, 3);
+> +	ret = __vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
+> +	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter action "
+> +		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
+> +		    ret, errno);
+> +}
+> +
+> +static void test_invalid_filter(void)
+> +{
+> +	vpmu_vm = __create_vpmu_vm(guest_code, set_invalid_filter, NULL);
+> +	destroy_vpmu_vm(vpmu_vm);
+> +}
+> +
+>  static bool kvm_supports_pmu_event_filter(void)
+>  {
+>  	int r;
+> @@ -216,4 +250,6 @@ int main(void)
+>  	TEST_REQUIRE(host_pmu_supports_events());
+>  
+>  	for_each_test();
+> +
+> +	test_invalid_filter();
+>  }
+Thanks
 
-                Linus
+Eric
+
 
