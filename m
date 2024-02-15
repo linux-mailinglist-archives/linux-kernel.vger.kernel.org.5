@@ -1,87 +1,87 @@
-Return-Path: <linux-kernel+bounces-67386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB2FE856B07
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AB12856AF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2267FB2B558
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:18:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22670B2B797
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20B931369A1;
-	Thu, 15 Feb 2024 17:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD7F137C45;
+	Thu, 15 Feb 2024 17:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a0EBncya"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GvSPP72q"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEA8136659;
-	Thu, 15 Feb 2024 17:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711B2136983;
+	Thu, 15 Feb 2024 17:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017476; cv=none; b=XwWo1+DZW86qe33pX5qgizyiNu0jP5lQ0oZB0LEUA3Ob6JGqREfe+gb46ENRAzjBipq75ZsCOkkOVuhgmrCTAt0JDf+pBfwjHcJOLjGXE3f8mtDbhiCygNtZV94X0lBvs/vkqvOpVpXJGnMBgb80C4s50XX3l2sIWD5wpjf/ax4=
+	t=1708017478; cv=none; b=HH4dtq/UOJRKhCOzkwlHHVbgcrNY/zlxvOP66ZawKEExackHxeH/jR2YVSUm41AG990TbkFWs1HCGtFvplYviPBTHvbQ4rcifvuSz02+mI+QVwsdRoUMgJxxF1dM4XAmGsxqhRdPSEMK5gp98eT5BpsAikOoalOlgJwlNQ/paio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017476; c=relaxed/simple;
-	bh=eFdJHcujAkNakHE9cboLrLydtuz4OsYv+UTx701ru4Y=;
+	s=arc-20240116; t=1708017478; c=relaxed/simple;
+	bh=gv5DE7RXsTmH4yqXPX4t1wYgvuqILt6r3eF0XEGiPNI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q8f3lf1sZtcnqJ5f5x/sD+a9t89nOL7ILCFlbSb25AfXsKqk0AtAPIcxQ2WdQKTHe66Qu6BLzWpRQgDbOSDjWKVWbP4w+ens0xHvJc9QFfwXtyi93hk2UdsMLIccjLlcws5Lm8FwvIwOghPbhQbZ4FnDT9apHxGqPZfq9tQ9pMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a0EBncya; arc=none smtp.client-ip=209.85.167.46
+	 MIME-Version; b=AHkPBghjmXYdCP8cRpZZ5z9BdFEbk9qyOJp6uR8HCPK+93P9eyRi469lDdYXxsB1/DhsIQrSkXwnTov73LpnnQfBNI70veE4RBMpb17w61bJUJXOB7Lccn+XB03k/bUWoQZ+nU3WmEJSMX+MpgG4zhr6jLwbayJcDSVXmUhR4uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GvSPP72q; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51187830d6dso1340345e87.3;
-        Thu, 15 Feb 2024 09:17:54 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51181d8f52fso1400942e87.3;
+        Thu, 15 Feb 2024 09:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708017473; x=1708622273; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708017474; x=1708622274; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LaEbk0wqkJrGhQpGNqYgT1jXkOwl5keUz4UPTBa9rB0=;
-        b=a0EBncya+Mb5Ju/G75yymiTprr0j1f/yzhsXiAI+NFeo4QjVtioXb5qSH/f3BoDE+p
-         6bM51BG5IdYXtfQrtjKnPdfm39T581DAUt1UySOc6pRW1dsViJxueeZtbltg/3xTV8gh
-         1oG7TA9AA81/geIgfq8L9YCWiIqxYQTBUhu34FUC3KArBAV6cqcN57epCzskA45HQ8L2
-         We9l6S4oRNGkCk3srBN/VmdS/T7pUKi5s4rYj8qgXt0rZtTf5hrr2cbHQ/T7/U8LsOXb
-         GTz7it5ggjhWYvbnSuP2NCcLaNGWAOuTnISz4ZkanS+FgT4Xm5rWTb2EZ7RT5AnyXnHg
-         yVgA==
+        bh=LWD6NBu3YiSI1wWq6kinvIvYBM4vO3pv/UsA9bvpgzQ=;
+        b=GvSPP72qNDUfoP1jX15Gj5FDl9IADUxKWYljrXFzxrEyw4wfrAhbB8vlUtQ9nKXZVp
+         PrF1m/x1bx5iaVEDb5u60zhqksBLS/jAgtBT32v4SVA88wdIJf/8HZo3suPjGZf4zju+
+         B/qRbvueSQmyh9rKarhQTg0dn1gzhaLlNxgyQgDXa81MA6aXMM2WV7O1C9/PklE0tnbK
+         ve0Qglbd/1QqY6wj+yNoym4GjMqoYhrgQYed4CUkkEYOLmNj/RuJvWdJ0+1hw9CzyF3Q
+         O5QvMO9I/IuS6Pgp5E0K4/d1F1HOGBZOM+cHkXkPc7fIBg8+imhbGHOqyqVs59QRIK4y
+         aWFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708017473; x=1708622273;
+        d=1e100.net; s=20230601; t=1708017474; x=1708622274;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LaEbk0wqkJrGhQpGNqYgT1jXkOwl5keUz4UPTBa9rB0=;
-        b=plbjCFxbEbpdmHIHiqkIMbnoV+bvGvjICdPc8lUQpRsAVTFGEyOfDzUD3TPvpur+GG
-         eERxHGpxf4rWYgF5ZN2mv3Ouy9cmgsnbM4fE5jT8z8mqfzFAvt4fiWIXHlv0v9wqQr61
-         PwF2H0edP8B61lVhXWIQ/3doyOH7mOM2V50rccScO64Y7R6nUFAU6GISDBdBUy/8o8nm
-         FDrlKYXnCUVwpkTOZMiyS84LCnTrlQR6q3QcMpRDfdPf6EVm7NYZci7qK2jFx85ayjqB
-         DP9XR55TYuWWymN5BkOOO7S6uQm2leUdF77YYclu1aF5gNCjGxlg55vNl50FIuCi7KDc
-         86xQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVRY1xF37tyTAHkTc+iAH2sDJrRgrJY7uMlDwGZyX63zIpXD1RO/10/iKmJfno8HCCS9XkVswxsBUdCEt3oCIdyTr74T1sQ34NAYag8ZHo2KXEhxhsYhimoxJ8xRsVtcxw++LJO8QOXXKcRtjGrTt33puC3iFmBBzFuJOQUalooZZmJ/CgJaA==
-X-Gm-Message-State: AOJu0YyzQyCYKzSA+dk2kOHUqVLM1CppO4E3/B5qJ/enHioeyrIzqehq
-	A2mG4bLmxB0fW8o/J3LDsRiPpbfR/geBS3BRF4jZwb14USvLtNys
-X-Google-Smtp-Source: AGHT+IFMr1H/s0vZe8v58QQjJIManCwLDRihaLF2e2KpUTKr2bawlYNng6CXmVKXbAWB0AJ7Q2D2ug==
-X-Received: by 2002:a05:6512:1152:b0:511:7ebe:b160 with SMTP id m18-20020a056512115200b005117ebeb160mr2239460lfg.45.1708017472483;
-        Thu, 15 Feb 2024 09:17:52 -0800 (PST)
+        bh=LWD6NBu3YiSI1wWq6kinvIvYBM4vO3pv/UsA9bvpgzQ=;
+        b=gtIQxG//Ep3mPNERhoFigrgZxuWFWoba3Ayz8r2eH8dWfexi75KJpfkVmDMnl14ZoE
+         L+Bkv1vxgugHuYKwhhKWZzrxO5N08jwvzcs2Cfs9kvWEt/euv+Ck61r3PAFbsX/LK096
+         k5jHLsNBdruZlwl+UcNrSv0nvwBLVTrFFt0e0MKcskItOo1u5v93rVikZbghT1Yl5eeI
+         XlOf2gM8BaaxgvRH1TVx4ZfeHSIJOi/lW8wunguyr+CqpSi8mWHhsoTGoEIpDmmq87de
+         4fARE+E/Zcp4h/UbR3tPzjfKVfcSpNq/6oNWwat3pODqfOiOdez+/5J0Ewssq7rvX+CY
+         eqJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfbxnYFRfpwa9yygmiHIATmw8XrKZ/YtwZRiknsY1HQmjDW9tZVbzmlscesBAc9i0n7Z95ZrvYtrHH0uCtzS8CH0hwcrwyTuBcC5c9WRa82TDy6YN6SEQTQJMnHkd920GGb5EaO3JUSvo+CJtbHmXJfRMikVGKnaCpTuVCDSE3+0Oi/BqRYQ==
+X-Gm-Message-State: AOJu0YwIvXCsdQ+LLY48Rwsif5VXEfDRu3CZX3KnxfGSJ5AEBiDumE4J
+	3zxSNkbL7X1wTQ49OK2Q+rfTiC6phpdwWcaZylkVjW3wchPS3D2E
+X-Google-Smtp-Source: AGHT+IEyWvDdPOgStxl17oLA2WRBpXuBBoZ3Kibr5+lnRIW0ufhJUYeohaM+Cvp7KBqVACSH+JDVTQ==
+X-Received: by 2002:ac2:5bc4:0:b0:511:4844:77f2 with SMTP id u4-20020ac25bc4000000b00511484477f2mr1787996lfn.40.1708017474151;
+        Thu, 15 Feb 2024 09:17:54 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id p17-20020a19f011000000b005118f61ffb3sm309458lfc.233.2024.02.15.09.17.51
+        by smtp.gmail.com with ESMTPSA id x21-20020ac24895000000b00511570772f1sm309401lfc.303.2024.02.15.09.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 09:17:52 -0800 (PST)
+        Thu, 15 Feb 2024 09:17:53 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Andrew Morton <akpm@linux-foundation.org>
+	Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc: Serge Semin <fancer.lancer@gmail.com>,
 	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
 	Stephen Rothwell <sfr@rothwell.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	linux-mips@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] mips: cm: Add __mips_cm_l2sync_phys_base prototype declaration
-Date: Thu, 15 Feb 2024 20:17:26 +0300
-Message-ID: <20240215171740.14550-2-fancer.lancer@gmail.com>
+Subject: [PATCH 2/4] mips: cm: Add CM GCR and L2-sync base address getters declarations
+Date: Thu, 15 Feb 2024 20:17:27 +0300
+Message-ID: <20240215171740.14550-3-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240215171740.14550-1-fancer.lancer@gmail.com>
 References: <20240215171740.14550-1-fancer.lancer@gmail.com>
@@ -93,75 +93,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The __mips_cm_l2sync_phys_base() and mips_cm_l2sync_phys_base() couple was
-introduced in commit 9f98f3dd0c51 ("MIPS: Add generic CM probe & access
-code") where the former method was a weak implementation of the later
-function. Such design pattern permitted to re-define the original method
-and use the weak implementation in the new function. A similar approach
-was introduced in the framework of another arch-specific programmable
-interface: mips_cm_phys_base() and __mips_cm_phys_base(). The only
-difference is that the underscored method of the later couple was declared
-in the "asm/mips-cm.h" header file, but it wasn't done for the CM L2-sync
-methods in the subject. Due to the missing the global function declaration
-the "missing prototype" warning was spotted in the framework of the commit
-9a2036724cd6 ("mips: mark local function static if possible") and fixed
-just be re-qualifying the weak method as static. Doing that broke what was
-originally implied by having the weak implementation globally defined. Fix
-that by dropping the static qualifier and adding the
-__mips_cm_l2sync_phys_base() prototype declared in the "asm/mips-cm.h"
-header file.
+Based on the design pattern utilized in the CM GCR and L2-sync base
+address getters implementation the platform-specific code is capable to
+re-define the getters and re-use the weakly defined initial versions. But
+since the re-definition is supposed to be done in another source file the
+interface methods have been globally defined which in its turn causes the
+"no previous prototype" warning printed should the re-definition is
+finally introduced. Since without the global declarations the pattern can
+be considered as incomplete and causing the warning printed, fix it by
+providing the respective methods prototype declarations in
+"arch/mips/include/asm/mips-cm.h".
 
-Fixes: 9a2036724cd6 ("mips: mark local function static if possible")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
 ---
 
-Note seeing there is no user of the pattern described above we can convert
-it to having just weakly defined methods. Let me know if that would be a
-better alternative.
+Note as I mentioned in the previous patch, since the weak implementation
+of the getters isn't utilized other than as a default implementation of
+the original methods, we can convert the denoted pattern to a simple
+__weak attributed methods. Let me know if that would be more preferable.
 ---
- arch/mips/include/asm/mips-cm.h | 14 ++++++++++++++
- arch/mips/kernel/mips-cm.c      |  2 +-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/mips-cm.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
-index 23c67c0871b1..1f143dfad7a2 100644
+index 1f143dfad7a2..6dbe74dc323d 100644
 --- a/arch/mips/include/asm/mips-cm.h
 +++ b/arch/mips/include/asm/mips-cm.h
-@@ -33,6 +33,20 @@ extern void __iomem *mips_cm_l2sync_base;
+@@ -32,6 +32,7 @@ extern void __iomem *mips_cm_l2sync_base;
+  * name mips_cm_phys_base (without underscores).
   */
  extern phys_addr_t __mips_cm_phys_base(void);
++extern phys_addr_t mips_cm_phys_base(void);
  
-+/**
-+ * __mips_cm_l2sync_phys_base - retrieve the physical base address of the CM
-+ *                              L2-sync region
-+ *
-+ * This function returns the physical base address of the Coherence Manager
-+ * L2-cache only region. It provides a default implementation which reads the
-+ * CMGCRL2OnlySyncBase register where available or returns a 4K region just
-+ * behind the CM GCR base address. It may be overridden by platforms which
-+ * determine this address in a different way by defining a function with the
-+ * same prototype except for the name mips_cm_l2sync_phys_base (without
-+ * underscores).
-+ */
-+extern phys_addr_t __mips_cm_l2sync_phys_base(void);
-+
+ /**
+  * __mips_cm_l2sync_phys_base - retrieve the physical base address of the CM
+@@ -46,6 +47,7 @@ extern phys_addr_t __mips_cm_phys_base(void);
+  * underscores).
+  */
+ extern phys_addr_t __mips_cm_l2sync_phys_base(void);
++extern phys_addr_t mips_cm_l2sync_phys_base(void);
+ 
  /*
   * mips_cm_is64 - determine CM register width
-  *
-diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index 84b3affb9de8..3f00788b0871 100644
---- a/arch/mips/kernel/mips-cm.c
-+++ b/arch/mips/kernel/mips-cm.c
-@@ -201,7 +201,7 @@ phys_addr_t __mips_cm_phys_base(void)
- phys_addr_t mips_cm_phys_base(void)
- 	__attribute__((weak, alias("__mips_cm_phys_base")));
- 
--static phys_addr_t __mips_cm_l2sync_phys_base(void)
-+phys_addr_t __mips_cm_l2sync_phys_base(void)
- {
- 	u32 base_reg;
- 
 -- 
 2.43.0
 
