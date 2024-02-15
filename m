@@ -1,140 +1,160 @@
-Return-Path: <linux-kernel+bounces-67240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B41C85687A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:50:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122B085687F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE8841C2288E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A081C2084F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A292133996;
-	Thu, 15 Feb 2024 15:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80425134730;
+	Thu, 15 Feb 2024 15:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hp.com header.i=@hp.com header.b="DPdt9LWk"
-Received: from us-smtp-delivery-162.mimecast.com (us-smtp-delivery-162.mimecast.com [170.10.133.162])
+	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="O/EJRg6V"
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94952133982
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBE012BF03;
+	Thu, 15 Feb 2024 15:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012196; cv=none; b=tX1SZeF0KIrKqyZQptSR4joXBLN5iUJa+Du3ahxGWLUnqCmX2NhVP855OpT7+uplUuijs7gDrFX7WupbfDuenzy9ogYT8uas5gtoScB+R4f9HyArIMD8YFKMCfjQkd4UieZdvNICNgauUIfEIR2CpjvdeERrdmRRTmoDqq99fLc=
+	t=1708012224; cv=none; b=qwTuVPjAeHqU2ehFzWlY8vIMTcPirw1MlpVFAnNpsNtTG7AJ30RgN7UvDfKZX+bwe8yGAmW/byjIxH+R3JxNAUc7Yf9Ysz8LOkoeZ4t48vIHG8g2xh7dI2POjFBx3uIkz9gc/dRiNlCB+GVmP6DDDsOeDI7mEUAHwlzfQ0EzK6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012196; c=relaxed/simple;
-	bh=0UxlDs5v98il8Yvx5898jp0zflTPlEd7LBBWGgaz4vE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qthzddX4unHVoVHArXN4PzFSipoa7Jm56Pfw+9q/AQnhUry9+XXtBcX4f2flz1AE3TZxdpY4JhDnWBZG+ps/eLrHfeZYGJ/5LMYM9nscEbwWPrvFMlbNh/RkCWb8lXdbvaa2CLQUsao8HX7F/1QOjTEI8eAJPtwtP6s2VdDySRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hp.com; spf=pass smtp.mailfrom=hp.com; dkim=pass (1024-bit key) header.d=hp.com header.i=@hp.com header.b=DPdt9LWk; arc=none smtp.client-ip=170.10.133.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hp.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
-	t=1708012193;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0UxlDs5v98il8Yvx5898jp0zflTPlEd7LBBWGgaz4vE=;
-	b=DPdt9LWkOPjBXUEiNVNUIQMGOD6ZyBi/Qy/zg3jWugvbGgcyYVw3QJFQrVi2d1MB753gat
-	mXtuCHl9R5veWpyLJzRcEB6W6fdnOYp7XVGbu8c2HZMo0bGvUe0tUONJ1C923NP64RiKiH
-	lXbNMzBqGl2L22GhxML7YSBL1luXaGg=
-Received: from g8t01560s.inc.hp.com (g8t01560s.inc.hp.com [15.72.64.154]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-352-5jmfhb03Pduo__cOpimguQ-1; Thu, 15 Feb 2024 10:49:52 -0500
-X-MC-Unique: 5jmfhb03Pduo__cOpimguQ-1
-Received: from g7t14407g.inc.hpicorp.net (g7t14407g.inc.hpicorp.net [15.63.19.131])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by g8t01560s.inc.hp.com (Postfix) with ESMTPS id 06CD720399;
-	Thu, 15 Feb 2024 15:49:50 +0000 (UTC)
-Received: from localhost.localdomain (unknown [15.53.255.151])
-	by g7t14407g.inc.hpicorp.net (Postfix) with ESMTP id C23FF17;
-	Thu, 15 Feb 2024 15:49:48 +0000 (UTC)
-From: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
-To: linux-sound@vger.kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com
-Cc: linux-kernel@vger.kernel.org,
-	eniac-xw.zhang@hp.com,
-	Alexandru Gagniuc <alexandru.gagniuc@hp.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] ALSA: hda/realtek: fix mute/micmute LED For HP mt645
-Date: Thu, 15 Feb 2024 15:49:22 +0000
-Message-Id: <20240215154922.778394-1-alexandru.gagniuc@hp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <87frxteoil.wl-tiwai@suse.de>
-References: <87frxteoil.wl-tiwai@suse.de>
+	s=arc-20240116; t=1708012224; c=relaxed/simple;
+	bh=nRsOhffUEUuRhmS+8HSepxdFjF49Sg5dDRzWq3AYXBE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JJYJ1uPq/keTl2HajSCH4zyigDxc6OQDqdKzwbqZmvqRPCkf7DSE4E4zTO2gvhiJwppqIago4jfeGPPyXlr/olTB1Chqq4xlRonziRru8yOYCIyXFDdFh+sh3ENXz4jdfM9xM4U26oFmGuXkapAR4eYM/rOaBePpphIwc/v8ezw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=O/EJRg6V; arc=none smtp.client-ip=52.119.213.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1708012223; x=1739548223;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GOmRYqtgssrc+Ztwxp13mDL5XOVk9YlZb1c27Zd3aaQ=;
+  b=O/EJRg6VuRkk0gEkOELFMHYz8MUZ2/N/ODw/BoVaRuNI2L0h2CT6ocEw
+   GCLEfS2bJqyFzXWyylqL6tU9dCt08gzUZOtMc2Wdd/9JipyQbvse0Punu
+   OBuccVuL2f39HGPu59oC2gnSJHQn8YP0ik7i3+iCkCFR3x3I6V4u1YvqB
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.06,162,1705363200"; 
+   d="scan'208";a="185053725"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:50:20 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:31897]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.60.209:2525] with esmtp (Farcaster)
+ id 129ec688-a7b3-4980-8268-483dcdf08da3; Thu, 15 Feb 2024 15:50:18 +0000 (UTC)
+X-Farcaster-Flow-ID: 129ec688-a7b3-4980-8268-483dcdf08da3
+Received: from EX19D001UWA002.ant.amazon.com (10.13.138.236) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 15 Feb 2024 15:50:18 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
+ EX19D001UWA002.ant.amazon.com (10.13.138.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 15 Feb 2024 15:50:18 +0000
+Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
+ by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Thu, 15 Feb 2024 15:50:18 +0000
+Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
+	id F14604266; Thu, 15 Feb 2024 15:50:17 +0000 (UTC)
+From: Maximilian Heyne <mheyne@amazon.de>
+To: 
+CC: <ravib@amazon.com>, Maximilian Heyne <mheyne@amazon.de>,
+	<stable@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+	<adilger.kernel@dilger.ca>, Yongqiang Yang <xiaoqiangnk@gmail.com>,
+	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] ext4: fix corruption during on-line resize
+Date: Thu, 15 Feb 2024 15:50:09 +0000
+Message-ID: <20240215155009.94493-1-mheyne@amazon.de>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hp.com
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=WINDOWS-1252; x-default=true
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-From: Eniac Zhang <eniac-xw.zhang@hp.com>
+We observed a corruption during on-line resize of a file system that is
+larger than 16 TiB with 4k block size. With having more then 2^32 blocks
+resize_inode is turned off by default by mke2fs. The issue can be
+reproduced on a smaller file system for convenience by explicitly
+turning off resize_inode. An on-line resize across an 8 GiB boundary (the
+size of a meta block group in this setup) then leads to a corruption:
 
-The HP mt645 G7 Thin Client uses an ALC236 codec and needs the
-ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF quirk to make the mute and
-micmute LEDs work.
+  dev=/dev/<some_dev> # should be >= 16 GiB
+  mkdir -p /corruption
+  /sbin/mke2fs -t ext4 -b 4096 -O ^resize_inode $dev $((2 * 2**21 - 2**15))
+  mount -t ext4 $dev /corruption
 
-There are two variants of the USB-C PD chip on this device. Each uses
-a different BIOS and board ID, hence the two entries.
+  dd if=/dev/zero bs=4096 of=/corruption/test count=$((2*2**21 - 4*2**15))
+  sha1sum /corruption/test
+  # 79d2658b39dcfd77274e435b0934028adafaab11  /corruption/test
 
-Signed-off-by: Eniac Zhang <eniac-xw.zhang@hp.com>
-Signed-off-by: Alexandru Gagniuc <alexandru.gagniuc@hp.com>
-Cc: <stable@vger.kernel.org>
+  /sbin/resize2fs $dev $((2*2**21))
+  # drop page cache to force reload the block from disk
+  echo 1 > /proc/sys/vm/drop_caches
+
+  sha1sum /corruption/test
+  # 3c2abc63cbf1a94c9e6977e0fbd72cd832c4d5c3  /corruption/test
+
+2^21 = 2^15*2^6 equals 8 GiB whereof 2^15 is the number of blocks per
+block group and 2^6 are the number of block groups that make a meta
+block group.
+
+The last checksum might be different depending on how the file is laid
+out across the physical blocks. The actual corruption occurs at physical
+block 63*2^15 = 2064384 which would be the location of the backup of the
+meta block group's block descriptor. During the on-line resize the file
+system will be converted to meta_bg starting at s_first_meta_bg which is
+2 in the example - meaning all block groups after 16 GiB. However, in
+ext4_flex_group_add we might add block groups that are not part of the
+first meta block group yet. In the reproducer we achieved this by
+substracting the size of a whole block group from the point where the
+meta block group would start. This must be considered when updating the
+backup block group descriptors to follow the non-meta_bg layout. The fix
+is to add a test whether the group to add is already part of the meta
+block group or not.
+
+Fixes: 01f795f9e0d67 ("ext4: add online resizing support for meta_bg and 64-bit file systems")
+Cc: stable@vger.kernel.org
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
 ---
+ fs/ext4/resize.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changes since version 1:
- - Adjusted Signed-off-by lines to include original author.
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 4d4a5a32e310..3c0d12382e06 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1602,7 +1602,8 @@ static int ext4_flex_group_add(struct super_block *sb,
+ 		int gdb_num = group / EXT4_DESC_PER_BLOCK(sb);
+ 		int gdb_num_end = ((group + flex_gd->count - 1) /
+ 				   EXT4_DESC_PER_BLOCK(sb));
+-		int meta_bg = ext4_has_feature_meta_bg(sb);
++		int meta_bg = ext4_has_feature_meta_bg(sb) &&
++			      gdb_num >= le32_to_cpu(es->s_first_meta_bg);
+ 		sector_t padding_blocks = meta_bg ? 0 : sbi->s_sbh->b_blocknr -
+ 					 ext4_group_first_block_no(sb, 0);
+ 
+-- 
+2.40.1
 
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6994c4c5073c..c837470ef5b8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9928,6 +9928,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
-=3D {
- =09SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS=
-35L41_SPI_2_HP_GPIO_LED),
- =09SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC"=
-, ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- =09SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC"=
-, ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+=09SND_PCI_QUIRK(0x103c, 0x8b0f, "HP Elite mt645 G7 Mobile Thin Client U81=
-", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- =09SND_PCI_QUIRK(0x103c, 0x8b2f, "HP 255 15.6 inch G10 Notebook PC", ALC23=
-6_FIXUP_HP_MUTE_LED_COEFBIT2),
- =09SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
-LED),
- =09SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
-LED),
-@@ -9935,6 +9936,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] =
-=3D {
- =09SND_PCI_QUIRK(0x103c, 0x8b45, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
-LED),
- =09SND_PCI_QUIRK(0x103c, 0x8b46, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
-LED),
- =09SND_PCI_QUIRK(0x103c, 0x8b47, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_=
-LED),
-+=09SND_PCI_QUIRK(0x103c, 0x8b59, "HP Elite mt645 G7 Mobile Thin Client U89=
-", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- =09SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VR=
-EF),
- =09SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VR=
-EF),
- =09SND_PCI_QUIRK(0x103c, 0x8b63, "HP Elite Dragonfly 13.5 inch G4", ALC245=
-_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
---=20
-2.42.0
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
 
