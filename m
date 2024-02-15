@@ -1,202 +1,143 @@
-Return-Path: <linux-kernel+bounces-67433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB1B856B7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:47:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6960A856B7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFAF81C23584
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:47:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2643C285D70
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08EF3137C3A;
-	Thu, 15 Feb 2024 17:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23551386CD;
+	Thu, 15 Feb 2024 17:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w30JlcnJ"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="N6MkM24f"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32699137C57
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CED41386C5
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019223; cv=none; b=djvHfXn9ABA8T7CalHuFpprgzX+rFUnUx+pi3XO88hTXrBGLZMI/5Ox5791rls3O/JhScnYp0nKdX0iUCIiA+pa+yDcKAwAQXjJ2iKtUjBwwNuttfpMV0A59nQ4Z2iKcSFGgRR1CwP05+5ua4PV4YWRw+PQ0qO4arjG9eeVKv1s=
+	t=1708019232; cv=none; b=hw2irPFAUKczz5cdUsCW/1dqHphqImxFFBcEnqhxZndB6FuOrMfVl58xgAWC7aGJK9j1leGjYJjr2PEHc1tZ1HcFVozy0xOgRlzVPM5X8xOOQ7KiCWcKYad6I3WoPXDfIUHG0fPHYkxI2skZ6k978Bs6YwRUEwKhi0lFkOODFmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019223; c=relaxed/simple;
-	bh=6iHjAnqtb6WKmS553f33Msu3R11CMKdhBEB4L24+Blg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=belxnzFSR9az5FXROOdocBz4q7NWYCHM8qPy7XtnKOh1ILb4hZHB5LsyYqOKNpQwQQ+FBovh9clcX0wPgfomevtENhIMA+jNTTo1+fbKKf/1S8Sf9xaR8L6JnJfiEvZtaMWUNZ5xQhlKAkGWEmT3ijWX5CnC7tXbAH7RF3Y04a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w30JlcnJ; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563a772606aso1326124a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:47:00 -0800 (PST)
+	s=arc-20240116; t=1708019232; c=relaxed/simple;
+	bh=+dXm83v4lzGGGWoMkrAhpsoKvqPYYTZkbg+SCOnXjxY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6pGrOBdLy+L7Zt0tADy7UGkQ34UgFCF3amxEtCMs6gK/I0KyHzUT9SWYxs2e7JlKVbp3VLihOcZ0aotJ+1AugEgkf9DHt5PpZO5paUjIvCm0K8bJUhbUlzoLiuTZONHUq5eja+gpP7qrwK53IgIhWiWKE/JZDBtkJy0gR15VR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=N6MkM24f; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-783f553fdabso75486685a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:47:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708019219; x=1708624019; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qGFi4nYhTSGzwEyDxOa4rN/Cn5B1c0Et6UQeZJ6o04k=;
-        b=w30JlcnJCYta1W/T7gBC1rd4XdIHQVh6h53ZftOKenD+xEGkFhdFPL1f9Z/4VaTvB9
-         wkZEAon7YdXQWa26HzgQagx18E09v1MZvQ5KFz402+ew0g40DhR6hkav2/j3pP44+RZA
-         IiNcQU+K/fXUs5s9LZh9fCPalrzLOhvcRjhfmKIstPach83jXUaIMWoKBWJWSl+4cpq8
-         8EArTaeOoxh620zP0vRs0MXo9tVztVrWPtYrYYOvecc/7A/a5FL4LkfTkxzlo16Y8Um0
-         UiQOyutmLcnGiX1dTHBYIW26HJdgFG3PR0jpbIqAwfGHrulIsLEV0y7eo8bHTJ9+oDx7
-         Skqg==
+        d=ziepe.ca; s=google; t=1708019230; x=1708624030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gwxKYOTTfsVxRUkOMJlptUV0ZFZUoBorwA6GkU+MTmM=;
+        b=N6MkM24fIlXRxa3OTszGz5z1eTHNELNLwud5JwW4/R8XpbeAdBp1Ur/9uU97Dy2W7D
+         +amqpJWJrvWf8SaDTy/0VUPYz+eWv0tG0DlA67QC0LxOeBjzgVAoWD1U24JvrluLtI1X
+         H9f8k0Bhb/fF0tsfInxHFANscZzf+w4GfgKJgfME9NYy4bPRDZ8NfKC4+fgraqNhHrgS
+         tRCTej7KduBp51W4F1tNThAUpEduFCcxBtUnQfgZ2EqT2gPXqJCJ12yIJwTDAZzNscHt
+         KlJdCAbUofoMgmHnUFt3rZIaXR/ZzYPs8K8+GFrWK6Has6zZNqNkPxgdpcCUPqZBYsU0
+         LrOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708019219; x=1708624019;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1708019230; x=1708624030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qGFi4nYhTSGzwEyDxOa4rN/Cn5B1c0Et6UQeZJ6o04k=;
-        b=lO7yOp/8DRtTpYV5K3w72BYiORt2RgxeguNmxmruyyCFBzn4xF0Eb6w1T7hIGfgbD3
-         KzSpFgq/i3wpXuuokXmeuj4BsAEH+yPXdLV0kvY3p0O2rsUvHI9BS4QoCQClNh/m3e0m
-         xPBRPEvyR4k2wvb8tHzoPjKo/t1gWtSG+LjBwp3C0Hdbfduml254bVufyhr8GLR64Td/
-         J5x7VHpNFenvG7IgZsU5wEjKSzZ3h1tDl42rkMByo2C0bJW4gEFSmonZXsjEqfDOm5IJ
-         V9xMq5GpOFGLz7VA9eQTnfxTrOcJCoSJqhyfhBUVcinLWo0458H7KRhh28nK7Z3cYwb5
-         kcLw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKJuHq0QseuIUkALS5PIYUgeaSEk5uuMNC9ovjw+3QQQs4ddDDxFEg2+ImJem4EhoAaobSNDLKNdU7tF8t2wS5WJo8pe+d0eLgVdbp
-X-Gm-Message-State: AOJu0YzLoHInaWgG11hn2ePUBpmkJL6OZDYkHZKfOEqhxOnPlRFFr4mX
-	GqJ/BhYei5dRIOa2ie14d32pGiO+M4WgY01t8/VWqTzaZ6xesgqfZ7xAnNicfSg=
-X-Google-Smtp-Source: AGHT+IH6K2lKLxFkkaMzYt3eVZiWsV5RtSerOOoiiTmDmLRvoHacljVqFxweD8HfL/T5NauJN/AcWg==
-X-Received: by 2002:aa7:d594:0:b0:562:d88:adca with SMTP id r20-20020aa7d594000000b005620d88adcamr2205053edq.17.1708019219334;
-        Thu, 15 Feb 2024 09:46:59 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id r1-20020a50d681000000b005638f04c122sm790193edi.14.2024.02.15.09.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 09:46:58 -0800 (PST)
-Message-ID: <a12217ec-ce63-4312-a412-9a5c8d1d92fe@linaro.org>
-Date: Thu, 15 Feb 2024 18:46:55 +0100
+        bh=gwxKYOTTfsVxRUkOMJlptUV0ZFZUoBorwA6GkU+MTmM=;
+        b=rawvDZLvCheAwst5L1BOXz2fkJO+rMtL/PsgbmrJovuOetcdF3M396eCvL+31kFra6
+         7mrqg9bjNxF4rZqacdrsLLaxtoAAvfrwDVvuWx1cx3VQKgQclr8124ZuZWkSPsso6gCT
+         +FKGvzqE1QGzAeBiCOBhU3L3OzNBGt+YiEWripa5khprg0mRrdYSsxCrBuVqnlzauUxa
+         cVRDCaGHB0rbVCeMrFh1TH1L/99OfXHXbOzE93PRL5xykTy0zA8A3Hlc2xyeYVy0ERK5
+         qiVk73xkn0sPcmVtXJQo94sOqAO4dp6uCD2COa4naTj2Gzfm1+e8HAuJh+RqHkCOBPT3
+         rtQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUk0Z4SSOrOLJ2GB/Nabsb+7XM3Asc0IKRDFLsrEDejql+esBIrTHRH9S0GANuNLTXbdCBmy2L2m1TLzxOP9VsP0t2woB2SAsXvxECv
+X-Gm-Message-State: AOJu0YxdZhcBupkG4odQ039DLIj6lFQYlOJSGpbIjNn8g1oJB7Zi1riP
+	9H5VFy1U9eCcfXN7kIKvUnrNnL052O/S/XCLsMDcMzjhkdZmcC37nnpnOyVAz2Y=
+X-Google-Smtp-Source: AGHT+IEPzBiyamH8HajiIAanCfaYKrF4d6zvsj2pCYaxgpaQcWPNs2s/mky4ykJihrWfUqWYewBaKQ==
+X-Received: by 2002:a05:620a:372a:b0:787:2d4a:e91 with SMTP id de42-20020a05620a372a00b007872d4a0e91mr9362184qkb.12.1708019229933;
+        Thu, 15 Feb 2024 09:47:09 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bj27-20020a05620a191b00b007873df5a625sm182249qkb.97.2024.02.15.09.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 09:47:09 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rafpE-001DT3-Rz;
+	Thu, 15 Feb 2024 13:47:08 -0400
+Date: Thu, 15 Feb 2024 13:47:08 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Huang Jiaqing <jiaqing.huang@intel.com>,
+	Ethan Zhao <haifeng.zhao@linux.intel.com>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iommu/vt-d: Use rbtree to track iommu probed devices
+Message-ID: <20240215174708.GC1299735@ziepe.ca>
+References: <20240215072249.4465-1-baolu.lu@linux.intel.com>
+ <20240215072249.4465-2-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: dwc: Use the correct sleep function in wait_for_link
-To: Bjorn Helgaas <helgaas@kernel.org>,
- Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Marijn Suijten <marijn.suijten@somainline.org>, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>
-References: <20240215170258.GA1292702@bhelgaas>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240215170258.GA1292702@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215072249.4465-2-baolu.lu@linux.intel.com>
 
-On 15.02.2024 18:02, Bjorn Helgaas wrote:
-> On Thu, Feb 15, 2024 at 02:35:13PM +0100, Alexander Lobakin wrote:
->> From: Konrad Dybcio <konrad.dybcio@linaro.org>
->> Date: Thu, 15 Feb 2024 11:39:31 +0100
->>
->>> According to [1], msleep should be used for large sleeps, such as the
->>> 100-ish ms one in this function. Comply with the guide and use it.
->>>
->>> [1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
->>>
->>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>> ---
->>> Tested on Qualcomm SC8280XP CRD
->>> ---
->>>  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
->>>  drivers/pci/controller/dwc/pcie-designware.h | 3 +--
->>>  2 files changed, 2 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->>> index 250cf7f40b85..abce6afceb91 100644
->>> --- a/drivers/pci/controller/dwc/pcie-designware.c
->>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->>> @@ -655,7 +655,7 @@ int dw_pcie_wait_for_link(struct dw_pcie *pci)
->>>  		if (dw_pcie_link_up(pci))
->>>  			break;
->>>  
->>> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
->>> +		msleep(LINK_WAIT_MSLEEP_MAX);
->>
->> Just use fsleep(LINK_WAIT_USLEEP_MAX) and let the kernel decide which
->> function to pick.
+On Thu, Feb 15, 2024 at 03:22:48PM +0800, Lu Baolu wrote:
+> Use a red-black tree(rbtree) to track devices probed by the driver's
+> probe_device callback. These devices need to be looked up quickly by
+> a source ID when the hardware reports a fault, either recoverable or
+> unrecoverable.
+> 
+> Fault reporting paths are critical. Searching a list in this scenario
+> is inefficient, with an algorithm complexity of O(n). An rbtree is a
+> self-balancing binary search tree, offering an average search time
+> complexity of O(log(n)). This significant performance improvement
+> makes rbtrees a better choice.
+> 
+> Furthermore, rbtrees are implemented on a per-iommu basis, eliminating
+> the need for global searches and further enhancing efficiency in
+> critical fault paths. The rbtree is protected by a spin lock with
+> interrupts disabled to ensure thread-safe access even within interrupt
+> contexts.
+> 
+> Co-developed-by: Huang Jiaqing <jiaqing.huang@intel.com>
+> Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/iommu.h |  7 +++++
+>  drivers/iommu/intel/dmar.c  |  3 +-
+>  drivers/iommu/intel/iommu.c | 62 +++++++++++++++++++++++++++++++++++--
+>  3 files changed, 69 insertions(+), 3 deletions(-)
 
-IMO, fsleep only makes sense when the argument is variable.. This way, we
-can save on bothering the compiler or adding an unnecessary branch
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> 
-> Odd.
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/timers/timers-howto.rst?id=v6.7#n114
-> mentions fsleep() (with no real guidance about when to use it), but
-> https://www.kernel.org/doc/Documentation/timers/timers-howto.txt 
-> seems to be a stale copy from 2017, before fsleep() was added.  I
-> emailed helpdesk@kernel.org to see if the stale content can be
-> removed.
-> 
-> I do think fsleep() should be more widely used.
-> 
->>>  /* Parameters for the waiting for link up routine */
->>>  #define LINK_WAIT_MAX_RETRIES		10
->>> -#define LINK_WAIT_USLEEP_MIN		90000
->>> -#define LINK_WAIT_USLEEP_MAX		100000
->>> +#define LINK_WAIT_MSLEEP_MAX		100
-> 
-> Since you're touching this anyway, it would be helpful to include the
-> units on the timeout.
-> 
-> USLEEP/MSLEEP is definitely a hint, but I think the "SLEEP" part
-> suggests something about atomic/non-atomic context and isn't relevant
-> to the time interval itself, and something like "TIMEOUT" would be
-> better.
-> 
-> I think an explicit "_US" or "_MS" would better indicate the units.
-> 
-> This is turning into a long tangent, but I'm not a huge fan of the
-> LINK_WAIT_* pattern where I have to look up the code that uses
-> LINK_WAIT_MAX_RETRIES and LINK_WAIT_USLEEP_MAX and do the math to see
-> what the actual timeout is.  Obviously not fodder for *this* patch.
+> +static int device_rbtree_insert(struct intel_iommu *iommu,
+> +				struct device_domain_info *info)
+> +{
+> +	struct rb_node *curr;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
+> +	curr = rb_find_add(&info->node, &iommu->device_rbtree, device_rid_cmp);
+> +	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
+> +	if (curr)
+> +		dev_warn(info->dev, "device already in rbtree\n");
 
-Might as well do that indeed
+I would suggest
 
-Konrad
+WARN_ON(curr);
+
+Something has gone really wonky at this point, right?
+
+Jason
 
