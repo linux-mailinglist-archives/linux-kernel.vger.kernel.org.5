@@ -1,114 +1,139 @@
-Return-Path: <linux-kernel+bounces-67660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78701856EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:40:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76687856EB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:41:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1961C20A3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 180AC1F27C8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB5813B29F;
-	Thu, 15 Feb 2024 20:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2002913B28B;
+	Thu, 15 Feb 2024 20:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VxgP7QgG"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VHmBjrL6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97AE132469;
-	Thu, 15 Feb 2024 20:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2BE1386A2
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708029597; cv=none; b=TVjprB2ptQ87ehtrZnpJ/rZiENDQwg155y+rHLlPTuEr1t5/IhW+6G148fzqEczgrZToi4th6u9lOUHAYPN06Lm7cgGqpblqq0LhbH+oJ/8NPBSt1SysIdT/fw2DhLvEoxBiz/NL5G8jD1oGKT9svsxXyOfmETBP0qOrlB97iig=
+	t=1708029652; cv=none; b=VS//HnA54jF8dwz5fkNpMc59Z1sGTMTSAIrGSwJ130qg6QD6u47xzekt7XCTaQJCoLw+oa2AcKoymIXkPOfbyJOIj+NtqVwyEwYBXc0xBO187DtlcM171sgX+xDSQYBfzQe4FH6CZAMU4Rp5TQDS8pwK6u3HUXArggtP3HJW6I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708029597; c=relaxed/simple;
-	bh=biYF8TzBmTBfUehzYOJvS+68v778LfcH2oFqG0FepeQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IC4eg4FhMSeriOJ09LvnhOUyZ6L8Kh9tpYVSB0ljKCeVoEgj1w4aAsk0wO5EpUWtUryukkugaNMyEbp8yZX4OhB/wRL+GnJD700T3YqD4ayg+d9x40m5qpLbpyE1BdKRRM7l3kBLQ5CqAJZ26LVA/fYXQU5eKznaLEJOTwLdFrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VxgP7QgG; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFSxL3031050;
-	Thu, 15 Feb 2024 20:39:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-11-20;
- bh=dZqIRhOjiKqSt7dvw8csIF1s9y8sRAbgBVziurwX4LM=;
- b=VxgP7QgG2FkmX/tsRB/ecCvmacRm/aPTCuPrkF6MwxMbrF2Wvn4eLZXkhHNKtREBx7O1
- 4nDmxzMdHE9WBnA8VTmAnS89KrFEHxS8zmbyL53mL8oU0mvqZiEO6Vr8Oj502sEvS85c
- C4daiTgKsnNI7ifYVaZ34iQj+plXsJxTEdQ3715apjWjrRud8rX/4OQp+snG0qRlO5/j
- OZpJyrJ28slecTC60huO7wD4jhKgDbEnR0cKz8J7kKwDsXMELyRZ813Dki9A076Db2f7
- ZM7IqeCdgEoEBTMOPs2g4V2eaqywHphtby3PtEx1acP27x8QZs0YyeBqD20XDujnvOBe lg== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w9301k7rt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 20:39:35 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FJ8Y38015017;
-	Thu, 15 Feb 2024 20:39:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykats5k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 20:39:34 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FKdVPP012444;
-	Thu, 15 Feb 2024 20:39:34 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w5ykats32-3;
-	Thu, 15 Feb 2024 20:39:34 +0000
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] scsi: jazz_esp: only build if SCSI core is builtin
-Date: Thu, 15 Feb 2024 15:39:24 -0500
-Message-ID: <170802930866.3317154.3155585946655239383.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240214055953.9612-1-rdunlap@infradead.org>
-References: <20240214055953.9612-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1708029652; c=relaxed/simple;
+	bh=RNbgm2PSnyK3LVzCwTFXtsWgZ5d1/ZKQNi1RrhGFaSM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q9E01QJBFma3c71jyypoHvLgmv48wMEungmp5Hav85FZIMGqgYVHCnxl1kaW1hMQO+MYEkLgl2FDF2cVvfuVuUkFBTW4MI5nj2RaStfJe9bVpbosomr9vpwdYR3frUaSnNVK9oFVpb48KLjvnc6apvUxMhzY/WATRNLq4LDrODQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VHmBjrL6; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708029651; x=1739565651;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RNbgm2PSnyK3LVzCwTFXtsWgZ5d1/ZKQNi1RrhGFaSM=;
+  b=VHmBjrL6QVsFhJ/vhxyGS+4Godmmiq/RhIBZgF4dfLZITbEJcIn8pnxW
+   cfhPuUPWoM05t+efVgitwStl3+tj2jBNqJ20N3f6e2l3atK2X8a7yjn9w
+   VQ54l0qE3t6ai1xSmGoDVmzUE8AKWF85Uup4k0XcGsYFxxRpz/1hWIWoA
+   b5nB5et3auhR12NcN8uTXt2Z+rK+r40RsuceRZQGY/J4AM79+Dqlsx6JN
+   zzjazI6kW3AaQaKTCvtqSe/yaAOYVrZQm6gFYZQ/o4iG7GHo5fk8WSFaU
+   TtRFEc4uBG8LJ4IT9ccMuWRrEWom/O4FySDxqbtSG9PvIuw0S3glcBXAz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5927781"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="5927781"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 12:40:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="3733053"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by orviesa010.jf.intel.com with ESMTP; 15 Feb 2024 12:40:43 -0800
+Received: from [10.249.139.11] (mwajdecz-MOBL.ger.corp.intel.com [10.249.139.11])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 2F98F2818D;
+	Thu, 15 Feb 2024 20:40:41 +0000 (GMT)
+Message-ID: <a6652e88-c66f-44d5-93a4-be9fa7a4623d@intel.com>
+Date: Thu, 15 Feb 2024 21:40:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_19,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402150166
-X-Proofpoint-GUID: SXDJDdr1S211bZff-c_hDDqI3aYVnPb1
-X-Proofpoint-ORIG-GUID: SXDJDdr1S211bZff-c_hDDqI3aYVnPb1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] wordpart.h: Helpers for making u16/u32/u64 values
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Alexey Dobriyan <adobriyan@gmail.com>, Jani Nikula <jani.nikula@intel.com>
+References: <20240214214654.1700-1-michal.wajdeczko@intel.com>
+ <202402141408.0E78D47@keescook>
+From: Michal Wajdeczko <michal.wajdeczko@intel.com>
+In-Reply-To: <202402141408.0E78D47@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 13 Feb 2024 21:59:53 -0800, Randy Dunlap wrote:
 
-> JAZZ_ESP is a bool kconfig symbol that selects SCSI_SPI_ATTRS.
-> When CONFIG_SCSI=m, this results in SCSI_SPI_ATTRS=m while
-> JAZZ_ESP=y, which causes many undefined symbol linker errors.
+
+On 14.02.2024 23:09, Kees Cook wrote:
+> On Wed, Feb 14, 2024 at 10:46:53PM +0100, Michal Wajdeczko wrote:
+>> It is quite common practice to make u16, u32 or u64 values from
+>> smaller words.  Add simple helpers for that.
+>>
+>> Signed-off-by: Michal Wajdeczko <michal.wajdeczko@intel.com>
+>> ---
+>> v2: new macro names due to conflict with crypto/aria.h
+>>     explicit cast and truncation everywhere (Alexey)
+>>     moved to wordpart.h (Andy)
+>> ---
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+>> Cc: Jani Nikula <jani.nikula@intel.com>
+>> ---
+>>  include/linux/wordpart.h | 32 ++++++++++++++++++++++++++++++++
+>>  1 file changed, 32 insertions(+)
+>>
+>> diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
+>> index f6f8f83b15b0..8c75a5355112 100644
+>> --- a/include/linux/wordpart.h
+>> +++ b/include/linux/wordpart.h
+>> @@ -31,6 +31,38 @@
+>>   */
+>>  #define lower_16_bits(n) ((u16)((n) & 0xffff))
+>>  
+>> +/**
+>> + * make_u16_from_u8 - make u16 value from two u8 values
+>> + * @hi: value representing upper 8 bits
+>> + * @lo: value representing lower 8 bits
+>> + */
+>> +#define make_u16_from_u8(hi, lo) ((u16)((u16)(u8)(hi) << 8 | (u8)(lo)))
 > 
-> Fix this by only offering to build this driver when CONFIG_SCSI=y.
-> 
-> 
-> [...]
+> Do we want to actually do type validation here? Right now it's just
+> cast/truncating, which based on the version log is by design. Is silent
+> truncation the right thing to do?
 
-Applied to 6.8/scsi-fixes, thanks!
+note that even FIELD_PREP() is doing silent truncation and these macros
+here could be treated as specialized/simplified variants of FIELD_PREP()
+as alternate implementation can look like:
 
-[1/1] scsi: jazz_esp: only build if SCSI core is builtin
-      https://git.kernel.org/mkp/scsi/c/9ddf190a7df7
+#define make_u16_from_u8(hi, lo) \
+	((u16)(FIELD_PREP_CONST(GENMASK(15, 8), (hi)) | \
+	       FIELD_PREP_CONST(GENMASK(7, 0), (lo))))
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+#define make_u32_from_u16(hi, lo) \
+	((u32)(FIELD_PREP_CONST(GENMASK(31, 16), (hi)) | \
+	       FIELD_PREP_CONST(GENMASK(15, 0), (lo))))
+
+#define make_u64_from_u32(hi, lo) \
+	((u64)(FIELD_PREP_CONST(GENMASK_ULL(63, 32), (hi)) | \
+	       FIELD_PREP_CONST(GENMASK_ULL(31, 0), (lo))))
+
+but then it will not match simplicity of the lower|upper_XX_bits macros
+
 
