@@ -1,122 +1,309 @@
-Return-Path: <linux-kernel+bounces-67552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038A4856D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:08:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D238856D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB3001F21FE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:08:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3068D1C21E07
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5567A139578;
-	Thu, 15 Feb 2024 19:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC43139565;
+	Thu, 15 Feb 2024 19:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAgUsKBd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U3nj8npf"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6D81386B3;
-	Thu, 15 Feb 2024 19:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7123D6D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708024100; cv=none; b=feKN+e8dEcrLLc+6d6fixb8fNgEX/nQ9scTJzjtzgcDqm9+PgPbR9DFWzPMS9rKrQ9zk/PZeVpATd+ZJaVdbKgnMBYAKsVG4FuBetKa7P47zQZmJcjZc6Ut9vCKFhTE4gMGc9VgsXRb7LOIv3X8DFEulYVoj9yZqg6PCC0+p9zw=
+	t=1708024143; cv=none; b=DXbBTxO6aBlPbJhz977gqa09gyu5XVyf7Rw+JRrk74rAHrDQjrxClnpdCzGb52GMbzI78KVyLsAhuXQ1Ylsn0w5Jg4d6P+SLvAw2dST1Gr9Pk2c1xGHrzIutd8Hh9s2PEvxHR0Yn+8rmggwSTwa9mKEVRTmNNS4mX0zKajZHcRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708024100; c=relaxed/simple;
-	bh=zGKMc4hmjCuHx26m6Wg4jWi3wX2vsJdIkSazXYmhNXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D2kmfT8scoynYPh4EbE+gbL71YfRBhlZRQSzXN+yfsm9ZSpvqVTP/jDEKcwjfOUcasFBzoDmIb6I2Y3UUfzdCE66pilF7qgqnG9p5YV87RuBESsIar683tc2AE/0GfodxGb20JpjYxAsZf8Y0GjA7PU1Cb2y9t/Pe/CRymDnX18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAgUsKBd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F94FC433F1;
-	Thu, 15 Feb 2024 19:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708024100;
-	bh=zGKMc4hmjCuHx26m6Wg4jWi3wX2vsJdIkSazXYmhNXc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eAgUsKBdLrG/AoBl4jxLGxfxS2UGF7JpxEAWtiGZ7rIbBu5BDxt1PhRZzQgrFu1hM
-	 EdFc5TS5FpEw8Oy9zH6BK8FldwnGmhmh5bD4RE6iPJl4pkUKjWX8C6freZOTf/de09
-	 mgXn72+4fpwnGEbmMJMD4CLqfdQkyqQ3Gc3N/tZf95EMegqglwwBQbvAJ31W3IpyHJ
-	 zaPEtXXwtbmz1vrC5Fz7puqKFvltRHUSNR7NEYM5qwIXxkCctCXkP2yuIPY2yImcSA
-	 +Rc42ZUiN40+byDmO2FZmzfsEeoOPjLDSIP1YScjj2uSA6p33mm4qsDeCZGgG8NGDV
-	 36Up7YjWxEOVQ==
-Date: Thu, 15 Feb 2024 20:08:16 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc: Jean Delvare <jdelvare@suse.de>, Hans de Goede <hdegoede@redhat.com>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Marius Hoch <mail@mariushoch.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
- in Dell laptops/notebooks?
-Message-ID: <Zc5hIPxzA0oVHoZc@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-	Jean Delvare <jdelvare@suse.de>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Marius Hoch <mail@mariushoch.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
-References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
- <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
- <20231223125350.xqggx3nyzyjjmnut@pali>
- <20240213150708.57148f6a@endymion.delvare>
- <20240215181633.2aevovw6wkxq5si2@pali>
+	s=arc-20240116; t=1708024143; c=relaxed/simple;
+	bh=Vrycz9zR0jiW5CW4N8cLC6KiY0T/p5ojmCrCUnGWMaw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VEuDo19bmVuvUk7HxgMQ3M//OaWftf9tCllS1IeXxkA+lHHfPbngg7WBSEBPto4ANu3kJj3qU4d5I6adnsH7ML1R5X1YCVifHVp4TgxhVFd9qEVVkXMkJzxG+8ZSZqmVPsHSN+GKgU9ENeMKYaGNOzM8PBOefO/cgaknzjaib4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U3nj8npf; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FG4MuE031791;
+	Thu, 15 Feb 2024 19:08:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=8WHqq+J
+	PABcr9TUapr2Y2fy9p+O1+fPjCNfuvXj4B+g=; b=U3nj8npfAnNfCxDhFSwx0ox
+	Pv5duhUZK4vETAWTCoAe5j/MKCEyv9imxXl83Dnm4hGEVtz7yShqyAbkzmRvx8ll
+	9wZEcN6dCvSa4aBx/ksxJtHxuxKkbZ/3LexeCGtczny+7lpj1yMUy/ndPT2f/V/L
+	8sztCAhB46O7ndnULj00uGZECcanbYyzD8tyq8SAoI1SfmXXqAXL3r7kjnplWmKM
+	YujT5exyEojDuRGVxak0TMCh1rP1oB1EIOJtMD4IZE4UGJqbnG42++npNg2q1SPO
+	VDMO+aUbmxxxSxSG+3deHhLlOI9g54+iuuZBTs5nw2Rnq95Tz51++WZF2z4UHmQ=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9e4h1t72-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 19:08:45 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41FJ8ido010080
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 19:08:44 GMT
+Received: from abhinavk-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 15 Feb 2024 11:08:43 -0800
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+To: <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin
+	<tvrtko.ursulin@linux.intel.com>
+CC: Abhinav Kumar <quic_abhinavk@quicinc.com>, <robdclark@gmail.com>,
+        <freedreno@lists.freedesktop.org>, <dmitry.baryshkov@linaro.org>,
+        <intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
+        <quic_jesszhan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <intel-xe@lists.freedesktop.org>
+Subject: [PATCH v2] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+Date: Thu, 15 Feb 2024 11:08:34 -0800
+Message-ID: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b95QzZChQrFPri/W"
-Content-Disposition: inline
-In-Reply-To: <20240215181633.2aevovw6wkxq5si2@pali>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: T7dngG2H_HaB3-eFianvs3eRmlcF3_dr
+X-Proofpoint-ORIG-GUID: T7dngG2H_HaB3-eFianvs3eRmlcF3_dr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_18,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150154
 
+intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+Lets move this to drm_dp_helper to achieve this.
 
---b95QzZChQrFPri/W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+changes in v2:
+	- rebased on top of drm-tip
 
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+---
+ drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
+ drivers/gpu/drm/i915/display/intel_dp.c | 71 +---------------------
+ include/drm/display/drm_dp_helper.h     |  3 +
+ 3 files changed, 83 insertions(+), 69 deletions(-)
 
-> Anyway, SMBus ARP is new thing to me, I have never heard about it or its
-> usage before. Has anybody else found some device which supports it?
-> Would be interesting to know if this is not just another standard which
-> was not publicly deployed yet.
+diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+index 8d6ce46471ae..6c91f400ecb1 100644
+--- a/drivers/gpu/drm/display/drm_dp_helper.c
++++ b/drivers/gpu/drm/display/drm_dp_helper.c
+@@ -2913,6 +2913,84 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
+ }
+ EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+ 
++/**
++ * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
++ * @vsc: vsc sdp initialized according to its purpose as defined in
++ *       table 2-118 - table 2-120 in DP 1.4a specification
++ * @sdp: valid handle to the generic dp_sdp which will be packed
++ * @size: valid size of the passed sdp handle
++ *
++ * Returns length of sdp on success and error code on failure
++ */
++ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
++			    struct dp_sdp *sdp, size_t size)
++{
++	size_t length = sizeof(struct dp_sdp);
++
++	if (size < length)
++		return -ENOSPC;
++
++	memset(sdp, 0, size);
++
++	/*
++	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
++	 * VSC SDP Header Bytes
++	 */
++	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
++	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
++	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
++	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
++
++	if (vsc->revision == 0x6) {
++		sdp->db[0] = 1;
++		sdp->db[3] = 1;
++	}
++
++	/*
++	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
++	 * Format as per DP 1.4a spec and DP 2.0 respectively.
++	 */
++	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
++		goto out;
++
++	/* VSC SDP Payload for DB16 through DB18 */
++	/* Pixel Encoding and Colorimetry Formats  */
++	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
++	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
++
++	switch (vsc->bpc) {
++	case 6:
++		/* 6bpc: 0x0 */
++		break;
++	case 8:
++		sdp->db[17] = 0x1; /* DB17[3:0] */
++		break;
++	case 10:
++		sdp->db[17] = 0x2;
++		break;
++	case 12:
++		sdp->db[17] = 0x3;
++		break;
++	case 16:
++		sdp->db[17] = 0x4;
++		break;
++	default:
++		WARN(1, "Missing case %d\n", vsc->bpc);
++		return -EINVAL;
++	}
++
++	/* Dynamic Range and Component Bit Depth */
++	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
++		sdp->db[17] |= 0x80;  /* DB17[7] */
++
++	/* Content Type */
++	sdp->db[18] = vsc->content_type & 0x7;
++
++out:
++	return length;
++}
++EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
++
+ /**
+  * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+  * @dpcd: DisplayPort configuration data
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 217196196e50..a9458df475e2 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -4089,73 +4089,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
+ 	return false;
+ }
+ 
+-static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+-				     struct dp_sdp *sdp, size_t size)
+-{
+-	size_t length = sizeof(struct dp_sdp);
+-
+-	if (size < length)
+-		return -ENOSPC;
+-
+-	memset(sdp, 0, size);
+-
+-	/*
+-	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+-	 * VSC SDP Header Bytes
+-	 */
+-	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+-	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+-	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+-	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+-
+-	if (vsc->revision == 0x6) {
+-		sdp->db[0] = 1;
+-		sdp->db[3] = 1;
+-	}
+-
+-	/*
+-	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+-	 * Format as per DP 1.4a spec and DP 2.0 respectively.
+-	 */
+-	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+-		goto out;
+-
+-	/* VSC SDP Payload for DB16 through DB18 */
+-	/* Pixel Encoding and Colorimetry Formats  */
+-	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+-	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+-
+-	switch (vsc->bpc) {
+-	case 6:
+-		/* 6bpc: 0x0 */
+-		break;
+-	case 8:
+-		sdp->db[17] = 0x1; /* DB17[3:0] */
+-		break;
+-	case 10:
+-		sdp->db[17] = 0x2;
+-		break;
+-	case 12:
+-		sdp->db[17] = 0x3;
+-		break;
+-	case 16:
+-		sdp->db[17] = 0x4;
+-		break;
+-	default:
+-		MISSING_CASE(vsc->bpc);
+-		break;
+-	}
+-	/* Dynamic Range and Component Bit Depth */
+-	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+-		sdp->db[17] |= 0x80;  /* DB17[7] */
+-
+-	/* Content Type */
+-	sdp->db[18] = vsc->content_type & 0x7;
+-
+-out:
+-	return length;
+-}
+-
+ static ssize_t
+ intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
+ 					 const struct hdmi_drm_infoframe *drm_infoframe,
+@@ -4248,8 +4181,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
+ 
+ 	switch (type) {
+ 	case DP_SDP_VSC:
+-		len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+-					    sizeof(sdp));
++		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
++					  sizeof(sdp));
+ 		break;
+ 	case HDMI_PACKET_TYPE_GAMUT_METADATA:
+ 		len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
+diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+index d02014a87f12..8474504d4c88 100644
+--- a/include/drm/display/drm_dp_helper.h
++++ b/include/drm/display/drm_dp_helper.h
+@@ -812,4 +812,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
+ 		       int bpp_x16, unsigned long flags);
+ int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
+ 
++ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
++			    struct dp_sdp *sdp, size_t size);
++
+ #endif /* _DRM_DP_HELPER_H_ */
+-- 
+2.34.1
 
-SMBus ARP was introduced with spec 2.0 in 2000. I personally have never
-seen it used in the wild. I am biased because I am way more familiar
-with embedded than, say, servers. But it tells something that we don't
-have support for it in the Linux Kernel.
-
-
---b95QzZChQrFPri/W
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXOYRwACgkQFA3kzBSg
-Kbb3vQ//a/t4ssgGJ18uKXlILCbImPCutKb4rulq8S2RotVt1vzB5z78AtX6W1XU
-ty2fjG5YUMW9HtLugHB3F4pKACbR8/TyapeB1HCyljupA5CR2c8gEUG5L0fxGCzf
-RcvwILH+C/koeEQPnA8hmvafqIr0NcP1Bzh4Tk0kXoy6JT8Gk4eQWR/hKXuLimb1
-k+ia/K9mMQZ1z/7aydtUSJq5oEYHN3n16R/4YRVNvBFMTZlmrYGqOln9oUvQWioM
-+s/TZ3t4eefQDxRZbdSWvYZY4WJL6eY3hDdOSmWJayx2rmDiyD8kDiqZVRFTPUqC
-2x3UMwbn5tXBl4E1OSl3ZrIFjPVLgVaQcqDclClnTv6jCv1tTPnfDhlWNTzEz+1k
-dnqpym85j8twlSKPYl4yKwgBvgD+MUHm+dGXnpoDYSts4WVFMPTF8UAB/U3T16qR
-C/V1hMlcGvP5Pi+AD4KCP3XYHyFJDiXx9bYmgnEIWecLzKX2NWO9ZQDhrTGl6Cvh
-7UN5IZkUKFnPeUQeJFT7rOkqeO9LvM6RM+nUO5UX41khmF6/ZX3nyELh0tYWL/cU
-egB/2+MP+QTLyPF72zP56fjgOQvojnMEYojOJx/dFTQ8WP6s5qBO2s3CqaPkdCHE
-UbNNgLBFN6k8ABtuI4XXCBh61bWGovUIY4Z6bRGvQGHqvI5AowI=
-=/rOg
------END PGP SIGNATURE-----
-
---b95QzZChQrFPri/W--
 
