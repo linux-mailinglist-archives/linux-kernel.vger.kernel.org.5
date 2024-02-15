@@ -1,75 +1,88 @@
-Return-Path: <linux-kernel+bounces-67192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B5D58567D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:34:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF3218567DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 196A02844B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E2A31F2CED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923E5136997;
-	Thu, 15 Feb 2024 15:30:58 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157331339B2;
+	Thu, 15 Feb 2024 15:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M3vNe30Y"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9E8136995;
-	Thu, 15 Feb 2024 15:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA17D133431;
+	Thu, 15 Feb 2024 15:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011058; cv=none; b=nw8FN7YBtnPoI4BNWgDecZEA1N3TBryJ0LnKrnd9nIxgCrFMNQciKf+WaptbeL3jAuLAJfSh/1yzVwQZ8b0NBScJUiD3+6G6l3c1WCIOiKgT5Ahbv6NdIelCvEnrWFbdrgVSeQaF2GA5xnyHw7DT9O746NZsAKYLdm9YTLkvVGM=
+	t=1708011078; cv=none; b=cQ2TblvLNC5osJtL5/eIx4VgDfYOgvp8zyWG4tSjSYVasSrkfWNjQRKuOkMOQsP7sbX6CdVrFEoso4BDFAFH3grzyFc+fhH6gdFf1iRu2o41LaWNENGdz36On90gXJIQHz4kF6suxoxlXE+8tujk1H38Ow/D2R70y/H5ztBG/Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011058; c=relaxed/simple;
-	bh=B0r36ErVVXrTrtr7W/g+NKVHw+xBL+tNCmApTVuv35A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZIf1jHJKbRXij+w/SF3xU3zYB5RK7En4+i+4cs65QG/bRVR3pOR0wHhxs0vblOQK0B9s7ov4TvMGZP7y3erJE1zWzJ10SKuAV0NOjNTjhxVMw558iUJgNRQZI43zo3eIi9KxIWib+/qhguiKlIod2p/8zJU17wzgJfL10/YrSLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2229489"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="2229489"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:30:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912180958"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="912180958"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 07:30:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1radhF-00000004pR2-0Whi;
-	Thu, 15 Feb 2024 17:30:45 +0200
-Date: Thu, 15 Feb 2024 17:30:44 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH v3 04/18] i2c: omap: wakeup the controller during
- suspend() callback
-Message-ID: <Zc4uJBUuBzpNgxDP@smile.fi.intel.com>
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-4-5c2e4a3fac1f@bootlin.com>
+	s=arc-20240116; t=1708011078; c=relaxed/simple;
+	bh=dLfIX3aUyBqo2RdTxsMyCriWrHkLIgqJmVYmc44D6GE=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hBCHSL5T79KGkfXG+uV4d9OeLNXiRel5RJ2RhxeRf2kERgFbD72f+igCFX/kshwCJYJ87WwNWBQ3ko2H2fyxjNnterq0qCkGRs9APRgzI3cshtHGgXQUNgPD8SzmrCR3h1JjLhkJ0di4q1LB0a1Jftr4U/609r5O2jYNlGKlsbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M3vNe30Y; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33aea66a31cso559762f8f.1;
+        Thu, 15 Feb 2024 07:31:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708011075; x=1708615875; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=yKrpTQJQFLvHUzVWUoBR2+UEWTVnDVznNd1fLBttIMw=;
+        b=M3vNe30Y4ESHC64TLuvxzm5KCQx4GhCsMFTUyVEo6mRWXa0YyIe8+elRQ6NhSkYMU0
+         GfD4iXrJ7tU/jWAhcMZtpax19sw0sElSuX/l/lGBZSiJBmB6LN3RcYnlTD9OmtgRT1xP
+         x+ujmxGTOScHPtOZ3R+72LTK+UPNfXYeJt3Vpfz9wUqbScD7cp/RwBbkamR/l1x/yvj0
+         2TnbjTLaL4VYL/6paMLWz97iCeHkEU7sVX+o8sm9YxWdt3VBpmCo4E1Hs0ysXsJK+K6O
+         AhT7OdslzR5i/77L+/YuJbM7LO0FnoZgCJmUMHXLvbtVO56pU93YIqxBcio/XRl/rU95
+         jW5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708011075; x=1708615875;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yKrpTQJQFLvHUzVWUoBR2+UEWTVnDVznNd1fLBttIMw=;
+        b=gTUyiqVVQtzpHL/9Bz5Q8h0GQ6JAH9pKU7v0z0AWbQTTbAIZ5YqPQY15DeRcc7xUuh
+         SvWM78Zm78hAD/qV7ikalxEeOj1vSxq4fVdyQNc617yHtQNWsHC5DCdIOxWlqPMhAYJF
+         SUxtM/WULCf6FNFan4sNetcL9Qk0aWYNpBUa5OW0RXhJ4v3BMBUbWIEv8uHjBcSDgDMw
+         pUt3DuLxC1b9hl4Q+ZDaqXyIC6CKsSGCwwuo1/yyfEOmz7W4o2Ol1153bpmGcRfp8cdH
+         iCbX5RpyyAKPAILTa1X6uajUJj3kx0xP5WJ0HzNX79h+D8Pcen3rXaZ36IMaJ5FMysBD
+         SC5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWwgHo7lREKDkV1yCQXYMYp6k5LgKxir08TwHUqkIBRrdY6tbVb0845be9IKJFvXxvJKGRIzjroCv2RNKJgdmovSM/9682fIwnblrukWnUF0VgWcdsZ1k2hPT1Z2Zk0qxMVxWJy
+X-Gm-Message-State: AOJu0YyHXx8odKqKkyzOko3E9kMO+r0Ceo6Wi9cyYHQWIXZ+k04r3tYw
+	Yd1GSXaxZ6kEm2mDuWe7BN68K0r203EQg1PEgsVtEJZ5RR79t5zB
+X-Google-Smtp-Source: AGHT+IHtJa43taH8kjVEW1xAmQDivjclGzmFMF9S6JofmjqqzjF5JBe78KImWL/Bx0Ac2GGLazCztg==
+X-Received: by 2002:adf:db4a:0:b0:33b:179d:d9aa with SMTP id f10-20020adfdb4a000000b0033b179dd9aamr1823427wrj.26.1708011074413;
+        Thu, 15 Feb 2024 07:31:14 -0800 (PST)
+Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id bx23-20020a5d5b17000000b0033cfbe7343asm2230699wrb.8.2024.02.15.07.31.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 07:31:14 -0800 (PST)
+Message-ID: <65ce2e42.5d0a0220.ee3ec.8566@mx.google.com>
+X-Google-Original-Message-ID: <Zc4uP714kvDr1tqh@Ansuel-XPS.>
+Date: Thu, 15 Feb 2024 16:31:11 +0100
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Robert Marko <robimarko@gmail.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [net-next PATCH] net: phy: aquantia: add AQR113 PHY ID
+References: <20240213180228.15859-1-ansuelsmth@gmail.com>
+ <1d30f923-8391-4e36-bf3f-2cdb733d464c@lunn.ch>
+ <e9c0e96314a36ca4320ff215c03d5f7dc0e01235.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,41 +91,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240102-j7200-pcie-s2r-v3-4-5c2e4a3fac1f@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <e9c0e96314a36ca4320ff215c03d5f7dc0e01235.camel@redhat.com>
 
-On Thu, Feb 15, 2024 at 04:17:49PM +0100, Thomas Richard wrote:
-> A device may need the controller up during suspend_noirq() or
-> resume_noirq().
-> But if the controller is autosuspended, there is no way to wakeup it during
-> suspend_noirq() or resume_noirq() because runtime pm is disabled at this
-> time.
+On Thu, Feb 15, 2024 at 01:35:40PM +0100, Paolo Abeni wrote:
+> Hi,
 > 
-> The suspend() callback wakes up the controller, so it is available until
-> its suspend_noirq() callback (pm_runtime_force_suspend()).
-> During the resume, it's restored by resume_noirq() callback
-> (pm_runtime_force_resume()). Then resume() callback enables autosuspend.
+> On Wed, 2024-02-14 at 19:05 +0100, Andrew Lunn wrote:
+> > On Tue, Feb 13, 2024 at 07:02:26PM +0100, Christian Marangi wrote:
+> > > Add Aquantia AQR113 PHY ID. Aquantia AQR113 is just a chip size variant of
+> > > the already supported AQR133C where the only difference is the PHY ID
+> > > and the hw chip size.
+> > > 
+> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > 
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 > 
-> So the controller is up during a little time slot in suspend and resume
-> sequences even if it's not used.
+> This does not apply cleanly anymore after "net: phy: aquantia: add
+> AQR111 and AQR111B0 PHY ID". Could you please rebase it?
+>
 
-..
-
-> +	/*
-> +	 * If the controller is autosuspended, there is no way to wakeup it once
-> +	 * runtime pm is disabled (in suspend_late()).
-> +	 * But a device may need the controller up during suspend_noirq() or
-> +	 * resume_noirq().
-> +	 * Wakeup the controller while runtime pm is enabled, so it is available until
-> +	 * its suspend_noirq(), and from resume_noirq().
-> +	 */
-
-It's a bit random line lengths...
-Can you repack this to be more condensed?
+Sure, sent v2 and thanks for checking this.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+	Ansuel
 
