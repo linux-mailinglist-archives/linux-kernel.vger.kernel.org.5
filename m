@@ -1,97 +1,97 @@
-Return-Path: <linux-kernel+bounces-67588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058D7856DCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:33:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6E49856DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A2A61F25E97
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:33:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63A6A1F25EB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AD2813959D;
-	Thu, 15 Feb 2024 19:33:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C771386AE;
+	Thu, 15 Feb 2024 19:34:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="eg+FHDE7"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R4/IGeaS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E776A1386AE
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D6813A24E;
+	Thu, 15 Feb 2024 19:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025624; cv=none; b=VYjekGZkQmgfvVbq974wA0JAp8f88oiS0SPrbjPszaBYoSc5kkpXJHyhTF3xzLftVdwZeJ/dSHec+iHGyZ7N6ieXGSemP5ePSNqzuseiV1LwauVHgqILkUoufCJooBWy5Jj7jgODcIFwlwt+8UoxoTP6UbFZFZAcP6JBHOFLM2M=
+	t=1708025650; cv=none; b=Eq2fQ1PpX36pBgqqRH5U0WPoR+MNoA7F5G4gKoRm8APUl+p7FT95aQhb3LaVprtpx+lPoBlDtF+AUgfsD0Z3oL94j4VBsz0GQm+3ZME74THLSyTMVnEwkjiEHP67An3jD0jbu6xEiboSo6rZniidurAwjfpmK70SY984vmNcKno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025624; c=relaxed/simple;
-	bh=fY7bPeUGECHTJGAnq11eLS1BJV4utg9nEqgu+9p9e5s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NZ9VhNGVw67I5yIgFdT6olZT+dLLDhIAmTjS51twLb7k+6yzldh2zi1j3x4te6D88dMKgfYXEdono8mtANvndUQMe5LWLEwflU6HRhxLlFqud4db8DfgR4b23T6c8MkrYhuOSa0D90ZA6MlMWzq1UP7+eWDkIZrwoNUyDly7lmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=eg+FHDE7; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d0e5212559so15534191fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1708025620; x=1708630420; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fY7bPeUGECHTJGAnq11eLS1BJV4utg9nEqgu+9p9e5s=;
-        b=eg+FHDE7vwPXtRWJ0BP3d2css1ZPc1GQJpSKyiil/iL2GsR5X4vjfI+PTgrKwdg23E
-         rSwqf5iugy7O0gtdajsUIypHrWbkRZYSyLnmRkb0Qifa+m3Es943y3PqzY7VHGhRvg9B
-         CaKq1hoq9PH09hICsmFkM1hjstBTXmW9kBJs6FotG4jpzxxP9iHZFv92k/3jAUDRobzb
-         2OrzYIzBcN1+uoPENrFLjG1HvZAVeHITrYw1Is5u6bvR9yfV57oaNx0OWqdSRZ3rz83N
-         wBya0HvKPU0aHW8aAArCdjqIXpTbsmK1UQXZJXTCcJ8t/qHnsezyoPROC7lbDl3bhRIT
-         HfTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708025620; x=1708630420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fY7bPeUGECHTJGAnq11eLS1BJV4utg9nEqgu+9p9e5s=;
-        b=B5Ym7L7CHKLfWUziqn1hQ1UiEE1rEpVe6QE05FMSl9+C7pdRjGf7lNXBht9SpGHMtm
-         oUEM+/PLEUfpJs+UCBCBL619gS91kz/p3HaxaZPvyBp+FnA1L0qMS4WWdSEDVTVq43JV
-         2u59ZTjDbQM5dq4DHaAc58YVBqTbxs6Xsf2PZl6AIlVLdDVaUVa5wnFIQSQBFQZlmqXh
-         R8Kmfv6oyWEoA12z2A5MBpy4OQUj+IVe854VI6kMeOG7UDTjozVOBuQEYwuyjtqaup9y
-         tB/bHICbitj9+I0EyNbRVw2NKK0eY+Ic9S0Hg+Tri6hiaK5oJQUhqFOuUXSj93jNQ1X5
-         aN9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUdKK7o3KsAuPLOFl2tXLRKKKW5ct/w6G+n579t3UcHlVJga/khhVXsy54qrsaOs5afGkkKnuJJnJATqQAex4bNGvxcJ5HYintI21nd
-X-Gm-Message-State: AOJu0Yxc9HajrjtCf+8NzQD3MSdXqG6UjW6lXIlCRIc8TROwWBh3eMCF
-	L3FlPO1mzFPcnTfZUnyOsA8neAGuy1u/Znw3JmtZVXprpJ5ab+TTKdA3NO7WAzjBS4ynEhPQnpr
-	K4q2El4paB2tCGhkEIyseElPv4J0F3NDr+Pm5Fw==
-X-Google-Smtp-Source: AGHT+IEkD9DfmAVvJoUA76C927vp9QSuWjLrw/gPYp/wFh5Xl4sFBBEvu2vXnNp5wym+2fg+tY6NIQ36BY/T6qfRVrE=
-X-Received: by 2002:a05:651c:b08:b0:2d2:145e:b36c with SMTP id
- b8-20020a05651c0b0800b002d2145eb36cmr302147ljr.21.1708025619959; Thu, 15 Feb
- 2024 11:33:39 -0800 (PST)
+	s=arc-20240116; t=1708025650; c=relaxed/simple;
+	bh=uI6p2EeYM8i+aIvLwXONNd+KHjJzBDE6AmusnfGfHWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tC0hVUIuZd8BFz9xcpmVLpgOmyzDZZkvn0JZfvqzVMQcc7KkIeF16biPtzIDXJNOv3VXKv1jYp993J/RtMvS5yiFydUB9hDU6zj9oafg3jvYENgrRKZ0lLzkjlcoazJDJyCtv2dpnwiJdMfom078V/xzesrCbuotMKdktjSdx3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R4/IGeaS; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708025649; x=1739561649;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uI6p2EeYM8i+aIvLwXONNd+KHjJzBDE6AmusnfGfHWU=;
+  b=R4/IGeaSNCICSNAnblNjGgyW8AwsURJyNjddio39Gfds1AyOm2KN/J3b
+   VxiBdZbEU9omzd4HpZY4Ex05fFDW0f21eeC9w8IB/tpEYmth1ZZJPw8JV
+   VVBbS3QMoHuoS8SsKh3HfYVWoEWXXwzqZMH9qdEnmVkRLg3VvWkKWgwn3
+   9tKRbZnMdorXpRUAMW7TRlB0+HYlttYcGYGPywZXRRqVmcyMAw3k5EMOO
+   6IGIW/mfitYOR7PqVIO10yJSEtWJHTMczlE/OFJF1VswNymsBT7IGzJc4
+   iMeu7LiPxCPBPDmKtGZXK6xSKpgzgevSqvgcUV98+s1L3etecFOgxtMJl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5948070"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="5948070"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:33:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912217507"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="912217507"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:33:34 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rahUB-00000004sJI-0qA7;
+	Thu, 15 Feb 2024 21:33:31 +0200
+Date: Thu, 15 Feb 2024 21:33:30 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: Michal Wajdeczko <michal.wajdeczko@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Julia Lawall <Julia.Lawall@inria.fr>,
+	Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] cocci: Add rules to find str_plural() replacements
+Message-ID: <Zc5nCsE74E33PdD2@smile.fi.intel.com>
+References: <20240215180156.work.548-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215145602.1371274-1-max.kellermann@ionos.com>
- <20240215145602.1371274-10-max.kellermann@ionos.com> <Zc5mRRhhU7flXB2f@casper.infradead.org>
-In-Reply-To: <Zc5mRRhhU7flXB2f@casper.infradead.org>
-From: Max Kellermann <max.kellermann@ionos.com>
-Date: Thu, 15 Feb 2024 20:33:28 +0100
-Message-ID: <CAKPOu+_LbVg4YNumZWAc6R+bA+_LTBniUkQgH=WRaFDCjnDoDg@mail.gmail.com>
-Subject: Re: [PATCH v1 09/14] linux/mm.h: move usage count functions to mm/page_usage.h
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215180156.work.548-kees@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 15, 2024 at 8:30=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
-> Why does this want to be its own header instead of being part of
-> page_ref.h?
+On Thu, Feb 15, 2024 at 10:02:00AM -0800, Kees Cook wrote:
+> Add rules for finding places where str_plural() can be used. This
+> currently finds:
+>  54 files changed, 62 insertions(+), 61 deletions(-)
 
-Because I thought page_ref.h was a low-level header and the new one
-would be higher-level with (slightly) heavier dependencies. Keeping
-different layers of code in separate headers helps keeping
-dependencies lean. I used the term "usage" from the explanatory
-comment at the top. I'll amend the patch description to explain that
-detail.
+Can we extend this to cover string_choices and call the script probably
+str_choices.cocci ?
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
