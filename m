@@ -1,121 +1,147 @@
-Return-Path: <linux-kernel+bounces-67843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B3F8571BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:40:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF14B8571BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC215B24254
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:40:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B057282754
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B9E145B1F;
-	Thu, 15 Feb 2024 23:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3250B145B19;
+	Thu, 15 Feb 2024 23:43:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZQnA+Vj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="naPm9z1l"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082DB8833;
-	Thu, 15 Feb 2024 23:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3271386A3;
+	Thu, 15 Feb 2024 23:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708040421; cv=none; b=Ztx8fyZK54CPBy6zCo2vnsjSyLqZ3ivEmAZaBxUceIReqZ58LtTn/6unRJbALmLhi0GQkOICnDSc8nkcaHPZeFUqvkvTiHv1VCGA3LkjQ9qUfi4uajYfL3/H3fUQQnpXeCQOPqhNZT3mmEJEhWpumlWaPfz9haVPTW6kVBMLrm8=
+	t=1708040602; cv=none; b=NAWAGUUaF+wRjKMqJtyXKHXPpUtRN4j+A+KQyWyRJ6CQRUOftjZKTXfJMXTQdBcxspzX4d8aHhmIyUwETBYuAg1uhBM56NO/ewlU8qCJhtT0oPIDfaUJVluqxVoKLqppt+1U0OIQm2XRv0/Vcex0gXBnbZIRXoGocHKwXnewduk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708040421; c=relaxed/simple;
-	bh=MdGOLNF5O+3/k/MN90ft/gq4gaJkB7U3p52hntLN17I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iXPfNeI+bHMIOVQ6X6rgC1TAFwlZMLhri3AnsYjBJsCdOVDDfbu5CprU0UlwOw1Usthw16D5c343oBhTv/2kK03dA/rReS3TKMQH6ZVxwmsa1Eeqx1rUiiN206U4/0lqbj2qvkUpZ2UuHeVcT70izc5QtnVmL8fd7ofkkuxZ7YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZQnA+Vj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D593C433C7;
-	Thu, 15 Feb 2024 23:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708040420;
-	bh=MdGOLNF5O+3/k/MN90ft/gq4gaJkB7U3p52hntLN17I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gZQnA+VjpmOCIRf9BW8kNoSxWl0GNonzrGp8LNK/SUjyPZVrrJ/rJJ40MCuRsXI/v
-	 ETfI2MnlVBYn/ByAwOfhMv+JCOydgbzT/QDKj8u8GV7iYeA0WN4s2w5wC+DlaG0mU2
-	 dJPws4t1UCpi88hW8KXWrT1VJvjSEvMwah3AwwuPGhkCLhB4mNLhDI7GOleSNn6I+F
-	 MtDvAuoLpvlM9vO1P3NU+W5PgYLTPQ8XjJbY3vbWi8koboKupO22okOpKJZanKx9eG
-	 yPMl31hJ7LVqrlO6DYcqhHq7zvcgk+8cgAW9SOPVIokrpgPG/U9l3f0joYKyuE2evm
-	 VxdrqDzROXsyA==
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d0b4ea773eso18587331fa.0;
-        Thu, 15 Feb 2024 15:40:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUWhRzD0P1zKDk9vdZ+E9F5V5VO9zXumfoZunB5H1a0zOgaTIDBsrmMPp4uypmAEgIA2zcITFf9V6K+2TZ1hehvcG81K9EJYFx+SAjgD9h7MOzmGoq5sxqq3m1Bx14pcTrvBReM1fk8
-X-Gm-Message-State: AOJu0YyQ3mBHUB+ZAIAySBjH8IZ+LxjLPnn2iyiq9evBxP1TEIcxulY6
-	RyiMQS6C/ggSiRpyixSAfqamSLCt0yIhP6z5FFVuL1UKrxRhbY+TZ+5+8UQna6cMBI8ZvHe587A
-	kxWCjFGkLk8VK18Oyimdo2u51kjQ=
-X-Google-Smtp-Source: AGHT+IEJnOuiKoXLEzOneSrmISAp+FvSiNtE8/3bi4MJIh9xlNEbfU2lfXGAfUxhS3wG7zMPFna3hgcfQe2KZIk6//Y=
-X-Received: by 2002:a05:651c:1a29:b0:2d2:912:916b with SMTP id
- by41-20020a05651c1a2900b002d20912916bmr2609906ljb.24.1708040418698; Thu, 15
- Feb 2024 15:40:18 -0800 (PST)
+	s=arc-20240116; t=1708040602; c=relaxed/simple;
+	bh=Fqw4R2TCCNuFLfcj3N3za2hiQluZoyUsJ8OTL/KQZrU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pmd9q8aAh3EqNGG5aB6j5DcPX5lEX62t8jtg4w7wvor+YS+fnBjA4HGr9v90Glk7hCxPCbCCs1jywxgfPfnl8ZPgOepVCFVvx5kOwukgmvB90+tLdc7H9gsrFsiN0bp0Gu3wUXoXYY8zidGQ9V1gwNwbRMYABf0qRYI993EAdoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=naPm9z1l; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708040600; x=1739576600;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Fqw4R2TCCNuFLfcj3N3za2hiQluZoyUsJ8OTL/KQZrU=;
+  b=naPm9z1lxEtcoE03S4Te5q7v+aYQ1YGFRrQQkfOEqiQQj0XeNCD35hfD
+   e8EZnPPup9dPbrszziKRGPFXEnP3pzE0ZXhOfB+rFn0QljqZha2UQCDOb
+   TJ7qBhvipwvfmmeUJxPJdP12eQxz8QO7bEa/2BTwvHkjSSgJGOJ7em5w2
+   7xrrYmbCGgI2NlFHekhj7ryHV5b6ZbpLiSVglK07FrjbRG6UnSHZUisye
+   qJ33ANptCZC/pTeIpCXb1QhiPe8GEYiuY5XA5/iSme11oc2kKTXOvHYKD
+   5Hi6zSnIdTzfMY2XsRpD25FRQrKqGZFez+QrJ8DI1XiQMuLrWexQYGhtU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2294410"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="2294410"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:43:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="4003686"
+Received: from jmjohns4-mobl1.amr.corp.intel.com (HELO [10.209.57.138]) ([10.209.57.138])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:43:18 -0800
+Message-ID: <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+Date: Thu, 15 Feb 2024 15:43:18 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215225116.3435953-1-boqun.feng@gmail.com> <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
-In-Reply-To: <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 16 Feb 2024 00:40:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGd8a-ZrSj4N=F9NZgAXcvNNHvF86aEs9smSwu66D85+Q@mail.gmail.com>
-Message-ID: <CAMj1kXGd8a-ZrSj4N=F9NZgAXcvNNHvF86aEs9smSwu66D85+Q@mail.gmail.com>
-Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
-To: Boqun Feng <boqun.feng@gmail.com>, Oliver Smith-Denny <osde@linux.microsoft.com>
-Cc: stable@vger.kernel.org, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+Content-Language: en-US
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
+ dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240205210638.157741-10-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 16 Feb 2024 at 00:21, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> (cc Oliver)
->
-> On Thu, 15 Feb 2024 at 23:51, Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
-> > a trouble with the following firmware memory region setup:
-> >
-> >         [..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
-> >         [..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
-> >
->
-> Which memory types were listed here?
->
-> > , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
-> > range will be omitted from the the linear map due to 64k round-up. And
-> > a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
-> >
-> >         [...] Unable to handle kernel paging request at virtual address ffff0000dfd80000
-> >
->
-> You trimmed all the useful information here. ACPI reclaim memory is
-> reclaimable, but we don't actually do so in Linux. So this is not
-> general purpose memory, it is used for a specific purpose, and the
-> code that accesses it is assuming that it is accessible via the linear
-> map. There are reason why this may not be the case, so the fix might
-> be to use memremap() in the access instead.
->
+On 2/5/24 13:06, Haitao Huang wrote:
+>  static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>  {
+> @@ -1003,14 +1001,6 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>  	struct sgx_encl_mm *encl_mm;
+>  	int idx;
+>  
+> -	/*
+> -	 * If called from normal task context, return the mem_cgroup
+> -	 * of the current task's mm. The remainder of the handling is for
+> -	 * ksgxd.
+> -	 */
+> -	if (!current_is_ksgxd())
+> -		return get_mem_cgroup_from_mm(current->mm);
 
-Please try the below if the caller is already using memremap(). It
-might misidentify the region because the start is in the linear map
-but the end is not.
+Why is this being removed?
 
+Searching the enclave mm list is a last resort.  It's expensive and
+imprecise.
 
-diff --git a/arch/arm64/mm/ioremap.c b/arch/arm64/mm/ioremap.c
-index 269f2f63ab7d..fef0281e223c 100644
---- a/arch/arm64/mm/ioremap.c
-+++ b/arch/arm64/mm/ioremap.c
-@@ -31,7 +31,6 @@ void __init early_ioremap_init(void)
- bool arch_memremap_can_ram_remap(resource_size_t offset, size_t size,
-                                 unsigned long flags)
- {
--       unsigned long pfn = PHYS_PFN(offset);
--
--       return pfn_is_map_memory(pfn);
-+       return pfn_is_map_memory(PHYS_PFN(offset)) &&
-+              pfn_is_map_memory(PHYS_PFN(offset + size - 1));
- }
+get_mem_cgroup_from_mm(current->mm), on the other hand is fast and precise.
 
