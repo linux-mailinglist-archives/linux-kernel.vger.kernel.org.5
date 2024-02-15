@@ -1,274 +1,163 @@
-Return-Path: <linux-kernel+bounces-67306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE43C856982
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:26:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC67D85698A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E22EB237D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:26:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8502AB2AF12
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F43134CC0;
-	Thu, 15 Feb 2024 16:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48731134CD7;
+	Thu, 15 Feb 2024 16:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QazWVB4P"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="O3eXekOJ"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C71134743;
-	Thu, 15 Feb 2024 16:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018D513399E;
+	Thu, 15 Feb 2024 16:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014355; cv=none; b=e0SpvyzPQ7wDvbR4sZyTm1uuIAV4yUAifqtwnWTtdl2yb7kuCyV1qnO+YU4URVONZBJ9srmvfrhf62bDeoDmTemY/GTubOmcsZ18iKCMrrUoSIrC6do7dlkogpdJZFB3rqhShSHsXK0okqAVj3C4ZhUV0s+YfcpM7UYiIupRORo=
+	t=1708014447; cv=none; b=rYNlXKBL5IrnTfegumx/DLSmrDgCAYMdmY5ANZ8jXYGbEJqVB9QXOye5bJBVS+d7NgEbmlWZnW/hpg7/FCAxdMBuhOwvQIS2qgixuLlNyZm9ESvU2CYpFB05u5dUDgUCCgB7y72Bee50B/EkzBjK+0zpx+iNS6sqJBR8WfdcpE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014355; c=relaxed/simple;
-	bh=VSAALJp4MFaIgFzqjLLc6BeLPyT7H5C4A+EO6BbIRzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=rHQRTYfvc4XHIroqR7eQNLaNvxg2qxc3PdsuXKS9zuJwsqHxEgx4V/v1URbsSIsy12rIh6WHTicLaAMF+5Xgh8twv181EBuMmaMdIKDimr9r3hGWn3tDJrhxMud71EinChhEdDD2i9CZMUhYeyJGOVShOWF9HIXd+u5Xhd7pdDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QazWVB4P; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FBfcDE002449;
-	Thu, 15 Feb 2024 16:25:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=2Z2TB9HMc/XqBevRu67UWw4yo4bEz0HNufbBYufQook=; b=Qa
-	zWVB4Plwn5QYzPoDSce+5P7tJRoq5Rs9A5yqLbnNwDN68bwyHOi6PGQDEhfBrAWv
-	9cZBYHLdek4zigR4bB653tZmodepZShH8afgaS/2aksdm/Te3Zg/GWK/280tpIYu
-	MyI7qCT6GAXI/xse+IUPUMBkD1rwhVZJCvPkZnnlDgmD24xRLGUQMKFhQARTRjDZ
-	+R7Hh+q5P1eZBa8iKbrD/9T9w4Nahp5h+n8ui+2v1z93O8eUjfN6x8r6NxvCp7V/
-	IuK4VpDJcilPAdwttIUVni8BEmvuD3oD/mSQLYUy4GoLGTpdEuEPNXxgcN3vPEwF
-	G76wS9sOiYzeryssWFTA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9bfs1m9e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 16:25:30 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41FGPToN023623
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 16:25:29 GMT
-Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 15 Feb
- 2024 08:25:29 -0800
-Message-ID: <74b6c3dc-6add-414c-8056-3dcb94b12cd7@quicinc.com>
-Date: Thu, 15 Feb 2024 08:25:20 -0800
+	s=arc-20240116; t=1708014447; c=relaxed/simple;
+	bh=CyRI1uCzCoGWcjKACcwDD3OCyQCqdt4SPHYVdoOyQ1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CI5iDFmU55BTUuyGe+7/o9kEZijUHkK3oXFhZc2ufWt0+XnSSaqIy39MiHAeSPN7LaSxZzIc9dCGlpbLSYGT0K0IYhLwA1lMTOyOCa1hichXRsPztjuRNusXFViawbycDOAEOeL5yGU8W9cjsaRcavtmOadQ0kZrNvdlBPeJppQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=O3eXekOJ; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=EWZIyim+Tuvyt3wOnNkE0nCb5ATARobWhzBcyG/FuL0=; b=O3eXekOJVXDVMI39FdMDQkdpcQ
+	PyjL5Dp5oG/MIRx71Pmy9Oi9Hqr6Y5DXH1kPsFJECm5WupOzQxQbOVHAWtYrJvcQR6gWYx+INfcsj
+	RgJ5BhvXhBy8LpAGO6Bn9EVL+nCHFpRakzgLNGrKYS6chsqYXFfNQMp5Nd1DEibb8RGpESJD22vtb
+	mxLpMMerGDK7pWuuZvnrxKzUtE77cgbAHo+Sa3QVBQX9uYcpWwISHvv0IwKzm14Mn+ILqGbTXFctw
+	zuJqNDDoa8H2VHQp77/Mb+L9J5ruUXBZddwARnpiVsfxS6tP/jxZCuvDl3nVDDB7Iy5CRJ2DGWnBp
+	sIXX7vsQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50496)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1raeZg-0004Qb-2H;
+	Thu, 15 Feb 2024 16:27:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1raeZb-0004pl-Eb; Thu, 15 Feb 2024 16:26:55 +0000
+Date: Thu, 15 Feb 2024 16:26:55 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Choong Yong Liang <yong.liang.choong@linux.intel.com>
+Cc: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+	David E Box <david.e.box@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <Jose.Abreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
+	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
+	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
+Subject: Re: [PATCH net-next v5 1/9] net: phylink: provide
+ mac_get_pcs_neg_mode() function
+Message-ID: <Zc47T/qv8Xg2SA21@shell.armlinux.org.uk>
+References: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
+ <20240215030500.3067426-2-yong.liang.choong@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] drm/panel: ltk500hd1829: make room for more similar
- panels
-To: Heiko Stuebner <heiko@sntech.de>, <neil.armstrong@linaro.org>
-CC: <sam@ravnborg.org>, <maarten.lankhorst@linux.intel.com>,
-        <mripard@kernel.org>, <tzimmermann@suse.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quentin.schulz@theobroma-systems.com>,
-        Heiko
- Stuebner <heiko.stuebner@cherry.de>
-References: <20240215090515.3513817-1-heiko@sntech.de>
- <20240215090515.3513817-2-heiko@sntech.de>
-Content-Language: en-US
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20240215090515.3513817-2-heiko@sntech.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LZfVm8segKP6sX68vyDuaTOJKWkKYxEo
-X-Proofpoint-GUID: LZfVm8segKP6sX68vyDuaTOJKWkKYxEo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_15,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 spamscore=0
- clxscore=1011 adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402150133
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215030500.3067426-2-yong.liang.choong@linux.intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-
-
-On 2/15/2024 1:05 AM, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+On Thu, Feb 15, 2024 at 11:04:51AM +0800, Choong Yong Liang wrote:
+> Phylink invokes the 'mac_get_pcs_neg_mode' function during interface mode
+> switching and initial startup.
 > 
-> There exist more dsi-panels from Leadtek sharing supplies and timings
-> with only the panel-mode and init commands differing.
+> This function is optional; if 'phylink_pcs_neg_mode' fails to accurately
+> reflect the current PCS negotiation mode, the MAC driver can determine the
+> mode based on the interface mode, current link negotiation mode, and
+> advertising link mode.
 > 
-> So make room in the driver to also keep variants here instead of
-> requiring additional drivers per panel.
-> 
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> For instance, if the interface switches from 2500baseX to SGMII mode,
+> and the current link mode is MLO_AN_PHY, calling 'phylink_pcs_neg_mode'
+> would yield PHYLINK_PCS_NEG_OUTBAND. Since the MAC and PCS driver require
+> PHYLINK_PCS_NEG_INBAND_ENABLED, the 'mac_get_pcs_neg_mode' function
+> will calculate the mode based on the interface, current link negotiation
+> mode, and advertising link mode, returning PHYLINK_PCS_NEG_OUTBAND to
+> enable the PCS to configure the correct settings.
 
-Hi Heiko,
+This paragraph doesn't make sense - at least to me. It first talks about
+requiring PHYLINK_PCS_NEG_INBAND_ENABLED when in SGMII mode. On this:
 
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+1) are you sure that the hardware can't be programmed for the SGMII
+symbol repititions? 
 
-Thanks,
+2) what happens if you're paired with a PHY (e.g. on a SFP module)
+which uses SGMII but has no capability of providing the inband data?
+(They do exist.) If your hardware truly does require inband data, it
+is going to be fundamentally inoperative with these modules.
 
-Jessica Zhang
+Next, you then talk about returning PHYLINK_PCS_NEG_OUTBAND for the
+"correct settings". How does this relate to the first part where you
+basically describe the problem as SGMII requring inband? Basically
+the two don't follow.
 
-> ---
->   .../drm/panel/panel-leadtek-ltk500hd1829.c    | 73 ++++++++++++-------
->   1 file changed, 47 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> index 39e408c9f762f..42f4e2584af18 100644
-> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> @@ -11,6 +11,7 @@
->   #include <linux/gpio/consumer.h>
->   #include <linux/module.h>
->   #include <linux/of.h>
-> +#include <linux/of_device.h>
->   #include <linux/regulator/consumer.h>
->   
->   #include <video/mipi_display.h>
-> @@ -21,25 +22,32 @@
->   #include <drm/drm_modes.h>
->   #include <drm/drm_panel.h>
->   
-> +struct ltk500hd1829_cmd {
-> +	char cmd;
-> +	char data;
-> +};
-> +
-> +struct ltk500hd1829_desc {
-> +	const struct drm_display_mode *mode;
-> +	const struct ltk500hd1829_cmd *init;
-> +	unsigned int num_init;
-> +};
-> +
->   struct ltk500hd1829 {
->   	struct device *dev;
->   	struct drm_panel panel;
->   	struct gpio_desc *reset_gpio;
->   	struct regulator *vcc;
->   	struct regulator *iovcc;
-> +	const struct ltk500hd1829_desc *panel_desc;
->   	bool prepared;
->   };
->   
-> -struct ltk500hd1829_cmd {
-> -	char cmd;
-> -	char data;
-> -};
-> -
->   /*
->    * There is no description in the Reference Manual about these commands.
->    * We received them from the vendor, so just use them as is.
->    */
-> -static const struct ltk500hd1829_cmd init_code[] = {
-> +static const struct ltk500hd1829_cmd ltk500hd1829_init[] = {
->   	{ 0xE0, 0x00 },
->   	{ 0xE1, 0x93 },
->   	{ 0xE2, 0x65 },
-> @@ -260,6 +268,26 @@ static const struct ltk500hd1829_cmd init_code[] = {
->   	{ 0x35, 0x00 },
->   };
->   
-> +static const struct drm_display_mode ltk500hd1829_mode = {
-> +	.hdisplay	= 720,
-> +	.hsync_start	= 720 + 50,
-> +	.hsync_end	= 720 + 50 + 50,
-> +	.htotal		= 720 + 50 + 50 + 50,
-> +	.vdisplay	= 1280,
-> +	.vsync_start	= 1280 + 30,
-> +	.vsync_end	= 1280 + 30 + 4,
-> +	.vtotal		= 1280 + 30 + 4 + 12,
-> +	.clock		= 69217,
-> +	.width_mm	= 62,
-> +	.height_mm	= 110,
-> +};
-> +
-> +static const struct ltk500hd1829_desc ltk500hd1829_data = {
-> +	.mode = &ltk500hd1829_mode,
-> +	.init = ltk500hd1829_init,
-> +	.num_init = ARRAY_SIZE(ltk500hd1829_init),
-> +};
-> +
->   static inline
->   struct ltk500hd1829 *panel_to_ltk500hd1829(struct drm_panel *panel)
->   {
-> @@ -324,8 +352,8 @@ static int ltk500hd1829_prepare(struct drm_panel *panel)
->   	/* tRT: >= 5ms */
->   	usleep_range(5000, 6000);
->   
-> -	for (i = 0; i < ARRAY_SIZE(init_code); i++) {
-> -		ret = mipi_dsi_generic_write(dsi, &init_code[i],
-> +	for (i = 0; i < ctx->panel_desc->num_init; i++) {
-> +		ret = mipi_dsi_generic_write(dsi, &ctx->panel_desc->init[i],
->   					     sizeof(struct ltk500hd1829_cmd));
->   		if (ret < 0) {
->   			dev_err(panel->dev, "failed to write init cmds: %d\n", ret);
-> @@ -359,31 +387,17 @@ static int ltk500hd1829_prepare(struct drm_panel *panel)
->   	return ret;
->   }
->   
-> -static const struct drm_display_mode default_mode = {
-> -	.hdisplay	= 720,
-> -	.hsync_start	= 720 + 50,
-> -	.hsync_end	= 720 + 50 + 50,
-> -	.htotal		= 720 + 50 + 50 + 50,
-> -	.vdisplay	= 1280,
-> -	.vsync_start	= 1280 + 30,
-> -	.vsync_end	= 1280 + 30 + 4,
-> -	.vtotal		= 1280 + 30 + 4 + 12,
-> -	.clock		= 69217,
-> -	.width_mm	= 62,
-> -	.height_mm	= 110,
-> -};
-> -
->   static int ltk500hd1829_get_modes(struct drm_panel *panel,
->   				  struct drm_connector *connector)
->   {
->   	struct ltk500hd1829 *ctx = panel_to_ltk500hd1829(panel);
->   	struct drm_display_mode *mode;
->   
-> -	mode = drm_mode_duplicate(connector->dev, &default_mode);
-> +	mode = drm_mode_duplicate(connector->dev, ctx->panel_desc->mode);
->   	if (!mode) {
->   		dev_err(ctx->dev, "failed to add mode %ux%u@%u\n",
-> -			default_mode.hdisplay, default_mode.vdisplay,
-> -			drm_mode_vrefresh(&default_mode));
-> +			ctx->panel_desc->mode->hdisplay, ctx->panel_desc->mode->vdisplay,
-> +			drm_mode_vrefresh(ctx->panel_desc->mode));
->   		return -ENOMEM;
->   	}
->   
-> @@ -413,6 +427,10 @@ static int ltk500hd1829_probe(struct mipi_dsi_device *dsi)
->   	if (!ctx)
->   		return -ENOMEM;
->   
-> +	ctx->panel_desc = of_device_get_match_data(dev);
-> +	if (!ctx->panel_desc)
-> +		return -EINVAL;
-> +
->   	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
->   	if (IS_ERR(ctx->reset_gpio)) {
->   		dev_err(dev, "cannot get reset gpio\n");
-> @@ -492,7 +510,10 @@ static void ltk500hd1829_remove(struct mipi_dsi_device *dsi)
->   }
->   
->   static const struct of_device_id ltk500hd1829_of_match[] = {
-> -	{ .compatible = "leadtek,ltk500hd1829", },
-> +	{
-> +		.compatible = "leadtek,ltk500hd1829",
-> +		.data = &ltk500hd1829_data,
-> +	},
->   	{ /* sentinel */ }
->   };
->   MODULE_DEVICE_TABLE(of, ltk500hd1829_of_match);
-> -- 
-> 2.39.2
-> 
+How, from a design point of view, because this fundamentally allows
+drivers to change how the system behaves, it will allow radically
+different behaviours for the same parameters between different drivers.
+I am opposed to that - I want to see a situation where we have uniform
+behaviour for the same configuration, and where hardware doesn't
+support something, we have some way to indicate that via some form
+of capabilities.
+
+The issue of whether 2500base-X has inband or not is a long standing
+issue, and there are arguments (and hardware) that take totally
+opposing views on this. There is hardware where 2500base-X inband
+_must_ be used or the link doesn't come up. There is also hardware
+where 2500base-X inband is not "supported" in documentation but works
+in practice. There is also hardware where 2500base-X inband doesn't
+work. The whole thing is a total mess (thanks IEEE 802.3 for not
+getting on top of this early enough... and what's now stated in 802.3
+for 2500base-X is now irrelevant because they were too late to the
+party.)
+
+I haven't been able to look at this issue over the last few weeks
+because of being at a summit, and then suffering with flu and its
+recovery. However, I have been working on how we can identify the
+capabilities of the PCS and PHY w.r.t. inband support in various
+interface modes, and how we can handle the result. That work is
+ongoing (as and when I have a clear head from after-flu effects.)
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
