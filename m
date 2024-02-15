@@ -1,246 +1,197 @@
-Return-Path: <linux-kernel+bounces-66748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE19E85610C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:11:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8038185610F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F19E51C20C75
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:11:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5A651C21242
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927E412C559;
-	Thu, 15 Feb 2024 11:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902D312B147;
+	Thu, 15 Feb 2024 11:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MnWReYKz"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SpE7Oabv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wN6In+Sq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tae2G1rg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1c1W27sC"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63846129A75;
-	Thu, 15 Feb 2024 11:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8E012A158
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707995411; cv=none; b=RVNGj8YWdCFHWBLhP7g9vW44sypJKBgFRWCDnSmudvjOR/FCZQG6A/x2g2WTk4X04/jABjY+J6JwZN4iXd6rHUZHiXxnzjD32bFyPwGYmlnAY4JglF80q4LBzsOtdWMSgMHBxyp6TsvNGomrS7tg1rr8fZsB2hSK/f4qzuqLDnU=
+	t=1707995443; cv=none; b=JxdjdO5nHCjjDOg0XGaU9og4Cu/EWjLRiKpPLkhMyoAjrb7wwY/f0aDkpCw8tcWqIzpurcD7cIKVPuUj5XYSwws5GEWojYiT2kaw9o/Wk2ObtaC+KpjHsogyCNJnVrwTEOJQYtuHUr6YvILu/4CS+6K9bmCwv/P/H7lwTCm3AbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707995411; c=relaxed/simple;
-	bh=BJwDCaMI0aYz6VnWacdyLdYJC4bbqH19di3iUcevG24=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ShtipA0RnOzWf3xlACnCsVtYiHWQzkO4rVuwrtGMGP6nVSODKKEEt62ZQ6fcRcKJXjcVtX1i4f79xjIEh3qAIExenLHyioH5TUK3Cc7u2h8E6Jvtey/jyEWKMFy6jue8Xb04QrZeiZgr9qOuRqGWBS9F0thjoJf7Q9jQWLEAUoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MnWReYKz; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FBA0wY081722;
-	Thu, 15 Feb 2024 05:10:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707995400;
-	bh=M407onLK2mqpOgnXCBUnGsRyi/aiFxEPhpsZL7d0pG8=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=MnWReYKzA+1q3mB0FCeKc5q6tTrpn6Fq1u0o/t7dZeNGeAaCDkZzFNSdJYYq6v7x7
-	 muKAnYTy3Or9RrpiSW7P98ZoROZVOHdwVYnKhWQeKDIS7Dq1iziDliuB1CHzko7eSf
-	 X8WZsZfz30dlZhmo8x02T1UTGItUsQX0zJrupCNI=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FBA0qV001868
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 05:10:00 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 05:10:00 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 05:10:00 -0600
-Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FB9x73111243;
-	Thu, 15 Feb 2024 05:09:59 -0600
-From: Chintan Vankar <c-vankar@ti.com>
-To: Chintan Vankar <c-vankar@ti.com>,
-        Dan Carpenter
-	<dan.carpenter@linaro.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Siddharth
- Vadapalli <s-vadapalli@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        Eric
- Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH net-next 2/2] net: ethernet: ti: am65-cpsw: Enable RX HW timestamp only for PTP packets
-Date: Thu, 15 Feb 2024 16:39:53 +0530
-Message-ID: <20240215110953.3225099-2-c-vankar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215110953.3225099-1-c-vankar@ti.com>
-References: <20240215110953.3225099-1-c-vankar@ti.com>
+	s=arc-20240116; t=1707995443; c=relaxed/simple;
+	bh=B0vBWySrpPCC9F04SvntC7CarLmc39ktOUUEEnNOK18=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BQc9EiJ//O5lGRFYGSmpkBSQaW6KesDQuD9U+So93XPVdZ3JTod2Y/tYUARMLHvWnbagL6oGdOSz1QNivE80NWEeC/6AL9nC71UT2S6jEEe/A//qakAb5kFOHZdmxVTYuXiBEP+jyt7tSHlszsMMb2ClQy/gThvtLuIcg54BGjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SpE7Oabv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wN6In+Sq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tae2G1rg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1c1W27sC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F281721FE8;
+	Thu, 15 Feb 2024 11:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707995440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q/rePRTTXIR2SNKRlxOuF/gBJ5LkqGnM8buqh9JDPaU=;
+	b=SpE7OabvrMpiQgDTcR1nCbFpMuMY6F2visNl7LAnTCzaP8yOOq+jxYhOZwXSnnVKmrNOFd
+	P3RDTFIXMPcIh6ZxpZ/TVGV610an4DBvpA8c3GvrEkPqiuEh2ZpDgL9g4RLafW5+nTb76G
+	ReTiX0NyekhjneHGKRqSXfbk6bXhljM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707995440;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q/rePRTTXIR2SNKRlxOuF/gBJ5LkqGnM8buqh9JDPaU=;
+	b=wN6In+Sqg1y4PlrhcWMaWoDsLiMtjW6Dp7JsWUQdesQ6L+xewfuoAIsMWzWQO37Z1+Rv9V
+	zOtgmuDDJfx197Ag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707995438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q/rePRTTXIR2SNKRlxOuF/gBJ5LkqGnM8buqh9JDPaU=;
+	b=tae2G1rg5a/u78q8n0MrvdO4zTFm1ZDwW9crEHppgfsqj6fgnn5F80xRAYNyncTrHnw/Yz
+	8UqcMb9nj+XTFAB5W2dkj2YJjTcCyvhdinUQz+C+4B5cf0qwBfHkWt0b5Ky8j0GRNynOx8
+	SmzX8aGnVuegZjDplmaxIk6d1NxkrDc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707995438;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q/rePRTTXIR2SNKRlxOuF/gBJ5LkqGnM8buqh9JDPaU=;
+	b=1c1W27sCDomu/cZYSYFPskmZxCNUcp3LE3VCGJYZgyTKE/+NzwdT6uTx5RiMThyuN46x8l
+	iARkWsLUb5xYgODQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DDD4313A53;
+	Thu, 15 Feb 2024 11:10:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id X+24NS7xzWX4NAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 11:10:38 +0000
+Message-ID: <4f4f008b-bde1-4551-ae24-db2c0778eb27@suse.cz>
+Date: Thu, 15 Feb 2024 12:10:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 5/7] mm,page_owner: Display all stacks and their count
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>
+References: <20240214170157.17530-1-osalvador@suse.de>
+ <20240214170157.17530-6-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240214170157.17530-6-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -5.92
+X-Spamd-Result: default: False [-5.92 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 BAYES_HAM(-0.63)[82.22%];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-The CPSW peripherals on J7AHP, J7VCL, J7AEP, J7ES, AM64 SoCs have
-an errata i2401 "CPSW: Host Timestamps Cause CPSW Port to Lock up".
+On 2/14/24 18:01, Oscar Salvador wrote:
+> This patch adds a new directory called 'page_owner_stacks' under
+> /sys/kernel/debug/, with a file called 'show_stacks' in it.
+> Reading from that file will show all stacks that were added by page_owner
+> followed by their counting, giving us a clear overview of stack <-> count
+> relationship.
+> 
+> E.g:
+> 
+>   prep_new_page+0xa9/0x120
+>   get_page_from_freelist+0x801/0x2210
+>   __alloc_pages+0x18b/0x350
+>   alloc_pages_mpol+0x91/0x1f0
+>   folio_alloc+0x14/0x50
+>   filemap_alloc_folio+0xb2/0x100
+>   __filemap_get_folio+0x14a/0x490
+>   ext4_write_begin+0xbd/0x4b0 [ext4]
+>   generic_perform_write+0xc1/0x1e0
+>   ext4_buffered_write_iter+0x68/0xe0 [ext4]
+>   ext4_file_write_iter+0x70/0x740 [ext4]
+>   vfs_write+0x33d/0x420
+>   ksys_write+0xa5/0xe0
+>   do_syscall_64+0x80/0x160
+>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>  stack_count: 4578
+> 
+> The seq stack_{start,next} functions will iterate through the list
+> stack_list in order to print all stacks.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Marco Elver <elver@google.com>
 
-As a workaround, Disable timestamping on all RX packets and timestamp
-only PTP packets.
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Set Time Sync Receive bits in Time Sync control register so that
-packets can be determined as a valid Ethernet Receive Event for time
-synchronization.
+..
 
-Update the RX filter configuration to indicate Hardware Timestamping
-support only for PTP packets.
+> +static int stack_print(struct seq_file *m, void *v)
+> +{
+> +	int i;
+> +	struct stack *stack = v;
+> +	unsigned long *entries;
+> +	unsigned long nr_entries;
+> +	struct stack_record *stack_record = stack->stack_record;
+> +
+> +	nr_entries = stack_record->size;
+> +	entries = stack_record->entries;
+> +
+> +	if (!nr_entries || nr_entries < 0 ||
+> +	    refcount_read(&stack_record->count) < 2)
+> +		return 0;
+> +
+> +	for (i = 0; i < nr_entries; i++)
+> +		seq_printf(m, " %pS\n", (void *)entries[i]);
+> +	seq_printf(m, "stack_count: %d\n\n", refcount_read(&stack_record->count));
 
-Replace "am65_cpsw_rx_ts()" function with "am65_cpts_rx_timestamp()"
-function which timestamps only PTP packets.
-
-Fixes: b1f66a5bee07 ("net: ethernet: ti: am65-cpsw-nuss: enable packet timestamping support")
-Signed-off-by: Chintan Vankar <c-vankar@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 51 +++++++++++-------------
- 1 file changed, 24 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 9d2f4ac783e4..ab843fb64b93 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -101,6 +101,12 @@
- #define AM65_CPSW_PN_TS_CTL_TX_HOST_TS_EN	BIT(11)
- #define AM65_CPSW_PN_TS_CTL_MSG_TYPE_EN_SHIFT	16
- 
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN		BIT(0)
-+#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN	BIT(1)
-+#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT2_EN	BIT(2)
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN		BIT(3)
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN		BIT(9)
-+
- /* AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG register fields */
- #define AM65_CPSW_PN_TS_SEQ_ID_OFFSET_SHIFT	16
- 
-@@ -124,6 +130,11 @@
- 	 AM65_CPSW_PN_TS_CTL_TX_ANX_E_EN |	\
- 	 AM65_CPSW_PN_TS_CTL_TX_ANX_F_EN)
- 
-+#define AM65_CPSW_TS_RX_ANX_ALL_EN		\
-+	(AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN |	\
-+	 AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN |	\
-+	 AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN)
-+
- #define AM65_CPSW_ALE_AGEOUT_DEFAULT	30
- /* Number of TX/RX descriptors */
- #define AM65_CPSW_MAX_TX_DESC	500
-@@ -749,18 +760,6 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
- 	return ret;
- }
- 
--static void am65_cpsw_nuss_rx_ts(struct sk_buff *skb, u32 *psdata)
--{
--	struct skb_shared_hwtstamps *ssh;
--	u64 ns;
--
--	ns = ((u64)psdata[1] << 32) | psdata[0];
--
--	ssh = skb_hwtstamps(skb);
--	memset(ssh, 0, sizeof(*ssh));
--	ssh->hwtstamp = ns_to_ktime(ns);
--}
--
- /* RX psdata[2] word format - checksum information */
- #define AM65_CPSW_RX_PSD_CSUM_ADD	GENMASK(15, 0)
- #define AM65_CPSW_RX_PSD_CSUM_ERR	BIT(16)
-@@ -841,9 +840,6 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
- 	skb->dev = ndev;
- 
- 	psdata = cppi5_hdesc_get_psdata(desc_rx);
--	/* add RX timestamp */
--	if (port->rx_ts_enabled)
--		am65_cpsw_nuss_rx_ts(skb, psdata);
- 	csum_info = psdata[2];
- 	dev_dbg(dev, "%s rx csum_info:%#x\n", __func__, csum_info);
- 
-@@ -856,6 +852,9 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
- 		ndev_priv = netdev_priv(ndev);
- 		am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
- 		skb_put(skb, pkt_len);
-+		skb_reset_mac_header(skb);
-+		if (port->rx_ts_enabled)
-+			am65_cpts_rx_timestamp(common->cpts, skb);
- 		skb->protocol = eth_type_trans(skb, ndev);
- 		am65_cpsw_nuss_rx_csum(skb, csum_info);
- 		napi_gro_receive(&common->napi_rx, skb);
-@@ -1334,7 +1333,6 @@ static int am65_cpsw_nuss_ndo_slave_set_mac_address(struct net_device *ndev,
- static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 				       struct ifreq *ifr)
- {
--	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
- 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
- 	u32 ts_ctrl, seq_id, ts_ctrl_ltype2, ts_vlan_ltype;
- 	struct hwtstamp_config cfg;
-@@ -1358,11 +1356,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	case HWTSTAMP_FILTER_NONE:
- 		port->rx_ts_enabled = false;
- 		break;
--	case HWTSTAMP_FILTER_ALL:
--	case HWTSTAMP_FILTER_SOME:
--	case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
--	case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
--	case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
-@@ -1372,10 +1365,13 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	case HWTSTAMP_FILTER_PTP_V2_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_SYNC:
- 	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
--	case HWTSTAMP_FILTER_NTP_ALL:
- 		port->rx_ts_enabled = true;
--		cfg.rx_filter = HWTSTAMP_FILTER_ALL;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
- 		break;
-+	case HWTSTAMP_FILTER_ALL:
-+	case HWTSTAMP_FILTER_SOME:
-+	case HWTSTAMP_FILTER_NTP_ALL:
-+		return -EOPNOTSUPP;
- 	default:
- 		return -ERANGE;
- 	}
-@@ -1405,6 +1401,10 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 		ts_ctrl |= AM65_CPSW_TS_TX_ANX_ALL_EN |
- 			   AM65_CPSW_PN_TS_CTL_TX_VLAN_LT1_EN;
- 
-+	if (port->rx_ts_enabled)
-+		ts_ctrl |= AM65_CPSW_TS_RX_ANX_ALL_EN |
-+			   AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN;
-+
- 	writel(seq_id, port->port_base + AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG);
- 	writel(ts_vlan_ltype, port->port_base +
- 	       AM65_CPSW_PORTN_REG_TS_VLAN_LTYPE_REG);
-@@ -1412,9 +1412,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	       AM65_CPSW_PORTN_REG_TS_CTL_LTYPE2);
- 	writel(ts_ctrl, port->port_base + AM65_CPSW_PORTN_REG_TS_CTL);
- 
--	/* en/dis RX timestamp */
--	am65_cpts_rx_enable(common->cpts, port->rx_ts_enabled);
--
- 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
- }
- 
-@@ -1431,7 +1428,7 @@ static int am65_cpsw_nuss_hwtstamp_get(struct net_device *ndev,
- 	cfg.tx_type = port->tx_ts_enabled ?
- 		      HWTSTAMP_TX_ON : HWTSTAMP_TX_OFF;
- 	cfg.rx_filter = port->rx_ts_enabled ?
--			HWTSTAMP_FILTER_ALL : HWTSTAMP_FILTER_NONE;
-+			HWTSTAMP_FILTER_PTP_V2_EVENT : HWTSTAMP_FILTER_NONE;
- 
- 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
- }
--- 
-2.34.1
+So count - 1 here to report actual usage, as explained in reply to 4/7?
 
 
