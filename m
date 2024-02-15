@@ -1,479 +1,165 @@
-Return-Path: <linux-kernel+bounces-66567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DEE3855E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:42:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AC02855E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:40:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 428ECB2EB91
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:40:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D623C2873E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E631802A;
-	Thu, 15 Feb 2024 09:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C0C1B812;
+	Thu, 15 Feb 2024 09:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="v+q0Q2s/"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="LNKI3kcf"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2135.outbound.protection.outlook.com [40.107.20.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC533175AA;
-	Thu, 15 Feb 2024 09:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707990007; cv=none; b=bIl7ISGji6DgA1KTVxj/u6obFxBb4RYWqZvyFzmZKXLxGmy/XKWA3MZlnrDzfavtFYAvombg+FHNrLIijwEjCU8PhWlebWwGdUgxYyJgzMNsvOrckKA32tbnnKh0jOgkd+Tc98VYXHHuXVMggnaRKpVtGbBF4SewG/YCWj5Df2o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707990007; c=relaxed/simple;
-	bh=9sJ/t8yz8FiGfPdj7FcsLpkudzXIHYEycjw0ff8JTCU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s0WdDbeeCoKIV439tIWHiOTRlkBL8Z5UUdOa9Aq9OV16YkDU2VYTOOIiE/AUarCfpcU0CSK8cVtfeYzVnTFyh3m2v3I7VU/AD0nnr9BHJjUrWeF/51M9zmevpqE5KWyBJ7vMxDprE/2pH6Y6vXnPtk+fcnrjZ3jf7cFpwa7C880=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=v+q0Q2s/; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41F9dvEB082270;
-	Thu, 15 Feb 2024 03:39:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707989997;
-	bh=EkP7vJ1wesG1Us28/BCdSU3PzcUnykpRGLaOIoggQvk=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=v+q0Q2s/2CdX+x43yAzcLcnsSbks5hfFCgAbTTGPaRimY8bJ6r8eVc8OmRgB8azY+
-	 qJJ8V5AbSG0tmrgoqdsxvnSnBwFmPUnMpk3GCQcof8ShDYYuZGU4khPpvEBfETx8uf
-	 VT/oYHLrM0D8Mi35LU7mfcQ1FmaB+/e5hVr+GMHc=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41F9dvPn120668
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 03:39:57 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 03:39:56 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 03:39:56 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41F9dtrA120656;
-	Thu, 15 Feb 2024 03:39:56 -0600
-Date: Thu, 15 Feb 2024 15:09:55 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-CC: <rafael@kernel.org>, <caleb.connolly@linaro.org>, <lina.iyer@linaro.org>,
-        <lukasz.luba@arm.com>, <quic_manafm@quicinc.com>,
-        <quic_priyjain@quicinc.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vibhore@ti.com>,
-        <khilman@baylibre.com>
-Subject: Re: [PATCH v1 2/2] PM: QoS: Add a performance QoS
-Message-ID: <20240215093955.mgox2yiaidxh3ktq@dhruva>
-References: <20231213175818.2826876-1-daniel.lezcano@linaro.org>
- <20231213175818.2826876-2-daniel.lezcano@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9427F1862E;
+	Thu, 15 Feb 2024 09:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.135
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707990014; cv=fail; b=s86RE6vaQbc3nlCy8xr951LlDA76HNi9S8ZIk5z6EWLDV71AA3ytnufQEpHJqVV1XG2guW2SN0CpOh8t4t8uzQMXuoC29EMDJ7KZOlrWpM/6TUb1mS0FHssT/XvhZv2Jgzt+S4Lw0WcmgvOJNFvEsxwkImVLWR5xq+NjghycZIA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707990014; c=relaxed/simple;
+	bh=3YO4SmBItGHsYCg9h/jRJYJvfdKecGertjtDF2g6vyY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=LDNpV4XIdvdsUiOG5llPzt7vfIVSAQzZKtGW588CYNTHUWy7qrwvZQzr8T3dAyic6eginvyFiKNYCkCmPHOP+sWnSf42n/9y6CYfojepJEPjMzlxH66QP134Ejjcd+rkHrGsM1J4wJaIsPvVpTLqvA8O1FTcDPdoEsReXAz+OTQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=theobroma-systems.com; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=LNKI3kcf; arc=fail smtp.client-ip=40.107.20.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theobroma-systems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T80WeXO4uN6+KswvXJGo1z+0Ej6cCRuBwTo+Sw56Y/wTlclaAoywQzuURdC9m+3DWieNswKX+BdEyjgXn5uoOybGtd652TBR1QDJQK6bI87li3nDNmsDhdnfL45lTyvTwYkDrg+Zu7hNnpCXer7n+fJD3Htnp4tLveCMynQ37RuBzX2aqQTcXFYbO1G+cLEBEtWdQg4OFFKO69CrTN5Ak2gPIk7gaa5JH5iolg5sBF31vIWB7ynsB3rJrE/CVy9bxub7D+r6iHoWzY8WDp1Z/eEMsmdRfUYRb8RNU34bsO2L8PBjS/ZgOlGwz3cwT+5WcH8AYGhUZPQd9nOoAmq/1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ek7jdNq2FcvPAL1ie6iI2jeUqX2TQsjrPh1JH+pNv0w=;
+ b=YNznfkpChLld4viKDmobA5mpT8YHGFixnb0KZvipWu7NsZ0RHx5xE3rfKHVhTDP6GpOVajHbnLSl4E/CVP1KsvD9CDiCspEAiuXuWnk+L5VneJO/3KGFsiKty7VjmUJrU26oUxxKR+TyK2MEHm5ONsZfDCRCWAE24I4tXhfVx9UkzIxWykiq8JwCJaDm2/26lZuy+0ggrJ/HrI4kk6Iq6NDSSuyAGuCesJXWveM1Ptm8UxsN64jP/sqXxcFNAoYiIKd9xNLrzNi19d4VKePrEktKGswfrguEffEx/w6bu5iTZFPhaRHBBHvrQD2n76xtESg+3Oh9NkJPK6KYcJoP5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ek7jdNq2FcvPAL1ie6iI2jeUqX2TQsjrPh1JH+pNv0w=;
+ b=LNKI3kcfVC7UaVQ5xLzWjo9maytCTOZLclsGbL1aXNZuJaACpVsboSgKxbSAMli3et2GSAdDmC1FWR+P/t5vu6czQkRBNbfuXySaX1k7FQvlefV+Tb6koU7JjoRbxup67XgxZyfqVRway4shkT8fkyQeM8E8g6L8CH1xbGv1XNdKNZUOgxpPnNi6fzWQpedIXzidZCcVil0uT1uOG2GmvEJRpnptcFZXF+a2XEGYU6hc5rwhfqAVXZhH/uCg4/UvcyIFx4STMLuTlsrxvmaC9YXeaTJNr2YCs2msMeHNVxnre3qXPCmnqd0J9PYXd202KY8JaXOgriDRNZnzXphl7w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from DU2PR04MB8536.eurprd04.prod.outlook.com (2603:10a6:10:2d7::10)
+ by DBBPR04MB7546.eurprd04.prod.outlook.com (2603:10a6:10:1f7::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Thu, 15 Feb
+ 2024 09:40:07 +0000
+Received: from DU2PR04MB8536.eurprd04.prod.outlook.com
+ ([fe80::550d:ad96:e3cb:9a6e]) by DU2PR04MB8536.eurprd04.prod.outlook.com
+ ([fe80::550d:ad96:e3cb:9a6e%5]) with mapi id 15.20.7292.029; Thu, 15 Feb 2024
+ 09:40:07 +0000
+Message-ID: <6498807b-2e93-44a6-b985-808e7fa261ad@theobroma-systems.com>
+Date: Thu, 15 Feb 2024 10:40:04 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] drm/panel: add one more Leadtek panel, the
+ ltk101b4029w
+Content-Language: en-US
+To: Heiko Stuebner <heiko@sntech.de>, neil.armstrong@linaro.org
+Cc: quic_jesszhan@quicinc.com, sam@ravnborg.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240215090515.3513817-1-heiko@sntech.de>
+From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+In-Reply-To: <20240215090515.3513817-1-heiko@sntech.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0009.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::19) To DU2PR04MB8536.eurprd04.prod.outlook.com
+ (2603:10a6:10:2d7::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231213175818.2826876-2-daniel.lezcano@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8536:EE_|DBBPR04MB7546:EE_
+X-MS-Office365-Filtering-Correlation-Id: d73d2ac3-c496-4ede-98e6-08dc2e0a1810
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/uZgvg/CMJ9+0BeBNZz8zSooYNzsED1I5JZr6MhgHqy2GmFv5HlzA5dGxzqa89myMdnB7kwpulOzZy1K0I22Dm9fdK/VoSDedub4V57zb6GCRYZFC4tuB2g8Rmf8WuP8aUEIPZ0DCsshgp29uqIqAcd4nfetINaXsva0nlMe97LAdy96z5Vp4Ih7ArgVHBiP0xK3LguDBqA4Wpuz61DHBKGRxEF4uVP5aubRL/ETawD64ZXFeH8REB397RSCSX4k4lNthFuWaP9juK24r7QJblMrsfFMURdz7QrA6TNqFRG7F8CLiR8uP+8wsEnKQUIuIUDMJw8JGcvnHMp1g5BmHk08YFbAJ68QduD5Dg0hAIqNwaaYIChQP//tEHapJ+Zn+afCjOSZreKM1Be7vDZPBevPsIsvjKzyHGWdMZfshxcA++p+mitD/2D/PmfFnveJzpSEwkPsmDKwU0AOqV5TTQmyyBkKNhtznEy4wSBMSc2aKMeDNcSpv68L8WMymJ6jHH4aycz022AoQpl3OCexuGVN5TkOe9Wv1p38kfilIDznuVds8OJDGEGDfNeXo/2F
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8536.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(396003)(39850400004)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(31686004)(6666004)(316002)(4744005)(7416002)(5660300002)(2906002)(44832011)(66946007)(66476007)(8676002)(66556008)(6486002)(86362001)(31696002)(6512007)(4326008)(8936002)(41300700001)(2616005)(478600001)(36756003)(6506007)(53546011)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ak5WNDBvMGtMQVVJVXV1cW5hYXVaM2RJSnhoSFNpWU5vRHlBVmZzYmltOFgv?=
+ =?utf-8?B?dDhsN0orU0tBRVB1bWI1UmNZbnpxZC9sZ3ZzSmNkNjdydXRDUVpJYU9IKzdF?=
+ =?utf-8?B?V3pvcDdHMXRLbFdlWG5ZT2d1SjU5VnAySWQ2eU9XTHFOQkNYbmtUSFZIbmJU?=
+ =?utf-8?B?UEpCajlaU1dSTDNWSzkzbkhOb1ZOSlN1T3RsSnBndUUrY1V0dTFFQzZIYXV6?=
+ =?utf-8?B?OWVmdTdxUXAreW5qN2Y0clRibndvaDRvd0k5cGlXeXl3Sy9OQTAwQno0TTFY?=
+ =?utf-8?B?cVRQdDFFc0tlZVdIRUQ3dWVwNGw1ZFlnNnQ1VkNUTkZFL3Z1ckF4QUVsMDlZ?=
+ =?utf-8?B?YjN2MlFzakVENVpqRnVxSFhGQ1g1RDU2Vi8yQjZuc2NrcXJxSjdNS3dHb1BE?=
+ =?utf-8?B?bzB6bjFuZi9tVTNwVldMcGc3R3llVXdRTGxmbjk1ZWJrLzJDNm94czlxTERy?=
+ =?utf-8?B?TWdEenM3YnF4akxHMkRwRGNKMVI3ajZCTVNjYVVkUCtrbmt6TjJOaHFzaGxY?=
+ =?utf-8?B?Sk9rMVNtRDVGS04weVVGS3JnS0lHVlNaUW8zV0xpRDhLYnRZTmlndlNBaGR0?=
+ =?utf-8?B?NEJPMkdMZnZrRUFHMEFUb1Joakx6dktsbE5XS0g5QzZCVktTU29CMDAvNDdO?=
+ =?utf-8?B?UTl1OFF4ZnNTMVRyOEgydkNCSXA4aWwrUm9uWFpTTEJOc29FTWNMVUdhbTh3?=
+ =?utf-8?B?eGRzUUZxOURheHhQNzEzbG5PMUhWRWNocWd5bm1CZ1NwYTNDUjBGRWI1bFha?=
+ =?utf-8?B?UDkrMnZGQjFiSmlZZEl2Nk03QWRvUElhV1RkbnZlWnNHeE5yVmxNNFdIaFRO?=
+ =?utf-8?B?a3ZWbi90RXV4WlZtT3pNOWdvSVpWWGVTSWNQTGhkRTRQZVBiTE9pMzNXZnVO?=
+ =?utf-8?B?TXNYVDdFZkFNdEx5NmFIYjdlVDFxZC9zRUNDUHRFQ3pZb2tYemowMERHd0F2?=
+ =?utf-8?B?dVlXenBaMmRzTTVTemJCNHhLbUFybEtETFY3bTNQVnpyZk5jc3FEc05maHRq?=
+ =?utf-8?B?ZHc0bGhYODM5NWpXZmJVMXl6VC8yYU9IMjZ3dm9rUkRndVFaWHc0b2FQZGxR?=
+ =?utf-8?B?YmFMeTZHc3BHUlNrbVlZU3RBUXo3VHliZEJqOVY1KzVjVmszU1dDZ1lZZVJT?=
+ =?utf-8?B?ME04RThzT1QwZXBCZjU2anZWSGhGSmxONHAydTREb0liT0I5cUVPTW1GRmxp?=
+ =?utf-8?B?Q2ZlYUVtSUVVVDdiZEdNMXRvaStmOEdEUVhtMnUyUGpJcXkvdlVrbGtVVGRI?=
+ =?utf-8?B?cEJSSEU4Nmtya0dnYURQLy9zU1ZqdkJUcC96OENWZmpBOG1kejMwNGVCc3RX?=
+ =?utf-8?B?Z3FmOXUxYzZDc3l0YmdlK3RGUXlJdDdaejBVUnhoY1p0QXhFeDQ4dHJneHFM?=
+ =?utf-8?B?K3JZS21rMzVNUnhvOXJweDQ5MEVIS2x6eFNENGNWc1NOeUtITmpsSXJoMjYr?=
+ =?utf-8?B?SjlxZUluUTlGU2JNekxRZ3Izb25LSEgzZmNsRm9HYk04TDQxczRLenpRaEF2?=
+ =?utf-8?B?dERGRXVpaGp5Wmhxck4wVmRKSnR0K3lnaVhzU2kzb25pMnlSWWJnTDFUL2lX?=
+ =?utf-8?B?VEJsUlBxTUVPajIvclFxSFBra0F6V3c5RkVUdXZTNDFsOGJiM0x6OVhsT1V5?=
+ =?utf-8?B?K1lZYytVc2UvT1o0TFNvYkJWQ3Z0RmtTMzl5MklzT1YzdDRCTThFbVJ4N1V3?=
+ =?utf-8?B?M2R1a09mb2lkNTlJZDlSVzJwbnR5TitNZkducG1sRHdCYzhEYTR0VkVkZ0g0?=
+ =?utf-8?B?TStMbGZta2VWL3lBcFoycGJJNW5iYlBQa0J2VER1QUpjOVFUTjVWR0tPaktO?=
+ =?utf-8?B?SXh6R3lXd0ZhSDhId0NQQVp6cnFuaU0rcHZ4emU0TmROdEtIa1RVSUlwSVJ4?=
+ =?utf-8?B?WVA2NDRVSUdOalBaMCs3d1gzVWxIWFZiRjVwYS9hS2MyWW8zY2RaM3ZsMmZR?=
+ =?utf-8?B?SGgyc2tka3NnaUllck5zbHZLdzNRcERhRzk5MUNGeEc0Zkl2UWZjai91eUsx?=
+ =?utf-8?B?NTlQbldiWnlJRjRrY0Y2bUpxY2kzbTd3UnIycVIrMzl4WWQvWW1lZ3gvbDRq?=
+ =?utf-8?B?RnMrUFNnK09yZlpiWHROYXd6QnVyWjdWR1VpQUkrems1a2VPOE1LOE5rVDBX?=
+ =?utf-8?B?bXVRb1VyaFlvMHdKbXcxcm1lQUZwNnJIK0hMcUJ0MFE3STQ4c2o2ODZWMERv?=
+ =?utf-8?B?V01uMXJPek5aaGRwWVR3T0xUUEpyUnd5UXBKY1ZJN0U4TWEwd3VRaHJOSmVM?=
+ =?utf-8?B?VHo4eEQzVlVqbjZ5SGYzUE1OTzNBPT0=?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d73d2ac3-c496-4ede-98e6-08dc2e0a1810
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8536.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 09:40:07.0028
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RRHGR7KcT9su2/NU7i1cvMxT3qX1S1TlT7S+NqAnV/97GrNtk8b9Oki9sW5aZM4DBewysV8dGk0cGiFQqz8FaxQ1hj6lwhOQoN3vM0gpYwqo/28d53EltfTjrn3Jr1xD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7546
 
-Hi,
+Hi Heiko,
 
-On Dec 13, 2023 at 18:58:18 +0100, Daniel Lezcano wrote:
-> Currently cpufreq and devfreq are using the freq QoS to aggregate the
-> requests for frequency ranges.
+On 2/15/24 10:05, Heiko Stuebner wrote:
+> Similar in setup to the ltk500hd1829, group it with this driver.
+>  > Heiko Stuebner (3):
+>    drm/panel: ltk500hd1829: make room for more similar panels
+>    dt-bindings: display: ltk500hd1829: add variant compatible for
+>      ltk101b4029w
+>    drm/panel: ltk500hd1829: add panel type for ltk101b4029w
 > 
-> However, there are new devices wanting to act not on a frequency range
-> but on a performance index range. Those need also to export to
-> userspace the knob to act on their performance limits.
-> 
-> This change provides a performance limiter QoS based on a minimum /
-> maximum performance values. At init time, the limits of the interval
-> are 0 / 1024. It is up to the backend to convert the 1024 to the
-> maximum performance state. So if the performance must be limited to
-> 50%, it should set to maximum limit to 512 where the backend will end
-> up by converting (max performance index / 2). The same applies for the
-> minimum. Obviously, the min can not be greater than the max.
-> 
->  1. With the example above, if there is a odd number like 5 for the
->  number of performance indexes and we ask for 512 (so 50%), what would
->  be the performance index computed? (5/2=2 or 5/2=3)? (I would say the
->  minimum otherwise we end up with a performance limit greater than
->  what we actually asked for).
-> 
->  2. The conversion from 1024 to a performance index will inevatibly
->  end up to a state above or below the percentage given. Shall it be
->  reflected in the value set? eg. We want to apply a performance limit
->  to be 33% maximum. So it is, 1024 x 0.333333 = 314. If there are 20
->  performance indexes, that will be (20 x 314) / 1024 = 6.13, so index
->  6. Shall we convert this index back to the requested performance
->  limit to (6.13 x 1024) / 20 = 307 ? (So requested is 314 but it is
->  actually 307).
-> 
-> The end goal is to make the freq QoS and perf QoS to co-exist together
-> in the next changes in the different backends. A change of one of the
-> QoS impacts the other. For instance if there are 5 performance states
-> and we set a performance limit to 80%, then the maximum state will 4.
-> 
-> For the long term, when those can co-exist, then we can implement a
-> cooling device based on the performance Qos which will be generic for
-> all devices using this QoS. That will imply the CPUs, the GPUs and any
-> devfreq devices. So devfreq and cpufreq cooling devices can be merged
-> into a single performance cooling device which will be generic for all
-> devices with a performance limit QoS.
-> 
-> In a similar way, in the future, a power QoS could be added also and a
-> power based cooling device. So any device with the energy model and a
-> power capping feature can become a cooling device and the power
-> computation part in the cooling devices will move to the back ends. We
-> will end up with a generic power cooling device compatible with all
-> power capable devices.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/base/power/power.h |   2 +
->  drivers/base/power/qos.c   | 158 +++++++++++++++++++++++++-
->  drivers/base/power/sysfs.c |  92 +++++++++++++++
->  include/linux/cpufreq.h    |   2 +
->  include/linux/pm_qos.h     |  42 +++++++
->  kernel/power/qos.c         | 225 +++++++++++++++++++++++++++++++++++++
->  6 files changed, 517 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/base/power/power.h b/drivers/base/power/power.h
-> index 922ed457db19..eb1a77a7a0f4 100644
-> --- a/drivers/base/power/power.h
-> +++ b/drivers/base/power/power.h
-> @@ -78,6 +78,8 @@ extern int pm_qos_sysfs_add_flags(struct device *dev);
->  extern void pm_qos_sysfs_remove_flags(struct device *dev);
->  extern int pm_qos_sysfs_add_latency_tolerance(struct device *dev);
->  extern void pm_qos_sysfs_remove_latency_tolerance(struct device *dev);
-> +extern int pm_qos_sysfs_add_perf_limit(struct device *dev);
-> +extern void pm_qos_sysfs_remove_perf_limit(struct device *dev);
->  extern int dpm_sysfs_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid);
->  
->  #else /* CONFIG_PM */
-> diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-> index ae0b9d2573ec..a71cff1f8048 100644
-> --- a/drivers/base/power/qos.c
-> +++ b/drivers/base/power/qos.c
-> @@ -128,6 +128,14 @@ s32 dev_pm_qos_read_value(struct device *dev, enum dev_pm_qos_req_type type)
->  		ret = IS_ERR_OR_NULL(qos) ? PM_QOS_MAX_FREQUENCY_DEFAULT_VALUE
->  			: freq_qos_read_value(&qos->freq, FREQ_QOS_MAX);
->  		break;
-> +	case DEV_PM_QOS_MIN_PERF:
-> +		ret =  IS_ERR_OR_NULL(qos) ? PM_QOS_MIN_PERF_DEFAULT_VALUE
-> +			: perf_qos_read_value(&qos->perf, RANGE_QOS_MIN);
-> +		break;
-> +	case DEV_PM_QOS_MAX_PERF:
-> +		ret =  IS_ERR_OR_NULL(qos) ? PM_QOS_MAX_PERF_DEFAULT_VALUE
-> +			: perf_qos_read_value(&qos->perf, RANGE_QOS_MAX);
-> +		break;
->  	default:
->  		WARN_ON(1);
->  		ret = 0;
-> @@ -177,6 +185,10 @@ static int apply_constraint(struct dev_pm_qos_request *req,
->  		ret = pm_qos_update_flags(&qos->flags, &req->data.flr,
->  					  action, value);
->  		break;
-> +	case DEV_PM_QOS_MIN_PERF:
-> +	case DEV_PM_QOS_MAX_PERF:
-> +		ret = perf_qos_apply(&req->data.perf, action, value);
-> +		break;
->  	default:
->  		ret = -EINVAL;
->  	}
-> @@ -223,6 +235,20 @@ static int dev_pm_qos_constraints_allocate(struct device *dev)
->  	c->no_constraint_value = PM_QOS_LATENCY_TOLERANCE_NO_CONSTRAINT;
->  	c->type = PM_QOS_MIN;
->  
-> +	c = &qos->perf.lower_bound;
-> +	plist_head_init(&c->list);
-> +	c->target_value = PM_QOS_MIN_PERF_DEFAULT_VALUE;
-> +	c->default_value = PM_QOS_MIN_PERF_DEFAULT_VALUE;
-> +	c->no_constraint_value = PM_QOS_MIN_PERF_DEFAULT_VALUE;
-> +	c->type = PM_QOS_MAX;
-> +
-> +	c = &qos->perf.upper_bound;
-> +	plist_head_init(&c->list);
-> +	c->target_value = PM_QOS_MAX_PERF_DEFAULT_VALUE;
-> +	c->default_value = PM_QOS_MAX_PERF_DEFAULT_VALUE;
-> +	c->no_constraint_value = PM_QOS_MAX_PERF_DEFAULT_VALUE;
-> +	c->type = PM_QOS_MIN;
-> +
->  	freq_constraints_init(&qos->freq);
->  
->  	INIT_LIST_HEAD(&qos->flags.list);
-> @@ -299,6 +325,20 @@ void dev_pm_qos_constraints_destroy(struct device *dev)
->  		memset(req, 0, sizeof(*req));
->  	}
->  
-> +	c = &qos->perf.lower_bound;
-> +	plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
-> +		apply_constraint(req, PM_QOS_REMOVE_REQ,
-> +				 PM_QOS_MIN_PERF_DEFAULT_VALUE);
-> +		memset(req, 0, sizeof(*req));
-> +	}
-> +
-> +	c = &qos->perf.upper_bound;
-> +	plist_for_each_entry_safe(req, tmp, &c->list, data.freq.pnode) {
-> +		apply_constraint(req, PM_QOS_REMOVE_REQ,
-> +				 PM_QOS_MAX_PERF_DEFAULT_VALUE);
-> +		memset(req, 0, sizeof(*req));
-> +	}
-> +	
->  	f = &qos->flags;
->  	list_for_each_entry_safe(req, tmp, &f->list, data.flr.node) {
->  		apply_constraint(req, PM_QOS_REMOVE_REQ, PM_QOS_DEFAULT_VALUE);
-> @@ -349,17 +389,32 @@ static int __dev_pm_qos_add_request(struct device *dev,
->  
->  	req->dev = dev;
->  	req->type = type;
-> -	if (req->type == DEV_PM_QOS_MIN_FREQUENCY)
-> +
-> +	switch (type) {
-> +	case DEV_PM_QOS_MIN_FREQUENCY:
->  		ret = freq_qos_add_request(&dev->power.qos->freq,
->  					   &req->data.freq,
->  					   FREQ_QOS_MIN, value);
-> -	else if (req->type == DEV_PM_QOS_MAX_FREQUENCY)
-> +		break;
-> +	case DEV_PM_QOS_MAX_FREQUENCY:
->  		ret = freq_qos_add_request(&dev->power.qos->freq,
->  					   &req->data.freq,
->  					   FREQ_QOS_MAX, value);
-> -	else
-> +		break;
-> +	case DEV_PM_QOS_MIN_PERF:
-> +		ret = perf_qos_add_request(&dev->power.qos->perf,
-> +					   &req->data.perf,
-> +					   RANGE_QOS_MIN, value);
-> +		break;
-> +	case DEV_PM_QOS_MAX_PERF:
-> +		ret = perf_qos_add_request(&dev->power.qos->perf,
-> +					   &req->data.perf,
-> +					   RANGE_QOS_MAX, value);
-> +		break;
-> +	default:
->  		ret = apply_constraint(req, PM_QOS_ADD_REQ, value);
-> -
-> +		break;
-> +	}
->  	return ret;
->  }
->  
-> @@ -427,6 +482,10 @@ static int __dev_pm_qos_update_request(struct dev_pm_qos_request *req,
->  	case DEV_PM_QOS_MAX_FREQUENCY:
->  		curr_value = req->data.freq.pnode.prio;
->  		break;
-> +	case DEV_PM_QOS_MIN_PERF:
-> +	case DEV_PM_QOS_MAX_PERF:
-> +		curr_value = req->data.perf.pnode.prio;
-> +		break;
->  	case DEV_PM_QOS_FLAGS:
->  		curr_value = req->data.flr.flags;
->  		break;
-> @@ -674,6 +733,14 @@ static void __dev_pm_qos_drop_user_request(struct device *dev,
->  		req = dev->power.qos->flags_req;
->  		dev->power.qos->flags_req = NULL;
->  		break;
-> +	case DEV_PM_QOS_MIN_PERF:
-> +		req = dev->power.qos->perf_min_req;
-> +		dev->power.qos->perf_min_req = NULL;
-> +		break;
-> +	case DEV_PM_QOS_MAX_PERF:
-> +		req = dev->power.qos->perf_max_req;
-> +		dev->power.qos->perf_max_req = NULL;
-> +		break;
->  	default:
->  		WARN_ON(1);
->  		return;
-> @@ -980,3 +1047,86 @@ void dev_pm_qos_hide_latency_tolerance(struct device *dev)
->  	pm_runtime_put(dev);
->  }
->  EXPORT_SYMBOL_GPL(dev_pm_qos_hide_latency_tolerance);
-> +
-> +int dev_pm_qos_expose_perf_limit(struct device *dev)
-> +{
-> +	struct dev_pm_qos_request *req_min;
-> +	struct dev_pm_qos_request *req_max;
-> +	int ret;
-> +
-> +	if (!device_is_registered(dev))
-> +		return -EINVAL;
-> +
-> +	req_min = kzalloc(sizeof(*req_min), GFP_KERNEL);
-> +	if (!req_min)
-> +		return -ENOMEM;
-> +
-> +	req_max = kzalloc(sizeof(*req_max), GFP_KERNEL);
-> +	if (!req_max) {
-> +		kfree(req_min);
-> +		return -ENOMEM;
-> +	}
-> +	
 
-Oops, looks like we forgot to run checkpatch ;)
+For the whole series:
 
-There are many more errors with these patches and I'd urge you to run
-checkpatch and fix and re-spin.
-Do keep me in CC from next rev.
+Reviewed-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 
-> +	ret = dev_pm_qos_add_request(dev, req_min, DEV_PM_QOS_MIN_PERF,
-> +				     PM_QOS_MIN_PERF_DEFAULT_VALUE);
-> +	if (ret < 0) {
-> +		kfree(req_min);
-> +		kfree(req_max);
-> +		return ret;
-> +	}
-> +
-> +	ret = dev_pm_qos_add_request(dev, req_max, DEV_PM_QOS_MAX_PERF,
-> +				     PM_QOS_MAX_PERF_DEFAULT_VALUE);
-> +	if (ret < 0) {
-> +		dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MIN_PERF);
-> +		return ret;
-> +	}
-> +
-> +	mutex_lock(&dev_pm_qos_sysfs_mtx);
-> +
-> +	mutex_lock(&dev_pm_qos_mtx);
-> +
-> +	if (IS_ERR_OR_NULL(dev->power.qos))
-> +		ret = -ENODEV;
-> +	else if (dev->power.qos->perf_min_req || dev->power.qos->perf_max_req)
-> +		ret = -EEXIST;
-> +
-> +	if (ret < 0) {
-> +		__dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MIN_PERF);
-> +		__dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MAX_PERF);
-> +		mutex_unlock(&dev_pm_qos_mtx);
-> +		goto out;
-> +	}
-> +
-> +	dev->power.qos->perf_min_req = req_min;
-> +	dev->power.qos->perf_max_req = req_max;
-> +
-> +	mutex_unlock(&dev_pm_qos_mtx);
-> +
-> +	ret = pm_qos_sysfs_add_perf_limit(dev);
-> +	if (ret) {
-> +		dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MIN_PERF);
-> +		dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MAX_PERF);
-> +	}
-> +out:
-> +	mutex_unlock(&dev_pm_qos_sysfs_mtx);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_pm_qos_expose_perf_limit);
-> +
-> +void dev_pm_qos_hide_perf_limit(struct device *dev)
-> +{
-> +	mutex_lock(&dev_pm_qos_sysfs_mtx);
-> +
-> +	pm_qos_sysfs_remove_perf_limit(dev);
-> +
-> +	mutex_lock(&dev_pm_qos_mtx);
-> +
-> +	__dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MIN_PERF);
-> +	__dev_pm_qos_drop_user_request(dev, DEV_PM_QOS_MAX_PERF);
-> +	
-
-whitespace.. ^^
-
-> +	mutex_unlock(&dev_pm_qos_mtx);
-> +
-> +	mutex_unlock(&dev_pm_qos_sysfs_mtx);
-> +}
-> +EXPORT_SYMBOL_GPL(dev_pm_qos_hide_perf_limit);
-> diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
-> index a1474fb67db9..5a45191006c1 100644
-> --- a/drivers/base/power/sysfs.c
-> +++ b/drivers/base/power/sysfs.c
-> @@ -317,6 +317,76 @@ static ssize_t pm_qos_no_power_off_store(struct device *dev,
->  
->  static DEVICE_ATTR_RW(pm_qos_no_power_off);
->  
-> +
-> +static ssize_t pm_qos_perf_limit_min_max_show(struct device *dev,
-> +					      struct device_attribute *attr,
-> +					      char *buf, bool max)
-> +{
-> +	s32 value = dev_pm_qos_read_value(dev, max ? DEV_PM_QOS_MAX_PERF :
-> +					  DEV_PM_QOS_MIN_PERF);
-> +
-> +	return sysfs_emit(buf, "%d\n", value);
-> +}
-> +
-> +static ssize_t pm_qos_perf_limit_min_max_store(struct device *dev,
-> +					       struct device_attribute *attr,
-> +					       const char *buf, size_t n, bool max)
-> +{
-> +	int ret;
-
-Your function return type is ssize_t,  do you want to change the type of
-ret too?
-
-> +	s32 min_value = dev_pm_qos_read_value(dev, DEV_PM_QOS_MIN_PERF);
-> +	s32 max_value = dev_pm_qos_read_value(dev, DEV_PM_QOS_MAX_PERF);
-> +	s32 new_value;
-> +
-> +	if (kstrtoint(buf, 0, &new_value))
-> +		return -EINVAL;
-> +
-> +	if (new_value < PM_QOS_MIN_PERF_DEFAULT_VALUE ||
-> +	    new_value > PM_QOS_MAX_PERF_DEFAULT_VALUE)
-> +		return -EINVAL;
-> +
-> +	if (max && (new_value < min_value))
-> +		return -EINVAL;
-> +
-> +	if (!max && (new_value > max_value))
-> +		return -EINVAL;
-
-No strong opinions, but might help debug better if you print why each
-EINVAL was returned?
-
-> +
-> +	ret = dev_pm_qos_update_request(max ? dev->power.qos->perf_max_req :
-> +					dev->power.qos->perf_min_req, new_value);
-> +
-> +	return ret < 0 ? ret : n;
-> +}
-> +
-> +static ssize_t pm_qos_perf_limit_min_show(struct device *dev,
-> +						 struct device_attribute *attr,
-> +						 char *buf)
-> +{
-> +	return pm_qos_perf_limit_min_max_show(dev, attr, buf, false);
-> +}
-> +
-> +static ssize_t pm_qos_perf_limit_min_store(struct device *dev,
-> +						  struct device_attribute *attr,
-> +						  const char *buf, size_t n)
-> +{
-> +	return pm_qos_perf_limit_min_max_store(dev, attr, buf, n, false);
-> +}
-> +
-> +static ssize_t pm_qos_perf_limit_max_show(struct device *dev,
-> +						 struct device_attribute *attr,
-> +						 char *buf)
-> +{
-> +	return pm_qos_perf_limit_min_max_show(dev, attr, buf, true);
-> +}
-> +
-> +static ssize_t pm_qos_perf_limit_max_store(struct device *dev,
-> +						  struct device_attribute *attr,
-> +						  const char *buf, size_t n)
-> +{
-> +	return pm_qos_perf_limit_min_max_store(dev, attr, buf, n, true);
-> +}
-> +
-> +static DEVICE_ATTR_RW(pm_qos_perf_limit_min);
-> +static DEVICE_ATTR_RW(pm_qos_perf_limit_max);
-> +
-[...]
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+Thanks,
+Quentin
 
