@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-66245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69FE855906
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:55:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB4785590A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:56:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3975F1F28577
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:55:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BE841C221E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A7346AD;
-	Thu, 15 Feb 2024 02:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 247B54A05;
+	Thu, 15 Feb 2024 02:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ae70Zxqo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m8kV5y6k"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632C110F4;
-	Thu, 15 Feb 2024 02:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6A84691;
+	Thu, 15 Feb 2024 02:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707965728; cv=none; b=IMKjfIR5/qoRi86GaKwRw0Vvb2MdQLyiG+YTgeQCzpz3T/AGuYNJaDmaDM7ggqyBB9MZksJ8prx6JbOUapKzM0b41OQEcmfhR5cjH/6Q9nkYn2yWapKz8EnDcw9YHQGCr6O9l7Yr4kEelcfvz9CCi/cC2FZadvGi1Pxuw72jd/4=
+	t=1707965799; cv=none; b=PcFsfsZ7KoKjnaf3tIhjAkccfn1ccThqjufdhKv01BikqmjgmcGIXvPPMMG/5HHDzwtfn9tgJc4T3QI6P4Vlt9Xrac1vkDAsP+GVnFagk4u8b0kLv0d9zxeIP5inv+V7KKcP8C5AJYdASmp2gB1Bx/UqgdqEUw+myVGe2V0B0iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707965728; c=relaxed/simple;
-	bh=ATGHlAvsAW+y6+mj3ZNmwt5QwE0bbGk9HcB1S/+IKBg=;
+	s=arc-20240116; t=1707965799; c=relaxed/simple;
+	bh=yvs/U+kUCiyR07Pib58VdwJ/XOtbMmpXBVFg4jf9vAU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F4dXccUxq5Vt4IMYu6+ta9Zqa1q23b9ZIpmqA+o/NC9N3zGzL9Uw0TmsuQwou2Efq+ePfmYpGmCKGgbmGBDikTDzYl3oCQtplYRegnzdamWGDmXIHWNeznT4AEzY82nQwJ5Gw/+BXFV6KVSVmU5cDUlnjPGDVwXfyp99+Gy2MBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ae70Zxqo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1AC8C433F1;
-	Thu, 15 Feb 2024 02:55:27 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=FYQk2wcAUOpesBMoyNDiwtFWlbx6I4rtUffv9ZPtBFkDis90ggiKayKJOOhRbgXMgKQaLcNu4DRqLrbCzGwWJZy4xuDX1sIHFgS0s9aebS348E7G8d5IeFKO0ulKYyBuMwBYoduZctdU2GAhY+CA4ni6XmP9eCwM1gfeoVEA5oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m8kV5y6k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A3AC433F1;
+	Thu, 15 Feb 2024 02:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707965727;
-	bh=ATGHlAvsAW+y6+mj3ZNmwt5QwE0bbGk9HcB1S/+IKBg=;
+	s=k20201202; t=1707965798;
+	bh=yvs/U+kUCiyR07Pib58VdwJ/XOtbMmpXBVFg4jf9vAU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ae70ZxqoIRwhsZypwAxCUSpOjEezfcsLJqxjTxAhW50/I7akynItB1ayLtMzCmCE6
-	 EhfUEhEaXMshxL59rwFswLI92LTiO/HWLFMG4CVHtSdawVSGrFG53NRfLeasyJICLj
-	 CjnxADwPYaxMCJrqeLztVUT/4XWuRZEo6m8OW2VW+TyvPGdbVXUwmBzBj55d6MbvWQ
-	 IRoNGzLhmpvynruYNd84Ca/XO0JL0kpYBIUnt8B8om4ljusNjgvvsE6LvqXnzoLxmD
-	 B8awoc4ivZiGwTXZBwnCK02D7EgEAdlpMTh6NkaBav3MqoXel1gjWGwlWqYyfi/xiB
-	 Tl3Qy4sbISpdQ==
-Date: Wed, 14 Feb 2024 20:55:25 -0600
+	b=m8kV5y6kZ/Vq0xa+v6cnaIZ5mCEfJLuZhxYRRbS4uom1kKgd4IgZmx+P2paZdUoD9
+	 bBIP2NcGelcd8lU6kzotI/tmMaV0o4//INI6K64AdimC6Re9I6uwV4EjyZZfNSCh3e
+	 OA/SA7mUUyH5uh6CqN5PjG8XEeHh/TvBq2uGd7FZ8GCkPnZdRmp6P38GFDxTwmY6sF
+	 Z1N3C1/HSiRKP4ckhs4Kdo97oPTlZzLT/geHtRTEEOucJi19W3eISooC4qLbJuGsBk
+	 cek5KQZPrMXNJaAxPyyNIyynL11Vl6l23EGS6emrDBZnsUGbjRUZ3FRl/AhMQMoen9
+	 a0lXiOTa3/75w==
+Date: Wed, 14 Feb 2024 20:56:36 -0600
 From: Rob Herring <robh@kernel.org>
 To: Abel Vesa <abel.vesa@linaro.org>
 Cc: Rob Clark <robdclark@gmail.com>,
@@ -57,13 +57,12 @@ Cc: Rob Clark <robdclark@gmail.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
 	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: display/msm: document MDSS on
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: display/msm: Document the DPU for
  X1E80100
-Message-ID: <20240215025525.GA2574098-robh@kernel.org>
+Message-ID: <20240215025636.GA2577530-robh@kernel.org>
 References: <20240214-x1e80100-display-v2-0-cf05ba887453@linaro.org>
- <20240214-x1e80100-display-v2-1-cf05ba887453@linaro.org>
+ <20240214-x1e80100-display-v2-2-cf05ba887453@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,288 +71,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214-x1e80100-display-v2-1-cf05ba887453@linaro.org>
+In-Reply-To: <20240214-x1e80100-display-v2-2-cf05ba887453@linaro.org>
 
-On Wed, Feb 14, 2024 at 11:24:30PM +0200, Abel Vesa wrote:
-> Document the MDSS hardware found on the Qualcomm X1E80100 platform.
+On Wed, Feb 14, 2024 at 11:24:31PM +0200, Abel Vesa wrote:
+> Document the DPU for Qualcomm X1E80100 platform in the SM8650 schema, as
+> they are similar.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
->  .../bindings/display/msm/qcom,x1e80100-mdss.yaml   | 252 +++++++++++++++++++++
->  1 file changed, 252 insertions(+)
+>  Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.yaml
-> new file mode 100644
-> index 000000000000..c3e38afab76e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.yaml
-> @@ -0,0 +1,252 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/msm/qcom,x1e80100-mdss.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm X1E80100 Display MDSS
-> +
-> +maintainers:
-> +  - Abel Vesa <abel.vesa@linaro.org>
-> +
-> +description:
-> +  X1E80100 MSM Mobile Display Subsystem(MDSS), which encapsulates sub-blocks like
-> +  DPU display controller, DP interfaces, etc.
-> +
-> +$ref: /schemas/display/msm/mdss-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,x1e80100-mdss
-> +
-> +  clocks:
-> +    items:
-> +      - description: Display AHB
-> +      - description: Display hf AXI
-> +      - description: Display core
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 3
-> +
-> +  interconnect-names:
-> +    maxItems: 3
-> +
-> +patternProperties:
-> +  "^display-controller@[0-9a-f]+$":
-> +    type: object
+> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> index a01d15a03317..c4087cc5abbd 100644
+> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8650-dpu.yaml
+> @@ -13,7 +13,9 @@ $ref: /schemas/display/msm/dpu-common.yaml#
+>  
+>  properties:
+>    compatible:
+> -    const: qcom,sm8650-dpu
+> +    enum:
+> +      - qcom,sm8650-dpu
+> +      - qcom,x1e80100-dpu
 
-       additionalProperties: true
+Patch 1 uses this in the example, so this patch needs to come first.
 
-> +    properties:
-> +      compatible:
-> +        const: qcom,x1e80100-dpu
-> +
-> +  "^displayport-controller@[0-9a-f]+$":
-> +    type: object
-
-       additionalProperties: true
-
-> +    properties:
-> +      compatible:
-> +        const: qcom,x1e80100-dp
-> +
-> +  "^phy@[0-9a-f]+$":
-> +    type: object
-
-       additionalProperties: true
-
-> +    properties:
-> +      compatible:
-> +        const: qcom,x1e80100-dp-phy
-> +
-> +required:
-> +  - compatible
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,x1e80100-dispcc.h>
-> +    #include <dt-bindings/clock/qcom,x1e80100-gcc.h>
-> +    #include <dt-bindings/clock/qcom,rpmh.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interconnect/qcom,x1e80100-rpmh.h>
-> +    #include <dt-bindings/phy/phy-qcom-qmp.h>
-> +    #include <dt-bindings/power/qcom,rpmhpd.h>
-> +
-> +    display-subsystem@ae00000 {
-> +        compatible = "qcom,x1e80100-mdss";
-> +        reg = <0x0ae00000 0x1000>;
-> +        reg-names = "mdss";
-> +
-> +        interconnects = <&mmss_noc MASTER_MDP 0 &gem_noc SLAVE_LLCC 0>,
-> +                        <&mc_virt MASTER_LLCC 0 &mc_virt SLAVE_EBI1 0>,
-> +                        <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_DISPLAY_CFG 0>;
-> +        interconnect-names = "mdp0-mem", "mdp1-mem", "cpu-cfg";
-> +
-> +        resets = <&dispcc_core_bcr>;
-> +
-> +        power-domains = <&dispcc_gdsc>;
-> +
-> +        clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +                 <&gcc GCC_DISP_HF_AXI_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_MDP_CLK>;
-> +        clock-names = "bus", "nrt_bus", "core";
-> +
-> +        interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <1>;
-> +
-> +        iommus = <&apps_smmu 0x1c00 0x2>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges;
-> +
-> +        display-controller@ae01000 {
-> +            compatible = "qcom,x1e80100-dpu";
-> +            reg = <0x0ae01000 0x8f000>,
-> +                  <0x0aeb0000 0x2008>;
-> +            reg-names = "mdp", "vbif";
-> +
-> +            clocks = <&gcc_axi_clk>,
-> +                     <&dispcc_ahb_clk>,
-> +                     <&dispcc_mdp_lut_clk>,
-> +                     <&dispcc_mdp_clk>,
-> +                     <&dispcc_mdp_vsync_clk>;
-> +            clock-names = "nrt_bus",
-> +                          "iface",
-> +                          "lut",
-> +                          "core",
-> +                          "vsync";
-> +
-> +            assigned-clocks = <&dispcc_mdp_vsync_clk>;
-> +            assigned-clock-rates = <19200000>;
-> +
-> +            operating-points-v2 = <&mdp_opp_table>;
-> +            power-domains = <&rpmhpd RPMHPD_MMCX>;
-> +
-> +            interrupt-parent = <&mdss>;
-> +            interrupts = <0>;
-> +
-> +            ports {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                port@0 {
-> +                    reg = <0>;
-> +                    dpu_intf1_out: endpoint {
-> +                        remote-endpoint = <&dsi0_in>;
-> +                    };
-> +                };
-> +
-> +                port@1 {
-> +                    reg = <1>;
-> +                    dpu_intf2_out: endpoint {
-> +                        remote-endpoint = <&dsi1_in>;
-> +                    };
-> +                };
-> +            };
-> +
-> +            mdp_opp_table: opp-table {
-> +                compatible = "operating-points-v2";
-> +
-> +                opp-200000000 {
-> +                    opp-hz = /bits/ 64 <200000000>;
-> +                    required-opps = <&rpmhpd_opp_low_svs>;
-> +                };
-> +
-> +                opp-325000000 {
-> +                    opp-hz = /bits/ 64 <325000000>;
-> +                    required-opps = <&rpmhpd_opp_svs>;
-> +                };
-> +
-> +                opp-375000000 {
-> +                    opp-hz = /bits/ 64 <375000000>;
-> +                    required-opps = <&rpmhpd_opp_svs_l1>;
-> +                };
-> +
-> +                opp-514000000 {
-> +                    opp-hz = /bits/ 64 <514000000>;
-> +                    required-opps = <&rpmhpd_opp_nom>;
-> +                };
-> +            };
-> +        };
-> +
-> +        displayport-controller@ae90000 {
-> +            compatible = "qcom,x1e80100-dp";
-> +            reg = <0 0xae90000 0 0x200>,
-> +                  <0 0xae90200 0 0x200>,
-> +                  <0 0xae90400 0 0x600>,
-> +                  <0 0xae91000 0 0x400>,
-> +                  <0 0xae91400 0 0x400>;
-> +
-> +            interrupt-parent = <&mdss>;
-> +            interrupts = <12>;
-> +
-> +            clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +               <&dispcc DISP_CC_MDSS_DPTX0_AUX_CLK>,
-> +               <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK>,
-> +               <&dispcc DISP_CC_MDSS_DPTX0_LINK_INTF_CLK>,
-> +               <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK>;
-> +            clock-names = "core_iface", "core_aux",
-> +                    "ctrl_link",
-> +                    "ctrl_link_iface",
-> +                    "stream_pixel";
-> +
-> +            assigned-clocks = <&dispcc DISP_CC_MDSS_DPTX0_LINK_CLK_SRC>,
-> +                  <&dispcc DISP_CC_MDSS_DPTX0_PIXEL0_CLK_SRC>;
-> +            assigned-clock-parents = <&usb_1_ss0_qmpphy QMP_USB43DP_DP_LINK_CLK>,
-> +                  <&usb_1_ss0_qmpphy QMP_USB43DP_DP_VCO_DIV_CLK>;
-> +
-> +            operating-points-v2 = <&mdss_dp0_opp_table>;
-> +
-> +            power-domains = <&rpmhpd RPMHPD_MMCX>;
-> +
-> +            phys = <&usb_1_ss0_qmpphy QMP_USB43DP_DP_PHY>;
-> +            phy-names = "dp";
-> +
-> +            #sound-dai-cells = <0>;
-> +
-> +            status = "disabled";
-
-Examples should be enabled.
-
-
-> +
-> +            ports {
-> +              #address-cells = <1>;
-> +              #size-cells = <0>;
-> +
-> +              port@0 {
-> +                  reg = <0>;
-> +
-> +                  mdss_dp0_in: endpoint {
-> +                    remote-endpoint = <&mdss_intf0_out>;
-> +                  };
-> +              };
-> +
-> +              port@1 {
-> +                  reg = <1>;
-> +
-> +                  mdss_dp0_out: endpoint {
-> +                  };
-> +              };
-> +            };
-> +
-> +            mdss_dp0_opp_table: opp-table {
-> +              compatible = "operating-points-v2";
-> +
-> +              opp-160000000 {
-> +                 opp-hz = /bits/ 64 <160000000>;
-> +                 required-opps = <&rpmhpd_opp_low_svs>;
-> +              };
-> +
-> +              opp-270000000 {
-> +                 opp-hz = /bits/ 64 <270000000>;
-> +                 required-opps = <&rpmhpd_opp_svs>;
-> +              };
-> +
-> +              opp-540000000 {
-> +                 opp-hz = /bits/ 64 <540000000>;
-> +                 required-opps = <&rpmhpd_opp_svs_l1>;
-> +              };
-> +
-> +              opp-810000000 {
-> +                 opp-hz = /bits/ 64 <810000000>;
-> +                 required-opps = <&rpmhpd_opp_nom>;
-> +              };
-> +            };
-> +        };
-> +    };
-> +...
+>  
+>    reg:
+>      items:
 > 
 > -- 
 > 2.34.1
