@@ -1,172 +1,105 @@
-Return-Path: <linux-kernel+bounces-67416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41E7856B27
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:37:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85F0856B2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:38:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EDA51F23467
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:37:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A21F5B2255E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8579B1369AA;
-	Thu, 15 Feb 2024 17:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66CC31369AA;
+	Thu, 15 Feb 2024 17:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zj43VBWf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Yb1lv4cJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0CgoOr31";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SLzVhLAm"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RbzvRZv9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4016341F;
-	Thu, 15 Feb 2024 17:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3C613667A;
+	Thu, 15 Feb 2024 17:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708018647; cv=none; b=n/tSfwMJJIHPMomRbGwtwcL+fIbrm3kyFXKEx0dimUeMRb4ZF1LTBtDvobgjMxJapsHLUPEzTuv2oGcfohOzDAI8khLhpImzJcQL7BYxOg3DuU8XBL03EKdR7Dcdje8DSGTZn1h+Wfqa7Q1c5Nxvyz0SfmNbno+/y58ukznTAfY=
+	t=1708018685; cv=none; b=s/LtycdRyLSTX1RIqfuEv8rajVRyvh5fPBVRculZbJWiuS3WrpOAPBkQcjiRXY93HqgJO+GZ7lA7cbChp8YiQPYWlCPtEqDxykPyX0wuhlPWJP/YQrJo5h1Fbl+3Y4hkEvL6s3sYQXPiIdR716xcYx2LCKcqHBcQTc2HZNPeP08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708018647; c=relaxed/simple;
-	bh=K865F9Yq9c8+7XUP7G6+muwUilhZSdjhnMzub2Bz0TM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VbE6kcUAbgBXbbrs/vW8jpCdeM1bhseAm+2MLXn7zOMwogyZ+k6OP/72q7UVN/dfe5zu1/TXqTTCbP8W5xTpZVYcIN5fblk0B5BKYC1al1cgoCxkJvGAl4gt0hLVvC8PU+LsyxSBDq/m1furTCECxNRNz2Xq9B/INqz9/yQP2xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zj43VBWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Yb1lv4cJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0CgoOr31; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SLzVhLAm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF2651F8BE;
-	Thu, 15 Feb 2024 17:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708018644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJ3XwzuJ/s0K1I/FmXtk4ovuVAj4aJMTuF4cFMIFjqA=;
-	b=zj43VBWfOreASQ43v5g5RKgoQkDg+p/Sp/J9Pldm+PTJe9RViQNUKcgKyMDQvsBuo8+FPF
-	ZiQ8rcm74hA7qOON3bIqb/2admEX6WrcUzYHRnFCns6zb/6l0+4CifaJ7tKMvEo6GiEfpt
-	atX6rayYTuXg7vQlCKxnTSEmxYRWuKU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708018644;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJ3XwzuJ/s0K1I/FmXtk4ovuVAj4aJMTuF4cFMIFjqA=;
-	b=Yb1lv4cJgflLMgP2HRl3BGBghcyeSl7J5faNHjdClFqDi4N9I6r4sKiPzJ98siu6nCxE4s
-	bPkgazy8muMOicDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708018643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJ3XwzuJ/s0K1I/FmXtk4ovuVAj4aJMTuF4cFMIFjqA=;
-	b=0CgoOr31CziJ7bdAN2INwpvO69NadbOlLL+FkFJFsvbRe8JI9MgyBEin8AqBhA2vdKwGXT
-	/63OUKeyfCoQ2cZkNjiLen8/5Hu05qZQ12PrQwBU3pSPZq0gnunCZ0rTbFc1VscSxAn6NK
-	esZafPSFzmIUtCha1pJ/UjgfwRken8c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708018643;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QJ3XwzuJ/s0K1I/FmXtk4ovuVAj4aJMTuF4cFMIFjqA=;
-	b=SLzVhLAmKmoVzNd33Afo5Lw6DXchTrI/xVksGIrjD+vFUOA5EqYj1bKw/MaJcs8H7MeCL/
-	t8B28s8f2TA36nAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E404A139D0;
-	Thu, 15 Feb 2024 17:37:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id MW2lN9NLzmXLUAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 15 Feb 2024 17:37:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 89E56A0809; Thu, 15 Feb 2024 18:37:23 +0100 (CET)
-Date: Thu, 15 Feb 2024 18:37:23 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	osmtendev@gmail.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [udf?] UBSAN: array-index-out-of-bounds in
- udf_process_sequence
-Message-ID: <20240215173723.qomaaju7mkytcu7c@quack3>
-References: <0000000000000fdc630601cd9825@google.com>
- <00000000000037dfd406116efacd@google.com>
+	s=arc-20240116; t=1708018685; c=relaxed/simple;
+	bh=Qpm4U+Chvatig2Wj7kHJn2NI5GBwUCXx8r+p3JB+ZwM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=M5C/GSz2TuzDTH3LlBPO8BbazUu4y9lCtF5St8rCflYpFbRblweZOF61fU+w3MCZsHX7dkUPAgrBPpjMjMXyYU+wncWW4D9Iu0iJeJBZTkCQsEi5DxgZZ/9ATsNxWtpai2My32+W9A6SjnAwTNHgNcAYprmsAwHwD7cWY57qSO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RbzvRZv9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B133FC433A6;
+	Thu, 15 Feb 2024 17:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708018685;
+	bh=Qpm4U+Chvatig2Wj7kHJn2NI5GBwUCXx8r+p3JB+ZwM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=RbzvRZv9VHh81xZgTipc+cyHotQf0QrKw8tdJnBwMuBKSriJLu1P+2WDrlWbEGa7S
+	 fvWYE1oRqENHoFFddwxPZnXGD+D5p9+f8k6q+hneW7/yL8KQZz5CmWNfVyvPBx0yGN
+	 pIoe3VZ9r/F3GXRoycqe/3oaqxc3vSqVofCl28hdJhrBZq9PI89WCF2zo0AtMzIdwc
+	 QQWPI7B0rpPhtwjlFT7O/sRJJ9EeoOEyYYx9yle9TG2TyvIyq8r5/9r6NBW13+JCgw
+	 zMMM+iW6t8oI+LaLDx3hR8GV957pOhAFThPIkDYn2o+80SjypEzmuxy9AnKQ914Y/v
+	 fI/3ShfGjJCtA==
+Date: Thu, 15 Feb 2024 18:38:05 +0100 (CET)
+From: Jiri Kosina <jikos@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, security@kernel.org, linux@leemhuis.info, 
+    Kees Cook <keescook@chromium.org>, 
+    Konstantin Ryabitsev <konstantin@linuxfoundation.org>, 
+    Krzysztof Kozlowski <krzk@kernel.org>, 
+    Lukas Bulwahn <lukas.bulwahn@gmail.com>, Sasha Levin <sashal@kernel.org>, 
+    Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v4] Documentation: Document the Linux Kernel CVE
+ process
+In-Reply-To: <2024021500-laziness-grimace-ed80@gregkh>
+Message-ID: <nycvar.YFH.7.76.2402151817440.21798@cbobk.fhfr.pm>
+References: <2024021500-laziness-grimace-ed80@gregkh>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000037dfd406116efacd@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0CgoOr31;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SLzVhLAm
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[32.71%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d];
-	 TAGGED_RCPT(0.00)[abb7222a58e4ebc930ad];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,suse.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.dk,kernel.org,suse.com,suse.cz,vger.kernel.org,gmail.com,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 1.49
-X-Rspamd-Queue-Id: EF2651F8BE
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu 15-02-24 09:30:02, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17ef13dc180000
-> start commit:   9e6c269de404 Merge tag 'i2c-for-6.5-rc7' of git://git.kern..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175ed6bba80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=146c8923a80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+On Thu, 15 Feb 2024, Greg Kroah-Hartman wrote:
 
-Makes sense.
+> The Linux kernel project now has the ability to assign CVEs to fixed
+> issues, so document the process and how individual developers can get a
+> CVE if one is not automatically assigned for their fixes.
 
-#syz fix: fs: Block writes to mounted block devices
+There is still one thing that's not clear to me with this new process, and 
+that's how embargos are going to be handled.
 
-								Honza
+Currently, the process is broken as well, but at least understood by 
+everybody.
+
+- issues are reported to security@kernel.org. No CVE assigned, 7days 
+  embargo, then fix gets pushed out
+
+- at some point (in parallel, before, or after the above), the issue gets 
+  reported to linux-distros@. CVE gets assigned, and downstreams start 
+  integrating the fix (once available) to their codebase.
+
+- embargo is lifted, fixes are released with proper CVE reference
+
+How is the new process going to look like? Please keep in mind that 
+linux-stable is (by far!) *not* the only downstream of Linux Kernel 
+project.
+
+We've had this discussion in other contexts already, but I whole-heartedly 
+believe that it's in no way in the Linux Kernel project's interest to kill 
+those other downstreams (read: Linux distros) (*) ... or is it?
+
+(*) just looking at how much those not-basing-on-stable distros are 
+    contributing to mainline
+
+Thanks,
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jiri Kosina
+SUSE Labs
+
 
