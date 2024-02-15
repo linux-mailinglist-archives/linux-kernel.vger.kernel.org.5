@@ -1,194 +1,91 @@
-Return-Path: <linux-kernel+bounces-67409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC26856B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:30:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDFB4856B04
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053851C22930
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:30:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704BF1F266F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B908B137C59;
-	Thu, 15 Feb 2024 17:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XsUwywqh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CF91369A8;
+	Thu, 15 Feb 2024 17:30:05 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9331369BF;
-	Thu, 15 Feb 2024 17:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202F7136998
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708018187; cv=none; b=jNVUdU0MRnRvFL3/Qtx+pLaJR3gqU84bfKY94+RJDmXEauzuQQLH5/vTHjVGDEJU07ECWXAZ2cDIhh89evBKsZHiLN+NcxRKt7EHTq2grX98ACE92S5emeY/7FhdHxi2MxeQSQ1ArLdD0pzshVrVO+5FPVp+nMmAPje4tn8CCxY=
+	t=1708018204; cv=none; b=h9zxHX+vJzcyZSOsiEi2BjFoo8Q8HSyT5pZ4rKCFNuBUuVj5lJXrU+Q/N64AvlucjvK60jSqOKO7kKjVHMICqW9nG2pbA3dyU3BwBjfZYyk7tX33qUXljw31asyjOKnntlwtK3oDsyWZmmAN8HFeX/4PQtIOi2l1myUyvGWt4QI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708018187; c=relaxed/simple;
-	bh=xGmTgBLilTN6fWGK0q/dhszZ3xW+TO9kc1nLJ9c0Cxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cVaOVyWcJ8rupBF5yfssfwd76T/37WNZjmDHXTcxIlLfqEmPL1RfytuYoVfir4qEId+iblVl4hjeJ9PB3dhVJ3ZZsm60AxLNhdf8MiFKgJhPoMm87lgAtFwic48c/7d6/k4LltXN/tRGxHwRks+mmQwK5NGUZHJRfcIPVcSHU1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XsUwywqh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 244D8C433C7;
-	Thu, 15 Feb 2024 17:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708018186;
-	bh=xGmTgBLilTN6fWGK0q/dhszZ3xW+TO9kc1nLJ9c0Cxo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XsUwywqhBibh7Nv0quuN/TTKxrYrGRYyWGcYr7Abta1V0DhGrg3J9h9+bXqRGbnqw
-	 v+A9ci8EMo3tJMFYYaws9C+AVD45z9PhoXPrjknlm2taJHmMpY4z1LkJXK36HDBBrG
-	 I14DC3cwO+7HubyV/9pDwQHCxvHKzjXUf1/QzifXnL9poFyL6veVp3ydBJRS11vqIF
-	 OMGrNZ0UiBonFgJnP5hSW8N9uwBERdhzIe7EVVcIfwxwno6mGTk6c2kSacy9ftzIqC
-	 lg2xLO1mOveZ/UaT6BsOVC711kanQvq1aA6ZozLXRDNAkBZHBXI7SQ3xavWA3iDNBG
-	 jrO7rv0XjiUMw==
-Date: Thu, 15 Feb 2024 17:29:40 +0000
-From: Conor Dooley <conor@kernel.org>
-To: =?utf-8?B?UGF3ZcWC?= Anikiel <panikiel@google.com>
-Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org,
-	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
-	krzysztof.kozlowski+dt@linaro.org,
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-	mripard@kernel.org, robh+dt@kernel.org, tzimmermann@suse.de,
-	devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	chromeos-krk-upstreaming@google.com, ribalda@chromium.org
-Subject: Re: [PATCH 7/9] media: dt-bindings: Add Chameleon v3 framebuffer
-Message-ID: <20240215-supervise-concerned-55a18554a120@spud>
-References: <20240212131323.2162161-1-panikiel@google.com>
- <20240212131323.2162161-8-panikiel@google.com>
+	s=arc-20240116; t=1708018204; c=relaxed/simple;
+	bh=VthmcxhVEuqz9eJ5clxXTesoB8WduMoco1RaCTXD9Qk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ILYUnX95BZtE+gYLrFRzuO0db0DVDaRzSppQ7qXWczy00hU5Zx8Y2jHg1w0iyru8OxLiUk8Rw2mtnCrHocJXfCNu4grOLvjAHKe6qxL5Wk8iPv6iSLoXekPZtJpP1TstJFIYvSVHJpOdmb1onVKscbzmxHVkzRdSrU3sKxjSCM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bc2b7bef65so95066739f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:30:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708018202; x=1708623002;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mas1+oMkdzW0fSqjxmSiwbESID1pMxANi5qAJUaYfqg=;
+        b=ubyiJTH8xAxwDP16oVHRzryDmwur2fZ4selzJkTWCJo8u7dDKYriE22iuEgNIKX71t
+         JKZ7fFIYBdxzRIHqZxN4IZecVWQ4u5JJchl8637RsNiM6HGDoPu3OPdZEHZc8tpEDqBx
+         D1UFFHcomt4y/826hmcbXeym7ZQhqHn6lZOXOsY2x0L7bIpapRQFWB8Y0uLAJUAomupa
+         LiULVaq8yknBNwfmE+1Csr9NsUsAViieg0CO1D9Ac5RAcHerRe51QD2EtqbJTZUDW51J
+         MnL0aQng1630obx2vOz+0R7DRnJ8fMiNb8eWv/sd/5Q+b+2pE5i3h9PtYSnbpdCE7t2P
+         V2CA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/5kPLNJTn3Ms+OI1p9eLOOEikCXxS9WyP30PjIdWhmxk1Mum93gznt4F4vq+EUWpDunfcGA8ovXxGgKRY9ZVAmk6j8cSaj1VSJUdx
+X-Gm-Message-State: AOJu0YyEVWCC5ClJNKdddjhLc2DjoAicmZT6lEEFvoIIWdJk6zLsSI4X
+	dCOMX2F8fvzpaqz8FVYovewMUMg7ROhdtzjyqbarob6QI96OtGlvgwIuxABKrg2G70dbMPsPJJC
+	hqB6GCR3ufxqARUd4Wk0JtefC5rWykhgmLlfbB5pRSmSqVYqdcKjFA5A=
+X-Google-Smtp-Source: AGHT+IE7NYplBG53Q/FVg4oPpnY6PC138cqIKFc7dpg4p9ejsuwS+Ss4O9qFDe+Y8yNN7yBtZmj1I0gXd2bDryxkvj/RPXstuNOI
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="C43cJgjesa1CmRR7"
-Content-Disposition: inline
-In-Reply-To: <20240212131323.2162161-8-panikiel@google.com>
+X-Received: by 2002:a05:6638:4907:b0:473:f904:f04 with SMTP id
+ cx7-20020a056638490700b00473f9040f04mr17206jab.3.1708018202302; Thu, 15 Feb
+ 2024 09:30:02 -0800 (PST)
+Date: Thu, 15 Feb 2024 09:30:02 -0800
+In-Reply-To: <0000000000000fdc630601cd9825@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000037dfd406116efacd@google.com>
+Subject: Re: [syzbot] [udf?] UBSAN: array-index-out-of-bounds in udf_process_sequence
+From: syzbot <syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	osmtendev@gmail.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
---C43cJgjesa1CmRR7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-On Mon, Feb 12, 2024 at 01:13:21PM +0000, Pawe=C5=82 Anikiel wrote:
-> The Chameleon v3 uses the framebuffer IP core to take the video signal
-> from different sources and directly write frames into memory.
->=20
-> Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
-> ---
->  .../bindings/media/google,chv3-fb.yaml        | 77 +++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/google,chv3-f=
-b.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/media/google,chv3-fb.yaml =
-b/Documentation/devicetree/bindings/media/google,chv3-fb.yaml
-> new file mode 100644
-> index 000000000000..ba6643cc7232
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/google,chv3-fb.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/google,chv3-fb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Google Chameleon v3 video framebuffer
-> +
-> +maintainers:
-> +  - Pawe=C5=82 Anikiel <panikiel@google.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: google,chv3-fb
-> +
-> +  reg:
-> +    items:
-> +      - description: core registers
-> +      - description: irq registers
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  google,legacy-format:
-> +    type: boolean
-> +    description: The incoming video stream is in 32-bit padded mode.
-> +
-> +  google,no-endpoint:
-> +    type: boolean
-> +    description:
-> +      The framebuffer isn't connected to a controllable endpoint.
-> +      The video interface still works, but EDID control is unavailable
-> +      and DV timing information only reports the active video width/heig=
-ht.
+    fs: Block writes to mounted block devices
 
-Why does this need a dedicated property? Is it not sufficient to check
-that there are no endpoints in the devicetree?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17ef13dc180000
+start commit:   9e6c269de404 Merge tag 'i2c-for-6.5-rc7' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
+dashboard link: https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175ed6bba80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=146c8923a80000
 
-Cheers,
-Conor.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +allOf:
-> +  - if:
-> +      not:
-> +        required:
-> +          - google,no-endpoint
-> +    then:
-> +      required:
-> +        - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    video@c0060500 {
-> +        compatible =3D "google,chv3-fb";
-> +        reg =3D <0xc0060500 0x100>,
-> +              <0xc0060f20 0x10>;
-> +        interrupts =3D <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-> +        google,legacy-format;
-> +        google,no-endpoint;
-> +    };
-> +
-> +  - |
-> +    video@c0060600 {
-> +        compatible =3D "google,chv3-fb";
-> +        reg =3D <0xc0060600 0x100>,
-> +              <0xc0060f30 0x10>;
-> +        interrupts =3D <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        port {
-> +            fb_mst0_0: endpoint {
-> +                remote-endpoint =3D <&dprx_mst_0>;
-> +            };
-> +        };
-> +    };
-> --=20
-> 2.43.0.687.g38aa6559b0-goog
->=20
+#syz fix: fs: Block writes to mounted block devices
 
---C43cJgjesa1CmRR7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5KBAAKCRB4tDGHoIJi
-0lysAQDdxf2465AvkKhF49ZcHnwSHInQqU4NtSRwzZOwOHT1hQEAqOZCSrEz6g2o
-2S9hN9oun805ifFuz83SNRi4jo99oAg=
-=3pwD
------END PGP SIGNATURE-----
-
---C43cJgjesa1CmRR7--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
