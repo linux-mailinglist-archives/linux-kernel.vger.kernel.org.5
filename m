@@ -1,131 +1,179 @@
-Return-Path: <linux-kernel+bounces-66433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E9A855CA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:39:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB47855CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA96F1F2EE5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:39:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C2B52868C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E81134CA;
-	Thu, 15 Feb 2024 08:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086F1134CC;
+	Thu, 15 Feb 2024 08:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oy65GiHF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="AyQAC6EV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yq6j5sac";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="SD/LXjnb";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="W7qfD0w9"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B0812B90
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A039513FE2;
+	Thu, 15 Feb 2024 08:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707986378; cv=none; b=Vj8eo0hgSYaBQ/TQx5EXMV/JTWw4ubFcJler8F0UfUVYY75Q3FmzlVjNz2sL6VhlQD5dIGLZg5XHTaccYWZqyihCz0XdjgvIaBr+qZS5DUMxNYapiDYejavKLYjT230YeRh/8lkbIjGurcllJJVV+28rcoGUM5GKwY4xZwkzbg8=
+	t=1707986415; cv=none; b=s7TU/MNeSV5tA2neMiQUiNSXYNaUpd+8LZlforqXNHL0hdykAT5cWDZj4svF/2IuycGhXe231fmLeigLW45wjvrRhskV1ctpH7ZASLxQCFvxZ5Fld675x7UbzWKOu71kyi28X3pySlf7ankXkOBDgiJ2yKpsSpGi6puwCUdY58A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707986378; c=relaxed/simple;
-	bh=nU2GWl8pjQTzoRKcy5LbXTwzOcvRte+6I5y9OLsNnfc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oSgZzSf8Ap5ufStocPXV2DD1scCuX8p1dXKRUscgnKzTpditXShfjCX5zOOSScF4+fADXQdRGtEaZ62iYoLgin6TLaoh6EaBigTaetdKMVq1wuMVgUsZFn79KbnM1EnkGfxQZGZiH0Gl+3SySBTgL5TYUHs1a7Xf24eyEcoRCj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oy65GiHF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707986375;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
-	bh=bakj0FATNvoSdsfDbqmxKCUpth/6U6kxf5U1T4MpHTM=;
-	b=Oy65GiHF3n1MqHhGE6GPSJfWgwS1Tae5ZiemPq8wocRDQeeTyksLgiKYNVv80ppR07iaQa
-	XprdqsI8Wqwprk9PgubyJ7vQKnc2JDvMKu+amfHS2hk4s2qUSB1gMvBDtezQ9NdX/HAlmg
-	kzQ0fRzu8jgFSHqm3IijCW0yKIA8mNI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-594-AvOsWZVoPEKLoWO4iKeIkQ-1; Thu,
- 15 Feb 2024 03:39:32 -0500
-X-MC-Unique: AvOsWZVoPEKLoWO4iKeIkQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	s=arc-20240116; t=1707986415; c=relaxed/simple;
+	bh=F7BdL6N3jatKbCbiIQyhxX2cwbuRbqCr7GGsYXgZGxk=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UrGyhBz4wXkawBnL2lM1YpjSRAYnsMWbFEAs6Rx75CQCH8MQ8ep91hvKj6DSYx4buPe/ZiNbNCgs0f9bV4BFUyIlbg7rls4BmDhg40S1PcLTqZ99bE/9+DZyx2rIz4EFA8XDqCIDhwtcjlVMstoRVcPEX6gc2ktjDnawgq67vx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=AyQAC6EV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yq6j5sac; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=SD/LXjnb; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=W7qfD0w9; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B67BA280A9A8;
-	Thu, 15 Feb 2024 08:39:31 +0000 (UTC)
-Received: from tucnak.zalov.cz (unknown [10.39.192.8])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 73F0E20110C4;
-	Thu, 15 Feb 2024 08:39:31 +0000 (UTC)
-Received: from tucnak.zalov.cz (localhost [127.0.0.1])
-	by tucnak.zalov.cz (8.17.1/8.17.1) with ESMTPS id 41F8dR9K1207786
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 09:39:28 +0100
-Received: (from jakub@localhost)
-	by tucnak.zalov.cz (8.17.1/8.17.1/Submit) id 41F8dPiY1207783;
-	Thu, 15 Feb 2024 09:39:25 +0100
-Date: Thu, 15 Feb 2024 09:39:25 +0100
-From: Jakub Jelinek <jakub@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on
- gcc-11 (and earlier)
-Message-ID: <Zc3NvWhOK//UwyJe@tucnak>
-Reply-To: Jakub Jelinek <jakub@redhat.com>
-References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com>
- <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
- <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
- <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
- <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D36A21F86A;
+	Thu, 15 Feb 2024 08:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707986411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XULIr3WXpUdEe2Bc55sez6vW2u/ICAnQ7pQCNfnb9mM=;
+	b=AyQAC6EVNdn1/D/oO7mwlKLB0FypMsQ2J7FZl5lIiLuoYSC9A1W1/NJ9jlaeofv++t/8zw
+	LuctbTgtJQpInzym/Yl+7eZkh7YF8PhgREeLfDivSScgJK7Gwt8QGWHxA+k+MDg/KyXY2c
+	n8gD82TT9kpa1iihtgHZlxbGRAyZPqY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707986411;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XULIr3WXpUdEe2Bc55sez6vW2u/ICAnQ7pQCNfnb9mM=;
+	b=yq6j5sacooZ6sFmpUGxUM/EbKnJc9nb93otu8oOTaU9WQ6rf7NpXLSnCPgLXVkLaZpaTXX
+	7HnIXjoW5yNziDAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707986409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XULIr3WXpUdEe2Bc55sez6vW2u/ICAnQ7pQCNfnb9mM=;
+	b=SD/LXjnbFYNfMpV7sQYcw4PFtOqBIfk6icBjvxzr0Sb9Y5nPm1p8tY0ifD7cicUw1NqjEw
+	fdiCX4S917MqDuSNtGZK+jK8TgbkLmsZ3an5iXfCkondGibPB8/ZQMWJ8tnyyRu29E7/TK
+	biq4GvQfWKNdYxwzX2RifJyMFM++qPI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707986409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XULIr3WXpUdEe2Bc55sez6vW2u/ICAnQ7pQCNfnb9mM=;
+	b=W7qfD0w9YA1iyqPelkUBHtzE1zn8BUMfUkS2T3iTaYg75rUUrcB5pNB80Jd42Z5OntWjwd
+	rW808AI83xJiV9Dw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C3AC13A72;
+	Thu, 15 Feb 2024 08:40:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id v391JOnNzWXHDgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 15 Feb 2024 08:40:09 +0000
+Date: Thu, 15 Feb 2024 09:40:09 +0100
+Message-ID: <87h6iaf7di.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Karthikeyan Ramasubramanian <kramasub@chromium.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Sven van Ashbrook <svenva@chromium.org>,
+	Brian Geffon <bgeffon@google.com>,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
+In-Reply-To: <20240215034528.240-1-hdanton@sina.com>
+References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
+	<20240215034528.240-1-hdanton@sina.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.30
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[sina.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[chromium.org:email];
+	 FREEMAIL_TO(0.00)[sina.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Wed, Feb 14, 2024 at 04:11:05PM -0800, Linus Torvalds wrote:
-> On Wed, 14 Feb 2024 at 10:43, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Based on the current state of
-> >
-> >     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113921
-> >
-> > I would suggest this attached kernel patch [...]
+On Thu, 15 Feb 2024 04:45:27 +0100,
+Hillf Danton wrote:
 > 
-> Well, that "current state" didn't last long, and it looks like Jakub
-> found the real issue and posted a suggested fix.
+> On Wed, 14 Feb 2024 17:07:25 -0700 Karthikeyan Ramasubramanian <kramasub@chromium.org>
+> > Before 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+> > the alsa non-contiguous allocator always called the alsa fallback
+> > allocator in the non-iommu case. This allocated non-contig memory
+> > consisting of progressively smaller contiguous chunks. Allocation was
+> > fast due to the OR-ing in of __GFP_NORETRY.
+> > 
+> > After 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+> > the code tries the dma non-contig allocator first, then falls back to
+> > the alsa fallback allocator. In the non-iommu case, the former supports
+> > only a single contiguous chunk.
+> > 
+> > We have observed experimentally that under heavy memory fragmentation,
+> > allocating a large-ish contiguous chunk with __GFP_RETRY_MAYFAIL
+> > triggers an indefinite hang in the dma non-contig allocator. This has
+> > high-impact, as an occurrence will trigger a device reboot, resulting in
+> > loss of user state.
+> > 
+> > Fix the non-iommu path by letting dma_alloc_noncontiguous() fail quickly
+> > so it does not get stuck looking for that elusive large contiguous chunk,
+> > in which case we will fall back to the alsa fallback allocator.
 > 
-> Anyway, the end result is that the current kernel situation - that
-> adds the workaround for all gcc versions - is the best that we can do
-> for now.
+> The faster dma_alloc_noncontiguous() fails the more likely the paperover
+> in 9d8e536d36e7 fails to work, so this is another case of bandaid instead
+> of mitigating heavy fragmentation at the first place.
 
-Can it be guarded with
-#if GCC_VERSION < 140100
-so that it isn't forgotten?  GCC 14.1 certainly will have a fix for this
-(so will GCC 13.3, 12.4 and 11.5).
-Maybe it would be helpful to use
-#if GCC_VERSION < 140000
-while it is true that no GCC 14 snapshots until today (or whenever the fix
-will be committed) have the fix, for GCC trunk it is up to the distros
-to use the latest snapshot if they use it at all and would allow better
-testing of the kernel code without the workaround, so that if there are
-other issues they won't be discovered years later.  Most userland code
-doesn't actually use asm goto with outputs...
+Yes, the main problem is the indefinite hang from
+dma_alloc_noncontiguous().
 
-	Jakub
+So, is the behavior more or less same even if you pass
+__GFP_RETRY_MAYFAIL to dma_alloc_noncontiguous()?  Or is this flag
+already implicitly set somewhere in the middle?  It shouldn't hang
+indefinitely, but the other impact to the system like OOM-killer
+kickoff may be seen.
 
+As of now, I'm inclined to take the suggested workaround.  It'll work
+in most cases.  The original issue worked around by the commit
+9d8e536d36e7 still remains, and we need to address differently.
+
+
+thanks,
+
+Takashi
 
