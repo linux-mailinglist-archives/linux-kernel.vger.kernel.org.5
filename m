@@ -1,171 +1,113 @@
-Return-Path: <linux-kernel+bounces-67505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72CE856CA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:31:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 505C6856C88
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7402028E2EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:31:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A051F21A0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C16414691C;
-	Thu, 15 Feb 2024 18:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9B81419BE;
+	Thu, 15 Feb 2024 18:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNJENkXJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="el+YSwMe"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8053014601F;
-	Thu, 15 Feb 2024 18:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F7D13B7A3
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708021580; cv=none; b=iTpScc50w+O2rTssbKCiAOT0upZP1dzPbd+PLgVokQwGl8vjZD6GTWPY7SFCNxurjd3I5XVIRAgRgJ2C73zxyIB/PyS1e716KHvekEcXEdAnwmLsrfIHvpKBD5TyG4KaGXFGaD9p7QJfeizjFhsTm7vXmIBL0GkR1or9yzNkc8k=
+	t=1708021563; cv=none; b=KkX0vz4qkrb/zpkpge1/lTGmk/lobmPvx5HZJabgOM0bp3hqD2woNRuoq8Qk1jyxoPMg1oaFN1c+RlyZFyXS6fJSLI4bF/6dbJThZMmFgdaAng7CGu4WdTgZn2BYVJ8p6SjsDM5ul0wsCSvXtgSn20HP2joLUUX1IRZARDsTUj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708021580; c=relaxed/simple;
-	bh=x222K/iVJq1Vit9kTzhOmvETqEf55fuMWAFaC+bQJPA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Yfz1xghAVhZWzaJg6ncCzZtamNH/DrfzlLsNgsIhwMN3bL9lY6YwPdbyFtfYaysQ4kvOj62a1Z2khXctBSVAYYtLhk4FU2x5mexiAo6EesvQ4PtrQR2l4MdXpbiRGBOhdYHtYqOh82aCB2u0YQYxuJQerbiZW1zOwxRBaXxC9qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNJENkXJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A69FC43394;
-	Thu, 15 Feb 2024 18:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708021580;
-	bh=x222K/iVJq1Vit9kTzhOmvETqEf55fuMWAFaC+bQJPA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=eNJENkXJQd3tdenz6UODUvk6smrVpiDRE9Dbhz0k/rHhyIDmwPRjV8AP20UFaiXr1
-	 2gpsp/H/0S47m3/kCpgJMQ0bKv1RVSH730ydj6nhTCAcx2xLxADd+A+VMRaogFIr4K
-	 zpDwAxiXaw7uYrD/nG43dO1o6crao0msx0LGo+kUKZe3hcSLKMoikfHzqgdMsJco6i
-	 HbpA/DqNWZvDGVvbJ72mgsp3R/2EzMgXkZLDBGZ2jOtyFVMGLrWKseXxxPThwLA+Uu
-	 6qtk4fRO4yYaNCqysM1waQN/CuwTERtmkLZEpO5E4cg4jDsZeh3hiURbE590WJ5D2O
-	 wOSGCOYpvt0LA==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Thu, 15 Feb 2024 19:25:40 +0100
-Subject: [PATCH net 13/13] selftests: mptcp: diag: unique 'cestab' subtest
- names
+	s=arc-20240116; t=1708021563; c=relaxed/simple;
+	bh=dk7nldjBHf2OhhUJm5xdgR4jejE5bUggZf5m/L2de8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QPU0aQZLJf5cScoD+IzP0ADtaekCk0WKRenpByHfAsKg0W5eWX4J0FBNmLZhPozjqNe6XQFUlTdmvrXOXQpCgoNlLpzRbKKHknX3QtT88rdMBwmKWSe2ZanjQV3ZNHvNBBc7d7Q++dBdbFVnfR/fIDqq6x4Rg0iPqyWgjZkQcak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=el+YSwMe; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3d002bc6f7so115747666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1708021559; x=1708626359; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sjjC6lYZHHWcZkiJkEdyU7XkS4SkECfb3ViIZBKdrI=;
+        b=el+YSwMetnVQOm6Ng602mTNUm2syJGnqaMdy0M0M0zx5SFhwOb2cDP7ZN9W2io9m0M
+         NsUFcpM0cMvIGY3ucIQpsawuiDgYLXaoS1cqkLEl/jKZ6h4GeAc0r+5RBnT3AxTCeLgk
+         8t0jnDZXBIMStqpKMhKMaKK0p6Ph3dVtW+KdI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708021559; x=1708626359;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4sjjC6lYZHHWcZkiJkEdyU7XkS4SkECfb3ViIZBKdrI=;
+        b=p/P9uMBjU688h9VHT2Q04oxjqM14JyCXcKgQs+ts8iLSlp+iLEyejlYPVQZhjcIdGT
+         4vkSKCF0akKnSZMsQ+Pz155Qsz/Gbsq8LOu1hu/cgB4lIVeJEGz1X3/udKg/5qzXDF4C
+         C+zTBuyHnTp7eP2jQv0cZMT0itxp9ToAh0Xfn6nWPI/8E2MkzMMZFZUVQjrb2UduRvbM
+         oe5URZiETst3SrgdrGw0P6ff4t0EgH2fkOqIbYEtL0PRGW0iE0AEKAF6+UCOrFnF1jQX
+         WXFUjHpxgKSf3pef72BaBpdfMvAQNpd+JpFJQGutQTUVS0HtEE4xOBl0qa7m2trQjgoM
+         shQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXK8XsZmDnchJm5hEuydHGCuD5OfztV44sz5JjuzgkB3RY6FtCfRR7o7MtTRdBm/7Vo/1C6He936blOt6+TKuBmHvKofD05b5TVM8vR
+X-Gm-Message-State: AOJu0YxTs5MB+bg1hQmQMuBHjn7w1psWd52eBoj0HF24wVCSZ2NYX/MP
+	mGR1qGEq/GCEZCKEHBCzaKuL5oc1uZ0xidZkt1V1Mv06NnfS1unIkVKAa9iQLmN/PykBscxDiLK
+	pOVM=
+X-Google-Smtp-Source: AGHT+IHMhZvO1+oru/8r10lDFJWoz9eMi/4EiTq2VMQEKvrfYlX5lEKb8ARORXLnRGJbZLRCN6Oa8w==
+X-Received: by 2002:a17:906:ae48:b0:a3c:de7:f59a with SMTP id lf8-20020a170906ae4800b00a3c0de7f59amr1895327ejb.60.1708021558794;
+        Thu, 15 Feb 2024 10:25:58 -0800 (PST)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id hd16-20020a170907969000b00a385535a02asm806128ejc.171.2024.02.15.10.25.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 10:25:57 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so1771430a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:25:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU61meHaU0n7IWwWlPWhNfxgIcFcAvT0sNi4vkxlx4XHlABmsusuleRQw8+lg0lAbMdwaL2fFlmvRjl9jBVLwwn5znUuCG3tueKMd5q
+X-Received: by 2002:aa7:cf8d:0:b0:560:14c4:58fe with SMTP id
+ z13-20020aa7cf8d000000b0056014c458femr1868778edx.29.1708021557034; Thu, 15
+ Feb 2024 10:25:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240215-upstream-net-20240215-misc-fixes-v1-13-8c01a55d8f6a@kernel.org>
-References: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
-In-Reply-To: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Davide Caratti <dcaratti@redhat.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, 
- "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, stable@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2535; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=x222K/iVJq1Vit9kTzhOmvETqEf55fuMWAFaC+bQJPA=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlzlcdkqqo1as8l+1WTgonChxLYAPdqGM3qqqWv
- xMvz1RVmtOJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZc5XHQAKCRD2t4JPQmmg
- c7P5EADAORF4I6xRVCuIteRM18Viuxr5KG8CJBSnyQSeTV/vonia8wze3JPh9GE6VpUkY0bqPvJ
- Z6yMC991t6M5QFmkPW5hfBjuQQcqeeZ/40MuMkAM1ssJFVq67Dmw19grT1ZLjriD3qXaW+xn5rn
- h3nWRaxK0GZo1NE0tdkwTt0dsmJOfDSH0YSp8Gyxu4iBzbkXfcOV93FDcqdbJne+qTWVZxJKQ8H
- /UZQcRbbO0dWoRh42yISUgigPMQwQuFusT3h6xoIKLek5U97L0dyFquk/X57yRXuoiXu9kYiDI8
- sCvaQL+I6UhulZWWdKVc7bCi6690tmsA9/LFqUNl2n6lFTxJiEg9A0bwTp4L1bowf8UuwNggn+B
- r66SCrglwMHiYXrSJhDxHs9mabj3gGlhqFUzr6qGv3EA189mweNnRmnO12HEOoOTdhVCSoc51W+
- T7OWhhhs1BPgcfnGOjXuOe9tY90XJW6B6a5dZlKKIvXebdaxyVKBfQc//PwyMXFguUdNXd8cD2R
- Ur0C13HAFW7cHBV/cY63MJAzdf2lPQl+6ws8FX+erP5ES7dkboC9do2SeKQVQ4UkDiDYDTnokgF
- HfKz4bR1ASlAhkmE/IK2u0AR3FGAImFLy0kSqC/GUcg/AVyFytIlG4p2KAcCALzY3l3camMdeKA
- lr+DTNHNrTLEXgw==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+ <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
+ <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
+ <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
+ <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
+ <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
+ <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com> <Zc3NvWhOK//UwyJe@tucnak>
+In-Reply-To: <Zc3NvWhOK//UwyJe@tucnak>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 15 Feb 2024 10:25:40 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
+Message-ID: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
+ (and earlier)
+To: Jakub Jelinek <jakub@redhat.com>
+Cc: Uros Bizjak <ubizjak@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Sean Christopherson <seanjc@google.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-It is important to have a unique (sub)test name in TAP, because some CI
-environments drop tests with duplicated name.
+On Thu, 15 Feb 2024 at 00:39, Jakub Jelinek <jakub@redhat.com> wrote:
+>
+> Can it be guarded with
+> #if GCC_VERSION < 140100
 
-Some 'cestab' subtests from the diag selftest had the same names, e.g.:
+Ack. I'll update the workaround to do that, and add the new and
+improved bugzilla pointer.
 
-    ....chk 0 cestab
+Thanks for fixing this so quickly.
 
-Now the previous value is taken, to have different names, e.g.:
-
-    ....chk 2->0 cestab after flush
-
-While at it, the 'after flush' info is added, similar to what is done
-with the 'in use' subtests. Also inspired by these 'in use' subtests,
-'many' is displayed instead of a large number:
-
-    many msk socket present                           [  ok  ]
-    ....chk many msk in use                           [  ok  ]
-    ....chk many cestab                               [  ok  ]
-    ....chk many->0 msk in use after flush            [  ok  ]
-    ....chk many->0 cestab after flush                [  ok  ]
-
-Fixes: 81ab772819da ("selftests: mptcp: diag: check CURRESTAB counters")
-Cc: stable@vger.kernel.org
-Reviewed-by: Geliang Tang <geliang@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
----
- tools/testing/selftests/net/mptcp/diag.sh | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/net/mptcp/diag.sh b/tools/testing/selftests/net/mptcp/diag.sh
-index 266656a16229..0a58ebb8b04c 100755
---- a/tools/testing/selftests/net/mptcp/diag.sh
-+++ b/tools/testing/selftests/net/mptcp/diag.sh
-@@ -189,10 +189,15 @@ chk_msk_inuse()
- # $1: cestab nr
- chk_msk_cestab()
- {
--	local cestab=$1
-+	local expected=$1
-+	local msg="....chk ${2:-${expected}} cestab"
-+
-+	if [ "${expected}" -eq 0 ]; then
-+		msg+=" after flush"
-+	fi
- 
- 	__chk_nr "mptcp_lib_get_counter ${ns} MPTcpExtMPCurrEstab" \
--		 "${cestab}" "....chk ${cestab} cestab" ""
-+		 "${expected}" "${msg}" ""
- }
- 
- wait_connected()
-@@ -236,7 +241,7 @@ chk_msk_cestab 2
- flush_pids
- 
- chk_msk_inuse 0 "2->0"
--chk_msk_cestab 0
-+chk_msk_cestab 0 "2->0"
- 
- echo "a" | \
- 	timeout ${timeout_test} \
-@@ -256,7 +261,7 @@ chk_msk_cestab 1
- flush_pids
- 
- chk_msk_inuse 0 "1->0"
--chk_msk_cestab 0
-+chk_msk_cestab 0 "1->0"
- 
- NR_CLIENTS=100
- for I in `seq 1 $NR_CLIENTS`; do
-@@ -278,11 +283,11 @@ done
- 
- wait_msk_nr $((NR_CLIENTS*2)) "many msk socket present"
- chk_msk_inuse $((NR_CLIENTS*2)) "many"
--chk_msk_cestab $((NR_CLIENTS*2))
-+chk_msk_cestab $((NR_CLIENTS*2)) "many"
- flush_pids
- 
- chk_msk_inuse 0 "many->0"
--chk_msk_cestab 0
-+chk_msk_cestab 0 "many->0"
- 
- mptcp_lib_result_print_all_tap
- exit $ret
-
--- 
-2.43.0
-
+                Linus
 
