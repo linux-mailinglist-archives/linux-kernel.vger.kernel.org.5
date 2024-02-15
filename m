@@ -1,137 +1,166 @@
-Return-Path: <linux-kernel+bounces-67286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B3A85692B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:14:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5742585691A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFCE3283089
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:14:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA4B51F215E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD07137C23;
-	Thu, 15 Feb 2024 16:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PRL/Ort+"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0D51350D0;
+	Thu, 15 Feb 2024 16:06:37 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B031369BC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFF013342A;
+	Thu, 15 Feb 2024 16:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708013271; cv=none; b=GQAi9XWxSGcejMl/JawR8DN+EmmXy/UyaNQfhKztC0viCbf+f4v8EG0Jk0GJXvrsRk/3SF6Av9O+yE9NeD9RaS6+0vydTX3eq/gaXb1VEH1upnMzt09r8mlnrWKjmj5dKAyj9fhkSLGPh0iXgVgQr+UuemwCaTg0b5d1P8Y1itU=
+	t=1708013197; cv=none; b=CddAc8iwQt5auDUeW4hfYbs34zpzsX0yas+GgITu4gY9TO/6GRs+WmfB2tRyBAuMz17L4Tg7QS4iVQGJ/9Key2/GWxhDmDr9swo23o/bkBiVo4+kwLridClvkdbIVNcXgO4zYpiAktIcD72OBbtU4BWx/9EGyJJPhERboZtxCCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708013271; c=relaxed/simple;
-	bh=WyVHiG7SNjPtocRHyKZ3iRHU1kqrdd9Sm6OgjUgJq08=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n8qSi9nimKaor1fnURFnteSbVrIe5Fdwa2IGBzm173JRqMcrz7zN031GkTM248NAXMG0AQNLJqQ5gGdt8GZx4/3JMFMFdJfqPEM4OWd56dtj7dkVDmnsh5SeRfCcekZaHR9FGz6h7rcm3YD+LAk1quxPhrCmY275OlI59fyHrwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PRL/Ort+; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59d78deb469so603404eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708013269; x=1708618069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xvsN+oW6w+v+3YWUT8f18I44TCeWB8omp1IZ3VxOyQU=;
-        b=PRL/Ort+vVnP6rqIFy60C1jznCufQCkQsKKLYxOnD2N8WoSwCy0yf5fVTs434oQeXY
-         Vjq896mImErS+2TpYDv1mlvQjCmko65K+YkJblnjk+ncddPZA/1fTckDZZR0ICwIY5aU
-         5jx3eDhQfn9n2/iZ4ccPqm0fEcy1l6GilPY4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708013269; x=1708618069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xvsN+oW6w+v+3YWUT8f18I44TCeWB8omp1IZ3VxOyQU=;
-        b=SiuA9DHNP3A26vdxvRLvTVZ5QfjK1yCUL9pW7sXmJia4quzmhShQqhpo2pyknOnS4L
-         AHiKYrTxDbRcsmWRODni8riuvBeKo52HMlSu0Bx31O0Rc/ziyGU7m0qgxCdlvF4uLy5/
-         nZ7fWsN1qOTYUv2TWvQKUUaUdPyfG6G9s4PgpY1Jtly41J47B8CD5A3N4jzoIQHyH+mU
-         0Qd390AKrVDqMavh20nAsFGlmxCjKoYD/X3ZpLyBqUXPgHqyqPgdsFKs37ZEFyChh8w2
-         y44DSChEE/qCUpTquL+PjfM4l/MifvWpKUjj0SquUNXryATHbYSDssOVGduSVAVu7TNy
-         cG8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV4sX4RF1APvt5PJ2xUR/uPosM+e/IydWPzbrAJjW3YFpeUoYfietzJLVDb5KU540ak6PoNlers6fkQ9hyNJK/2uTJ5SWZwHQi4VGDe
-X-Gm-Message-State: AOJu0YwHkTLygv40i03jJQymVQla0qTpoR0wYi/FV/r1OUtIbCW5SLb3
-	4pkQCyhEC14sSUo6OVM+DrSNxen2s3+kT2YM0iVRXqSgjhMjLfOKbVQDkUfMn1Vp8UF6gIqixMP
-	573KmMynK7WpHWZZYkj90zyHdg6xLPbiKc7J7
-X-Google-Smtp-Source: AGHT+IGYs9rjNiqGuCyTcpQJFZHsomTYuyM9rFlZCgqnradG7m5ZDI1cWSBqXR459I1Q5ycQk0myVk/vlnDys/0kkGU=
-X-Received: by 2002:a4a:314d:0:b0:59d:638e:bab3 with SMTP id
- v13-20020a4a314d000000b0059d638ebab3mr2080220oog.2.1708013269431; Thu, 15 Feb
- 2024 08:07:49 -0800 (PST)
+	s=arc-20240116; t=1708013197; c=relaxed/simple;
+	bh=JICvr0D4tYvl5DaKYMCiv1tn6ushEDdrtmyTwJvTNJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=COjHdklXc+JVZrh1C0JSVEsGrIXS+R3lBP9M7SIgnCqYh7Q12CGBMietnhQCmR+aKbxQFSlTYZmPrD/gzArm64bxk9LP+FP8DZTRhvaglxNWgMRM4/dJSZLJV30bVKedLIALUqWMRRMQs8HYt8/wPzt96GCPE2lCg8fW1mu7FVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00AA4C43390;
+	Thu, 15 Feb 2024 16:06:34 +0000 (UTC)
+Date: Thu, 15 Feb 2024 11:08:08 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 24/36] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+Message-ID: <20240215110808.752c9b67@gandalf.local.home>
+In-Reply-To: <170723231592.502590.12367006830540525214.stgit@devnote2>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723231592.502590.12367006830540525214.stgit@devnote2>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
- <20240215034528.240-1-hdanton@sina.com> <87h6iaf7di.wl-tiwai@suse.de>
-In-Reply-To: <87h6iaf7di.wl-tiwai@suse.de>
-From: Sven van Ashbrook <svenva@chromium.org>
-Date: Thu, 15 Feb 2024 11:07:38 -0500
-Message-ID: <CAG-rBigFG-U-sKY77CvzghGzs+1Xm3YXzBF6N4ti0+h6UdAb8Q@mail.gmail.com>
-Subject: Re: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Hillf Danton <hdanton@sina.com>, Karthikeyan Ramasubramanian <kramasub@chromium.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Brian Geffon <bgeffon@google.com>, 
-	linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Takashi,
+On Wed,  7 Feb 2024 00:11:56 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-On Thu, Feb 15, 2024 at 3:40=E2=80=AFAM Takashi Iwai <tiwai@suse.de> wrote:
->
-> Yes, the main problem is the indefinite hang from
-> dma_alloc_noncontiguous().
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
+> on the stack in ftrace_graph return trampoline so that the callbacks
+> can access registers via ftrace_regs APIs.
+> 
+> Note that this only recovers 'rax' and 'rdx' registers because other
+> registers are not used anymore and recovered by caller. 'rax' and
+> 'rdx' will be used for passing the return value.
+> 
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  Changes in v3:
+>   - Add a comment about rip.
+>  Changes in v2:
+>   - Save rsp register and drop clearing orig_ax.
+> ---
+>  arch/x86/Kconfig            |    3 ++-
+>  arch/x86/kernel/ftrace_64.S |   37 +++++++++++++++++++++++++++++--------
+>  2 files changed, 31 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 5edec175b9bf..ccf17d8b6f5f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -223,7 +223,8 @@ config X86
+>  	select HAVE_FAST_GUP
+>  	select HAVE_FENTRY			if X86_64 || DYNAMIC_FTRACE
+>  	select HAVE_FTRACE_MCOUNT_RECORD
+> -	select HAVE_FUNCTION_GRAPH_RETVAL	if HAVE_FUNCTION_GRAPH_TRACER
+> +	select HAVE_FUNCTION_GRAPH_FREGS	if HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> +	select HAVE_FUNCTION_GRAPH_RETVAL	if !HAVE_DYNAMIC_FTRACE_WITH_ARGS
+>  	select HAVE_FUNCTION_GRAPH_TRACER	if X86_32 || (X86_64 && DYNAMIC_FTRACE)
+>  	select HAVE_FUNCTION_TRACER
+>  	select HAVE_GCC_PLUGINS
+> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+> index 214f30e9f0c0..8a16f774604e 100644
+> --- a/arch/x86/kernel/ftrace_64.S
+> +++ b/arch/x86/kernel/ftrace_64.S
+> @@ -348,21 +348,42 @@ STACK_FRAME_NON_STANDARD_FP(__fentry__)
+>  SYM_CODE_START(return_to_handler)
+>  	UNWIND_HINT_UNDEFINED
+>  	ANNOTATE_NOENDBR
+> -	subq  $24, %rsp
+> +	/*
+> +	 * Save the registers requires for ftrace_regs;
+> +	 * rax, rcx, rdx, rdi, rsi, r8, r9 and rbp
+> +	 */
+> +	subq $(FRAME_SIZE), %rsp
+> +	movq %rax, RAX(%rsp)
+> +	movq %rcx, RCX(%rsp)
+> +	movq %rdx, RDX(%rsp)
+> +	movq %rsi, RSI(%rsp)
+> +	movq %rdi, RDI(%rsp)
+> +	movq %r8, R8(%rsp)
+> +	movq %r9, R9(%rsp)
+> +	movq %rbp, RBP(%rsp)
 
-We have a publicly-visible test [1] which readily triggers the
-indefinite hang on non-iommu Intel SoCs such as JasperLake.
-As noted in the commit message, iommu SoCs are not currently
-affected.
+This unconditionally slows down function graph tracer for no good reason.
 
-> So, is the behavior more or less same even if you pass
-> __GFP_RETRY_MAYFAIL to dma_alloc_noncontiguous()?  Or is this flag
-> already implicitly set somewhere in the middle?  It shouldn't hang
-> indefinitely, but the other impact to the system like OOM-killer
-> kickoff may be seen.
+Most of the above is going to be garbage anyway, except the rax and rdx.
 
-My incomplete understanding:
+I would recommend than we set something else in the ftrace regs that states
+this only holds return values. Anything else will just get invalid.
 
-Alsa specifies __GFP_RETRY_MAYFAIL because it wants to prevent triggering
-the OOM killer. This was __GFP_NORETRY in the not-too-distant past [2],
-but that failed too quickly, which resulted in permanent loss of audio due
-to failed firmware dma sg allocations.
+I'm really against saving garbage. The purpose of ftrace_regs is that it
+can hold incomplete data.
 
-In the iommu case, dma_alloc_noncontiguous() implements a backoff [3] loop
-which ORs in __GFP_NORETRY except for minimum order allocations. We observe
-experimentally that __GFP_RETRY_MAYFAIL does not get "stuck" on minimum ord=
-er
-allocations. So the iommu case is not affected.
+-- Steve
 
-In the non-iommu case however, dma_alloc_noncontiguous() actually becomes a
-contiguous allocator, with no backoff loop. The commit introducing it [4]
-states "This API is only properly implemented for dma-iommu and will simply
-return a contigious chunk as a fallback." In this case we observe the indef=
-inite
-hang.
 
-The alsa fallback allocator is also not affected by the problem, as it does
-not specify __GFP_RETRY_MAYFAIL. Except in the XENPV case.
+> +	/*
+> +	 * orig_ax is not cleared because it is used for indicating the direct
+> +	 * trampoline in the fentry. And rip is not set because we don't know
+> +	 * the correct return address here.
+> +	 */
+> +
+> +	leaq FRAME_SIZE(%rsp), %rcx
+> +	movq %rcx, RSP(%rsp)
+>  
+> -	/* Save the return values */
+> -	movq %rax, (%rsp)
+> -	movq %rdx, 8(%rsp)
+> -	movq %rbp, 16(%rsp)
+>  	movq %rsp, %rdi
+>  
+>  	call ftrace_return_to_handler
+>  
+>  	movq %rax, %rdi
+> -	movq 8(%rsp), %rdx
+> -	movq (%rsp), %rax
+>  
+> -	addq $24, %rsp
+> +	/*
+> +	 * Restore only rax and rdx because other registers are not used
+> +	 * for return value nor callee saved. Caller will reuse/recover it.
+> +	 */
+> +	movq RDX(%rsp), %rdx
+> +	movq RAX(%rsp), %rax
+> +
+> +	addq $(FRAME_SIZE), %rsp
+>  	/*
+>  	 * Jump back to the old return address. This cannot be JMP_NOSPEC rdi
+>  	 * since IBT would demand that contain ENDBR, which simply isn't so for
 
-Sven
-
-[1] https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src=
-/third_party/autotest/files/client/site_tests/power_LowMemorySuspend/contro=
-l
-
-[2] a61c7d8 ("ALSA: memalloc: use __GFP_RETRY_MAYFAIL for DMA mem allocs")
-
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/drivers/iommu/dma-iommu.c?h=3Dv6.8-rc4#n903
-
-[4] 7d5b573 ("dma-mapping: add a dma_alloc_noncontiguous API")
 
