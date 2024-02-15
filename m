@@ -1,402 +1,164 @@
-Return-Path: <linux-kernel+bounces-66388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D025855C04
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:09:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EB0F855C05
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321AB1C2885E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:09:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BE352823FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5182812E67;
-	Thu, 15 Feb 2024 08:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D99913AC6;
+	Thu, 15 Feb 2024 08:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nihSTvYX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Zsaxm202"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453091118F;
-	Thu, 15 Feb 2024 08:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE435134CA
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707984553; cv=none; b=NwfMCiDwZG4V+nQF9zwyASylo+0dW+h+/Aa1Y4O1yfFHy8MOutvmtGOIB3UZDue/YR95TD+mX4NTtf/PDtsXFZyXQAlS3Nv6Utc4qs/hOxLZDNLq7zfeTlkj6w/89jIUUOi7IdyjL95J16MIMhGcYHW0F7hyX7PEXNL5+lsskBU=
+	t=1707984559; cv=none; b=qlahPoB3PAswc5wm7Kn/5g1SpBq1NxhQM9FGiBkx972H+cySwm8xirCTMMB5BwUgUjZ2Weqh9Nr8pUOzyp3s4oemf42PhnzEPSN/3s9rmoxzjsSUKCbkfqF5cmAXmFIKLdlAgm8EoAyFwRz1oN7QEWn+AfZaMbnIoR+LLAAoWzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707984553; c=relaxed/simple;
-	bh=iBhxtYQbpLfj3dlhxKI2geTS1BtCu4ErK/UQ/65GC9k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CNB9Z9QOMYZ7CW1tVv6008hIwkn6NKUumVod5ch5HW6UWUkbxN8m0L5DgRdtWNGt0t0GX0KQnWx88V/QaMqHVLuL5r4mC2y7OLkGYB2Bx9rs6KTbMZZnvHlyOyyEt9gzssw4qpHY3oqKeSIo2eyqusw+TJinPFCwZyZc6T4LUFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nihSTvYX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6813C43141;
-	Thu, 15 Feb 2024 08:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707984552;
-	bh=iBhxtYQbpLfj3dlhxKI2geTS1BtCu4ErK/UQ/65GC9k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nihSTvYX3PqYfrp/Bdhm3OFoEXqstCjlXeLvJFPhV0bn04Gh5frQzRdTQFYuObeJN
-	 FLs0y9nCyK06w+AgV8Mw2r5om9Vq1XLDrQrAdIZIawj2AYmScZD1TFkHrgcBzPQSKi
-	 whkNmIjS9L4MswGi/Np4BkbqIUWwGn1gO7AZRj9BScBxPdsKcaSeGzD6cFC+4bfT7I
-	 qpcmKEgXeLzPJswzqgZBbsDgqNXtHwfnHgz7xTMJ6X8PHyOx/dOFUwYipqeFuBm3Wf
-	 3lA/1QZNJnjx4kcNQfjAv2lOqRDj2+LF6KcFMaQn3/zAeEWdRTMt/YltHpfGmZkRRG
-	 scj1PwuNN3d8w==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-511976c126dso741250e87.1;
-        Thu, 15 Feb 2024 00:09:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUXno6ypJ2cFs8QFDruGUFMLrdp07P9xYV0oC89c/1RRGF0hHcm3YAcrbL6veJuf+QTxNwMLENSOD64zYsik0S1MDXIpsrc6iUIGIvIa1E6cd7qES7mwzoub1fLlMk0rsvmop3hulLmoC4ES6vzBUrOeKZzm8XsRc2wTY9NxrK5Zj3N260Jlurl4/uPmEzHYUUoXnWujPEFLMC2ue3s/P1Jcjnb
-X-Gm-Message-State: AOJu0YyKDM9adFslKy72ivRkjsW79cEEl45v/Q+9htsSrGo7AbRO3PiE
-	pu7kxLHfm6QU2KtgiNHM9GB9SdSLU9Ob1lnMZhCWuW4Ufru6u9nlhTEQO8yHOjU9Xln+hf2NcwE
-	C3/PMmxnveP8gYtluFRE2/+ye7Tg=
-X-Google-Smtp-Source: AGHT+IES5dFR/dEUVlJWfvtf3xciPB+7NHzjXGklMH5tK3nkOBEGAVCil/5i8S6vDeDjj+8Wg38DPkb9JJN4ATkctI0=
-X-Received: by 2002:a05:6512:e98:b0:511:ac21:57db with SMTP id
- bi24-20020a0565120e9800b00511ac2157dbmr936557lfb.0.1707984550864; Thu, 15 Feb
- 2024 00:09:10 -0800 (PST)
+	s=arc-20240116; t=1707984559; c=relaxed/simple;
+	bh=os2ejC1/FFEVbTRi0dZfoX5I51ndLrpxCGwFODLHC6E=;
+	h=Mime-Version:Subject:From:To:CC:Message-ID:Date:Content-Type:
+	 References; b=mP+R/pWgJ4oRpk94zELvKw+icjMX8rgFDWl5bdHHViEU59V+6ik9gsh1QT4gVpLSQR8FZ6PgOQ7pkxr2vBvbQDxqC8qbN51JrS23AFeyzVWkWWhGIU7bTbx5CcHLIUglJQIdl3Yx8Fe/y+Amgs5/JKsabTJvidOqh51Huw4BP5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Zsaxm202; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240215080908epoutp021514024e7c318163cbc102e5613f7119~z_uXbtqjb1975319753epoutp02Z
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:09:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240215080908epoutp021514024e7c318163cbc102e5613f7119~z_uXbtqjb1975319753epoutp02Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1707984548;
+	bh=fZsm0JDutQFfHlHVHia33p4T5epNvICN0al9bA90iJw=;
+	h=Subject:Reply-To:From:To:CC:Date:References:From;
+	b=Zsaxm2029O6D9A7RwUe5nKIQbqsR5V6HoFXl/dllpFfbV4LGe1JgC302LZRyQgUYG
+	 vyQtDmDaSwCeQWaGHEs3c6vLt8NL9e3LAwzU85wLwZP9qTzKbCcSLCLZkCjGib+2L8
+	 M+TxC0On4JjZTYZ57BzOhd1zljPnKpC23Vo7qn7U=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+	20240215080908epcas2p41931e9cc6b162b429520119c7696c88f~z_uWur2dU2920429204epcas2p4a;
+	Thu, 15 Feb 2024 08:09:08 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.101]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4Tb74g3jqYz4x9Pt; Thu, 15 Feb
+	2024 08:09:07 +0000 (GMT)
+X-AuditID: b6c32a4d-9f7ff70000004a32-59-65cdc6a35f47
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	75.04.18994.3A6CDC56; Thu, 15 Feb 2024 17:09:07 +0900 (KST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240214221847.2066632-1-ross.philipson@oracle.com> <20240214221847.2066632-5-ross.philipson@oracle.com>
-In-Reply-To: <20240214221847.2066632-5-ross.philipson@oracle.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 15 Feb 2024 09:08:59 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGaMfUAR85jpeS2JxcmWBbpkzroCVZOtwa3WDQwStDjMw@mail.gmail.com>
-Message-ID: <CAMj1kXGaMfUAR85jpeS2JxcmWBbpkzroCVZOtwa3WDQwStDjMw@mail.gmail.com>
-Subject: Re: [PATCH v8 04/15] x86: Secure Launch Resource Table header file
-To: Ross Philipson <ross.philipson@oracle.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-efi@vger.kernel.org, dpsmith@apertussolutions.com, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com, 
-	mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de, 
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net, nivedita@alum.mit.edu, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, kanth.ghatraju@oracle.com, 
-	trenchboot-devel@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Subject: [PATCH v2] perf: CXL: fix CPMU filter value mask length
+Reply-To: hj96.nam@samsung.com
+Sender: Hojin Nam <hj96.nam@samsung.com>
+From: Hojin Nam <hj96.nam@samsung.com>
+To: "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"jonathan.cameron@huawei.com" <jonathan.cameron@huawei.com>
+CC: Wonjae Lee <wj28.lee@samsung.com>, KyungSan Kim
+	<ks0204.kim@samsung.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "will@kernel.org" <will@kernel.org>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20240215080906epcms2p2c49c6b9bfe271e1d089ad35ab527b958@epcms2p2>
+Date: Thu, 15 Feb 2024 17:09:06 +0900
+X-CMS-MailID: 20240215080906epcms2p2c49c6b9bfe271e1d089ad35ab527b958
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmhe7iY2dTDbbNk7BYtfAam8XRPRwW
+	mx5fY7U4P+sUi8XlXXPYLJZev8hk0XLH1GLj/XdsDhwea+atYfRoOfKW1WPTqk42j81L6j36
+	tqxi9Pi8SS6ALSrbJiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUn
+	QNctMwfoGiWFssScUqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgXmBXnFibnFpXrpeXmqJ
+	laGBgZEpUGFCdsaB5TfYC7YJVFy+fpWpgXEpTxcjJ4eEgIlE1/sWti5GLg4hgT2MEhOOdwE5
+	HBy8AoISf3cIg5jCAg4SvQ9UQMqFBOQk9pw4zwJiCwtoSKz9fpgdxGYTUJNYeP8SM4gtIlAl
+	cf39UyaQkcwC25gk/j5cygixi1diRvtTFghbWmL78q1QcQ2JH8t6mSFsUYmbq9+yw9jvj82H
+	qhGRaL13FqpGUOLBz91QcSmJT3c3QcWLJWbvXwYVL5BY8WMR1C59icbr79lAbF4BX4mOJU1g
+	NouAqsTzc5dYIWpcJE68ngEWZxaQl9j+dg4zyO/MApoS63fpg5gSAsoSR26xQFTwSXQc/ssO
+	89WOeU+YIGwlif0drVDXSEjcOXEZ6hoPiYknbjFBgjBQYv2xq6wTGBVmIcJ5FpK9sxD2LmBk
+	XsUolVpQnJuemmxUYKibl1oOj97k/NxNjOCkqeW7g/H1+r96hxiZOBgPMUpwMCuJ8E7qPZMq
+	xJuSWFmVWpQfX1Sak1p8iNEU6OuJzFKiyfnAtJ1XEm9oYmlgYmZmaG5kamCuJM57r3VuipBA
+	emJJanZqakFqEUwfEwenVANT/tQIT0XFt1oLJk+3YZnxyiI8Ob3zx6yC3FeHFhbcjuSb/+Zb
+	6tynHycecbaYnPH604/XL86ZnpzmcCpSapFe25wPNcqt2yepvZi8ftG5lREdomyO5ze2Scr/
+	Ce6cIGHJ8YL7SPdFVYtZ3Ls5Zs5+Hf39/fRopinHwziZq/5stV39j5X91xEPwalX9PyvvepV
+	fqt1rbxqubbR/R2XPh034r8n384Q5sHRFfXrsEG57IJMRR3ldVuUbW+2hd8rOHDzzYVFB9k7
+	1mRukl24NvPMlrLHK5bJ7rJNyu/256qzsNtdeTJv9/mKjlPl/74q/b3fa/TscokC17xJqtb9
+	fwuOe83zXrKhiz/0qNC83McpgUosxRmJhlrMRcWJADt1t34jBAAA
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240215080906epcms2p2c49c6b9bfe271e1d089ad35ab527b958
+References: <CGME20240215080906epcms2p2c49c6b9bfe271e1d089ad35ab527b958@epcms2p2>
 
-On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
->
-> Introduce the Secure Launch Resource Table which forms the formal
-> interface between the pre and post launch code.
->
-> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> ---
->  include/linux/slr_table.h | 270 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 270 insertions(+)
->  create mode 100644 include/linux/slr_table.h
->
-> diff --git a/include/linux/slr_table.h b/include/linux/slr_table.h
-> new file mode 100644
-> index 000000000000..42020988233a
-> --- /dev/null
-> +++ b/include/linux/slr_table.h
-> @@ -0,0 +1,270 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Secure Launch Resource Table
-> + *
-> + * Copyright (c) 2023, Oracle and/or its affiliates.
-> + */
-> +
-> +#ifndef _LINUX_SLR_TABLE_H
-> +#define _LINUX_SLR_TABLE_H
-> +
-> +/* Put this in efi.h if it becomes a standard */
-> +#define SLR_TABLE_GUID                         EFI_GUID(0x877a9b2a, 0x0385, 0x45d1, 0xa0, 0x34, 0x9d, 0xac, 0x9c, 0x9e, 0x56, 0x5f)
-> +
-> +/* SLR table header values */
-> +#define SLR_TABLE_MAGIC                0x4452544d
-> +#define SLR_TABLE_REVISION     1
-> +
-> +/* Current revisions for the policy and UEFI config */
-> +#define SLR_POLICY_REVISION            1
-> +#define SLR_UEFI_CONFIG_REVISION       1
-> +
-> +/* SLR defined architectures */
-> +#define SLR_INTEL_TXT          1
-> +#define SLR_AMD_SKINIT         2
-> +
-> +/* SLR defined bootloaders */
-> +#define SLR_BOOTLOADER_INVALID 0
-> +#define SLR_BOOTLOADER_GRUB    1
-> +
-> +/* Log formats */
-> +#define SLR_DRTM_TPM12_LOG     1
-> +#define SLR_DRTM_TPM20_LOG     2
-> +
-> +/* DRTM Policy Entry Flags */
-> +#define SLR_POLICY_FLAG_MEASURED       0x1
-> +#define SLR_POLICY_IMPLICIT_SIZE       0x2
-> +
-> +/* Array Lengths */
-> +#define TPM_EVENT_INFO_LENGTH          32
-> +#define TXT_VARIABLE_MTRRS_LENGTH      32
-> +
-> +/* Tags */
-> +#define SLR_ENTRY_INVALID      0x0000
-> +#define SLR_ENTRY_DL_INFO      0x0001
-> +#define SLR_ENTRY_LOG_INFO     0x0002
-> +#define SLR_ENTRY_ENTRY_POLICY 0x0003
-> +#define SLR_ENTRY_INTEL_INFO   0x0004
-> +#define SLR_ENTRY_AMD_INFO     0x0005
-> +#define SLR_ENTRY_ARM_INFO     0x0006
-> +#define SLR_ENTRY_UEFI_INFO    0x0007
-> +#define SLR_ENTRY_UEFI_CONFIG  0x0008
-> +#define SLR_ENTRY_END          0xffff
-> +
-> +/* Entity Types */
-> +#define SLR_ET_UNSPECIFIED     0x0000
-> +#define SLR_ET_SLRT            0x0001
-> +#define SLR_ET_BOOT_PARAMS     0x0002
-> +#define SLR_ET_SETUP_DATA      0x0003
-> +#define SLR_ET_CMDLINE         0x0004
-> +#define SLR_ET_UEFI_MEMMAP     0x0005
-> +#define SLR_ET_RAMDISK         0x0006
-> +#define SLR_ET_TXT_OS2MLE      0x0010
-> +#define SLR_ET_UNUSED          0xffff
-> +
-> +#ifndef __ASSEMBLY__
-> +
-> +/*
-> + * Primary SLR Table Header
-> + */
-> +struct slr_table {
-> +       u32 magic;
-> +       u16 revision;
-> +       u16 architecture;
-> +       u32 size;
-> +       u32 max_size;
-> +       /* entries[] */
-> +} __packed;
+CPMU filter value is described as 4B length in CXL r3.0 8.2.7.2.2.
+However, it is used as 2B length in code and comments.
 
-Packing this struct has no effect on the layout so better drop the
-__packed here. If this table is part of a structure that can appear
-misaligned in memory, better to pack the outer struct or deal with it
-there in another way.
+Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
+---
 
-> +
-> +/*
-> + * Common SLRT Table Header
-> + */
-> +struct slr_entry_hdr {
-> +       u16 tag;
-> +       u16 size;
-> +} __packed;
+Hi Jonathan,
+as you said, I didn't actually hit this. I just found it by simply
+comparing the code to the CXL Spec. I removed Fixes tag and 
+repaired broken sign off, Thank you!
 
-Same here
+Changes since v1:
+- Remove Fixes tag (Jonathan)
+- Repair broken sign off (Jonathan)
 
-> +
-> +/*
-> + * Boot loader context
-> + */
-> +struct slr_bl_context {
-> +       u16 bootloader;
-> +       u16 reserved;
-> +       u64 context;
-> +} __packed;
-> +
-> +/*
-> + * DRTM Dynamic Launch Configuration
-> + */
-> +struct slr_entry_dl_info {
-> +       struct slr_entry_hdr hdr;
-> +       struct slr_bl_context bl_context;
-> +       u64 dl_handler;
+ drivers/perf/cxl_pmu.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-I noticed in the EFI patch that this is actually
+diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
+index 365d964b0f6a..ca5e92f28b4a 100644
+--- a/drivers/perf/cxl_pmu.c
++++ b/drivers/perf/cxl_pmu.c
+@@ -59,7 +59,7 @@
+ #define   CXL_PMU_COUNTER_CFG_EVENT_GRP_ID_IDX_MSK     GENMASK_ULL(63, 59)
 
-void (*dl_handler)(struct slr_bl_context *bl_context);
+ #define CXL_PMU_FILTER_CFG_REG(n, f)   (0x400 + 4 * ((f) + (n) * 8))
+-#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(15, 0)
++#define   CXL_PMU_FILTER_CFG_VALUE_MSK                 GENMASK(31, 0)
 
-so better declare it as such.
+ #define CXL_PMU_COUNTER_REG(n)         (0xc00 + 8 * (n))
 
-> +       u64 dce_base;
-> +       u32 dce_size;
-> +       u64 dlme_entry;
-> +} __packed;
-> +
-> +/*
-> + * TPM Log Information
-> + */
-> +struct slr_entry_log_info {
-> +       struct slr_entry_hdr hdr;
-> +       u16 format;
-> +       u16 reserved;
-> +       u64 addr;
-> +       u32 size;
-> +} __packed;
-> +
-> +/*
-> + * DRTM Measurement Policy
-> + */
-> +struct slr_entry_policy {
-> +       struct slr_entry_hdr hdr;
-> +       u16 revision;
-> +       u16 nr_entries;
-> +       /* policy_entries[] */
+@@ -314,9 +314,9 @@ static bool cxl_pmu_config1_get_edge(struct perf_event *event)
+ }
 
-Please use a flex array here:
+ /*
+- * CPMU specification allows for 8 filters, each with a 16 bit value...
+- * So we need to find 8x16bits to store it in.
+- * As the value used for disable is 0xffff, a separate enable switch
++ * CPMU specification allows for 8 filters, each with a 32 bit value...
++ * So we need to find 8x32bits to store it in.
++ * As the value used for disable is 0xffff_ffff, a separate enable switch
+  * is needed.
+  */
 
-  struct slr_policy_entry policy_entries[];
+@@ -642,7 +642,7 @@ static void cxl_pmu_event_start(struct perf_event *event, int flags)
+                if (cxl_pmu_config1_hdm_filter_en(event))
+                        cfg = cxl_pmu_config2_get_hdm_decoder(event);
+                else
+-                       cfg = GENMASK(15, 0); /* No filtering if 0xFFFF_FFFF */
++                       cfg = GENMASK(31, 0); /* No filtering if 0xFFFF_FFFF */
+                writeq(cfg, base + CXL_PMU_FILTER_CFG_REG(hwc->idx, 0));
+        }
 
-> +} __packed;
-> +
-> +/*
-> + * DRTM Measurement Entry
-> + */
-> +struct slr_policy_entry {
-> +       u16 pcr;
-> +       u16 entity_type;
-> +       u16 flags;
-> +       u16 reserved;
-> +       u64 entity;
-> +       u64 size;
-> +       char evt_info[TPM_EVENT_INFO_LENGTH];
-> +} __packed;
-> +
-> +/*
-> + * Secure Launch defined MTRR saving structures
-> + */
-> +struct slr_txt_mtrr_pair {
-> +       u64 mtrr_physbase;
-> +       u64 mtrr_physmask;
-> +} __packed;
-> +
-> +struct slr_txt_mtrr_state {
-> +       u64 default_mem_type;
-> +       u64 mtrr_vcnt;
-> +       struct slr_txt_mtrr_pair mtrr_pair[TXT_VARIABLE_MTRRS_LENGTH];
-> +} __packed;
-> +
-> +/*
-> + * Intel TXT Info table
-> + */
-> +struct slr_entry_intel_info {
-> +       struct slr_entry_hdr hdr;
-> +       u64 saved_misc_enable_msr;
-> +       struct slr_txt_mtrr_state saved_bsp_mtrrs;
-> +} __packed;
-> +
-> +/*
-> + * AMD SKINIT Info table
-> + */
-> +struct slr_entry_amd_info {
-> +       struct slr_entry_hdr hdr;
-> +} __packed;
-> +
-> +/*
-> + * ARM DRTM Info table
-> + */
-> +struct slr_entry_arm_info {
-> +       struct slr_entry_hdr hdr;
-> +} __packed;
-> +
-
-These two look preliminary, so better to drop them now and introduce
-only once you know what they will look like.
-
-> +struct slr_entry_uefi_config {
-> +       struct slr_entry_hdr hdr;
-> +       u16 revision;
-> +       u16 nr_entries;
-> +       /* uefi_cfg_entries[] */
-
-Use a flex array
-
-> +} __packed;
-> +
-> +struct slr_uefi_cfg_entry {
-> +       u16 pcr;
-> +       u16 reserved;
-> +       u64 cfg; /* address or value */
-> +       u32 size;
-> +       char evt_info[TPM_EVENT_INFO_LENGTH];
-> +} __packed;
-> +
-> +static inline void *slr_end_of_entrys(struct slr_table *table)
-
-typo 'entrys' ?
-
-> +{
-> +       return (((void *)table) + table->size);
-
-You can drop two sets of parens here
-
-> +}
-> +
-> +static inline struct slr_entry_hdr *
-> +slr_next_entry(struct slr_table *table,
-> +              struct slr_entry_hdr *curr)
-> +{
-> +       struct slr_entry_hdr *next = (struct slr_entry_hdr *)
-> +                               ((u8 *)curr + curr->size);
-> +
-> +       if ((void *)next >= slr_end_of_entrys(table))
-> +               return NULL;
-> +       if (next->tag == SLR_ENTRY_END)
-> +               return NULL;
-> +
-> +       return next;
-> +}
-> +
-> +static inline struct slr_entry_hdr *
-> +slr_next_entry_by_tag(struct slr_table *table,
-> +                     struct slr_entry_hdr *entry,
-> +                     u16 tag)
-> +{
-> +       if (!entry) /* Start from the beginning */
-> +               entry = (struct slr_entry_hdr *)(((u8 *)table) + sizeof(*table));
-> +
-> +       for ( ; ; ) {
-> +               if (entry->tag == tag)
-> +                       return entry;
-> +
-> +               entry = slr_next_entry(table, entry);
-> +               if (!entry)
-> +                       return NULL;
-> +       }
-> +
-> +       return NULL;
-> +}
-> +
-> +static inline int
-> +slr_add_entry(struct slr_table *table,
-> +             struct slr_entry_hdr *entry)
-> +{
-> +       struct slr_entry_hdr *end;
-> +
-> +       if ((table->size + entry->size) > table->max_size)
-> +               return -1;
-> +
-> +       memcpy((u8 *)table + table->size - sizeof(*end), entry, entry->size);
-> +       table->size += entry->size;
-> +
-> +       end  = (struct slr_entry_hdr *)((u8 *)table + table->size - sizeof(*end));
-> +       end->tag = SLR_ENTRY_END;
-> +       end->size = sizeof(*end);
-> +
-> +       return 0;
-> +}
-> +
-> +static inline void
-> +slr_init_table(struct slr_table *slrt, u16 architecture, u32 max_size)
-> +{
-> +       struct slr_entry_hdr *end;
-> +
-> +       slrt->magic = SLR_TABLE_MAGIC;
-> +       slrt->revision = SLR_TABLE_REVISION;
-> +       slrt->architecture = architecture;
-> +       slrt->size = sizeof(*slrt) + sizeof(*end);
-> +       slrt->max_size = max_size;
-> +       end = (struct slr_entry_hdr *)((u8 *)slrt + sizeof(*slrt));
-> +       end->tag = SLR_ENTRY_END;
-> +       end->size = sizeof(*end);
-> +}
-> +
-> +#endif /* !__ASSEMBLY */
-> +
-> +#endif /* _LINUX_SLR_TABLE_H */
-> --
-> 2.39.3
->
+--
+2.34.1
 
