@@ -1,75 +1,52 @@
-Return-Path: <linux-kernel+bounces-67591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC24C856DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:34:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDDCA856DD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:35:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C07EBB22E7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:34:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F2D9B27701
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C59C13A24E;
-	Thu, 15 Feb 2024 19:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4062013A27E;
+	Thu, 15 Feb 2024 19:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="atrljX81"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ifH4v4Cu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733D3139563;
-	Thu, 15 Feb 2024 19:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7562E13A249;
+	Thu, 15 Feb 2024 19:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025671; cv=none; b=nL2WYRxlz/78n/ts9Q9+qgTPtVInQVe7SlFAEBa5JAX1eM7aY2YKiv/zDbsSOCKli4MQW69bYlApuXJL32nJkJZ+UIP7LcKbgB4BHaxNX+OgZ1Sm6JZqGKZNxJHDqYfIpJGjKHoQ1axozIGWPvDD3B8RhJPgdPmR3Y5bPGp0D8s=
+	t=1708025672; cv=none; b=aZsJ/079jAjk1UOnBjat8Z0RXZkDfat4NjujjUy85z9HuGrFjxByosWCywiWHSPaPQ6hymzoTenY/4pnRi8rTPD/0egCKw8FoQcqpUWBWHzSjeleSJrCITQrJVewWBUhN+HqMVN1pmV14WXwe2dpriY1fO5W7v4kxbscFTdMRaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025671; c=relaxed/simple;
-	bh=DpX+QLqMpXLedN4ugddvfd9mbmUiqpJiSZRn+YSTau8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AR/hp/sowRCjVvRwSMhYYeIwgtj6nmWOu4xP4dtOeoMmHg0FdMFW5c82iJS8Rw1+I6SmiYrVm1tPHi4B0PMqjxZ8rEOaoHLec9atLr4bpjyEZMnd1XL0iHXzKjmD/qWirxXeT4/8ZrTaqJOdbdUX9hiNnQ6a7ZZYFRvPSIFBnSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=atrljX81; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708025670; x=1739561670;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DpX+QLqMpXLedN4ugddvfd9mbmUiqpJiSZRn+YSTau8=;
-  b=atrljX81KYRXN+uI4jedHA23GkMyx8dSafQe6kxNXds/qU7sKEztQ2Yj
-   OVpRoiK2QNASDofP7zss51oJqHVKpKASyuvQC9FUVkfvWOJ7M+JpBBIcD
-   uL55stagHHJRWhNYzNG0s8e1ji60ceXyjlQj4uRqL4+wK5e/ozGp9yNlD
-   cEjCtACviXXipddAzK920pSbm7rCLJIQVQkvkD1mBeRhbkLyfptditFuS
-   mEY35zGeviIiEtTRHATrtpCFS3mMHiHdBBFoOJ2rFlHKh4FlQEAzDDgVw
-   y8z64+fhItHx7L5UNGkwkv+upir7kJOB1mBxOpQYu1cN1h4cUwYyAl39b
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5948276"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="5948276"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:34:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912217578"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="912217578"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 11:34:04 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rahUf-00000004sJi-3y0g;
-	Thu, 15 Feb 2024 21:34:01 +0200
-Date: Thu, 15 Feb 2024 21:34:01 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Michal Wajdeczko <michal.wajdeczko@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] cocci: Add rules to find str_plural() replacements
-Message-ID: <Zc5nKZezYhg3Khtr@smile.fi.intel.com>
-References: <20240215180156.work.548-kees@kernel.org>
- <Zc5nCsE74E33PdD2@smile.fi.intel.com>
+	s=arc-20240116; t=1708025672; c=relaxed/simple;
+	bh=0xDmjRzOIFe1GDF6uU0h8F9gRo4dQvRi6OpVT2WbXoc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=B1JA68yFOaRm57Lzum42/gT4aV3uccznYMpx1+ZQDdalq5PrVUrBZl22oUaIIAQO2hHeo+xPfVfM9ffhJrxDIwkUvBhszk2PKwTUuuvX8auumKQeed6/BUKecILep88OWrJkuTjF4jpvIdVzp+nIUNNUFJftEMuduRy6NsTxZWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ifH4v4Cu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56592C433C7;
+	Thu, 15 Feb 2024 19:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708025672;
+	bh=0xDmjRzOIFe1GDF6uU0h8F9gRo4dQvRi6OpVT2WbXoc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ifH4v4CuOKoHeSu/KbrmZyJJSKHAp0/ypLuYrTQ+s8V5B6NVQVLvvWxUVhT6xqNBH
+	 5ETEDqAFSrjnQHN4872ksk1llIV7eJW+v0GFPvZpn/vGLzqzES2UdzN8HzsgzGRD8e
+	 r1moDpqIxtzllc0aruFZhGFDnLYUi+E7hqhEuoytzf0t0/Ipr0PFktEfbwurq04cJ3
+	 lmidBin+tzBTqhjzuK34M1EH+qDaph3XZJ7DT0tlsnBtjFsjg3XuuXJagZnLrDvsGA
+	 pSo5zNZjV4pLSZTtOX+T9KeiKJ4ow/8QlEp67JFYKOf42kSKOl/XFaHBLJLLI8zyDl
+	 e4iTc4+1wpBhg==
+Date: Thu, 15 Feb 2024 20:34:28 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa@kernel.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>
+Subject: [GIT PULL] i2c-host fixes for v6.8-rc5
+Message-ID: <6utwghfmlmpaasdtoel5faalrrnfhyg3iupeditg4w7bgd7g35@cxplq2kipgfb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,23 +55,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zc5nCsE74E33PdD2@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 15, 2024 at 09:33:31PM +0200, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 10:02:00AM -0800, Kees Cook wrote:
-> > Add rules for finding places where str_plural() can be used. This
-> > currently finds:
-> >  54 files changed, 62 insertions(+), 61 deletions(-)
-> 
-> Can we extend this to cover string_choices and call the script probably
-> str_choices.cocci ?
+Hi Wolfram,
 
-(And add it to MAINTAINERS?)
+This week, I'm submitting three fixes: two address hardware
+issues with the i801 and qcom-gen devices, and the third resolves
+a compilation error that occurs when including both pasemi and
+apple i2c in compile tests on PowerPC.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Andi
 
+The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
 
+  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags/i2c-host-fixes-6.8-rc5
+
+for you to fetch changes up to eb9f7f654f251b57db310eab90bbae5876898ae3:
+
+  i2c: i801: Fix block process call transactions (2024-02-14 22:15:38 +0100)
+
+----------------------------------------------------------------
+Three fixes are included here. Two are strictly hardware-related
+for the i801 and qcom-geni devices. Meanwhile, a fix from Arnd
+addresses a compilation error encountered during compile test on
+powerpc.
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      i2c: pasemi: split driver into two separate modules
+
+Jean Delvare (1):
+      i2c: i801: Fix block process call transactions
+
+Viken Dadhaniya (1):
+      i2c: i2c-qcom-geni: Correct I2C TRE sequence
+
+ drivers/i2c/busses/Makefile          |  6 ++----
+ drivers/i2c/busses/i2c-i801.c        |  4 ++--
+ drivers/i2c/busses/i2c-pasemi-core.c |  6 ++++++
+ drivers/i2c/busses/i2c-qcom-geni.c   | 14 +++++++-------
+ 4 files changed, 17 insertions(+), 13 deletions(-)
 
