@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-66977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43A95856454
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:28:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF94485648E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6B271F215D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:28:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5785B2B68A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0EE130AF7;
-	Thu, 15 Feb 2024 13:28:26 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8DD5130AEF;
+	Thu, 15 Feb 2024 13:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bCj4W7Y8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA8E130AE1
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12264130ADC;
+	Thu, 15 Feb 2024 13:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003706; cv=none; b=oF3PQe6xxaF+KKaoOqjqPHuNh8NotE5o/6Vv2Y4+24426FxwySgeq+CiOdlaDJGZ4HH0GSJlTz1p8G/MIYOoxzklKYa5XdDxoEGaX4JtLmysXNI956MvsQDJPPSR4njjngGU4ZSlkZIk0W3NxasHtSoC4mHrI2JppAkX1vFegVw=
+	t=1708003825; cv=none; b=kieo63uiT0C2PW+jJaQlrnzSR7A+IwL/FTaHY2LYe5bwubbci9CeNBmpuH64Z83d2sDsF1DqyKhRNECyhBRLV/miaw7GU1Fs359pl7WBiB1Tq+Bga94RR7W0Tmd936euXw7Nd/EWvsCCmuh5zspacR7uAALEguQKznPYV2SKjDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003706; c=relaxed/simple;
-	bh=W+BInuv+uaYZEdgHM7yo4xi7Cnqhjg2drhGZO4Ls9FY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=SZ5V2r0CUDkWdVaDOmZaddEjiR/TcweRO3OOD57nIPp+Hr3v0WjO24PGsy/G9WWUts9Esz+9U3KUjTprpV9dgfvSeyKlgOrGMA4YmDPWmFDOXHkuzPHTRspYqE/cCXfwFRfj2Glnk7sVs8PeNDWanaFC1IXJIyDAi3ugvcIBssg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3610073a306so6635055ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:28:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708003703; x=1708608503;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YOyAVj8iZnfLPO2Tj57CukZdvRkebiNy5RkDdicIJsY=;
-        b=De3Y71t2mhugw7gf5NhOnzi3FbMYMFPcpLlPLRc124zObfm8QCTTW1MCi3pWWoRcPL
-         pJ9jOUDBb0OiwXsUv3o9Q5Ov5+hNKOqy8c2UUmba76mI0A6RISZ0E6HYh4srNRQX8OHI
-         HfpCYH5kV6dXfj+gVqwJKL9dSz6fPm5h+xC/qd9C4ZYPA7ucdqLALxiG1+88MS6375ES
-         Qo7nT7/a53qb/QTfFDLaikBOby3wsbxjOgaAGflEaF0YQhqPKrCwjAI6L+nqdf+a5kC5
-         ssgXkcD9JZJhDqGhSjzD9z/x/pojyt72Md9W8EL+zN42yH8uy6xF1eTF6D2pbCq8RbV3
-         C5dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXscP5lqVflqOTqRjEfB+f2sxup/a14+VgBAGvZl8mMnqN8ykGFM45AtRNVejMsUxzrY5WK/IdIsS1Voxvrpg+Q2mQr1eokxxT88ODY
-X-Gm-Message-State: AOJu0Yw2CekGBR2jKriGduKzuHC6TjVVP4vCxKevONx71btfsTJA2RAw
-	Fpuv0yUhoTKJFfG47sE/v8uSEuBxWBMSSAhJKXFkxClTbi+f4kucsLXFMEbcfOS/s9DOV7H4QLW
-	sN6S6OLfpq0rCY8my4mS5w+Ex2/5iIykWi/vI/SXAVL6czD1TQq8R4U8=
-X-Google-Smtp-Source: AGHT+IEREh9yEaNckCxDoksWb7wYynsZ3OGb1J//mCCzUvWZ9+ATJgsqnYvz2H3RflTF2wLmuskGIv7izrXcerbLZ2tV4ESMUnDv
+	s=arc-20240116; t=1708003825; c=relaxed/simple;
+	bh=p+0qP4/2n7COOyx8ru8nVeV5lUukoT2wVONrXg/kkws=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kU9GLrR93Um+Gidj/1K/D8FM2Dp7GSwp8Zs4TKxOyGyJPi9FjNdOl6KUYE5hLJAPpMx42enMnixyoeJr6PZztZk/HVfTQUR8Pe4mmeJpy4CaLQxocHTDEfuTn3A8jNkvCfDm1PMxeuVFvycalEb3UbawR1FFAyKMD1plGeeP9pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bCj4W7Y8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A139C433F1;
+	Thu, 15 Feb 2024 13:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708003824;
+	bh=p+0qP4/2n7COOyx8ru8nVeV5lUukoT2wVONrXg/kkws=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bCj4W7Y8UPPXgaDjZ4gi9mQGUtdeSWR+5EhXCTTdwjIBkCwmXOnSkt+oiA78XQMMF
+	 w/yBiBQYmnMcQYJJsfkgtV/DNdt1l8pASkj3i4AzDy/xw3hgeN7Fnj6EfuLL5olMhD
+	 OtYeYLjHeOz6T0j6MH0ht8Ul7Z6tOV9INvclJ+BrBrVAuoUCV6GvCKApP8MMhBLMmb
+	 /Dh9908cQpTrlH+g8SdEpk5MlfQR1uAGW7OT69Fx/t6Jb5MRAundprc0DNQNgz7Ujb
+	 B+E2reJ+3rz1FTc9FutG3OQzV+FVDkGIOBcKPaT2GfOP6Ci2EkESmLcmN3YcLur8W0
+	 +MBPoZ2Px58Dg==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-sound@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: remove redundant 'tristate' in sound/soc/codecs/Kconfig
+Date: Thu, 15 Feb 2024 22:28:54 +0900
+Message-Id: <20240215132854.1907630-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d1e:b0:363:c25b:75e4 with SMTP id
- i30-20020a056e021d1e00b00363c25b75e4mr143497ila.5.1708003703797; Thu, 15 Feb
- 2024 05:28:23 -0800 (PST)
-Date: Thu, 15 Feb 2024 05:28:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a40fa06116b9aeb@google.com>
-Subject: [syzbot] Monthly f2fs report (Feb 2024)
-From: syzbot <syzbot+list794268f47f12e7406f24@syzkaller.appspotmail.com>
-To: chao@kernel.org, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello f2fs maintainers/developers,
+The type 'tristate' is already specified three lines above.
 
-This is a 31-day syzbot report for the f2fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/f2fs
-
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 3 issues are still open and 35 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 314     Yes   INFO: task hung in f2fs_balance_fs
-                  https://syzkaller.appspot.com/bug?extid=8b85865808c8908a0d8c
-<2> 17      Yes   kernel BUG in f2fs_evict_inode (2)
-                  https://syzkaller.appspot.com/bug?extid=31e4659a3fe953aec2f4
-<3> 13      Yes   KASAN: slab-use-after-free Read in f2fs_filemap_fault
-                  https://syzkaller.appspot.com/bug?extid=763afad57075d3f862f2
-
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+ sound/soc/codecs/Kconfig | 3 ---
+ 1 file changed, 3 deletions(-)
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 59f9742e9ff4..f7e06ba99570 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -2300,7 +2300,6 @@ config SND_SOC_WSA881X
+ 	tristate "WSA881X Codec"
+ 	depends on SOUNDWIRE
+ 	select REGMAP_SOUNDWIRE
+-	tristate
+ 	help
+ 	  This enables support for Qualcomm WSA8810/WSA8815 Class-D
+ 	  Smart Speaker Amplifier.
+@@ -2309,7 +2308,6 @@ config SND_SOC_WSA883X
+ 	tristate "WSA883X Codec"
+ 	depends on SOUNDWIRE
+ 	select REGMAP_SOUNDWIRE
+-	tristate
+ 	help
+ 	  This enables support for Qualcomm WSA8830/WSA8835 Class-D
+ 	  Smart Speaker Amplifier.
+@@ -2318,7 +2316,6 @@ config SND_SOC_WSA884X
+ 	tristate "WSA884X Codec"
+ 	depends on SOUNDWIRE
+ 	select REGMAP_SOUNDWIRE
+-	tristate
+ 	help
+ 	  This enables support for Qualcomm WSA8840/WSA8845/WSA8845H Class-D
+ 	  Smart Speaker Amplifier.
+-- 
+2.40.1
 
-You may send multiple commands in a single email message.
 
