@@ -1,152 +1,143 @@
-Return-Path: <linux-kernel+bounces-66175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DAB855821
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:08:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F40785581F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB73F1F23099
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:08:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0124281569
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42089818;
-	Thu, 15 Feb 2024 00:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C067ECE;
+	Thu, 15 Feb 2024 00:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iI5dPF/H"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fQff7ErD"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CCC391
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35913391
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707955687; cv=none; b=L2fgyrN8gdV0Yk1yUoRm0lNOHefGAc03Pgyokh1XON18HboCV59kRM4MbtipE7HkZq/9MMUrbJYXcupYSneu3d7LkuYtsP4FCTh/L/pNfDTl+lJjzrNjlZfKBT4E3H1byro1anVuqGBMyCZJSfHasphZF1YUxe0vn2m3TMGEGaM=
+	t=1707955668; cv=none; b=bFkkxVu5bjTUdYMrgqqAbP1GFbA/6uqZoM0S7jIVuygo7n/RFWGW+86F4zaOyNxHOjiEfj+UXivjEQ2yV7TZv9ZTgKP+nwOwIcSDDzIk8eFQqysF8gDM0rAooaxJXtBw8a8wZ//nfQpEEuxmunQK4BVblfIrOKQvBAN1V8v3ONY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707955687; c=relaxed/simple;
-	bh=MXm7+NJ1npnE1n0F4jgnhA9YQZg7N1sx7Rye2amVgf0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k7G2TTmBBm9w8sYYydT8wOVmB8gwj9uIT5I0wBwcwmdqsQXpY/NlAdm+jQj3Jn9m75ygylPgm4xMGQsUmKiq/u3G1v66j/SBM3rhTpeanTpPYEKXpSqqvFcyz2ZU4HJIDtNJdJUIlfPeRbJoQxQC5apAnWQrTx0uFETrY0GK5j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iI5dPF/H; arc=none smtp.client-ip=209.85.167.174
+	s=arc-20240116; t=1707955668; c=relaxed/simple;
+	bh=mqihVnhqmNxSJUbv/RGxqZmC0xVgRGexMSCP0Ns7bYU=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jIr4qiAOsBp6mj/v4YBC/zglGrZJLojIse6Q6gkWJIrjXRreDLaBgZoHL7haKQPYiZMUJtM4SWMkGzNsnf9SV/aadv7ECHCRklpNJDIYn3GVx34m1uZhcfxUYtCuR4QUpgYtbiYti+CrM6jCVqkD4NPT5KSadQGYMvxRl87AYmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fQff7ErD; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c0471954faso247679b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:08:05 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5114b2b3b73so360103e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707955684; x=1708560484; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xk1V2GeLZIB0eK1Atb00UHsPHWh3K6myT0Efv9rtx7M=;
-        b=iI5dPF/HSjGS+h0IkgezGQjrujzUJ+FIXkwRZY+4trK7l2UqAWEnkNdgjSnKQivrah
-         AYA/1BIiysMZhUzX4uLmc2WL9VOSJiA/1qpFFFZ40YStdnYq7gb3sYfw1VlQJrq6E/Vo
-         Bpmwb9TiW6gYDCgSZ/wwowYHEAbooHr1ArGVA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707955684; x=1708560484;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=chromium.org; s=google; t=1707955664; x=1708560464; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xk1V2GeLZIB0eK1Atb00UHsPHWh3K6myT0Efv9rtx7M=;
-        b=E38ci8QY7BH722OFdhEuDa50rUcuPfV9RC/Y6WZQY4wvg3rAc0GZSxfZ6U8vUn87ne
-         6YA2g/8j7xfAbaftmPGiyP3E6AcTR0IUvftOAUNoVL3SL2XuYfwIBUq0POwhMg60chCQ
-         Jpy70gLtT0KoQQF+3nebzOMWbWBct7UToLM0VSApIiPPpNom72W2vpB0w5/AZ43lihAk
-         sUdZVzM3vhQeNH6gmPkuJgg/TLP+mUcil+fs9/N9f+11XG6xoaYJVT3HCMyhXJhEvxro
-         QipzyCv86py9praG0OgHvn4F/EETKsrIWo1ZMyF8emoRcqxDCAgUSaWPnhmNrfi5fj3A
-         F+QQ==
-X-Gm-Message-State: AOJu0Yz+dgZqmm3aLajpw1Buwu8IPLkfITvlTgFs3QrZ6JUzZ4TAcy4C
-	TUmHZ6G50+5wNEOe/gZPuV9NCKdnoo0IM+xtYrAeBT0FTSIbjOSxuod01S5EHvnvs90CAD7x78P
-	Vyw==
-X-Google-Smtp-Source: AGHT+IFEv5AreGUl0qs62KnOYzdEhLJrc3sNJRq5ufUSWwoxqO1SZ1oENLinLTCH2NnrkBM8Gp/2pQ==
-X-Received: by 2002:a05:6808:2182:b0:3c1:3661:d37 with SMTP id be2-20020a056808218200b003c136610d37mr399215oib.38.1707955684095;
-        Wed, 14 Feb 2024 16:08:04 -0800 (PST)
-Received: from kramasub2.cros.corp.google.com ([100.107.108.189])
-        by smtp.gmail.com with ESMTPSA id r6-20020ac85206000000b0042c71ca69b4sm54981qtn.11.2024.02.14.16.08.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Feb 2024 16:08:03 -0800 (PST)
-From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Takashi Iwai <tiwai@suse.de>
-Cc: Karthikeyan Ramasubramanian <kramasub@chromium.org>,
-	Sven van Ashbrook <svenva@chromium.org>,
-	Brian Geffon <bgeffon@google.com>,
-	stable@vger.kernel.org,
-	Curtis Malainey <cujomalainey@chromium.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org
-Subject: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
-Date: Wed, 14 Feb 2024 17:07:25 -0700
-Message-ID: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
+        bh=Er+ESEKbgXvc1t5qmUg/dKRx14VLf4dPpeD7i9BwE5I=;
+        b=fQff7ErDYFXHPoXlCcp/lvCOR3Te7xvdHQXRtCT/rId6rLQMyHpA9vn3Gz9WEg9UfU
+         fON4MwJPefDvY37/bIhw3ej3KJicuaNxTv52zYf+ggnZS+MNlAZr/14y1phKF57NI9wL
+         qKZ8Tj/ROM+48yVbFjN2fGizHornGEHZtW9w8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707955664; x=1708560464;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Er+ESEKbgXvc1t5qmUg/dKRx14VLf4dPpeD7i9BwE5I=;
+        b=OJfGqfpS4Rn5mT5Vn0PKgpmYaBRl1TLX8tG+9CTIE2HjCXw/issZ22/0Rgb3cJqOz6
+         vR7Xx3riUlfcLz9WKLAO4MAaGCfZAfiWZ/KinIOXS+G4q6dXJKnac76fhG1IyLQLrBbu
+         QFI7veUC/foKlE28gKnSi2020ERvjr+uTlbwqc+vLyYaU0x6RZyyPjdJHyQaa2hi0Ixj
+         tJ0t8ZEr4kldRitCheayCmEh680CMvUDqobbh77vSXwy3Ae013SHOggcEnJzW7DU0jFD
+         Z9qmDV8AtypoM/gEoy+iWt6371W485H6doHZhArRi4/WNzgLn6eiABHvQlcXdFYQwoE8
+         xkQA==
+X-Gm-Message-State: AOJu0Yxb+iJADgrve2LAC5jl1asFJBoXnCagpwNd9VsieOZ2SrhUH0Ij
+	ffAqubvA7D9q+uS749DPi380mtWCQUNqB62TZGaz+1WV2f6zgLMmD3QIFro1GMdTQ5yP5HZ1znJ
+	WxzEi8543PosoSDL4Lk3NyPt1rlWoSHHSYeIQ
+X-Google-Smtp-Source: AGHT+IFV146fri/yEai625WOmmn4P92hjYL0lv0BuNrjWlIcprz/viy3Rv+xCRbYoWq6nvQJZDmqN9KcjzHIR0bVyZk=
+X-Received: by 2002:a05:6512:77:b0:511:7292:c4db with SMTP id
+ i23-20020a056512007700b005117292c4dbmr243676lfo.12.1707955664213; Wed, 14 Feb
+ 2024 16:07:44 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 14 Feb 2024 16:07:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <18ac05fb-a78d-4e95-a73d-461f509cdc5f@linaro.org>
+References: <20240210070934.2549994-1-swboyd@chromium.org> <20240210070934.2549994-19-swboyd@chromium.org>
+ <18ac05fb-a78d-4e95-a73d-461f509cdc5f@linaro.org>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Wed, 14 Feb 2024 16:07:43 -0800
+Message-ID: <CAE-0n50Y_GRMt8km=XjGC5Zm5dvb2t4gccznJn9HEFS4p7y8fQ@mail.gmail.com>
+Subject: Re: [PATCH 18/22] dt-bindings: chrome: Add binding for ChromeOS Pogo
+ pin connector
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, chrome-platform@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, 
+	Pin-yen Lin <treapking@chromium.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Before 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
-the alsa non-contiguous allocator always called the alsa fallback
-allocator in the non-iommu case. This allocated non-contig memory
-consisting of progressively smaller contiguous chunks. Allocation was
-fast due to the OR-ing in of __GFP_NORETRY.
+Quoting Krzysztof Kozlowski (2024-02-11 05:39:36)
+> On 10/02/2024 08:09, Stephen Boyd wrote:
+> > diff --git a/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml b/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml
+> > new file mode 100644
+> > index 000000000000..5ba68fd95fcd
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml
+> > @@ -0,0 +1,61 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+[...]
+>
+> > +properties:
+> > +  compatible:
+> > +    const: google,pogo-pin-connector
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +  port:
+> > +    $ref: /schemas/graph.yaml#/properties/port
+> > +    description: Connection to USB2 port providing USB signals
+> > +    required:
+> > +      - endpoint
+>
+> Drop required.
 
-After 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
-the code tries the dma non-contig allocator first, then falls back to
-the alsa fallback allocator. In the non-iommu case, the former supports
-only a single contiguous chunk.
+Why? I'd like to make it so you can't have the node defined without
+connecting it up to the rest of the system. Is that bad?
 
-We have observed experimentally that under heavy memory fragmentation,
-allocating a large-ish contiguous chunk with __GFP_RETRY_MAYFAIL
-triggers an indefinite hang in the dma non-contig allocator. This has
-high-impact, as an occurrence will trigger a device reboot, resulting in
-loss of user state.
+>
+>
+> > +
+> > +patternProperties:
+> > +  "^keyboard@[0-9a-f]{1,2}$":
+> > +    description: The detachable keyboard
+>
+> If this is detachable why do you define it in DT? Only hard-wired USB
+> devices, which need some sort of special handling. are described in DT.
 
-Fix the non-iommu path by letting dma_alloc_noncontiguous() fail quickly
-so it does not get stuck looking for that elusive large contiguous chunk,
-in which case we will fall back to the alsa fallback allocator.
+From the commit text:
 
-Note that the iommu dma non-contiguous allocator is not affected. While
-assembling an array of pages, it tries consecutively smaller contiguous
-allocations, and lets higher-order chunk allocations fail quickly.
+ We expect to find a keyboard on the other side of this connector with a
+ specific vid/pid, so describe that as a child device at the port of the
+ usb device connected upstream.
 
-Suggested-by: Sven van Ashbrook <svenva@chromium.org>
-Suggested-by: Brian Geffon <bgeffon@google.com>
-Fixes: 9d8e536d36e7 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
-Cc: stable@vger.kernel.org
-Cc: Sven van Ashbrook <svenva@chromium.org>
-Cc: Brian Geffon <bgeffon@google.com>
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
----
-
- sound/core/memalloc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index f901504b5afc1..5f6526a0d731c 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -540,13 +540,18 @@ static void *snd_dma_noncontig_alloc(struct snd_dma_buffer *dmab, size_t size)
- {
- 	struct sg_table *sgt;
- 	void *p;
-+	gfp_t gfp_flags = DEFAULT_GFP;
- 
- #ifdef CONFIG_SND_DMA_SGBUF
- 	if (cpu_feature_enabled(X86_FEATURE_XENPV))
- 		return snd_dma_sg_fallback_alloc(dmab, size);
-+
-+	/* Non-IOMMU case: prevent allocator from searching forever */
-+	if (!get_dma_ops(dmab->dev.dev))
-+		gfp_flags |= __GFP_NORETRY;
- #endif
- 	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir,
--				      DEFAULT_GFP, 0);
-+				      gfp_flags, 0);
- #ifdef CONFIG_SND_DMA_SGBUF
- 	if (!sgt && !get_dma_ops(dmab->dev.dev))
- 		return snd_dma_sg_fallback_alloc(dmab, size);
--- 
-2.43.0.687.g38aa6559b0-goog
-
+ChromeOS userspace is checking that the connected device downstream of
+this port has the expected vid/pid to quickly rule out USB keyboards
+that aren't the detachable keyboard. I wanted to express this in DT so
+that it didn't live in ChromeOS userspace forever.
 
