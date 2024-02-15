@@ -1,191 +1,158 @@
-Return-Path: <linux-kernel+bounces-66926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2780A8563AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:51:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACDE88563C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9B0C1F2617B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:51:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5076B24DE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBED12EBD8;
-	Thu, 15 Feb 2024 12:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TQONDs1P"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BEE12F388;
+	Thu, 15 Feb 2024 12:51:31 +0000 (UTC)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F283EA86;
-	Thu, 15 Feb 2024 12:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A9E12F371
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708001486; cv=none; b=chLe7EQOChFB3njoc/aTBHDQVaqa8Vs4GZ+BEtydCdMFUlQkGWMZHvUInCEs4MRUfcm5ieqM/SV7eMfYH8p2T0qvOuh6ePAjDu+cPrTkI3tvIBh4WcJq7ilwO4nNS6W8MML+BUEQ/9nyAOUTbrYW7g2vtMVUEQoIbg3OECtFBXk=
+	t=1708001491; cv=none; b=R17JKCCpwuWpbc44vjsmQCyWMzScUjpVejpdHbdilrj3Fia0D0o0cscofvzb9H/LyliuhcNmqnYIZIBMTreqObjnD88+Fou2AMw3PTOmMWpQZSbJpTzwN1d0T9RYj+aR4+JPLnhH+g6UdaYj5GZI6EEo05D5c0DabDgZ34UHcvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708001486; c=relaxed/simple;
-	bh=Q8RXEieFWbklk94sgp9zpA7bkSc1ZAounH3k4h1iIQo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rf+DzG806G9psr7RgH7CQOIU+k0HKfhdAGryDHmqlvUsZWEctmMt9k34xtWR3AbsLphNOrEZmw9hd/YLIEt9JdKNVyH1rmL8B0AI957ojVz0Bk34v+xwnTZrhnlbDIBoT1RFtlfzigT4SMyISUhCfF4XGLbzSGiIe5jTOuPmXmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TQONDs1P; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708001483; x=1739537483;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Q8RXEieFWbklk94sgp9zpA7bkSc1ZAounH3k4h1iIQo=;
-  b=TQONDs1Pk3SnBy3ic+QeloaRm2pUX+8gqucYErCvRgelEJzTIScFpjM5
-   sKjtC79SFZB+KR/OYg/omVdSL0zqsiTK90qhZfTzUxhhsryXlGcdhRld3
-   In0xH0w6CpnBY6fqLqEXYixehRe1JzdIwmOWfhQVK/OWmM7H8NEEqTpnw
-   tAwNpmVCztVz/L4kqQxADvbVMIjG+8GE0iSjctdL6dtkVTwrHAoLa5DHO
-   rquo86qlHKWMWtOujRj9daeJM2UZFtR9kwvCfvMbtsdxZ9cQo8g5+h2mV
-   Scp7f2JGAu4nKSqIhk1m7o5u7tsqlETX19v5izDS/Ws4xBHTV2TEQo7HH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="2228323"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="2228323"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:51:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="3869792"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:51:23 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id D831511F871;
-	Thu, 15 Feb 2024 14:51:19 +0200 (EET)
-Date: Thu, 15 Feb 2024 12:51:19 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] media: imx335: Use v4l2_link_freq_to_bitmap helper
-Message-ID: <Zc4Ix32Ld_bCD-LO@kekkonen.localdomain>
-References: <20240131055208.170934-1-umang.jain@ideasonboard.com>
- <20240131055208.170934-3-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1708001491; c=relaxed/simple;
+	bh=numjJyssHCK83ZTxToyLkXAvONvPBcoOdl89HtYTob0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TxkKxfOaL2adjrF8BUrjVpfMpyT7aNvLsF7aMPq+yD58ikSnXxgcoITJq0wPfjJl6qRWGi+h5xPowlz/hiZ4oqW40hiGPqSBoCtpLCRGh1TDwZqBjmoFcd57KRHwAoJNfcivqPzCxztFFazQ+BENhPDzlxBcq3Grzvjo/vP9ol8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ac52:3a54:2a84:d65a])
+	by laurent.telenet-ops.be with bizsmtp
+	id nQrM2B0090LVNSS01QrM3z; Thu, 15 Feb 2024 13:51:21 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rabCr-000gwp-Pl;
+	Thu, 15 Feb 2024 13:51:21 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rabCz-00HVKe-5H;
+	Thu, 15 Feb 2024 13:51:21 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Zhang Rui <rui.zhang@intel.com>,
+	Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] thermal: Drop spaces before TABs
+Date: Thu, 15 Feb 2024 13:51:19 +0100
+Message-Id: <480478a53fd42621e97b2db36e181903cc0f53e3.1708001426.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131055208.170934-3-umang.jain@ideasonboard.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Umang,
+There is never a need to have a space before a TAB, but it hurts the
+eyes of vim users.
 
-On Wed, Jan 31, 2024 at 11:22:05AM +0530, Umang Jain wrote:
-> Use the v4l2_link_freq_to_bitmap() helper to figure out which
-> driver-supported link frequencies can be used on a given system.
-> 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->  drivers/media/i2c/imx335.c | 36 ++++++++++++++++++------------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index 927b4806a5d7..73691069556f 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -49,7 +49,7 @@
->  #define IMX335_INCLK_RATE	24000000
->  
->  /* CSI2 HW configuration */
-> -#define IMX335_LINK_FREQ	594000000
-> +#define IMX335_LINK_FREQ	594000000LL
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - Drop change to removed drivers/thermal/st/st_thermal_syscfg.c.
+---
+ drivers/thermal/Makefile               |  2 +-
+ drivers/thermal/st/st_thermal.h        | 18 +++++++++---------
+ drivers/thermal/st/st_thermal_memmap.c |  2 +-
+ drivers/thermal/thermal_of.c           |  2 +-
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-If you change this, please make it ULL---it's unsigned.
-
->  #define IMX335_NUM_DATA_LANES	4
->  
->  #define IMX335_REG_MIN		0x00
-> @@ -134,6 +134,7 @@ struct imx335_mode {
->   * @vblank: Vertical blanking in lines
->   * @cur_mode: Pointer to current selected sensor mode
->   * @mutex: Mutex for serializing sensor controls
-> + * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
->   * @cur_mbus_code: Currently selected media bus format code
->   */
->  struct imx335 {
-> @@ -157,6 +158,7 @@ struct imx335 {
->  	u32 vblank;
->  	const struct imx335_mode *cur_mode;
->  	struct mutex mutex;
-> +	unsigned long link_freq_bitmap;
->  	u32 cur_mbus_code;
->  };
->  
-> @@ -404,7 +406,8 @@ static int imx335_update_controls(struct imx335 *imx335,
->  {
->  	int ret;
->  
-> -	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, mode->link_freq_idx);
-> +	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl,
-> +				 __ffs(imx335->link_freq_bitmap));
->  	if (ret)
->  		return ret;
->  
-> @@ -690,6 +693,13 @@ static int imx335_init_state(struct v4l2_subdev *sd,
->  	fmt.which = sd_state ? V4L2_SUBDEV_FORMAT_TRY : V4L2_SUBDEV_FORMAT_ACTIVE;
->  	imx335_fill_pad_format(imx335, &supported_mode, &fmt);
->  
-> +	mutex_lock(&imx335->mutex);
-> +	__v4l2_ctrl_modify_range(imx335->link_freq_ctrl, 0,
-> +				 __fls(imx335->link_freq_bitmap),
-> +				 ~(imx335->link_freq_bitmap),
-> +				 __ffs(imx335->link_freq_bitmap));
-> +	mutex_unlock(&imx335->mutex);
-> +
->  	return imx335_set_pad_format(sd, sd_state, &fmt);
->  }
->  
-> @@ -938,19 +948,10 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
->  		goto done_endpoint_free;
->  	}
->  
-> -	if (!bus_cfg.nr_of_link_frequencies) {
-> -		dev_err(imx335->dev, "no link frequencies defined\n");
-> -		ret = -EINVAL;
-> -		goto done_endpoint_free;
-> -	}
-> -
-> -	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++)
-> -		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
-> -			goto done_endpoint_free;
-> -
-> -	dev_err(imx335->dev, "no compatible link frequencies found\n");
-> -
-> -	ret = -EINVAL;
-> +	ret = v4l2_link_freq_to_bitmap(imx335->dev, bus_cfg.link_frequencies,
-> +				       bus_cfg.nr_of_link_frequencies,
-> +				       link_freq, ARRAY_SIZE(link_freq),
-> +				       &imx335->link_freq_bitmap);
-
-Thanks! :-)
-
->  
->  done_endpoint_free:
->  	v4l2_fwnode_endpoint_free(&bus_cfg);
-> @@ -1098,9 +1099,8 @@ static int imx335_init_controls(struct imx335 *imx335)
->  	imx335->link_freq_ctrl = v4l2_ctrl_new_int_menu(ctrl_hdlr,
->  							&imx335_ctrl_ops,
->  							V4L2_CID_LINK_FREQ,
-> -							ARRAY_SIZE(link_freq) -
-> -							1,
-> -							mode->link_freq_idx,
-> +							__fls(imx335->link_freq_bitmap),
-> +							__ffs(imx335->link_freq_bitmap),
->  							link_freq);
->  	if (imx335->link_freq_ctrl)
->  		imx335->link_freq_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-
+diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+index d77d7fe99a84aa3f..5cdf7d68687f43b3 100644
+--- a/drivers/thermal/Makefile
++++ b/drivers/thermal/Makefile
+@@ -43,7 +43,7 @@ obj-$(CONFIG_RCAR_GEN3_THERMAL)	+= rcar_gen3_thermal.o
+ obj-$(CONFIG_RZG2L_THERMAL)	+= rzg2l_thermal.o
+ obj-$(CONFIG_KIRKWOOD_THERMAL)  += kirkwood_thermal.o
+ obj-y				+= samsung/
+-obj-$(CONFIG_DOVE_THERMAL)  	+= dove_thermal.o
++obj-$(CONFIG_DOVE_THERMAL)	+= dove_thermal.o
+ obj-$(CONFIG_DB8500_THERMAL)	+= db8500_thermal.o
+ obj-$(CONFIG_ARMADA_THERMAL)	+= armada_thermal.o
+ obj-$(CONFIG_IMX_THERMAL)	+= imx_thermal.o
+diff --git a/drivers/thermal/st/st_thermal.h b/drivers/thermal/st/st_thermal.h
+index 75a84e6ec6a729bf..8639d9165c9b9d56 100644
+--- a/drivers/thermal/st/st_thermal.h
++++ b/drivers/thermal/st/st_thermal.h
+@@ -38,10 +38,10 @@ struct st_thermal_sensor;
+  *
+  * @power_ctrl:		Function for powering on/off a sensor. Clock to the
+  *			sensor is also controlled from this function.
+- * @alloc_regfields: 	Allocate regmap register fields, specific to a sensor.
+- * @do_memmap_regmap: 	Memory map the thermal register space and init regmap
++ * @alloc_regfields:	Allocate regmap register fields, specific to a sensor.
++ * @do_memmap_regmap:	Memory map the thermal register space and init regmap
+  *			instance or find regmap instance.
+- * @register_irq: 	Register an interrupt handler for a sensor.
++ * @register_irq:	Register an interrupt handler for a sensor.
+  */
+ struct st_thermal_sensor_ops {
+ 	int (*power_ctrl)(struct st_thermal_sensor *, enum st_thermal_power_state);
+@@ -56,15 +56,15 @@ struct st_thermal_sensor_ops {
+  *
+  * @reg_fields:		Pointer to the regfields array for a sensor.
+  * @sys_compat:		Pointer to the syscon node compatible string.
+- * @ops: 		Pointer to private thermal ops for a sensor.
+- * @calibration_val: 	Default calibration value to be written to the DCORRECT
++ * @ops:		Pointer to private thermal ops for a sensor.
++ * @calibration_val:	Default calibration value to be written to the DCORRECT
+  *			register field for a sensor.
+- * @temp_adjust_val: 	Value to be added/subtracted from the data read from
++ * @temp_adjust_val:	Value to be added/subtracted from the data read from
+  *			the sensor. If value needs to be added please provide a
+  *			positive value and if it is to be subtracted please
+- * 			provide a negative value.
+- * @crit_temp: 		The temperature beyond which the SoC should be shutdown
+- * 			to prevent damage.
++ *			provide a negative value.
++ * @crit_temp:		The temperature beyond which the SoC should be shutdown
++ *			to prevent damage.
+  */
+ struct st_thermal_compat_data {
+ 	char *sys_compat;
+diff --git a/drivers/thermal/st/st_thermal_memmap.c b/drivers/thermal/st/st_thermal_memmap.c
+index e8cfa83b724a774b..29c2269b0fb35ced 100644
+--- a/drivers/thermal/st/st_thermal_memmap.c
++++ b/drivers/thermal/st/st_thermal_memmap.c
+@@ -27,7 +27,7 @@ static const struct reg_field st_mmap_thermal_regfields[MAX_REGFIELDS] = {
+ 	 * written simultaneously for powering on and off the temperature
+ 	 * sensor. regmap_update_bits() will be used to update the register.
+ 	 */
+-	[INT_THRESH_HI]	= REG_FIELD(STIH416_MPE_INT_THRESH, 	0,  7),
++	[INT_THRESH_HI]	= REG_FIELD(STIH416_MPE_INT_THRESH,	0,  7),
+ 	[DCORRECT]	= REG_FIELD(STIH416_MPE_CONF,		5,  9),
+ 	[OVERFLOW]	= REG_FIELD(STIH416_MPE_STATUS,		9,  9),
+ 	[DATA]		= REG_FIELD(STIH416_MPE_STATUS,		11, 18),
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 4d6c22e0ed85bf55..c9bee46b48cd0f75 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -463,7 +463,7 @@ static void thermal_of_zone_unregister(struct thermal_zone_device *tz)
+  * @ops: A set of thermal sensor ops
+  *
+  * Return: a valid thermal zone structure pointer on success.
+- * 	- EINVAL: if the device tree thermal description is malformed
++ *	- EINVAL: if the device tree thermal description is malformed
+  *	- ENOMEM: if one structure can not be allocated
+  *	- Other negative errors are returned by the underlying called functions
+  */
 -- 
-Regards,
+2.34.1
 
-Sakari Ailus
 
