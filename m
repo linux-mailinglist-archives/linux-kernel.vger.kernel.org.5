@@ -1,119 +1,152 @@
-Return-Path: <linux-kernel+bounces-66173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24B7185581A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:05:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DAB855821
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7F60284BE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB73F1F23099
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9022C817;
-	Thu, 15 Feb 2024 00:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42089818;
+	Thu, 15 Feb 2024 00:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QyYCwzrl"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iI5dPF/H"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637F719A;
-	Thu, 15 Feb 2024 00:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CCC391
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707955546; cv=none; b=GduJfJLbWaECRZrwdOWV/RCdlRTbQkX5XBWkMB3BLY36QAEZQ/gRumTRIBPhurMRcx/SwM19tvG6AFDkxlaxZALplr6YMexyo/YCKUMzD98bgIpDd2J+pKoHKt20JSxrC22MAMqOW6rqY+B5v6P9aarPe8PmiDvlg8uSej8zMwk=
+	t=1707955687; cv=none; b=L2fgyrN8gdV0Yk1yUoRm0lNOHefGAc03Pgyokh1XON18HboCV59kRM4MbtipE7HkZq/9MMUrbJYXcupYSneu3d7LkuYtsP4FCTh/L/pNfDTl+lJjzrNjlZfKBT4E3H1byro1anVuqGBMyCZJSfHasphZF1YUxe0vn2m3TMGEGaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707955546; c=relaxed/simple;
-	bh=RyT0hAFnyZXFspK1xF3WX3kXpHesaIlud3qAHvWfYQ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AalmuE0/7ECz2MxrFqWfK3hvd8V3lJeRh61hVIXodRnaIJHVouHzL9sXsxfpHAiyj99kKlTVi6VLXHTua8NoYeeyzZlR+UdWPNRU7reP19fW/GhvTOdCoK49LKIZIRhunAoF1ucwSlKi8EsOu2hQy7rgDoHyRLFCP3V4TVC6ejE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QyYCwzrl; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-785d4dba20cso21497385a.3;
-        Wed, 14 Feb 2024 16:05:45 -0800 (PST)
+	s=arc-20240116; t=1707955687; c=relaxed/simple;
+	bh=MXm7+NJ1npnE1n0F4jgnhA9YQZg7N1sx7Rye2amVgf0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k7G2TTmBBm9w8sYYydT8wOVmB8gwj9uIT5I0wBwcwmdqsQXpY/NlAdm+jQj3Jn9m75ygylPgm4xMGQsUmKiq/u3G1v66j/SBM3rhTpeanTpPYEKXpSqqvFcyz2ZU4HJIDtNJdJUIlfPeRbJoQxQC5apAnWQrTx0uFETrY0GK5j0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iI5dPF/H; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c0471954faso247679b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 16:08:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707955544; x=1708560344; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0RoGSg2VttRw4fae6dvJDXsrdDpNftzBOM5PYVXiVHg=;
-        b=QyYCwzrlPqDYwZWDknwfByM5xU6oDRigoj6cAGfBpNCE+Jwmx4BDUsY9arhPA8ArkC
-         kdPwm/KrygqgVAFSl/Raatd/6/4Io6hq4br1dJ1oGYVuZGoAn3GxwsXEsj755uOxTGVf
-         eFyLwW6RC7mXed64uygbXctmRY0g7T39TkUCJjPR2J6Ki4WHFlgA1n6IIi5kRswY40rO
-         dTnbnL2Jynx98TD4aAZZIrfeCvJYn8/eVoglrD8WxH0zY4cQcopXpDEdYOksjgOcGONN
-         qTizpdYd7hTUwVd+yyAoO6e4SUCRDoGDuYCArGvb0nbrXuTR2ZIO2Asy22yDPu0rMjZ3
-         kShw==
+        d=chromium.org; s=google; t=1707955684; x=1708560484; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xk1V2GeLZIB0eK1Atb00UHsPHWh3K6myT0Efv9rtx7M=;
+        b=iI5dPF/HSjGS+h0IkgezGQjrujzUJ+FIXkwRZY+4trK7l2UqAWEnkNdgjSnKQivrah
+         AYA/1BIiysMZhUzX4uLmc2WL9VOSJiA/1qpFFFZ40YStdnYq7gb3sYfw1VlQJrq6E/Vo
+         Bpmwb9TiW6gYDCgSZ/wwowYHEAbooHr1ArGVA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707955544; x=1708560344;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0RoGSg2VttRw4fae6dvJDXsrdDpNftzBOM5PYVXiVHg=;
-        b=mnsDLUV4t8PyJOjq3ec7thKwmntou3IcZzurOmdDm1EJYUdMxkFko/GNceLv8UIGf7
-         c0iMtI8KpwgQxaJM7rm9ZgaXSeDyzTDaaWSYono1Rxd2kawxVoP0oBVxJ04GamDrDLvo
-         n+9M4qTUgYeJ4OT7v7U3fj/BNHCHH3kz5V/lP5cGdhJnYwt7Icc3qcuLhJ/bQx99PDdQ
-         QAXKbTjWxLKSYMGMSM4WZWNsMkENtHKOcDhxe/WIWUfjmRkpYJWbNYhxSAl17xLhGvpa
-         A9E7sxW6ix+e/SWs4QXQxAEuYwjcyj2ykieYu/0gnkPR6tEb+2GLKddn97LlVf8xa3+K
-         /SNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ+jlYcMuez65xImd2v34MAPLaSMmKETfHl7D+sZmV4vDPDDbhd2VROYha5E5vgbtmBMTZqXHwVtDufc5uSKCIvDQTgSRKRqhuSrtVpReBVTOjiF19hF5ek5oTPncpAwJOUZYH
-X-Gm-Message-State: AOJu0YyjZO5W4LvN+lehCkMzyo6h/fn8faF4yRJm+jhp84VqeCAFoVJP
-	QC8fgBVCPU+uWzpnPLgP/7BwlFaG9yKyK27Ww7bDxuklMlZoXNe+
-X-Google-Smtp-Source: AGHT+IFpjE8rZ/HqeC/vKl01yY1yV6zz1HzKkGi6yhJBnaiEDIrmnxls2pdAv8XI9iMUXxFwVbHNVQ==
-X-Received: by 2002:a05:622a:45:b0:42c:7c3d:e20e with SMTP id y5-20020a05622a004500b0042c7c3de20emr310372qtw.41.1707955544138;
-        Wed, 14 Feb 2024 16:05:44 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i6-20020ac85e46000000b0042c5ec26eccsm43286qtx.72.2024.02.14.16.05.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 16:05:43 -0800 (PST)
-Message-ID: <1533ba43-c622-4a1e-b2f6-5ba0a6a8a1a2@gmail.com>
-Date: Wed, 14 Feb 2024 16:05:40 -0800
+        d=1e100.net; s=20230601; t=1707955684; x=1708560484;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xk1V2GeLZIB0eK1Atb00UHsPHWh3K6myT0Efv9rtx7M=;
+        b=E38ci8QY7BH722OFdhEuDa50rUcuPfV9RC/Y6WZQY4wvg3rAc0GZSxfZ6U8vUn87ne
+         6YA2g/8j7xfAbaftmPGiyP3E6AcTR0IUvftOAUNoVL3SL2XuYfwIBUq0POwhMg60chCQ
+         Jpy70gLtT0KoQQF+3nebzOMWbWBct7UToLM0VSApIiPPpNom72W2vpB0w5/AZ43lihAk
+         sUdZVzM3vhQeNH6gmPkuJgg/TLP+mUcil+fs9/N9f+11XG6xoaYJVT3HCMyhXJhEvxro
+         QipzyCv86py9praG0OgHvn4F/EETKsrIWo1ZMyF8emoRcqxDCAgUSaWPnhmNrfi5fj3A
+         F+QQ==
+X-Gm-Message-State: AOJu0Yz+dgZqmm3aLajpw1Buwu8IPLkfITvlTgFs3QrZ6JUzZ4TAcy4C
+	TUmHZ6G50+5wNEOe/gZPuV9NCKdnoo0IM+xtYrAeBT0FTSIbjOSxuod01S5EHvnvs90CAD7x78P
+	Vyw==
+X-Google-Smtp-Source: AGHT+IFEv5AreGUl0qs62KnOYzdEhLJrc3sNJRq5ufUSWwoxqO1SZ1oENLinLTCH2NnrkBM8Gp/2pQ==
+X-Received: by 2002:a05:6808:2182:b0:3c1:3661:d37 with SMTP id be2-20020a056808218200b003c136610d37mr399215oib.38.1707955684095;
+        Wed, 14 Feb 2024 16:08:04 -0800 (PST)
+Received: from kramasub2.cros.corp.google.com ([100.107.108.189])
+        by smtp.gmail.com with ESMTPSA id r6-20020ac85206000000b0042c71ca69b4sm54981qtn.11.2024.02.14.16.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 16:08:03 -0800 (PST)
+From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+To: LKML <linux-kernel@vger.kernel.org>,
+	Takashi Iwai <tiwai@suse.de>
+Cc: Karthikeyan Ramasubramanian <kramasub@chromium.org>,
+	Sven van Ashbrook <svenva@chromium.org>,
+	Brian Geffon <bgeffon@google.com>,
+	stable@vger.kernel.org,
+	Curtis Malainey <cujomalainey@chromium.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org
+Subject: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
+Date: Wed, 14 Feb 2024 17:07:25 -0700
+Message-ID: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
+X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/124] 6.6.17-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240214142247.920076071@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240214142247.920076071@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2/14/24 06:30, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.17 release.
-> There are 124 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 16 Feb 2024 14:22:24 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.17-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Before 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+the alsa non-contiguous allocator always called the alsa fallback
+allocator in the non-iommu case. This allocated non-contig memory
+consisting of progressively smaller contiguous chunks. Allocation was
+fast due to the OR-ing in of __GFP_NORETRY.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+After 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+the code tries the dma non-contig allocator first, then falls back to
+the alsa fallback allocator. In the non-iommu case, the former supports
+only a single contiguous chunk.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+We have observed experimentally that under heavy memory fragmentation,
+allocating a large-ish contiguous chunk with __GFP_RETRY_MAYFAIL
+triggers an indefinite hang in the dma non-contig allocator. This has
+high-impact, as an occurrence will trigger a device reboot, resulting in
+loss of user state.
+
+Fix the non-iommu path by letting dma_alloc_noncontiguous() fail quickly
+so it does not get stuck looking for that elusive large contiguous chunk,
+in which case we will fall back to the alsa fallback allocator.
+
+Note that the iommu dma non-contiguous allocator is not affected. While
+assembling an array of pages, it tries consecutively smaller contiguous
+allocations, and lets higher-order chunk allocations fail quickly.
+
+Suggested-by: Sven van Ashbrook <svenva@chromium.org>
+Suggested-by: Brian Geffon <bgeffon@google.com>
+Fixes: 9d8e536d36e7 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+Cc: stable@vger.kernel.org
+Cc: Sven van Ashbrook <svenva@chromium.org>
+Cc: Brian Geffon <bgeffon@google.com>
+Cc: Curtis Malainey <cujomalainey@chromium.org>
+Signed-off-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+---
+
+ sound/core/memalloc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index f901504b5afc1..5f6526a0d731c 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -540,13 +540,18 @@ static void *snd_dma_noncontig_alloc(struct snd_dma_buffer *dmab, size_t size)
+ {
+ 	struct sg_table *sgt;
+ 	void *p;
++	gfp_t gfp_flags = DEFAULT_GFP;
+ 
+ #ifdef CONFIG_SND_DMA_SGBUF
+ 	if (cpu_feature_enabled(X86_FEATURE_XENPV))
+ 		return snd_dma_sg_fallback_alloc(dmab, size);
++
++	/* Non-IOMMU case: prevent allocator from searching forever */
++	if (!get_dma_ops(dmab->dev.dev))
++		gfp_flags |= __GFP_NORETRY;
+ #endif
+ 	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir,
+-				      DEFAULT_GFP, 0);
++				      gfp_flags, 0);
+ #ifdef CONFIG_SND_DMA_SGBUF
+ 	if (!sgt && !get_dma_ops(dmab->dev.dev))
+ 		return snd_dma_sg_fallback_alloc(dmab, size);
 -- 
-Florian
+2.43.0.687.g38aa6559b0-goog
 
 
