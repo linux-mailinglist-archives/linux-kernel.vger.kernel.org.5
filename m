@@ -1,160 +1,145 @@
-Return-Path: <linux-kernel+bounces-67080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1122A8565EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:27:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8808565F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDF8A28384D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:27:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EADA1F25219
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21AC131E50;
-	Thu, 15 Feb 2024 14:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE0A131E59;
+	Thu, 15 Feb 2024 14:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="qhNGsWxP"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OnwrRn4Y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A21130AC3;
-	Thu, 15 Feb 2024 14:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B60612EBD4;
+	Thu, 15 Feb 2024 14:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708007218; cv=none; b=rMfq/LC/HxeVItdhQtuHCtPRghR982J+VMcmkgphHqrCCIodkmWxH7BKeE2XpcuJd8Cj2npi1C8ypqZTElQgoXlgHQyGebGx7EOiL9PLtLxwOYbaAU/UtwMBYDhPpZl88bVMzHT8Ly32aOgTz2kuVz67RyGQXvSrVkk7pFc8Wcs=
+	t=1708007326; cv=none; b=u30p8pQX03dMvqSdJhso4nUsfJpXQ23dY/2XVNU4SCIx34TIbCTrhEra8X4dr0oGOIGtfqKYXHJKawevDdN7jNpV1+WAo4w+y3yw5KagJOMrnhCTISx2zPPbp2F3H3NaZtOIK0CXkmRgYviKp4Uc7p/eBRQGprkKZkTDtSVeAc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708007218; c=relaxed/simple;
-	bh=j9ITj3d8lRCK3n4rRoSOFa3j1UaG+SfaxitoJTBcDfs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=PQpSTfZlKiskjMJaKdvrlDLEpZTrFB1jG4VRVWe8eMLA/eT3p9SIWsq/X3GACQDgk0a9aUCyqSDPOtoeamjXku0PiNLgmS37Vr4puSB+4GWF7nhFI3XoY75NlsxFXXLFokoZ5kkoYJQ+S/ho0v2ME6V73h7MEZgMsxpEYBRueqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=qhNGsWxP; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FEQlNF031380;
-	Thu, 15 Feb 2024 08:26:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708007207;
-	bh=0aoAEQiGSIWc7BwNRPPsCsxo3a+QdD0m5M9Mc62tfDg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=qhNGsWxPsZ0CvcuTQCdUW75r84WOKH1B7EizWUtd1t17scBlTTXzsoEU42jm7j6Xe
-	 G3EZ3SwIEzjMbeb6G4PLAbFrYCzCjsYr8von6mf+v7NM005HwPF4mRFc68R5Rzk3we
-	 4xikvEmAV7x3fZbovLOQbFuvzsaUclHqw7NTvy9A=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FEQl47021598
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 08:26:47 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 08:26:47 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 08:26:47 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FEQkBp067848;
-	Thu, 15 Feb 2024 08:26:47 -0600
-Message-ID: <e78406a7-189a-4847-8625-2a66dce818b5@ti.com>
-Date: Thu, 15 Feb 2024 08:26:46 -0600
+	s=arc-20240116; t=1708007326; c=relaxed/simple;
+	bh=Wf73cxr87GHpuYxipFrmEqJpur94FjNtOwVM6tDrmHM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HRLr7rJjfijgw+w7PVkcU79G29YuH2IsIldHhMcnAVGDEIyAySYcQRjJwSCqPwbnzoJfip4iicuvT9YIchdfCTDOxi23kRykeqk2HX0CUzACW/jqjS9kO5GRp8+g9tet7hFdTRcyZE9mRYr/DmAbE8uDlSUQpLYiN3Vumjw+wEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OnwrRn4Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E47C433F1;
+	Thu, 15 Feb 2024 14:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708007326;
+	bh=Wf73cxr87GHpuYxipFrmEqJpur94FjNtOwVM6tDrmHM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OnwrRn4YKZaN4o1RuqeBymMAMru8kHE4Q7Da3aedo1qE+afwhoWtdDqJtOIdPWKgw
+	 gQvyrUrqgOnWGPZ8/Qgu959Z3QHSL8emHdN4LSum5F2q+AOImwwJWUtxDRwS/V6NFt
+	 IOIjYalS6OCk1hpZ9ib+aTK9CXfLC7i9svg2cimI9AZ5Gn9rA5fOZtr0PsWyDtAb9e
+	 UP6WsTWcu0klLjyEGsrTOgn4OZeKLWmwxP0PEvgDQra4BCCDFE9lbdwG8ex0YOlxoi
+	 FGFl2LjoTrW3gTrV2auku35SWYgHg/5nMzk9odSNesFJDa+gvBenTcg0Pwvd5a6wi6
+	 rr5Vo/HIhkmvw==
+Date: Thu, 15 Feb 2024 08:28:36 -0600
+From: Rob Herring <robh@kernel.org>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: neil.armstrong@linaro.org, clabbe@baylibre.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	khilman@baylibre.com, jbrunet@baylibre.com,
+	martin.blumenstingl@googlemail.com, vadim.fedorenko@linux.dev,
+	linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kernel@salutedevices.com
+Subject: Re: [PATCH v4 16/20] dt-bindings: crypto: meson: support new SoC's
+Message-ID: <20240215142836.GA1186-robh@kernel.org>
+References: <20240212135108.549755-1-avromanov@salutedevices.com>
+ <20240212135108.549755-17-avromanov@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am654: Drop ti,syscon-rgmii-delay from
- ICSSG nodes
-To: MD Danish Anwar <danishanwar@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Tero
- Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
-        Roger
- Quadros <rogerq@kernel.org>
-References: <20240215105407.2868266-1-danishanwar@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240215105407.2868266-1-danishanwar@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212135108.549755-17-avromanov@salutedevices.com>
 
-On 2/15/24 4:54 AM, MD Danish Anwar wrote:
-> Drop ti,syscon-rgmii-delay from ICSSG0, ICSSG1 and ICSSG2 node as this
-> property is no longer used by ICSSG driver.
+On Mon, Feb 12, 2024 at 04:51:04PM +0300, Alexey Romanov wrote:
+> Now crypto module available at G12A/G12B/S4/A1/SM1/AXG.
 > 
-
-I see a couple more instances in k3-am65-iot2050-common.dtsi.
-
-Andrew
-
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> 1. Add new compatibles:
+>   - amlogic,g12a-crypto
+>   - amlogic,s4-crypto (uses g12a-crypto as fallback)
+>   - amlogic,a1-crypto (uses g12a-crypto as fallback)
+>   - amlogic,axg-crypto
+> 
+> 2. All SoC's, exclude GXL, doesn't take a clock input for
+> Crypto IP. Make it required only for amlogic,gxl-crypto.
+> 
+> 3. All SoC's, exclude GXL, uses only one interrupt flow
+> for Crypto IP.
+> 
+> 4. Add power-domains in schema.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
 > ---
->   arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 2 --
->   arch/arm64/boot/dts/ti/k3-am654-idk.dtso    | 4 ----
->   2 files changed, 6 deletions(-)
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   | 43 ++++++++++++++++---
+>  1 file changed, 36 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> index 0a6e75265ba9..bb0e29873df7 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> @@ -68,7 +68,6 @@ icssg2_emac0: port@0 {
->   				reg = <0>;
->   				phy-handle = <&icssg2_phy0>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
-> @@ -76,7 +75,6 @@ icssg2_emac1: port@1 {
->   				reg = <1>;
->   				phy-handle = <&icssg2_phy1>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> index 8bdb87fcbde0..d4bc80032587 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
-> @@ -72,7 +72,6 @@ icssg0_emac0: port@0 {
->   				reg = <0>;
->   				phy-handle = <&icssg0_phy0>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
-> @@ -80,7 +79,6 @@ icssg0_emac1: port@1 {
->   				reg = <1>;
->   				phy-handle = <&icssg0_phy1>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
-> @@ -140,7 +138,6 @@ icssg1_emac0: port@0 {
->   				reg = <0>;
->   				phy-handle = <&icssg1_phy0>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4110>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
-> @@ -148,7 +145,6 @@ icssg1_emac1: port@1 {
->   				reg = <1>;
->   				phy-handle = <&icssg1_phy1>;
->   				phy-mode = "rgmii-id";
-> -				ti,syscon-rgmii-delay = <&scm_conf 0x4114>;
->   				/* Filled in by bootloader */
->   				local-mac-address = [00 00 00 00 00 00];
->   			};
+> diff --git a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> index 948e11ebe4ee..41f0153d58c8 100644
+> --- a/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.yaml
+> @@ -11,20 +11,30 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - const: amlogic,gxl-crypto
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - amlogic,a1-crypto
+> +              - amlogic,s4-crypto
+> +          - const: amlogic,g12a-crypto
+> +      - enum:
+> +          - amlogic,gxl-crypto
+> +          - amlogic,axg-crypto
+> +          - amlogic,g12a-crypto
+>  
+>    reg:
+>      maxItems: 1
+>  
+>    interrupts:
+> -    items:
+> -      - description: Interrupt for flow 0
+> -      - description: Interrupt for flow 1
+> +    minItems: 1
+> +    maxItems: 2
+
+Just keep the descrptions here and add 'minItems: 1'. Then in the 
+if/then schema, you only need minItems and maxItems to require 1 or 2 
+interrupts.
+
+>  
+>    clocks:
+>      maxItems: 1
+>  
+> +  power-domains:
+> +    maxItems: 1
+> +
+>    clock-names:
+>      const: blkmv
+>  
+> @@ -32,8 +42,27 @@ required:
+>    - compatible
+>    - reg
+>    - interrupts
+> -  - clocks
+> -  - clock-names
+
+New chips work without clocks? Cool!
+
+Rob
 
