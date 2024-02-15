@@ -1,176 +1,78 @@
-Return-Path: <linux-kernel+bounces-66208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84231855886
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:00:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 705BD85588B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F08621F281E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:00:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B9BC1F2934C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D0B6116;
-	Thu, 15 Feb 2024 01:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D173A1362;
+	Thu, 15 Feb 2024 01:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LYlYTTS6"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVQoZunP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454193C39
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F2E184E;
+	Thu, 15 Feb 2024 01:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707958814; cv=none; b=NkBSCzDiQHTMSZZGqn8un5AjdhJIfkUtpYEKLj+gc0exIdCXn4LuPQmrlnV8zu+HMjicIR/zVGP6kVaY7r4LAIjSPlbxXZCJGOI8GO5ReswAQqh4JRyckIDPIuJQ2NXb9R13naRRtJ7uEctaIg37q6eGYeluRNPaFiOjUk8XsAQ=
+	t=1707958925; cv=none; b=JLOL08xUOyIlEqQGraj+QMJDwvZ5q9zMlzzBiKHci7APQ59K/lQ3cRHQH41GPDoNegLzjr/6D1wsnjV+SIMB+r7Bxoo+pj25FjGQmaT3G+m5kY8Y0Ey8v40xID8I/7owxZgcQ0Wfws3ia9oXt+wv6WKg9G0pvufYR62AmBQ7hHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707958814; c=relaxed/simple;
-	bh=Wf4UDyoxn2kT2aM4troTO93XPUaqMcnsOBDPFbW/SkM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=PB+Pf+QOT1gooN/alYe5yfg/1fsfXwNZQjvujoETg9RQHOk5XlrchwxzfTgGW+6o8694/gywpbrduaZ4bn9n0rwfEp+LkpcAANQozeW+g6+RaSljGDbFWNhuaJTyaYasYa4OpUs9l6nHVRcv+gBIAPUbaO0TC3flS/ZdfKJZKvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LYlYTTS6; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e0a9b28359so455611b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 17:00:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707958812; x=1708563612; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=THBGYEvhQX0rLSUutlty+Y9Xa/noirUlucPH6YPlG7k=;
-        b=LYlYTTS61aYDoyYVk1Rn6qB7AKtPQbPvtdiVI5xm5zO+MfFVFNETmY3NT5HDAvMoJ8
-         20ndF524d/cg50tNvpxafVHuzqzMBOMmbhyEzMUJcDZkgQLcdUQcumyxp+LYqnRWzT25
-         psfq5vAPudyTDzYt/FowvBXyHCRprh3AZthk0DODfeaSNnE2AqL+WB4M4y++57sl1C6l
-         XLQ2Quzy6iwpxNO2efCIEogsJa2jU4bIvWi64D/Sf7Wkdm1lJAVHmF0YRhtbVf8WmXmE
-         QefMR8Mjx+yh8UvAUVvIlGopJbgD2MgyiztVvV5gAliZp8l0CM8CfMt0/+mTqZQv0/GZ
-         AZsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707958812; x=1708563612;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=THBGYEvhQX0rLSUutlty+Y9Xa/noirUlucPH6YPlG7k=;
-        b=fHMeUjkvOhdgzpvK1yWsPpiV6pi38roQb6kDzEXq5aFrGN3SxSDnziBrFN1+200JYy
-         ZbTLeu0Jg7vdFOIc/0VlfrnkWKOGPQ93Ntbk61Q0ujA1PatFsnEjkZoBB6Yw3/JiGyUM
-         R+QwG57DA3HK1yOvcxP3Jds7N/tXOxoC/ZV603+tZqXxagrxhnQc/+NY/CSvg8VRf0+B
-         FAKJV+1D5CrKL1+F4jtjHU6+XS02D0x8cb1rRHtoqtPgg4T5d8NMDxIQ/7CEwcghmU27
-         JhCJDmkyZZTHsz9SAvgm+jHabksZHzkbta91MwQ2Nq0RQ9jBN06KXbqFp2m7N51XRKpW
-         q4DA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTvpKBMvq4S/iJxkuwTZSMJTiZ/UulhHZJ/6/m0UwUD0b5ek4kYfZ3X4jvHlYJdO67IMja2r5lDAUpGKM8xcCqrZkILNNArYwRAg6m
-X-Gm-Message-State: AOJu0YzczkdqoB3xTe//NEjruew9Oaagizn0Ic08rDi2MYQISxFM50yC
-	hruEvtDxbSDLM2f5aF1P7b+ghRHjFwvtdO7FNxkN0hnEiY/3O02mMsTm1Rseau0UqoWsjXl9Idf
-	/jA==
-X-Google-Smtp-Source: AGHT+IEStBd+icuQ7JfYkpal9lHt3H+yQK5HyweUIHDTPfNjaxBHmFup6/mXtTX+KtrfCtylz5irAboczJA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1898:b0:6e0:e2f8:cf30 with SMTP id
- x24-20020a056a00189800b006e0e2f8cf30mr36898pfh.0.1707958812693; Wed, 14 Feb
- 2024 17:00:12 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed, 14 Feb 2024 17:00:04 -0800
-In-Reply-To: <20240215010004.1456078-1-seanjc@google.com>
+	s=arc-20240116; t=1707958925; c=relaxed/simple;
+	bh=Z7IBwlxEVPqGxWdYiyD7ZJELI6QCwfFBuGkNDpX6rrQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=feoUdIAoGgGs7bWRHQBIzuu5jZ52ZiHTWTnS1ilPYn/43VUcAuK6CCzPdmx9GKrWb1qpu394bssadpK6XaXWIwh2AAuwgFHoKKa1Yn9R9Kzgh19aXlX4YJ78uIl/WhNeAN1vH8Xr9464Z+TY8iaGOR2PsT2dOpsB3r9H/eLC5MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVQoZunP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5F4C433C7;
+	Thu, 15 Feb 2024 01:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707958924;
+	bh=Z7IBwlxEVPqGxWdYiyD7ZJELI6QCwfFBuGkNDpX6rrQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CVQoZunPb8jvNkG6H2BcauSGZlEDjo4hi1jrW8wc9BkZx7jvJgL0H0piu0fejtxSq
+	 H+nksj2s+5vH9/AhV0nGy3BAZYnvh2fB+4zmb+2nqYPMeXrPWl1rD/FoUC4kKAfeop
+	 uc1IubG66AtffHzHRNx89IWicLY06hu73DDhLO4SqArrcVuCo2utRFZc2BdR72ZCpu
+	 y0aTMDVKk4+zBeNgHmnjkvK695Jawn000dSgPz45HpzD798WcWPvlf4LPCSADvHikE
+	 XlOLdfMpECewgAIyWmoAllgeLxNxA2htBM57hNbxih4SmluDuS4FnwjQuVyn2WDS5h
+	 8FsXb/9CSH/VQ==
+Date: Wed, 14 Feb 2024 17:02:03 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Rand Deeb <rand.sec96@gmail.com>
+Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, deeb.rand@confident.ru,
+ lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru
+Subject: Re: [PATCH] dl2k: Fix potential NULL pointer dereference in
+ receive_packet()
+Message-ID: <20240214170203.5bf20e2d@kernel.org>
+In-Reply-To: <20240213200900.41722-1-rand.sec96@gmail.com>
+References: <20240213200900.41722-1-rand.sec96@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215010004.1456078-1-seanjc@google.com>
-X-Mailer: git-send-email 2.43.0.687.g38aa6559b0-goog
-Message-ID: <20240215010004.1456078-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: selftests: Test forced instruction emulation in
- dirty log test (x86 only)
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Matlack <dmatlack@google.com>, Pasha Tatashin <tatashin@google.com>, 
-	Michael Krebs <mkrebs@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Add forced emulation of MOV and LOCK CMPXCHG instructions in the dirty log
-test's guest code to verify that KVM's emulator marks pages dirty as
-expected (and obviously to verify the emulator works at all).  In the long
-term, the guest code would ideally hammer more of KVM's emulator, but for
-starters, cover the two major paths: writes and atomics.
+On Tue, 13 Feb 2024 23:09:00 +0300 Rand Deeb wrote:
+> +			if (skb == NULL) {
 
-To minimize #ifdeffery, wrap only the related code that is x86 specific,
-unnecessariliy synchronizing an extra boolean to the guest is far from the
-end of the world.
+if (!skb) is more common
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- tools/testing/selftests/kvm/dirty_log_test.c | 36 ++++++++++++++++++--
- 1 file changed, 33 insertions(+), 3 deletions(-)
+> +				np->rx_ring[entry].fraginfo = 0;
+> +				printk (KERN_INFO
+> +				       "%s: receive_packet: "
+> +				       "Unable to re-allocate Rx skbuff.#%d\n",
+> +				       dev->name, entry);
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index eaad5b20854c..ff1d1c7f05d8 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -92,6 +92,29 @@ static uint64_t guest_test_phys_mem;
-  */
- static uint64_t guest_test_virt_mem = DEFAULT_GUEST_TEST_MEM;
- 
-+static bool is_forced_emulation_enabled;
-+
-+static void guest_write_memory(uint64_t *mem, uint64_t val, uint64_t rand)
-+{
-+#ifdef __x86_64__
-+	if (is_forced_emulation_enabled && (rand & 1)) {
-+		if (rand & 2) {
-+			__asm__ __volatile__(KVM_FEP "movq %1, %0"
-+					     : "+m" (*mem)
-+					     : "r" (val) : "memory");
-+		} else {
-+			uint64_t __old = READ_ONCE(*mem);
-+
-+			__asm__ __volatile__(KVM_FEP LOCK_PREFIX "cmpxchgq %[new], %[ptr]"
-+					     : [ptr] "+m" (*mem), [old] "+a" (__old)
-+					     : [new]"r" (val) : "memory", "cc");
-+		}
-+	} else
-+#endif
-+
-+	*mem = val;
-+}
-+
- /*
-  * Continuously write to the first 8 bytes of a random pages within
-  * the testing memory region.
-@@ -114,11 +137,13 @@ static void guest_code(void)
- 
- 	while (true) {
- 		for (i = 0; i < TEST_PAGES_PER_LOOP; i++) {
-+			uint64_t rand = READ_ONCE(random_array[i]);
-+
- 			addr = guest_test_virt_mem;
--			addr += (READ_ONCE(random_array[i]) % guest_num_pages)
--				* guest_page_size;
-+			addr += (rand % guest_num_pages) * guest_page_size;
- 			addr = align_down(addr, host_page_size);
--			*(uint64_t *)addr = READ_ONCE(iteration);
-+
-+			guest_write_memory((void *)addr, READ_ONCE(iteration), rand);
- 		}
- 
- 		/* Tell the host that we need more random numbers */
-@@ -772,6 +797,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	sync_global_to_guest(vm, guest_page_size);
- 	sync_global_to_guest(vm, guest_test_virt_mem);
- 	sync_global_to_guest(vm, guest_num_pages);
-+	sync_global_to_guest(vm, is_forced_emulation_enabled);
- 
- 	/* Start the iterations */
- 	iteration = 1;
-@@ -875,6 +901,10 @@ int main(int argc, char *argv[])
- 	int opt, i;
- 	sigset_t sigset;
- 
-+#ifdef __x86_64__
-+	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
-+#endif
-+
- 	sem_init(&sem_vcpu_stop, 0, 0);
- 	sem_init(&sem_vcpu_cont, 0, 0);
- 
+no prints on allocation failure, please, there logs will include OOM
+splats already. A counter as suggested by Jake would be better.
 -- 
-2.43.0.687.g38aa6559b0-goog
-
+pw-bot: cr
 
