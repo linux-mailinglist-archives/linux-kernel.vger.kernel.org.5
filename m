@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-66199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCAE855874
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:51:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7E7855876
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58B8B289865
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:51:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD880B2895B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 00:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE17AAD5E;
-	Thu, 15 Feb 2024 00:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CCE9CA4E;
+	Thu, 15 Feb 2024 00:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BG8swuC7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bqp3Z+5F"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3918F6F;
-	Thu, 15 Feb 2024 00:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D4ABA4B;
+	Thu, 15 Feb 2024 00:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707958211; cv=none; b=GPnJ/VWDUjegsU+Pg9ybFjMjUc0GDKrYURZ+cu8vdNklK7z7AeA1Y+zP85YTdTXyUTYJBxKnwgcfLBA+ud79//YvNDffoEfOITtf+l31ILQbF1argWmAYPf9bYyvg3hVbFvu5nij5Z9NUV2j4c4zhqaRtxVxIxeO2f3axfdo48g=
+	t=1707958213; cv=none; b=G1gi+CJZAZd8+MmEo9Gi+I19eP2RByxVNMGHsXM3NHZqTdWwUnl/PX4sh26WXB2K0Dfn2e5X+OsYwRldWy/c16Vi/IY3Uyx0C0+kag150Pa/RVvmZh8yXwfe4Emqea7UIXBtcJ9W53dKobTuXQidzg2cmN74XyW09aoe2F+tz0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707958211; c=relaxed/simple;
-	bh=7Y5HUcTOOASw7q/i66H/i3KoMA/Mx0KFs62yKsM7Q3U=;
+	s=arc-20240116; t=1707958213; c=relaxed/simple;
+	bh=TyYfmOPE/p3NSd8TeId10uLJdlRXk+ZcnArj63ZnB78=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i1kprDMUG6VBEB2mnB88ezjyfhoPaerVBpHTXujCiz1diI9SEbvQj8pGunsgUJFZagaqK1cugRmw/GdLMQdj7xYzXPAOOHJTvIsieEZ+s8bEwzfbBzg3uj4Wu2/Oz2z3L48wMSOelK4qMpvt1fr2bJElaBzU7YVHFGdkF0CNeT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BG8swuC7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E13C433F1;
-	Thu, 15 Feb 2024 00:50:08 +0000 (UTC)
+	 MIME-Version; b=L0F30FFHcIqLr9ZzfCzG4qqtvWA04D2YLDVDOGSeguG5VOKYQ3sZnoJRP/wlTl+Rg4ESaOk1cklblT1hEPPABaSg5JJfjEUTL5T3yAHchcg/fcBOJD2tCmAOTXpsK8L+woFoAtLn82Wt7w/WcMN/kDETm44cOD36WFLt9GKSis8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bqp3Z+5F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52FCAC433F1;
+	Thu, 15 Feb 2024 00:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707958210;
-	bh=7Y5HUcTOOASw7q/i66H/i3KoMA/Mx0KFs62yKsM7Q3U=;
+	s=k20201202; t=1707958213;
+	bh=TyYfmOPE/p3NSd8TeId10uLJdlRXk+ZcnArj63ZnB78=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BG8swuC7G7o0rc6PZD+BP6DnZFqHhFPMSq6dQMm688+1cJOISJSAFtHpXi2YZs7Ol
-	 WeM5Fd70Is5xAllHt8MST0VoNH9/LjZeSNVZrZsaMs/kgdrFr9/8iIkpehRk2W+Ne3
-	 aJyHnj0GkzPRAbiJdEgODAgTUqlsO12INSZffnQsk1XIV+W8jI2vYWyvUYgddYR8Fl
-	 BOHn13x+9jah2yOtFMQAJIB8uo9dfOc1Z9GYHhvFdWyLACPuFqdbel/LDDss5AGfc4
-	 A3+Qn1MAxuyNIig+Xz/u5MAzjDAUoHUbC44eYRyOfN2e1QnoaavfLaCGt/CNTO7wOn
-	 ZNF7737Oj0biw==
+	b=bqp3Z+5F53mWZq048afnxrfe7nQprPLQu+KBQWmQOH2mkqI5soXwZfsv99yhXWWta
+	 tb3QXoONODumGhTKQw1KTG+7Wo4q0nB/ywNPFI3f63X1ZzP7JW51J4MMGlt6HsNq4P
+	 6nz7CMPGf4tG/tB119Sg0av2sKA7Opvr6vVclFqutXXz5KPsfgLGl4qigdh1LdIhJH
+	 NIq1RPhRv7OQZNNhTHK76OSiOSaLdQ8MOMKhV4Xyv7Ya4K65hDpLW3IxgpXfDIXCAp
+	 BDJjBTB9O9x0iwIlkX8tQlYVApISqlTPIAnmKKwY/1Eyz91MyxaCFXc/XTp3XbpsW9
+	 kXm/K4qhZZD4g==
 From: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -49,9 +49,9 @@ To: Matthias Brugger <matthias.bgg@gmail.com>,
 	linux-kernel@vger.kernel.org,
 	linux-media@vger.kernel.org
 Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH 4/9] soc: mediatek: cmdq: Add cmdq_pkt_nop() helper function
-Date: Thu, 15 Feb 2024 00:49:26 +0000
-Message-Id: <20240215004931.3808-5-chunkuang.hu@kernel.org>
+Subject: [PATCH 5/9] drm/mediatek: Drop calling cmdq_pkt_finalize()
+Date: Thu, 15 Feb 2024 00:49:27 +0000
+Message-Id: <20240215004931.3808-6-chunkuang.hu@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240215004931.3808-1-chunkuang.hu@kernel.org>
 References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
@@ -63,71 +63,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-cmdq_pkt_nop() append nop command to the packet. nop command ask
-GCE to do no operation.
+For some client driver, it want to reduce latency between excuting
+previous packet command and next packet command, so append jump
+command to the end of previous packet and the jump destination
+address is the start address of next packet command buffer. Before
+next packet exist, the previous packet has no information of where
+to jump to, so append nop command first. When next packet exist,
+change nop command to jump command. For mediatek drm driver, it
+never has next packet, so appending nop command is redundant.
+Because cmdq_pkt_finalize() would append nop command, so change
+calling cmdq_pkt_finalize() to cmdq_pkt_eoc() to prevent append
+redundant nop command.
 
 Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 ---
- drivers/soc/mediatek/mtk-cmdq-helper.c | 11 +++++++++++
- include/linux/soc/mediatek/mtk-cmdq.h  | 16 ++++++++++++++++
- 2 files changed, 27 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-index e982997117c2..1be950b4ec7f 100644
---- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-+++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-@@ -369,6 +369,17 @@ int cmdq_pkt_eoc(struct cmdq_pkt *pkt)
- }
- EXPORT_SYMBOL(cmdq_pkt_eoc);
- 
-+int cmdq_pkt_nop(struct cmdq_pkt *pkt, u8 shift_pa)
-+{
-+	struct cmdq_instruction inst = { {0} };
-+
-+	/* Jumping to next instruction is equal to no operation */
-+	inst.op = CMDQ_CODE_JUMP;
-+	inst.value = CMDQ_INST_SIZE >> shift_pa;
-+	return cmdq_pkt_append_command(pkt, inst);
-+}
-+EXPORT_SYMBOL(cmdq_pkt_nop);
-+
- int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
- {
- 	struct cmdq_instruction inst = { {0} };
-diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
-index a67f719dec0b..8179ba5238f9 100644
---- a/include/linux/soc/mediatek/mtk-cmdq.h
-+++ b/include/linux/soc/mediatek/mtk-cmdq.h
-@@ -255,6 +255,17 @@ int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr, u8 shift_pa);
-  */
- int cmdq_pkt_eoc(struct cmdq_pkt *pkt);
- 
-+/**
-+ * cmdq_pkt_nop() - Append nop command to the CMDQ packet, ask GCE
-+ *		    to do no operation.
-+ * @pkt:	the CMDQ packet
-+ * @shift_pa:	shift bits of physical address in CMDQ instruction. This value
-+ *		is got by cmdq_get_shift_pa().
-+ *
-+ * Return: 0 for success; else the error code is returned
-+ */
-+int cmdq_pkt_nop(struct cmdq_pkt *pkt, u8 shift_pa);
-+
- /**
-  * cmdq_pkt_finalize() - Append EOC and jump command to pkt.
-  * @pkt:	the CMDQ packet
-@@ -361,6 +372,11 @@ static inline int cmdq_pkt_eoc(struct cmdq_pkt *pkt)
- 	return -EINVAL;
- }
- 
-+static inline int cmdq_pkt_nop(struct cmdq_pkt *pkt, u8 shift_pa)
-+{
-+	return -EINVAL;
-+}
-+
- static inline int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
- {
- 	return -EINVAL;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index c729af3b9822..df693fa268ce 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -593,7 +593,7 @@ static void mtk_drm_crtc_update_config(struct mtk_drm_crtc *mtk_crtc,
+ 		cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+ 		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+ 		mtk_crtc_ddp_config(crtc, cmdq_handle);
+-		cmdq_pkt_finalize(cmdq_handle);
++		cmdq_pkt_eoc(cmdq_handle);
+ 		dma_sync_single_for_device(mtk_crtc->cmdq_client.chan->mbox->dev,
+ 					   cmdq_handle->pa_base,
+ 					   cmdq_handle->cmd_buf_size,
 -- 
 2.34.1
 
