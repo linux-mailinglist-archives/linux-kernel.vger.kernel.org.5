@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-66497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3A8855D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:12:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC99855D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A32231C21F0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:12:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 843BD1F2C863
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D0D13FFF;
-	Thu, 15 Feb 2024 09:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99FF114005;
+	Thu, 15 Feb 2024 09:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bnv3phRi"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xLyhXGHT"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A0B134D3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E0513AD1
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988338; cv=none; b=dKqwXfYkBE18KpCIvukLMj5mer/nSylAWFu+ArtYzr9oXVmTwNY9vZ4nA/8qWTID6bGA4ulhb8NdOA16vIDTWfP9+63Ej0d/A6vUaspd3IxBalMj9FXehtU9CZCAoMwfitRDlXmVNwODhsdIlNA4fyl54u6Qw5Puf8hvOvO3BIs=
+	t=1707988397; cv=none; b=hXNdMO/TCfQSxaYcbEx5YaoN2ngN7kTN0fqkr3z4EXRc48R9VvAuPMyaHBs9p7cosQH7HzOxWZ+YWMJLIiko4lKxnkcAwp1xBggDSjvsA+QlBS5BlQNXZAsvH2QAr7UxmoqgpFRUgM9yDHzoTcp2mHNWD2omM+BRbEH30qe/0Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988338; c=relaxed/simple;
-	bh=axb07rsJSprQtzvZ9lDU3nupZqM162p+jcZvjk4j4TY=;
+	s=arc-20240116; t=1707988397; c=relaxed/simple;
+	bh=bICAboczo0fE1kosVdjDA8jTx9PZOkEy/Kr7tLy6oSo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K/tQmuaEBC2DbZEbKM+t9GnZ52UU3oEpFUBmkAQT86LPsCbsVYu+I1HNUzVHhj2Twd50fz1wwu1BpKL1MBMF8Hk1f6DPESYNmcfrquPWTaTqD+iMHpw35oKyA7eq5AS6saGN28q7arYi9OE74HOW8tdCQC9Jjgjz2neHydg+3fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bnv3phRi; arc=none smtp.client-ip=209.85.208.50
+	 In-Reply-To:Content-Type; b=BJX+J0ujjUyd/66xUHVh7d4uWTcHoutLfL/w09m5ef4BGEHzPVPJDMbkdu+pTI1UnJQf728CWHnmf+7AEphYIAjKGsbZuFD19aoQ7t3I1ykQTSxzxflFbHF57ruDG9rR2p0HRoWkioPn/3Ft/n8nvO3RDZ8oYTPaSaqkke5Drzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xLyhXGHT; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5610cc8cc1aso664260a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:12:15 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-562178003a1so768344a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:13:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707988333; x=1708593133; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1707988393; x=1708593193; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=joiT44UsnuH9KUogrNtWPy4rxGmoiIGP+jNUh/pD02o=;
-        b=bnv3phRitYYYWcCTo70BSFQbJxsFifgXVmGa9wcVGvdsnYNh48AtkVpJHsxId6rKMX
-         oE1/WmRcT4I325lI7HTVPdWFHDjhPWEQX2+dKfKBThRXd0G33vysDGCq4/byU3wjf86T
-         u6+FXnfgAM2/S8hl5cOmUo00DrwL7/2EOIbGXgks05ufwmF2mg4S+WgCcEeCVZaeLVA5
-         rsHAUEw//6avyl9OKa9E7sLqy0gbNSLckOPDnl0mXF2sQROC35lDrFQjj+88j4jgR0Ok
-         eQLYW0xnQkfQtb1eQ3ZO+E7epw9yx0xrksEBuhV8SnhkLt32SV1bSHZBiPhcsYGGKAQA
-         OytQ==
+        bh=WidnjJffhTsILS34UkL2f/yQzPDmxMpZNSHt1ahPWzs=;
+        b=xLyhXGHT8RyZb1MpvJaWhxrY6jebwfhKSZDOTbOirO+kT171FaFcupNdI47wSr/OdP
+         wCnryz9Ea9HZexTt7VKMf0ovPfeTWsOTNWo80ykGqV99BcTUaRMjuin48/g0HuMgDDts
+         IMFsEg1kj8iAk2GblBMhzZryWqBWRCjCOb0ZcXODumCctzySAJfcIYH4vC+fpMi497X1
+         raCabaWfNb4QRwbMizcgNWBzpwmiVWrlda5I4XXW4CFmCGDAbcJrlIDSyrF7juKtoSpu
+         yFbIanowDBwbs2rijZHuo576k8q6Xgqh2UAblEUelfaWpur6tBXHrbtM+DkSygXeOlwP
+         kQpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707988333; x=1708593133;
+        d=1e100.net; s=20230601; t=1707988393; x=1708593193;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=joiT44UsnuH9KUogrNtWPy4rxGmoiIGP+jNUh/pD02o=;
-        b=oxpzEk3kFSo3gooa56DntOpguGgmpn1hb1qQ2QAjaTYso+nCpO+qe8/PhZNh9AcXSe
-         W4yrROE11/fWGUB0U9OJ0h77/kBpFV+JJUWAEQrhbeMzsfhbAQYs/al0+ihnslh69rJp
-         iREV5DNAG1tShhLryrdng6jmwutxVD83fMMGmnI7W5FGdYvLtJFUVicjC5VxPwlsHu2A
-         Z96NQgwRHP9jIkgH62cyHF1rPRVELn50Sd3uZejAK+b6fpJm6JZBe+oHRGSY0cBq6dcM
-         sy1qmSObPYl+SmpijNQb77xBlyBr3cxcrBtwqwCfIlGpDvXo8LzpGwdNE3l2Q6ZwmlKJ
-         HxFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXUa5i6N07CXXluSji2VkKKIQ+/xoNLYHjmIx0Fw/bMXWP42b7FVZ3ibgd5AA6VaErw2BU8pF+UqAtpVBOjviqtcCzEJbrHrGeR4w1t
-X-Gm-Message-State: AOJu0YxKt4pfsCO8RIlpBnDavLX2p1uK6x0VmSI8uFVmnryM9LRor03J
-	WhFRLo2QZly/MZ87AEvQhgFTgDTbZZguMEUeDKaUlNMlsSvdMBXHdO0tPt6ggw4=
-X-Google-Smtp-Source: AGHT+IGJygtJOAk1NvMHZfNT6tBC1WXkafZ/gPjyVkP/5QXWUjZpW6nO3fmdahsM78cgbqMQ5HIdyg==
-X-Received: by 2002:aa7:d411:0:b0:55e:ea35:1da4 with SMTP id z17-20020aa7d411000000b0055eea351da4mr867899edq.4.1707988333563;
-        Thu, 15 Feb 2024 01:12:13 -0800 (PST)
+        bh=WidnjJffhTsILS34UkL2f/yQzPDmxMpZNSHt1ahPWzs=;
+        b=BDGphF7M+CaIGuRB7HPXTH0OqvvBl4MM4+L85YnQI2Ejv1vYT7c996DwfXIKEbFgwn
+         KPoJkIqDpX6iqEoGyV3RaHD5s6flBY/Fcoc11A9DXi0LY/dWogdhditVKw5LfN9buejm
+         I6iyLdrmlMjkopJ+n6ZL1GbO9aob3YoIf4qD01vnjecmphvFxQiTXO/LJZelFfmoMNNd
+         G/6Gvyy628KxTTk7l/eWlyG9/NiDQiGcEOgkZLWkgyJKKzPrNoiW9urUqr/3S/fRxPKf
+         42kcJS35ZbEEQ5gjK/xS0K/YI5BOCQjWJET6gBDkrR9pSaaccIqP1pC2y7Q0xQZFxndr
+         O5kw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOcIzy+kx87bgVhFz6cti7Q0atC+Y3UWwAA0yXXORu2tk7yW7i0Ax2yR93Cdda/hJKz/8JizcHUtxHkqdlalxZv/DwXtVnZdo4HM09
+X-Gm-Message-State: AOJu0Ywvritf/koWfRbWrd3BLL4VI3nlaqPwsquedwc2PD59FIh3OYVr
+	u97o04kfknDbFfdhsOWan4iJxt6cg52n3g8qOaIxxcIlWFhGDWiPYEZdmslUcxk=
+X-Google-Smtp-Source: AGHT+IEw/vjsN/JN8erTGnuSQJieL6oohFH0SW0tibglcIcwiJvU/5yKS35C5X8Bsq4G/oZlbbuMJQ==
+X-Received: by 2002:a50:ed19:0:b0:562:f48:d8f4 with SMTP id j25-20020a50ed19000000b005620f48d8f4mr940341eds.3.1707988393559;
+        Thu, 15 Feb 2024 01:13:13 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id w15-20020a50d78f000000b0055ef4a779d9sm381258edi.34.2024.02.15.01.12.12
+        by smtp.gmail.com with ESMTPSA id w15-20020a50d78f000000b0055ef4a779d9sm381258edi.34.2024.02.15.01.13.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 01:12:13 -0800 (PST)
-Message-ID: <51cb3592-8cf1-4c0b-9810-54c85c29995d@linaro.org>
-Date: Thu, 15 Feb 2024 10:12:12 +0100
+        Thu, 15 Feb 2024 01:13:13 -0800 (PST)
+Message-ID: <9e19c820-c9aa-4eef-a594-f7305b03eea4@linaro.org>
+Date: Thu, 15 Feb 2024 10:13:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,8 +75,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/23] dt-bindings: gpio: nomadik: add optional ngpios
- property
+Subject: Re: [PATCH 03/23] dt-bindings: gpio: nomadik: add mobileye,eyeq5-gpio
+ compatible
 Content-Language: en-US
 To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
  Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
@@ -91,7 +91,7 @@ Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Tawfik Bayouk <tawfik.bayouk@mobileye.com>
 References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
- <20240214-mbly-gpio-v1-2-f88c0ccf372b@bootlin.com>
+ <20240214-mbly-gpio-v1-3-f88c0ccf372b@bootlin.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -137,18 +137,56 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240214-mbly-gpio-v1-2-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-3-f88c0ccf372b@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 14/02/2024 17:23, Théo Lebrun wrote:
-> This GPIO controller can support a lesser number of GPIOs than 32.
-> Express that in devicetree using an optional, generic property.
+> This GPIO controller is used on the Mobileye EyeQ5 SoC. Add its
+> compatible to the dt-bindings. One difference is that the block as
+> integrated on EyeQ5 does not support sleep-mode.
 > 
 > Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 > ---
+>  .../devicetree/bindings/gpio/st,nomadik-gpio.yaml        | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
+> index bbd23daed229..e44cf292bc6d 100644
+> --- a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
+> @@ -19,7 +19,9 @@ properties:
+>      pattern: "^gpio@[0-9a-f]+$"
+>  
+>    compatible:
+> -    const: st,nomadik-gpio
+> +    enum:
+> +      - st,nomadik-gpio
+> +      - mobileye,eyeq5-gpio
+>  
+>    reg:
+>      maxItems: 1
+> @@ -65,6 +67,18 @@ required:
+>  
+>  unevaluatedProperties: false
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: st,nomadik-gpio
+> +    then:
+> +      properties:
+> +        st,supports-sleepmode:
+> +          description: Whether the controller can sleep or not.
+> +          $ref: /schemas/types.yaml#/definitions/flag
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+You already have such property, so you are defining it second time. You
+want instead if: for eyeq5-gpio making it:
+then:
+  properties:
+    st,supports-sleepmode: false
 
 Best regards,
 Krzysztof
