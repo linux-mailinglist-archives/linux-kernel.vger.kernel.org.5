@@ -1,153 +1,105 @@
-Return-Path: <linux-kernel+bounces-66693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CD3985604A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:55:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0565585604F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0D01F281BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 377F71C20886
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533BD132465;
-	Thu, 15 Feb 2024 10:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tORbjEKo"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04743132473;
+	Thu, 15 Feb 2024 10:41:25 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19633131E5B;
-	Thu, 15 Feb 2024 10:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B6C12A14C;
+	Thu, 15 Feb 2024 10:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993655; cv=none; b=U/mU1KYw5+ErunyOk/6eq6pQIUqXmkKUNG2nJZeN0FRMtdTC0KjGghn/wCEgMx/1EOcQ5ZxZtWfA3sX0T8GOvOUqDp4BU8Bj8sXv2U5g/Vx57BmxPhoXWMwXl1NShkwDaE7RW/zA+46jgsGDS4u+C/JPZAImPJzlnQIHNs5mk2o=
+	t=1707993684; cv=none; b=OJ6GnDtkHsCNeRgXypXG/yw1Dx+aJPTRuxb+i0JKbZbXOlMA+aKrPzdFZmRfO13BZhvAtk3Ih/SrG6Voj99VF3st8vwsCl6EfZmdtfSyFVm62e4AAFges2u7r3qf9qjXZam9iVEl57aDe2UQGW4z8CEvCXtPytz5VMamac+HMto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993655; c=relaxed/simple;
-	bh=5wcOrmWAdm8TpcUI51bhbt1tBGqjQwvGwURuQv6OC9E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VZeYu+qT5b2J/ervXSjl/Z6SwMmZz0n8w1gY6FtXiIbaz28Lu2Fft+COBSwW8sugSO4loTUlN7JLky55D4XRYlFQcDUEwe99ccv5r7Ue3B+TNlXyWO2CF+0pmFqKRSRmqgf5VkzG67Wdx7V2W9ltLrruP+ljXkteLk83OJTBoiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tORbjEKo; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707993652;
-	bh=5wcOrmWAdm8TpcUI51bhbt1tBGqjQwvGwURuQv6OC9E=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=tORbjEKozUXgDVSjisgTfnm0szQ4Ks63i5wjFUPknRP0oqD85lAO5FCeS3tw0+Zkk
-	 mYDHyFv15I2FqeSYc1C4X1EPicF7PIyVoZy0sfIqsha9T3/genKmlJAfVB1OBxPwSl
-	 zE0f/X1QNjC5Sk6FMeBTBvGKqz+CGs+MTZsY0PNflkCz10o9yDNhr1zxuLXabYy445
-	 EMYoQSD4pvHP5Uwaf6unpAlX2FBinyZQ4tYo+w5ZsIHCR42xfrNR26vNX45drWYEG6
-	 oHUjxmGhAz5gAId3lNZTKTGDkCAhUV3ocSjDuGSYjdYlZicE91WKovSA0X6UjrJR5K
-	 ueEYntvmlGqVw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2C6AD3780FC7;
-	Thu, 15 Feb 2024 10:40:52 +0000 (UTC)
-Message-ID: <21d17701-e40b-49c5-bf16-5e70a6daa2c4@collabora.com>
-Date: Thu, 15 Feb 2024 11:40:52 +0100
+	s=arc-20240116; t=1707993684; c=relaxed/simple;
+	bh=hJ+JXqdOrEJnX3WT582TNr+VYiHYPK6HQI+HEvWK9t8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J5tmPXU7LJFVtGSszHFiLMr/TSxoWjDUCsoMj65TCToq07jwcEWwq+fFMUrNWKd5CRtZpWg0qCns76VKp6DnsU/XP0ZqIXLCBtHspGnhPjc3P5AdQgRS9dC/7CnINOOxUXRuxHH55258jGi3TnmciM0ebwuse5kHraRYSDfZu0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-607dca92fcaso2067987b3.1;
+        Thu, 15 Feb 2024 02:41:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707993681; x=1708598481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0BYNOg5Hl4Io6X5VDtgJ8P/zozWReiHM8av/Gg63dgE=;
+        b=VMLtCooVRK6mG4m2HErNLVX2jpS5NhTL4fGlSkvAcOke9QHUCGRhIAQGYIhYdcsblJ
+         O+ayHNA/T25TwHTcwzsCopxDaczl2K1Gz/+dY6nud3dZNWSPXxkGO8seWJPRsk4yhnjJ
+         5Fq1/TpblZvjKUFb5p4gEKd1SAJWi8ibkzaSAHSacHSh98p2RCujEo0L6Zj646CIXTab
+         8rPWxrCOM9jxIkVhrDw4ZKTHISL2lMsb3/7NmPFr+ZFGGwefpLz0SXZDyYlBOLFCB/nD
+         o+GqvkJ56ORSRaegz0esSqrJpZA0FyODMt4Gcr8vz+juaE/OiIA1lfTFTth/QLvcFpy4
+         P9QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXiXzKqnDoQRvATAeXebTgPVKSJzRiW+cORH8Z6OWPMAUIQq1C2mJWVUR053fipKBozScLO56iHX+RacXS04+LnUNhfI6KVzF5wWGa
+X-Gm-Message-State: AOJu0Yyj7SFtae280Jhj1i93QxjetHwpireHPiM4HHe4V29vxDjQ3+9b
+	5fbp+CUMN7O5ki0G3VfCqI1+Fh2dS7m3iGR4y20LKw+glMJxfg6xI29mn/rofqzfRw==
+X-Google-Smtp-Source: AGHT+IHy211Eq9GaDDfwhv5mamwsT+hrL0Acdei4KfkR+rddVmeXsoGNVEt/hnCNlEo0PZXvNg9V2w==
+X-Received: by 2002:a81:8507:0:b0:607:c7b0:302e with SMTP id v7-20020a818507000000b00607c7b0302emr1333340ywf.27.1707993681088;
+        Thu, 15 Feb 2024 02:41:21 -0800 (PST)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id x13-20020a0dd50d000000b00604b1b977b9sm191958ywd.62.2024.02.15.02.41.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 02:41:20 -0800 (PST)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607bfa4c913so6817867b3.3;
+        Thu, 15 Feb 2024 02:41:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUe0LGeOk5yUaUT09KeCKnx4Wo89o0rlHElDX1U9Zey9MaqW8j8JgiABU7MJ+nTrVk3kFmvIRxr18hSlomlGIPwsKL8GBKEc2VvNTkA
+X-Received: by 2002:a25:b286:0:b0:dcc:6757:1720 with SMTP id
+ k6-20020a25b286000000b00dcc67571720mr1193139ybj.32.1707993680622; Thu, 15 Feb
+ 2024 02:41:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] soc: mediatek: cmdq: Add parameter shift_pa to
- cmdq_pkt_jump()
-Content-Language: en-US
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
- <20240215004931.3808-3-chunkuang.hu@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240215004931.3808-3-chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-12-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240212170423.2860895-12-andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 15 Feb 2024 11:41:09 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVD4VTgwU3KqTZxW0baJ8PzNwW3aU=_nJgWtVK9uhHsvg@mail.gmail.com>
+Message-ID: <CAMuHMdVD4VTgwU3KqTZxW0baJ8PzNwW3aU=_nJgWtVK9uhHsvg@mail.gmail.com>
+Subject: Re: [PATCH v2 11/15] auxdisplay: ht16k33: Move ht16k33_linedisp_ops down
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
-> In original design, cmdq_pkt_jump() call cmdq_get_shift_pa() every
-> time to get shift_pa. But the shift_pa is constant value for each
-> SoC, so client driver just need to call cmdq_get_shift_pa() once
-> and pass shift_pa to cmdq_pkt_jump() to prevent frequent function
-> call.
-> 
+On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> We will need the update functions to be defined before
+> ht16k33_linedisp_ops. Move the latter down in the code.
+> No functional change intended.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-As far as I understand, the CMDQ supports both relative and absolute jumps, right?
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Here's my proposal:
-  - Add a new function cmdq_pkt_jump_rel() or cmdq_pkt_jump_relative()
-    * note: I prefer "rel", as maybe in a future we'll get a jump_abs function? :-)
-  - Don't touch the cmdq_pkt_jump() function for one cycle
-    - Migrate mediatek-drm to use cmdq_pkt_jump_rel()
-  - Remove cmdq_pkt_jump() in the next cycle.
+Gr{oetje,eeting}s,
 
-What do you think?
+                        Geert
 
-Regards,
-Angelo
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
->   drivers/soc/mediatek/mtk-cmdq-helper.c | 5 ++---
->   include/linux/soc/mediatek/mtk-cmdq.h  | 6 ++++--
->   2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> index 67e17974d1e6..ed4ef95adf5b 100644
-> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> @@ -348,14 +348,13 @@ int cmdq_pkt_assign(struct cmdq_pkt *pkt, u16 reg_idx, u32 value)
->   }
->   EXPORT_SYMBOL(cmdq_pkt_assign);
->   
-> -int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr)
-> +int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr, u8 shift_pa)
->   {
->   	struct cmdq_instruction inst = {};
->   
->   	inst.op = CMDQ_CODE_JUMP;
->   	inst.offset = CMDQ_JUMP_RELATIVE;
-> -	inst.value = addr >>
-> -		cmdq_get_shift_pa(((struct cmdq_client *)pkt->cl)->chan);
-> +	inst.value = addr >> shift_pa;
->   	return cmdq_pkt_append_command(pkt, inst);
->   }
->   EXPORT_SYMBOL(cmdq_pkt_jump);
-> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
-> index 6c42d817d368..6215191a328d 100644
-> --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> @@ -238,10 +238,12 @@ int cmdq_pkt_assign(struct cmdq_pkt *pkt, u16 reg_idx, u32 value);
->    *		     a physical address which should contains more instruction.
->    * @pkt:        the CMDQ packet
->    * @addr:       physical address of target instruction buffer
-> + * @shift_pa:	shift bits of physical address in CMDQ instruction. This value
-> + *		is got by cmdq_get_shift_pa().
->    *
->    * Return: 0 for success; else the error code is returned
->    */
-> -int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr);
-> +int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr, u8 shift_pa);
->   
->   /**
->    * cmdq_pkt_finalize() - Append EOC and jump command to pkt.
-> @@ -339,7 +341,7 @@ static inline int cmdq_pkt_assign(struct cmdq_pkt *pkt, u16 reg_idx, u32 value)
->   	return -EINVAL;
->   }
->   
-> -static inline int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr)
-> +static inline int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr, u8 shift_pa)
->   {
->   	return -EINVAL;
->   }
-
-
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
