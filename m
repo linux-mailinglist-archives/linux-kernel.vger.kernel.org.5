@@ -1,157 +1,226 @@
-Return-Path: <linux-kernel+bounces-67564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C14B0856D84
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:18:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F008856D8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45D1E28EAC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:18:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A4111F22B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8870B13A250;
-	Thu, 15 Feb 2024 19:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C748139597;
+	Thu, 15 Feb 2024 19:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HohibbP7"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ZBj82k6M"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2059.outbound.protection.outlook.com [40.92.52.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C131413956F
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708024686; cv=none; b=tnGshwLB1b4vBRb0zpNGLk3cbHbwysoy8C6rPcbBixzYDgpVGtkJumS82t2EANhR8U+fsiM5GC8Z6rk4lYwkvaIWxm47Mjl3HdSAJK9Ns0RDtSoJRaBSGglJuAZuywpbIylEN3QSmhTDCVtIOxLm2yPfBkghteNarAUsbyumG6g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708024686; c=relaxed/simple;
-	bh=o3id02ShTaAJP/qkPl05c1vDDNiTkgunU+ojuRRB+Nk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q2ETdp750bvrAeNHm0UwkYL+hv3c+ASgSOtWmkO7/YLIW91fTB/joRKbnHyuDeGzBWv4kzopy6EUk2YWzhrS8PPuSl/eSwVF+HZv1gqsqV989g54jz8t7AD4CNSRu5dZhof7zdquSqWYXxBNzYJsZqwAxOhCEzZswqKU4FlC8FI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HohibbP7; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51178bbb5d9so1428972e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708024682; x=1708629482; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KITCyNjL2swPBA9ngw1xqwUThE0CIbT81b+KJugWYzs=;
-        b=HohibbP7mBtJ0GZtU1qwGFCb0H4pFMoZtkl6cngQwpYZshPEynWs8JHESb1wvMoAgh
-         cjClGG5wvTLewfzfGOQ0f2gvDcLKjRtP3DFpmdl3Ei6m4HpiyrJAaWByLgHltnJVnBh8
-         pOEAmBqTgvIkNbJlLCSEPLvDOTu7AQIS2UXvE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708024682; x=1708629482;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KITCyNjL2swPBA9ngw1xqwUThE0CIbT81b+KJugWYzs=;
-        b=IPP8pobPrAa+Tf3jWNcRi4XYE+1235RaBa2jq6gBCyY+/PAPRJ0//oxqx12Ygg1L22
-         Z6rGLHqgkLoch/QfHWYuccqpjePlAK97vdhX3LpAjvwcjVfgXQF+smuHlCbVNhVYLmje
-         stWFFf6sSLIj2WkJ6tdO+Zv7m+3NdHZRqiH4TsZ+edz9vabQDvSDoBdysx5kd7fmHEwU
-         agDQgF6qKuIZfV7fAFzdnfZeCbS4cDGJ0aAuWMjUEfpgW7ayDSLUWNwPCeKqOtLmEik8
-         uPKH+6nE3Q4wu9E68jrlNLf0/uHi0UipAY+VxfEL3bipYPrUSskvIXansQqyUccW7Fel
-         crHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8UULQApu09o2W5byAMvnVoamKuqyKCGd78katblo6ae/QDZXp+Rij23uoD+g0u0ONi4wdZ+fWOob0+jejOmGqR0LdDwjhiZlzufXl
-X-Gm-Message-State: AOJu0YxfBjqhfL7qHvtlQKjPRmkRWApy2wPetk3i3Wz1ekarZfwPBow8
-	JNQgh7qZQG+8W32C8Sc15Ft/Au9gTRQZDhyv6pU1HOVwNiY7IO0msRbQyUPMHdFwjFH9kMdVCGW
-	lQgk=
-X-Google-Smtp-Source: AGHT+IH9rSGNatVnu6OzsnBVquogScvOTlsqtFxdyEYTppiYgsVaskYOo1mizpDhdAjtyaFKS8+e4w==
-X-Received: by 2002:ac2:446a:0:b0:511:879f:2a73 with SMTP id y10-20020ac2446a000000b00511879f2a73mr2011145lfl.7.1708024682533;
-        Thu, 15 Feb 2024 11:18:02 -0800 (PST)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id qo3-20020a170907874300b00a3da5bf6aa5sm619905ejc.211.2024.02.15.11.18.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 11:18:01 -0800 (PST)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55ee686b5d5so1636101a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:18:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWv7NWbB8jNPoWS2q5dFJMFMDvwBSE34XqxldZpe/sUG9D5tnIObIeI5x7E3XBvoz44YV+KxJ09kMkdYayuwLPYEMOo71ODxUGVHtjU
-X-Received: by 2002:aa7:c31a:0:b0:55f:d95c:923 with SMTP id
- l26-20020aa7c31a000000b0055fd95c0923mr2173374edq.25.1708024681342; Thu, 15
- Feb 2024 11:18:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80B41386C6;
+	Thu, 15 Feb 2024 19:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.52.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708024845; cv=fail; b=usYSvSEAUdLmjPdzo2UOHq3vYMmVZZnH7Qo3ynni9ZY2soen0odN2raFBbyhvIjSHzBbJsEx5kCNoVHJ+YZijrnZB2BM1amXk1pPq3uaAjiJDhXzwcSWlclkPzG+ebzkVlvcUZ5TML94qGp0b7KefxBy2kHRKuai8tzwlfS8oqM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708024845; c=relaxed/simple;
+	bh=g35GVFCxZ7cYEvFUsB1lBCLN3K3leMG5X+Rb+PxF7ig=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=heGw1LAiaohR86uEB7MM7W/HJ7xxIs2hAiyC/wKZkX1e+K/PW6taFxxpldzj6mlMO+yD6nFtkwVMwErKJjJMst5EfDJNYAt+HZGsJu34gnPkca44Ux3rIlDFfZ+0vKMHG8D2lz5mp1O6Vdjl61+YfYBnrM6rEhvfQFWmXSaoqAs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ZBj82k6M; arc=fail smtp.client-ip=40.92.52.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gKYijb1ZmKbOrRcqXWMel7m+qkq9nVUOPgr/xciEg4aft/UEm7PhWCeI0NXIJEXgTt1Q3tDla1Q4k46V9sSfQ6zFDZ64riTyfBBKxuHE58M/Z5R/ovdF7nadt6LG5BN7YhOkr3yMPxymirY5c/fHMHPzkoKfOnZtOfEa8emdAn+X6gPe0rB8yi29iqG2G7+jXySLkev96b73LG7g/PeWxRQar7cKQveDaZzkeM8ukfNGY5+cOu7SQy8/b/XT3O2blImHQd1g4TbXPKtlv9CaabX38k/KShvND4gX9wnTo/T771lv1TL0l3O1mYFiQ6mvAvq/ZQy0rzB2WBTUTfQu4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bGLIhcXfaEaza4ey+zPtnhnI19xVJhWKLxLSTiRGgKM=;
+ b=cGYOXgoaVa7M+Nt5He1z+HT4FMXqRrL7YCMSQtu6h0KAohT50yuILMX5Hu1eYSWLLVF0ACajKrs/ksJFavGuXcmLfi19RB0ETYjMJC770iSxeOINkJt6TTjxqqH7C67iiLNxJ7UlkqOyoTcLRojd/5Ptuc+02qj/ToUaClZbNPDvOR5Z4PvyK2H7luclIjmraZTfQaIVyltFcBIVv6uO7Xptpf5WOMtBVdWwBGAN/kjh/piTZ/mKZmW06aZ8LNaei0cWSLTRpK3RkwNfvR8tAKGQADhyvfcWuwGFNPVUdlgeGvcWEMo5f1Lpf+U+4ZIkcAZGV+v2WX0CEYKs2UdFQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bGLIhcXfaEaza4ey+zPtnhnI19xVJhWKLxLSTiRGgKM=;
+ b=ZBj82k6MlsTGL7kGZJ+SdEPSMzZNiQBjT/rjJZgOunaczI9UJtgnvnm2xgDb4kT8n8UDCVP8WCYSxCRUTSKBaUTrUv7t2KMP1cWIDgSStzDAqLS41cvHxupsdr4LCq1h05LVqe3R/lBI5fBc8Fh/II0Tw7oPfOT8vuxJVyg5pSVhgNTljDtgtA8+uNykfpC9G1g2gQQ5oTmalguuDMuGL3Eyy7ShinbRwkOzPBsGNEJR7G2Bgc+MMdPC6yCoqGaTBHb28xq2NoJD/1mL6SL+BP3N0/ci+7xrOPBkG20jw9I8ET6zbEpVl2DH/cdWMMtoq65eWJZMrlHJdvkqQrrDxw==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by SEZPR06MB7389.apcprd06.prod.outlook.com (2603:1096:101:24f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Thu, 15 Feb
+ 2024 19:20:33 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1%4]) with mapi id 15.20.7292.026; Thu, 15 Feb 2024
+ 19:20:32 +0000
+Message-ID:
+ <SEZPR06MB6959B783D324C7EF79095FE2964D2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Fri, 16 Feb 2024 03:20:29 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] mmc: dw_mmc: add support for hi3798mv200
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Jaehoon Chung
+ <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Igor Opaniuk <igor.opaniuk@linaro.org>,
+ tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
+ <20240216-b4-mmc-hi3798mv200-v1-1-7d46db845ae6@outlook.com>
+ <682f2d6e-31fb-418c-9622-d3e5ebd4ee7f@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <682f2d6e-31fb-418c-9622-d3e5ebd4ee7f@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [SjH+NfOGzzNeMvhD0ZYfiKkS1w1p6whacb5lkyFaiu6F4zguTf9prH7mE5P+lcX86POoXtGqG6E=]
+X-ClientProxiedBy: TYCPR01CA0190.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b0::7) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <718bc55e-a086-458e-b2ae-e5fe55a48715@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
- <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
- <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
- <ZcZyWrawr1NUCiQZ@google.com> <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
- <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
- <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
- <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
- <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
- <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
- <Zc3NvWhOK//UwyJe@tucnak> <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
-In-Reply-To: <CAHk-=wiar+J2t6C5k6T8hZXGu0HDj3ZjH9bNGFBkkQOHj4Xkog@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 15 Feb 2024 11:17:44 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjLFrbAVq6bxjGk+cAuafRgW8-6fxjsWzdxngM-fy_cew@mail.gmail.com>
-Message-ID: <CAHk-=wjLFrbAVq6bxjGk+cAuafRgW8-6fxjsWzdxngM-fy_cew@mail.gmail.com>
-Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on gcc-11
- (and earlier)
-To: Jakub Jelinek <jakub@redhat.com>
-Cc: Uros Bizjak <ubizjak@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Sean Christopherson <seanjc@google.com>, "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB7389:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07095a4b-0505-4a0e-b3a2-08dc2e5b2da8
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cclkLH31eV2g/MwjOIaGxjyNQzShVtGHCxNiSrmoEZRSVXQW6sYk1yZBbxVMYz2y7a6gVmBE7znWTkUR20TK+8cCMNSLquyUBsy6at0Stof1O20FQWTJYFQBPqhIM71gwB8fW+hS7/UVjkggGUII9CU+d2H7uQPsS4FLhs+IZ/ryzOIC6mR96TlrtuIIvmGcXjZYj9Haaam+pQVLBfPs4T3TeiAL1wiAP49bylxx1q8EKnEqTmbcwlVUBxaJAtwv1WX9tAdEmhCK2Z1NpgWNaJr32MGbcr13ddnIPDExnED4MeLKltDutjSy+vdpg5hWRSnvdkaLz2Jol9cOGvPK1zujVz6hEROmAUFycbROXjrn4Pnw6hwC6vk4kO/wz3rBLcqX3mKDyPbYbyVobMEBC/FMLrOPah2r4quwPsGo6aHWOw5BwnMtDBvCokaVovYmGgESRlLVMnk6/TVQ6+ArUBe1XnTXEIJPmhyF2v1tBUN7i1KMIEgACPUznDzHY55u7OoBiJv9y5/lZ5mi1cPPvSkRFvxl8P5F+7JHSBZHkuqczyrhfMoEG35cjrHYrpWy
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cTRiSEgvMmNldGhYcjRjVVRiNk1GaThxbHQ1RVYybUxQZVk3ck5hNDVWbzVv?=
+ =?utf-8?B?MjBadXdFNmVxbjFod3drQTRGNEJDMk44VXo1MUo2dmxqNnFqbzl1YlhrekNU?=
+ =?utf-8?B?ckZpdzMrZktNTzhLUjlCVUVWd0lieUFUOVpLMkZ1b0hXVWVzazJ5VkJhSDlI?=
+ =?utf-8?B?RzZoWVJybnJsdGY2ZkZ2UnlGNmZUdjI4WS9GYXlQSTJEeS9JLzlQdW5RRXhx?=
+ =?utf-8?B?MnZrU2xIN0laOTQ5UEhsWktnTjRNTTZKTEpJZTFGOEErci8zd3RvdCtCQUV2?=
+ =?utf-8?B?OGVPdDF4cStTb2xieCs4MkhoMVI0c0grUlNoWityTnNhcVJOYnpFYnZMaGQz?=
+ =?utf-8?B?L1NJU2pSb2R2TlhZaFRnWnVueTU1TCtuZ1VGZnJ2S0V3eHJsYWthMkRZUGtW?=
+ =?utf-8?B?eUpneFZFeEo0SmZrMk5mbGZtUXNXNzV0Nko2dFlaK2pHMGdKdGxTVW1IcmRS?=
+ =?utf-8?B?cUc4dXYyS2VWTlcyaHFYbDlLKy9maDFiTEI5T3Vyd2FybjkxejBMakorRk5v?=
+ =?utf-8?B?T1JBR0lqeEcwZy9kRHpGdExmSTRtbnVmYVNlTHR3L0J3dWtqOUJLcU5Vano2?=
+ =?utf-8?B?M1RKMkJ3RWlXa1JpTWFrU2lHbjI3K2ZUYXRXMGkyVmlSMUR1NXlKMktEc3d3?=
+ =?utf-8?B?SmtPak5pQVFYUDdnSDlCY3c0SGRaaDQxT3RpTzhYby9PK1VhMmdYbWFPRzVt?=
+ =?utf-8?B?cm4yeGh2MnhBVm54SHFuL2pPTitZVkV0OFZUOVdXRHVvRHZqTU8vWGxKZG9V?=
+ =?utf-8?B?QlhlNVNiYW5OZzByZXNKZkpadDViSm5tZVZtZVplaHo0dkwrMWowQW5xaWFq?=
+ =?utf-8?B?K1JTaFFyOG53dklMTWVzbzkyMGZvZFJWU0hVUXhXd3NTUVVZUHRNL0Y0dC9l?=
+ =?utf-8?B?aEU0YnY2cnFhS1cxdWk1c0hscXQ0VGRSY1ZvZnNDeEhNNFB4WXVHeERmNlRF?=
+ =?utf-8?B?bitaZXpkWUJwcS9YdEROVnhiYXlhSUw5QmU2NzMxVlkvbDE0RDZ2aE8ySUJj?=
+ =?utf-8?B?bzFoZWE3WDhxMTRrbW1VMFdCaDh2eVU0eXg4V2c3QXhNNmw1QURNcjFWUDBB?=
+ =?utf-8?B?YUFqUGZMSzMybFA4b0lMM2syN2VpRDA2SDk5dW1LWDJUMC9uV0djVlEwZHgw?=
+ =?utf-8?B?VVplRHgydmhPVk5vVkhCQjJYTU1PYW1abTYvWElPOGRmVVV2VmZUTVRSNmFB?=
+ =?utf-8?B?bEJiQWRXRVU4aFg2Snd5NEd2aStUejFhUEw2SnpUQks3cVVXVXFPcFdNM1pZ?=
+ =?utf-8?B?U1dmKzhmOGhlRitIcTV6TmFNUW5CSXJnYXduVGJ5d0kwS0ZVUlRLc0hHemNk?=
+ =?utf-8?B?YlpEL3lpZUg3VW5XNVQrT3hZNWxKdlNWSXljdGt4aTMwWUI0cThIYjU0NEM4?=
+ =?utf-8?B?K3hZMmFnbzVNMzVDVGRvc3lTYmJBRGRyZTgyWmlCcmYyZEdWN1ZLdGYwUmk5?=
+ =?utf-8?B?MUU3OGZjbi9qaVdKVVdXWWxpOXhRbS9OM0VpT2R1dDFXcGszSkc0cWQ1RXBw?=
+ =?utf-8?B?U2tTTUdiL21VSDE1K1JCY3hDMUxVR3Zka3IzQzF3SDF2U0l0ZHE1d1RqZ1pB?=
+ =?utf-8?B?UnEwd0pxL05FVVZKWjBQTC9HTVR1Y05GSHVIb2hQWmtLTmNMY256Sk5aYWly?=
+ =?utf-8?B?NzM3UnU2OXNsNytaSGlmbGxsMjNOQ05RTHJCeTJZZU4yZnZJb3JpdVFaK2Ns?=
+ =?utf-8?B?MVBWbHB5RlpUMEFWbC9oQzU4TkxuL3NHVmlJb2g2QWtMM3pkaDRSZkZIUlYz?=
+ =?utf-8?Q?z8ljiAzfvR9BhX1r+8+y1pjAeU5MfB8007WK7s7?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07095a4b-0505-4a0e-b3a2-08dc2e5b2da8
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 19:20:32.4234
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB7389
 
-On Thu, 15 Feb 2024 at 10:25, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On 2/16/2024 3:15 AM, Krzysztof Kozlowski wrote:
+> On 15/02/2024 18:46, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
+>>
+>> Add support for Hi3798MV200 specific extension.
+>>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 >
-> On Thu, 15 Feb 2024 at 00:39, Jakub Jelinek <jakub@redhat.com> wrote:
-> >
-> > Can it be guarded with
-> > #if GCC_VERSION < 140100
+>> +
+>> +static int dw_mci_hi3798mv200_init(struct dw_mci *host)
+>> +{
+>> +	struct dw_mci_hi3798mv200_priv *priv;
+>> +	struct device_node *np = host->dev->of_node;
+>> +
+>> +	priv = devm_kzalloc(host->dev, sizeof(*priv), GFP_KERNEL);
+>> +	if (!priv)
+>> +		return -ENOMEM;
+>> +
+>> +	mmc_of_parse_clk_phase(host->dev, &priv->phase_map);
+>> +
+>> +	priv->sample_clk = devm_clk_get_enabled(host->dev, "ciu-sample");
+>> +	if (IS_ERR(priv->sample_clk)) {
+>> +		dev_err(host->dev, "failed to get enabled ciu-sample clock\n");
+> syntax is: return dev_err_probe()
+Will fix in next version.
 >
-> Ack. I'll update the workaround to do that, and add the new and
-> improved bugzilla pointer.
+>> +		return PTR_ERR(priv->sample_clk);
+>> +	}
+>> +
+>> +	priv->drive_clk = devm_clk_get_enabled(host->dev, "ciu-drive");
+>> +	if (IS_ERR(priv->drive_clk)) {
+>> +		dev_err(host->dev, "failed to get enabled ciu-drive clock\n");
+> syntax is: return dev_err_probe()
+Will fix in next version.
+>
+>> +		return PTR_ERR(priv->drive_clk);
+>> +	}
+>> +
+>> +	priv->sap_dll_reg = syscon_regmap_lookup_by_phandle(np, "hisilicon,sap-dll-reg");
+>> +	if (IS_ERR(priv->sap_dll_reg)) {
+>> +		dev_err(host->dev, "failed to get sap-dll-reg\n");
+> syntax is: return dev_err_probe()
+Will fix in next version.
+>
+>> +		return PTR_ERR(priv->sap_dll_reg);
+>> +	}
+>> +
+>> +	host->priv = priv;
+>> +	return 0;
+>> +}
+>> +
+> ....
+>
+>> +
+>> +MODULE_DEVICE_TABLE(of, dw_mci_hi3798mv200_match);
+>> +static struct platform_driver dw_mci_hi3798mv200_driver = {
+>> +	.probe = dw_mci_hi3798mv200_probe,
+>> +	.remove_new = dw_mci_hi3798mv200_remove,
+>> +	.driver = {
+>> +		.name = "dwmmc_hi3798mv200",
+>> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>> +		.of_match_table = dw_mci_hi3798mv200_match,
+>> +	},
+>> +};
+>> +module_platform_driver(dw_mci_hi3798mv200_driver);
+>> +
+>> +MODULE_DESCRIPTION("HiSilicon Hi3798MV200 Specific DW-MSHC Driver Extension");
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_ALIAS("platform:dwmmc_hi3798mv200");
+> You should not need MODULE_ALIAS() in normal cases. If you need it,
+> usually it means your device ID table is wrong (e.g. misses either
+> entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
+> for incomplete ID table.
+Will fix it in v2. I simply copied this from dw_mmc-hi3798cv200.c and 
+s/cv200/mv200/. I'll remove it for dw_mmc-hi3798cv200.c in next version 
+too because it seems not useful in that driver too.
+> Best regards,
+> Krzysztof
+>
 
-. and I also followed your suggestion to just consider any gcc-14
-snapshots as fixed. That seemed safe, considering that in practice the
-actual bug that Sean reported seems to not actually trigger with any
-gcc version 12.1+ as per your bisect (and my minimal testing).
+-- 
+Regards,
+Yang Xiwen
 
-HOWEVER, when I was working through this, I noted that the *other*
-part of the workaround (the "missing volatile") doesn't seem to have
-been backported as aggressively.
-
-IOW, I find that "Mark asm goto with outputs as volatile" in the
-gcc-12 and gcc-13 branches, but not in gcc-11.
-
-So I did end up making the default "asm_goto_output()" macro always
-use "asm volatile goto()", so that we don't have to worry about the
-other gcc issue.
-
-End result: the extra empty asm barrier is now dependent on gcc
-version in my tree, but the manual addition of 'volatile' is
-unconditional.
-
-Because it looks to me like gcc-11.5 will have your fix for the pseudo
-ordering, but not Andrew Pinski's fix for missing a volatile.
-
-Anyway, since the version dependencies were complex enough, I ended up
-going with putting that logic in our Kconfig files, rather than making
-the gcc-specific header file an ugly mess of #if's.
-
-Our Kconfig files are pretty much designed for having complicated
-configuration dependencies, so it ends up being quite natural there:
-
-  config GCC_ASM_GOTO_OUTPUT_WORKAROUND
-        bool
-        depends on CC_IS_GCC && CC_HAS_ASM_GOTO_OUTPUT
-        # Fixed in GCC 14.1, 13.3, 12.4 and 11.5
-        # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113921
-        default y if GCC_VERSION < 110500
-        default y if GCC_VERSION >= 120000 && GCC_VERSION < 120400
-        default y if GCC_VERSION >= 130000 && GCC_VERSION < 130300
-
-and having those kinds of horrid expressions as preprocessor code
-included in every single compilation unit seemed just nasty.
-
-              Linus
 
