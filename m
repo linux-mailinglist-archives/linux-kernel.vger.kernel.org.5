@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-67518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEED856CC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:35:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4115B856D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 421831F26AAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:35:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7FE8B2C2B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123D113A249;
-	Thu, 15 Feb 2024 18:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A031813AA28;
+	Thu, 15 Feb 2024 18:34:33 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A17139597
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397F6139565
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022048; cv=none; b=e6dDkmuN0k11ao5fJS32fiyED+uUTBSzprPDIfotx+6jZVXTcKprDO8wh9XF3hlIq+VXeeSs5Gjjld63Lydi7kuEozzzfl1EV4qVKMLgr+owYHw0Qpeg+4rmBDPAQP0qczqihQd/neWNtsfIgoRJya/+94M9SMFiw6Wz0vuEdDg=
+	t=1708022073; cv=none; b=SSxR+x4lKQZteBEX2t1YlG9uszGotny5UAEhUX5TQjyyJu7ly/4PAFd9pgZbK8U47h18+O2gy8QkY97xif19hrUHlff7eXCFLeAEO+PCN5QVOQ2stefavbeOIPyt6EDunoxL0Apu0XbF3hdapaB6Fit5ilRe3ngs9USztoSzBzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022048; c=relaxed/simple;
-	bh=no/blXCb0vQawIseQkgHar47hmhAMUTDnXZAbG+6kqM=;
+	s=arc-20240116; t=1708022073; c=relaxed/simple;
+	bh=xFUHeOpu2v94WEgVrM78QpkrFdmxkfz0LYJ3IrH26zQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FRp2ldSmu0f84NX5AfGs2dnlxmBUtaC3kfy1pOb+JWRhXTylTBSsoF0vqK/cmNmHqWptfPhD0UXGuIuZhH3qrVMqMFJ8u9biV7z7tVCAjKgYggbXs54jRlSyJaDaoD6fLXve688tamMhUVUwS/m2FrUBdtEOO2NV9LXABMdhYWw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=oYZuFU24StMYUnoS0MNBKIF0M9kYs41VpOQZdWjgslLgzawrsBQlNpviKlRpk2ZHFZEJVAkamfwoabXoVPuLK551Zvre3wF21KL6iNVURVG2IgiSWOZ7h5ZoWa4SRfzzF2cZEIq2NIP+tgoHG+vze7zEFL/pHnbcNrTBwRTDh8w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38715C433C7;
-	Thu, 15 Feb 2024 18:34:03 +0000 (UTC)
-Date: Thu, 15 Feb 2024 18:34:00 +0000
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28676C433C7;
+	Thu, 15 Feb 2024 18:34:27 +0000 (UTC)
+Date: Thu, 15 Feb 2024 18:34:25 +0000
 From: Catalin Marinas <catalin.marinas@arm.com>
 To: Ryan Roberts <ryan.roberts@arm.com>
 Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
@@ -50,11 +50,11 @@ Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
 	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
 	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 07/18] arm64/mm: Convert READ_ONCE(*ptep) to
- ptep_get(ptep)
-Message-ID: <Zc5ZGNaYp5dFND1_@arm.com>
+Subject: Re: [PATCH v6 08/18] arm64/mm: Convert set_pte_at() to set_ptes(...,
+ 1)
+Message-ID: <Zc5ZMbMosSvI0rRm@arm.com>
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-8-ryan.roberts@arm.com>
+ <20240215103205.2607016-9-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,17 +63,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215103205.2607016-8-ryan.roberts@arm.com>
+In-Reply-To: <20240215103205.2607016-9-ryan.roberts@arm.com>
 
-On Thu, Feb 15, 2024 at 10:31:54AM +0000, Ryan Roberts wrote:
-> There are a number of places in the arch code that read a pte by using
-> the READ_ONCE() macro. Refactor these call sites to instead use the
-> ptep_get() helper, which itself is a READ_ONCE(). Generated code should
-> be the same.
+On Thu, Feb 15, 2024 at 10:31:55AM +0000, Ryan Roberts wrote:
+> Since set_ptes() was introduced, set_pte_at() has been implemented as a
+> generic macro around set_ptes(..., 1). So this change should continue to
+> generate the same code. However, making this change prepares us for the
+> transparent contpte support. It means we can reroute set_ptes() to
+> __set_ptes(). Since set_pte_at() is a generic macro, there will be no
+> equivalent __set_pte_at() to reroute to.
 > 
-> This will benefit us when we shortly introduce the transparent contpte
-> support. In this case, ptep_get() will become more complex so we now
-> have all the code abstracted through it.
+> Note that a couple of calls to set_pte_at() remain in the arch code.
+> This is intentional, since those call sites are acting on behalf of
+> core-mm and should continue to call into the public set_ptes() rather
+> than the arch-private __set_ptes().
 > 
 > Tested-by: John Hubbard <jhubbard@nvidia.com>
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
