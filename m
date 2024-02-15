@@ -1,162 +1,129 @@
-Return-Path: <linux-kernel+bounces-66550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5C4855E41
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D915A855E47
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28A2EB324EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9987AB2FAF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A11217C61;
-	Thu, 15 Feb 2024 09:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05201BC56;
+	Thu, 15 Feb 2024 09:32:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BhTmjOIQ"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8xrrJvJ"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6947EDDA5
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0EB5182BF
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707989544; cv=none; b=PpEIgZ/TowZTvkVSkVbYT/t0s1MI+SIC2TSvlCbDeCoIL1NWeuOvm+plW4q1nt2EBVTEPGjbsgoDmyQXJPmkdR9d7pSfySxW65vL3SkSGrBQq2t7ZGYNS66rasvUj6dMEUo5MkZHXF/jWTw7XDLeB2PSadLp9DWCNZ17bHW+jzY=
+	t=1707989567; cv=none; b=nDEMneysxkEu2W5UwC66OoOX3/ha7A6FAJ5/54f3BP1xxgZsSdRBzlFZbPlkaImGTPCWZM4eC0koPuIGnUrhZsZ0s0rKax5DtjF9h/KrUWUGsWnopEJFDyUSgD9wWe1YwdrxjaKr9X+wwnea3DDmVwBUdCfGWdESgXLAcxTqcYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707989544; c=relaxed/simple;
-	bh=t8fjnbGI5gCrFfnFsadlQGU4sXRofYXA6zNJI24MqTw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cozsx5cupn5qZZHTNltdBuYeX3DvO9/lDyfjhmOMz770TpyEs/9jsEe4Xu/4uBBP2HYwVaqfQQsGQs7Ur/Bp+E3dDgmqyeG6OKpTkEm+ebj7a6KYjK5qCygoDO21SdpzeSmYUeYsw3z3byNpI5khRHMbhqd/JtIhs3QCQr0RJFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BhTmjOIQ; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso426842276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:32:22 -0800 (PST)
+	s=arc-20240116; t=1707989567; c=relaxed/simple;
+	bh=Omg4acYujtdeRawCGb0RTHxJLjrGqaPKUU7KovSJhpc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l/JYCjjzjpp+XRrxaDZ4CX4JCz9JZHctAe3wa48+dVuKdUSz++zZd0Ah8k0n//2hZkSluYgEOk+9/B1CwNZtJ6iDPUFg+1aQTIH3OZkbnc6gLQy7HL0WMDXuyGrfBQ3PY0fLawYMz+R0HxjhH4D5pIRLolZ+DLoZLMBOFr0wnWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8xrrJvJ; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563bdf132f8so32580a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 01:32:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707989541; x=1708594341; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xhsL/cUAT42+vhfZnH+MnscoqoxI62SZOZMcf2180Ao=;
-        b=BhTmjOIQCLkZdId60uaR6cEW8Lj2t9+jOOCJ0tj43srt+SyBfBc76ASRp80I2vJP9l
-         8GmEBVCwP5fFKDa4+pZw9fQIIXEezxinoRkq5OuW/8NrkZWCER1JXCu0V5A5qwutvjUl
-         /l8ZR4CfN5XZtaYpP95gGBGZzLB2TpMZmtEArns1V1eg1iX8fLuGtmNBWU962cTUu/6v
-         YQvm7HuXneV9dJYEjUGiRsVMGtbz7RHoAVx3SYrlXlAN7vzVoHGXBpHL3ITyabsJF8qq
-         D7slb8ZjwczuiJNOzBQisdqQK8Ad4Et0Lra1I0zmuAq/mCeiMNdCtC2qITbJpE6qtIj/
-         hUsw==
+        d=gmail.com; s=20230601; t=1707989564; x=1708594364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kg/5u3u8BHpzXrjgfyC49Sj4UVynox8lvULasQKi+Xs=;
+        b=a8xrrJvJB21dWg3bY5NJCS7AhIQ9kdFHwvnYAyU9XT5RdL5lmIO+TQnDH74MZ7lGVR
+         ZgBs0llyY6UtdgMT2GsdKZG4xpccFNmAlzkeGiES2ojqNHQVSLLYIaT85xw9KGpEqgnW
+         DM2x15YRP+d0RFjEzvvPCjwH1FSQ8KK06SqKaJkeGKVbZa2vmpTbew35IU+cOlEL7bQH
+         5Ucib2T5IO8YVLOlnwM5/Nfsgfz7gS9CikhsHCsqua8oNiL291YOKkEZTeAwIRYkAH/6
+         sT8cw8h7U2LV0VF/AQ+qwhI/FGZoB+/XKcDql7O2p+yyYizxPKYI9bzimQZGe53UrCmc
+         SS7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707989541; x=1708594341;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xhsL/cUAT42+vhfZnH+MnscoqoxI62SZOZMcf2180Ao=;
-        b=LUIRnG/53bvk9v91K3vXJCTm3F9B9CpqAKzfq6yZgv4ui2ZFgvTLlEuHswHnx84NqV
-         hMqqyNNfDmLa0XcSoikXEzLg+GhfSa5ghTHNxlDJOnwhtHSVZpXc7WXC6bwGAfk1YnbK
-         3mXspnLTxqfUbi5iZdaXSQE7AFJ4ojt3dtS7eAM0lzaosJfObJ5rMHQ8SxVa6xY45y1J
-         KkAQezOd5FiYeHsfYc1JyRfQwsXPqmMIjh9k0U3DridlbwqDikfsQ7UiWJA7LtNZnGKN
-         dcZcy0dSCl8plBiB2bu6gyUGb3/b4SK3ON7/MZwoSXf3Uy8IcZ9n+tR1C4t+5RA3IptJ
-         kMrw==
-X-Forwarded-Encrypted: i=1; AJvYcCWvxXBRkOTR7u085J+N4jt2W5Y45DkWgn5dO4ktmM3vaL7WqpLNCgTnW0bE/pqTKhv/qKX21OrQi5kSWAU2aQEQ/+x6VvwPHZZjJlab
-X-Gm-Message-State: AOJu0YxSAq7afD+iFzd9lGuW+Ru/5ODfiTfqT8Pe2pFAGwyIhx84R+EN
-	gUEUBDvyC+NjTZqUc58w8jEryJ7AyaKRdR/DdlvEo37X6h/cYF+hOrHjd7AZAEfj33RtEi5p2fz
-	hVkPLRAekdVgn1o7Ny+3cL/YBLxZXeMYXEY8MTA==
-X-Google-Smtp-Source: AGHT+IGo2HcfVD2s8rsl4Q6UKE4zYlvCOdCjsO2WiOwy9pC6rfEmy2MtkOAphVrWtXxWh32cSnZlcfv9SsjiJWqGlD8=
-X-Received: by 2002:a25:d68b:0:b0:dc6:aed5:718a with SMTP id
- n133-20020a25d68b000000b00dc6aed5718amr968831ybg.26.1707989541228; Thu, 15
- Feb 2024 01:32:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707989564; x=1708594364;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kg/5u3u8BHpzXrjgfyC49Sj4UVynox8lvULasQKi+Xs=;
+        b=h+KQVNR/QiJ4LNziUMhchi4yAZLLi4sgFaUvlU5pzaiWsY6idhOrDvF3AD/frCQwjb
+         lsy/ZVDSsqm2DwND1Lhn8MDFhS2cYB3KCTAy+M04rTGTIbW73OTvcV+QTLSQzSXfs8Du
+         +WLo+wVMoiYvqHg5iyhkfqoMQVKrhlH9VcPj1M59PAxrhJ/o5G3rorUSRbpE3nmm/uZn
+         yF0beWZ9S74XjnRotQAur23oa8ZOjHGcMd+evlINwTAJrVN6UHdPSxkBmPAU5ntKYvz4
+         gtQCXGAJ8RJa0s+LxS7HJTnaAfNK6NdmjKnmtHYSmNbO8fPcwyJD4ubscC/A/ioc3UXO
+         0PMA==
+X-Gm-Message-State: AOJu0YyXjTM3iZqJJ4y6Ley+qQadki1wrsatGCa4lAgqOp0XgV95W3Qv
+	ryqyCEZCm2q987wekWxjVCK5r/alYFDzluqL0nGrWdOeCrtn2teb
+X-Google-Smtp-Source: AGHT+IEcIgt2Iqxx2tsbVKbYneFYaBxEmNZ14WV6xTenuRe50DQjP6SUkT4XxX/DOObJtd/XCGhboA==
+X-Received: by 2002:a50:8d11:0:b0:560:1f51:80f6 with SMTP id s17-20020a508d11000000b005601f5180f6mr808912eds.4.1707989563363;
+        Thu, 15 Feb 2024 01:32:43 -0800 (PST)
+Received: from [192.168.8.103] (dynamic-176-005-144-062.176.5.pool.telefonica.de. [176.5.144.62])
+        by smtp.gmail.com with ESMTPSA id z10-20020aa7cf8a000000b0056399fa69absm364316edx.26.2024.02.15.01.32.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 01:32:42 -0800 (PST)
+Message-ID: <817953da-12ee-4720-aef1-725d07c2704e@gmail.com>
+Date: Thu, 15 Feb 2024 10:32:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215-topic-sm8650-gpu-v2-0-6be0b4bf2e09@linaro.org>
- <20240215-topic-sm8650-gpu-v2-2-6be0b4bf2e09@linaro.org> <CAA8EJprpYEhGi5b+uWGWtOa+qbSwUR8C0j9NLC+ah_-nvy-=Ng@mail.gmail.com>
- <ffb16ef6-fc9a-42b1-b9c3-4e8f6b52d849@linaro.org>
-In-Reply-To: <ffb16ef6-fc9a-42b1-b9c3-4e8f6b52d849@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 15 Feb 2024 11:32:10 +0200
-Message-ID: <CAA8EJpobWYu8LoHZarOw82z78=kLJrKH0P4ncK6sX7zE1nHuqQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] dt-bindings: arm-smmu: Document SM8650 GPU SMMU
-To: neil.armstrong@linaro.org
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Staging: rtl8192e: rtl819x_HTProc: Removed braces from
+ single statement block
+To: Aaron Parfitt <aaronparfitt123@gmail.com>, gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+References: <20240213074649.18158-1-aaronparfitt123@gmail.com>
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240213074649.18158-1-aaronparfitt123@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Feb 2024 at 11:29, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+Hi Aaron,
+
+looks OK but can we make the subject more unique. Maybe like this:
+
+[PATCH] Staging: rtl8192e: Removed braces from single statement block in 
+ht_on_assoc_rsp
+
+Or is this getting to long?
+
+I propose the description to be like:
+
+Remove braces from single statement blocks to clear checkpatch warning.
+
+If you change this you need to make a v2 with changelog.
+
+Bye Philipp
+
+On 13.02.24 08:46, Aaron Parfitt wrote:
+> Fixed code style issue
 >
-> On 15/02/2024 10:25, Dmitry Baryshkov wrote:
-> > On Thu, 15 Feb 2024 at 11:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> >>
-> >> Document the GPU SMMU found on the SM8650 platform.
-> >>
-> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> >> ---
-> >>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 7 +++++--
-> >>   1 file changed, 5 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> >> index a4042ae24770..3ad5c850f3bf 100644
-> >> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> >> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> >> @@ -93,6 +93,7 @@ properties:
-> >>                 - qcom,sm8350-smmu-500
-> >>                 - qcom,sm8450-smmu-500
-> >>                 - qcom,sm8550-smmu-500
-> >> +              - qcom,sm8650-smmu-500
-> >>             - const: qcom,adreno-smmu
-> >>             - const: qcom,smmu-500
-> >>             - const: arm,mmu-500
-> >> @@ -508,7 +509,10 @@ allOf:
-> >>     - if:
-> >>         properties:
-> >>           compatible:
-> >> -          const: qcom,sm8550-smmu-500
-> >> +          contains:
-> >> +            enum:
-> >> +              - qcom,sm8550-smmu-500
-> >> +              - qcom,sm8650-smmu-500
-> >
-> > Doesn't this cause warnings for non-GPU SMMU on this platform?
+> Signed-off-by: Aaron Parfitt <aaronparfitt123@gmail.com>
+> ---
+>   drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> No because it doesn't add those to required, it simply allows clock the properties.
-
-Can we further constrain this branch so that it is applicable only to
-the Adreno SMMUs (and enforce requirement)? And maybe constrain the
-second if-branch so that it doesn't apply to the Adreno SMMUs?
-
->
-> >
-> >>       then:
-> >>         properties:
-> >>           clock-names:
-> >> @@ -544,7 +548,6 @@ allOf:
-> >>                 - qcom,sdx65-smmu-500
-> >>                 - qcom,sm6350-smmu-500
-> >>                 - qcom,sm6375-smmu-500
-> >> -              - qcom,sm8650-smmu-500
-> >>                 - qcom,x1e80100-smmu-500
-> >>       then:
-> >>         properties:
-> >>
-> >> --
-> >> 2.34.1
-> >>
-> >
-> >
->
-
-
--- 
-With best wishes
-Dmitry
+> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> index 6d0912f90198..49b882c363bf 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> @@ -480,9 +480,9 @@ void ht_on_assoc_rsp(struct rtllib_device *ieee)
+>   	}
+>   
+>   	ht_info->current_mpdu_density = pPeerHTCap->MPDUDensity;
+> -	if (ht_info->iot_action & HT_IOT_ACT_TX_USE_AMSDU_8K) {
+> +	if (ht_info->iot_action & HT_IOT_ACT_TX_USE_AMSDU_8K)
+>   		ht_info->current_ampdu_enable = false;
+> -	}
+> +
+>   	ht_info->cur_rx_reorder_enable = 1;
+>   
+>   	if (pPeerHTCap->MCS[0] == 0)
 
