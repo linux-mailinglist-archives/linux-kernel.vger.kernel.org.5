@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-66593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B94855EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:05:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79B8855EC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49BBB1C215B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:05:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A1A3B2217C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F962AE93;
-	Thu, 15 Feb 2024 10:04:47 +0000 (UTC)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629AD66B4C;
+	Thu, 15 Feb 2024 10:05:24 +0000 (UTC)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA63DDC4;
-	Thu, 15 Feb 2024 10:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F3966B4B;
+	Thu, 15 Feb 2024 10:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707991486; cv=none; b=f+z4Gwx2TQ+nLrR38fWDpiO/2LLtIAHfdaz6Xy5l7Q/mnp0cM2HhfpZzIaRkmG3Gd9Uue0OX5AU8cSwiftIZ8rjUaxy8wmImhZGa2QEz/18pknNaJZ00N/M9pNaqlMa9QJzhuOgjn2j9uC7dceZc7J2LuQT5VnS9TQIzgr1eXvg=
+	t=1707991523; cv=none; b=Zccmf1TcshUte7QSMUlHkEsn5GXPlqQrpdBraLpmgOB6H2NVdyckfTsiwUVrcimubnAWHqZVi7HElCQr1YVJ4/5dAT6G6uStr9FAfozh0lB4C4ZqDb4kLqwdpiGfrC6vOQSWj08LalNTYOczbMqKJqyvXScZH9SojBNwaPWJV3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707991486; c=relaxed/simple;
-	bh=Tyw7+TxvzuXkuWqI7H1uznwnX+VLpb2UjvuGUHJA+M8=;
+	s=arc-20240116; t=1707991523; c=relaxed/simple;
+	bh=zXR1Th1Fns4JSC7Jtt7QoNy6Isissiie5f7KTXRyD6A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ccf8lAesWZkAqJj8AGVXKbgDT0OYk4MRZsYPnPBDS5J4yJcSBnpcrRb8O9TSAgqyaIpIOsrZmDby5CWKwBFM0iK6+5q8DB8oJ3aMnsn0dyJ8b02OnhTldxDx2xsYtiEQT9Iy148w2Tz2qfC/EHnNInH9Qksf2VxsGf5JlZ+xyvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.47
+	 To:Cc:Content-Type; b=RHoB4HYVyRr5afl0LHxrZI92wIEMWt8/oXQ1BpQ3t6WHWNvWpf7La3ipsg3sq14iMwLwR/biQ2LKMw1x6Ni3uKOq5Qf9RxApJimdcygwZG/2kjozt8zlTH7hV7182xVl39FQ5ZHJEAaz1JjjT7mBZfetq8DU/aLHusdUqi1bEHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5101cd91017so809185e87.2;
-        Thu, 15 Feb 2024 02:04:44 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-511a04c837bso775214e87.0;
+        Thu, 15 Feb 2024 02:05:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707991481; x=1708596281;
+        d=1e100.net; s=20230601; t=1707991519; x=1708596319;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FCWHRvsaoBCtnbyCZ7UWHWquJ4EWk2cm41O1IK5/ZC4=;
-        b=Bd5RSgZAPcojF2qkdynllEIKDPfHlMVYx1STDZGwUwxvn9pQ+hFpswNKyjjDlWwyT9
-         bv5mlcfvHbtYs8XRFlHH/y5xabXD3u6PsnC1h8Yot91P9gU50n+1oPpxiUh6i1AJusnl
-         h/NoOlax0k3lpaO1yXXM2Hit97ufAKpkyuWO6FDoqfeaXIWZzzFJPR5+poBuOzOkTK8X
-         KYv9bQfGI9SOSye9ZdiTb+8cIzO2q/X8ydMaSryzIJD471sFLEtIyD5wJG3Jjv63/wM0
-         1yGGZijXk27lypOWuW1wiu4z5lRGafXYKEXUj7zU6+w8tcUQrZvcfzyWLYrXX/t8OJdG
-         070g==
-X-Forwarded-Encrypted: i=1; AJvYcCXhq4IIFm0jfpCyp6wfL46V0NjqX63QAah1NCvOrxwE8bmSo0Gd5JqW3ZD8FXJcpcL9tezb74fPRqLYRDoTuaVkj1aLWk6qUOmiSSUh
-X-Gm-Message-State: AOJu0Yyh7KpQaqC8zijtyw2UGXR4oLj5Y/aCqMWZuUqvWYaHhYY0yzQv
-	+qsSxUDCws/zfwOpJ7ljqmet06V8jR9AIrlPkSC+/vqJA8UtjxNPtR/jXZwelMv4nw==
-X-Google-Smtp-Source: AGHT+IFcM7dwDEyOnwCgDedn5qjZx1tfO6HDfHPsWJZnt427ZSuyz5yDRNIPwKicUUlgZrKpGvMC4Q==
-X-Received: by 2002:ac2:4824:0:b0:511:b44b:8052 with SMTP id 4-20020ac24824000000b00511b44b8052mr866074lft.65.1707991481624;
-        Thu, 15 Feb 2024 02:04:41 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id u13-20020a05651220cd00b0051172bf4e66sm181939lfr.74.2024.02.15.02.04.41
+        bh=sMGJ76noLanla/25q8E8XYSHetkA+XFXEotUyozLh+0=;
+        b=PL/5fKiheZGESkle5RNOy37J0oUpdiKmjro4412xeZJylgJ00EzlfAzjUclrrOoa/w
+         kEV/idGXySw/4vqURvy2GyHr5g4ICKDKMjADixm3s9aUg8nZIYeHfHRiTvGgqXaZKzoK
+         0qWlWOpyiaF/nnt8VFShu79+lnk2H3AdKWnwPPzl86rmweBxOdCbCiy8LLJ/CosLbeSJ
+         aw30KPdvZOt+FRS/LjuhyTjxjNJYf1jffJWvnqoq3qJsXkOVbrRsZ9saKtoGgn0j7dvG
+         TvMImkz9/zc9nRhYClt04vt/kXKSgYQax2PnfVgsgs0VUPnYA3MmtXhunE9S8tDDsDSf
+         ABTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWdIMkwH6bFK2BWSOfSOdeI5QhyrvA8EkBSZuBkFYBAY5UzAqt9ABgRvnkf7qkzgZL2hldJ8WHvWI6a1mSBMGVIX1kOtqkD7KhZBd4t
+X-Gm-Message-State: AOJu0Yyy7rIvZsOxNlzSalBLFsymvg55Bixx4nNSSj1WqtQrXbiM3Wbo
+	Hzid2lsPX/ZTS63brBL0DXRszY415YwLsUzMQwHGzxb/AxBu/oJkslV406TE1wIq3Q==
+X-Google-Smtp-Source: AGHT+IGuKk8ytxzR5E+csW4iJscA2ebWInfYZQ+TaRtE0Dn9WyeQH1XRAXoNxabfhu/kV3SJ9ZhZIQ==
+X-Received: by 2002:a05:6512:3d0f:b0:512:8a75:53f9 with SMTP id d15-20020a0565123d0f00b005128a7553f9mr815582lfv.57.1707991518871;
+        Thu, 15 Feb 2024 02:05:18 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id v22-20020a197416000000b0051181cbea91sm178297lfe.228.2024.02.15.02.05.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:04:41 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51181d8f52fso836101e87.3;
-        Thu, 15 Feb 2024 02:04:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUQRRAlAmgCHlfMCz0xnxdK3uA2FbP4zWAumOCCd06SIFvQmNMzKAEkca5Vch1J3HMgFIVjkat+U11K3/oH4qIgfAM4e3cTJ5WxNHfu
-X-Received: by 2002:ac2:4285:0:b0:511:7b2c:dd35 with SMTP id
- m5-20020ac24285000000b005117b2cdd35mr875759lfh.45.1707991480977; Thu, 15 Feb
- 2024 02:04:40 -0800 (PST)
+        Thu, 15 Feb 2024 02:05:18 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-511a04c837bso775176e87.0;
+        Thu, 15 Feb 2024 02:05:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7yxXMkr9BV7pLCXIobItVSglQVQh8m8qfyB6QH0AwSKuJyGar0F61eaic8zFnxUKb6lNj6LMSnpzlOdgmTYGgE4CB28vJSbXvXKep
+X-Received: by 2002:a05:6512:3d0f:b0:512:8a75:53f9 with SMTP id
+ d15-20020a0565123d0f00b005128a7553f9mr815564lfv.57.1707991518416; Thu, 15 Feb
+ 2024 02:05:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-7-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240212170423.2860895-7-andriy.shevchenko@linux.intel.com>
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-8-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240212170423.2860895-8-andriy.shevchenko@linux.intel.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 11:04:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU7OyF1-ZjVGCe2o+G9SWmYu7BSDBxgfNgst=vdhY_TOQ@mail.gmail.com>
-Message-ID: <CAMuHMdU7OyF1-ZjVGCe2o+G9SWmYu7BSDBxgfNgst=vdhY_TOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/15] auxdisplay: linedisp: Move exported symbols to a namespace
+Date: Thu, 15 Feb 2024 11:05:00 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW=gTH12vLALAU_ioCKX9E2mJ3uR+8Q6GT0brc4yg83_A@mail.gmail.com>
+Message-ID: <CAMuHMdW=gTH12vLALAU_ioCKX9E2mJ3uR+8Q6GT0brc4yg83_A@mail.gmail.com>
+Subject: Re: [PATCH v2 07/15] auxdisplay: linedisp: Group line display drivers together
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -79,17 +79,124 @@ Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+Hi Andy,
+
 On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
-> Avoid unnecessary pollution of the global symbol namespace by
-> moving library functions in to a specific namespace and import
-> that into the drivers that make use of the functions.
->
-> For more info: https://lwn.net/Articles/760045/
+> For better usability group the line display drivers together in Kconfig
+> and Makefile.
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your patch!
+
+> --- a/drivers/auxdisplay/Kconfig
+> +++ b/drivers/auxdisplay/Kconfig
+> @@ -25,12 +25,6 @@ config CHARLCD
+>           This is some character LCD core interface that multiple drivers=
+ can
+>           use.
+>
+> -config LINEDISP
+> -       tristate "Character line display core support" if COMPILE_TEST
+> -       help
+> -         This is the core support for single-line character displays, to=
+ be
+> -         selected by drivers that use it.
+> -
+>  config HD44780_COMMON
+>         tristate "Common functions for HD44780 (and compatibles) LCD disp=
+lays" if COMPILE_TEST
+>         select CHARLCD
+> @@ -52,6 +46,16 @@ config HD44780
+>           kernel and started at boot.
+>           If you don't understand what all this is about, say N.
+>
+> +config LCD2S
+> +       tristate "lcd2s 20x4 character display over I2C console"
+> +       depends on I2C
+> +       select CHARLCD
+> +       help
+> +         This is a driver that lets you use the lcd2s 20x4 character dis=
+play
+> +         from Modtronix engineering as a console output device. The disp=
+lay
+> +         is a simple single color character display. You have to connect=
+ it
+> +         to an I2C bus.
+> +
+
+I think it would be good to have "# <display type> section" comments,
+to make the grouping clear.
+Else I wonder why "L" is sorted before "K" ;-)
+
+>  config KS0108
+>         tristate "KS0108 LCD Controller"
+>         depends on PARPORT_PC
+> @@ -153,6 +157,12 @@ config CFAG12864B_RATE
+>           If you compile this as a module, you can still override this
+>           value using the module parameters.
+>
+> +config LINEDISP
+> +       tristate "Character line display core support" if COMPILE_TEST
+> +       help
+> +         This is the core support for single-line character displays, to=
+ be
+> +         selected by drivers that use it.
+> +
+>  config IMG_ASCII_LCD
+>         tristate "Imagination Technologies ASCII LCD Display"
+>         depends on HAS_IOMEM
+> @@ -177,16 +187,6 @@ config HT16K33
+>           Say yes here to add support for Holtek HT16K33, RAM mapping 16*=
+8
+>           LED controller driver with keyscan.
+>
+> -config LCD2S
+> -       tristate "lcd2s 20x4 character display over I2C console"
+> -       depends on I2C
+> -       select CHARLCD
+> -       help
+> -         This is a driver that lets you use the lcd2s 20x4 character dis=
+play
+> -         from Modtronix engineering as a console output device. The disp=
+lay
+> -         is a simple single color character display. You have to connect=
+ it
+> -         to an I2C bus.
+> -
+>  config ARM_CHARLCD
+>         bool "ARM Ltd. Character LCD Driver"
+>         depends on PLAT_VERSATILE
+
+Shouldn't this (and PARPORT_PANEL and friends) be moved up, to the
+character LCD section?
+
+> diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
+> index 6968ed4d3f0a..43bad850481c 100644
+> --- a/drivers/auxdisplay/Makefile
+> +++ b/drivers/auxdisplay/Makefile
+> @@ -5,12 +5,12 @@
+>
+>  obj-$(CONFIG_CHARLCD)          +=3D charlcd.o
+>  obj-$(CONFIG_HD44780_COMMON)   +=3D hd44780_common.o
+> -obj-$(CONFIG_ARM_CHARLCD)      +=3D arm-charlcd.o
+> +obj-$(CONFIG_HD44780)          +=3D hd44780.o
+> +obj-$(CONFIG_LCD2S)            +=3D lcd2s.o
+>  obj-$(CONFIG_KS0108)           +=3D ks0108.o
+>  obj-$(CONFIG_CFAG12864B)       +=3D cfag12864b.o cfag12864bfb.o
+> -obj-$(CONFIG_IMG_ASCII_LCD)    +=3D img-ascii-lcd.o
+> -obj-$(CONFIG_HD44780)          +=3D hd44780.o
+> -obj-$(CONFIG_HT16K33)          +=3D ht16k33.o
+> -obj-$(CONFIG_PARPORT_PANEL)    +=3D panel.o
+> -obj-$(CONFIG_LCD2S)            +=3D lcd2s.o
+>  obj-$(CONFIG_LINEDISP)         +=3D line-display.o
+> +obj-$(CONFIG_IMG_ASCII_LCD)    +=3D img-ascii-lcd.o
+> +obj-$(CONFIG_HT16K33)          +=3D ht16k33.o
+> +obj-$(CONFIG_ARM_CHARLCD)      +=3D arm-charlcd.o
+> +obj-$(CONFIG_PARPORT_PANEL)    +=3D panel.o
+
+IMHO it hurts to not sort Makefile entries alphabetically.
 
 Gr{oetje,eeting}s,
 
