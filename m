@@ -1,190 +1,151 @@
-Return-Path: <linux-kernel+bounces-67421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA9F856B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C2A856B49
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A14C286B91
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:39:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DBB51F23E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3551137C33;
-	Thu, 15 Feb 2024 17:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8219C1384AE;
+	Thu, 15 Feb 2024 17:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Jtv9GqAU"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="oCluk6Mu"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC30136674;
-	Thu, 15 Feb 2024 17:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708018771; cv=fail; b=VgM487cb9hElu8W8BAuTn4+wZz8lyb41egb1eQPI3xX/Vq3BDlrBv3E87M5QFdA2SOOrPAa8MosxXXPfHBBKoLuSVweuuY/8aB9XcgY3OqWpElBGjTDX2Q7XyYZnrPM5p82EkFxepaYWtBKv5pKNc3EdHCpqYCNthWfRQ/Irplg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708018771; c=relaxed/simple;
-	bh=YCUPWGMfrzAz3a/96tP0XvrQzwEx3sgTMSIi7MxvEnk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=uDLA42JQDSZyOgke12gNKLuKo5q36zcWadGdYVJlx7mjgPj5lxbsJhL8Ek7690vjpPGEFcwgK3pHueOeRNaEpKOfLjbzsBPGJ93BZ45Twleeky0UmPb0aSyetejigvZikE7xpY4Z/YcGfMzB+3Pnh/qJcxLM0rwhIjKihbMAk8E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Jtv9GqAU; arc=fail smtp.client-ip=40.107.93.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RU8MkQAuLuqFWLaFgcPP+jpmphe+vja4CBmHSiwg/GUsIKTq0l9oMEUvP2uZQdT9ZYhAY7Ic9ObNobMfllrVc50A9wxnu8XOUgrBf6//q+DWgnMlEyZ0nLFvloFDG3O6hv/Z85A9xOgRDuapphon6saD7kOobhXmvrS1pqwu/Ips1MAk//MI/4grmiaY8rbNku9wjaPSBdqPnrHFv/BxsxZERNdKSBYbg6hjNmwzVaz1bBltUJLCtKgQrDL8PeQwYyPybELNLA1OQ7mSWGaqLTuu0cibVMgjWKCph1sqCCcDZn9IsCPI7lI9q9lyOo7ugf9Dl1S07T/i/vBGPgIBnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ntp//jo/0MbG3rXkwxbw3+RYBvfkZFtSX9kDqOZmQDI=;
- b=H1ywVliSndf1hWCtuXIIl/YEtnq5TLJ/ld+xeXdUm2Hu25nHfX+jM6pKJFHvG7XVzt356ilgC9YiupiNGbqMNsx0ZIAOOkvkcuWbIv9K21lbzM1yvk7xS/I3QBJiQM7cJzCGEHelLnF9cmakFyKuRcHxo7QAd5hJLiWP0MPrFbpDB9NniwQYu0WJzZDPPBcAHXSu6/3BA6uqLVS1EjM7xFBU3LtCCfkp0ZAM1od0GikUjj8/81F7cMxI9+UC90thWLLWOPV2iBgfBiklvohsbLmWw33+YV0Qe1VPH1sffyzo/oTqJF8iGjDzfOvg019nfXVVhqjJ25Va++fdHlc3Bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ntp//jo/0MbG3rXkwxbw3+RYBvfkZFtSX9kDqOZmQDI=;
- b=Jtv9GqAUpNOnE5pZQc0C3NElvuA4I1MACNC/Y1Sv4+sqxxMPXTr/3RTfgurGajOOc/DQz4fFNbkbFbXx5McfwktyMGMGref8LeL28Sn5XWvNNNZiEmUhldP7jc5HJeDdqIg+6XWxMSlLoQDkDMU25pR8h4feJTdrSDPAPhq/S+Q=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
- by MN2PR12MB4239.namprd12.prod.outlook.com (2603:10b6:208:1d2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.27; Thu, 15 Feb
- 2024 17:39:27 +0000
-Received: from BL1PR12MB5995.namprd12.prod.outlook.com
- ([fe80::a6e6:9792:57ce:1df9]) by BL1PR12MB5995.namprd12.prod.outlook.com
- ([fe80::a6e6:9792:57ce:1df9%7]) with mapi id 15.20.7292.022; Thu, 15 Feb 2024
- 17:39:27 +0000
-Date: Thu, 15 Feb 2024 11:39:18 -0600
-From: John Allen <john.allen@amd.com>
-To: Sean Christopherson <seanjc@google.com>, mlevitsk@redhat.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-	weijiang.yang@intel.com, rick.p.edgecombe@intel.com, x86@kernel.org,
-	thomas.lendacky@amd.com, bp@alien8.de
-Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for
- hypervisor kernel
-Message-ID: <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
-References: <20231010200220.897953-1-john.allen@amd.com>
- <20231010200220.897953-7-john.allen@amd.com>
- <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
- <ZUQvNIE9iU5TqJfw@google.com>
- <c077e005c64aa82c7eaf4252f322c4ca29a2d0af.camel@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c077e005c64aa82c7eaf4252f322c4ca29a2d0af.camel@redhat.com>
-X-ClientProxiedBy: BYAPR07CA0108.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::49) To BL1PR12MB5995.namprd12.prod.outlook.com
- (2603:10b6:208:39b::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B60138490
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708018782; cv=none; b=U2xxJzLbVLBH9ooe01XYSPTpwiWYPUYb0yCdYKkRtm1Raq/4pyybBoSg8R7fWzWtLKe54i9t1Mi3osen+oxfGuqowDv9Bn0ZPGa5JpR2+NZ4oBUwVqXYJPGZC/anPQcjrjBgTkU2/d2TIhehx1eixx0oPFon2q+NHEi7/lY5AQ0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708018782; c=relaxed/simple;
+	bh=Ow2KNKuunpi3CFMpu4ctB3YxV++SCuTQIz8FvzYqWsw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iRXZA17fRgNPw3FkfIqJlqpCQ0jQvEbLcRa5pZuS7akkQUuRiJpK7Yf/FGiWOfhJpGJQFh+zNoUZRAO4LD5rU6M5YETGcm0UOvlphPQQdloHoD7frKcrpvY9mBQW28xCtdRBBvANib26leI1DdXDslNMsncAeo60TCDMYVQxgRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=oCluk6Mu; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1940225276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1708018779; x=1708623579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KDtOxyQIUrvHRZYbLeRYhzP9Am/nBdCIsn1qRJuLxtI=;
+        b=oCluk6MuB1we9gNYwPOGpxeUsfl6PAWTP3M8fzoNoYYZ/A88EcpLAnESS8VpIfZmAf
+         9m1tdlqCaI4brfNoR8QK4z5TzeRmcGtK38hghuU1nIMNTCw3yZFPf4Z4P7adB0l0h3xn
+         b9BzJPnbQHW8jKmgXT1et/217j+ngKK5Rt+f6dvrQWAJqrCglkymhp12MUrku3VZAGg1
+         U4DBvXTBm6F80NWS20w1mJ3wpdtVUszQaw4Goqli/WTFdFJak5xQtlYNkTB6M/Z2dFuG
+         TH+qJXQUsOgqoIcAjPODENkHm7JRrG7Iy8XhpzxiPJoxi0s2tNQbNN0QeB365NaqEag3
+         BUgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708018779; x=1708623579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KDtOxyQIUrvHRZYbLeRYhzP9Am/nBdCIsn1qRJuLxtI=;
+        b=cswugICIJOe30jybZQOzDdamO9hh3k0kmiPNX17zOSO92NVo+NudDf5UV9pyMC7EWv
+         e5neyzCtTShdCLu9ehlEqLSanIFcj9QhYY0ypLSnYOp0f3qHLHP0GchYnN7sbKemgCQv
+         /yZcN+NE0nGqyd9Bh653AhvDu+pO00VNKJKBiF30rE+MCDvqxu0+TnW2JbiCvw4VAf2z
+         169OVB/Rbuz2zDYnm3yfjxAqgk582bNuXXWYiwuDtK7GXzApfMY8LFDXmnKPe5hMqwFA
+         eX38C2FyFeClfSEzF3/f6+Zem7y5t5bxTSIK0vyWId2Nd4vX2vPz9QglbWIF3vUB5l/Y
+         OCag==
+X-Forwarded-Encrypted: i=1; AJvYcCUqnxnPATE1GRZJPctAPe3Fvft8NNzPiksnKjQWx+h7NhVC/K+evg3MgtvSU6n0NARf9nN9MdGoqtvdwg/zhHI1RZws4Q+Q9Yym7Y32
+X-Gm-Message-State: AOJu0YxwjK6Hb7DhJlVn0J03ZT/9RV+oPKEKsLNzVMuCkTVlM10fQyVS
+	MRyi3wWi+D88ARrR4H5nZtNF1W3X65oRi/MzS63DBPneLRdRlHJp+4RORBAH/I8YiUhEY1oDRls
+	LRNFT2dN5h93hi/8o6yfp0eixi9ro2qAEFtPg
+X-Google-Smtp-Source: AGHT+IGwSaM8UUA2DlZQLmgb04t9x61k5G5l90Kp3W/JMy4waio3qsHOqLdGqzAHAHqwmRlx7ZC0mXhEzhGiFCRjBqg=
+X-Received: by 2002:a25:c302:0:b0:dc2:201a:7f1a with SMTP id
+ t2-20020a25c302000000b00dc2201a7f1amr4066205ybf.30.1708018779496; Thu, 15 Feb
+ 2024 09:39:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|MN2PR12MB4239:EE_
-X-MS-Office365-Filtering-Correlation-Id: 384b7ce5-aec6-4c32-1c4a-08dc2e4d0e80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	rqMw4CmDZrZ56g4m4SROs1aJBd2pAsqq0hJE92uP9jNvIJtZueKyD67FBjUFBclyFof/0z+HfQWogOSnJjX01ORxCNkuckSIvHGeDQCLhted/djSfZW2tORqiV1jmszfJ56PUEAPW91hUn5SQEfthxTQ1yZXo0qx0WRuOy5vtcqEp/LrvDd66tC3k2p61IPJcliJV7TMSO9BqOdHawq6B/P1ij8fanmMGBlawZ5e8C6CBJXNon0lVKqghJYQ/Wtaxe2WHELUw3/pAd89ShxLiZJ60mTrTVAscrTtp9XH6lN7CBrJDOhR6xjVUbAzto3tLrhHTZMgHDZeVB4lI/74Ijf8jdGS01fCj41cK5IHgGxZP5WW5rtvyMmyrwtNDFPvdjTx+0YlDFloA3Z6KH8sK7P0OZIsm9ct4WorjiRjkPtUt4/TUbnKxyusi5v9FsUudBBvFDfK20yHErhfzpK9cFT3Q+eCLgjqfBBRHmp8hJiSXXavz2lBSyz+r/vBdMYDBA/wKcmq5o+Z3GNFVwieq+gW/Y0Uauy5oxeLaw+jeRW7XkfqRqAFIcryGjxaoXYt
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(6486002)(478600001)(41300700001)(2906002)(66556008)(4326008)(44832011)(5660300002)(4001150100001)(8936002)(8676002)(66946007)(66476007)(6666004)(6506007)(6512007)(316002)(83380400001)(86362001)(38100700002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ZV9pD9C9ZZi/0tXbI8rVlT8ciWrTP+3RyWBK9K57U0X6d5GS2KA2Z98LpWya?=
- =?us-ascii?Q?GcvJafnLWsnxjHD+wiLRqay4gFSp1igbvdgzP/alc74BEGSm68GvC+6wzmRY?=
- =?us-ascii?Q?NYF0iYCG5CBqL6SAkxl/jybYy51jiC9ee4YN0MLrGI/p4NXNEUq74PqtY5bu?=
- =?us-ascii?Q?nudHISTWei+NiYndz8uJ9OAEw1KAh99tYaEXbdFJCuzs6zdVa3ncGZhnDQZz?=
- =?us-ascii?Q?prMKBNKursLnOT9ejsBUEybaZ36vcKoF0RQuSvYyAQqtchTERY1+qy3DBdRd?=
- =?us-ascii?Q?0vo3AxtkZ1C5pdYT0I5R6uZuKsh3v8pPoGDP7TCVoo+YXhEi/m8WrTBfoomU?=
- =?us-ascii?Q?JpT1EwZJ4nvvgEZR2XlBlBqNXXu9jpvsLbQ+EJ090tVolqeoCVreAuT7B691?=
- =?us-ascii?Q?4+5nkaIjgYTHz+2E1VkpT2s39mcQ2KFwGvyfjJ+OyNhfa/4H+ODoiUx/A+i1?=
- =?us-ascii?Q?r463NCGKxP39UQaK+6tkBihieNNHMBLCR0DHH7OsjMhn37L4j9j7Apo02ORE?=
- =?us-ascii?Q?UA9TE3KPpW59I2ZHRJb3r+AT8fbxr4urvPtuwG6v4iisks7EhwwPSnq9qQ4G?=
- =?us-ascii?Q?7in+GsrBugqzKamWd3HbQ/wOz9xPs6XwcJ+JOuluE2lNSaa2Ayj9lpic3ZnZ?=
- =?us-ascii?Q?wJ5D5V4q/iWHCIHN8hanw10sx+6UeZ+SimOcHNSYv76oMJtWP0TPE0ucsB7S?=
- =?us-ascii?Q?zX7QhE/9ODM7bfTvH3qmjMYXWO55GQuWSu/bjqEvgGGZmE38gUFdjMXRakBE?=
- =?us-ascii?Q?SNb/8TPhxwFFQ/LYXrNLwDd+FBTAEi2C+2nzPhaVaOjjSTqBJX/nnHVrRBqA?=
- =?us-ascii?Q?6B2R+8FYX71sVXlPKUX7NtzF1TJZQEGg5CpMyoQsj/Dy+lTEohEM5OoUyVer?=
- =?us-ascii?Q?k1o2HrOOTep8Ahr1/2ykrbHo9y5Bs+dP3/PuWNqdptqlNqRnl4YorrX/UFjB?=
- =?us-ascii?Q?/zdGCggtXOcmrtCWPrO7GWjKCb0wMRy2vr7lDdAzMqC+UZTbw6LhcdbdbimZ?=
- =?us-ascii?Q?i/odmBAaKjdk3WQPOflx/IPFNmr8xVfAXnkCFQDwfPQmmK46ZUkQjepvigJC?=
- =?us-ascii?Q?wFxSGWu18KDPw6VIaRV721/yIpQqiIEGwun0wdM2TwD/25R6colvvJmSzzm5?=
- =?us-ascii?Q?ixPweXb7EYJ3rMnJm/s//Q0EFWu/3PirqGi0b3gBmXta/DQLyoPGvfel7CUu?=
- =?us-ascii?Q?QucVEhPg6Y3W6fyW7lOrfXavzeB1hymLpdx9dxpkQeDjT2bTLqDB7qmNCxd/?=
- =?us-ascii?Q?Mwxjz3UEXV5UHbDq8tFQ9E1zldQvGy+2Kh+UmA9a6+Ar19xwPMxtgtytCgHJ?=
- =?us-ascii?Q?ggIN9d97DpBPpbcS5HoALz9ogQMchrG0BYCf047wRKs2c75C2NuHsT0h9yEz?=
- =?us-ascii?Q?2kiCNqSaKiYuvI5fRQO+1x+4BTCmRdGEpcaqSvse4es2OVhC79JQPHPpDaju?=
- =?us-ascii?Q?XDViznjqo5gYX/mwGlBjeYIkzCFgspXLW+NidrNDBItKIs9YufdXkQn7BmKj?=
- =?us-ascii?Q?VtLZbRLmfTJ0ki7PhqApYRmOo8me/rCpHffOj7CzeT1eBs+Wy6Uhe+3S1rvs?=
- =?us-ascii?Q?YNeuOLdh1Nu2DKUodiMez7Uueh9o1eynm4MKiqsp?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 384b7ce5-aec6-4c32-1c4a-08dc2e4d0e80
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 17:39:27.3207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1lTYm3b5K7ftp2LTwJZlFUVVFTDjOMjKqve8N2uGHbwgDCC44bN9Qq2b6KdgD5LMUvoxM2Md4m/Q8cN7Aq/cWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4239
+References: <20240215160458.1727237-1-ast@fiberby.net> <20240215160458.1727237-2-ast@fiberby.net>
+In-Reply-To: <20240215160458.1727237-2-ast@fiberby.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Thu, 15 Feb 2024 12:39:28 -0500
+Message-ID: <CAM0EoMndBjwC8Otx6th_dM_aV_r80NeLEke9C8PwzGt1q3vAMA@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/3] net: sched: cls_api: add skip_sw counter
+To: =?UTF-8?B?QXNiasO4cm4gU2xvdGggVMO4bm5lc2Vu?= <ast@fiberby.net>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	llu@fiberby.dk, Vlad Buslov <vladbu@nvidia.com>, 
+	Marcelo Ricardo Leitner <mleitner@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 07, 2023 at 08:20:52PM +0200, Maxim Levitsky wrote:
-> On Thu, 2023-11-02 at 16:22 -0700, Sean Christopherson wrote:
-> > On Thu, Nov 02, 2023, Maxim Levitsky wrote:
-> > > On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
-> > > > @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
-> > > >  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
-> > > >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
-> > > >  	}
-> > > > +
-> > > > +	if (kvm_caps.supported_xss)
-> > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
-> > > 
-> > > This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
-> > > to whatever value it wants, and thus it might allow XSAVES to access some host msrs
-> > > that guest must not be able to access.
-> > > 
-> > > AMD might not yet have such msrs, but on Intel side I do see various components
-> > > like 'HDC State', 'HWP state' and such.
-> > 
-> > The approach AMD has taken with SEV-ES+ is to have ucode context switch everything
-> > that the guest can access.  So, in theory, if/when AMD adds more XCR0/XSS-based
-> > features, that state will also be context switched.
-> > 
-> > Don't get me wrong, I hate this with a passion, but it's not *quite* fatally unsafe,
-> > just horrific.
-> > 
-> > > I understand that this is needed so that #VC handler could read this msr, and
-> > > trying to read it will cause another #VC which is probably not allowed (I
-> > > don't know this detail of SEV-ES)
-> > > 
-> > > I guess #VC handler should instead use a kernel cached value of this msr
-> > > instead, or at least KVM should only allow reads and not writes to it.
-> > 
-> > Nope, doesn't work.  In addition to automatically context switching state, SEV-ES
-> > also encrypts the guest state, i.e. KVM *can't* correctly virtualize XSS (or XCR0)
-> > for the guest, because KVM *can't* load the guest's desired value into hardware.
-> > 
-> > The guest can do #VMGEXIT (a.k.a. VMMCALL) all it wants to request a certain XSS
-> > or XCR0, and there's not a damn thing KVM can do to service the request.
-> > 
-> 
-> Ah, I understand now. Everything makes sense, and yes, this is really ugly.
++Cc Vlad and Marcelo..
 
-Hi Maxim and Sean,
+On Thu, Feb 15, 2024 at 11:06=E2=80=AFAM Asbj=C3=B8rn Sloth T=C3=B8nnesen <=
+ast@fiberby.net> wrote:
+>
+> Maintain a count of skip_sw filters.
+>
+> This counter is protected by the cb_lock, and is updated
+> at the same time as offloadcnt.
+>
+> Signed-off-by: Asbj=C3=B8rn Sloth T=C3=B8nnesen <ast@fiberby.net>
+> ---
+>  include/net/sch_generic.h | 1 +
+>  net/sched/cls_api.c       | 4 ++++
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+> index 934fdb977551..46a63d1818a0 100644
+> --- a/include/net/sch_generic.h
+> +++ b/include/net/sch_generic.h
+> @@ -476,6 +476,7 @@ struct tcf_block {
+>         struct flow_block flow_block;
+>         struct list_head owner_list;
+>         bool keep_dst;
+> +       atomic_t skipswcnt; /* Number of skip_sw filters */
+>         atomic_t offloadcnt; /* Number of oddloaded filters */
 
-It looks as though there are some broad changes that will need to happen
-over the long term WRT to SEV-ES/SEV-SNP. In the short term, how would
-you suggest I proceed with the SVM shstk series? Can we omit the SEV-ES
-changes for now with an additional patch that disallows guest shstk when
-SEV-ES is enabled? Subsequently, when we have a proper solution for the
-concerns discussed here, we could submit another series for SEV-ES
-support.
+For your use case is skipswcnt ever going to be any different than offloadc=
+nt?
 
-Thanks,
-John
+cheers,
+jamal
+
+>         unsigned int nooffloaddevcnt; /* Number of devs unable to do offl=
+oad */
+>         unsigned int lockeddevcnt; /* Number of devs that require rtnl lo=
+ck. */
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index ca5676b2668e..397c3d29659c 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -3483,6 +3483,8 @@ static void tcf_block_offload_inc(struct tcf_block =
+*block, u32 *flags)
+>         if (*flags & TCA_CLS_FLAGS_IN_HW)
+>                 return;
+>         *flags |=3D TCA_CLS_FLAGS_IN_HW;
+> +       if (tc_skip_sw(*flags))
+> +               atomic_inc(&block->skipswcnt);
+>         atomic_inc(&block->offloadcnt);
+>  }
+>
+> @@ -3491,6 +3493,8 @@ static void tcf_block_offload_dec(struct tcf_block =
+*block, u32 *flags)
+>         if (!(*flags & TCA_CLS_FLAGS_IN_HW))
+>                 return;
+>         *flags &=3D ~TCA_CLS_FLAGS_IN_HW;
+> +       if (tc_skip_sw(*flags))
+> +               atomic_dec(&block->skipswcnt);
+>         atomic_dec(&block->offloadcnt);
+>  }
+>
+> --
+> 2.43.0
+>
 
