@@ -1,228 +1,137 @@
-Return-Path: <linux-kernel+bounces-66708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE28856078
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40BF385606E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:59:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2FF21F214C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:00:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2CAE1F2107A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF02313328D;
-	Thu, 15 Feb 2024 10:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24FA12B144;
+	Thu, 15 Feb 2024 10:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="UY6Fx3jO"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tCDSnKve"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9992612E1C4;
-	Thu, 15 Feb 2024 10:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D0A12A171
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993987; cv=none; b=GEN6WkEfV5SUsRRNtxdBJMi8GDWogOCuc+4tzIQLSs7bCO4+KXalnE+mWvXImigA4whFVijV3Ky/hdoyzCZo8ZYSSF+Oi/b20mIcWC+4vGpAXN5MfP3nbmWH/R0oGCKTlybrnNUn2BK0ZbIZoJr14hrLSrwynqqnGYPYa8A8b0Y=
+	t=1707993960; cv=none; b=i1DPDXkPVn3jtZe+FT3hNlpjalkQF/R/r/5eLdai6lHcg5btbRyzozG9Bd6GA5orf8eVxtwwyro0ZdSXFobQgOl+rl/oAlgjauv3oE6+JJ8/M+jRsE/WlBz+fFHxAyqN+2C/3YFvKl64dJRNUMQPBxCGQzLBuOjB4TF1Mhl2voY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993987; c=relaxed/simple;
-	bh=m1LjF1npWj8tCKHK1NcAZBpF2cD039mfR5VwBO1BovM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=kccfve1LLYruIby3ee7i3f8uAtjKVcHl/PJIX6wLXuxIww1yzZz22c++Ib6sxkXWLcy6nSnd0haZ0f2T+q5iPIfFYMGcGxXZoRXYmSj6KCnN0Vuqz4rfZgjA51jb4/qZcRh53xWavexcDAGnNC0PhDAKP0lkrRMw67H1PJ4dQBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=UY6Fx3jO; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707993986; x=1739529986;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=m1LjF1npWj8tCKHK1NcAZBpF2cD039mfR5VwBO1BovM=;
-  b=UY6Fx3jOMxV3CrJQzLMf9i15vr0aa8ezR/NecGHE3kehyXm5VcCE/Nqn
-   70B2FUz/F6NhT/E+YqoDloyJ6H5KJOKreM0JqfMvMe8LbSIcaWo4qgRmJ
-   X1h49QteXFNcCWk+l6B28N8QzVUX5kNgcsBM7U/nuTszksBXLcJ7Y0i4F
-   Z8mE2BbIvJKqobYVfoZnUUzLLZHZuUvlOCMAjQRXKWXW1eSxS3KsMuOIw
-   hRZT7zLKMcONeUIY6DoygyTY3pJfs4nyqJQ8SxlLEyPh+JMnC62NxnHL2
-   Zx3f6WUMeTf3YfrZoe/GQB4tXM6IvS3WrWQO8Tw8S4BlKLG5iNhPFZM2a
-   g==;
-X-CSE-ConnectionGUID: sBOc7X1pTDaZ9glc9RjUSQ==
-X-CSE-MsgGUID: IeU7h4lfSoWKR0brJFk/NA==
-X-IronPort-AV: E=Sophos;i="6.06,161,1705388400"; 
-   d="scan'208";a="247024159"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 03:46:24 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 15 Feb 2024 03:46:01 -0700
-Received: from che-lt-i66125lx.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 15 Feb 2024 03:45:56 -0700
-From: Durai Manickam KR <durai.manickamkr@microchip.com>
-Date: Thu, 15 Feb 2024 16:15:44 +0530
-Subject: [PATCH] dt-bindings: dma: convert atmel-dma.txt to YAML
+	s=arc-20240116; t=1707993960; c=relaxed/simple;
+	bh=wuxysMNMqCk725hkpLxM7t6pHbp0NDW7ymjHD5cQXRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L+lv6Ty4VYDyunM7s0TW7GYzIDmf5nQEm4XTogp1dYxt3a+GwMQMVsvng9oAzE5l4j9XkekQgtsWQUCG2xRPGR41oeins8LDRPBrPh8bP8F/beZZnipNyX9D54fmMZTDO/78PWSMpnMulZ1vdL7ndEGsXttSnxGKC8yNcEWtHfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tCDSnKve; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707993956;
+	bh=wuxysMNMqCk725hkpLxM7t6pHbp0NDW7ymjHD5cQXRI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tCDSnKveaq5j/GLl1+L0oFpMDQgbIQ4NMt/FmFS8WugixvZe9Ca7nobUxropZiPHj
+	 8/1+UaHZg3GK+4Y1zbP7J3z2QTF61t+UES2J59VDtFVVDNFzUcoD8c29/qqIN7FB6v
+	 6Wh4nvjRgff92JXI3pyhNyk9ZhrHuyE4rowP5v/jt6Lo8Zhf/sKbboxkk0kby0nrdZ
+	 D4MGUcnBXn1tD87uY36SsuivaK79yi+QVYTl3behqlYMoBcgx5YqlTeV8zgE5ZCJkM
+	 9H0R2PeS5Q+i6tKSPdEP+IHw/llXSoy6vkGTwLBvH4IO58v/VZ7SpT+J0oGVkq+uvv
+	 Upa/r6mNPmr3g==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7FC843780FC7;
+	Thu, 15 Feb 2024 10:45:55 +0000 (UTC)
+Message-ID: <1fdf2c07-8240-4711-a708-b555932dabc6@collabora.com>
+Date: Thu, 15 Feb 2024 11:45:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 06/13] drm/mediatek: Turn off the layers with zero
+ width or height
+Content-Language: en-US
+To: Hsiao Chien Sung <shawn.sung@mediatek.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Bibby Hsieh <bibby.hsieh@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
+ Sean Paul <seanpaul@chromium.org>, Fei Shao <fshao@chromium.org>,
+ Jason Chen <jason-ch.chen@mediatek.corp-partner.google.com>,
+ "Nancy . Lin" <nancy.lin@mediatek.com>, dri-devel@lists.freedesktop.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240215101119.12629-1-shawn.sung@mediatek.com>
+ <20240215101119.12629-7-shawn.sung@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240215101119.12629-7-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240215-dmac-v1-1-8f1c6f031c98@microchip.com>
-X-B4-Tracking: v=1; b=H4sIAFfrzWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0MT3ZTcxGRd0zQTi7QU8zTjJMsUJaDSgqLUtMwKsDHRsbW1AFX/e49
- WAAAA
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	"Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
-	"Alexandre Belloni" <alexandre.belloni@bootlin.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>, Ludovic Desroches
-	<ludovic.desroches@microchip.com>, Tudor Ambarus <tudor.ambarus@linaro.org>
-CC: <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	"Durai Manickam KR" <durai.manickamkr@microchip.com>
-X-Mailer: b4 0.12.4
 
-Added a description, required properties and appropriate compatibles
-for all the SoCs that are supported by microchip.
+Il 15/02/24 11:11, Hsiao Chien Sung ha scritto:
+> We found that IGT (Intel GPU Tool) will try to commit layers with
+> zero width or height and lead to undefined behaviors in hardware.
+> Disable the layers in such a situation.
+> 
+> Fixes: 777b7bc86a0a3 ("drm/mediatek: Add ovl_adaptor support for MT8195")
+> Fixes: fa97fe71f6f93 ("drm/mediatek: Add ETHDR support for MT8195")
+> 
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- .../devicetree/bindings/dma/atmel-dma.txt          | 42 -------------
- .../bindings/dma/microchip,at91-dma.yaml           | 71 ++++++++++++++++++++++
- 2 files changed, 71 insertions(+), 42 deletions(-)
+This commit should be sent separately from this series, as it is fixing things
+that are not related just to IGT, but also to corner cases in regular non-testing
+usecases.
 
-diff --git a/Documentation/devicetree/bindings/dma/atmel-dma.txt b/Documentation/devicetree/bindings/dma/atmel-dma.txt
-deleted file mode 100644
-index f69bcf5a6343..000000000000
---- a/Documentation/devicetree/bindings/dma/atmel-dma.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--* Atmel Direct Memory Access Controller (DMA)
--
--Required properties:
--- compatible: Should be "atmel,<chip>-dma".
--- reg: Should contain DMA registers location and length.
--- interrupts: Should contain DMA interrupt.
--- #dma-cells: Must be <2>, used to represent the number of integer cells in
--the dmas property of client devices.
--
--Example:
--
--dma0: dma@ffffec00 {
--	compatible = "atmel,at91sam9g45-dma";
--	reg = <0xffffec00 0x200>;
--	interrupts = <21>;
--	#dma-cells = <2>;
--};
--
--DMA clients connected to the Atmel DMA controller must use the format
--described in the dma.txt file, using a three-cell specifier for each channel:
--a phandle plus two integer cells.
--The three cells in order are:
--
--1. A phandle pointing to the DMA controller.
--2. The memory interface (16 most significant bits), the peripheral interface
--(16 less significant bits).
--3. Parameters for the at91 DMA configuration register which are device
--dependent:
--  - bit 7-0: peripheral identifier for the hardware handshaking interface. The
--  identifier can be different for tx and rx.
--  - bit 11-8: FIFO configuration. 0 for half FIFO, 1 for ALAP, 2 for ASAP.
--
--Example:
--
--i2c0@i2c@f8010000 {
--	compatible = "atmel,at91sam9x5-i2c";
--	reg = <0xf8010000 0x100>;
--	interrupts = <9 4 6>;
--	dmas = <&dma0 1 7>,
--	       <&dma0 1 8>;
--	dma-names = "tx", "rx";
--};
-diff --git a/Documentation/devicetree/bindings/dma/microchip,at91-dma.yaml b/Documentation/devicetree/bindings/dma/microchip,at91-dma.yaml
-new file mode 100644
-index 000000000000..a0a582902e4d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/microchip,at91-dma.yaml
-@@ -0,0 +1,71 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/microchip,at91-dma.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel Direct Memory Access Controller (DMA)
-+
-+maintainers:
-+  - Ludovic Desroches <ludovic.desroches@microchip.com>
-+  - Tudor Ambarus <tudor.ambarus@linaro.org>
-+
-+description: |
-+  The Atmel Direct Memory Access Controller (DMAC) transfers data from a source
-+  peripheral to a destination peripheral over one or more AMBA buses. One channel
-+  is required for each source/destination pair. In the most basic configuration,
-+  the DMAC has one master interface and one channel. The master interface reads
-+  the data from a source and writes it to a destination. Two AMBA transfers are
-+  required for each DMAC data transfer. This is also known as a dual-access transfer.
-+  The DMAC is programmed via the APB interface.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - atmel,at91sam9g45-dma
-+          - atmel,at91sam9rl-dma
-+  reg:
-+    description: Should contain DMA registers location and length.
-+    maxItems: 1
-+
-+  interrupts:
-+    description: Should contain the DMA interrupts associated to the DMA channels.
-+    maxItems: 1
-+
-+  "#dma-cells":
-+    description:
-+      Must be <2>, used to represent the number of integer cells in the dmas
-+      property of client devices.
-+    const: 2
-+
-+  clocks:
-+    description: Should contain a clock specifier for each entry in clock-names.
-+    maxItems: 1
-+
-+  clock-names:
-+    description: Should contain the clock of the DMA controller.
-+    const: dma_clk
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - "#dma-cells"
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dma0: dma-controller@ffffec00 {
-+            compatible = "atmel,at91sam9g45-dma";
-+            reg = <0xffffec00 0x200>;
-+            interrupts = <21>;
-+            #dma-cells = <2>;
-+            clocks = <&pmc 2 20>;
-+            clock-names = "dma_clk";
-+    };
-+
-+...
+In any case, it's not mandatory as that depends on what the maintainer prefers,
+so it's CK's call anyway.
 
----
-base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
-change-id: 20240214-dmac-5f48fd7f3b9d
+Besides that,
 
-Best regards,
--- 
-Durai Manickam KR <durai.manickamkr@microchip.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+> ---
+>   drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c | 2 +-
+>   drivers/gpu/drm/mediatek/mtk_ethdr.c            | 7 ++++++-
+>   2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+> index d4a13a1402148..68a20312ac6f1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+> @@ -157,7 +157,7 @@ void mtk_ovl_adaptor_layer_config(struct device *dev, unsigned int idx,
+>   	merge = ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_MERGE0 + idx];
+>   	ethdr = ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0];
+>   
+> -	if (!pending->enable) {
+> +	if (!pending->enable || !pending->width || !pending->height) {
+>   		mtk_merge_stop_cmdq(merge, cmdq_pkt);
+>   		mtk_mdp_rdma_stop(rdma_l, cmdq_pkt);
+>   		mtk_mdp_rdma_stop(rdma_r, cmdq_pkt);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.c b/drivers/gpu/drm/mediatek/mtk_ethdr.c
+> index 73dc4da3ba3bd..69872b77922eb 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_ethdr.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_ethdr.c
+> @@ -160,7 +160,12 @@ void mtk_ethdr_layer_config(struct device *dev, unsigned int idx,
+>   	if (idx >= 4)
+>   		return;
+>   
+> -	if (!pending->enable) {
+> +	if (!pending->enable || !pending->width || !pending->height) {
+> +		/*
+> +		 * instead of disabling layer with MIX_SRC_CON directly
+> +		 * set the size to 0 to avoid screen shift due to mixer
+> +		 * mode switch (hardware behavior)
+> +		 */
+>   		mtk_ddp_write(cmdq_pkt, 0, &mixer->cmdq_base, mixer->regs, MIX_L_SRC_SIZE(idx));
+>   		return;
+>   	}
 
 
