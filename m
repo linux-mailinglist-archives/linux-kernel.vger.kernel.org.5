@@ -1,104 +1,116 @@
-Return-Path: <linux-kernel+bounces-66963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77EDF85641F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:14:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32195856424
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3494528241A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:14:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE85D1F2992C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E706812FF96;
-	Thu, 15 Feb 2024 13:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB0912FF92;
+	Thu, 15 Feb 2024 13:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYnpbPv0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FC/fPhSz"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AA012FB27
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D48012CDBE;
+	Thu, 15 Feb 2024 13:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002870; cv=none; b=mZYo0R5SGKdf1JGa7OuWRcLRF7UKW7HVkInlxOUvGUJm8vDHlGs6ZZSfRHIQ+utqzJyDDoSRDk5LdHnDKbaGis4HtrDZGdzNWkHv2umskp6hZ0yR3TleKtTRXfHZWYxRRizSBkGGowwGUl8wLrXUakI/AozyHdIxlmg1BbikiBU=
+	t=1708002968; cv=none; b=bpqJnC2yMSdEgiyjKnQBHXl3PkevbfzIWOlma9zj2toIziNvj6S/9ViA100gTxcapS2j+1ne5paEb3kYacAgGKvke5YG/qL+ry2YX8+S6QfiX8na9RtA9jYUMpjxSSbpkRwnBaiL/DcntxqBK/WssqEfzsaV24Vvl3z4I1p427I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002870; c=relaxed/simple;
-	bh=aUWWrfsL8ZnO6US7lu0C+z2+ofPyZmFmbK5Cal70MlM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WDk9wul9eMAfg0D4gU0PMD38MXha1Yf37J3fXA+ganoBUW3QdEdhGlsSu1hOoJkhhDRL1GAdo4FcEUnRLsRSgL0fIcgUM7RgIsawe1QQj1oEI0otI9b5SeALA3wnGkj/jYX0DIyumzsn+4adOSNF7OUyNx4uFmZlJs3f8CNULY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYnpbPv0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 529DDC43394;
-	Thu, 15 Feb 2024 13:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708002869;
-	bh=aUWWrfsL8ZnO6US7lu0C+z2+ofPyZmFmbK5Cal70MlM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dYnpbPv0Jd/r16AM8nCmg/DMjAtayMYZjHFhTD2Q+754ZN2ljgeV1VDZG3MGZeTX8
-	 +ZirYFi1DQaCj00GVwT/fEqDdY9bligPiF0Gj8VJIGxLn7eId+e9KKU2qd9+7CfCqI
-	 lSybdqQjUIlDAAKKIZGNx15OiJzYYsnBc6AUOYez/sBBhYZDDU2/WV0cS/qmGwOl+Y
-	 4lbv5JjayxylxdjSgbt0nJQ/n8YO8zHxATiMcYlKvFvDe4It03omd7MCz+u5ZduP0C
-	 /ssjt8R++j2ddB+AwJyD8A3LmDprJkNmZ7EHq2hZJZBJnGokPsWhn0xXHe91BOzOJC
-	 swfgXOdnpsbgA==
-Date: Thu, 15 Feb 2024 13:14:26 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Stefan O'Rear <sorear@fastmail.com>
-Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified
- privileged ISA versions
-Message-ID: <20240215-icy-oblong-67adb68a4074@spud>
-References: <20240213033744.4069020-1-samuel.holland@sifive.com>
- <20240213033744.4069020-3-samuel.holland@sifive.com>
- <20240213-88c9d65fd2b6465fc4793f56@orel>
+	s=arc-20240116; t=1708002968; c=relaxed/simple;
+	bh=ZMcH2cl5HrhWXR1rAuN3t1R9ANzFaFtZb+vIKIdyJjA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nyvCLuYYyZ6m+JK6mGi8wiGCppezcoVf69ND4nvVbjtkkh67XsqNbwIJfJwqTP38sjQQaXkw2o69qjSWDcoj5beCR5CMqf6tmH/gt6qUYtLw7nVtzBMa/4oJxCKipc68jcm5sHAgWvJ0Jdc3DSk/Zl76fpjNjhJfSmCJcdX0aYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FC/fPhSz; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-411e5f21c0bso7381605e9.0;
+        Thu, 15 Feb 2024 05:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708002965; x=1708607765; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IeBmJwr+NavRsk9se4OE6Y3WMAt4IgfjmriUd2t4/J8=;
+        b=FC/fPhSzmFYwocM5/rRGynGlOuyg3CLsaBj5jhFj7okhsDU/wZtjqS1+lOt49PV/vx
+         wZC0P/6kNLmEryT4jkOS6+emGQULU3gXAfKoc2/ZpF/Y5UmA6YX9k0QAS3fUOscLcEBu
+         Qab5/O4Z/6nqtq2pk/t50drRCAEOMfL2T4ZFzMUkq7ZLAEZjhlJGukqA21NVl6SiNKO9
+         +MWI3aNbw8VFo1PkQDSzPP3JgifEvgaUN1vt3J3Aq3oU/emm4g4/Y9SED01hcMSQ5AOj
+         b0ljT02Fi4PZPppQxDlkOLeuN+Jdku2sCIiaRLCmx+iwoXFD+/+W5PIUgEZ61CZuCk18
+         Es5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708002965; x=1708607765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IeBmJwr+NavRsk9se4OE6Y3WMAt4IgfjmriUd2t4/J8=;
+        b=vaiTXGuXSXaI+rnj5dPc+2xVt37PffGqar/kEjGOnkKjTefAZG9etNfMoJhWLPQhre
+         v3ELrTI74xUM+b3joaBpmFEtMi8J+9tw18teRHV35vVxCZR+u9BG7dj+MpTvWjp8Pyhg
+         yboYkXUgF652KzVo3X7IpO5nsdCUaPdACbgHdjlLyxwRZOR1dWBMok+nqRJWVLE1Ls9F
+         Lc9miKWHdP4oFpxduLpNkMpOIo8egVQIdbxtoy8pILU4JeWDEu+FIx5ZcmSGfy0HcxUU
+         qhKBCyHZifRPTstQ0nsPh2FXnes5qVBrLXPcLZnp4ngD+CzsNdOdGA2HAEBX7QFAxpLg
+         0O6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXj91uNSe8Jc6L/RzxU9dnmh6voWJAkrRdqwvzVeRmCfgA9MNCPS8PFLqTlYKLFkdWDpxqR28DQH7D5Y89BFkqzIW0PQKW3Biz4T6SmuMxwQbvP2949idkT03mno8thnVtdPwPbwUQM
+X-Gm-Message-State: AOJu0YwcWIXW0aOI7/ibykcV9MoOJzBHi4MR1lkKqBfiQvuMudrDVzIi
+	k7y9kso6k53xusoFNvXYzUBKBw69kUxQ85GubjQ+u/DI8NDcdLGE
+X-Google-Smtp-Source: AGHT+IHbRc99z02i6FWnbm8IHOkzsWaPAjvDKMTyyG22n1oYGUQohBURcNvbbdhi4AcrDHd6DcT3Mg==
+X-Received: by 2002:a05:600c:46cd:b0:410:cf60:d857 with SMTP id q13-20020a05600c46cd00b00410cf60d857mr1331806wmo.18.1708002965162;
+        Thu, 15 Feb 2024 05:16:05 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id q25-20020a7bce99000000b00411e1574f7fsm5011002wmj.44.2024.02.15.05.16.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 05:16:04 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Serge Semin <fancer.lancer@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] spi: dw: remove redundant assignment to variable len
+Date: Thu, 15 Feb 2024 13:16:03 +0000
+Message-Id: <20240215131603.2062332-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ty9sdf64Wa8pEu18"
-Content-Disposition: inline
-In-Reply-To: <20240213-88c9d65fd2b6465fc4793f56@orel>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+The variable id len being initialized with a value that is never read,
+it is being re-assigned later on in a for-loop. The initialization is
+redundant and can be removed.
 
---Ty9sdf64Wa8pEu18
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cleans up clang scan build warning:
+drivers/spi/spi-dw-dma.c:580:17: warning: Although the value stored
+to 'len' is used in the enclosing expression, the value is never
+actually read from 'len' [deadcode.DeadStores]
 
-On Tue, Feb 13, 2024 at 03:25:44PM +0100, Andrew Jones wrote:
-> On Mon, Feb 12, 2024 at 07:37:33PM -0800, Samuel Holland wrote:
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/spi/spi-dw-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Note, QEMU doesn't add these extensions to the ISA string yet, but I think
-> it should start, particularly the profile CPU types which should ensure
-> all the profile's mandatory extensions are added to the ISA string in
-> order to avoid any confusion.
+diff --git a/drivers/spi/spi-dw-dma.c b/drivers/spi/spi-dw-dma.c
+index 0ecbb6c36e23..f4c209e5f52b 100644
+--- a/drivers/spi/spi-dw-dma.c
++++ b/drivers/spi/spi-dw-dma.c
+@@ -577,7 +577,7 @@ static int dw_spi_dma_transfer_one(struct dw_spi *dws,
+ 	sg_init_table(&tx_tmp, 1);
+ 	sg_init_table(&rx_tmp, 1);
+ 
+-	for (base = 0, len = 0; base < xfer->len; base += len) {
++	for (base = 0; base < xfer->len; base += len) {
+ 		/* Fetch next Tx DMA data chunk */
+ 		if (!tx_len) {
+ 			tx_sg = !tx_sg ? &xfer->tx_sg.sgl[0] : sg_next(tx_sg);
+-- 
+2.39.2
 
-Something to note about these "mandatory extensions" that are names for
-things we already assumed were present - they're utterly useless and any
-DT property should note their absence, not presence, in order to be of any
-use. Anything parsing a DT cannot see "svbare" and gain any new
-information, since the lack of it could be something that predates the
-definition of "svbare" or something without "svbare".
-
-Shit, but that's exactly why I deprecated riscv,isa.
-
-Cheers,
-Conor.
-
---Ty9sdf64Wa8pEu18
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc4OMQAKCRB4tDGHoIJi
-0gBfAQDHitJRjjkm8BAASaylKf3zcVB6vWarMERcGPovak8WmQD/dIaz8rDrvtlD
-sOoKf0i7vy+Ub2viaSLzs3SD3hV4Two=
-=dUI9
------END PGP SIGNATURE-----
-
---Ty9sdf64Wa8pEu18--
 
