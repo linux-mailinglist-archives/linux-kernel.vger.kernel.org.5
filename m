@@ -1,245 +1,166 @@
-Return-Path: <linux-kernel+bounces-66720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE9E28560A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C7185609D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:03:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F382A1C228B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:03:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D841C23BE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A0F130E3C;
-	Thu, 15 Feb 2024 10:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5BF130AD4;
+	Thu, 15 Feb 2024 10:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OQcHYFeK"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Med1oLNB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Q6pc7gW";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Med1oLNB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Q6pc7gW"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8560130AF5;
-	Thu, 15 Feb 2024 10:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D67F1EF1D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994528; cv=none; b=eeIF9TIPLHWOTzAWSxTZ5vj1uLO/qHQHtE7mjZ4nRdeSsKHGbexukVEQeRrFwy5R1sbt++U3AlQZb03R9S+UvmIUg8gYGXiH/LBQrpYHjT3uE90Nacac1aNbDubyMT72olLheRcJiDpPwDTklsIxDkYCH6XxLJmcklkR05mTEVY=
+	t=1707994524; cv=none; b=Ww9oq2caOQIoHCfkk70C1Tjg8iArMFRKRWp2BNUIZCffZmbTFWA7CLxog6OXY9DSXTS0qYiPxArVqu+HmDIdoFY+vC02xZoHpoCcuRaDjNrsxXtufY38IiHwkXacicNkDDbrPP+wKH6NcVSa6bN0ZG5gib0B+tBfMtylRyzgi/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994528; c=relaxed/simple;
-	bh=ix55/jnZ4SkMNe1ZtfE07LjBU7sY6tl3iGBli1lEAcg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=NT8QK4QDJS3fbJvP/ao1FNB7pUlDI0GZldRYXIZ5GaSbv/hU8lF0j+Co3UlljmINZnaO49B6amIXaQliWcl3wQ2cMJVUPg19ibKwkDXQRTErL7GC/DQAWc/G+XPisQ3/SuhDcb7CGqguXvm0+Y/gzv6aOaW0TDCNFL+cibEFFYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=OQcHYFeK; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707994527; x=1739530527;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=ix55/jnZ4SkMNe1ZtfE07LjBU7sY6tl3iGBli1lEAcg=;
-  b=OQcHYFeKYm9YeEphcLwtgjWu7PtxDgE7JBmYJjXCsXvFf7faNanj3crb
-   ysgR/xG1pMoktu1Cs/smmkFV3yrZhHfwo/EksMLihZdogRrOQHhjgpFye
-   c2vR9BuyADbsddiqGDUkGHd8MSLZSKaf6CCWkuWZ0XjLr6noMhP9rw6Ww
-   zZHxo3XRERfsiAcxGHKYIdpOIYHP6WG5juDjC5/JD97nUWLOnnQnZmsAU
-   VGD7GWRl4FoM537nmjHGzkoTLepRApq2IPLZ41cuu7vJV3vA72YzSAoE7
-   75QoTIVFC5mswE415EcUA324TWSuH8zyYV+hkDtlcP6Hhb32N706DehL+
-   g==;
-X-CSE-ConnectionGUID: v+sFuF0CRgGdCT0U0xN+Lg==
-X-CSE-MsgGUID: t8z6n7eVQo2rYQB00hVd2A==
-X-IronPort-AV: E=Sophos;i="6.06,161,1705388400"; 
-   d="scan'208";a="16283972"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 03:55:26 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 15 Feb 2024 03:55:24 -0700
-Received: from che-lt-i66125lx.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 15 Feb 2024 03:55:20 -0700
-From: Durai Manickam KR <durai.manickamkr@microchip.com>
-Date: Thu, 15 Feb 2024 16:25:15 +0530
-Subject: [PATCH] dt-bindings: dma: convert atmel-xdma.txt to YAML
+	s=arc-20240116; t=1707994524; c=relaxed/simple;
+	bh=yXKEXe+jJogGmhKlWXxl4a3x7CycnAlkIpxDarAvsrI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EK2HqhJiX6VC8/v+98Q5xeSubF3TzQBbtnHc4ZSK4aW+Ie8bHcsadzIP5XDojfULNttMU7HgtGJQgjb292fEPYMbDWrnSyGDhBtyyXcOUWWyBR6wf/MqbWiCTpOys1I011zUb7U6ns9DJBXiKzrau7812mqlbpG0O0Pbv5qia1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Med1oLNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Q6pc7gW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Med1oLNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Q6pc7gW; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7620121EAD;
+	Thu, 15 Feb 2024 10:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707994520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
+	b=Med1oLNBn8ZxJaQi8g8abR9bH07zjIDiqfHz5vVXZO+L7FZdhzXlUP8oSLf9mf9Nyq23gY
+	KEZEEzbm66IGnQ5dlpl3PAo+dqQauhiczaI8OckRQZdXBTf4nMuaPnxlOfBMs5Sfs8zclj
+	tiwZc2dN5rtc0Smzl9i9Mht9OS7ODGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707994520;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
+	b=1Q6pc7gWYUiEcvWs+VGr5UkOJAPDG3idD38iOFbVW6Tx09REjnsWsYt6zh/xmFY49gJlsb
+	EuzM+ZdnXD1mAVCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707994520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
+	b=Med1oLNBn8ZxJaQi8g8abR9bH07zjIDiqfHz5vVXZO+L7FZdhzXlUP8oSLf9mf9Nyq23gY
+	KEZEEzbm66IGnQ5dlpl3PAo+dqQauhiczaI8OckRQZdXBTf4nMuaPnxlOfBMs5Sfs8zclj
+	tiwZc2dN5rtc0Smzl9i9Mht9OS7ODGk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707994520;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
+	b=1Q6pc7gWYUiEcvWs+VGr5UkOJAPDG3idD38iOFbVW6Tx09REjnsWsYt6zh/xmFY49gJlsb
+	EuzM+ZdnXD1mAVCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6162813A53;
+	Thu, 15 Feb 2024 10:55:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 1/hrF5jtzWXAMAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 10:55:20 +0000
+Message-ID: <08a08ea2-6764-48af-8883-84639c732ce5@suse.cz>
+Date: Thu, 15 Feb 2024 11:55:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/7] mm,page_owner: Maintain own list of stack_records
+ structs
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>
+References: <20240214170157.17530-1-osalvador@suse.de>
+ <20240214170157.17530-4-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240214170157.17530-4-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240215-xdma-v1-1-1139960cf096@microchip.com>
-X-B4-Tracking: v=1; b=H4sIAJLtzWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0NT3YqU3ERdY7NUi6SUpDQLQxNDJaDSgqLUtMwKsDHRsbW1AI7hoNV
- WAAAA
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	"Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
-	"Alexandre Belloni" <alexandre.belloni@bootlin.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>
-CC: <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	"Durai Manickam KR" <durai.manickamkr@microchip.com>
-X-Mailer: b4 0.12.4
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.46
+X-Spamd-Result: default: False [-1.46 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.17)[69.92%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-Added a description, required properties and appropriate compatibles
-for all the SoCs that are supported by microchip for the XDMAC.
+On 2/14/24 18:01, Oscar Salvador wrote:
+> page_owner needs to increment a stack_record refcount when a new allocation
+> occurs, and decrement it on a free operation.
+> In order to do that, we need to have a way to get a stack_record from a
+> handle.
+> Implement __stack_depot_get_stack_record() which just does that, and make
+> it public so page_owner can use it.
+> 
+> Also, traversing all stackdepot buckets comes with its own complexity,
+> plus we would have to implement a way to mark only those stack_records
+> that were originated from page_owner, as those are the ones we are
+> interested in.
+> For that reason, page_owner maintains its own list of stack_records,
+> because traversing that list is faster than traversing all buckets
+> while keeping at the same time a low complexity.
+> 
+> For now, add to stack_list only the stack_records of dummy_handle and
+> failure_handle, and set their refcount of 1.
+> 
+> Further patches will add code to increment or decrement stack_records
+> count on allocation and free operation.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- .../devicetree/bindings/dma/atmel-xdma.txt         | 54 ---------------
- .../bindings/dma/microchip,at91-xdma.yaml          | 77 ++++++++++++++++++++++
- 2 files changed, 77 insertions(+), 54 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-deleted file mode 100644
-index 76d649b3a25d..000000000000
---- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-+++ /dev/null
-@@ -1,54 +0,0 @@
--* Atmel Extensible Direct Memory Access Controller (XDMAC)
--
--* XDMA Controller
--Required properties:
--- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
--  "microchip,sama7g5-dma" or
--  "microchip,sam9x7-dma", "atmel,sama5d4-dma".
--- reg: Should contain DMA registers location and length.
--- interrupts: Should contain DMA interrupt.
--- #dma-cells: Must be <1>, used to represent the number of integer cells in
--the dmas property of client devices.
--  - The 1st cell specifies the channel configuration register:
--    - bit 13: SIF, source interface identifier, used to get the memory
--    interface identifier,
--    - bit 14: DIF, destination interface identifier, used to get the peripheral
--    interface identifier,
--    - bit 30-24: PERID, peripheral identifier.
--
--Example:
--
--dma1: dma-controller@f0004000 {
--	compatible = "atmel,sama5d4-dma";
--	reg = <0xf0004000 0x200>;
--	interrupts = <50 4 0>;
--	#dma-cells = <1>;
--};
--
--
--* DMA clients
--DMA clients connected to the Atmel XDMA controller must use the format
--described in the dma.txt file, using a one-cell specifier for each channel.
--The two cells in order are:
--1. A phandle pointing to the DMA controller.
--2. Channel configuration register. Configurable fields are:
--    - bit 13: SIF, source interface identifier, used to get the memory
--    interface identifier,
--    - bit 14: DIF, destination interface identifier, used to get the peripheral
--    interface identifier,
--  - bit 30-24: PERID, peripheral identifier.
--
--Example:
--
--i2c2: i2c@f8024000 {
--	compatible = "atmel,at91sam9x5-i2c";
--	reg = <0xf8024000 0x4000>;
--	interrupts = <34 4 6>;
--	dmas = <&dma1
--		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
--		 | AT91_XDMAC_DT_PERID(6))>,
--	       <&dma1
--		(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
--		| AT91_XDMAC_DT_PERID(7))>;
--	dma-names = "tx", "rx";
--};
-diff --git a/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
-new file mode 100644
-index 000000000000..0bd79c7b5e6f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/microchip,at91-xdma.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/microchip,at91-xdma.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel Extensible Direct Memory Access Controller (XDMAC)
-+
-+maintainers:
-+  - Durai Manickam KR <durai.manickamkr@microchip.com>
-+
-+description: |
-+  The Atmel Extensible Direct Memory Access Controller (XDMAC) performs peripheral
-+  data transfer and memory move operations over one or two bus ports through the
-+  unidirectional communication channel. Each channel is fully programmable and
-+  provides both peripheral or memory-to-memory transfers.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - atmel,sama5d4-dma
-+          - microchip,sama7g5-dma
-+          - microchip,sam9x7-dma
-+      - items:
-+          - const: atmel,sama5d4-dma
-+          - const: microchip,sam9x60-dma
-+  reg:
-+    description: Should contain DMA registers location and length.
-+    maxItems: 1
-+
-+  interrupts:
-+    description: Should contain the DMA interrupts associated to the DMA channels.
-+    maxItems: 1
-+
-+  "#dma-cells":
-+    description: |
-+      Must be <1>, used to represent the number of integer cells in the dmas
-+      property of client device.
-+      -The 1st cell specifies the channel configuration register:
-+      -bit 13: SIF, source interface identifier, used to get the memory
-+               interface identifier,
-+      -bit 14: DIF, destination interface identifier, used to get the peripheral
-+               interface identifier,
-+      -bit 30-24: PERID, peripheral identifier.
-+    const: 1
-+
-+  clocks:
-+    description: Should contain a clock specifier for each entry in clock-names.
-+    maxItems: 1
-+
-+  clock-names:
-+    description: Should contain the clock of the DMA controller.
-+    const: dma_clk
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - "#dma-cells"
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dma0: dma-controller@f0004000 {
-+            compatible = "atmel,sama5d4-dma";
-+            reg = <0xffffec00 0x200>;
-+            interrupts = <50 4 0>;
-+            #dma-cells = <1>;
-+            clocks = <&pmc 2 20>;
-+            clock-names = "dma_clk";
-+    };
-+
-+...
-
----
-base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-change-id: 20240215-xdma-36e8bdbf8141
-
-Best regards,
--- 
-Durai Manickam KR <durai.manickamkr@microchip.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
 
