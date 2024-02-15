@@ -1,138 +1,97 @@
-Return-Path: <linux-kernel+bounces-66312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886ED855A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F52E855A33
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44D2C290B7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:48:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97FFF28F2E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07187BA2D;
-	Thu, 15 Feb 2024 05:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD56BA29;
+	Thu, 15 Feb 2024 05:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="SwQK8Itp"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FU11tw6x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2438F68
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB77A8F4E;
+	Thu, 15 Feb 2024 05:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707976111; cv=none; b=Saf2p1SxUo7zfIEdVnfTPbE5CDhuJ2m8oMcWM6yRVeTKz7eWHRVGG0n7nv8SGghxC/IRmHjKofV/SjWdx9CGstZOFHtBfBq5zhwipyeunugBdfuMMG/4NL7RSNIYsxun2LCkpde9Npzba9Zc7jn4w9+92Zyk7aB4H8z41xam2sA=
+	t=1707976286; cv=none; b=AoWUzkQ4ByJAcyGQDeY9Odl21wIvMqTVntVLpQq3gfsrUTkqs/sWd9+zGuuc8f7QQ3oGYUBcjMt6ME7gBQfb/f95TEeDvgmtXCYHaeMeYzKp2ooyty2fhwCN7aBkPhFIu7QetMFFDoQ5SatQ4PzFJIA8xB2n0n46UfPuhlkXoc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707976111; c=relaxed/simple;
-	bh=Wy0+n9JgqrY/lECFwTB8y+8bzYPNJDBhqzCYO+LmmYI=;
+	s=arc-20240116; t=1707976286; c=relaxed/simple;
+	bh=vN7MCwTLwLnvk9WWo0RxU5cJ2q/qqz/7Vlw6seBKkdE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ii7mTnWaeK5IOvvDxafIUh1hif3vc3jvSJ4GC/XbyzbSl+kJKlBpFiebQXTUxf4QkG9q3Z+aKW6ttDmgyez0+3yMED+OvrS1NdcUv7O9D/bxau2cDNbPG6vyIViKSbcr3FzLGl29zmsQ6+otk/q2oMXIAE9RdqeVZEqr6G4o8+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=SwQK8Itp; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5114fa38434so543550e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 21:48:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1707976107; x=1708580907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kCR9TmSawra5wUvs4oISeBGT3tqyzqaDdzBDeohv99Y=;
-        b=SwQK8ItpNEsH1bs+vbCEMNvTKQagz7fZinP0etl/v1SuVNXNLvHE0x+LqDBFq0Pms3
-         UWY19UyP+R8zzpkbCo2d/K0QlttHkhfZlLOuCYrG0uVdRZ8D18i0ZfSzMBUxESoiTAVF
-         7DuNglli+v1IvatQtgW3EGQ1K0e6hdQWF1vQ1hwAan4oWCeFTE1kqrzPCuEPgUSo9O0G
-         NOpUu0sNzLBUlwo1Nj/wykWei7Zs7KODSSbNJuL/6EpMYhGXvNkWH8xGzzFzSeZPKch3
-         eKvUmQvAyzGc5C76xRUuBtvV3+srkpjGTjMdyL4LG4uNUO4xC20oPUc9yODyEHRD+wIq
-         G27w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707976107; x=1708580907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kCR9TmSawra5wUvs4oISeBGT3tqyzqaDdzBDeohv99Y=;
-        b=YmquXXohOzcuevBGeQwKnqN4S/4BU9RVDr/nqyrWTnf3GZmPY/Zx/jg2/AYNTLleVS
-         ElOwe6aOJJ00cOTIWeE5rkC7bWYeQ7fUHfYsY8OoURZ3NvSW/gkwQYWYk3HFDsAaDxvp
-         1mBL6Rw6Ux17Dx943V1/iBcSlc6mRcVarkkKm/Xgd1zwqTzPxkUiI9q3ayeMHLzw0qPQ
-         WpnmtAe1iZS3fc0DghI+LA+M7ZSyeiUmcv5b9YLp+Iaz3b2k/a7f0NU6ZRIKcQD6wzwK
-         7qBWXIMALMjA4zItmmc/vhpT6bfrMQSP/qnLvxzfbC9U8OuapLEloupoFBftvhgAgxGK
-         HbIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWSKAgFBDepprNQ52fqviFueTkgK08QEKGVxLqq42KmqjugBsEg9ujNQqvYUSMQcs9Y3IEDTA/IuL6TVKki7Ex8FBwzHt05wZ+AEFrw
-X-Gm-Message-State: AOJu0Yxc2OaJghgBwQDCAP/QLvBlAFmeGWVMMLbRvCa+KpGZNNFERvkx
-	Ezaf8a1GMMEmj7dX72itYOFBSgSHWn9g6ximgoWqEE/pkjw0/bAhXvP5sUQwNPW/wHZ8qLz9+H+
-	4ITn+QzbKyNGpISlik26cWpRDX/UbkIdtZzZpgw==
-X-Google-Smtp-Source: AGHT+IFXK7zSd2x0PSl1ap8TU3fQMItsMd1vzwFvuhYCp/fEDN7sIyRsPKR8EwxhBD/qfurWwSMNwN2P4fLnuwKJ9SA=
-X-Received: by 2002:a05:6512:67:b0:511:82b5:b484 with SMTP id
- i7-20020a056512006700b0051182b5b484mr605399lfo.64.1707976107190; Wed, 14 Feb
- 2024 21:48:27 -0800 (PST)
+	 To:Cc:Content-Type; b=Pmak9sdOZ6R1qz4ltgOEC/2k8qi7p3dWn5aajPo56tvM6Zg9U1Ak2FrlfcnwvK6F+pKn1nF62V+kS9QIGOz4rv2oK0rVtP5KHvLCStEon/JpE25G2PLu+uhYqNeZAjlrtJd8xn20a5unBAfadccjUT8D1JUW7aJ7DAmxgvFz/aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FU11tw6x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B8DC43399;
+	Thu, 15 Feb 2024 05:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707976286;
+	bh=vN7MCwTLwLnvk9WWo0RxU5cJ2q/qqz/7Vlw6seBKkdE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FU11tw6xpUmJvzSliH25LHi3P45mr19GUZt0TbBMNGO8+izHpAErH6Gh5ZeHUDW2y
+	 Mxird2u9mgekexKkakNs8jmwreJqQX2aXl7gntbDRMF2D4v661SZ0+YuU5BQH1ymCq
+	 e/GtRq4N+qgVmPwPdhQCz0NiWBAMaX9VRO/dNrtGvv9SRMAIMum6ZMa9CQWODcLnxA
+	 aLJmKK80mbP/qpofrQr2Kd0mbWIKPsdug5lFFRThpBcwp/uP/dak6EnBwR5+GQFbJW
+	 Vx5RrU6LODESeUgHgJVyAUWhEzWj1EVVyFiM4jFmEqI8n/UGNwbFWKkkOnYlaIl8d3
+	 yhntSPKRg1Klg==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-511a4a1c497so491261e87.3;
+        Wed, 14 Feb 2024 21:51:26 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXU7W9RzxlwvnaxX+Y+wuPS+az/90SRYOFKbED5FECFQO3ODU6lDuF86NNCDPMppHXH4YpX9MHNDMQXBLD1pc7Dt8CJlNcCQws1JfKe/7oQ09r6dgv00x+YuuZUVgMmkHzjS5bf4t3lDr0C
+X-Gm-Message-State: AOJu0Yw+DRQYyhZKSjBGlEDKZm3mM1IyBfrXbt/c96cSQnhkxQ+wacLB
+	uoiS1DfsFPiB1fvbYkIIbhP+7iV+cDbhDIXWCh1F9gIC/mAP/PsItgV/3bIRrypDjLOIK+EMZ2D
+	sqfPHHPePuYkQTtJ5WXmIEG046S0=
+X-Google-Smtp-Source: AGHT+IFEpuM4TCTzRj2NftvgACtWzuJCwVaZkKN0LP3m7ajuCdc/KsIvF3vBgFAICFUvQ6QR+YuDq5mCqv2nvyAvovg=
+X-Received: by 2002:ac2:43a7:0:b0:511:87eb:8dc4 with SMTP id
+ t7-20020ac243a7000000b0051187eb8dc4mr617322lfl.32.1707976284715; Wed, 14 Feb
+ 2024 21:51:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <CAK9=C2Vwtj2gZg-P73yLMxu0rPXQ3YrRRuxq6HcpHMXgs-jHaw@mail.gmail.com> <87bk8ig6t2.ffs@tglx>
-In-Reply-To: <87bk8ig6t2.ffs@tglx>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Thu, 15 Feb 2024 11:18:15 +0530
-Message-ID: <CAK9=C2WsSSHgDF+7ruxx_QF0Lk+Dsx2F2Y-_NabnxrJ_qWhgGQ@mail.gmail.com>
-Subject: Re: [PATCH v12 00/25] Linux RISC-V AIA Support
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Marc Zyngier <maz@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Atish Patra <atishp@atishpatra.org>, 
-	Andrew Jones <ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
-	Saravana Kannan <saravanak@google.com>, Anup Patel <anup@brainfault.org>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, "Ahmed S. Darwish" <darwi@linutronix.de>
+References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com> <20240212-coreboot-mod-defconfig-v4-2-d14172676f6d@collabora.com>
+In-Reply-To: <20240212-coreboot-mod-defconfig-v4-2-d14172676f6d@collabora.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Thu, 15 Feb 2024 14:50:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASTG=xzodA6sAKTBaq09aDPZ9oqxcX2Q4iCuPrL+foQ8g@mail.gmail.com>
+Message-ID: <CAK7LNASTG=xzodA6sAKTBaq09aDPZ9oqxcX2Q4iCuPrL+foQ8g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] firmware: coreboot: Generate aliases for coreboot modules
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
+Cc: Tzung-Bi Shih <tzungbi@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Brian Norris <briannorris@chromium.org>, Julius Werner <jwerner@chromium.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kernel@collabora.com, 
+	chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 1:24=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
+On Mon, Feb 12, 2024 at 11:51=E2=80=AFPM N=C3=ADcolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
 >
-> Anup!
+> Generate aliases for coreboot modules to allow automatic module probing.
 >
-> On Sat, Jan 27 2024 at 21:50, Anup Patel wrote:
-> >> Changes since v11:
-> >>  - Rebased on Linux-6.8-rc1
-> >>  - Included kernel/irq related patches from "genirq, irqchip: Convert =
-ARM
-> >>    MSI handling to per device MSI domains" series by Thomas.
-> >>    (PATCH7, PATCH8, PATCH9, PATCH14, PATCH16, PATCH17, PATCH18, PATCH1=
-9,
-> >>     PATCH20, PATCH21, PATCH22, PATCH23, and PATCH32 of
-> >>     https://lore.kernel.org/linux-arm-kernel/20221121135653.208611233@=
-linutronix.de/)
-> >>  - Updated APLIC MSI-mode driver to use the new WIRED_TO_MSI mechanism=
-.
-> >>  - Updated IMSIC driver to support per-device MSI domains for PCI and
-> >>    platform devices.
-> >
-> > I have rebased and included 13 patches (which add per-device MSI domain
-> > infrastructure) from your series [1]. In this series, the IMSIC driver
-> > implements the msi_parent_ops and APLIC driver implements wired-to-msi
-> > bridge using your new infrastructure.
-> >
-> > The remaining 27 patches of your series [1] requires testing on ARM
-> > platforms which I don't have. I suggest these remaining patches to
-> > go as separate series.
->
-> Of course. Darwi (in Cc) is going to work on the ARM parts when he
-> returns from vacation. I'm going to apply the infrastructure patches
-> (1-13) in the next days so they are out of the way for you and Darwi,
-> unless someone has any objections.
->
-> Thanks for picking this up and driving it forward!
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+> Reviewed-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
 
-Thanks Thomas, I will be sending v13 of this series next week.
 
-For the time being, I will carry the 13 infrastructure patches in
-this series until they land in upstream Linux so that it is easier
-for people to try this series.
+Acked-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Regards,
-Anup
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
