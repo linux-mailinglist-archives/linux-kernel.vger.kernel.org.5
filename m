@@ -1,145 +1,105 @@
-Return-Path: <linux-kernel+bounces-66586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE37C855EAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:02:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 208CC855EAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A7F128391A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:02:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF2E51F2145A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24E6664BE;
-	Thu, 15 Feb 2024 10:02:25 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0A4664C1;
+	Thu, 15 Feb 2024 10:03:26 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B94C664D2
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A043265E05;
+	Thu, 15 Feb 2024 10:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707991345; cv=none; b=CozUpOYoav5/LapFZ1kRuRTzPgVC4p67elMUZgaL2h4e2+T/MwiyPIDd7kVej9Xw6JLXTDQwBc+jMf1AUJ3fA/tF/I6NLr1xXK/grHM13hjmEYw78bVYWXAsGVEo/x0a1MUadkW+oVh0GgseLQMcI/D6N0kBAvfWJR83ZBULSUQ=
+	t=1707991405; cv=none; b=W85i9lXNSiMJ7wElI6aJyOjhd0cwjlXHTp+9xkyTqLZ/7mvLcfBhuIkCdSlMxWZTkXF6m1fyiVqFkHiZGEVppDhCETr+Az3MgbDK1R4QUt4Cc4YhqK1+DYW+wKE7YWvUebmMguk5BThPOeCB3R+kFN9PD42axSnguUdNdgsQQCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707991345; c=relaxed/simple;
-	bh=To/616VYsl1JYtI0DcRNUrjLciru29NY2Dgy6sQDoRA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d34UkLBUKRLxAEn1c+CNYMAYkDs9YvUcuL6ue5a0cOMVQGxFk/IY54JeAmSrdlBbpoU3u2lofW8uRMVt8kBisxCzbRL9OQof2+/GlxKOhs7PscgONyq3oUJSelEEpnm58utGNCOS/5k3eVVwgXgfz+FPHXdmrVRAZLP/ns2zyC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYZC-0004fD-8S; Thu, 15 Feb 2024 11:02:06 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYZA-000rGi-Vp; Thu, 15 Feb 2024 11:02:04 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYZA-005HsV-2q;
-	Thu, 15 Feb 2024 11:02:04 +0100
-Date: Thu, 15 Feb 2024 11:02:04 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Lee Jones <lee@kernel.org>, sam@ravnborg.org, bbrezillon@kernel.org, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, 
-	daniel@ffwll.ch, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, 
-	claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, thierry.reding@gmail.com, 
-	linux-pwm@vger.kernel.org, Dharma Balasubiramani <dharma.b@microchip.com>, 
-	hari.prasathge@microchip.com, manikandan.m@microchip.com, 
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: (subset) [linux][PATCH v6 3/3] dt-bindings: mfd: atmel,hlcdc:
- Convert to DT schema format
-Message-ID: <aamdttvdk3jmswvy3rw3debk3ouddkgjbs6xmixroe6kqakjw4@lnd5crcgoeyj>
-References: <20240202001733.91455-1-dharma.b@microchip.com>
- <20240202001733.91455-4-dharma.b@microchip.com>
- <170738899221.920003.15342446791449663430.b4-ty@kernel.org>
- <cedecdb7-fe4a-42ea-9a11-faa82f84b57d@linaro.org>
+	s=arc-20240116; t=1707991405; c=relaxed/simple;
+	bh=HDkHFmuyAIbY1g1cu9TL5SLYxGYEIyAyUbVQUE8TkXM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DkmMXFcPkfuQ4KDAzcMcpeGhCv2IYXkXvjsMhm03kJ+HzcQmoxevTIERUlWmf/0KIBqI0ENB+e5KOk59wrtrO2frsWWeMXAAqOma7go5fVQYAgOaKqjHv19kiBxTLT1nH3OIayQuTO/mQDHOH3BvgLz5KHRGYdYHzRsdy612KgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6078350e130so6591597b3.0;
+        Thu, 15 Feb 2024 02:03:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707991402; x=1708596202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EUNQa6tI/+0+nqwNVC8tBBTyjfXUFwBtTDQfBepwcIw=;
+        b=rKKMvo9dl/fCVtyEBFKsD4PIePu/2HezE7mkcumwpwWgrbflf0SRm78/NqcMHlCYSE
+         2gqECuEQFNGaWzeINt7Tz+zDgynujx+Tsgwj8vHtCDjZ1GNU9Hn2vksVWlNfjrdRRrzG
+         759tqx5Lpo08r5jtBKZX6Aj1N3vaGlze+ybNKMmDqLndJJNOe1a7qaOhVwe+JR4+7h/Y
+         AfM/ryvL/ZRHha8CB9HuFhHl1YLvoci9wPQFQfkafUGLiUKUPCZnjAioM0u+vONbMdSr
+         vXkXz8FFSUXRLj1TD1iQml4w3CJbvpfypQ38w6oiev/x6WIV6sqsYKNOP7ci1O/bk7Yd
+         2nKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwjsmxV+ETGxSyzWGNT802iSPvwEBoXd+CtsteqSHzNQTQhW582kKwpneNbMDTqxzyH13N5LJ/sd9Ea/AhHSR2JzNu55SJTdiT2RVz
+X-Gm-Message-State: AOJu0YxWcLcwcBAK1xCxt3dSEDWTQqZ7BEJFZPzVr44V3bfPvStQZNxt
+	SI1T7lfOEjfirnaaBS3buGDtReawB1O9qrIhUFeB4C2SukRUo2bRjo+E1e0jUnY=
+X-Google-Smtp-Source: AGHT+IFO24RCBrIuN9Fi7DftVU3ks0f8GOuNzYq4/YAAq2NQJ1YEPZUjHvqHwOA97G1DCI0JWL/jUg==
+X-Received: by 2002:a81:9f0d:0:b0:607:8edd:b5f7 with SMTP id s13-20020a819f0d000000b006078eddb5f7mr895682ywn.49.1707991401755;
+        Thu, 15 Feb 2024 02:03:21 -0800 (PST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id j5-20020a0df905000000b0060493d50392sm177245ywf.103.2024.02.15.02.03.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 02:03:21 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso559202276.2;
+        Thu, 15 Feb 2024 02:03:21 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWTSmGorQAEdutzZ7SHDt/9udqADusNmNsidf/d+CRtZ879WvKpA+fR6TXYrguVdgPTXvLhiBsXu1Df/ZRNdhsS6NYljFpQoBShH4Oy
+X-Received: by 2002:a05:6902:250a:b0:dbe:9f4a:6bb0 with SMTP id
+ dt10-20020a056902250a00b00dbe9f4a6bb0mr1180489ybb.56.1707991401026; Thu, 15
+ Feb 2024 02:03:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o2z5u2icip6vcnon"
-Content-Disposition: inline
-In-Reply-To: <cedecdb7-fe4a-42ea-9a11-faa82f84b57d@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---o2z5u2icip6vcnon
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240212170423.2860895-2-andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 15 Feb 2024 11:03:07 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWM5ainsMZdooUFygccWL6nK9tEXGxuYQ3kTc2MLT3TBA@mail.gmail.com>
+Message-ID: <CAMuHMdWM5ainsMZdooUFygccWL6nK9tEXGxuYQ3kTc2MLT3TBA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/15] auxdisplay: img-ascii-lcd: Make container_of()
+ no-op for struct linedisp
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 11:23:02AM +0100, Krzysztof Kozlowski wrote:
-> On 08/02/2024 11:43, Lee Jones wrote:
-> > On Fri, 02 Feb 2024 05:47:33 +0530, Dharma Balasubiramani wrote:
-> >> Convert the atmel,hlcdc binding to DT schema format.
-> >>
-> >> Align clocks and clock-names properties to clearly indicate that the L=
-CD
-> >> controller expects lvds_pll_clk when interfaced with the lvds display.=
- This
-> >> alignment with the specific hardware requirements ensures accurate dev=
-ice tree
-> >> configuration for systems utilizing the HLCDC IP.
-> >>
-> >> [...]
-> >=20
-> > Applied, thanks!
-> >=20
-> > [3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
-> >       commit: cb946db1335b599ece363d33966bf653ed0fa58a
-> >=20
->=20
-> Next is still failing.
+On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Move embedded struct linedisp member to make container_of() no-op.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Failing in the sense of dtbs_check, right?
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> Dharma,
-> You must explain and clearly mark dependencies between patches.
->=20
-> Lee,
-> Can you pick up two previous patches as well?
+Gr{oetje,eeting}s,
 
-I applied the pwm patch now. If Lee wants to pick up this one via his
-tree that would be fine for me, too. If that's the case please tell me,
-then I'll drop it from my for-next branch again. Feel free to add
-my Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> for patch
-#2 then.
+                        Geert
 
-Best regards
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
---o2z5u2icip6vcnon
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXN4RwACgkQj4D7WH0S
-/k6aQggAqysz6fco+x2BEiMLKvymsmjxsyB2/87ERoRKMlE6OrSSbqyjTAhMSXeo
-V66WmW2x3F1DhLcpwochJJIc2e4sFUWSJ1qfXPyGNTocDInGiLAhYZGqoBuOZBIN
-nfJTFseFLQ429Y9Ip7uMet4TIhZjAX0t8cMGKDZSMU2h+Xeuj76BidSxgtiHErcP
-k0ej0USTqRXvJ3IebZ7lbrhJBPF5CMAW9U83v9gqCbg85lVGANWcte/AcvPTKCcH
-CERT4AOYikNxEQIC8PEhYWCwOcR9lkY4o0WPSUe6T/11eFmiga+uk+NDdRONRPN7
-w3esiQ5TsIkYMiK/13Ve0Y8podbLnQ==
-=g/pN
------END PGP SIGNATURE-----
-
---o2z5u2icip6vcnon--
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
