@@ -1,244 +1,176 @@
-Return-Path: <linux-kernel+bounces-67787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E8C8570BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:53:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDBE18570BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 122CD1C21A6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:53:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61D8E284977
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27851420D4;
-	Thu, 15 Feb 2024 22:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DAE13B2B0;
+	Thu, 15 Feb 2024 22:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=telus.net header.i=@telus.net header.b="Cb4lUyAp"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XypwHuFk"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE7313A86F
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6914A13A86F;
+	Thu, 15 Feb 2024 22:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708037584; cv=none; b=rNkgtEBgJ76spO4gr1xU6xdkijx0knq5qaVcl4KqatuBHGyVSFPSBFVM6j87FJU249YXBDqSv//IB+M6brx52jEbeqAIYrSbKHITfLHi7eKMo0Edq+KF29ItBqWtRUPPLTEa3OGW2pxeksCqBN4xYU9JtKcUzZ+SR97TMfTfRcQ=
+	t=1708037617; cv=none; b=mZSghxkm/u89fewr2WPf3N6U13AZd94E0e6QieV2eeDRwIQUrrCqoqNwzUOrv0k21j3F16+I/LI3nmpWm0jUmnCUxJP4x0tt7M/z7S9et9dYLqB8ZDGDHX4I/DzqvnXYMpRaXBdRFH6P30vdb4IwTD0E4IbbdeZlvJF3AuyJ3ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708037584; c=relaxed/simple;
-	bh=gVtwWwBmoGcxD/Dd81RsCvFFLgug1u8njms8eH1uLvU=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nr7NSOvYnOOZgQJ/xHFEnj5IzjRDlenRUsfASlhJUAe2XdJR6q2wG0N2sm08FmrXZ35ev6Z6Eb3sLkZ0ddXCY9D0JQBXBc502kjlGays8umvWfi90Ms//QbFIY/Pat8vdhQgQdPlXkiBz+e000zXF5Bnecs2k7zFAloPDqD++y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=telus.net; spf=pass smtp.mailfrom=telus.net; dkim=pass (2048-bit key) header.d=telus.net header.i=@telus.net header.b=Cb4lUyAp; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=telus.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=telus.net
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59883168a83so775128eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:53:01 -0800 (PST)
+	s=arc-20240116; t=1708037617; c=relaxed/simple;
+	bh=mVmdnH/gleyZRHJKTGo3Zk+ijax5waOA2VGEMQ90394=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gEMoqZW5Rxz5NWojIeAcuGEdu6op6wzYpYoxJ6WLgfB12YP8wFht7ax+BKCXPZBBD90NvuIbGvwNnZp8yBJbb9tyOdRqkuAxKlFZRRhWXA9rmboj/HdURlABEZWp1CmV7lgKHPQCCYmMVAmA/pTh/htL31ll3eQJSI+EZHOVWBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XypwHuFk; arc=none smtp.client-ip=209.85.222.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-785d567fa26so4052585a.3;
+        Thu, 15 Feb 2024 14:53:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1708037581; x=1708642381; darn=vger.kernel.org;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1EKbpN+e7JKAG/MkqriqG+x1Jw40LA+jNb66bBx2Ww=;
-        b=Cb4lUyApjkcEli2xl0ccC+rTXPMcyIgKedPkf1wQGFRdK1JuyjsC+tvxl6r1hnT5HF
-         P1TwckLCnnH669qKXsKNbktVasQWPzT6G5wO3S2SPwk9p6/DIMNT4A+Mrtt8Y3uXcCVr
-         EGFXo9Wt27UmyF2cz4Ef74ioHY4a2AsCFLDZ6L7EvIdgAoGEo72FRXF0tKWkcFCtbbRU
-         0bjwUugcS0O3U8pLnzNOmiiiHaivQLOhBmNsBVL6VAsVsvOeIBcT4DVlBxp+VmbrU03/
-         AXN49si2kex74s6vBRQtWOhVc8dRluSdM6ZK5f163UHUWyfTC2cKNSRlwygCDVWowZHg
-         TKZA==
+        d=gmail.com; s=20230601; t=1708037615; x=1708642415; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3LGmj+4Ox8DNbnQHN45Al/A5FlWzwlLmvFimBSFQ88o=;
+        b=XypwHuFklUBDb5CL0dq1L9R82ohwkj07ckWajdKVHyK6dVr7jL4bxPwRZD4i5876DO
+         bLLQvkHAiQ7iDNk0cito2iTAnm5PqJ0s9PDQiDiv5a+BNUju1JzksHmgbyzPocCpxrGh
+         soaA/XWZjOVvdHr7YBRzI+njQAxm/bS+F+CzCQaJiTEu5R8Cu2Wu/8fEAoJEpq3cTBXw
+         DT5Haj/CUh9iGCKU5ySlsV7BfQRr+aYnX+bRGXSVl+Qv7bCKPipYaoENiYnQyrZfCdyN
+         BEg1aCbrCtVGUgHIsJdO0Ek5CrU/Q8ahfcUNXZjaSZmFZsGR0mWSa0c2mpJ5LnhXonzX
+         1i7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708037581; x=1708642381;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1EKbpN+e7JKAG/MkqriqG+x1Jw40LA+jNb66bBx2Ww=;
-        b=Uw6qyCCQfo166VHvcaqDPf3Spz3Yl7i7BT/ZooPA5CNyNTJHmy5CbrPfU2O0TFyahs
-         4aparEWyy7lKwkL5idpdAoLRaffU3Iv4RWc/+UiQ9LCuozj7CYo9SI2uDhPZVp66UIBq
-         BSvQpW/yejUBRjFg2lDZpCPBC6VNQS+AS3GvGuygxga3MdSP8B+9DwenSmOnRfPQEUIO
-         anAqJmCdMFUUrV20FxL8yvFhVwOXR1wtiOmgJUOFzf4c3HNDM6NJX8viTt8nQs6KINfe
-         sqevTfEeQywK6lYW5sKVQ2B/TGGQYSEDP2nzW7N1O+TjTdL4sOntvxtBLOsPf6dnsyMT
-         abXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAGAzpZYMQ15u4tNIr4Bdu3s4Ix3QuR2K4TIw/pLvXYup3MxKnEa0OXWerBvivL23X9zBHBJ9ZOaYCihBuKuxRNHNzUaRgzMANc5UB
-X-Gm-Message-State: AOJu0YwWCf8pSJZfExu+BuHwSTae8cEgmh1qcDSXLBmFWYhNIQtIgRiW
-	q+gKbdsNi7ZmbX4vpnM5CTE+n146xhdNqyu6x2jkj8DmK5WLNEH2pBCFGBNZKz8=
-X-Google-Smtp-Source: AGHT+IE6sE0XGtC0W9O2UAq9sQ2FS1xveLUA+FW7BMsfBKSodwfMr6XYElbX4okl+S2tbPhc34EvQQ==
-X-Received: by 2002:a05:6358:5927:b0:17a:a774:93a3 with SMTP id g39-20020a056358592700b0017aa77493a3mr2299269rwf.15.1708037580892;
-        Thu, 15 Feb 2024 14:53:00 -0800 (PST)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id n6-20020aa79846000000b006ddcadb1e2csm1848022pfq.29.2024.02.15.14.53.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Feb 2024 14:53:00 -0800 (PST)
-From: "Doug Smythies" <dsmythies@telus.net>
-To: "'Vincent Guittot'" <vincent.guittot@linaro.org>,
-	"'Rafael J. Wysocki'" <rafael@kernel.org>,
-	"'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>
-Cc: "'Ingo Molnar'" <mingo@kernel.org>,
-	<linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	"Doug Smythies" <dsmythies@telus.net>
-References: <002f01da5ba0$49cbf810$dd63e830$@telus.net> <CAKfTPtA-jizig0sh_shmkAMudAxDPYHP0SdanZe=Gc57jVKouQ@mail.gmail.com> <003801da5bae$02d6f550$0884dff0$@telus.net> <CAKfTPtC7pOtb-srrgQLFbTueLLDqHay+GQBm9=sNsnZDg_UYSQ@mail.gmail.com> <000b01da5d09$8219f900$864deb00$@telus.net> <CAKfTPtB8v30LzL3EufRqbfcCceS2nQ_2G8ZHuoD5N1_y-pvFbg@mail.gmail.com> <001b01da5ea7$86c7a070$9456e150$@telus.net> <CAKfTPtD4Un-A2FcdsvKnNZskG=xH0wrsT3xzaWDs--mQjgZ3rg@mail.gmail.com>
-In-Reply-To: <CAKfTPtD4Un-A2FcdsvKnNZskG=xH0wrsT3xzaWDs--mQjgZ3rg@mail.gmail.com>
-Subject: RE: sched/cpufreq: Rework schedutil governor performance estimation - Regression bisected
-Date: Thu, 15 Feb 2024 14:53:03 -0800
-Message-ID: <003001da6061$bbad1e30$33075a90$@telus.net>
+        d=1e100.net; s=20230601; t=1708037615; x=1708642415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3LGmj+4Ox8DNbnQHN45Al/A5FlWzwlLmvFimBSFQ88o=;
+        b=A/elrnEyhjSZpGGqYXSbZpcFKtv/3ZU/IOw8SfKdB1IBGQw89aG/SUxdPU8k0fbG6m
+         FgBdyvJ0X27IlctWw59Pzo5fC+MdEY4EgogvG+hn0dDftRd/GOyzx4g+JYP8kyqoDhGo
+         RWpDCy+EOw+Zzy5sQOF5VJUxqnqnDaAn1u/swMA98zPJBwswfJXx61kj4uM4BWy8q9U/
+         hgWyFfZArJBtMKTBSNOtnoSiTp0W6tCjkBpcS5tbP4yNUewerxOsm+KKybWnhxo9iVHE
+         fl9C5Zw5cZR7oK8hRPC0PC/6qrSSeE8t3F6/Oq/hbyBMqzrprLw8U8G4gQ7Noh4OV0ve
+         WaWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwRgTNepVl4MP2jM8QPQDSCOyU5lzlVxoiVXL7Qq+xRivv+6ZDk9K9cWqVY/wE52kVC/OCtocLP0WpCiFjbBmYZEDZ3l8YFY8dRziBnInj/ncp3hN0jOOlzftHFMUXwFn28/7RtLyQ
+X-Gm-Message-State: AOJu0YwglgCZXZmQ+6ZdfD6XF0Se7pFQoJE6T+kuv8bCx1EoSVRaY6q+
+	EQWAHOi9sXB1+cDSMmo96nexFKwkObl+ewT8EZaOR+fFSj1uLkB6
+X-Google-Smtp-Source: AGHT+IHynkdzBL+6w805/MNC3X+1JCGgVdnQ1SYu5l7m8zh13dbhAhq1No1F0QgY2V54D9ytwVyRJQ==
+X-Received: by 2002:a05:620a:491a:b0:787:2f14:553 with SMTP id vy26-20020a05620a491a00b007872f140553mr3219040qkn.18.1708037615202;
+        Thu, 15 Feb 2024 14:53:35 -0800 (PST)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id oq27-20020a05620a611b00b007873ee07d53sm249933qkn.3.2024.02.15.14.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 14:53:34 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 0D90A1200064;
+	Thu, 15 Feb 2024 17:53:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 15 Feb 2024 17:53:34 -0500
+X-ME-Sender: <xms:7JXOZRgBZ6aQD34AAZvPjtJwHBOQ9VoQkcGtL2iZkmkI6i4KORBtig>
+    <xme:7JXOZWAj7X6GdnatCF4Bia4OYKoupYbrdBjdZK5_3I53TraAimTwOkECjYRF8OtYl
+    s-9EyJkn7TbmAGZNw>
+X-ME-Received: <xmr:7JXOZRGooOx8ojHlMoguVQtDYJlAbzyIfnrMvmtmh7CdJC9k05nkfHt2Srs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddugddtgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:7JXOZWRB9gnKnXRCM5WtHIiiImXExo7DMhDEwZFxa3_8t_G_ybSbpw>
+    <xmx:7JXOZexzDbm7mFeu7TXHxO6yq_nQalDfXQEphWnUPjqtNxEQGRumBQ>
+    <xmx:7JXOZc7_VufFMtdKx38UmibPUU0UlaCv8cXoVx2ryKHTRt5uePXc2Q>
+    <xmx:7pXOZVo1uyRzZmJzaTduCOd5hMSENvLpwAdrXNGikp-VoMmqzQe3Y07q6nU>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Feb 2024 17:53:32 -0500 (EST)
+Date: Thu, 15 Feb 2024 14:53:28 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
+Message-ID: <Zc6V6GnSQ_q1OAFC@boqun-archlinux>
+References: <20240215225116.3435953-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-ca
-Thread-Index: AQHymzO4ho/iLx8gQfQ33x85MlP38AE230H5ATs9P70BGBlhKwIBEbUgAWfpSqoB1OxCigJA5W0AsIM54tA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215225116.3435953-1-boqun.feng@gmail.com>
 
-Hi Vincent,
+(Cc the correct arm mailing list)
 
-This email thread appears as if it might be moving away from a =
-regression
-caused by your commit towards a conclusion that your commit exposed
-a pre-existing bug in the intel_psate.c code.
-
-Therefore, I have moved Rafael from the C.C. line to the "to" line and
-added Srinivas.
-
-On 2024.02.14 07:38 Vincent wrote:
-> On Tue, 13 Feb 2024 at 19:07, Doug Smythies <dsmythies@telus.net> =
-wrote:
->> On 2024.02.13 03:27 Vincent wrote:
->>> On Sun, 11 Feb 2024 at 17:43, Doug Smythies <dsmythies@telus.net> =
-wrote:
->>>> On 2024.02.11 05:36 Vincent wrote:
->>>>> On Sat, 10 Feb 2024 at 00:16, Doug Smythies <dsmythies@telus.net> =
-wrote:
->>>>>> On 2024.02.09.14:11 Vincent wrote:
->>>>>>> On Fri, 9 Feb 2024 at 22:38, Doug Smythies <dsmythies@telus.net> =
-wrote:
->>>>>>>>
->>>>>>>> I noticed a regression in the 6.8rc series kernels. Bisecting =
-the kernel pointed to:
->>>>>>>>
->>>>>>>> # first bad commit: [9c0b4bb7f6303c9c4e2e34984c46f5a86478f84d]
->>>>>>>> sched/cpufreq: Rework schedutil governor performance estimation
->>>>>>>>
->>>>>>>> There was previous bisection and suggestion of reversion,
->>>>>>>> but I guess it wasn't done in the end. [1]
->>>>>>>
->>>>>>> This has been fixed with
->>>>>>> =
-https://lore.kernel.org/all/170539970061.398.16662091173685476681.tip-bot=
-2@tip-bot2/
->>>>>>
->>>>>> Okay, thanks. I didn't find that one.
->>>>>>
->>>>>>>> The regression: reduced maximum CPU frequency is ignored.
->>>>
->>>> Perhaps I should have said "sometimes ignored".
->>>> With a maximum CPU frequency for all CPUs set to 2.4 GHz and
->>>> a 100% load on CPU 5, its frequency was sampled 1000 times:
->>>> 28.6% of samples were 2.4 GHz.
->>>> 71.4% of samples were 4.8 GHz (the max turbo frequency)
->>>> The results are highly non-repeatable, for example another sample:
->>>> 32.8% of samples were 2.4 GHz.
->>>> 76.2% of samples were 4.8 GHz
->>>>
->>>> Another interesting side note: If load is added to the other CPUs,
->>>> the set maximum CPU frequency is enforced.
->>>
->>> Could you trace cpufreq and pstate ? I'd like to understand how
->>> policy->cur can be changed
->>> whereas there is this comment in intel_pstate_set_policy():
->>>        /*
->>>         * policy->cur is never updated with the intel_pstate driver, =
-but it
->>>         * is used as a stale frequency value. So, keep it within =
-limits.
->>>         */
->>>
->>> but cpufreq_driver_fast_switch() updates it with the freq returned =
-by
->>> intel_cpufreq_fast_switch()
->>
->> Perhaps I should submit a patch clarifying that comment.
->> It is true for the "intel_pstate" CPU frequency scaling driver but =
-not for the
->> "intel_cpufreq" CPU frequency scaling driver, also known as the =
-intel_pstate
->> driver in passive mode. Sorry for any confusion.
->>
->> I ran the intel_pstate_tracer.py during the test and do observe many, =
-but
->> not all, CPUs requesting pstate 48 when the max is set to 24.
->> The calling request seems to always be via "fast_switch" path.
->> The root issue here appears to be a limit clamping problem for that =
-path.
->
-> Yes, I came to a similar conclusion as well. Whatever does schedutil
-> ask for, it should be clamped by  cpu->max|min_perf_ratio.
-
-Agreed. And it is not clamping properly under specific conditions.
-
-> Do you know if you use fast_switch or adjust_perf call back ?
-
-I am not certain, but I think it uses "adjust_perf" call back.
-I do know for certain that it never takes the
-"intel_cpufreq_update_pstate" path
-and always takes the
-"intel_cpu_freq_adjust_perf" path.
-
-The problem seems to occur when that function is called with:
-min_perf =3D 1024
-target_perf =3D 1024
-capacity =3D 1024
-
-Even though cpu->max_perf_ratio is 24, the related HWP MSR,
-0x774: IA32_HWP_REQUEST, ends up as 48, 48, 48 for min, max, des.
-
-This patch appears to fix the issue (still has my debug code and
-includes a question):
-
-diff --git a/drivers/cpufreq/intel_pstate.c =
-b/drivers/cpufreq/intel_pstate.c
-index ca94e60e705a..8f88a04a494b 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2987,12 +2987,22 @@ static void intel_cpufreq_adjust_perf(unsigned =
-int cpunum,
-        if (min_pstate < cpu->min_perf_ratio)
-                min_pstate =3D cpu->min_perf_ratio;
-
-+//     if (min_pstate > cpu->pstate.max_pstate)   /* needed? I don't =
-know */
-+//             min_pstate =3D cpu->pstate.max_pstate;
-+
-+       if (min_pstate > cpu->max_perf_ratio)
-+               min_pstate =3D cpu->max_perf_ratio;
-+
-        max_pstate =3D min(cap_pstate, cpu->max_perf_ratio);
-        if (max_pstate < min_pstate)
-                max_pstate =3D min_pstate;
-
-        target_pstate =3D clamp_t(int, target_pstate, min_pstate, =
-max_pstate);
-
-+       if((max_pstate > 40) || (max_pstate < 7) || (min_pstate < 7) || =
-min_pstate > 40 || target_pstate > 40){
-+               pr_debug("Doug: t: %d : min %d : max %d : minp %d : maxp =
-%d : mnperf %lu : tgperf %lu : capacity %lu\n", target_pstate, =
-min_pstate, max_pstate, cpu->min_perf_ratio, cpu->max_perf_ratio, =
-min_perf, target_perf, capacity);
-+       }
-+
-        intel_cpufreq_hwp_update(cpu, min_pstate, max_pstate, =
-target_pstate, true);
-
-        cpu->pstate.current_pstate =3D target_pstate;
-
-With the patch, I never hit the debug statement if the max CPU frequency =
-is limited to 2.4 GHz,
-whereas it used to get triggered often.
-More importantly, the system seems to now behave properly and obey set =
-CPU frequency limits.
-
-
+On Thu, Feb 15, 2024 at 02:51:06PM -0800, Boqun Feng wrote:
+> Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
+> a trouble with the following firmware memory region setup:
+> 
+> 	[..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
+> 	[..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
+> 
+> , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
+> range will be omitted from the the linear map due to 64k round-up. And
+> a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
+> 
+> 	[...] Unable to handle kernel paging request at virtual address ffff0000dfd80000
+> 
+> To fix this, add ACPI_MEMORY_NVS into the linear map.
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> Cc: stable@vger.kernel.org # 5.15+
+> ---
+> We hit this in an ARM64 Hyper-V VM when using 64k page size, although
+> this issue may also be fixed if the efi memory regions are all 64k
+> aligned, but I don't find this memory region setup is invalid per UEFI
+> spec, also I don't find that spec disallows ACPI_MEMORY_NVS to be mapped
+> in the OS linear map, but if there is any better way or I'm reading the
+> spec incorrectly, please let me know.
+> 
+> It's Cced stable since 5.15 because that's when Hyper-V ARM64 support is
+> added, and Hyper-V is the only one that hits the problem so far.
+> 
+>  drivers/firmware/efi/efi-init.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
+> index a00e07b853f2..9a1b9bc66d50 100644
+> --- a/drivers/firmware/efi/efi-init.c
+> +++ b/drivers/firmware/efi/efi-init.c
+> @@ -139,6 +139,7 @@ static __init int is_usable_memory(efi_memory_desc_t *md)
+>  	case EFI_LOADER_CODE:
+>  	case EFI_LOADER_DATA:
+>  	case EFI_ACPI_RECLAIM_MEMORY:
+> +	case EFI_ACPI_MEMORY_NVS:
+>  	case EFI_BOOT_SERVICES_CODE:
+>  	case EFI_BOOT_SERVICES_DATA:
+>  	case EFI_CONVENTIONAL_MEMORY:
+> @@ -202,8 +203,12 @@ static __init void reserve_regions(void)
+>  			if (!is_usable_memory(md))
+>  				memblock_mark_nomap(paddr, size);
+>  
+> -			/* keep ACPI reclaim memory intact for kexec etc. */
+> -			if (md->type == EFI_ACPI_RECLAIM_MEMORY)
+> +			/*
+> +			 * keep ACPI reclaim and NVS memory and intact for kexec
+> +			 * etc.
+> +			 */
+> +			if (md->type == EFI_ACPI_RECLAIM_MEMORY ||
+> +			    md->type == EFI_ACPI_MEMORY_NVS)
+>  				memblock_reserve(paddr, size);
+>  		}
+>  	}
+> -- 
+> 2.43.0
+> 
 
