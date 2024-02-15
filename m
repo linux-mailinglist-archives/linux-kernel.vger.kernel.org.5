@@ -1,115 +1,270 @@
-Return-Path: <linux-kernel+bounces-66789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45659856188
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E4C585618B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00EB329176D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:28:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9CE12920B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1665012AAC1;
-	Thu, 15 Feb 2024 11:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bkqR6Eya"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5407129A75;
-	Thu, 15 Feb 2024 11:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DEB12A158;
+	Thu, 15 Feb 2024 11:28:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C68128837
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707996489; cv=none; b=kYxWriWD12sG7Plmy+PQg7cZxneGATu4CdozN11kO/PKrH5AFtzTQc1lWMzGcKemrGl1K/Z7FBAXEDUFkWDC+h8BvpN//X/Z1KBLQB2lilN3RXthmTkvV+wyEWOxdTAJ3cPyhRfmff+GoqZFS/hA4j6xFYsIq6cDqYbrMmm6SdE=
+	t=1707996509; cv=none; b=BKWu+EhgRbS6qk9iaHnRzgIS2vm5eqMuznSFNOq5YenuZtNoMAjt6QhYW+sJtt07Q8xNzD4JTqeVEgZyC8YF3WRvCmvW5ttlJnpDkSAXw0aJCNgwKa+ddmFY3apf/WfqC+Bl5RTI+Gdi+lpuXUSjwbI85fVigBM5BgEBN05rKuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707996489; c=relaxed/simple;
-	bh=xO9ERZYT04zobE8avkfrLBAVFW+bp83vnhF4juLP3AY=;
+	s=arc-20240116; t=1707996509; c=relaxed/simple;
+	bh=NTo0jv7v+/9xihVKWHnaNEzxfHRWqhjwTGIRKYu0+oE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W1pDdLEn9L3ZQ5itBn1VMRNfkG30OIxLFkf1xN43ZqPI7CsEkagL3JW94ATN780PLwrIcx0HIZj91KsUgWFC3ts5JBiE2LilQMpr/zPvU1HfuAWzNRAc2BzxmnvBo6IGDPZhtAFArKCXzok1D/mVmHTzo2S0u0nxXn1UOYmK23Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bkqR6Eya; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707996487; x=1739532487;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=xO9ERZYT04zobE8avkfrLBAVFW+bp83vnhF4juLP3AY=;
-  b=bkqR6EyawmhotfDgII8pyqI/tFR6JZ8/XUGGfVc3F5UqDexZDaf78lJy
-   HxxqxESLJK45t9yUE+GGkpw6lZW3Mbzttn+aLI1MKvWnNSZBPmDzeBu9F
-   1yJjZ0iwrSx1yMSi+nHYHXdb7wI/Bwk3cjiWjHqZE7UA8J9tYRavG+MFW
-   YUT2ExM/VQQnW2o+eoDGxLMMqieh3U9hr2m4NI4fh7pM1r/G9o2D0k36T
-   64dRsJ36i+VG5qW3zyvh37veLTzEhvckhZSN8V4KBhRy9Me/qSoa17VMg
-   Al+TI4E+PZiGjRRzCpdVCDCITdeb5C60qQ+Chyi8gleX4gn87Wc0o3lLu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1954098"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="1954098"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 03:28:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912149520"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="912149520"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 03:28:04 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1raZuL-00000004m4B-4BsW;
-	Thu, 15 Feb 2024 13:28:02 +0200
-Date: Thu, 15 Feb 2024 13:28:01 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Paul Burton <paulburton@kernel.org>
-Subject: Re: [PATCH v2 03/15] auxdisplay: linedisp: Use unique number for id
-Message-ID: <Zc31QVEEzM5jQ0jy@smile.fi.intel.com>
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
- <20240212170423.2860895-4-andriy.shevchenko@linux.intel.com>
- <CAMuHMdUWw-_dECEXrTt--AX400YZOhP7b+tBOD0bHYQmS0z=1g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NCLEueIFsFKvkmtnlxE9hQ4kN1vM8PBxdKJD1mORW+M4UYagFnvF4a5dtJSEWoZDfKquKBWXqDbuyTrFBqcEjzkM3HMyXCCth/ZftaLVnIIU3kx55fN2gdiw503LzD85YUWrBku8x8NtcDepvGprHUbXdOBghXOK2vFx/un0a2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B3ADA7;
+	Thu, 15 Feb 2024 03:29:07 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.68.11])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 522743F7B4;
+	Thu, 15 Feb 2024 03:28:23 -0800 (PST)
+Date: Thu, 15 Feb 2024 11:28:20 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 13/18] arm64/mm: Implement new wrprotect_ptes() batch
+ API
+Message-ID: <Zc31VN2j7DJYmgoJ@FVFF77S0Q05N>
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-14-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdUWw-_dECEXrTt--AX400YZOhP7b+tBOD0bHYQmS0z=1g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240215103205.2607016-14-ryan.roberts@arm.com>
 
-On Thu, Feb 15, 2024 at 11:03:27AM +0100, Geert Uytterhoeven wrote:
-> On Mon, Feb 12, 2024 at 6:04 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-
-..
-
-> >  struct linedisp {
-> >         struct device dev;
-> > +       unsigned int id;
+On Thu, Feb 15, 2024 at 10:32:00AM +0000, Ryan Roberts wrote:
+> Optimize the contpte implementation to fix some of the fork performance
+> regression introduced by the initial contpte commit. Subsequent patches
+> will solve it entirely.
 > 
-> Note that there is a hole on 64-bit platforms.
-> Hence I'd move id below, so the hole is at the end of the
-> structure, and might be filled by future changes.
+> During fork(), any private memory in the parent must be write-protected.
+> Previously this was done 1 PTE at a time. But the core-mm supports
+> batched wrprotect via the new wrprotect_ptes() API. So let's implement
+> that API and for fully covered contpte mappings, we no longer need to
+> unfold the contpte. This has 2 benefits:
+> 
+>   - reduced unfolding, reduces the number of tlbis that must be issued.
+>   - The memory remains contpte-mapped ("folded") in the parent, so it
+>     continues to benefit from the more efficient use of the TLB after
+>     the fork.
+> 
+> The optimization to wrprotect a whole contpte block without unfolding is
+> possible thanks to the tightening of the Arm ARM in respect to the
+> definition and behaviour when 'Misprogramming the Contiguous bit'. See
+> section D21194 at https://developer.arm.com/documentation/102105/ja-07/
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-I had checked timer_list, but while it has holes, without debug it ends on
-4-bytes boundary (without debug enabled), otherwise on 8-bytes.
-Nevertheless, relying on the above seems fragile, so I follow your suggestion.
-Thank you!
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-> >         struct timer_list timer;
-> >         void (*update)(struct linedisp *linedisp);
-> >         char *buf;
+Mark.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+>  arch/arm64/include/asm/pgtable.h | 61 ++++++++++++++++++++++++++------
+>  arch/arm64/mm/contpte.c          | 38 ++++++++++++++++++++
+>  2 files changed, 89 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 831099cfc96b..8643227c318b 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -978,16 +978,12 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+>  }
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+> -/*
+> - * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
+> - * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
+> - */
+> -static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+> -					unsigned long address, pte_t *ptep)
+> +static inline void ___ptep_set_wrprotect(struct mm_struct *mm,
+> +					unsigned long address, pte_t *ptep,
+> +					pte_t pte)
+>  {
+> -	pte_t old_pte, pte;
+> +	pte_t old_pte;
+>  
+> -	pte = __ptep_get(ptep);
+>  	do {
+>  		old_pte = pte;
+>  		pte = pte_wrprotect(pte);
+> @@ -996,6 +992,25 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+>  	} while (pte_val(pte) != pte_val(old_pte));
+>  }
+>  
+> +/*
+> + * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
+> + * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
+> + */
+> +static inline void __ptep_set_wrprotect(struct mm_struct *mm,
+> +					unsigned long address, pte_t *ptep)
+> +{
+> +	___ptep_set_wrprotect(mm, address, ptep, __ptep_get(ptep));
+> +}
+> +
+> +static inline void __wrprotect_ptes(struct mm_struct *mm, unsigned long address,
+> +				pte_t *ptep, unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+> +		__ptep_set_wrprotect(mm, address, ptep);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
+>  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+> @@ -1149,6 +1164,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+>  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep);
+> +extern void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr);
+>  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  				unsigned long addr, pte_t *ptep,
+>  				pte_t entry, int dirty);
+> @@ -1268,12 +1285,35 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
+>  }
+>  
+> +#define wrprotect_ptes wrprotect_ptes
+> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr)
+> +{
+> +	if (likely(nr == 1)) {
+> +		/*
+> +		 * Optimization: wrprotect_ptes() can only be called for present
+> +		 * ptes so we only need to check contig bit as condition for
+> +		 * unfold, and we can remove the contig bit from the pte we read
+> +		 * to avoid re-reading. This speeds up fork() which is sensitive
+> +		 * for order-0 folios. Equivalent to contpte_try_unfold().
+> +		 */
+> +		pte_t orig_pte = __ptep_get(ptep);
+> +
+> +		if (unlikely(pte_cont(orig_pte))) {
+> +			__contpte_try_unfold(mm, addr, ptep, orig_pte);
+> +			orig_pte = pte_mknoncont(orig_pte);
+> +		}
+> +		___ptep_set_wrprotect(mm, addr, ptep, orig_pte);
+> +	} else {
+> +		contpte_wrprotect_ptes(mm, addr, ptep, nr);
+> +	}
+> +}
+> +
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+>  				unsigned long addr, pte_t *ptep)
+>  {
+> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> -	__ptep_set_wrprotect(mm, addr, ptep);
+> +	wrprotect_ptes(mm, addr, ptep, 1);
+>  }
+>  
+>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+> @@ -1305,6 +1345,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+>  #define ptep_clear_flush_young			__ptep_clear_flush_young
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  #define ptep_set_wrprotect			__ptep_set_wrprotect
+> +#define wrprotect_ptes				__wrprotect_ptes
+>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+>  #define ptep_set_access_flags			__ptep_set_access_flags
+>  
+> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+> index 6d7f40667fa2..bedb58524535 100644
+> --- a/arch/arm64/mm/contpte.c
+> +++ b/arch/arm64/mm/contpte.c
+> @@ -26,6 +26,26 @@ static inline pte_t *contpte_align_down(pte_t *ptep)
+>  	return PTR_ALIGN_DOWN(ptep, sizeof(*ptep) * CONT_PTES);
+>  }
+>  
+> +static void contpte_try_unfold_partial(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, unsigned int nr)
+> +{
+> +	/*
+> +	 * Unfold any partially covered contpte block at the beginning and end
+> +	 * of the range.
+> +	 */
+> +
+> +	if (ptep != contpte_align_down(ptep) || nr < CONT_PTES)
+> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +
+> +	if (ptep + nr != contpte_align_down(ptep + nr)) {
+> +		unsigned long last_addr = addr + PAGE_SIZE * (nr - 1);
+> +		pte_t *last_ptep = ptep + nr - 1;
+> +
+> +		contpte_try_unfold(mm, last_addr, last_ptep,
+> +				   __ptep_get(last_ptep));
+> +	}
+> +}
+> +
+>  static void contpte_convert(struct mm_struct *mm, unsigned long addr,
+>  			    pte_t *ptep, pte_t pte)
+>  {
+> @@ -238,6 +258,24 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+>  }
+>  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
+>  
+> +void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, unsigned int nr)
+> +{
+> +	/*
+> +	 * If wrprotecting an entire contig range, we can avoid unfolding. Just
+> +	 * set wrprotect and wait for the later mmu_gather flush to invalidate
+> +	 * the tlb. Until the flush, the page may or may not be wrprotected.
+> +	 * After the flush, it is guaranteed wrprotected. If it's a partial
+> +	 * range though, we must unfold, because we can't have a case where
+> +	 * CONT_PTE is set but wrprotect applies to a subset of the PTEs; this
+> +	 * would cause it to continue to be unpredictable after the flush.
+> +	 */
+> +
+> +	contpte_try_unfold_partial(mm, addr, ptep, nr);
+> +	__wrprotect_ptes(mm, addr, ptep, nr);
+> +}
+> +EXPORT_SYMBOL(contpte_wrprotect_ptes);
+> +
+>  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+>  					unsigned long addr, pte_t *ptep,
+>  					pte_t entry, int dirty)
+> -- 
+> 2.25.1
+> 
 
