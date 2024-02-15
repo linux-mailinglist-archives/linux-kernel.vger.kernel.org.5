@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-66976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDD8856446
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:26:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DDC5856456
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84A75B21595
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AB23281448
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E64130AC1;
-	Thu, 15 Feb 2024 13:25:14 +0000 (UTC)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD74130E2E;
+	Thu, 15 Feb 2024 13:28:30 +0000 (UTC)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [195.130.132.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB0E128837
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:25:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D2D130E2D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003513; cv=none; b=OpLhr8xkdPgsJ49ItJy3VKWD07b0H4x7ekVGlAxl1d471mbXhoM1hn0p36321azcdlj6Edi+mrw7516NV6vBRGFTdc3UZKr/eiHuuwyTZgj1gjFiv/G8kOuA/cLx4nqeah2X6P9cds2UZ2Jit8kNDkkGj06eOHBveRYIrznxxyE=
+	t=1708003709; cv=none; b=ko7pE+6x8XJ/jmzEsquifbHkhz44f+iwVrYu9RkZYjXqNWimmOsiI2LjDc05eRRW8xHr/hooyUm4ZMPg9PwnrORtC4Xzv2AZuIAIFKQ3Rf/J+0AXrNeLNEyLoEjWQKjQ0dGVgV6fbLJpoQ+2X969+t6+9JroSt5dy2pBMMMYANg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003513; c=relaxed/simple;
-	bh=L5Fmt/vxvrj+Hm2BqAp6LP7B/rme3isGyU56p0X9Jo4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YOWb+idvBJkbjhxC5+CP4XQp4JOnrb3BDy3Oz/SwLyamZ1vol5xY5qgxvr6+BrJMnb6k5m+UrHp3YeffaZbNJBJzd0dF7KQMpvOxjZ3kV5PNQrMgXYrjrp+7mIpLQfsGzSmr1vaGMFzGqaP0xey5n3RlOj2pcNfCwWBAFX+5jls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
+	s=arc-20240116; t=1708003709; c=relaxed/simple;
+	bh=yErmxTR4sdF8IYbb0NbWHYGlmsiQdjhvfNimdEVhaeA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HLV3QnaKaQLGWLSywRQWhPH2hYlMhnbh4ravfutExBZr0F7ZLZNTLeqehKynHXlN/lTYNQ0ki0/8n7Wb3zVHagfIqv8SFoSCeGhY5MdSW3AyHAlulUOtMlVjqOG0CclUhd/JJVeAseSujhQ8xOQfNnnbHM+8soDzpkx2ixuL1fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:ac52:3a54:2a84:d65a])
-	by xavier.telenet-ops.be with bizsmtp
-	id nRRB2B0040LVNSS01RRBhu; Thu, 15 Feb 2024 14:25:11 +0100
+	by baptiste.telenet-ops.be with bizsmtp
+	id nRUJ2B0060LVNSS01RUJxk; Thu, 15 Feb 2024 14:28:18 +0100
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1rabjb-000gz5-Nj;
-	Thu, 15 Feb 2024 14:25:11 +0100
+	id 1rabmd-000gzE-2Y;
+	Thu, 15 Feb 2024 14:28:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1rabjj-00HZiA-2z;
-	Thu, 15 Feb 2024 14:25:11 +0100
+	id 1rabmk-00HZka-E7;
+	Thu, 15 Feb 2024 14:28:18 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
+To: John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Cc: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH resend] riscv: misaligned: Grammar s/disable/disabled/
-Date: Thu, 15 Feb 2024 14:25:10 +0100
-Message-Id: <e541754cd564253b2da9efa952479c75bb7fd2d6.1708003477.git.geert+renesas@glider.be>
+Subject: [PATCH resend] selftests: timers: clocksource-switch: Adapt progress to kselftest framework
+Date: Thu, 15 Feb 2024 14:28:17 +0100
+Message-Id: <7960007c8517109b592995ad10a3058fbe5aae75.1708003520.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -60,27 +61,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix a wrong conjugation of "disabled".
+When adapting the test to the kselftest framework, a few printf() calls
+indicating test progress were not updated.
 
-Fixes: 7c83232161f609bb ("riscv: add support for misaligned trap handling in S-mode")
+Fix this by replacing these printf() calls by ksft_print_msg() calls.
+
+Fixes: ce7d101750ff8450 ("selftests: timers: clocksource-switch: adapt to kselftest framework")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/riscv/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+When just running the test, the output looks like:
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index b49016bb5077b860..84b8200f7a625b07 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -706,7 +706,7 @@ config RISCV_MISALIGNED
- 	default y
- 	help
- 	  Say Y here if you want the kernel to embed support for misaligned
--	  load/store for both kernel and userspace. When disable, misaligned
-+	  load/store for both kernel and userspace. When disabled, misaligned
- 	  accesses will generate SIGBUS in userspace and panic in kernel.
+    # Validating clocksource arch_sys_counter
+    TAP version 13
+    1..12
+    ok 1 CLOCK_REALTIME
+    ...
+    # Validating clocksource ffca0000.timer
+    TAP version 13
+    1..12
+    ok 1 CLOCK_REALTIME
+    ...
+
+When redirecting the test output to a file, the progress prints are not
+interspersed with the test output, but collated at the end:
+
+    TAP version 13
+    1..12
+    ok 1 CLOCK_REALTIME
+    ...
+    TAP version 13
+    1..12
+    ok 1 CLOCK_REALTIME
+    ...
+    # Totals: pass:6 fail:0 xfail:0 xpass:0 skip:6 error:0
+    # Validating clocksource arch_sys_counter
+    # Validating clocksource ffca0000.timer
+    ...
+
+This makes it hard to match the test results with the timer under test.
+Is there a way to fix this?  The test does use fork().
+
+Thanks!
+---
+ tools/testing/selftests/timers/clocksource-switch.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/timers/clocksource-switch.c b/tools/testing/selftests/timers/clocksource-switch.c
+index c5264594064c8516..83faa4e354e389c2 100644
+--- a/tools/testing/selftests/timers/clocksource-switch.c
++++ b/tools/testing/selftests/timers/clocksource-switch.c
+@@ -156,8 +156,8 @@ int main(int argc, char **argv)
+ 	/* Check everything is sane before we start switching asynchronously */
+ 	if (do_sanity_check) {
+ 		for (i = 0; i < count; i++) {
+-			printf("Validating clocksource %s\n",
+-				clocksource_list[i]);
++			ksft_print_msg("Validating clocksource %s\n",
++					clocksource_list[i]);
+ 			if (change_clocksource(clocksource_list[i])) {
+ 				status = -1;
+ 				goto out;
+@@ -169,7 +169,7 @@ int main(int argc, char **argv)
+ 		}
+ 	}
  
- config RISCV_EFFICIENT_UNALIGNED_ACCESS
+-	printf("Running Asynchronous Switching Tests...\n");
++	ksft_print_msg("Running Asynchronous Switching Tests...\n");
+ 	pid = fork();
+ 	if (!pid)
+ 		return run_tests(runtime);
 -- 
 2.34.1
 
