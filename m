@@ -1,205 +1,230 @@
-Return-Path: <linux-kernel+bounces-66698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B99685605E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:58:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DD0C85605D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A9A1B2CCD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:56:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED8511F21071
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C56132C07;
-	Thu, 15 Feb 2024 10:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EAB12BE88;
+	Thu, 15 Feb 2024 10:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xqZ8IFgw"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="aC1Zn/hJ"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6028512AAD4
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A17D12BE85;
+	Thu, 15 Feb 2024 10:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993700; cv=none; b=fV3MRG3UR/3zXoMXH3AYu+5IsVH28MInKE7CYqcfzY1xqR+rGgEaWLO4Ha3ClchZ/zr0zOVZmdj5QOyZW1TNTF8bnyUGDb0zMLdUq/53OwxFmd58e6sbVup0LkVXtOih9v3dixFfILAOAjxf5gazZxcNDuhZ3oDc7+R709Ap+d8=
+	t=1707993803; cv=none; b=IFMLFyP+0zQ2YKUgd6STW/bP/8CMHUh3heDNWdRBVblYNeQDp2UyWspeexhPrhMK1bE25u8np9bMH5jWNYkbmC6yVFLpMOtH8mihZtRQ8wKGXtnScR2Ue+ZIpq/EYTX2u52pPey3ru/9ergvBLLIue5DDGj/QEeM139z3E5tJVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993700; c=relaxed/simple;
-	bh=89kL2m38VBLYpfi08xjvcphV/ms31WL7c/6vBV5WjpU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YJdu1oGVjuKv6gOcDup2puoReL3TZPXsjTnlqm1EZCCngBJOsAclXnswzxhZMH77nyCdUjvR7z6fZLMunOplfhh+58ENADiznXIOq8RzbOKTVjsvqsnJ5iP8j6rQMBtHQXwciNWnMj2krJoFl52X6MCzthpsagvtcnDCaZ7tuxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xqZ8IFgw; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51197ca63f5so911619e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:41:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707993696; x=1708598496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VUYBcKj53WAi3y6gltiMvu5JfERqWvi9YPUJbVOf3Mo=;
-        b=xqZ8IFgwUXKumSOUVZAIsE0FgE4GYClyDu3Vl9k/AxbjuLtH0kQeMDXvcjb+Xbt3LY
-         fsHyeJMIF/NT5CWUElsZ+p+9DabFV6VRAogrsYH7IcrJB64hzHSw/aKogwwNGB1lKfLu
-         g+rrfTps2TJa7zi8/NGRw+PxEobtTT0PMz+RA0G1VofzxPbCOASoyqj3qRruNmGRBNjb
-         UhzW6i0o0KS8msLx6/jz7XZdxgVoxfZtQ0o4D9XEUOYxdOnWaAiBBA/y8vQ90L1TJCXP
-         mJaiwhk2QYTtWuLSLEK47S3i/P9hwy/pPc1I/QPpMON8G+9aL+tDEC0PYqbkEcVg4rRt
-         xOyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707993696; x=1708598496;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VUYBcKj53WAi3y6gltiMvu5JfERqWvi9YPUJbVOf3Mo=;
-        b=KMu1SoFezMsgoegEeTMpVmpCl+7I74kGTJsdJyJQKwpQirWA9rzYbSSjTd8Z0KErIt
-         wpX/J6Okm4lZpL5LYFQRekMxLtKiCELY/JTBz/CVpboID/pSA9cj8o4z+YyDjmWY5Ny/
-         3VTRszkp3dB2gwMyW/A655ykO+DF9/BzPv5rR+7cKMn4aqMi8QhG3PM96fZjq6M8oCxn
-         rGcmntMpC/kcgIXyMsT0cJigNb5n28AIhRuTLsx7z0Kfq2pIcHCg++3hQ1F075IZBaN0
-         sp+5Wch1zXrSLQ5WpAkwqvh6iq4fwm0+Qln1ngzgNytaqzJBD3i88evJbHfTEzpOO+bu
-         ZtbA==
-X-Forwarded-Encrypted: i=1; AJvYcCXNYtYEEkET0zi6grA9tVDEfX3BPclFuZyavAHf+iwZfgq6oPWpbNg3WyyT51TFo98jxzHzpTXL3N4q5JUDK8lRw5DRADfg6sUSucvI
-X-Gm-Message-State: AOJu0YynZSCeDpmIZkP4Jr9hIOMI4Vl+0ckDkzK3B3ekUVVD4hesiaY1
-	kME5Yddu47CJzd6+BE5JLf/ceKSr3UBUZzSLsyltC11Yp4FdOb/QSpnbu/xmS7w=
-X-Google-Smtp-Source: AGHT+IEcAT4U/SeoV9QZ1GoMtyBdueDaX8N8avvtZi0g2w+pf1DVcF9RtUYsg2KCjzAVQ534XzYb1w==
-X-Received: by 2002:a05:6512:3ca5:b0:511:87c6:3060 with SMTP id h37-20020a0565123ca500b0051187c63060mr1648595lfv.12.1707993696399;
-        Thu, 15 Feb 2024 02:41:36 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id t26-20020ac243ba000000b005119fdbac87sm189167lfl.289.2024.02.15.02.41.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:41:35 -0800 (PST)
-Message-ID: <20ab318e-e79f-419e-b68b-85ae0e5ab128@linaro.org>
-Date: Thu, 15 Feb 2024 11:41:32 +0100
+	s=arc-20240116; t=1707993803; c=relaxed/simple;
+	bh=WRkahTUfWZzwX8Vr9v8Xuq2gLkRiI5fGDnkFKyJWX+w=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XS8KjY23BqiWWruyv7HWR37oEXrgCZts8xAFD2K+GgFVA0COafQj3cvazn9iZcKYZXD8BxafEZvPJVoag+QkK6EpWhl6eYGsBsNGjl8tXb/VZSoCXGICsv5fSje6+Hw1T7IQSMPxWwjBbe1r7kQNgqjhdUqmwQP8pSoHgn1TN9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=aC1Zn/hJ; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id AE8E1100009;
+	Thu, 15 Feb 2024 13:43:09 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AE8E1100009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1707993789;
+	bh=JH0whwe9yMPahO4ftK676Nk9OMPAhJpwKYEfE7/kv2M=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
+	b=aC1Zn/hJKlJFXDVZ+wkACWbtJu26OlgtisJNavzTdaqoCPGYUN4lO/QLRkQCcaURI
+	 eE2LcgzjrsLvFgCbQa8xOI8nOqxEYKyzF8kxac1+9Vqmg8XykHBJtZOiSVD3zC/iS2
+	 qlZUAU/Ko7qhuwqRLAsznBaELJtQgTySt+o9C6uhF7CIQRaitc5raOUTuiR1DLPyRN
+	 ffacTzCT1Zz4zJ41jbfeMS6iRi2KCSLmtJyrUw8l4y2FYFO3SB008uh4App2wq4tRd
+	 S+tcJHTnHMBgHslg4YS8GY0CmRKdF1T4KHcjgaZeDCSeCzCWA8yuHJCSSo9M0LLyHg
+	 njHIvT9R09hGw==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 15 Feb 2024 13:43:09 +0300 (MSK)
+Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 15 Feb 2024 13:43:09 +0300
+Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1]) by
+ p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1%7]) with mapi id
+ 15.02.1118.040; Thu, 15 Feb 2024 13:43:09 +0300
+From: Alexey Romanov <avromanov@salutedevices.com>
+To: Corentin Labbe <clabbe.montjoie@gmail.com>
+CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
+	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
+	<khilman@baylibre.com>, "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
+	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
+Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
+ driver
+Thread-Topic: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
+ driver
+Thread-Index: AQHaXbqRFptCyAwKyUyy1Cn5x5FmZLEHrLEAgANdAYA=
+Date: Thu, 15 Feb 2024 10:43:09 +0000
+Message-ID: <20240215104251.pcqj532ekhq5dfbt@cab-wsm-0029881.sigma.sbrf.ru>
+References: <20240212135108.549755-1-avromanov@salutedevices.com>
+ <ZcsYaPIUrBSg8iXu@Red>
+In-Reply-To: <ZcsYaPIUrBSg8iXu@Red>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1F71700A325F53478901685FB02CFC10@sberdevices.ru>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] drm/panel: Add driver for DJN HX83112A LCD panel
-Content-Language: en-US
-To: neil.armstrong@linaro.org, Luca Weiss <luca.weiss@fairphone.com>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
- <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org
-References: <20240110-fp4-panel-v2-0-8ad11174f65b@fairphone.com>
- <20240110-fp4-panel-v2-2-8ad11174f65b@fairphone.com>
- <CACRpkdaWTfPDCin_L6pefHsokjNyO8Mo6hWPdzPLLi1EUkKUuA@mail.gmail.com>
- <CYBZEZ4IM6IL.VR04W7933VI@fairphone.com>
- <CACRpkdZQbVXfBa70nhDOqfWPbsh-6DgX-uvZOxr19pzMmF2giQ@mail.gmail.com>
- <CYCLSCKPPBOC.1B1MP3VOOC0Q8@fairphone.com>
- <cdc18e2a-b7eb-4b54-a513-481148fb3b0d@linaro.org>
- <CYCMVXHYVDCI.HVH1TR8MWEUK@fairphone.com>
- <CACRpkdacS9ojXUuogygkz6xxCf3mMq6GG_75sze8ukUu=rxVyw@mail.gmail.com>
- <f99d363c-d4a6-44b3-8057-3925f8dac1d5@linaro.org>
- <CYL76M5KT424.G3BC6JX74XVN@fairphone.com>
- <CZ4P5PWJTODV.3UJ89H6M8W07H@fairphone.com>
- <f9164049-6529-42c1-a35a-e91132c823b9@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <f9164049-6529-42c1-a35a-e91132c823b9@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183458 [Feb 15 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;cab-wsm-0029881.sigma.sbrf.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/15 04:37:00 #23614209
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On 14.02.2024 10:50, neil.armstrong@linaro.org wrote:
-> On 14/02/2024 10:33, Luca Weiss wrote:
->> On Mon Jan 22, 2024 at 12:27 PM CET, Luca Weiss wrote:
->>> On Fri Jan 12, 2024 at 11:26 AM CET,  wrote:
->>>> On 12/01/2024 11:23, Linus Walleij wrote:
->>>>> On Fri, Jan 12, 2024 at 10:52 AM Luca Weiss <luca.weiss@fairphone.com> wrote:
->>>>>
->>>>>> Since there's zero indication Truly is involved in this panel in my
->>>>>> documentation - much less the number 5P65 - I'm not going to add that.
->>>>
->>>> Ack
->>>>
->>>>>
->>>>> OK then, I fold, thanks for looking into it.
->>>>> Keep the Himax hx83112a file name and symbols.
->>>>>
->>>>>> So in short this panel is the model 9A-3R063-1102B from DJN, which uses
->>>>>> a Himax HX83112A driver IC.
->>>>>
->>>>> So compatible = "djn,9a-3r063-1102b" since the setup sequences for
->>>>> hx83112a are clearly for this one display?
->>>>
->>>> Yep let's settle on that!
->>>
->>
->> Hi Neil and Linus,
->>
->> Any feedback about the below question?
->>
->> Regards
->> Luca
->>
->>> It's clear to me to use "djn,9a-3r063-1102b" in the driver now but what
->>> about dts?
->>>
->>> Currently here in v2 we have this:
->>> compatible = "fairphone,fp4-hx83112a-djn", "himax,hx83112a";
->>>
->>> Should this just become this?
->>> compatible = "djn,9a-3r063-1102b";
->>>
->>> Or e.g. this?
->>> compatible = "djn,9a-3r063-1102b", "himax,hx83112a";
->>>
->>> Or something else completely? Do we have some documentation / best
->>> practises around this maybe?
-> 
-> Sorry I totally missed the question.
-> 
-> Not sure if "himax,hx83112a" is needed here, the "djn,9a-3r063-1102b" is enough to know the IC is hx83112a.
-> 
-> I don't think you'll ever find a "djn,9a-3r063-1102b" with another controller IC ?
-> 
-> And "himax,hx83112a" alone as fallback is not enough to describe the panel hardware, so I think it should be dropped.
+Hello,
 
-+1
+On Tue, Feb 13, 2024 at 08:21:12AM +0100, Corentin Labbe wrote:
+> Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a 'ecrit :
+> > Hello!
+> >=20
+> > This patchset expand the funcionality of the Amlogic
+> > crypto driver by adding support for more SoC families:
+> > AXG, G12A, G12B, SM1, A1, S4.
+> >=20
+> > Also specify and enable crypto node in device tree
+> > for reference Amlogic devices.
+> >=20
+> > Tested on AXG, G12A/B, SM1, A1 and S4 devices via
+> > custom tests [1] and tcrypt module.
+> >=20
+> > ---
+> >=20
+>=20
+> I started to test on Lepotato board and added patchs up to  "drivers: cry=
+pto: meson: process more than MAXDESCS descriptors"
+> booting lead to:
 
-Konrad
+Can you please give me your test cases?
+Which tool are you using or is it something custom?
+
+> [   18.559922] gxl-crypto c883e000.crypto: will run requests pump with re=
+altime priority
+> [   18.562492] gxl-crypto c883e000.crypto: will run requests pump with re=
+altime priority
+> [   18.570328] Unable to handle kernel NULL pointer dereference at virtua=
+l address 0000000000000028
+> [   18.581135] Mem abort info:
+> [   18.581354]   ESR =3D 0x0000000096000006
+> [   18.585138]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [   18.593005]   SET =3D 0, FnV =3D 0
+> [   18.593334]   EA =3D 0, S1PTW =3D 0
+> [   18.597329]   FSC =3D 0x06: level 2 translation fault
+> [   18.604250] Data abort info:
+> [   18.604282]   ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
+> [   18.612243]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+> [   18.614552]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+> [   18.624249] user pgtable: 4k pages, 48-bit VAs, pgdp=3D000000007b8ab00=
+0
+> [   18.626196] [0000000000000028] pgd=3D080000007b8ac003, p4d=3D080000007=
+b8ac003, pud=3D080000007b8ad003, pmd=3D0000000000000000
+> [   18.640426] Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+> [   18.642929] Modules linked in: of_mdio fixed_phy fwnode_mdio sm4_ce(-)=
+ sm4 meson_rng meson_canvas libphy rng_core meson_gxbb_wdt watchdog amlogic=
+_gxl_crypto(+) ghash_generic gcm xctr xts cts essiv authenc cmac xcbc ccm
+> [   18.662164] CPU: 3 PID: 264 Comm: cryptomgr_test Not tainted 6.8.0-rc1=
+-00052-gf70f2b0814a0 #11
+> [   18.670698] Hardware name: Libre Computer AML-S905X-CC (DT)
+> [   18.676220] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYP=
+E=3D--)
+> [   18.683118] pc : meson_get_engine_number+0x2c/0x50 [amlogic_gxl_crypto=
+]
+> [   18.689674] lr : meson_skencrypt+0x38/0x8c [amlogic_gxl_crypto]
+> [   18.695539] sp : ffff800081393790
+> [   18.698816] x29: ffff800081393790 x28: 0000000000000400 x27: ffff80008=
+0874a80
+> [   18.705888] x26: ffff800081393830 x25: ffff800081393bd8 x24: ffff00000=
+1aaa000
+> [   18.712961] x23: 0000000000000001 x22: 0000000000000000 x21: ffff00000=
+11b1c50
+> [   18.720033] x20: ffff00007bac8248 x19: ffff0000011b1c00 x18: fffffffff=
+fffffff
+> [   18.727105] x17: 00000000000001a4 x16: ffff800078edc1f0 x15: ffff80008=
+13938e0
+> [   18.734178] x14: ffff800101393bd7 x13: 0000000000000000 x12: 000000000=
+0000000
+> [   18.741250] x11: 000000000000021c x10: fffffffff81213e0 x9 : 000000000=
+00730d5
+> [   18.748323] x8 : ffff0000011b1ca8 x7 : fefefefefefefefe x6 : fffffc000=
+007a302
+> [   18.755395] x5 : ffff800078eb4148 x4 : 0000000000000000 x3 : 000000000=
+0000028
+> [   18.762468] x2 : ffff000001aaa040 x1 : 0000000000000000 x0 : 000000000=
+0000000
+> [   18.769541] Call trace:
+> [   18.771956]  meson_get_engine_number+0x2c/0x50 [amlogic_gxl_crypto]
+> [   18.778167]  crypto_skcipher_encrypt+0xe0/0x124
+> [   18.782651]  test_skcipher_vec_cfg+0x2a8/0x6b0
+> [   18.787050]  test_skcipher_vec+0x80/0x1c4
+> [   18.791017]  alg_test_skcipher+0xbc/0x1fc
+> [   18.794985]  alg_test+0x140/0x628
+> [   18.798262]  cryptomgr_test+0x24/0x44
+> [   18.801885]  kthread+0x110/0x114
+> [   18.805076]  ret_from_fork+0x10/0x20
+> [   18.808617] Code: 1b008440 d65f03c0 9100a003 f9800071 (885f7c61)=20
+> [   18.814651] ---[ end trace 0000000000000000 ]---
+> [   18.862270] meson8b-dwmac c9410000.ethernet: IRQ eth_wake_irq not foun=
+d
+> [   18.863897] meson8b-dwmac c9410000.ethernet: IRQ eth_lpi not found
+> [   18.870349] meson8b-dwmac c9410000.ethernet: PTP uses main clock
+> [   18.880548] meson8b-dwmac c9410000.ethernet: User ID: 0x11, Synopsys I=
+D: 0x37
+> [   18.882403] meson8b-dwmac c9410000.ethernet: 	DWMAC1000
+> [   18.887926] meson8b-dwmac c9410000.ethernet: DMA HW capability registe=
+r supported
+> [   18.895215] meson8b-dwmac c9410000.ethernet: RX Checksum Offload Engin=
+e supported
+> [   18.902627] meson8b-dwmac c9410000.ethernet: COE Type 2
+> [   18.907756] meson8b-dwmac c9410000.ethernet: TX Checksum insertion sup=
+ported
+> [   18.914750] meson8b-dwmac c9410000.ethernet: Wake-Up On Lan supported
+> [   18.921246] meson8b-dwmac c9410000.ethernet: Normal descriptors
+> [   18.927017] meson8b-dwmac c9410000.ethernet: Ring mode enabled
+> [   18.932782] meson8b-dwmac c9410000.ethernet: Enable RX Mitigation via =
+HW Watchdog Timer
+
+--=20
+Thank you,
+Alexey=
 
