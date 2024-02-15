@@ -1,115 +1,132 @@
-Return-Path: <linux-kernel+bounces-67772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302FC857070
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:19:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A08857072
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B97C21F291EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:19:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA44CB25B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC83145340;
-	Thu, 15 Feb 2024 22:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE9214534D;
+	Thu, 15 Feb 2024 22:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P4o2+uCT"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rLeRCuRX"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0D313AA23
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8281419A2
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708035585; cv=none; b=ONjJLQtsEEoS6aJgvtOd/SIAj4wKnJzOHHxKB1zxC5GQp8pSTvFdYjvrckVkAUkqlOJIv3mm+lA7dV5d6K8tbwIH+BPyTZ0scPST0GraUHRPfjLeuAkLoNkiB8lBPKW0FgEgFnZY5E+2baDhgjQO88SDIAA0VkGL8zppi+6mOwI=
+	t=1708035595; cv=none; b=riVYcFkOx8YoM8Hbo5xXMvHnh0QMs1Z0B/+FmPT0glD8sJeVLnqkw9pmB/yEtnmTb3GgVh3xt7UuoqoSS8cuaTmPuppXBEhCtj0vEvh7H7q6pfQJa5u768TOKs6RIvoJRgtw8EBfZsbSDA/xjSWft3P1rwnxLWlSx5PemuB3/BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708035585; c=relaxed/simple;
-	bh=t5lzTA0nIItmopI9Umsmp0Fv7pl2DXGoHCaMJc+PE60=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=D7x8cObor7WXXem60JDSJuoJFGiHUntANKpGmM6L4FTsDVbY1qVb3Ist/f5X4ZiLBwNGeg+6f7ut0514xsqUSvHcNIeDl2BmiT4qfyeg2hFLTWwqbbYOocMjKiIRuWumvkgW/bTi8KaplAQuvxUjk+pL+YuwTqOhsi0Szyjlu24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P4o2+uCT; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42c705e8e4bso8192031cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:19:42 -0800 (PST)
+	s=arc-20240116; t=1708035595; c=relaxed/simple;
+	bh=aF59DJKg+GxnyqLQw5fUxg2rlzvMMS+kzrvQ8I5o6Ws=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZnQ0+bE/9Un5QGNv2U6JkgBWZtF1lQ32FqUMLrSK6S290v08VqSATMcwQ6iKAnm6slhrN5T0TpEeJQdviqXG76eN+hJyqRxQ3WCs5epaXKp0HM0FL0XdHsOaJ4Usddom7U7uBl/NAb2zWOoDaACdqU0cwgQkKbLNpeIV6XphVW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rLeRCuRX; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60495209415so14635537b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:19:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708035581; x=1708640381; darn=vger.kernel.org;
-        h=subject:cc:to:from:message-id:date:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1708035593; x=1708640393; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c6kwSQjWLSvkCQdCfgG1xvDgzx+947B7zGFnqfTvyPk=;
-        b=P4o2+uCT7A7qsxALg3e+CTOh73/v6zuCRZRj+QIInUx7Y9Nd9U0dy7xl+fZdsqmObs
-         MPwDcM6a4LRVQXvoyT2cXshdh2EyQ7I7R8mabQdyzXOn41LjcPPOFTdz6Ga7wK2J7ayI
-         E7Cz4jF97QdIiL0h5iBPIysUJkC661WWtqBChxoJzi7iLc4+tI18FhJPuxijgblRQZBy
-         M6KJAHso7wJ8/qwwmeXk+OCpWsDOIL9uC9LoPGaZ9yajFFnrrvO/gLJKDVORaRJa9eES
-         5mcaaHVk3q0Rtt3Rkx3U1W4EuXak4IRUvhJgJR0f5QOyJlgA4Q9R+hIevUV4XN66WyAZ
-         RgUg==
+        bh=EIA+RVykCQtMd4uKP0jMkGSiYfomHvLOKfcmRsJzzt8=;
+        b=rLeRCuRXKcK1Rj3wRjnFm7dlMhDJOfW4VOdLOttjB9eTtl9P4zZFgDbbDYRjNCMpOQ
+         2sAvga2xfZEakbYsnnd7bjfe9Bu9Z4/Enjznm/2ivr4Asehln6I+DGgoq3R+ALnTMnez
+         xI4kazCh33YX+RP0EJcOqDrckkL7AMdhOA0HWNS1Z8UsHHrHsTX8kJLoy7MgJG685wnc
+         YZ56JWLJXtrdTR8Z5QKFbvi/DXOArSV3axdAOeyF5PZkdrwhG/jFeimrKsuKkBeJ2FSc
+         8r48k9iRVzJQ6kn9Nmer+ObPtgTMJ0U1ixcTrY9q23ZdYrPZ8MU8pmEpEqdoHlyx+zmG
+         7G6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708035581; x=1708640381;
-        h=subject:cc:to:from:message-id:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708035593; x=1708640393;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c6kwSQjWLSvkCQdCfgG1xvDgzx+947B7zGFnqfTvyPk=;
-        b=xUkrwBqAxBl9/2MWkL7TIrij5zfCv5WX+fsvVn/yckhCXCLD5iuSMZ/7LyDDxYd+7M
-         y239OSO/6A24kH/NSZEPlla4OZ6DvlDeFiLkXBTaz0Tg8CzqdTdVNxdvcLTvd8f1hBox
-         zEz2H7xRK0obzp936GAy260zZoXCmaCdddERS8sokPX2cRdyNkRsHg5XRFPxOE0pHn/R
-         JndUoXB0KyP08VZMBD89Im1/T4uRfcTOGeQ+qHuBRegcIN7+L7gly1H7yNgwd8t7NLsi
-         T9i3+hyTlIGzhIP01I1Xgn/ZuU5cL3iK7CqgBQTaLIid01UKEFBtmAVy7h6XuAa87PZX
-         HNmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUv237NHau/5KP9LcQhUyUEO7AlXlyZ2U6TYDSyblGILnBLxIEZPYtXVoD57NPBj2IIWeFDTF3OnLx2ijDxznBiGZuAmmAmTSGAY65m
-X-Gm-Message-State: AOJu0YwvMXrGJIAtBUpioYl+Awi/re1HkS1fZYLcWvmZZhwxDM75sKl7
-	wn/TRUxpCSbdE8skIbqw9oVlUH7/iZ+cUO4Y4KGCAmDWgNDhdv58Z0cL80wdunMrdRp2zkQGZ1E
-	=
-X-Google-Smtp-Source: AGHT+IEL5fVRQ5OTvPJwk93Gadl7MJ2rvpIOBR+XfkVlQDRRNw1Rlb0K/iyrEbEf7AXLbBC8i3l+Ew==
-X-Received: by 2002:a0c:ca82:0:b0:68f:801:d8d5 with SMTP id a2-20020a0cca82000000b0068f0801d8d5mr3403043qvk.8.1708035581390;
-        Thu, 15 Feb 2024 14:19:41 -0800 (PST)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id mu15-20020a056214328f00b0068c9d0561d1sm1087563qvb.83.2024.02.15.14.19.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 14:19:41 -0800 (PST)
-Date: Thu, 15 Feb 2024 17:19:40 -0500
-Message-ID: <6fcbf9b8e83e76678a0f520bfbbd6bcf@paul-moore.com>
-From: Paul Moore <paul@paul-moore.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] lsm/lsm-pr-20240215
+        bh=EIA+RVykCQtMd4uKP0jMkGSiYfomHvLOKfcmRsJzzt8=;
+        b=kX8em7Wq9Dbo8D2QM/1/7S1lnU7AaZGsQ8L51mwvq1KxlrzEj6lH+gTYcYk6YHm8nD
+         doYMuCFzpHGqnQia7mR3mReJXatphzqqFxma/r+NDAIiPrHFWPxEVYo5IKy0fF4675mT
+         nqwv2jSH94ZDfrEnHRvwG1oo065WeN9OtauOWOIh1keLAo+3rE43uMArFby9AQMd5358
+         jkeAVqnX7Sp62la5/9e4IP8vg374TLPTAOe7AnMpUxNGuYH3aD88uAL5jchwlkPcHpZL
+         eAnwh2z+rkrviiHsmHW5BwcoBky4SljzqS4FcNT3uLt/t67MhRNiVmW1IL9AIZ+nJF2S
+         dX0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUHSi4Eq1xSBVKoCJnmQC5g5ZJ3Sy35/phw7OOl8EHnh84pF3R7i5uu0Zdpv0jYoGqpZOzcJy1MCFuS5tx9xhd8CCfwl1c+LBzqGT3B
+X-Gm-Message-State: AOJu0YzqrvMUn/24G7JME9ODWhPt6bn+iFp13576qiKvVYcB0NPg5HpI
+	rhTGCS869oWbl7f3Vr7QfqGIPE5fVnY7lv01NUJoNF9DAhiQSicEAUmOfNEQxRfKo2StYD1oQjV
+	halrw/5iDEQGjWgHqkxAbY4ZuZdboLj5i6gD+
+X-Google-Smtp-Source: AGHT+IH5Y8G4M+psLtl5ozUOu2RjeWfSvT5C53fM4Wva+peYjIwy6mOS42gzLlAZlpmBSbzeIubfKTtWZadUROXeA8I=
+X-Received: by 2002:a81:a103:0:b0:607:c8fe:c4c3 with SMTP id
+ y3-20020a81a103000000b00607c8fec4c3mr3441262ywg.30.1708035592344; Thu, 15 Feb
+ 2024 14:19:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240215182756.3448972-1-lokeshgidra@google.com> <20240215182756.3448972-4-lokeshgidra@google.com>
+In-Reply-To: <20240215182756.3448972-4-lokeshgidra@google.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 15 Feb 2024 14:19:41 -0800
+Message-ID: <CAJuCfpFe2spt082fdB99ow+pqGj+DKnep6cHxoVYRVYgyO9uhg@mail.gmail.com>
+Subject: Re: [PATCH v7 3/4] mm: add vma_assert_locked() for !CONFIG_PER_VMA_LOCK
+To: Lokesh Gidra <lokeshgidra@google.com>
+Cc: akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, selinux@vger.kernel.org, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, axelrasmussen@google.com, bgeffon@google.com, 
+	willy@infradead.org, jannh@google.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, timmurray@google.com, rppt@kernel.org, 
+	Liam.Howlett@oracle.com, ryan.roberts@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Thu, Feb 15, 2024 at 10:28=E2=80=AFAM Lokesh Gidra <lokeshgidra@google.c=
+om> wrote:
+>
+> vma_assert_locked() is needed to replace mmap_assert_locked() once we
+> start using per-vma locks in userfaultfd operations.
+>
+> In !CONFIG_PER_VMA_LOCK case when mm is locked, it implies that the
+> given VMA is locked.
 
-One small LSM patch to fix a potential integer overflow in the newly
-added lsm_set_self_attr() syscall.  Please merge.
+Yes, makes sense. With per-vma locks used in more places, this makes
+replacing mmap_assert_locked() with vma_assert_locked() very
+straight-forward.
 
-Thanks,
--Paul
+>
+> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
 
---
-The following changes since commit 5a287d3d2b9de2b3e747132c615599907ba5c3c1:
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 
-  lsm: fix default return value of the socket_getpeersec_*() hooks
-    (2024-01-30 17:01:54 -0500)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-    tags/lsm-pr-20240215
-
-for you to fetch changes up to d8bdd795d383a23e38ac48a40d3d223caf47b290:
-
-  lsm: fix integer overflow in lsm_set_self_attr() syscall
-    (2024-02-14 13:53:15 -0500)
-
-----------------------------------------------------------------
-lsm/stable-6.8 PR 20240215
-
-----------------------------------------------------------------
-Jann Horn (1):
-      lsm: fix integer overflow in lsm_set_self_attr() syscall
-
- security/security.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
---
-paul-moore.com
+> ---
+>  include/linux/mm.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 3c85634b186c..5ece3ad34ef8 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -781,6 +781,11 @@ static inline struct vm_area_struct *lock_vma_under_=
+rcu(struct mm_struct *mm,
+>         return NULL;
+>  }
+>
+> +static inline void vma_assert_locked(struct vm_area_struct *vma)
+> +{
+> +       mmap_assert_locked(vma->vm_mm);
+> +}
+> +
+>  static inline void release_fault_lock(struct vm_fault *vmf)
+>  {
+>         mmap_read_unlock(vmf->vma->vm_mm);
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
 
