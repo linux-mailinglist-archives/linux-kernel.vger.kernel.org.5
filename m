@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-66636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3CDE855F4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:34:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0CFE855F58
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53CD81F231E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:34:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8793E283168
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB5B12B159;
-	Thu, 15 Feb 2024 10:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486F612BF02;
+	Thu, 15 Feb 2024 10:32:33 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720D712AAD7
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C0F12AAD7
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993149; cv=none; b=S/0OhcLO6WiEC8pB7M7/k7tE6Qm3AoM+F6HGbsGNfDXXLZi30dGzXkhOKpmGMS6YBmHlrZ6H3UrqYe0xR3nVcFBOMpY/3xEI60klmP8vT34utrYnhGDWrudmAaBsI+7dZLjIwxQ6yfUnY+7CP1NhVWI/0MFXCANNpDqZhEEs1qY=
+	t=1707993152; cv=none; b=P1kDGAlHTh8gAGGpwJt/seqShl2H7Q76bHqMe323OGEndj5dk1dZy8JJl2ptTBFoJVYo/iEXnlWQPC9DLyfE9fO8jU4J6OV7FOZn4dcdyGXj7zw1l4lHWZqL9JIvqouahe8C5E2gm5cORkHz+IJRxcjqLMzWO+A/4nr3EMIhvnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993149; c=relaxed/simple;
-	bh=2hkmQn4Ed8vkkGt4I+ydMlyJoDxhv4t3yUe1PaYNzQE=;
+	s=arc-20240116; t=1707993152; c=relaxed/simple;
+	bh=f9J310tQ1bNpyfSQ928lGyLybpb8KOoR/8xzLYJEgEk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=laiq4LB+frTw8Lgb7diwRXB7f/oV3rwWKCxi9NElGoWluLRoRpRDr3Z4JAnF2ylsuQK64bEQCUrdZluOt8RI24l3noqCksBelGjMw5ZrUwYx1xhG9C7vKHMHpcLI//NfEuZxtIjuHpiuhNJD+mvhul40pLoemKZtQw5FWX14HCQ=
+	 MIME-Version; b=TqCyAeHphWpLmoofEzi8E9V1mTmwwG545uZZpH1wEabXDB/FsaIpFsyAY1GUqpWKIU088UjSqKY1gz0GBucC1wkib/rXXhgQ2sn/sE4PVL9J7r6qVQ+9g8jWlP/Jg+lm8gEmANIihaq242LtGsYsygrS3iWLlyuAmaiApZ9z4mM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A52231480;
-	Thu, 15 Feb 2024 02:33:07 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 149FD14BF;
+	Thu, 15 Feb 2024 02:33:11 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BFF83F7B4;
-	Thu, 15 Feb 2024 02:32:23 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B7CA3F7B4;
+	Thu, 15 Feb 2024 02:32:26 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -60,9 +60,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 02/18] mm: thp: Batch-collapse PMD with set_ptes()
-Date: Thu, 15 Feb 2024 10:31:49 +0000
-Message-Id: <20240215103205.2607016-3-ryan.roberts@arm.com>
+Subject: [PATCH v6 03/18] mm: Introduce pte_advance_pfn() and use for pte_next_pfn()
+Date: Thu, 15 Feb 2024 10:31:50 +0000
+Message-Id: <20240215103205.2607016-4-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240215103205.2607016-1-ryan.roberts@arm.com>
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
@@ -74,101 +74,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Refactor __split_huge_pmd_locked() so that a present PMD can be
-collapsed to PTEs in a single batch using set_ptes().
+The goal is to be able to advance a PTE by an arbitrary number of PFNs.
+So introduce a new API that takes a nr param. Define the default
+implementation here and allow for architectures to override.
+pte_next_pfn() becomes a wrapper around pte_advance_pfn().
 
-This should improve performance a little bit, but the real motivation is
-to remove the need for the arm64 backend to have to fold the contpte
-entries. Instead, since the ptes are set as a batch, the contpte blocks
-can be initially set up pre-folded (once the arm64 contpte support is
-added in the next few patches). This leads to noticeable performance
-improvement during split.
+Follow up commits will convert each overriding architecture's
+pte_next_pfn() to pte_advance_pfn().
 
-Acked-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- mm/huge_memory.c | 58 +++++++++++++++++++++++++++---------------------
- 1 file changed, 33 insertions(+), 25 deletions(-)
+ include/linux/pgtable.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 016e20bd813e..14888b15121e 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2579,15 +2579,16 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 231370e1b80f..b7ac8358f2aa 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -212,14 +212,17 @@ static inline int pmd_dirty(pmd_t pmd)
+ #define arch_flush_lazy_mmu_mode()	do {} while (0)
+ #endif
  
- 	pte = pte_offset_map(&_pmd, haddr);
- 	VM_BUG_ON(!pte);
--	for (i = 0, addr = haddr; i < HPAGE_PMD_NR; i++, addr += PAGE_SIZE) {
--		pte_t entry;
--		/*
--		 * Note that NUMA hinting access restrictions are not
--		 * transferred to avoid any possibility of altering
--		 * permissions across VMAs.
--		 */
--		if (freeze || pmd_migration) {
-+
-+	/*
-+	 * Note that NUMA hinting access restrictions are not transferred to
-+	 * avoid any possibility of altering permissions across VMAs.
-+	 */
-+	if (freeze || pmd_migration) {
-+		for (i = 0, addr = haddr; i < HPAGE_PMD_NR; i++, addr += PAGE_SIZE) {
-+			pte_t entry;
- 			swp_entry_t swp_entry;
-+
- 			if (write)
- 				swp_entry = make_writable_migration_entry(
- 							page_to_pfn(page + i));
-@@ -2606,25 +2607,32 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 				entry = pte_swp_mksoft_dirty(entry);
- 			if (uffd_wp)
- 				entry = pte_swp_mkuffd_wp(entry);
--		} else {
--			entry = mk_pte(page + i, READ_ONCE(vma->vm_page_prot));
--			if (write)
--				entry = pte_mkwrite(entry, vma);
--			if (!young)
--				entry = pte_mkold(entry);
--			/* NOTE: this may set soft-dirty too on some archs */
--			if (dirty)
--				entry = pte_mkdirty(entry);
--			if (soft_dirty)
--				entry = pte_mksoft_dirty(entry);
--			if (uffd_wp)
--				entry = pte_mkuffd_wp(entry);
-+
-+			VM_WARN_ON(!pte_none(ptep_get(pte + i)));
-+			set_pte_at(mm, addr, pte + i, entry);
- 		}
--		VM_BUG_ON(!pte_none(ptep_get(pte)));
--		set_pte_at(mm, addr, pte, entry);
--		pte++;
-+	} else {
-+		pte_t entry;
-+
-+		entry = mk_pte(page, READ_ONCE(vma->vm_page_prot));
-+		if (write)
-+			entry = pte_mkwrite(entry, vma);
-+		if (!young)
-+			entry = pte_mkold(entry);
-+		/* NOTE: this may set soft-dirty too on some archs */
-+		if (dirty)
-+			entry = pte_mkdirty(entry);
-+		if (soft_dirty)
-+			entry = pte_mksoft_dirty(entry);
-+		if (uffd_wp)
-+			entry = pte_mkuffd_wp(entry);
-+
-+		for (i = 0; i < HPAGE_PMD_NR; i++)
-+			VM_WARN_ON(!pte_none(ptep_get(pte + i)));
-+
-+		set_ptes(mm, haddr, pte, entry, HPAGE_PMD_NR);
- 	}
--	pte_unmap(pte - 1);
-+	pte_unmap(pte);
+-
+ #ifndef pte_next_pfn
+-static inline pte_t pte_next_pfn(pte_t pte)
++#ifndef pte_advance_pfn
++static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
+ {
+-	return __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
++	return __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
+ }
+ #endif
  
- 	if (!pmd_migration)
- 		folio_remove_rmap_pmd(folio, page, vma);
++#define pte_next_pfn(pte) pte_advance_pfn(pte, 1)
++#endif
++
+ #ifndef set_ptes
+ /**
+  * set_ptes - Map consecutive pages to a contiguous range of addresses.
 -- 
 2.25.1
 
