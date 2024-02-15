@@ -1,59 +1,80 @@
-Return-Path: <linux-kernel+bounces-66422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E758855C86
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:33:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012AA855C88
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60B5328142D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3416E1C21DD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46E912E6D;
-	Thu, 15 Feb 2024 08:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE4D14002;
+	Thu, 15 Feb 2024 08:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lhw7ewat"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="rgiRJp+Q"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A73171A7;
-	Thu, 15 Feb 2024 08:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEDA13AF0
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707986009; cv=none; b=EHWJsIjUs19zMUjMpDGObuZqDvkfbnbmmeANdn7DrBfvn39EtPyzAEqrrkq+8pUjJ7yH08/l4LJ2b6URrR1rHIQ57kG3D0BaO1lvo1ZiaMpSre+flH5Ssp2FdcGigrS5Tg3+CUbkc3OLKEx/r1DYNX9GtYa9BMF5pEyIgTOET3g=
+	t=1707986021; cv=none; b=pZ9EaPFIUSyBY3l7+fqHtdnHp+5x0gjwDSRhHdtlR8L8YtwTzZQg/xai23Hi73Ug9EFmsnt4FPlli53DeMuiN4hYRX2PLLPEPiMROr1RUyuimMG+imO4t7/Hbe/jS43qub7SZN28iObSHItKnu+bL6iUxaNJFJkKPAlV4M8FLdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707986009; c=relaxed/simple;
-	bh=ATjsM1v1rtS8D/Phyv7flUsDtfA5NO7irfbWAKzdNXs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=e8Xl5ZLYzht9vGiM7qfPHaSrMDZQmTr++bdHtJ3lqJxgvCAKWhOhWqgVO1828FB0IqVMKMXrzPThx4IDdx7ATLHOPmIoh1s8JxdUwU5YxSL8D4S3KCNYi+yS3mjvplxrJTWAiXmx/lmT4eBSewIfInqJyuxDz4Trjx/kaW9bhDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lhw7ewat; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30A97C433F1;
-	Thu, 15 Feb 2024 08:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707986008;
-	bh=ATjsM1v1rtS8D/Phyv7flUsDtfA5NO7irfbWAKzdNXs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Lhw7ewatBIg8dmBvwogTtKZnJQY2QT/5QEdoQ/yUTf7x1G2+OroRp6XUj4dhwmRrO
-	 RT9pjrBxbsN3tYav+1VUtOqAWIgjZWbmfRaPIiQ32J9J1Xda5X2bwLuG92bcFcW27o
-	 Js4TXZekrA49gXaYuwqlyFXx0/8E8LPaiY1ufYNuDNKzVNWQ8IMRtT0zmUPqfnYroA
-	 lZdkESi/UVMm5pqf+VePcLfh9+BCl14xoXuKtxajN8jcaRxtd2KK748eSQDuW/Nn8G
-	 4ACJTzjqMgaUwBEpzBvBg1ai/xDP4BDuolhh6Ar9Wk52rdhnk1N3xdRO0nSqOpRiXI
-	 wXzJdxmk7Py6A==
-From: Arnd Bergmann <arnd@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Jingyu Wang <jingyuwang_vip@163.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: qcom-hw: add CONFIG_COMMON_CLK dependency
-Date: Thu, 15 Feb 2024 09:33:14 +0100
-Message-Id: <20240215083322.4002782-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1707986021; c=relaxed/simple;
+	bh=xT5dfURtGIxff62raqt0jG+pcsjp7uhfEREhWd31PRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LUwrjpno27SnMJqECb/CFR5kLEJuQwOJR7QzYHs4twFLVHcYXs9r/Ajdetut0lKxElp2y7lwvG4GtUT8BF8J+yD5xL8do2aJ7AwuoMFJy+moEn2ViSDqFcUQeW9v9HtNWHgjbQLAke8YVrz1Ke0ADade0L6ARKwMW/x2Yswksn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=rgiRJp+Q; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d09cf00214so7781951fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1707986017; x=1708590817; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ez9xOpn3UTLsU+b3iGm2vmX6gqE6PZNq2Dof+USHQP0=;
+        b=rgiRJp+Qem11c2HuaMFORjMJWUhH42bl3u6IkuCAVxIVmcHdhSrqrYI4ii3zb3yGjk
+         4Zgq6t+jLUt8A8cDulRb84EYI/N8iUT8gRr12o/3I3bF2T7mCiUXG4PvZQcOcK3khmRJ
+         kZOC5kzYPOtiAdM3sNd0lf9iIaVCiTca/MCY97XxUFXy/L9gX6NNN9ByOBktVaLhQiWI
+         iNRKfWCIQlHTKiFr2F90RC0ledaQfI5f50LU+BALeuPGkJa5ktf0EXlu6bCUdb6Tija9
+         wSvU5n2IH/yr9v1Uopaj281PKZODFMssAVI6lEr69ZXwx/4KYa+uinI6E5LuYKglssKS
+         BDJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707986017; x=1708590817;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ez9xOpn3UTLsU+b3iGm2vmX6gqE6PZNq2Dof+USHQP0=;
+        b=D5YgeKW8W4Hb681gK1Mpmffxg01AdGAm281hRVurTqqEY8nis5kvZgsQVJDgsTL7WH
+         866GlOc0oKnCtkwqb5DEJbHHZWyLxvrYncp7tjwAwVi3eiyaNIP1Muk5SFuZL2k31VPD
+         KKy4rwxdcPbqPztzOPMIwRUBVvEKv2HwFAQOG/T0W/InKrLrikAAOCjmQlRmwG1utWfm
+         NLkPF9HWL7BjwcIDsCMBE98bxOY5ITRjzqma/JsG0LWVyeEgFW2QoC0LXdkoXbpZFJbU
+         6K6aW9pIh+wZaz2b/FifFbf+r7IBV+3svjescmLyf+bxH90aikzZaFH0JbzqH5rlb/GF
+         PK2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVEiL+w65zuhIvUCJv4GlS01bnObAZ25fQD05k5CtnAcfTmHjASZv2jM1pe47EWa4uqduRTrgDCJqaCn+ZGaSdl03UOntMjxNWD06qg
+X-Gm-Message-State: AOJu0YzTRQtUSi8DEDRCC+ql1AyvjbXfQRJ2521m1yh+km3k7cYY1Q/N
+	6+9lY72aiFzmcrOGZn/2dEA+mGaEbfSdkHlgdpaFgH++A2cTbEZlRTjEOq9TntzwIev+XVK29of
+	3
+X-Google-Smtp-Source: AGHT+IFQV7OKQsTQ/UxE3IWZlRvegLax6f9smfnoepWKpuD0SsrBm4RCPyfQCitdXEojv+hB5o6haQ==
+X-Received: by 2002:a2e:9c58:0:b0:2d0:a8fe:4263 with SMTP id t24-20020a2e9c58000000b002d0a8fe4263mr760447ljj.25.1707986016884;
+        Thu, 15 Feb 2024 00:33:36 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:20b3:d902:bf8e:897])
+        by smtp.gmail.com with ESMTPSA id u22-20020a05600c211600b0040fddaf9ff4sm4286906wml.40.2024.02.15.00.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 00:33:36 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 1/2] gpio: provide for_each_gpio()
+Date: Thu, 15 Feb 2024 09:33:27 +0100
+Message-Id: <20240215083328.11464-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,42 +83,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-It is still possible to compile-test a kernel without CONFIG_COMMON_CLK
-for some ancient ARM boards or other architectures, but this causes a
-link failure in the qcom-cpufreq-hw driver:
+We only provide iterators for requested GPIOs to provider drivers. In
+order to allow them to display debug information about all GPIOs, let's
+provide a variant for iterating over all GPIOs.
 
-ERROR: modpost: "devm_clk_hw_register" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
-ERROR: modpost: "devm_of_clk_add_hw_provider" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
-ERROR: modpost: "of_clk_hw_onecell_get" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
-
-Add a Kconfig dependency here to make sure this always work. Apparently
-this bug has been in the kernel for a while without me running into it
-on randconfig builds as COMMON_CLK is almost always enabled.
-
-I have cross-checked by building an allmodconfig kernel with COMMON_CLK
-disabled, which showed no other driver having this problem.
-
-Fixes: 4370232c727b ("cpufreq: qcom-hw: Add CPU clock provider support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/cpufreq/Kconfig.arm | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/gpio/driver.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index f911606897b8..a0ebad77666e 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -173,6 +173,7 @@ config ARM_QCOM_CPUFREQ_NVMEM
- config ARM_QCOM_CPUFREQ_HW
- 	tristate "QCOM CPUFreq HW driver"
- 	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on COMMON_CLK
- 	help
- 	  Support for the CPUFreq HW driver.
- 	  Some QCOM chipsets have a HW engine to offload the steps
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 9d0023f83a57..5f915b653548 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -551,6 +551,21 @@ DEFINE_CLASS(_gpiochip_for_each_data,
+ 	     }),
+ 	     const char **label, int *i)
+ 
++/**
++ * for_each_gpio - Iterates over all GPIOs for given chip.
++ * @_chip: Chip to iterate over.
++ * @_i: Loop counter.
++ * @_label: Place to store the address of the label if the GPIO is requested.
++ *          Set to NULL for unused GPIOs.
++ */
++#define for_each_gpio(_chip, _i, _label) \
++	for (CLASS(_gpiochip_for_each_data, _data)(&_label, &_i); \
++	     *_data.i < _chip->ngpio; \
++	     (*_data.i)++, kfree(*(_data.label)), *_data.label = NULL) \
++		if (IS_ERR(*_data.label = \
++			gpiochip_dup_line_label(_chip, *_data.i))) {} \
++		else
++
+ /**
+  * for_each_requested_gpio_in_range - iterates over requested GPIOs in a given range
+  * @_chip:	the chip to query
 -- 
-2.39.2
+2.40.1
 
 
