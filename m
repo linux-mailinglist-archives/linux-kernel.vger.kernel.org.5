@@ -1,159 +1,238 @@
-Return-Path: <linux-kernel+bounces-66721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EAD38560A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:04:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A248C8560B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B381F21EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:04:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 188FB1F2418F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267DD13172F;
-	Thu, 15 Feb 2024 10:55:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00423131724;
-	Thu, 15 Feb 2024 10:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA2B12AADA;
+	Thu, 15 Feb 2024 10:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mHQocX0N"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6948883A04
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994537; cv=none; b=EqHYBCkYC9FoXMWnlGfRQRKoYq0aA6P3Uuubh/EeINkQho0xWfcesiGbrXYkwjexCkzm73qq5fRp1lgH1wjXXu+ah9db1s8SpJhL3L9olBPwgLmrVLVCkq4kMTjB7IDNWZ8TkGEhOtnHNM2Wp5wdEcy8CaA9g5FVXkim6jbk4Q0=
+	t=1707994652; cv=none; b=lUXHJ7QSRHiGu4DsOpRGvs+t4fe2+75pBv/hbVmYlcgv1M0IU/GNRv5DP8DXIQEAwENzOnEjetPPo8Sj6bmKkUJ5cwOvkSFyUeaFDmAo3Z6CSZbv0sj7jbfamrcPI3AwoRiHV9kE2YjctsmnRsW6RemA8zFZDsUsKqOBeHM5Gn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994537; c=relaxed/simple;
-	bh=LoA5sWoZO8pD3VB5bo+8CWwWCpCXLeSRWHC2fiM65fI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GHrzApZdQ5WN1tU9h9doGauw6eMYZE8DEJyJMNlKC6D4vX3l/eTLBUitNVYC9xc1JfqCESJ9Xt6lu/h0ncUvU+VOK/HiZqnWHMa4h1aZE3tteKe3Rzedmpppsq1TAOu/MLLkJvvnUMEsgke0X6X2/8XU45LdaGklTcTWqP2UoFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2108D1FB;
-	Thu, 15 Feb 2024 02:56:16 -0800 (PST)
-Received: from [10.57.49.250] (unknown [10.57.49.250])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AABD83F7B4;
-	Thu, 15 Feb 2024 02:55:33 -0800 (PST)
-Message-ID: <56d56f85-6172-4fb1-a002-fe82ffc8a66a@arm.com>
-Date: Thu, 15 Feb 2024 10:55:32 +0000
+	s=arc-20240116; t=1707994652; c=relaxed/simple;
+	bh=fia32X7UBkpe3dW/uCV30sxHEtkvNs3IFKVG0jds3Xg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ZUqUdv8tE7iTwqtQZHeWXJrfs4F5tYCPWuJRLpC5z3qs4ojUuI+odHKdhDFd2pxgQVVd097EYdEfDh3dl4Gu7HUkC5coORx3NdvaXCzfSAxr82qheVi+5BEhOmi69imOoOyuSTl8f38G52CXEn+/A1hE9nuO+NVP2plMMggE1bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mHQocX0N; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707994650; x=1739530650;
+  h=date:from:to:cc:subject:message-id;
+  bh=fia32X7UBkpe3dW/uCV30sxHEtkvNs3IFKVG0jds3Xg=;
+  b=mHQocX0NIv7g3h5GEdXhlJtdfzBGrjVLn67K4FSizxLk8N3qluHj719Z
+   wU2lGPJBqlBgTf8Ni8aocHr7wIrW+c5gAguhZoY/SY5F5RPSYcZ6KCEQ1
+   ApjJVq/+dhh2LwcvxyjN/aiBIozUQLjEnMuwpo61W93DgEGJM2AgYPVIr
+   dy+Bs0kTFC+dRS0xVsjolf1P/Fm/ACe6D9jJWP9eWUKeH/isY50SYS4xK
+   WU7cjmd3fR+BnIqMwntPbxhp3yjvDsXRQRTNar1KxCmsBoQ/9u//GA1Lo
+   rYmcFsSJBW0VgZnYjrIqRWH9pQo7CqVUBqO4FswCAIhZ+ZR++CzjqyWjO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1948591"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="1948591"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 02:57:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="3460932"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 15 Feb 2024 02:56:52 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1raZPb-0000QS-0W;
+	Thu, 15 Feb 2024 10:56:37 +0000
+Date: Thu, 15 Feb 2024 18:55:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ 218b13db258c091e646857fc962ef45fe2163054
+Message-ID: <202402151840.iW7Gvdz6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 02/11] coresight: stm: Extract device name from AMBA
- pid based table lookup
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-3-anshuman.khandual@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240123054608.1790189-3-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 23/01/2024 05:45, Anshuman Khandual wrote:
-> Instead of using AMBA private data field, extract the device name from AMBA
-> pid based table lookup using new coresight_get_uci_data_from_amba() helper.
-> 
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->   drivers/hwtracing/coresight/coresight-priv.h | 10 ++++++++++
->   drivers/hwtracing/coresight/coresight-stm.c  | 14 +++++++++++++-
->   2 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index 767076e07970..68cbb036cec8 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -221,6 +221,16 @@ static inline void *coresight_get_uci_data(const struct amba_id *id)
->   	return uci_id->data;
->   }
->   
-> +static inline void *coresight_get_uci_data_from_amba(const struct amba_id *table, u32 pid)
-> +{
-> +	while (table->mask) {
-> +		if ((table->id & table->mask) == pid)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: 218b13db258c091e646857fc962ef45fe2163054  Merge branch 'x86/core' into x86/merge, to ease integration testing
 
-Why are we masking table->id ? table->id is a static value that the
-driver wants to check for "variants" of a given device. The table->mask
-is there to filter out the "irrelevant" bits of the PID that we read
-from the device. So this should instead be:
+elapsed time: 1445m
 
-		if ((table->mask & pid) == table->id)
+configs tested: 150
+configs skipped: 2
 
-> +			return coresight_get_uci_data(table);
-> +		table++;
-> +	};
-> +	return NULL;
-> +}
-> +
->   void coresight_release_platform_data(struct coresight_device *csdev,
->   				     struct device *dev,
->   				     struct coresight_platform_data *pdata);
-> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-> index a1c27c901ad1..9cdca4f86cab 100644
-> --- a/drivers/hwtracing/coresight/coresight-stm.c
-> +++ b/drivers/hwtracing/coresight/coresight-stm.c
-> @@ -804,6 +804,18 @@ static void stm_init_generic_data(struct stm_drvdata *drvdata,
->   	drvdata->stm.set_options = stm_generic_set_options;
->   }
->   
-> +#define STM_AMBA_MASK 0xfffff
-> +
-> +static const struct amba_id stm_ids[];
-> +
-> +static char *stm_csdev_name(struct coresight_device *csdev)
-> +{
-> +	u32 stm_pid = coresight_get_pid(&csdev->access) & STM_AMBA_MASK;
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Similar to above:
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240215   gcc  
+arc                   randconfig-002-20240215   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                        clps711x_defconfig   clang
+arm                                 defconfig   clang
+arm                          ep93xx_defconfig   clang
+arm                      integrator_defconfig   clang
+arm                   randconfig-001-20240215   clang
+arm                   randconfig-002-20240215   gcc  
+arm                   randconfig-003-20240215   gcc  
+arm                   randconfig-004-20240215   gcc  
+arm                        shmobile_defconfig   gcc  
+arm                        spear6xx_defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240215   clang
+arm64                 randconfig-002-20240215   clang
+arm64                 randconfig-003-20240215   gcc  
+arm64                 randconfig-004-20240215   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240215   gcc  
+csky                  randconfig-002-20240215   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240215   clang
+hexagon               randconfig-002-20240215   clang
+i386         buildonly-randconfig-001-20240215   clang
+i386         buildonly-randconfig-002-20240215   clang
+i386         buildonly-randconfig-003-20240215   clang
+i386         buildonly-randconfig-004-20240215   clang
+i386         buildonly-randconfig-005-20240215   clang
+i386         buildonly-randconfig-006-20240215   clang
+i386                  randconfig-001-20240215   gcc  
+i386                  randconfig-002-20240215   gcc  
+i386                  randconfig-003-20240215   clang
+i386                  randconfig-004-20240215   gcc  
+i386                  randconfig-005-20240215   gcc  
+i386                  randconfig-006-20240215   gcc  
+i386                  randconfig-011-20240215   clang
+i386                  randconfig-012-20240215   clang
+i386                  randconfig-013-20240215   gcc  
+i386                  randconfig-014-20240215   gcc  
+i386                  randconfig-015-20240215   clang
+i386                  randconfig-016-20240215   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240215   gcc  
+loongarch             randconfig-002-20240215   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240215   gcc  
+nios2                 randconfig-002-20240215   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                  or1klitex_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                randconfig-001-20240215   gcc  
+parisc                randconfig-002-20240215   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                          g5_defconfig   gcc  
+powerpc                      makalu_defconfig   clang
+powerpc               randconfig-001-20240215   gcc  
+powerpc               randconfig-002-20240215   clang
+powerpc               randconfig-003-20240215   clang
+powerpc                     tqm8555_defconfig   clang
+powerpc64             randconfig-001-20240215   clang
+powerpc64             randconfig-002-20240215   gcc  
+powerpc64             randconfig-003-20240215   clang
+riscv                            allmodconfig   clang
+riscv                            allyesconfig   clang
+riscv                 randconfig-001-20240215   gcc  
+riscv                 randconfig-002-20240215   gcc  
+s390                             alldefconfig   gcc  
+s390                             allmodconfig   clang
+s390                             allyesconfig   gcc  
+s390                  randconfig-001-20240215   clang
+s390                  randconfig-002-20240215   clang
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                     magicpanelr2_defconfig   gcc  
+sh                    randconfig-001-20240215   gcc  
+sh                    randconfig-002-20240215   gcc  
+sh                           se7343_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64               randconfig-001-20240215   gcc  
+sparc64               randconfig-002-20240215   gcc  
+um                               allmodconfig   clang
+um                               allyesconfig   gcc  
+um                    randconfig-001-20240215   gcc  
+um                    randconfig-002-20240215   gcc  
+x86_64                            allnoconfig   clang
+x86_64       buildonly-randconfig-001-20240215   clang
+x86_64       buildonly-randconfig-002-20240215   clang
+x86_64       buildonly-randconfig-003-20240215   gcc  
+x86_64       buildonly-randconfig-004-20240215   gcc  
+x86_64       buildonly-randconfig-005-20240215   clang
+x86_64       buildonly-randconfig-006-20240215   gcc  
+x86_64                randconfig-001-20240215   clang
+x86_64                randconfig-002-20240215   clang
+x86_64                randconfig-003-20240215   gcc  
+x86_64                randconfig-004-20240215   clang
+x86_64                randconfig-005-20240215   clang
+x86_64                randconfig-006-20240215   clang
+x86_64                randconfig-011-20240215   gcc  
+x86_64                randconfig-012-20240215   gcc  
+x86_64                randconfig-013-20240215   gcc  
+x86_64                randconfig-014-20240215   gcc  
+x86_64                randconfig-015-20240215   gcc  
+x86_64                randconfig-016-20240215   clang
+x86_64                randconfig-071-20240215   clang
+x86_64                randconfig-072-20240215   clang
+x86_64                randconfig-073-20240215   gcc  
+x86_64                randconfig-074-20240215   gcc  
+x86_64                randconfig-075-20240215   clang
+x86_64                randconfig-076-20240215   gcc  
+xtensa                  cadence_csp_defconfig   gcc  
+xtensa                randconfig-001-20240215   gcc  
+xtensa                randconfig-002-20240215   gcc  
+xtensa                         virt_defconfig   gcc  
 
-Why do we apply a "custom" mask to the PID and later check the PID with
-that of the table->pid.
-
-The way it is supposed work is :
-
-	(table->mask & dev_pid) == table->pid
-
-the table->mask is there for a reason: i.e., to get the relevant bits 
-from the device_pid and compare it against "the" expected value 
-(table->pid).
-
-
-Suzuki
-
-> +	void *uci_data = coresight_get_uci_data_from_amba(stm_ids, stm_pid);
-> +
-> +	return uci_data ? (char *)uci_data : "STM";
-> +}
-> +
->   static int stm_probe(struct amba_device *adev, const struct amba_id *id)
->   {
->   	int ret, trace_id;
-> @@ -900,7 +912,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
->   	pm_runtime_put(&adev->dev);
->   
->   	dev_info(&drvdata->csdev->dev, "%s initialized\n",
-> -		 (char *)coresight_get_uci_data(id));
-> +		 stm_csdev_name(drvdata->csdev));
->   	return 0;
->   
->   cs_unregister:
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
