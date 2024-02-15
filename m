@@ -1,73 +1,49 @@
-Return-Path: <linux-kernel+bounces-67089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C868856616
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0819E856623
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51BE1C22874
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:39:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF89B1F25264
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37308132476;
-	Thu, 15 Feb 2024 14:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jsRvp+7k"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23405132479;
+	Thu, 15 Feb 2024 14:42:08 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CDC269DF0;
-	Thu, 15 Feb 2024 14:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1027613246F
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708007984; cv=none; b=ILZ8QYz8RIg9PovoblJr3OlR6cTQuwnpPR6ipAdFhSD2iSw6dJt/1Js01VCErvCJw8yiGev/4Hae4pOaMMBDuXrPWddh5kymY9veUypRutCTpTQVlDYynqzcHTosh24MlqHYKDGI8iZ8/dju5M4X3i52FEUxb/nnbk/p2SgD7mY=
+	t=1708008127; cv=none; b=Z3X4kuzlcYSAa0mYqN/WZnNaGe6xp44CNFlRFR5cqMVbC9ml3iMR2eVphmbFUn8hAcpkX3WwtCJI95P5PN3NoaZNx26pRPdzL9kwIKgxHcxAUdZakgwadw37QtcLsVWJauU25DokD+L4pSKcBluo4/eGKadf/Am2bFX3M0MvMaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708007984; c=relaxed/simple;
-	bh=MV9oKZSV6w9tYnhYunre9EcN7ovtDZaJe8D0pVI4U2A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F8s93wSPNV+OKLkToZQNnS7t+8dfLcQbAYh5lXg7ztgnwXBAgY2uw/1DrWNas/ZDbl/m2ubuJLGuhrQEMIdSUDfnLriFgg+TGxKJU6qcDrsvNIi5XtOq63XGXRmgvYWCGEIV1I6wfuUV/mB5dJrSD2yLccj38k8yQsNG8vU/PGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jsRvp+7k; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FEa0Td022512;
-	Thu, 15 Feb 2024 14:39:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=zZurr08+4rCmi2p87VmKajNXUbdSQeh/Ml+DyrXsBJY=;
- b=jsRvp+7kedzUhComLQF4tv0eXIaGM2RShLJ2AHhUnsUehPlEmIrFeKtHeBQz5x8W2Woo
- dszYEPUFXpbSvpkkEnusY9IZnLt8SdUFDybty+7BFnq7nFNLDdij9O5wT7PW4iQxl5wJ
- jp9yj+4qezufi7RtUIuh+N9PUHQvAhD7SEnm1MrDp0apd7Q2iIcNuRqfm7Oe1xGRawf8
- 5WOS4yk2pCniZ6WtFpuM1ZfEUvQVLWlTmeWJZNF/J/XymUhEFE6pFgwnQSM3aVuUkoDW
- 8x67oTWrjzw2PjJXN/HMdxiPLNqd6u15Aoo4kmmLmLcnPx4If9PYhvsiLs2NhZVS/5JM 8A== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9m1991pk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 14:39:32 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FDqAda004297;
-	Thu, 15 Feb 2024 14:39:30 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6kv0ng2w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 14:39:30 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FEdR8s24511196
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 15 Feb 2024 14:39:29 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 829C658062;
-	Thu, 15 Feb 2024 14:39:27 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CD1825805A;
-	Thu, 15 Feb 2024 14:39:26 +0000 (GMT)
-Received: from [9.61.99.202] (unknown [9.61.99.202])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 15 Feb 2024 14:39:26 +0000 (GMT)
-Message-ID: <a50cf258-b861-40e5-8ca9-dec7721400ec@linux.ibm.com>
-Date: Thu, 15 Feb 2024 08:39:26 -0600
+	s=arc-20240116; t=1708008127; c=relaxed/simple;
+	bh=1iE642cmMGZSjdPlTyM9NvhPHi1h7rzgZBOYYDcrJZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=GnehXBkHy1YX5IdVt1B60DpvJJfiYi9i7dNxthgudOdG3+LhP8AsMQoAfr/EcIUpKvPIVE7hUlRlIWMFAEAwBMdcNOhwWPUscmUhTFk36wb17kpZKMhdxigbAC6KGeS+WUKCHq8W8NmPGIZa+uZDOHhRZwLpOxzi6mlOaXXPZ70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 41FEg1Mh092207;
+	Thu, 15 Feb 2024 23:42:01 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
+ Thu, 15 Feb 2024 23:42:01 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 41FEg0tt092203
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 15 Feb 2024 23:42:00 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <c3b0f5b0-9f86-40be-b815-8177a4f0b71f@I-love.SAKURA.ne.jp>
+Date: Thu, 15 Feb 2024 23:41:59 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,64 +51,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] uapi/auxvec: Define AT_HWCAP3 and AT_HWCAP4 aux
- vector, entries
+Subject: Re: [PATCH] profiling: initialize prof_cpu_mask from
+ profile_online_cpu()
 Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, linux-api@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Cc: Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Nick Piggin <npiggin@au1.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <a406b535-dc55-4856-8ae9-5a063644a1af@linux.ibm.com>
- <aa657f01-7cb1-43f4-947e-173fc8a53f1f@app.fastmail.com>
-From: Peter Bergner <bergner@linux.ibm.com>
-In-Reply-To: <aa657f01-7cb1-43f4-947e-173fc8a53f1f@app.fastmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org
+References: <000000000000d6b55e060d6bc390@google.com>
+ <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
+ <85edf211-aa30-4671-93e0-5173b3f7adf2@I-love.SAKURA.ne.jp>
+In-Reply-To: <85edf211-aa30-4671-93e0-5173b3f7adf2@I-love.SAKURA.ne.jp>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: U0zh-cXg3ppxx8BiWtZDI9TVoSkYhrAq
-X-Proofpoint-GUID: U0zh-cXg3ppxx8BiWtZDI9TVoSkYhrAq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_13,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- impostorscore=0 spamscore=0 priorityscore=1501 mlxlogscore=319
- phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402150117
 
-On 2/15/24 2:16 AM, Arnd Bergmann wrote:
-> On Wed, Feb 14, 2024, at 23:34, Peter Bergner wrote:
->> The powerpc toolchain keeps a copy of the HWCAP bit masks in our TCB for fast
->> access by the __builtin_cpu_supports built-in function.  The TCB space for
->> the HWCAP entries - which are created in pairs - is an ABI extension, so
->> waiting to create the space for HWCAP3 and HWCAP4 until we need them is
->> problematical.  Define AT_HWCAP3 and AT_HWCAP4 in the generic uapi header
->> so they can be used in glibc to reserve space in the powerpc TCB for their
->> future use.
->>
->> I scanned through the Linux and GLIBC source codes looking for unused AT_*
->> values and 29 and 30 did not seem to be used, so they are what I went
->> with.  This has received Acked-by's from both GLIBC and Linux kernel
->> developers and no reservations or Nacks from anyone.
->>
->> Arnd, we seem to have consensus on the patch below.  Is this something
->> you could take and apply to your tree? 
->>
+Hello, Linus.
+
+It seems that nobody maintains this code.
+
+Can I directly send this patch to you, as "THE REST" rule of MAINTAINERS file?
+Is some tag like [PATCH ORPHANED] available?
+
+On 2024/01/31 23:06, Tetsuo Handa wrote:
+> syzbot is reporting uninit-value at profile_hits(), for commit acd895795d35
+> ("profiling: fix broken profiling regression") by error initialized
+> prof_cpu_mask too early.
 > 
-> I don't mind taking it, but it may be better to use the
-> powerpc tree if that is where it's actually being used.
-
-So this is not a powerpc only patch, but we may be the first arch
-to use it.  Szabolcs mentioned that aarch64 was pretty quickly filling
-up their AT_HWCAP2 and that they will eventually require using AT_HWCAP3
-as well.  If you still think this should go through the powerpc tree,
-I can check on that.
-
-Peter
-
+> do_profile_hits() is called from profile_tick() from timer interrupt
+> only if cpumask_test_cpu(smp_processor_id(), prof_cpu_mask) is true and
+> prof_buffer is not NULL. But the syzbot's report says that profile_hits()
+> was called while current thread is still doing vzalloc(buffer_bytes)
+> where prof_buffer is NULL at this moment. This indicates two things.
+> 
+> One is that cpumask_set_cpu(cpu, prof_cpu_mask) should have been called
+>  from profile_online_cpu() from cpuhp_setup_state() only after
+> profile_init() completed. Fix this by explicitly calling cpumask_copy()
+>  from create_proc_profile() on only UP kernels.
+> 
+> The other is that multiple threads concurrently tried to write to
+> /sys/kernel/profiling interface, which caused that somebody else tried
+> to re-initialize prof_buffer despite somebody has already initialized
+> prof_buffer. Fix this by using serialization.
+> 
+> Reported-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
+> Fixes: acd895795d35 ("profiling: fix broken profiling regression")
+> Tested-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> ---
+>  kernel/ksysfs.c  | 27 ++++++++++++++++++++++-----
+>  kernel/profile.c |  6 +++---
+>  2 files changed, 25 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
+> index 1d4bc493b2f4..66bc712f590c 100644
+> --- a/kernel/ksysfs.c
+> +++ b/kernel/ksysfs.c
+> @@ -91,10 +91,23 @@ static ssize_t profiling_store(struct kobject *kobj,
+>  				   struct kobj_attribute *attr,
+>  				   const char *buf, size_t count)
+>  {
+> +	static DEFINE_MUTEX(lock);
+>  	int ret;
+>  
+> -	if (prof_on)
+> -		return -EEXIST;
+> +	/*
+> +	 * We need serialization, for profile_setup() initializes prof_on
+> +	 * value. Also, use killable wait in case memory allocation from
+> +	 * profile_init() triggered the OOM killer and chose current thread
+> +	 * blocked here.
+> +	 */
+> +	if (mutex_lock_killable(&lock))
+> +		return -EINTR;
+> +
+> +	if (prof_on) {
+> +		count = -EEXIST;
+> +		goto out;
+> +	}
+> +
+>  	/*
+>  	 * This eventually calls into get_option() which
+>  	 * has a ton of callers and is not const.  It is
+> @@ -102,11 +115,15 @@ static ssize_t profiling_store(struct kobject *kobj,
+>  	 */
+>  	profile_setup((char *)buf);
+>  	ret = profile_init();
+> -	if (ret)
+> -		return ret;
+> +	if (ret) {
+> +		count = ret;
+> +		goto out;
+> +	}
+>  	ret = create_proc_profile();
+>  	if (ret)
+> -		return ret;
+> +		count = ret;
+> +out:
+> +	mutex_unlock(&lock);
+>  	return count;
+>  }
+>  KERNEL_ATTR_RW(profiling);
+> diff --git a/kernel/profile.c b/kernel/profile.c
+> index 8a77769bc4b4..7575747e2ac6 100644
+> --- a/kernel/profile.c
+> +++ b/kernel/profile.c
+> @@ -114,11 +114,9 @@ int __ref profile_init(void)
+>  
+>  	buffer_bytes = prof_len*sizeof(atomic_t);
+>  
+> -	if (!alloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
+> +	if (!zalloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
+>  		return -ENOMEM;
+>  
+> -	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
+> -
+>  	prof_buffer = kzalloc(buffer_bytes, GFP_KERNEL|__GFP_NOWARN);
+>  	if (prof_buffer)
+>  		return 0;
+> @@ -481,6 +479,8 @@ int __ref create_proc_profile(void)
+>  		goto err_state_prep;
+>  	online_state = err;
+>  	err = 0;
+> +#else
+> +	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
+>  #endif
+>  	entry = proc_create("profile", S_IWUSR | S_IRUGO,
+>  			    NULL, &profile_proc_ops);
 
 
