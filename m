@@ -1,77 +1,59 @@
-Return-Path: <linux-kernel+bounces-66421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4BBC855C99
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:38:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DAD4855C7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:32:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C49DCB2EA88
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:33:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07311C21E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B1413FE7;
-	Thu, 15 Feb 2024 08:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832EF125B6;
+	Thu, 15 Feb 2024 08:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="purw5bOU"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8QsKOXK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DECF2134CC;
-	Thu, 15 Feb 2024 08:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9AE0B67D;
+	Thu, 15 Feb 2024 08:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707985980; cv=none; b=oLpCvlyUoQWf7daACtmpKHIeluwvVrcpFvqdtIrQ7cnqKZ9XLjvM/WqnVcn7fAMZUeVrT/oaP61VKQvQyfR7XAgjl9SSYoT165P8lLsm1JdsYCFZaRXF0T0c05L2X/qLrnJV7q0aV403LkQU6P75JGs/DiPbFu6rEznVSzItJKc=
+	t=1707985951; cv=none; b=scFJ6IA2rSFVXstrJY6Gse8NZy1XolZC6a0kLymwkagHGUMrdSAWeREiFNVIOOpSt0GCKyQ4owJIs1v1SYSR2XB6GukXtDUwr6EP/QL5uDa8E5dHz3YiklFtjTN6LhpVZNFj4N4gbUphhdcU/Kg1qHFJyqeEZfz69glzt8A9Vmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707985980; c=relaxed/simple;
-	bh=40dRn8Rt8pwjXs544QFSNxow2CIt72ON5GhYkE/a1iY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BHRUYaqn7rjdgBwtgKGGdweC0enqOcFl3M+JLJOPRaD3GHU7TfaM6e4K5ojh8/ZCBKCZr0WorEF2hgv+9bNWsgLQFKBhMlR675OpWeJ+NmJtZ92RbmmAVpJyxprww7pwdb6mrZwtYHjFVlysZefc5aGjRd3GUeWkKyPYEoQHSIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=purw5bOU; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41F8W9nN041977;
-	Thu, 15 Feb 2024 02:32:09 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707985929;
-	bh=dhGYY3G/DrUwrWyrm5dmRSYgmfU1stnJgcj6QYV18GQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=purw5bOUsiqRnMiVBpyW1yQEemio5EG/cQG3GKX+YhHzHBi5MgAhboH33N5nmRHT1
-	 hZPrpc42dK4vi3XS7lMaWLrPN8FHhoVwzQLAk/MRwDkiGGsrH2va0BiGnvh7tlNVdH
-	 024RWSvyyAvcvsecckYDQ3QIvJpGzeNbb9OSpR9Q=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41F8W8dD036845
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 02:32:09 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 02:32:08 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 02:32:08 -0600
-Received: from localhost (ti.dhcp.ti.com [172.24.227.95] (may be forged))
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41F8W75Q022078;
-	Thu, 15 Feb 2024 02:32:08 -0600
-From: Devarsh Thakkar <devarsht@ti.com>
-To: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
-CC: <praneeth@ti.com>, <a-bhatia1@ti.com>, <j-luthra@ti.com>,
-        <devarsht@ti.com>
-Subject: [PATCH v3 1/2] dt-bindings: display: ti,am65x-dss: Add support for common1 region
-Date: Thu, 15 Feb 2024 14:02:04 +0530
-Message-ID: <20240215083205.2902634-2-devarsht@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215083205.2902634-1-devarsht@ti.com>
-References: <20240215083205.2902634-1-devarsht@ti.com>
+	s=arc-20240116; t=1707985951; c=relaxed/simple;
+	bh=UGfF3lZh/KRtVtdUp6G6TZfp0sNrsZF0XSORI0xUMqc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t/mRUZrrHF+pyq17F9j9WVDurhskwxTAgFPiUdXnmEVxM4Lm9lb3ddsJX301A9dSwrhOWLMvzp65P83dvV2YgNX+VaLAZCRm8ZQBrIYswJ4RFExOWBpwWm4FMZFl5LjiDrVyo8FlHv+JRDfbE6NER3W90Sn5AAeJaIlCiPJQN+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8QsKOXK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A71FC433F1;
+	Thu, 15 Feb 2024 08:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707985951;
+	bh=UGfF3lZh/KRtVtdUp6G6TZfp0sNrsZF0XSORI0xUMqc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i8QsKOXKyHAd6n28S9dhVqcePsxd7+GXhKkS0K6gYkoj6rN9LqZ0Rc0QgZiG1WZJu
+	 EW3mQrItGu4KHyMPz12l9rhBTpYClYR4MN+UWhFyF1dTjO/Z/DieqmrTYwjY1F21id
+	 tad+V68IP0d5n4lIQjhUELQMdh+lojWDIc/fUYYhfz5hshSl4mv8ruEG+ntj/ZDng5
+	 8gUJqbVJBI77WMkSVfI9ims40OuBZUZ+VfhwskM2AkUgnfekCz2pnukWlZEp7kVUIG
+	 6zElqNqeDA4KRJ+rVBGNOml2711HtD7oE0KnGfTja69xEjloD3YPq8j8nAD5LwmfeI
+	 koCu3N2PTpowQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	=?UTF-8?q?Pierre-Cl=C3=A9ment=20Tosi?= <ptosi@google.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] kallsyms: ignore ARMv4 thunks along with others
+Date: Thu, 15 Feb 2024 09:32:08 +0100
+Message-Id: <20240215083225.3976252-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,72 +61,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-TI keystone display subsystem present in AM65 and other SoCs such as AM62
-support two separate register spaces namely "common" and "common1" which
-can be used by two separate hosts to program the display controller as
-described in respective Technical Reference Manuals [1].
+From: Arnd Bergmann <arnd@arndb.de>
 
-The common1 register space has similar set of configuration registers as
-supported in common register space except the global configuration
-registers which are exclusive to common region.
+lld is now able to build ARMv4 and ARMv4T kernels, which means it can
+generate thunks for those (__ARMv4PILongThunk_*, __ARMv4PILongBXThunk_*)
+that can interfere with kallsyms table generation since they do not get
+ignore like the corresponding ARMv5+ ones are:
 
-This adds binding for "common1" register region too as supported by the
-hardware.
+Inconsistent kallsyms data
+Try "make KALLSYMS_EXTRA_PASS=1" as a workaround
 
-[1]:
-AM62x TRM:
-https://www.ti.com/lit/pdf/spruiv7 (Section 14.8.9.1 DSS Registers)
+Replace the hardcoded list of thunk symbols with a more general regex that
+covers this one along with future symbols that follow the same pattern.
 
-AM65x TRM:
-https://www.ti.com/lit/pdf/spruid7 (Section 12.6.5 DSS Registers)
-
-Fixes: 2d8730f1021f ("dt-bindings: display: ti,am65x-dss: Add dt-schema yaml binding")
-Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Fixes: 5eb6e280432d ("ARM: 9289/1: Allow pre-ARMv5 builds with ld.lld 16.0.0 and newer")
+Fixes: efe6e3068067 ("kallsyms: fix nonconverging kallsyms table with lld")
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-V2: Add Acked-by tag
-V3: Add Fixes tag
+v2: use a regular expression instead of listing each one.
 ---
- .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ scripts/mksysmap | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-index b6767ef0d24d..55e3e490d0e6 100644
---- a/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-+++ b/Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-@@ -37,6 +37,7 @@ properties:
-       - description: OVR2 overlay manager for vp2
-       - description: VP1 video port 1
-       - description: VP2 video port 2
-+      - description: common1 DSS register area
+diff --git a/scripts/mksysmap b/scripts/mksysmap
+index 9ba1c9da0a40..57ff5656d566 100755
+--- a/scripts/mksysmap
++++ b/scripts/mksysmap
+@@ -48,17 +48,8 @@ ${NM} -n ${1} | sed >${2} -e "
+ / __kvm_nvhe_\\$/d
+ / __kvm_nvhe_\.L/d
  
-   reg-names:
-     items:
-@@ -47,6 +48,7 @@ properties:
-       - const: ovr2
-       - const: vp1
-       - const: vp2
-+      - const: common1
+-# arm64 lld
+-/ __AArch64ADRPThunk_/d
+-
+-# arm lld
+-/ __ARMV5PILongThunk_/d
+-/ __ARMV7PILongThunk_/d
+-/ __ThumbV7PILongThunk_/d
+-
+-# mips lld
+-/ __LA25Thunk_/d
+-/ __microLA25Thunk_/d
++# lld arm/aarch64/mips thunks
++/ __[[:alnum:]]*Thunk_/d
  
-   clocks:
-     items:
-@@ -147,9 +149,10 @@ examples:
-                     <0x04a07000 0x1000>, /* ovr1 */
-                     <0x04a08000 0x1000>, /* ovr2 */
-                     <0x04a0a000 0x1000>, /* vp1 */
--                    <0x04a0b000 0x1000>; /* vp2 */
-+                    <0x04a0b000 0x1000>, /* vp2 */
-+                    <0x04a01000 0x1000>; /* common1 */
-             reg-names = "common", "vidl1", "vid",
--                    "ovr1", "ovr2", "vp1", "vp2";
-+                    "ovr1", "ovr2", "vp1", "vp2", "common1";
-             ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
-             power-domains = <&k3_pds 67 TI_SCI_PD_EXCLUSIVE>;
-             clocks =        <&k3_clks 67 1>,
+ # CFI type identifiers
+ / __kcfi_typeid_/d
 -- 
-2.34.1
+2.39.2
 
 
