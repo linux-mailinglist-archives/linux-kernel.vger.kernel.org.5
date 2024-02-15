@@ -1,301 +1,167 @@
-Return-Path: <linux-kernel+bounces-67700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4477856F62
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:34:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF73F856F6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD19A1C20F84
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 723E4286200
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2A61419BE;
-	Thu, 15 Feb 2024 21:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD17D1419A7;
+	Thu, 15 Feb 2024 21:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T57rtz5A"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kGX5XVcr"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2935513DBA4
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA6A78B67;
+	Thu, 15 Feb 2024 21:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708032832; cv=none; b=Zht6wB8E9B1Pgmi+2QxqP8qprcQRFxkpdXraW/g6Wz7sgrN8U+n/xFCGF6EDFDucyzTDu9dRe/Jmgr905KnTQHQvUbN9j4JmXx5gI6i6isqM+UojHyEKq2PdQuBOx2yJgLw12YbK42kPOr9tzvroOKpU2KBosCPgjPoxUVKCRsU=
+	t=1708033045; cv=none; b=aO2A7X9GhcDcFqPRyuHiVNZAu+L0prnB8+9T8p1opmX914KqwxedCCpRs0UF6f64GbIrSz5d+BCaT46DKRRQgrqP74j0P0Nx3Qa6T+APTOyhYHVeYbS1E/+FLxEtMVyNNLdkOlX4dDoTAhj6+KCyXoGepgpz57CNotGpgV3vhr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708032832; c=relaxed/simple;
-	bh=2UmlXYt8o/1rjCum/92wgAjcMp4ZHvYMHwH5IxaA3YM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OWc5PIkgewWpHkXjimTyQLPRiXPwv6i2wFx2W9vudvqXfvT3zdT2wUSAzyE9yFJt/A2It0364lNJSB5a8vN9kIe/hVk5tA3xfsk8f5LNSL3mMPJipf4krAOiFVklVgRDIEOUqp87Nj/4EEP4mDKULlJbhtd5STN5uxURP+yJhwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T57rtz5A; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc74ac7d015so1867637276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:33:50 -0800 (PST)
+	s=arc-20240116; t=1708033045; c=relaxed/simple;
+	bh=p/D9l2LdVjVoAxXGUB9gV8bM6nr49Q8Re2/x44lUbeI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KyzuRwtIb5WOZCN0xA9dH6UPHcnhbWBEJiJU/oZ8Cl1z1Tyh+HKEWd4gbC58pJfsLKdE+jSa9gkSrZOqugwDALaYo/E8tww6zPAaKzsuKsY2tZ0PFsuo9RhW+9iYxMvv/wG+kiPOPqLYB8NwyfSBF6BGPa9VpIJWV+/DlDMoSXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kGX5XVcr; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d11c55d7f2so20004831fa.2;
+        Thu, 15 Feb 2024 13:37:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708032830; x=1708637630; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AocB5QyyDp1HbztmHNs2CC7MOtPEN+TNVBfTVeVV9Fg=;
-        b=T57rtz5Akx1nshIzLI52Q71vlrczBF/l5Xd4g78L4K7ln1RuTzDOTXSdazGWR0sHKP
-         Yi/Io+ct/4M9U0uhobA+k1GafxIVEh6w5DIHLhilFeJoRbR9n0h0t0kK7fvVqdf9b8xH
-         ur/qfE3tVYoJhkw1JvtxXeiFPLEI+y6xEe9b6XvHYQ83qqu7myCk7nY02NAVmybXDDzE
-         tG0BBBNUbtLYObB8HMOlBrlEKyEal5q2bJxQzK6w9+fmsjm1wUfAGYznlP6qcGfeTW/8
-         oPkGn+KV+x8gdK9GlgQpXdbPz9FeRVMJFlQQIUGGco1XaiG18+BtvmD41pw4DAPsC/5T
-         qHYg==
+        d=gmail.com; s=20230601; t=1708033041; x=1708637841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ol+RYFc5wfSm1Xn8806GCkiU2EP3qs/UQCZpQ/EGEHo=;
+        b=kGX5XVcrX3gONT5gLe9rNRObvZ7YTAj3Vsk88u9YOAswgl9Z8bNuPMNoM/WxW32k3/
+         NwfmB7+j6h6jvYlcsIeLqzPx+IIXPDotqYbqE5pG9GVr5l8vyadIjdaaeGQK9CE1gYSU
+         eCaXXHFK1JVBGXhbQM4fSaCoNaYV4j9BCpk87Rte7cqxQ+eWMrxy1F07SFD+e+IXge7m
+         JniY8W738rtImcLukoxGkDAgfVJTI5gLeGeuIZ5Xc3bmt/cGlfAAgmKtRFAICd68qiL3
+         wpzse1kW0ykzpxA2/+ELjGK9CEjBoDSvPK9ASqmOCTHnSkE2JWikjsAbU2yIVYucwLmn
+         tIbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708032830; x=1708637630;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AocB5QyyDp1HbztmHNs2CC7MOtPEN+TNVBfTVeVV9Fg=;
-        b=c42xVoU29jUqz7cDRbXH5BOLAHJPWKFX72OseDMhgz5yJt2BttVqL7NVHI7XjP63/y
-         bJOlHJxLGatq4LvleHkOg51yg/rEGXT/1zPrjGQ4be2ONvdMUq0xdIlJz+PF3MrEhv/n
-         Koutz4t7LpahgkYwhruoxskGhXus+hjn5IzVa0Oezy+vuTacmQJZ5yVjs/rLnBuChWvF
-         cVW5mHCl/08twLJDloBltRCuLUKVOs5RSs7sYo1L9mKs/bI2MzlATYPa4hroMbsFFC8t
-         5LIj00M9p/1Qs7b38DT5ZFBd9QiJm2VafhcU7c2At8E/Fx2dnUQitd5kZ10FUGuU/HZL
-         5GlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvyszRNRjKVYXkv1zzLz5ro4R1iHcmgRT+YUG2FPACZnh7r9+Rwx0RDcu/x/SJyUPERJOGgnsnJM6ClabBmLZ0bJrDUdCdCeXJGZbJ
-X-Gm-Message-State: AOJu0YyCz1pvX8Kkinf45xuCbXrjzo23X78h+lXCMFYSZYuGaQJLLfY+
-	+0RFO0cuhqbR6qgR67Xho8QoPJ/jHh6B2stg3aUe7N55HOv3EWBhEkDcT0JNxV00RiIGY8WbFrD
-	66Q==
-X-Google-Smtp-Source: AGHT+IF5FQ3Ln0cnMaR3KbqRLrXioQ8PHYOdNvCYEMOGquKMF+QgPtB6WHvIfmmR1OQXYFMltmywBuxG+E0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1241:b0:dc6:e647:3fae with SMTP id
- t1-20020a056902124100b00dc6e6473faemr122134ybu.2.1708032830246; Thu, 15 Feb
- 2024 13:33:50 -0800 (PST)
-Date: Thu, 15 Feb 2024 13:33:48 -0800
-In-Reply-To: <Zc5wTHuphbg3peZ9@linux.dev>
+        d=1e100.net; s=20230601; t=1708033041; x=1708637841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ol+RYFc5wfSm1Xn8806GCkiU2EP3qs/UQCZpQ/EGEHo=;
+        b=eih42D+9h2KkuSMry6URUhXmN6AJXFsHtgKKTrXAxsePGSZamwF/Q3EWlZuoXZFzpn
+         sFcpsfo+bR4fu8J85o/IkvPx5OdGo8hlt+HOPOW//goqg7q9KKYItv7m23B1evfJ/0C3
+         TBRJlVFFOfD6AmSfdnHI6fDNTTN7ar9AgjNjcRrBpYCSIsQXkOUg3PU4gJsbm2ZL9eqb
+         ovilYlZ4iEXyJAxTRcYyp6fiuiLK48kmV5s8Am/T3pfBc5F5G7lUS/trut2BKE4yeD/C
+         ZXKSswzqZb4vsbSknpXw4yC6M/Mo0o2I6XJFNNS9eLGqH2NTrLU01OcunZc25hnBKy5H
+         VKnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWB0EUJadZLKYBiAY0yzdVY94DZYpHgnj755tzas1pgrWPnVe6Aa1w3gKXMPGg3yyyLyQ4FsWu3mm0JfB0DeCt1qCA8qeqJmCNAyfhY
+X-Gm-Message-State: AOJu0YxzHsas118Fizvcq7j6XHSXnvNBMoxC5yx93b/CMa6+Su+mx7U0
+	GPlikirWH2Tsie8ntYEOjkp3aT5bYarGfJ94lTIB0a8yZdiq3U616EQOun7Hpi+hjttbJufWO0x
+	xwD8OxbkMWexfOSyWCf15jVQ4DlxEgYqeh9I=
+X-Google-Smtp-Source: AGHT+IELuCSsPf84pwsOCk4aUHy02twIqt/HBSuX/1xhhd4uvCiI1n3TZxLr1CRHUsp046hOZUgGa3EdVp4gxfsG1kQ=
+X-Received: by 2002:a2e:b6c6:0:b0:2d0:fa56:84ce with SMTP id
+ m6-20020a2eb6c6000000b002d0fa5684cemr2104070ljo.52.1708033040935; Thu, 15 Feb
+ 2024 13:37:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215010004.1456078-1-seanjc@google.com> <20240215010004.1456078-3-seanjc@google.com>
- <Zc3JcNVhghB0Chlz@linux.dev> <Zc5c7Af-N71_RYq0@google.com> <Zc5wTHuphbg3peZ9@linux.dev>
-Message-ID: <Zc6DPEWcHh-TKCSD@google.com>
-Subject: Re: [PATCH 2/2] KVM: selftests: Test forced instruction emulation in
- dirty log test (x86 only)
-From: Sean Christopherson <seanjc@google.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Matlack <dmatlack@google.com>, Pasha Tatashin <tatashin@google.com>, 
-	Michael Krebs <mkrebs@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240214012328.BlueZ.1.I10eda6f375bc8dfedf4eef3a8cf6572c65803afc@changeid>
+In-Reply-To: <20240214012328.BlueZ.1.I10eda6f375bc8dfedf4eef3a8cf6572c65803afc@changeid>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Thu, 15 Feb 2024 16:37:08 -0500
+Message-ID: <CABBYNZ+MJRSAWHjgNTNwcWCdq5y0zBU5f8XJvr1tv3LCqvdKJw@mail.gmail.com>
+Subject: Re: [BlueZ PATCH] Bluetooth: hci_core: Skip hci_cmd_work if
+ hci_request is pending
+To: Hsin-chen Chuang <chharry@chromium.org>
+Cc: linux-bluetooth@vger.kernel.org, 
+	chromeos-bluetooth-upstreaming@chromium.org, 
+	Johan Hedberg <johan.hedberg@gmail.com>, Marcel Holtmann <marcel@holtmann.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024, Oliver Upton wrote:
-> On Thu, Feb 15, 2024 at 10:50:20AM -0800, Sean Christopherson wrote:
-> > Yeah, the funky flow I concocted was done purely to have the "no emulation" path
-> > fall through to the common "*mem = val".  I don't have a strong preference, I
-> > mentally flipped a coin on doing that versus what you suggested, and apparently
-> > chose poorly :-)
-> 
-> Oh, I could definitely tell this was intentional :) But really if folks
-> are going to add more flavors of emulated instructions to the x86
-> implementation (which they should) then it might make sense to just have
-> an x86-specific function.
+Hi Hsin-chen,
 
-Yeah, best prepare for the onslaught.  And if I base this on the SEV selftests
-series that adds kvm_util_arch.h, it's easy to shove the x86 sequence into a
-common location outside of dirty_log_test.c.  Then there are no #ifdefs or x86
-code in dirty_log_test.c, and other tests can use the helper at will.
+On Tue, Feb 13, 2024 at 12:24=E2=80=AFPM Hsin-chen Chuang <chharry@chromium=
+org> wrote:
+>
+> hci_cmd_work overwrites the hdev->sent_cmd which contains the required
+> info for a hci_request to work. In the real world, it's observed that
+> a request from hci_le_ext_create_conn_sync could be interrupted by
+> the authentication (hci_conn_auth) caused by rfcomm_sock_connect. When
+> it happends, hci_le_ext_create_conn_sync hangs until timeout; If the
+> LE connection is triggered by MGMT, it freezes the whole MGMT interface.
+>
+> Signed-off-by: Hsin-chen Chuang <chharry@chromium.org>
+> ---
+>
+>  net/bluetooth/hci_core.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index 34c8dca2069f..e3706889976d 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -4213,8 +4213,11 @@ static void hci_cmd_work(struct work_struct *work)
+>         BT_DBG("%s cmd_cnt %d cmd queued %d", hdev->name,
+>                atomic_read(&hdev->cmd_cnt), skb_queue_len(&hdev->cmd_q));
+>
+> -       /* Send queued commands */
+> -       if (atomic_read(&hdev->cmd_cnt)) {
+> +       /* Send queued commands. Don't send the command when there is a p=
+ending
+> +        * hci_request because the request callbacks would be overwritten=
+.
+> +        */
+> +       if (atomic_read(&hdev->cmd_cnt) &&
+> +           !hci_dev_test_flag(hdev, HCI_CMD_PENDING)) {
+>                 skb =3D skb_dequeue(&hdev->cmd_q);
+>                 if (!skb)
+>                         return;
+> --
+> 2.43.0.687.g38aa6559b0-goog
 
-It'll require some macro hell to support all four sizes, but that's not hard,
-just annoying.
 
-And it's a good excuse to do what I should have done in the first place, and
-make is_forced_emulation_enabled be available to all guest code without needing
-to manually check it in each test.
+This seems to be causing some mgmt-tester failures:
 
-Over 2-3 patches...
+Pair Device - Sec Mode 3 Success 1                   Timed out   22.753 sec=
+onds
+Pair Device - Sec Mode 3 Reject 1                    Timed out   22.533 sec=
+onds
+Pair Device - Sec Mode 3 Reject 2                    Timed out   22.526 sec=
+onds
 
----
- tools/testing/selftests/kvm/dirty_log_test.c  |  9 ++++++---
- .../selftests/kvm/include/kvm_util_base.h     |  3 +++
- .../kvm/include/x86_64/kvm_util_arch.h        | 20 +++++++++++++++++++
- .../selftests/kvm/lib/x86_64/processor.c      |  3 +++
- .../selftests/kvm/x86_64/pmu_counters_test.c  |  3 ---
- .../kvm/x86_64/userspace_msr_exit_test.c      |  9 ++-------
- 6 files changed, 34 insertions(+), 13 deletions(-)
+I think this is because we need to respond to an event with a command like:
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index babea97b31a4..93c3a51a6d9b 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -114,11 +114,14 @@ static void guest_code(void)
- 
- 	while (true) {
- 		for (i = 0; i < TEST_PAGES_PER_LOOP; i++) {
-+			uint64_t rand = READ_ONCE(random_array[i]);
-+			uint64_t val = READ_ONCE(iteration);
-+
- 			addr = guest_test_virt_mem;
--			addr += (READ_ONCE(random_array[i]) % guest_num_pages)
--				* guest_page_size;
-+			addr += (rand % guest_num_pages) * guest_page_size;
- 			addr = align_down(addr, host_page_size);
--			*(uint64_t *)addr = READ_ONCE(iteration);
-+
-+			vcpu_arch_put_guest((u64 *)addr, val, rand);
- 		}
- 
- 		/* Tell the host that we need more random numbers */
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 4b266dc0c9bd..4b7285f073df 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -610,6 +610,9 @@ void *addr_gva2hva(struct kvm_vm *vm, vm_vaddr_t gva);
- vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva);
- void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa);
- 
-+#ifndef vcpu_arch_put_guest
-+#define vcpu_arch_put_guest(mem, val, rand) do { *mem = val; } while (0)
-+#endif
- 
- static inline vm_paddr_t vm_untag_gpa(struct kvm_vm *vm, vm_paddr_t gpa)
- {
-diff --git a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-index 205ed788aeb8..3f9a44fd4bcb 100644
---- a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
-@@ -5,6 +5,8 @@
- #include <stdbool.h>
- #include <stdint.h>
- 
-+extern bool is_forced_emulation_enabled;
-+
- struct kvm_vm_arch {
- 	uint64_t c_bit;
- 	uint64_t s_bit;
-@@ -20,4 +22,22 @@ static inline bool __vm_arch_has_protected_memory(struct kvm_vm_arch *arch)
- #define vm_arch_has_protected_memory(vm) \
- 	__vm_arch_has_protected_memory(&(vm)->arch)
- 
-+/* TODO: Expand this madness to also support u8, u16, and u32 operands. */
-+#define vcpu_arch_put_guest(mem, val, rand) 						\
-+do {											\
-+	if (!is_forced_emulation_enabled || !(rand & 1)) {				\
-+		*mem = val;								\
-+	} else if (rand & 2) {								\
-+		__asm__ __volatile__(KVM_FEP "movq %1, %0"				\
-+				     : "+m" (*mem)					\
-+				     : "r" (val) : "memory");				\
-+	} else {									\
-+		uint64_t __old = READ_ONCE(*mem);					\
-+											\
-+		__asm__ __volatile__(KVM_FEP LOCK_PREFIX "cmpxchgq %[new], %[ptr]"	\
-+				     : [ptr] "+m" (*mem), [old] "+a" (__old)		\
-+				     : [new]"r" (val) : "memory", "cc");		\
-+	}										\
-+} while (0)
-+
- #endif  // _TOOLS_LINUX_ASM_X86_KVM_HOST_H
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-index aa92220bf5da..d0a97d5e1ff9 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-@@ -23,6 +23,7 @@
- vm_vaddr_t exception_handlers;
- bool host_cpu_is_amd;
- bool host_cpu_is_intel;
-+bool is_forced_emulation_enabled;
- 
- static void regs_dump(FILE *stream, struct kvm_regs *regs, uint8_t indent)
- {
-@@ -577,6 +578,7 @@ void kvm_arch_vm_post_create(struct kvm_vm *vm)
- 	vm_create_irqchip(vm);
- 	sync_global_to_guest(vm, host_cpu_is_intel);
- 	sync_global_to_guest(vm, host_cpu_is_amd);
-+	sync_global_to_guest(vm, is_forced_emulation_enabled);
- 
- 	if (vm->subtype == VM_SUBTYPE_SEV)
- 		sev_vm_init(vm);
-@@ -1337,6 +1339,7 @@ void kvm_selftest_arch_init(void)
- {
- 	host_cpu_is_intel = this_cpu_is_intel();
- 	host_cpu_is_amd = this_cpu_is_amd();
-+	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
- }
- 
- bool sys_clocksource_is_based_on_tsc(void)
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index ae5f6042f1e8..6b2c1fd551b5 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -21,7 +21,6 @@
- 
- static uint8_t kvm_pmu_version;
- static bool kvm_has_perf_caps;
--static bool is_forced_emulation_enabled;
- 
- static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
- 						  void *guest_code,
-@@ -35,7 +34,6 @@ static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
- 	vcpu_init_descriptor_tables(*vcpu);
- 
- 	sync_global_to_guest(vm, kvm_pmu_version);
--	sync_global_to_guest(vm, is_forced_emulation_enabled);
- 
- 	/*
- 	 * Set PERF_CAPABILITIES before PMU version as KVM disallows enabling
-@@ -609,7 +607,6 @@ int main(int argc, char *argv[])
- 
- 	kvm_pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
- 	kvm_has_perf_caps = kvm_cpu_has(X86_FEATURE_PDCM);
--	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
- 
- 	test_intel_counters();
- 
-diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-index ab3a8c4f0b86..a409b796bb18 100644
---- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
-@@ -12,8 +12,6 @@
- #include "kvm_util.h"
- #include "vmx.h"
- 
--static bool fep_available;
--
- #define MSR_NON_EXISTENT 0x474f4f00
- 
- static u64 deny_bits = 0;
-@@ -257,7 +255,7 @@ static void guest_code_filter_allow(void)
- 	GUEST_ASSERT(data == 2);
- 	GUEST_ASSERT(guest_exception_count == 0);
- 
--	if (fep_available) {
-+	if (is_forced_emulation_enabled) {
- 		/* Let userspace know we aren't done. */
- 		GUEST_SYNC(0);
- 
-@@ -519,7 +517,6 @@ static void test_msr_filter_allow(void)
- 	int rc;
- 
- 	vm = vm_create_with_one_vcpu(&vcpu, guest_code_filter_allow);
--	sync_global_to_guest(vm, fep_available);
- 
- 	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
- 	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
-@@ -550,7 +547,7 @@ static void test_msr_filter_allow(void)
- 	vcpu_run(vcpu);
- 	cmd = process_ucall(vcpu);
- 
--	if (fep_available) {
-+	if (is_forced_emulation_enabled) {
- 		TEST_ASSERT_EQ(cmd, UCALL_SYNC);
- 		vm_install_exception_handler(vm, GP_VECTOR, guest_fep_gp_handler);
- 
-@@ -791,8 +788,6 @@ static void test_user_exit_msr_flags(void)
- 
- int main(int argc, char *argv[])
- {
--	fep_available = kvm_is_forced_emulation_enabled();
--
- 	test_msr_filter_allow();
- 
- 	test_msr_filter_deny();
+< HCI Command: Create Conn.. (0x01|0x0005) plen 13  #241 [hci0] 16:25:38.69=
+9066
+        Address: 00:AA:01:01:00:00 (Intel Corporation)
+        Packet type: 0x0018
+          DM1 may be used
+          DH1 may be used
+        Page scan repetition mode: R2 (0x02)
+        Page scan mode: Mandatory (0x00)
+        Clock offset: 0x0000
+        Role switch: Allow peripheral (0x01)
+> HCI Event: Command Status (0x0f) plen 4           #242 [hci0] 16:25:38.70=
+1881
+      Create Connection (0x01|0x0005) ncmd 1
+        Status: Success (0x00)
+> HCI Event: Link Key Request (0x17) plen 6         #243 [hci0] 16:25:38.70=
+2375
+        Address: 00:AA:01:01:00:00 (Intel Corporation)
 
-base-commit: e072aa6dbd1db64323a407b3eca82dc5107ea0b1
--- 
+But because Create Connection is pending we cannot respond to Link Key
+Request, so it is actually a design problem if we cannot send commands
+because something is pending so perhaps we need to redesign how we
+store cmd_sent so we can have multiple outstanding commands rather
+than just one.
 
+--=20
+Luiz Augusto von Dentz
 
