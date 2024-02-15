@@ -1,39 +1,62 @@
-Return-Path: <linux-kernel+bounces-66778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD3E85616E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:24:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B8EF8561AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4D571C2278E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:24:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB569B34BF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B3E129A98;
-	Thu, 15 Feb 2024 11:24:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB5E53369;
-	Thu, 15 Feb 2024 11:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35F0129A8A;
+	Thu, 15 Feb 2024 11:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UOmLZR3g"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E767E53369;
+	Thu, 15 Feb 2024 11:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707996242; cv=none; b=gYDvp5Od0GXzUTwFS8sLT4ewcqrOut2/dyLGO57fXnz65SRxwW8Usl83LLcE1/QBBnZ5tplt+AP6ekGPDPKxypS5XrUeEF4gXkunMDuUYbbA+3sm8inUXhmNq5Xy7ebHZ5UJ+C4urFM7pYuza9MUtzTjJEafF81Yi/VePdT3TnA=
+	t=1707996262; cv=none; b=Q03rCQQRo+jaSN4Ff1OElow11wiGZrzsLiQ/6v9wHm6fdbp2xYZXdgZiUoyu+IZf0fMWto0Bi4ztHhJBr+WUt5QJ19qX1P7/gA2KneMvavjNR7EuQaZ+jIKNyVplU2oQI5vAbY7nzbMCb7akNJQA6pM3u9ZnarhKh3C02MAMr9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707996242; c=relaxed/simple;
-	bh=hVGzQRzhASRK0PBLcdMUoc1nqlbrfvpv32F2cqVIqwE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BP3sCe0Rou1DaR2Ybaj4fhYiTcQ1rtQ0V94p56fe1TO4vciDgfdQgzz5wOFGVJRDrA44uILpbM2kmTnIq2ZZ2M0cZdBgAtSgfIoW62E+KI1lSngB4B2FlPyopxWKW2svZaZlZzyOSficVM2chNYFmLQnkNdYS9XIjHdOqNiAdok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C631DA7;
-	Thu, 15 Feb 2024 03:24:41 -0800 (PST)
-Received: from [10.57.49.250] (unknown [10.57.49.250])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A84F73F7B4;
-	Thu, 15 Feb 2024 03:23:58 -0800 (PST)
-Message-ID: <b72c54bf-17a8-453c-8fbb-fbc90abdb45a@arm.com>
-Date: Thu, 15 Feb 2024 11:23:57 +0000
+	s=arc-20240116; t=1707996262; c=relaxed/simple;
+	bh=T40Bb/okSk8xC07J0s4tBjEbaqfT+JQiYdFRe1exttY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QWEIZxUsl5J3QkHg4OO+m2JGyRQaMNoMsS+w2CiWJ8y4jclN1g5pxIEwHYP5k1nahDf2Kh3Hxrq+5rA/yEMFsAOHnGNfhcPvMT+SvjvY+GDbw4yy7nJry371mJej9zJKuutNGAzrbIqQn9rVaHbh/lNmL4JvygwTU6mmx/izE18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UOmLZR3g; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41F9lUf4022733;
+	Thu, 15 Feb 2024 11:24:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=fuX4jRjU3Bu1HVqZnpt7tw+geePMvX9MHSSgoEALtGg=; b=UO
+	mLZR3gkffoJ2mhbzUuQ7bnbQVrNwGIz6royeUIJrhgCSkXIhL970zQSx6ob1QcVr
+	RC14NRAD6eFuA1R8B0npG3ngYma4PMDecU/0fj8RHlG99yE0wXeENeMedmiOJOaL
+	WWI0ouTEIec78yAXTibissim6hl/QLgiHy1yJckYVvUBbhILKiBrFdDZDxUjdYkJ
+	qy3QzvGjxmrE08rM19e0f9GgUXLbWqH3VAJ15glyx9+iGlbImbO4rgk0Qa8Ur6Sv
+	SifauzqlCMvpxr6MpbifYH9iTI1T3Q1esy8M2i7L79GnWmNBlT8ZDEevVgGlNGSK
+	R4zQqYxIXDmM8EKQVgcQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9e4h0f0r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 11:24:17 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41FBOGDl027876
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 11:24:16 GMT
+Received: from [10.217.198.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 15 Feb
+ 2024 03:24:15 -0800
+Message-ID: <bc40a8b6-de9b-4715-90fa-94eabdc2102f@quicinc.com>
+Date: Thu, 15 Feb 2024 16:54:12 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,274 +64,78 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 05/11] coresight: replicator: Move ACPI support from
- AMBA driver to platform driver
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-6-anshuman.khandual@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240123054608.1790189-6-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] soc: qcom: qcom_stats: Add DSPs and apss subsystem stats
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240215-qcom_stats-v1-1-4a2cf83d0bdd@quicinc.com>
+ <6ffa3094-ccbb-4947-9f28-e1437c9f500c@linaro.org>
+From: "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>
+In-Reply-To: <6ffa3094-ccbb-4947-9f28-e1437c9f500c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5M-CG8XxMQAiJFGmqk7wR5khkJaRlPUB
+X-Proofpoint-ORIG-GUID: 5M-CG8XxMQAiJFGmqk7wR5khkJaRlPUB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150090
 
-Hi Anshuman
-
-On 23/01/2024 05:46, Anshuman Khandual wrote:
-> Add support for the dynamic replicator device in the platform driver, which
-> can then be used on ACPI based platforms. This change would now allow
-> runtime power management for repliacator devices on ACPI based systems.
+On 2/15/2024 3:24 PM, Konrad Dybcio wrote:
+> On 15.02.2024 10:23, Maulik Shah wrote:
+>> Add SMEM items for compute, general purpose DSPs and application processor
+>> subsystem stats.
+>>
+>> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+>> ---
+>>   drivers/soc/qcom/qcom_stats.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
+>> index 0216fc24f2ca..c429d5154aae 100644
+>> --- a/drivers/soc/qcom/qcom_stats.c
+>> +++ b/drivers/soc/qcom/qcom_stats.c
+>> @@ -35,11 +35,15 @@ static const struct subsystem_data subsystems[] = {
+>>   	{ "wpss", 605, 13 },
+>>   	{ "adsp", 606, 2 },
+>>   	{ "cdsp", 607, 5 },
+>> +	{ "cdsp1", 607, 12 },
+>> +	{ "gpdsp0", 607, 17 },
+>> +	{ "gpdsp1", 607, 18 },
+>>   	{ "slpi", 608, 3 },
+>>   	{ "gpu", 609, 0 },
+>>   	{ "display", 610, 0 },
+>>   	{ "adsp_island", 613, 2 },
+>>   	{ "slpi_island", 613, 3 },
+>> +	{ "apss", 631, QCOM_SMEM_HOST_ANY },
 > 
-> The driver would try to enable the APB clock if available. Also, rename the
-> code to reflect the fact that it now handles both static and dynamic
-> replicators.
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > 
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Thanks for the review.
 
-I think the patch is doing three different things:
-
-1) Use new helper to register/remove AMBA/Platform drivers
-2) Refactor replicator_probe() to make sure it can be reused for 
-platform/amba driver, by moving the pm_runtime_put() to the callers.
-3) Actually moving the ACPI driver to Platform driver
-
-While (1) and (3) are obvious, (2) gave me hard time to review this
-patch, without proper description. If you don't mind, are you able to
-split the patch and add proper description of the 3 changes mentioned
-above.
-
-
-Kind regards
-Suzuki
-
-> ---
-> Changes in V4:
+> Although, giving it a spin on 8280, it's not there.. It is there
+> on 8450, but the reported count seems to coincide with cpuidle..
+> roughly min{/sys/bus/cpu/devices/cpu*/cpuidle/state0/usage).
 > 
-> - Added pm_runtime_disable() in replicator_platform_probe()
-> - Changed replicator_platform_remove() for platform_driver->remove_new()
-> 
->   drivers/acpi/arm64/amba.c                     |  1 -
->   .../coresight/coresight-replicator.c          | 81 ++++++++++---------
->   2 files changed, 43 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-> index 171b5c2c7edd..270f4e3819a2 100644
-> --- a/drivers/acpi/arm64/amba.c
-> +++ b/drivers/acpi/arm64/amba.c
-> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
->   	{"ARMHC503", 0}, /* ARM CoreSight Debug */
->   	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
->   	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
-> -	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
->   	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->   	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
->   	{"", 0},
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index 91d93060dda5..9b5f52725f43 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->    * @base:	memory mapped base address for this component. Also indicates
->    *		whether this one is programmable or not.
->    * @atclk:	optional clock for the core parts of the replicator.
-> + * @pclk:	APB clock if present, otherwise NULL
->    * @csdev:	component vitals needed by the framework
->    * @spinlock:	serialize enable/disable operations.
->    * @check_idfilter_val: check if the context is lost upon clock removal.
-> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->   struct replicator_drvdata {
->   	void __iomem		*base;
->   	struct clk		*atclk;
-> +	struct clk		*pclk;
->   	struct coresight_device	*csdev;
->   	spinlock_t		spinlock;
->   	bool			check_idfilter_val;
-> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
->   			return ret;
->   	}
->   
-> +	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
-> +	if (IS_ERR(drvdata->pclk))
-> +		return -ENODEV;
-> +
->   	/*
->   	 * Map the device base for dynamic-replicator, which has been
->   	 * validated by AMBA core
-> @@ -285,7 +291,6 @@ static int replicator_probe(struct device *dev, struct resource *res)
->   	}
->   
->   	replicator_reset(drvdata);
-> -	pm_runtime_put(dev);
->   
->   out_disable_clk:
->   	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
-> @@ -301,29 +306,33 @@ static int replicator_remove(struct device *dev)
->   	return 0;
->   }
->   
-> -static int static_replicator_probe(struct platform_device *pdev)
-> +static int replicator_platform_probe(struct platform_device *pdev)
->   {
-> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	int ret;
->   
->   	pm_runtime_get_noresume(&pdev->dev);
->   	pm_runtime_set_active(&pdev->dev);
->   	pm_runtime_enable(&pdev->dev);
->   
-> -	/* Static replicators do not have programming base */
-> -	ret = replicator_probe(&pdev->dev, NULL);
-> -
-> -	if (ret) {
-> -		pm_runtime_put_noidle(&pdev->dev);
-> +	ret = replicator_probe(&pdev->dev, res);
-> +	pm_runtime_put(&pdev->dev);
-> +	if (ret)
->   		pm_runtime_disable(&pdev->dev);
-> -	}
->   
->   	return ret;
->   }
->   
-> -static void static_replicator_remove(struct platform_device *pdev)
-> +static void replicator_platform_remove(struct platform_device *pdev)
->   {
-> -	replicator_remove(&pdev->dev);
-> +	struct replicator_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-> +
-> +	if (drvdata)
-> +		replicator_remove(&pdev->dev);
-> +
->   	pm_runtime_disable(&pdev->dev);
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_put(drvdata->pclk);
->   }
->   
->   #ifdef CONFIG_PM
-> @@ -334,6 +343,8 @@ static int replicator_runtime_suspend(struct device *dev)
->   	if (drvdata && !IS_ERR(drvdata->atclk))
->   		clk_disable_unprepare(drvdata->atclk);
->   
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_disable_unprepare(drvdata->pclk);
->   	return 0;
->   }
->   
-> @@ -344,6 +355,8 @@ static int replicator_runtime_resume(struct device *dev)
->   	if (drvdata && !IS_ERR(drvdata->atclk))
->   		clk_prepare_enable(drvdata->atclk);
->   
-> +	if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
-> +		clk_prepare_enable(drvdata->pclk);
->   	return 0;
->   }
->   #endif
-> @@ -353,31 +366,32 @@ static const struct dev_pm_ops replicator_dev_pm_ops = {
->   			   replicator_runtime_resume, NULL)
->   };
->   
-> -static const struct of_device_id static_replicator_match[] = {
-> +static const struct of_device_id replicator_match[] = {
->   	{.compatible = "arm,coresight-replicator"},
->   	{.compatible = "arm,coresight-static-replicator"},
->   	{}
->   };
->   
-> -MODULE_DEVICE_TABLE(of, static_replicator_match);
-> +MODULE_DEVICE_TABLE(of, replicator_match);
->   
->   #ifdef CONFIG_ACPI
-> -static const struct acpi_device_id static_replicator_acpi_ids[] = {
-> +static const struct acpi_device_id replicator_acpi_ids[] = {
->   	{"ARMHC985", 0}, /* ARM CoreSight Static Replicator */
-> +	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
->   	{}
->   };
->   
-> -MODULE_DEVICE_TABLE(acpi, static_replicator_acpi_ids);
-> +MODULE_DEVICE_TABLE(acpi, replicator_acpi_ids);
->   #endif
->   
-> -static struct platform_driver static_replicator_driver = {
-> -	.probe          = static_replicator_probe,
-> -	.remove_new     = static_replicator_remove,
-> +static struct platform_driver replicator_driver = {
-> +	.probe          = replicator_platform_probe,
-> +	.remove_new     = replicator_platform_remove,
->   	.driver         = {
-> -		.name   = "coresight-static-replicator",
-> +		.name   = "coresight-replicator",
->   		/* THIS_MODULE is taken care of by platform_driver_register() */
-> -		.of_match_table = of_match_ptr(static_replicator_match),
-> -		.acpi_match_table = ACPI_PTR(static_replicator_acpi_ids),
-> +		.of_match_table = of_match_ptr(replicator_match),
-> +		.acpi_match_table = ACPI_PTR(replicator_acpi_ids),
->   		.pm	= &replicator_dev_pm_ops,
->   		.suppress_bind_attrs = true,
->   	},
-> @@ -386,7 +400,13 @@ static struct platform_driver static_replicator_driver = {
->   static int dynamic_replicator_probe(struct amba_device *adev,
->   				    const struct amba_id *id)
->   {
-> -	return replicator_probe(&adev->dev, &adev->res);
-> +	int ret;
-> +
-> +	ret = replicator_probe(&adev->dev, &adev->res);
-> +	if (!ret)
-> +		pm_runtime_put(&adev->dev);
-> +
-> +	return ret;
->   }
->   
->   static void dynamic_replicator_remove(struct amba_device *adev)
-> @@ -416,27 +436,12 @@ static struct amba_driver dynamic_replicator_driver = {
->   
->   static int __init replicator_init(void)
->   {
-> -	int ret;
-> -
-> -	ret = platform_driver_register(&static_replicator_driver);
-> -	if (ret) {
-> -		pr_info("Error registering platform driver\n");
-> -		return ret;
-> -	}
-> -
-> -	ret = amba_driver_register(&dynamic_replicator_driver);
-> -	if (ret) {
-> -		pr_info("Error registering amba driver\n");
-> -		platform_driver_unregister(&static_replicator_driver);
-> -	}
-> -
-> -	return ret;
-> +	return coresight_init_driver("replicator", &dynamic_replicator_driver, &replicator_driver);
->   }
->   
->   static void __exit replicator_exit(void)
->   {
-> -	platform_driver_unregister(&static_replicator_driver);
-> -	amba_driver_unregister(&dynamic_replicator_driver);
-> +	coresight_remove_driver(&dynamic_replicator_driver, &replicator_driver);
->   }
->   
->   module_init(replicator_init);
+> Konrad
 
+yes apss stats should be available from sm8450 onward and count should 
+(not necessarily) coincide with 
+/sys/kernel/debug/pm_genpd/power-domain-cluster/idle_states, s1 usage 
+count on sm8450.
+
+DSP stats for gdsp0/gdsp1/cdsp1 are available in sa8775p.
+
+Thanks,
+Maulik
 
