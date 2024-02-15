@@ -1,131 +1,124 @@
-Return-Path: <linux-kernel+bounces-66695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED0785604D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:55:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31491856047
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D00A328401F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:55:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63A491C21471
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C129F1386AC;
-	Thu, 15 Feb 2024 10:41:01 +0000 (UTC)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BE9138485;
+	Thu, 15 Feb 2024 10:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="X1pu8P4t"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5144131E58;
-	Thu, 15 Feb 2024 10:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3595F131E5B;
+	Thu, 15 Feb 2024 10:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993661; cv=none; b=MGqVU6jrtksn6f1IIEu0Sk61KhN1VCRSyIizbjgSArsnq5hoFMqjQyPpdTsgtcB1ILhHaJmkP4YrrliSmL6+l64vUVO3BwzZ6wCxfPPub4JhsFv6E21qt56WBqeii2VxxMNf6c+VVw3RjzfanShztZXr1criHJWic2+ZTgGOMyo=
+	t=1707993650; cv=none; b=sPt2wZnqU+BvPPvvObvDnysL91T2eLPRllrBVOrS+XtsXRV7JiT2BZ6epVfMTV/y2pINmSKJznRIXxwQwxiqFt4P5AQz7PIHTSVaN6MwKk69CFMhlKLENA1EGYfv5SwFTWIyLOX+Vip0y0lD35BnbDFSNGOLT0ZJpJBiHWqXbBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993661; c=relaxed/simple;
-	bh=Y/NM07+ec8X945QyavCo9A6gSVvDgYuzRMM4zril0OE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TJ5sn/n4SQVzeQFkhfXd8suh3St9EFitCL4oJqkjyktRaSSeGur3IVSmp3wtA1qlUg26FzjbjE+xnN19+L6u2JWBaE56YzsAoOZfNpR9McSITvqScE2jojcVpFXGRfgH/dCVdgGiWsS5V/1Fgy7ENqiOJuQKHsWkII0jjobDj8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-607dec82853so2036107b3.3;
-        Thu, 15 Feb 2024 02:40:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707993658; x=1708598458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o57CBG8kxGbBsN3aPo1NEC+C0U+G30UcOmuYFLRG5FE=;
-        b=AbsSVirNgIKB7dEors/J5DIZnT9s4zcZaPaOfqa+ImOD85ZPXPLTdK1fvg6ci40AWE
-         THTGtnmrDd4W11CyIdR3oTiN4ngotBm7VBOT8WWJWlpu8B9BFhay1nbcA6OweC9/D8dK
-         lBh1SfCMkH9qyEJPax/o5E2No21gw2IqJ06OohN6mpxxzZo8GpKPeCOZ+8QlOmj0A1wO
-         UprHS0EsBpcXXBWn0uOrGNgv3iN2vwGvfFiik/gNxAJ+JXxY1SBKtYoAGU6gPZ2IWtEk
-         343lRPopqtF+TeUmlLVX1iz83Pn6TytSF6Tq4kijlOx60U8QizdL1XY+IikRj6R7aI4g
-         QqQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHZv4dIED/0CggRilhOPds+M2f+s+dg4wT7Ociet33fM+QS1HCaNJtlQ02RXu+rTkbAny5EKKc+z6tIj03HFtM3bSF58RGt6aboIqB
-X-Gm-Message-State: AOJu0YyraAXEu7SL2h2X76t57uvcq5+FxoPA4rqZbKssJkLvHV4KfBtK
-	W2QgFJSpMpxL6qoKFgm+Dw1UOYbnzEzGx6fz02X56S6SCuxkpD9R4nYR5/sl3fFYag==
-X-Google-Smtp-Source: AGHT+IEHf96BeW0BIv4Njrjh4PAwlj3UkutpCOGzr6rypxE+ZTQfYmR8LEmQYwbw8zWq5RSaPRS/HA==
-X-Received: by 2002:a0d:dd03:0:b0:607:8177:660 with SMTP id g3-20020a0ddd03000000b0060781770660mr1258057ywe.47.1707993657954;
-        Thu, 15 Feb 2024 02:40:57 -0800 (PST)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id x35-20020a81af63000000b00607b53565afsm187744ywj.97.2024.02.15.02.40.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:40:57 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so619249276.1;
-        Thu, 15 Feb 2024 02:40:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtgnUZEmipl7sJyPHH17DAmN7JclgfOPTGYojVLf1TxHu/1TVaFWka9/nczJmpZWZ3joZvTeaZRaikL//WjlWjXyV1a3G/+j+99ugq
-X-Received: by 2002:a25:ced3:0:b0:dc6:a74b:f200 with SMTP id
- x202-20020a25ced3000000b00dc6a74bf200mr1238211ybe.38.1707993657261; Thu, 15
- Feb 2024 02:40:57 -0800 (PST)
+	s=arc-20240116; t=1707993650; c=relaxed/simple;
+	bh=iSVp6dLTFhBiFSnkW1LO3rz+tjlpHFgMWN84cVY5kB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=m8i4d4XWBawoFgwzStrXM07NuZuTrzxjUDJg3uYdZ0fshl/1hFPC/jBs2UDPFZ/18CVIlVCsuDwxc4sCdcZ9+QFod7Ku30wacuWUDUB4YAkVD9W9njcAd4++xYo3GhWPpgzjNZKGo8cCJM0GRoI4QXO1S0cXalFADOTRL5+SeHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=X1pu8P4t; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707993647;
+	bh=iSVp6dLTFhBiFSnkW1LO3rz+tjlpHFgMWN84cVY5kB8=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=X1pu8P4tHnLAJ/NzR3FsmEfCfcYEmDufQsGBm2JjdNgoCsFy9qBRUt4hmItMSH4l4
+	 apKgyef/UKTllMBzNjg6Y0AZsGIHG0j709qo8k+S0XeJV8sqdJYXfWu0Sm46yFmKf1
+	 /xcqUMq9EBb7PLCC7NfFkKSKYYg7LrQxjD1/K+sX8Mny4Ng6ityj+etq4FBXeOUBBK
+	 NvMPWDKY6iInbjcQSDBJMjUHtOkDBaImq7mIeoeVQFHIyZ2/W3u5uXQSUzPPDL/2Bl
+	 QpYLHhF/XmcvNLiVjSKU0JFLadl/pn+efiDn+Oa7lisUWKo/yRSb83zkxUktkaK9n4
+	 53Lok0WcOI9vw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2A23737820B1;
+	Thu, 15 Feb 2024 10:40:47 +0000 (UTC)
+Message-ID: <680fcb9a-d7e2-4a15-877e-09c01024ed53@collabora.com>
+Date: Thu, 15 Feb 2024 11:40:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-11-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240212170423.2860895-11-andriy.shevchenko@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 11:40:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVtqWBi4Y1tj74m4V4kp-3cFe_FphKKeY7zOkrbMVkKRg@mail.gmail.com>
-Message-ID: <CAMuHMdVtqWBi4Y1tj74m4V4kp-3cFe_FphKKeY7zOkrbMVkKRg@mail.gmail.com>
-Subject: Re: [PATCH v2 10/15] auxdisplay: linedisp: Provide a small buffer in
- the struct linedisp
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] soc: mediatek: cmdq: Add cmdq_pkt_nop() helper
+ function
+Content-Language: en-US
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
+ <20240215004931.3808-5-chunkuang.hu@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240215004931.3808-5-chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Andy,
+Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
+> cmdq_pkt_nop() append nop command to the packet. nop command ask
+> GCE to do no operation.
+> 
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+>   drivers/soc/mediatek/mtk-cmdq-helper.c | 11 +++++++++++
+>   include/linux/soc/mediatek/mtk-cmdq.h  | 16 ++++++++++++++++
+>   2 files changed, 27 insertions(+)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> index e982997117c2..1be950b4ec7f 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -369,6 +369,17 @@ int cmdq_pkt_eoc(struct cmdq_pkt *pkt)
+>   }
+>   EXPORT_SYMBOL(cmdq_pkt_eoc);
+>   
+> +int cmdq_pkt_nop(struct cmdq_pkt *pkt, u8 shift_pa)
+> +{
+> +	struct cmdq_instruction inst = { {0} };
+> +
+> +	/* Jumping to next instruction is equal to no operation */
+> +	inst.op = CMDQ_CODE_JUMP;
+> +	inst.value = CMDQ_INST_SIZE >> shift_pa;
+> +	return cmdq_pkt_append_command(pkt, inst);
+> +}
+> +EXPORT_SYMBOL(cmdq_pkt_nop);
+> +
+>   int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
+>   {
+>   	struct cmdq_instruction inst = { {0} };
+> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
+> index a67f719dec0b..8179ba5238f9 100644
+> --- a/include/linux/soc/mediatek/mtk-cmdq.h
+> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
+> @@ -255,6 +255,17 @@ int cmdq_pkt_jump(struct cmdq_pkt *pkt, dma_addr_t addr, u8 shift_pa);
+>    */
+>   int cmdq_pkt_eoc(struct cmdq_pkt *pkt);
+>   
+> +/**
+> + * cmdq_pkt_nop() - Append nop command to the CMDQ packet, ask GCE
+> + *		    to do no operation.
 
-On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> There is a driver that uses small buffer for the string, when we
-> add a new one, we may avoid duplication and use one provided by
-> the line display library. Allow user to skip buffer pointer when
-> registering a device.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+  * cmdq_pkt_nop() - Append No-Operation (NOP) command to a CMDQ packet
 
-Thanks for your patch!
+After which...
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-> --- a/drivers/auxdisplay/line-display.c
-> +++ b/drivers/auxdisplay/line-display.c
-> @@ -330,8 +330,8 @@ int linedisp_register(struct linedisp *linedisp, stru=
-ct device *parent,
->         linedisp->dev.parent =3D parent;
->         linedisp->dev.type =3D &linedisp_type;
->         linedisp->ops =3D ops;
-> -       linedisp->buf =3D buf;
-> -       linedisp->num_chars =3D num_chars;
-> +       linedisp->buf =3D buf ? buf : linedisp->curr;
-> +       linedisp->num_chars =3D buf ? num_chars : min(num_chars, LINEDISP=
-_DEFAULT_BUF_SZ);
 
-I think it would be safer to return an error if buf =3D=3D NULL and
-num_chars < LINEDISP_DEFAULT_BUF_SZ.
-Else a careless driver that doesn't check linedisp->num_chars might
-overflow the buffer.
-
->         linedisp->scroll_rate =3D DEFAULT_SCROLL_RATE;
->
->         err =3D ida_alloc(&linedisp_id, GFP_KERNEL);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
