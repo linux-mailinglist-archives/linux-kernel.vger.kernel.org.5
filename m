@@ -1,206 +1,131 @@
-Return-Path: <linux-kernel+bounces-66432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90013855C9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E9A855CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 177F71F2EE4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:39:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA96F1F2EE5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BE413AC2;
-	Thu, 15 Feb 2024 08:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E81134CA;
+	Thu, 15 Feb 2024 08:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zZL84w98"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Oy65GiHF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B3E134CC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B0812B90
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707986364; cv=none; b=mLRZ/lZJCSaOo0AsOTM04BbhsFidMMRkZzewRW8zGowi2uffiKl4h4/LItOCwc9eugYkjdDH2iLYf40u+IDzAYQoqebEq5gMZHqLegwEYnFReTAQW/hUQJcJK46eG0gWHo53N97at6O302UnpaNeg+XJldiSfRraLVxLs/4Geqo=
+	t=1707986378; cv=none; b=Vj8eo0hgSYaBQ/TQx5EXMV/JTWw4ubFcJler8F0UfUVYY75Q3FmzlVjNz2sL6VhlQD5dIGLZg5XHTaccYWZqyihCz0XdjgvIaBr+qZS5DUMxNYapiDYejavKLYjT230YeRh/8lkbIjGurcllJJVV+28rcoGUM5GKwY4xZwkzbg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707986364; c=relaxed/simple;
-	bh=yC6kHSRvKkqYYdGQqM1omwhwYRYrDp3DukkCubobnU8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FrfTLyIjMUK07vHD4D5Evdn3H3OrJQ/uJG8Bfux1/3d3yv1yI/dw21xpFxH9XKKI5YOX2RYzFiwq74v9VowwWKvdh/eLEZW1jR3OH1Y8nVtcd/T80gbhWAzGovDHuPKJAqSKJhHRGhh674cNX8/+Q6+AdYZkjbfXqveRTIoBC3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zZL84w98; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a30e445602cso327042366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1707986360; x=1708591160; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wNQBz1sIK/4mg2JmHpaia1KSFPNVyM9uJkIcdSOuaC4=;
-        b=zZL84w983Jz3a3l9Wu1dyU8PSOrtI7pPJrzxN3fEjfIBXUAhGOyIP7lTZR8ON51y0f
-         wi9ptuGiPqrqwWfEU0vnfkOtMx5T1bztlMNul9PqsVpIK5Me03yNHjCBcOY21is+o0tP
-         meSfR6+jNiv1cz9J9X59mbFd5FpMowLxdnQpkxcstl7pt+hKgx8rtrkYj5SRpjcawuag
-         KARSlnVvq4XUhytqV3kD6NZP+DmSjc2r1Zn7K3Phx9cPcLu841bjnfaHQ1N7KV5qmezj
-         mhGOYYG0ZkJX67tBJZ5PjD1P/66JMZzp6Hw4DoZ+afzOBube1qni0sTH4BJwqBp0waNB
-         eZfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707986360; x=1708591160;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNQBz1sIK/4mg2JmHpaia1KSFPNVyM9uJkIcdSOuaC4=;
-        b=dfcxgLGxzdbuGK3T1jMy+NEmnSteBpNVoC7PIUqk3nhhavI9+C5DKrC7T+xjLxUy5u
-         CU5a4rCVupsKIO3zu1CRDNEJ35u+lBeVYoOxt87tDKf5IfenH9aXaqrFbZNvG/K1s36X
-         SKX02tww4RmO+jgk7NT0j4ro0upLjmmKAgDNiuBvebya9oMPHYrCdNUGQIdWjZJe70Df
-         shrmE75J0Mu1+uu0qv63DehmR2XiOcfjBmfRp0cCLNZDQPyciRaTPAxX3SFmwPI0Xo3g
-         Wjp3XOTTG+zyEbO+drcPdxQs0OeJT9zZ4UhUAE9sz3XzaqikjBTpnxgtqJl3j/vNcOm5
-         19Bg==
-X-Gm-Message-State: AOJu0YyJcYwekmnGOPGHSdEtGZCjjXBjDyvHgY8f30SS4A/zb8UaBbb/
-	UniKmMhlOX8NXVL7p2At7Mhpk2DYUipoMP1w6oHipqXYR+72Asd6vJLFL68JsYg=
-X-Google-Smtp-Source: AGHT+IFXMkjC59dZDD/bZU7bp5dc4sjhNvSGvhU/k6lBcUDwSv7Zh1XkBkihkLA/y57EYSoY6y7gYg==
-X-Received: by 2002:a17:906:c791:b0:a3d:20ec:7d1a with SMTP id cw17-20020a170906c79100b00a3d20ec7d1amr4142606ejb.11.1707986360322;
-        Thu, 15 Feb 2024 00:39:20 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id vx1-20020a170907a78100b00a3d8be700ddsm318508ejc.98.2024.02.15.00.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 00:39:19 -0800 (PST)
-Message-ID: <7be10595-3852-4fec-a53c-b7d8ddde84c3@linaro.org>
-Date: Thu, 15 Feb 2024 09:39:18 +0100
+	s=arc-20240116; t=1707986378; c=relaxed/simple;
+	bh=nU2GWl8pjQTzoRKcy5LbXTwzOcvRte+6I5y9OLsNnfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oSgZzSf8Ap5ufStocPXV2DD1scCuX8p1dXKRUscgnKzTpditXShfjCX5zOOSScF4+fADXQdRGtEaZ62iYoLgin6TLaoh6EaBigTaetdKMVq1wuMVgUsZFn79KbnM1EnkGfxQZGZiH0Gl+3SySBTgL5TYUHs1a7Xf24eyEcoRCj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Oy65GiHF; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707986375;
+	h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:in-reply-to:in-reply-to:  references:references;
+	bh=bakj0FATNvoSdsfDbqmxKCUpth/6U6kxf5U1T4MpHTM=;
+	b=Oy65GiHF3n1MqHhGE6GPSJfWgwS1Tae5ZiemPq8wocRDQeeTyksLgiKYNVv80ppR07iaQa
+	XprdqsI8Wqwprk9PgubyJ7vQKnc2JDvMKu+amfHS2hk4s2qUSB1gMvBDtezQ9NdX/HAlmg
+	kzQ0fRzu8jgFSHqm3IijCW0yKIA8mNI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-594-AvOsWZVoPEKLoWO4iKeIkQ-1; Thu,
+ 15 Feb 2024 03:39:32 -0500
+X-MC-Unique: AvOsWZVoPEKLoWO4iKeIkQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B67BA280A9A8;
+	Thu, 15 Feb 2024 08:39:31 +0000 (UTC)
+Received: from tucnak.zalov.cz (unknown [10.39.192.8])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 73F0E20110C4;
+	Thu, 15 Feb 2024 08:39:31 +0000 (UTC)
+Received: from tucnak.zalov.cz (localhost [127.0.0.1])
+	by tucnak.zalov.cz (8.17.1/8.17.1) with ESMTPS id 41F8dR9K1207786
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 09:39:28 +0100
+Received: (from jakub@localhost)
+	by tucnak.zalov.cz (8.17.1/8.17.1/Submit) id 41F8dPiY1207783;
+	Thu, 15 Feb 2024 09:39:25 +0100
+Date: Thu, 15 Feb 2024 09:39:25 +0100
+From: Jakub Jelinek <jakub@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew Pinski (QUIC)" <quic_apinski@quicinc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] Kconfig: Explicitly disable asm goto w/ outputs on
+ gcc-11 (and earlier)
+Message-ID: <Zc3NvWhOK//UwyJe@tucnak>
+Reply-To: Jakub Jelinek <jakub@redhat.com>
+References: <CAKwvOdk_obRUkD6WQHhS9uoFVe3HrgqH5h+FpqsNNgmj4cmvCQ@mail.gmail.com>
+ <DM6PR02MB40587AD6ABBF1814E9CCFA7CB84B2@DM6PR02MB4058.namprd02.prod.outlook.com>
+ <CAHk-=wi3p5C1n03UYoQhgVDJbh_0ogCpwbgVGnOdGn6RJ6hnKA@mail.gmail.com>
+ <ZcZyWrawr1NUCiQZ@google.com>
+ <CAKwvOdmKaYYxf7vjvPf2vbn-Ly+4=JZ_zf+OcjYOkWCkgyU_kA@mail.gmail.com>
+ <CAHk-=wgEABCwu7HkJufpWC=K7u_say8k6Tp9eHvAXFa4DNXgzQ@mail.gmail.com>
+ <CAHk-=wgBt9SsYjyHWn1ZH5V0Q7P6thqv_urVCTYqyWNUWSJ6_g@mail.gmail.com>
+ <CAFULd4ZUa56KDLXSoYjoQkX0BcJwaipy3ZrEW+0tbi_Lz3FYAw@mail.gmail.com>
+ <CAHk-=wiRQKkgUSRsLHNkgi3M4M-mwPq+9-RST=neGibMR=ubUw@mail.gmail.com>
+ <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 18/22] dt-bindings: chrome: Add binding for ChromeOS Pogo
- pin connector
-Content-Language: en-US
-To: Stephen Boyd <swboyd@chromium.org>, chrome-platform@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
- Pin-yen Lin <treapking@chromium.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Benson Leung <bleung@chromium.org>,
- Guenter Roeck <groeck@chromium.org>
-References: <20240210070934.2549994-1-swboyd@chromium.org>
- <20240210070934.2549994-19-swboyd@chromium.org>
- <18ac05fb-a78d-4e95-a73d-461f509cdc5f@linaro.org>
- <CAE-0n50Y_GRMt8km=XjGC5Zm5dvb2t4gccznJn9HEFS4p7y8fQ@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAE-0n50Y_GRMt8km=XjGC5Zm5dvb2t4gccznJn9HEFS4p7y8fQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh2LQtWKNpV-+0+saW0+6zvQdK6vd+5k1yOEp_H_HWxzQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 15/02/2024 01:07, Stephen Boyd wrote:
-> Quoting Krzysztof Kozlowski (2024-02-11 05:39:36)
->> On 10/02/2024 08:09, Stephen Boyd wrote:
->>> diff --git a/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml b/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml
->>> new file mode 100644
->>> index 000000000000..5ba68fd95fcd
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/chrome/google,pogo-pin-connector.yaml
->>> @@ -0,0 +1,61 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
-> [...]
->>
->>> +properties:
->>> +  compatible:
->>> +    const: google,pogo-pin-connector
->>> +
->>> +  "#address-cells":
->>> +    const: 1
->>> +
->>> +  "#size-cells":
->>> +    const: 0
->>> +
->>> +  port:
->>> +    $ref: /schemas/graph.yaml#/properties/port
->>> +    description: Connection to USB2 port providing USB signals
->>> +    required:
->>> +      - endpoint
->>
->> Drop required.
+On Wed, Feb 14, 2024 at 04:11:05PM -0800, Linus Torvalds wrote:
+> On Wed, 14 Feb 2024 at 10:43, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Based on the current state of
+> >
+> >     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=113921
+> >
+> > I would suggest this attached kernel patch [...]
 > 
-> Why? I'd like to make it so you can't have the node defined without
-> connecting it up to the rest of the system. Is that bad?
+> Well, that "current state" didn't last long, and it looks like Jakub
+> found the real issue and posted a suggested fix.
+> 
+> Anyway, the end result is that the current kernel situation - that
+> adds the workaround for all gcc versions - is the best that we can do
+> for now.
 
-Hm, I double checked and you're right. I thought endpoint is required
-anyway by graph.yaml in dtschema, but it seems it is not.
+Can it be guarded with
+#if GCC_VERSION < 140100
+so that it isn't forgotten?  GCC 14.1 certainly will have a fix for this
+(so will GCC 13.3, 12.4 and 11.5).
+Maybe it would be helpful to use
+#if GCC_VERSION < 140000
+while it is true that no GCC 14 snapshots until today (or whenever the fix
+will be committed) have the fix, for GCC trunk it is up to the distros
+to use the latest snapshot if they use it at all and would allow better
+testing of the kernel code without the workaround, so that if there are
+other issues they won't be discovered years later.  Most userland code
+doesn't actually use asm goto with outputs...
 
-> 
->>
->>
->>> +
->>> +patternProperties:
->>> +  "^keyboard@[0-9a-f]{1,2}$":
->>> +    description: The detachable keyboard
->>
->> If this is detachable why do you define it in DT? Only hard-wired USB
->> devices, which need some sort of special handling. are described in DT.
-> 
-> From the commit text:
-> 
->  We expect to find a keyboard on the other side of this connector with a
->  specific vid/pid, so describe that as a child device at the port of the
->  usb device connected upstream.
-> 
-> ChromeOS userspace is checking that the connected device downstream of
-> this port has the expected vid/pid to quickly rule out USB keyboards
-> that aren't the detachable keyboard. I wanted to express this in DT so
-> that it didn't live in ChromeOS userspace forever.
-
-OK,
-
-Best regards,
-Krzysztof
+	Jakub
 
 
