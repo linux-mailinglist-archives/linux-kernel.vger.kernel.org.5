@@ -1,113 +1,168 @@
-Return-Path: <linux-kernel+bounces-67784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFAA8570B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:48:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFE48570B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 925501F22591
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:48:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2B0E283B0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E156D1419AD;
-	Thu, 15 Feb 2024 22:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4F61419AD;
+	Thu, 15 Feb 2024 22:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O869b/tj"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DARco0iC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E1441A87;
-	Thu, 15 Feb 2024 22:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB6513B298;
+	Thu, 15 Feb 2024 22:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708037291; cv=none; b=kMi21VxkRXOCclYLqTHCL79+9t4ox8xKts0NFpaLt/5FIEPCfXWa1tlqqyCWxuERRuq13OjGiUSlmasEFKLv7nHwAgOIDnJOlantIDtU8d7LLv+PpBsqDFJHBaEmoguXRvpUY8FdcjoPNLRfmWfigAh1qcbmPF9erlPNDv4PUFY=
+	t=1708037331; cv=none; b=Z505DMCScV6sJoGH4Wqz5QfRHgpG3v5BgUIMSrKkHDFoSYHitw7kSzWOBhnRHWIqr4xnrHYEJWczXU7JrTNMnpo1ij1UPZi+r/2+0U/N4WbOApky1G7QQYhmBPYglW//INSqTtz4+yVcVSXe3Ff73tZEVZ0/7vj8QP6lYlomuc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708037291; c=relaxed/simple;
-	bh=/kWliuY+oG1YGeiKJ1UUmE2TUPvHlC+v3vpcBhn1ISg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mD6ooGTKQmK1mtFUqoZNzNI1+ec1j20iojacZBO23W3lE24TaFcSODxCof7qrOyUV4EOJ+p/oM0hzby9aRLlhfe0QJk5euSCSXZxeAnRq1MiVMaSx6Y7Pq+09R6MJhPFQvAsQjppla3l9P/OpibB4R61E0VfTPoSpGzmpUiTmMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O869b/tj; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-411de7c6b3dso10958305e9.3;
-        Thu, 15 Feb 2024 14:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708037288; x=1708642088; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VxZz8dpdlBG3f4JnaEViziH04upv3BIHYbzmShbS36A=;
-        b=O869b/tjCbq72ocV+gFLIHARD3m86QP8X1cAkVmIVrXKVjec/40dXAzE4L5j6vpxGN
-         G37E0MCo+hM5vWetQgh86794+HyvZRJ7wQ/gi5//qBD/zdgdI29wBYbH0tu1E6fhr0d5
-         z+YqpI8soXl2gFK4Sor1b+9cTQLMj+9FjH+ttzgu+0p+rBLOffTNFN5Iv1/bpyqXfMW5
-         kNZoBZNhJdF9WvajH4LkjMGPMfczHwpyhNbQeUyw+5FRpuGkWlnIaTNlhH3o2z96mkqd
-         PK9csP/VDKfo10JJJmZYDK9RMzUJLL8L4q51EEuPW+7QCzIwZwB9qPHpahdrRAc7M36C
-         X0lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708037288; x=1708642088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VxZz8dpdlBG3f4JnaEViziH04upv3BIHYbzmShbS36A=;
-        b=ZceB4IxEmPmtPGLaGhgHLYFVpUbKjy2f8P/YiQnIq73DD9n0xLU+iOa74fzDMOmCGy
-         6iyUuVl8xBNwzZOH8NKJcxxEhlyj0+LmKiPelOVmOoX4/8mPCEhFJejX47SyDxoqJBkX
-         bJexhjDdoQO4s0OB3tI7XFYyejP01OBp7TYiJT40rszHoPenS+/EqY0gswJSLtrMGSx/
-         hVJAtKSqT9ia0p9aCHVTovmyJk4TDeVYh5yPd4oe/glFGwJGAenUU/zoklkcwOlgmNHd
-         YOVTtt89AMqUgXTamPo1uuVsEXNhMSoXUJUOYJvebrUxI1hmXH6IHOh1MiEiffM47Naf
-         xADg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQKFolgSgY9SjwrWr0gcrS0OCfrGdyn3lrfqIn6bUkdBUvGbJspqGBxpVLDDwUzcQ0eed29pRkiwPspI5op5tJv6mumTExHLt9lbDG
-X-Gm-Message-State: AOJu0Yz1IvrGjuQzTM3Nz5EpR8aHUKFIQvzS1GDOIN3gCwY/GCX9u1VX
-	9xx6Do09big93SODVPAycsjpbKnwDBAy30sGR4XAJXvVJoBT36Wl
-X-Google-Smtp-Source: AGHT+IEHcn7vuCmdD0vbj0K6OCuGp4jwkwobudrNE34EGoVaEDBiYwLOq3sO8rU1BKDdccJHXR7NqA==
-X-Received: by 2002:a05:600c:3b28:b0:410:1d3b:3424 with SMTP id m40-20020a05600c3b2800b004101d3b3424mr2460999wms.28.1708037287695;
-        Thu, 15 Feb 2024 14:48:07 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id l3-20020a1c7903000000b00410b98a5c77sm442936wme.32.2024.02.15.14.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 14:48:07 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: David Airlie <airlied@redhat.com>,
-	dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] agp/amd64: remove redundant assignment to variable i
-Date: Thu, 15 Feb 2024 22:48:06 +0000
-Message-Id: <20240215224806.2074087-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708037331; c=relaxed/simple;
+	bh=O2YipuwbWV1YLastP336dH3q8Zkm6CgW4TI5yh0PFMM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=WHPx1FoG366V3821XzheezXPF93ie1i6xihgrFVwPi0kY62swn8u3dJeY5PezE89l+r3JVhCHEGkR57JUyQ7Ypsvlm8nGqCbFFY/Jrcz9fqf68jztXQB6NpnVpjVKiidcqjxFwlc0BdUXD8G4uMRJwQZ4Lirtx4hd1JASR1spvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DARco0iC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9DAC433C7;
+	Thu, 15 Feb 2024 22:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708037331;
+	bh=O2YipuwbWV1YLastP336dH3q8Zkm6CgW4TI5yh0PFMM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DARco0iCdfuae92XExh7ksU1jOCySljoFJvUjTDn6qsullpN+UZD19SQnJFqhMYAZ
+	 oOm+fymLMFt8D+F9JZKcJYJsu3fAkB0Xfg6t5w4Y8bHGlrMdP//45q1dE8IjOYoDXb
+	 P21Fkvnul+Og6eWw2GUVO+Duw3g99sqJQjsFXikQ=
+Date: Thu, 15 Feb 2024 14:48:49 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, David Hildenbrand
+ <david@redhat.com>, Barry Song <21cnbao@gmail.com>, John Hubbard
+ <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm/filemap: Allow arch to request folio size for
+ exec memory
+Message-Id: <20240215144849.aba06863acc08b8ded09a187@linux-foundation.org>
+In-Reply-To: <20240215154059.2863126-1-ryan.roberts@arm.com>
+References: <20240215154059.2863126-1-ryan.roberts@arm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The variable i is being initialized with a value that is never read,
-it is being re-assigned in the next for-loop statement. The
-initialization is redundant and can be removed.
+On Thu, 15 Feb 2024 15:40:59 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
 
-Cleans up clang scan build warning:
-drivers/char/agp/amd64-agp.c:336:2: warning: Value stored to 'i' is
-never read [deadcode.DeadStores]
+> Change the readahead config so that if it is being requested for an
+> executable mapping, do a synchronous read of an arch-specified size in a
+> naturally aligned manner.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/char/agp/amd64-agp.c | 1 -
- 1 file changed, 1 deletion(-)
+Some nits:
 
-diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
-index ce8651436609..47bd3b8a54b4 100644
---- a/drivers/char/agp/amd64-agp.c
-+++ b/drivers/char/agp/amd64-agp.c
-@@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
- 	if (!amd_nb_has_feature(AMD_NB_GART))
- 		return -ENODEV;
- 
--	i = 0;
- 	for (i = 0; i < amd_nb_num(); i++) {
- 		struct pci_dev *dev = node_to_amd_nb(i)->misc;
- 		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
--- 
-2.39.2
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1115,6 +1115,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
+>   */
+>  #define arch_wants_old_prefaulted_pte	cpu_has_hw_af
+> 
+> +/*
+> + * Request exec memory is read into pagecache in at least 64K folios. The
+> + * trade-off here is performance improvement due to storing translations more
+> + * effciently in the iTLB vs the potential for read amplification due to reading
+
+"efficiently"
+
+> + * data from disk that won't be used. The latter is independent of base page
+> + * size, so we set a page-size independent block size of 64K. This size can be
+> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
+> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
+> + * use.
+> + */
+> +#define arch_wants_exec_folio_order() ilog2(SZ_64K >> PAGE_SHIFT)
+> +
+
+To my eye, "arch_wants_foo" and "arch_want_foo" are booleans.  Either
+this arch wants a particular treatment or it does not want it.
+
+I suggest a better name would be "arch_exec_folio_order".
+
+>  static inline bool pud_sect_supported(void)
+>  {
+>  	return PAGE_SIZE == SZ_4K;
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index aab227e12493..6cdd145cbbb9 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -407,6 +407,18 @@ static inline bool arch_has_hw_pte_young(void)
+>  }
+>  #endif
+> 
+> +#ifndef arch_wants_exec_folio_order
+> +/*
+> + * Returns preferred minimum folio order for executable file-backed memory. Must
+> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
+> + * preference and mm will not special-case executable memory in the pagecache.
+> + */
+
+I think this comment contains material which would be useful above the
+other arch_wants_exec_folio_order() implementation - the "must be in
+range" part.  So I suggest all this material be incorporated into a
+single comment which describes arch_wants_exec_folio_order().  Then
+this comment can be removed entirely.  Assume the reader knows to go
+seek the other definition for the commentary.
+
+> +static inline int arch_wants_exec_folio_order(void)
+> +{
+> +	return -1;
+> +}
+> +#endif
+> +
+>  #ifndef arch_check_zapped_pte
+>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
+>  					 pte_t pte)
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 142864338ca4..7954274de11c 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3118,6 +3118,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
+>  	}
+>  #endif
+> 
+> +	/*
+> +	 * Allow arch to request a preferred minimum folio order for executable
+> +	 * memory. This can often be beneficial to performance if (e.g.) arm64
+> +	 * can contpte-map the folio. Executable memory rarely benefits from
+> +	 * read-ahead anyway, due to its random access nature.
+
+"readahead"
+
+> +	 */
+> +	if (vm_flags & VM_EXEC) {
+> +		int order = arch_wants_exec_folio_order();
+> +
+> +		if (order >= 0) {
+> +			fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+> +			ra->size = 1UL << order;
+> +			ra->async_size = 0;
+> +			ractl._index &= ~((unsigned long)ra->size - 1);
+> +			page_cache_ra_order(&ractl, ra, order);
+> +			return fpin;
+> +		}
+> +	}
+> +
+>  	/* If we don't want any read-ahead, don't bother */
+>  	if (vm_flags & VM_RAND_READ)
+>  		return fpin;
 
 
