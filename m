@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-67388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B3B856AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:18:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F18B856AC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 629C71C22A0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:18:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FCCC28B974
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908DD1369AD;
-	Thu, 15 Feb 2024 17:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36EC31386B3;
+	Thu, 15 Feb 2024 17:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cdHbLKkV"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZNZQkbr"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F0D137C21;
-	Thu, 15 Feb 2024 17:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DC313848E;
+	Thu, 15 Feb 2024 17:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017479; cv=none; b=iKvOyKJhHMsPN4F8hURG/g1y7d+mdfl8kQhckW7er2473RUifQ4fPYkM/7ZFNK0E7RdDx+qynLQWQctOKXzpTCDjrgeTa9xH1BEprq9gj+FqF6+c22JJsBkg9tSFxF98IYZheHkqOc1s2fuqnUBKgGMF83js999PYgOoJ/LNJ3w=
+	t=1708017481; cv=none; b=R4RDpq9oeIL5AS0fP1OWVU+XdGIBHVkwQYUdbcrpUBPnljjpdj3RTF1bDfO8LdwnBTS3f3ULi5VD7pV9giB/b3Jnwx9uibDiT322G99OGKkRYyzQyddet/pR5V/QBxZAc5UIFhuvz+anULRuhKWLYWu/IyOtg1zmQe/OnPcsz/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017479; c=relaxed/simple;
-	bh=1cFvs/yZBROdCDOH3bBEZnxHv6CCc4ReMbEKdtps5dE=;
+	s=arc-20240116; t=1708017481; c=relaxed/simple;
+	bh=3niBVDG2P9zo7HyZa3mOAK6Iv/Wd2/y/+iNeqLtGf9g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Cmtsy79BJny1qA9OLvoagb+G4INxkl3dQSxKRz+axKZK6QcR5H3PaboOtpsBWspijSuh0O4X5juOciHbDrWWdQu8Fz2uhDY6piiEik5UF/tfhzRVtDKPg7c/V7w5zW6wFRyje5UQ7Qqz/rfZPRnQoTURWEV/vHYHw2CeGLyY7oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cdHbLKkV; arc=none smtp.client-ip=209.85.167.47
+	 MIME-Version:Content-Type; b=ivDIErb8YQMIe+Er1oR/riwRQKgtyEvcXehuWHWUswGhMDtIb3HM1BztJSZayAEKafBLV1B54WirmZAna+jtyenImyqA3BIBaBVQY+bCfkdV/jC9QtCTL956wSnbUOuJohYREz2oPHTO9biYZTIYqO6Oh91Xan0PrXPz/nwwR60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZNZQkbr; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51197ca63f5so1467199e87.1;
-        Thu, 15 Feb 2024 09:17:57 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5118290fcd8so1323199e87.3;
+        Thu, 15 Feb 2024 09:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708017476; x=1708622276; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708017478; x=1708622278; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0j2TlmYMB0WpVBSNLXRrWkXu6rdw2V73xcSAet+Oj5o=;
-        b=cdHbLKkV60acE+19IiFy6KnaIRrjj+Es8gqarIXrQuQB8jyKWvxLvBo9oy2GdrxUZI
-         UJYXkQNNs289L2mW31E09UgkZ+BCZu0dkVDh743Z5M3zHX4ZjI+8MTU/LGmOy9LkCt8i
-         cR7GufIysw8PT+cL41jxZaNot2cG4lQLg0zsqV1adqEJHKaq2RcVsDoS4STl02n6+xo1
-         Z4CxSFAh3M3KZ5iJ+6QM91zfupk+CWVP/3oUzFIQHaVIZ1bGHmGHbBSfupEa1SjrhXZu
-         ax5w5lE/3NyOg7r4rFUaeM/5+hzA371JNMLLfTqnWg9YlobprR1fRHxUYYmJVto7ZpSF
-         v4VA==
+        bh=MBvrFBfn8f9ygHbETBGRtk4r0X8Ogb6B9wjwrJRvRzk=;
+        b=LZNZQkbrB1i8LwT1am5RTu/Ps+KnQDPOLUACX3UkrPXPD9Qu/ttnYPZ0/dWG19yJ/w
+         HjTDNZbFevgWplS9EtKsHQ37PjX1k7AtSuSDTSWOM094K8QLei4af3ka71OGkQYNZbkU
+         VO7UKZcETrkQ/Ez6hxJBUN4pz/9Ev6q0rj86LuZ+C+x0xwavf3zvH+L2puyg5OvlaztM
+         8uVeMa8GcjGKLbDqK7rftJeXWmmFJybROpMMBTn1sswVkwYgrbRmFj4iq5TosjzRS4Wa
+         pki7SeJru/II2iyjj5tmaRb3FtGiYariu/tkQ0HpWm1yqCGw9QwlYi8kudezHPaNAH17
+         yHNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708017476; x=1708622276;
+        d=1e100.net; s=20230601; t=1708017478; x=1708622278;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0j2TlmYMB0WpVBSNLXRrWkXu6rdw2V73xcSAet+Oj5o=;
-        b=W3ILaWQ0dPRYq8Bb7pKYieXpN+CedIC5+TCgZdAIwHZUXP4KDGwy8S04h0rSzG0PcL
-         2GaGvsTY8rNQZ0F9Jrl6NHkGEXXCEbLRbXvQyYaXEatSlxInyQNgWEALSlaWQOav8crw
-         pToSdAk0PH7eoG/pw8lAZFtgPoiEoxjjgL0C8JI75j37afFvV16QWZzkZY8qCfZPkzWG
-         1RnVb1wwrZnpgIOc24iJPd+oQbpX11L4ngxTTpEp/u7t2qf0Odq7jMYUDg/pE/laYovy
-         FCiqaOmN0y0UgyFL8a1RssNETnM/5h2Q0UmZsxI8nIHpXfAXrzEyMGCwKj9asntGvzyR
-         6DxA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTiKE0EmHCsnQORF/SRC7VjmtQlHnsLKmKutzSsJdeh8Che8CTvZqZBPj1Q1ZJQAwiDFvUfmxYa/kq2i/4JrnNtEeYOlp89i8EqTCL7i7zldYXBfDU+m+mPi9j7eK/1i0c7cZWQTvQRpimMkmd77wvRpcHbUB0qPbnueyWo7j+UbXY1nRkcQ==
-X-Gm-Message-State: AOJu0YyAXKI4oYLvwASG0AT4rvtg3BsE2gQ66uQuZL33EGLjHvCY9csk
-	goOdFRuEY3/0k0vWoKd8GHGpn8rqpAiTtGQLaSBGOAkvcIwHHwHz
-X-Google-Smtp-Source: AGHT+IGoO+RXYgHQLbgqjhVJRXkBUTgbP71wwTsa/RJMwTYGWhGWzBPYoo3JwDsgzbTfrBBCB0fJsg==
-X-Received: by 2002:ac2:51aa:0:b0:511:69bf:d1f7 with SMTP id f10-20020ac251aa000000b0051169bfd1f7mr2089806lfk.50.1708017476028;
-        Thu, 15 Feb 2024 09:17:56 -0800 (PST)
+        bh=MBvrFBfn8f9ygHbETBGRtk4r0X8Ogb6B9wjwrJRvRzk=;
+        b=nx0EAIZ7Psjg6+HcES9uAD6wFVNPKPKd2m138crwXDjWMZd+OWQAiHGusitSNUcvRr
+         qMenPrbbNhNEYD0CCJrQhgfKc4lcjvrMX5dRI74iwP/K2DxHTY+ig20TFalfOZvM/0NF
+         RGh5PE9ypYbBeVQw0pFhWGMm46ZMpauM/FpyZGG4WKnZxrcUkEtTk5bFBZ/v9sJOGDFR
+         L1l0McOwoP2S/frEcSI9Cej1HzAxukdM2IvkvcTOY68z7S/aHnKtqXBFo4fWnKxRJoG7
+         EQRPEqGcAhkbR+WR6NLn6aYBrf23+UcL3KFkumRwaY1mhbLGw5ipQ0sPn8t//f5tHd7G
+         Hmdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVEElUU9jbDAJhGRrell0mN9W+Y00F6vmOqXxy+9s3+8z3YAZB07Fn+xAFQyZ2graeoFDe/TZvEpq9ODDq83ixs/+EV9frZsuEMLrFViIIjs/mr0qk3+8v8RQzFW5wAPKTwtKo32R3GwKj3lwQihdxyp90HMBf1c9qoOqXsrhTEufSLHtXWzQ==
+X-Gm-Message-State: AOJu0YxnLZbLgZ37JTAbKYYgHW7opqiVfxZu/Cje3teO0drk5maugv4u
+	dp9vn/q9jyBFhZTFjxMiJuHMSQjbmspFDvGkQ9GiMFMz3Z9huB9X
+X-Google-Smtp-Source: AGHT+IHRq81umpSNWlY4tVOq5fL8rl3vkqUJ1BPGXG8FJFRYOTGILq0K/V+l/UgBiY7XhIG+BMh8HA==
+X-Received: by 2002:a05:6512:1289:b0:512:55c9:6aad with SMTP id u9-20020a056512128900b0051255c96aadmr2145079lfs.10.1708017477781;
+        Thu, 15 Feb 2024 09:17:57 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id w7-20020a05651234c700b00511503f9ac5sm308277lfr.231.2024.02.15.09.17.55
+        by smtp.gmail.com with ESMTPSA id f4-20020ac251a4000000b00511ad5c3487sm309263lfk.276.2024.02.15.09.17.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 09:17:55 -0800 (PST)
+        Thu, 15 Feb 2024 09:17:57 -0800 (PST)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -79,9 +79,9 @@ Cc: Serge Semin <fancer.lancer@gmail.com>,
 	linux-mips@vger.kernel.org,
 	linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] mips: zboot: Fix "no previous prototype" build warning
-Date: Thu, 15 Feb 2024 20:17:28 +0300
-Message-ID: <20240215171740.14550-4-fancer.lancer@gmail.com>
+Subject: [PATCH 4/4] tty: mips_ejtag_fdc: Fix passing incompatible pointer type warning
+Date: Thu, 15 Feb 2024 20:17:29 +0300
+Message-ID: <20240215171740.14550-5-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240215171740.14550-1-fancer.lancer@gmail.com>
 References: <20240215171740.14550-1-fancer.lancer@gmail.com>
@@ -94,61 +94,40 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Without having the putc() prototype forwardly declared the next
-build-warning is printed:
+mips_ejtag_fdc_encode() method expects having a first argument passed of
+the "u8 **" type, meanwhile the driver passes the "const char **" type.
+That causes the next build-warning:
 
-arch/mips/boot/compressed/uart-prom.c:6:6: warning: no previous prototype for ‘putc’ [-Wmissing-prototypes]
-..
+drivers/tty/mips_ejtag_fdc.c: In function ‘mips_ejtag_fdc_console_write’:
+drivers/tty/mips_ejtag_fdc.c:343:32: error: passing argument 1 of ‘mips_ejtag_fdc_encode’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+   word = mips_ejtag_fdc_encode(&buf_ptr, &buf_len, 1);
+                                ^
+drivers/tty/mips_ejtag_fdc.c:216:24: note: expected ‘const u8 ** {aka const unsigned char **}’ but argument is of type ‘const char **’
+ static struct fdc_word mips_ejtag_fdc_encode(const u8 **ptrs,
+                        ^~~~~~~~~~~~~~~~~~~~~
 
-Fix that by adding the "decompress.h" header file with the putc() function
-declaration to the source files which have the method redefined.
+Fix it by altering the type of the pointer which is passed to the
+mips_ejtag_fdc_encode() method.
 
+Fixes: ce7cbd9a6c81 ("tty: mips_ejtag_fdc: use u8 for character pointers")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- arch/mips/boot/compressed/uart-16550.c   | 2 ++
- arch/mips/boot/compressed/uart-alchemy.c | 2 ++
- arch/mips/boot/compressed/uart-prom.c    | 2 ++
- 3 files changed, 6 insertions(+)
+ drivers/tty/mips_ejtag_fdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
-index 09dcd2c561d9..db618e72a0c4 100644
---- a/arch/mips/boot/compressed/uart-16550.c
-+++ b/arch/mips/boot/compressed/uart-16550.c
-@@ -8,6 +8,8 @@
+diff --git a/drivers/tty/mips_ejtag_fdc.c b/drivers/tty/mips_ejtag_fdc.c
+index aac80b69a069..afbf7738c7c4 100644
+--- a/drivers/tty/mips_ejtag_fdc.c
++++ b/drivers/tty/mips_ejtag_fdc.c
+@@ -309,7 +309,7 @@ static void mips_ejtag_fdc_console_write(struct console *c, const char *s,
+ 	unsigned int i, buf_len, cpu;
+ 	bool done_cr = false;
+ 	char buf[4];
+-	const char *buf_ptr = buf;
++	const u8 *buf_ptr = buf;
+ 	/* Number of bytes of input data encoded up to each byte in buf */
+ 	u8 inc[4];
  
- #include <asm/addrspace.h>
- 
-+#include "decompress.h"
-+
- #if defined(CONFIG_MACH_LOONGSON64) || defined(CONFIG_MIPS_MALTA)
- #define UART_BASE 0x1fd003f8
- #define PORT(offset) (CKSEG1ADDR(UART_BASE) + (offset))
-diff --git a/arch/mips/boot/compressed/uart-alchemy.c b/arch/mips/boot/compressed/uart-alchemy.c
-index 8ec63011e7dc..003967c084b3 100644
---- a/arch/mips/boot/compressed/uart-alchemy.c
-+++ b/arch/mips/boot/compressed/uart-alchemy.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <asm/mach-au1x00/au1000.h>
- 
-+#include "decompress.h"
-+
- void putc(char c)
- {
- 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
-diff --git a/arch/mips/boot/compressed/uart-prom.c b/arch/mips/boot/compressed/uart-prom.c
-index a8a0a32e05d1..5fa3b9945333 100644
---- a/arch/mips/boot/compressed/uart-prom.c
-+++ b/arch/mips/boot/compressed/uart-prom.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <asm/setup.h>
- 
-+#include "decompress.h"
-+
- void putc(char c)
- {
- 	prom_putchar(c);
 -- 
 2.43.0
 
