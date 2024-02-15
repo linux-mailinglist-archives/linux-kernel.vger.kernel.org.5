@@ -1,202 +1,92 @@
-Return-Path: <linux-kernel+bounces-66260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43A8D855969
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:12:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43ACD85591C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD9BC1F2CF5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:12:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C820FB25CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C25DDCB;
-	Thu, 15 Feb 2024 03:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vsl1yFIr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A4014A12;
+	Thu, 15 Feb 2024 03:07:07 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525B3611B;
-	Thu, 15 Feb 2024 03:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F5515D1
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707966533; cv=none; b=b7d+ZQ+ZdxstqR72As7cd8cqUKT1IExZenJmv974hft1OvRpUCYdTbU/FdEb1cctDLjbxl3Wi51HzKBN0/khsTugPfxQD+uijZ+UF4WTmRfnR/qvV1ACOTMCQNganY3bQb4cBYfKMB1lIEEfIfUWtkqp0wS74p+qxWxPBNZkSe8=
+	t=1707966427; cv=none; b=d25CpSLzH1e4cHp9IkwtjZk94RkBrtllWIz/ulbkmtVlRCF2slho1B/cBfOjHAJyTCCgntQ5fJik3cQGnj7unNxbZapgJ5PnSksVS1VbKB37ZCMt6ORRAfHRXkXZOunkAnvNbM2UkTwtpysrdRoYyFPOWOytdzkG4y/U1An8C6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707966533; c=relaxed/simple;
-	bh=qvmE9ozt+922Am67EghiGlMAntqBBBPRw+LPiyCAFes=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hx1NARbaEEZZ+y9qvvzGn9gv440KdljKsMddgcabRwIAdmyRzvcTvmzqBbh0co3YM0zKMo+EJFS1IO/RXXrzrYpeV4URJZXdNw7zF27Cl6/aD7K8IF6O3vsxSR0tMdfTCYQ3ixORaQBm/H89slJckjTr+wQPP7cJIBw5Ub/Duh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vsl1yFIr; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707966532; x=1739502532;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qvmE9ozt+922Am67EghiGlMAntqBBBPRw+LPiyCAFes=;
-  b=Vsl1yFIrzGyB74w6qHdmSe/75lA/Y91AMd/wze4YnSKqCyO1X5CssomT
-   +sDLZbk4EDil7qThVTwxstsX5KGjIFtOv/+MuX9vwiBi8+kAXe/pzDThB
-   GcPblx2k1nstDqF8xuDmRwTRDoWRXjelIdUhwI+gIuRUB72n3LZdfsfwO
-   vDZiifomVst5GFCaWpz8PZfVdb4eW8txWamopT9xQYjSgopR8Fz1bHSJ5
-   /nqXn7AoFcz1jcvvCVPXAXsZ2FglZ3Eva92kbU7rgGIh9v9TpNL5dImf/
-   jNmKyb6GXJGQ6H/GkiYS48akk5ddilcDoejfwjkkdDpOZDtP8z1L0JPYQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="19461453"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="19461453"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2024 19:08:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="3385871"
-Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by fmviesa009.fm.intel.com with ESMTP; 14 Feb 2024 19:08:35 -0800
-From: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-To: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-	David E Box <david.e.box@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <Jose.Abreu@synopsys.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Andrew Halaney <ahalaney@redhat.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Voon Wei Feng <weifeng.voon@intel.com>,
-	Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-	Lai Peter Jun Ann <jun.ann.lai@intel.com>,
-	Abdul Rahim Faizal <faizal.abdul.rahim@intel.com>
-Subject: [PATCH net-next v5 9/9] stmmac: intel: interface switching support for ADL-N platform
-Date: Thu, 15 Feb 2024 11:04:59 +0800
-Message-Id: <20240215030500.3067426-10-yong.liang.choong@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
-References: <20240215030500.3067426-1-yong.liang.choong@linux.intel.com>
+	s=arc-20240116; t=1707966427; c=relaxed/simple;
+	bh=+WH7uPzfjj81wqBb60oGRmq5wR6eVikk7Rh/pPaG/zM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=jt3I7fmYfP5J7n/1rIFGDiSdGfEmu31bIm4VVwVk/RdyiXlabKnDQk8y26oMuRJzf/k3ZnuH9HBQB2kVXdzik063l+8gPNKnvmQbsTjCrxWAvM+r29FpCq+spsynSfbsWWkXnAzCvFT7IPzQ9KO0Fg73cNFTKP+d6M+ZMtcbuIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363d169c770so5257495ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Feb 2024 19:07:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707966425; x=1708571225;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hu3WnfFcFlDDxQZ/5rA1nzDSVs6Azrnu1Ol+niXifK4=;
+        b=WvhG5XGo3jXkO1aAHdKowHAXuz10QztNLaUDgO66Mlr+D79BwFnrLdV0xbVPsb1YZH
+         0xty6KUjrmgEXw/5SySx32Ij/E0gJ7UhJv6VqLN5+TXTPTArkDrV8rq4zFtVq9g/IbqB
+         qjHR9EcVa7tS8375J5qW/AWcw2sUG5kde0268u2zIlcFizKQrWKdPEN+VlUyyFXsgd6+
+         /kDUwo8XqZEfvmaen4q5RTR0QgVtj2RJEwWv3vauvyI3t8jxAkEddwA1zlFzIpLWBv3k
+         PSmyaGMjETDu2ONU7kDWlQAHqgd7M/jwdXg4hNreLWSccfr/U94SZr4VFnRlj/jRu1Xr
+         J7pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVGNmtrWCa5S2zzJ+l0TSrL6dNxW0a13z8jtYQmh4na/n+90A7gdhfyXGwhjEbDULRRVyrrZjwr7DenELUwRJcPw5MX7fLzxH09MSyO
+X-Gm-Message-State: AOJu0YzAM2GjeOKwI0ykrs/YinUQS9yKuLPYyOK5QbCUwkrKQtJe8BV1
+	nIqXwn1sGnvgWop5Pi/QDEuTVPQ+gCCOG9SXOVb1AOViYMERDbmEMSEhcckGZn6ya9RhDLnWeZV
+	yLuk7SrB9cwljNjIc639t/TWaASQvZSw9tE3CWJ5jbnc+ltu+8S4WfDU=
+X-Google-Smtp-Source: AGHT+IH0mUXBoVo6kd1a3ZPvV61p0PAgEUateH+/Hk/zY01riz1kIj9fB3Dkx22kScLVWX8T2JXv6d2RzarTpAUDpK8IWZiQczjE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:154f:b0:363:de50:f7bb with SMTP id
+ j15-20020a056e02154f00b00363de50f7bbmr27964ilu.2.1707966424876; Wed, 14 Feb
+ 2024 19:07:04 -0800 (PST)
+Date: Wed, 14 Feb 2024 19:07:04 -0800
+In-Reply-To: <0000000000005c72b5060abf946a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b0fcc061162ec09@google.com>
+Subject: Re: [syzbot] [reiserfs?] kernel BUG in entry_points_to_object
+From: syzbot <syzbot+927b0cd57b86eedb4193@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	paul@paul-moore.com, reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-'intel_get_pcs_neg_mode' and 'intel_config_serdes' was provided to
-handle interface mode change for ADL-S platform.
+syzbot suspects this issue was fixed by commit:
 
-Modphy register lane was provided to configure serdes on interface
-mode changing.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 49 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  2 +
- 2 files changed, 50 insertions(+), 1 deletion(-)
+    fs: Block writes to mounted block devices
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index c79d8e3c3b24..f0f3d35bdb69 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -992,6 +992,53 @@ static int adls_sgmii_phy1_data(struct pci_dev *pdev,
- static struct stmmac_pci_info adls_sgmii1g_phy1_info = {
- 	.setup = adls_sgmii_phy1_data,
- };
-+
-+static int adln_common_data(struct pci_dev *pdev,
-+			    struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->rx_queues_to_use = 6;
-+	plat->tx_queues_to_use = 4;
-+	plat->clk_ptp_rate = 204800000;
-+
-+	plat->safety_feat_cfg->tsoee = 1;
-+	plat->safety_feat_cfg->mrxpee = 0;
-+	plat->safety_feat_cfg->mestee = 1;
-+	plat->safety_feat_cfg->mrxee = 1;
-+	plat->safety_feat_cfg->mtxee = 1;
-+	plat->safety_feat_cfg->epsi = 0;
-+	plat->safety_feat_cfg->edpp = 0;
-+	plat->safety_feat_cfg->prtyen = 0;
-+	plat->safety_feat_cfg->tmouten = 0;
-+
-+	intel_priv->tsn_lane_registers = adln_tsn_lane_registers;
-+	intel_priv->max_tsn_lane_registers = ARRAY_SIZE(adln_tsn_lane_registers);
-+
-+	return intel_mgbe_common_data(pdev, plat);
-+}
-+
-+static int adln_sgmii_phy0_data(struct pci_dev *pdev,
-+				struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->bus_id = 1;
-+	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->max_speed = SPEED_2500;
-+	plat->serdes_powerup = intel_serdes_powerup;
-+	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->get_pcs_neg_mode = intel_get_pcs_neg_mode;
-+	plat->config_serdes = intel_config_serdes;
-+	intel_priv->pid_modphy = PID_MODPHY1;
-+
-+	return adln_common_data(pdev, plat);
-+}
-+
-+static struct stmmac_pci_info adln_sgmii1g_phy0_info = {
-+	.setup = adln_sgmii_phy0_data,
-+};
-+
- static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
- 	{
- 		.func = 6,
-@@ -1374,7 +1421,7 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1, &tgl_sgmii1g_phy1_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0, &adls_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1, &adls_sgmii1g_phy1_info) },
--	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &tgl_sgmii1g_phy0_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &adln_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, RPLP_SGMII1G, &tgl_sgmii1g_phy0_info) },
- 	{}
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 093eed977ab0..2c6b50958988 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -124,8 +124,10 @@ static const struct pmc_serdes_regs pid_modphy1_2p5g_regs[] = {
- 	{}
- };
- 
-+static const int adln_tsn_lane_registers[] = {6};
- static const int ehl_tsn_lane_registers[] = {7, 8, 9, 10, 11};
- #else
-+static const int adln_tsn_lane_registers[] = {};
- static const int ehl_tsn_lane_registers[] = {};
- #endif /* CONFIG_INTEL_PMC_IPC */
- 
--- 
-2.34.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12e6241c180000
+start commit:   98b1cc82c4af Linux 6.7-rc2
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=52c9552def2a0fdd
+dashboard link: https://syzkaller.appspot.com/bug?extid=927b0cd57b86eedb4193
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101b9214e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fb7214e80000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
