@@ -1,118 +1,120 @@
-Return-Path: <linux-kernel+bounces-67085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86959856609
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB7C85660D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432F5286F12
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:34:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DE0F1C22575
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA642132461;
-	Thu, 15 Feb 2024 14:33:54 +0000 (UTC)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01426132C0E;
+	Thu, 15 Feb 2024 14:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jfnLugIp"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F74131E39;
-	Thu, 15 Feb 2024 14:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09D969DF0;
+	Thu, 15 Feb 2024 14:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708007634; cv=none; b=eK7PBl3OKijrxXeWRbEwbvYthdMQO6PjtG7HYUEs1EjNeLKa9n40Qn7zKhLvkGoFLuFJ3tN23wFm19qG4P5RbyoPibHCTEVfjPpaVQBnDeekNvuiBirLiaxmcFwsWiB58TaqZer+tGc669UroUckeWZP5PZn4z+8b/m5ffRfJMo=
+	t=1708007636; cv=none; b=d7wpQ1dLefc89cOlagZQmLk8IaujAsmSoENKCsbagI1NYbQ/c+vbHfOvqkWKlY7Gsr3SB5K/QZ8amJgFvnEWd/I8u+exDmB4ZzbxrovH7d40Kk2gHbwUYP1N4tCaGWf2gFUpZ2huBgWhC3cKAI0qmNqw6vMQS/7ytAlsVzwHar8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708007634; c=relaxed/simple;
-	bh=P7xNhav6aJfwhARb1uRFeRs+f3vK41om6Ya4wO7sFs0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VDLUkQJTEWHhDTeZJKqBLonsdQJ00Q7Sxbw3kI6wVo+2OlSoJBEyKOj4e4HRzuH0ml2XpN8hC5cpvxMhU5deh+iq4YikNPVegTIUDGao12V2Oyr2X99yXSEPcRnwNk4+XchSBtCkHJF+8Lm92RNOSaqUheU+NnaFR5cUMlkE5eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so703047276.1;
-        Thu, 15 Feb 2024 06:33:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708007630; x=1708612430;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wRnGHYlf9o6eH3AsZCqpvdC1oI/90IKUzu5Kv/VNKDw=;
-        b=hyH2DSq1nRbcqkHhpc5PS/K92TWx3fWan7mJewXZuduh07OZgmFkLwhnagFiNF60rL
-         WdIy4lR/f4WkxJyMe8Hw0vpU9mvNN1QKaqiQOn3Twgeje11lDp45lOufINaHMOsA26jJ
-         /8J5M+Rp2GLt0sjnYQ0+E0kXjIgN3qJ5R7+7X3ysXV/KTFyQ1vlJR2i/yptivsLneCKH
-         G2Qvnn1nPFY+aL+irfTfNJ+57esv14vBRoDQIPDz9Cal/ddeI9NmXZ7f/1iU//xJEgH2
-         qpJrxckOIsdwRaI30yh2oFXPtzP2Y6MWQP7MHg2l8paCOGCg0rRiQCpmccPWsC6BwvFR
-         z0CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2KS0acN/xqohpuRVWjnrzZMWiNyfvArn+SmBuiZMc/m7aJL5Y/USXkbt7BFwrQq3T5QQHF+19S6VX5py1vo8yWR+/c1C4HYVfXqyrHg0CSwmYarIzW0+EbXTF9OqHTYasr97D7jg3VekwF9P9GcL+n9ov15Ycdk7nuwzRisrFSTAl73VGZjTSD/5+jyZ6JqfbVQrUg2R+Uxs9gJRzVMRPDgsLM+sL/lZupLI=
-X-Gm-Message-State: AOJu0YzrX4w/bulkRYMBPtZ0p5EPpiHX9gEnMC69OPTaCbRZ5eXn/0Sv
-	rU0iFwfcYYPYNV3M7gO/clUIhkhTK1roqGOdXhJRHSzLdROqt3I9JSWV8Onx6efB9g==
-X-Google-Smtp-Source: AGHT+IGpyxPfTAi9hYB3cwg+Y26aSU1R09q970/E7gjueMFlzULKfbAnef4pgFv39u3LuV5v7k4yQw==
-X-Received: by 2002:a25:c8c1:0:b0:dc6:c670:c957 with SMTP id y184-20020a25c8c1000000b00dc6c670c957mr3662276ybf.32.1708007630429;
-        Thu, 15 Feb 2024 06:33:50 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id g19-20020a25db13000000b00dcdb7d232f9sm212789ybf.4.2024.02.15.06.33.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 06:33:50 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607e54b6cf5so2101237b3.0;
-        Thu, 15 Feb 2024 06:33:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVnISvEHkT3uZLUBb7bGGqWNJeyO5s6JqyvvBIB1BGOeUTBTlCoFB3tVCqIBHlsGbCBCPijqTNldOe44xtu5p3AD/O1FF9RKVPPLtN2ar9USH7mZeDuUCu0goPsK9jwqdZdnm8mitc64GciEpwGQYqWp+eeCN6bSzr20mkHnEejaidUA+UeqW7w4t40E1jvh4w4u3AaOpSM/QArSuH/zrgLqReMlN0c5A2prE8=
-X-Received: by 2002:a0d:df56:0:b0:607:e6b5:a492 with SMTP id
- i83-20020a0ddf56000000b00607e6b5a492mr405131ywe.26.1708007629791; Thu, 15 Feb
- 2024 06:33:49 -0800 (PST)
+	s=arc-20240116; t=1708007636; c=relaxed/simple;
+	bh=x/C4JrMOvi9rCj9I7QPAKYQAw03CTw9sUHduKSKVXmQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ucoBl5hC0jW3oQiw9j1OBOAKIaEA7rg6uG3bd+EO0icp92WljNqTHXP3Rqnx4BMeEpixmz+mvc4OcJGlQDFEgkK4SnD4VIzHwTDrB1QMASk8aLxsoDKrwY5WwqEnH+FpeX9skBZVBqkrUSQkDxxz07xCeZLVpWN9vYND+t6kaeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jfnLugIp; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 489A520002;
+	Thu, 15 Feb 2024 14:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708007625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cdrzonxR0aohlaO272Q7MZrzcpjlQwtAuBm+FlVa2Zk=;
+	b=jfnLugIptfivZ7YdFpbIK7v/kS9Z5wDYbgN9JxdaFDSBKmFMzZioHeQjDfhB5IjWglucM4
+	Sqi0DuPcWmiN2jFy9WL98/pukDSqt8ZnZqlmQPyHcJCMqdvrB6agaUXCwMmTrc78hEyMwR
+	p9myXchCskW8S842CIb2DvZ0LqUh0ajdZvF7nyrRcMa4ZvEQomuyZsfYidc7uzMkZY7DK8
+	Cokymg3a2p/uT6FDqq/dh8gIDEao+tPQ4fDkDmU+TbMEqdjlRv/3Heh3apBXZUyneqM0pH
+	hM1waaf3aoSIhHIIFMwRm7PFg+qencCW54aQTPgtMaM6Kzg9nxdcDA7ca8g+Pw==
+Date: Thu, 15 Feb 2024 15:33:42 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Rob Herring <robh@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis
+ Chamberlain <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v3 10/17] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <20240215153342.0be61fe0@kmaincent-XPS-13-7390>
+In-Reply-To: <377d2e0f-dc0c-400f-9c10-f4a158146ceb@lunn.ch>
+References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
+	<20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
+	<20240209144349.GA3678044-robh@kernel.org>
+	<20240214141310.119364c4@kmaincent-XPS-13-7390>
+	<20240214164150.5be591d0@kmaincent-XPS-13-7390>
+	<20240215135130.GA4139246-robh@kernel.org>
+	<377d2e0f-dc0c-400f-9c10-f4a158146ceb@lunn.ch>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215140841.2278657-1-claudiu.beznea.uj@bp.renesas.com> <20240215140841.2278657-3-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240215140841.2278657-3-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 15:33:35 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUsLu70ZaQN4SBgP237EUPzF6rPRwSktXWfeBzLLY=eiA@mail.gmail.com>
-Message-ID: <CAMuHMdUsLu70ZaQN4SBgP237EUPzF6rPRwSktXWfeBzLLY=eiA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/9] watchdog: rzg2l_wdt: Make the driver depend on PM
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	p.zabel@pengutronix.de, geert+renesas@glider.be, magnus.damm@gmail.com, 
-	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Thu, Feb 15, 2024 at 3:08=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The rzg2l_wdt watchdog driver cannot work w/o CONFIG_PM=3Dy (e.g. the
-> clocks are enabled though pm_runtime_* specific APIs). To avoid building
-> a driver that doesn't work make explicit the dependency on CONFIG_PM.
->
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v7:
-> - updated the dependency to PM || COMPILE_TEST to be able to
->   compile-test the driver when compiling for a
->   !(ARCH_RZG2L || ARCH_R9A09G011) platform and CONFIG_PM is disabled
+On Thu, 15 Feb 2024 15:01:08 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Although this doesn't make any practical difference:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > Not so much used indeed:
+> > > $ git log --grep=3D"Sponsored" | grep Sponsored    =20
+> > >     Sponsored by:  The FreeBSD Foundation
+> > >     Sponsored by:  The FreeBSD Foundation
+> > >     Sponsored by:  The FreeBSD Foundation
+> > >     Sponsored by:  The FreeBSD Foundation
+> > >     Sponsored-by: Google Chromium project
+> > >     Sponsored: Google ChromeOS
+> > >     Sponsored: Google ChromeOS
+> > >=20
+> > > Is it ok to keep it? =20
+> >=20
+> > IMO, its use should be documented like other tags, or it should not be=
+=20
+> > used. Just write a sentence to the same effect. =20
+>=20
+> Or include a patch to document it :-)
 
-Gr{oetje,eeting}s,
+It seems someone has already tried to send a patch to add this tag but it h=
+as
+not been accepted due to maintainers extra works bring by the tag:
+https://lore.kernel.org/lkml/20230817220957.41582-1-giulio.benetti@benettie=
+ngineering.com/
 
-                        Geert
+I will replace it by a small sentence then.
 
+Regards,
 --=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
