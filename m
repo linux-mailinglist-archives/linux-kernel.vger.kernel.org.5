@@ -1,59 +1,66 @@
-Return-Path: <linux-kernel+bounces-67254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7E58568B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:03:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734D48568B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6941F23886
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:03:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F6EB290F63
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02BE1339A3;
-	Thu, 15 Feb 2024 16:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90105134751;
+	Thu, 15 Feb 2024 16:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TaUOWjhk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="kF0taM9q"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFC1350F6;
-	Thu, 15 Feb 2024 16:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3851339AC;
+	Thu, 15 Feb 2024 16:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708012920; cv=none; b=MJ8MU6M0n5Wxlmt6UUvUTABPvgCi/F1Bcp3OOFYlgvPniA4zBPJwNqEnJDcW6XWnGdsQM7KJL+vh3myyLonowEB4PpxReRXwY7/BIFDRxrKPW7W++uLe7Xnv3R4cJGzOyuQIe1yvMZyAP+7apuLFhOH09caz3ZvNRMhD36Da65o=
+	t=1708012959; cv=none; b=LMufxWy4VRkUsNp3Zp0tRnN8jqXVBC/W4AaeVaHj7cF4nT7jlS/lm06TJponMS3aMNTJAIFl4Mcc5kPn+ZVQ91Pnx3CWR4f0i3b8VqVOYwI8hyIZGZYZFbmIZF2/l+Wp67rpPwVz9gRZNvi7FijzZLNQlQqceCnOm2eFdcvosvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708012920; c=relaxed/simple;
-	bh=pWw8ohlMdJOBYl5mwsS+UEZnUOAY6rOv2BrZBdYFroE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=USUcjXD+WiDPJzbUNOzxK45vLe0Y7YhW/Kbf71ZrX6tu9j9x6GLtrJsj45z2suFZxT4rr+HEL7/eThEyVJa+1+SfBLxKZc+Vwv7k9dE4Vg6cp2K4kxuwVbPnM4/Go6V5ZKo2nqpOAd476wibCQ95Ls/4hQM3hDE4iB417CjS3Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TaUOWjhk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DF5C433C7;
-	Thu, 15 Feb 2024 16:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708012919;
-	bh=pWw8ohlMdJOBYl5mwsS+UEZnUOAY6rOv2BrZBdYFroE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=TaUOWjhkb5mM0/BsHOScRRcw1Loz1te9kYIoI82lkP56F49Uzy9oG+HgmRR2cD0S0
-	 jYP3vTctJ84N23BibErGY4gMhi7ULXq3jshaOuJdvl13WzszMz9M3spY8VwUwSG1DP
-	 ATEIWlZ/hwegkwSNt3tPKxboCw5MkCRORCdUtTlPr/Na6ow4v2f0fvJbJPNKLAvjwu
-	 x3ouW88CaQfG/+ghH2q+QBA0mN37y77UO6x0DzXFu3kDWWKS9aiQpeIzbHjtU2raFk
-	 9J19JecmfXkwoKtOcoUcqHEYV5WF4iwo9vxzepup41U18GaLxltBu//PsWHna/zubC
-	 0tEepQWrESd4Q==
-Date: Thu, 15 Feb 2024 10:01:57 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>, bhelgaas@google.com,
-	robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
-	jonathanh@nvidia.com, Kishon Vijay Abraham I <kishon@kernel.org>,
-	catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-	digetx@gmail.com, mperttunen@nvidia.com, linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V16 13/13] PCI: tegra: Add Tegra194 PCIe support
-Message-ID: <20240215160157.GA1291755@bhelgaas>
+	s=arc-20240116; t=1708012959; c=relaxed/simple;
+	bh=vCX30uSOIcfJD/9firrildGpUnUbZaUq1SXGVFbONvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c+iHgRwzPK2LIKFAWn4p0W8qg7JDVFmhiT1p+9wDkOWwLMVhMDbr0DZ842uXARya+KkdMn4j/UryqulI87HS8Pln2HgZw/izyF4zN537hH2AAybf9sYVHhKETam6hmMen8G3TE6wuyecyMKvJ4EHxnvXQLuflAJl17IXBi2518g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=kF0taM9q; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=YQNWh7GF/RgZwIhyO2ZMjQuqWh+GiSsA9oHVl02ggEI=; b=kF0taM9qJfyXAROo0+zXB7uFzR
+	aoGafoZ/LScV/hDufIGDnoF4KI4wt9lrgKS/EXyBbTBLRfPq7gq6+ZlBwhY2ZyAfLYzuQ1kEaBsSS
+	Rwg3kblOtlpazxzqEMhvXUYAfzpkVnUjofCw3nFg0HC/Px1LcHzHR/RlnZmciaXvgbP/6dN1AVZlx
+	0QVFypKSnv6J+hcMiBMWEkHSvqmdnlz+htm02NNe1+/Lds/tjpfvxuKVS31nY12q6Kneh6UHyhfij
+	X+g/g/B3uNYv8H+UzMXEcBjdiLv3TXoyhjNlCbE7xsBrajeFI90DjQ2PMEAQnIKam8jPIRx9F0eyL
+	qhjbkZhA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39184)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1raeBx-0004O8-0I;
+	Thu, 15 Feb 2024 16:02:29 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1raeBu-0004og-5y; Thu, 15 Feb 2024 16:02:26 +0000
+Date: Thu, 15 Feb 2024 16:02:26 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Daniil Dulov <d.dulov@aladdin.ru>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] net: sfp: remove redundant NULL check
+Message-ID: <Zc41kuP2iwK3AlWv@shell.armlinux.org.uk>
+References: <20240211150824.3947-1-d.dulov@aladdin.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,56 +69,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <17dadf66-055c-4796-a905-44e37b6fcfe3@nvidia.com>
+In-Reply-To: <20240211150824.3947-1-d.dulov@aladdin.ru>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Feb 15, 2024 at 04:55:47PM +0530, Vidya Sagar wrote:
-> On 15-02-2024 00:42, Bjorn Helgaas wrote:
-> > Hi Vidya, question about ancient history:
-> > 
-> > On Tue, Aug 13, 2019 at 05:06:27PM +0530, Vidya Sagar wrote:
-> > > Add support for Synopsys DesignWare core IP based PCIe host controller
-> > > present in Tegra194 SoC.
-> > > ...
-> > > +static int tegra_pcie_dw_host_init(struct pcie_port *pp)
-> > > +{
-> > > +     struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +     struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
-> > > +     u32 val, tmp, offset, speed;
-> > > +
-> > > +     tegra_pcie_prepare_host(pp);
-> > > +
-> > > +     if (dw_pcie_wait_for_link(pci)) {
-> > > +             /*
-> > > +              * There are some endpoints which can't get the link up if
-> > > +              * root port has Data Link Feature (DLF) enabled.
-> > > +              * Refer Spec rev 4.0 ver 1.0 sec 3.4.2 & 7.7.4 for more info
-> > > +              * on Scaled Flow Control and DLF.
-> > > +              * So, need to confirm that is indeed the case here and attempt
-> > > +              * link up once again with DLF disabled.
-> >
-> > This comment suggests that there's an issue with *Endpoints*, not an
-> > issue with the Root Port.  If so, it seems like this problem could
-> > occur with all Root Ports, not just Tegra194.  Do you remember any
-> > details about this?
-> > 
-> > I don't remember hearing about any similar issues, and this driver is
-> > the only place PCI_EXT_CAP_ID_DLF is referenced, so maybe it is
-> > actually something related to Tegra194?
->
-> We noticed PCIe link-up issues with some endpoints. link-up at the physical
-> layer level but NOT at the Data link layer level precisely. We further
-> figured out that it is the DLFE DLLPs that the root port sends during the
-> link up process which are causing the endpoints get confused and preventing
-> them from sending the InitFC DLLPs leading to the link not being up at
-> Data Link Layer level.
+On Sun, Feb 11, 2024 at 07:08:24AM -0800, Daniil Dulov wrote:
+> bus->upstream_ops in sfp_register_bus() cannot be NULL. So remove
+> redundant NULL check.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Do you happen to remember any of the endpoints that have issues?
+It probably would've been better to include in here details of the two
+paths that lead to this point, and indicate why it's safe to remove the
+NULL check.
 
-Could save some painful debugging if we trip over this issue on other
-systems.  We have seen a few cases where links wouldn't train at full
-speed unless they trained at a lower speed first, e.g.,
-imx6_pcie_start_link(), fu740_pcie_start_link().  I guess there are
-probably lots of edge cases that can cause link failures.
+The first path is via sfp_register_socket(), which checks that
+bus->upstream_ops is not NULL prior to calling sfp_register_bus().
+Therefore, "ops" can not be NULL when sfp_register_bus() is called
+via this path.
 
-Bjorn
+The second path is via sfp_bus_add_upstream(), and this path assumes
+that the "ops" passed into this function will not be NULL. Nothing in
+this code makes that guarantee, and it's up to the design(er) to
+determine whether NULL is permitted or not. It's not something that
+an automated checker ought to be suggesting.
+
+In this particular instance, I, as the interface designer, do indeed
+intend that "ops" will not be NULL here, so the patch can remove the
+check is acceptable in this instance.
+
+However, I'll go back to my original point: this is *not* something
+that automated tools should be identifying, and it is *not* something
+that should be used to throw patches randomly out, especially where
+the commit message doesn't include human analysis details.
+
+
+> 
+> Fixes: ce0aa27ff3f6 ("sfp: add sfp-bus to bridge between network devices and sfp cages")
+> Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+> ---
+>  drivers/net/phy/sfp-bus.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
+> index 850915a37f4c..829cb1dccc27 100644
+> --- a/drivers/net/phy/sfp-bus.c
+> +++ b/drivers/net/phy/sfp-bus.c
+> @@ -478,14 +478,12 @@ static int sfp_register_bus(struct sfp_bus *bus)
+>  	const struct sfp_upstream_ops *ops = bus->upstream_ops;
+>  	int ret;
+>  
+> -	if (ops) {
+> -		if (ops->link_down)
+> -			ops->link_down(bus->upstream);
+> -		if (ops->connect_phy && bus->phydev) {
+> -			ret = ops->connect_phy(bus->upstream, bus->phydev);
+> -			if (ret)
+> -				return ret;
+> -		}
+> +	if (ops->link_down)
+> +		ops->link_down(bus->upstream);
+> +	if (ops->connect_phy && bus->phydev) {
+> +		ret = ops->connect_phy(bus->upstream, bus->phydev);
+> +		if (ret)
+> +			return ret;
+>  	}
+>  	bus->registered = true;
+>  	bus->socket_ops->attach(bus->sfp);
+> -- 
+> 2.25.1
+> 
+> 
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
