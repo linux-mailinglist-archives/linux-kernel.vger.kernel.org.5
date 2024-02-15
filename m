@@ -1,209 +1,241 @@
-Return-Path: <linux-kernel+bounces-66308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92602855A1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:27:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 175EB855A1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 06:27:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48B1528DE50
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:27:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83163B290F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A0BB67D;
-	Thu, 15 Feb 2024 05:26:56 +0000 (UTC)
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3DAB677;
+	Thu, 15 Feb 2024 05:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qsDnFRPP"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794F228E6;
-	Thu, 15 Feb 2024 05:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD1FDDAE
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 05:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707974815; cv=none; b=rVR1aebahD7A1B8M6RZ0pUomu6lp/GWyJ/XQJ3jph8LT/yHueAeuGKzpc4ditYirCczPDp6aT8j03oCAXk1H8otCM5aJz9jI2QacCAFRFXza/WUSOi7urATCI0/9HBDdvPXXO2fgkFWS4Jo9ihy1DRFjQ0Y9qclGnh2bBTpTNaM=
+	t=1707974829; cv=none; b=JGCHUsKYGXQDVKIjyhhwnMKmZTKPe2Vo364oP9VyFbVTHYekGEXxcrLLJnibwf4A0UZa0vLdBduxEUaqLNppuQg0UtepR0ImsRbkZqlKUYBLbWICzvBwUbLJ3miQxT5fq5lBHuvzniI+uHJO9HC4ua1u2Rqa1m0M8d3RTbUP59Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707974815; c=relaxed/simple;
-	bh=qudj50MsrXJBc2/l83E4vE1vsmzaPnBg5wtWaZSUQj0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C4UIN2ioCLeUpoWI/+Ytsvy93r7Iwi4ed4VkCWMpWvqWi+akCRnX4ItZBFsZn1hATuwsW/ujSucjaZ+IXeb2wQ6qKPpWZjGzxBsMBmE7dUQltReyAO08plPqZLb8eqOd6AWw6enlM1Htr7cbdFI8zX/AS+/LkhfSiDSQpiV86ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e0a37751cbso487155b3a.2;
-        Wed, 14 Feb 2024 21:26:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707974813; x=1708579613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wyxQNQK0uTNTZnSbnKT+Xd+wPCudPnqbKEQ4MhMWKww=;
-        b=MKvvTxz6I5o8Pp3hPlWDf5TTdcH96ErbNQHjC3xnHXQeqo2cFwrOUnL9Ia+ZKE8JAL
-         AkkReJMDlIPhXK0HTHx3w+koQwOlVZyzMb1nFwhKZlyPnm5PPqRHYXbpIClRVnM5YYXc
-         nBJFudn+Ay0sbTvnEbE5If9cXtG6DeeLxI//q5QjAQ/LT50l+VOsHPv5uDAj5hbwTN68
-         BU4iHlfew597Fv6Izs+u0t/WCfIpJaa+iIvh2ob9U2xSAIFNP1PziF6+wy5EJgQbEvpA
-         tz02ijqRf/ofmQGS126RwZ9JEkuPuSfiusYrdBcLTJ9jVGjElLGlAM1UoonhMRrlD6QK
-         xQHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWLxaMRcHYrh2kCC6YvpUbdWNh/8VR/n8pc7pFQ3frVVIRAAKFlyTPcaApsiXCNgnuNRaWYXutUvqdUE5hV7U4/ZSelDwelocgpNW3StR7GAN6z/W1i58yWtwSUPgOCCKF03Oc6Dg6PJ+HVvYNirg==
-X-Gm-Message-State: AOJu0YwwhS1uxUi5d55xZXkBgVBMPKro+1Ee/v1B/4pnwJfMc0ltPm+K
-	SWarEI9GrWl147CrEgLtJAWii+F9jRHzGBaPmWILHBgjrqjCWOYuJE5zMf5ZvJM85LkK59bIOpN
-	Lz5vlOOKHAjLrp2WlIavIEdq6X2Q=
-X-Google-Smtp-Source: AGHT+IEKyBJy0sJXXBsHFFb1FNMTg2xrIDX2tzbjZziRV4o2wa90sAynADD13Lf1l/4XttxWvw/70AFodOP3rcjbs/s=
-X-Received: by 2002:a05:6a21:164e:b0:19e:b925:f191 with SMTP id
- no14-20020a056a21164e00b0019eb925f191mr962704pzb.10.1707974813584; Wed, 14
- Feb 2024 21:26:53 -0800 (PST)
+	s=arc-20240116; t=1707974829; c=relaxed/simple;
+	bh=+XV6YA2a+keFs3p1GXfq6dFbI5Lo38vYiGNe1pFdGMU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WuHMZ65cR01PY+JhP05dpFjKaTrSu+OfDfq1V3FUW2aDrCFalgsgF/CPC2SKf3CwiEVxN7wM08umFs/wAX+9BSqLibT1Ky08hoKuPw7EGndDKNcu6e08JRfawmdr78iyffDntzKLIrzgESudzNprWnE6iVqSjjvmxvpUwIDkI2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qsDnFRPP; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 14:26:50 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1707974823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FvPObSsaIok6oQHL9ZBe2c4DMn5WAmkQbL3JbetFFmY=;
+	b=qsDnFRPP2HA35Ho3RYm177Y5yuT1mCcE9EuUD9cIhMuCqhMSO8pDUvnUxShIrB5LYoxify
+	KR6bjMPZfeU4Y3POXtUOzFXp7+vDB0kr4msJpvPlCdq5cADj8cO2ZloTH9bs2u4Q4uOnyZ
+	33wVcIyqd8Kb6+IWfCgeLcTopvVoXyI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Itaru Kitayama <itaru.kitayama@linux.dev>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Anup Patel <anup@brainfault.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Vishal Annapurve <vannapurve@google.com>,
+	Ackerley Tng <ackerleytng@google.com>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Peter Gonda <pgonda@google.com>
+Subject: Re: [PATCH v8 04/10] KVM: selftests: Add support for
+ allocating/managing protected guest memory
+Message-ID: <Zc2gmlr2zgK690nu@vm3>
+References: <20240203000917.376631-1-seanjc@google.com>
+ <20240203000917.376631-5-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213075256.1983638-1-namhyung@kernel.org> <20240213075256.1983638-4-namhyung@kernel.org>
- <CAP-5=fVK3vvNoaGHPep8NCweGw9cztKBGQh5+0bVX91PhWp5Eg@mail.gmail.com>
-In-Reply-To: <CAP-5=fVK3vvNoaGHPep8NCweGw9cztKBGQh5+0bVX91PhWp5Eg@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 14 Feb 2024 21:26:42 -0800
-Message-ID: <CAM9d7ci=A9rwZxEYYQRi-Cncs7NSpRG+TaH5knTdEPZYxJWp9Q@mail.gmail.com>
-Subject: Re: [PATCH 3/4] perf hist: Do not use event index in hpp__fmt()
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240203000917.376631-5-seanjc@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 4:08=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Mon, Feb 12, 2024 at 11:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> >
-> > The __hpp__fmt() is to print period values in a hist entry.  It handles
-> > event groups using linked pair entries.  Until now, it used event index
-> > to print values of group members.  But we want to make it more robust
-> > and support groups even if some members in the group were removed.
->
-> I'm unclear how it breaks currently. The evsel idx is set the evlist
-> nr_entries on creation and not updated by a remove. A remove may
-> change a groups leader, should the remove also make the next entry's
-> index idx that of the previous group leader?
+On Fri, Feb 02, 2024 at 04:09:10PM -0800, Sean Christopherson wrote:
+> From: Peter Gonda <pgonda@google.com>
+> 
+> Add support for differentiating between protected (a.k.a. private, a.k.a.
+> encrypted) memory and normal (a.k.a. shared) memory for VMs that support
+> protected guest memory, e.g. x86's SEV.  Provide and manage a common
+> bitmap for tracking whether a given physical page resides in protected
+> memory, as support for protected memory isn't x86 specific, i.e. adding a
+> arch hook would be a net negative now, and in the future.
+> 
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Vishal Annapurve <vannapurve@google.com>
+> Cc: Ackerley Tng <ackerleytng@google.com>
+> cc: Andrew Jones <andrew.jones@linux.dev>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Michael Roth <michael.roth@amd.com>
+> Originally-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  .../selftests/kvm/include/kvm_util_base.h     | 25 +++++++++++++++++--
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 22 +++++++++++++---
+>  2 files changed, 41 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> index d9dc31af2f96..a82149305349 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -46,6 +46,7 @@ typedef uint64_t vm_vaddr_t; /* Virtual Machine (Guest) virtual address */
+>  struct userspace_mem_region {
+>  	struct kvm_userspace_memory_region2 region;
+>  	struct sparsebit *unused_phy_pages;
+> +	struct sparsebit *protected_phy_pages;
+>  	int fd;
+>  	off_t offset;
+>  	enum vm_mem_backing_src_type backing_src_type;
+> @@ -573,6 +574,13 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
+>  		uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+>  		uint32_t flags, int guest_memfd_fd, uint64_t guest_memfd_offset);
+>  
+> +#ifndef vm_arch_has_protected_memory
+> +static inline bool vm_arch_has_protected_memory(struct kvm_vm *vm)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
+>  void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
+>  void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
+> @@ -836,10 +844,23 @@ const char *exit_reason_str(unsigned int exit_reason);
+>  
+>  vm_paddr_t vm_phy_page_alloc(struct kvm_vm *vm, vm_paddr_t paddr_min,
+>  			     uint32_t memslot);
+> -vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> -			      vm_paddr_t paddr_min, uint32_t memslot);
+> +vm_paddr_t __vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> +				vm_paddr_t paddr_min, uint32_t memslot,
+> +				bool protected);
+>  vm_paddr_t vm_alloc_page_table(struct kvm_vm *vm);
+>  
+> +static inline vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> +					    vm_paddr_t paddr_min, uint32_t memslot)
+> +{
+> +	/*
+> +	 * By default, allocate memory as protected for VMs that support
+> +	 * protected memory, as the majority of memory for such VMs is
+> +	 * protected, i.e. using shared memory is effectively opt-in.
+> +	 */
+> +	return __vm_phy_pages_alloc(vm, num, paddr_min, memslot,
+> +				    vm_arch_has_protected_memory(vm));
+> +}
+> +
+>  /*
+>   * ____vm_create() does KVM_CREATE_VM and little else.  __vm_create() also
+>   * loads the test binary into guest memory and creates an IRQ chip (x86 only).
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index a53caf81eb87..ea677aa019ef 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -717,6 +717,7 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+>  	vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
+>  
+>  	sparsebit_free(&region->unused_phy_pages);
+> +	sparsebit_free(&region->protected_phy_pages);
+>  	ret = munmap(region->mmap_start, region->mmap_size);
+>  	TEST_ASSERT(!ret, __KVM_SYSCALL_ERROR("munmap()", ret));
+>  	if (region->fd >= 0) {
+> @@ -1098,6 +1099,8 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
+>  	}
+>  
+>  	region->unused_phy_pages = sparsebit_alloc();
+> +	if (vm_arch_has_protected_memory(vm))
+> +		region->protected_phy_pages = sparsebit_alloc();
+>  	sparsebit_set_num(region->unused_phy_pages,
+>  		guest_paddr >> vm->page_shift, npages);
+>  	region->region.slot = slot;
+> @@ -1924,6 +1927,10 @@ void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+>  			region->host_mem);
+>  		fprintf(stream, "%*sunused_phy_pages: ", indent + 2, "");
+>  		sparsebit_dump(stream, region->unused_phy_pages, 0);
+> +		if (region->protected_phy_pages) {
+> +			fprintf(stream, "%*sprotected_phy_pages: ", indent + 2, "");
+> +			sparsebit_dump(stream, region->protected_phy_pages, 0);
+> +		}
+>  	}
+>  	fprintf(stream, "%*sMapped Virtual Pages:\n", indent, "");
+>  	sparsebit_dump(stream, vm->vpages_mapped, indent + 2);
+> @@ -2025,6 +2032,7 @@ const char *exit_reason_str(unsigned int exit_reason)
+>   *   num - number of pages
+>   *   paddr_min - Physical address minimum
+>   *   memslot - Memory region to allocate page from
+> + *   protected - True if the pages will be used as protected/private memory
+>   *
+>   * Output Args: None
+>   *
+> @@ -2036,8 +2044,9 @@ const char *exit_reason_str(unsigned int exit_reason)
+>   * and their base address is returned. A TEST_ASSERT failure occurs if
+>   * not enough pages are available at or above paddr_min.
+>   */
+> -vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> -			      vm_paddr_t paddr_min, uint32_t memslot)
+> +vm_paddr_t __vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+> +				vm_paddr_t paddr_min, uint32_t memslot,
+> +				bool protected)
+>  {
+>  	struct userspace_mem_region *region;
+>  	sparsebit_idx_t pg, base;
+> @@ -2050,8 +2059,10 @@ vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+>  		paddr_min, vm->page_size);
+>  
+>  	region = memslot2region(vm, memslot);
+> +	TEST_ASSERT(!protected || region->protected_phy_pages,
+> +		    "Region doesn't support protected memory");
+> +
+>  	base = pg = paddr_min >> vm->page_shift;
+> -
+>  	do {
+>  		for (; pg < base + num; ++pg) {
+>  			if (!sparsebit_is_set(region->unused_phy_pages, pg)) {
+> @@ -2070,8 +2081,11 @@ vm_paddr_t vm_phy_pages_alloc(struct kvm_vm *vm, size_t num,
+>  		abort();
+>  	}
+>  
+> -	for (pg = base; pg < base + num; ++pg)
+> +	for (pg = base; pg < base + num; ++pg) {
+>  		sparsebit_clear(region->unused_phy_pages, pg);
+> +		if (protected)
+> +			sparsebit_set(region->protected_phy_pages, pg);
+> +	}
+>  
+>  	return base * vm->page_size;
+>  }
 
-The evsel__group_idx() returns evsel->idx - leader->idx.
-If it has a group event {A, B, C} then the index would be 0, 1, 2.
-If it removes B, the group would be {A, C} with index 0 and 2.
-The nr_members is 2 now so it cannot use index 2 for C.
+Reviewed-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
 
-Note that we cannot change the index of C because some information
-like annotation histogram relies on the index.
-
->
-> > Let's use an index table from evsel to value array so that we can skip
-> > dummy events in the output later.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/ui/hist.c | 34 ++++++++++++++++++++++++++++------
-> >  1 file changed, 28 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/perf/ui/hist.c b/tools/perf/ui/hist.c
-> > index 5f4c110d840f..9c4c738edde1 100644
-> > --- a/tools/perf/ui/hist.c
-> > +++ b/tools/perf/ui/hist.c
-> > @@ -48,15 +48,30 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct =
-hist_entry *he,
-> >         if (evsel__is_group_event(evsel)) {
-> >                 int idx;
-> >                 struct hist_entry *pair;
-> > -               int nr_members =3D evsel->core.nr_members;
-> > +               int nr_members =3D evsel->core.nr_members - 1;
->
-> A comment on the -1 would be useful.
-
-The 'nr_members' includes the leader which is already printed.
-In this code, we want to print member events only, hence -1.
-I'll add it to the comment.
-
-Thanks,
-Namhyung
-
->
-> Thanks,
-> Ian
->
->
-> >                 union {
-> >                         u64 period;
-> >                         double percent;
-> >                 } *val;
-> > +               struct evsel *member;
-> > +               struct evsel **idx_table;
-> >
-> >                 val =3D calloc(nr_members, sizeof(*val));
-> >                 if (val =3D=3D NULL)
-> > -                       return 0;
-> > +                       goto out;
-> > +
-> > +               idx_table =3D calloc(nr_members, sizeof(*idx_table));
-> > +               if (idx_table =3D=3D NULL)
-> > +                       goto out;
-> > +
-> > +               /*
-> > +                * Build an index table for each evsel to the val array=
-.
-> > +                * It cannot use evsel->core.idx because removed events=
- might
-> > +                * create a hole so the index is not consecutive anymor=
-e.
-> > +                */
-> > +               idx =3D 0;
-> > +               for_each_group_member(member, evsel)
-> > +                       idx_table[idx++] =3D member;
-> >
-> >                 /* collect values in the group members */
-> >                 list_for_each_entry(pair, &he->pairs.head, pairs.node) =
-{
-> > @@ -66,8 +81,15 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct h=
-ist_entry *he,
-> >                         if (!total)
-> >                                 continue;
-> >
-> > -                       evsel =3D hists_to_evsel(pair->hists);
-> > -                       idx =3D evsel__group_idx(evsel);
-> > +                       member =3D hists_to_evsel(pair->hists);
-> > +                       for (idx =3D 0; idx < nr_members; idx++) {
-> > +                               if (idx_table[idx] =3D=3D member)
-> > +                                       break;
-> > +                       }
-> > +
-> > +                       /* this should not happen */
-> > +                       if (idx =3D=3D nr_members)
-> > +                               continue;
-> >
-> >                         if (fmt_percent)
-> >                                 val[idx].percent =3D 100.0 * period / t=
-otal;
-> > @@ -75,8 +97,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct hi=
-st_entry *he,
-> >                                 val[idx].period =3D period;
-> >                 }
-> >
-> > -               /* idx starts from 1 to skip the leader event */
-> > -               for (idx =3D 1; idx < nr_members; idx++) {
-> > +               for (idx =3D 0; idx < nr_members; idx++) {
-> >                         if (fmt_percent) {
-> >                                 ret +=3D hpp__call_print_fn(hpp, print_=
-fn,
-> >                                                           fmt, len, val=
-[idx].percent);
-> > @@ -89,6 +110,7 @@ static int __hpp__fmt(struct perf_hpp *hpp, struct h=
-ist_entry *he,
-> >                 free(val);
-> >         }
-> >
-> > +out:
-> >         /*
-> >          * Restore original buf and size as it's where caller expects
-> >          * the result will be saved.
-> > --
-> > 2.43.0.687.g38aa6559b0-goog
-> >
+> -- 
+> 2.43.0.594.gd9cf4e227d-goog
+> 
 
