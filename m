@@ -1,138 +1,93 @@
-Return-Path: <linux-kernel+bounces-66401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67AFF855C32
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:18:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A72F3855C5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99CC01C20B91
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:18:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C111BB21C2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727C512E6D;
-	Thu, 15 Feb 2024 08:18:08 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14BF12E67;
+	Thu, 15 Feb 2024 08:19:25 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D530C111BD;
-	Thu, 15 Feb 2024 08:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272B011CB0;
+	Thu, 15 Feb 2024 08:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707985088; cv=none; b=dme8rhbVRHdEScgpDEpA73N+ydzdCh9FycrnnpDt7Rv1kBOf4mUpZJGJRxEvu0jBPe1MBf4YIoUfKH9/jV1681ayIl0TnDeYPIKwQLprW4F1QjzqWIoj5f2DULdVmjdulAhbeezeusgYLHVJ/SVUKXGeRE+nrZeIvRJjEvUhTbw=
+	t=1707985165; cv=none; b=YcWABTX7Or6CHxsHR50xhNLQIBdk/rVxjo9RloxEHFeERJf6QeD0ZpUfoTz+reKtQDP8BvH4zCp7fmb7Hn7dzuX0ZnQr1mg1BoWZ0C39tYdu/vF+qlOj2xQwD732i0on/zSf/Vr5xyhH3yuAjCJZL/f2zA5xHj270xWr9lfOVLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707985088; c=relaxed/simple;
-	bh=GjvxOvr7YHWbvDJgSZqVDoq5LPxPbh4MFABALTZefzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f+8KgAUWq3LuVL9CxZDAIZSIjnjMqRghfOQpS88TiGuL/rvUAxq+lKx76sEi5ys+Lf1msjgFq+w8ygPSzmtByiv06USGU56D0TfgWLI5wjREgFKemRCXLZnRCN7dPNetkekOzaqngx8Mz03nDBSMUzHbpRdtwkzE5Qg5jV+6Brw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1raWwR-000393-WB; Thu, 15 Feb 2024 09:18:00 +0100
-Message-ID: <11248961-9180-4330-8537-1cd0037edb85@leemhuis.info>
-Date: Thu, 15 Feb 2024 09:17:59 +0100
+	s=arc-20240116; t=1707985165; c=relaxed/simple;
+	bh=iKnYr81o5hV+pRY3NBoR16c+PMpKohJg5JHYWfKUrlU=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=ZdXdnMIvXZP2U2RQPtrrzKNJdsszrSe1F+rk4cmiJAPUN5v1AO3imHB1g4x1nzr2t3JgG5bcGscZiiLjHFmHIykG6AMh/NdgASOH/Zw6IJMFCj4Mt7Cxk0ie8DF24vOcH7hD1ZjMZy3xW3T8qEDMEWo/PVlsI0ko+2AxYxiLzwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1b:c794::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id D510D37813FD;
+	Thu, 15 Feb 2024 08:19:12 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240214142941.551330912@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240214142941.551330912@linuxfoundation.org>
+Date: Thu, 15 Feb 2024 08:19:12 +0000
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
-Content-Language: en-US, de-DE
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, corbet@lwn.net,
- workflows@vger.kernel.org
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- security@kernel.org, Kees Cook <keescook@chromium.org>,
- Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
-References: <2024021430-blanching-spotter-c7c8@gregkh>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <2024021430-blanching-spotter-c7c8@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1707985086;9c9ec4e8;
-X-HE-SMSGID: 1raWwR-000393-WB
+Message-ID: <5068-65cdc900-1-67057380@4073141>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?6=2E1?= 00/65] 
+ =?utf-8?q?6=2E1=2E78-rc2?= review
+User-Agent: SOGoMail 5.9.1
+Content-Transfer-Encoding: quoted-printable
 
-On 14.02.24 09:00, Greg Kroah-Hartman wrote:
-> The Linux kernel project now has the ability to assign CVEs to fixed
-> issues, so document the process and how individual developers can get a
-> CVE if one is not automatically assigned for their fixes.
-> [...]
+On Wednesday, February 14, 2024 20:00 IST, Greg Kroah-Hartman <gregkh@l=
+inuxfoundation.org> wrote:
 
-This following is just nitpicking, hence feel free to ignore.
+> This is the start of the stable review cycle for the 6.1.78 release.
+> There are 65 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
+>=20
+> Responses should be made by Fri, 16 Feb 2024 14:28:54 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1=
+78-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
+git linux-6.1.y
+> and the diffstat can be found below.
+>=20
 
-> +As always, it is best to take all released kernel changes, as they are
-> +tested together in a unified whole by many community members, and not as
-> +individual cherry-picked changes.  Also note that for many bugs, the
-> +solution to the overall problem is not found in a single change, but by
-> +the sum of many fixes on top of each other.  Ideally CVEs will be
-> +assigned to all fixes for all issues, but sometimes we do not notice
-> +fixes in released kernels, so do not assume that because a specific
-> +change does not have a CVE assigned to it, that it is not relevant to
-> +take.
+## stable-rc HEAD for linux-6.1.y:
 
-There are a four "not" in the last pretty long sentence which makes it
-kinda hard to parse. Avoiding that could look like this:
+Date: 2024-02-14
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
+git/log/?h=3Dea6a03790c420fec42790d8c5db2e81663954186
 
-Ideally CVEs will be assigned to all fixes for all issues -- but
-sometimes we will fail to notice fixes, therefore assume that some
-changes without an assigned CVE might still be relevant to take.
+## Build failures:
+No build failures seen for the stable-rc/linux-6.1.y commit head \o/
 
-Or like this:
+## Boot failures:
+No **new** boot failures seen for the stable-rc/linux-6.1.y commit head=
+ \o/
 
-Ideally CVEs will be assigned to all fixes for all issues, but sometimes
-we will overlook fixes -- therefore assume that some changes that lack
-an assigned CVE might still be relevant to take.
+Tested-by: kernelci.org bot <bot@kernelci.org>
 
-Not sure if that really makes it better, I guess you as a native speaker
-are a better judge here.
-
-Ciao, Thorsten (who also wondered what "to all fixes for all issues"
-exactly means, but whatever)
+Thanks,
+Shreeya Patel
 
 
