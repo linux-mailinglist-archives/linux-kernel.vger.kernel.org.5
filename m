@@ -1,179 +1,219 @@
-Return-Path: <linux-kernel+bounces-67106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496FB856688
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:50:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2642C85668B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27BB1F27C78
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC7D1F27CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12F7132496;
-	Thu, 15 Feb 2024 14:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6DB132488;
+	Thu, 15 Feb 2024 14:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ECIszJOQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JCTZ/IsK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC43A132487;
-	Thu, 15 Feb 2024 14:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447BB132484;
+	Thu, 15 Feb 2024 14:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008489; cv=none; b=Kxsy9G5pE7oMRXmynqjYX/ylbv78Vl3zNCqh1kmm9Ei7lfscZ+NY3HEnx+K2LSUHDk3ZYPiSGtJiY3Iu8sD75cnVDK5/ldMm9gTXGjD5K7uShoKGDRTocA+s9m0z7N3He/zWC8rWckZ6TDDEhbMFpTBB3/EDQE+pEZQf8/IFUbs=
+	t=1708008637; cv=none; b=UfNT8xo5O4NSEwpEVajYRjvlMlc43/8I6lIPSXuSHsrg2kkHikv4kkvJugaG+uk7ATF0pUBksDJE8S9gV2yKy3gqTf2V04xVf3g9hxYKrZcKcMYYwkh0wVovglTUr4I35SC57ccEX7puw0G4+PWEhQYKhiO3hF+EOvH42Jdnmf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008489; c=relaxed/simple;
-	bh=0+eV2z62wC4M1HPoT2S+05ApoAOXW0O0QiIlxgy+rog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pk1S2GbZcuB2aTTAz89FfBp+fvACRvkDP6d3ADnIO3bt0mqJg+O3hDq4tPR26fydpHQsSgwzV3LRPo+hmhIjiinni1A1rdWvKhpAxPczHNCqI56lfLcYcurtjiXoZB1qvR/fQE38KnYeu3Sau03JFQAbmEiGYdqMmlmOGrTs874=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ECIszJOQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C255C43390;
-	Thu, 15 Feb 2024 14:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708008488;
-	bh=0+eV2z62wC4M1HPoT2S+05ApoAOXW0O0QiIlxgy+rog=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ECIszJOQGoQ2anjbO4YmfzCJzHkllqvxa+8pVFJXr0jERLsNeBO/x6IXesUGya4IS
-	 vcAGz2L4L8JnS8CEFBkxqxu77+/Xwfy0ZrhzpADod4tkSt3TZqog28Fa7GlBPsCewj
-	 nJ8RGQRKYqghzEMiEtYzdYorMHitXDhbdboJQhVLfKOAQRmbrkfenEWAVohDJ2Ugj/
-	 CzsqGUoacwiG0+dMTg0HIJziyvrZHxYxv3Mtan2IpROHW+WpwsRVhtFvDDF9G/shmx
-	 sNFS/JU6oCOK3kEqrKV89yAXk7yQ0IoxnJJaLeMw63x/9ZNWmtsO6OQ9lE+boAKHeu
-	 Uah81SXH9lbrQ==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511a4a1c497so1020728e87.3;
-        Thu, 15 Feb 2024 06:48:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXSMoxJhe3bRPfzy/l+AXqU/fa/S8Mq2xknfNQmV0adDuNBGj6pHFE1pxadD4AymVdj+41+mq+wtAmMz0oledNdz1uenF/jhERgqi+wbZgMvDKxyvWqyB5wEjGBuX/FbV4tWzIoQf44
-X-Gm-Message-State: AOJu0YzsAIvVmwA0RfygjzvyxZZdqqdExj5mX5Zit3HwBbEuKF+JO/k+
-	KLebyiQkXpDxFK5v0aOK69luPbhe3Ay4ZM91DZ9SZ1nVFRMqciYRICWIKeRbUWbnPfK0XeDWzUm
-	LLeTE2nTVngkBiP2aavqLJaAdU4o=
-X-Google-Smtp-Source: AGHT+IEZw0KmJnT1uU8Ft00FTsupt30pFi4+zk6kJV4/CX34SXviVJUOot0Yh2Y2rwLBIufyF9SkYEGj4qQU6pesW0g=
-X-Received: by 2002:a05:6512:601:b0:511:ae21:97ab with SMTP id
- b1-20020a056512060100b00511ae2197abmr1705357lfe.25.1708008486587; Thu, 15 Feb
- 2024 06:48:06 -0800 (PST)
+	s=arc-20240116; t=1708008637; c=relaxed/simple;
+	bh=2UTMt4kij+AbeHSuCqQx7s5uiRsL4iwwHL/UJl/dr60=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dw7eIuqT3kXXD9qQsWNtJvFwDTPhVdQuz73rd9vosX9KoPzGJqDXFxpoA3fbiHyUxDbitBtF9UrCIcY4GZcCXBXkWbbCUMI4QbHxBew2eJ7TCahxGB52pzazsPau3nRMJnhzSzQyFBJrNykchLFpkHWn+CCEJUD6UYmlqt80LzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JCTZ/IsK; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708008635; x=1739544635;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2UTMt4kij+AbeHSuCqQx7s5uiRsL4iwwHL/UJl/dr60=;
+  b=JCTZ/IsKvKi+wN3+DTz3Rgijnbh+AP+wbcDsRhjfFMYc1rx3gGSJ0sTr
+   Wm8EX4kBL9D7pZWXIc5aftC27yPL8kyQzbKV1jf9psvCtLWjV2ZjwRA8L
+   385fiTGlAop+irGkxfdA9Y82tUXfZHGhBQk9OBdzU/AuHfOQite5Gn1jz
+   87rWBS3gfszbMOkHHnuEXHhDOltZty+K29NyEw8dCRfI6hhndlplrmaik
+   cyjIZU5KT7nYMtoascjZrIuSJx4SMf9VlZc0nYB920RoGSdqMp1RilGbL
+   g3gb2+kEOKAUwuA/pPPJnWwVJrOQVznPU7WTGz4CV+pjIGaDR2zVD6FUj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1968850"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="1968850"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:50:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="935676901"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="935676901"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Feb 2024 06:50:32 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 706C620B; Thu, 15 Feb 2024 16:50:31 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v2 1/1] serial: 8250_of: Drop quirk fot NPCM from 8250_port
+Date: Thu, 15 Feb 2024 16:50:08 +0200
+Message-ID: <20240215145029.581389-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240109034755.100555-1-Smita.KoralahalliChannabasappa@amd.com> <20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
-In-Reply-To: <20240109034755.100555-3-Smita.KoralahalliChannabasappa@amd.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 15 Feb 2024 15:47:54 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXESytb-wD6ybRqrA+D0sOnfSRyFVLxEOyok7OqPofjCGw@mail.gmail.com>
-Message-ID: <CAMj1kXESytb-wD6ybRqrA+D0sOnfSRyFVLxEOyok7OqPofjCGw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] efi/cper, cxl: Make definitions and structures global
-To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc: linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-cxl@vger.kernel.org, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	Yazen Ghannam <yazen.ghannam@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 9 Jan 2024 at 04:48, Smita Koralahalli
-<Smita.KoralahalliChannabasappa@amd.com> wrote:
->
-> In preparation to add tracepoint support, move protocol error UUID
-> definition to a common location and make CXL RAS capability struct
-> global for use across different modules.
->
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+We are not supposed to spread quirks in 8250_port module especially
+when we have a separate driver for the hardware in question.
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Move quirk from generic module to the driver that uses it.
 
-> ---
-> v2:
->         No change.
-> ---
->  drivers/firmware/efi/cper_cxl.c | 11 -----------
->  drivers/firmware/efi/cper_cxl.h |  7 ++-----
->  include/linux/cper.h            |  4 ++++
->  include/linux/cxl-event.h       | 11 +++++++++++
->  4 files changed, 17 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
-> index a55771b99a97..4fd8d783993e 100644
-> --- a/drivers/firmware/efi/cper_cxl.c
-> +++ b/drivers/firmware/efi/cper_cxl.c
-> @@ -18,17 +18,6 @@
->  #define PROT_ERR_VALID_DVSEC                   BIT_ULL(5)
->  #define PROT_ERR_VALID_ERROR_LOG               BIT_ULL(6)
->
-> -/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
-> -struct cxl_ras_capability_regs {
-> -       u32 uncor_status;
-> -       u32 uncor_mask;
-> -       u32 uncor_severity;
-> -       u32 cor_status;
-> -       u32 cor_mask;
-> -       u32 cap_control;
-> -       u32 header_log[16];
-> -};
-> -
->  static const char * const prot_err_agent_type_strs[] = {
->         "Restricted CXL Device",
->         "Restricted CXL Host Downstream Port",
-> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
-> index 86bfcf7909ec..6f8c00495708 100644
-> --- a/drivers/firmware/efi/cper_cxl.h
-> +++ b/drivers/firmware/efi/cper_cxl.h
-> @@ -7,14 +7,11 @@
->   * Author: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
->   */
->
-> +#include <linux/cxl-event.h>
-> +
->  #ifndef LINUX_CPER_CXL_H
->  #define LINUX_CPER_CXL_H
->
-> -/* CXL Protocol Error Section */
-> -#define CPER_SEC_CXL_PROT_ERR                                          \
-> -       GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,   \
-> -                 0x4B, 0x77, 0x10, 0x48)
-> -
->  #pragma pack(1)
->
->  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
-> diff --git a/include/linux/cper.h b/include/linux/cper.h
-> index c1a7dc325121..2cbf0a93785a 100644
-> --- a/include/linux/cper.h
-> +++ b/include/linux/cper.h
-> @@ -89,6 +89,10 @@ enum {
->  #define CPER_NOTIFY_DMAR                                               \
->         GUID_INIT(0x667DD791, 0xC6B3, 0x4c27, 0x8A, 0x6B, 0x0F, 0x8E,   \
->                   0x72, 0x2D, 0xEB, 0x41)
-> +/* CXL Protocol Error Section */
-> +#define CPER_SEC_CXL_PROT_ERR                                          \
-> +       GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,   \
-> +                 0x4B, 0x77, 0x10, 0x48)
->
->  /*
->   * Flags bits definitions for flags in struct cper_record_header
-> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
-> index 6ce839c59749..3a41dd5723e8 100644
-> --- a/include/linux/cxl-event.h
-> +++ b/include/linux/cxl-event.h
-> @@ -141,6 +141,17 @@ struct cxl_cper_event_rec {
->         union cxl_event event;
->  } __packed;
->
-> +/* CXL RAS Capability Structure, CXL v3.0 sec 8.2.4.16 */
-> +struct cxl_ras_capability_regs {
-> +       u32 uncor_status;
-> +       u32 uncor_mask;
-> +       u32 uncor_severity;
-> +       u32 cor_status;
-> +       u32 cor_mask;
-> +       u32 cap_control;
-> +       u32 header_log[16];
-> +};
-> +
->  struct cxl_cper_event_info {
->         struct cxl_cper_event_rec rec;
->  };
-> --
-> 2.17.1
->
->
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: added missing bits.h, reworked error handling in a switch-case
+ drivers/tty/serial/8250/8250_of.c   | 44 +++++++++++++++++++++++++++--
+ drivers/tty/serial/8250/8250_port.c | 24 ----------------
+ 2 files changed, 42 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+index 34f17a9785e7..9dcc17e33269 100644
+--- a/drivers/tty/serial/8250/8250_of.c
++++ b/drivers/tty/serial/8250/8250_of.c
+@@ -4,7 +4,10 @@
+  *
+  *    Copyright (C) 2006 Arnd Bergmann <arnd@arndb.de>, IBM Corp.
+  */
++
++#include <linux/bits.h>
+ #include <linux/console.h>
++#include <linux/math.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/serial_core.h>
+@@ -25,6 +28,36 @@ struct of_serial_info {
+ 	int line;
+ };
+ 
++/* Nuvoton NPCM timeout register */
++#define UART_NPCM_TOR          7
++#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
++
++static int npcm_startup(struct uart_port *port)
++{
++	/*
++	 * Nuvoton calls the scratch register 'UART_TOR' (timeout
++	 * register). Enable it, and set TIOC (timeout interrupt
++	 * comparator) to be 0x20 for correct operation.
++	 */
++	serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
++
++	return serial8250_do_startup(port);
++}
++
++/* Nuvoton NPCM UARTs have a custom divisor calculation */
++static unsigned int npcm_get_divisor(struct uart_port *port, unsigned int baud,
++				     unsigned int *frac)
++{
++	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
++}
++
++static int npcm_setup(struct uart_port *port)
++{
++	port->get_divisor = npcm_get_divisor;
++	port->startup = npcm_startup;
++	return 0;
++}
++
+ /*
+  * Fill a struct uart_port for a given device node
+  */
+@@ -164,10 +197,17 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
+ 	switch (type) {
+ 	case PORT_RT2880:
+ 		ret = rt288x_setup(port);
+-		if (ret)
+-			goto err_pmruntime;
++		break;
++	case PORT_NPCM:
++		ret = npcm_setup(port);
++		break;
++	default:
++		/* Nothing to do */
++		ret = 0;
+ 		break;
+ 	}
++	if (ret)
++		goto err_pmruntime;
+ 
+ 	if (IS_REACHABLE(CONFIG_SERIAL_8250_FSL) &&
+ 	    (of_device_is_compatible(np, "fsl,ns16550") ||
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 175a0b07589c..2699ccf5bfce 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -38,10 +38,6 @@
+ 
+ #include "8250.h"
+ 
+-/* Nuvoton NPCM timeout register */
+-#define UART_NPCM_TOR          7
+-#define UART_NPCM_TOIE         BIT(7)  /* Timeout Interrupt Enable */
+-
+ /*
+  * Debugging.
+  */
+@@ -2206,15 +2202,6 @@ int serial8250_do_startup(struct uart_port *port)
+ 				UART_DA830_PWREMU_MGMT_FREE);
+ 	}
+ 
+-	if (port->type == PORT_NPCM) {
+-		/*
+-		 * Nuvoton calls the scratch register 'UART_TOR' (timeout
+-		 * register). Enable it, and set TIOC (timeout interrupt
+-		 * comparator) to be 0x20 for correct operation.
+-		 */
+-		serial_port_out(port, UART_NPCM_TOR, UART_NPCM_TOIE | 0x20);
+-	}
+-
+ #ifdef CONFIG_SERIAL_8250_RSA
+ 	/*
+ 	 * If this is an RSA port, see if we can kick it up to the
+@@ -2508,15 +2495,6 @@ static void serial8250_shutdown(struct uart_port *port)
+ 		serial8250_do_shutdown(port);
+ }
+ 
+-/* Nuvoton NPCM UARTs have a custom divisor calculation */
+-static unsigned int npcm_get_divisor(struct uart_8250_port *up,
+-		unsigned int baud)
+-{
+-	struct uart_port *port = &up->port;
+-
+-	return DIV_ROUND_CLOSEST(port->uartclk, 16 * baud + 2) - 2;
+-}
+-
+ static unsigned int serial8250_do_get_divisor(struct uart_port *port,
+ 					      unsigned int baud,
+ 					      unsigned int *frac)
+@@ -2561,8 +2539,6 @@ static unsigned int serial8250_do_get_divisor(struct uart_port *port,
+ 		quot = 0x8001;
+ 	else if (magic_multiplier && baud >= port->uartclk / 12)
+ 		quot = 0x8002;
+-	else if (up->port.type == PORT_NPCM)
+-		quot = npcm_get_divisor(up, baud);
+ 	else
+ 		quot = uart_get_divisor(port, baud);
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
