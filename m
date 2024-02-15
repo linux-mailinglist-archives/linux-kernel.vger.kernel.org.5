@@ -1,274 +1,134 @@
-Return-Path: <linux-kernel+bounces-66430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 745E2855CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:43:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD533855C9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FB82B30EF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:37:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7762A283A5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 08:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B510913ADC;
-	Thu, 15 Feb 2024 08:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9F9134CE;
+	Thu, 15 Feb 2024 08:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="BWXspkJo"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ri0f8YUb"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74BA134C1
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A6811713
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 08:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707986234; cv=none; b=ZGygYfEoK4/fQGQbRHxtuA5mBczIRLShlIJU2btLomww7KCzMdZXAl4tLWYY6zsGF8BP7ztF9AE0hKJ0ROdf5hTkMgzDbuTUG1LenXRAXGIMA8X3+rMU3jJ8KvZgzl6siME/pG+d0EI6YGGQGJiezxiFxTAxFHxWLwoJPflIJGE=
+	t=1707986324; cv=none; b=JQrSdm3FNpBb57MsvTlgARR6RypsZ0K1EqV2MHCh8Zx0LQFmXQnTwN//EwJJQlxlWYoKjODq7PhYmt30PRLH/iITU4KyLqW9/9yr+IPf8U7qUFA5MK4UMVr55dbNE8c9AnxeRKb5b0FCP7quZtsryT2C7rMsQsZTpF1vUpsS31g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707986234; c=relaxed/simple;
-	bh=aD4TuNBSfrmec1g1U2kSzpEwzyiwxJCOb5xx42bvHGA=;
+	s=arc-20240116; t=1707986324; c=relaxed/simple;
+	bh=Q56x3ZcX1nF9Sgm6TFM0JZIi1GbTTjB5Fn2nyTorVbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pst50VIXLjyHCkvGGtb5PQBLhIZ+ZVkRtcxfIhVEwMYp54cvKqLvFfzOIy2AOqPno5tgujsu24b5wg5M0FhqWf2ChET5rh3+0ZLRy2Xmr3DsKWQyBrAjkVHScVGGAZV9LmJ+qdI162DfDK4gpP2x7+5ddTqnxXxNYhGceMgd0S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=BWXspkJo; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d1094b5568so8134701fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:37:12 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rsX0/47khjdGNd95Pc6neXtg2ntz5YPz8iMLAYKoG0VX3QICCdrcUPN7RlJTAf4wGZX9nt5LEl1QyXRTCn18xa89LOb4BwTwYV83GZXH7/5cs/FPMp+g6xqTS9kN5FtoaR0Eug2cvnQuV8RtYHVm5qH4vMjDoynkN9c6cumlm4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ri0f8YUb; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d71cb97937so5854485ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 00:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1707986231; x=1708591031; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=p0Tr3DlNIUsbNl7Zybl/OUv7Beh0KoEzVQNaV1wEscA=;
-        b=BWXspkJoYt26/GW5ODk2Pc8EEht/yohjO98jASlXvyJrZpKVep3orRf2hIm2dK1UOG
-         5p6H1rY/FJR68brh4GPG69nnU9bUd/7R07Q9i1dqcQUsT5ILCGM1A4LjRgR7KFDekC8x
-         bSy0WAud39Na6SBEyS5GVFCPxmhhZIXTmrdEQ=
+        d=linaro.org; s=google; t=1707986322; x=1708591122; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=unp5IYDIJwzJBKtXHzFZAv0ys3C/nXvo3MpOLEbWD+0=;
+        b=ri0f8YUbwHLi89vFn1RQc5cGGsP/GBhKQpDneR3fZY3aIICVbo7qV+hUxr+YC7pqpO
+         peP4HRrD+K6RadLWJ5g2sAx/EgTP9C4PsdqoPp/gR4llwmQJqf1DjY4K2Jepqcladlzi
+         yFCgYXDvBpnp3bYhNG1DuVMc8vbK+2p9Vi38owZOt6K28bkQAA7i4UDc4hr28i/NqlWL
+         NNE4pXeyc1IF0OOYSpdG1CWf3EMvXFw/i6hZyGDkhle+jg1mmVVm3S/XUljCmr0zlkNB
+         lwVqc12UyF8vGtTA5XrvBqdyvGkTJpRzX13/KQh4wlRX+HGdqRbKpmirE0wTRgXi41ve
+         G6Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707986231; x=1708591031;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p0Tr3DlNIUsbNl7Zybl/OUv7Beh0KoEzVQNaV1wEscA=;
-        b=YUtNQjLBiA6lx9i3giyyryPV2tJtzC7glnlSlUJDWQC4Ijr6FTnBYniFSrP8O3+THy
-         h9bgpiNN4+rAl7AAlSzIieIGgRgO8cGp5nzLLlz6B0tUXdnwizhFR6hMPDOF/nS7+nPj
-         xHGR4XxyIegaxyYCXebWKMtoTT/gqPNogNI+U+9KzRR3PCroICuNIB9mDKLwuNd+sJap
-         9+QHyvMTdUqhSpfGIfNhRt7yMBnjyH2Fe1uxcJ+tLurNvjJ4ayaAP13CYo7PEUV1wSK4
-         RC+O5rwU0ZaQCeJ7ucR5TXIQRWILedSXgkF68FT2yvEdo9a8ZO15fBD9HgKD7I3p50Ok
-         xB3w==
-X-Forwarded-Encrypted: i=1; AJvYcCX0q4p1HixN9d3hL8Pe/PZigZoHyMiIUfbsZSHJN/uDlGvGWbMhgZyaBUCmTf8sKfumhAZ0AbGIRpQBaByYdsHdtqHkXBLP2elzYka+
-X-Gm-Message-State: AOJu0YzS5Efy3hAvNt0JMhk/6RKmdvqROhFcblRROtFIG0u6MBHSzQ/T
-	d0JKt1D/BCkbVdpbmZunp0Sy1iGl2z8BUOyefN4YIND2HxN5Y2WKlwnbJVrjuhk=
-X-Google-Smtp-Source: AGHT+IG6L8UDyDxpMu9X27hfF38b95OqoJaWrWoeoQPrfZTqYcZ+N/S/qJDlQGyYvbnfKjPT22kAlw==
-X-Received: by 2002:a2e:a9a0:0:b0:2d0:fe83:bc87 with SMTP id x32-20020a2ea9a0000000b002d0fe83bc87mr1234033ljq.10.1707986230631;
-        Thu, 15 Feb 2024 00:37:10 -0800 (PST)
-Received: from localhost ([213.195.118.74])
-        by smtp.gmail.com with ESMTPSA id g8-20020a05620a108800b00785d6c811cdsm420962qkk.70.2024.02.15.00.37.09
+        d=1e100.net; s=20230601; t=1707986322; x=1708591122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=unp5IYDIJwzJBKtXHzFZAv0ys3C/nXvo3MpOLEbWD+0=;
+        b=B+keeC+mmXJmDXMoCxu61Kg/oSDP0qIyUBmUqk6AX/a4bxDoRpjuO80HOA4OeSwByk
+         t0atzrkGpv2qf2iq4H9m7G/TdGn8oKwtbEhU1r2AS6O2jeZJgnyN09s5FE8JmLlSKIBb
+         B+5RT5Tvy190IcaLHamKpouG4gsB57gIoUOYf2rSPvOF0lKu44UqXhdgqNDWE/pjbKet
+         OxdvYRczckpioc5kBJWwcafnLc6aOozpGcsIfuayc9H6c0RdVuijyWDfDwwSNfdn243+
+         gu+uqD1aexlxXeCppY9JwLyRjoTBrrhG8QxpKkCAQWfl5qIeFo6KwJHG+1xlkcnxJtVR
+         nGtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWWIP13VZR8bW6LgIAuGCNLhUjKUHbVz8Bz2e9hK49galx5y6rYY+l2GsZWjiSOfuKSLS95XrbNElsAO+OTTDwPPFKVM65PmN3ZLMok
+X-Gm-Message-State: AOJu0YxYA/1ND6Wkw5WGkxeKZoU9QxIfUlZifWbXTS5e/ZmtP7W9uDV4
+	FKtHNy61wtoBT+axO//KPkrgV0il0qUQ2Wx5cdlQ3/3+Se6hP1h1wyElXS6UW8yHOD3/48fsIA/
+	H
+X-Google-Smtp-Source: AGHT+IHcsfElY98Ie802okXFW0Fa7ycIX8s8eDqg3GY+f9qMqasiqHgWuI5mLHezozWl+ozksSlrZw==
+X-Received: by 2002:a17:903:32c3:b0:1d8:f071:5067 with SMTP id i3-20020a17090332c300b001d8f0715067mr1329330plr.35.1707986322106;
+        Thu, 15 Feb 2024 00:38:42 -0800 (PST)
+Received: from localhost ([122.172.83.95])
+        by smtp.gmail.com with ESMTPSA id u5-20020a170902bf4500b001db45855530sm729704pls.290.2024.02.15.00.38.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 00:37:10 -0800 (PST)
-Date: Thu, 15 Feb 2024 09:37:08 +0100
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: "Chen, Jiqian" <Jiqian.Chen@amd.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Juergen Gross <jgross@suse.com>,
-	Stefano Stabellini <sstabellini@kernel.org>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-	"Huang, Ray" <Ray.Huang@amd.com>,
-	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>
-Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Message-ID: <Zc3NNOEN-NPR9jjI@macbook>
-References: <ZcnhOEjnTgbYFPVl@macbook>
- <20240212191858.GA1137351@bhelgaas>
+        Thu, 15 Feb 2024 00:38:41 -0800 (PST)
+Date: Thu, 15 Feb 2024 14:08:39 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Jingyu Wang <jingyuwang_vip@163.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: qcom-hw: add CONFIG_COMMON_CLK dependency
+Message-ID: <20240215083839.rq7655uhmrlnkh3w@vireshk-i7>
+References: <20240215083322.4002782-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240212191858.GA1137351@bhelgaas>
+In-Reply-To: <20240215083322.4002782-1-arnd@kernel.org>
 
-On Mon, Feb 12, 2024 at 01:18:58PM -0600, Bjorn Helgaas wrote:
-> On Mon, Feb 12, 2024 at 10:13:28AM +0100, Roger Pau Monné wrote:
-> > On Fri, Feb 09, 2024 at 03:05:49PM -0600, Bjorn Helgaas wrote:
-> > > On Thu, Feb 01, 2024 at 09:39:49AM +0100, Roger Pau Monné wrote:
-> > > > On Wed, Jan 31, 2024 at 01:00:14PM -0600, Bjorn Helgaas wrote:
-> > > > > On Wed, Jan 31, 2024 at 09:58:19AM +0100, Roger Pau Monné wrote:
-> > > > > > On Tue, Jan 30, 2024 at 02:44:03PM -0600, Bjorn Helgaas wrote:
-> > > > > > > On Tue, Jan 30, 2024 at 10:07:36AM +0100, Roger Pau Monné wrote:
-> > > > > > > > On Mon, Jan 29, 2024 at 04:01:13PM -0600, Bjorn Helgaas wrote:
-> > > > > > > > > On Thu, Jan 25, 2024 at 07:17:24AM +0000, Chen, Jiqian wrote:
-> > > > > > > > > > On 2024/1/24 00:02, Bjorn Helgaas wrote:
-> > > > > > > > > > > On Tue, Jan 23, 2024 at 10:13:52AM +0000, Chen, Jiqian wrote:
-> > > > > > > > > > >> On 2024/1/23 07:37, Bjorn Helgaas wrote:
-> > > > > > > > > > >>> On Fri, Jan 05, 2024 at 02:22:17PM +0800, Jiqian Chen wrote:
-> > > > > > > > > > >>>> There is a need for some scenarios to use gsi sysfs.
-> > > > > > > > > > >>>> For example, when xen passthrough a device to dumU, it will
-> > > > > > > > > > >>>> use gsi to map pirq, but currently userspace can't get gsi
-> > > > > > > > > > >>>> number.
-> > > > > > > > > > >>>> So, add gsi sysfs for that and for other potential scenarios.
-> > > > > > > > > > >> ...
-> > > > > > > > > > > 
-> > > > > > > > > > >>> I don't know enough about Xen to know why it needs the GSI in
-> > > > > > > > > > >>> userspace.  Is this passthrough brand new functionality that can't be
-> > > > > > > > > > >>> done today because we don't expose the GSI yet?
-> > > > > > > > > 
-> > > > > > > > > I assume this must be new functionality, i.e., this kind of
-> > > > > > > > > passthrough does not work today, right?
-> > > > > > > > > 
-> > > > > > > > > > >> has ACPI support and is responsible for detecting and controlling
-> > > > > > > > > > >> the hardware, also it performs privileged operations such as the
-> > > > > > > > > > >> creation of normal (unprivileged) domains DomUs. When we give to a
-> > > > > > > > > > >> DomU direct access to a device, we need also to route the physical
-> > > > > > > > > > >> interrupts to the DomU. In order to do so Xen needs to setup and map
-> > > > > > > > > > >> the interrupts appropriately.
-> > > > > > > > > > > 
-> > > > > > > > > > > What kernel interfaces are used for this setup and mapping?
-> > > > > > > > > >
-> > > > > > > > > > For passthrough devices, the setup and mapping of routing physical
-> > > > > > > > > > interrupts to DomU are done on Xen hypervisor side, hypervisor only
-> > > > > > > > > > need userspace to provide the GSI info, see Xen code:
-> > > > > > > > > > xc_physdev_map_pirq require GSI and then will call hypercall to pass
-> > > > > > > > > > GSI into hypervisor and then hypervisor will do the mapping and
-> > > > > > > > > > routing, kernel doesn't do the setup and mapping.
-> > > > > > > > > 
-> > > > > > > > > So we have to expose the GSI to userspace not because userspace itself
-> > > > > > > > > uses it, but so userspace can turn around and pass it back into the
-> > > > > > > > > kernel?
-> > > > > > > > 
-> > > > > > > > No, the point is to pass it back to Xen, which doesn't know the
-> > > > > > > > mapping between GSIs and PCI devices because it can't execute the ACPI
-> > > > > > > > AML resource methods that provide such information.
-> > > > > > > > 
-> > > > > > > > The (Linux) kernel is just a proxy that forwards the hypercalls from
-> > > > > > > > user-space tools into Xen.
-> > > > > > > 
-> > > > > > > But I guess Xen knows how to interpret a GSI even though it doesn't
-> > > > > > > have access to AML?
-> > > > > > 
-> > > > > > On x86 Xen does know how to map a GSI into an IO-APIC pin, in order
-> > > > > > configure the RTE as requested.
-> > > > > 
-> > > > > IIUC, mapping a GSI to an IO-APIC pin requires information from the
-> > > > > MADT.  So I guess Xen does use the static ACPI tables, but not the AML
-> > > > > _PRT methods that would connect a GSI with a PCI device?
-> > > > 
-> > > > Yes, Xen can parse the static tables, and knows the base GSI of
-> > > > IO-APICs from the MADT.
-> > > > 
-> > > > > I guess this means Xen would not be able to deal with _MAT methods,
-> > > > > which also contains MADT entries?  I don't know the implications of
-> > > > > this -- maybe it means Xen might not be able to use with hot-added
-> > > > > devices?
-> > > > 
-> > > > It's my understanding _MAT will only be present on some very specific
-> > > > devices (IO-APIC or CPU objects).  Xen doesn't support hotplug of
-> > > > IO-APICs, but hotplug of CPUs should in principle be supported with
-> > > > cooperation from the control domain OS (albeit it's not something that
-> > > > we tests on our CI).  I don't expect however that a CPU object _MAT
-> > > > method will return IO APIC entries.
-> > > > 
-> > > > > The tables (including DSDT and SSDTS that contain the AML) are exposed
-> > > > > to userspace via /sys/firmware/acpi/tables/, but of course that
-> > > > > doesn't mean Xen knows how to interpret the AML, and even if it did,
-> > > > > Xen probably wouldn't be able to *evaluate* it since that could
-> > > > > conflict with the host kernel's use of AML.
-> > > > 
-> > > > Indeed, there can only be a single OSPM, and that's the dom0 OS (Linux
-> > > > in our context).
-> > > > 
-> > > > Getting back to our context though, what would be a suitable place for
-> > > > exposing the GSI assigned to each device?
-> > > 
-> > > IIUC, the Xen hypervisor:
-> > > 
-> > >   - Interprets /sys/firmware/acpi/tables/APIC (or gets this via
-> > >     something running on the Dom0 kernel) to find the physical base
-> > >     address and GSI base, e.g., from I/O APIC, I/O SAPIC.
-> > 
-> > No, Xen parses the MADT directly from memory, before stating dom0.
-> > That's a static table so it's fine for Xen to parse it and obtain the
-> > I/O APIC GSI base.
+On 15-02-24, 09:33, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> It's an interesting split to consume ACPI static tables directly but
-> put the AML interpreter elsewhere.
-
-Well, static tables can be consumed by Xen, because thye don't require
-an AML parser (obviously), and parsing them doesn't have any
-side-effects that would prevent dom0 from being the OSPM (no methods
-or similar are evaluated).
-
-> I doubt the ACPI spec envisioned
-> that, which makes me wonder what other things we could trip over, but
-> that's just a tangent.
-
-Indeed, ACPI is not be best interface for the Xen/dom0 split model.
-
-> > >   - Needs the GSI to locate the APIC and pin within the APIC.  The
-> > >     Dom0 kernel is the OSPM, so only it can evaluate the AML _PRT to
-> > >     learn the PCI device -> GSI mapping.
-> > 
-> > Yes, Xen doesn't know the PCI device -> GSI mapping.  Dom0 needs to
-> > parse the ACPI methods and signal Xen to configure a GSI with a
-> > given trigger and polarity.
-> > 
-> > >   - Has direct access to the APIC physical base address to program the
-> > >     Redirection Table.
-> > 
-> > Yes, the hardware (native) I/O APIC is owned by Xen, and not directly
-> > accessible by dom0.
-> > 
-> > > The patch seems a little messy to me because the PCI core has to keep
-> > > track of the GSI even though it doesn't need it itself.  And the
-> > > current patch exposes it on all arches, even non-ACPI ones or when
-> > > ACPI is disabled (easily fixable).
-> > > 
-> > > We only call acpi_pci_irq_enable() in the pci_enable_device() path, so
-> > > we don't know the GSI unless a Dom0 driver has claimed the device and
-> > > called pci_enable_device() for it, which seems like it might not be
-> > > desirable.
-> > 
-> > I think that's always the case, as on dom0 devices to be passed
-> > through are handled by pciback which does enable them.
+> It is still possible to compile-test a kernel without CONFIG_COMMON_CLK
+> for some ancient ARM boards or other architectures, but this causes a
+> link failure in the qcom-cpufreq-hw driver:
 > 
-> pcistub_init_device() labels the pci_enable_device() as a "HACK"
-> related to determining the IRQ, which makes me think there's not
-> really a requirement for the device to be *enabled* (BAR decoding
-> enabled) by dom0.
-
-No, there's no need for memory decoding to be enabled for getting the
-GSI from the ACPI method I would assume.  I'm confused by that
-pci_enable_device() call.  Is maybe the purpose to make sure the
-device is powered up so that reading the PCI header Interrupt Line and
-Pin fields returns valid values?  No idea whether reading those fields
-requires the device to be in certain (active) power states.
-
-> > I agree it might be best to not tie exposing the node to
-> > pci_enable_device() having been called.  Is _PRT only evaluated as
-> > part of acpi_pci_irq_enable()? (or pci_enable_device()).
+> ERROR: modpost: "devm_clk_hw_register" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+> ERROR: modpost: "devm_of_clk_add_hw_provider" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+> ERROR: modpost: "of_clk_hw_onecell_get" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
 > 
-> Yes.  AFAICT, acpi_pci_irq_enable() is the only path that evaluates
-> _PRT (except for a debugger interface).  I don't think it *needs* to
-> be that way, and the fact that we do it per-device like that means we
-> evaluate _PRT many times even though I think the results never change.
+> Add a Kconfig dependency here to make sure this always work. Apparently
+> this bug has been in the kernel for a while without me running into it
+> on randconfig builds as COMMON_CLK is almost always enabled.
 > 
-> I could imagine evaluating _PRT once as part of enumerating a PCI host
-> bridge (and maybe PCI-PCI bridge, per acpi_pci_irq_find_prt_entry()
-> comment), but that looks like a fair bit of work to implement.  And of
-> course it doesn't really affect the question of how to expose the
-> result, although it does suggest /sys/bus/acpi/devices/PNP0A03:00/ as
-> a possible location.
+> I have cross-checked by building an allmodconfig kernel with COMMON_CLK
+> disabled, which showed no other driver having this problem.
+> 
+> Fixes: 4370232c727b ("cpufreq: qcom-hw: Add CPU clock provider support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/cpufreq/Kconfig.arm | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+> index f911606897b8..a0ebad77666e 100644
+> --- a/drivers/cpufreq/Kconfig.arm
+> +++ b/drivers/cpufreq/Kconfig.arm
+> @@ -173,6 +173,7 @@ config ARM_QCOM_CPUFREQ_NVMEM
+>  config ARM_QCOM_CPUFREQ_HW
+>  	tristate "QCOM CPUFreq HW driver"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+> +	depends on COMMON_CLK
+>  	help
+>  	  Support for the CPUFreq HW driver.
+>  	  Some QCOM chipsets have a HW engine to offload the steps
 
-So you suggest exposing the GSI as part of the PCI host bridge?  I'm
-afraid I'm not following how we could then map PCI SBDFs from devices
-to their assigned GSI.
+Applied. Thanks.
 
-Thanks, Roger.
+-- 
+viresh
 
