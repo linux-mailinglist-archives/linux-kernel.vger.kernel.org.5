@@ -1,127 +1,110 @@
-Return-Path: <linux-kernel+bounces-67131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C3D8566C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:02:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FA88566C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09971F282B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41461C214C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E69132C18;
-	Thu, 15 Feb 2024 15:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76379132C3C;
+	Thu, 15 Feb 2024 15:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MpjcItyx"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ACCFDxP4";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KXqXpqo8"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69B7132491
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5F4132491;
+	Thu, 15 Feb 2024 15:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708009252; cv=none; b=h8ztVeig46HVVwrLTLmCjKrfHjb+252sp7DYyPDCa/tjRxv0pRSe8LEliW73GIloHCbcAsoe8ksLf8oLrQclnwOIASlS5fz9xKJ7j7XbaOLa5tTvciTiuvbcyxqInQKYbLXU5QK6bPJ5NqZ/rq6xEIucaVtMfSS9ZRg5gv0bM24=
+	t=1708009267; cv=none; b=qxWhZeTvt1LXAuroB0iVz4poaA8PqlF7o9AX6etxgMfpoliwpCI9fih5AqQe3/XFBgwMHF56V6xRB6kRIQect4Of8MpMejh+MNkoP6Rexy0npwyjA2RKzRhY+en1SHiLxytKmoNfg/8/eCxIxx2o2cj2FfDDSfcKyYFcOU/T0v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708009252; c=relaxed/simple;
-	bh=TuiNAUvyq1clV8TcQUgStWd7GbVGRghSxXf3rSzZwzE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=miysz6fGXMnV0WHDxscv6ND5FExu5nz+2dEkpZupAIxb/l8875R7WpkPqG3nBe70E1F1nP1mjMIuxtN0Dx9nxi6kqImSDjw8g2bvMXPhX1sQ+cw4A+5UfC/Cuj+rphKI4R5Bp5RTlNnPw46p1xNEwIEk1NhDpHMaf/FCmAGjGn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MpjcItyx; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6078c4cadd7so10245667b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:00:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708009250; x=1708614050; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ0BMQ4fbAPxFZIL+ExAw2UZkWvzvacKzKpaYXVa9bs=;
-        b=MpjcItyxaCUbywq2/eFa9EpNJTbqxHjYzxiGUvadyJ4OpD2g3m4X/lGDCmwdji0F89
-         ZI3iiZzXixEt5Ceq2UT/wY6vmjXC6KX5du0vxdF+ZnJH0R4cB96e0DF9PgVExW/+PJ9G
-         owZiDKQ4YK3LEngMTT6K1FVQmx2pltalCWdLGmxV766sl7oax+LSo/5H2dJ7jIBfOCG+
-         NfeLZACVrTmdxU4rSK1ptNPKzImM3PtzV3W03K/9imOLSjYcvzQJcVGA7a+cKKrbzfVE
-         KvGCKypdYp7V70/ltmKfLfVkw2SUm5ku6/RfV+DUnaCYMBLfJG5LnMRxHfhK7cfXTWBx
-         Y/0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708009250; x=1708614050;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CJ0BMQ4fbAPxFZIL+ExAw2UZkWvzvacKzKpaYXVa9bs=;
-        b=bCt4FkIb12Vur8WC+BCiJPKQ9UtD8xmxI0cagKZPcQR7X/0ILBVCfncLE5sHhqBny+
-         3wKw1JR/3V1Yoa8Mc6duCP0+utyHvGePqBwifJjjyRwt1tfPTY7i9bQUDwVoyxdaU0Rv
-         47vev1KIitL4162F9uD/4AO+zXUcixhv7vXyb59K2v22uAD4ahDI/pMZIJz+g+jxNYLQ
-         s4pwmZBwvpSlO2zGdIPlb9I26z2vidTN3MIUewymvhKKneFC5swCrPMJntWy1nFl02OV
-         4YjdrswD4XNyK6F0k0BL8qvFmh7jnGj0P7h6uQnfc2Kla+HLlKQuzLw3fClXFr4mX3da
-         2rOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWI/r8If7D4TrSeD2zEk5kv9gA+n8VocOtSwpLejZJ+Edll4NTLgdo7oDVGNdGJRo4zMltD/ADDyAwQbtLMWfghxviTmvZZloraw9uQ
-X-Gm-Message-State: AOJu0YxkbhdKL1atdyoGPX4Rc6faGeE9aBqEaxUKJj2r8FdtMrsc0QU2
-	7tuqGUljScSSONRvgGZd3dxiB/02++imZ3qjrU989i3WIbGcFl23eZSYNOjJBpA3FzZN2lg05cq
-	ii0F+SIWhhBsOzfmbxPg8OGCUUpp2jamuqYWshA==
-X-Google-Smtp-Source: AGHT+IH1iXXNMam85attnJ7ZRIB2/4oXnewhRdPWa1d/MOJ9E89Emu3qeIMg52lohwW+P6inqZ48cubKQOYzlT5hKRw=
-X-Received: by 2002:a81:7994:0:b0:607:7e73:fce1 with SMTP id
- u142-20020a817994000000b006077e73fce1mr2063382ywc.26.1708009249786; Thu, 15
- Feb 2024 07:00:49 -0800 (PST)
+	s=arc-20240116; t=1708009267; c=relaxed/simple;
+	bh=MtMq9tcbpWwfTdQNJk1rzVu9HeI1V4yx38+kxXa5HNg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CpWJOoS8m8MlFbNfzEdIU70zaXRc4ceqALUygtP7BgLJpfPlXN3S+de1RiYYis8kLsxUmhsCgmPNybO9/4Sfii9p6u2Jxao0oNy46Usj8wyUY/V8qF3AzE1F32gJCnNJfvTB4qv3LwG629wDTuDbQ4zgytTDwzZM3nW2NRBLj0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ACCFDxP4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KXqXpqo8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708009264;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7jurcXevAzLq5b3XNHkngyd9aG7HXv/ajp+hOIdurHE=;
+	b=ACCFDxP4M6h+kPZxC8n5YjerDJytE7XIB0xzvUQXXsvsgxPRymDCIwAOCzBTMwjF/tAC6G
+	5DClIsEIgMg8ovLCONa+WB3EEhNaR0do2/BXAHLP/kwTJWohwek+I2LO/AhhBv4naEVE0e
+	aHQgbFkMm4aV/a+ICweO1zbPNB9N6AaJDpzcUIWsYMFaaN5tq4TzG4KtRQiOI3ZH5zRyML
+	a3IJasqR/LwhLRPH+XRe6Jqq5lcpAy4rh9jyXmQL4Rc0PsGK3z88opG/4JIKCQLL2Mssf8
+	aa1w9c8EObkVpg4klvWcgi5NpujCCu6uXwJBtrkci69IOAL7y7ahvCT+XVT0PQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708009264;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7jurcXevAzLq5b3XNHkngyd9aG7HXv/ajp+hOIdurHE=;
+	b=KXqXpqo8rLP9B7h0qdTcwSs6/WBr1zOrw9q92FTDKvwl3twYREKP5rQvKTif3BtifKxCaI
+	TvV5B162CoS6pGDQ==
+To: Marc Zyngier <maz@kernel.org>, Anup Patel <apatel@ventanamicro.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Atish Patra <atishp@atishpatra.org>, Andrew Jones
+ <ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, Saravana
+ Kannan <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v12 04/25] genirq/irqdomain: Add DOMAIN_BUS_DEVICE_IMS
+In-Reply-To: <86o7ci3puk.wl-maz@kernel.org>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-5-apatel@ventanamicro.com>
+ <86o7ci3puk.wl-maz@kernel.org>
+Date: Thu, 15 Feb 2024 16:01:03 +0100
+Message-ID: <87h6i9epqo.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com> <20240215134856.1313239-6-quic_mdalam@quicinc.com>
-In-Reply-To: <20240215134856.1313239-6-quic_mdalam@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 15 Feb 2024 17:00:37 +0200
-Message-ID: <CAA8EJpqV=w38TqjfTp6OurAwHjR87PpmQTs2jUo6O7vF1-T-WQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: ipq9574: Disable eMMC node
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
-	manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org, 
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	quic_srichara@quicinc.com, quic_varada@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-On Thu, 15 Feb 2024 at 15:49, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
+On Thu, Feb 15 2024 at 11:54, Marc Zyngier wrote:
+> On Sat, 27 Jan 2024 16:17:32 +0000,
+> Anup Patel <apatel@ventanamicro.com> wrote:
+>>  	DOMAIN_BUS_PCI_DEVICE_IMS,
+>> +	DOMAIN_BUS_DEVICE_IMS,
 >
-> Disable eMMC node for rdp433, since rdp433 default boot mode
-> is norplusnand.
+> Only a personal taste, but since we keep calling it "device MSI",
+> which it really is, I find it slightly odd to name the token
+> "DEVICE_IMS".
+>
+> From what I understand, IMS is PCIe specific. Platform (and by
+> extension device) MSI extends far beyond PCIe. So here, DEVICE_MSI
+> would make a lot more sense and avoid confusion.
 
-Are they exclusive?
+That's true, but I chose it intentionally because Interrupt Message
+Store (IMS) is a (PCI) device specific way to store the message contrary
+to PCI/MSI[-X] which has standardized storage.
 
->
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> index 1bb8d96c9a82..e33e7fafd695 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> @@ -24,7 +24,7 @@ &sdhc_1 {
->         mmc-hs400-enhanced-strobe;
->         max-frequency = <384000000>;
->         bus-width = <8>;
-> -       status = "okay";
-> +       status = "disabled";
->  };
->
->  &tlmm {
-> --
-> 2.34.1
->
->
+So my thought was that this exactly reflects what the platform device
+requires: device specific message store, aka DMS or DSMS :)
 
+> But hey, I don't have much skin in this game, and I can probably
+> mentally rotate the acronym...
 
--- 
-With best wishes
-Dmitry
+I have no strong opinion about it though.
+
+Thanks,
+
+        tglx
 
