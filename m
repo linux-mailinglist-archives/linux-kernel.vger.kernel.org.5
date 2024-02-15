@@ -1,154 +1,177 @@
-Return-Path: <linux-kernel+bounces-67157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95888856742
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B18ED85675B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49C4928CEC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:20:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA5A281885
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6E41353FA;
-	Thu, 15 Feb 2024 15:18:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D690F137C33;
+	Thu, 15 Feb 2024 15:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GAeDjyOd"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XhQEl6ns"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9784134CDC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB76C136660;
+	Thu, 15 Feb 2024 15:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708010294; cv=none; b=CKlxgXtR6u+sAQ/Oi1BxA4KCB6tgXYwsVsrBUgXz92AASx9x7N0PqFqudsDJa1z6o867yHInz8d5T5/FeDvnUWb4VaiTX2RmfD17LvDUv5URQCarxwNk814mrFCe7HdoWseL25PYg8kEyDA7/oGW4qTmpaq9AFi2cuFQzVV+aiA=
+	t=1708010300; cv=none; b=ZXKlhN3lfAlY9/y28ED3O/gEMecHPlu/6qb/WnVnsyKrrQpGqrKBOzonkQFDVqHUhRBqOtQAeOZXtQqTiNFtCcwSK2Vo+PP0JuF3DAOlsuqHHMK62zLsMa3nEonNFm4WK6UxahIGTW+E4bXaylh62hdgv71dcP/kuTEqrsAVOi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708010294; c=relaxed/simple;
-	bh=0moq0mcoUJnqJgfLCw56ofLM3dtVq9Kx/sgkFcuifvc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u/u4smlT7Ka8RenXttaz2uMmoaB0IMcCTMxi7DT+JRrgHdlGzDEfQ+VEg9NEbnSR92UVFV9BQzOA9iZKNm9yWzdUu7iesC6rR/r9qL/HdEBbnnwPDNBONiGc0ULGog86k9jsczcle/QH/v2OpVIi2TxA/rNNyLkRmeYhGUCF2bM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GAeDjyOd; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78731e44587so62842285a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:18:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708010291; x=1708615091; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kwWfU3Ro1z0XktmL8m4mtOaaeAQD2IJrZimJ0lbSENo=;
-        b=GAeDjyOdKMyJoJq6GbpeUb8/TqUOKMqCPhyFu8i2j7JeDIxwxzz2zoK6jBmHc8IIX/
-         kuTjxA8foaHtdZTfIR8+Nr3dJQs0Iv2mqaGHgw7oswz3JCKo7f1rlE+g+1sIHi3kweTg
-         G3DVcyifGy30LRieDv7LDh9XddeW3luF5kZVhFsi0mH7OtE3O2tdd+t6au+i/Ic4DL2F
-         2X6cOSDt8huWZJBDr4w+5w98O4E2i6GDZPpoVNaH60vHlI8FkGPy8vUgDZ3oECdll+Ph
-         CouVGCVbh+Ojiv3tm1SMpPbBFIsacWMgoGwq6pKxSIYfHVdSAOiWMQ4ygzQMvvwaPTgB
-         mRtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708010291; x=1708615091;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kwWfU3Ro1z0XktmL8m4mtOaaeAQD2IJrZimJ0lbSENo=;
-        b=axisLNaOPkUCH91scB8LZzMoySsf9z4zCdEkfiWnlL26oQAKb95vWf2As67LL31ADD
-         Kl9Lp5EDAqYTg8gx37RUTZYUcOoAKQefpyzt7wXndaV7C2xzljrfMCu4MB+FmMUZOIlf
-         QE70hky2lqCGAUU5L1Wg6SU3dj5rNHBkksJAymbxDQhctYcogVm8c9sPRAgeRD/OmkQE
-         RWdEc2R170xtP3SH03qGxaM8EyJ5gJtIgIuIBJS3RTVw0VHVQVFo2U9m7h/8JY0wZjh8
-         T1RbVaHNVjHNbj9uxJHRUcoOJk31EvJs14vlr0wSZVXVGLtC7kvYEiLEg+wwLDMe4SOq
-         0O1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUmUmCGXMxAbrXqM7pXanYha5nvzCQB0giuz8+onag/TeOXGGO9c1WMVbO197v+caIlB5+pzVp53M42DumzJ3bpDv/0j3c76mYoyLVG
-X-Gm-Message-State: AOJu0Yy/cMhQ/UlPK5Z6456PZh9fiy+Bcn3ypXBOwp88rKdfkwGRfdXy
-	/YKUGb/ADfJBsLiYn3h7ccructNNXHLpMFoYQDQnTVHMLFnX1wUVOn5tke7pnR5SqyLwxpVF3lB
-	HLCeaReApl6GTXFuZj0akv/y0pAA2zcQTaRmg2w==
-X-Google-Smtp-Source: AGHT+IEZ6QB3M6um48zblbG5/nvFRICNI0XNyCLsrHF5dTGPKc3t3UmN+k1fe2w7rx+t0rUIY2qhxPuZ3tJEtf7DuNA=
-X-Received: by 2002:a0c:e409:0:b0:68f:2b7:ae39 with SMTP id
- o9-20020a0ce409000000b0068f02b7ae39mr1704887qvl.40.1708010291520; Thu, 15 Feb
- 2024 07:18:11 -0800 (PST)
+	s=arc-20240116; t=1708010300; c=relaxed/simple;
+	bh=syYHVSXzkqOe90sAyDghDGNg/hTKWhyvklSNl9vHdvA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=CBBGHtNnOK84rzQoQbDaQR/da2LVmRcfNIoEQHybwzPnx7JblR3PGz0/tGiucrmTST7rzXOBWl+VyxjuKPncIVN0RXdh0enEMwNIItcQcSpVtFwsRTv9T4WRvI52wQznfj6euQzYLSRpNnv5PWfwGQb0GE5W9kErtIECmmHXToc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XhQEl6ns; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 43FEA24000C;
+	Thu, 15 Feb 2024 15:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708010296;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IAFq8gnQLkAuZEJxQcdlNSuJ0c9RJtiPkL9kSYkKtUc=;
+	b=XhQEl6nsOJlPT8bqe7eashq44KBh3BxprioEvTZsyIPqhvop6ahUCejb7pGmJ5XQwuRyz7
+	QqpnhFMml0Gy6oioCZVhB/4e4SS/Y4ScyrXao0zB6/ES+ce4DGYSJW7hUUWUIf8mWUoBgT
+	GyzAfQ6y2D4qwjLjRUuJTtdmmON2MBiTwJgcHlwZW+MLx5Oq6iK3GvQ3MyD3lMBtzWg95q
+	ZwpNe/g5xi3m0+df9quWccZ2nQPU5uK248+MINd5p+rP/ElvpVXEnZYB6bilblwvmm51Wi
+	j78mjF0m2xmhfP/4/HclzHyAnu1nCUCjJCeaIfULvh7mSVsG4bsZLRLtPqe2eg==
+From: Thomas Richard <thomas.richard@bootlin.com>
+Date: Thu, 15 Feb 2024 16:18:00 +0100
+Subject: [PATCH v3 15/18] PCI: cadence: extract link setup sequence from
+ cdns_pcie_host_setup()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYuHF34bSbN9ktKuMAv1eOFVrf+Gw1MC_rG5trUQv9A_Pw@mail.gmail.com>
- <Zc4UZkFp6Jr051gE@slm.duckdns.org>
-In-Reply-To: <Zc4UZkFp6Jr051gE@slm.duckdns.org>
-From: Anders Roxell <anders.roxell@linaro.org>
-Date: Thu, 15 Feb 2024 16:18:00 +0100
-Message-ID: <CADYN=9KmFfQM9BxthsOYXraE=hVtydVbOXF8dH6otx_7aSafrQ@mail.gmail.com>
-Subject: Re: next-20240215: workqueue.c: undefined reference to `irq_work_queue_on'
-To: Tejun Heo <tj@kernel.org>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, open list <linux-kernel@vger.kernel.org>, 
-	Linux-Next Mailing List <linux-next@vger.kernel.org>, lkft-triage@lists.linaro.org, 
-	Linux Regressions <regressions@lists.linux.dev>, Lai Jiangshan <jiangshanlai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240102-j7200-pcie-s2r-v3-15-5c2e4a3fac1f@bootlin.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+In-Reply-To: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+ Aaro Koskinen <aaro.koskinen@iki.fi>, 
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+ Thomas Richard <thomas.richard@bootlin.com>
+X-Mailer: b4 0.12.0
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Thu, 15 Feb 2024 at 14:40, Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
+The function cdns_pcie_host_setup() mixes probe structure and link setup.
 
-Hey Tejun,
+The link setup must be done during the resume sequence. So extract it from
+cdns_pcie_host_setup() and create a dedicated function.
 
->
-> Can you see whether the following patch fixes the build?
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+ drivers/pci/controller/cadence/pcie-cadence-host.c | 39 ++++++++++++++--------
+ drivers/pci/controller/cadence/pcie-cadence.h      |  6 ++++
+ 2 files changed, 32 insertions(+), 13 deletions(-)
 
-This patch fixes the build. Thank you for the quick fix.
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+index 5b14f7ee3c79..93d9922730af 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-host.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+@@ -497,6 +497,30 @@ static int cdns_pcie_host_init(struct device *dev,
+ 	return cdns_pcie_host_init_address_translation(rc);
+ }
+ 
++int cdns_pcie_host_link_setup(struct cdns_pcie_rc *rc)
++{
++	struct cdns_pcie *pcie = &rc->pcie;
++	struct device *dev = rc->pcie.dev;
++	int ret;
++
++	if (rc->quirk_detect_quiet_flag)
++		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
++
++	cdns_pcie_host_enable_ptm_response(pcie);
++
++	ret = cdns_pcie_start_link(pcie);
++	if (ret) {
++		dev_err(dev, "Failed to start link\n");
++		return ret;
++	}
++
++	ret = cdns_pcie_host_start_link(rc);
++	if (ret)
++		dev_dbg(dev, "PCIe link never came up\n");
++
++	return 0;
++}
++
+ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ {
+ 	struct device *dev = rc->pcie.dev;
+@@ -533,20 +557,9 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ 		return PTR_ERR(rc->cfg_base);
+ 	rc->cfg_res = res;
+ 
+-	if (rc->quirk_detect_quiet_flag)
+-		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
+-
+-	cdns_pcie_host_enable_ptm_response(pcie);
+-
+-	ret = cdns_pcie_start_link(pcie);
+-	if (ret) {
+-		dev_err(dev, "Failed to start link\n");
+-		return ret;
+-	}
+-
+-	ret = cdns_pcie_host_start_link(rc);
++	ret = cdns_pcie_host_link_setup(rc);
+ 	if (ret)
+-		dev_dbg(dev, "PCIe link never came up\n");
++		return ret;
+ 
+ 	for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
+ 		rc->avail_ib_bar[bar] = true;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 373cb50fcd15..4c687aeb810e 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -515,10 +515,16 @@ static inline bool cdns_pcie_link_up(struct cdns_pcie *pcie)
+ }
+ 
+ #ifdef CONFIG_PCIE_CADENCE_HOST
++int cdns_pcie_host_link_setup(struct cdns_pcie_rc *rc);
+ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc);
+ void __iomem *cdns_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
+ 			       int where);
+ #else
++static inline int cdns_pcie_host_link_setup(struct cdns_pcie_rc *rc)
++{
++	return 0;
++}
++
+ static inline int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ {
+ 	return 0;
 
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
+-- 
+2.39.2
 
->
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 8df18f3a9748..41be05a8ba5e 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -107,6 +107,8 @@ config CONSTRUCTORS
->
->  config IRQ_WORK
->         bool
-> +       depends on SMP
-> +       default y
->
->  config BUILDTIME_TABLE_SORT
->         bool
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 04e35dbe6799..6ae441e13804 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1209,6 +1209,20 @@ static struct irq_work *bh_pool_irq_work(struct worker_pool *pool)
->         return &per_cpu(bh_pool_irq_works, pool->cpu)[high];
->  }
->
-> +static void kick_bh_pool(struct worker_pool *pool)
-> +{
-> +#ifdef CONFIG_SMP
-> +       if (unlikely(pool->cpu != smp_processor_id())) {
-> +               irq_work_queue_on(bh_pool_irq_work(pool), pool->cpu);
-> +               return;
-> +       }
-> +#endif
-> +       if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
-> +               raise_softirq_irqoff(HI_SOFTIRQ);
-> +       else
-> +               raise_softirq_irqoff(TASKLET_SOFTIRQ);
-> +}
-> +
->  /**
->   * kick_pool - wake up an idle worker if necessary
->   * @pool: pool to kick
-> @@ -1227,15 +1241,7 @@ static bool kick_pool(struct worker_pool *pool)
->                 return false;
->
->         if (pool->flags & POOL_BH) {
-> -               if (likely(pool->cpu == smp_processor_id())) {
-> -                       if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
-> -                               raise_softirq_irqoff(HI_SOFTIRQ);
-> -                       else
-> -                               raise_softirq_irqoff(TASKLET_SOFTIRQ);
-> -               } else {
-> -                       irq_work_queue_on(bh_pool_irq_work(pool), pool->cpu);
-> -               }
-> -
-> +               kick_bh_pool(pool);
->                 return true;
->         }
->
 
