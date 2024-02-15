@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-67818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB0E8857169
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:18:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 999CB85716B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07A4EB237E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:18:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE7DB1C21A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561E214C592;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910D314C59D;
 	Thu, 15 Feb 2024 23:14:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NfpFrd8Q"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aZFz9HTh"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8E914A0B4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E29114A0BE
 	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708038885; cv=none; b=NuD3kT1bXHQLwSujhO0FVDKrq1gyq/+5Nt38KGwyNftj/ZlBFRI80lBMUpiMDOdnmiwKDmbDIEvmWI6zLRWFt7FxrUEFKjJw3BqfyAvxN/3/FNW5T+meh/HB7+IN5kacpvqRnesY1ux7YsbzdWjiTx3VKE0/UzU3x1cKZRwQdco=
+	t=1708038885; cv=none; b=cb045/qJ6zu+wrCr5cVaqHLljkROJ3BpUoiQVVERDX0FdDWTGBgGvgpr3UFyHpG6sLTsAjDXbOmx5Zq3pKAEKfL7qAc6zGyUAToruQ1WvBfDs7mCcrI4A0vAT/jg+pUwhXa59j2fyht1DS8Dez6nFH3aFP2e8ataRZKgulPAw1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708038885; c=relaxed/simple;
-	bh=XHhdhuxOKWz8EspMQDfPASDrP/vRFk3wVhxiIKVJyZE=;
+	bh=Ib9DRZGDBCSUD4uXPmR+ijcvzy4h1J3AkaOgyP6jQrA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XCM6cTGbz+wgQVg31jWnb6meQPVXYAfRR6VV+0b3kMpHHENWBHdYKv2B660DMoLgkV7bBt7GiAa9XuhufQ0e3OCoQkiNGP8JSbLhZICQCnTwZB5Y+qg3rLGZ4CTjFr/aZM8Y8OkHemkw7y1uolMqniT+oEpPV3Vx6r7bYfjoMvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NfpFrd8Q; arc=none smtp.client-ip=198.175.65.21
+	 MIME-Version:Content-Type; b=QlhR5j7cZdmVHU4nxOXRX4SH6QHfiYuRku/AmVqCvQXhUMzFA7LVUp4t/UrziUvFp+0xmLCPns7BIabNk5Hqa75l0ml6cwK6ekmJEP7EjofApmj1DW+rdHTgOayN+JcawQfQPwbssya6+MymRPiYdIXi7FHcTArrgsHNbJrzjNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aZFz9HTh; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708038883; x=1739574883;
+  t=1708038884; x=1739574884;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=XHhdhuxOKWz8EspMQDfPASDrP/vRFk3wVhxiIKVJyZE=;
-  b=NfpFrd8QKeI9hUSsEoGQdlTQLTlezIbtpPp8Y4K6b2oPY9jS6+Wvohsm
-   2vvbo9RRbf9w7K80AvrYN+7sm+rvOYqOKCPuyhyzXKQBAynW5cstBsKNF
-   OSIlrxc06ExNllCwHwuym+USb6RXSx8RBsjlgdvIqvYsA31ULgejFJ0SY
-   XsL5ww3hdqlK+i27Qh1s9X4vkADpL81xt7EPzKOFTDYAI8+WHpKt0hh54
-   TxEWKe4CAu/IwDzTl3BFj1l8ufffzWSOd9k61b89Qd1YTW8d/3+R44VkM
-   Zsb2vKgtuE4L+eeoNW1ckkVHMhYLvekTND0Fq9hE5rFaFNPY9W+ALI0TH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2066354"
+  bh=Ib9DRZGDBCSUD4uXPmR+ijcvzy4h1J3AkaOgyP6jQrA=;
+  b=aZFz9HThrAXYgiC93qZAMnKdqWEZXqXnbLivzJoGt6MORRK3hWMLXBBb
+   mdYwToFGS83l+1BJsVIb1vz7QYsW3lqm8vbPZ6MbvPlG2AsNv347Kh4fz
+   86l86S03256YyZBJU7Ae7P4sgVea75b2YLRXQe/oZ3XhNurn2N6sn1qIu
+   nYruggcY+Gz5748T/jpXg259Ve5H1kY1mSws/MWV3CNNTuWf/epzFI1FD
+   /U5FB73nXTBvk6/FHRovQ1R71jyXJywfnbGLhoCwSWplc/LhXmO42VE+w
+   Eb/f43bAYS1zhnoPOp95vhZtUiZMBpmP1ioK73ngqHKh2EpfOYBl05jHx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2066367"
 X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="2066354"
+   d="scan'208";a="2066367"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912250197"
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912250200"
 X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="912250197"
+   d="scan'208";a="912250200"
 Received: from yshin-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.95.133])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:39 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:14:40 -0800
 From: Rick Edgecombe <rick.p.edgecombe@intel.com>
 To: Liam.Howlett@oracle.com,
 	akpm@linux-foundation.org,
@@ -72,9 +72,9 @@ To: Liam.Howlett@oracle.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Cc: rick.p.edgecombe@intel.com
-Subject: [RFC PATCH 4/8] thp: Add thp_get_unmapped_area_vmflags()
-Date: Thu, 15 Feb 2024 15:13:28 -0800
-Message-Id: <20240215231332.1556787-5-rick.p.edgecombe@intel.com>
+Subject: [RFC PATCH 5/8] mm: Take placement mappings gap into account
+Date: Thu, 15 Feb 2024 15:13:29 -0800
+Message-Id: <20240215231332.1556787-6-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
 References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
@@ -103,132 +103,115 @@ placed, mmap() may place the shadow stack in the PAGE_SIZE free area. Then
 the mapping that is supposed to have a guard gap will not have a gap to
 the adjacent VMA.
 
-Add a THP implementations of the vm_flags variant of get_unmapped_area().
-Future changes will call this from mmap.c in the do_mmap() path to allow
-shadow stacks to be placed with consideration taken for the start guard
-gap. Shadow stack memory is always private and anonymous and so special
-guard gap logic is not needed in a lot of caseis, but it can be mapped by
-THP, so needs to be handled.
+For MAP_GROWSDOWN/VM_GROWSDOWN and MAP_GROWSUP/VM_GROWSUP this has not
+been a problem in practice because applications place these kinds of
+mappings very early, when there is not many mappings to find a space
+between. But for shadow stacks, they may be placed throughout the lifetime
+of the application.
+
+So define a VM_UNMAPPED_START_GAP_SET flag to specify that a start_gap
+field has been set, as most vm_unmapped_area_info structs are not zeroed,
+so the added field will often contain garbage. Use
+VM_UNMAPPED_START_GAP_SET in unmapped_area/_topdown() to find a space that
+includes the guard gap for the new mapping. Take care to not interfere
+with the alignment.
 
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- include/linux/huge_mm.h | 11 +++++++++++
- mm/huge_memory.c        | 23 ++++++++++++++++-------
- mm/mmap.c               | 12 +++++++-----
- 3 files changed, 34 insertions(+), 12 deletions(-)
+ include/linux/mm.h |  2 ++
+ mm/mmap.c          | 21 ++++++++++++++-------
+ 2 files changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index fa0350b0812a..ef7251dfd9f9 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -139,6 +139,9 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 9addf16dbf18..160bb6db7a16 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3393,12 +3393,14 @@ extern unsigned long __must_check vm_mmap(struct file *, unsigned long,
  
- unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
- 		unsigned long len, unsigned long pgoff, unsigned long flags);
-+unsigned long thp_get_unmapped_area_vmflags(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags,
-+		vm_flags_t vm_flags);
+ struct vm_unmapped_area_info {
+ #define VM_UNMAPPED_AREA_TOPDOWN 1
++#define VM_UNMAPPED_START_GAP_SET 2
+ 	unsigned long flags;
+ 	unsigned long length;
+ 	unsigned long low_limit;
+ 	unsigned long high_limit;
+ 	unsigned long align_mask;
+ 	unsigned long align_offset;
++	unsigned long start_gap;
+ };
  
- void folio_prep_large_rmappable(struct folio *folio);
- bool can_split_folio(struct folio *folio, int *pextra_pins);
-@@ -286,6 +289,14 @@ static inline void folio_prep_large_rmappable(struct folio *folio) {}
- 
- #define thp_get_unmapped_area	NULL
- 
-+static inline unsigned long
-+thp_get_unmapped_area_vmflags(struct file *filp, unsigned long addr,
-+			      unsigned long len, unsigned long pgoff,
-+			       unsigned long flags, vm_flags_t vm_flags)
-+{
-+	return 0;
-+}
-+
- static inline bool
- can_split_folio(struct folio *folio, int *pextra_pins)
- {
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e9ef43a719a5..f235f6d3ff62 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -628,7 +628,8 @@ static inline bool is_transparent_hugepage(struct folio *folio)
- 
- static unsigned long __thp_get_unmapped_area(struct file *filp,
- 		unsigned long addr, unsigned long len,
--		loff_t off, unsigned long flags, unsigned long size)
-+		loff_t off, unsigned long flags, unsigned long size,
-+		vm_flags_t vm_flags)
- {
- 	loff_t off_end = off + len;
- 	loff_t off_align = round_up(off, size);
-@@ -641,8 +642,8 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
- 	if (len_pad < len || (off + len_pad) < off)
- 		return 0;
- 
--	ret = mm_get_unmapped_area(current->mm, filp, addr, len_pad,
--				   off >> PAGE_SHIFT, flags);
-+	ret = mm_get_unmapped_area_vmflags(current->mm, filp, addr, len_pad,
-+					   off >> PAGE_SHIFT, flags, vm_flags);
- 
- 	/*
- 	 * The failure might be due to length padding. The caller will retry
-@@ -662,17 +663,25 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
- 	return ret;
- }
- 
--unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
--		unsigned long len, unsigned long pgoff, unsigned long flags)
-+unsigned long thp_get_unmapped_area_vmflags(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags,
-+		vm_flags_t vm_flags)
- {
- 	unsigned long ret;
- 	loff_t off = (loff_t)pgoff << PAGE_SHIFT;
- 
--	ret = __thp_get_unmapped_area(filp, addr, len, off, flags, PMD_SIZE);
-+	ret = __thp_get_unmapped_area(filp, addr, len, off, flags, PMD_SIZE, vm_flags);
- 	if (ret)
- 		return ret;
- 
--	return mm_get_unmapped_area(current->mm, filp, addr, len, pgoff, flags);
-+	return mm_get_unmapped_area_vmflags(current->mm, filp, addr, len, pgoff, flags,
-+					    vm_flags);
-+}
-+
-+unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
-+{
-+	return thp_get_unmapped_area_vmflags(filp, addr, len, pgoff, flags, 0);
- }
- EXPORT_SYMBOL_GPL(thp_get_unmapped_area);
- 
+ extern unsigned long vm_unmapped_area(struct vm_unmapped_area_info *info);
 diff --git a/mm/mmap.c b/mm/mmap.c
-index 2723f26f7c62..936d728ba1ca 100644
+index 936d728ba1ca..1b6c333656f9 100644
 --- a/mm/mmap.c
 +++ b/mm/mmap.c
-@@ -1857,16 +1857,18 @@ __get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
- 		 */
- 		pgoff = 0;
- 		get_area = shmem_get_unmapped_area;
--	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
--		/* Ensures that larger anonymous mappings are THP aligned. */
--		get_area = thp_get_unmapped_area;
- 	}
+@@ -1567,14 +1567,17 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
+  */
+ static unsigned long unmapped_area(struct vm_unmapped_area_info *info)
+ {
+-	unsigned long length, gap;
++	unsigned long length, gap, start_gap = 0;
+ 	unsigned long low_limit, high_limit;
+ 	struct vm_area_struct *tmp;
  
--	if (get_area)
-+	if (get_area) {
- 		addr = get_area(file, addr, len, pgoff, flags);
--	else
-+	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-+		/* Ensures that larger anonymous mappings are THP aligned. */
-+		addr = thp_get_unmapped_area_vmflags(file, addr, len,
-+						     pgoff, flags, vm_flags);
-+	} else {
- 		addr = mm_get_unmapped_area_vmflags(current->mm, file, addr, len,
- 						    pgoff, flags, vm_flags);
-+	}
- 	if (IS_ERR_VALUE(addr))
- 		return addr;
+ 	MA_STATE(mas, &current->mm->mm_mt, 0, 0);
  
++	if (info->flags & VM_UNMAPPED_START_GAP_SET)
++		start_gap = info->start_gap;
++
+ 	/* Adjust search length to account for worst case alignment overhead */
+-	length = info->length + info->align_mask;
++	length = info->length + info->align_mask + start_gap;
+ 	if (length < info->length)
+ 		return -ENOMEM;
+ 
+@@ -1586,7 +1589,7 @@ static unsigned long unmapped_area(struct vm_unmapped_area_info *info)
+ 	if (mas_empty_area(&mas, low_limit, high_limit - 1, length))
+ 		return -ENOMEM;
+ 
+-	gap = mas.index;
++	gap = mas.index + start_gap;
+ 	gap += (info->align_offset - gap) & info->align_mask;
+ 	tmp = mas_next(&mas, ULONG_MAX);
+ 	if (tmp && (tmp->vm_flags & VM_STARTGAP_FLAGS)) { /* Avoid prev check if possible */
+@@ -1619,13 +1622,17 @@ static unsigned long unmapped_area(struct vm_unmapped_area_info *info)
+  */
+ static unsigned long unmapped_area_topdown(struct vm_unmapped_area_info *info)
+ {
+-	unsigned long length, gap, gap_end;
++	unsigned long length, gap, gap_end, start_gap = 0;
+ 	unsigned long low_limit, high_limit;
+ 	struct vm_area_struct *tmp;
+ 
+ 	MA_STATE(mas, &current->mm->mm_mt, 0, 0);
++
++	if (info->flags & VM_UNMAPPED_START_GAP_SET)
++		start_gap = info->start_gap;
++
+ 	/* Adjust search length to account for worst case alignment overhead */
+-	length = info->length + info->align_mask;
++	length = info->length + info->align_mask + start_gap;
+ 	if (length < info->length)
+ 		return -ENOMEM;
+ 
+@@ -1832,7 +1839,7 @@ unsigned long mm_get_unmapped_area_vmflags(struct mm_struct *mm, struct file *fi
+ 
+ unsigned long
+ __get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+-		unsigned long pgoff, unsigned long flags, vm_flags_t vm_flags)
++		    unsigned long pgoff, unsigned long flags, vm_flags_t vm_flags)
+ {
+ 	unsigned long (*get_area)(struct file *, unsigned long,
+ 				  unsigned long, unsigned long, unsigned long)
+@@ -1883,7 +1890,7 @@ __get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+ 
+ unsigned long
+ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+-		unsigned long pgoff, unsigned long flags)
++		  unsigned long pgoff, unsigned long flags)
+ {
+ 	return __get_unmapped_area(file, addr, len, pgoff, flags, 0);
+ }
 -- 
 2.34.1
 
