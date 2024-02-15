@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-66872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A1CE8562EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:18:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0F88562F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:18:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09AAF282FA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:18:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEA081C21C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF0C12C802;
-	Thu, 15 Feb 2024 12:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7819512CD9C;
+	Thu, 15 Feb 2024 12:18:11 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A612E12BEAF
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AF712BF18
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707999489; cv=none; b=Fk8l0vunljLVs2ehqDhvsqAkmbPaHt9z87k+Im7kx3kpyxg0FpODvEqljQtSKKGOtGig5cO99IsrgFjEDEUNG1VCrXx0WUnm/4y3aoLgTr5H2tMdHRPxiYYgEB6Fq4p4JYQxvh7lWYNHwe0r2CSKmoh3TPskk8g4wcwkucb/tCk=
+	t=1707999491; cv=none; b=ty2nw6D8KBbRzM/7iOLuuHQvynwR/CUjO0mRVemo/zIGKAMle7gZ8v9SGjGlUDlgAPPbPkMpWZHidMczUrcPtB+ugpVqrbZyvQYUMc/FxMYRIQ0eBW8s1mrNJAqc0OrGw3QliYjmrVj8jgHXs4bDwQPKY3epUaNcw4nqJWNkmek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707999489; c=relaxed/simple;
-	bh=x9FtnrleqpJuZy6f30x2br9cQeME+hU2HTs978RoTLA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qdG81AQy9t1duLggBJlhR1MNxAUWDG8LCPXd2GZfVlO8Utjn/YDNJTYOvaSWQhQ3U8n13Zokyw/i4EAjjPkhJm+5LivQtv6qAnnbaPcRI4piGa+Z7DjxeNYThtBi6ckB4ycDXQ+JI4GFyhFQLeDC88KE9i+tO5BzzOqumBXNSrs=
+	s=arc-20240116; t=1707999491; c=relaxed/simple;
+	bh=3HoTIqHBsoYmtmbX/YO4jZ7nHqPVAeaeLJeXivTjHog=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FWsvrUE7NXG9dqUSFD5WhHSztDLBjjLM4diH2TdaiXlkI8AXZ2E+22a4u8sLxQpFo0fFxQaocP00repr645pUaDz4gl9TpLxhNCDidgiRpAWo+0f7zRqDAk5GvHnM8wC0258HNY1KoptJb8x/AqC4NxOpILxIeSwtABVVeDFtSc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C309F1FB;
-	Thu, 15 Feb 2024 04:18:46 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA08EDA7;
+	Thu, 15 Feb 2024 04:18:48 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 256853F766;
-	Thu, 15 Feb 2024 04:18:04 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E9A03F766;
+	Thu, 15 Feb 2024 04:18:06 -0800 (PST)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: David Hildenbrand <david@redhat.com>,
 	Mark Rutland <mark.rutland@arm.com>,
@@ -46,10 +47,12 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-Date: Thu, 15 Feb 2024 12:17:52 +0000
-Message-Id: <20240215121756.2734131-1-ryan.roberts@arm.com>
+Subject: [RFC PATCH v1 1/4] mm: Introduce ptep_get_lockless_norecency()
+Date: Thu, 15 Feb 2024 12:17:53 +0000
+Message-Id: <20240215121756.2734131-2-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240215121756.2734131-1-ryan.roberts@arm.com>
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,57 +61,172 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is an RFC for a series that aims to reduce the cost and complexity of
-ptep_get_lockless() for arm64 when supporting transparent contpte mappings [1].
-The approach came from discussion with Mark and David [2].
+With the introduction of contpte mapping support for arm64, that
+architecture's implementation of ptep_get_lockless() has become very
+complex due to the need to gather access and dirty bits from across all
+of the ptes in the contpte block. This requires careful implementation
+to ensure the returned value is consistent (because its not possible to
+read all ptes atomically), but even in the common case when there is no
+racing modification, we have to read all ptes, which gives an ~O(n^2)
+cost if the core-mm is iterating over a range, and performing a
+ptep_get_lockless() on each pte.
 
-It introduces a new helper, ptep_get_lockless_norecency(), which allows the
-access and dirty bits in the returned pte to be incorrect. This relaxation
-permits arm64's implementation to just read the single target pte, and avoids
-having to iterate over the full contpte block to gather the access and dirty
-bits, for the contpte case.
+Solve this by introducing ptep_get_lockless_norecency(), which does not
+make any guarantees about access and dirty bits. Therefore it can simply
+read the single target pte.
 
-It turns out that none of the call sites using ptep_get_lockless() require
-accurate access and dirty bit information, so we can also convert those sites.
-Although a couple of places need care (see patches 2 and 3).
+At the same time, convert all call sites that previously used
+ptep_get_lockless() but don't care about access and dirty state.
 
-Arguably patch 3 is a bit fragile, given the wide accessibility of
-vmf->orig_pte. So it might make sense to drop this patch and stick to using
-ptep_get_lockless() in the page fault path. I'm keen to hear opinions.
+We may want to do something similar for ptep_get() (i.e.
+ptep_get_norecency()) in future; it doesn't suffer from the consistency
+problem because the PTL serializes it with any modifications, but does
+suffer the same O(n^2) cost.
 
-I've chosen the name "recency" because it's shortish and somewhat descriptive,
-and is alredy used in a couple of places to mean similar things (see mglru and
-damon). I'm open to other names if anyone has better ideas.
-
-If concensus is that this approach is generally acceptable, I intend to create a
-series in future to do a similar thing with ptep_get() -> ptep_get_norecency().
-
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
-This series applies on top of [1].
+ include/linux/pgtable.h | 37 ++++++++++++++++++++++++++++++++++---
+ kernel/events/core.c    |  2 +-
+ mm/hugetlb.c            |  2 +-
+ mm/khugepaged.c         |  2 +-
+ mm/memory.c             |  2 +-
+ mm/swap_state.c         |  2 +-
+ mm/swapfile.c           |  2 +-
+ 7 files changed, 40 insertions(+), 9 deletions(-)
 
-[1] https://lore.kernel.org/linux-mm/20240215103205.2607016-1-ryan.roberts@arm.com/
-[2] https://lore.kernel.org/linux-mm/a91cfe1c-289e-4828-8cfc-be34eb69a71b@redhat.com/
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index a36cf4e124b0..9dd40fdbd825 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -528,16 +528,47 @@ static inline pmd_t pmdp_get_lockless(pmd_t *pmdp)
+ #endif /* CONFIG_PGTABLE_LEVELS > 2 */
+ #endif /* CONFIG_GUP_GET_PXX_LOW_HIGH */
 
-Thanks,
-Ryan
+-/*
+- * We require that the PTE can be read atomically.
+- */
+ #ifndef ptep_get_lockless
++/**
++ * ptep_get_lockless - Get a pte without holding the page table lock. Young and
++ *                     dirty bits are guaranteed to accurately reflect the state
++ *                     of the pte at the time of the call.
++ * @ptep: Page table pointer for pte to get.
++ *
++ * If young and dirty information is not required, use
++ * ptep_get_lockless_norecency() which can be faster on some architectures.
++ *
++ * May be overridden by the architecture; otherwise, implemented using
++ * ptep_get(), on the assumption that it is atomic.
++ *
++ * Context: Any.
++ */
+ static inline pte_t ptep_get_lockless(pte_t *ptep)
+ {
+ 	return ptep_get(ptep);
+ }
+ #endif
 
-Ryan Roberts (4):
-  mm: Introduce ptep_get_lockless_norecency()
-  mm/gup: Use ptep_get_lockless_norecency()
-  mm/memory: Use ptep_get_lockless_norecency() for orig_pte
-  arm64/mm: Override ptep_get_lockless_norecency()
++#ifndef ptep_get_lockless_norecency
++/**
++ * ptep_get_lockless_norecency - Get a pte without holding the page table lock.
++ *				 Young and dirty bits may not be accurate.
++ * @ptep: Page table pointer for pte to get.
++ *
++ * Prefer this over ptep_get_lockless() when young and dirty information is not
++ * required since it can be faster on some architectures.
++ *
++ * May be overridden by the architecture; otherwise, implemented using the more
++ * precise ptep_get_lockless().
++ *
++ * Context: Any.
++ */
++static inline pte_t ptep_get_lockless_norecency(pte_t *ptep)
++{
++	return ptep_get_lockless(ptep);
++}
++#endif
++
+ #ifndef pmdp_get_lockless
+ static inline pmd_t pmdp_get_lockless(pmd_t *pmdp)
+ {
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f0f0f71213a1..27991312d635 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -7583,7 +7583,7 @@ static u64 perf_get_pgtable_size(struct mm_struct *mm, unsigned long addr)
+ 	if (!ptep)
+ 		goto again;
 
- arch/arm64/include/asm/pgtable.h |  6 ++++
- include/linux/pgtable.h          | 55 ++++++++++++++++++++++++++++--
- kernel/events/core.c             |  2 +-
- mm/gup.c                         |  7 ++--
- mm/hugetlb.c                     |  2 +-
- mm/khugepaged.c                  |  2 +-
- mm/memory.c                      | 57 ++++++++++++++++++++------------
- mm/swap_state.c                  |  2 +-
- mm/swapfile.c                    |  2 +-
- 9 files changed, 102 insertions(+), 33 deletions(-)
+-	pte = ptep_get_lockless(ptep);
++	pte = ptep_get_lockless_norecency(ptep);
+ 	if (pte_present(pte))
+ 		size = pte_leaf_size(pte);
+ 	pte_unmap(ptep);
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 68283e54c899..41dc44eb8454 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -7517,7 +7517,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	}
 
+ 	if (pte) {
+-		pte_t pteval = ptep_get_lockless(pte);
++		pte_t pteval = ptep_get_lockless_norecency(pte);
+
+ 		BUG_ON(pte_present(pteval) && !pte_huge(pteval));
+ 	}
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 2771fc043b3b..1a6c9ed8237a 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1019,7 +1019,7 @@ static int __collapse_huge_page_swapin(struct mm_struct *mm,
+ 			}
+ 		}
+
+-		vmf.orig_pte = ptep_get_lockless(pte);
++		vmf.orig_pte = ptep_get_lockless_norecency(pte);
+ 		if (!is_swap_pte(vmf.orig_pte))
+ 			continue;
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 4dd8e35b593a..8e65fa1884f1 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4353,7 +4353,7 @@ static bool pte_range_none(pte_t *pte, int nr_pages)
+ 	int i;
+
+ 	for (i = 0; i < nr_pages; i++) {
+-		if (!pte_none(ptep_get_lockless(pte + i)))
++		if (!pte_none(ptep_get_lockless_norecency(pte + i)))
+ 			return false;
+ 	}
+
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 2f540748f7c0..061c6c16c7ff 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -837,7 +837,7 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
+ 			if (!pte)
+ 				break;
+ 		}
+-		pentry = ptep_get_lockless(pte);
++		pentry = ptep_get_lockless_norecency(pte);
+ 		if (!is_swap_pte(pentry))
+ 			continue;
+ 		entry = pte_to_swp_entry(pentry);
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index d1bd8d1e17bd..c414dd238814 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1857,7 +1857,7 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 				break;
+ 		}
+
+-		ptent = ptep_get_lockless(pte);
++		ptent = ptep_get_lockless_norecency(pte);
+
+ 		if (!is_swap_pte(ptent))
+ 			continue;
 --
 2.25.1
 
