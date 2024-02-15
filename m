@@ -1,132 +1,452 @@
-Return-Path: <linux-kernel+bounces-67392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11CAD856AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:20:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35BC3856AD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 451FA1C213D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:20:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0868285B18
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF90E13667C;
-	Thu, 15 Feb 2024 17:20:44 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905A312882C;
+	Thu, 15 Feb 2024 17:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5W0+ggk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497F413665F
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BD3136676;
+	Thu, 15 Feb 2024 17:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017644; cv=none; b=nwKlBwH1yBE0p5EDB3by1uI7w4uuT6JiA4Gy38fDYR7+ZKlWXx08GfLVHiWhwKmi3gPXgUI6dTjaAcKTkJKQoq25ipqfqEy33+axrHOu/wUHJl0jIqn+vSvMLohMqZLqSau1jNJ3jllKCVqlknWl7aXbkjf1MgeLoV69p0jVx6A=
+	t=1708017687; cv=none; b=acdOrz/E24K8xInF1W96sZlOLRyKbhDr915DGVNsSEjciGhuQGChBqrWC88I8aObLxqANDrTF7Ps3sInE48BLJ+1Fz8N/lX5+y/YtC7nUaU1PHE/BXSE5bZggFzKzQOLHozs9SQPag+U8SmTB4BOqKdGBwyNHcHg1fYAaOR+Dm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017644; c=relaxed/simple;
-	bh=DhCOBaollMnNcyIsBNcsmF0ZLgDsp0XSt2/+v5C7ZBg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=POlXXgg74bJm46VB4tFL2XBDscgBD6mMAB2ZzE39oeUR1rn9oM+1b0ePQC/NTeD2/86a8imVvNOTBD0Eu34UzQIhvPsAKYqkc49aRvfbxa5BNCphC/bh2RKoZqjwxFm6IBB0DBJY8DNVTRqLPbo+BuqxelbRQhPoDhR1KkEl2ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rafPE-00023i-Ge; Thu, 15 Feb 2024 18:20:16 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rafPD-000vTS-Ev; Thu, 15 Feb 2024 18:20:15 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rafPD-005VOO-1D;
-	Thu, 15 Feb 2024 18:20:15 +0100
-Date: Thu, 15 Feb 2024 18:20:15 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
-Message-ID: <likebxfhlcg6equjhxnf7cimsgac4qvoge3bf65qyir6apwq4n@iotwg6zjjr6c>
-References: <20240208070529.28562-1-raag.jadav@intel.com>
- <20240208070529.28562-2-raag.jadav@intel.com>
- <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
- <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
- <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
- <Zcz-csPY5x29DP7v@smile.fi.intel.com>
- <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
- <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
+	s=arc-20240116; t=1708017687; c=relaxed/simple;
+	bh=Ewvmk35fJMqC+64TDSr4ZQqvpKrjdh6e8nzRlZgkAcU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=B53UoUa/OKLn25VGyuVATUvGfuybMTou6q00R+1adkzQx7dPDBKA35xrf6nMOUjeSU3jQ5MC3iCm1eVU7zVwjaPcRowWMsmEoIMRmU+ncoMYoRTK10r/C2VJpw5JQ7q3HQ8gdOutpYW7bpuIkYUKqg9u8wevJU5ncZ6v/SRvOpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U5W0+ggk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9A77C433C7;
+	Thu, 15 Feb 2024 17:21:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708017686;
+	bh=Ewvmk35fJMqC+64TDSr4ZQqvpKrjdh6e8nzRlZgkAcU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U5W0+ggk+ZYsj4BnA1LFi5qoTFwGYnG844Sn+Nva22TMWys9WCxb1XkDL4EkFljDv
+	 0BR9dfkeYMc4dATph1I+Hh67uTLmg3Zguv8a6xg1/BvCOCoitWXnMAlfhcqTdsuVmV
+	 g3rswGXuUlVQfSzRX5lIPj3SstQbdlrrtUevjvokvmKhlS1NpsfE2MmOuf3XENFZHV
+	 5HV0Er/Nof3rKGlL111TRNWQ2OHiy/8clSfK7s4gKGFa9hZRl/rLGB+TJf+neNOf0I
+	 /LgIqxGRREH8xAA2GqZTz4V+0xBknuhxaoAyDiXs9X/NdZDdy3VZbCagY7vXGQl++B
+	 PUAwox5WdNf9A==
+From: Jakub Kicinski <kuba@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	pabeni@redhat.com
+Subject: [GIT PULL] Networking for v6.8-rc5
+Date: Thu, 15 Feb 2024 09:21:25 -0800
+Message-ID: <20240215172125.400403-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nzhwffwfhtbddob5"
-Content-Disposition: inline
-In-Reply-To: <Zc4TTLetiGhJlx8d@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+Hi Linus!
 
---nzhwffwfhtbddob5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 1f719a2f3fa67665578c759ac34fd3d3690c1a20:
 
-Hello Andy,
+  Merge tag 'net-6.8-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-02-08 15:09:29 -0800)
 
-On Thu, Feb 15, 2024 at 03:36:12PM +0200, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 10:22:57AM +0100, Uwe Kleine-K=F6nig wrote:
-> > If a driver author knows it while writing the code, it's obvious. But if
-> > the driver author looks again in 2 years or someone else (e.g. me with
-> > the PWM maintainer hat on and with little pci experience) that knowledge
-> > might be faded.
->=20
-> This is widely used pattern. Anybody who works with Git should know how
-> to use `git grep` tool. If in doubts, always can ask in the mailing lists.
+are available in the Git repository at:
 
-IMHO you're assuming to much. If someone sees this pattern and quickly
-looks at the implementation of pcim_iomap_table() they might (as I did)
-conclude that this call should be error checked. If they send a patch in
-say 2 years I think I won't remember this discussion/patch and happily
-accept this patch. And I probably won't get enough doubts to start
-grepping around.
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.8-rc5
 
-> I still consider it redundant.
->=20
-> P.S. That's what you call "bikeshedding" (done by yourself here)?
+for you to fetch changes up to c40c0d3a768c78a023a72fb2ceea00743e3a695d:
 
-I can understand that you consider that bikeshedding given that for you
-it's obvious that the second function cannot fail. For me it's not and I
-take this as a hint that it's not obvious for everyone.
+  Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2024-02-15 08:06:51 -0800)
 
-Best regards
-Uwe
+----------------------------------------------------------------
+Including fixes from can, wireless and netfilter.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Current release - regressions:
 
---nzhwffwfhtbddob5
-Content-Type: application/pgp-signature; name="signature.asc"
+ - af_unix: fix task hung while purging oob_skb in GC
 
------BEGIN PGP SIGNATURE-----
+ - pds_core: do not try to run health-thread in VF path
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXOR84ACgkQj4D7WH0S
-/k7egQgAomdmzTMreh6wBaC9N99w6iyzXtHVBFeEUMU42kCw/Wyp1/JUwDkbzoQN
-YT86ZJQ/4y1lECvtsogD3H10f/OCuJgizYgyFdf3oKTVvl5CvkiPjjHFnwXmgwP6
-m2K2F9v49C/oQ0ZB5wFAdJOcbwhIf2NJczBaAuuhH+qt14aknkmRogP2TfBFHljM
-IsktlhR4/S/lFypmxf6fcKQp5VHSL4naDyMQt2AfC3uvZeEiSKL0VapFhIIe912L
-atvbzMhxUnutQRP0mvc9uDc6zVI+8JUQD7pn3iWd938dkQ/kDQwV6x1rsFDi59PT
-zcn5n804FbnTzDB9YYgeGqevKnCrIA==
-=VoYV
------END PGP SIGNATURE-----
+Current release - new code bugs:
 
---nzhwffwfhtbddob5--
+ - sched: act_mirred: don't zero blockid when net device is being deleted
+
+Previous releases - regressions:
+
+ - netfilter:
+   - nat: restore default DNAT behavior
+   - nf_tables: fix bidirectional offload, broken when unidirectional
+     offload support was added
+
+ - openvswitch: limit the number of recursions from action sets
+
+ - eth: i40e: do not allow untrusted VF to remove administratively
+   set MAC address
+
+Previous releases - always broken:
+
+ - tls: fix races and bugs in use of async crypto
+
+ - mptcp: prevent data races on some of the main socket fields,
+   fix races in fastopen handling
+
+ - dpll: fix possible deadlock during netlink dump operation
+
+ - dsa: lan966x: fix crash when adding interface under a lag
+   when some of the ports are disabled
+
+ - can: j1939: prevent deadlock by changing j1939_socks_lock to rwlock
+
+Misc:
+
+ - handful of fixes and reliability improvements for selftests
+
+ - fix sysfs documentation missing net/ in paths
+
+ - finish the work of squashing the missing MODULE_DESCRIPTION()
+   warnings in networking
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Aaron Conole (2):
+      net: openvswitch: limit the number of recursions from action sets
+      selftests: openvswitch: Add validation for the recursion test
+
+Allison Henderson (1):
+      net:rds: Fix possible deadlock in rds_message_put
+
+Arnd Bergmann (2):
+      bnad: fix work_queue type mismatch
+      ethernet: cpts: fix function pointer cast warnings
+
+Breno Leitao (17):
+      net: fill in MODULE_DESCRIPTION()s for xfrm
+      net: fill in MODULE_DESCRIPTION()s for mpoa
+      net: fill in MODULE_DESCRIPTION()s for af_key
+      net: fill in MODULE_DESCRIPTION()s for 6LoWPAN
+      net: fill in MODULE_DESCRIPTION()s for ipv6 modules
+      net: fill in MODULE_DESCRIPTION()s for ipv4 modules
+      net: fill in MODULE_DESCRIPTION()s for net/sched
+      net: fill in MODULE_DESCRIPTION()s for ipvtap
+      net: fill in MODULE_DESCRIPTION()s for dsa_loop_bdinfo
+      net: sysfs: Fix /sys/class/net/<iface> path for statistics
+      net: fill in MODULE_DESCRIPTION()s for xen-netback
+      net: fill in MODULE_DESCRIPTION()s for ieee802154/fakelb
+      net: fill in MODULE_DESCRIPTION()s for plip
+      net: fill in MODULE_DESCRIPTION()s for fddik/skfp
+      net: fill in MODULE_DESCRIPTION()s for ppp
+      net: fill in MODULE_DESCRIPTION()s for mdio_devres
+      net: fill in MODULE_DESCRIPTION()s for missing arcnet
+
+Chuck Lever (1):
+      net/handshake: Fix handshake_req_destroy_test1
+
+Dan Carpenter (2):
+      wifi: iwlwifi: Fix some error codes
+      wifi: iwlwifi: uninitialized variable in iwl_acpi_get_ppag_table()
+
+Daniel Gabay (1):
+      wifi: iwlwifi: mvm: use correct address 3 in A-MSDU
+
+Dave Ertman (1):
+      ice: Add check for lport extraction to LAG init
+
+David S. Miller (4):
+      Merge branch 'tls-fixes'
+      Merge branch 'net-misplaced-fields'
+      Merge branch 'mptcp-misc-fixes'
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+
+Dmitry Antipov (2):
+      net: smc: fix spurious error message from __sock_release()
+      net: sctp: fix skb leak in sctp_inq_free()
+
+Emmanuel Grumbach (1):
+      wifi: iwlwifi: mvm: fix a crash when we run out of stations
+
+Eric Dumazet (4):
+      tcp: move tp->scaling_ratio to tcp_sock_read_txrx group
+      tcp: move tp->tcp_usec_ts to tcp_sock_read_txrx group
+      net-device: move lstats in net_device_read_txrx
+      net: add rcu safety to rtnl_prop_list_size()
+
+Felix Fietkau (1):
+      netfilter: nf_tables: fix bidirectional offload regression
+
+Florian Fainelli (1):
+      net: bcmasp: Handle RX buffer allocation failure
+
+Gavrilov Ilia (1):
+      pppoe: Fix memory leak in pppoe_sendmsg()
+
+Geliang Tang (2):
+      mptcp: check addrs list in userspace_pm_get_local_id
+      MAINTAINERS: update Geliang's email address
+
+Horatiu Vultur (1):
+      lan966x: Fix crash when adding interface under a lag
+
+Ido Schimmel (5):
+      selftests: net: Fix bridge backup port test flakiness
+      selftests: forwarding: Fix layer 2 miss test flakiness
+      selftests: forwarding: Fix bridge MDB test flakiness
+      selftests: forwarding: Suppress grep warnings
+      selftests: forwarding: Fix bridge locked port test flakiness
+
+Ivan Vecera (3):
+      i40e: Do not allow untrusted VF to remove administratively set MAC
+      i40e: Fix waiting for queues of all VSIs to be disabled
+      i40e: Fix wrong mask used during DCB config
+
+Jakub Kicinski (14):
+      Merge branch 'selftests-forwarding-various-fixes'
+      Merge branch 'net-openvswitch-limit-the-recursions-from-action-sets'
+      Merge branch 'net-fix-module_description-for-net-p5'
+      net: tls: factor out tls_*crypt_async_wait()
+      tls: fix race between async notify and socket close
+      tls: fix race between tx work scheduling and socket close
+      net: tls: handle backlogging of crypto requests
+      selftests: tls: use exact comparison in recv_partial
+      net: tls: fix returned read length with async decrypt
+      Merge branch 'selftests-net-more-pmtu-sh-fixes'
+      Merge tag 'wireless-2024-02-14' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless
+      selftests: tls: increase the wait in poll_partial_rec_async
+      Merge branch 'fix-module_description-for-net-p6'
+      Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+
+Jiri Pirko (2):
+      dpll: fix possible deadlock during netlink dump operation
+      net/mlx5: DPLL, Fix possible use after free after delayed work timer triggers
+
+Johannes Berg (1):
+      wifi: mac80211: reload info pointer in ieee80211_tx_dequeue()
+
+Keqi Wang (1):
+      connector/cn_proc: revert "connector: Fix proc_event_num_listeners count not cleared"
+
+Kuniyuki Iwashima (1):
+      af_unix: Fix task hung while purging oob_skb in GC.
+
+Kunwu Chan (1):
+      igb: Fix string truncation warnings in igb_set_fw_version
+
+Kyle Swenson (1):
+      netfilter: nat: restore default DNAT behavior
+
+Maciej Fijalkowski (2):
+      i40e: avoid double calling i40e_pf_rxq_wait()
+      i40e: take into account XDP Tx queues when stopping rings
+
+Magnus Karlsson (1):
+      bonding: do not report NETDEV_XDP_ACT_XSK_ZEROCOPY
+
+Maxim Galaganov (1):
+      selftests: net: ip_local_port_range: define IPPROTO_MPTCP
+
+Maxime Jayat (1):
+      can: netlink: Fix TDCO calculation using the old data bittiming
+
+Miri Korenblit (1):
+      wifi: iwlwifi: clear link_id in time_event
+
+Oleksij Rempel (1):
+      can: j1939: Fix UAF in j1939_sk_match_filter during setsockopt(SO_J1939_FILTER)
+
+Pablo Neira Ayuso (1):
+      netfilter: nft_set_pipapo: fix missing : in kdoc
+
+Paolo Abeni (12):
+      selftests: net: add more missing kernel config
+      mptcp: drop the push_pending field
+      mptcp: fix rcv space initialization
+      mptcp: fix more tx path fields initialization
+      mptcp: corner case locking for rx path fields initialization
+      mptcp: really cope with fastopen race
+      selftests: net: cope with slow env in gro.sh test
+      selftests: net: cope with slow env in so_txtime.sh test
+      selftests: net: more strict check in net_helper
+      selftests: net: more pmtu.sh fixes
+      Merge tag 'linux-can-fixes-for-6.8-20240214' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
+      Merge tag 'nf-24-02-15' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
+
+Parav Pandit (1):
+      devlink: Fix command annotation documentation
+
+Paul Barker (1):
+      net: ravb: Count packets instead of descriptors in GbEth RX path
+
+Randy Dunlap (1):
+      net: ti: icssg-prueth: add dependency for PTP
+
+Sabrina Dubroca (1):
+      net: tls: fix use-after-free with partial reads and async decrypt
+
+Sasha Neftin (1):
+      igc: Remove temporary workaround
+
+Shannon Nelson (2):
+      ionic: minimal work with 0 budget
+      pds_core: no health-thread in VF path
+
+Simon Horman (1):
+      net: stmmac: xgmac: use #define for string constants
+
+Subbaraya Sundeep (1):
+      octeontx2-af: Remove the PF_FUNC validation for NPC transmit rules
+
+Vadim Fedorenko (1):
+      net-timestamp: make sk_tskey more predictable in error path
+
+Victor Nogueira (1):
+      net/sched: act_mirred: Don't zero blockid when net device is being deleted
+
+Ziqi Zhao (1):
+      can: j1939: prevent deadlock by changing j1939_socks_lock to rwlock
+
+ .mailmap                                           |   9 +-
+ .../ABI/testing/sysfs-class-net-statistics         |  48 ++++----
+ Documentation/netlink/specs/dpll.yaml              |   4 -
+ Documentation/networking/devlink/devlink-port.rst  |   2 +-
+ .../networking/net_cachelines/net_device.rst       |   4 +-
+ .../networking/net_cachelines/tcp_sock.rst         |   4 +-
+ MAINTAINERS                                        |   2 +-
+ drivers/connector/cn_proc.c                        |   5 +-
+ drivers/dpll/dpll_netlink.c                        |  20 +--
+ drivers/dpll/dpll_nl.c                             |   4 -
+ drivers/dpll/dpll_nl.h                             |   2 -
+ drivers/net/arcnet/arc-rawmode.c                   |   1 +
+ drivers/net/arcnet/arc-rimi.c                      |   1 +
+ drivers/net/arcnet/capmode.c                       |   1 +
+ drivers/net/arcnet/com20020-pci.c                  |   1 +
+ drivers/net/arcnet/com20020.c                      |   1 +
+ drivers/net/arcnet/com20020_cs.c                   |   1 +
+ drivers/net/arcnet/com90io.c                       |   1 +
+ drivers/net/arcnet/com90xx.c                       |   1 +
+ drivers/net/arcnet/rfc1051.c                       |   1 +
+ drivers/net/arcnet/rfc1201.c                       |   1 +
+ drivers/net/bonding/bond_main.c                    |   5 +-
+ drivers/net/can/dev/netlink.c                      |   2 +-
+ drivers/net/dsa/dsa_loop_bdinfo.c                  |   1 +
+ drivers/net/ethernet/amd/pds_core/main.c           |   6 +
+ drivers/net/ethernet/broadcom/asp2/bcmasp_intf.c   |   3 +
+ drivers/net/ethernet/brocade/bna/bnad.c            |  12 +-
+ drivers/net/ethernet/intel/i40e/i40e_dcb.c         |   2 +-
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |  24 ++--
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  38 +++++-
+ drivers/net/ethernet/intel/ice/ice_lag.c           |  25 +++-
+ drivers/net/ethernet/intel/ice/ice_lag.h           |   3 +
+ drivers/net/ethernet/intel/igb/igb.h               |   2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c          |  35 +++---
+ drivers/net/ethernet/intel/igc/igc_phy.c           |   6 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |  32 -----
+ drivers/net/ethernet/mellanox/mlx5/core/dpll.c     |   2 +-
+ .../net/ethernet/microchip/lan966x/lan966x_lag.c   |   9 +-
+ drivers/net/ethernet/pensando/ionic/ionic_txrx.c   |   9 ++
+ drivers/net/ethernet/renesas/ravb_main.c           |  22 ++--
+ .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |  69 +++++------
+ drivers/net/ethernet/ti/Kconfig                    |   1 +
+ drivers/net/ethernet/ti/cpts.c                     |  17 ++-
+ drivers/net/fddi/skfp/skfddi.c                     |   1 +
+ drivers/net/ieee802154/fakelb.c                    |   1 +
+ drivers/net/ipvlan/ipvtap.c                        |   1 +
+ drivers/net/phy/mdio_devres.c                      |   1 +
+ drivers/net/plip/plip.c                            |   1 +
+ drivers/net/ppp/bsd_comp.c                         |   1 +
+ drivers/net/ppp/ppp_async.c                        |   1 +
+ drivers/net/ppp/ppp_deflate.c                      |   1 +
+ drivers/net/ppp/ppp_generic.c                      |   1 +
+ drivers/net/ppp/ppp_synctty.c                      |   1 +
+ drivers/net/ppp/pppoe.c                            |  23 ++--
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c       |  15 ++-
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c  |   3 +
+ drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c      |   4 +
+ .../net/wireless/intel/iwlwifi/mvm/time-event.c    |   3 +-
+ drivers/net/wireless/intel/iwlwifi/mvm/tx.c        |  73 +++++++++--
+ drivers/net/xen-netback/netback.c                  |   1 +
+ include/linux/netdevice.h                          |  10 +-
+ include/linux/tcp.h                                |   6 +-
+ include/net/tls.h                                  |   5 -
+ net/6lowpan/core.c                                 |   1 +
+ net/atm/mpc.c                                      |   1 +
+ net/can/j1939/j1939-priv.h                         |   3 +-
+ net/can/j1939/main.c                               |   2 +-
+ net/can/j1939/socket.c                             |  46 ++++---
+ net/core/dev.c                                     |   5 +-
+ net/core/rtnetlink.c                               |  15 ++-
+ net/handshake/handshake-test.c                     |   5 +-
+ net/ipv4/ah4.c                                     |   1 +
+ net/ipv4/esp4.c                                    |   1 +
+ net/ipv4/ip_gre.c                                  |   1 +
+ net/ipv4/ip_output.c                               |  13 +-
+ net/ipv4/ip_tunnel.c                               |   1 +
+ net/ipv4/ip_vti.c                                  |   1 +
+ net/ipv4/ipip.c                                    |   1 +
+ net/ipv4/tcp.c                                     |   3 +-
+ net/ipv4/tunnel4.c                                 |   1 +
+ net/ipv4/udp_tunnel_core.c                         |   1 +
+ net/ipv4/xfrm4_tunnel.c                            |   1 +
+ net/ipv6/ah6.c                                     |   1 +
+ net/ipv6/esp6.c                                    |   1 +
+ net/ipv6/ip6_output.c                              |  13 +-
+ net/ipv6/ip6_udp_tunnel.c                          |   1 +
+ net/ipv6/mip6.c                                    |   1 +
+ net/ipv6/sit.c                                     |   1 +
+ net/ipv6/tunnel6.c                                 |   1 +
+ net/ipv6/xfrm6_tunnel.c                            |   1 +
+ net/key/af_key.c                                   |   1 +
+ net/mac80211/tx.c                                  |   5 +-
+ net/mptcp/fastopen.c                               |   6 +-
+ net/mptcp/options.c                                |   9 +-
+ net/mptcp/pm_userspace.c                           |  13 +-
+ net/mptcp/protocol.c                               |  31 ++---
+ net/mptcp/protocol.h                               |  16 +--
+ net/mptcp/subflow.c                                |  71 ++++++-----
+ net/netfilter/nf_nat_core.c                        |   5 +-
+ net/netfilter/nft_flow_offload.c                   |   1 +
+ net/netfilter/nft_set_pipapo.h                     |   4 +-
+ net/openvswitch/flow_netlink.c                     |  49 +++++---
+ net/rds/recv.c                                     |  13 +-
+ net/sched/act_mirred.c                             |   2 -
+ net/sched/em_canid.c                               |   1 +
+ net/sched/em_cmp.c                                 |   1 +
+ net/sched/em_meta.c                                |   1 +
+ net/sched/em_nbyte.c                               |   1 +
+ net/sched/em_text.c                                |   1 +
+ net/sched/em_u32.c                                 |   1 +
+ net/sctp/inqueue.c                                 |  14 ++-
+ net/smc/af_smc.c                                   |   1 +
+ net/tls/tls_sw.c                                   | 135 ++++++++++-----------
+ net/unix/garbage.c                                 |   7 +-
+ net/xfrm/xfrm_algo.c                               |   1 +
+ net/xfrm/xfrm_user.c                               |   1 +
+ tools/testing/selftests/net/config                 |   6 +-
+ .../selftests/net/forwarding/bridge_locked_port.sh |   4 +-
+ .../testing/selftests/net/forwarding/bridge_mdb.sh |  14 ++-
+ .../selftests/net/forwarding/tc_flower_l2_miss.sh  |   8 +-
+ tools/testing/selftests/net/gro.sh                 |   5 +
+ tools/testing/selftests/net/ip_local_port_range.c  |   4 +
+ tools/testing/selftests/net/net_helper.sh          |  11 +-
+ .../selftests/net/openvswitch/openvswitch.sh       |  13 ++
+ .../testing/selftests/net/openvswitch/ovs-dpctl.py |  71 ++++++++---
+ tools/testing/selftests/net/pmtu.sh                |   4 +-
+ tools/testing/selftests/net/so_txtime.sh           |  29 ++++-
+ .../selftests/net/test_bridge_backup_port.sh       |  23 ++++
+ tools/testing/selftests/net/tls.c                  |  12 +-
+ 129 files changed, 819 insertions(+), 491 deletions(-)
 
