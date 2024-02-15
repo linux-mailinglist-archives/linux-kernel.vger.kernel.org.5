@@ -1,197 +1,221 @@
-Return-Path: <linux-kernel+bounces-66969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D00E856433
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:21:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 251CB856435
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E531F2658A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:21:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0056283F4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDEA130AC3;
-	Thu, 15 Feb 2024 13:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5A6130AC3;
+	Thu, 15 Feb 2024 13:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LZEIjw4l"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j0T5RdwY"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B612C12FB13;
-	Thu, 15 Feb 2024 13:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708003305; cv=fail; b=LbOzNmL1wpK4KMG24vmhclOU61N5T7tUKPzWMwe3Wr7YPzk0RBvsBVMkEwz2HD5CwRVuaQwrRP6wrYMXHNuIT8cwsSyWeHq62liUf0ZmmDiYFxQLGrSvsNGKiGtjdBqlEuhfiz72oAnDmESjej2SfDuiN7gcnFScXaNQs3fOT/8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708003305; c=relaxed/simple;
-	bh=mGIiE3Y+EcuMZhDR9I9BZGJyCeueBCuvW06B9RpXar0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=qZwfJ9NMpuUSPNti52+5HE1e3izY7yU90dSJZVO3iOWRBAZjcV4Q3LLqiJoP7Zo25wagGgrfIMrRjEI2sLzYZw45d8KwO5f+rul24DtEWeQhkMZ5kPg+MYKsGlOXFqbiRGXUS4uxBQZB3qKh/nn7hIk1kjCvrpbnQa8eszfwjMQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LZEIjw4l; arc=fail smtp.client-ip=40.107.220.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B3QWRyM9LbzZSggWXrmNZfGnHPa09cR8J/mnEcjaUk8gOWlymt0eKUaYNkvcauo9XjMcjr+n9SYZ2DYFZtrqOLUopzC8F7HNJCTVI4YWHtGP9vvyI+nxyMM3sgEWZIadxfqMvdlBj8XfQqgF3uHFvYIALPfejmk7087ObCWpVN9U4lyQafyW3YvaCXtxvhlm6t8hWBKXSJ0w8KFrGoeDnoPmiFl7UBO3c8A7M2gmj9hBwEfNeHDnedDGyqhVw+mtvY91uAmyjYqeK/NoRgxyUJ7e2ZNdkpjw0QvpEzV484kdVYYG+K4AUSwKmufAXv0xhkz8ncc08amJXT7vrmTbDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tY9KfPy8aQrSo4A5Kz8iCDUM3Tu6Ty8K/720IDRrf9I=;
- b=lEY0XY9OmCbMx/2m8fORx/4XMaXBEkKFx5qLLEJBVwcDFmAqcwIhFfdfS5J3LFZacD0pOYJkd9yFYkgaD9hFPdWzCTklH/zvS6wmiMps+CsrGjasgGQXx78ntA4RNbhectEpzm24dnBEfiSKw7xh/3tS+RLcICBlI2/CPIzj5uqZOGWL2ziKEV96SXHFlgLySB79z01AtmDE1dRDQVZMl2qeLt8LGVUUZ51ru4p1/kAEnm0SCF4MiySJSIYcLqJZzaXnLyydN/ZuoHzyai8fQxk3MpsRmk3Cbx2GCMqijSvT8aiAP92xyovGphod/K/g14pFIWv+YuJwEUkUg69TVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tY9KfPy8aQrSo4A5Kz8iCDUM3Tu6Ty8K/720IDRrf9I=;
- b=LZEIjw4lLUOwI+QdeuAdfZkV63W4rEn+G6OYcRAD71AZkWb5UQ4SnYtqM+QlEkAA1w7b5UcpFRxG4qhp1wXX0WNxqjXIvETP7+Co99Ra1DeMH9O2VHQ4y34ooVkkCnqqgAOb0/SEoVk4u0V198tfg5vHn4Nowd79913Kgaey00/pRnp/v5DmJBvy5kXQUrCfuM71C/ei7W2LdjJUScgU+y7iQhq8NwRtN1n/3etlf5B7bjuRUxA38+h9uKP++hh278qh9U1L5s/Zq15U1jo0DWWkCxYRSHwUyO+KhFs+M7TA7V/UD4fQr4wRpADsFv3OtYUzemJorGdKndhKMi2nGw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CY5PR12MB6622.namprd12.prod.outlook.com (2603:10b6:930:42::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Thu, 15 Feb
- 2024 13:21:41 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7316.012; Thu, 15 Feb 2024
- 13:21:40 +0000
-Date: Thu, 15 Feb 2024 09:21:38 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	David Ahern <dsahern@kernel.org>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240215132138.GK1088888@nvidia.com>
-References: <20240207072435.14182-1-saeed@kernel.org>
- <Zcx53N8lQjkpEu94@infradead.org>
- <20240214074832.713ca16a@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214074832.713ca16a@kernel.org>
-X-ClientProxiedBy: MN2PR12CA0004.namprd12.prod.outlook.com
- (2603:10b6:208:a8::17) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DFC12E1C7;
+	Thu, 15 Feb 2024 13:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708003340; cv=none; b=ddiaCZsqmo6XBLXjUgBwUbZmUD1Mc50TGt1BbPxPZtcK42OU7cGBbYR3Xw9XKXOiU9vbde7znjer9Q8lnYWUqaPSCv2/SQXPJJEWFkuXYbCqiIu6f/BDB/MQDtjcg0btP5cWxTiP2prDdN8sMoT+iMl9Wh2cx/Jvrv9QLsEj6ho=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708003340; c=relaxed/simple;
+	bh=bnjUnGWY5tuJqudE0O1MmY98iLuXPIdsyEbTw9zIQdQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cxsSWAsnz0jufTvRxmpFzXgkBXo2wnFV4eH/aPRvXmE58oqn3POcfsIzs5A/8YtZ67ZIFPP0/ABuxFZ5euH0paFrp8YhlII6F2Zwh6yltJCVKMwtHQMcoiLhJE0GX5PIxhfSwb6jevpflHG7Iufv9C4g7FGtpbxjcX0LOBkiTEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j0T5RdwY; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d0d7985dfdso11978731fa.2;
+        Thu, 15 Feb 2024 05:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708003337; x=1708608137; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EF0nScnhCC2yAbtMSsLI0QixWOPqumzxsZSInzkhycs=;
+        b=j0T5RdwYF9/sQb7hmbDgQ5cV1k6QbN+G6lFg5uI7NT9JdRFSurcbhj3YsZ126vTcOx
+         bpI/tiATUtnsvONOVlGLhPGnGwpW40ij9A6zd7rDbNscFLnEPqKLbqLD84RfsXk5Qszd
+         2I1w/lbUHy5WTEft20Mq9OzPSmg3hgQo8ZFrhVVRRMlF9M5gDeIEZev58Bja5f2xWLYK
+         cqNeKILepHztikzZYpOOy1ASk4J3u/QBxLB/osi2GhgF26GsVGMw0qO7bO3jIRsNLwJ/
+         pf2+57LPhYJU+LFheAYCMDnAEcSVYCMjAp/Ij5hmFUb92w+kp0WjEzUZHl/cOPVWZEMY
+         wjCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708003337; x=1708608137;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EF0nScnhCC2yAbtMSsLI0QixWOPqumzxsZSInzkhycs=;
+        b=sE1K52LgsvoglasrKd8CL4XblbVKnCHcXFfI5PI13+y3BFHi/NdYJxo3niAJDNeGRz
+         zivDHOLJo7H7S10DLGzh/iduvTa2UWEZ1Ox2x+lLTNhD/1b6wrsXIRpotvOOrnYS2ZZ9
+         odnQpxnO6EgqkBD90GLPpLjc6vj67MnkwMGdBaLS1+4MS6ojOyB626UPMzCy4xpnZn8B
+         Rxspr3AbgH4/5kikwZBqGQmP8uu3JDA1T8SNyVHuDLJxa4ocMOCBObzfy8RU4FJjuNTc
+         aBVk87Xrp7Y+D3/47G0K0UtRthScA2QVEqs05/0fzBjkjhsHY3XDPNcM/GW5mzCqyfrY
+         9J7g==
+X-Forwarded-Encrypted: i=1; AJvYcCW73cNO8QYaFyKak/8Eylm1oBsvLWBguXAu1IO+G9bSxHSXyXphfzMw9W3AmS2MjzYcxB42+NJOHFv0S2AvvMGSAZIP20SZMXvB2aww9bHEnHsl43h8FugIKv8arIeTtNmNmCQO2/Q0/i3ceUkZUQQv3L93FSmY6zP1PXG6+fFLEnT3sw==
+X-Gm-Message-State: AOJu0Yzsv46b83onia0rySzi/QrDhkGOhIjkWgQf1l3Y2qLfSl0S9+0Z
+	PYVy51Kh0KU616d11NThTXPFyMBRiNzc1NsWjA9OcLKLBCbVff75
+X-Google-Smtp-Source: AGHT+IFdSeee2h6yPbN253Q+N6eCnxg7HRV8sLAauAyt9G6++zpa57D4VNNEWvu9CKVdqwilcjiqFA==
+X-Received: by 2002:a19:550c:0:b0:511:7c0c:f94a with SMTP id n12-20020a19550c000000b005117c0cf94amr1550261lfe.16.1708003336569;
+        Thu, 15 Feb 2024 05:22:16 -0800 (PST)
+Received: from [192.168.176.154] ([5.14.144.108])
+        by smtp.gmail.com with ESMTPSA id un8-20020a170907cb8800b00a3d1c0a3d5dsm543452ejc.63.2024.02.15.05.22.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 05:22:16 -0800 (PST)
+Message-ID: <84546728-f0cb-4b38-a71c-e053b9b9278e@gmail.com>
+Date: Thu, 15 Feb 2024 15:22:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY5PR12MB6622:EE_
-X-MS-Office365-Filtering-Correlation-Id: 154f9bcf-bd83-4506-3f23-08dc2e290b8c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	T9KsfuL9/6mDOeSDPHmwVcWRBnVqNGopWseyEAxNPVyGOBKbyknyB85vC3RJD4leCAxwbt2HSRrDzOiRuPph2N4k+g/MLKQm7r5XUJQ6FIK9l+TI/zuXDSzKozl/T2rL92lTOp2j7N7SLUbdr091neWlVOiBz5WmsCD/CsZcjNUTac0pvzgvttHumj44lvkAw0N5O6chSWtjk+VquMTslCgvONOx7PP+7xY+zGCLuA6Xdk+Kh+LNrJ3eOPiZuTt370UhKGQZS1d6l3HaWIzvKBEii8NkUTcnDQEgv9CBkaEcK24BFoFt9U9UtJh9iZbiRvIw9G13AtpGZS+mWYB39aO7kfSrxWmIMcapOUi7uKACGSTwy4ikHR6X8VxN6McyMceigkoLx4oxnEVscQd3eWGiQxM3LHbUIIme3mWn4cscjxM6QH3HixXDL6HcPDp4HHUZuLZJSU98GM4j//z1Gpjd+EwIg+QbsY97NFvPUT3VbQ13b4xBBIt7Vvux4uDgzvMtpaevuMAKw4VICIFZItdk7SXfONwh+qT43jejzQkvoK7HLhOd0KAe7NzUqYBc
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(396003)(366004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(38100700002)(66946007)(66556008)(66476007)(8936002)(8676002)(4326008)(6916009)(7416002)(2906002)(5660300002)(26005)(2616005)(54906003)(41300700001)(316002)(1076003)(6512007)(6506007)(6486002)(478600001)(86362001)(36756003)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MvvysQZiDqyfoN0a40l/rVQFQNRgcLSBQbZdzupLTwpPc0xjiYZJKrXSuhGd?=
- =?us-ascii?Q?byl6n9+ZBHEzUAAPXONovf8tBrpuKJ+liozaZ5uihb/EethrPNjdAl4sdIKJ?=
- =?us-ascii?Q?to9sWfzQHF3+ivQZcP6oX3T8zLIUwIJeR81n5mGyOhoxbfdiNp8DW2HKqmUP?=
- =?us-ascii?Q?H5YzwhaeK7I7GOHz4Y6hom8ouaKvuO/+UlqILLxvYYxCMZu6GnFJbIxQtPOy?=
- =?us-ascii?Q?3hFVixXP7XZMYe2wcqSiyBM2y23lhthmM4/MdXnePbj+IAmAPvJb2JvRnJSB?=
- =?us-ascii?Q?WzOPNMKoVxuChsTUIjTD+E2K1q+7tA6lCKGExG81NW+PJ7XafVBvMGMFBNZJ?=
- =?us-ascii?Q?Ykn4pPXwhDilj7Wp8eIeJa0A0+ykBX4j/qvw9nJn9p8wXMTCvXTsqU7HlmvY?=
- =?us-ascii?Q?fnoB1MlzaQiS7v6IPrYHSafEj1CWRhdDGeg7KLYSdhjDWygOAjpOzS/w+QR4?=
- =?us-ascii?Q?RZ360ULFv/NWYhgWYTTWhjUWfXF+N7XX1suiLAwvlvLfDhkBQ0/KRmFzpOpC?=
- =?us-ascii?Q?6Zia/qHL+M3mgTxGxS5xp2L04adTln3GuUD2g+IE1bFauAqMTQeAbZV6AEsc?=
- =?us-ascii?Q?K5ldT1MHLWRQzXdNKfe2fSSKrQBfUdJjvfikbCAl3kkaLJAZ0HeeqStM3i2G?=
- =?us-ascii?Q?hy1A5TsPTzCAwgRz5obqf079XL0mLXzEpRzvTGEkYpRe4p375fBGK8MXEpGm?=
- =?us-ascii?Q?47dEwVpNPKBNrh8ExSyScLgHqGqu6l4chAfzXwqAZXs++BBc8AkdFY0QZEmX?=
- =?us-ascii?Q?JVgjp6P/et8io4jYXWdVvac2+zm6As/HFMLpWSCBuv3LEuQITdQLiGNOMRTs?=
- =?us-ascii?Q?nzqiT6W9Fpu93MZ3vCi89kc2ZfvI3niPwyIhgUrZtebQcs39QI3VbwtOXD0I?=
- =?us-ascii?Q?f4c5bEN42ucg5ypf3ncpgYlZl0eaTWRVedWmq4mAYO++9uDrpluj4PB8/vvd?=
- =?us-ascii?Q?Wn2uWZZH2ndGJcHQQND6Se4B8mIOFZdjwQ5vDLHlVLeoKWWkBoz76N3PrM4Q?=
- =?us-ascii?Q?udg8lchmRoXH7FoWWvrM8Yhsg8tPHnJBLmWIXTVQcvByX9Bud8njq5YC2Zzn?=
- =?us-ascii?Q?du4hENtXyDlnsWsLgRN9sz5D54dFBUBcoJ3j4TdfML9RMiVuVNFMn39YJfg6?=
- =?us-ascii?Q?6PEXdD3RRpVo2LV8Sc2aYLhWrNKtgBAnLNFlAhfJaBN04Otq10+JvEvk6mYl?=
- =?us-ascii?Q?ayxV9oIDSKRs3KKHkvxWy3eICyjUkQfKQlw6E7RNzosRWGnSiTT/QrjjkSLc?=
- =?us-ascii?Q?PhNdfcoysf24gl0SBHvV7dtTu54GTXUxLklJuJ5ZQchLHyuWA/DMjnrdOflk?=
- =?us-ascii?Q?AW4qqPBp+3IJV7wfqw8vXiCBqYFOTNXAg7Wb9TKzozeSPyNY55NSEuETKx9j?=
- =?us-ascii?Q?2/msCsBl9Q2gxE0fyurkj+fR7rSwNFnxmR5NCA8rbmvkzd/+P8NrziJeMye4?=
- =?us-ascii?Q?QC1T7G+svrJWIHVF1cSSY9iww9fMjhWnwbviFWhj3qJXrRo6aIvHSP8wf7JI?=
- =?us-ascii?Q?1L1Vvl99WP61m46yteCqW+aSz/UHKQgvioLlfgAyLTTfL74CeJgrmKgA1Kj3?=
- =?us-ascii?Q?0yHbgVrSJyAzuFMVh0U=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 154f9bcf-bd83-4506-3f23-08dc2e290b8c
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 13:21:40.5241
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hs7jX5lFC/WymGmWZGTXYgJPAF0E1o9OjnY8LDsaImHHtZHUlksVpLUylfllwnuS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6622
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 5/5] iio: adc: ad7192: Add AD7194 support
+Content-Language: en-US
+To: David Lechner <dlechner@baylibre.com>
+Cc: alexandru.tachici@analog.com, alisa.roman@analog.com,
+ conor+dt@kernel.org, devicetree@vger.kernel.org, jic23@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+ lars@metafoo.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ michael.hennerich@analog.com, robh+dt@kernel.org,
+ Nuno Sa <nuno.sa@analog.com>
+References: <20240208172459.280189-1-alisa.roman@analog.com>
+ <20240208172459.280189-6-alisa.roman@analog.com>
+ <CAMknhBHU6k8J_PLCmGYF48S1q3uXByiCwzcd+B3q3Cd-02CUow@mail.gmail.com>
+From: Alisa-Dariana Roman <alisadariana@gmail.com>
+In-Reply-To: <CAMknhBHU6k8J_PLCmGYF48S1q3uXByiCwzcd+B3q3Cd-02CUow@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 07:48:32AM -0800, Jakub Kicinski wrote:
-> On Wed, 14 Feb 2024 00:29:16 -0800 Christoph Hellwig wrote:
-> > With my busy kernel contributor head on I have to voice my
-> > dissatisfaction with the subsystem maintainer overreach that's causing
-> > the troubles here. 
+Hello and thank you for the feedback!
+
+On 09.02.2024 00:27, David Lechner wrote:
+> On Thu, Feb 8, 2024 at 11:25 AM Alisa-Dariana Roman
+> <alisadariana@gmail.com> wrote:
+>>
+>> Unlike the other AD719Xs, AD7194 has configurable differential
+>> channels. The default configuration for these channels can be changed
+>> from the devicetree.
+
+..
+
+>>
+>> +static const struct iio_info ad7194_info = {
+>> +       .read_raw = ad7192_read_raw,
+>> +       .write_raw = ad7192_write_raw,
+>> +       .write_raw_get_fmt = ad7192_write_raw_get_fmt,
+>> +       .read_avail = ad7192_read_avail,
+>> +       .validate_trigger = ad_sd_validate_trigger,
+>> +       .update_scan_mode = ad7192_update_scan_mode,
+>> +};
 > 
-> Overreach is unfortunate, I'd love to say "please do merge it as part 
-> of RDMA". You probably don't trust my opinion but Jason admitted himself
-> this is primarily for RDMA.
+> Isn't this identical to ad7192_info and ad7195_info now that .attrs is
+> removed? It seems like we could consolidate here.
 
-"admitted"? You make it sound like a crime. I've been very clear on
-this need from the RDMA community since the first posting.
+Those are not exactly identical since: 92 has bridge switch attribute, 
+95 has bridge switch and ac excitation attributes and 94 has no custom 
+attributes. I used a different info structure for 94 in order to avoid 
+showing extra attributes.
 
-> The problem is that some RDMA stuff is built really closely on TCP,
-
-Huh? Since when? Are you talking about soft-iwarp? That is a reasearch
-project and Bernard is very responsive, if you have issues ask him and
-he will help.
-
-Otherwise the actual HW devices are not entangled with netdev TCP, the
-few iWarp devices have their own TCP implementation, in accordance
-with what the IETF standardized.
-
-> and given Jason's and co. inability to understand that good fences
-> make good neighbors it will soon start getting into the netdev stack :|
-
-I seem to recall you saying RDMA shouldn't call any netdev APIs at
-all. We were unable to agree on where to build the fence for this
-reason.
-
-> Ah, and I presume they may also want it for their DOCA products. 
-> So 80% RDMA, 15% DOCA, 5% the rest is my guess.
-
-I don't know all details about DOCA, but what I know about runs over
-RDMA.
-
-> Not sure what you mean by "without lots of precedence" but you can ask
-> around netdev. We have nacked such interfaces multiple times.
-> The best proof the rule exists and is well established it is that Saeed
-> has himself asked us a number of times to lift it.
 > 
-> What should be expected of us is fairness and not engaging in politics.
-> We have a clear rule against opaque user space to FW interfaces,
-> and I don't see how we could enforce that fairly for pure Ethernet
-> devices if big vendors get to do whatever they want.
+>> +
+>>   static const struct iio_info ad7195_info = {
+>>          .read_raw = ad7192_read_raw,
+>>          .write_raw = ad7192_write_raw,
+>> @@ -1009,6 +1049,80 @@ static const struct iio_chan_spec ad7193_channels[] = {
+>>          IIO_CHAN_SOFT_TIMESTAMP(14),
+>>   };
+>>
+>> +static struct iio_chan_spec ad7194_channels[] = {
+>> +       AD7193_DIFF_CHANNEL(0, 1, 2, 0x001),
+>> +       AD7193_DIFF_CHANNEL(1, 3, 4, 0x023),
+>> +       AD7193_DIFF_CHANNEL(2, 5, 6, 0x045),
+>> +       AD7193_DIFF_CHANNEL(3, 7, 8, 0x067),
+>> +       AD7193_DIFF_CHANNEL(4, 9, 10, 0x089),
+>> +       AD7193_DIFF_CHANNEL(5, 11, 12, 0x0AB),
+>> +       AD7193_DIFF_CHANNEL(6, 13, 14, 0x0CD),
+>> +       AD7193_DIFF_CHANNEL(7, 15, 16, 0x0EF),
+>> +       AD719x_TEMP_CHANNEL(8, AD7194_CH_TEMP),
+>> +       AD7193_CHANNEL(9, 1, AD7194_CH_AIN1),
+>> +       AD7193_CHANNEL(10, 2, AD7194_CH_AIN2),
+>> +       AD7193_CHANNEL(11, 3, AD7194_CH_AIN3),
+>> +       AD7193_CHANNEL(12, 4, AD7194_CH_AIN4),
+>> +       AD7193_CHANNEL(13, 5, AD7194_CH_AIN5),
+>> +       AD7193_CHANNEL(14, 6, AD7194_CH_AIN6),
+>> +       AD7193_CHANNEL(15, 7, AD7194_CH_AIN7),
+>> +       AD7193_CHANNEL(16, 8, AD7194_CH_AIN8),
+>> +       AD7193_CHANNEL(17, 9, AD7194_CH_AIN9),
+>> +       AD7193_CHANNEL(18, 10, AD7194_CH_AIN10),
+>> +       AD7193_CHANNEL(19, 11, AD7194_CH_AIN11),
+>> +       AD7193_CHANNEL(20, 12, AD7194_CH_AIN12),
+>> +       AD7193_CHANNEL(21, 13, AD7194_CH_AIN13),
+>> +       AD7193_CHANNEL(22, 14, AD7194_CH_AIN14),
+>> +       AD7193_CHANNEL(23, 15, AD7194_CH_AIN15),
+>> +       AD7193_CHANNEL(24, 16, AD7194_CH_AIN16),
+> 
+> Shouldn't these be differential channels since they are
+> pseudo-differential inputs measuring the difference between AINx and
+> AINCOM?
+> 
+>> +       IIO_CHAN_SOFT_TIMESTAMP(25),
+>> +};
+> 
+> i.e. like this (where AINCOM is voltage0 AINx is voltagex)
+> 
+> static struct iio_chan_spec ad7194_channels[] = {
+>         AD7193_DIFF_CHANNEL(0, 1, 0, AD7194_CH_AIN1),
+>         AD7193_DIFF_CHANNEL(1, 2, 0, AD7194_CH_AIN2),
+>         AD7193_DIFF_CHANNEL(2, 3, 0, AD7194_CH_AIN3),
+>         AD7193_DIFF_CHANNEL(3, 4, 0, AD7194_CH_AIN4),
+>         AD7193_DIFF_CHANNEL(4, 5, 0, AD7194_CH_AIN5),
+>         AD7193_DIFF_CHANNEL(5, 6, 0, AD7194_CH_AIN6),
+>         AD7193_DIFF_CHANNEL(6, 7, 0, AD7194_CH_AIN7),
+>         AD7193_DIFF_CHANNEL(7, 8, 0, AD7194_CH_AIN8),
+>         AD7193_DIFF_CHANNEL(8, 9, 0, AD7194_CH_AIN9),
+>         AD7193_DIFF_CHANNEL(9, 10, 0, AD7194_CH_AIN10),
+>         AD7193_DIFF_CHANNEL(10, 11, 0, AD7194_CH_AIN11),
+>         AD7193_DIFF_CHANNEL(11, 12, 0, AD7194_CH_AIN12),
+>         AD7193_DIFF_CHANNEL(12, 13, 0, AD7194_CH_AIN13),
+>         AD7193_DIFF_CHANNEL(13, 14, 0, AD7194_CH_AIN14),
+>         AD7193_DIFF_CHANNEL(14, 15, 0, AD7194_CH_AIN15),
+>         AD7193_DIFF_CHANNEL(15, 16, 0, AD7194_CH_AIN16),
+>         AD719x_TEMP_CHANNEL(16, AD7194_CH_TEMP),
+>         IIO_CHAN_SOFT_TIMESTAMP(17),
+> };
+> 
 
-If your community is telling your rules are not working for them
-anymore, it is not nice to tell them that rules exist and cannot be
-questioned. Try working together toward a reasonable consensus
-solution.
+I tried to follow the existing style of the driver: for each 
+pseudo-differential channel(AINx - AINCOM) there is an iio channel like 
+this in_voltagex_raw; and for each differential channel(AINx - AINy) 
+there is an iio channel like this in_voltagex-in_voltagey_raw. AD7194 
+has 16 pseudo-differential channels/8 fully differential channels so I 
+thought the (AINx - AINCOM) channels should be static and only the 8 
+differential ones could be configured by the user from the devicetree by 
+choosing the input pins.
 
-The world has changed alot, the use cases are different, the users are
-different, the devices are different. When Dave made that prohibition
-long ago it was not in a world of a multi billion transistor NIC being
-deployed in uniform clusters of unimaginable size.
+The existing style of the driver, AD7192 has 4 pseudo differential 
+channels and 2 (non configurable) differential channels:
+static const struct iio_chan_spec ad7192_channels[] = {
+	AD719x_DIFF_CHANNEL(0, 1, 2, AD7192_CH_AIN1P_AIN2M),
+	AD719x_DIFF_CHANNEL(1, 3, 4, AD7192_CH_AIN3P_AIN4M),
+	AD719x_TEMP_CHANNEL(2, AD7192_CH_TEMP),
+	AD719x_DIFF_CHANNEL(3, 2, 2, AD7192_CH_AIN2P_AIN2M),
+	AD719x_CHANNEL(4, 1, AD7192_CH_AIN1),
+	AD719x_CHANNEL(5, 2, AD7192_CH_AIN2),
+	AD719x_CHANNEL(6, 3, AD7192_CH_AIN3),
+	AD719x_CHANNEL(7, 4, AD7192_CH_AIN4),
+	IIO_CHAN_SOFT_TIMESTAMP(8),
+};
 
-Jason
+Would it be better to respect the existing style or to do like you 
+suggested and have a total of 16 differential channels that are 
+configurable from the device tree?
+
+Kind regards,
+Alisa-Dariana Roman
 
