@@ -1,192 +1,274 @@
-Return-Path: <linux-kernel+bounces-67305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D81785697D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:25:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE43C856982
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44DB0290BDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:25:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E22EB237D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830413473B;
-	Thu, 15 Feb 2024 16:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F43134CC0;
+	Thu, 15 Feb 2024 16:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="YyMAqsfM"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QazWVB4P"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CCD134733
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708014312; cv=fail; b=LZyzeCl3nFVEKCzNfhfYLOs4+TyVwjRkNSN1vron5S85ndiSdraUD3cd7zjuuaZEUgVsb0Yc2mkmAjmLA1xyzIO491n/buB9BrvrwOn1N1Cdlpng3UwqB3c/FDHAtf58Pxc5EIBBJazK82IuPru3+zz/0znIswo7TeU7ub0GLuY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708014312; c=relaxed/simple;
-	bh=aUuWaN35K46LvZG416+WEQydCrI3kPiM1wLPbkMWsRQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=g2S8uL49An9vYTFaLDu1PlFWBlyq8H6f6jupydaMv4XieSU5W/9uhlCK34ysEqysDYIvVOSxu81pfa7XLNCdBxp9R1AUnLwgJpCXxUzGUjFRP7ooZhElhhit6lYw0ICwMcwBAVlRLL8a1JxVvXtNMrZRbv6BuJgiEevv+LQXBT0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=YyMAqsfM; arc=fail smtp.client-ip=40.107.93.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UoL/AG02L7CkjmqwNQspnxAVjo8dizP+v8gCaDyE3nLfCwYDWGfra043qql1h2BxHqBg0qbpJNRL9hp/5zj5KH1pFiyLv5k/qN8c+VJSZDgyTBWJRmGsVkzYAm+K3syXH1GGb4S6FTm/1YchVDte0t92fVTmEINvc+ogpKoQqHoTJOJH6Ia8fRrC7CFgqPw0v7xG5nQqaVUQ/Sqbs67Nngs2vOJnYACh6GwlgoY40z6AW0KtcGOAbnNQeAmNqhXpVlGz7XnZ8tT0YKwdwYm9qlBeUbhdH/fvbEF5ILOuH64qQ9oet46kS4aVcStx7bbDwiCDEuwlzdEmBJNAYnagww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7hwMSDle5gSWOIbga3WTQmkgdR4PZIPpwUWvSJ4cgSk=;
- b=Z6IVy94tmWHFjesdnJjB7hloY0c+MBRPan55izgtrYb1FJPQLcfCQwu7h4YgPAL8GdK/Ff6dzbMoP0ga78unlD49E57vnR6LnO5uecOs7Q+qVLAGv+8J5uL4bG+LSywbTbb09xkhTVa23DEZVS1AXnYuLKXNUvwtfLw2A2PCvDRc0uPOheMCl6t5HuXH78TBeFskUEkdcO/cwtifvrI7E1rfA504tOjajfIqBFf8s0dIrXPl3qZsOU1Ion5h/4J9QvExewL7St5HGkmkD/pO+1r8TTuzMxt1fG2EYpYynO8QNL/duIupayYUEm6sedRfyjBHj6FblKCyV/SuTthiZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7hwMSDle5gSWOIbga3WTQmkgdR4PZIPpwUWvSJ4cgSk=;
- b=YyMAqsfMSAdkFWX7J80YP+h/wevWUgdHfBOln36DSMUA7/OxWedV8ML5fLEVq/nx3OwU0AlieZ99fP8fGLgNv+TAu1MG80+6Ams6sjmYYJ2+ku4awRV1KPMxfIl5mHjW8HBucxxLV+jxEeASCcCd8THSdGxP5TNON4UWLb2VhA4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
- by BN9PR12MB5163.namprd12.prod.outlook.com (2603:10b6:408:11c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Thu, 15 Feb
- 2024 16:25:07 +0000
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::d420:5e9a:1eb:701f]) by MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::d420:5e9a:1eb:701f%3]) with mapi id 15.20.7316.012; Thu, 15 Feb 2024
- 16:25:07 +0000
-Message-ID: <ff44adad-5be1-bef4-098f-ee363fcfb08e@amd.com>
-Date: Thu, 15 Feb 2024 21:54:56 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [patch V6 00/19] x86/cpu: Rework topology evaluation
-Content-Language: en-US
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
- Andrew Cooper <andrew.cooper3@citrix.com>,
- Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
- Juergen Gross <jgross@suse.com>, Dimitri Sivanich
- <dimitri.sivanich@hpe.com>, Sohil Mehta <sohil.mehta@intel.com>,
- Kan Liang <kan.liang@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>,
- "Paul E. McKenney" <paulmck@kernel.org>, Feng Tang <feng.tang@intel.com>,
- Andy Shevchenko <andy@infradead.org>, Michael Kelley <mhklinux@outlook.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20240212153109.330805450@linutronix.de>
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20240212153109.330805450@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0118.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:96::19) To MW2PR12MB2379.namprd12.prod.outlook.com
- (2603:10b6:907:9::24)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C71134743;
+	Thu, 15 Feb 2024 16:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708014355; cv=none; b=e0SpvyzPQ7wDvbR4sZyTm1uuIAV4yUAifqtwnWTtdl2yb7kuCyV1qnO+YU4URVONZBJ9srmvfrhf62bDeoDmTemY/GTubOmcsZ18iKCMrrUoSIrC6do7dlkogpdJZFB3rqhShSHsXK0okqAVj3C4ZhUV0s+YfcpM7UYiIupRORo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708014355; c=relaxed/simple;
+	bh=VSAALJp4MFaIgFzqjLLc6BeLPyT7H5C4A+EO6BbIRzM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rHQRTYfvc4XHIroqR7eQNLaNvxg2qxc3PdsuXKS9zuJwsqHxEgx4V/v1URbsSIsy12rIh6WHTicLaAMF+5Xgh8twv181EBuMmaMdIKDimr9r3hGWn3tDJrhxMud71EinChhEdDD2i9CZMUhYeyJGOVShOWF9HIXd+u5Xhd7pdDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QazWVB4P; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FBfcDE002449;
+	Thu, 15 Feb 2024 16:25:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2Z2TB9HMc/XqBevRu67UWw4yo4bEz0HNufbBYufQook=; b=Qa
+	zWVB4Plwn5QYzPoDSce+5P7tJRoq5Rs9A5yqLbnNwDN68bwyHOi6PGQDEhfBrAWv
+	9cZBYHLdek4zigR4bB653tZmodepZShH8afgaS/2aksdm/Te3Zg/GWK/280tpIYu
+	MyI7qCT6GAXI/xse+IUPUMBkD1rwhVZJCvPkZnnlDgmD24xRLGUQMKFhQARTRjDZ
+	+R7Hh+q5P1eZBa8iKbrD/9T9w4Nahp5h+n8ui+2v1z93O8eUjfN6x8r6NxvCp7V/
+	IuK4VpDJcilPAdwttIUVni8BEmvuD3oD/mSQLYUy4GoLGTpdEuEPNXxgcN3vPEwF
+	G76wS9sOiYzeryssWFTA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9bfs1m9e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 16:25:30 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41FGPToN023623
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 16:25:29 GMT
+Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 15 Feb
+ 2024 08:25:29 -0800
+Message-ID: <74b6c3dc-6add-414c-8056-3dcb94b12cd7@quicinc.com>
+Date: Thu, 15 Feb 2024 08:25:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|BN9PR12MB5163:EE_
-X-MS-Office365-Filtering-Correlation-Id: f159ab97-e4f8-4634-ada4-08dc2e42abe1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+sfnZddAbhV98T9jlz3U8xeGqg5VGYHuVhKprnm7plD0tDncgQXGmvP+tlcOvYkiHqONtLSwVJmOD9X9ggk5FRALYZYqv7PcRYSPjqpKiQN62ZbBBCp/Swb3PiHjQsdAwU31FgfM3X7wXupBteORg7QF4ahp4zOE82uptGPZH9tkl6hvO7ygB5sB84UEyKPBmp+x41sWkNl9QhVyU1Bpb1C/RG7Ep/VRYNe76vyg3R2ce/+DKWKG1xpxnoGOdcMl3eoS+VwNpXNXjX2fCRl05/qpfSp4xB59QoYOhup473ocexR6bUo9pFWHGcw6q/yKw8+Cgo+nbwwYrdH5xFv5pr2cTvm3JXkdrREjzdLUrvHP7NRyK3cn3LXj/G3P5paGKnIVQAUumgIN2WhsCkKPE80f5ZrpP+X4egGSdkRWzEVycMH0HZfy/2mDJJvXWUDWC0UxywTDegSdG21ylSKNKs5WEXvAFgKR4Wz0j6ZqCJK104AC2AolktaSLCxCZ6qTq/G5Ts8nS80KpNC+fFRTiq17CIh5sbp0kzz0juypNDg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(2616005)(26005)(41300700001)(66946007)(83380400001)(8936002)(8676002)(4326008)(53546011)(66476007)(66556008)(478600001)(110136005)(54906003)(316002)(6666004)(6486002)(966005)(6512007)(6506007)(36756003)(38100700002)(31696002)(86362001)(2906002)(7416002)(31686004)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?U0ZtSWkyd3NhL2dHYlpDSVlhYTJsR3JxUXp3Y3QwQklIMUNHQVE0R3ZUbmpB?=
- =?utf-8?B?aVF0OGFiQzJhRUdlSHkxcHEweFJQeS9xOW5hOE9KWXk1U1JxeWxMNGt1MkRI?=
- =?utf-8?B?UytOc0NEU052UWovSGdFaDNldXFubGZPc1JuRTVwN2daQTBpdWZuK3hVUW45?=
- =?utf-8?B?ZDJ5MmR0a2lXSkJmV0hFV0s2Wm5ZdGlTbkd1dUk3K2Mzb0pDNzc1bHN3L1p3?=
- =?utf-8?B?YjVvOHlqMWRXOFg5eXRoYVhYaW9hWC9idTVPSmN1S1drSVVpMTNxckc2dm95?=
- =?utf-8?B?L2VDVDU0U3czT0cxb3h6eGMvNE96ODRqb1JHclFtVERuakUzSFNtWjIwMjBv?=
- =?utf-8?B?bi9HaFVpeGp5VFhDbGRQTFRpNDJoTFAwMHV6QXQxekxkZTNnY1VzTFgxN3Fl?=
- =?utf-8?B?bk9sNjVWMCtVVGo1MnVGMU5pZHh4YjlpYzFQalVLVysrWVoyUDNsMmhKMkFV?=
- =?utf-8?B?STQvVlNLbnFKNXZnUzlVUzFkZHdnTHBxOHNwaWdHNmxmeGhaWDFXaEduL1VX?=
- =?utf-8?B?K3kyZ3Zvc2N0b3FNMUZLK0wyUVdBTGlRUHE5MkZPd05LY1U5Z2dGdnIva1M4?=
- =?utf-8?B?WXZIRk9SMDlDVWhObEhQMXN3eGtpc01WQmlKbmhuQW11UUpzdUdiTkd1S3dB?=
- =?utf-8?B?bDdEOXBXekl3aDZWRE5FYTNBYlVYSXJzSEt6c0tWSGVsRWhYeEswZ1B4dk9Z?=
- =?utf-8?B?Q3l1QnhwaXhFSkxaZ3RNekIzRGdRcC9JTlk3emJUZFF0UjJUbm55UmpGVERl?=
- =?utf-8?B?Z1RjTU0xWURnTUI2RzU1R2ZneVZxWUxNeGFyYm5IMEZWdVVXTlpqWEticEZp?=
- =?utf-8?B?aWF5d0Z4bUNLMXk2SEdRQnNVbWozWmNTTEk0a0t6eXFGVHdEZTc1cGVhT3ZN?=
- =?utf-8?B?S3A0ekVGc2xJR3Fld0YxYVZEc0VvZjJ0WWtnQUJ5blJpbW0vc1M1WCtDeDlV?=
- =?utf-8?B?YVg4UVorVTFuTEN5L2VoYnhtSDh3SVJtYThWMU02d3JSTWRDajRHMjdnVGlS?=
- =?utf-8?B?bk9kdlNBYUF5L2JSbm14bmtyeGE5Q2NoZmh3aDd2RmNQQk40cG5zdEZuWTdM?=
- =?utf-8?B?enRyYTJ6NFdhdHdnR0pVZVA0RW1zWnRIeU51aTNMUmZlOW1NQkpubzRMZ0dl?=
- =?utf-8?B?K2JWYVRCTnlCbWs3YTJtcW0wM0VhbDM5SnN0NFFYVkZzQ21TU2xjNnFmYnBl?=
- =?utf-8?B?WFVjT3FIK1RWdFNGd0duVHpTKzBjWGR4a0R5SXo0RWR3dFRXK2tPSFlGTGtL?=
- =?utf-8?B?UU10S0J3Wk1iQWh3U2JCWkJYNmc4aFk3dE5GOWpTUFBoNDcxOFFaYUl3OUhz?=
- =?utf-8?B?OFN6THBtZW9FeHRkMHJtMVdGUDdBZC8xbm1hM3kyMlEzQS81V2lJQnc4Kzhz?=
- =?utf-8?B?cTErQUljQWg0eURPNnhiTFp2eGtQVnBBNEpsOGVDeWk0WTgrWU5la2xpOWpn?=
- =?utf-8?B?MTM4Q0VMNkhmNm8vcGdpN3hMNGFFTXltZWVrNXhzWWdoUWlwdnZyM2RGK0c2?=
- =?utf-8?B?eXRhZHUyWGQ4VjRoYVB4eUR5c2o2bWFQaDZTYnA2blpnNm1BOXY2YWFFK1JZ?=
- =?utf-8?B?KzhrZFV0N0NXU2hyVWRtdCtQNFVPbUY3ODVnMUUwR1JPdWdEZXFFeHdBVXZ5?=
- =?utf-8?B?OFM2c1kvNjlUcnZnL1Irekp1c1VuOUpCV00xUDNNTjRSYkF5aG1wRVhLZmpn?=
- =?utf-8?B?Y0ROZWt0Ym95ZlU5SjFVNzkvSUVka3U5NTBWMHBOdDZWUVNHbER6dThOK3Vr?=
- =?utf-8?B?ak8rbC9LWUJZN2hRTUpwZzJBdGhFV1JvSmtHcnQwR2MvdEN1VitzV1VXblRp?=
- =?utf-8?B?MGxJRndiaWxwRDNRUXFDTGduN2ZWT3hlcEluekhkdTZONzlwd2ZNcmo1OWZ5?=
- =?utf-8?B?c1hXRHNQeHVrTXdqZE5ZNGpVeTVqRE1VNUM4RXZpbkdoODlGNEhZK0tqUll0?=
- =?utf-8?B?WkU3RmZMZ1F1NWEvODU3VEZndW8xL3RuMU5XaEpPMnRWSy8rQzNlYzh5bXQ2?=
- =?utf-8?B?c3VpMytsbDdyaTEzZHpFU2ZXOUROM01ZUG9FZCsyL3B3WnQwc2xydXBqV0JM?=
- =?utf-8?B?U1NsWTZBLzFSeHU1cW9BQldDazBKczc5akR0djRhYkx2bXBRQ1doNEFCRFl0?=
- =?utf-8?Q?KiICy0FZLIuPZD9+VzHLxnESw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f159ab97-e4f8-4634-ada4-08dc2e42abe1
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 16:25:07.1371
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d7Dg0IJBpusL/pmowmL8z+mQdYUet7Cmr+yM3MtQOKOVR1zV33PXTR/PTTSMA2wYInOCX5XFYnm4jKkGpl+fpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5163
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] drm/panel: ltk500hd1829: make room for more similar
+ panels
+To: Heiko Stuebner <heiko@sntech.de>, <neil.armstrong@linaro.org>
+CC: <sam@ravnborg.org>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>, <tzimmermann@suse.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quentin.schulz@theobroma-systems.com>,
+        Heiko
+ Stuebner <heiko.stuebner@cherry.de>
+References: <20240215090515.3513817-1-heiko@sntech.de>
+ <20240215090515.3513817-2-heiko@sntech.de>
+Content-Language: en-US
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240215090515.3513817-2-heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LZfVm8segKP6sX68vyDuaTOJKWkKYxEo
+X-Proofpoint-GUID: LZfVm8segKP6sX68vyDuaTOJKWkKYxEo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_15,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 spamscore=0
+ clxscore=1011 adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150133
 
-Hello Thomas,
 
-On 2/14/2024 2:33 AM, Thomas Gleixner wrote:
-> This is a follow up on V5 of this work:
-> 
->   https://lore.kernel.org/all/20240117115752.863482697@linutronix.de
-> 
-> and contains only the not yet applied part which reworks the CPUID
-> parsing. This is also preparatory work for the general overhaul of APIC ID
-> enumeration and management.
-> 
-> Changes vs. V5:
-> 
->   - Fix the AMD leaf 0x8000008 parsing
->   - Update to generated CPUID leaf structures
->   - Address review comments (coding style, comments, changelogs, boot_cpu_has())
-> 
-> This applies on Linus tree and is available from git:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v6
 
-Tested the above tree comparing the values reported by
-"/sys/kernel/debug/x86/topo/cpus/X" and
-"/sys/devices/system/cpu/cpuX/topology/*" with those reported by
-v6.8-rc4 on the following systems:
-
-- Dual socket 3rd Generation EPYC System (2 x 64C/128T)
-- Single socket 4th Generation EPYC System (1 x 96C/192T)
-- Dual socket 4th Generation EPYC System (2 x 128C/256T)
-
-Happy to report the values from the sysfs and debugfs with the series
-are consistent with values on v6.8-rc4. "amd_node_id" and
-"amd_nodes_per_pkg" introduced with the series are consistent with the
-values reported in CPUID leaf 0x8000001E ECX on the respective system.
-
-Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-
+On 2/15/2024 1:05 AM, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
-> [..snip..]
+> There exist more dsi-panels from Leadtek sharing supplies and timings
+> with only the panel-mode and init commands differing.
 > 
+> So make room in the driver to also keep variants here instead of
+> requiring additional drivers per panel.
+> 
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 
---
-Thanks and Regards,
-Prateek
+Hi Heiko,
+
+Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+
+Thanks,
+
+Jessica Zhang
+
+> ---
+>   .../drm/panel/panel-leadtek-ltk500hd1829.c    | 73 ++++++++++++-------
+>   1 file changed, 47 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> index 39e408c9f762f..42f4e2584af18 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/gpio/consumer.h>
+>   #include <linux/module.h>
+>   #include <linux/of.h>
+> +#include <linux/of_device.h>
+>   #include <linux/regulator/consumer.h>
+>   
+>   #include <video/mipi_display.h>
+> @@ -21,25 +22,32 @@
+>   #include <drm/drm_modes.h>
+>   #include <drm/drm_panel.h>
+>   
+> +struct ltk500hd1829_cmd {
+> +	char cmd;
+> +	char data;
+> +};
+> +
+> +struct ltk500hd1829_desc {
+> +	const struct drm_display_mode *mode;
+> +	const struct ltk500hd1829_cmd *init;
+> +	unsigned int num_init;
+> +};
+> +
+>   struct ltk500hd1829 {
+>   	struct device *dev;
+>   	struct drm_panel panel;
+>   	struct gpio_desc *reset_gpio;
+>   	struct regulator *vcc;
+>   	struct regulator *iovcc;
+> +	const struct ltk500hd1829_desc *panel_desc;
+>   	bool prepared;
+>   };
+>   
+> -struct ltk500hd1829_cmd {
+> -	char cmd;
+> -	char data;
+> -};
+> -
+>   /*
+>    * There is no description in the Reference Manual about these commands.
+>    * We received them from the vendor, so just use them as is.
+>    */
+> -static const struct ltk500hd1829_cmd init_code[] = {
+> +static const struct ltk500hd1829_cmd ltk500hd1829_init[] = {
+>   	{ 0xE0, 0x00 },
+>   	{ 0xE1, 0x93 },
+>   	{ 0xE2, 0x65 },
+> @@ -260,6 +268,26 @@ static const struct ltk500hd1829_cmd init_code[] = {
+>   	{ 0x35, 0x00 },
+>   };
+>   
+> +static const struct drm_display_mode ltk500hd1829_mode = {
+> +	.hdisplay	= 720,
+> +	.hsync_start	= 720 + 50,
+> +	.hsync_end	= 720 + 50 + 50,
+> +	.htotal		= 720 + 50 + 50 + 50,
+> +	.vdisplay	= 1280,
+> +	.vsync_start	= 1280 + 30,
+> +	.vsync_end	= 1280 + 30 + 4,
+> +	.vtotal		= 1280 + 30 + 4 + 12,
+> +	.clock		= 69217,
+> +	.width_mm	= 62,
+> +	.height_mm	= 110,
+> +};
+> +
+> +static const struct ltk500hd1829_desc ltk500hd1829_data = {
+> +	.mode = &ltk500hd1829_mode,
+> +	.init = ltk500hd1829_init,
+> +	.num_init = ARRAY_SIZE(ltk500hd1829_init),
+> +};
+> +
+>   static inline
+>   struct ltk500hd1829 *panel_to_ltk500hd1829(struct drm_panel *panel)
+>   {
+> @@ -324,8 +352,8 @@ static int ltk500hd1829_prepare(struct drm_panel *panel)
+>   	/* tRT: >= 5ms */
+>   	usleep_range(5000, 6000);
+>   
+> -	for (i = 0; i < ARRAY_SIZE(init_code); i++) {
+> -		ret = mipi_dsi_generic_write(dsi, &init_code[i],
+> +	for (i = 0; i < ctx->panel_desc->num_init; i++) {
+> +		ret = mipi_dsi_generic_write(dsi, &ctx->panel_desc->init[i],
+>   					     sizeof(struct ltk500hd1829_cmd));
+>   		if (ret < 0) {
+>   			dev_err(panel->dev, "failed to write init cmds: %d\n", ret);
+> @@ -359,31 +387,17 @@ static int ltk500hd1829_prepare(struct drm_panel *panel)
+>   	return ret;
+>   }
+>   
+> -static const struct drm_display_mode default_mode = {
+> -	.hdisplay	= 720,
+> -	.hsync_start	= 720 + 50,
+> -	.hsync_end	= 720 + 50 + 50,
+> -	.htotal		= 720 + 50 + 50 + 50,
+> -	.vdisplay	= 1280,
+> -	.vsync_start	= 1280 + 30,
+> -	.vsync_end	= 1280 + 30 + 4,
+> -	.vtotal		= 1280 + 30 + 4 + 12,
+> -	.clock		= 69217,
+> -	.width_mm	= 62,
+> -	.height_mm	= 110,
+> -};
+> -
+>   static int ltk500hd1829_get_modes(struct drm_panel *panel,
+>   				  struct drm_connector *connector)
+>   {
+>   	struct ltk500hd1829 *ctx = panel_to_ltk500hd1829(panel);
+>   	struct drm_display_mode *mode;
+>   
+> -	mode = drm_mode_duplicate(connector->dev, &default_mode);
+> +	mode = drm_mode_duplicate(connector->dev, ctx->panel_desc->mode);
+>   	if (!mode) {
+>   		dev_err(ctx->dev, "failed to add mode %ux%u@%u\n",
+> -			default_mode.hdisplay, default_mode.vdisplay,
+> -			drm_mode_vrefresh(&default_mode));
+> +			ctx->panel_desc->mode->hdisplay, ctx->panel_desc->mode->vdisplay,
+> +			drm_mode_vrefresh(ctx->panel_desc->mode));
+>   		return -ENOMEM;
+>   	}
+>   
+> @@ -413,6 +427,10 @@ static int ltk500hd1829_probe(struct mipi_dsi_device *dsi)
+>   	if (!ctx)
+>   		return -ENOMEM;
+>   
+> +	ctx->panel_desc = of_device_get_match_data(dev);
+> +	if (!ctx->panel_desc)
+> +		return -EINVAL;
+> +
+>   	ctx->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
+>   	if (IS_ERR(ctx->reset_gpio)) {
+>   		dev_err(dev, "cannot get reset gpio\n");
+> @@ -492,7 +510,10 @@ static void ltk500hd1829_remove(struct mipi_dsi_device *dsi)
+>   }
+>   
+>   static const struct of_device_id ltk500hd1829_of_match[] = {
+> -	{ .compatible = "leadtek,ltk500hd1829", },
+> +	{
+> +		.compatible = "leadtek,ltk500hd1829",
+> +		.data = &ltk500hd1829_data,
+> +	},
+>   	{ /* sentinel */ }
+>   };
+>   MODULE_DEVICE_TABLE(of, ltk500hd1829_of_match);
+> -- 
+> 2.39.2
+> 
 
