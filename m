@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-67065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2E7E8565B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:16:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47FC68565AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:14:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F019B2C240
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:14:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05530282F59
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B796131E48;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F69C132466;
 	Thu, 15 Feb 2024 14:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GUjLhBLT"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CAkj2+hm"
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B1912EBD4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E02130ADA;
 	Thu, 15 Feb 2024 14:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708006466; cv=none; b=NfPZG1c6+X7YOs0+lWf5UCXMTIsIqRd3nSinoHtUHAyUw/7oj28bz7Kavv3x9dbdD75K9dxawnljwf+4tt5H+1trn1plTgZqzJz1v4qKX3AbFRQKYss6SIAoAWZgVrNgl1+tHbQ+em0oEN/TLnWBTQZOHc9pfvBZMvON5RGI6I0=
+	t=1708006466; cv=none; b=FdTUmVZQVifWpkS7+CqlAdj0gFoeR6KbP8P372R78S7aEVzA/lG45BWlo/p5u4mSYw3XMFtAaIKI53maiuNKeHXwztzTkJQGYjr8vVD+qT3RMiMAj6lH09AXaRre0sHnIQf9ejYRHHiivyJ70TB5q5JC6JWQZSdY+w9m7lSRwA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708006466; c=relaxed/simple;
-	bh=Pl94FX9jABh58putNDS5MTxIlDCKyQK+qGnIUegwhsA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=l2z03Q/2i2YBX5nVYjOAnoquYT1+8cWK32HQEQE7GCtyjz+nbm15gA5+r2/o7S5FuNdPgMi4mk4kGc8n0ijUXw+8RNrDFZ/ODWfiJ5mo6Uu9itCdoA8TXpXBA5ZktEYjq7VUMUOIPPama7WImNN6uNp5mgJHvJShCM+xX6sQKcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GUjLhBLT; arc=none smtp.client-ip=217.70.183.195
+	bh=EMBLwevEY0zUQ/hVqUx05ubdMW0u9n/ytRqgi5tBFGY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=d69bi2fDmGP7Nq+vyMgooHSDaYb2L2U8A3GH9q7Z7garhsneDGTCk9fcLJIN8bGMaAPTniYyhI69pYD8UJCHQMb+gkIv1SBQC+WiQUH2asEcU6L4lA1vmT02w5aOIL7DowmqAvtvfnEXxmV1+lQKQlp6P4eK1aXRg/YnJm2rK2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CAkj2+hm; arc=none smtp.client-ip=217.70.183.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3DEA6000B;
-	Thu, 15 Feb 2024 14:14:20 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A11686000E;
+	Thu, 15 Feb 2024 14:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708006461;
+	t=1708006462;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=WjYKmqjE8TbHlo4ippGPCTLvH3WmrEy1f5h2gFbnQxY=;
-	b=GUjLhBLTYqXDgdvnzkzqSEgpF1C7IhrPduA3SCbvsfG9GnS6NpozPAiQ4e8dRPZzJzVq/2
-	5o+gyihQweXhFv8DOEem2fY45HfTu3OekiQcNTiGvMflsxE7gC/SL5LTYJuLPb5W4fYEg1
-	6cHPl1Lp+CE4WFid1gT7oY2x9nVmBtl8vUjzHPco3WHm0XcYIg4t9Ga15BUQr/6NOKZcR/
-	w1BzNyNq7PO83fQIprdZ4MyGyPnrYFJSTNaU5l3VhD+Duak53gyxVTKnBbykGxG9PLa9Dh
-	jNkHqXigVd9GIDIeHLe0I2Tstxo82o66yv2F6NB/MzeDQOy5EaQ9SH1mPcQCWg==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FXP2gPLBFEVoi3fyWxeX+9N2//T08FGxLjrXEVgziMc=;
+	b=CAkj2+hmxuAnKP13edn3CL4etwko857Qu21F7Javyn60cvNa1t3TCpLbL41EPsVYYdBcB4
+	Z3DoiZuR8ZwVfRxVy0W/IcH3rwwC322JvsbjtAxgfhgd84QC2l2yDF/O8MiHKLebVDyVRp
+	1hMjOei6OK28ugswa9qHn+8rBl0iG1mhUjaZDp4L8zt0SXTh7OqyBJQB1knvgSwiykFzDk
+	nK8/m/bzJBaMgs0M5UhuIxMoog7h+yuHERX31qiR/gEGNTqcdyCTIudbBZOAxUBnONNZYE
+	PpR+d91fkfMSRcHO6trBdgvLtBwvaFtBYNGrA5mf3dwyj14MmsWQJ5s5p7lP0g==
 From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Subject: [PATCH 0/2] wifi: nl80211/wilc1000: force WLAN_AKM_SUITE_SAE to
- big endian in NL80211_CMD_EXTERNAL_AUTH
-Date: Thu, 15 Feb 2024 15:13:51 +0100
-Message-Id: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
+Date: Thu, 15 Feb 2024 15:13:52 +0100
+Subject: [PATCH 1/2] wifi: nl80211: force WLAN_AKM_SUITE_SAE in big endian
+ in NL80211_CMD_EXTERNAL_AUTH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,84 +56,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAB8czmUC/x2N0QqDMAxFf0XyvEJbFcVfGaMEm83gFkejIoj/v
- rCnw4HDvScoFSaFoTqh0M7Ki5iEWwXjhPIix9kcoo+Nj6Fx8u6NIT35SDh/km68kiaSzChCqi5
- 2rcc2dxn7GmznW8ji/8f9cV0/roHNBXMAAAA=
+Message-Id: <20240215-nl80211_fix_akm_suites_endianness-v1-1-57e902632f9d@bootlin.com>
+References: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
+In-Reply-To: <20240215-nl80211_fix_akm_suites_endianness-v1-0-57e902632f9d@bootlin.com>
 To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Ajay Singh <ajay.kathat@microchip.com>, Kalle Valo <kvalo@kernel.org>, 
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
  linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Igor Mitsyanko <imitsyanko@quantenna.com>, 
  Sergey Matyukevich <geomatsi@gmail.com>, 
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>, 
- kernel test robot <lkp@intel.com>
+ =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
 X-Mailer: b4 0.12.4
 X-GND-Sasl: alexis.lothore@bootlin.com
 
-This small series is the follow-up to discussions started around a sparse
-warning in wilc1000 driver ([1]) and implements the solution suggested by
-Johannes. It moves a historically needed conversion to be32 in nl80211 (in
-NL80211_CMD_EXTERNAL_AUTH, specifically on NL80211_ATTR_AKM_SUITES property
-_only_ when it is set to WLAN_AKM_SUITE_SAE) The user scenario affected by
-this update is a connect process on a WPA3-protected access point with
-authentication offloaded to user-space. Two drivers are affected by the
-update: wilc1000 and qtnfmac. wilc1000 case is handled by a small
-companion patch which also fixes the sparse warning.
+User-space supplicant (observed at least on wpa_supplicant) historically
+parses the NL80211_ATTR_AKM_SUITES from the NL80211_CMD_EXTERNAL_AUTH
+message as big endian _only_ when its value is WLAN_AKM_SUITE_SAE, while
+processing anything else in host endian. This behavior makes any driver
+relying on SAE external auth to switch AKM suite to big endian if it is
+WLAN_AKM_SUITE_SAE. A fix bringing compatibility with both endianness
+has been brought into wpa_supplicant, however we must keep compatibility
+with older versions, while trying to reduce the occurences of this manual
+conversion in wireless drivers.
 
-For the quantenna driver, I don't really get how it manipulates AKM suites.
-The only thing it currently does on it before calling nl80211 is a
-le32_to_cpu. IIUC the raw value (before applying le32_to_cpu) comes from
-chip/firmware:
-<interrupt>
- qtnf_shm_ipc_irq_handler
-  <some callbacks chains>
-   qtnf_pcie_control_rx_callback
-    qtnf_trans_handle_rx_ctl_packet
-     qtnf_trans_event_enqueue => queue skb to processing queue
+Add the be32 conversion specifically on WLAN_AKM_SUITE_SAE in nl80211 layer
+to keep compatibility with older wpa_supplicant versions.
 
-qtnf_event_work_handler <= dequeue corresponding skb to process
- qtnf_event_process_skb
-  qtnf_event_parse
-   qtnf_event_handle_external_auth
-    cfg80211_external_auth_request => sends NL80211_CMD_EXTERNAL_AUTH
-
-There is no cast to big endian on AKM suite at any point in this chain, but
-there are plenty of leXX_to_cpu, so I assume the chip/its firmware sends
-its data in little endian. Then, since the be32 conversion is _needed_ with
-current wpa_supplicant, I wonder if it works at all in current state, so I
-did not modify it. Or has it been tested with another supplicant (iwd ?)
-which handles WLAN_AKM_SUITE_SAE differently ? Opinions (and even some
-testing) are welcome for this driver, since I do not have the corresponding
-hardware.
-
-[1] https://lore.kernel.org/linux-wireless/87a5uatfl1.fsf@kernel.org/
-
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Ajay Singh <ajay.kathat@microchip.com>
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: <linux-wireless@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-Cc: Igor Mitsyanko <imitsyanko@quantenna.com>
-Cc: Sergey Matyukevich <geomatsi@gmail.com>
-
+Suggested-by: Johannes Berg <johannes@sipsolutions.net>
 Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
 ---
-Alexis Lothoré (2):
-      wifi: nl80211: force WLAN_AKM_SUITE_SAE in big endian in NL80211_CMD_EXTERNAL_AUTH
-      wifi: wilc1000: remove AKM suite be32 conversion for external auth request
-
- drivers/net/wireless/microchip/wilc1000/cfg80211.c |  2 +-
- net/wireless/nl80211.c                             | 19 ++++++++++++++++++-
- 2 files changed, 19 insertions(+), 2 deletions(-)
+Only a few minor modifications from Johannes' initial suggestion:
+- fixed unbalanced parenthesis
+- slightly reworded the inlined documentation
 ---
-base-commit: a4c7842e88b0f7d937015e4588ea2a1dec33cf2c
-change-id: 20240214-nl80211_fix_akm_suites_endianness-2750a5d7da83
+ net/wireless/nl80211.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-Best regards,
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 5f18cbf7cc3d..046ce0513d31 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -20136,9 +20136,26 @@ int cfg80211_external_auth_request(struct net_device *dev,
+ 	if (!hdr)
+ 		goto nla_put_failure;
+ 
++	/* Some historical mistakes in drivers <-> userspace interface (notably
++	 * between drivers and wpa_supplicant) led to a big-endian conversion
++	 * being needed on NL80211_ATTR_AKM_SUITES _only_ when its value is
++	 * WLAN_AKM_SUITE_SAE. This is now fixed on userspace side, but for the
++	 * benefit of older wpa_supplicant versions, send this particular value
++	 * in big-endian. Note that newer wpa_supplicant will also detect this
++	 * particular value in big endian still, so it all continues to work.
++	 */
++	if (params->key_mgmt_suite == WLAN_AKM_SUITE_SAE) {
++		if (nla_put_be32(msg, NL80211_ATTR_AKM_SUITES,
++				 cpu_to_be32(WLAN_AKM_SUITE_SAE)))
++			goto nla_put_failure;
++	} else {
++		if (nla_put_u32(msg, NL80211_ATTR_AKM_SUITES,
++				params->key_mgmt_suite))
++			goto nla_put_failure;
++	}
++
+ 	if (nla_put_u32(msg, NL80211_ATTR_WIPHY, rdev->wiphy_idx) ||
+ 	    nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex) ||
+-	    nla_put_u32(msg, NL80211_ATTR_AKM_SUITES, params->key_mgmt_suite) ||
+ 	    nla_put_u32(msg, NL80211_ATTR_EXTERNAL_AUTH_ACTION,
+ 			params->action) ||
+ 	    nla_put(msg, NL80211_ATTR_BSSID, ETH_ALEN, params->bssid) ||
+
 -- 
-Alexis Lothoré, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.43.0
 
 
