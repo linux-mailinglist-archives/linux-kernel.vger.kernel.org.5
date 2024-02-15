@@ -1,114 +1,197 @@
-Return-Path: <linux-kernel+bounces-67483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0025F856C46
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:16:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035AF856C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1F4CB22998
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27DB51C21CAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6811384BB;
-	Thu, 15 Feb 2024 18:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038FC1384B7;
+	Thu, 15 Feb 2024 18:17:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0kqmNTp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QZjFrhjO"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEB613173F;
-	Thu, 15 Feb 2024 18:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A771513173F;
+	Thu, 15 Feb 2024 18:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708020997; cv=none; b=i6WGMax2lmYajYhBVEn2LLCJYbWBWMOMfniNJ4h2ZrlESSzQbXKHPV7bjNNeyWSVC7cflV4N1aV8L+DY7JC8a2XOMN/1w1dGjNM3juZea2mq+07WGlfqNNZxDA10fJBsvpqhCAJaWyAxJW64zCUJtp703+hS/kEU9qn+hd9Kdsc=
+	t=1708021034; cv=none; b=OQKv3VYqWHQQlrJ6qGf/I8C0hiJqL/QwCanPDxps/iwOn+CBW10okdWUpPL9bUENjROu0hrZRTmJy+i3PlpgHEh9z0P1pV9ukGDCYV45eLIF37bCEAY7Lxp02jkOlE7L7B70Z4fmVx+mnp7ivvLzevrg6RjM4gqHS0OA4LxGSHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708020997; c=relaxed/simple;
-	bh=Awfuobtglup8WyFBxQDNA8oCZmqRri8Ujo/a4iJOCY8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gnCX7jkVbACY7qBzraLRSrw8pWZ15bM/1UBhKxJkTabIECAkDWjmygfw04T/O6wcaH+51YWkc7exoxe10ZpMpRoopFJ8fPoeJACGDnYWERVjKGglZuAcACs2SxwIxupdIv+9N3D5bt0G5HUBV7zIwDDdljFcwd04yRuxRFmi/yI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0kqmNTp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F21B3C433F1;
-	Thu, 15 Feb 2024 18:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708020997;
-	bh=Awfuobtglup8WyFBxQDNA8oCZmqRri8Ujo/a4iJOCY8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G0kqmNTpIor7iaOu/2rdZjj3yexSHjy0aPtL0aNOqXocBxWRDo8spEueJE7bxj1cL
-	 RYl9w78bsmG+wQDMOWzLnb8PX/3jQ4Xh8cl9mh8we71zaK3eTXgifaKyO/e46YFfot
-	 QTXBOwVTNxvUCZ1DalIieuDa5l9jwR+APUTbsWoPDPk6iN3KyTw2C4pCYVME5JQhiM
-	 HQf/R1QN6JOtTHtEXEpVRk+6xHkcm2Z7iQGLfxePjk7DESqHspDY/xLy1FZf4t6K38
-	 Zc3byWLalus4sXghfKDlfFUNHzmuN2HJNyV2riukbwH8cX+/ARbxuri8gxEAAL5JZJ
-	 pMjbhPg8N6KEw==
-Received: by pali.im (Postfix)
-	id EC44F75F; Thu, 15 Feb 2024 19:16:33 +0100 (CET)
-Date: Thu, 15 Feb 2024 19:16:33 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Jean Delvare <jdelvare@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-	linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Marius Hoch <mail@mariushoch.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
- in Dell laptops/notebooks?
-Message-ID: <20240215181633.2aevovw6wkxq5si2@pali>
-References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
- <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
- <20231223125350.xqggx3nyzyjjmnut@pali>
- <20240213150708.57148f6a@endymion.delvare>
+	s=arc-20240116; t=1708021034; c=relaxed/simple;
+	bh=xGhiyaV9i6rlKLrExFnE/CpescGwgSNkb44LB7gAni8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pmIIaEyrTDf1eFnu4mZI7kyPoY5kOEfx9sapwP2kMZn4DQtFLfjjeUKvdm1YWpK5C6GTmbfjQIdlNMb0ToIcLfC9DPE2yLK1sOl13sfUcKs1jfqWED+cTbLjM+utdIyHAEUZC5aq5yJEL2TU485efezAzMdtvteH5VfbjIezLJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QZjFrhjO; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d944e8f367so11153485ad.0;
+        Thu, 15 Feb 2024 10:17:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708021032; x=1708625832; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=5PQMJU8VBCATAr8+bfgPz9ZOvObk7WnHIMIqwe0D4ho=;
+        b=QZjFrhjOhmuQJckQlzIBVM/ZNVzSJV8/BQSyiywPorDtDBqjXKwEXgQMTvGbPfVDq5
+         sQqcYqgTWQGUh/72GFwEeb5TPC7xCtyTDlgXd/rakQPzfuWsYuw+H11L/xgjeUrcAFqP
+         tCCKCHC80UN7Z7h8okv3poNKjHDJrHIT3ZuSw/QEFKp/Qm0/wqQy2zgBZ7i2gzuD3zb/
+         QkS85+PjAO9I+wOg9l/5tCLGc/KsTdVXftWYN09sv71WP0gyoWh1U6IGnoJ+pZdC64km
+         WAtmi5ZYRoXqhZMv1yVs6gpTaEbRUi2bDwbhh7ybYNNH6ti0qiZoc5hDpxagVtQTXX4S
+         85zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708021032; x=1708625832;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5PQMJU8VBCATAr8+bfgPz9ZOvObk7WnHIMIqwe0D4ho=;
+        b=HiLpMzr6/yktB592ONxS6ZEVmVNre/REyeKCkVMl3HaR+qL+isG4M1gcYez1l8VG3l
+         rlfxA8H+SINxCRNFXxXiq5C5hcmbXsHMfFSRAdvImMijUbrTcB5kZOJD8geX6YR/S4Tt
+         3h3Gbk3G9Da10bB2JW/+8DktQJ1mKuT5TAK2bJhCQvGojMGQpwICLmTkQcdf1b8zOYJE
+         U+NxrBk66kPFNHvRuw8hBjSqbxUN4Lu1LZPki+0L0gKhSj+8qusTZR8LGsuFo2OjiU4Y
+         Is2VYvJwhV6W+JGVrkb/tNm8PwuaMgiYYjGzIOnjKzNyqFpa+vGAetXvCLoXbAP3NUnm
+         RsZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgYpFD/bKNY9tL1I3OvmkXVny+ZsaXxT6YQDWpWG4j1gVldUuDHHNU+Ho0XsudYAHjMcYX7PHSKO4LSi7X4oZDYKOicECBy4gMo+oZ
+X-Gm-Message-State: AOJu0YzMWLFaqRT9cD2S9jJQlFo7LqzpYb0AuDyxoIlj7WJGm4vfeRTK
+	nyS1zgvqq8h/FO8rjXif6wIteOvgfa0v8Abfi8yWhue42cCLnJ4Fwyl64q8J
+X-Google-Smtp-Source: AGHT+IE729Qc4xPcsGFIwNXVOyui6G9LgBR5VUshZxIgDwbmV5JWVEeR78P4A0CHDrcpS01TP7YPXQ==
+X-Received: by 2002:a17:902:d548:b0:1db:4419:e933 with SMTP id z8-20020a170902d54800b001db4419e933mr2915151plf.17.1708021031935;
+        Thu, 15 Feb 2024 10:17:11 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id kj4-20020a17090306c400b001d9ed80607esm1556484plb.126.2024.02.15.10.17.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 10:17:11 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <34c8d6f6-3449-4a5f-b8c8-50faf1621714@roeck-us.net>
+Date: Thu, 15 Feb 2024 10:17:09 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: John David Anglin <dave.anglin@bell.net>,
+ David Laight <David.Laight@ACULAB.COM>,
+ Charlie Jenkins <charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+ <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
+ <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
+ <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
+ <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
+ <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240213150708.57148f6a@endymion.delvare>
-User-Agent: NeoMutt/20180716
 
-On Tuesday 13 February 2024 15:07:08 Jean Delvare wrote:
-> On Sat, 23 Dec 2023 13:53:50 +0100, Pali Rohár wrote:
-> > smbus is not really bus which provides discovering and identifying
-> > devices on the bus.
+On 2/15/24 09:25, John David Anglin wrote:
+[ ... ]
+>>>> Source:
+>>>>
+>>>> static bool pc_is_kernel_fn(unsigned long pc, void *fn)
+>>>> {
+>>>>         return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
+>>> This looks wrong to me.  Function descriptors should always be 8-byte aligned.  I think this
+>>> routine should return false if fn isn't 8-byte aligned.
+>>
+>> Below you state "Code entry points only need 4-byte alignment."
+>>
+>> I think that contradicts each other. Also, the calling code is,
+>> for example,
+>>     pc_is_kernel_fn(pc, syscall_exit)
+>>
+>> I fail to see how this can be consolidated if it is ok
+>> that syscall_exit is 4-byte aligned but, at the same time,
+>> must be 8-byte aligned to be considered to be a kernel function.
+> In the above call, syscall_exit is treated as a function pointer. It points to an 8-byte aligned
+> function descriptor.  The descriptor holds the actual address of the function.  It only needs
+> 4-byte alignment.
 > 
-> For completeness, SMBus version 2.0 actually added support for device
-> discovery and even dynamic slave address allocation. This is explained
-> in chapter 5, section 5.6 (SMBus Address resolution protocol).
+> Descriptors need 8-byte alignment for efficiency on 64-bit parisc. The pc and gp are accessed
+> using ldd instructions.
 > 
-> Unfortunately, this is an optional feature which requires active
-> cooperation from each device connected to the bus. If any device on the
-> bus supports SMBus ARP then you should get an answer when probing
-> (7-bit) I2C address 0x61.
-> 
-> Long ago I had a plan to add support for SMBus ARP to the kernel, but
-> gave up because I couldn't find any system implementing it. If the
-> accelerometer device in Dell laptops supported ARP then we could use it
-> to figure out the device's address, unfortunately this doesn't seem to
-> be the case.
-> 
-> -- 
-> Jean Delvare
-> SUSE L3 Support
 
-According to my notes, accelerometer in Dell laptops should use
-LNG3DMTR-LGA16-3x3 chipset. From what I found it should be
-pin-compatible with LIS302DL, just in different package.
+Maybe code such as
+	pc_is_kernel_fn(pc, syscall_exit)
+is wrong because syscall_exit doesn't point to a function descriptor
+but to the actual address. The code and comments in arch/parisc/kernel/unwind.c
+is for sure confusing because it talks about not using
+dereference_kernel_function_descriptor() to keep things simple but then calls
+dereference_kernel_function_descriptor() anyway. Maybe it should just be
+	if (pc == syscall_exit)
+instead.
 
-ST LIS302DL datasheet is on the website:
-https://www.st.com/resource/en/datasheet/lis302dl.pdf
+The entire code is really odd anyway.
 
-It is dual i2c and SPI bus support chipset. But in the datasheet there
-is nothing about SMBus, looks like this is designed for i2c usage. So I
-highly doubt that chipset supports SMBus version 2.0 with ARP extension.
+         ptr = dereference_kernel_function_descriptor(&handle_interruption);
+         if (pc_is_kernel_fn(pc, ptr)) {
 
-Anyway, SMBus ARP is new thing to me, I have never heard about it or its
-usage before. Has anybody else found some device which supports it?
-Would be interesting to know if this is not just another standard which
-was not publicly deployed yet.
+and then pc_is_kernel_fn() dereferences it again. Weird.
+
+It looks like commit 8e0ba125c2bf ("parisc/unwind: fix unwinder when
+CONFIG_64BIT is enabled") might have messed this up. No idea how to fix
+it properly, though.
+
+Thanks,
+Guenter
+
 
