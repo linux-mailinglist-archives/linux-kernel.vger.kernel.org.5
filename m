@@ -1,146 +1,124 @@
-Return-Path: <linux-kernel+bounces-66611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E13B855EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:16:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C212855EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A9F8283DEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:16:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD0011F25D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA6269D13;
-	Thu, 15 Feb 2024 10:12:43 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3556E69D36;
+	Thu, 15 Feb 2024 10:13:51 +0000 (UTC)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DD667C44
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E324679FE;
+	Thu, 15 Feb 2024 10:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707991962; cv=none; b=XxMhE6/Q3uAKtcJcgoa+a9V+01Yy2YVvaoq1o3HAAUEsCdgXbfHIRzTdFb2JN81WWogXu1wfF6bx3ybV1J0U3jWEpd3S/TMhkpugBRl2/hRtvcsbqLQngamDMMRcMp81mgDHCac5MmzYMQKu70qzvdcp0TeYy0l5gQ37EN4YJm0=
+	t=1707992030; cv=none; b=BIy8yaeWYF10O+FVsqkHj9uSUQjtgycDcseMgsL0+bxcuexP4repyyLtIQChXD5yZDQ8x1UOb+AgeIP5Kr7TcD+Krkkc8O0BmadF27hHuZykaH3hi0ZkaG/C1HhHFi6ZAWVkpODpgH/cX0Ec9stfvyeoqX3ZCeQUATkrcYHPMEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707991962; c=relaxed/simple;
-	bh=eIFtCimqDhFJk6HuIKLTMzw5qvsWlj3IyY8h7yW9DwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s979FNUPpjEo3r0UoPAX485Iqjvas94sMKEh1tFMbNnORTHjNS678y7beGDDoUwp7JYNjoRadEsedjwyh7gF1CSnVEFRNj8q0Qsj9ae/89CKXSJWjGOPdrKz0NrPMvUtj0T5Z01YW64Kq3Tp4Np5FVf1YVEENbFEBN2YeeHznsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYjH-0005ke-4v; Thu, 15 Feb 2024 11:12:31 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYjG-000rdf-8J; Thu, 15 Feb 2024 11:12:30 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raYjG-005I4L-0U;
-	Thu, 15 Feb 2024 11:12:30 +0100
-Date: Thu, 15 Feb 2024 11:12:30 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Viorel Suman <viorel.suman@nxp.com>
-Cc: "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>, 
-	Florin Leotescu <florin.leotescu@nxp.com>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, linux-pwm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pwm: imx-tpm: reset module on probe
-Message-ID: <zeieriiouilwf23g4v5wv7oetdee43qcm5lvxiygyxmxm7lgde@m3a2uain6g45>
-References: <20240201122242.1597601-1-viorel.suman@oss.nxp.com>
- <vvldfzpthexjb7bir5imrdslgnnqztl2rdclfp6qiesj6hgiea@o53kcxs66mjr>
- <3d866664-d2fd-4d36-9e8f-5242327e41b9@nxp.com>
+	s=arc-20240116; t=1707992030; c=relaxed/simple;
+	bh=zQK9YWdnA2MLFWkG0KYucAtSWqDsyb5toZ7+7+Lze/o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nmgqufxdNwoFOXIhVtwDumZY4gtyt2BdKD64gbLNjt0P8VIskruREPY3T2CArq91eyueyFy3rj97jA8ASnAteZNXxHCuKNCNl3xFFaSJXaD/8sCjQofoSSCLd9yat5YCWXVTPhyIwy8HrqnePOXPJX40EmDh3mEiEd1wQL8bhNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d10ad265d5so8814151fa.0;
+        Thu, 15 Feb 2024 02:13:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707992026; x=1708596826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YNaDKxTWYbBEr/pCLpL+n0Yx2MpOWuz0pvKe7ocVQwQ=;
+        b=EXaElozzM7IYTeEUeuLAlMFBM1n4aikJ/sza54ziNGGcVPgJnKl8scOAzH+dxE+/pK
+         QU0I42aLG3Lyw3/llxzqjgbyRC2gECweADd01wq/4H3Cjyq/6ZyoFGdsdNzIQ+yO6ZGQ
+         aI4vdOm8ppxlZM/6zqQhMNGFpDUu9dZTysU+KF3z5maSwwavn6tehMiL4GgADvnLtwzu
+         xbZL6eIRalUM7/yU0nR7/iZuHK9jUntQ34wKfjt/js1bXzfcs6EQNBeycLxiTitX7tIq
+         8TAXBKBjKo4FXz4b8te+UwAI8W/DldS2V7qLSeRBcY60ELO9saRt0al0q+mkKd0yVVvA
+         YpTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVlhoBwWZXwy2t9/M+tG6YXr8L8Wi54N6mg419n3tNHWhtpkjRL5yC937NiZw3XdUFpv/WYTMhQSg4up9jGbtTuNiRhvK6We+mcLR6G
+X-Gm-Message-State: AOJu0Yz4zgDbE+sh4ZMV6OB7yAf6knBkuY6vUKovM8/XIJ2DG66+ahaq
+	lWBQUNpmM/tz3it7Q5jlWA8CVixye2bIpEZyervPpR3RNq4j/hYIVYn+xJ6usyNv9Q==
+X-Google-Smtp-Source: AGHT+IFrxfdkttYFuNy6II5xa4smJepNzsJk8CRsvZGZjwLVwwsWfBFtm5hbprjBOMNmkLh0mZktWg==
+X-Received: by 2002:a2e:9793:0:b0:2d0:ce22:516d with SMTP id y19-20020a2e9793000000b002d0ce22516dmr1087986lji.3.1707992026019;
+        Thu, 15 Feb 2024 02:13:46 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id w12-20020a2e9bcc000000b002cf1cf44a00sm213259ljj.52.2024.02.15.02.13.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 02:13:45 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5128812662eso506854e87.0;
+        Thu, 15 Feb 2024 02:13:45 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVJUq9XOyf+GVgx4V7x0bM/P358v4Ldow+vaGD6bOfcBZL5LrcCQ3v0MfgGH5fcgXk9sDCS1mzYUbkiWu0uBDjikMeWFJT+95iUrJt2
+X-Received: by 2002:a05:6512:4884:b0:511:61bd:d748 with SMTP id
+ eq4-20020a056512488400b0051161bdd748mr1062136lfb.36.1707992025566; Thu, 15
+ Feb 2024 02:13:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jxbuzkk2jq3itvqv"
-Content-Disposition: inline
-In-Reply-To: <3d866664-d2fd-4d36-9e8f-5242327e41b9@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---jxbuzkk2jq3itvqv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-9-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240212170423.2860895-9-andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 15 Feb 2024 11:13:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXWu4JYT5wCX8sbwdM8gt571JakL1UHi2SGd5wKB41pxQ@mail.gmail.com>
+Message-ID: <CAMuHMdXWu4JYT5wCX8sbwdM8gt571JakL1UHi2SGd5wKB41pxQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/15] auxdisplay: linedisp: Provide struct
+ linedisp_ops for future extension
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Andy,
 
-On Thu, Feb 01, 2024 at 06:25:26PM +0200, Viorel Suman wrote:
-> On 2/1/24 15:38, Uwe Kleine-K=F6nig wrote:
-> > > +	/* Resets all internal logic and registers */
-> > > +	writel(PWM_IMX_TPM_GLOBAL_RST, tpm->base + PWM_IMX_TPM_GLOBAL);
-> > > +	writel(0, tpm->base + PWM_IMX_TPM_GLOBAL);
-> > > +
-> > This opposes the use case that the bootloader setup the pwm-backlight to
-> > show a splash screen that is simply taken over by Linux without
-> > flickering, right?
->=20
-> Yes, I was not aware of such use case. Is it acceptable if I'll update
->=20
-> the patch in a such way so that the software reset happens as function
->=20
-> of a property in the related DTS node ?
+On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Currently the line display library doesn't scale in case we want to
+> provide more operations. Prepare the library to take a newly created
+> struct linedisp_ops that scales.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-That sounds wrong. Why do you reset at all? If at all, only reset if all
-channels are disabled (if at all).
+For the code changes:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> > Otherwise the commit log should motivate why "the module takes the
-> > default state" is better than the status quo and what this default state
-> > is.
->=20
-> The default state above means IP internal logic being reset to the initial
-> state and
->=20
-> registers values being set to their reset values. We're facing a situation
-> on iMX95 when
->=20
-> A core may be reset independently from the rest of the SoC, this triggers=
- a
-> new
->=20
-> SPL->U-Boot->Linux boot, and in Linux probe phase PWM will inherit its st=
-ate
-> from
->=20
-> previous Linux runtime - this leads to some issues in suspend/resume
-> functionality.
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -696,8 +700,7 @@ static int ht16k33_seg_probe(struct device *dev, stru=
+ct ht16k33_priv *priv,
+>         if (err)
+>                 return err;
+>
+> -       err =3D linedisp_register(&seg->linedisp, dev, 4, seg->curr,
+> -                               ht16k33_linedisp_update);
+> +       err =3D linedisp_register(&seg->linedisp, dev, 4, seg->curr, &ht1=
+6k33_linedisp_ops);
 
-What kind of issues?
+Please wrap this long line (everywhere).
+All lines in these drivers fit in 80-columns before.
 
-Best regards
-Uwe
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
---jxbuzkk2jq3itvqv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXN44gACgkQj4D7WH0S
-/k5Ciwf7BecLTtanPQd8D4/UIOl88dzpimfzOqdiUzZeHyMfb66uhQlG/1U+6JUE
-aWOR9SWebqo2GRGhzXevHWX0cMNtVIk04tBKyeEMvn+QiCBLuoPEi4JNP9pfTFCl
-Wdhbn+YDz0/oUOEo1PkAdJiKMyIBf/kKkHMh6qepajH0K1ul5aIRPIa6UA5SfgR8
-CTFqTEnD3slilQ67anWF6oASkFZGukHluLtg1neiY6JbR6C4FwG2QjE30fsFjRll
-Yf6V171w4lQj76xAgxLMku/Z2j+l7bueEz7lJC04QBP9ZIwY/r+KnvPgzAtsoBLv
-4XehTo0rOdEfwluvr6xyP/6brmlD0A==
-=d7Gu
------END PGP SIGNATURE-----
-
---jxbuzkk2jq3itvqv--
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
