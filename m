@@ -1,306 +1,148 @@
-Return-Path: <linux-kernel+bounces-67206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17933856805
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:37:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E168567F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4634283103
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:37:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5E201C237C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78064134CD7;
-	Thu, 15 Feb 2024 15:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022DF133421;
+	Thu, 15 Feb 2024 15:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PeIHrISH"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="2oLpDIOZ"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E711332B1;
-	Thu, 15 Feb 2024 15:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEF313398D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708011409; cv=none; b=ec9I8P8Csj/AjvlBjy8D2He1HHbavPlg1CMUxyztMToZDqHzdsiPu21HGvPj4orr11mTasaOtrFNFvYN5xUWo37tgSiB4cc1vk0uzfCDtD5zEbMbwq9FBh5yf8eGZ17raMLq5k6QVOwxYZGvZNh/k/KPzletjmxuu0tZkD4wfX8=
+	t=1708011392; cv=none; b=GQZzwN+dhHrfHy0FG5ZvzSB0Nj+gNGg5rcNH9nbQZVc0C5QArhUZkLJb+pljTBnxB0/HRzKRmlyA7xGB+inv4QKJp00HliVxcILnkS+NfPa163xBUPOCEFbIanTjd7i0bZf1fzPJI/VH6SBT0gXHuxA+YHf+fUOA8tfOpnP5TXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708011409; c=relaxed/simple;
-	bh=ZQgdL3IC4nxkrcDN6Ec7D5CV9fMRJObe5XK8re/GRyw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZxJQuDPx4FQ3McuSMYVqNi8hmJGBJnbt0R+JE3JZLywX02GfmydqavVSDfyV+avqDKcpZSx3nG8pJEXq8Wa7W1iADHl+b7TauyBkO64ywVq7iFt/KeguMuB+P9KqtIoGnfLcn4OCFhpRLMLUCW1LlvtCQf9hLLTXycObHX4upn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PeIHrISH; arc=none smtp.client-ip=217.70.178.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay9-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::229])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 96B0CC876B;
-	Thu, 15 Feb 2024 15:36:39 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 290D3FF80E;
-	Thu, 15 Feb 2024 15:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708011392;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcD8+r7IbXbWMnW4VdFvkFJiY+m6SJ3b82KLtl6OoVg=;
-	b=PeIHrISHalbiiMxK5RaA6Ya6FbWR01j848eJLFAiXuNw/PsVPu4jNSPAdtwtjWAdN3vWTi
-	c+Ql98nuAwh9Dc90pVVsXjaUC6XtlcHY8zztlrMYQA/TcjtiBGDyHWCDGzDMfFtE7ebALw
-	p1crL/H0EKKRizLq1GM7Rto05EKwAcHMA4ILVMh3lFlhnFiPiUo110OBKbmq8BKR/gvpEJ
-	oayS9gbsubvfapCv5dyhryXJS12ebLJfyFdR/w1K9Scntm7hwQjJdOoNd19vpOsoU6OG2G
-	v98SeYn82RFns2I1qQ1mtZ5CKnVnLDjxwZgWnOUtPdm/G9nn3bh8+uUzpDkfaA==
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Date: Thu, 15 Feb 2024 16:36:21 +0100
-Subject: [PATCH 4/4] wifi: wilc1000: add missing read critical sections
- around vif list traversal
+	s=arc-20240116; t=1708011392; c=relaxed/simple;
+	bh=SHOsohQCVk8Mi+NNdj2jfOKDNAp69jy2VOPdCJJt+q0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQRVqLs/Ocvn4YKtJ1k60KAC1HfMgJaelQhWLhQgz0bWO7TSw0T4bGcnhdQBlklLmRNWIK90e2SslrFssGb8fpBPeJIXSJ3D1V7If8yB5gEsKbG+3YDKXroZf2k7TlXHc+dQwKHqwkPrPQX4Akb0bip2vJaOYREJJRJJyZS5NcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=2oLpDIOZ; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso1013127276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:36:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708011388; x=1708616188; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3pd5Z9bCkRZAvWYNH8OwXvr8NmpG4s7j8kTUQAlhIF4=;
+        b=2oLpDIOZey5aXGIFeJU/a8LsbfzBerJdeFKtvnkiI2NcCSfwLCvF6Go4QOctBC1Xhp
+         C2i/KFFD2BsLDAuJLcVSntfVAiSinwyiBJBvqiljxbL5O5FB7Ew/HXd++dIyCBwqs5rW
+         y/Zrwd3EBkrir7ZT8yAbbn1HNnlYRRifI4T6iqtoBAvYWVfGI452pOdpDyzEImABRzGm
+         DTKDMJZgSHxU2Xb9r7A/+grrL+MMa8hyseazQjGNtozONBSx0f+Plme/M0iv42090UHm
+         5b9Ltedlv8Ba54ABuuzIvG0eMWluPTtEgBTN+vMlqg0eEgHtPh4Y39JHdgSQH9/Fv0uV
+         R+fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708011388; x=1708616188;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3pd5Z9bCkRZAvWYNH8OwXvr8NmpG4s7j8kTUQAlhIF4=;
+        b=Kgp/Tan3ry0zCChnfTHtOkqkQEWG1Z39kdQSwWJds2+pfKyxkXuoAs8IrTy3q2L3fe
+         JWtIn6jihQuljUOYFDYmO81uNYiVOsM14uib0zVQiIpk12z3YqJjaA9v9qMduXJJhUst
+         WRYcztF3DIEcTA9NpFFk4IY7TsrPz+Gq+obWF6L/GOrR1RrZ/aubJoheRPKl5PAZLMO4
+         e5MHjoqR12+Wshn43LpU3ymHNv0Nk4EaJxn2LVqmofLJzNdNRgYusjwuQf7+0wocal9F
+         iCTS5aQ7b1W8n7SFqVZAviaxScMORxU8hnnurjUTDufbDhFzp9l5GngHN+OvTxUiAYfN
+         7o7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXPV5TEMkG6KBW2PddKAlGEjYBnhBcT/RiVit/RXb82qZgdZqqJC79bYHmWBZdt2WBUFniwfyP0tde4ZzY9rmNZLdgvMjPGrkMfkW4/
+X-Gm-Message-State: AOJu0YywmrKi9nIzFFRjJv17zIl5T/c0BJBL7phx0+/w0KcGqLUkr6/C
+	hSsKR8TmbBRvGt/bP04wQ2r6hQYJFcBWJr6EOOeqDZQ5Sk4jpd30SJ1YK8opKZU=
+X-Google-Smtp-Source: AGHT+IG6vRmSD1zRYeD4ymw86uKgfET3PGueEePIwXpcqRD4LLeLf4tbUBRqs/U4ycSYhu5gSVFJTw==
+X-Received: by 2002:a25:84cd:0:b0:dbd:5bfa:9681 with SMTP id x13-20020a2584cd000000b00dbd5bfa9681mr1648224ybm.37.1708011387748;
+        Thu, 15 Feb 2024 07:36:27 -0800 (PST)
+Received: from ghost ([50.146.0.2])
+        by smtp.gmail.com with ESMTPSA id i15-20020a056902068f00b00dc73705ec59sm218316ybt.0.2024.02.15.07.36.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 07:36:27 -0800 (PST)
+Date: Thu, 15 Feb 2024 10:36:25 -0500
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: John David Anglin <dave.anglin@bell.net>,
+	David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Message-ID: <Zc4veRSmxHHqu/bB@ghost>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+ <Zc1pSi59aDOnqz++@ghost>
+ <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
+ <1d5e059e-5b31-415d-ae41-593415812e94@bell.net>
+ <Zc2GfgiCpevtKTtS@ghost>
+ <11fff7fe-ec4c-4340-a67f-d1d54d0712d8@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240215-wilc_fix_rcu_usage-v1-4-f610e46c6f82@bootlin.com>
-References: <20240215-wilc_fix_rcu_usage-v1-0-f610e46c6f82@bootlin.com>
-In-Reply-To: <20240215-wilc_fix_rcu_usage-v1-0-f610e46c6f82@bootlin.com>
-To: linux-wireless@vger.kernel.org
-Cc: Ajay Singh <ajay.kathat@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Kalle Valo <kvalo@kernel.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: alexis.lothore@bootlin.com
+In-Reply-To: <11fff7fe-ec4c-4340-a67f-d1d54d0712d8@roeck-us.net>
 
-From: Ajay Singh <ajay.kathat@microchip.com>
+On Thu, Feb 15, 2024 at 12:56:13AM -0800, Guenter Roeck wrote:
+> On 2/14/24 19:35, Charlie Jenkins wrote:
+> > On Wed, Feb 14, 2024 at 10:00:37PM -0500, John David Anglin wrote:
+> > > On 2024-02-14 8:58 p.m., Guenter Roeck wrote:
+> > > > Specifically:†Yes,†the†carry/borrow†bits†should†be†restored.†Question†is
+> > > > if†the†Linux†kernel's†interrupt†handler†doesn't†restore†the†carry†bits
+> > > > or†if†the†problem†is†on†the†qemu†side.
+> > > The carry/borrow bits in the PSW should be saved and restored by the save_specials
+> > > and rest_specials macros.† They are defined in arch/parisc/include/asm/assembly.h.
+> > 
+> > Why would they be needed to be restored in linux? The manual says "The
+> > PSW is set to the contents of the IPSW by the RETURN FROM INTERRUPTION
+> > instruction". This means that the PSW must be restored by the hardware.
+> > 
+> > We can see the QEMU implementation in:
+> > 
+> > rfi:
+> > https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/sys_helper.c#L93
+> > 
+> > handling interrupt:
+> > https://github.com/qemu/qemu/blob/v8.2.1/target/hppa/int_helper.c#L109
+> > 
+> > However the implementation appears to be faulty. During an RFI, the PSW
+> > is always set to 0x804000e (regardless of what the PSW was before the
+> > interrupt).
+> > 
+> 
+> Not sure if I agree. The interrupt handler in Linux is the one which needs to set
+> IPSW. Looking into the code, I agree with Dave that the tophys macro seems to
+> clobber the carry bits before psw is saved, so they can not really be restored.
+> The only issue with that idea is that I can only reproduce the problem with
+> an interrupted ldd instruction but not, for example, with ldw. This is why it
+> would be really important to have someone with real hardware test this.
+> 
+> Thanks,
+> Guenter
 
-Some code manipulating the vif list is still missing some srcu_read_lock /
-srcu_read_unlock, and so can trigger RCU warnings:
+Yes, we definitely feedback from somebody with access to hardware, but I
+do not understand how "The PSW is set to the contents of the IPSW by the
+RETURN FROM INTERRUPTION" could be interpreted as anything except that
+the hardware is expected to over-write the contents of the PSW during
+the rfi.
 
-=============================
-WARNING: suspicious RCU usage
-6.8.0-rc1+ #37 Not tainted
------------------------------
-drivers/net/wireless/microchip/wilc1000/hif.c:110 RCU-list traversed without holding the required lock!!
-[...]
-stack backtrace:
-CPU: 0 PID: 6 Comm: kworker/0:0 Not tainted 6.8.0-rc1+ #37
-Hardware name: Atmel SAMA5
-Workqueue: events sdio_irq_work
- unwind_backtrace from show_stack+0x18/0x1c
- show_stack from dump_stack_lvl+0x34/0x58
- dump_stack_lvl from wilc_get_vif_from_idx+0x158/0x180
- wilc_get_vif_from_idx from wilc_network_info_received+0x80/0x48c
- wilc_network_info_received from wilc_handle_isr+0xa10/0xd30
- wilc_handle_isr from wilc_sdio_interrupt+0x44/0x58
- wilc_sdio_interrupt from process_sdio_pending_irqs+0x1c8/0x60c
- process_sdio_pending_irqs from sdio_irq_work+0x6c/0x14c
- sdio_irq_work from process_one_work+0x8d4/0x169c
- process_one_work from worker_thread+0x8cc/0x1340
- worker_thread from kthread+0x448/0x510
- kthread from ret_from_fork+0x14/0x28
+- Charlie
 
-Fix those warnings by adding the needed lock around the corresponding
-critical sections
-
-Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
-Co-developed-by: Alexis Lothor√© <alexis.lothore@bootlin.com>
-Signed-off-by: Alexis Lothor√© <alexis.lothore@bootlin.com>
----
- drivers/net/wireless/microchip/wilc1000/hif.c    | 52 +++++++++++++-----------
- drivers/net/wireless/microchip/wilc1000/netdev.c |  8 +++-
- 2 files changed, 35 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c b/drivers/net/wireless/microchip/wilc1000/hif.c
-index c42859a727c3..f1085ccb7eed 100644
---- a/drivers/net/wireless/microchip/wilc1000/hif.c
-+++ b/drivers/net/wireless/microchip/wilc1000/hif.c
-@@ -1570,23 +1570,25 @@ void wilc_network_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 	struct host_if_drv *hif_drv;
- 	struct host_if_msg *msg;
- 	struct wilc_vif *vif;
-+	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
-+	srcu_idx = srcu_read_lock(&wilc->srcu);
- 	vif = wilc_get_vif_from_idx(wilc, id);
- 	if (!vif)
--		return;
--	hif_drv = vif->hif_drv;
-+		goto out;
- 
-+	hif_drv = vif->hif_drv;
- 	if (!hif_drv) {
- 		netdev_err(vif->ndev, "driver not init[%p]\n", hif_drv);
--		return;
-+		goto out;
- 	}
- 
- 	msg = wilc_alloc_work(vif, handle_rcvd_ntwrk_info, false);
- 	if (IS_ERR(msg))
--		return;
-+		goto out;
- 
- 	msg->body.net_info.frame_len = get_unaligned_le16(&buffer[6]) - 1;
- 	msg->body.net_info.rssi = buffer[8];
-@@ -1595,7 +1597,7 @@ void wilc_network_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 					  GFP_KERNEL);
- 	if (!msg->body.net_info.mgmt) {
- 		kfree(msg);
--		return;
-+		goto out;
- 	}
- 
- 	result = wilc_enqueue_work(msg);
-@@ -1604,6 +1606,8 @@ void wilc_network_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 		kfree(msg->body.net_info.mgmt);
- 		kfree(msg);
- 	}
-+out:
-+	srcu_read_unlock(&wilc->srcu, srcu_idx);
- }
- 
- void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
-@@ -1611,36 +1615,32 @@ void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 	struct host_if_drv *hif_drv;
- 	struct host_if_msg *msg;
- 	struct wilc_vif *vif;
-+	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	mutex_lock(&wilc->deinit_lock);
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
-+	srcu_idx = srcu_read_lock(&wilc->srcu);
- 	vif = wilc_get_vif_from_idx(wilc, id);
--	if (!vif) {
--		mutex_unlock(&wilc->deinit_lock);
--		return;
--	}
-+	if (!vif)
-+		goto out;
- 
- 	hif_drv = vif->hif_drv;
- 
- 	if (!hif_drv) {
--		mutex_unlock(&wilc->deinit_lock);
--		return;
-+		goto out;
- 	}
- 
- 	if (!hif_drv->conn_info.conn_result) {
- 		netdev_err(vif->ndev, "%s: conn_result is NULL\n", __func__);
--		mutex_unlock(&wilc->deinit_lock);
--		return;
-+		goto out;
- 	}
- 
- 	msg = wilc_alloc_work(vif, handle_rcvd_gnrl_async_info, false);
--	if (IS_ERR(msg)) {
--		mutex_unlock(&wilc->deinit_lock);
--		return;
--	}
-+	if (IS_ERR(msg))
-+		goto out;
- 
- 	msg->body.mac_info.status = buffer[7];
- 	result = wilc_enqueue_work(msg);
-@@ -1648,7 +1648,8 @@ void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 		netdev_err(vif->ndev, "%s: enqueue work failed\n", __func__);
- 		kfree(msg);
- 	}
--
-+out:
-+	srcu_read_unlock(&wilc->srcu, srcu_idx);
- 	mutex_unlock(&wilc->deinit_lock);
- }
- 
-@@ -1656,24 +1657,27 @@ void wilc_scan_complete_received(struct wilc *wilc, u8 *buffer, u32 length)
- {
- 	struct host_if_drv *hif_drv;
- 	struct wilc_vif *vif;
-+	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
-+	srcu_idx = srcu_read_lock(&wilc->srcu);
- 	vif = wilc_get_vif_from_idx(wilc, id);
- 	if (!vif)
--		return;
--	hif_drv = vif->hif_drv;
-+		goto out;
- 
--	if (!hif_drv)
--		return;
-+	hif_drv = vif->hif_drv;
-+	if (!hif_drv) {
-+		goto out;
-+	}
- 
- 	if (hif_drv->usr_scan_req.scan_result) {
- 		struct host_if_msg *msg;
- 
- 		msg = wilc_alloc_work(vif, handle_scan_complete, false);
- 		if (IS_ERR(msg))
--			return;
-+			goto out;
- 
- 		result = wilc_enqueue_work(msg);
- 		if (result) {
-@@ -1682,6 +1686,8 @@ void wilc_scan_complete_received(struct wilc *wilc, u8 *buffer, u32 length)
- 			kfree(msg);
- 		}
- 	}
-+out:
-+	srcu_read_unlock(&wilc->srcu, srcu_idx);
- }
- 
- int wilc_remain_on_channel(struct wilc_vif *vif, u64 cookie, u16 chan,
-diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
-index 092801d33915..710e29bea560 100644
---- a/drivers/net/wireless/microchip/wilc1000/netdev.c
-+++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
-@@ -819,14 +819,16 @@ void wilc_frmw_to_host(struct wilc *wilc, u8 *buff, u32 size,
- 	unsigned int frame_len = 0;
- 	struct wilc_vif *vif;
- 	struct sk_buff *skb;
-+	int srcu_idx;
- 	int stats;
- 
- 	if (!wilc)
- 		return;
- 
-+	srcu_idx = srcu_read_lock(&wilc->srcu);
- 	wilc_netdev = get_if_handler(wilc, buff);
- 	if (!wilc_netdev)
--		return;
-+		goto out;
- 
- 	buff += pkt_offset;
- 	vif = netdev_priv(wilc_netdev);
-@@ -837,7 +839,7 @@ void wilc_frmw_to_host(struct wilc *wilc, u8 *buff, u32 size,
- 
- 		skb = dev_alloc_skb(frame_len);
- 		if (!skb)
--			return;
-+			goto out;
- 
- 		skb->dev = wilc_netdev;
- 
-@@ -850,6 +852,8 @@ void wilc_frmw_to_host(struct wilc *wilc, u8 *buff, u32 size,
- 		stats = netif_rx(skb);
- 		netdev_dbg(wilc_netdev, "netif_rx ret value is: %d\n", stats);
- 	}
-+out:
-+	srcu_read_unlock(&wilc->srcu, srcu_idx);
- }
- 
- void wilc_wfi_mgmt_rx(struct wilc *wilc, u8 *buff, u32 size, bool is_auth)
-
--- 
-2.43.0
-
+> 
 
