@@ -1,73 +1,52 @@
-Return-Path: <linux-kernel+bounces-67540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995E6856D2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 638C4856D31
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50095288A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AC34288A89
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52ACA1386D1;
-	Thu, 15 Feb 2024 18:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FB11386C2;
+	Thu, 15 Feb 2024 18:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jSWBods/"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b="e08WsBox"
+Received: from cmx-torrgo001.bell.net (mta-tor-001.bell.net [209.71.212.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1B51EA7C
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C4A1EA7C;
+	Thu, 15 Feb 2024 18:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.71.212.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708023369; cv=none; b=CtmFWQ6E68OPdMn3EhSXn0S4JocB9PguJ13jDKZj7bk6p3iHSxtRGrPkI9mzThqtyOCtgD+eQykF/r4i9WxSCmeX1OmDpioCxO7h9S7cqEzNZNItHKDrftLmemChok+Im+AAnJt0sFE0/jfUYst5/ZnUCfR4Yu4tPUblL/ds19o=
+	t=1708023405; cv=none; b=H/5LmWO/Hhxy/bG2ay2ENlbwXT9urJvAtVqM1mZbTRqVGEGkO4ioEiMvpB5/iQqOduf/TwXvGx/LXLmD7y0fbo7Z5JN7cVOq7tEguUgHAarg5JDViMFtV67eJT2avj5SgKJmBX4L0y3lPbB6coGTGw5G6Bj7VpIFBDtoUQtQUb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708023369; c=relaxed/simple;
-	bh=kXPQO+rEIu0FnBDjvhp7f2t/7FBxe0fcseMERvCf4No=;
+	s=arc-20240116; t=1708023405; c=relaxed/simple;
+	bh=gER4Vd+ai70jUG45UghcGjdobwH4FoQ8GObQlj7lTyI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVnUvpm8hz7gpd1Rmh6ywszTEkEKdN7wbk8ajExBcEIp1HgSuuIrO/hjZb3uz/nQpfkXaoJaRovPMF3Kn7AHvlrITaJyvARpq1aKdPDiWgevwC/vjQFq88Q22Gp4v/6kqpzuQkdI4IcBqBO3Rnk8atRqHJhoTITjZcUiAOVdQqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jSWBods/; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3db14a0a31so77399666b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:56:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708023366; x=1708628166; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4cAJLHNF/JRrCEO49lp/BKyIGOuJcZVH2wEu3LRWvvE=;
-        b=jSWBods/dP4SiHbRd0cSkNnMRCO9007lj7/CUc9E/1xTONFWcPMaRtLunoJqBnsyAU
-         NcecIXzihgi2FDUIu2o6wid3raLGPsT0DFAbc3YNUaO4uvtkAAKI9MX7saD593QjkdLf
-         0X3swW12Oo8hWlYqOqEhtbagBqEFXyvQ3eOvJzrodrIJ0RiRY6a1SeJcqBvgXyLCAgop
-         ei5AN/+S2JmoGlKzILILfY75gE5ggA3KoFlrIJFoNBTjytw3nlosB7RlyJzJIvipK/7p
-         rcdt8qwJkLzytiwrwYvhyPPbFlANyLPkEZQXkM74To6wyOntIGJEjNdJTQ27rtYgFfLf
-         GOgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708023366; x=1708628166;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4cAJLHNF/JRrCEO49lp/BKyIGOuJcZVH2wEu3LRWvvE=;
-        b=gB465csYj4AEf1qibayjTiHVGXL8QslLjzW71WzFWabWqZf6FO3/FIO7Eyd02N3fc/
-         nof4kDITPKGrW51IYh7oP3DQcJ8eUguRJ1lTyVWsB/J0LUThuAcpGm/wbVKY+X+H78uY
-         1TfSu3Xe6eY/cnG26aNIuC2YzAu7Px5+QG4ZH/WFh1PAIVrZr0yWn+ty2N1e9uQzjBDt
-         mfGZTIM+EHNh8wubVMtVDizceUZoyoFrtWvg/kXJKZ9nKVKTYWr85YopY45KB8i+ba6S
-         FfYY2dRFbxrmWEksKAPUU5a9JV4NUrPvJVw55LBkSCu5ivUK8jXV5rr3tLp5EaDYyxCT
-         Djbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWuEWUeOWql0CSx6Z9dEBJJTuN72/UuAnwi53jhN82zyfz/Rr9LAAYPNhSSp5rsvhm9iam/qutl6NlnV3i0s3kQVmucJDuC5uJdDs+f
-X-Gm-Message-State: AOJu0Yx+oK+cskvE6W+HgYh0nbBSl5ERt+VGTrFojJNW04nOEJortyHt
-	BpzK6w/88IOn7KeQ9mhTgf+MFYyh+/v6d17Y/0SFs7HXR2mUY/qujzn3Zwq4F0Q=
-X-Google-Smtp-Source: AGHT+IEP+URuxt3T56XaW6PGp8rRSuDf5PyL8goXj3rHrMJxTftAeuUO0uUbbfH7vkxrWaqXZt2u9A==
-X-Received: by 2002:a17:906:1186:b0:a39:6c07:d31c with SMTP id n6-20020a170906118600b00a396c07d31cmr1969344eja.25.1708023366046;
-        Thu, 15 Feb 2024 10:56:06 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id tj6-20020a170907c24600b00a3dba44a709sm261960ejc.50.2024.02.15.10.56.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 10:56:05 -0800 (PST)
-Message-ID: <9c36b6e5-262d-48b1-971c-b03d9edf7789@linaro.org>
-Date: Thu, 15 Feb 2024 19:56:04 +0100
+	 In-Reply-To:Content-Type; b=HxuNt3/GU0/i16KQcwNtravBZp3eZ4JGiYQIo30QSCSICTIIYEb8JvANSsTktvTSUmELmQ8Ek7/IfJSrx617YKEnUJsfQGLNiZfxaA1vcoWl54e1urPCWANhIIB/2cT4cwCYmQ+mTUUUn8zFUUnEIbpf384ECmdPuauJ3kn/kkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net; spf=pass smtp.mailfrom=bell.net; dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b=e08WsBox; arc=none smtp.client-ip=209.71.212.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bell.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bell.net; s=selector1; t=1708023403; 
+        bh=S3ZkdKdSM97Ryio1K95PdUfsu1Zs9FEuw3CMKBjbQ6k=;
+        h=Message-ID:Date:MIME-Version:Subject:To:References:From:In-Reply-To:Content-Type;
+        b=e08WsBoxyDP5aRShEqqYqaN9k67cVGBk4XZd4TMs1ptL9oHTsNw96gSJqWgCc4GM1fzp3Z+hVxuCxB9pfUBNJbPlAdxEjfwl6qVQ0smG7KW/M+JrOu73KLTH3fkJWW7IVe5LF48aOejnxVujVPQcLp08C/XJNy/qlXLWj3jNdfKNDIwTaKbPLRyGh/RzDFfVV1ICjxq8/wJS5zoaiq+qlNGMLpPQc+tiJZ53vgV6RoYSG8rHTzMSJK+rP6oyi8ZRboYbBD3UXZqaLrECjANpDOw9diLe0xigAT65pKU0F13zUKaa/bj6fU6dxQy8uxCduABCCgrUiKRrXp/cFmxPPA==
+X-RG-SOPHOS: Clean
+X-RG-VADE-SC: 0
+X-RG-VADE: Clean
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 65CD68AA0011B80A
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgedvledrvddtgdduudelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuefgnffnpdfqfgfvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhohhhnucffrghvihguucetnhhglhhinhcuoegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvtheqnecuggftrfgrthhtvghrnhepjeelffffjeehgffgueehleegfeegueeigedtkeffgeduueetffegffejudekgfeunecukfhppedugedvrdduvdeirdduuddvrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheplgduledvrdduieekrddvrdeglegnpdhinhgvthepudegvddruddviedrudduvddrvdeffedpmhgrihhlfhhrohhmpegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvthdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepffgrvhhiugdrnfgrihhghhhtseetvegfnfetuedrvefqofdprhgtphhtthhopeflrghmvghsrdeuohhtthhomhhlvgihsehhrghnshgvnhhprghrthhnvghrshhhihhprdgtohhmpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegthhgrrhhlihgvsehrihhvohhsihhntgdrtghomhdprhgtphhtthhopegurghvvgdrrghnghhlihhnsegs
+	vghllhdrnhgvthdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from [192.168.2.49] (142.126.112.233) by cmx-torrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
+        id 65CD68AA0011B80A; Thu, 15 Feb 2024 13:56:20 -0500
+Message-ID: <405791f1-7e51-4ccd-8ec3-b0be6ee8f203@bell.net>
+Date: Thu, 15 Feb 2024 13:56:21 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,128 +54,139 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/12] memory: stm32-fmc2-ebi: add RIF support
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
 Content-Language: en-US
-To: Christophe Kerello <christophe.kerello@foss.st.com>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org
-References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
- <20240212174822.77734-7-christophe.kerello@foss.st.com>
- <989661f0-f539-43c3-a332-13c0e99ed7b9@linaro.org>
- <edbb5e6e-44c0-426b-9c97-87ea1eee1b4c@foss.st.com>
- <1e1ae38b-7f8c-44ba-9970-0929aaaa28a8@linaro.org>
- <a1badd8b-041b-495d-81cb-b264c687de80@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <a1badd8b-041b-495d-81cb-b264c687de80@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Guenter Roeck <linux@roeck-us.net>, David Laight
+ <David.Laight@ACULAB.COM>, Charlie Jenkins <charlie@rivosinc.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+ <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
+ <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
+ <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
+ <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
+ <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
+ <34c8d6f6-3449-4a5f-b8c8-50faf1621714@roeck-us.net>
+From: John David Anglin <dave.anglin@bell.net>
+Autocrypt: addr=dave.anglin@bell.net; keydata=
+ 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
+ T70V9SSrl2hiw38vRzsl
+In-Reply-To: <34c8d6f6-3449-4a5f-b8c8-50faf1621714@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 15/02/2024 10:00, Christophe Kerello wrote:
-> 
-> 
-> On 2/14/24 11:07, Krzysztof Kozlowski wrote:
->> On 13/02/2024 14:15, Christophe Kerello wrote:
->>>>> +
->>>>> +	if (ebi->majrev < FMC2_VERR_MAJREV_2)
->>>>> +		return 0;
->>>>> +
->>>>> +	if (resource >= FMC2_MAX_RESOURCES)
->>>>> +		return -EINVAL;
->>>>> +
->>>>> +	regmap_read(ebi->regmap, FMC2_SECCFGR, &seccfgr);
+On 2024-02-15 1:17 p.m., Guenter Roeck wrote:
+> On 2/15/24 09:25, John David Anglin wrote:
+> [ ... ]
+>>>>> Source:
+>>>>>
+>>>>> static bool pc_is_kernel_fn(unsigned long pc, void *fn)
+>>>>> {
+>>>>>         return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
+>>>> This looks wrong to me.  Function descriptors should always be 8-byte aligned.  I think this
+>>>> routine should return false if fn isn't 8-byte aligned.
 >>>
->>> Hi Krzysztof,
+>>> Below you state "Code entry points only need 4-byte alignment."
 >>>
->>>>
->>>> No checking of read value?
->>>>
+>>> I think that contradicts each other. Also, the calling code is,
+>>> for example,
+>>>     pc_is_kernel_fn(pc, syscall_exit)
 >>>
->>> No, it should never failed.
+>>> I fail to see how this can be consolidated if it is ok
+>>> that syscall_exit is 4-byte aligned but, at the same time,
+>>> must be 8-byte aligned to be considered to be a kernel function.
+>> In the above call, syscall_exit is treated as a function pointer. It points to an 8-byte aligned
+>> function descriptor.  The descriptor holds the actual address of the function.  It only needs
+>> 4-byte alignment.
 >>
->> And you tested that neither smatch, sparse nor Coverity report here
->> warnings?
+>> Descriptors need 8-byte alignment for efficiency on 64-bit parisc. The pc and gp are accessed
+>> using ldd instructions.
 >>
-> 
-> Hi Krzysztof,
-> 
-> There is a lot of driver in the Kernel that are using same 
-> implementation, and I am surprised to not have had this comment 4 years 
-> ago when the driver was introduced.
+>
+> Maybe code such as
+>     pc_is_kernel_fn(pc, syscall_exit)
+> is wrong because syscall_exit doesn't point to a function descriptor
+> but to the actual address. The code and comments in arch/parisc/kernel/unwind.c
+It depends on how syscall_exit is declared.    unwind.c lies the type of handle_interruption, etc:
 
-Really? Care to give some pointers? Heh, I don't know what to respond to
-it. Either you say that my comment is incorrect or you say that it's
-okay to sneak poor code if no one notices? We can argue on the first,
-whether my comment is reasonable or not. But if you claim that previous
-poor choice of code is argument of bringing more of such poor choices,
-then we are done here. It's the oldest argument: someone did it that
-way, so I can do the same. Nope.
+         extern void * const handle_interruption;
+         extern void * const ret_from_kernel_thread;
+         extern void * const syscall_exit;
+         extern void * const intr_return;
+         extern void * const _switch_to_ret;
+#ifdef CONFIG_IRQSTACKS
+         extern void * const _call_on_stack;
+#endif /* CONFIG_IRQSTACKS */
 
-> 
-> So, how should I proceed? Shall I initialize all local variables used by 
-> regmap_read? Or shall I check the return value of regmap_read?
-> And, as there is a lot of regmap_read call in this driver, shall I fix 
-> them in a separate patch?
+This should yield actual addresses.
+> is for sure confusing because it talks about not using
+> dereference_kernel_function_descriptor() to keep things simple but then calls
+> dereference_kernel_function_descriptor() anyway. Maybe it should just be
+>     if (pc == syscall_exit)
+> instead.
+Looks like.
+>
+> The entire code is really odd anyway.
+>
+>         ptr = dereference_kernel_function_descriptor(&handle_interruption);
+>         if (pc_is_kernel_fn(pc, ptr)) {
+>
+> and then pc_is_kernel_fn() dereferences it again. Weird.
+>
+> It looks like commit 8e0ba125c2bf ("parisc/unwind: fix unwinder when
+> CONFIG_64BIT is enabled") might have messed this up. No idea how to fix
+> it properly, though.
+This is Helge's code...  I'll let him fix it.
 
-regmap operations, depending on the regmap used, can fail. Most of the
-errors are result of static configuration, e.g. alignment, regmap in
-cache mode etc. Then certain regmap implementations can produce errors,
-which is not a static condition but dynamic.
+Dave
 
-You have neither error checking nor value initialization. You risk here
-to have quite tricky to find, unnoticeable bugs, if there any mistake
-leading to regmap errors.
-
-Indeed neither smatch nor sparse report this as error currently, but
-maybe that's their limitation?
-
-
-Best regards,
-Krzysztof
+-- 
+John David Anglin  dave.anglin@bell.net
 
 
