@@ -1,76 +1,78 @@
-Return-Path: <linux-kernel+bounces-66710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7175A85610B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 950958560D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:07:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E91D7B244EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:00:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DDE4B2A77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603911332BC;
-	Thu, 15 Feb 2024 10:46:48 +0000 (UTC)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EC4133432;
+	Thu, 15 Feb 2024 10:47:32 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E56133412;
-	Thu, 15 Feb 2024 10:46:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C19C12EBD4;
+	Thu, 15 Feb 2024 10:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994007; cv=none; b=vBPIg/x2IbtaZnxgcrzt7DUvu9DBId0UGbpmrrri3MqsRzNdFHQLqcgUwtKkU7kIJhBhpon6LTpXeoTfzt21TNxv7scAJSjuwDmvFjQm32iOaiNlnm0B4sb9ZCbzWkIybNlD5GYb//4iaEe8CeQcPZYNaaPMpiRtgLrPKW8+ano=
+	t=1707994051; cv=none; b=GyJMNwWNeQMAylGjc7QF00DQo6QmtUAxH+nld9kBiMoMq+jvjZO28iqHv/2/lXvNplKf5l5HoKIzwWxUK91PPQsjx23oKrW0Q0q8iwN7qHeLLtXI0LHe2nLVztYhRBTnr40eed/KLnjhDkc936KjuWBRj/Bl3eXPCS5sYqrf3O0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994007; c=relaxed/simple;
-	bh=2g1UCNPioXAN/NTdQsZtoVsmkeQZGEUJ1Z4j/bMyhTw=;
+	s=arc-20240116; t=1707994051; c=relaxed/simple;
+	bh=J1lf+RbzBwTUdgwEgk5Mt6fRHJgMnJQ02SQ/jvvXxO0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fGgqrVbVSFbULcxZVgdt7aCMdWt8eAUFN87OqnoG4Eqz+y1sXi3jt8JEYBSClZ210rhGK8h1prSThjxNJztBpJLNeOAYmvXgGX44p94dp8iUd+IZ8qHIqt2yxP1xw1vqB2TDXFxnODvV8egWfvLymWJEoF0A9wTlO257xlQBR6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
+	 To:Cc:Content-Type; b=gGN90EDz2TE88x8BPIgrI8H8YMHyqPGcx/oX40K2/21C9bY7Shx3K7V+AE1cNVySVF/L3YhV24IaVzgwqtQoVYNHS54kpb2nqXOZE3I2bTzLn25U5ceoRo3MgFxk1EvVfsWnMvlkXfw7cZgWc4DFzAdeudnusdM8atTQwwkvULE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-604a1581cffso7011917b3.3;
-        Thu, 15 Feb 2024 02:46:46 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-604a1581cffso7017697b3.3;
+        Thu, 15 Feb 2024 02:47:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707994004; x=1708598804;
+        d=1e100.net; s=20230601; t=1707994048; x=1708598848;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i1lAFMaqNvrj4VTIdRbaFJPSTWNCjgzdwW6T4WWjzLw=;
-        b=Cq6v1D9BLWOn9lNzBr955DlR5NMKKzXRcNeoilXgtscZvTuWcoG8Yb77pdIQXT4sc/
-         gln0uNZhZMCgauPlvdOjvR8s/S8ebc/fyD9fbB0lbGN4tdHYtXuRpWtaWdoWvezWhhHX
-         SCTzXV1IzDuh4wG3ziy8h9G//L0OfQxmlsCVXEi2nTdMli3q0wsFoDSBW4JhJdkEtxHW
-         OrZ3Td5mZ1l106KxD8eazUT8jFM6KZFfJ/fTNzhLJvzgtP644pmSPE5gD644XRN0LNGz
-         WJexq+AcYNRLF4CNz3DXVIhmOBF9aXAUPgI/XlXiCWoyz+V2sej2X1/L2O1gKAh06lK7
-         OCqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWC8+p3j8i4Hst+GI6kTAjTs6bev4UWsd+TF5pP3d/ibIc68Auv0gcQwskwftVAgYmfSF0GR888zgDIcNolR3Z9c3QYelkJMUZuq/og
-X-Gm-Message-State: AOJu0Yw5oEIutZaFZXsj7D25MYvGQ8QxhiKlT2KIFGjUz+IqyPE8E+B4
-	jdeV9odTBTADXQfYcCugZpFhJjbtlNyQg4heCfb5Hk5iwGbL9ctPo2kShkW9H27NAQ==
-X-Google-Smtp-Source: AGHT+IEAMlNuzUm4x9ocnPd/5LkUN4u0ASIukzxeWojbjm37d9otLvtmnc69XPSSRz/FYuxLNcNGjg==
-X-Received: by 2002:a0d:ca0c:0:b0:604:93a9:386a with SMTP id m12-20020a0dca0c000000b0060493a9386amr1559700ywd.39.1707994004304;
-        Thu, 15 Feb 2024 02:46:44 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id b188-20020a0dc0c5000000b00607c2ab443dsm189942ywd.130.2024.02.15.02.46.44
+        bh=cngMjuMI3kUloDphCEqdAv46UiS6t4QhdjtrFhn8Hf4=;
+        b=rjuNsd1M9XcEWl3TVu2Oa6CjvhhLyj+qdPbzSf3aJLF9vwsulnQ0Dui4LqShQL5GgU
+         Ltd5eScCq+kKNfBP5Lzvz8fS0JDgmGlazzVU3OYd54kutf66n2PCIq2RagrvEJAMvzG2
+         HsAZSPH+fQzI9MPs4H4zfKBE7pDtb3i/fXr1m0n9KmdiLrWeHV9bWxhIzfFe5nOzZrjh
+         e9NtgX0AoUASaF7+Q6ELA2YofiHp5AL89j0usdUXjEl4JasG5XitKjmUb/m6+4KOPpqY
+         uHw4KY0fI8vsDIggGi5ZyeudSguEmqmc05UqzAYQ0Qz1jEA5GFtOKvFl5hyD1UgsfuEP
+         AHng==
+X-Forwarded-Encrypted: i=1; AJvYcCUdOfmYhVnI6jEYf4/dNxhjn7Rhbofhik8hYCLch0yoV4x8fUt1aryl8PT0py1ENzsB30nKZhSUvCp/0O1t0/4Lhgw1NFC5GHs0tB/i
+X-Gm-Message-State: AOJu0Yx2sfF6I5liDaIFlVPET4OCWJoWa1M9VMrScJx1/LjmToyzm2Am
+	vrfsR1NmJrpiUb2tRQDGXLtgWO+ln2ALNVDyOrLDCV+mTYp/jptko2JeKfrYjqEUvQ==
+X-Google-Smtp-Source: AGHT+IHOqRgKg85V89qJIZJsNTKTfY3fp02aVzakTIfez8ZotOJ/GbvMTlHdhfa3kUO3SVxKdajh1A==
+X-Received: by 2002:a0d:e284:0:b0:607:8c4a:b4e5 with SMTP id l126-20020a0de284000000b006078c4ab4e5mr1389652ywe.22.1707994048284;
+        Thu, 15 Feb 2024 02:47:28 -0800 (PST)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id i204-20020a816dd5000000b005ff9bb7fa40sm196400ywc.34.2024.02.15.02.47.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:46:44 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so640483276.0;
-        Thu, 15 Feb 2024 02:46:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUgjAPnek/Orp6jTomrskDZpjzDtNIPVZk2s96++Xw3pW5YRGkI4/GOvySAxVV7OWIYVqUXQstYnEzRulqs3GtidAcTviPElkaBpJCV
-X-Received: by 2002:a81:8492:0:b0:607:90a5:dc15 with SMTP id
- u140-20020a818492000000b0060790a5dc15mr1629169ywf.7.1707994003820; Thu, 15
- Feb 2024 02:46:43 -0800 (PST)
+        Thu, 15 Feb 2024 02:47:27 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so641204276.0;
+        Thu, 15 Feb 2024 02:47:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWlM9bMfsj/sIlh1TLirASmeyI3HKwHAZP7PoTkKJzrJHnkWD4KOEz0zEAJI5J+xO2mDorv/HVPen7ZofUr5mrmOXKxCDSRnwMQ+3MQ
+X-Received: by 2002:a25:2bca:0:b0:dc2:6f92:2ec0 with SMTP id
+ r193-20020a252bca000000b00dc26f922ec0mr1301977ybr.51.1707994047597; Thu, 15
+ Feb 2024 02:47:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com> <20240212170423.2860895-14-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240212170423.2860895-14-andriy.shevchenko@linux.intel.com>
+References: <20240212170423.2860895-1-andriy.shevchenko@linux.intel.com>
+ <20240212170423.2860895-13-andriy.shevchenko@linux.intel.com> <CAMuHMdUqvotuuj6p7SNVo3X+BRvc0MAeQ9krLnJVQywr6rzOKg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUqvotuuj6p7SNVo3X+BRvc0MAeQ9krLnJVQywr6rzOKg@mail.gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 15 Feb 2024 11:46:32 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUMgGsuxo+hB9EDeq+ZU3awUMYok1NWKTaR4Yu61W7kEQ@mail.gmail.com>
-Message-ID: <CAMuHMdUMgGsuxo+hB9EDeq+ZU3awUMYok1NWKTaR4Yu61W7kEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 13/15] auxdisplay: ht16k33: Use buffer from struct linedisp
+Date: Thu, 15 Feb 2024 11:47:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWQ5D-H22+is4PO5MS7CHnb8xDwO-1FXDQtkZmyJ8Z4pw@mail.gmail.com>
+Message-ID: <CAMuHMdWQ5D-H22+is4PO5MS7CHnb8xDwO-1FXDQtkZmyJ8Z4pw@mail.gmail.com>
+Subject: Re: [PATCH v2 12/15] auxdisplay: ht16k33: Switch to use line display
+ character mapping
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Andy Shevchenko <andy@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
@@ -79,50 +81,21 @@ Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> struct linedips embedds a small buffer for the string that we may reuse.
-> Update the driver accordingly.
+On Thu, Feb 15, 2024 at 11:44=E2=80=AFAM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Mon, Feb 12, 2024 at 6:04=E2=80=AFPM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > Since line display library supports necessary bits to map the character=
+s
+> > (if required), switch this driver to use that.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Two nits below.
-
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -451,8 +444,7 @@ static void ht16k33_seg14_update(struct work_struct *=
-work)
+> Thanks for your patch!
 >
->  static int ht16k33_linedisp_get_map_type(struct linedisp *linedisp)
->  {
-> -       struct ht16k33_priv *priv =3D container_of(linedisp, struct ht16k=
-33_priv,
-> -                                                seg.linedisp);
-> +       struct ht16k33_priv *priv =3D container_of(linedisp, struct ht16k=
-33_priv, linedisp);
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Please wrap long lines.
-
->
->         switch (priv->type) {
->         case DISP_MATRIX:
-> @@ -471,8 +463,7 @@ static int ht16k33_linedisp_get_map_type(struct lined=
-isp *linedisp)
->
->  static void ht16k33_linedisp_update(struct linedisp *linedisp)
->  {
-> -       struct ht16k33_priv *priv =3D container_of(linedisp, struct ht16k=
-33_priv,
-> -                                                seg.linedisp);
-> +       struct ht16k33_priv *priv =3D container_of(linedisp, struct ht16k=
-33_priv, linedisp);
-
-Likewise.
-
->
->         schedule_delayed_work(&priv->work, 0);
->  }
+With the missing return-statement reported before added, of course ;-)
 
 Gr{oetje,eeting}s,
 
