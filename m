@@ -1,118 +1,148 @@
-Return-Path: <linux-kernel+bounces-67063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0326285659B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:13:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF238565A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:14:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2F62281843
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:13:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E62401F210F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466BA130ADA;
-	Thu, 15 Feb 2024 14:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0102F131E51;
+	Thu, 15 Feb 2024 14:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="cdCVBnDZ"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rhdf2j7e"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51487130E40
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7764A131727;
+	Thu, 15 Feb 2024 14:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708006423; cv=none; b=HOEDrQppKbabReuSIK5aARtu78s+OqVGDEx5vlmoH+q/NkbwqtvC55G2nUssjF/dZwRC6eXxUd0DeJH6QNitIbJIK6gKAkikl0xexNuAcwe903mKbr5QN4sELGTOm54CRBvBrvj54MelZ2ye8Rc22w/gcr2I58wA+p/uX6fS4W8=
+	t=1708006440; cv=none; b=FXJZiziTBEiJhX6LTiDSj+0Ngeb8Pmdk0QPGo/ZqQsX9a+0NOm3h8P+OVz6Rv1zydHMk6ll+PDJdvUsVFKqBx6xv+0ectdAVUe8OH433hbMfbppMhL2UfiF4c2HQfkwXj+eTKk//e+BVEubDa2F2vdX175Zo8hYfA6XKfV1nFJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708006423; c=relaxed/simple;
-	bh=Y6qeuARksgU+rEgbZqHNJm3BXr+2VBnjsm2duHdLWIs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sMnEuya+u864Qy/eOwDB0sSIZR6r0YPvr0wAHIg3sbpgR8IIPuhow0V1ERSh9LAR/gWedyvQJAIgfee4XYwveSiEd4WqX18SY5UTPpkY1METxrtnuJnPlPjZPSe3qmZzzwW3Q7PyVD5QKEYUvO6oddaHJt3lRkSkRFtjeawY4yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=cdCVBnDZ; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a29c4bbb2f4so117672066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1708006419; x=1708611219; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZLd9NX3ymKq7wMa9QaV0cpLQd+CyTlNqfrZR5Cx3Qk=;
-        b=cdCVBnDZffml7fx5wZG0IJJ9LetSwIKOOQy7Zay4w9XW+nog88Ia5Q9G/RMVBlgYPn
-         mjyyrNx0YHUWlpcoTW+VSLgP12+WpoZT2tw/5PHRub6x185I871lJj8rpBauMKabPh0y
-         SPuyUSsMm63M+yEELILU45siOPiZleS3AMK3bqh0AUTVHYhcjcZhKh8gIMZGWqHWoonx
-         2rO5xHBTm5j/RI6/+VMSy735CtO2OX0HJTlO+aDnctz/OW+rJ+4ccFQGpeKsdqCeWKcw
-         Z+PIPnl2IYlz8pUgNI/gGuNIrSi49JMYEmAr8Cr23fkTdJwIeayn/TigL6DU2Qm67bik
-         hOuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708006419; x=1708611219;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qZLd9NX3ymKq7wMa9QaV0cpLQd+CyTlNqfrZR5Cx3Qk=;
-        b=Q5ydNNSrOUZrxxt+7TliIhozYW0OZmTogoyVMxikA36Dk83GU+MuDt6oXLHzUP2HDS
-         IoOKY1Xz23KCK68Q+YQfEjxd7m6ka2ahwmxTDPM45HSXS8Ie0OyUBY6R+LPuBdOSEesa
-         hv/udKgMFf4UYHyZFjzhfPL1/jx/YS+bEzWD65Bgfv9xB5je2lIfW+PDiUID4lFs6hNX
-         PY6Hq0BrGhGppFNdGdhJEMhXaskh4Be0v/YhbL0ZfMsfpoGtJLX1Mwpo+lF0v6m4/kY/
-         xkc7pYhAsYgtGYEwT4SLGXENy2pdn8W46KHNOnkx8WzYNWK4V0HVOyLyj8xyvcccXEIX
-         oA7g==
-X-Forwarded-Encrypted: i=1; AJvYcCXxA/MywKI6Q9Bv8/4RmSidduZSobHGkQm37TE3+yoyGntIw2CIZ31vw5TTTLok/6nJcMvVNHAI8PdpAuO71tlCYoZRK0I1HpkHRXFM
-X-Gm-Message-State: AOJu0Ywsvb/QXqUthaF+/x7gDTqQ6UQTaRimBTXzbl266CMkSFanbgR7
-	Y2Em6rqwWTazsE3pSRMPKm3mCqqTdA4N9PHjgFg7iF9k4e7j3IJDAjO4rxfC8J9xbjC31BC5+aU
-	R
-X-Google-Smtp-Source: AGHT+IHmjoDEsfh6SH1SQF7H9GfynfhHdXsJTtUo7vetxOSexyYXzCfklwZRaLSMAQLoh20x9Vvu3A==
-X-Received: by 2002:a17:906:3ca:b0:a3d:b60a:3701 with SMTP id c10-20020a17090603ca00b00a3db60a3701mr330019eja.41.1708006419575;
-        Thu, 15 Feb 2024 06:13:39 -0800 (PST)
-Received: from raven.blarg.de (p200300dc6f267100023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f26:7100:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id gs36-20020a1709072d2400b00a3d0a094574sm585985ejc.66.2024.02.15.06.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 06:13:39 -0800 (PST)
-From: Max Kellermann <max.kellermann@ionos.com>
-To: masahiroy@kernel.org,
-	nathan@kernel.org,
-	nicolas@fjasle.eu,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH] scripts/mod/modpost: fix null pointer dereference
-Date: Thu, 15 Feb 2024 15:13:21 +0100
-Message-Id: <20240215141321.899675-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708006440; c=relaxed/simple;
+	bh=kQtfjGGHL//RaWDiYtL8dqPa6sivLw8vj+nf2o9x1CE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WFDb2c+LDFS3M4xtksxDJqSow9nu9w74DXScVSVC7HPlrKbtflTxA3YxqfiTLKJzIz1coCj2FnXGlBnBujQ3tftqH4dbKufjoF64hGosYBh6VYC7l+gTW2r2vDArByw4MI130tLPhJHY/GecMGDLiM2qB32MMFTmnBrLKnB1asQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rhdf2j7e; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708006439; x=1739542439;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=kQtfjGGHL//RaWDiYtL8dqPa6sivLw8vj+nf2o9x1CE=;
+  b=Rhdf2j7e7l4i4S0cKLYFUeQoleabgVjaQY3Rm+f3can2FL8sgPD9KYjZ
+   W8a10O4evRN8mPS3dbepLfI9tTAfpn4euQa766g9FgRpxJmybsLxQDRzu
+   1tqmPrb7oTMNRbTMurHHF0wcuE2vJUpHB3hymDTkRbuRdqHhWQ4z3CpTj
+   4uHNc7qExPAI4+45reGiP3vI2pUdvrp9HC3+AUpSGzxa354tkcY25PSPr
+   suSIqQYShMuoAjJqCFzKUKMlUak9rxOeBqyAeh/TC+h8ix4n0k3ql2EGO
+   fblBmDnkDb/c5+YDASfFv3oZJEuPnaxpyOs5yyv+UZPdkuf5vxaJ7t9oq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5905629"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="5905629"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:13:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="8149317"
+Received: from kraszkow-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.13])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:13:52 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Mario
+ Limonciello
+ <mario.limonciello@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>, Alex Deucher
+ <alexander.deucher@amd.com>, Hans de Goede <hdegoede@redhat.com>, "open
+ list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ amd-gfx@lists.freedesktop.org, "open list:USB SUBSYSTEM"
+ <linux-usb@vger.kernel.org>, linux-fbdev@vger.kernel.org,
+ nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
+ linux-renesas-soc@vger.kernel.org, "open list:ACPI"
+ <linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ Melissa Wen <mwen@igalia.com>, Mark Pearson <mpearson-lenovo@squebb.ca>
+Subject: Re: [PATCH v6 3/5] drm: Add support to get EDID from ACPI
+In-Reply-To: <Zc1JEg5mC0ww_BeU@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240214215756.6530-1-mario.limonciello@amd.com>
+ <20240214215756.6530-4-mario.limonciello@amd.com>
+ <Zc1JEg5mC0ww_BeU@intel.com>
+Date: Thu, 15 Feb 2024 16:13:50 +0200
+Message-ID: <877cj56cip.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-If the find_fromsym() call fails and returns NULL, the warn() call
-will dereference this NULL pointer and cause the program to crash.
+On Thu, 15 Feb 2024, Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com=
+> wrote:
+> On Wed, Feb 14, 2024 at 03:57:54PM -0600, Mario Limonciello wrote:
+>> +static int
+>> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t =
+len)
+>> +{
+>> +	struct drm_connector *connector =3D data;
+>> +	struct drm_device *ddev =3D connector->dev;
+>> +	struct acpi_device *acpidev =3D ACPI_COMPANION(ddev->dev);
+>> +	unsigned char start =3D block * EDID_LENGTH;
+>> +	void *edid;
+>> +	int r;
+>> +
+>> +	if (!acpidev)
+>> +		return -ENODEV;
+>> +
+>> +	switch (connector->connector_type) {
+>> +	case DRM_MODE_CONNECTOR_LVDS:
+>> +	case DRM_MODE_CONNECTOR_eDP:
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>
+> We could have other types of connectors that want this too.
+> I don't see any real benefit in having this check tbh. Drivers
+> should simply notset the flag on connectors where it won't work,
+> and only the driver can really know that.
 
-This happened when I tried to build with "test_user_copy" module.
-With this fix, it prints lots of warnings like this:
+Agreed.
 
- WARNING: modpost: lib/test_user_copy: section mismatch in reference: (unknown)+0x4 (section: .text.fixup) -> (unknown) (section: .init.text)
+>>  const struct drm_edid *drm_edid_read(struct drm_connector *connector)
+>>  {
+>> +	const struct drm_edid *drm_edid =3D NULL;
+>> +
+>>  	if (drm_WARN_ON(connector->dev, !connector->ddc))
+>>  		return NULL;
+>>=20=20
+>> -	return drm_edid_read_ddc(connector, connector->ddc);
+>> +	if (connector->acpi_edid_allowed)
+>
+> That should probably be called 'prefer_acpi_edid' or something
+> since it's the first choice when the flag is set.
+>
+> But I'm not so sure there's any real benefit in having this
+> flag at all. You anyway have to modify the driver to use this,
+> so why not just have the driver do the call directly instead of
+> adding this extra detour via the flag?
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
- scripts/mod/modpost.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Heh, round and round we go [1].
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index bf7c4b4b5ff4..6b37039c9e92 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1050,7 +1050,9 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
- 	sec_mismatch_count++;
- 
- 	warn("%s: section mismatch in reference: %s+0x%x (section: %s) -> %s (section: %s)\n",
--	     modname, fromsym, (unsigned int)(faddr - from->st_value), fromsec, tosym, tosec);
-+	     modname, fromsym,
-+	     (unsigned int)(faddr - (from ? from->st_value : 0)),
-+	     fromsec, tosym, tosec);
- 
- 	if (mismatch->mismatch == EXTABLE_TO_NON_TEXT) {
- 		if (match(tosec, mismatch->bad_tosec))
--- 
-2.39.2
 
+BR,
+Jani.
+
+[1] https://lore.kernel.org/r/87sf23auxv.fsf@intel.com
+
+
+--=20
+Jani Nikula, Intel
 
