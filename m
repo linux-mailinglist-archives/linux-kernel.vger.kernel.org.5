@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-66791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4C585618B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:28:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B15C85618D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9CE12920B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:28:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 300371C230E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DEB12A158;
-	Thu, 15 Feb 2024 11:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E3112A158;
+	Thu, 15 Feb 2024 11:29:07 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52C68128837
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E037D129A8A
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707996509; cv=none; b=BKWu+EhgRbS6qk9iaHnRzgIS2vm5eqMuznSFNOq5YenuZtNoMAjt6QhYW+sJtt07Q8xNzD4JTqeVEgZyC8YF3WRvCmvW5ttlJnpDkSAXw0aJCNgwKa+ddmFY3apf/WfqC+Bl5RTI+Gdi+lpuXUSjwbI85fVigBM5BgEBN05rKuE=
+	t=1707996546; cv=none; b=UldldeVPc5E5h1/2RTkfkdeGgr4FtoltjUwIO7j6Poab6a6htHJMaPO3jJ79Qr1lTZkeUIGSxFUjzPhSx9isFgxS4Hf1ezG1ZK78veNex3FCX/94kZ3szzNGWM5y1jU7SOlDuBO+/ngCdez0Pycl5Bjv1fuAP2NUv31KHL/+mxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707996509; c=relaxed/simple;
-	bh=NTo0jv7v+/9xihVKWHnaNEzxfHRWqhjwTGIRKYu0+oE=;
+	s=arc-20240116; t=1707996546; c=relaxed/simple;
+	bh=08dZSk3vv08S63hF2txkaw8uAM7KnMVs+f5LuHcEul4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NCLEueIFsFKvkmtnlxE9hQ4kN1vM8PBxdKJD1mORW+M4UYagFnvF4a5dtJSEWoZDfKquKBWXqDbuyTrFBqcEjzkM3HMyXCCth/ZftaLVnIIU3kx55fN2gdiw503LzD85YUWrBku8x8NtcDepvGprHUbXdOBghXOK2vFx/un0a2s=
+	 Content-Type:Content-Disposition:In-Reply-To; b=nG9fu5ZtV+HGz0hhbxOLTjMeXuMC6rn0OFEyB6tvQBXgwO60oO4dGKqeSHu3A2TUrPyWBTP3ig/dpZoXQXYTSeRyztn8CpcVu+LI6CgMZyagHoEKDnSMEXvUP7tYPDWF1vKioa08RcpLphkrw7CRb8xiGBvP5PFkgw9lYYjOziY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2B3ADA7;
-	Thu, 15 Feb 2024 03:29:07 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44F6EDA7;
+	Thu, 15 Feb 2024 03:29:45 -0800 (PST)
 Received: from FVFF77S0Q05N (unknown [10.57.68.11])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 522743F7B4;
-	Thu, 15 Feb 2024 03:28:23 -0800 (PST)
-Date: Thu, 15 Feb 2024 11:28:20 +0000
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC3FF3F7B4;
+	Thu, 15 Feb 2024 03:29:00 -0800 (PST)
+Date: Thu, 15 Feb 2024 11:28:58 +0000
 From: Mark Rutland <mark.rutland@arm.com>
 To: Ryan Roberts <ryan.roberts@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>,
@@ -54,11 +54,11 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
 	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 13/18] arm64/mm: Implement new wrprotect_ptes() batch
- API
-Message-ID: <Zc31VN2j7DJYmgoJ@FVFF77S0Q05N>
+Subject: Re: [PATCH v6 14/18] arm64/mm: Implement new
+ [get_and_]clear_full_ptes() batch APIs
+Message-ID: <Zc31esUwBD2jgYiX@FVFF77S0Q05N>
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-14-ryan.roberts@arm.com>
+ <20240215103205.2607016-15-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,28 +67,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215103205.2607016-14-ryan.roberts@arm.com>
+In-Reply-To: <20240215103205.2607016-15-ryan.roberts@arm.com>
 
-On Thu, Feb 15, 2024 at 10:32:00AM +0000, Ryan Roberts wrote:
-> Optimize the contpte implementation to fix some of the fork performance
-> regression introduced by the initial contpte commit. Subsequent patches
-> will solve it entirely.
+On Thu, Feb 15, 2024 at 10:32:01AM +0000, Ryan Roberts wrote:
+> Optimize the contpte implementation to fix some of the
+> exit/munmap/dontneed performance regression introduced by the initial
+> contpte commit. Subsequent patches will solve it entirely.
 > 
-> During fork(), any private memory in the parent must be write-protected.
-> Previously this was done 1 PTE at a time. But the core-mm supports
-> batched wrprotect via the new wrprotect_ptes() API. So let's implement
-> that API and for fully covered contpte mappings, we no longer need to
-> unfold the contpte. This has 2 benefits:
-> 
->   - reduced unfolding, reduces the number of tlbis that must be issued.
->   - The memory remains contpte-mapped ("folded") in the parent, so it
->     continues to benefit from the more efficient use of the TLB after
->     the fork.
-> 
-> The optimization to wrprotect a whole contpte block without unfolding is
-> possible thanks to the tightening of the Arm ARM in respect to the
-> definition and behaviour when 'Misprogramming the Contiguous bit'. See
-> section D21194 at https://developer.arm.com/documentation/102105/ja-07/
+> During exit(), munmap() or madvise(MADV_DONTNEED), mappings must be
+> cleared. Previously this was done 1 PTE at a time. But the core-mm
+> supports batched clear via the new [get_and_]clear_full_ptes() APIs. So
+> let's implement those APIs and for fully covered contpte mappings, we no
+> longer need to unfold the contpte. This significantly reduces unfolding
+> operations, reducing the number of tlbis that must be issued.
 > 
 > Tested-by: John Hubbard <jhubbard@nvidia.com>
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
@@ -98,172 +89,137 @@ Acked-by: Mark Rutland <mark.rutland@arm.com>
 Mark.
 
 > ---
->  arch/arm64/include/asm/pgtable.h | 61 ++++++++++++++++++++++++++------
->  arch/arm64/mm/contpte.c          | 38 ++++++++++++++++++++
->  2 files changed, 89 insertions(+), 10 deletions(-)
+>  arch/arm64/include/asm/pgtable.h | 67 ++++++++++++++++++++++++++++++++
+>  arch/arm64/mm/contpte.c          | 17 ++++++++
+>  2 files changed, 84 insertions(+)
 > 
 > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 831099cfc96b..8643227c318b 100644
+> index 8643227c318b..a8f1a35e3086 100644
 > --- a/arch/arm64/include/asm/pgtable.h
 > +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -978,16 +978,12 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
->  }
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->  
-> -/*
-> - * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
-> - * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
-> - */
-> -static inline void __ptep_set_wrprotect(struct mm_struct *mm,
-> -					unsigned long address, pte_t *ptep)
-> +static inline void ___ptep_set_wrprotect(struct mm_struct *mm,
-> +					unsigned long address, pte_t *ptep,
-> +					pte_t pte)
->  {
-> -	pte_t old_pte, pte;
-> +	pte_t old_pte;
->  
-> -	pte = __ptep_get(ptep);
->  	do {
->  		old_pte = pte;
->  		pte = pte_wrprotect(pte);
-> @@ -996,6 +992,25 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
->  	} while (pte_val(pte) != pte_val(old_pte));
+> @@ -965,6 +965,37 @@ static inline pte_t __ptep_get_and_clear(struct mm_struct *mm,
+>  	return pte;
 >  }
 >  
-> +/*
-> + * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
-> + * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
-> + */
-> +static inline void __ptep_set_wrprotect(struct mm_struct *mm,
-> +					unsigned long address, pte_t *ptep)
+> +static inline void __clear_full_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr, int full)
 > +{
-> +	___ptep_set_wrprotect(mm, address, ptep, __ptep_get(ptep));
+> +	for (;;) {
+> +		__ptep_get_and_clear(mm, addr, ptep);
+> +		if (--nr == 0)
+> +			break;
+> +		ptep++;
+> +		addr += PAGE_SIZE;
+> +	}
 > +}
 > +
-> +static inline void __wrprotect_ptes(struct mm_struct *mm, unsigned long address,
-> +				pte_t *ptep, unsigned int nr)
+> +static inline pte_t __get_and_clear_full_ptes(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep,
+> +				unsigned int nr, int full)
 > +{
-> +	unsigned int i;
+> +	pte_t pte, tmp_pte;
 > +
-> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
-> +		__ptep_set_wrprotect(mm, address, ptep);
+> +	pte = __ptep_get_and_clear(mm, addr, ptep);
+> +	while (--nr) {
+> +		ptep++;
+> +		addr += PAGE_SIZE;
+> +		tmp_pte = __ptep_get_and_clear(mm, addr, ptep);
+> +		if (pte_dirty(tmp_pte))
+> +			pte = pte_mkdirty(pte);
+> +		if (pte_young(tmp_pte))
+> +			pte = pte_mkyoung(pte);
+> +	}
+> +	return pte;
 > +}
 > +
 >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
->  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
-> @@ -1149,6 +1164,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  #define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR
+>  static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+> @@ -1160,6 +1191,11 @@ extern pte_t contpte_ptep_get(pte_t *ptep, pte_t orig_pte);
+>  extern pte_t contpte_ptep_get_lockless(pte_t *orig_ptep);
+>  extern void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
+>  				pte_t *ptep, pte_t pte, unsigned int nr);
+> +extern void contpte_clear_full_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr, int full);
+> +extern pte_t contpte_get_and_clear_full_ptes(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep,
+> +				unsigned int nr, int full);
+>  extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
 >  				unsigned long addr, pte_t *ptep);
 >  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep);
-> +extern void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr);
->  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  				unsigned long addr, pte_t *ptep,
->  				pte_t entry, int dirty);
-> @@ -1268,12 +1285,35 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
+> @@ -1253,6 +1289,35 @@ static inline void pte_clear(struct mm_struct *mm,
+>  	__pte_clear(mm, addr, ptep);
 >  }
 >  
-> +#define wrprotect_ptes wrprotect_ptes
-> +static inline void wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +				pte_t *ptep, unsigned int nr)
+> +#define clear_full_ptes clear_full_ptes
+> +static inline void clear_full_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr, int full)
 > +{
 > +	if (likely(nr == 1)) {
-> +		/*
-> +		 * Optimization: wrprotect_ptes() can only be called for present
-> +		 * ptes so we only need to check contig bit as condition for
-> +		 * unfold, and we can remove the contig bit from the pte we read
-> +		 * to avoid re-reading. This speeds up fork() which is sensitive
-> +		 * for order-0 folios. Equivalent to contpte_try_unfold().
-> +		 */
-> +		pte_t orig_pte = __ptep_get(ptep);
-> +
-> +		if (unlikely(pte_cont(orig_pte))) {
-> +			__contpte_try_unfold(mm, addr, ptep, orig_pte);
-> +			orig_pte = pte_mknoncont(orig_pte);
-> +		}
-> +		___ptep_set_wrprotect(mm, addr, ptep, orig_pte);
+> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +		__clear_full_ptes(mm, addr, ptep, nr, full);
 > +	} else {
-> +		contpte_wrprotect_ptes(mm, addr, ptep, nr);
+> +		contpte_clear_full_ptes(mm, addr, ptep, nr, full);
 > +	}
 > +}
 > +
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+> +#define get_and_clear_full_ptes get_and_clear_full_ptes
+> +static inline pte_t get_and_clear_full_ptes(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep,
+> +				unsigned int nr, int full)
+> +{
+> +	pte_t pte;
+> +
+> +	if (likely(nr == 1)) {
+> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +		pte = __get_and_clear_full_ptes(mm, addr, ptep, nr, full);
+> +	} else {
+> +		pte = contpte_get_and_clear_full_ptes(mm, addr, ptep, nr, full);
+> +	}
+> +
+> +	return pte;
+> +}
+> +
+>  #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
 >  				unsigned long addr, pte_t *ptep)
->  {
-> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> -	__ptep_set_wrprotect(mm, addr, ptep);
-> +	wrprotect_ptes(mm, addr, ptep, 1);
->  }
->  
->  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
-> @@ -1305,6 +1345,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
->  #define ptep_clear_flush_young			__ptep_clear_flush_young
->  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->  #define ptep_set_wrprotect			__ptep_set_wrprotect
-> +#define wrprotect_ptes				__wrprotect_ptes
->  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
->  #define ptep_set_access_flags			__ptep_set_access_flags
->  
+> @@ -1337,6 +1402,8 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+>  #define set_pte					__set_pte
+>  #define set_ptes				__set_ptes
+>  #define pte_clear				__pte_clear
+> +#define clear_full_ptes				__clear_full_ptes
+> +#define get_and_clear_full_ptes			__get_and_clear_full_ptes
+>  #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>  #define ptep_get_and_clear			__ptep_get_and_clear
+>  #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
 > diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-> index 6d7f40667fa2..bedb58524535 100644
+> index bedb58524535..50e0173dc5ee 100644
 > --- a/arch/arm64/mm/contpte.c
 > +++ b/arch/arm64/mm/contpte.c
-> @@ -26,6 +26,26 @@ static inline pte_t *contpte_align_down(pte_t *ptep)
->  	return PTR_ALIGN_DOWN(ptep, sizeof(*ptep) * CONT_PTES);
+> @@ -212,6 +212,23 @@ void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
 >  }
+>  EXPORT_SYMBOL(contpte_set_ptes);
 >  
-> +static void contpte_try_unfold_partial(struct mm_struct *mm, unsigned long addr,
-> +					pte_t *ptep, unsigned int nr)
+> +void contpte_clear_full_ptes(struct mm_struct *mm, unsigned long addr,
+> +				pte_t *ptep, unsigned int nr, int full)
 > +{
-> +	/*
-> +	 * Unfold any partially covered contpte block at the beginning and end
-> +	 * of the range.
-> +	 */
-> +
-> +	if (ptep != contpte_align_down(ptep) || nr < CONT_PTES)
-> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
-> +
-> +	if (ptep + nr != contpte_align_down(ptep + nr)) {
-> +		unsigned long last_addr = addr + PAGE_SIZE * (nr - 1);
-> +		pte_t *last_ptep = ptep + nr - 1;
-> +
-> +		contpte_try_unfold(mm, last_addr, last_ptep,
-> +				   __ptep_get(last_ptep));
-> +	}
-> +}
-> +
->  static void contpte_convert(struct mm_struct *mm, unsigned long addr,
->  			    pte_t *ptep, pte_t pte)
->  {
-> @@ -238,6 +258,24 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->  }
->  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
->  
-> +void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
-> +					pte_t *ptep, unsigned int nr)
-> +{
-> +	/*
-> +	 * If wrprotecting an entire contig range, we can avoid unfolding. Just
-> +	 * set wrprotect and wait for the later mmu_gather flush to invalidate
-> +	 * the tlb. Until the flush, the page may or may not be wrprotected.
-> +	 * After the flush, it is guaranteed wrprotected. If it's a partial
-> +	 * range though, we must unfold, because we can't have a case where
-> +	 * CONT_PTE is set but wrprotect applies to a subset of the PTEs; this
-> +	 * would cause it to continue to be unpredictable after the flush.
-> +	 */
-> +
 > +	contpte_try_unfold_partial(mm, addr, ptep, nr);
-> +	__wrprotect_ptes(mm, addr, ptep, nr);
+> +	__clear_full_ptes(mm, addr, ptep, nr, full);
 > +}
-> +EXPORT_SYMBOL(contpte_wrprotect_ptes);
+> +EXPORT_SYMBOL(contpte_clear_full_ptes);
 > +
->  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->  					unsigned long addr, pte_t *ptep,
->  					pte_t entry, int dirty)
+> +pte_t contpte_get_and_clear_full_ptes(struct mm_struct *mm,
+> +				unsigned long addr, pte_t *ptep,
+> +				unsigned int nr, int full)
+> +{
+> +	contpte_try_unfold_partial(mm, addr, ptep, nr);
+> +	return __get_and_clear_full_ptes(mm, addr, ptep, nr, full);
+> +}
+> +EXPORT_SYMBOL(contpte_get_and_clear_full_ptes);
+> +
+>  int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  					unsigned long addr, pte_t *ptep)
+>  {
 > -- 
 > 2.25.1
 > 
