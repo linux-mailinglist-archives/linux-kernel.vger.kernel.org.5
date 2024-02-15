@@ -1,168 +1,172 @@
-Return-Path: <linux-kernel+bounces-67785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFE48570B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:49:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72ABC8570B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:51:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2B0E283B0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:48:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A069C1C218F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4F61419AD;
-	Thu, 15 Feb 2024 22:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61262145324;
+	Thu, 15 Feb 2024 22:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="DARco0iC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kq5fy2yO"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB6513B298;
-	Thu, 15 Feb 2024 22:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2154913A86F;
+	Thu, 15 Feb 2024 22:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708037331; cv=none; b=Z505DMCScV6sJoGH4Wqz5QfRHgpG3v5BgUIMSrKkHDFoSYHitw7kSzWOBhnRHWIqr4xnrHYEJWczXU7JrTNMnpo1ij1UPZi+r/2+0U/N4WbOApky1G7QQYhmBPYglW//INSqTtz4+yVcVSXe3Ff73tZEVZ0/7vj8QP6lYlomuc4=
+	t=1708037494; cv=none; b=u028JKfnU2t4xTR8rA10ryIOGBb4pwnUnKL+RV919B+qhR88CD1CxxxbrqZ5zk13IDjpPloSAHXStpOgrEvYiEMMeIq0PHcGuGJ8QVhSHWH/EaRAxUfD2HnEu4Er8mu69tI551F5M9sDX0+u91xC6JXzl1g8eTpnzfOf33XIFyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708037331; c=relaxed/simple;
-	bh=O2YipuwbWV1YLastP336dH3q8Zkm6CgW4TI5yh0PFMM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=WHPx1FoG366V3821XzheezXPF93ie1i6xihgrFVwPi0kY62swn8u3dJeY5PezE89l+r3JVhCHEGkR57JUyQ7Ypsvlm8nGqCbFFY/Jrcz9fqf68jztXQB6NpnVpjVKiidcqjxFwlc0BdUXD8G4uMRJwQZ4Lirtx4hd1JASR1spvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=DARco0iC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9DAC433C7;
-	Thu, 15 Feb 2024 22:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708037331;
-	bh=O2YipuwbWV1YLastP336dH3q8Zkm6CgW4TI5yh0PFMM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DARco0iCdfuae92XExh7ksU1jOCySljoFJvUjTDn6qsullpN+UZD19SQnJFqhMYAZ
-	 oOm+fymLMFt8D+F9JZKcJYJsu3fAkB0Xfg6t5w4Y8bHGlrMdP//45q1dE8IjOYoDXb
-	 P21Fkvnul+Og6eWw2GUVO+Duw3g99sqJQjsFXikQ=
-Date: Thu, 15 Feb 2024 14:48:49 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, David Hildenbrand
- <david@redhat.com>, Barry Song <21cnbao@gmail.com>, John Hubbard
- <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm/filemap: Allow arch to request folio size for
- exec memory
-Message-Id: <20240215144849.aba06863acc08b8ded09a187@linux-foundation.org>
-In-Reply-To: <20240215154059.2863126-1-ryan.roberts@arm.com>
-References: <20240215154059.2863126-1-ryan.roberts@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708037494; c=relaxed/simple;
+	bh=6XhwMTtsLs0JIWiOr9upPSdCY8YQXot2QALVLFFVtTA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oh5mNOi42vKMfsR1dQRxsPwE8JLlvJsEPVs1cUuZWnI/1/LjloxGYLVFiqN10YP70i2fEPoBi7vuAFntM/btYSa85XcqUx8ufhCeXKBRCGO4vQ1DgJguVoqdcw5wKI7uliEmeEJo1ux2ak0V4Az0thp03P3KOvTh1CwfTt1rj2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kq5fy2yO; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e42845298eso786875a34.2;
+        Thu, 15 Feb 2024 14:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708037492; x=1708642292; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=MnyzlgyQvhJraZkrPcyEIJ8UMchFvRt/RNLWEzws5Fw=;
+        b=kq5fy2yOa3ia9NZAOnabiWem340bFMUD9byZyRscSJq1edzIxOelnGLD44EUYnDZTS
+         znrGgvGYL0DUBcWCeSbZmTzuRw//NpjM74xqAFTEJZTJktkiM5fPN0hTK3RvVQsYJc5+
+         jfLiHwhzVDd+XIl3wNp1C82hJbYd3DlCZE77ngqyEhjwnd3GI8SmMD7O9QMMakqA7xh6
+         WgFmaghh50pZU1s1mTbl9LFLmUntLlEePWFQnbzokfLwnvq9JZmPtdMtjUtku1FQ7qCJ
+         g22VsLt/KA75ccZD6khQMeafWQ9i07+eOBYO83ODnEstAIQQVvhk45DKU1ewdXk6I/+h
+         +XqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708037492; x=1708642292;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:feedback-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MnyzlgyQvhJraZkrPcyEIJ8UMchFvRt/RNLWEzws5Fw=;
+        b=xLAViVhoEYCZz6weBCmSdh50T8dR1V7OOSCPhw9RH1DpV19kai/NWmI7aG4AzKGEsX
+         nYbzfKbIq+RF4WOteGePn75XEiYKn2YW6nNsQB20yz8VEdkXM77BwE/0cdN+lG48zpwY
+         V2+iGAA1YXkFs9t5a2StgukmJLWSEKk6wht2yHTabDDaCwMIdLlm13uqCpSmMqVLFykc
+         LlF86VEeZahbqG2pKHR690y8VQWpHWt4MGCKmKj9JO/t1cOrWLbCZC7CcOCm1Jwi7bJO
+         lO4V+CXYv3Lo2H7PkNiwhEDNdi55herSFNrT1suWHozfxEx8JSUsoTxsaNBqnWSuQ7M8
+         V1ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUn4AyIh0ZOopMS3i1MVp20OqfRdd2Z3RR4wcQFNI1cdar5Vx+H1wEK5IkxGYrpLcAebbRki/zDQ+km5mp7HTvBV9vzoruSNeWR39KOMe0vjFyJxdseHs4Y11k+/3WxpoekaB5i5jqNjVYio80vh+4ylaYq8fRwy++KSfEw2yvt
+X-Gm-Message-State: AOJu0Yxuaar00NG0bzvQXMtDsX2roolz7b6PImZvJmHIehfKDYyVPWmq
+	4caeBNUjVsNWQrav7b9zpWzZTTsECSIst958z4jAQf6hmddKiDyT
+X-Google-Smtp-Source: AGHT+IG8iQn+l7rjVK6rQt/T/nVBqPf9ZO5YH6YMTo01yyXvveR1XnpgoqHUqqvoAWvhWXJHUcFfhw==
+X-Received: by 2002:a05:6830:12cf:b0:6e4:2202:ff9f with SMTP id a15-20020a05683012cf00b006e42202ff9fmr3142170otq.17.1708037491957;
+        Thu, 15 Feb 2024 14:51:31 -0800 (PST)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id 11-20020ac8590b000000b0042c80eb0d79sm992012qty.52.2024.02.15.14.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 14:51:31 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id E339B1200043;
+	Thu, 15 Feb 2024 17:51:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 15 Feb 2024 17:51:30 -0500
+X-ME-Sender: <xms:cpXOZb1aE9duRy89ifK7dQhnCHAOL_538imeKi_uUIkub1Mt0oOo-Q>
+    <xme:cpXOZaGM9crAP1vvGjcVhBB69HQM1yb7iC34IKif0QQHmSnAcUnqbPSd9QupWXwYH
+    RmwyCRIiZ2x_UHZIw>
+X-ME-Received: <xmr:cpXOZb7esUBBD1pK1mso6yXvxRQbUPoEt_i_P9eBp0JsNsRtxgt1fjL44pY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddugddtgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhepgfetfffhheejgedtudeiffduteefhefggedujeduhfeifefgiefgveeuudeludff
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
+    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
+    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
+    drnhgrmhgv
+X-ME-Proxy: <xmx:cpXOZQ335bmTmgtqdxktyV4BJoOk3hPxiUqUGvJqVVQ0fvuIEaxJQw>
+    <xmx:cpXOZeGiHwUhalTilpoToW9rhLUWgSqxJ2w0Qlcuq78tJwlOIRPODA>
+    <xmx:cpXOZR8cIWEpJx8arOoJDCnivts6T5ALKn_tDY3CfehR74QHgPBMWA>
+    <xmx:cpXOZbNKLkrIlURDOWlkFcOEC2xvOMr9Ro6IZuiZPKV_nb9NdoOhi2XoLVQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Feb 2024 17:51:30 -0500 (EST)
+From: Boqun Feng <boqun.feng@gmail.com>
+To: linux-arm-kernel@vger.kernel.org
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	stable@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
+Date: Thu, 15 Feb 2024 14:51:06 -0800
+Message-ID: <20240215225116.3435953-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 15 Feb 2024 15:40:59 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
+Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
+a trouble with the following firmware memory region setup:
 
-> Change the readahead config so that if it is being requested for an
-> executable mapping, do a synchronous read of an arch-specified size in a
-> naturally aligned manner.
+	[..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
+	[..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
 
-Some nits:
+, on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
+range will be omitted from the the linear map due to 64k round-up. And
+a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
 
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1115,6 +1115,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
->   */
->  #define arch_wants_old_prefaulted_pte	cpu_has_hw_af
-> 
-> +/*
-> + * Request exec memory is read into pagecache in at least 64K folios. The
-> + * trade-off here is performance improvement due to storing translations more
-> + * effciently in the iTLB vs the potential for read amplification due to reading
+	[...] Unable to handle kernel paging request at virtual address ffff0000dfd80000
 
-"efficiently"
+To fix this, add ACPI_MEMORY_NVS into the linear map.
 
-> + * data from disk that won't be used. The latter is independent of base page
-> + * size, so we set a page-size independent block size of 64K. This size can be
-> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
-> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
-> + * use.
-> + */
-> +#define arch_wants_exec_folio_order() ilog2(SZ_64K >> PAGE_SHIFT)
-> +
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Cc: stable@vger.kernel.org # 5.15+
+---
+We hit this in an ARM64 Hyper-V VM when using 64k page size, although
+this issue may also be fixed if the efi memory regions are all 64k
+aligned, but I don't find this memory region setup is invalid per UEFI
+spec, also I don't find that spec disallows ACPI_MEMORY_NVS to be mapped
+in the OS linear map, but if there is any better way or I'm reading the
+spec incorrectly, please let me know.
 
-To my eye, "arch_wants_foo" and "arch_want_foo" are booleans.  Either
-this arch wants a particular treatment or it does not want it.
+It's Cced stable since 5.15 because that's when Hyper-V ARM64 support is
+added, and Hyper-V is the only one that hits the problem so far.
 
-I suggest a better name would be "arch_exec_folio_order".
+ drivers/firmware/efi/efi-init.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
->  static inline bool pud_sect_supported(void)
->  {
->  	return PAGE_SIZE == SZ_4K;
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index aab227e12493..6cdd145cbbb9 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -407,6 +407,18 @@ static inline bool arch_has_hw_pte_young(void)
->  }
->  #endif
-> 
-> +#ifndef arch_wants_exec_folio_order
-> +/*
-> + * Returns preferred minimum folio order for executable file-backed memory. Must
-> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
-> + * preference and mm will not special-case executable memory in the pagecache.
-> + */
-
-I think this comment contains material which would be useful above the
-other arch_wants_exec_folio_order() implementation - the "must be in
-range" part.  So I suggest all this material be incorporated into a
-single comment which describes arch_wants_exec_folio_order().  Then
-this comment can be removed entirely.  Assume the reader knows to go
-seek the other definition for the commentary.
-
-> +static inline int arch_wants_exec_folio_order(void)
-> +{
-> +	return -1;
-> +}
-> +#endif
-> +
->  #ifndef arch_check_zapped_pte
->  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
->  					 pte_t pte)
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 142864338ca4..7954274de11c 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3118,6 +3118,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->  	}
->  #endif
-> 
-> +	/*
-> +	 * Allow arch to request a preferred minimum folio order for executable
-> +	 * memory. This can often be beneficial to performance if (e.g.) arm64
-> +	 * can contpte-map the folio. Executable memory rarely benefits from
-> +	 * read-ahead anyway, due to its random access nature.
-
-"readahead"
-
-> +	 */
-> +	if (vm_flags & VM_EXEC) {
-> +		int order = arch_wants_exec_folio_order();
-> +
-> +		if (order >= 0) {
-> +			fpin = maybe_unlock_mmap_for_io(vmf, fpin);
-> +			ra->size = 1UL << order;
-> +			ra->async_size = 0;
-> +			ractl._index &= ~((unsigned long)ra->size - 1);
-> +			page_cache_ra_order(&ractl, ra, order);
-> +			return fpin;
-> +		}
-> +	}
-> +
->  	/* If we don't want any read-ahead, don't bother */
->  	if (vm_flags & VM_RAND_READ)
->  		return fpin;
+diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
+index a00e07b853f2..9a1b9bc66d50 100644
+--- a/drivers/firmware/efi/efi-init.c
++++ b/drivers/firmware/efi/efi-init.c
+@@ -139,6 +139,7 @@ static __init int is_usable_memory(efi_memory_desc_t *md)
+ 	case EFI_LOADER_CODE:
+ 	case EFI_LOADER_DATA:
+ 	case EFI_ACPI_RECLAIM_MEMORY:
++	case EFI_ACPI_MEMORY_NVS:
+ 	case EFI_BOOT_SERVICES_CODE:
+ 	case EFI_BOOT_SERVICES_DATA:
+ 	case EFI_CONVENTIONAL_MEMORY:
+@@ -202,8 +203,12 @@ static __init void reserve_regions(void)
+ 			if (!is_usable_memory(md))
+ 				memblock_mark_nomap(paddr, size);
+ 
+-			/* keep ACPI reclaim memory intact for kexec etc. */
+-			if (md->type == EFI_ACPI_RECLAIM_MEMORY)
++			/*
++			 * keep ACPI reclaim and NVS memory and intact for kexec
++			 * etc.
++			 */
++			if (md->type == EFI_ACPI_RECLAIM_MEMORY ||
++			    md->type == EFI_ACPI_MEMORY_NVS)
+ 				memblock_reserve(paddr, size);
+ 		}
+ 	}
+-- 
+2.43.0
 
 
