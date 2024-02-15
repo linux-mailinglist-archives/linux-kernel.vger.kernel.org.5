@@ -1,193 +1,340 @@
-Return-Path: <linux-kernel+bounces-67532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB03856D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:45:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA72856D02
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E52F528954E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:45:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06401C23D36
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642211386BE;
-	Thu, 15 Feb 2024 18:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF481386BB;
+	Thu, 15 Feb 2024 18:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yn8PqIiF"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qqfk8Pod"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CC01386B3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81D91369AC
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022701; cv=none; b=HR3zZVJKcA43pwCj7q2+xF3D5Q3khjld/hN8pPhxJFlBVfEqpS5pMQCAlOfA7StIKuUA9HGf6XlMnR/bP0mo4lrdWDrUIpto2+hUQg2WCKst9Z9ifBp6IB+ydw7Nc6y1Yu5vaQrViuKVya0yoiadYa11QLe0JoZJ0ObN2KyYAbM=
+	t=1708022731; cv=none; b=uXLvh4dmIPIZbVQ/fsWVCIJarAg6K+MkAqNDrYekyMxhrYziHu5N+f/QWXwyrDkFZ8vIxyO/VytHhVomORVhhUIkXZr7YqSW8BDA6sgaxNwuKuSXZsajjRVQrwzinDe4XJY6VuXSPXl+M7tXprpCmIk8RyWOS9NGQwd4w+f4g+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022701; c=relaxed/simple;
-	bh=PbhhQzsCOzluMRuJrO5H2BPda4J2I15V9bFTUKFH6J8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rYschBb2tlX1RZLqD1hphoM4zIbu4CP9ODcrzLjBPguv2P2GnxN1cRCiznLRtG21+n2GnDyERi1NUXdsS3QWeWq0uILaAMbfgVa48LxhQCc25fR2kiY+nQ9Yzbaj8UQwwzeCRTQSRxVB1E+WmOvQAyJTaWdG0yrOM6cVYnawE3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yn8PqIiF; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5118d65cf9cso1529786e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:44:58 -0800 (PST)
+	s=arc-20240116; t=1708022731; c=relaxed/simple;
+	bh=UOeiFxBa6qkD5GL0C7Hexl1Pj7GUKu+u7H599BzMonQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=r7oKpi17KgKMycjb7TdYFDb46leunte7UIuGj59A+enLYJTg9SF4X8Ak9vLFe30wGw9tcTQnPvS4LjYc5OdyUbY+dP/NaAo0a8FD8a5/qfd7ncd56JrbKkRFXOF33ECHL97ni0F0ODtqLABYeUk0H+wdUpa1n3w6HcJv9oQ07kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qqfk8Pod; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b5d1899eso3003538276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708022697; x=1708627497; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BA2WiEiZ8gMhFWkJbMFNImep7UDUbAJ5L5wptDO6vH8=;
-        b=Yn8PqIiFLGQLTdu69uklZRkamueVKyB3ZvRxo4smHxbjmPVDOawOVyl78nQBzxOrNb
-         S344N05bqD1jRjbnYhDIx6T0G35SOJB9Oc5+0puNQr/cPYQXeQ5ruHmv8nM+tZWsNrVp
-         pyvlQKKogaRdcDXZB9LQzWJptLeMVvnhM8LKspT9lC4ayQvmMTfjKPKukD/supxjwyte
-         FZaaftGWVlU9k720/WtLdIZpBK2RVU+GF0T9FlhOVYdephnbRVlRB758BxgPphSg12zp
-         epaIiQ1YwIdUuW7LJ97ZcQRs90AgQ0kcG7pu65ZvutG0Nprqw+OlrvlmAYo3InpnnXuY
-         YSYA==
+        d=google.com; s=20230601; t=1708022729; x=1708627529; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=es2Z8u6824g77CxfRGV/9UPwzp6tSbCJdwnZIQFRqkQ=;
+        b=Qqfk8Podgz1i60TAcI8G+9q5bijlyK+JU6d41/AzQBG9EfrA/N9X8nkel4XcknAeGp
+         iit6O42Kx5X3NV7qr8Iht55mBHE2FWIqpJo03jlQk35pTWL2XaduTC1WQlvUf3+L/Qoj
+         3QQUmkeLw33gu37uBS54ihJvmRrflVD3xsCBLmOoR9AIm9VXw9zZ//FtsKzJ3uNkEFyB
+         F41mQ5igbxDQiTv3ZnKQhmxEYAvvhHaOkbtFDC9TJOWahn6GxGM1Jh1MVjOVPF1WhkZS
+         PJ7YNGEBcd7vOAUDug3F6y7TYLpcQziMQGSCpufO9lfHtGMGz/Cn7KvtAxpBX1UoWG2j
+         6zGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708022697; x=1708627497;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BA2WiEiZ8gMhFWkJbMFNImep7UDUbAJ5L5wptDO6vH8=;
-        b=fUdrdMH/wLpG+kU7VN7C3ZIIju8uBZkD81WBmpzpVIR7yAZVWGUQRff/CHMusonZqE
-         aLcKVbGgeRkcxwFD5gIjy5HEuUgD53e1UKBAZTzffj1C5R4Eu08do8uiLM41Is82titD
-         gpbHgD0EQx6IaiM18+cI7UQ1t7krKHgqd99g2elk9EBDzhg6+qM/sfKT3V+PqKGS8oIs
-         +XIeIB9rhTIRzkDoRAs0PPRDAL7JykmaL9ByIgeq5vjsrKtOpHZl6wqRXvNTOjwkeH5l
-         NWT2/9ECZcBcv7+SbgeTzfswsvwMrNcH1TLYCnvAwWigczCrRJCPEEOGFb1BRJFeO2e1
-         ge5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUJRtGkVyNxwl3ARnFZjRh9y6tUi8TyIg6+kV4aJQ1uvvHKfp95ca7gIwsQ0iCZ5qajmsdijMGgN7ql4O6W30R1tXXdg9yh6oSDkJb/
-X-Gm-Message-State: AOJu0Yw9h6P1puIADG9MYt9fq1rMzzHxXMKOULtjLkCu5HoBe0Tj7YoS
-	LCWpXc4sngwqD2UBOuBAWTkwdxheVaGeL1ZFwDKqjdfcgz43k1h314bhlP9DePg=
-X-Google-Smtp-Source: AGHT+IH1y1N708HUEGsnjoS6q4nNZv5jpR1ruiNr5BhgXx9htfbJ5Gvlx0osVvA0Xyky5zIXqmiVjw==
-X-Received: by 2002:a05:6512:945:b0:511:4175:8d16 with SMTP id u5-20020a056512094500b0051141758d16mr1702012lft.55.1708022696771;
-        Thu, 15 Feb 2024 10:44:56 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id i9-20020a0565123e0900b005128a755676sm284393lfv.110.2024.02.15.10.44.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 10:44:55 -0800 (PST)
-Message-ID: <2e96c824-47e8-48bd-9e03-8c7390b02d24@linaro.org>
-Date: Thu, 15 Feb 2024 19:44:53 +0100
+        d=1e100.net; s=20230601; t=1708022729; x=1708627529;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=es2Z8u6824g77CxfRGV/9UPwzp6tSbCJdwnZIQFRqkQ=;
+        b=CinysLT0FXVRK2LgiRH+R+Ug+ErBFe6xJjsqfsl+9phxe7s2QmItAnFpDM3Lj3f/4s
+         JLbJisaDWjIGxOCG5thrYx4E3JnR/Hp6RRb6BEcruBxx2vaF4m5h25OLzMiUMkqXsoWr
+         p4vkz657xGIFCCjvTLnOVS7/KhTq1pLLUBdCkt/dNHItE96MtlVI9ki/ZlJqFOq3q2NS
+         72s76VBdMtyJ+VEanx2quZ7owP6JWJ3qBJNjviVNOrjjvRs0sYfr0mXRYNJ8rpxMhPnB
+         7APyOnMIqrICW5gf3/3iiDecXIMSM/YakYO6jgLBYxuEfkmLf+WT5PlStUFphrGQaMpS
+         FMxw==
+X-Forwarded-Encrypted: i=1; AJvYcCV9q+Uom4QKBcZbQTd9Hq2XCLsHavyGEAJBKLo3VnBswQw2m/3IM3YUqW/aPnU4Qlf5bQC1t0cVlY2w7OhtA6K+9KNlmVxdywzlcTep
+X-Gm-Message-State: AOJu0Yxvy56bLhVVAMFKuGSjkgjB7ZikHBMDH0UDgdRewSA2aTtA1qhl
+	QW3E8EvQDh34sGbVmmKzeMhNtYoMgUcN+sdqPjk9JBxuMXwsVCPYM/zz+N0OsfJLz0HngAgcUKf
+	5vA==
+X-Google-Smtp-Source: AGHT+IE7n09VM6PDbu4AAFi/LoNJGkG79DodiNLPnLaY+HtysoZAZhU/auqUHuRtOKX8nI9xHjPD3v/5T7s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:eb07:0:b0:dc6:b7c2:176e with SMTP id
+ d7-20020a25eb07000000b00dc6b7c2176emr1071480ybs.4.1708022728842; Thu, 15 Feb
+ 2024 10:45:28 -0800 (PST)
+Date: Thu, 15 Feb 2024 10:45:27 -0800
+In-Reply-To: <CALzav=c0MFB7UG7yaXB3bAFampYO_xN=5Pjao6La55wy4cwjSw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: (subset) [linux][PATCH v6 3/3] dt-bindings: mfd: atmel,hlcdc:
- Convert to DT schema format
-Content-Language: en-US
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Lee Jones <lee@kernel.org>, sam@ravnborg.org, bbrezillon@kernel.org,
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
- linux-pwm@vger.kernel.org, Dharma Balasubiramani <dharma.b@microchip.com>,
- hari.prasathge@microchip.com, manikandan.m@microchip.com,
- Conor Dooley <conor.dooley@microchip.com>
-References: <20240202001733.91455-1-dharma.b@microchip.com>
- <20240202001733.91455-4-dharma.b@microchip.com>
- <170738899221.920003.15342446791449663430.b4-ty@kernel.org>
- <cedecdb7-fe4a-42ea-9a11-faa82f84b57d@linaro.org>
- <aamdttvdk3jmswvy3rw3debk3ouddkgjbs6xmixroe6kqakjw4@lnd5crcgoeyj>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <aamdttvdk3jmswvy3rw3debk3ouddkgjbs6xmixroe6kqakjw4@lnd5crcgoeyj>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240215010004.1456078-1-seanjc@google.com> <20240215010004.1456078-2-seanjc@google.com>
+ <CALzav=c0MFB7UG7yaXB3bAFampYO_xN=5Pjao6La55wy4cwjSw@mail.gmail.com>
+Message-ID: <Zc5bx4p6z8e3CmKK@google.com>
+Subject: Re: [PATCH 1/2] KVM: x86: Mark target gfn of emulated atomic
+ instruction as dirty
+From: Sean Christopherson <seanjc@google.com>
+To: David Matlack <dmatlack@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Pasha Tatashin <tatashin@google.com>, Michael Krebs <mkrebs@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/02/2024 11:02, Uwe Kleine-König wrote:
-> On Mon, Feb 12, 2024 at 11:23:02AM +0100, Krzysztof Kozlowski wrote:
->> On 08/02/2024 11:43, Lee Jones wrote:
->>> On Fri, 02 Feb 2024 05:47:33 +0530, Dharma Balasubiramani wrote:
->>>> Convert the atmel,hlcdc binding to DT schema format.
->>>>
->>>> Align clocks and clock-names properties to clearly indicate that the LCD
->>>> controller expects lvds_pll_clk when interfaced with the lvds display. This
->>>> alignment with the specific hardware requirements ensures accurate device tree
->>>> configuration for systems utilizing the HLCDC IP.
->>>>
->>>> [...]
->>>
->>> Applied, thanks!
->>>
->>> [3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
->>>       commit: cb946db1335b599ece363d33966bf653ed0fa58a
->>>
->>
->> Next is still failing.
-> 
-> Failing in the sense of dtbs_check, right?
+On Thu, Feb 15, 2024, David Matlack wrote:
+> On Wed, Feb 14, 2024 at 5:00=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > When emulating an atomic access on behalf of the guest, mark the target
+> > gfn dirty if the CMPXCHG by KVM is attempted and doesn't fault.  This
+> > fixes a bug where KVM effectively corrupts guest memory during live
+> > migration by writing to guest memory without informing userspace that t=
+he
+> > page is dirty.
+> >
+> > Marking the page dirty got unintentionally dropped when KVM's emulated
+> > CMPXCHG was converted to do a user access.  Before that, KVM explicitly
+> > mapped the guest page into kernel memory, and marked the page dirty dur=
+ing
+> > the unmap phase.
+> >
+> > Mark the page dirty even if the CMPXCHG fails, as the old data is writt=
+en
+> > back on failure, i.e. the page is still written.  The value written is
+> > guaranteed to be the same because the operation is atomic, but KVM's AB=
+I
+> > is that all writes are dirty logged regardless of the value written.  A=
+nd
+> > more importantly, that's what KVM did before the buggy commit.
+> >
+> > Huge kudos to the folks on the Cc list (and many others), who did all t=
+he
+> > actual work of triaging and debugging.
+> >
+> > Fixes: 1c2361f667f3 ("KVM: x86: Use __try_cmpxchg_user() to emulate ato=
+mic accesses")
+>=20
+> I'm only half serious but... Should we just revert this commit?
 
-No, bindings were failing. dt_binding_check. This must not fail, so kind
-of bummer...
+No.
 
+> This commit claims that kvm_vcpu_map() is unsafe because it can race
+> with mremap(). But there are many other places where KVM uses
+> kvm_vcpu_map() (e.g. nested VMX). It seems like KVM is just not
+> compatible with mremap() until we address all the users of
+> kvm_vcpu_map(). Patching _just_ emulator_cmpxchg_emulated() seems
+> silly but maybe I'm missing some context on what led to commit
+> 1c2361f667f3 being written.
 
-> 
->> Dharma,
->> You must explain and clearly mark dependencies between patches.
->>
->> Lee,
->> Can you pick up two previous patches as well?
-> 
-> I applied the pwm patch now. If Lee wants to pick up this one via his
-> tree that would be fine for me, too. If that's the case please tell me,
-> then I'll drop it from my for-next branch again. Feel free to add
-> my Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de> for patch
-> #2 then.
+The short version is that it's a rather trivial vector for userspace to tri=
+gger
+UAF.  E.g. map non-refcounted memory into a guest and then unmap the memory=
+.
 
-At least next is happy.
-> 
+We tried to fix the nVMX usage, but that proved to be impractical[1].  We h=
+aven't
+forced the issue because it's not obvious that there's meaningful exposure =
+in
+practice, e.g. unless userspace is hiding regular memory from the kernel *a=
+nd*
+oversubscribing VMs, a benign userspace won't be affected.  But at the same=
+ time,
+we don't have high confidence that the unsafe behavior can't be exploited i=
+n
+practice.
 
-Best regards,
-Krzysztof
+What I am pushing for now is an off-by-default module param to let userspac=
+e
+opt-in to unsafe mappings such as these[2].  Because if KVM starts allowing
+non-refcounted struct page memory, the ability to exploit these flaws skyro=
+ckets.
+(Though this reminds me that I need to take another look at whether or not =
+allowing
+non-refcounted struct page memory is actually necessary).
+
+[1] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com
+[2] https://lore.kernel.org/all/20230911021637.1941096-4-stevensd@google.co=
+m
+
+> kvm_vcpu_map/unmap() might not be the best interface, but it serves as
+> a common choke-point for mapping guest memory to access in KVM. This
+> is helpful for avoiding missed dirty logging updates (obviously) and
+> will be even more helpful if we add support for freezing guest memory
+> and "KVM Userfault" (as discussed in the 1/3 PUCK). I think we all
+> agree we should do more of this (common choke points), not less. If
+> there's a usecase for mremap()ing guest memory, we should make
+> kvm_vcpu_map() play nice with mmu_notifiers.
+
+I agree, but KVM needs to __try_cmpxchg_user() use anyways, when updating g=
+uest
+A/D bits in FNAME(update_accessed_dirty_bits)().  And that one we *definite=
+ly*
+don't want to revert; see commit 2a8859f373b0 ("KVM: x86/mmu: do compare-an=
+d-exchange
+of gPTE via the user address") for details on how broken the previous code =
+was.
+
+In other words, reverting to kvm_vcpu_{un,}map() *probably* isn't wildly un=
+safe,
+but it also doesn't really buy us anything, and long term we have line of s=
+ight
+to closing the holes for good.  And unlike the nVMX code, where it's reason=
+able
+for KVM to disallow using non-refcounted memory for VMCS pages, disallowing=
+ such
+memory for emulated atomic accesses is less reasonable.
+
+Rather than revert, to make this more robust in the longer term, we can add=
+ a
+wrapper in KVM to mark the gfn dirty.  I didn't do it here because I was hu=
+stling
+to get this minimal fix posted.
+
+E.g.
+
+--
+Subject: [PATCH] KVM: x86: Provide a wrapper for __try_cmpxchg_user() to ma=
+rk
+ the gfn dirty
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/paging_tmpl.h |  4 ++--
+ arch/x86/kvm/x86.c             | 25 +++++++++----------------
+ arch/x86/kvm/x86.h             | 19 +++++++++++++++++++
+ 3 files changed, 30 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.=
+h
+index 4d4e98fe4f35..a8123406fe99 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -246,11 +246,11 @@ static int FNAME(update_accessed_dirty_bits)(struct k=
+vm_vcpu *vcpu,
+ 		if (unlikely(!walker->pte_writable[level - 1]))
+ 			continue;
+=20
+-		ret =3D __try_cmpxchg_user(ptep_user, &orig_pte, pte, fault);
++		ret =3D kvm_try_cmpxchg_user(ptep_user, &orig_pte, pte, fault,
++					   vcpu, table_gfn);
+ 		if (ret)
+ 			return ret;
+=20
+-		kvm_vcpu_mark_page_dirty(vcpu, table_gfn);
+ 		walker->ptes[level - 1] =3D pte;
+ 	}
+ 	return 0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3ec9781d6122..bedb51fbbad3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7946,8 +7946,9 @@ static int emulator_write_emulated(struct x86_emulate=
+_ctxt *ctxt,
+ 				   exception, &write_emultor);
+ }
+=20
+-#define emulator_try_cmpxchg_user(t, ptr, old, new) \
+-	(__try_cmpxchg_user((t __user *)(ptr), (t *)(old), *(t *)(new), efault ##=
+ t))
++#define emulator_try_cmpxchg_user(t, ptr, old, new, vcpu, gfn)		  \
++	(kvm_try_cmpxchg_user((t __user *)(ptr), (t *)(old), *(t *)(new), \
++			      efault ## t, vcpu, gfn))
+=20
+ static int emulator_cmpxchg_emulated(struct x86_emulate_ctxt *ctxt,
+ 				     unsigned long addr,
+@@ -7960,6 +7961,7 @@ static int emulator_cmpxchg_emulated(struct x86_emula=
+te_ctxt *ctxt,
+ 	u64 page_line_mask;
+ 	unsigned long hva;
+ 	gpa_t gpa;
++	gfn_t gfn;
+ 	int r;
+=20
+ 	/* guests cmpxchg8b have to be emulated atomically */
+@@ -7990,18 +7992,19 @@ static int emulator_cmpxchg_emulated(struct x86_emu=
+late_ctxt *ctxt,
+=20
+ 	hva +=3D offset_in_page(gpa);
+=20
++	gfn =3D gpa_to_gfn(gpa);
+ 	switch (bytes) {
+ 	case 1:
+-		r =3D emulator_try_cmpxchg_user(u8, hva, old, new);
++		r =3D emulator_try_cmpxchg_user(u8, hva, old, new, vcpu, gfn);
+ 		break;
+ 	case 2:
+-		r =3D emulator_try_cmpxchg_user(u16, hva, old, new);
++		r =3D emulator_try_cmpxchg_user(u16, hva, old, new, vcpu, gfn);
+ 		break;
+ 	case 4:
+-		r =3D emulator_try_cmpxchg_user(u32, hva, old, new);
++		r =3D emulator_try_cmpxchg_user(u32, hva, old, new, vcpu, gfn);
+ 		break;
+ 	case 8:
+-		r =3D emulator_try_cmpxchg_user(u64, hva, old, new);
++		r =3D emulator_try_cmpxchg_user(u64, hva, old, new, vcpu, gfn);
+ 		break;
+ 	default:
+ 		BUG();
+@@ -8009,16 +8012,6 @@ static int emulator_cmpxchg_emulated(struct x86_emul=
+ate_ctxt *ctxt,
+=20
+ 	if (r < 0)
+ 		return X86EMUL_UNHANDLEABLE;
+-
+-	/*
+-	 * Mark the page dirty _before_ checking whether or not the CMPXCHG was
+-	 * successful, as the old value is written back on failure.  Note, for
+-	 * live migration, this is unnecessarily conservative as CMPXCHG writes
+-	 * back the original value and the access is atomic, but KVM's ABI is
+-	 * that all writes are dirty logged, regardless of the value written.
+-	 */
+-	kvm_vcpu_mark_page_dirty(vcpu, gpa_to_gfn(gpa));
+-
+ 	if (r)
+ 		return X86EMUL_CMPXCHG_FAILED;
+=20
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 2f7e19166658..2fabc7cd7e39 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -290,6 +290,25 @@ static inline bool kvm_check_has_quirk(struct kvm *kvm=
+, u64 quirk)
+ 	return !(kvm->arch.disabled_quirks & quirk);
+ }
+=20
++
++
++/*
++ * Mark the page dirty even if the CMPXCHG fails (but didn't fault), as th=
+e old
++ * old value is written back on failure.  Note, for live migration, this i=
+s
++ * unnecessarily conservative as CMPXCHG writes back the original value an=
+d the
++ * access is atomic, but KVM's ABI is that all writes are dirty logged,
++ * regardless of the value written.
++ */
++#define kvm_try_cmpxchg_user(ptr, oldp, nval, label, vcpu, gfn) \
++({								\
++	int ret;						\
++								\
++	ret =3D __try_cmpxchg_user(ptr, oldp, nval, label);	\
++	if (ret >=3D 0)						\
++		kvm_vcpu_mark_page_dirty(vcpu, gfn);		\
++	ret;							\
++})
++
+ void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc=
+_eip);
+=20
+ u64 get_kvmclock_ns(struct kvm *kvm);
+
+base-commit: 6769ea8da8a93ed4630f1ce64df6aafcaabfce64
+--=20
 
 
