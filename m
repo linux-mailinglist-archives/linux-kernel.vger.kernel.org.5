@@ -1,161 +1,124 @@
-Return-Path: <linux-kernel+bounces-66815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D448561D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:38:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D653E8561D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CCCE295511
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 157211C23179
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9B812D740;
-	Thu, 15 Feb 2024 11:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="j1cyQGYN"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449C512DD8F;
+	Thu, 15 Feb 2024 11:34:41 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C6E12B169;
-	Thu, 15 Feb 2024 11:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F4312DDAD
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707996875; cv=none; b=ViNa6AaJRoepk4yipVNq0CUvKn8Q85CWOTdQwFQ1MFaDnpr5gQXFcIaSHXqUb6GN+s4RV/W9IeZEq9H9+Qwx3m2UVvugVJzLotMcpT7qz6LiVP5vxwOq0fezq5++otNOi0KXXPTv9zTi1nPnMUWu78f5rM4uqcS5E8o+v2Zfy88=
+	t=1707996880; cv=none; b=MqrtP55bxBHMDVn4gT6JIArEDg3ThS2fCZ8NORfNysHOb2auw9/ubC1xuVaKNp+Aga6gMeiem3QNWLv7y4AegbIja+2/nmzqKm0A8WNVEA/HZkA+HWxFxgKH6uLfIfTEsozOJ5peEg+7cLLrQSXgS9kw0ifVCyC48hrOuC6Vt6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707996875; c=relaxed/simple;
-	bh=dYsimYV8a5MuhgVdd/kdTK7v/jXDyGawvGNCUG5RJVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NtTN8jbIomJIqIZjA9DrwP9pFen4dLw/sh3oPLhXI2gzwAk+yQsBbVClKQyTc78SGxNhI4ZgYYZIqH8hhFQbPPIPilec8Ps0kM+oDs03Ed8QZAa8TQiweeGvMVuiymQQgMfHFY0wVSwVWfRrFm51IqjUwyzIklXMlcRzp2uT0Oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=j1cyQGYN; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FBYCPa104278;
-	Thu, 15 Feb 2024 05:34:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1707996852;
-	bh=gAf2mxcuBIaLKTTKin78CXmfTwaUJE6J4P686AD0TPk=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=j1cyQGYN7pK7ojxOKA9TqCcnw07vjMKnTucKqNhcM3RWuPsRQKXVhnG+/sy8igCTl
-	 OF8di7XXAFWm2QCFLdGU29517vELXYjfV5IgFwylssSiVCU/zgtiNZ3se63xYMb2iL
-	 2ZY4jY+w4JXTiw47VeWLmQaUCxqVgudvYl92k2X4=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FBYCg7027322
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 05:34:12 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 05:34:12 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 05:34:11 -0600
-Received: from [172.24.227.31] (uda0496377.dhcp.ti.com [172.24.227.31])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FBX1NG008649;
-	Thu, 15 Feb 2024 05:34:07 -0600
-Message-ID: <2242fca2-3cef-4ef9-adfc-322822e6a24e@ti.com>
-Date: Thu, 15 Feb 2024 17:04:07 +0530
+	s=arc-20240116; t=1707996880; c=relaxed/simple;
+	bh=9eh13hpys/9bo+J50FfvsCv5nRULUp3KBcvLUzt7E/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NoSBZzn8XvcvD9Qqg52R/rLsYoMP81uQj4lJP7cFuCVUE9m7Z79XMCjcowyPse1qlxjBsztAlVxjybr8f+TDLodQXqZYLS0ML6wC0U0lEcD3VOSevWWoc6qqvVYPLVgjzf10D7JOyepG57ZlnOFWCh8tsftbizu+Wnt3tfuRJCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raa0W-0006Oi-9q; Thu, 15 Feb 2024 12:34:24 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raa0V-000sFI-FZ; Thu, 15 Feb 2024 12:34:23 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1raa0V-005JyK-1D;
+	Thu, 15 Feb 2024 12:34:23 +0100
+Date: Thu, 15 Feb 2024 12:34:23 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, John Crispin <john@phrozen.org>, linux-pwm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V2 1/2] dt-bindings: pwm: mediatek,mt2712: add compatible
+ for MT7988
+Message-ID: <ive5ueu7oq4hdfzxjevalssaotfmq2jb47zxanwbscxdaldum2@3bpqogbuhbjs>
+References: <20240214140454.6438-1-zajec5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] arm64: dts: ti: Add common1 register space for
- AM62x, AM62A & AM65x SoCs
-Content-Language: en-US
-To: Devarsh Thakkar <devarsht@ti.com>, <jyri.sarha@iki.fi>,
-        <tomi.valkeinen@ideasonboard.com>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, <maarten.lankhorst@linux.intel.com>,
-        <mripard@kernel.org>, <tzimmermann@suse.de>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
-CC: <praneeth@ti.com>, <j-luthra@ti.com>
-References: <20240215083205.2902634-1-devarsht@ti.com>
- <20240215083205.2902634-3-devarsht@ti.com>
-From: Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20240215083205.2902634-3-devarsht@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="75b4mriap2dmrhji"
+Content-Disposition: inline
+In-Reply-To: <20240214140454.6438-1-zajec5@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Thanks for the fixes, Devarsh!
 
-On 15/02/24 14:02, Devarsh Thakkar wrote:
-> This adds common1 register space for AM62x, AM62A and AM65x SoC's which are
-> using TI's Keystone display hardware and supporting it as described in
-> Documentation/devicetree/bindings/display/ti/ti,am65x-dss.yaml
-> 
-> Fixes: 3618811657b3 ("arm64: dts: ti: k3-am62a-main: Add node for Display SubSystem (DSS)")
-> Fixes: 8ccc1073c7bb ("arm64: dts: ti: k3-am62-main: Add node for DSS")
-> Fixes: fc539b90eda2 ("arm64: dts: ti: am654: Add DSS node")
-> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+--75b4mriap2dmrhji
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+Hello,
 
+On Wed, Feb 14, 2024 at 03:04:53PM +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> MT7988 has on-SoC controller that can control up to 8 PWM interfaces. It
+> differs from blocks on other SoCs (amount of PWMs & registers) so it
+> needs its own compatible string.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 > ---
-> V2: Add common1 region for AM62A SoC too
-> V3: Add Fixes tag
-> ---
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 5 +++--
->  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 5 +++--
->  arch/arm64/boot/dts/ti/k3-am65-main.dtsi  | 5 +++--
->  3 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> index fe0cc4a9a501..8cee4d94cdd3 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -779,9 +779,10 @@ dss: dss@30200000 {
->  		      <0x00 0x30207000 0x00 0x1000>, /* ovr1 */
->  		      <0x00 0x30208000 0x00 0x1000>, /* ovr2 */
->  		      <0x00 0x3020a000 0x00 0x1000>, /* vp1: Used for OLDI */
-> -		      <0x00 0x3020b000 0x00 0x1000>; /* vp2: Used as DPI Out */
-> +		      <0x00 0x3020b000 0x00 0x1000>, /* vp2: Used as DPI Out */
-> +		      <0x00 0x30201000 0x00 0x1000>; /* common1 */
->  		reg-names = "common", "vidl1", "vid",
-> -			    "ovr1", "ovr2", "vp1", "vp2";
-> +			    "ovr1", "ovr2", "vp1", "vp2", "common1";
->  		power-domains = <&k3_pds 186 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 186 6>,
->  			 <&dss_vp1_clk>,
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> index 972971159a62..f475daea548e 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> @@ -994,9 +994,10 @@ dss: dss@30200000 {
->  		      <0x00 0x30207000 0x00 0x1000>, /* ovr1 */
->  		      <0x00 0x30208000 0x00 0x1000>, /* ovr2 */
->  		      <0x00 0x3020a000 0x00 0x1000>, /* vp1: Tied OFF in the SoC */
-> -		      <0x00 0x3020b000 0x00 0x1000>; /* vp2: Used as DPI Out */
-> +		      <0x00 0x3020b000 0x00 0x1000>, /* vp2: Used as DPI Out */
-> +		      <0x00 0x30201000 0x00 0x1000>; /* common1 */
->  		reg-names = "common", "vidl1", "vid",
-> -			    "ovr1", "ovr2", "vp1", "vp2";
-> +			    "ovr1", "ovr2", "vp1", "vp2", "common1";
->  		power-domains = <&k3_pds 186 TI_SCI_PD_EXCLUSIVE>;
->  		clocks = <&k3_clks 186 6>,
->  			 <&k3_clks 186 0>,
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> index 07010d31350e..ff857117d719 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
-> @@ -991,9 +991,10 @@ dss: dss@4a00000 {
->  		      <0x0 0x04a07000 0x0 0x1000>, /* ovr1 */
->  		      <0x0 0x04a08000 0x0 0x1000>, /* ovr2 */
->  		      <0x0 0x04a0a000 0x0 0x1000>, /* vp1 */
-> -		      <0x0 0x04a0b000 0x0 0x1000>; /* vp2 */
-> +		      <0x0 0x04a0b000 0x0 0x1000>, /* vp2 */
-> +		      <0x0 0x04a01000 0x0 0x1000>; /* common1 */
->  		reg-names = "common", "vidl1", "vid",
-> -			"ovr1", "ovr2", "vp1", "vp2";
-> +			"ovr1", "ovr2", "vp1", "vp2", "common1";
->  
->  		ti,am65x-oldi-io-ctrl = <&dss_oldi_io_ctrl>;
->  
+> V2: Explain new compatibility string reason in commit body
+>=20
+>  Documentation/devicetree/bindings/pwm/mediatek,mt2712-pwm.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+
+Applied both patches to
+https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git pwm/for-=
+next
+
+Best regards and thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--75b4mriap2dmrhji
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXN9rgACgkQj4D7WH0S
+/k78SQgAhCV+r9LL9m8V3LBBqRSGqQoucfaii47kWo/cOi+uyoYCscPQQqP+1amS
+Nx8xPfxWcgPdrCoDuTIbBIgXcxaO33UqAhkVRQp+Hq9+u9ybN25CivUMQboc95gO
+3dzq6TTAjeXI44ydVhrVWwkMiYT4dpHGXkbNgKljSip6VPVZGNNccTVpxVA8ej5D
+3tAXnIjt7bPcowTywTq/EJL6xp1DdMpDkxVltcYG2jIL8oYy8FnfTsR2jnq6hPYX
+9RM9T32SoNZ+7aY+xGkG8p74AhZRPT2ctQeCwbRkHJNh1dYzlsVQqI+ZZgxCvyGL
+OJuORiHGhavkt84HtDj/x53M7jbMHw==
+=I2g8
+-----END PGP SIGNATURE-----
+
+--75b4mriap2dmrhji--
 
