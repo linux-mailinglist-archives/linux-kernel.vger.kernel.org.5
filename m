@@ -1,170 +1,138 @@
-Return-Path: <linux-kernel+bounces-66523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72BD855E29
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:31:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFEE9855DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 007A6B30908
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:24:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 937411F21782
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 984F11B959;
-	Thu, 15 Feb 2024 09:23:16 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFF117555;
+	Thu, 15 Feb 2024 09:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UdqcpEBX"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA891B950
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C84313ADC;
+	Thu, 15 Feb 2024 09:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988996; cv=none; b=NM03kpDoBBLpKZMwR9I2huBzUw/OgQjVojXvnaMcFU68hP4lbTgNGgtajhLgV4DoD00zcStfn4K+7cPhlXP/fiEyY7bPjzS442HfSkGkvpgrFZ4O3n09qv5iOOOSTGZ12KEL6DiGIv3DREJbMZ6conJAxynKt6LV8AJ8BJ/WIP8=
+	t=1707989040; cv=none; b=AqcjF4INHQcI6TyZlzrVJ8rLLwZJ7a/x3vwv7d1AZJyKuag76MD6mm3LZRIQomQlSFd1PqufYNtmbv93tFXzq5ucIJjSomO6ui4vJp/kLEU6mo+TLvkLwQ9qPqA0C6pJIwHR2dOyzodyU0x3kE0YrOBx894xBoZ/5Cb4KcFGCQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988996; c=relaxed/simple;
-	bh=jE1rZpY3SjNM/hr3FU2idYQaRSA7hffibi3C0fZZNdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G10In9od4pBtniUp1QxRCICvLFTNIyn8WH9eYrWIFp+36uIojdOs7TB6wSL5sBOJacVXoGkEjoDhwz/aNUTkTXuvI3MWe3L5Jne5qB5mbSqK9EQQnGS4N39fyzmIe7SL/2DuYjlgBRl1NqNgIEcdXzo5xYq+MUXaiO8UAuv3C0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raXxK-0001b0-QJ; Thu, 15 Feb 2024 10:22:58 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raXxJ-000r6J-Bz; Thu, 15 Feb 2024 10:22:57 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raXxJ-005Gfg-0v;
-	Thu, 15 Feb 2024 10:22:57 +0100
-Date: Thu, 15 Feb 2024 10:22:57 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com, 
-	mika.westerberg@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] pwm: dwc: drop redundant error check
-Message-ID: <sd2ugzjrmrdvcyxotoyg53qp3i7ta4yko225ln3gk4fmik7iof@a7mab6o2kkvz>
-References: <20240208070529.28562-1-raag.jadav@intel.com>
- <20240208070529.28562-2-raag.jadav@intel.com>
- <qrwcje4t2pbbxilnlfz2q7njodcp6vl54uaypdbvjgvwhgvc5g@4eq5wvumpjjx>
- <ZcUJoSMhgC7lhY-H@smile.fi.intel.com>
- <cv6w4n2ptcdehn5n3mipuyfrtemm4rldhiyppazk4uqdn2xx7e@hxg4kldaacxk>
- <Zcz-csPY5x29DP7v@smile.fi.intel.com>
+	s=arc-20240116; t=1707989040; c=relaxed/simple;
+	bh=2hhvK9xbgfKF7Xgbpeug5EvyYsxUkXVRqps22ve/YP8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=COpPa9HWUTcKqmeOrrft1sJ45SNCc+9xkG3zXJYxTq8krPFEvzcuP0BzNCbEW9+VDr6qo910n9wWwqWxIxnV1yXnlLahztmysXsPDwHYbMy6JlHz4dv7b/i70lAKoQ6TwD6AjaS6jDjcpjq8OHMuJLGSod8Cx7p4hFs5W3mxVfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UdqcpEBX; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41F5OF2q013013;
+	Thu, 15 Feb 2024 09:23:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=ifi
+	q1vPBEWQlt0VVJ4SsxcubAQPrEQWDquNnzLUfXOw=; b=UdqcpEBXOtWJXnO0ojO
+	mA5NbJh3mFk+JtmWtdr8D4GThU8Nm15Yg8zuhnvPxRQYc0OtGtLlSFj2lp/g3egM
+	L5gCaVt7oEZRHkaNBA8woKb/ZbDSnbAviCR8ygWJTJagwr3lvNwDOS8HmiVyN+OV
+	KYWLqFQ72wVI8lspfzSr3yljpqVVPsog5XMdfd/iL1CskHMSvXo2T4ZeffwgZHKu
+	gUYMHp2d81S3YvjnKftSpG/UCa5gn/W0i1sVEDW49pnLA/y0/Ijrlu+DOHIyLM3o
+	rNwRXb6detBdvx6rmOn0+eOlqX6GCscRXhtNh3X4BFK/Pufp1XlWC8w5wnCAkG2n
+	t6w==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w96c3s1pt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 09:23:55 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41F9Ntcd024697
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 09:23:55 GMT
+Received: from hu-mkshah-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 15 Feb 2024 01:23:53 -0800
+From: Maulik Shah <quic_mkshah@quicinc.com>
+Date: Thu, 15 Feb 2024 14:53:50 +0530
+Subject: [PATCH] soc: qcom: qcom_stats: Add DSPs and apss subsystem stats
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="52elieucqt6bggmp"
-Content-Disposition: inline
-In-Reply-To: <Zcz-csPY5x29DP7v@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240215-qcom_stats-v1-1-4a2cf83d0bdd@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIACXYzWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0NT3cLk/Nz44pLEkmJdExOjFCPDFEszk2QLJaCGgqLUtMwKsGHRsbW
+ 1AChqr2pcAAAA
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Maulik
+ Shah" <quic_mkshah@quicinc.com>
+X-Mailer: b4 0.12.5-dev-2aabd
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707989033; l=1014;
+ i=quic_mkshah@quicinc.com; s=20240109; h=from:subject:message-id;
+ bh=2hhvK9xbgfKF7Xgbpeug5EvyYsxUkXVRqps22ve/YP8=;
+ b=hSfvQn8ceJJe7ssuYnoCwGwBTUQ0TyMG1aBm+7p2pv0UIcwv/gQhYFTmZrRlWHJUI0ePCVfZJ
+ vYuBD8WFWTZCwFC5p/LzA9ovgyzBjdI7711JfeoVM3WE8tm8YgHMAcY
+X-Developer-Key: i=quic_mkshah@quicinc.com; a=ed25519;
+ pk=bd9h5FIIliUddIk8p3BlQWBlzKEQ/YW5V+fe759hTWQ=
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: z4r43cNQGIbtGx53jlFFFR99Yx-ussvI
+X-Proofpoint-GUID: z4r43cNQGIbtGx53jlFFFR99Yx-ussvI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_08,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 mlxlogscore=953 malwarescore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402150073
 
+Add SMEM items for compute, general purpose DSPs and application processor
+subsystem stats.
 
---52elieucqt6bggmp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+---
+ drivers/soc/qcom/qcom_stats.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Wed, Feb 14, 2024 at 07:54:58PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 14, 2024 at 06:45:48PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Thu, Feb 08, 2024 at 07:04:33PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Feb 08, 2024 at 08:46:44AM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > On Thu, Feb 08, 2024 at 12:35:25PM +0530, Raag Jadav wrote:
-> > > > > pcim_iomap_table() fails only if pcim_iomap_regions() fails. No n=
-eed to
-> > > > > check for failure if the latter is already successful.
-> > > >=20
-> > > > Is this really true? pcim_iomap_table() calls devres_alloc_node() w=
-hich
-> > > > might fail if the allocation fails. (Yes, I know
-> > > > https://lwn.net/Articles/627419/, but the rule is still to check for
-> > > > errors, right?)
-> > >=20
-> > > We do not add a dead code to the kernel, right?
-> > >=20
-> > > > What am I missing?
-> > >=20
-> > > Mysterious ways of the twisted PCI devres code.
-> > > Read the above commit message again :-)
-> > >=20
-> > > For your convenience I can elaborate. pcim_iomap_table() calls _first_
-> > > devres_find() which _will_ succeed if the pcim_iomap_regions() previo=
-usly
-> > > succeeded. Does it help to understand how it designed?
-> >=20
-> > I assume you're saying that after pcim_iomap_regions() succeeded it's
-> > already known that pcim_iomap_table() succeeds (because the former
-> > already called the latter).
-> >=20
-> > I'm still concerned here. I agree that error checking might be skipped
-> > if it's clear that no error can happen (the device cannot disappear
-> > between these two calls, can it?),=20
->=20
-> It depends. If you call it in some asynchronous callbacks which may be run
-> after PCI device disappears, then indeed, it's problematic. But you proba=
-bly
-> will have much bigger issue at that point already.
->=20
-> In ->probe() it's guaranteed to work as I suggested (assuming properly wo=
-rking
-> hardware).
+diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
+index 0216fc24f2ca..c429d5154aae 100644
+--- a/drivers/soc/qcom/qcom_stats.c
++++ b/drivers/soc/qcom/qcom_stats.c
+@@ -35,11 +35,15 @@ static const struct subsystem_data subsystems[] = {
+ 	{ "wpss", 605, 13 },
+ 	{ "adsp", 606, 2 },
+ 	{ "cdsp", 607, 5 },
++	{ "cdsp1", 607, 12 },
++	{ "gpdsp0", 607, 17 },
++	{ "gpdsp1", 607, 18 },
+ 	{ "slpi", 608, 3 },
+ 	{ "gpu", 609, 0 },
+ 	{ "display", 610, 0 },
+ 	{ "adsp_island", 613, 2 },
+ 	{ "slpi_island", 613, 3 },
++	{ "apss", 631, QCOM_SMEM_HOST_ANY },
+ };
+ 
+ struct stats_config {
 
-Assuming properly working hardware allows to drop many error checks :-)
+---
+base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
+change-id: 20240215-qcom_stats-442d21d964c8
 
-> > but for me as an uninitiated pci code
-> > reader, I wonder about
-> >=20
-> > 	dwc->base =3D pcim_iomap_table(pci)[0];
-> >=20
-> > without error checking. (OTOH, if pcim_iomap_table() returned NULL, the
-> > "[0]" part is already problematic.)
->=20
-> Seems it's your problem, many drivers use the way I suggested.
->=20
-> > I'd like to have a code comment here saying that pcim_iomap_table()
-> > won't return NULL.
->=20
-> Why? It's redundant. If you use it, you should know this API.
-> So, the bottom line, does this API needs better documentation?
+Best regards,
+-- 
+Maulik Shah <quic_mkshah@quicinc.com>
 
-If a driver author knows it while writing the code, it's obvious. But if
-the driver author looks again in 2 years or someone else (e.g. me with
-the PWM maintainer hat on and with little pci experience) that knowledge
-might be faded.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---52elieucqt6bggmp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXN1/AACgkQj4D7WH0S
-/k5JrQf/Qt6r2gqZjxMeq4PGvF1ZTCfwDFGvIsSfsXifo93hI+YxWNxiNGkXqwol
-MPOMR2g6xorzUL0Jz/fJZjnD/KqhBfM8DcSDNTuXi5wdZshZrto0WKcTP8YwrSBH
-AQGVKClLGe1YXgo0Gzuc1IXACRNJrMjp3rEZsqUy4xANrvEXfMH1KYWzIC7k0P0b
-2Grc2iLKinIuyfv59cWZixH/wf1Fl0SdJWsrhQ8ltf1tar1zO988tbFC3Yy3/sst
-+OLKIq/6iAc1iCc9wpzSCVC0kxaEgru2pgrX/BeW1tO9bDu5uBRv6jvqq51dLid6
-vTlKdejBqqBizFNTA4dsp29thDlICw==
-=fVEU
------END PGP SIGNATURE-----
-
---52elieucqt6bggmp--
 
