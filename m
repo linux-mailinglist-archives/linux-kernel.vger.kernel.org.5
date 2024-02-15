@@ -1,62 +1,92 @@
-Return-Path: <linux-kernel+bounces-67353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E74856A55
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:58:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61332856A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8DE91F21D42
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:58:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8366DB2576F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A758B136676;
-	Thu, 15 Feb 2024 16:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E9313665F;
+	Thu, 15 Feb 2024 16:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MofzPKt0"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Uj78eShb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d4x9GOGa";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Uj78eShb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d4x9GOGa"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39FBD135A70;
-	Thu, 15 Feb 2024 16:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E29E135A75
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708016237; cv=none; b=ElpKeiNLjH1N2czjp+Rt86L+CbjSzdEPXjwZU2jWNyNYI6yLF6/7wvnFcPxcBMqVCB7zBprYs1spkRb8CZAIjuGVfvInMK/JVPwlvcBr7/oJkKlG8GOfJSjb2lO5dsqlKtAOCRtg2uQ7yG04jq/9AuNjWHNCaX5kAo/2EdaHdZg=
+	t=1708016295; cv=none; b=YvXslKwb0UrpU7w7z6ygpouOyRdjDzujFM9E4GGQjPMHgF41KTLr2CnV2cOw7KTsKJFoGHMZ+7uMdKDxeYE7Dl98L0mdaIHYYFPxqlE/B7pIHQKTDqoEBTWd6n8Mh2Ds+pyxR0rK1PL0YYwF0vNY3GO4SzbRQHVoJrxZCG+FT+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708016237; c=relaxed/simple;
-	bh=Teovor+0cNBgqv0pxvlZZTXnZq+NJs8jQr9ByH5s71c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XQzlZQBE1HzHurjTPDWfQu7DLqbIpgIuCcvjEOPwebxZPXXseNDWv5Bdxy21eKyPiiUBYCOHTDPGVXkdt3Jh/rQDEBz6MdtCaWD6NzST5Zz+CTQ4ptiT0sIXxOJ9S8BvOXtmj7fX/J9ms1cOycvkvWHCz9rFHecGQmgxi6/hetU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MofzPKt0; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41FGv4Df063872;
-	Thu, 15 Feb 2024 10:57:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708016224;
-	bh=Z4RnqGGznCJSeFLUCS/wbnFfpLvync7aTHoThMZ9qH0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=MofzPKt0R/Z7VHhjt58hopkb1FITPJbseGGzei/F6gfjbEsn2D0dNokIi8ADOD8hl
-	 ITpiHJcL9aB6xugaxTFoKG2SFUozVM1uQGhJlamBrN7F3ft8MrSqFO9JbYp4o7wmI9
-	 z9+jk4DnwVRyu+iw3wcKTEUTDP2QQfVvjKYbdndU=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41FGv48Z057710
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 10:57:04 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 10:57:04 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 10:57:04 -0600
-Received: from [10.249.135.225] ([10.249.135.225])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41FGux4V066060;
-	Thu, 15 Feb 2024 10:57:00 -0600
-Message-ID: <4ef87f6c-caa8-45a8-8649-422806ec6eb2@ti.com>
-Date: Thu, 15 Feb 2024 22:26:59 +0530
+	s=arc-20240116; t=1708016295; c=relaxed/simple;
+	bh=VkRUamCXaPtSJ6IdITg+zE5jNmLdwfb4psxszPgy344=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gg/JD0oMTYVu0NIqM2C7H+5yk4+C4REpmy/Ji28xRawDtmauyvgTkERSug3hMcV39HN9esovmaOhU3Z1Mn/o3K8cmTihBpjFuGXKZgwgUbO6ch6QCYiVvt9OQH8GADgJ88Lztnlj/LP9DfvSJGc/S23jeMhQceUUih7ZnrAElN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Uj78eShb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d4x9GOGa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Uj78eShb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d4x9GOGa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2AE982222A;
+	Thu, 15 Feb 2024 16:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708016263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7muDhr8z81X6jCxdMQftsbeBEUefCO81St+FLzSeTk=;
+	b=Uj78eShbmCGOVbMuA28C8iKzGylYbSaStAQ4dkI/AZ2eOXwjEledvo1aAoWlaAJI4y2yC3
+	7/GGEsczGzRkcT3MLZL4FPoXdvCMynBLLlkjTabgQznADQe+G2pITnpvd5dKe5THIpkhZb
+	bYLdt6LpiRl9Sm9wsshAiKiEZcK2b5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708016263;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7muDhr8z81X6jCxdMQftsbeBEUefCO81St+FLzSeTk=;
+	b=d4x9GOGaorsYebiZnthGeD3C+cEhXXfg4FLEm4KMXI1XDv1rTnwL6z7SHoE8wuucanmu7h
+	WiFbeh0TCVvumJCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708016263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7muDhr8z81X6jCxdMQftsbeBEUefCO81St+FLzSeTk=;
+	b=Uj78eShbmCGOVbMuA28C8iKzGylYbSaStAQ4dkI/AZ2eOXwjEledvo1aAoWlaAJI4y2yC3
+	7/GGEsczGzRkcT3MLZL4FPoXdvCMynBLLlkjTabgQznADQe+G2pITnpvd5dKe5THIpkhZb
+	bYLdt6LpiRl9Sm9wsshAiKiEZcK2b5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708016263;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7muDhr8z81X6jCxdMQftsbeBEUefCO81St+FLzSeTk=;
+	b=d4x9GOGaorsYebiZnthGeD3C+cEhXXfg4FLEm4KMXI1XDv1rTnwL6z7SHoE8wuucanmu7h
+	WiFbeh0TCVvumJCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01A1E13A53;
+	Thu, 15 Feb 2024 16:57:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uF5gO4ZCzmX7DAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 16:57:42 +0000
+Message-ID: <6a011e7f-4e21-4e31-a9a2-52cba3181337@suse.cz>
+Date: Thu, 15 Feb 2024 17:57:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,50 +94,89 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am654: Drop ti,syscon-rgmii-delay from
- ICSSG nodes
+Subject: Re: [PATCH v5 2/3] mm/compaction: add support for >0 order folio
+ memory compaction.
 Content-Language: en-US
-To: Roger Quadros <rogerq@kernel.org>, MD Danish Anwar <danishanwar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Tero
- Kristo <kristo@kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
-References: <20240215105407.2868266-1-danishanwar@ti.com>
- <71adaabd-bb24-4181-9fdf-f7191e93edb5@kernel.org>
-From: "Anwar, Md Danish" <a0501179@ti.com>
-In-Reply-To: <71adaabd-bb24-4181-9fdf-f7191e93edb5@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts
+ <ryan.roberts@arm.com>, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, "Yin, Fengwei"
+ <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ Mel Gorman <mgorman@techsingularity.net>, Rohan Puri
+ <rohan.puri15@gmail.com>, Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Adam Manzanares <a.manzanares@samsung.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+References: <20240214220420.1229173-1-zi.yan@sent.com>
+ <20240214220420.1229173-3-zi.yan@sent.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240214220420.1229173-3-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.41 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLqwhhqik4qyk5i1fk54co8f1o)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.00)[17.29%];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[intel.com,arm.com,linux-foundation.org,infradead.org,redhat.com,google.com,linux.intel.com,cmpxchg.org,linux.alibaba.com,huaweicloud.com,techsingularity.net,gmail.com,kernel.org,samsung.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *
+X-Spam-Score: 1.41
+X-Spam-Flag: NO
 
+On 2/14/24 23:04, Zi Yan wrote:
+> @@ -1849,10 +1857,22 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
+>  static void compaction_free(struct folio *dst, unsigned long data)
+>  {
+>  	struct compact_control *cc = (struct compact_control *)data;
+> +	int order = folio_order(dst);
+> +	struct page *page = &dst->page;
+> +
+> +	if (folio_put_testzero(dst)) {
+> +		free_pages_prepare_fpi_none(page, order);
+> +
+> +		INIT_LIST_HEAD(&dst->lru);
 
+(is this even needed? I think the state of first parameter of list_add() is
+never expected to be in particular state?)
 
-On 2/15/2024 9:27 PM, Roger Quadros wrote:
-> 
-> 
-> On 15/02/2024 12:54, MD Danish Anwar wrote:
->> Drop ti,syscon-rgmii-delay from ICSSG0, ICSSG1 and ICSSG2 node as this
->> property is no longer used by ICSSG driver.
->>
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> ---
->>  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 2 --
->>  arch/arm64/boot/dts/ti/k3-am654-idk.dtso    | 4 ----
->>  2 files changed, 6 deletions(-)
-> 
-> What about the DT binding document?
-> 
+>  
+> -	list_add(&dst->lru, &cc->freepages);
+> -	cc->nr_freepages++;
+> -	cc->nr_migratepages += 1 << folio_order(dst);
+> +		list_add(&dst->lru, &cc->freepages[order]);
+> +		cc->nr_freepages += 1 << order;
+> +		cc->nr_migratepages += 1 << order;
 
-Now I am only removing the property from device tree. Once this proprty
-is removed from all DTs, in the 6.9-rc-1 I will remove the binding as
-well so that net people can merge that without getting any errors /
-warnings.
+Hm actually this increment of nr_migratepages should happen even if we lost
+the free page.
 
--- 
-Thanks and Regards,
-Md Danish Anwar
+> +	}
+> +	/*
+> +	 * someone else has referenced the page, we cannot take it back to our
+> +	 * free list.
+> +	 */
+>  }
+
 
