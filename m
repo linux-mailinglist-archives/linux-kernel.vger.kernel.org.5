@@ -1,151 +1,89 @@
-Return-Path: <linux-kernel+bounces-66624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D501855F21
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:27:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0056A855F23
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3235B1F21801
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:27:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 937C11F2450F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77DA69D19;
-	Thu, 15 Feb 2024 10:26:49 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34636994E;
+	Thu, 15 Feb 2024 10:27:44 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7949C69D05;
-	Thu, 15 Feb 2024 10:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3B467E97
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992809; cv=none; b=GhccxBjcCAHNBHiDYuHSr19hfEdVLc+fsqdDj8KfVDp5F7todqPXb3/kv/v+4mRAUnFPJY1lAGbUwLRqyRbrhuBD7U6MMkQrWzmxSmkhu0hImCHuccAo4dhZ6LojqE0DvxxAOh8rRhGUNRXQkzDR7G4JS8UUkeZf5PsAgSXLBgQ=
+	t=1707992864; cv=none; b=NfZ9L+es13hZNlHodgor/CRB3jvDDkhg2LMx7A6Oc3KCyRKvYJZVFDfcdBC7Gd713Ioqp2CxMFM5KQT5Y9o5HGzNVwTGVU3sdK66A3xcoVfg1wMlCrZpwJaqeFhEIWmn5/7jTI7T93NY+BB7cRQ/eVDTntPpcXXWORh36mdTpME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992809; c=relaxed/simple;
-	bh=20qbWw4eZocIiRgqnsx02KAsr2J5ezEMIV7F1eRgzYQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VAuhYccRmQzHWyZeCZ/DHqI+x4WovnP0S/QqJFGKxgvevA4a5FrWg0dxSIN1h/DCkA2pP7O4pso8jdG0GojCSyu7Gw7maUQZewOmaLTSXl7otYoflO+iDozd4oXXXmjIUINikfkFnnI5YtrMjW1/uIA+7m7FFuCVrYB6hKLlwgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TbB3S0L7Qz67Ldy;
-	Thu, 15 Feb 2024 18:23:16 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8A0221400D4;
-	Thu, 15 Feb 2024 18:26:43 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 15 Feb
- 2024 10:26:43 +0000
-Date: Thu, 15 Feb 2024 10:26:42 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
-	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, Dave Jiang
-	<dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 1/2 v4] cleanup: Add cond_guard() to conditional guards
-Message-ID: <20240215102642.000067c5@Huawei.com>
-In-Reply-To: <20240214180452.00000974@Huawei.com>
-References: <20240208130424.59568-1-fabio.maria.de.francesco@linux.intel.com>
-	<20240208130424.59568-2-fabio.maria.de.francesco@linux.intel.com>
-	<3917370.kQq0lBPeGt@fdefranc-mobl3>
-	<20240214180452.00000974@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1707992864; c=relaxed/simple;
+	bh=prL9PC3udb58w3aZMdSMRH+nhhgDsJZD+TnwkGx7ZDw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=f8akiVm7MOojvRdTwQ3sd3pf3IDBtSFFFV9In8C42cZj8j2wL9PH1olMT3eCa8xryQf1SwV50ujHU3hZYuWpk8vrF4oBWucV08c+SFPJ8K71ZUVCKLiucZhqx4UK02umDVbKPwnP92Z9iixMhe5bqJspB3tlaKtLLaayGEr5d8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-255-qB_rGUUHNDSLRHR0AQmz1Q-1; Thu, 15 Feb 2024 10:27:34 +0000
+X-MC-Unique: qB_rGUUHNDSLRHR0AQmz1Q-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 15 Feb
+ 2024 10:27:13 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 15 Feb 2024 10:27:13 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
+	<charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>, "James E.J.
+ Bottomley" <James.Bottomley@hansenpartnership.com>, Parisc List
+	<linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Thread-Topic: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Thread-Index: AQHaX5nyOY46VuiMM0eMJXXyrPmf2rELMs6w
+Date: Thu, 15 Feb 2024 10:27:13 +0000
+Message-ID: <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+In-Reply-To: <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Wed, 14 Feb 2024 18:04:52 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-
-> On Tue, 13 Feb 2024 17:51:26 +0100
-> "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
-> 
-> > On Thursday, 8 February 2024 14:04:23 CET Fabio M. De Francesco wrote:  
-> > > Add cond_guard() macro to conditional guards.
-> > > 
-> > > cond_guard() is a guard to be used with the conditional variants of locks,
-> > > like down_read_trylock() or mutex_lock_interruptible().
-> > > 
-> > > It takes a statement (or statement-expression) that is passed as its
-> > > second argument. That statement (or statement-expression) is executed if
-> > > waiting for a lock is interrupted or if a _trylock() fails in case of
-> > > contention.
-> > > 
-> > > Usage example:
-> > > 
-> > > 	cond_guard(mutex_intr, return -EINTR, &mutex);
-> > > 
-> > > Consistent with other usage of _guard(), locks are unlocked at the exit of
-> > > the scope where cond_guard() is called.
-> > >     
-> > [snip]  
-> > > 
-> > > +#define cond_guard(_name, _fail, args...) \
-> > > +	CLASS(_name, scope)(args); \
-> > > +	if (!__guard_ptr(_name)(&scope)) _fail; \
-> > > +	else { }
-> > > +    
-> > 
-> > I have converted and tested several functions in drivers/cxl and found that 
-> > there are cases where this macro needs to be called twice in the same scope.
-> > 
-> > The current implementation fails to compile because any subsequent call to 
-> > cond_guard() redefines "scope".
-> > 
-> > I have a solution for this, which is to instantiate a differently named 
-> > variable each time cond_guard() is used:
-> > 
-> > #define __UNIQUE_LINE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
-> > #define cond_guard(_name, _fail, args...) \
-> >         CLASS(_name, __UNIQUE_LINE_ID(scope))(args); \
-> >         if (!__guard_ptr(_name)(&__UNIQUE_LINE_ID(scope))) _fail; \
-> >         else { }
-> > 
-> > But, before sending v5, I think it's best to wait for comments from those with 
-> > more experience than me.  
-> 
-> Ah. So you can't use __UNIQUE_ID as guard does because we need it to be stable
-> across the two uses.  What you have looks fine to me.
-> We might end up with someone putting multiple calls in a macro but in my
-> view anyone doing that level of complexity in a macro is shooting themselves
-> in the foot.
-
-Thought more on this whilst cycling home.  Can you use another level
-of macros in combination with __UNIQUE_ID that guard uses?
-My skills with macros are very limited so I'm sure I got something wrong,
-but along the lines of.
-
-#define __cond_class(__unique, _name, _fail, args...) \
-   CLASS(_name, __unique)(args); \
-         if (!__guard_ptr(_name)(&__unique)) _fail; \
-         else { }
-#define cond_class(_name, _fail, args... ) \
-    __cond_class(__UNIQUE_ID(guard), _name, _fail, args...
-
-?
-
-> 
-> Jonathan
-> 
-> 
-> > 
-> > Fabio
-> > 
-> > 
-> > 
-> >   
-> 
-> 
+Li4uDQo+IEl0IHdvdWxkIGJlIHdvcnRod2hpbGUgdHJhY2tpbmcgdGhpcyBkb3duIHNpbmNlIHRo
+ZXJlIGFyZQ0KPiBsb3RzIG9mIHVuYWxpZ25lZCBkYXRhIGFjY2Vzc2VzICg4LWJ5dGUgYWNjZXNz
+ZXMgb24gNC1ieXRlIGFsaWduZWQgYWRkcmVzc2VzKQ0KPiB3aGVuIHJ1bm5pbmcgdGhlIGtlcm5l
+bCBpbiA2NC1iaXQgbW9kZS4NCg0KSG1tbS4uLi4NCkZvciBwZXJmb3JtYW5jZSByZWFzb25zIHlv
+dSByZWFsbHkgZG9uJ3Qgd2FudCBhbnkgb2YgdGhlbS4NClRoZSBtaXNhbGlnbmVkIDY0Yml0IGZp
+ZWxkcyBuZWVkIGFuIF9fYXR0cmlidXRlKChhbGlnbmVkKDQpKSBtYXJrZXIuDQoNCklmIHRoZSBj
+aGVja3N1bSBjb2RlIGNhbiBkbyB0aGVtIGl0IHJlYWxseSBuZWVkcyB0byBkZXRlY3QNCmFuZCBo
+YW5kbGUgdGhlIG1pc2FsaWdubWVudC4NCg0KVGhlIG1pc2FsaWduZWQgdHJhcCBoYW5kbGVyIHBy
+b2JhYmx5IG91Z2h0IHRvIGNvbnRhaW4gYQ0Kd2Fybl9vbl9vbmNlKCkgdG8gZHVtcCBzdGFjayBv
+biB0aGUgZmlyc3Qgc3VjaCBlcnJvci4NClRoZXkgY2FuIHRoZW4gYmUgZml4ZWQgb25lIGF0IGEg
+dGltZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
+eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
+aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
 
