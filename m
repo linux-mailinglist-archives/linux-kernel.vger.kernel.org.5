@@ -1,229 +1,301 @@
-Return-Path: <linux-kernel+bounces-67699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E2A856F5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:31:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4477856F62
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36B361C20FF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD19A1C20F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD03D1419A7;
-	Thu, 15 Feb 2024 21:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2A61419BE;
+	Thu, 15 Feb 2024 21:33:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E8Nsov5u";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GUVg/06b";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E8Nsov5u";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GUVg/06b"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T57rtz5A"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE3C13B791;
-	Thu, 15 Feb 2024 21:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2935513DBA4
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708032672; cv=none; b=omc/Umv8J5pAcjB0xIvMDovJVBp2UHBdW7++lox5E4VCAcsNJsnu11k1gNGJNhSh/eUr7J/W1wVuDoxy3PhbV8S8Zvrl3pzY6V5MPBNwA0RhMsjPuiUxJzaXVv6qE0EpFvaoG0eZAr+d204QMj8DTBfzRdvM8MfSs+HFpx6d948=
+	t=1708032832; cv=none; b=Zht6wB8E9B1Pgmi+2QxqP8qprcQRFxkpdXraW/g6Wz7sgrN8U+n/xFCGF6EDFDucyzTDu9dRe/Jmgr905KnTQHQvUbN9j4JmXx5gI6i6isqM+UojHyEKq2PdQuBOx2yJgLw12YbK42kPOr9tzvroOKpU2KBosCPgjPoxUVKCRsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708032672; c=relaxed/simple;
-	bh=3yDM0ZP46pK4fnHSsmL6R3X/38sqCvjEVTAglOUb9wU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cEP3QbSGkX9bqJ+hn4/GSCbAP451kwdv7qkdLMZB9xpRIi4pypJZhbrwe9Kcpafg0B9+2R8hwylf3zLH6o0D2gEMvLW+t2iIQOSNSs2N4i4mpWlE13wCfp2fKWHNtHyNJwAjL/Rp9Qg8AlNGF0jfhbdJzDEDJiluk/LorgirbB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E8Nsov5u; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GUVg/06b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E8Nsov5u; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GUVg/06b; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5084E21DA7;
-	Thu, 15 Feb 2024 21:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708032668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A6ZvPT33F9NrnVg8JxGTJmzEamMsclNNB8LU0yx6M8A=;
-	b=E8Nsov5uPAg0mjeawQLdoRqATRoEAbDe5XO0GEM9WfnKB2qR2mwNAuZhKByuBRYOwzIfk7
-	eZoQN0V5wp2YxP2Z7PJ/DBcdIOioFKPJeTjWdyzxiI5ORqpKlwby00VGVLzbyv1YO342n5
-	DUhv2kwS9+B6ed+MTfF2cLRtkaA/5HU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708032668;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A6ZvPT33F9NrnVg8JxGTJmzEamMsclNNB8LU0yx6M8A=;
-	b=GUVg/06bHbX3QUnYbZbacX02nQLtbZN/1obCAsDgxplA2OXNsNNjCi234wRWw1iP7VbUIR
-	yqFA84e/GWorUVDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708032668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A6ZvPT33F9NrnVg8JxGTJmzEamMsclNNB8LU0yx6M8A=;
-	b=E8Nsov5uPAg0mjeawQLdoRqATRoEAbDe5XO0GEM9WfnKB2qR2mwNAuZhKByuBRYOwzIfk7
-	eZoQN0V5wp2YxP2Z7PJ/DBcdIOioFKPJeTjWdyzxiI5ORqpKlwby00VGVLzbyv1YO342n5
-	DUhv2kwS9+B6ed+MTfF2cLRtkaA/5HU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708032668;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A6ZvPT33F9NrnVg8JxGTJmzEamMsclNNB8LU0yx6M8A=;
-	b=GUVg/06bHbX3QUnYbZbacX02nQLtbZN/1obCAsDgxplA2OXNsNNjCi234wRWw1iP7VbUIR
-	yqFA84e/GWorUVDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4D6D813A53;
-	Thu, 15 Feb 2024 21:31:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2LUvEpuCzmWGSgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 21:31:07 +0000
-Message-ID: <fbfab72f-413d-4fc1-b10b-3373cfc6c8e9@suse.cz>
-Date: Thu, 15 Feb 2024 22:31:06 +0100
+	s=arc-20240116; t=1708032832; c=relaxed/simple;
+	bh=2UmlXYt8o/1rjCum/92wgAjcMp4ZHvYMHwH5IxaA3YM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=OWc5PIkgewWpHkXjimTyQLPRiXPwv6i2wFx2W9vudvqXfvT3zdT2wUSAzyE9yFJt/A2It0364lNJSB5a8vN9kIe/hVk5tA3xfsk8f5LNSL3mMPJipf4krAOiFVklVgRDIEOUqp87Nj/4EEP4mDKULlJbhtd5STN5uxURP+yJhwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T57rtz5A; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc74ac7d015so1867637276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:33:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708032830; x=1708637630; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AocB5QyyDp1HbztmHNs2CC7MOtPEN+TNVBfTVeVV9Fg=;
+        b=T57rtz5Akx1nshIzLI52Q71vlrczBF/l5Xd4g78L4K7ln1RuTzDOTXSdazGWR0sHKP
+         Yi/Io+ct/4M9U0uhobA+k1GafxIVEh6w5DIHLhilFeJoRbR9n0h0t0kK7fvVqdf9b8xH
+         ur/qfE3tVYoJhkw1JvtxXeiFPLEI+y6xEe9b6XvHYQ83qqu7myCk7nY02NAVmybXDDzE
+         tG0BBBNUbtLYObB8HMOlBrlEKyEal5q2bJxQzK6w9+fmsjm1wUfAGYznlP6qcGfeTW/8
+         oPkGn+KV+x8gdK9GlgQpXdbPz9FeRVMJFlQQIUGGco1XaiG18+BtvmD41pw4DAPsC/5T
+         qHYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708032830; x=1708637630;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AocB5QyyDp1HbztmHNs2CC7MOtPEN+TNVBfTVeVV9Fg=;
+        b=c42xVoU29jUqz7cDRbXH5BOLAHJPWKFX72OseDMhgz5yJt2BttVqL7NVHI7XjP63/y
+         bJOlHJxLGatq4LvleHkOg51yg/rEGXT/1zPrjGQ4be2ONvdMUq0xdIlJz+PF3MrEhv/n
+         Koutz4t7LpahgkYwhruoxskGhXus+hjn5IzVa0Oezy+vuTacmQJZ5yVjs/rLnBuChWvF
+         cVW5mHCl/08twLJDloBltRCuLUKVOs5RSs7sYo1L9mKs/bI2MzlATYPa4hroMbsFFC8t
+         5LIj00M9p/1Qs7b38DT5ZFBd9QiJm2VafhcU7c2At8E/Fx2dnUQitd5kZ10FUGuU/HZL
+         5GlA==
+X-Forwarded-Encrypted: i=1; AJvYcCWvyszRNRjKVYXkv1zzLz5ro4R1iHcmgRT+YUG2FPACZnh7r9+Rwx0RDcu/x/SJyUPERJOGgnsnJM6ClabBmLZ0bJrDUdCdCeXJGZbJ
+X-Gm-Message-State: AOJu0YyCz1pvX8Kkinf45xuCbXrjzo23X78h+lXCMFYSZYuGaQJLLfY+
+	+0RFO0cuhqbR6qgR67Xho8QoPJ/jHh6B2stg3aUe7N55HOv3EWBhEkDcT0JNxV00RiIGY8WbFrD
+	66Q==
+X-Google-Smtp-Source: AGHT+IF5FQ3Ln0cnMaR3KbqRLrXioQ8PHYOdNvCYEMOGquKMF+QgPtB6WHvIfmmR1OQXYFMltmywBuxG+E0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1241:b0:dc6:e647:3fae with SMTP id
+ t1-20020a056902124100b00dc6e6473faemr122134ybu.2.1708032830246; Thu, 15 Feb
+ 2024 13:33:50 -0800 (PST)
+Date: Thu, 15 Feb 2024 13:33:48 -0800
+In-Reply-To: <Zc5wTHuphbg3peZ9@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/35] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
- obj_ext creation
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
- void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
- catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
- mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
- peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
- masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
- rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
- kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-8-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240212213922.783301-8-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E8Nsov5u;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="GUVg/06b"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.00)[25.68%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.00
-X-Rspamd-Queue-Id: 5084E21DA7
-X-Spam-Flag: NO
+Mime-Version: 1.0
+References: <20240215010004.1456078-1-seanjc@google.com> <20240215010004.1456078-3-seanjc@google.com>
+ <Zc3JcNVhghB0Chlz@linux.dev> <Zc5c7Af-N71_RYq0@google.com> <Zc5wTHuphbg3peZ9@linux.dev>
+Message-ID: <Zc6DPEWcHh-TKCSD@google.com>
+Subject: Re: [PATCH 2/2] KVM: selftests: Test forced instruction emulation in
+ dirty log test (x86 only)
+From: Sean Christopherson <seanjc@google.com>
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Matlack <dmatlack@google.com>, Pasha Tatashin <tatashin@google.com>, 
+	Michael Krebs <mkrebs@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On 2/12/24 22:38, Suren Baghdasaryan wrote:
-> Slab extension objects can't be allocated before slab infrastructure is
-> initialized. Some caches, like kmem_cache and kmem_cache_node, are created
-> before slab infrastructure is initialized. Objects from these caches can't
-> have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
-> caches and avoid creating extensions for objects allocated from these
-> slabs.
+On Thu, Feb 15, 2024, Oliver Upton wrote:
+> On Thu, Feb 15, 2024 at 10:50:20AM -0800, Sean Christopherson wrote:
+> > Yeah, the funky flow I concocted was done purely to have the "no emulation" path
+> > fall through to the common "*mem = val".  I don't have a strong preference, I
+> > mentally flipped a coin on doing that versus what you suggested, and apparently
+> > chose poorly :-)
 > 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  include/linux/slab.h | 7 +++++++
->  mm/slub.c            | 5 +++--
->  2 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index b5f5ee8308d0..3ac2fc830f0f 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -164,6 +164,13 @@
->  #endif
->  #define SLAB_TEMPORARY		SLAB_RECLAIM_ACCOUNT	/* Objects are short-lived */
->  
-> +#ifdef CONFIG_SLAB_OBJ_EXT
-> +/* Slab created using create_boot_cache */
-> +#define SLAB_NO_OBJ_EXT         ((slab_flags_t __force)0x20000000U)
+> Oh, I could definitely tell this was intentional :) But really if folks
+> are going to add more flavors of emulated instructions to the x86
+> implementation (which they should) then it might make sense to just have
+> an x86-specific function.
 
-There's
-   #define SLAB_SKIP_KFENCE        ((slab_flags_t __force)0x20000000U)
-already, so need some other one?
+Yeah, best prepare for the onslaught.  And if I base this on the SEV selftests
+series that adds kvm_util_arch.h, it's easy to shove the x86 sequence into a
+common location outside of dirty_log_test.c.  Then there are no #ifdefs or x86
+code in dirty_log_test.c, and other tests can use the helper at will.
 
-> +#else
-> +#define SLAB_NO_OBJ_EXT         0
-> +#endif
-> +
->  /*
->   * ZERO_SIZE_PTR will be returned for zero sized kmalloc requests.
->   *
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 1eb1050814aa..9fd96238ed39 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -5650,7 +5650,8 @@ void __init kmem_cache_init(void)
->  		node_set(node, slab_nodes);
->  
->  	create_boot_cache(kmem_cache_node, "kmem_cache_node",
-> -		sizeof(struct kmem_cache_node), SLAB_HWCACHE_ALIGN, 0, 0);
-> +			sizeof(struct kmem_cache_node),
-> +			SLAB_HWCACHE_ALIGN | SLAB_NO_OBJ_EXT, 0, 0);
->  
->  	hotplug_memory_notifier(slab_memory_callback, SLAB_CALLBACK_PRI);
->  
-> @@ -5660,7 +5661,7 @@ void __init kmem_cache_init(void)
->  	create_boot_cache(kmem_cache, "kmem_cache",
->  			offsetof(struct kmem_cache, node) +
->  				nr_node_ids * sizeof(struct kmem_cache_node *),
-> -		       SLAB_HWCACHE_ALIGN, 0, 0);
-> +			SLAB_HWCACHE_ALIGN | SLAB_NO_OBJ_EXT, 0, 0);
->  
->  	kmem_cache = bootstrap(&boot_kmem_cache);
->  	kmem_cache_node = bootstrap(&boot_kmem_cache_node);
+It'll require some macro hell to support all four sizes, but that's not hard,
+just annoying.
+
+And it's a good excuse to do what I should have done in the first place, and
+make is_forced_emulation_enabled be available to all guest code without needing
+to manually check it in each test.
+
+Over 2-3 patches...
+
+---
+ tools/testing/selftests/kvm/dirty_log_test.c  |  9 ++++++---
+ .../selftests/kvm/include/kvm_util_base.h     |  3 +++
+ .../kvm/include/x86_64/kvm_util_arch.h        | 20 +++++++++++++++++++
+ .../selftests/kvm/lib/x86_64/processor.c      |  3 +++
+ .../selftests/kvm/x86_64/pmu_counters_test.c  |  3 ---
+ .../kvm/x86_64/userspace_msr_exit_test.c      |  9 ++-------
+ 6 files changed, 34 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index babea97b31a4..93c3a51a6d9b 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -114,11 +114,14 @@ static void guest_code(void)
+ 
+ 	while (true) {
+ 		for (i = 0; i < TEST_PAGES_PER_LOOP; i++) {
++			uint64_t rand = READ_ONCE(random_array[i]);
++			uint64_t val = READ_ONCE(iteration);
++
+ 			addr = guest_test_virt_mem;
+-			addr += (READ_ONCE(random_array[i]) % guest_num_pages)
+-				* guest_page_size;
++			addr += (rand % guest_num_pages) * guest_page_size;
+ 			addr = align_down(addr, host_page_size);
+-			*(uint64_t *)addr = READ_ONCE(iteration);
++
++			vcpu_arch_put_guest((u64 *)addr, val, rand);
+ 		}
+ 
+ 		/* Tell the host that we need more random numbers */
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index 4b266dc0c9bd..4b7285f073df 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -610,6 +610,9 @@ void *addr_gva2hva(struct kvm_vm *vm, vm_vaddr_t gva);
+ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva);
+ void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa);
+ 
++#ifndef vcpu_arch_put_guest
++#define vcpu_arch_put_guest(mem, val, rand) do { *mem = val; } while (0)
++#endif
+ 
+ static inline vm_paddr_t vm_untag_gpa(struct kvm_vm *vm, vm_paddr_t gpa)
+ {
+diff --git a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
+index 205ed788aeb8..3f9a44fd4bcb 100644
+--- a/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
++++ b/tools/testing/selftests/kvm/include/x86_64/kvm_util_arch.h
+@@ -5,6 +5,8 @@
+ #include <stdbool.h>
+ #include <stdint.h>
+ 
++extern bool is_forced_emulation_enabled;
++
+ struct kvm_vm_arch {
+ 	uint64_t c_bit;
+ 	uint64_t s_bit;
+@@ -20,4 +22,22 @@ static inline bool __vm_arch_has_protected_memory(struct kvm_vm_arch *arch)
+ #define vm_arch_has_protected_memory(vm) \
+ 	__vm_arch_has_protected_memory(&(vm)->arch)
+ 
++/* TODO: Expand this madness to also support u8, u16, and u32 operands. */
++#define vcpu_arch_put_guest(mem, val, rand) 						\
++do {											\
++	if (!is_forced_emulation_enabled || !(rand & 1)) {				\
++		*mem = val;								\
++	} else if (rand & 2) {								\
++		__asm__ __volatile__(KVM_FEP "movq %1, %0"				\
++				     : "+m" (*mem)					\
++				     : "r" (val) : "memory");				\
++	} else {									\
++		uint64_t __old = READ_ONCE(*mem);					\
++											\
++		__asm__ __volatile__(KVM_FEP LOCK_PREFIX "cmpxchgq %[new], %[ptr]"	\
++				     : [ptr] "+m" (*mem), [old] "+a" (__old)		\
++				     : [new]"r" (val) : "memory", "cc");		\
++	}										\
++} while (0)
++
+ #endif  // _TOOLS_LINUX_ASM_X86_KVM_HOST_H
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+index aa92220bf5da..d0a97d5e1ff9 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
+@@ -23,6 +23,7 @@
+ vm_vaddr_t exception_handlers;
+ bool host_cpu_is_amd;
+ bool host_cpu_is_intel;
++bool is_forced_emulation_enabled;
+ 
+ static void regs_dump(FILE *stream, struct kvm_regs *regs, uint8_t indent)
+ {
+@@ -577,6 +578,7 @@ void kvm_arch_vm_post_create(struct kvm_vm *vm)
+ 	vm_create_irqchip(vm);
+ 	sync_global_to_guest(vm, host_cpu_is_intel);
+ 	sync_global_to_guest(vm, host_cpu_is_amd);
++	sync_global_to_guest(vm, is_forced_emulation_enabled);
+ 
+ 	if (vm->subtype == VM_SUBTYPE_SEV)
+ 		sev_vm_init(vm);
+@@ -1337,6 +1339,7 @@ void kvm_selftest_arch_init(void)
+ {
+ 	host_cpu_is_intel = this_cpu_is_intel();
+ 	host_cpu_is_amd = this_cpu_is_amd();
++	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
+ }
+ 
+ bool sys_clocksource_is_based_on_tsc(void)
+diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+index ae5f6042f1e8..6b2c1fd551b5 100644
+--- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
++++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+@@ -21,7 +21,6 @@
+ 
+ static uint8_t kvm_pmu_version;
+ static bool kvm_has_perf_caps;
+-static bool is_forced_emulation_enabled;
+ 
+ static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
+ 						  void *guest_code,
+@@ -35,7 +34,6 @@ static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
+ 	vcpu_init_descriptor_tables(*vcpu);
+ 
+ 	sync_global_to_guest(vm, kvm_pmu_version);
+-	sync_global_to_guest(vm, is_forced_emulation_enabled);
+ 
+ 	/*
+ 	 * Set PERF_CAPABILITIES before PMU version as KVM disallows enabling
+@@ -609,7 +607,6 @@ int main(int argc, char *argv[])
+ 
+ 	kvm_pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
+ 	kvm_has_perf_caps = kvm_cpu_has(X86_FEATURE_PDCM);
+-	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
+ 
+ 	test_intel_counters();
+ 
+diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+index ab3a8c4f0b86..a409b796bb18 100644
+--- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
++++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+@@ -12,8 +12,6 @@
+ #include "kvm_util.h"
+ #include "vmx.h"
+ 
+-static bool fep_available;
+-
+ #define MSR_NON_EXISTENT 0x474f4f00
+ 
+ static u64 deny_bits = 0;
+@@ -257,7 +255,7 @@ static void guest_code_filter_allow(void)
+ 	GUEST_ASSERT(data == 2);
+ 	GUEST_ASSERT(guest_exception_count == 0);
+ 
+-	if (fep_available) {
++	if (is_forced_emulation_enabled) {
+ 		/* Let userspace know we aren't done. */
+ 		GUEST_SYNC(0);
+ 
+@@ -519,7 +517,6 @@ static void test_msr_filter_allow(void)
+ 	int rc;
+ 
+ 	vm = vm_create_with_one_vcpu(&vcpu, guest_code_filter_allow);
+-	sync_global_to_guest(vm, fep_available);
+ 
+ 	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
+ 	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
+@@ -550,7 +547,7 @@ static void test_msr_filter_allow(void)
+ 	vcpu_run(vcpu);
+ 	cmd = process_ucall(vcpu);
+ 
+-	if (fep_available) {
++	if (is_forced_emulation_enabled) {
+ 		TEST_ASSERT_EQ(cmd, UCALL_SYNC);
+ 		vm_install_exception_handler(vm, GP_VECTOR, guest_fep_gp_handler);
+ 
+@@ -791,8 +788,6 @@ static void test_user_exit_msr_flags(void)
+ 
+ int main(int argc, char *argv[])
+ {
+-	fep_available = kvm_is_forced_emulation_enabled();
+-
+ 	test_msr_filter_allow();
+ 
+ 	test_msr_filter_deny();
+
+base-commit: e072aa6dbd1db64323a407b3eca82dc5107ea0b1
+-- 
 
 
