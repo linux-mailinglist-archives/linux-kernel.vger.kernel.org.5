@@ -1,146 +1,205 @@
-Return-Path: <linux-kernel+bounces-67129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BF58566D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:03:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7251B8566C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA050B29FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:01:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAEA8B27FD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB6A1332B0;
-	Thu, 15 Feb 2024 14:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EBA133412;
+	Thu, 15 Feb 2024 15:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QCSBC1fn"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fy6L9q3C"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A2A132C05
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460A213248B
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 15:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708009138; cv=none; b=Sr8fpHYMesJHxKIcAT+vuw2faHusJme6eiPfMuEeCHBYWG2RqiSrFN3W2HUeozUYKRg3/9Mj4y/VjDLF/El3G4N4i4vhVEwXuFD7ZdDAhxsbVlttWEDE7cWX5XRsdUW68cxbiRhgm9yUHpIOyGqq+om/hs+qRPFYqHdYTScypf0=
+	t=1708009215; cv=none; b=XWcvO9va2XLVWm2N/dwGa/jJwsI3QaQH9FwVAfjqU+igbl1ZL3oeOE157FI3YhV+vp0Pe3pNZ1CDEcbAO+4vtYPLHjX0GK2Da/LppPkrWYIC6rl3FxHU20oxgGFdgivVSRiw8dohydSanIckPWs3h3+VcZgINIe8QiUzpAi+qV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708009138; c=relaxed/simple;
-	bh=6IMij2aMCDzlI1InstPj/0SjhHnSgb7se0txHOjqYec=;
+	s=arc-20240116; t=1708009215; c=relaxed/simple;
+	bh=UlLpq6ptjkFE4SLoHOdwCV2cdC3BUnUnSX6rNIe0NW4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P1v/H9CnwgbcIlreQPtPOt7i+oj8a4D2OWeChEXKNnKGMu9UP+lUjuWNJnM7hsjn0DHz8sMd5v2YqibNVyN458u20SrXD6c1CfdT1bhv7X/zbrEaICCZ2PvHtVTnOirHQWUThOQfCgjsPYWWHraPkPg9TxpAUF7zcF1QRKuXkLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QCSBC1fn; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso664656276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:58:56 -0800 (PST)
+	 To:Cc:Content-Type; b=XP4WCGYdxJzb2tlJ9KXj+3hJLdoKa2NwufWgzb3lOjFnP76qofpzd+uXE83PmqCwiD0k03rVrIhzlUg25ja7WuaXXg8jROV7FQVKwUpM6jaF51KFxvfYUNAsKdUdzX8WuLut1KldCqq0mtdlqx7jslRgOnOmUvUiyo3kCmWo5A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fy6L9q3C; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso858234276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 07:00:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708009135; x=1708613935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tw/wN6EwhF1l4GL2nZ/ht1qejqJOWh5ecVMENBzDBDY=;
-        b=QCSBC1fn1Ka2h7g6fyuo/iR+OmsxJN+44ewMiK7TnEvXLUwE54/Fla7TeargSAD7FL
-         K4XY0N++HOd/XQR20ySjDvDEt4AT0wRqIA6SonOzfFP5z8DdEIZqaTEQUNCb8KPaAgTi
-         KuGZZAXkpnbLQ8uo8Gzowy4mMy4fIf8FjABi8dPX6Dpz9E5EvFoaI1UKe7ERn4Wuu7vW
-         9RpviaBpJWGkU607Q3RTsx1Q9BMnNxYkHWLkp9p4vl9Ttstb/nKLi8MMIMkJ5YhE7prP
-         AqX5xmoXXbk2RV4MOgo4U2hdSmx6j9jUjLVFg+6dNyF4KktkZz5uVsTEJBtCoOEQfFva
-         7uKA==
+        d=linaro.org; s=google; t=1708009212; x=1708614012; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RadMiDe92m4brTDSBbZrQSBMUCpi10GCJT9OlMPEwXY=;
+        b=fy6L9q3Cc4Vv7bpubHQk3jX8OFfP70h4berDhK2xIJvQ3FKhxZyq0xRCTuoNTKBqGE
+         JCgVJEZLZFQZe0ks+23sG/22cYL9/Z7Rt3hslyvNpdx/GoMuZx+gYR6W7EM3K7O0IWe8
+         wYPsERgtWu8n/xA+b2iUE5tqxhOpxmuCw2ZD+YfTAOcWyhmxBKc/NezQPgLbo+WiiSRJ
+         yX16pmD4jOx+6nMwpZy31jz3vPiB/fuXKj/9scmzyawXIn3g2LJCIPS72peV8T0unRVR
+         gFZDIR3lqs5QuLhf0vcvMRwn4q62KL9o+Pp6shtK3OjloAqfcyf+MEOoZkVjnEOUgLNy
+         2Nfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708009135; x=1708613935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tw/wN6EwhF1l4GL2nZ/ht1qejqJOWh5ecVMENBzDBDY=;
-        b=YJrV9qXHMeNvabOJRmLmdytTYCmKYY954ihmXhPdwTiMPKwfDxMG4f9W4qH4jQ/+wY
-         XalQcYgAwcY6rSCW3Df+XLoFDD4jC7juYOoXwkVgNBcrs/sM6UsIDzFdhZQTXGhUFery
-         oA+fGilL3ZedlIdpZwMLi17NjGacW1iy78pLdCK1mQ56hllPfEDKjoa+69VyIi3Zt5M9
-         Zjt9Jy+Ai1wawQecz71fFp2XX5XMYjDmo8S129Ad/9DeDW2sgiVhgHIVgA9QgU5TKqtU
-         PFaG6rHHwrim9Y2dSbdCrsnbP7wq+tkP9+HfqEL++xiXQStg6H2CQkwJXnRkIDKG0Ndf
-         g2vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdUVZ7RI8ZR+7sAinMLJhR4BHvLlcS6A3rqdjHLbAdTEZEpszE1EL1/VkHRjNcjcC6tE9cpp0cP+K6aYMRx59A52jxiY8lKO6Y77RV
-X-Gm-Message-State: AOJu0Yx3HFFoD6y/M4jumANBUnTMYn9QQIgx60s7RMCRDEhnU+anYhkN
-	RuB3UPeaZ5mIqNtp1UjxK8zEKU63PsMvWa/EVQrXQ0mFgcNzI/fiYtlixTXkdlZyas2TRuxB3lT
-	nF6hggyI33yoLbsKn6OWqG2mOAV/Duq9Ij20H
-X-Google-Smtp-Source: AGHT+IHbdGXWcfbi3sM7zNcX3xbLXT1pZZDBplduLx68NqKeXRGL2TAUM4SLA4O1Gc053VxRA9U/P0Ad1H3i0YzTDwI=
-X-Received: by 2002:a25:8750:0:b0:dbe:9509:141c with SMTP id
- e16-20020a258750000000b00dbe9509141cmr1821330ybn.30.1708009135319; Thu, 15
- Feb 2024 06:58:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708009212; x=1708614012;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RadMiDe92m4brTDSBbZrQSBMUCpi10GCJT9OlMPEwXY=;
+        b=IMUxmAqjmiVIAisXBQQy37uIZrnZiGWO8bU36DV9MQFNhEPsk9UJu0NjOuXSqD9wdx
+         dpTDv1izqU27f0pai/IL3bys1wued/CNUNyl/ggXbmVV2RJlXGfLze2rFxTpylwpHsm4
+         muEMpDx3yDYddShg+R+1S5OE9jzxDi/jL3czO3E0HjFHB3vZyRgrrLZ24gxYNleuIkql
+         5CuxLKkqx8eK++pop0S8vLPrYYsNSQ6w6hyex8IZta5ouTYhAsFNwMzooC6bCaZt/AnE
+         zhVoczAF14GE7JiLerXFfmHmm5mvfXdq6zuS6dPg9k7xawGQQ6GWV99SVXt10sw7d2CC
+         blkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXkIU2fQWpVRIHAsDnn/Vau21+oRpmt9Pg5yfcmgLWNwZxkhjfTAirM1q/lxzNfYc3bwycOUynljDXMIpMMwUamGooJQZIfWukFF5yw
+X-Gm-Message-State: AOJu0YzglSdqW9ofedsT2DFFsKWC7SSPtbTqowvV9S2afud7NGgsdfGp
+	y4Y4r/7LXxrgsPtxVbYjQcytUcsJnVlTD/3PwRvjyvLElWWwOGpsClRk+1US6rVDUbMAoR+4ek5
+	fPMKoWC2ZvD8KIGzl7ZAxXilhVyQJIJ3EqC+a/Q==
+X-Google-Smtp-Source: AGHT+IG9VjWm3vrwjladOxmvn95+Q9vBX02+e37fghrXCVUWsX2DFBhY2VjHQFCFnjilBT/8d54Qvp6HvXvaehGIGn0=
+X-Received: by 2002:a25:ae28:0:b0:dc2:4fff:75ee with SMTP id
+ a40-20020a25ae28000000b00dc24fff75eemr1336871ybj.3.1708009211944; Thu, 15 Feb
+ 2024 07:00:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-32-surenb@google.com>
- <Zc3X8XlnrZmh2mgN@tiehlicka>
-In-Reply-To: <Zc3X8XlnrZmh2mgN@tiehlicka>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 15 Feb 2024 06:58:42 -0800
-Message-ID: <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com> <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+In-Reply-To: <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 15 Feb 2024 17:00:00 +0200
+Message-ID: <CAA8EJpquDwDg+OrZKeJrTWEtokCF7uyHMyzCFK2etSsDip8_6Q@mail.gmail.com>
+Subject: Re: [PATCH 2/5] drivers: mtd: nand: Add qpic_common API file
+To: Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+	manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org, 
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	quic_srichara@quicinc.com, quic_varada@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 1:22=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Thu, 15 Feb 2024 at 15:53, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
 >
-> On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
-> [...]
-> > @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *n=
-odemask, int max_zone_idx)
-> >  #ifdef CONFIG_MEMORY_FAILURE
-> >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_p=
-ages));
-> >  #endif
-> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > +     {
-> > +             struct seq_buf s;
-> > +             char *buf =3D kmalloc(4096, GFP_ATOMIC);
-> > +
-> > +             if (buf) {
-> > +                     printk("Memory allocations:\n");
-> > +                     seq_buf_init(&s, buf, 4096);
-> > +                     alloc_tags_show_mem_report(&s);
-> > +                     printk("%s", buf);
-> > +                     kfree(buf);
-> > +             }
-> > +     }
-> > +#endif
+> Add qpic_common.c file which hold all the common
+> qpic APIs which will be used by both qpic raw nand
+> driver and qpic spi nand driver.
 >
-> I am pretty sure I have already objected to this. Memory allocations in
-> the oom path are simply no go unless there is absolutely no other way
-> around that. In this case the buffer could be preallocated.
+> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> ---
+>  drivers/mtd/nand/Makefile            |    1 +
+>  drivers/mtd/nand/qpic_common.c       |  786 +++++++++++++++++
+>  drivers/mtd/nand/raw/qcom_nandc.c    | 1226 +-------------------------
+>  include/linux/mtd/nand-qpic-common.h |  488 ++++++++++
+>  4 files changed, 1291 insertions(+), 1210 deletions(-)
+>  create mode 100644 drivers/mtd/nand/qpic_common.c
+>  create mode 100644 include/linux/mtd/nand-qpic-common.h
+>
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 19e1291ac4d5..131707a41293 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -12,3 +12,4 @@ nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_SW_HAMMING) += ecc-sw-hamming.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_MXIC) += ecc-mxic.o
+> +obj-y += qpic_common.o
+> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
+> new file mode 100644
+> index 000000000000..4d74ba888028
+> --- /dev/null
+> +++ b/drivers/mtd/nand/qpic_common.c
+> @@ -0,0 +1,786 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * QPIC Controller common API file.
+> + * Copyright (C) 2023  Qualcomm Inc.
+> + * Authors:    Md sadre Alam           <quic_mdalam@quicinc.com>
+> + *             Sricharan R             <quic_srichara@quicinc.com>
+> + *             Varadarajan Narayanan   <quic_varada@quicinc.com>
 
-Good point. We will change this to a smaller buffer allocated on the
-stack and will print records one-by-one. Thanks!
+This is a bit of an exaggeration. You are moving code, not writing new
+code. Please retain the existing copyrights for the moved code.
 
->
+> + *
+> + */
+> +
+> +#include <linux/mtd/nand-qpic-common.h>
+> +
+> +struct qcom_nand_controller *
+> +get_qcom_nand_controller(struct nand_chip *chip)
+> +{
+> +       return container_of(chip->controller, struct qcom_nand_controller,
+> +                           controller);
+> +}
+> +EXPORT_SYMBOL(get_qcom_nand_controller);
+
+NAK for adding functions to the global export namespace without a
+proper driver-specific prefix.
+
+Also, a bunch of the code here seems not so well thought. It was fine
+for an internal interface, but it doesn't look so good as a common
+wrapper. Please consider defining a sensible common code module
+interface instead.
+
+At least each function that is being exported should get a kerneldoc.
+
+Last, but not least, please use EXPORT_SYMBOL_GPL.
+
+> +
+> +/*
+> + * Helper to prepare DMA descriptors for configuring registers
+> + * before reading a NAND page.
+> + */
+> +void config_nand_page_read(struct nand_chip *chip)
+> +{
+> +       struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +
+> +       write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+> +       write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> +       if (!nandc->props->qpic_v2)
+> +               write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+> +       write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
+> +       write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
+> +                     NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
+> +}
+> +EXPORT_SYMBOL(config_nand_page_read);
+> +
+> +/* Frees the BAM transaction memory */
+> +void free_bam_transaction(struct qcom_nand_controller *nandc)
+> +{
+> +       struct bam_transaction *bam_txn = nandc->bam_txn;
+> +
+> +       devm_kfree(nandc->dev, bam_txn);
+
+devm_kfree is usually a bad sign. Either the devm_kfree should be
+dropped (because the memory area is allocated only during probe / init
+and doesn't need to be freed manually) or use kalloc/kfree directly
+without devres wrapping.
+
+> +}
+> +EXPORT_SYMBOL(free_bam_transaction);
+> +
+
+[skipped the rest]
+
 > --
-> Michal Hocko
-> SUSE Labs
+> 2.34.1
+>
+>
+
+
+--
+With best wishes
+Dmitry
 
