@@ -1,166 +1,199 @@
-Return-Path: <linux-kernel+bounces-66719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C7185609D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:03:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6158560E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:08:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D841C23BE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:03:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D379BB24717
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5BF130AD4;
-	Thu, 15 Feb 2024 10:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Med1oLNB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Q6pc7gW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Med1oLNB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Q6pc7gW"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7896F129A98;
+	Thu, 15 Feb 2024 10:36:09 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D67F1EF1D
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1B7133410;
+	Thu, 15 Feb 2024 10:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994524; cv=none; b=Ww9oq2caOQIoHCfkk70C1Tjg8iArMFRKRWp2BNUIZCffZmbTFWA7CLxog6OXY9DSXTS0qYiPxArVqu+HmDIdoFY+vC02xZoHpoCcuRaDjNrsxXtufY38IiHwkXacicNkDDbrPP+wKH6NcVSa6bN0ZG5gib0B+tBfMtylRyzgi/c=
+	t=1707993369; cv=none; b=kplTboY1++D3hw41nqlzbt6ywMOK2DFylgwooFmGKXFQKoHBcK4BCPUJXis01wyqqgFVdYFh4+O4D/BbCqB9N0xfkgdbcGE0dZ7MiI/8Pm4vxafHighUHY08+lSw+adF5a/mIUXI50eaH4rPbocqnCYZhLiynqlr3r0YxAtfPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994524; c=relaxed/simple;
-	bh=yXKEXe+jJogGmhKlWXxl4a3x7CycnAlkIpxDarAvsrI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EK2HqhJiX6VC8/v+98Q5xeSubF3TzQBbtnHc4ZSK4aW+Ie8bHcsadzIP5XDojfULNttMU7HgtGJQgjb292fEPYMbDWrnSyGDhBtyyXcOUWWyBR6wf/MqbWiCTpOys1I011zUb7U6ns9DJBXiKzrau7812mqlbpG0O0Pbv5qia1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Med1oLNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Q6pc7gW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Med1oLNB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Q6pc7gW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7620121EAD;
-	Thu, 15 Feb 2024 10:55:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707994520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
-	b=Med1oLNBn8ZxJaQi8g8abR9bH07zjIDiqfHz5vVXZO+L7FZdhzXlUP8oSLf9mf9Nyq23gY
-	KEZEEzbm66IGnQ5dlpl3PAo+dqQauhiczaI8OckRQZdXBTf4nMuaPnxlOfBMs5Sfs8zclj
-	tiwZc2dN5rtc0Smzl9i9Mht9OS7ODGk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707994520;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
-	b=1Q6pc7gWYUiEcvWs+VGr5UkOJAPDG3idD38iOFbVW6Tx09REjnsWsYt6zh/xmFY49gJlsb
-	EuzM+ZdnXD1mAVCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707994520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
-	b=Med1oLNBn8ZxJaQi8g8abR9bH07zjIDiqfHz5vVXZO+L7FZdhzXlUP8oSLf9mf9Nyq23gY
-	KEZEEzbm66IGnQ5dlpl3PAo+dqQauhiczaI8OckRQZdXBTf4nMuaPnxlOfBMs5Sfs8zclj
-	tiwZc2dN5rtc0Smzl9i9Mht9OS7ODGk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707994520;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EGovcSwKtSq7xWvCafXr0+DJqD0DGxnDBwIFF2je9d8=;
-	b=1Q6pc7gWYUiEcvWs+VGr5UkOJAPDG3idD38iOFbVW6Tx09REjnsWsYt6zh/xmFY49gJlsb
-	EuzM+ZdnXD1mAVCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6162813A53;
-	Thu, 15 Feb 2024 10:55:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1/hrF5jtzWXAMAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 15 Feb 2024 10:55:20 +0000
-Message-ID: <08a08ea2-6764-48af-8883-84639c732ce5@suse.cz>
-Date: Thu, 15 Feb 2024 11:55:20 +0100
+	s=arc-20240116; t=1707993369; c=relaxed/simple;
+	bh=FRkDuKYrn+JaUiHkO/hEV0XA6Yl+4fzxz0tmqhKImvw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Vp3UgJXpUmkA8TTnkospzVA7J1PK6b8aVE5RQdk51AttVqQAy5zjuSjSIR2pCXSfBQJY1kTFsPmofBBcZn+K8A6DVOFTw45GnbECH2pwI4PhVHJNdlTIKFOUo/+7WaocBFdExAhWKBaoffJu61lm/Yypgz1WKDNNax8kg4oC9mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TbB0c6bbnz9yB7M;
+	Thu, 15 Feb 2024 18:20:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 4AA771405A2;
+	Thu, 15 Feb 2024 18:35:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwA3LxjQ6M1l4QeNAg--.58293S5;
+	Thu, 15 Feb 2024 11:35:53 +0100 (CET)
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	chuck.lever@oracle.com,
+	jlayton@kernel.org,
+	neilb@suse.de,
+	kolga@netapp.com,
+	Dai.Ngo@oracle.com,
+	tom@talpey.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com,
+	eric.snowberg@oracle.com,
+	dhowells@redhat.com,
+	jarkko@kernel.org,
+	stephen.smalley.work@gmail.com,
+	omosnace@redhat.com,
+	casey@schaufler-ca.com,
+	shuah@kernel.org,
+	mic@digikod.net
+Cc: linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	keyrings@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v10 13/25] security: Introduce file_release hook
+Date: Thu, 15 Feb 2024 11:31:01 +0100
+Message-Id: <20240215103113.2369171-14-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 3/7] mm,page_owner: Maintain own list of stack_records
- structs
-Content-Language: en-US
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240214170157.17530-1-osalvador@suse.de>
- <20240214170157.17530-4-osalvador@suse.de>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240214170157.17530-4-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.46
-X-Spamd-Result: default: False [-1.46 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.17)[69.92%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:LxC2BwA3LxjQ6M1l4QeNAg--.58293S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxurWUGr4fGFWUKw15Ar1UJrb_yoW5try7pF
+	Z8t3WUGFW5JF17Wrn7Aa9rua4Sg393Kr9rWrZ5W34rtF1DJr9YgFsxCr1DuF1DJrW8Jr10
+	q3W2grW3Gr1DArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
+	Av7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
+	6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY
+	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
+	CY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5pfYgAAsd
 
-On 2/14/24 18:01, Oscar Salvador wrote:
-> page_owner needs to increment a stack_record refcount when a new allocation
-> occurs, and decrement it on a free operation.
-> In order to do that, we need to have a way to get a stack_record from a
-> handle.
-> Implement __stack_depot_get_stack_record() which just does that, and make
-> it public so page_owner can use it.
-> 
-> Also, traversing all stackdepot buckets comes with its own complexity,
-> plus we would have to implement a way to mark only those stack_records
-> that were originated from page_owner, as those are the ones we are
-> interested in.
-> For that reason, page_owner maintains its own list of stack_records,
-> because traversing that list is faster than traversing all buckets
-> while keeping at the same time a low complexity.
-> 
-> For now, add to stack_list only the stack_records of dummy_handle and
-> failure_handle, and set their refcount of 1.
-> 
-> Further patches will add code to increment or decrement stack_records
-> count on allocation and free operation.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+the file_release hook.
+
+IMA calculates at file close the new digest of the file content and writes
+it to security.ima, so that appraisal at next file access succeeds.
+
+The new hook cannot return an error and cannot cause the operation to be
+reverted.
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Acked-by: Paul Moore <paul@paul-moore.com>
+Acked-by: Christian Brauner <brauner@kernel.org>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ fs/file_table.c               |  1 +
+ include/linux/lsm_hook_defs.h |  1 +
+ include/linux/security.h      |  4 ++++
+ security/security.c           | 11 +++++++++++
+ 4 files changed, 17 insertions(+)
+
+diff --git a/fs/file_table.c b/fs/file_table.c
+index b991f90571b4..725407f374fa 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -367,6 +367,7 @@ static void __fput(struct file *file)
+ 	eventpoll_release(file);
+ 	locks_remove_file(file);
+ 
++	security_file_release(file);
+ 	ima_file_free(file);
+ 	if (unlikely(file->f_flags & FASYNC)) {
+ 		if (file->f_op->fasync)
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 3c84942d2818..7f9e9240606e 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -173,6 +173,7 @@ LSM_HOOK(int, 0, kernfs_init_security, struct kernfs_node *kn_dir,
+ 	 struct kernfs_node *kn)
+ LSM_HOOK(int, 0, file_permission, struct file *file, int mask)
+ LSM_HOOK(int, 0, file_alloc_security, struct file *file)
++LSM_HOOK(void, LSM_RET_VOID, file_release, struct file *file)
+ LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
+ LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
+ 	 unsigned long arg)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 97f2212c13b6..2997348afcb7 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -395,6 +395,7 @@ int security_kernfs_init_security(struct kernfs_node *kn_dir,
+ 				  struct kernfs_node *kn);
+ int security_file_permission(struct file *file, int mask);
+ int security_file_alloc(struct file *file);
++void security_file_release(struct file *file);
+ void security_file_free(struct file *file);
+ int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ int security_file_ioctl_compat(struct file *file, unsigned int cmd,
+@@ -1008,6 +1009,9 @@ static inline int security_file_alloc(struct file *file)
+ 	return 0;
+ }
+ 
++static inline void security_file_release(struct file *file)
++{ }
++
+ static inline void security_file_free(struct file *file)
+ { }
+ 
+diff --git a/security/security.c b/security/security.c
+index 5b442032c273..145e3141339c 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2719,6 +2719,17 @@ int security_file_alloc(struct file *file)
+ 	return rc;
+ }
+ 
++/**
++ * security_file_release() - Perform actions before releasing the file ref
++ * @file: the file
++ *
++ * Perform actions before releasing the last reference to a file.
++ */
++void security_file_release(struct file *file)
++{
++	call_void_hook(file_release, file);
++}
++
+ /**
+  * security_file_free() - Free a file's LSM blob
+  * @file: the file
+-- 
+2.34.1
 
 
