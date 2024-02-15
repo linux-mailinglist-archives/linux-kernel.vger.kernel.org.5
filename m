@@ -1,96 +1,123 @@
-Return-Path: <linux-kernel+bounces-67373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE5D3856A95
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A30C4856A9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6FEC281BBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:09:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D70C2833D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AEF13666F;
-	Thu, 15 Feb 2024 17:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC351369BF;
+	Thu, 15 Feb 2024 17:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vz3BXJ6+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbco+Ket"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84EA12DD9A;
-	Thu, 15 Feb 2024 17:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B20136988;
+	Thu, 15 Feb 2024 17:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708016939; cv=none; b=sNaMNCdR851fX61D8i5ZuQmw4wTbbxd2R4+DYB7KwarM5MWMsNM+bx1R+vY0iJk0BPeKPQQ9rb759dMBy/9rj9S6xtKyAsZtE/4Rm0CCLfmTkvRv0NKUi6Js2jL/Hxmj+z2HZRpZTkHjdO0gKXKa/DH2yeiKDWrDIQRKnNgQP/0=
+	t=1708016956; cv=none; b=Xf1zJ7QKAnrWmW9JLPvXi9QHWyckhIhI4XtfD7Lugg+Y/J9IIC/UHaxfsEZxNuhaHaHt+DBWy75CVboyQ9O4ylY1q5JUfn4VK3JRI0UzAeRHHEs3tCg8pxS5b+sYKepipzFR0Xv/mf+cf2aaze7S8K5IfkkxEql2cyn0WzGYBw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708016939; c=relaxed/simple;
-	bh=IMXJE45lWQekeaLIZjfOoc/Fs5C6NndcB5OT80m0SDc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=HJg2pzczmAbRW8lQYB08dEzSGLngcFBUU6DJ7hfWAUP4kbFgInxKHLJY6q/cC+Zrm7TZjIHTCktPhJVXRiGdKQtuua5YmD4/wlin+6wSEVWyMVpbPMjfIcxt7fIwiEzFdMjIUzLpl9GdwELvtOKz548PTym9OUddAGn9q5CmMwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vz3BXJ6+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14BA2C433F1;
-	Thu, 15 Feb 2024 17:08:57 +0000 (UTC)
+	s=arc-20240116; t=1708016956; c=relaxed/simple;
+	bh=iYuaQPEfpoZMaguUakN8GMeMOfkpNsph0ragFrzOlps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lbn5jGi/wbfhwZBswbDyIm5keIohV5BdfMf0TuLdpfLHG9aD5AGl9jGPitDP6pjaqZdIvgKqpiSQE67MeI317Kq9vit6ZN5ag97+nGgEoMxhmbBG1dPNShmmCnVwrCQ2zHGFFr5lg5je7jsTMuSyC089Qq4N2haGr6KIXfhoaK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cbco+Ket; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E8DC433F1;
+	Thu, 15 Feb 2024 17:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708016939;
-	bh=IMXJE45lWQekeaLIZjfOoc/Fs5C6NndcB5OT80m0SDc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Vz3BXJ6+GCcZ4t9+MaxoAYpJ45VKTjECTSUsRCw+Cv1KFa6c5l5nlgnyQU3A/4nxF
-	 b68y1NW3le5lEoi0pU58mdeADUp/P0yoJlcuF3gquGJ5ld9FHnwisB6G+xYMhL4nCO
-	 UXtDjMSdX3D2yFs2ICxF3kTa3WzWGyR0V5IcilOQJbqY9Wz2j+ikMC/MqRB5/TUNTw
-	 3sg3zddz7eCKnuY9j7xuH8nvbph/HqB0i4fcRLhj5BWrcqPKd2uhQZD/cKO/c/ONxd
-	 0UvxiNFNWZ0S/1jtcYuqdUIgHurhqKxNI9vA1dKAgVyn4ilfVXRl//s81sn/6Jzx6P
-	 Tkv+IELUXD2rQ==
-From: Mark Brown <broonie@kernel.org>
-To: linux-sound@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, 
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20240215132854.1907630-1-masahiroy@kernel.org>
-References: <20240215132854.1907630-1-masahiroy@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: remove redundant 'tristate' in
- sound/soc/codecs/Kconfig
-Message-Id: <170801693779.201416.2907627102331688225.b4-ty@kernel.org>
-Date: Thu, 15 Feb 2024 17:08:57 +0000
+	s=k20201202; t=1708016955;
+	bh=iYuaQPEfpoZMaguUakN8GMeMOfkpNsph0ragFrzOlps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cbco+Ket1Xpt3QUm+m0Nii0K+QlMMiAk9HvlywVaCUu81Jp3Ghz9lHhZz3gLDRDlM
+	 EYI8a/utOCbK+iQR4kTi83Qpvr1WD9TW+1IEZjQmTP48CFo/oR7Ju66a1yhmFM8UfL
+	 DbQSoCCMS4CYS8LeG8Bvk3/oqFEY/73eAC2CM2RhoqrRycyjSX46rjSrTiDC47IvyO
+	 MxllMrmhCLXFC42wcLC1X0lALxG2XUW58QxpwyZoYPLBAtHPfc/gEksXrlSxtGzg+C
+	 HrGik8kiiFW//qYvfLPg1uc/LYliYpcdj98/p+jIdd94XuSBTH8a6CIzcF6g2QZyiy
+	 fL6Aogj/NCprw==
+Date: Thu, 15 Feb 2024 17:09:10 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: neil.armstrong@linaro.org, quic_jesszhan@quicinc.com, sam@ravnborg.org,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quentin.schulz@theobroma-systems.com,
+	Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH 1/2] dt-bindings: vendor-prefixes: add prefix for admatec
+ GmbH
+Message-ID: <20240215-settle-province-41ad1a2f77e7@spud>
+References: <20240215090442.3513760-1-heiko@sntech.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tGCrTqscGmACoUi4"
+Content-Disposition: inline
+In-Reply-To: <20240215090442.3513760-1-heiko@sntech.de>
 
-On Thu, 15 Feb 2024 22:28:54 +0900, Masahiro Yamada wrote:
-> The type 'tristate' is already specified three lines above.
-> 
-> 
 
-Applied to
+--tGCrTqscGmACoUi4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Thu, Feb 15, 2024 at 10:04:41AM +0100, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+>=20
+> admatec GmbH is a german supplier for industrial displays.
+>=20
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 
-Thanks!
+There's a fair few Admatec's it seems, so a link would be good:
 
-[1/1] ASoC: codecs: remove redundant 'tristate' in sound/soc/codecs/Kconfig
-      commit: 74e0259495cfab4f92c64ddcbbfe454e5c2f962a
+Link: https://www.admatec.de/
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Cheers,
+Conor.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 1a0dc04f1db47..fef2e12b504ee 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -61,6 +61,8 @@ patternProperties:
+>      description: Analog Devices, Inc.
+>    "^adieng,.*":
+>      description: ADI Engineering, Inc.
+> +  "^admatec,.*":
+> +    description: admatec GmbH
+>    "^advantech,.*":
+>      description: Advantech Corporation
+>    "^aeroflexgaisler,.*":
+> --=20
+> 2.39.2
+>=20
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--tGCrTqscGmACoUi4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5FNgAKCRB4tDGHoIJi
+0hx3AP9aePTSJI1q2YqKlAHMe+jLDYuIkE/T6r+mNA0NZhL55AD/X4ONMTJ5vE7+
+EzhpHmzcA/qdoXcOzAmgfmMxb5xMYgo=
+=nFDp
+-----END PGP SIGNATURE-----
 
+--tGCrTqscGmACoUi4--
 
