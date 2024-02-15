@@ -1,75 +1,46 @@
-Return-Path: <linux-kernel+bounces-66292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DACC88559D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57DC08559DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 05:34:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 952272912CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02B621F296F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D017E182D4;
-	Thu, 15 Feb 2024 04:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZZgwhKJI"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBE2DDD9;
-	Thu, 15 Feb 2024 04:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5929D3D9E;
+	Thu, 15 Feb 2024 04:34:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321F1625
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 04:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707971279; cv=none; b=GTKFYL/PedXKZfTpol8bPnfAnDBLlyKZnRGPHFdYAzN/h8LLleJ/awIZ3tx5NtOcjMjGtYZNCmu5ePhbkKMG9VmFO2i9OYXpLq5P0dhM9z6UAxQ7Nm5V8Abokrgj7ShGeEQ7QU4rQ7klMujD6te5fvBmy13zCApaSrUO52Z5rXY=
+	t=1707971656; cv=none; b=n4Gyj2uCoroxxhfCP7rffFkTMWMzz2bAd+WrygjSMUlHI/8wQOefYlMEiFI9+SxtAThsktf6MeRDbb66j6NmGk3Ohkdp0v+TJZFyF/sQ5XHGXDXEoe6ghxRRWRdDwkfE/kgZY1PNQ9qtE/wI8hgHpvz99FJjDScfRVUbaD3IHV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707971279; c=relaxed/simple;
-	bh=PJX9nxRLEeoQwdUnmOqN3H2dctwppjpelMENczAYtJo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CagqRbVWCCHxrMGLpwy8rs9FAXVIKfopvmExIAr1jEQNbg3OlHPqMPzFkZgPAmlqAishRYAUrwm7Lz6Jo322E4HrOQl01ixgv8y3z2U/IKkUC8jo51FMrz7L6ugotJJmGZ2lD3PUQHv1Vzedsg7yGyBAX2upvuUQEPYe/L9Brmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZZgwhKJI; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707971275;
-	bh=PJX9nxRLEeoQwdUnmOqN3H2dctwppjpelMENczAYtJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZZgwhKJIFf7Dca21dG8DyHBxCG7bWPazxrJMg8S4zPiqK4NyHGXStqH798q6X2cxx
-	 4l7xgMRSV6+GrS1inT20T5fnzEcYwB7j3ghvjeHSqUOBp9t/CLLhIA3NB4erz9eGVi
-	 gU7VI1U0B0g0X24tsdadh7um1UwOWVg3Ll1ULT16GCBCCCP0cI+yLou3c30j4X/0/c
-	 +A/4kmGzuhn/aWqS2mS7rBvstcJ6S2O9lWFenRIIJFMoCRNTsHJnCqes4YDVMHiFPn
-	 ZgsAzzWYxSH/K6amRz67PxQ5wkBGgljYH22Gees/i08csya0NDHbv/utwrVfguLKma
-	 cl165W1QtuAtQ==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 32B3137820A1;
-	Thu, 15 Feb 2024 04:27:50 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	eugen.hristev@collabora.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	krisman@suse.de,
-	Gabriel Krisman Bertazi <krisman@collabora.com>,
-	Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v10 8/8] f2fs: Move CONFIG_UNICODE defguards into the code flow
-Date: Thu, 15 Feb 2024 06:26:54 +0200
-Message-Id: <20240215042654.359210-9-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215042654.359210-1-eugen.hristev@collabora.com>
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
+	s=arc-20240116; t=1707971656; c=relaxed/simple;
+	bh=XX6T+2qLJ1at+tCtwel54WNzbhu3rUFHduoOdIcabBo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JDV5A1aqBY/gqJRnkYBS23OdKRBgAKBzIRI8ncIiGu/AChJzHsgtFkDXJknPMNOrEyy9cf5JNg9ZDk9r3g70J5DTq3+5g6KPTQ69vwrfrj0br4yK0ZgIP0khdzGEnwXA9AbVEbbYmYGLCYK2eTxvK3ORc45cR5EQro8iaiTDVgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06E2A1FB;
+	Wed, 14 Feb 2024 20:34:53 -0800 (PST)
+Received: from a077893.arm.com (unknown [10.163.45.45])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 201CE3F7B4;
+	Wed, 14 Feb 2024 20:34:09 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH V2] mm/hugetlb: Ensure adequate CMA areas available for hugetlb_cma[]
+Date: Thu, 15 Feb 2024 10:04:05 +0530
+Message-Id: <20240215043405.2379295-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,94 +49,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+HugeTLB CMA area array is being created for possible MAX_NUMNODES without
+ensuring corresponding MAX_CMA_AREAS support in CMA. This fails the build
+for such scenarios indicating need for CONFIG_CMA_AREAS adjustment.
 
-Instead of a bunch of ifdefs, make the unicode built checks part of the
-code flow where possible, as requested by Torvalds.
-
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-[eugen.hristev@collabora.com: port to 6.8-rc3]
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: Muchun Song <muchun.song@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- fs/f2fs/namei.c | 10 ++++------
- fs/f2fs/super.c |  8 ++++----
- 2 files changed, 8 insertions(+), 10 deletions(-)
+This patch applies on v6.8-rc4
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index ba11298b7837..c317bfd1c344 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -577,8 +577,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
+Changes in V2:
+
+- Replaced VM_WARN_ON() with BUILD_BUG_ON() per Andrew
+
+Changes in V1:
+
+https://lore.kernel.org/all/20240209065036.1412670-1-anshuman.khandual@arm.com/
+
+ mm/hugetlb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ed1581b670d4..30dc02e19616 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -7743,6 +7743,13 @@ void __init hugetlb_cma_reserve(int order)
  	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
-+	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
- 		 * well.  For now, prevent the negative dentry
-@@ -587,7 +586,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		trace_f2fs_lookup_end(dir, dentry, ino, err);
- 		return NULL;
- 	}
--#endif
-+
- 	new = d_splice_alias(inode, dentry);
- 	trace_f2fs_lookup_end(dir, !IS_ERR_OR_NULL(new) ? new : dentry,
- 				ino, IS_ERR(new) ? PTR_ERR(new) : err);
-@@ -640,16 +639,15 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 	f2fs_delete_entry(de, page, dir, inode);
- 	f2fs_unlock_op(sbi);
  
--#if IS_ENABLED(CONFIG_UNICODE)
- 	/* VFS negative dentries are incompatible with Encoding and
- 	 * Case-insensitiveness. Eventually we'll want avoid
- 	 * invalidating the dentries here, alongside with returning the
- 	 * negative dentries at f2fs_lookup(), when it is better
- 	 * supported by the VFS for the CI case.
- 	 */
--	if (IS_CASEFOLDED(dir))
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
- 		d_invalidate(dentry);
--#endif
+ 	reserved = 0;
 +
- 	if (IS_DIRSYNC(dir))
- 		f2fs_sync_fs(sbi->sb, 1);
- fail:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1b718bebfaa1..07c54981cb6b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -312,7 +312,7 @@ struct kmem_cache *f2fs_cf_name_slab;
- static int __init f2fs_create_casefold_cache(void)
- {
- 	f2fs_cf_name_slab = f2fs_kmem_cache_create("f2fs_casefolded_name",
--							F2FS_NAME_LEN);
-+						   F2FS_NAME_LEN);
- 	return f2fs_cf_name_slab ? 0 : -ENOMEM;
- }
- 
-@@ -1360,13 +1360,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
--#if !IS_ENABLED(CONFIG_UNICODE)
--	if (f2fs_sb_has_casefold(sbi)) {
-+
-+	if (!IS_ENABLED(CONFIG_UNICODE) && f2fs_sb_has_casefold(sbi)) {
- 		f2fs_err(sbi,
- 			"Filesystem with casefold feature cannot be mounted without CONFIG_UNICODE");
- 		return -EINVAL;
- 	}
--#endif
-+
- 	/*
- 	 * The BLKZONED feature indicates that the drive was formatted with
- 	 * zone alignment optimization. This is optional for host-aware
++	/*
++	 * There needs to be enough MAX_CMA_AREAS to accommodate
++	 * MAX_NUMNODES heap areas being created here. Otherwise
++	 * adjust CONFIG_CMA_AREAS as required.
++	 */
++	BUILD_BUG_ON(MAX_CMA_AREAS < MAX_NUMNODES);
+ 	for_each_online_node(nid) {
+ 		int res;
+ 		char name[CMA_MAX_NAME];
 -- 
-2.34.1
+2.25.1
 
 
