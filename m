@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-66694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79623856131
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCE7856129
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F350B227B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:55:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4CDBB2BEF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1600713246D;
-	Thu, 15 Feb 2024 10:41:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF3A12AADF;
+	Thu, 15 Feb 2024 10:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M2Q7dZje"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XsYuJN1L"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23461384BC
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A864C15D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993660; cv=none; b=lGuijN30C4OBqk0u4XDSxFVYsywx7Tey79/e3lngQEk2a248znZ7Hn0YFavh/dkWW3mfjEVY8o7u6QL1kTn0H0/uHAZKKH3XuxAjtPpAB8tJ/OkzotejhibHTQXuTjfE14s9KQN74qgKZ/Bdusg+nAebzMtnQXaFKj5rbjS6yTM=
+	t=1707993755; cv=none; b=qXEVBInkjpxHFldsGmUf+DtEv39MTIO61dRd1tcwVe7hpZ4ZUDGhDrr4XZBMVKHklwmvlqBgvPnRwg9M3vYtkGf2mPgDm+OiHHabNYKugWNeKKI7zRdb+ALnCSaegRVVCezVNzUlB9UeDUL1EQna872AXurAt+LwRDYIxNuMpqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993660; c=relaxed/simple;
-	bh=SWZyr91RSjFEBPMJygb0PeNZiqlT5lF1JF07mMzSN50=;
+	s=arc-20240116; t=1707993755; c=relaxed/simple;
+	bh=/h6044P2lGm268g6KeLYTlIgmBaQqEF0UcGXmu0jXnM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YPITPscaRl1cOoojnw3irEwHUyehqmhw/CmOhOfsx+C/pMSPSSJ54BaKo9X8X7bFJ1i+TqpmqwBQmeY7WaMIJtQh4cB0gUdMD/mj+w0Qy5mQvUNc3KJkFGZR4rDNCQtEBfUwcEMoORujvFGZWYo091NoOfqT+QJe0vVAB0eiPF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M2Q7dZje; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=oyDQ8UX3FUJI6K9ZqirTm9SAkWfhQWyJemS1jFmkkeanYfhcPiqNlxjAFTK8VMfBxYDfxm1OfceBEZ5qcqszaswMV/L6NgOOwiQ6DacK/mnsI9NdQdBNK382Pw7KaBTgiSEb6LLfkaZo26apsAYYxzoMZsvK4NM1Wu1pq2vsNK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XsYuJN1L; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707993657;
+	s=mimecast20190719; t=1707993753;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Dn6tveOs8PusEs8m4mD6zhNeKDU0VeTYuAwtKeY+rs0=;
-	b=M2Q7dZjePAHFju4KIcgDQjHQHeQl5D/Q94GVRS9XgzzhORZDAJNxK43Fi4Wh9OTKY/VKVg
-	E85RL7x/Ke4waaVRPUQBJYxRn/3jyTPj2kajIe/z69eBdtchxqfueDSkOK+Yez+cjrZ5rT
-	1FB/1Xnpi+OnS2iNoMtBgGLImXUnMH0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=CmuQ7jlV5StRyQKCMnSZiYTZwMgVbzqFDx1+VQ1He2U=;
+	b=XsYuJN1Ln5oWptyo+dkWnYL9UjLDLCAgBXPhMdsPhqL97f2wzSy2/jhQbi8gTR6vW1Z6t8
+	1rqmHGv935fU+aixiKZVTqG52SQCnJ/+UV1t3np38wExuDVyBn7WVLlfrF49qgu0qlfRg2
+	kpoM9Rl4jT4bJf8fy0R0gGVCDN4kCxQ=
+Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
+ [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-78-Ax3P3Xf4N9CsYGbVeWatFQ-1; Thu, 15 Feb 2024 05:40:55 -0500
-X-MC-Unique: Ax3P3Xf4N9CsYGbVeWatFQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-68c51abe499so13044856d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:40:55 -0800 (PST)
+ us-mta-382-Uy1rWxsgOayf6Y2VkmSc3w-1; Thu, 15 Feb 2024 05:42:31 -0500
+X-MC-Unique: Uy1rWxsgOayf6Y2VkmSc3w-1
+Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4c0313ab162so244485e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 02:42:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707993655; x=1708598455;
+        d=1e100.net; s=20230601; t=1707993751; x=1708598551;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dn6tveOs8PusEs8m4mD6zhNeKDU0VeTYuAwtKeY+rs0=;
-        b=F5aAERkiu9YNtU72ymeAIBXtvIw0byPwh+qq4oEd4SZe5Lntolp0BbBVow/EValKTR
-         twnsyljk6madm2KbfG2muFP/fl4MyGDiHOL9azKJwQTmJ2AD0M6ehwHZOV1W1XyQf/Uu
-         /g8l5NzeE2eyJ5fhKyj00uKy5D/IHxpdrpl1jSavwGpyHNIMDCit7m1UqOsZYdiou8fq
-         qvw4KnQJEmG6E7I6AsSIqBLhfWXYl4Ucu0BeK9Kt1NqjP2LMYkT7k/yRZvXdyK3Mx66c
-         cCSbG5AFAer+E4d9CO3hfUh38SkCzjgu1ceTkb90l8+AVyMWObG8p6r9LfhZbYtGRy2D
-         fSfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfs0ezPnUXqea3gkKutuUR7Y5uwGva52/zveXoLlN/2aoUGFf42nuMjtEJ0fM9bizALkzvv2mvTYsrAg91uhj3SHicFvyNKFuuLz3m
-X-Gm-Message-State: AOJu0YwxTWc4wsZ/QwnqLLwUrt3EoO4DDCAM3ny71b5Zw10ojPvGkIG/
-	WchDfl2yi+mYds9Nf5E4LkW844lO/udRHAk45caa4KAwWE5fn47gD9U4vR4b8vpxVStJp/ofUN8
-	t4iQFv0C307oRMkVkHN7e02fP/mGQhu3/M5gGYSWdE1pmBLQ9A0OSYPXReW0vmw==
-X-Received: by 2002:a0c:f5d3:0:b0:68c:46e0:78d with SMTP id q19-20020a0cf5d3000000b0068c46e0078dmr1336996qvm.45.1707993655386;
-        Thu, 15 Feb 2024 02:40:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFMIzzBE86F6/yl4ubcuKOsVW2ImujOvA9fp0gqQGQAEFO2Q+VxkIQrF3T8orreKnGMsgBwPg==
-X-Received: by 2002:a0c:f5d3:0:b0:68c:46e0:78d with SMTP id q19-20020a0cf5d3000000b0068c46e0078dmr1336986qvm.45.1707993655069;
-        Thu, 15 Feb 2024 02:40:55 -0800 (PST)
+        bh=CmuQ7jlV5StRyQKCMnSZiYTZwMgVbzqFDx1+VQ1He2U=;
+        b=ooffBqvuPLeItyoOHL5inf6ejVL6nMPMYqwdIbNhvo9tEdIV+ZL9WZbRH5BA5kQRaz
+         dGy8napZ+1neNmSyxT71oa6BlM3f3+d1C/PEL+AjUdPCKB/uBTAyDnBSiuHwlrxhZUha
+         JAXbb35yO7nABTcVmYgGnwMbeJVXP4qUGq4u3f48e6Ok9FswRD33i0CuqixhB2PIz0+a
+         gZQ6AGgCcJQ/H7nFGe4bqeoxGFNgvyb0cQlqoIJvVfYfyaduLa9tC1a4sndgK4CI+cup
+         RQqwU7/ksVBG9OJXJ7hUKGgXryt23/I3tbTgg5Lu5bcboj+auNAmTvueMwDnRmJfpXF1
+         tqBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqkBlZMDRap8O9o9RxgA3+HcXIBgcbjYN+qzqxQnPpa7jHpsZ6uHm5UFlJGF8/O1+elRtWAhHe45A4G0DhX9puU90V+wjlkRSpPZnU
+X-Gm-Message-State: AOJu0Yx7Z0YGrha4tXHlE/Ayow1fWPepjEpu1a0d4imQwobJwAA9f8jr
+	6rg69vKyydfOQOrkH7BzItopMKJu4JKuM4vRAC+itIMSzRa9K5uk/eFZHd8+tc9Eb6Sp4GBacHu
+	MvdRg9xPqQSLqNtjEolXYFgw2dXaGTVvgiOQIQT6QBnqCgIaN8RVdxKkz6DYhag==
+X-Received: by 2002:a1f:d502:0:b0:4c0:1bb6:322 with SMTP id m2-20020a1fd502000000b004c01bb60322mr1080658vkg.15.1707993750907;
+        Thu, 15 Feb 2024 02:42:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHMiuIlXMhc0yS1rTV968GiZtxO95OE2uSApX5wtMbNkEqknL8qJRKqS1uqudeSIroiZglpZQ==
+X-Received: by 2002:a1f:d502:0:b0:4c0:1bb6:322 with SMTP id m2-20020a1fd502000000b004c01bb60322mr1080635vkg.15.1707993750584;
+        Thu, 15 Feb 2024 02:42:30 -0800 (PST)
 Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id lu7-20020a0562145a0700b0068efbe2235asm535657qvb.54.2024.02.15.02.40.51
+        by smtp.gmail.com with ESMTPSA id lu7-20020a0562145a0700b0068efbe2235asm535657qvb.54.2024.02.15.02.42.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 02:40:54 -0800 (PST)
-Message-ID: <3dd9a4b1-d912-4a92-9450-97ca816a267b@redhat.com>
-Date: Thu, 15 Feb 2024 11:40:49 +0100
+        Thu, 15 Feb 2024 02:42:30 -0800 (PST)
+Message-ID: <e9ce88d6-0e2e-4b8b-825a-bcb85180e21d@redhat.com>
+Date: Thu, 15 Feb 2024 11:42:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 03/18] mm: Introduce pte_advance_pfn() and use for
- pte_next_pfn()
+Subject: Re: [PATCH v6 04/18] arm64/mm: Convert pte_next_pfn() to
+ pte_advance_pfn()
 Content-Language: en-US
 To: Ryan Roberts <ryan.roberts@arm.com>,
  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
@@ -101,7 +101,7 @@ Cc: linux-arm-kernel@lists.infradead.org, x86@kernel.org,
  linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org
 References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-4-ryan.roberts@arm.com>
+ <20240215103205.2607016-5-ryan.roberts@arm.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -148,49 +148,44 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240215103205.2607016-4-ryan.roberts@arm.com>
+In-Reply-To: <20240215103205.2607016-5-ryan.roberts@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 15.02.24 11:31, Ryan Roberts wrote:
-> The goal is to be able to advance a PTE by an arbitrary number of PFNs.
-> So introduce a new API that takes a nr param. Define the default
-> implementation here and allow for architectures to override.
-> pte_next_pfn() becomes a wrapper around pte_advance_pfn().
-> 
-> Follow up commits will convert each overriding architecture's
-> pte_next_pfn() to pte_advance_pfn().
+> Core-mm needs to be able to advance the pfn by an arbitrary amount, so
+> override the new pte_advance_pfn() API to do so.
 > 
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->   include/linux/pgtable.h | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
+>   arch/arm64/include/asm/pgtable.h | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 231370e1b80f..b7ac8358f2aa 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -212,14 +212,17 @@ static inline int pmd_dirty(pmd_t pmd)
->   #define arch_flush_lazy_mmu_mode()	do {} while (0)
->   #endif
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 52d0b0a763f1..b6d3e9e0a946 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -351,10 +351,10 @@ static inline pgprot_t pte_pgprot(pte_t pte)
+>   	return __pgprot(pte_val(pfn_pte(pfn, __pgprot(0))) ^ pte_val(pte));
+>   }
 >   
-> -
->   #ifndef pte_next_pfn
+> -#define pte_next_pfn pte_next_pfn
 > -static inline pte_t pte_next_pfn(pte_t pte)
-> +#ifndef pte_advance_pfn
+> +#define pte_advance_pfn pte_advance_pfn
 > +static inline pte_t pte_advance_pfn(pte_t pte, unsigned long nr)
 >   {
-> -	return __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
-> +	return __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
+> -	return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
+> +	return pfn_pte(pte_pfn(pte) + nr, pte_pgprot(pte));
 >   }
->   #endif
 >   
-> +#define pte_next_pfn(pte) pte_advance_pfn(pte, 1)
-> +#endif
-> +
->   #ifndef set_ptes
->   /**
->    * set_ptes - Map consecutive pages to a contiguous range of addresses.
+>   static inline void set_ptes(struct mm_struct *mm,
+> @@ -370,7 +370,7 @@ static inline void set_ptes(struct mm_struct *mm,
+>   		if (--nr == 0)
+>   			break;
+>   		ptep++;
+> -		pte = pte_next_pfn(pte);
+> +		pte = pte_advance_pfn(pte, 1);
+
 
 Acked-by: David Hildenbrand <david@redhat.com>
 
