@@ -1,163 +1,258 @@
-Return-Path: <linux-kernel+bounces-67448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E6AA856BAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:55:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E802856BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:56:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2D3C1C20A87
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:55:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADD061F2128E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EB21386A4;
-	Thu, 15 Feb 2024 17:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7323F1386D7;
+	Thu, 15 Feb 2024 17:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Llt8JoIT"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2052.outbound.protection.outlook.com [40.107.223.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z53TqLO7"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E151369AC;
-	Thu, 15 Feb 2024 17:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019718; cv=fail; b=sMdlnfT0Qos0i+vncKVb97c1F2lNDrm6fA2haPjhfRUVEuLn51y34VL7V6cPs23xoIlt6PC7kgl4BZVeFdycz1BcTytOK1zFYoyHrNbok/EpafNrJ1hGafvKvF/KobWOevbSPBtk0FnR1db+aisOXzr/1qWxiSaHFlkSDgfNU00=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019718; c=relaxed/simple;
-	bh=vuDi+Gi8HQfXYzLgx6B/Eo2Yma+EDSHJ5mUwPWzVw0k=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EvTqi03TiG+vyjq32QTFQjyhop+PFwvXeKK+joYp5c+/kSkEu5QwHn+NJVVm5glQXGS8KrzmrkEbSWZ24SHsH/OMQjC6s0UmvLIQ6ryfXYFBJ+Jn5wt+52gUdD6GHiWdeNSA6nwfGFfPutC0aho4Md+VhW771etcZvVX6EIcvo8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Llt8JoIT; arc=fail smtp.client-ip=40.107.223.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=la3CZNaNl9xVGvMNLytpau6ZIbyHkQGUNSk5q4EuJuybbwb+sFIQXn1h0CRw5QtO/eTLsNkHYeVQzmn6mgCcg+6m8rZdy/FFG9LVOKjypwF+6SFer4+r19yHDUPyWaFQUWC3kEw1PsO5ihAFM9RJKjM7RXMyd3Tnu4RJW1Egg4JZI7ESJcANTR5FxwCVBzPx8BLPHE+e0Ixscbpr1thR4F92eFTMoh+/gJxRToR2mwF/Mtt3xuI/Q6efcwDnV9a7MAYCA2dt0uvmxeiztHyXhFKkz4VAn7S4OKbmnhgradCGpwkGtKVKisJKpFNSvkojRiMoM49q4eJd0+jHenQnNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qwhB/KzKzje75xeExOV7KpioCmnw5fXARW4w3Y2o7Y4=;
- b=nGfSM65rEWW6C8vemG0KoEAMYRr93fXXvIq3cMXQaJNag2zDeJsXmOR/MP3GohG6IhWXhEucrQdTOrjV4po2+be9UtcYF/NwqvACG0zzNnPCvKaNF1Ht59qUyfOUx+beoWHYxFGGGdySn0JLSJ3xADGdneUoD9Bo++Lnr+Zu+atg9f1qe5hLDWTx955PBiEJEiJ+ZcfFYaWsVa/m77HIQJouLv97/BYVozwp7X5Mj0c2V96FAkvPmgBekPPkzQKBfNqm1+wpntDDfV+tCL4iC69LPHOgTM380yHNuhzwTkoEIJM3qKVg6nkXXvd6bDSSyBJVOfr41mELUujdWYni3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qwhB/KzKzje75xeExOV7KpioCmnw5fXARW4w3Y2o7Y4=;
- b=Llt8JoIT8AASTlWg/kxuh1w8ld9uhN8wBiTKH1HVYR3LlHhiOaDC83ZonOkXobicgoECkPtPXQcEGERiRaTLREbKBFmh9Q1qCH6R7nTKyvEM7b3CNyxJW4uzQZpmhkoP+GIrHU0EHKJxQ7/g+kXWnvh3Uv/3Tzqr/h3rbip8C4M=
-Received: from CY5PR20CA0027.namprd20.prod.outlook.com (2603:10b6:930:3::21)
- by BY5PR12MB4067.namprd12.prod.outlook.com (2603:10b6:a03:212::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Thu, 15 Feb
- 2024 17:55:13 +0000
-Received: from CY4PEPF0000EE34.namprd05.prod.outlook.com
- (2603:10b6:930:3:cafe::cf) by CY5PR20CA0027.outlook.office365.com
- (2603:10b6:930:3::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
- Transport; Thu, 15 Feb 2024 17:55:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE34.mail.protection.outlook.com (10.167.242.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Thu, 15 Feb 2024 17:55:12 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 15 Feb
- 2024 11:55:12 -0600
-Date: Thu, 15 Feb 2024 11:54:56 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<seanjc@google.com>, <aik@amd.com>, <isaku.yamahata@intel.com>,
-	<thomas.lendacky@amd.com>
-Subject: Re: [PATCH 09/10] KVM: SEV: introduce KVM_SEV_INIT2 operation
-Message-ID: <20240215175456.yg3rck76t2k77ttg@amd.com>
-References: <20240209183743.22030-1-pbonzini@redhat.com>
- <20240209183743.22030-10-pbonzini@redhat.com>
- <20240215013415.bmlsmt7tmebmgtkh@amd.com>
- <ddabdb1f-9b33-4576-a47f-f19fe5ca6b7e@redhat.com>
- <20240215144422.st2md65quv34d4tk@amd.com>
- <CABgObfb1YSa0KrxsFJmCoCSEDZ7OGgSyDuCpn1Bpo__My-ZxAg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8AF1369AC
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708019731; cv=none; b=bu1iXBOau17Rwl6olWfaHsO9755NGawc52KDOGi6aMbPQYmbyY4gwmB4dGvgfFsvch9nzSWl6hQjYjplpHXs1sFHelH9euAvaoSgEwMg2Kv3ewf9OPAGIMcE+TVFa39b3yRB3tGGMKYYjW8sraXYNvZylsFzfHb8so4KAMI15v8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708019731; c=relaxed/simple;
+	bh=qrTaakqRAPccZJkKzTa2VDsicEBBfpGpDdAlWZurPwY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UVOX6h8vHKRQtO/ynJ1jiwlaIhs4NxKY2MDvieHxfdJYN/Wk5hL+FcRWbicfcd0quJ8mvWiLFGgs67VVMrUkVGVsr4L+h4Wzau5ExNBRSZBiZu9mLkCNRlkcLreNX00i9+NhyEkKe9l4b7huAyL2bTdAeNwsvI534BfNwFVkpPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=z53TqLO7; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511a45f6a57so1499034e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 09:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708019727; x=1708624527; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JDWXjBWcKFEbyW8Uf48hnpLWCBqnIeEgb6RPWjwQokE=;
+        b=z53TqLO7cPLfcxhVXTBELFDVh4ILdOkeQQ/w6r0qOWJWDzwA2Jl/vAtmCgPoxsiPnu
+         SU6D5JYpDABlET30PC3wMLy+Gz96jszr1inLPSCaWuixm85YY/+J/fRTxscQWXuWYQaX
+         23ePZ5Qv6uzyliiQcwThqLArRmG1bm39PU1oswNfLKe3xcNFhsJP51miNWcz2Z7pvvAo
+         7HHX7HXDimM8p199E7Ccrd8BSoMhnrLP4mBiZGXQG70Ei0Xl3lnOmxVN20UGrSa5Bdq9
+         TK7mcIgfxBkei7IGbbbeSZYnsrN/W9Ml+0gHgTSHkgW8Xc3CVel2/bmfEMBeQg3XyzXq
+         NeAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708019727; x=1708624527;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDWXjBWcKFEbyW8Uf48hnpLWCBqnIeEgb6RPWjwQokE=;
+        b=mSJQ8Lpskw+t8P/CIxWolq6d0e3e/nDJ77JBsOsGRvZq1GRbDtKf4MYmoVn4AxhvWq
+         thrq6TkVAwJeNJZq8eKApTm7Ig+0d1WUZGECMkGIWyzQOy/cRaXvypNcMsG8hDMQskeD
+         EN6t8wL5cSQE31ISp9XwS6tocUTmVy3c1vFnDS2zu2FoQdCmyapD30LpjfXyiXX+Lm+Y
+         OinhbwjyJA8Nj840Jkzv1Fs/bzWyHcZiiDl9fgOhqD0dc28LwxC4dzAs0VUZ4tNHIbRq
+         xCwOWHFMqjvHKaxY5tm412rW6Ty0aOxXFSXStXFlQG4/dOh9/LGNyJnYSAjvVo3aQcEW
+         ifNA==
+X-Forwarded-Encrypted: i=1; AJvYcCWvV0RSyL2oh/76bknDnqIRREIX8seY8f96zUB/zR6A9jbFUBMS7tfU5VUJ3E/+PI/xVhzljOoI/e3P8vMfnUgqRh/2V7nzmIV3qtTf
+X-Gm-Message-State: AOJu0YyYRs/rApa9a4Ex5bYmXvlU463rlamsTWQQmoQ6LIuV0G2dQ+sj
+	8NDNIn8o1C0W0sBBveY8Q8qea2UugXxwQWkEc7dNhmuvsAJkctqWFEJkTORKytM=
+X-Google-Smtp-Source: AGHT+IHCLIfN6muAhaewbjdhnO1CjXkKfDODDb3Jlvpzo3uuFHn1hyVeYSewW3DaaUIu7nCHSXFxCA==
+X-Received: by 2002:ac2:4d8d:0:b0:511:5537:fb26 with SMTP id g13-20020ac24d8d000000b005115537fb26mr1993787lfe.39.1708019720252;
+        Thu, 15 Feb 2024 09:55:20 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id g6-20020aa7c586000000b005619eea3d52sm749980edq.8.2024.02.15.09.55.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 09:55:14 -0800 (PST)
+Message-ID: <4cb0144c-303b-4b91-bf88-0a7d7412afe1@linaro.org>
+Date: Thu, 15 Feb 2024 18:55:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfb1YSa0KrxsFJmCoCSEDZ7OGgSyDuCpn1Bpo__My-ZxAg@mail.gmail.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE34:EE_|BY5PR12MB4067:EE_
-X-MS-Office365-Filtering-Correlation-Id: af432c91-c438-4350-e05d-08dc2e4f4253
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Ep2/RK9YrVexWHfeNcK/zJ7vMKkYu89SCy6zDwy8+h/LYcmAEVDJSzgtosjme8XLRW4Z4bR3LtktqhylX1sd+YRU3Cz5iPm6XRS44q81iNLzps0SYRbOH108/wiTtn3gDzLW8C7KE9ltkma5SoUJXcvX8M+OCvMEJRLACw53KnpU3f/CPAkVs6oCj7dz9aeVN6hHj/R9PN/CfyCzkvJQRoTDAby9NJDGU/UkQcMrGmvDWEuz7AqAMd/4RFyeNZzsPzl7TIC556JQa1vZeW2nwGyKGQjbft/w5DMwY66CeDoc5f8e5I4oK9/jOX44f4gzyLAqVwNhCjHKCix/uRJpVTxG4YItOf/9Y9EBnAgre1bRBiXH7yYkt62yrocMdHbxmh3QITt/Z8tPW3YdkNdNjb248Ep9dGmevdTKD+NXOq62PyXxNvumrvxC/o5RQDMk2qeIZInXwehFRd4Z+iX9hnf1ljoKlRvvleHy3IeXj1mKmDeLqzzE1TAjf+1urD194DC/Bq2I0n2Rv8qrJmmB1Iyd4OGeKezBThhWGBeMPtZEugbtqz4E012EERm7mMTymkb2EbL8hYlEf1HMf/8BB8oDnwEyIK+9Jw3wDl3RGi64JUHjkO62X/wzPjgxkBOvLkfgHYPT80b4PbYMV4W+SNFZiAI0otSv5LEnj9eZfcQ=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(396003)(136003)(230273577357003)(230922051799003)(64100799003)(451199024)(36860700004)(186009)(82310400011)(1800799012)(46966006)(40470700004)(36756003)(8936002)(8676002)(16526019)(4326008)(356005)(26005)(41300700001)(426003)(83380400001)(2906002)(86362001)(336012)(81166007)(44832011)(5660300002)(1076003)(2616005)(70586007)(316002)(70206006)(6666004)(6916009)(478600001)(54906003)(53546011)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 17:55:12.8761
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: af432c91-c438-4350-e05d-08dc2e4f4253
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE34.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4067
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] drivers: mtd: nand: Add qpic_common API file
+Content-Language: en-US
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
+ broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
+ linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240215134856.1313239-3-quic_mdalam@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 06:28:18PM +0100, Paolo Bonzini wrote:
-> On Thu, Feb 15, 2024 at 3:44 PM Michael Roth <michael.roth@amd.com> wrote:
-> > What I mean is that if userspace is modified for these checks, it's
-> > reasonable to also inform them that only VMSA features present in
-> > those older kernels (i.e. debug-swap) will be available via KVM_SEV_INIT,
-> > and for anything else they will need to use KVM_SEV_INIT.
-> >
-> > That way we can provide clear documentation on what to expect regarding
-> > VMSA features for KVM_SEV_INIT and not have to have the "undefined"
-> > wording: it'll never use anything other than debug-swap depending on the
-> > module param setting.
+On 15.02.2024 14:48, Md Sadre Alam wrote:
+> Add qpic_common.c file which hold all the common
+> qpic APIs which will be used by both qpic raw nand
+> driver and qpic spi nand driver.
 > 
-> Ah, I agree.
+> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> ---
+
+IIUC this is mostly moving code around?
+
+I do however have some suggestions..
+
+>  drivers/mtd/nand/Makefile            |    1 +
+>  drivers/mtd/nand/qpic_common.c       |  786 +++++++++++++++++
+>  drivers/mtd/nand/raw/qcom_nandc.c    | 1226 +-------------------------
+>  include/linux/mtd/nand-qpic-common.h |  488 ++++++++++
+>  4 files changed, 1291 insertions(+), 1210 deletions(-)
+>  create mode 100644 drivers/mtd/nand/qpic_common.c
+>  create mode 100644 include/linux/mtd/nand-qpic-common.h
 > 
-> > That seems reasonable, but the main thing I was hoping to avoid was
-> > another round of VMSA features changing out from underneath the covers
-> > again. The module param setting is something we've needed to convey
-> > internally/externally a good bit due to the fallout and making this
-> > change would lead to another repeat. Not the end of the world but would
-> > be nice to avoid if possible.
-> 
-> The fallout was caused by old kernels not supporting debug-swap and
-> now by failing measurements. As far as I know there is no downside of
-> leaving it disabled by default, and it will fix booting old guest
-> kernels.
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index 19e1291ac4d5..131707a41293 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -12,3 +12,4 @@ nandcore-$(CONFIG_MTD_NAND_ECC) += ecc.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_SW_HAMMING) += ecc-sw-hamming.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_SW_BCH) += ecc-sw-bch.o
+>  nandcore-$(CONFIG_MTD_NAND_ECC_MXIC) += ecc-mxic.o
+> +obj-y += qpic_common.o
+> diff --git a/drivers/mtd/nand/qpic_common.c b/drivers/mtd/nand/qpic_common.c
+> new file mode 100644
+> index 000000000000..4d74ba888028
+> --- /dev/null
+> +++ b/drivers/mtd/nand/qpic_common.c
+> @@ -0,0 +1,786 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * QPIC Controller common API file.
+> + * Copyright (C) 2023  Qualcomm Inc.
+> + * Authors:	Md sadre Alam           <quic_mdalam@quicinc.com>
+> + *		Sricharan R             <quic_srichara@quicinc.com>
+> + *		Varadarajan Narayanan	<quic_varada@quicinc.com>
+> + *
+> + */
+> +
+> +#include <linux/mtd/nand-qpic-common.h>
+> +
+> +struct qcom_nand_controller *
+> +get_qcom_nand_controller(struct nand_chip *chip)
+> +{
+> +	return container_of(chip->controller, struct qcom_nand_controller,
+> +			    controller);
+> +}
+> +EXPORT_SYMBOL(get_qcom_nand_controller);
 
-Yah, agreed on older guest kernels, but it's the measurement side of things
-where we'd expect some additional fallout. The guidance was essentially that
-if you run a newer host kernel with debug-swap support, you need either need
-to:
+#define to_qcom_nand_controller()?
 
-  a) update your measurements to account for the additional VMSA feature
-  b) disable debug-swap param to maintain previous behavior/measurement
+> +
+> +/*
+> + * Helper to prepare DMA descriptors for configuring registers
+> + * before reading a NAND page.
+> + */
 
-So those who'd taken approach a) would see another unexpected measurement
-change when they eventually update to a newer kernel.
+Can you convert these to kerneldoc instead?
 
--Mike
+> +void config_nand_page_read(struct nand_chip *chip)
+> +{
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +
+> +	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+> +	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+> +	if (!nandc->props->qpic_v2)
 
-> 
-> Paolo
-> 
+This is not going to scale going forward.. please include a version
+enum instead.
+
+[...]
+
+> +
+> +int prep_adm_dma_desc(struct qcom_nand_controller *nandc, bool read,
+> +		      int reg_off, const void *vaddr, int size,
+> +			     bool flow_control)
+> +{
+> +	struct desc_info *desc;
+> +	struct dma_async_tx_descriptor *dma_desc;
+> +	struct scatterlist *sgl;
+> +	struct dma_slave_config slave_conf;
+> +	struct qcom_adm_peripheral_config periph_conf = {};
+> +	enum dma_transfer_direction dir_eng;
+> +	int ret;
+
+Revertse-christmas-tree, please
+
+> +
+> +	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+> +	if (!desc)
+> +		return -ENOMEM;
+> +
+> +	sgl = &desc->adm_sgl;
+> +
+> +	sg_init_one(sgl, vaddr, size);
+> +
+> +	if (read) {
+> +		dir_eng = DMA_DEV_TO_MEM;
+> +		desc->dir = DMA_FROM_DEVICE;
+> +	} else {
+> +		dir_eng = DMA_MEM_TO_DEV;
+> +		desc->dir = DMA_TO_DEVICE;
+> +	}
+> +
+> +	ret = dma_map_sg(nandc->dev, sgl, 1, desc->dir);
+> +	if (ret == 0) {
+
+if (!ret)
+
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	memset(&slave_conf, 0x00, sizeof(slave_conf));
+
+Just zero-initialize it (= { 0 }) at declaration time
+
+Konrad
 
