@@ -1,208 +1,141 @@
-Return-Path: <linux-kernel+bounces-67432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A994856B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:47:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE11D856B7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EFD4B2156E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:47:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CBF31C2201F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3716E1386AD;
-	Thu, 15 Feb 2024 17:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8CD1386AE;
+	Thu, 15 Feb 2024 17:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R4jYCgIO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ak+LTUXk"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DDC1369B2;
-	Thu, 15 Feb 2024 17:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CC21384AB
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019203; cv=none; b=Itizu7zr+BaciO0cIWU6J4CnDg1FLVtvijaVkSOmfw6PAuRXo5YQMwRyCh5t2C5jwHv1sXnjAKXSa3PWIWC2NJqp+xsaCku+x1ZuuzRkn282aJFXZqFG5Lyn9Fr1VIKRlhmsWiCkXHzILaHh7H1XbbsWRtrJO+ABgp6CL2FqP8E=
+	t=1708019226; cv=none; b=tnUuXdfyxmuO+AL5ZV9ZEoKKl3AN1/lU+/2QTttUk/Abe4Eo+ZCrjLMd6pE4jaiRQHrtL06bYaP8GXfGOXpWtS4FGBoc99KQMzw8gjZVIPjai6laCb0blxpcq0PZVhoMLvx0lTFMOcE9MEVpT9/0A3bykxVorVkbpjqCVfVFraY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019203; c=relaxed/simple;
-	bh=qrkL/cNhS+5VssaK2deynwkxln+cK6Q46lyuSrshsP8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VKo4MHo9RPh9TXfrg5ZFEkTKevWVGJn8H6BDJ7Uas63c9ZP76jAVx3eYT0TZq6rbKw+pGWoegGTnWno2nunSslJgQtQE5Iy5HY3wmO2um5UsbIYxKff7ELrKZ7H+lQtOPNptgSAJzg/LuxJ9cnT3bbzv9MOosjUulX0AHw7v2tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R4jYCgIO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D8706C43399;
-	Thu, 15 Feb 2024 17:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708019202;
-	bh=qrkL/cNhS+5VssaK2deynwkxln+cK6Q46lyuSrshsP8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=R4jYCgIOG1sqiWcVTSMjk3GVSIyvK3jhwIHX8a/OR9wFQ6JqA5U9QZ8Ve7wn+Z2Gf
-	 IyJcbct0J2eQBHWHUNk6BToF6BIjYrnbetgjl8rTG6F0Z6BEUx5GsloDmo5KVKakVB
-	 4sJRD8vdDnuIg3UCit0Q2pWaTezfDyUg8UelflIO/VM0Up7OfcBqkUEJo6hyZUHAo1
-	 dnbnLx1lRkbbWwV6U7UoMQCGrEMg6Q6mslVOcsbjNE2JQxTNAHTJ+pBnUQB4ehjxiB
-	 ufi2FQ4xwF2K07Y/di93LwXpoqzqQ65bcIMNn0aAepLtlnpUgOzl+5XsuWdJ53ni5r
-	 REPxrKbwBv2wA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFFC1C48BF2;
-	Thu, 15 Feb 2024 17:46:42 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Fri, 16 Feb 2024 01:46:44 +0800
-Subject: [PATCH 3/3] dt-bindings: mmc: dw-mshc-hi3798cv200: rename to
- dw-mshc-histb
+	s=arc-20240116; t=1708019226; c=relaxed/simple;
+	bh=jHG9H8i9qhAeOn57Plf+Ex4DiuuEmdAlsRWhZjMgxes=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bhxYJrQTKkCa6ACDefIXdcZJB7Uw5AtJpiJhkJ1YCloeHUL4fa9lbSYVJV4/2N03R+6Y1rlLwupyEfhJRBpkp3YDPbMgZEo8xSfpyEPZCraBr/zNu1bBeaaFdCjvUW94mEf5WSjfMw6GAbf4huv+tT0ZgVukJKjo0Y3L8fIsXiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ak+LTUXk; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FFTY34030192;
+	Thu, 15 Feb 2024 17:46:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=PJ/JEvX0jmjLAMAQh6ULKyKsJAdiUkLyj1BxUN+t8+0=;
+ b=ak+LTUXktNYa0FN1G7vC/Ie/HMVe5lOgIe6W7EBrBtEy1cC6BVIKYLEp/vkwO+BQK1Po
+ i4yVzWDtq8cEIlNiWhdePrv0eDmmTGPqlPfA6JFjEDIZKmTEuNuY/4Bsb1b4+TyDgl26
+ 6vwecyGQqRhhXiklcplznEValSKBPl9M0v4Z/p07Vd06wBggxynhD+bElo83KE4ehbxR
+ A5vO8c/FIrS2Dfp0zK6VokmlB06fgT2iYjNjDsHmYSVVRZNpNRIScDAxOvILpelbKlYU
+ zSLeMyNfk2IyYAE7iy28b3viNOgptPRCtux1AW/ZQIAWSJA6WDzikXGxEOCLFCNDBneN fA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91f033yp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 17:46:56 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FGtsou014987;
+	Thu, 15 Feb 2024 17:46:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykakd72-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 17:46:55 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FHfld4023373;
+	Thu, 15 Feb 2024 17:46:55 GMT
+Received: from jonah-ol8.us.oracle.com (dhcp-10-65-162-170.vpn.oracle.com [10.65.162.170])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3w5ykakd5w-1;
+	Thu, 15 Feb 2024 17:46:55 +0000
+From: Jonah Palmer <jonah.palmer@oracle.com>
+To: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        eperezma@redhat.com, si-wei.liu@oracle.com,
+        virtualization@lists.linux-foundation.org, dtatulea@nvidia.com
+Cc: jonah.palmer@oracle.com, boris.ostrovsky@oracle.com, leiyang@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] vdpa/mlx5: Allow CVQ size changes
+Date: Thu, 15 Feb 2024 12:46:47 -0500
+Message-Id: <20240215174647.3885093-1-jonah.palmer@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240216-b4-mmc-hi3798mv200-v1-3-7d46db845ae6@outlook.com>
-References: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
-In-Reply-To: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>, 
- Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708019203; l=4176;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=vyT5SY9rrA1BRKlIPW3ARvBOXeZjjpuC0pdH+zidx+U=;
- b=Tf3Nb3SLoAI+EwCZ6ijWxGYdkpP8wYBMIRw7xswxJo5oZ6AvOrrL3r6U3dllsArYeg57hgvnE
- 9OOU7fzbCSNBO41J+nGHqoN6vK/gcrutOvSe/waWCtMDad1zAuLOUIS
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_16,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150143
+X-Proofpoint-ORIG-GUID: ZRaBVuTFXVW_8jdqLGv_AjIlXszMx3D6
+X-Proofpoint-GUID: ZRaBVuTFXVW_8jdqLGv_AjIlXszMx3D6
 
-From: Yang Xiwen <forbidden405@outlook.com>
+The MLX driver was not updating its control virtqueue size at set_vq_num
+and instead always initialized to MLX5_CVQ_MAX_ENT (16) at
+setup_cvq_vring.
 
-Add binding for Hi3798MV200 DWMMC specific extension.
+Qemu would try to set the size to 64 by default, however, because the
+CVQ size always was initialized to 16, an error would be thrown when
+sending >16 control messages (as used-ring entry 17 is initialized to 0).
+For example, starting a guest with x-svq=on and then executing the
+following command would produce the error below:
 
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+ # for i in {1..20}; do ifconfig eth0 hw ether XX:xx:XX:xx:XX:XX; done
+
+ qemu-system-x86_64: Insufficient written data (0)
+ [  435.331223] virtio_net virtio0: Failed to set mac address by vq command.
+ SIOCSIFHWADDR: Invalid argument
+
+Signed-off-by: Jonah Palmer <jonah.palmer@oracle.com>
 ---
- ...hi3798cv200-dw-mshc.yaml => histb-dw-mshc.yaml} | 60 +++++++++++++++++++---
- 1 file changed, 52 insertions(+), 8 deletions(-)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-similarity index 57%
-rename from Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
-rename to Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-index 5db99cd94b90..d2f5b7bb7a58 100644
---- a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
-+++ b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-@@ -1,11 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/mmc/hi3798cv200-dw-mshc.yaml#
-+$id: http://devicetree.org/schemas/mmc/histb-dw-mshc.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 778821bab7d9..c74de1fe6a94 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -2276,9 +2276,15 @@ static void mlx5_vdpa_set_vq_num(struct vdpa_device *vdev, u16 idx, u32 num)
+ 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+ 	struct mlx5_vdpa_virtqueue *mvq;
  
- title:
--  Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
-+  Hisilicon HiSTB SoCs specific extensions to the Synopsys DWMMC controller
+-	if (!is_index_valid(mvdev, idx) || is_ctrl_vq_idx(mvdev, idx))
++	if (!is_index_valid(mvdev, idx))
+ 		return;
  
- maintainers:
-   - Yang Xiwen <forbidden405@outlook.com>
-@@ -14,16 +14,14 @@ description:
-   The Synopsys designware mobile storage host controller is used to interface
-   a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
-   differences between the core Synopsys dw mshc controller properties described
--  by synopsys-dw-mshc.txt and the properties used by the Hisilicon Hi3798CV200
--  specific extensions to the Synopsys Designware Mobile Storage Host Controller.
--
--allOf:
--  - $ref: synopsys-dw-mshc-common.yaml#
-+  by synopsys-dw-mshc.txt and the properties used by the Hisilicon HiSTB specific
-+  extensions to the Synopsys Designware Mobile Storage Host Controller.
- 
- properties:
-   compatible:
-     enum:
-       - hisilicon,hi3798cv200-dw-mshc
-+      - hisilicon,hi3798mv200-dw-mshc
- 
-   reg:
-     maxItems: 1
-@@ -48,6 +46,12 @@ properties:
-       control the clock phases, "ciu-sample" is required for tuning
-       high speed modes.
- 
-+  hisilicon,sap-dll-reg:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      A phandle points to the sample delay-locked-loop(DLL)
-+      syscon node, used for tuning.
++        if (is_ctrl_vq_idx(mvdev, idx)) {
++                struct mlx5_control_vq *cvq = &mvdev->cvq;
++                cvq->vring.vring.num = num;
++                return;
++        }
 +
- required:
-   - compatible
-   - reg
-@@ -55,13 +59,25 @@ required:
-   - clocks
-   - clock-names
+ 	mvq = &ndev->vqs[idx];
+ 	mvq->num_ent = num;
+ }
+@@ -2963,7 +2969,7 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
+ 		u16 idx = cvq->vring.last_avail_idx;
  
-+allOf:
-+  - $ref: synopsys-dw-mshc-common.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: hisilicon,hi3798mv200-dw-mshc
-+    then:
-+      required:
-+        - hisilicon,sap-dll-reg
-+
- unevaluatedProperties: false
- 
- examples:
-   - |
-     #include <dt-bindings/clock/histb-clock.h>
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
--    emmc: mmc@9830000 {
-+    mmc@9830000 {
-       compatible = "hisilicon,hi3798cv200-dw-mshc";
-       reg = <0x9830000 0x10000>;
-       interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-@@ -84,3 +100,31 @@ examples:
-       bus-width = <8>;
-       status = "okay";
-     };
-+  - |
-+    #include <dt-bindings/clock/histb-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    mmc@9830000 {
-+      compatible = "hisilicon,hi3798mv200-dw-mshc";
-+      reg = <0x9830000 0x10000>;
-+      interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+      clocks = <&crg HISTB_MMC_CIU_CLK>,
-+               <&crg HISTB_MMC_BIU_CLK>,
-+               <&crg HISTB_MMC_SAMPLE_CLK>,
-+               <&crg HISTB_MMC_DRV_CLK>;
-+      clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
-+      resets = <&crg 0xa0 4>;
-+      reset-names = "reset";
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&emmc_pins>;
-+      fifo-depth = <256>;
-+      clock-frequency = <50000000>;
-+      max-frequency = <150000000>;
-+      cap-mmc-highspeed;
-+      mmc-ddr-1_8v;
-+      mmc-hs200-1_8v;
-+      mmc-hs400-1_8v;
-+      non-removable;
-+      bus-width = <8>;
-+      hisilicon,sap-dll-reg = <&emmc_sap_dll_reg>;
-+      status = "okay";
-+    };
-
+ 		err = vringh_init_iotlb(&cvq->vring, mvdev->actual_features,
+-					MLX5_CVQ_MAX_ENT, false,
++					cvq->vring.vring.num, false,
+ 					(struct vring_desc *)(uintptr_t)cvq->desc_addr,
+ 					(struct vring_avail *)(uintptr_t)cvq->driver_addr,
+ 					(struct vring_used *)(uintptr_t)cvq->device_addr);
 -- 
-2.43.0
+2.39.3
 
 
