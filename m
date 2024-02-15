@@ -1,144 +1,175 @@
-Return-Path: <linux-kernel+bounces-67596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B668856DDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:39:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A678856DDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ADFAB227ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:39:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9416F1F21CB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE91C13A869;
-	Thu, 15 Feb 2024 19:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A9613A24E;
+	Thu, 15 Feb 2024 19:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xj4aDh/w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZRbNisLR"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B945DF16;
-	Thu, 15 Feb 2024 19:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7535DF16;
+	Thu, 15 Feb 2024 19:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708025972; cv=none; b=ffompPJnM8qLgDl5Z8ic8MHpgkaW5z2DTH8zMvaUH+Kbmzfy2wp1NTBbXu/aDjkPaq9aBqtyWlxPHgwjj0viNGBD2Wt6bzywlTF6/sMwqevtQosZ0W/lzHrfMduNYHL2gXrGgyVtO4/P0LNTV2VTrbVYFJPnFA8Zoxr/W1VBKzI=
+	t=1708025990; cv=none; b=rLX9O9bITvI9pnj92IoIzCm67jwTSGoqoCC/USQ+uMNEdjNbWpWTqWZ1OQ26neTZBFWnYDV5utkvxCMiG+JEcbBm4eCDLaa8t5dkWgn5Z3fByOOm8ekgl+aSUxo/YG6rFtF98U1K7OQmJFA/MhLtP2F5e+gzyGTCpuOa6TpLis4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708025972; c=relaxed/simple;
-	bh=lnJROVnckTmteDEbP/T2C4WoTvrQNTHlrX+h6G5UKQQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SoPOHCSvLKFkOy+H6KsDHtdiV+MtEcLayMJHOrkxM7Trbqm4uJiuRmqNsfssPYwK0RnW+xWYogfvfdxYKVdBy5CcB/11rzP4EkI4eoF/rb3TCsM8tsciSOM03SbwnTzDUq++PCPu4aTBap9cULZ1KeTa7c4NPUNGoPpGkk9DEjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xj4aDh/w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B7DDC433F1;
-	Thu, 15 Feb 2024 19:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708025971;
-	bh=lnJROVnckTmteDEbP/T2C4WoTvrQNTHlrX+h6G5UKQQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Xj4aDh/wvg83T77RgYb8/CZYmPb03V+3YOM0ahGjqlCiHI04YTLEmtszPZEpGv6aN
-	 5ujsRcBXBAFC087z4SaWgVfocoJTbzAoKbnrjsTrkra+Ix2kbDOB4EK05BJtjlpAtD
-	 /AkijIN2sZiDLYEXlzwbTEqAcjGRAzVW1bYqpKa2QFm70K8YCOsR/W7yHMzsnVXLlL
-	 KgGeTq+ilB+srMbqxdAb1GU802bqB0vE5CPnauB3XYXe16U6ihnobhCf4huYqGYUq6
-	 qSC408dCYejb5Nh388pL59LEFbaMaE/7NEmCG4kpBSSlP/gIjIVvnnZKqU+lVgTNwn
-	 uEirmsKEjH1Pg==
-Date: Thu, 15 Feb 2024 19:39:26 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Cc: gregkh@linuxfoundation.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	balbi@kernel.org, Thinh.Nguyen@synopsys.com,
-	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, git@amd.com,
-	Piyush Mehta <piyush.mehta@amd.com>
-Subject: Re: [PATCH] dt-bindings: usb: dwc3: Add snps,enable_guctl1_ipd_quirk
-Message-ID: <20240215-crying-lunchtime-977afb05e45f@spud>
-References: <1708023665-1441674-1-git-send-email-radhey.shyam.pandey@amd.com>
+	s=arc-20240116; t=1708025990; c=relaxed/simple;
+	bh=b4qsm/vXrA5+rq9TQ8U1/ACAAqaoSOxrn80nHRGkv7I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kHPfA/AXeg05yJo5T0IUuaBQBUnlevFAGr3xNpg5CNPXwwdoNCVNsp1tCZv/fyoF85eOokUJz3xZjfL90W7lDl/nBw854QPVMsiOWbTPVRjRb7pEizPGz7xu1dSOOkGCfzhqe9aaWXtC8xG2U0BNFZZVEF3TbDqlve7O/D0g1aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZRbNisLR; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FJUpJQ015076;
+	Thu, 15 Feb 2024 19:39:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DXx62xEDkMDtVYwwGpGO1K+w7sxZBu7HWpCPYxFwSME=;
+ b=ZRbNisLRs5PgAS9akFbugwMk+p9Cv+kM0W32tY4ERnlpjGu/RTRtsifIa9LENIgyYGkl
+ dd4ws0WbdFgFbV2JW99s4W87iphobojyv88g6PFJBkpVC6NFbg3njS7akTyeG8TcelIP
+ RgJWiD3YX+vfugBWVMWSjeiF2VePyyqSw7tXpE3AC1ISgXWB4mV0d0EL06aqBR1J8Xz9
+ qWmUbwK2u9atsJ+hVWB4w2C+h6J21u7l2laIUOiO+5xBImiwRhw51wBjRRsRfXO8R34Y
+ kT+wY9RRjNVAlqbcQiTWHEZU/ymFluQVhS61nzmByC28awWjFmGm2gYGpbXYDVyUidKI mQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9qfaj90q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 19:39:32 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41FJXRkv026056;
+	Thu, 15 Feb 2024 19:39:31 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9qfaj90h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 19:39:31 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FJAQnG032596;
+	Thu, 15 Feb 2024 19:39:30 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6kfty4m9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Feb 2024 19:39:30 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41FJdRmP15073858
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 19:39:30 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E1CAE5805A;
+	Thu, 15 Feb 2024 19:39:27 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C0C615805D;
+	Thu, 15 Feb 2024 19:39:27 +0000 (GMT)
+Received: from localhost (unknown [9.41.178.242])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 15 Feb 2024 19:39:27 +0000 (GMT)
+From: Nathan Lynch <nathanl@linux.ibm.com>
+To: Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
+Cc: linuxppc-dev@lists.ozlabs.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy
+ <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: powerpc: Add header symlinks for building
+ papr character device tests
+In-Reply-To: <20240215192334.GT9696@kitsune.suse.cz>
+References: <20240215165527.23684-1-msuchanek@suse.de>
+ <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+ <20240215192334.GT9696@kitsune.suse.cz>
+Date: Thu, 15 Feb 2024 13:39:27 -0600
+Message-ID: <87a5o1ikk0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n9jI1ZoH10PjuklW"
-Content-Disposition: inline
-In-Reply-To: <1708023665-1441674-1-git-send-email-radhey.shyam.pandey@amd.com>
-
-
---n9jI1ZoH10PjuklW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: dHZjoht_l3SplpnpVfgfYytwe__CGZEi
+X-Proofpoint-ORIG-GUID: 7KiZXsiChIvbg2Gq05Gqu7fVP_3aUuIx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_18,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 impostorscore=0 mlxlogscore=541 bulkscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150158
 
-On Fri, Feb 16, 2024 at 12:31:05AM +0530, Radhey Shyam Pandey wrote:
-> From: Piyush Mehta <piyush.mehta@amd.com>
->=20
-> SNPS controller when configured in HOST mode maintains Inter Packet
-> Delay (IPD) of ~380ns which works with most of the super-speed hubs
-> except VIA-LAB hubs. When IPD is ~380ns HOST controller fails to
-> enumerate FS/LS devices when connected behind VIA-LAB hubs.
->=20
-> To address the above issue, add 'snps,enable_guctl1_ipd_quirk' quirk,
-> This quirk set the bit 9 of GUCTL1 that enables the workaround in HW to
-> reduce the ULPI clock latency by 1 cycle, thus reducing the IPD (~360ns).
->=20
-> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-> ---
-> In the zynqmp public database GUCTL1 bit 9 is reserved but it is used to
-> enable a fix related to Inter Packet Delay in HW. The documentation team
-> is working to update GUCTL1 bit 9 description.
+Michal Such=C3=A1nek <msuchanek@suse.de> writes:
+> On Thu, Feb 15, 2024 at 01:13:34PM -0600, Nathan Lynch wrote:
+>> Michal Suchanek <msuchanek@suse.de> writes:
+>> >
+>> > Without the headers the tests don't build.
+>> >
+>> > Fixes: 9118c5d32bdd ("powerpc/selftests: Add test for papr-vpd")
+>> > Fixes: 76b2ec3faeaa ("powerpc/selftests: Add test for papr-sysparm")
+>> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+>> > ---
+>> >  tools/testing/selftests/powerpc/include/asm/papr-miscdev.h | 1 +
+>> >  tools/testing/selftests/powerpc/include/asm/papr-sysparm.h | 1 +
+>> >  tools/testing/selftests/powerpc/include/asm/papr-vpd.h     | 1 +
+>> >  3 files changed, 3 insertions(+)
+>> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-m=
+iscdev.h
+>> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/papr-s=
+ysparm.h
+>> >  create mode 120000
+>> > tools/testing/selftests/powerpc/include/asm/papr-vpd.h
+>>=20
+>> I really hope making symlinks into the kernel source isn't necessary. I
+>> haven't experienced build failures with these tests. How are you
+>> building them?
+>>=20
+>> I usually do something like (on a x86 build host):
+>>=20
+>> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- ppc64le_defconf=
+ig
+>> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- headers
+>> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- -C tools/testin=
+g/selftests/powerpc/
+>>=20
+>> without issue.
+>
+> I am not configuring the kernel, only building the tests, and certainly
+> not installing headers on the system.
 
-Does this just affect the zynqmp?
-If it does, then you don't need a property - do this based on
-compatible.=20
-If it does affect other devices, what prevents the workaround being
-performed for all dwc3 controllers?
+OK, but again: how do you provoke the build errors, exactly? Don't make
+us guess please.
 
-Cheers,
-Conor.
+> Apparently this is what people aim to do, and report bugs when it does
+> not work: build the kselftests as self-contained testsuite that relies
+> only on standard libc, and whatever it brought in the sources.
+>
+> That said, the target to install headers is headers_install, not
+> headers. The headers target is not documented, it's probably meant to be
+> internal to the build system. Yet it is not enforced that it is built
+> before building the selftests.
 
-> ---
->  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Docum=
-entation/devicetree/bindings/usb/snps,dwc3.yaml
-> index 8f5d250070c7..b226457a6e50 100644
-> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> @@ -280,6 +280,13 @@ properties:
->        xhci reset. And the vbus will back to 5V automatically when reset =
-done.
->      type: boolean
-> =20
-> +  snps,enable_guctl1_ipd_quirk:
+<shrug> the headers target is used in Documentation/dev-tools/kselftest.rst:
 
-No underscores in properties please.
+"""
+To build the tests::
 
-> +    description:
-> +      When set, HW reduce the ULPI clock latency by 1 cycle, thus reduci=
-ng
-> +      the IPD (~360ns) and making controller enumerate FS/LS devices
-> +      connected behind via-hubs.
-> +    type: boolean
-> +
->    snps,is-utmi-l1-suspend:
->      description:
->        True when DWC3 asserts output signal utmi_l1_suspend_n, false when
-> --=20
-> 2.34.1
->=20
+  $ make headers
+  $ make -C tools/testing/selftests
+"""
 
---n9jI1ZoH10PjuklW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5obgAKCRB4tDGHoIJi
-0l7TAQCNQRDS4vsEFSVQ8ov4nOn8FfznlW91DryqSTYqunOlVwD/f90BI+v2r4Xy
-xBG6YLClNWWmnSMN2ve5dAOyW5SDeAc=
-=aXB9
------END PGP SIGNATURE-----
-
---n9jI1ZoH10PjuklW--
+This is what I've been following.
 
