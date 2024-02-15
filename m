@@ -1,89 +1,142 @@
-Return-Path: <linux-kernel+bounces-66625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0056A855F23
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:27:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F11BD855F29
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:30:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 937C11F2450F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BF982894BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34636994E;
-	Thu, 15 Feb 2024 10:27:44 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8996A000;
+	Thu, 15 Feb 2024 10:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vdRLr0SL"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3B467E97
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5486169DF0;
+	Thu, 15 Feb 2024 10:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707992864; cv=none; b=NfZ9L+es13hZNlHodgor/CRB3jvDDkhg2LMx7A6Oc3KCyRKvYJZVFDfcdBC7Gd713Ioqp2CxMFM5KQT5Y9o5HGzNVwTGVU3sdK66A3xcoVfg1wMlCrZpwJaqeFhEIWmn5/7jTI7T93NY+BB7cRQ/eVDTntPpcXXWORh36mdTpME=
+	t=1707992993; cv=none; b=mtNXoYtHMaTTDRbEVhUztX6y3HH67phcWFGNtocXk0wDerZkLMZ8DkavWonkWHNgKK5v0F65+kgNklWKIv2T+fu2P1KU/yWJjb7qk7vd21YcKeJ3fZX3ZncEqYI9KjFfTdsEwzviZX8OHcJs3ZqRKg3vNJOW2YjOd+hBmnRscGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707992864; c=relaxed/simple;
-	bh=prL9PC3udb58w3aZMdSMRH+nhhgDsJZD+TnwkGx7ZDw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=f8akiVm7MOojvRdTwQ3sd3pf3IDBtSFFFV9In8C42cZj8j2wL9PH1olMT3eCa8xryQf1SwV50ujHU3hZYuWpk8vrF4oBWucV08c+SFPJ8K71ZUVCKLiucZhqx4UK02umDVbKPwnP92Z9iixMhe5bqJspB3tlaKtLLaayGEr5d8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-255-qB_rGUUHNDSLRHR0AQmz1Q-1; Thu, 15 Feb 2024 10:27:34 +0000
-X-MC-Unique: qB_rGUUHNDSLRHR0AQmz1Q-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 15 Feb
- 2024 10:27:13 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 15 Feb 2024 10:27:13 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
-	<charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>, "James E.J.
- Bottomley" <James.Bottomley@hansenpartnership.com>, Parisc List
-	<linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Thread-Topic: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Thread-Index: AQHaX5nyOY46VuiMM0eMJXXyrPmf2rELMs6w
-Date: Thu, 15 Feb 2024 10:27:13 +0000
-Message-ID: <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
-In-Reply-To: <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1707992993; c=relaxed/simple;
+	bh=lCKAiQ1BgMuFxaAEpE7w6O8TyAdEMRj0SufRx1KfSQ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IECVQNsISilyOGDd8fkIN+TQiYjrFm9jf+qBRzsZ9uqhiiNbwLMmk7l9iF5/YEDH06fLORX7bIXDqWdVwIANFVfdMeNOUFPyTfkEAJCcYKvOkyq2R0uT7ez2zoUtuCD8BKipZxqAMo7pJep1tQMuxGodqFNM1vy1Og7aXQkfDAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vdRLr0SL; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707992983;
+	bh=lCKAiQ1BgMuFxaAEpE7w6O8TyAdEMRj0SufRx1KfSQ4=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=vdRLr0SLlXy+WD9tG1YIsF9FZLOC9Ck90t/SzhMX1YTkqmHPhs3662tv1zeYOqzbP
+	 gYtysHX1iaaVtaO/quHSWYrygrR/LZnsDrz2jmC2XeFBBTMJQGMVeRlMy+k2mI27yH
+	 b5D8CRBLTfu3XdhTzjoQox4Ip+SS+xFBhwK/S9MEYK9VIPQIptvPEoB5bk6Ng7xvKY
+	 bISZqW458jcqsXYHaX5zaRxjaw4fz1lgmf0kUQOI+5YJ+u8z2VqBbh/dL3D8S5nTnp
+	 ZGO1hMVhNcG6Kat2SZ1QQGw0OEypsUHoGLTyD2uURgDOsSRpsrYzmFfV5MVgNtYaUq
+	 MmVdQ4+9Z39ZA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 178123780FC7;
+	Thu, 15 Feb 2024 10:29:43 +0000 (UTC)
+Message-ID: <4dcfaf49-aaac-4980-a149-02fec3109f31@collabora.com>
+Date: Thu, 15 Feb 2024 11:29:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/9] media: platform: mtk-mdp3: drop calling
+ cmdq_pkt_finalize()
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ Moudy Ho <moudy.ho@mediatek.com>
+References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
+ <20240215004931.3808-7-chunkuang.hu@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240215004931.3808-7-chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Li4uDQo+IEl0IHdvdWxkIGJlIHdvcnRod2hpbGUgdHJhY2tpbmcgdGhpcyBkb3duIHNpbmNlIHRo
-ZXJlIGFyZQ0KPiBsb3RzIG9mIHVuYWxpZ25lZCBkYXRhIGFjY2Vzc2VzICg4LWJ5dGUgYWNjZXNz
-ZXMgb24gNC1ieXRlIGFsaWduZWQgYWRkcmVzc2VzKQ0KPiB3aGVuIHJ1bm5pbmcgdGhlIGtlcm5l
-bCBpbiA2NC1iaXQgbW9kZS4NCg0KSG1tbS4uLi4NCkZvciBwZXJmb3JtYW5jZSByZWFzb25zIHlv
-dSByZWFsbHkgZG9uJ3Qgd2FudCBhbnkgb2YgdGhlbS4NClRoZSBtaXNhbGlnbmVkIDY0Yml0IGZp
-ZWxkcyBuZWVkIGFuIF9fYXR0cmlidXRlKChhbGlnbmVkKDQpKSBtYXJrZXIuDQoNCklmIHRoZSBj
-aGVja3N1bSBjb2RlIGNhbiBkbyB0aGVtIGl0IHJlYWxseSBuZWVkcyB0byBkZXRlY3QNCmFuZCBo
-YW5kbGUgdGhlIG1pc2FsaWdubWVudC4NCg0KVGhlIG1pc2FsaWduZWQgdHJhcCBoYW5kbGVyIHBy
-b2JhYmx5IG91Z2h0IHRvIGNvbnRhaW4gYQ0Kd2Fybl9vbl9vbmNlKCkgdG8gZHVtcCBzdGFjayBv
-biB0aGUgZmlyc3Qgc3VjaCBlcnJvci4NClRoZXkgY2FuIHRoZW4gYmUgZml4ZWQgb25lIGF0IGEg
-dGltZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
-eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
-aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
+> Because client driver has the information of struct cmdq_client, so
+> it's not necessary to store struct cmdq_client in struct cmdq_pkt.
+> cmdq_pkt_finalize() use struct cmdq_client in struct cmdq_pkt, so it's
+> going to be abandoned. Therefore, use cmdq_pkt_eoc() and cmdq_pkt_nop()
+> to replace cmdq_pkt_finalize().
+
+No, it's not because cmdq_pkt_finalize() has cmdq_client, but because we want
+finer grain control over the CMDQ packets, as not all cases require the NOP
+packet to be appended after EOC.
+
+Besides, honestly I'm not even sure if the NOP is always required in MDP3, so...
+
+..Moudy, you know the MDP3 way better than anyone else - can you please
+check if NOP is actually needed here?
+
+Thanks!
+Angelo
+
+> 
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+>   drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c | 3 ++-
+>   drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c | 2 ++
+>   drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h | 1 +
+>   3 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> index 6adac857a477..a420d492d879 100644
+> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> @@ -471,7 +471,8 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+>   		dev_err(dev, "mdp_path_config error\n");
+>   		goto err_free_path;
+>   	}
+> -	cmdq_pkt_finalize(&cmd->pkt);
+> +	cmdq_pkt_eoc(&cmd->pkt);
+> +	cmdq_pkt_nop(&cmd->pkt, mdp->cmdq_shift_pa);
+>   
+>   	for (i = 0; i < num_comp; i++)
+>   		memcpy(&comps[i], path->comps[i].comp,
+> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+> index 94f4ed78523b..2214744c937c 100644
+> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+> @@ -231,6 +231,8 @@ static int mdp_probe(struct platform_device *pdev)
+>   		goto err_put_scp;
+>   	}
+>   
+> +	mdp->cmdq_shift_pa = cmdq_get_shift_pa(mdp->cmdq_clt->chan);
+> +
+>   	init_waitqueue_head(&mdp->callback_wq);
+>   	ida_init(&mdp->mdp_ida);
+>   	platform_set_drvdata(pdev, mdp);
+> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+> index 7e21d226ceb8..ed61e0bb69ee 100644
+> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+> @@ -83,6 +83,7 @@ struct mdp_dev {
+>   	u32					id_count;
+>   	struct ida				mdp_ida;
+>   	struct cmdq_client			*cmdq_clt;
+> +	u8					cmdq_shift_pa;
+>   	wait_queue_head_t			callback_wq;
+>   
+>   	struct v4l2_device			v4l2_dev;
 
 
