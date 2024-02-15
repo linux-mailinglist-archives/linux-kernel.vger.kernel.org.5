@@ -1,163 +1,119 @@
-Return-Path: <linux-kernel+bounces-66825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA4708561F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:44:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E153856266
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF3929668C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:44:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 588C2B23165
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B689512AAF7;
-	Thu, 15 Feb 2024 11:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6821512AADD;
+	Thu, 15 Feb 2024 11:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cwAx7h/d"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2056.outbound.protection.outlook.com [40.107.243.56])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OgdT35T/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD7F6A339;
-	Thu, 15 Feb 2024 11:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707997456; cv=fail; b=psJQRTlLo01ifMRGJYabjxxxYPcwPwJFn1K8Vddrv6Jh2L84ktd2hpWC3SzI5HrK9O5Q89yqejH0JjpUnYsYib2CPw/DGxULXB7ZfwlYs+mC2ugLOYGC3/5am9JaEy5TnQ4R8/TtLjT5PPTG/HILxQMynnZJYxiw6YibrOqvxVM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707997456; c=relaxed/simple;
-	bh=e1rcC9hoqqBX6HcZW2O9T19mr2d8EF0XZp7iOIKrKF0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=maMi2Sj6lcj7+qy3PYnMhZ05Vhe1kzfB5fbYaukwoPLZumY/k5wLJOoerFUe4Y5IbvhJXjbMZO71KUKhL1lfEakCFFEesk7PGS1Eav1qwwpydGvtpgNX6UjkmyZFpKvuolmvVtJnZt/hjWkgoV7NT77JsDC6a5ZM6dMU4rj8oAg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cwAx7h/d; arc=fail smtp.client-ip=40.107.243.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iZfqzhFaHR4CIOTNkojGyGipFFK1j5pKxwY5aiCNcAV5GkI4OFSS3V6a312WGhGlpl00G1y/F7dBRPccqiTEH4E0LRBqwk8BHZDPrllA5qhZ6lDCkTgLF5AL+P+/5Y19BqzmOTnxoRe/mFKKzQa56GzFCfmLrzMVsSVJGq3GlY2n8DNXskdLroHs7fG8Big1/hwpSt/efFF+KV9lvMcRvqtwdywL+0XT+E9sHImlS9Ie8AWWz90kXgGaK5BlsXe1iHCA1rCmegmzAThNmc1GBmr5eQ8Q39BWvdWTRVq8snIohnyz9l7ZCI1P0rtbIBY8T788TDBugBH6Lc+u4yfX8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KPEvuG54xdujnrSUc2pKlKH/UVyP5L9UPcoONmar6uE=;
- b=lEurXjD0PoITVC9/+/otLOMxPDhFeOOXP7ifYQjAgmbka4XoKWlz4Y+86Wjx/O1OawnJnGT5O3PAyniu9mrxSLlMAT7lZpe4o7DZKxfZag8mB3eBOUq3fOzTrt17e+SlOyjPtJk1Kmd/OyWSMYgGrWfr2u1/paLXYbM2XBKSr5471k93CA0jcsVz08Cy27OcWJvYXnXylMQcMXvB1Z6wlbDPtKHO3wCDMK84lxJjAxjMGbx0YiH/BRAa//p3L3u9mSa+3Sb1ac0xqv1OxgcQpyhHB1YL0DqqcKf3Xiu8UdGK5HVTLfEtYoF03/AQwPY983FsA2PXND3A2VyIpSYUDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KPEvuG54xdujnrSUc2pKlKH/UVyP5L9UPcoONmar6uE=;
- b=cwAx7h/dJYwQVd1cgVQqd4X6tb/IOrj75y/qFmw82h/XQzlg3ROI2cSjlSfkq9TRTbF8sNA06aPgwtpn4HNYw0/7SDf93Qdmv3PjxDh4DfuErmQukM7Zu9dC1MzC1N5YFlWmUAAm5Hzt+Dt2xJtMfzF1ql5kaPvmE6DnPFRxPNI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com (2603:10b6:610:19f::7)
- by DM4PR12MB6302.namprd12.prod.outlook.com (2603:10b6:8:a4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Thu, 15 Feb
- 2024 11:44:11 +0000
-Received: from CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::c167:ed6d:bcf1:4638]) by CH3PR12MB9194.namprd12.prod.outlook.com
- ([fe80::c167:ed6d:bcf1:4638%7]) with mapi id 15.20.7316.010; Thu, 15 Feb 2024
- 11:44:11 +0000
-Message-ID: <30824dde-d504-43ff-8f2e-ff948dc800b7@amd.com>
-Date: Thu, 15 Feb 2024 22:44:04 +1100
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH kernel 1/4] pci/doe: Define protocol types and make those
- public
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>
-References: <20240201060228.3070928-1-aik@amd.com>
- <20240201060228.3070928-2-aik@amd.com> <20240201065040.GA31925@wunner.de>
- <895b31de-f7f8-425c-870b-1524be21c688@amd.com>
- <20240209085216.GA15263@wunner.de>
-From: Alexey Kardashevskiy <aik@amd.com>
-In-Reply-To: <20240209085216.GA15263@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SYCPR01CA0048.ausprd01.prod.outlook.com
- (2603:10c6:10:e::36) To CH3PR12MB9194.namprd12.prod.outlook.com
- (2603:10b6:610:19f::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9740129A98
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707997378; cv=none; b=R1pNXozC8nMoO3XA4zL9q8ERgXZ/XVxm6QN+4sQvWT0LLjPqIPepcppnm/oowtIVgMHni+GUXkZ0+KGf+IMnI5+M5z7dw5hXn6riEtriySaqTiiu8SUIRliiXXIdwTr7erGRTrhh902QOqnXCIIFCRcJqipjEEVvykPiRulu7UE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707997378; c=relaxed/simple;
+	bh=/FTXlztzle2L/AhigWw1U4jQU2T/XKgKPnl46C3daJk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u0uNOLPDsq8sO8PQ8/MpxH/utU4k2yZEMUOS9Du7411X9yYcLKrQeiEfeit8hKDZfzYEXN/kLwqRfNizYwiacRhYGduVEtrmDUK8IFlKzbJ2XhtjaZ9eSPx7+d5LUsUvf5fEELcrv6/m84Hk/Kvqhjr75fRHuxrDtD2skWApde4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OgdT35T/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707997375;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xii2dGZNUM53ImanG6FtSPY3VdLuDxHQOVnxEu+XqVY=;
+	b=OgdT35T/QoeKVWWKMjtqQdx9e2l9EIH651v/EXRSp+8ybbxFa+s7ZZfvJK3NrimXKxThjJ
+	y7YGnU8m+YsnBH4FfITkNHgqS7FPywkPVjFt6yaSaTSbXHor8WRKw55giE79+FSFPTK7sM
+	YRgm/lqxTtRmhYabNyBoKRitma7nROo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-Za6kuhPdP7mORgoJwagK2g-1; Thu, 15 Feb 2024 06:42:52 -0500
+X-MC-Unique: Za6kuhPdP7mORgoJwagK2g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9FAAF845DC1;
+	Thu, 15 Feb 2024 11:42:51 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.56])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C20F2166B36;
+	Thu, 15 Feb 2024 11:42:51 +0000 (UTC)
+Date: Thu, 15 Feb 2024 06:44:28 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/14] writeback: don't call mapping_set_error on
+ AOP_WRITEPAGE_ACTIVATE
+Message-ID: <Zc35HOF8+vVEkdQu@bfoster>
+References: <20240215063649.2164017-1-hch@lst.de>
+ <20240215063649.2164017-2-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB9194:EE_|DM4PR12MB6302:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f886133-a7ca-48f9-3430-08dc2e1b6d1d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GHD9yCgWCfkI2OfUaDb5WUS2JkgfN8J2zB2u7uchrcr4pMctrYYiYp9DEwXVWIUFS5mK4ssm1UxKs87W81Q2PdwRm7k+8kHFYPmN0pEuudxrFTiVgpvTRKIMXQqv2mkKsHt2KrFuMp5QhoheYy1r8OOjpFx/il4Wm5vAdGZs7jZSCDkdQqKcqOuKWmGes2FvOMBkSdhJhboHqc4/PYZJcPxHtBN8EzFs7fFQe34zeDPhlOFyOYII/0exBArHSOZyaywQheE0T9WVzM3X6hcNAUeA8BD3W3xB/Vc9JoAYwQ5jFBSX42kOvHU2f64fYBNovDIKvEUBX1l3yzGVsU7JfrGmQJNs17E/gves5qNNORB8p8f+k1wJlJDGihK2YIcmSKosLt7GKk9fDANUfiw3186cO9TFKaobcL28LjpBcdsoqmXMCk8H873e/xgnnCITCbXUEzA98VSWvhKkKzTfsH3EHL2IWg3UUG7gWt3IXhdB/Axawx+v84lM62yXmb8O+JWCoW20X1jfJkO2wBAj6DpwfS1QjboKa5M4Uuu0SRG7lTcLLZ1kMYdjmuvgXHKg
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB9194.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(366004)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(478600001)(6666004)(6486002)(31686004)(41300700001)(31696002)(4744005)(5660300002)(2906002)(6916009)(316002)(54906003)(66476007)(66946007)(6512007)(6506007)(53546011)(66556008)(4326008)(8936002)(8676002)(2616005)(26005)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eVlhYmhDUHBaMHdHeERCSXVhZFZVSm5tQkNsNFNZczdudGFyb0dwM2xObmk0?=
- =?utf-8?B?ZDZGSC9JQXRYY0FIdHl0ODF0dGNwajZqZDB2dVN6SmFrVXJiNXRtTk8yalIx?=
- =?utf-8?B?Zkd6QjhZNysvMGtQcE9SWWUycWxnT3NmdGZVU1pCOCtNbWsxcHNta3FRZlhZ?=
- =?utf-8?B?cXNObGpoUzdxTktYZ08xWmp4MVFJVEd4L1dkTnhrcjNzWEMrN014RWpRRmZw?=
- =?utf-8?B?TlBNYSszc0w2b2VyT1p1SGhyYlV5REhhK3ZNSGxIWndDemVQSEQ4ZXlWajBP?=
- =?utf-8?B?RkoxREtmcFpJZlRGWGdzRWZTbHB2SHN3ZmxHWHA0dTJFVlYxNkVRUm5PNEFv?=
- =?utf-8?B?bFYrUzdCVnRkTXVhaTNRMElIOURLM2tLVFFpcHhFRTBIRGxXa1Q1WWYxendD?=
- =?utf-8?B?UWZKNzg2MlNUOGNKUU15N015SDZKUlU4T0ZqMWNnbE5JUDFZUU9mK2grVFpj?=
- =?utf-8?B?eWMxeDJBa1dLSGNvVWFiWTBRSnVVcm44bHFpWDQxV0pqQUl3T0tJYXdZclA2?=
- =?utf-8?B?WGZzcEQyWDhmTDdDb2t0QjdnNkdzSUt0b3RBRkhZMEJRYzRnVkdPdGdHZk5s?=
- =?utf-8?B?Nml3WXQyakhUMjM5b2hHRkVaYTEwaTV4YmZmbkh0NERHZXFiVnpzcWZXaDlB?=
- =?utf-8?B?Y1UyeWxadllXSUxqMkVtcWZQaDhFc0hkOUNqa0VpTzBMYUxSRGZSQkdmTEVD?=
- =?utf-8?B?L3ozRXJZWXc0elhTemVjZE1lTlBMTFU2VXo3aVpGQ0NUL096TFB3Mjc2VFJq?=
- =?utf-8?B?WkF0TjdVQkQyeVdSYWpnd2tQVDRvdmhFYU55WjZyYktlcGlNK2hydkhIeElR?=
- =?utf-8?B?STFRbzNSRGUrdGJKRG9JUS9SdHdVRU8wOVBFWUx4cDNTTVhCYnhJQjhPYUQ2?=
- =?utf-8?B?Nyt3cEx3ZHNGWkV4UGdpaGZNOVVYQm94R1ljZTVkNVdDdDV3ZEE4bFNydnVC?=
- =?utf-8?B?cms0RGJNK3JpVFN4RGdHcjhWNkJ0SE10VjVxZStoTlVTSGkrVGtVZVNjbGZI?=
- =?utf-8?B?c3dkdHZHTVRPMlM5dnFycFpyS21IOW44d2NnaFd0aG8rNTNocE5weUJwZjBv?=
- =?utf-8?B?U3BRVTdlMWxpUjNkTnRVQmxGS1VWQnNBNTV5N2dwNkgrTkZtYld1aUpoYzJy?=
- =?utf-8?B?d2RWOWxwQjhSWFpGblUwM2xZQitxa2I3aURBV3k0U3MrV01FVHFRcmNSNnhF?=
- =?utf-8?B?V1NTbWtUcHR0a0RITzltTDJBbm1XZHU3RWpyNmFrclZMVkc4OHFvN0ZJNER1?=
- =?utf-8?B?bjVPL05KRXEwRGlHQ21vMnhTbm00Q29GTGRiZW4zY1lqS2cvalRTbzdBTnJv?=
- =?utf-8?B?VTFPSVFVN0N4U0NSV01IK3NDR1JWN2VYK29NM1Y5TmdYQ0hZYXlHbGcrdXM3?=
- =?utf-8?B?QXg0bGZhQ3A5MnlJbFFqZmN4cCttY1J6SGZxdE5xZFovWHhUWkNrdENrWm9E?=
- =?utf-8?B?YnFvcm1pRXJSSzJoaEVRNUEySmFGeWdoV0dxNmFkdWt2Z1BTMWV0dFBBQ0hC?=
- =?utf-8?B?dm5SUTN1VDdRVHZWL3FXenRDeWdWbVU1OUFSNkxuM2hKY29MQjFTNEtCMjc0?=
- =?utf-8?B?Uzl6VDFEQThVbkxOVWQ4dzVDakp6aVZWUDh1d1ZxQllpVUkzbDhJZ2xSanBh?=
- =?utf-8?B?ZC9RWkRWakdROGxqZzM0b0hrV1h1QnBjRHhyelFXU2ZlSTh3YXZGVFVxSDlE?=
- =?utf-8?B?aXJJVkhacnVLcUdEekdjR1ZwdmNZQy96c2F6Q3lHVVpldG0ybVI3b2xQVWFq?=
- =?utf-8?B?Wi96ajRmOHVad3c4VWpsbGJYNkpJbmVBWXBrOTFzSjl6M2FJMW5xdFhxdndE?=
- =?utf-8?B?U3orRnZ2VWhSUnIxc3BTVXY0S2lhTXhMQ0dTaFk1aVFJdGd0azNaWDZySTB6?=
- =?utf-8?B?ZXJHMUJsbFV3MlZtN2NJUHoyTldQNkpnVlZpSVJydUNMRkQxTnlYUEZLczlv?=
- =?utf-8?B?Z1BTYThTeCtYeHp6aW1LVUFXZDRwVnVodWh5dHhybitnaDZMeHF0VkNBT1JP?=
- =?utf-8?B?eitMNVlId1RXWkUvT0JrMEp5QlcxcDVsQ0RaMC9OemtWQkFkUEhTa241NmU4?=
- =?utf-8?B?MUg5dnRZbG1ITUREM0t6ZkU0L0FNWFZZV1FuU25IaW1HVkhvdXFLV21ZUjhm?=
- =?utf-8?Q?qbp56NapuzqyMWLdbfOn28x9I?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f886133-a7ca-48f9-3430-08dc2e1b6d1d
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB9194.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 11:44:11.2694
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 61xAXZKYHu6eoLf7BQvxb9hfJL/h1hiYxnEarcFG6Onlf7UW0Ajd3bz1zd6s5UON/cCZc03Q3JP8+5GZmJcR9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6302
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215063649.2164017-2-hch@lst.de>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-
-
-On 9/2/24 19:52, Lukas Wunner wrote:
-> On Thu, Feb 01, 2024 at 09:16:37PM +1100, Alexey Kardashevskiy wrote:
->> Or the plan is to add pci_doe_secure_transport() to cma.c and force everyone
->> use that?
+On Thu, Feb 15, 2024 at 07:36:36AM +0100, Christoph Hellwig wrote:
+> mapping_set_error should only be called on 0 returns (which it ignores)
+> or a negative error code.
 > 
-> Right, the plan is to pass an additional callback to spdm_create()
-> which performs a secure transmission.  And cma.c would define that
-> to use the separate DOE type.
+> writepage_cb ends up being able to call writepage_cb on the magic
+> AOP_WRITEPAGE_ACTIVATE return value from ->writepage which means
+> success but the caller needs to unlock the page.  Ignore that and
+> just call mapping_set_error on negative errors.
+> 
+> (no fixes tag as this goes back more than 20 years over various renames
+>  and refactors so I've given up chasing down the original introduction)
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-But it is no use for the TDISP case which won't be calling spdm_create() 
-and will have to define CMA_SPDM and SECURED_CMA_SPDM, again.
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 
-
--- 
-Alexey
+>  mm/page-writeback.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index 3f255534986a2f..703e83c69ffe08 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2535,7 +2535,9 @@ static int writepage_cb(struct folio *folio, struct writeback_control *wbc,
+>  {
+>  	struct address_space *mapping = data;
+>  	int ret = mapping->a_ops->writepage(&folio->page, wbc);
+> -	mapping_set_error(mapping, ret);
+> +
+> +	if (ret < 0)
+> +		mapping_set_error(mapping, ret);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.39.2
+> 
+> 
 
 
