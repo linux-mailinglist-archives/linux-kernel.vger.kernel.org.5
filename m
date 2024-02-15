@@ -1,221 +1,183 @@
-Return-Path: <linux-kernel+bounces-67146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE6A856709
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:17:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC38A856717
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 16:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC258281C99
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51AA81F22503
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF68132C08;
-	Thu, 15 Feb 2024 15:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78643133296;
+	Thu, 15 Feb 2024 15:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p5ITTyLw";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p5ITTyLw"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="o9DbmqpX"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2181754B;
-	Thu, 15 Feb 2024 15:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB5CD1EEE7;
+	Thu, 15 Feb 2024 15:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708010214; cv=none; b=WbGSlIQhsYPtNOvByLLRBLBisCZAJE+zvLUsvyFvBU47Sdy0Hh+1j9/sz4ZWgnFBRDBG+Bdv43/SrJnurLuLY+ASrQvWzhGSZiCiaBwYS5YmM4xx5U1hC9t64AQQEQZL9DSqR/zJ5PDw15ywvVpqUr/CkooywS3mwCEuoQJL0uQ=
+	t=1708010287; cv=none; b=oUVYDEmvJpzXN4lZjeuXJgb6pgms4AcWrC6GvE/PUQgovyEqsBPoTLBNMZ5n5beKfq1sDN2xgoUYYYlkYTLcBhcOYsggRHxUF02cvhig4kvUjx8JDslaRp60SmXzMxDR1W8+tQQKto2Pb0INXfnDVM8id4EmkyUAA0oKCR1H+PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708010214; c=relaxed/simple;
-	bh=+3tBwyBJQSmRLOGeAZM1Eljg7HCq/1bfTBDC7mOJlD8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Bp1Q2D/MYj9ldi8acAFDUx++ux8ySViZas1xKahYCFAgIUVYa9S0iYi3ZKRQVaE7q1MPV0f2OX9N/JvEH8VwLg0DW8eRMDqzGfXztL3hEvmVW0Ee5JOgVZpENrMrU3Ppnww7b0zSMtkYGj4c+JPrvtsrruDIHBpEQ+Ha6hGd33I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p5ITTyLw; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p5ITTyLw; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 86C4F1F37C;
-	Thu, 15 Feb 2024 15:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708010207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/gYCDZUDJp0eZaNS1nrl5orvvbCUssTGKtvswvygSK8=;
-	b=p5ITTyLwDBW0NP4VIkMKACXLqkMdiFBr/+Bq3TwGMyMMI2oA4li9P2Ah2Ed5WJ4y9eropB
-	gEdCrBlMQHTro944inviiPswAZINtoUtFKyUNzwNU/exiIrXZkUgC9AqC3JcpK4iDSgix8
-	HIMCNsj0iHPp07yQgfX30RF1s5jS2Tk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708010207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/gYCDZUDJp0eZaNS1nrl5orvvbCUssTGKtvswvygSK8=;
-	b=p5ITTyLwDBW0NP4VIkMKACXLqkMdiFBr/+Bq3TwGMyMMI2oA4li9P2Ah2Ed5WJ4y9eropB
-	gEdCrBlMQHTro944inviiPswAZINtoUtFKyUNzwNU/exiIrXZkUgC9AqC3JcpK4iDSgix8
-	HIMCNsj0iHPp07yQgfX30RF1s5jS2Tk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7478E13A53;
-	Thu, 15 Feb 2024 15:16:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sPP6G98qzmXGcgAAD6G6ig
-	(envelope-from <petr.pavlu@suse.com>); Thu, 15 Feb 2024 15:16:47 +0000
-From: Petr Pavlu <petr.pavlu@suse.com>
-To: masahiroy@kernel.org,
-	nathan@kernel.org,
-	nicolas@fjasle.eu,
-	mark.rutland@arm.com
-Cc: linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Petr Pavlu <petr.pavlu@suse.com>
-Subject: [PATCH v2] kbuild: Use -fmin-function-alignment when available
-Date: Thu, 15 Feb 2024 16:16:42 +0100
-Message-Id: <20240215151642.8970-1-petr.pavlu@suse.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1708010287; c=relaxed/simple;
+	bh=/5RuGo1BUth2SZ1jzxAgP1hnBYBVss31ksnOXl9XJrA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eVAJCDK+IjAScr3EPL+TCqH/XftZyzNAAxAdCRSWH6IOFgwP/4++rPKu4nkE5j14eE9Fa5MtMUpeCtGFdYlNTUVyypVuRHlRAD3a3EjRx1DJ2DZWNczHUUpL7T9c/7OSNwc+AsA4rHE5EOAusMRgQEUzwd2R3uM9Te+C8j5oU/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=o9DbmqpX; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8270C240002;
+	Thu, 15 Feb 2024 15:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708010279;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mFwF74WYG389eTgoCBYbyxfkr+BMGReUM+V29ejlH/U=;
+	b=o9DbmqpX4/9BdCNE5XP79nCuaHvPL3RSwYXLefC9AJr49SuqVn3XKDXDtej/ID9DyQRboT
+	6u1yn7jIStwyGAhYzO5ATu7pptNaohDS2ZrCLPXskvm+Nm3iEdf1G0YYl3siW7qgw/OKUn
+	zVHPSIdue3Jq+cDPL6NNW7NVvY1eAJbQDJNlGBCU0CGcPMgnW97E0O0o+8omOjAcaQj4FC
+	40hZf8UBmaWOUGGFL3CM0LoU4uXpj8wvxUFt8c2rym1n5LpMz6gtBEMGlW+c4Mc4qHMZjx
+	xcbwmKpDSpz/78ukf6JT1G3dRc9WJnGouHmAeGu5fYJPzIASeTCac6dOGjC/wA==
+From: Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH v3 00/18] Add suspend to ram support for PCIe on J7200
+Date: Thu, 15 Feb 2024 16:17:45 +0100
+Message-Id: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,gnu.org:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+X-B4-Tracking: v=1; b=H4sIABkrzmUC/32NQQ7CIBBFr9KwdgxMS2hdeQ/jAujUYrQ00BBN0
+ 7sL3bnQ5Z/5/72VRQqOIjtVKwuUXHR+yqE+VMyOeroRuD5nhhwbLjjCXSHnMFtHEDEAWSN0pzq
+ qpWJ5ZHQkMEFPdiyzp44LhfKYAw3utZsu15xHFxcf3rs4iXL96UgCOLQNSdlrmSv8bLxfHm46W
+ v9kBZbwPwALgJpB9YgtWfwGbNv2Adp2j00IAQAA
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+ Aaro Koskinen <aaro.koskinen@iki.fi>, 
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+ Thomas Richard <thomas.richard@bootlin.com>, 
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+X-Mailer: b4 0.12.0
+X-GND-Sasl: thomas.richard@bootlin.com
 
-GCC recently added option -fmin-function-alignment, which should appear
-in GCC 14. Unlike -falign-functions, this option causes all functions to
-be aligned at the specified value, including the cold ones.
+This add suspend to ram support for the PCIe (RC mode) on J7200 platform.
 
-Detect availability of -fmin-function-alignment and use it instead of
--falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
-and make the workarounds for the broken function alignment conditional
-on this setting.
+In RC mode, the reset pin for endpoints is managed by a gpio expander on a
+i2c bus. This pin shall be managed in suspend_noirq() and resume_noirq().
+The suspend/resume has been moved to suspend_noirq()/resume_noirq() for
+pca953x (expander) and pinctrl-single.
 
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+To do i2c accesses during suspend_noirq/resume_noirq, we need to force the
+wakeup of the i2c controller (which is autosuspended) during suspend
+callback. 
+It's the only way to wakeup the controller if it's autosuspended, as
+runtime pm is disabled in suspend_noirq and resume_noirq.
+
+The main change in this v3 is the removal of the probe boolean for the
+functions wiz_clock_probe() and cdns_pcie_host_setup().
+Their contents were split in multiple functions which are called in the
+resume_noirq() callbacks.
+
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
+Changes in v3:
+- pinctrl-single: split patch in two parts, a first patch to remove the
+  dead code, a second to move suspend()/resume() callbacks to noirq.
+- i2c-omap: add a comments above the suspend_noirq() callback.
+- mux: now mux_chip_resume() try to restores all muxes, then return 0 if
+  all is ok or the first failure.
+- mmio: fix commit message.
+- phy-j721e-wiz: add a patch to use dev_err_probe() instead of dev_err() in
+  the wiz_clock_init() function.
+- phy-j721e-wiz: remove probe boolean for the wiz_clock_init(), rename the
+  function to wiz_clock_probe(), extract hardware configuration part in a
+  new function wiz_clock_init().
+- phy-cadence-torrent: use dev_err_probe() and fix commit messages
+- pcie-cadence-host: remove probe boolean for the cdns_pcie_host_setup()
+  function and extract the link setup part in a new function
+  cdns_pcie_host_link_setup().
+- pcie-cadence-host: make cdns_pcie_host_init() global.
+- pci-j721e: use the cdns_pcie_host_link_setup() cdns_pcie_host_init()
+  functions in the resume_noirq() callback.
+- Link to v2: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com
 
-Changes since v1 [1]:
-- Check the availability of -fmin-function-alignment only in one place.
+Changes in v2:
+- all: fix commits messages.
+- all: use DEFINE_NOIRQ_DEV_PM_OPS and pm_sleep_ptr macros.
+- all: remove useless #ifdef CONFIG_PM.
+- pinctrl-single: drop dead code
+- mux: add mux_chip_resume() function in mux core.
+- mmio: resume sequence is now a call to mux_chip_resume().
+- phy-cadence-torrent: fix typo in resume sequence (reset_control_assert()
+  instead of reset_control_put()).
+- phy-cadence-torrent: use PHY instead of phy.
+- pci-j721e: do not shadow cdns_pcie_host_setup return code in resume
+  sequence.
+- pci-j721e: drop dead code.
+- Link to v1: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com
 
-[1] https://lore.kernel.org/linux-kbuild/20240212145355.1050-1-petr.pavlu@suse.com/
+---
+Thomas Richard (15):
+      gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
+      pinctrl: pinctrl-single: remove dead code in suspend() and resume() callbacks
+      pinctrl: pinctrl-single: move suspend()/resume() callbacks to noirq
+      i2c: omap: wakeup the controller during suspend() callback
+      mux: add mux_chip_resume() function
+      phy: ti: phy-j721e-wiz: use dev_err_probe() instead of dev_err()
+      phy: ti: phy-j721e-wiz: split wiz_clock_init() function
+      phy: ti: phy-j721e-wiz: add resume support
+      phy: cadence-torrent: extract calls to clk_get from cdns_torrent_clk
+      phy: cadence-torrent: register resets even if the phy is already configured
+      phy: cadence-torrent: add already_configured to struct cdns_torrent_phy
+      phy: cadence-torrent: remove noop_ops phy operations
+      phy: cadence-torrent: add suspend and resume support
+      PCI: cadence: extract link setup sequence from cdns_pcie_host_setup()
+      PCI: cadence: set cdns_pcie_host_init() global
 
- Makefile                       |  7 +++++++
- arch/Kconfig                   | 12 ++++++++++++
- include/linux/compiler_types.h | 10 +++++-----
- kernel/exit.c                  |  5 ++++-
- 4 files changed, 28 insertions(+), 6 deletions(-)
+Théo Lebrun (3):
+      mux: mmio: add resume support
+      PCI: j721e: add reset GPIO to struct j721e_pcie
+      PCI: j721e: add suspend and resume support
 
-diff --git a/Makefile b/Makefile
-index 7e0b2ad98905..6f20ab5e2e44 100644
---- a/Makefile
-+++ b/Makefile
-@@ -974,8 +974,15 @@ export CC_FLAGS_CFI
- endif
- 
- ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
-+# Set the minimal function alignment. Use the newer GCC option
-+# -fmin-function-alignment if it is available, or fall back to -falign-funtions.
-+# See also CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
-+ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
-+KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
-+else
- KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
- endif
-+endif
- 
- # arch Makefile may override CC so keep this after arch Makefile is included
- NOSTDINC_FLAGS += -nostdinc
-diff --git a/arch/Kconfig b/arch/Kconfig
-index a5af0edd3eb8..bd6c6335efac 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1507,4 +1507,16 @@ config FUNCTION_ALIGNMENT
- 	default 4 if FUNCTION_ALIGNMENT_4B
- 	default 0
- 
-+config CC_HAS_MIN_FUNCTION_ALIGNMENT
-+	# Detect availability of the GCC option -fmin-function-alignment which
-+	# guarantees minimal alignment for all functions, unlike
-+	# -falign-functions which the compiler ignores for cold functions.
-+	def_bool $(cc-option, -fmin-function-alignment=8)
-+
-+config CC_HAS_SANE_FUNCTION_ALIGNMENT
-+	# Set if the guaranteed alignment with -fmin-function-alignment is
-+	# available or extra care is required in the kernel. Clang provides
-+	# strict alignment always, even with -falign-functions.
-+	def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
-+
- endmenu
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 663d8791c871..f0152165e83c 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -99,17 +99,17 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html#index-cold-label-attribute
-  *
-  * When -falign-functions=N is in use, we must avoid the cold attribute as
-- * contemporary versions of GCC drop the alignment for cold functions. Worse,
-- * GCC can implicitly mark callees of cold functions as cold themselves, so
-- * it's not sufficient to add __function_aligned here as that will not ensure
-- * that callees are correctly aligned.
-+ * GCC drops the alignment for cold functions. Worse, GCC can implicitly mark
-+ * callees of cold functions as cold themselves, so it's not sufficient to add
-+ * __function_aligned here as that will not ensure that callees are correctly
-+ * aligned.
-  *
-  * See:
-  *
-  *   https://lore.kernel.org/lkml/Y77%2FqVgvaJidFpYt@FVFF77S0Q05N
-  *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c9
-  */
--#if !defined(CONFIG_CC_IS_GCC) || (CONFIG_FUNCTION_ALIGNMENT == 0)
-+#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || (CONFIG_FUNCTION_ALIGNMENT == 0)
- #define __cold				__attribute__((__cold__))
- #else
- #define __cold
-diff --git a/kernel/exit.c b/kernel/exit.c
-index dfb963d2f862..5a6fed4ad3df 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
-  *
-  * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
-  */
--__weak __function_aligned void abort(void)
-+#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
-+__function_aligned
-+#endif
-+__weak void abort(void)
- {
- 	BUG();
- 
+ drivers/gpio/gpio-pca953x.c                        |   7 +-
+ drivers/i2c/busses/i2c-omap.c                      |  22 ++++
+ drivers/mux/core.c                                 |  30 +++++
+ drivers/mux/mmio.c                                 |  12 ++
+ drivers/pci/controller/cadence/pci-j721e.c         | 102 ++++++++++++++++-
+ drivers/pci/controller/cadence/pcie-cadence-host.c |  44 +++++---
+ drivers/pci/controller/cadence/pcie-cadence.h      |  12 ++
+ drivers/phy/cadence/phy-cadence-torrent.c          | 121 +++++++++++++++------
+ drivers/phy/ti/phy-j721e-wiz.c                     | 119 +++++++++++++-------
+ drivers/pinctrl/pinctrl-single.c                   |  28 ++---
+ include/linux/mux/driver.h                         |   1 +
+ 11 files changed, 380 insertions(+), 118 deletions(-)
+---
+base-commit: 00ff0f9ce40db8e64fe16c424a965fd7ab769c42
+change-id: 20240102-j7200-pcie-s2r-ecb1a979e357
 
-base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
+Best regards,
 -- 
-2.35.3
+Thomas Richard <thomas.richard@bootlin.com>
 
 
