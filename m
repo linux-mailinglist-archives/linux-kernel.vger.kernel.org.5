@@ -1,104 +1,122 @@
-Return-Path: <linux-kernel+bounces-67443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDAA856B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:51:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F31856B98
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB3728406E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:51:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9050528B297
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFA4F137C35;
-	Thu, 15 Feb 2024 17:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A35513848A;
+	Thu, 15 Feb 2024 17:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QQdQ1WMe"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="An931f/1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2A613667D
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 17:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762FF13667D;
+	Thu, 15 Feb 2024 17:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708019499; cv=none; b=QmSO+lLIeXwRV2AzAxFSIFyjIs8JLW0F2HYy7mkbTnbonwuTVSPAP35KsTywyEOeNWKCMDCs3NbBPaMogoC4QbBwUzfB28CMolhQYAhDHliDeqZ65hXyTuHZNVUFGBo5uPBxaIxbxoQGhnVm18gANE/PWzpo5AN6rfsdHh8ghns=
+	t=1708019462; cv=none; b=JjUoQDqzhawL7QgGVCTaoVWI/CT+sjjtIJ2pRZLnFlrx5DtpJsgwjJrT9HgK4pIocFR/23ZZchTS1upJf1WQG+Okapn9M1XT85aR+KesvK3lWoc+/Zgih6iNr8Na2bEnEnjvsWpGf3VE++1HETJncuDG3PA1JBvEAsE50bJDg2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708019499; c=relaxed/simple;
-	bh=uWn7JPvg51SksgaZWGKJtP5oLBDREUXXipDxKopFiXY=;
+	s=arc-20240116; t=1708019462; c=relaxed/simple;
+	bh=dpqcQEuKP3mHeIIAJ34hexRGvNtqvpRmFBgMCz2ZH5Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BzNdezVq31HWnUKV8G8N4BQNSYknVZDO67itsfHwBusPqT0G85pRqIAVXZPEVULPHcAHLe92349yMui57YT8fvyrzcffBRXgqICzIiAVAzJ3pcBEjfY8AsEKYoIwxENUi6w4B3mTubp+oiAbOrklbY2jymCGw+AQVBasRSI4Qfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QQdQ1WMe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708019496;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GG6Ulxh+r2vwDrd1myPyHalaQeRg4IYOcP2tfu6yPes=;
-	b=QQdQ1WMeJI9SPRyYPtGFFwhbi9gv5jn5FfjLj08+880+kHEyPJw7aLHyuq+zf9xSevcTcQ
-	5IazelkOpQviVjf/BDG0/bFJGlQcE2wrx/LSA8+uq+/g2pN6XcKfJWb4Y4UnqucOW7IcQl
-	X9bNT7yx0wr6ppkRdf3Yos8J1IyoxlY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-670-WaAN2ccvO1q6c7KHKvc2Xg-1; Thu, 15 Feb 2024 12:51:32 -0500
-X-MC-Unique: WaAN2ccvO1q6c7KHKvc2Xg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7C20185A780;
-	Thu, 15 Feb 2024 17:51:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.56])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 3AFE3492BC6;
-	Thu, 15 Feb 2024 17:51:28 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 15 Feb 2024 18:50:14 +0100 (CET)
-Date: Thu, 15 Feb 2024 18:50:11 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Russell King <linux@armlinux.org.uk>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: ptrace: Use bitfield helpers
-Message-ID: <20240215174945.GA29299@redhat.com>
-References: <f73e6deb1bef9696661a62498ee5a56ac9a389ce.1708005130.git.geert+renesas@glider.be>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gSAPVuLNQTO/gJhu5K2GarMmXtye/rqTqqVLMKNcJjcaR0hb0l7M8/M4e1xhuhQGw5LIdAXHMEBSzY7jKGUN30Sju8ARlh2iSTuwzrES2JYYjebHzFh6zvTjcqtJQVd5dG9vIRbDAexQhVDaChC3o0dxS/mEwVMVgctTanRzSj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=An931f/1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C96C433F1;
+	Thu, 15 Feb 2024 17:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708019462;
+	bh=dpqcQEuKP3mHeIIAJ34hexRGvNtqvpRmFBgMCz2ZH5Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=An931f/1AQDPwWTVvh47+FjPNfzyvR9wLinhZJxYs0kdziP13Z8me8rWP5kX+YKNk
+	 /gTlwm7DWqzmrWEzceOajWdq9SBCnyfoY5hms/YIkcvRPd7kKWm0OvkaF3dStKGB4q
+	 0h+IKxGAAIPsDTyS7QvZfvFFKYbNsExyDqXPHkGePW9465LVbw9GG/ZwpKifc3UDfi
+	 p+ETQp+k6V+y89FXpE5SeeovHv5GUvOg1vhhjM4WSwqzkpfMxVPhrK8TpMnbdHufw9
+	 PdZ0M8WECWAhB1HO1oDsi4YfXVdnGNoSMHYS6hbgXrklN5kzQXy4CLGXSS99LcsExP
+	 n3uMvHgi9lMxg==
+Date: Thu, 15 Feb 2024 17:50:57 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Bryant Mairs <bryant@mai.rs>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	luca@z3ntu.xyz, ~postmarketos/upstreaming@lists.sr.ht,
+	phone-devel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: qcom: Document
+ samsung,milletwifi device
+Message-ID: <20240215-stitch-respect-9073beb16a70@spud>
+References: <20240215172617.115307-1-bryant@mai.rs>
+ <20240215172617.115307-2-bryant@mai.rs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qH5FbCXFBQ9ocbjE"
+Content-Disposition: inline
+In-Reply-To: <20240215172617.115307-2-bryant@mai.rs>
+
+
+--qH5FbCXFBQ9ocbjE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f73e6deb1bef9696661a62498ee5a56ac9a389ce.1708005130.git.geert+renesas@glider.be>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: quoted-printable
 
-Sorry for the noise, can't resist...
+On Thu, Feb 15, 2024 at 06:19:48PM +0100, Bryant Mairs wrote:
+> Add binding documentation for Samsung Galaxy Tab 4 8.0 Wi-Fi
+> tablet which is based on Snapdragon 400 (apq8026) SoC.
+>=20
+> Signed-off-by: Bryant Mairs <bryant@mai.rs>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-I am replying only because I wasn't aware of bitfield.h and useful
-helpers there.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thank you ;)
+Cheers,
+Conor.
 
-On 02/15, Geert Uytterhoeven wrote:
->
->  #ifndef __ASSEMBLY__
-> +#include <linux/bitfield.h>
->  #include <linux/types.h>
->
->  struct pt_regs {
-> @@ -35,8 +36,8 @@ struct svc_pt_regs {
->
->  #ifndef CONFIG_CPU_V7M
->  #define isa_mode(regs) \
-> -	((((regs)->ARM_cpsr & PSR_J_BIT) >> (__ffs(PSR_J_BIT) - 1)) | \
-> -	 (((regs)->ARM_cpsr & PSR_T_BIT) >> (__ffs(PSR_T_BIT))))
-> +	(FIELD_GET(PSR_J_BIT, (regs)->ARM_cpsr) << 1 | \
-> +	 FIELD_GET(PSR_T_BIT, (regs)->ARM_cpsr))
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentat=
+ion/devicetree/bindings/arm/qcom.yaml
+> index 2b993b4c51dc..c11bb2a81643 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -104,6 +104,7 @@ properties:
+>                - huawei,sturgeon
+>                - lg,lenok
+>                - samsung,matisse-wifi
+> +              - samsung,milletwifi
+>            - const: qcom,apq8026
+> =20
+>        - items:
+> --=20
+> 2.43.0
+>=20
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+--qH5FbCXFBQ9ocbjE
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc5PAQAKCRB4tDGHoIJi
+0qpyAP0X0WZKt2zgAlS0u7K+dptT9RH+ibt0Pogr75dolPapYQEAx4eYm69jx3VK
+jPe6ok7U4f3+2zoACma6ly7X3GE00wE=
+=o+WJ
+-----END PGP SIGNATURE-----
+
+--qH5FbCXFBQ9ocbjE--
 
