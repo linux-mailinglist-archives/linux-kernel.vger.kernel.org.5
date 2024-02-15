@@ -1,151 +1,166 @@
-Return-Path: <linux-kernel+bounces-66494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2E82855D72
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:09:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A51CE855DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 398B41F223FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:09:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50F95B2CBB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F10E13FE0;
-	Thu, 15 Feb 2024 09:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CF613FE2;
+	Thu, 15 Feb 2024 09:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YmjWyekN"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lrawo/vv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247EC17541;
-	Thu, 15 Feb 2024 09:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD5113ADD;
+	Thu, 15 Feb 2024 09:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988170; cv=none; b=BigxMxtzBwXj03w/QYY9yU715l8s0RDmUKx2wep3jUpuSSFCJi0w4N+oNlHz2zoyl+L4M+QaMDGxWz4Ulq0OXwQk1c4j/zTd3RNVTUGyWEprxl8LaNeEgXh3r5y7+GFSBItIX7OWK7HMlNT47yxSkgnZpFr89AqTvf4aBv8agnM=
+	t=1707988270; cv=none; b=dLSjzDcW83oU7GCwkKWf6js43LFAXdGLwyJ1dJhXfPLi4+D5Roi+318pGHNFkJrHqjnGv4iGlToD6okCpKzd6S+n4w7LbeHlR62t1snzko5wbcVf8UHgN4k1kmfUv7aSp7uMkhR8apYRpO3070r0Nvyb0fbPHxFXHEVK1mAAgi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988170; c=relaxed/simple;
-	bh=SC0DzMXmL6wuTpB4rilsajqsgZ9EI3IMipGogrhDtKk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=s9pqyx23v/bY+Z/xIH8vSLk8aoZe6zj/2lBrjaNxrsc9sRWuXjP6g8Ic/luj+2/sAqRMYLWl2kYegZC1rMBOuUNfcsvE2AKH+ZgVyWQ/suzo7l+cnGfS0fxX14FZgsR4LgfcRT2yljkl455xaq3IWhlwg+qWbReIbeiZPfC1bvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YmjWyekN; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41F7KMrx007362;
-	Thu, 15 Feb 2024 09:09:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=RKA2a9gsGXfy
-	QaESlXIv15mxArU0v+5pfEqdlas7Wew=; b=YmjWyekNDZPXvEIYRluZjSYW6mo/
-	iNKzQBpeKMK9WkVzs9DGwZasDcqTnv0nEPKDfw7NG3W2n/OKJur8PZpyeR/q02Lt
-	QH4ZDp5p47xbmRgAH03iFwiPvL3G9t1/hjZ78YKWN0lRXJmx4N7amoFb/4cd7Trq
-	T4Ut/kAFUwMAyd7N5IHmdqjky7XrDD8jeZUuG+SQBckPABTRfDQylYT0pWkoLKOJ
-	7Q6KkkUSkkVnzRJ41r9qNs/oHInVmNlQApiJuh5vhX2KjzgKN4LFs8Z0T7Rk8Zv1
-	6xQRnW1ZJkpmyd2XzgL3sfFYLRZuNhFMoxchj39uGDCYlHt7K6OrpEYWww==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9e4h06n4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 09:09:19 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41F99Fvi019027;
-	Thu, 15 Feb 2024 09:09:15 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3w627ku661-1;
-	Thu, 15 Feb 2024 09:09:15 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41F99E1g019022;
-	Thu, 15 Feb 2024 09:09:14 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 41F99EnP019021;
-	Thu, 15 Feb 2024 09:09:14 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
-	id 7F5DD5001D9; Thu, 15 Feb 2024 14:39:13 +0530 (+0530)
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-sm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
-        quic_cchiluve@quicinc.com, quic_anupkulk@quicinc.com,
-        Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Subject: [PATCH v3] arm64: dts: qcom: sc7280: add slimbus DT node
-Date: Thu, 15 Feb 2024 14:39:10 +0530
-Message-Id: <20240215090910.30021-1-quic_vdadhani@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iIGYpERGTgyR4VtHhQIXV7BtkSmwYoRB
-X-Proofpoint-ORIG-GUID: iIGYpERGTgyR4VtHhQIXV7BtkSmwYoRB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_08,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- impostorscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=440
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402150071
+	s=arc-20240116; t=1707988270; c=relaxed/simple;
+	bh=7eGIJxOK0G/jSamaJ4jiJZq4d17+9v1xzV/cbhLB+Ac=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XBvnJeClk4gKhUa3itFERHAHopLmrtTplU/g+PHGw/i5LwP6JRlWROJyjNfjo2zidqcJPIvZMRqFAnRh4/seDI8ljqwYN03sde0g6KeRbUnROgyX4OAiDHGxJCgn9lB2r46pSGRelw1THEBz5GCY8JB4m3d4nVmLkE4EnYtXrWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lrawo/vv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC24C433F1;
+	Thu, 15 Feb 2024 09:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707988269;
+	bh=7eGIJxOK0G/jSamaJ4jiJZq4d17+9v1xzV/cbhLB+Ac=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lrawo/vvf9RjklBWJmIYkaGooX/f9MU2fxom5gF0oAiukSehNeOQONWHr+1A0MBAX
+	 Afb9rzUx+RjdPjUnMeau51NkD1RwJ5amxxkxBB5LcLBaEl/GqQxgUG235aa2cDxZi6
+	 PtfNHsZi45/jmfn25HPUihNL7MgiVfmMU+Lz6BfY=
+Date: Thu, 15 Feb 2024 10:11:05 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Petr Tesarik <petrtesarik@huaweicloud.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	David Kaplan <david.kaplan@amd.com>,
+	Larry Dewey <larry.dewey@amd.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Carlos Bilbao <carlos.bilbao@amd.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Petr Mladek <pmladek@suse.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Eric DeVolder <eric.devolder@oracle.com>,
+	Marc =?iso-8859-1?Q?Aur=E8le?= La France <tsi@tuyoix.net>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Nhat Pham <nphamcs@gmail.com>,
+	"Christian Brauner (Microsoft)" <brauner@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	Mike Christie <michael.christie@oracle.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Maninder Singh <maninder1.s@samsung.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH v1 5/5] sbm: SandBox Mode documentation
+Message-ID: <2024021514-manmade-ambitious-414a@gregkh>
+References: <20240214113035.2117-1-petrtesarik@huaweicloud.com>
+ <20240214113035.2117-6-petrtesarik@huaweicloud.com>
+ <20240214053053.982b48d993ae99dad1d59020@linux-foundation.org>
+ <2024021425-audition-expand-2901@gregkh>
+ <20240214155524.719ffb15@meshulam.tesarici.cz>
+ <2024021415-jokester-cackle-2923@gregkh>
+ <20240214173112.138e0e29@meshulam.tesarici.cz>
+ <2024021417-magma-drudge-ad70@gregkh>
+ <20240214204254.6208ca2f@meshulam.tesarici.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240214204254.6208ca2f@meshulam.tesarici.cz>
 
-Populate the DTSI node for slimbus instance to be
-used by bluetooth FM audio case.
+On Wed, Feb 14, 2024 at 08:42:54PM +0100, Petr Tesařík wrote:
+> On Wed, 14 Feb 2024 19:48:52 +0100
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Wed, Feb 14, 2024 at 05:31:12PM +0100, Petr Tesařík wrote:
+> > > On Wed, 14 Feb 2024 16:11:05 +0100
+> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > >   
+> > > > On Wed, Feb 14, 2024 at 03:55:24PM +0100, Petr Tesařík wrote:  
+> > > > > OK, so why didn't I send the whole thing?
+> > > > > 
+> > > > > Decomposition of the kernel requires many more changes, e.g. in linker
+> > > > > scripts. Some of them depend on this patch series. Before I go and
+> > > > > clean up my code into something that can be submitted, I want to get
+> > > > > feedback from guys like you, to know if the whole idea would be even
+> > > > > considered, aka "Fail Fast".    
+> > > > 
+> > > > We can't honestly consider this portion without seeing how it would
+> > > > work, as we don't even see a working implementation that uses it to
+> > > > verify it at all.
+> > > > 
+> > > > The joy of adding new frameworks is that you need a user before anyone
+> > > > can spend the time to review it, sorry.  
+> > > 
+> > > Thank your for a quick assessment. Will it be sufficient if I send some
+> > > code for illustration (with some quick&dirty hacks to bridge the gaps),
+> > > or do you need clean and nice kernel code?  
+> > 
+> > We need a real user in the kernel, otherwise why would we even consider
+> > it?  Would you want to review a new subsystem that does nothing and has
+> > no real users?  If not, why would you want us to?  :)
+> 
+> Greg, please enlighten me on the process. How is something like this
+> supposed to get in?
 
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
----
-v2 -> v3:
-- Fix patch title by adding "PATCH" string.
-- Update commit log.
+If you were in our shoes, what would you want to see in order to be able
+to properly review and judge if a new subsystem was ok to accept?
 
-v1 -> v2:
-- change 0x0 -> 0 to reg property.
-- reorder the DT property.
-- change node tag slim_msm to slim.
----
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> Subsystem maintainers will not review code that depends on core features
+> not yet reviewed by the respective maintainers. If I add only the API
+> and a stub implementation, then it brings no benefit and attempts to
+> introduce the API will be dismissed. I would certainly do just that if
+> I was a maintainer...
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 581818676a4c..1d6afde915aa 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2672,6 +2672,31 @@
- 			status = "disabled";
- 		};
- 
-+		slimbam: dma-controller@3a84000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0 0x03a84000 0 0x20000>;
-+			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			qcom,controlled-remotely;
-+			num-channels  = <31>;
-+			qcom,ee = <1>;
-+			qcom,num-ees = <2>;
-+			iommus = <&apps_smmu 0x1826 0x0>;
-+			status = "disabled";
-+		};
-+
-+		slim: slim-ngd@3ac0000 {
-+			compatible = "qcom,slim-ngd-v1.5.0";
-+			reg = <0 0x03ac0000 0 0x2c000>;
-+			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
-+			dmas = <&slimbam 3>, <&slimbam 4>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x1826 0x0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		lpass_hm: clock-controller@3c00000 {
- 			compatible = "qcom,sc7280-lpasshm";
- 			reg = <0 0x03c00000 0 0x28>;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+Exactly, you need a real user.
 
+> I could try to pack everything (base infrastructure, arch
+> implementations, API users) into one big patch with pretty much
+> everybody on the Cc list, but how is that ever going to get reviewed?
+
+How are we supposed to know if any of this even works at all if you
+don't show that it actually works and is useful?  Has any of that work
+even been done yet?  I'm guessing it has (otherwise you wouldn't have
+posted this), but you are expecting us to just "trust us, stuff in the
+future is going to use this and need it" here.
+
+Again, we can not add new infrastructure for things that have no users,
+nor do you want us to.  Ideally you will have at least 3 different
+users, as that seems to be the "magic number" that shows that the
+api/interface will actually work well, and is flexible enough.  Just
+one user is great for proof-of-concept, but that usually isn't good
+enough to determine if it will work for others (and so it wouldn't need
+to be infrastructure at all, but rather just part of that one feature on
+its own.)
+
+> Should I just go and maintain an out-of-tree repo for a few years,
+> hoping that it gets merged one day, like bcachefs? Is this the way?
+
+No, show us how this is going to be used.
+
+Again, think about what you would want if you had to review this.
+
+thanks,
+
+greg k-h
 
