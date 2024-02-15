@@ -1,122 +1,126 @@
-Return-Path: <linux-kernel+bounces-67679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BD32856F08
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB01856F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:04:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17B2A1C21BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:03:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26A831C2231B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76DB13B2BF;
-	Thu, 15 Feb 2024 21:03:44 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8611C13B791;
+	Thu, 15 Feb 2024 21:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WagP35sA"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F6641C61
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BAF341C61;
+	Thu, 15 Feb 2024 21:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708031024; cv=none; b=YysIsC8udOMSot2tzbNgbhW7gWWDtiLhj0HvYp7UiqlbHS3C4CW993nh17RDytrpqZgC7NGxNnJn9mTUjIN4dJJcyxEX4cNcVTerpKfH1psvyyqGelX0+K/Civ2EcRQyNfVIWsvMM6YAq7tmaAWtsEn99lhu+p7zi5em62WYmzw=
+	t=1708031036; cv=none; b=X/dD+w8W1pFw2+0hr+/37X2ifrCJHI+XwnUuG+Fgz8WZRY2XdtyO06FCE2rWvisImqxoGx41pPTdCU+hULPOtntz6W9icbFMWARHmo6cKoT6ZjrzF2qQDEWJx33/O6StfpDh82hUIhYUm4goUBn6FuacZtC73HGYxYcC+uq3up0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708031024; c=relaxed/simple;
-	bh=VhdfpZDcEIsddO/EyQfKPvU+8LMInwZEs57nuX4AZrs=;
+	s=arc-20240116; t=1708031036; c=relaxed/simple;
+	bh=BJNmghe578Dr0q6jJp6nQZwXix12LotZLSHYuCxzj6U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UsxzVBYmSxR1HXb1sd+uD2JiHxlvRer/QLxjXnaqx2bTaSYGt4Y7BXjbX0tBcRboaBHhL9Sz5Blh+KxSnpRJ8m7VVRl7zvyEVpgD7Jzw5WDOIF9XBincEgwH4rjbxdaWDJcsqAJvk+bbyuZB45g4VBT03Dd9Q/ffmyscPqrAR00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1raitC-0000gM-7x; Thu, 15 Feb 2024 22:03:26 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rait9-000xGR-RU; Thu, 15 Feb 2024 22:03:23 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rait9-005eCw-2Q;
-	Thu, 15 Feb 2024 22:03:23 +0100
-Date: Thu, 15 Feb 2024 22:03:23 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, 
-	Charles Keepax <ckeepax@opensource.cirrus.com>, kernel@pengutronix.de, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-kernel@vger.kernel.org, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, patches@opensource.cirrus.com, 
-	Fabio Estevam <festevam@gmail.com>, Gregory Clement <gregory.clement@bootlin.com>, 
-	linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH 00/13] irqchip: Convert to platform remove callback
- returning void
-Message-ID: <knhwqxhouaiehmnnz5oxaxibhq7usokefztae4pplqypwuzgye@mke2irokres4>
-References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l37/zH/H0ho6t8a6K93OiWOXGwvSXPFBJkKkO8l7Ce+z7h4OYH+tgrzmHHWnHhBiGHr4e6EJ70vs9d9VGJn3KyWn6pSG3uyfRqcUHz8BKuywgEB84JvWBdKMWhJboM+LsMz3SUz+gayB/05qkSwBAf6e9EzanmXQUZi2MvsLng8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WagP35sA; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511976c126dso1776335e87.1;
+        Thu, 15 Feb 2024 13:03:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708031033; x=1708635833; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ky2ZahidDUXO2cGFTczfagUmFQuczB83RWWZ7vrowF4=;
+        b=WagP35sAFLZFY3+tiWomwrXrqwaQTJtU7c6i4H3nT39tQ8hgl7Al3vjVrtrUW7wuwF
+         ffysSslhXKSRZqKQhercTGGYdfEgB869FZD0h2z9DEk1aIkncUiLePqOzrntbH5EeJL3
+         FipWfq97Bi+tM8y778HjTU2devVQHM1gBbEHTNdlzTUN4GYasFJ34T2pjWWkAWuyJy+W
+         EciUsMEZXjUiO4ywEE7+MIArD3Z4RnJzz0t5/kEFprwjqpksQY7Ix4+T6MbyykmIHAK+
+         HbRgLcgZIqFo0lW6l7Uk3UoEo6iVP/vvNpizypLLwURKA+yzfb/STQ1EQZS5z9kg8MNt
+         dpAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708031033; x=1708635833;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ky2ZahidDUXO2cGFTczfagUmFQuczB83RWWZ7vrowF4=;
+        b=HGkDSkeWmYorRbqZ+hqm3hn5T9/PXpv6Rk6JQVml/FDVewmQiv92+WT9jEQMwlUjms
+         oelefI9wzIKKKix/efr/IZkcf9mvA1tIcrOEYd/OfO070KlIdr2uMMOOrwcfV17sOige
+         1VnjNNVkvRzDnPQpbRvfqWkup8aTJMksc2gYh7ospuny1uB7CJTzL/161QIb8y7dJ5/p
+         yAk23h39KrZI6jvtzvb/DfIuoZiPYqfTYrZv2HWH2NTkSjNeN5dfhmNdGy6uIJhTmfXS
+         oY0p7kxWyikLoa2yFtyQ/ohYH+dpLA7LuEZoXInHuKlht3IliC1GXdjvEFL28JKWzW4W
+         vd7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXjpFjmUHDrpCOnS/BObsmdAR1tgq4IaYsJZ965UTX4Gmkdx7bdFIDVz/phKFDHuzmbaB2wQshFh+GghZml/bwUOciWJHTFEqlH8s2SOVjdRPA4q2885RkivwtYy+2zcDcdXFCP
+X-Gm-Message-State: AOJu0Yy5ARX8MglQB/YlaTa5ca89yqmX2Kn5Fco3A6aKLZQcnzNDVCHe
+	znZtjjS8EDMErT7ksKTKNWqkVPQuiH23ny7o1nmlcA/4E4CY1Bw+6UGoJYdx
+X-Google-Smtp-Source: AGHT+IE0q8c+07du9QdFQWzS1GQSJ3+K8PVrqti7ePCn+9czzhmuN6wNeYywXIJZxS95bQrpPsWi0A==
+X-Received: by 2002:a05:6512:1192:b0:512:8aeb:aaa8 with SMTP id g18-20020a056512119200b005128aebaaa8mr1890037lfr.49.1708031033197;
+        Thu, 15 Feb 2024 13:03:53 -0800 (PST)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id ps7-20020a170906bf4700b00a3d12d84cffsm903512ejb.167.2024.02.15.13.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 13:03:52 -0800 (PST)
+Date: Thu, 15 Feb 2024 22:03:50 +0100
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 net-next 09/14] net: phy: marvell-88q2xxx: add cable
+ test support
+Message-ID: <20240215210350.GB3103@debian>
+References: <20240213213955.178762-1-dima.fedrau@gmail.com>
+ <20240213213955.178762-10-dima.fedrau@gmail.com>
+ <fe604759-d1cd-4a4d-ba64-69936b3e6598@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="543tsvzhxgimotst"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <fe604759-d1cd-4a4d-ba64-69936b3e6598@lunn.ch>
 
+Am Wed, Feb 14, 2024 at 06:54:58PM +0100 schrieb Andrew Lunn:
+> > +static int mv88q222x_cable_test_get_status(struct phy_device *phydev,
+> > +					   bool *finished)
+> > +{
+> > +	int ret;
+> > +	u32 dist;
+> > +
+> > +	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_MMD_PCS_MV_TDR_STATUS);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	*finished = true;
+> 
+> That looks odd. Is there no status bit which says it has completed? Is
+> it guaranteed to complete within a fixed time? How is it guaranteed that
+> mv88q222x_cable_test_get_status() is called at the necessary delay after 
+> mv88q222x_cable_test_start()?
+> 
+According to the datasheet and the Marvell API bits(0:1) can be used to
+check if the test has completed. Sample code waits 500ms before checking
+the bits. If the test is not completed after the delay the corresponding
+function returns with an error.
 
---543tsvzhxgimotst
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I just used bits(7:4) where 2'b1000 means that the test is in progress,
+and setting *finished = false. I didn't introduced any delay, relying
+on the reschedule delay of the PHY state machine. I didn't notice any
+problems with this approach. Anyway if the test does not complete for
+whatever reasons we get stuck here, right ? Don't know if this can
+happen. Probably we should take the safer path described in the Marvell
+API.
 
-Hello Thomas,
-
-On Fri, Dec 22, 2023 at 11:50:31PM +0100, Uwe Kleine-K=F6nig wrote:
-> this series converts all drivers below drivers/irqchip to use
-> .remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
-> callback that returns no value") for an extended explanation and the
-> eventual goal. The TL;DR; is to make it harder for driver authors to
-> leak resources.
->=20
-> The drivers touched here are all fine though and don't return early in
-> .remove(). So all conversions in this series are trivial.
-
-I'm still waiting for this series to go in (or get review feedback). Is
-this still on your radar? You're the right maintainer to take this
-series, aren't you?
-
-The series still applies to today's next.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---543tsvzhxgimotst
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXOfBoACgkQj4D7WH0S
-/k52nAgArzzUUBfYS1wZr/tKGMqABl7rtsR1xpM2V3NdiROGvaYALX1/ROABy83V
-lo8pk8XNMuVzDEYFoMOjFhWeoT9jJ8qGk+emLXFs2gr1HwIDzptSP5nW3jSLgv1m
-Y/CnadQn2wbIyxPPxPxPglktJ6kPrVcg4pllVjhi6VrwuhIi8dItD9WDuf+qVaVe
-J0rHGiTF2iZvhcuIgIulliMcR9+5npsA14ZxonEQdHJ7f4Ew0LTijz14X8+rNZ4b
-3Fe8/jB2MGtwxlwK6eFGEfH5SWnWqltMR4yPzGVHNIqUHrSB3BVFWzDyNnW2EAfx
-d+1GXz634dPtW4JEgQNJRXcgS//+JQ==
-=O3pv
------END PGP SIGNATURE-----
-
---543tsvzhxgimotst--
+Dimitri
 
