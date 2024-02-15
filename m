@@ -1,354 +1,125 @@
-Return-Path: <linux-kernel+bounces-67040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACFD385653A
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A731E856539
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63251C2442C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:01:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 469951F2556B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6EA131E31;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65607131E33;
 	Thu, 15 Feb 2024 14:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VQ4kc547"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cj4jrZ9P"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E933112FF7C;
-	Thu, 15 Feb 2024 14:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2116B12FF88;
+	Thu, 15 Feb 2024 14:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708005671; cv=none; b=UFRsimXpWmudoL2DYccGNG7tsER8LvvI6taT2K2zvceUVQ8kLt7id9ouzgOuhXtnBLbA5SBqkBrc6ZDXGvRtFXwi6vRFl3Cc4YcCKgnNc30EsFE3H/EK97/zdGz+Qlxj9/LnnL7poJ8Qx+xhjgLDiSDAMHhHjhLOjfuhHcxMqlc=
+	t=1708005671; cv=none; b=RwXzujbzIWfqjgkuvenVrZJsyVWwfHt3I+p0nuIx65zIgssQwuEBPxXhQTg5vR29YsRkkpxttUcibJLm2x9MIt5BRJHSTKJ116lMgzwIoGIs2Cd96nq5KZCaMiMhPalpKUojsyFr4OzLPNJsNLK6pVh/RxL10OnI9RDpjqtg83k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708005671; c=relaxed/simple;
-	bh=NU9Se3/hUjZuq4O8oLC6OrFNJO05DdvNQarp036H6Ss=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=oJ7CpEdUpiFM6f9Yw8sG92tmibBz5jfzxm9udi8DBTJkDr82RNKh1mLACnRVCwxA8rp5OARJ13YFhp5FZKDE5Q0rkHILjTM1u0Mr2IBpObzQrsl2i3AAlNVxCXb4zZnbn3LGJrx4m3Z2K4WZa2g+l+0g40FPLhiCQe8q/DTTQ/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VQ4kc547; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708005669; x=1739541669;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=NU9Se3/hUjZuq4O8oLC6OrFNJO05DdvNQarp036H6Ss=;
-  b=VQ4kc547LXGXQkGJxkbAgnTRR2JkarAVA+jBpzXoTqW7j1wpkOpGp/Hz
-   tSAXc1F26lSCFHQG9d+xFWpYCQRz4aXSInMGKogq+hfrmtxRIkNJjMpbN
-   p4nrZARD0nZPN69R5tkJkSV/uzVk4RuFlOtFLhKWuyjqM2rOH2D8Fu9LH
-   lsOp2U8tJCajjg6AYHJy/hk/wZccsuq2RTK8SyTL8TbSn7zVbl3HGdsi4
-   aS/hf8bo3rOWOdO6/sKm4LLa1JtUIwfFIjoNcbgOXo8OrtyysSADbRp3A
-   tXyF5YuoHq6ksYpBjbz60MtfptRmFJisI6k3MEzyDh5XpwN1OMpWP3OQ8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="5867666"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="5867666"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:01:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="826416889"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="826416889"
-Received: from kraszkow-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.13])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 06:01:04 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Mario Limonciello <mario.limonciello@amd.com>,
- amd-gfx@lists.freedesktop.org, "open list:DRM DRIVERS"
- <dri-devel@lists.freedesktop.org>
-Cc: "open list:ACPI" <linux-acpi@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, Melissa Wen <mwen@igalia.com>, Mark
- Pearson <mpearson-lenovo@squebb.ca>, Mario Limonciello
- <mario.limonciello@amd.com>
-Subject: Re: [PATCH v5 1/3] drm: Add support to get EDID from ACPI
-In-Reply-To: <20240211055011.3583-2-mario.limonciello@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240211055011.3583-1-mario.limonciello@amd.com>
- <20240211055011.3583-2-mario.limonciello@amd.com>
-Date: Thu, 15 Feb 2024 16:01:02 +0200
-Message-ID: <87eddd6d41.fsf@intel.com>
+	bh=2PtL4ZO+AuLDLByDl0phHsryE++u7uCY1JkYwT9390g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=VCRkDhE5cU3DnH4y17b2sfcMN1YIMO0CXulQzVC61F4vAht8xIkTPKofQ6gfPYcnESlS8zQ1cTUKF/08Ib0QtETubk50uWnQIpsKeBI8kWjRUXHi58OFPAbN5CI7V5Krhsd44Ns4cYGeqCGAaBmX+DFfvbFTm8j4kiNb5ccokjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cj4jrZ9P; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33cf6374e58so405079f8f.3;
+        Thu, 15 Feb 2024 06:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708005668; x=1708610468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=byROdOa7RThrRxfbEAlUg2egljys0iMmL1dy4Jts6eE=;
+        b=Cj4jrZ9P2STwyUpxMXDj5XLLxviR6zpmoquQBR+ToBZLgACEc0KwfoBWGhxWdn3YUC
+         CMlRVxg4rpKmKv3VPAjkvMy1xmoJ8mFuQHL9ORwGUgmGgGp3iWLOzw48KbazZngHKZ0b
+         LkGVjSMOhU3UztiRMinDsdtliRKgxEbgItpG4iOMLy8fTidHbOOA2W8QmjTaYaGeD1kQ
+         Af7InSorL88P6VlKth0gIgKEpqmEe0vANMMyx/yA7n4qiG7YUfG2yt9mY/AAAF9sAUXv
+         2KBgUwdOExtXvC7lpUovVE52MOtccBrgG767d2gsIxRedlo627uRfvczizv9A0UnDJQQ
+         ND2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708005668; x=1708610468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=byROdOa7RThrRxfbEAlUg2egljys0iMmL1dy4Jts6eE=;
+        b=g/fi/hPkNwxdI3MSP33l5pYys3ugh/jkN8HLyLidgGilJDyWYVt0ZtqZ5LAX/EyQ5S
+         Euz0+cXN/t8Wp8NcR4Whh0q7gBmHrC5/tr5YMNKDGyOtKUWyIDHLzKRFcvvNf3z0QMf6
+         3cp+xM3dg5xqBNJELdOsGi0fYh8guNBketYG3mBrRZ/dXq7jHAjlybkBfcopm4JJ2xAy
+         43uLrSt6DkUyn35MHa4uwqlE3+/EwTf3q1AsjyTXUhFv04WQC3xfnwRdTnRqbcpAuYRc
+         y5u4Jpo1vMFOlscZV6Y+7uaruIEGTBj2NhT/DhlIRxyW6wbLimVsflBz3FXTUXNtvw+k
+         cECA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkeafAL24ihfd1JqBtp/L67nAR1xbE6Mi7mr09gm78nlrhGjjWod1h7yPkE8uiMIqDLIE1sO8FUJ9siFH2qVhqIwSYA+dng37H2qv0
+X-Gm-Message-State: AOJu0YzTzHUaGs+8xRMUBuUMgXmiqVm2fpkl/83L4urHwAEK1kooacpr
+	64Ano2gD6/0gLnyetoEDfSX0cyodZ55HWskZtaGRIQkQ54gcAWxGQvD8mI9VDgs=
+X-Google-Smtp-Source: AGHT+IHe2sxmoy/X2Ezb2Q3D0GQv0IZZRrxcTzQ/dTI5Yy67muJihjhwDVPF4Li07ni+kuSFVdu8jA==
+X-Received: by 2002:adf:e911:0:b0:33d:461:ebc2 with SMTP id f17-20020adfe911000000b0033d0461ebc2mr1302521wrm.28.1708005668074;
+        Thu, 15 Feb 2024 06:01:08 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id q25-20020a056000137900b0033cffd1a302sm1872343wrz.57.2024.02.15.06.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 06:01:07 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mtd: chips: remove redundant assignment to variable timeo
+Date: Thu, 15 Feb 2024 14:01:06 +0000
+Message-Id: <20240215140106.2062858-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, 10 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
-> Some manufacturers have intentionally put an EDID that differs from
-> the EDID on the internal panel on laptops.  Drivers that prefer to
-> fetch this EDID can set a bit on the drm_connector to indicate that
-> the DRM EDID helpers should try to fetch it and it is preferred if
-> it's present.
->
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v1->v2:
->  * Split code from previous amdgpu specific helper to generic drm helper.
-> v2->v3:
->  * Add an extra select to fix a variety of randconfig errors found from
->    LKP robot.
-> v3->v4:
->  * Return struct drm_edid
-> v4->v5:
->  * Rename to drm_edid_read_acpi
->  * Drop selects
-> ---
->  drivers/gpu/drm/Kconfig     |   7 +++
->  drivers/gpu/drm/drm_edid.c  | 113 +++++++++++++++++++++++++++++++++---
->  include/drm/drm_connector.h |   6 ++
->  include/drm/drm_edid.h      |   1 +
->  4 files changed, 119 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index 2520db0b776e..a49740c528b9 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -103,6 +103,13 @@ config DRM_KMS_HELPER
->  	help
->  	  CRTC helpers for KMS drivers.
->  
-> +config DRM_ACPI_HELPER
-> +	tristate "ACPI support in DRM"
-> +	depends on DRM
-> +	depends on (ACPI_VIDEO || ACPI_VIDEO=n)
-> +	help
-> +	  ACPI helpers for DRM drivers.
-> +
->  config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
->          bool "Enable refcount backtrace history in the DP MST helpers"
->  	depends on STACKTRACE_SUPPORT
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 69c68804023f..096c278b6f66 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -28,6 +28,7 @@
->   * DEALINGS IN THE SOFTWARE.
->   */
->  
-> +#include <acpi/video.h>
->  #include <linux/bitfield.h>
->  #include <linux/cec.h>
->  #include <linux/hdmi.h>
-> @@ -2188,6 +2189,62 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
->  	return ret == xfers ? 0 : -1;
->  }
->  
-> +/**
-> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
-> + * @data: struct drm_connector
-> + * @buf: EDID data buffer to be filled
-> + * @block: 128 byte EDID block to start fetching from
-> + * @len: EDID data buffer length to fetch
-> + *
-> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
-> + *
-> + * Return: 0 on success or error code on failure.
-> + */
-> +static int
-> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> +{
-> +	struct drm_connector *connector = data;
-> +	struct drm_device *ddev = connector->dev;
-> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-> +	unsigned char start = block * EDID_LENGTH;
-> +	void *edid;
-> +	int r;
-> +
-> +	if (!acpidev)
-> +		return -ENODEV;
-> +
-> +	switch (connector->connector_type) {
-> +	case DRM_MODE_CONNECTOR_LVDS:
-> +	case DRM_MODE_CONNECTOR_eDP:
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* fetch the entire edid from BIOS */
-> +	if (IS_REACHABLE(CONFIG_DRM_ACPI_HELPER)) {
-> +		r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-> +		if (r < 0) {
-> +			DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
-> +			return -EINVAL;
-> +		}
-> +	} else {
-> +		r = -EOPNOTSUPP;
-> +	}
-> +	if (len > r || start > r || start + len > r) {
-> +		r = -EINVAL;
-> +		goto cleanup;
-> +	}
-> +
-> +	memcpy(buf, edid + start, len);
-> +	r = 0;
-> +
-> +cleanup:
-> +	kfree(edid);
-> +
-> +	return r;
-> +}
-> +
->  static void connector_bad_edid(struct drm_connector *connector,
->  			       const struct edid *edid, int num_blocks)
->  {
-> @@ -2621,7 +2678,8 @@ EXPORT_SYMBOL(drm_probe_ddc);
->   * @connector: connector we're probing
->   * @adapter: I2C adapter to use for DDC
->   *
-> - * Poke the given I2C channel to grab EDID data if possible.  If found,
-> + * If the connector allows it, try to fetch EDID data using ACPI. If not found
-> + * poke the given I2C channel to grab EDID data if possible.  If found,
->   * attach it to the connector.
->   *
->   * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> @@ -2629,20 +2687,50 @@ EXPORT_SYMBOL(drm_probe_ddc);
->  struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter)
->  {
-> -	struct edid *edid;
-> +	struct edid *edid = NULL;
->  
->  	if (connector->force == DRM_FORCE_OFF)
->  		return NULL;
->  
-> -	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> -		return NULL;
-> +	if (connector->acpi_edid_allowed)
-> +		edid = _drm_do_get_edid(connector, drm_do_probe_acpi_edid, connector, NULL);
-> +
-> +	if (!edid) {
-> +		if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-> +			return NULL;
-> +		edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
-> +	}
+In two functions the variable timeo is being initialized with a value
+that is never read, it is being re-assigned later on. The initializations
+are redundant and can be removed.
 
-Hmm. So do you want the presence of ACPI EDID to determine whether the
-display is there or not?
+Cleans up clang scan build warning:
+warning: Value stored to 'timeo' during its initialization is never
+read [deadcode.DeadStores]
 
-Note how the override and firmware EDID mechanisms only override the
-EDID *contents*. They are orthogonal from connector forcing. So you can
-override the EDID, but still rely on the DDC probe to determine if the
-display is there.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The question is, how likely is it that the ACPI EDID is used not just
-because the actual EDID is bogus, but also because the display just
-doesn't respond to DDC at all?
-
-If possible, I'd like ACPI EDID to follow the override/firmware EDID
-semantics on this.
-
->  
-> -	edid = _drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter, NULL);
->  	drm_connector_update_edid_property(connector, edid);
->  	return edid;
->  }
->  EXPORT_SYMBOL(drm_get_edid);
->  
-> +/**
-> + * drm_edid_read_acpi - get EDID data, if available
-> + * @connector: connector we're probing
-> + *
-> + * Use the BIOS to attempt to grab EDID data if possible.
-> + *
-> + * The returned pointer must be freed using drm_edid_free().
-> + *
-> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> + */
-> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector)
-> +{
-> +	const struct drm_edid *drm_edid;
-> +
-> +	if (connector->force == DRM_FORCE_OFF)
-> +		return NULL;
-
-If the caller handled all the connector->force stuff, this could be
-dropped.
-
-> +
-> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector);
-> +
-> +	/* Note: Do *not* call connector updates here. */
-> +
-> +	return drm_edid;
-> +}
-> +EXPORT_SYMBOL(drm_edid_read_acpi);
-> +
->  /**
->   * drm_edid_read_custom - Read EDID data using given EDID block read function
->   * @connector: Connector to use
-> @@ -2727,10 +2815,11 @@ const struct drm_edid *drm_edid_read_ddc(struct drm_connector *connector,
->  EXPORT_SYMBOL(drm_edid_read_ddc);
->  
->  /**
-> - * drm_edid_read - Read EDID data using connector's I2C adapter
-> + * drm_edid_read - Read EDID data using BIOS or connector's I2C adapter
->   * @connector: Connector to use
->   *
-> - * Read EDID using the connector's I2C adapter.
-> + * Read EDID from BIOS if allowed by connector or by using the connector's
-> + * I2C adapter.
->   *
->   * The EDID may be overridden using debugfs override_edid or firmware EDID
->   * (drm_edid_load_firmware() and drm.edid_firmware parameter), in this priority
-> @@ -2742,10 +2831,18 @@ EXPORT_SYMBOL(drm_edid_read_ddc);
->   */
->  const struct drm_edid *drm_edid_read(struct drm_connector *connector)
->  {
-> +	const struct drm_edid *drm_edid = NULL;
-> +
->  	if (drm_WARN_ON(connector->dev, !connector->ddc))
->  		return NULL;
->  
-> -	return drm_edid_read_ddc(connector, connector->ddc);
-> +	if (connector->acpi_edid_allowed)
-> +		drm_edid = drm_edid_read_acpi(connector);
-> +
-> +	if (!drm_edid)
-> +		drm_edid = drm_edid_read_ddc(connector, connector->ddc);
-
-This should be in drm_edid_read_ddc() not drm_edid_read(). Please let's
-not make the two behave any different. It would be really weird if one
-had an ACPI check and the other not.
-
-> +
-> +	return drm_edid;
->  }
->  EXPORT_SYMBOL(drm_edid_read);
->  
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index fe88d7fc6b8f..74ed47f37a69 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1886,6 +1886,12 @@ struct drm_connector {
->  
->  	/** @hdr_sink_metadata: HDR Metadata Information read from sink */
->  	struct hdr_sink_metadata hdr_sink_metadata;
-> +
-> +	/**
-> +	 * @acpi_edid_allowed: Get the EDID from the BIOS, if available.
-> +	 * This is only applicable to eDP and LVDS displays.
-> +	 */
-> +	bool acpi_edid_allowed;
->  };
->  
->  #define obj_to_connector(x) container_of(x, struct drm_connector, base)
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index 518d1b8106c7..38b5e1b5c773 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -463,5 +463,6 @@ bool drm_edid_is_digital(const struct drm_edid *drm_edid);
->  
->  const u8 *drm_find_edid_extension(const struct drm_edid *drm_edid,
->  				  int ext_id, int *ext_index);
-> +const struct drm_edid *drm_edid_read_acpi(struct drm_connector *connector);
->  
->  #endif /* __DRM_EDID_H__ */
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index df589d9b4d70..9f2223d3e8e1 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -2411,7 +2411,7 @@ static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
++	unsigned long timeo;
+ 	unsigned long int adr;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret;
+@@ -2512,7 +2512,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip, unsigned long adr, int len, void *thunk)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long timeo = jiffies + HZ;
++	unsigned long timeo;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret;
+ 	int retry_cnt = 0;
 -- 
-Jani Nikula, Intel
+2.39.2
+
 
