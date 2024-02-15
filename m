@@ -1,290 +1,183 @@
-Return-Path: <linux-kernel+bounces-66226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4F108558C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:23:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D61D8558C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4F96B2893A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:23:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C19B41F22B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 01:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E861C0F;
-	Thu, 15 Feb 2024 01:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94ED817E9;
+	Thu, 15 Feb 2024 01:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GWVQmokD"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2081.outbound.protection.outlook.com [40.107.93.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BsJ4FpBR"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168211361;
-	Thu, 15 Feb 2024 01:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707960162; cv=fail; b=p+g5PoPulZiKvF5EimnFhaA9xC34lscvMmTtxSxbi/9Iwi+Yz5fQMej88WqwQbVmcji11GW+lvL6l8cTZXQzZgtP/2o8kzk/r5GCQTvzWIx2uww9cc1wxoDjmCyT5OT8+8gRjrqEeve0grUjtKHN+oK8yZPCY9KI7mMZPdT2aK4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707960162; c=relaxed/simple;
-	bh=MMz8cfPqaau6ZbeXY//zkrJwR9RntbLkMw7SGkzN7DM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d9gVqPs7v53Mu61g8rt/0V1I9LoVgjHgy8t91r7iN4+6ZnohrDsh7UWff7ndY/k9yxzLfbw9SGn0v/wLscsAGqKhnraXpgHuUClo86zapg6z8YL3niXi/on4QYfPzLf9JbRRCwRGNs62guJM6f0y7G2Bh2x6wocoBgNz8edyX2M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GWVQmokD; arc=fail smtp.client-ip=40.107.93.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/zGgUYCox21JBe31Efzk/GW5XjrhzlazC9rCsZaQhpabqN6I/cMgKFUR8wZku1m4ls7fvkFn1Tdot8ysKIhU/kKkQmqMz0qU8i67S8ucljCW2yR4WNrDyeShoa6DkVEtDuL/gwWrOYk3aOJGjISx9xbSGhWz38UE0YYr3rASTU1gymj3ymOoqPVRr04Ry+F/sHNcjxg4REhcNlx6dKZP/dw4T82qJ6lu3nW82+nenUMxxJR6VEjfxZROqMXsFfuB7Pw8ZgkBIrVSZMsR0YYdXoll+bV0KdqDOmAnczgCcHZZZQ4mEVHisD5Y64eZApV6g7jYduBIPwpPy6La0MZ+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+Mkhn6VH0D6dxBZjHW5RE8+RO3AG15oeAlBjVkoT5kE=;
- b=cfIo5LaQXwBEWYsls9fVXEkdHHCoT6NpJfT9Ljm9VvPQ0yS5Orc7QsKab4RL3pR27SvqMNUA7NpLxrxR+XX10d6asIEh9P4Q79SbIcqTmkOkKChMqpPZUDdEO4gIR/D0My2Dcf/SAwiUfiGI2JzULxrA/RMIPV1fTXlymfxBgaD+Zm9DL6Ej9bW53Mil++YbblKRkPlhb/b0O2GZ3jY9gCBwtS/SjIBF6WX3COiJWoukrgG7Mfa89hMk9eMKICCJoaDb53eKzYmrl4bIOrtiOX5dLIykJ0XuCDY0BPUGDIhSDGM1rvfCGL5l2RB/mI0+QgHxiGz/krbdm+H1UkYwaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Mkhn6VH0D6dxBZjHW5RE8+RO3AG15oeAlBjVkoT5kE=;
- b=GWVQmokD/dxwW4/dbTptS1PcP0vW7pWe4h06i6vwMuxewasyzebnSQvkff+Wbsfnt3wNicj8RvVnEPSB7TtzldW9Xe3tm66PWavbR+uxIHYHswUQXb+hLyv5itnKg+SIjgc0mQHaCm83ZvGSFcMlJszH/25o3Pb84fEr2iYcE44=
-Received: from CH0PR03CA0097.namprd03.prod.outlook.com (2603:10b6:610:cd::12)
- by DM8PR12MB5430.namprd12.prod.outlook.com (2603:10b6:8:28::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.26; Thu, 15 Feb 2024 01:22:38 +0000
-Received: from CH2PEPF000000A0.namprd02.prod.outlook.com
- (2603:10b6:610:cd:cafe::4a) by CH0PR03CA0097.outlook.office365.com
- (2603:10b6:610:cd::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.41 via Frontend
- Transport; Thu, 15 Feb 2024 01:22:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CH2PEPF000000A0.mail.protection.outlook.com (10.167.244.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Thu, 15 Feb 2024 01:22:38 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 14 Feb
- 2024 19:22:37 -0600
-Date: Wed, 14 Feb 2024 19:19:57 -0600
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<seanjc@google.com>, <aik@amd.com>, <isaku.yamahata@intel.com>
-Subject: Re: [PATCH 08/10] KVM: SEV: define VM types for SEV and SEV-ES
-Message-ID: <20240215011957.4bidufstf4mp5jij@amd.com>
-References: <20240209183743.22030-1-pbonzini@redhat.com>
- <20240209183743.22030-9-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3546D10F2;
+	Thu, 15 Feb 2024 01:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707960256; cv=none; b=XmJBWS7pdyhsB+1zViuXYeoYF0Zlv857PeLSQXu4snMLBE1Pu/Il73OPFlT7dkMQ7ePPCwssOGwZGqPaLoRGcBBgH2r1r1BV3cOKXEOsiB1OrRrGobI/Kjv0vcyiRHW7XeKAVRz9ZkH6RtzuV0DnYRihZ8LCggtHNqwIVg250vw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707960256; c=relaxed/simple;
+	bh=PgXSHMP1jNw+Xh52N9SCK2KPIf7b2fiKcPI3A90/8aY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lb+BrvEsnqrzUXvd6PGwRKOZOEc9QwOqgqMdewxaOSmRNY4SOT/SIo8IQgps3FKDEjn2IF3VHYyJAtY8Ml6/RfZqPw9BjxfY58P+D270Li1muX9nj8V1ToMFRKrbdH3W6u2V4FFnkbCwXQUm1htswSrrY3dy6OQXrTMIXKeihSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BsJ4FpBR; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e104196e6eso456452b3a.0;
+        Wed, 14 Feb 2024 17:24:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707960254; x=1708565054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=gedE0L9Ouy/oIx8vXboFUteCNYZmLOHoNTlwQC5vaB4=;
+        b=BsJ4FpBRvJovcYn2/RQnfntX0k8oSjHz8uUdvG6qvO0XQATqNcG0nlH5UuY0E9b1Lg
+         V5/GjAfJlrj6tPanKUMrsXXfcJEg9GZVaz7RwuvTIWwxzwdukJ8eRbM29AluR/YF2GHo
+         4IknZUkcy7nkfq90KVCp7TcG6RqqPCBaq/El2R/lcQeq86ltSNfVMQTt+yft1KyDUd2J
+         CmiL6iTR5rJFVGTp6jz0YEWoNtaBUc4Cho1KMOFI12NMbBx3EpbWV1hhvP6y4Lm5XIIv
+         ioDUa0hGPPQpzLedO1pVY+VT/nEWk5UjJbqS0r9m55CysX5hEp0SE27ORnFx9yorMI4p
+         jGxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707960254; x=1708565054;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gedE0L9Ouy/oIx8vXboFUteCNYZmLOHoNTlwQC5vaB4=;
+        b=CypMZli75dC4HWBOkhsraoUAcjv4p+VfcpYQKF3I2PES92kSQc/eXJklSshCJIq81/
+         MIPLzhxR0PviH5WPwbwRQpvunMoGVFbkqBtrVm57gF6w1FXDqfZ0uVXlq/TeO0ggilcP
+         UdX4gjGwgf/casbOeWXqEl7u05VN4zKKzh8YaQM7KpVrAcyyAjJLVuwbiOQnpPDFSgJU
+         Dumy2Z2gky5rdigyVFCkIbE/uz8gzURRzD2SwHavETMwmPk99NoLTYQCuzO0JOO8YImC
+         Dsho00Yn6L9PnkhyWEEvYxZe/7/ubUur0MAMecKgYl0kSzhfp0RsgsoVGhadkdpNjZEW
+         krvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdqdP0FD/TL+Lk4iZxJz/oBOY895cjY+InmRfbaLHoIn9bUzwxf1DsKNs2e1MoJMo1pJD4VNfqCai8SfWIkrIN8LfH6kNEwc4oJ615
+X-Gm-Message-State: AOJu0Yz1ZS77mvNF3l0mjBykQUpvGMJErkMiDSDmIRdFjUBu66BQyjfH
+	VytTOiO2sLsfr14OpIGuCF9jlWf3bg0BdD8hjjeDPTdieE3LPd/9
+X-Google-Smtp-Source: AGHT+IEn49lwYt768Aluu90Nocb2R1YsoTNL8qRJtToIE2r9kTeYeZAHhmtz6zkH3MqGi0YPR3IDtg==
+X-Received: by 2002:a05:6a00:1995:b0:6e0:e618:7eb0 with SMTP id d21-20020a056a00199500b006e0e6187eb0mr651601pfl.8.1707960254432;
+        Wed, 14 Feb 2024 17:24:14 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o16-20020a056a00215000b006e0938f7c57sm86145pfk.121.2024.02.14.17.24.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 17:24:13 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <285cd809-d5e0-4688-ace1-630aa8c30aae@roeck-us.net>
+Date: Wed, 14 Feb 2024 17:24:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240209183743.22030-9-pbonzini@redhat.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF000000A0:EE_|DM8PR12MB5430:EE_
-X-MS-Office365-Filtering-Correlation-Id: 467794c7-ce62-4cc1-93e2-08dc2dc498e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ONhHIsqQTK8FCVCBS4no8RcGpvuV04CsD6HVmZRQ64Xeg9P50cqIlLdS5ajzQauRPtVgP6W6DGsqolT0hkQ5oH1piBK58YyXKaPUMMrGiqt1YU0/c5BKjNeexfbiO576Dxl+9WcQx9RT/96KWu6TOGBUBn9j2wSXZIh63KN95cCMuId9WHLuyMCHihafTCKgZ4F2Z0T88DFTBlpy5Qm3eMtwsulEGCJAwszPDM3LIHmd7rJy+2UyrEqUo9M/ApouRLeiCevE0miBR3YRq07xBphIERDonlwslwXHGktKlVxCmXNjrf3NrAHv04bsvnicAVQlm2AZ6j6F0SGZkYG50M8K8sIjn93Lt9sXXgsFm6uMp0ODmi/KBQGlCEGsumRnmhP4CmMXWsrPL7q8l4BXG5lJ0Dnn97MXQE/FlW1GFDTIsf/P0rmCZ4KPuvpXehqACOdek9M2ir38XSf+bd/npmXPK/0S7we8q0xFNoW4c482utVRiQiDVAgX5QfRFEo+F7Ba7keijSMeCvmsgB1vGWkIyIGYuezgSD1n2/EnTLg0llzsys59cnHN8UliSB1gZ1Idg/kHbabXKHeJLhc1d5IwGcn8ktCBj8LLxVoiZjUP+HJ56FAJWjBqx19XyPaIuQFy+6h2Tc28fgS3ddXQIoBjJvQrsJ+pgA990l0d06w=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(36860700004)(40470700004)(46966006)(478600001)(41300700001)(6666004)(8676002)(8936002)(44832011)(2906002)(4326008)(5660300002)(70586007)(54906003)(70206006)(316002)(6916009)(2616005)(83380400001)(86362001)(336012)(426003)(356005)(81166007)(26005)(1076003)(16526019)(82740400003)(36756003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 01:22:38.0746
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 467794c7-ce62-4cc1-93e2-08dc2dc498e1
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF000000A0.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5430
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 09, 2024 at 01:37:40PM -0500, Paolo Bonzini wrote:
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  Documentation/virt/kvm/api.rst  |  2 ++
->  arch/x86/include/uapi/asm/kvm.h |  2 ++
->  arch/x86/kvm/svm/sev.c          | 18 +++++++++++++++++-
->  arch/x86/kvm/svm/svm.c          | 11 +++++++++++
->  arch/x86/kvm/svm/svm.h          |  2 ++
->  arch/x86/kvm/x86.c              |  4 ++++
->  6 files changed, 38 insertions(+), 1 deletion(-)
+On 2/14/24 13:41, Charlie Jenkins wrote:
+> The test cases for ip_fast_csum and csum_ipv6_magic were failing on a
+> variety of architectures that are big endian or do not support
+> misalgined accesses. Both of these test cases are changed to support big
+> and little endian architectures.
 > 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 3ec0b7a455a0..bf957bb70e4b 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -8790,6 +8790,8 @@ means the VM type with value @n is supported.  Possible values of @n are::
->  
->    #define KVM_X86_DEFAULT_VM	0
->    #define KVM_X86_SW_PROTECTED_VM	1
-> +  #define KVM_X86_SEV_VM	8
-> +  #define KVM_X86_SEV_ES_VM	10
->  
->  9. Known KVM API problems
->  =========================
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 6c74db23257e..7c46e96cfe62 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -854,5 +854,7 @@ struct kvm_hyperv_eventfd {
->  
->  #define KVM_X86_DEFAULT_VM	0
->  #define KVM_X86_SW_PROTECTED_VM	(KVM_X86_DEFAULT_VM | __KVM_X86_PRIVATE_MEM_TYPE)
-> +#define KVM_X86_SEV_VM		8
-
-Hmm... would it make sense to decouple the VM types and their associated
-capabilities? Only bit 2 is left in the lower range after this, and using any
-bits beyond TDX's bit 4 risks overflowing check_extension ioctl's 32-bit return
-value. Maybe a separate lookup table instead?
-
-> +#define KVM_X86_SEV_ES_VM	(KVM_X86_SEV_VM | __KVM_X86_PROTECTED_STATE_TYPE)
->  
->  #endif /* _ASM_X86_KVM_H */
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 712bfbc0028a..acf5c45ef14e 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -260,6 +260,9 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	if (kvm->created_vcpus)
->  		return -EINVAL;
->  
-> +	if (kvm->arch.vm_type != KVM_X86_DEFAULT_VM)
-> +		return -EINVAL;
-> +
->  	ret = -EBUSY;
->  	if (unlikely(sev->active))
->  		return ret;
-> @@ -279,6 +282,7 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  
->  	INIT_LIST_HEAD(&sev->regions_list);
->  	INIT_LIST_HEAD(&sev->mirror_vms);
-> +	sev->need_init = false;
->  
->  	kvm_set_apicv_inhibit(kvm, APICV_INHIBIT_REASON_SEV);
->  
-> @@ -1814,7 +1818,8 @@ int sev_vm_move_enc_context_from(struct kvm *kvm, unsigned int source_fd)
->  	if (ret)
->  		goto out_fput;
->  
-> -	if (sev_guest(kvm) || !sev_guest(source_kvm)) {
-> +	if (kvm->arch.vm_type != source_kvm->arch.vm_type ||
-> +	    sev_guest(kvm) || !sev_guest(source_kvm)) {
->  		ret = -EINVAL;
->  		goto out_unlock;
->  	}
-> @@ -2135,6 +2140,7 @@ int sev_vm_copy_enc_context_from(struct kvm *kvm, unsigned int source_fd)
->  	mirror_sev->asid = source_sev->asid;
->  	mirror_sev->fd = source_sev->fd;
->  	mirror_sev->es_active = source_sev->es_active;
-> +	mirror_sev->need_init = false;
->  	mirror_sev->handle = source_sev->handle;
->  	INIT_LIST_HEAD(&mirror_sev->regions_list);
->  	INIT_LIST_HEAD(&mirror_sev->mirror_vms);
-> @@ -3192,3 +3198,13 @@ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->  
->  	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, 1);
->  }
-> +
-> +bool sev_is_vm_type_supported(unsigned long type)
-> +{
-> +	if (type == KVM_X86_SEV_VM)
-> +		return sev_enabled;
-> +	if (type == KVM_X86_SEV_ES_VM)
-> +		return sev_es_enabled;
-> +
-> +	return false;
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 392b9c2e2ce1..87541c84d07e 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4087,6 +4087,11 @@ static void svm_cancel_injection(struct kvm_vcpu *vcpu)
->  
->  static int svm_vcpu_pre_run(struct kvm_vcpu *vcpu)
->  {
-> +	struct kvm_sev_info *sev = &to_kvm_svm(vcpu->kvm)->sev_info;
-> +
-> +	if (sev->need_init)
-> +		return -EINVAL;
-> +
->  	return 1;
->  }
->  
-> @@ -4888,6 +4893,11 @@ static void svm_vm_destroy(struct kvm *kvm)
->  
->  static int svm_vm_init(struct kvm *kvm)
->  {
-> +	if (kvm->arch.vm_type) {
-> +		struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +		sev->need_init = true;
-> +	}
-> +
->  	if (!pause_filter_count || !pause_filter_thresh)
->  		kvm->arch.pause_in_guest = true;
->  
-> @@ -4914,6 +4924,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->  	.vcpu_free = svm_vcpu_free,
->  	.vcpu_reset = svm_vcpu_reset,
->  
-> +	.is_vm_type_supported = sev_is_vm_type_supported,
->  	.vm_size = sizeof(struct kvm_svm),
->  	.vm_init = svm_vm_init,
->  	.vm_destroy = svm_vm_destroy,
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 864c782eaa58..63be26d4a024 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -79,6 +79,7 @@ enum {
->  struct kvm_sev_info {
->  	bool active;		/* SEV enabled guest */
->  	bool es_active;		/* SEV-ES enabled guest */
-> +	bool need_init;		/* waiting for SEV_INIT2 */
-
-Seems like this should be a separate patch.
-
--Mike
-
->  	unsigned int asid;	/* ASID used for this guest */
->  	unsigned int handle;	/* SEV firmware handle */
->  	int fd;			/* SEV device fd */
-> @@ -696,6 +697,7 @@ void sev_es_vcpu_reset(struct vcpu_svm *svm);
->  void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
->  void sev_es_prepare_switch_to_guest(struct vcpu_svm *svm, struct sev_es_save_area *hostsa);
->  void sev_es_unmap_ghcb(struct vcpu_svm *svm);
-> +bool sev_is_vm_type_supported(unsigned long type);
->  
->  /* vmenter.S */
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c89ddaa1e09f..dfc66ee091a1 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4795,6 +4795,10 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  		r = BIT(KVM_X86_DEFAULT_VM);
->  		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
->  			r |= BIT(KVM_X86_SW_PROTECTED_VM);
-> +		if (kvm_is_vm_type_supported(KVM_X86_SEV_VM))
-> +			r |= BIT(KVM_X86_SEV_VM);
-> +		if (kvm_is_vm_type_supported(KVM_X86_SEV_ES_VM))
-> +			r |= BIT(KVM_X86_SEV_ES_VM);
->  		break;
->  	default:
->  		break;
-> -- 
-> 2.39.0
+> The test for ip_fast_csum is changed to align the data along (14 +
+> NET_IP_ALIGN) bytes which is the alignment of an IP header. The test for
+> csum_ipv6_magic aligns the data using a struct. An extra padding field
+> is added to the struct to ensure that the size of the struct is the same
+> on all architectures (44 bytes).
 > 
+> The test for csum_ipv6_magic somewhat arbitrarily aligned saddr and
+> daddr. This would fail on parisc64 due to the following code snippet in
+> arch/parisc/include/asm/checksum.h:
 > 
+> add		%4, %0, %0\n"
+> ldd,ma		8(%1), %6\n"
+> ldd,ma		8(%2), %7\n"
+> add,dc		%5, %0, %0\n"
+> 
+> The second add is expecting carry flags from the first add. Normally,
+> a double word load (ldd) does not modify the carry flags. However,
+> because saddr and daddr may be misaligned, ldd triggers a misalignment
+> trap that gets handled in arch/parisc/kernel/unaligned.c. This causes
+> many additional instructions to be executed between the two adds. This
+> can be easily solved by adding the carry into %0 before executing the
+> ldd.
+> 
+> However, that is not necessary since ipv6 headers should always be
+> aligned on a 16-byte boundary on parisc since NET_IP_ALIGN is set to 2
+> and the ethernet header size is 14.
+> 
+> Architectures that set NET_IP_ALIGN to 0 must support misaligned saddr
+> and daddr, but that is not tested here.
+> 
+> Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+
+Reviewed-and-Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
+
+
 
