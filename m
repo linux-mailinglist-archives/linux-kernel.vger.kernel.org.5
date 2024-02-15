@@ -1,113 +1,130 @@
-Return-Path: <linux-kernel+bounces-66510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF474855DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C062855DF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EF7DB2F6CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:17:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1972B2CE25
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 09:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E30717586;
-	Thu, 15 Feb 2024 09:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE6A168BA;
+	Thu, 15 Feb 2024 09:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGAUCyMl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t8w8Dlyu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A53A14006;
-	Thu, 15 Feb 2024 09:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E7A13FFD;
+	Thu, 15 Feb 2024 09:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988655; cv=none; b=YTE3/nN461n1bZPutHZIMZB3OpK/5f7UV+/gf0lpb1hGOjqtp5fMbE/Y4YpSBRoeNSdDi8oC/+9KZ2lXPzgU4pcMlSO6NgvLJRuteovxQvyuUPMTXhcHg+EXMux3rOVotchJ+Pn0nxRBHFmb7BOGFPloIpiOH2MCSyY0tpOmt3k=
+	t=1707988683; cv=none; b=K/TBmW4y+Qbi3fJI0FtOiJJuxli/riUx6DkbNaOD6MGHNd5qzPulBrk0B1DS8HplJCRX/yDH/nxXTz3l0HxrkglLGu69+mHZbO/NQWVbNGsY0QScCK//6UgCCK7H/J+4eyg8Irenv3E0IIcKePsBn9FEpWC55T64OueFrUDpq0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988655; c=relaxed/simple;
-	bh=g4fM9SmhycOvEJgP9Jk1eieBn+/gDJgMcoqee5Fq9WA=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=sFObyxEmqsNehazvxKDfsVBtAANAPmdt2Cy4E/ElbYNQiXUP/B8iibPVWbxcUUpfNIOMiJTHch2e37IlvovaXz+Z2VHxA9aGqUty9+NmXaidIRgVFfH4h50i//jNYsui+Q5mM7x4S/UahoQbXvSJvunx7nnGqCz0D9iFaMyfJNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGAUCyMl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B01A4C433B1;
-	Thu, 15 Feb 2024 09:17:34 +0000 (UTC)
+	s=arc-20240116; t=1707988683; c=relaxed/simple;
+	bh=S/AjCC8VHzWj3sCL5RknpqlrVIJThGoN6o8cUNj0HAc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oXNbun3Mw5LkIUI1Ox2q+Wv7qXLjJi9c0wns6p9UPo7mEHgrZ7TmlRoGT448j4NeCR/1eI7SPOBIR4QJMhIHjiuWZnGTiX+l2OAvdsmjT46QWpCEMbouMDGPgbuqrhBSY2cDd1QmtX0pEZuFuiuT6LyX4ANcbvFkSLvROOagc7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t8w8Dlyu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98718C43394;
+	Thu, 15 Feb 2024 09:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707988654;
-	bh=g4fM9SmhycOvEJgP9Jk1eieBn+/gDJgMcoqee5Fq9WA=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=sGAUCyMlyiOzsLRzDnhUKucnFZ5TJq9K/8MxHfMtOZfYzeYAIfOdZf6NplX/yKjqT
-	 gEs9IJS3SDU33YQj8NlD6dDC09Qvw6xkDWTJiOffGD+DF5twNR9YYJsNxbbo5qYaDm
-	 zgsouqnkjTppt7OgDoHnWklsUzxRWq6U18XcK2dYee+7Zhh/Tkw9MY85e89KBwAFH9
-	 md8w8kCxqHHDKHPNbIvyujagQKdWmq9boUNIL3KJaHkudFIYx9lywIsAdHYeEW+ubu
-	 qD9ouTNWs3a7CJd2fGsT9/S70YdCNP0j/h3oPidY+7MRSE7RnvAYOq4+uluUVZd9Qr
-	 6Lx6Cxt8pNTvQ==
-Date: Thu, 15 Feb 2024 03:17:33 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1707988682;
+	bh=S/AjCC8VHzWj3sCL5RknpqlrVIJThGoN6o8cUNj0HAc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=t8w8Dlyunwadomn9EpttMUklIMkJAVSImls8uYNCN2KFOS7ng/VK2LR8RYdBlWTur
+	 Z2EZoTC/fJe7fxlgMyDYV3j1EhWPAXyh1iVmxwhxMprb9MeRAJaKDhFFufyUu4nKW6
+	 l76luLcslvses4IfnmeonRd01sS/sdv/DW/Q+FvQTk1AjVeHxK0Mp/DUUhVeEnrAc7
+	 xBM8fW2luk8yxj+kjcbMSpDXJiip2wU+D9BAYnBZhT6/ejL/Fmo2QvRYfkhlU5u3+/
+	 eDfcT3623TJuizH+FcloVUgsdE9iTY9SvPR4yq9l08URXLE7A/O9rVn/0xxI2QQaDt
+	 WdsIS/nRyZiNA==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511898b6c9eso745104e87.3;
+        Thu, 15 Feb 2024 01:18:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXiRwa4MOVRg9tqJx/LKCBN+Eyy7bAMJpN348VXY7/xDbg0CKcZ3Qfxi0LFPqouAV3veW7D9dGkj0S4MXvKXLFulo6wTCixNBLK3uxvKOPnPKZOf2MH6LxtNqVYMYHQK0DwUAQVmrW+dskt
+X-Gm-Message-State: AOJu0YxzxvBfJPfqTmcoiRJZQT5F0vmnKRKPVOLpzwUTocoJKWvPP9EU
+	QNkDateeOAg7ySYBz6x8SkxTgXvChfk+AULztKX51VE4No0WVN/4mLWDVrPY0WlId9qIsqlsWME
+	RsWSjOoqOiEYcB5e6qnXkIs7DtJE=
+X-Google-Smtp-Source: AGHT+IEsMgiElptgTCNfGX2dKL2tYNf4Hhbc7w/ckQwW07j4ZbEqdCIUUZlE+vGLt1J/JAmNUWIICNnaJdmIV3XLc7I=
+X-Received: by 2002:a05:6512:3c8a:b0:511:7211:2cdc with SMTP id
+ h10-20020a0565123c8a00b0051172112cdcmr1182263lfv.10.1707988680836; Thu, 15
+ Feb 2024 01:18:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
- linux-pci@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
- Nishanth Menon <nm@ti.com>, Bjorn Helgaas <bhelgaas@google.com>, 
- Kishon Vijay Abraham I <kishon@ti.com>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- devicetree <devicetree@vger.kernel.org>, "Andrew F. Davis" <afd@ti.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- "Lopes Ivo, Diogo Miguel (T CED IFD-PT)" <diogo.ivo@siemens.com>
-In-Reply-To: <d0f251f4-1c9e-4ed2-b7df-5a7fda28fe4e@siemens.com>
-References: <d0f251f4-1c9e-4ed2-b7df-5a7fda28fe4e@siemens.com>
-Message-Id: <170798865265.3193150.14017104193365362131.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: PCI: ti,am65: Fix remaining binding
- warnings
+References: <20240215083225.3976252-1-arnd@kernel.org>
+In-Reply-To: <20240215083225.3976252-1-arnd@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 15 Feb 2024 10:17:49 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGNdnbYVvnYFwmWMTk5rXjCeGWEEnLyXZdK=FBQGv-8dQ@mail.gmail.com>
+Message-ID: <CAMj1kXGNdnbYVvnYFwmWMTk5rXjCeGWEEnLyXZdK=FBQGv-8dQ@mail.gmail.com>
+Subject: Re: [PATCH] [v2] kallsyms: ignore ARMv4 thunks along with others
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	=?UTF-8?Q?Pierre=2DCl=C3=A9ment_Tosi?= <ptosi@google.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, 
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 15 Feb 2024 at 09:32, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> lld is now able to build ARMv4 and ARMv4T kernels, which means it can
+> generate thunks for those (__ARMv4PILongThunk_*, __ARMv4PILongBXThunk_*)
+> that can interfere with kallsyms table generation since they do not get
+> ignore like the corresponding ARMv5+ ones are:
+>
+> Inconsistent kallsyms data
+> Try "make KALLSYMS_EXTRA_PASS=1" as a workaround
+>
+> Replace the hardcoded list of thunk symbols with a more general regex that
+> covers this one along with future symbols that follow the same pattern.
+>
+> Fixes: 5eb6e280432d ("ARM: 9289/1: Allow pre-ARMv5 builds with ld.lld 16.0.0 and newer")
+> Fixes: efe6e3068067 ("kallsyms: fix nonconverging kallsyms table with lld")
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Thu, 15 Feb 2024 09:14:47 +0100, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-> This adds the missing num-viewport, phys and phy-name properties to the
-> schema. Based on driver code, num-viewport is required for the root
-> complex, phys are optional. Their number corresponds to the number of
-> lanes. The AM65x supports up to 2 lanes.
-> 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+
 > ---
->  .../bindings/pci/ti,am65-pci-host.yaml        | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/pci/ti,am65-pci-host.example.dts:50.30-31 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/pci/ti,am65-pci-host.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/d0f251f4-1c9e-4ed2-b7df-5a7fda28fe4e@siemens.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+> v2: use a regular expression instead of listing each one.
+> ---
+>  scripts/mksysmap | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+>
+> diff --git a/scripts/mksysmap b/scripts/mksysmap
+> index 9ba1c9da0a40..57ff5656d566 100755
+> --- a/scripts/mksysmap
+> +++ b/scripts/mksysmap
+> @@ -48,17 +48,8 @@ ${NM} -n ${1} | sed >${2} -e "
+>  / __kvm_nvhe_\\$/d
+>  / __kvm_nvhe_\.L/d
+>
+> -# arm64 lld
+> -/ __AArch64ADRPThunk_/d
+> -
+> -# arm lld
+> -/ __ARMV5PILongThunk_/d
+> -/ __ARMV7PILongThunk_/d
+> -/ __ThumbV7PILongThunk_/d
+> -
+> -# mips lld
+> -/ __LA25Thunk_/d
+> -/ __microLA25Thunk_/d
+> +# lld arm/aarch64/mips thunks
+> +/ __[[:alnum:]]*Thunk_/d
+>
+>  # CFI type identifiers
+>  / __kcfi_typeid_/d
+> --
+> 2.39.2
+>
 
