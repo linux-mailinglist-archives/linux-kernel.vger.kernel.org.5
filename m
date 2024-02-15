@@ -1,170 +1,193 @@
-Return-Path: <linux-kernel+bounces-67531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06039856CFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:44:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE88856CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0B55288508
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:44:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 177B61F21FCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C02137C57;
-	Thu, 15 Feb 2024 18:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1969C1386B7;
+	Thu, 15 Feb 2024 18:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="h6TaWYYL"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2079.outbound.protection.outlook.com [40.92.49.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WG5tRvTJ"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7852595;
-	Thu, 15 Feb 2024 18:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.49.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708022685; cv=fail; b=o+lPUIbkufiEKmmZ3SrhuC11wxsiq976tVN1SUNhh6mMumALLquozdSEZI3WgVD8VZQBSs3shd0N6RBPhf4wmdLzUJTD6+ikXsMDxavdzNW1/M5o2m1/fC2OlThjdqkkE3Hem4WpzvN6DuoLz7tDsQUKOMdAKhkq7/Peu6khEJg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708022685; c=relaxed/simple;
-	bh=DYY0+AcDewv43J3g/PC+3UGIIs8ql0WkoIKdpKSfWfQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=V8eelwn0gIO3j59/jYExwYroDcKRUlDcxvfoopOjtghOeO18JosdBVXbEOdfh/YAF3LMiJjl0UCMSDtOclfMq6tieIYpmsXB3MswQLjhxnbto6l+kUALDYZfPWY4TYAi1uKR42KDBozszGN2LQBO9o0+kpMNN+YPJZ+B54ofBAQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=h6TaWYYL; arc=fail smtp.client-ip=40.92.49.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LMBqxm/2taV0fa/Jb1OJz+8Wo/jeAQGjLOcSeoHB/nQiCheczEnzoSZiJDtYXFKQXtVbb1FqoEqgJyDQyGMF1HgzgIyCGkmAjphu+TXWBXn+u6eRjHMZPEiAj4MRKgcdQRnKI1wm/DKivTRVxhN6GeNvtqcObDmVygdskSefTVF6rxPyU8PNoT65kvr0a31BQlHQolpzsYwZa5d20FiA2ubzeBg8BhO9IOZRgEX2cDDUFbxYmLiERfcoZIxQIXohgzfoo2lfb9O2f/6vyI+3qk9zVzi0O9/O+oxI0zNGxP7xFCHkWUugWbTssbtz2yVKTkzXA5WpGM2puE+OvmIO4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6WQnFK7iGX6Ikr5ADyyfNApbj2aVc5SoJtXog6qH1PI=;
- b=mLva+0Aby+4K+jubkg4T6IYQYc9697ZXLcFe1Et17Qo6bZn2CiiB1ugpuDQynNQQn13yygSd/3NG9pGIVrL/5zZIhdKMnAUMNIYLnYncRhR1DFGwqPMVuLrv3wL3HohjwXXXB6SqD3tdbtz76UvM0Mjoo9eOIQaHrUKpw89XhIbrzkCLawh8h6kFLKChTwUJt2anr8/mMuSPBw1mPH5xltGmymMkhPryzzvAQFiWaS/ujVgcaKeHXeBC1nVTsKn1KE5dUalVMN9Su3YCOYP02GAERX8Ge9B9mhvjKEYAEFX8iN3FNw2dW2+l+VWDYCDPOc4q8LHEn8RBPbW6JK61Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WQnFK7iGX6Ikr5ADyyfNApbj2aVc5SoJtXog6qH1PI=;
- b=h6TaWYYL8Jlfov1bbKsefiuWJYCQ2P9FEWFjjVvMcxDo5DKB0ur3X8T5/9tGp9elhGD5u7dBLCCjegcoLtIj+ri61lYNY+1ZU0g+YTq6WKLCNvpUknyQAVhVzCqsVJhbl8YN8j+j/rKQe1lc+KFFBPmPNvUdnTDz+IZPDKAU7wIZVaZS5wfd0np+QTHhjuwg5vqPkwy+IcgoYSIOxLTVYzt5KPp16L7OWuZocw+kT7qkAdlkDHgIZxZSS1yf71qpUD7lNRkLsMeKcX3uHX/o7caz8ORMLjdbJJVvFV1C/ezkt8sSus4gmkDLTauiJkLPiJjGSh/5eALbcdD9tNKCAQ==
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
- by GV2PR03MB9548.eurprd03.prod.outlook.com (2603:10a6:150:da::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39; Thu, 15 Feb
- 2024 18:44:40 +0000
-Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::58d5:77b7:b985:3a18]) by AM6PR03MB5848.eurprd03.prod.outlook.com
- ([fe80::58d5:77b7:b985:3a18%7]) with mapi id 15.20.7292.029; Thu, 15 Feb 2024
- 18:44:40 +0000
-From: Juntong Deng <juntong.deng@outlook.com>
-To: ryabinin.a.a@gmail.com,
-	glider@google.com,
-	andreyknvl@gmail.com,
-	dvyukov@google.com,
-	vincenzo.frascino@arm.com,
-	corbet@lwn.net
-Cc: kasan-dev@googlegroups.com,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] kasan: Add documentation for CONFIG_KASAN_EXTRA_INFO
-Date: Thu, 15 Feb 2024 18:43:04 +0000
-Message-ID:
- <AM6PR03MB58480786BBA03365CE454CDB994D2@AM6PR03MB5848.eurprd03.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [QWaWzb8MH7tSszj9rgRVqXWQobk9go8o]
-X-ClientProxiedBy: LO4P123CA0277.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:195::12) To AM6PR03MB5848.eurprd03.prod.outlook.com
- (2603:10a6:20b:e4::10)
-X-Microsoft-Original-Message-ID:
- <20240215184304.33039-1-juntong.deng@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B10C18E02
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708022675; cv=none; b=btmMRnY9yuuu/MtA8MfSDLzC5ZHnvyA1BXoq64Y9EWLWw3Anye8Vo72VWkSdZ4jYZk6cmzjLuGuUOJVbRDVYv1TFtczWrmysr3Qu/Sv5i2/W1B5pUBTE5Zt6eAdX9g/VLvPoIO1rJbaJpRLakTgx6I64nNiCz7J4U+rTBkNcaSU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708022675; c=relaxed/simple;
+	bh=Ov3h6NmCfWVCrQRPZcBAGDu7dD9jbUeBaBXLPNApxYg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rFwxcqcQQ+U/khDmq6Kju/pT4gWxBJtmfDCtoXX7tkgjU3aBJX/OPNTx+xTqFlIwac+h+jEy/ao8EQoZCxviMv/HORHomLL+zPabusPH431a2zu+KscishsE5FVuXk1EmJNUkK8CqjCQ3ZewQ6CD4czg+SrNuT3XQ5p9ceder+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WG5tRvTJ; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d10f52e7d8so13229161fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708022671; x=1708627471; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/1q2t5THAXaIQHLTF3wmnuNYqSVcOhZJZA6IWBoe7FA=;
+        b=WG5tRvTJ1rdHfIHXlYPaO0CM7ZXYcZCypeRc6bGXR/Zs23BLfe/Slp5NPYbVR0/UMc
+         CN/nKy5+yZlhAoFrBZVY616VDSdy3FGGcTjODyZWg6JKpw+Q2FMfpxW+zBkX1B/+x0Kl
+         J2Q68R0xsy9p7EesHzQM1fszC447pm1rTAyXEcVqQqCqeC0Z+ZG9csY/BY2LR4CH4CAF
+         gEo1uKOVSxwMW3yGF1F4dYD3IVf6vJVOa7gRsLGkC1nz+29/HsxsO3sqVsgptWbmFEDx
+         NdaHnr0vL9SOc6Whe922s6fXDm8wUUV0u/re/fBQiX3Nn+Z/Q8SdxOK7rREgf+7eAKQ/
+         LIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708022671; x=1708627471;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/1q2t5THAXaIQHLTF3wmnuNYqSVcOhZJZA6IWBoe7FA=;
+        b=KdMVWnfIJMiPgP+X+zr2RU72L85N+IzugfznGKmc/rd/3Vgniro7JPUYAnoQhfE1gN
+         RbX+i32gLkIEusmsXsaXmldYUnRHDp2IONySsnpoplXS4DlW3VFouvekn75dQ6KZoCh7
+         /uisXAW0dEN2qTx/hxa2hNvRQLDmlGffX5Jxk1b46s6wG5egjrzbE/DU3+K1iSnvg7Wu
+         YYzdPf6Pg9WHmUEeroNFB02cQWuBspIkERzovRWmZygPWO+VdPKxfc9Fg3wxzw4dSQtz
+         7h3TeySMdeX7wW9lwB6on0hwbcMsyCsQ8mta98qUDlfk30TCyWMHasRwaidZpfXQteii
+         56lg==
+X-Forwarded-Encrypted: i=1; AJvYcCXpDlC6hi//VBTDH5KHVKBnVdP9uzehT/ww2F+r8L96P62/HG4SyyAwd5Pgt5oRGINzqxkDkqYp1DAVOZcJOvWJt6crwzYaIsVAMVD3
+X-Gm-Message-State: AOJu0YxCFEFvJTmG0P7JeaTV4ywm7NtiVc3eFIlP9fGBRRUtZgyeqO6Q
+	1tHAjTI7HIoJuok4ckQGMFU3zmkTCTFiVQaTro7hSme1xECSsyQs+qkDoP3Y/BM=
+X-Google-Smtp-Source: AGHT+IHBrUEPEGVeK0vtIcVNlx2ltmsJu5vHeHHZz0wFy9l8DbCDpMTbmDuhROJn4UpG+ml/N/UStA==
+X-Received: by 2002:a2e:a483:0:b0:2d1:33a:6c85 with SMTP id h3-20020a2ea483000000b002d1033a6c85mr1959604lji.8.1708022671457;
+        Thu, 15 Feb 2024 10:44:31 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id t20-20020a2e9d14000000b002d0b4fdf3a2sm383976lji.46.2024.02.15.10.44.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 10:44:30 -0800 (PST)
+Message-ID: <bc7d9859-f7ec-41c5-8a9e-170ccdfff46a@linaro.org>
+Date: Thu, 15 Feb 2024 19:44:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|GV2PR03MB9548:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0483777d-6dbf-4172-53d9-08dc2e562ac0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	qKTfpCsur8tEnwmDr4uqAxWSfBXw2lNDdfD4vnUwgQ7WH9Grn2oHUV5802aiaJZXWTe1vWQDnOxqQ1ZWz8KidmXGjF2Pt599h8XyqWB5bUwBrDGwuCTV+gkGsGU5b53NyGszE7WVpjfcfjNK0we/1mNRcRI5u7XW3v+2CSZmGQcuubBy9VLuCnFzR41fEJIvRTSJpWAdtU40pQQ2iJcTPopcOmIH3EelDN28ZQgJ/e1vGeKNakF9B7f88/vUGaSGC1xmgsJVu0XvRqcVgF//Wp04BPOakeqVPCfL5B7x7DP+BxlsZ818Ys0zHlBD+hPJgRD3r7B9ElaVx2cbrkM49J7yroUMJOaJuR9GBFD6ehNeGd6A/aKYvKrcsANtMmGwDveQV7xOSVS/Cjl/FcoQr1fzNM2TBzO+jbIYsQu9EFEySR4qNKfelRaH/oue5L8UpLNDwR8ePESK3wegyr3kK3p3oVb3HPHe2iVDHnXzuZvmgob3iioFMlzfAhBzjIJN6MT98tLvehzERGRyb/LIUrC16eTRRepedchM7xSbs4pcNamuBBS4yHrMnnjAyvws
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EyevmFmA+P0L6hwGgLQojtNqLwnZR6hgIf4gfw0NF4NnpiwZbPzs5TQxae4w?=
- =?us-ascii?Q?JHWHBhqtycc+K/in1B0ZeYZFsqcsq2sL3dYcICtB844UyW1HEbBgHBTL8V1X?=
- =?us-ascii?Q?lc8M7C7yck7T4vdz341SsuQQznqMXrDNe8eKoRUX+CjcyzHe0uUiOS4k51wS?=
- =?us-ascii?Q?wl/LpLZgqlvEDTyWce16LSatGJW3LkxQteF4/lFahnqlF0zA7ds9FUsTcUx7?=
- =?us-ascii?Q?qxfXrclhgjyMUiqnaJ+0to7UsIjnm+rA9HQcd1rTvUJ67pI5xyw5UsKuqV/J?=
- =?us-ascii?Q?lIkgADDgUWsJ9Dgd4k4EeOEMTdY2mBcItlGUIWbcJ4DGtTOWQrUSQ1Gm2Fa2?=
- =?us-ascii?Q?0d+2oggMmLo+O0koW/31n3r97nhwSd/F8patLaM9FF1z7r2LnGnt8h4G2+Yw?=
- =?us-ascii?Q?QMM7ud8XC0z9sfYBMvNlWjDelIxUand5BQpmahyXH0Hkck1Jl+3A/Lu9Nl1D?=
- =?us-ascii?Q?XqAPfSgtyaKCppA4+QKwTpCSfjmN77FZGTz86NItU6DdEXWNI3iB3+ukpcA6?=
- =?us-ascii?Q?tlM/YyIlXX4slx0i2t+7K3d7bJHu4Z+4oaDp2sYhcgskS6+rxIAX/2o1EY/u?=
- =?us-ascii?Q?x1LRncxQZmUwyGqcz/gUfaJfhb5WAMjMvvspoAQmbtFRh1LIGsvsVWM7vM5T?=
- =?us-ascii?Q?8N3RERYpyo1YJfKIe4iuA/divxcIBuuDNz00ZB8FUsm2JjVNuNe3c8oXXNi2?=
- =?us-ascii?Q?qCfojzi9gnOLD1YZWvEjye54EN/DOYW8raREJrkWN4bcp/8Jx2ALikrbPf2O?=
- =?us-ascii?Q?WDthEdZ5ELWviVhiZ81whe/DfpVj/WeGq7qtr3GjkdGR88yE2l6I24bkKW6O?=
- =?us-ascii?Q?NJnJ4tpRlkEUJPbANlbkMAdQqW84G6SzcjyKB87gjEKbzhCBBkYOpb2xKwWW?=
- =?us-ascii?Q?7FNhcvHde5eaaTyJbJN3rlUVMkAuiZuqb+r1JDIjjiopviggKiWWIIVQ4OH6?=
- =?us-ascii?Q?cZC9aHqSxshxo9OwMDx5ye3g0u3CGnVQuzNWUjFmxzBIdFpYP2KfxcGWMvy1?=
- =?us-ascii?Q?xPUTbYc3CQ5T+Rn2qf4TUMUonCohA/3eyuHPLXy/1R3e53gKsLDs/fvV60+a?=
- =?us-ascii?Q?tW8LP8cBKys3dcZrmuobDbFTyKxfZlvUuPQLkd8S1YNF3ELQreESiE7Z1Egr?=
- =?us-ascii?Q?uXor9gXaBKjHfXrfhsznYp5a8G8nZ2A3IpFTReCm3A8BKBH3E176VmgMRhNg?=
- =?us-ascii?Q?BmOEu5f5Q2TwekNyqCWmHbl3wTP+HlSy6lHvTJUvo8uCvWJPwKUAqD9QzOCj?=
- =?us-ascii?Q?jXJ2MPbAS//Ob3E4Jh5o?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0483777d-6dbf-4172-53d9-08dc2e562ac0
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 18:44:40.2897
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR03MB9548
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] PCI: qcom: Read back PARF_LTSSM register
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Johan Hovold <johan+linaro@kernel.org>
+References: <20240215161114.GA1292081@bhelgaas>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240215161114.GA1292081@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This patch adds CONFIG_KASAN_EXTRA_INFO introduction information to
-KASAN documentation.
+On 15.02.2024 17:11, Bjorn Helgaas wrote:
+> On Thu, Feb 15, 2024 at 11:21:45AM +0100, Konrad Dybcio wrote:
+>> On 14.02.2024 23:28, Bjorn Helgaas wrote:
+>>> On Wed, Feb 14, 2024 at 10:35:16PM +0100, Konrad Dybcio wrote:
+>>>> On 12.02.2024 22:17, Bjorn Helgaas wrote:
+>>>>> Maybe include the reason in the subject?  "Read back" is literally
+>>>>> what the diff says.
+>>>>>
+>>>>> On Sat, Feb 10, 2024 at 06:10:06PM +0100, Konrad Dybcio wrote:
+>>>>>> To ensure write completion, read the PARF_LTSSM register after setting
+>>>>>> the LTSSM enable bit before polling for "link up".
+>>>>>
+>>>>> The write will obviously complete *some* time; I assume the point is
+>>>>> that it's important for it to complete before some other event, and it
+>>>>> would be nice to know why that's important.
+>>>>
+>>>> Right, that's very much meaningful on non-total-store-ordering
+>>>> architectures, like arm64, where the CPU receives a store instruction,
+>>>> but that does not necessarily impact the memory/MMIO state immediately.
+>>>
+>>> I was hinting that maybe we could say what the other event is, or what
+>>> problem this solves?  E.g., maybe it's as simple as "there's no point
+>>> in polling for link up until after the PARF_LTSSM store completes."
+>>>
+>>> But while the read of PARF_LTSSM might reduce the number of "is the
+>>> link up" polls, it probably wouldn't speed anything up otherwise, so I
+>>> suspect there's an actual functional reason for this patch, and that's
+>>> what I'm getting at.
+>>
+>> So, the register containing the "enable switch" (PARF_LTSSM) can (due
+>> to the armv8 memory model) be "written" but not "change the value of
+>> memory/mmio from the perspective of other (non-CPU) memory-readers
+>> (such as the MMIO-mapped PCI controller itself)".
+>>
+>> In that case, the CPU will happily continue calling qcom_pcie_link_up()
+>> in a loop, waiting for the PCIe controller to bring the link up, however
+>> the PCIE controller may have never received the PARF_LTSSM "enable link"
+>> write by the time we decide to time out on checking the link status.
+>>
+>> It may also never happen for you, but that's exactly like a classic race
+>> condition, where it may simply not manifest due to the code around the
+>> problematic lines hiding it. It may also only manifest on certain CPU
+>> cores that try to be smarter than you and keep reordering/delaying
+>> instructions if they don't seem immediately necessary.
+> 
+> Does this mean the register is mapped incorrectly, e.g., I see arm64
+> has many different kinds of mappings for cacheability,
+> write-buffering, etc?
 
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
----
- Documentation/dev-tools/kasan.rst | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+No, it's correctly mapped as "device" memory, but even that gives no
+guarantees about when the writes are "flushed" out of the CPU/cluster
 
-diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-index a5a6dbe9029f..3dc48b08cf71 100644
---- a/Documentation/dev-tools/kasan.rst
-+++ b/Documentation/dev-tools/kasan.rst
-@@ -277,6 +277,27 @@ traces point to places in code that interacted with the object but that are not
- directly present in the bad access stack trace. Currently, this includes
- call_rcu() and workqueue queuing.
- 
-+CONFIG_KASAN_EXTRA_INFO
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Enabling CONFIG_KASAN_EXTRA_INFO allows KASAN to record and report more
-+information, the extra information currently supported is the CPU number and
-+timestamp at allocation and free. More information can help find the cause of
-+the bug and correlate the error with other system events, at the cost of using
-+extra memory to record more information (more cost details in the help text of
-+CONFIG_KASAN_EXTRA_INFO).
-+
-+Here is the report with CONFIG_KASAN_EXTRA_INFO enabled (only the
-+different parts are shown)::
-+
-+    ==================================================================
-+    ...
-+    Allocated by task 134 on cpu 5 at 229.133855s:
-+    ...
-+    Freed by task 136 on cpu 3 at 230.199335s:
-+    ...
-+    ==================================================================
-+
- Implementation details
- ----------------------
- 
--- 
-2.39.2
+> 
+> Or, if it is already mapped correctly, are we confident that none of
+> the *other* register writes need similar treatment?  Is there a rule
+> we can apply to know when the read-after-write is needed?
 
+Generally, it's a good idea to add such readbacks after all timing-
+critical writes, especially when they concern asserting reset,
+enabling/disabling power, etc., to make sure we're not assuming the
+hardware state of a peripheral has changed before we ask it to do so. 
+
+Konrad
 
