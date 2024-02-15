@@ -1,181 +1,208 @@
-Return-Path: <linux-kernel+bounces-67090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0819E856623
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:42:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E2D856626
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 15:42:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF89B1F25264
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:42:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F3CD282888
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:42:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23405132479;
-	Thu, 15 Feb 2024 14:42:08 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18EF132498;
+	Thu, 15 Feb 2024 14:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iNcjrIxJ"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1027613246F
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDA7132496
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708008127; cv=none; b=Z3X4kuzlcYSAa0mYqN/WZnNaGe6xp44CNFlRFR5cqMVbC9ml3iMR2eVphmbFUn8hAcpkX3WwtCJI95P5PN3NoaZNx26pRPdzL9kwIKgxHcxAUdZakgwadw37QtcLsVWJauU25DokD+L4pSKcBluo4/eGKadf/Am2bFX3M0MvMaU=
+	t=1708008135; cv=none; b=Lre+IJ/+JONRu3kXxS979Wt8I1DF5OiHJ9uxB/IZmxA8FEOsOPqQk63oK0OTEeaaIQ3cSBpSRyZ6XFIRhNmPPu3hc3W8cAiPAlAQGz7YwWX49saqX037yu+VoSexlNSnkvdtugQ/i+wLcw8Y8r5/ahOXpVfJn9c2TYj9dw2Q6Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708008127; c=relaxed/simple;
-	bh=1iE642cmMGZSjdPlTyM9NvhPHi1h7rzgZBOYYDcrJZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=GnehXBkHy1YX5IdVt1B60DpvJJfiYi9i7dNxthgudOdG3+LhP8AsMQoAfr/EcIUpKvPIVE7hUlRlIWMFAEAwBMdcNOhwWPUscmUhTFk36wb17kpZKMhdxigbAC6KGeS+WUKCHq8W8NmPGIZa+uZDOHhRZwLpOxzi6mlOaXXPZ70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav414.sakura.ne.jp (fsav414.sakura.ne.jp [133.242.250.113])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 41FEg1Mh092207;
-	Thu, 15 Feb 2024 23:42:01 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav414.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp);
- Thu, 15 Feb 2024 23:42:01 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav414.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 41FEg0tt092203
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 15 Feb 2024 23:42:00 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c3b0f5b0-9f86-40be-b815-8177a4f0b71f@I-love.SAKURA.ne.jp>
-Date: Thu, 15 Feb 2024 23:41:59 +0900
+	s=arc-20240116; t=1708008135; c=relaxed/simple;
+	bh=dS27jGD0fKVGB7XlaqNnfwFAlFDq82S6W3A7kwltT3w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gyjJM7NKI0PXy1HT0pyJYjhbV0yA6jitUAL9yBYPt6s+87qbOjM4DVcueB4vKohWigPCnj5KIYhZy1BOw1lU3HRJZ+endf26+IdzbqKsNh+GTOG9v7mUwZXJO76m2K7ZdbZpDloDbRDYQhtVoKVuQmQlGO2CAhD9i0hQIPkI+yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iNcjrIxJ; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso898250276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 06:42:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708008132; x=1708612932; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dAC16XHzjVY3XukbmOyTYofThyOnRxBkJl2MJq0kU/g=;
+        b=iNcjrIxJ2xjPQk92cQBpUDREps7BpgVcGVshe0obIHnneQXtVx/00A2ag83axItwM3
+         P1y9dqqf2RkWgAOsaFM9vuqQHbxIR2/c1ATQKL7l9FIAC5ZTnCPqZexjGatoZVUunb/x
+         z6X3SoOiXd0w2ePkxQSFCJGkBqneWWiS1cTHt8999yLh6wkVhZuzsePiGMJFl6BjEm9A
+         5aP2Wr24RvqTxdDcUomEh+/taRMW5QsYZ8y7llz0gPzWL3a069SsXncCHbnfT3kg+7MB
+         nCagWrFEaanxoYg7knRsIqyL1mz4uqjDoavT/97iu6D2vhd70LGThnCenmVfbqqNxAu0
+         MOnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708008132; x=1708612932;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dAC16XHzjVY3XukbmOyTYofThyOnRxBkJl2MJq0kU/g=;
+        b=Xjj5v32QZytZLd0UVhsnnw7okCpC27RUN9VzxYUQI2evpaRXE9XqeqARpZzw/aLNuN
+         2rmCgy9YF94rd4nnoQt6dXriLp0QE4uglnEI9xsuy4MMB1EX65muw5KXQ1/In+c5aaI+
+         Op4KZqb77MRBTyCXirS4jU8pZm+btF/HKBU66JGqq5DPEIQ+Hf7sRxR3uPmmN9wVvYFE
+         HmUrqx12zj7RswEj92pmRDsALYb/hPBg4wmQHgfXM7gM2SBu5rm0G4gP7HBF+xmx3+BZ
+         eP3CLvmoj4xrlK0OrRo2I1RftaaG4AXxalR0X4NXZkg2mfLxBOTK7r2Bv1Pqkb/75v9G
+         6fBg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7M1yD7AyKO676EllmXhpRFCpY3SefW7GVpIIoM+GoMHBWV8CTGh3d6aQLxSvUfwKeUmNMpqFAWp+sylbau+nqP3LS4Tu4UFXhpbFB
+X-Gm-Message-State: AOJu0YyJ3pr4e0IEsJtFIXs9sGDJb7WH8X3PieyV8lRchmhMKg9TP9mL
+	Mpsh1YmS8+47hm8Yv1RH3oUmp2hNM30M8qYg3bmioIwWHMo9T4Q8P0hVwEmfxQHXp19CmHoVT9H
+	Uma6cXKnEqrAOfrbyiopAi0H4j3nZK8/OVzBeHA==
+X-Google-Smtp-Source: AGHT+IFRJcoqJupsoaQ1qFV0tFqhF7c08tDk4aD3Ff1yyUny9nMO7+GZqCkuvRwWEVUHQhtBkS1fIY9p/4h0S7hvHQg=
+X-Received: by 2002:a25:b282:0:b0:dc7:46ef:8b9e with SMTP id
+ k2-20020a25b282000000b00dc746ef8b9emr1827807ybj.29.1708008131861; Thu, 15 Feb
+ 2024 06:42:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] profiling: initialize prof_cpu_mask from
- profile_online_cpu()
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-References: <000000000000d6b55e060d6bc390@google.com>
- <7227c8d1-08f6-4f95-ad0f-d5c3e47d874d@I-love.SAKURA.ne.jp>
- <85edf211-aa30-4671-93e0-5173b3f7adf2@I-love.SAKURA.ne.jp>
-In-Reply-To: <85edf211-aa30-4671-93e0-5173b3f7adf2@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240214-spmi-multi-master-support-v3-0-0bae0ef04faf@linaro.org>
+ <20240214-spmi-multi-master-support-v3-3-0bae0ef04faf@linaro.org>
+ <d9d8e86b-a499-49d1-90ad-6fae5b7dcbb7@linaro.org> <Zc0yXR/fC2OcObLB@linaro.org>
+ <CAA8EJpq=kYeZfNbFtfQ_oLS0Xi4imyEGV+dDNO+h6LZfqmpxZg@mail.gmail.com> <Zc4SWIViTS0uf952@linaro.org>
+In-Reply-To: <Zc4SWIViTS0uf952@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 15 Feb 2024 16:42:00 +0200
+Message-ID: <CAA8EJpqOd1Sz_538ZwhPh+AesVRBRmzMiQ0ntsvm4i5erKM-jA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 3/4] spmi: pmic-arb: Make core resources acquiring
+ a version operation
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Stephen Boyd <sboyd@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Johan Hovold <johan@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello, Linus.
+On Thu, 15 Feb 2024 at 15:32, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> On 24-02-15 11:30:23, Dmitry Baryshkov wrote:
+> > On Wed, 14 Feb 2024 at 23:36, Abel Vesa <abel.vesa@linaro.org> wrote:
+> > >
+> > > On 24-02-14 22:18:33, Konrad Dybcio wrote:
+> > > > On 14.02.2024 22:13, Abel Vesa wrote:
+> > > > > Rather than setting up the core, obsrv and chnls in probe by using
+> > > > > version specific conditionals, add a dedicated "get_core_resources"
+> > > > > version specific op and move the acquiring in there.
+> > > > >
+> > > > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > > > ---
+> > > > >  drivers/spmi/spmi-pmic-arb.c | 111 ++++++++++++++++++++++++++++++-------------
+> > > > >  1 file changed, 78 insertions(+), 33 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+> > > > > index 23939c0d225f..489556467a4c 100644
+> > > > > --- a/drivers/spmi/spmi-pmic-arb.c
+> > > > > +++ b/drivers/spmi/spmi-pmic-arb.c
+> > > > > @@ -203,6 +203,7 @@ struct spmi_pmic_arb {
+> > > > >   */
+> > > > >  struct pmic_arb_ver_ops {
+> > > > >     const char *ver_str;
+> > > > > +   int (*get_core_resources)(struct platform_device *pdev, void __iomem *core);
+> > > > >     int (*init_apid)(struct spmi_pmic_arb *pmic_arb, int index);
+> > > > >     int (*ppid_to_apid)(struct spmi_pmic_arb *pmic_arb, u16 ppid);
+> > > > >     /* spmi commands (read_cmd, write_cmd, cmd) functionality */
+> > > > > @@ -956,6 +957,19 @@ static int pmic_arb_init_apid_min_max(struct spmi_pmic_arb *pmic_arb)
+> > > > >     return 0;
+> > > > >  }
+> > > > >
+> > > > > +static int pmic_arb_get_core_resources_v1(struct platform_device *pdev,
+> > > > > +                                     void __iomem *core)
+> > > > > +{
+> > > > > +   struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
+> > > > > +
+> > > > > +   pmic_arb->wr_base = core;
+> > > > > +   pmic_arb->rd_base = core;
+> > > > > +
+> > > > > +   pmic_arb->max_periphs = PMIC_ARB_MAX_PERIPHS;
+> > > > > +
+> > > > > +   return 0;
+> > > > > +}
+> > > > > +
+> > > > >  static int pmic_arb_init_apid_v1(struct spmi_pmic_arb *pmic_arb, int index)
+> > > > >  {
+> > > > >     u32 *mapping_table;
+> > > > > @@ -1063,6 +1077,41 @@ static u16 pmic_arb_find_apid(struct spmi_pmic_arb *pmic_arb, u16 ppid)
+> > > > >     return apid;
+> > > > >  }
+> > > > >
+> > > > > +static int pmic_arb_get_obsrvr_chnls_v2(struct platform_device *pdev)
+> > > > > +{
+> > > > > +   struct spmi_pmic_arb *pmic_arb = platform_get_drvdata(pdev);
+> > > > > +   struct device *dev = &pdev->dev;
+> > > > > +   struct resource *res;
+> > > > > +
+> > > > > +   res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> > > >
+> > > > It's no longer indented to deep, no need to keep such aggressive wrapping
+> > > >
+> > >
+> > > The pmic_arb_get_obsrvr_chnls_v2 is used by both:
+> > > pmic_arb_get_core_resources_v2
+> > > pmic_arb_get_core_resources_v7
+> > >
+> > > > > +                                      "obsrvr");
+> > > > > +   pmic_arb->rd_base = devm_ioremap(dev, res->start,
+> > > > > +                                    resource_size(res));
+> > > > > +   if (IS_ERR(pmic_arb->rd_base))
+> > > > > +           return PTR_ERR(pmic_arb->rd_base);
+> > > > > +
+> > > > > +   res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> > > > > +                                      "chnls");
+> > > > > +   pmic_arb->wr_base = devm_ioremap(dev, res->start,
+> > > > > +                                    resource_size(res));
+> > > > > +   if (IS_ERR(pmic_arb->wr_base))
+> > > > > +           return PTR_ERR(pmic_arb->wr_base);
+> > > >
+> > > > Could probably make it "devm_platform_get_and_ioremap_resource "
+> > >
+> > > The reason this needs to stay as is is because of reason explained by
+> > > the following comment found in probe:
+> > >
+> > > /*
+> > >  * Please don't replace this with devm_platform_ioremap_resource() or
+> > >  * devm_ioremap_resource().  These both result in a call to
+> > >  * devm_request_mem_region() which prevents multiple mappings of this
+> > >  * register address range.  SoCs with PMIC arbiter v7 may define two
+> > >  * arbiter devices, for the two physical SPMI interfaces, which  share
+> > >  * some register address ranges (i.e. "core", "obsrvr", and "chnls").
+> > >  * Ensure that both devices probe successfully by calling devm_ioremap()
+> > >  * which does not result in a devm_request_mem_region() call.
+> > >  */
+> > >
+> > > Even though, AFAICT, there is no platform that adds a second node for
+> > > the second bus, currently, in mainline, we should probably allow the
+> > > "legacy" approach to still work.
+> >
+> > If there were no DT files which used two SPMI devices, I think we
+> > should drop this comment and use existing helpers. We must keep
+> > compatibility with the existing DTs, not with the _possible_ device
+> > trees.
+>
+> Sure.
+>
+> Should I drop the qcom,bus-id from the driver as well? It is optional
+> after all.
 
-It seems that nobody maintains this code.
+I think so. Let's drop it completely. And for the new sub-devices you
+perfectly know the bus ID.
 
-Can I directly send this patch to you, as "THE REST" rule of MAINTAINERS file?
-Is some tag like [PATCH ORPHANED] available?
-
-On 2024/01/31 23:06, Tetsuo Handa wrote:
-> syzbot is reporting uninit-value at profile_hits(), for commit acd895795d35
-> ("profiling: fix broken profiling regression") by error initialized
-> prof_cpu_mask too early.
-> 
-> do_profile_hits() is called from profile_tick() from timer interrupt
-> only if cpumask_test_cpu(smp_processor_id(), prof_cpu_mask) is true and
-> prof_buffer is not NULL. But the syzbot's report says that profile_hits()
-> was called while current thread is still doing vzalloc(buffer_bytes)
-> where prof_buffer is NULL at this moment. This indicates two things.
-> 
-> One is that cpumask_set_cpu(cpu, prof_cpu_mask) should have been called
->  from profile_online_cpu() from cpuhp_setup_state() only after
-> profile_init() completed. Fix this by explicitly calling cpumask_copy()
->  from create_proc_profile() on only UP kernels.
-> 
-> The other is that multiple threads concurrently tried to write to
-> /sys/kernel/profiling interface, which caused that somebody else tried
-> to re-initialize prof_buffer despite somebody has already initialized
-> prof_buffer. Fix this by using serialization.
-> 
-> Reported-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=b1a83ab2a9eb9321fbdd
-> Fixes: acd895795d35 ("profiling: fix broken profiling regression")
-> Tested-by: syzbot+b1a83ab2a9eb9321fbdd@syzkaller.appspotmail.com
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->  kernel/ksysfs.c  | 27 ++++++++++++++++++++++-----
->  kernel/profile.c |  6 +++---
->  2 files changed, 25 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-> index 1d4bc493b2f4..66bc712f590c 100644
-> --- a/kernel/ksysfs.c
-> +++ b/kernel/ksysfs.c
-> @@ -91,10 +91,23 @@ static ssize_t profiling_store(struct kobject *kobj,
->  				   struct kobj_attribute *attr,
->  				   const char *buf, size_t count)
->  {
-> +	static DEFINE_MUTEX(lock);
->  	int ret;
->  
-> -	if (prof_on)
-> -		return -EEXIST;
-> +	/*
-> +	 * We need serialization, for profile_setup() initializes prof_on
-> +	 * value. Also, use killable wait in case memory allocation from
-> +	 * profile_init() triggered the OOM killer and chose current thread
-> +	 * blocked here.
-> +	 */
-> +	if (mutex_lock_killable(&lock))
-> +		return -EINTR;
-> +
-> +	if (prof_on) {
-> +		count = -EEXIST;
-> +		goto out;
-> +	}
-> +
->  	/*
->  	 * This eventually calls into get_option() which
->  	 * has a ton of callers and is not const.  It is
-> @@ -102,11 +115,15 @@ static ssize_t profiling_store(struct kobject *kobj,
->  	 */
->  	profile_setup((char *)buf);
->  	ret = profile_init();
-> -	if (ret)
-> -		return ret;
-> +	if (ret) {
-> +		count = ret;
-> +		goto out;
-> +	}
->  	ret = create_proc_profile();
->  	if (ret)
-> -		return ret;
-> +		count = ret;
-> +out:
-> +	mutex_unlock(&lock);
->  	return count;
->  }
->  KERNEL_ATTR_RW(profiling);
-> diff --git a/kernel/profile.c b/kernel/profile.c
-> index 8a77769bc4b4..7575747e2ac6 100644
-> --- a/kernel/profile.c
-> +++ b/kernel/profile.c
-> @@ -114,11 +114,9 @@ int __ref profile_init(void)
->  
->  	buffer_bytes = prof_len*sizeof(atomic_t);
->  
-> -	if (!alloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
-> +	if (!zalloc_cpumask_var(&prof_cpu_mask, GFP_KERNEL))
->  		return -ENOMEM;
->  
-> -	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
-> -
->  	prof_buffer = kzalloc(buffer_bytes, GFP_KERNEL|__GFP_NOWARN);
->  	if (prof_buffer)
->  		return 0;
-> @@ -481,6 +479,8 @@ int __ref create_proc_profile(void)
->  		goto err_state_prep;
->  	online_state = err;
->  	err = 0;
-> +#else
-> +	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
->  #endif
->  	entry = proc_create("profile", S_IWUSR | S_IRUGO,
->  			    NULL, &profile_proc_ops);
-
+-- 
+With best wishes
+Dmitry
 
