@@ -1,129 +1,152 @@
-Return-Path: <linux-kernel+bounces-67655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC80856E98
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:33:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871E2856E9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 21:33:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64BEA282C40
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:33:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1679F1F23B1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 20:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8FB13B285;
-	Thu, 15 Feb 2024 20:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E52F1384BD;
+	Thu, 15 Feb 2024 20:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zCKnplUs"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uKMqNbYR"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8E71384BD
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B8413AA41
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708029180; cv=none; b=uKBl6Wt9DCKp1yhXyG0S7TSffiw/2Up67EPmBd+8jXRRcukwHIu8d5oFmP6QRseEMO2mvp/gfNUcPbRtZD8vnLLOiqJdlu00pazpY1HeY7BSr8reawT+vUv0y5NPUmdqCe+HR+lPtp9v/nk3IMVtjYUQyKNK1JrAoNcJgK+Y6BQ=
+	t=1708029227; cv=none; b=oVotSxPfu77InxZYEMdaynWlmx0ss21ruCA0imjWj4fX2x22coqKJOLkLePk43afSNAGq43bKbQtkX0l8UxPRkr7D0S/mxa/r7yZsmrgnBIZyhXeJf0F7wQuoa5HJwK3v3QtIPTkaHmKzBUumJD+BOwgdkcJBk2oPQCtHw8tzr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708029180; c=relaxed/simple;
-	bh=laSyg7YQPz643rzuuYEwb1CY2iHDVt99rko3X2hSnfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=focbs2YEtSqkjD3VMbvc2NwLTKNm70oH4DO6Z+0xuXZyipir7jTvmJngjhoihqDLtK1XI2Y6e20hit5GhPYJlWNIgplkPsL+r/HQF3g5RQAlsKRY7fXX5JQzF0iSSBmx0m+o0bbT1bK+NHe6wM0rGzC0Em+0DMGI/8WUFjEpDUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zCKnplUs; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563dd5bd382so3340a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708029176; x=1708633976; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=laSyg7YQPz643rzuuYEwb1CY2iHDVt99rko3X2hSnfw=;
-        b=zCKnplUsZl9cOHx1bsNhWVtlP0ATw6MpTM5BmPWs47sgpuz1ml51CDWFrlurYxwtRx
-         eSDHVLvtnA4PEFRQG33cCHy9TvyulFK+pLb0GH9mNgEpYMIqxB68zrzN7vinbZDXHV2c
-         2mY1MrfELx7RacES7icTlZgorfIXoTKZLxFQB3zatHkdqpuNj9yJPcQnnKTUDFtBg677
-         MGIJvBzVyDBgKIy9YoPuUt0OPTGJzMKcJqxGaYd33+h8JzPTbRpIs5u3oEPTg7szDPFU
-         xjkearPpOnufothrK+6gIik4YC4d8GwtFy9qCgApZNqk4omjgd2jLOFBsqRbeIQxLl6k
-         K2gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708029176; x=1708633976;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=laSyg7YQPz643rzuuYEwb1CY2iHDVt99rko3X2hSnfw=;
-        b=NIQNJ605+HCexpb5TmVy6pG0OdnCqRAM4vfymXmpabbKf2+q5oCO2aSD7hGAiEKKK3
-         94U/hbkAkG2UKKGowHgxdiwxTvYRC49knqv/p22LH3P8MbalEMHrZ6OTUeb1+ciJDMkV
-         2ncfmsGBkFjt9YANFTThTXJXd1v50ckuFvdxALRCN4zNHMhznOoZGJouVsMomA35vM58
-         HoiBifV5y6C76Ysex7SRkhKJtFsUZA9quUrEb8oQDBcPX35dUN/yUOUYQWBKyP1S/d0U
-         9vLkFuyMdBwxWvsjPfAOR3mzhDdcIT3aZddYqWIV8f9AGusxVqHhbT+OI1DtO+o8Xy2x
-         uvyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNcdkO6LSLRcpTl8Xbnu7JkMwV3uhe8F8wnEfA+5Ak/fKJNiWDwUYCieqgCjMruvAIba1tIchqqFcI4rfH8o6aCdpOHNx8ZdNd+H5z
-X-Gm-Message-State: AOJu0YzvjNJE+lhsXGxJq+c8Uc0SYSA+rDDKUwvQnT7d2kFPox97ZcWU
-	folwNsfeH0JxVsFQ6KIrM1vnL6T0pSqUVqg8dJ3KS1qqXq11h2p29XNg6/eNUQYvFM0vUqaBxla
-	Ewlwcjc3/pfI3Lissz7Q5tFW3+YHAxDf8V3G2
-X-Google-Smtp-Source: AGHT+IEchM9k5jNArbj5+35xIQAzhyJ/jP6cl9FmgZLvIfjEnm9gulJ+kijAQ6eqYDiIJUnuCe8d9j548sUG4qfxPWI=
-X-Received: by 2002:a50:cd8c:0:b0:561:a93:49af with SMTP id
- p12-20020a50cd8c000000b005610a9349afmr44357edi.7.1708029176383; Thu, 15 Feb
- 2024 12:32:56 -0800 (PST)
+	s=arc-20240116; t=1708029227; c=relaxed/simple;
+	bh=svZI8lR5yuLAKcmkdT/NwJ0LBFg7C4bhwIEcPtd4wK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RFIPX2lNxJghhoxPzqhN2DbNNaen5IVc6UMUWa5rfs0U54A/I8mrLk8/5k1hVtqRMejP47Lrf9ZIEYqXC/fXcp9edcGzfBLCKPizFHxIig8UQIRvaIInWp8wKYaVPq68ye7Vcy8Jg/nOCNo7/z5x7XRg+jk0h6oIIR7FWHtTlE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uKMqNbYR; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 15:33:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708029222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1h3mKBhbYx2gO9e1zxP9AUVbRxFOpkSn+Z2PNxlzZgw=;
+	b=uKMqNbYRWjGlI+HaoeIYPI5ERvXjACozyNlWdRNl+Qg1jnpaLiF79qYZW/RTxK0qgoH1Wj
+	xEHLKTRGoGqywmCPXSAl2Kq3qU0Ae4RnatPfkhFcJzRdH8nYJYHyebbvQZadulqXqF8Jgg
+	hvFxKVPZazAslAUs1cKqTwK9orq6Wkw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+	akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
+	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
+	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-32-surenb@google.com>
+ <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124101404.161655-1-kovalev@altlinux.org> <20240124101404.161655-2-kovalev@altlinux.org>
- <CANn89iLKc8-hwvSBE=aSTRg=52Pn9B0HmFDneGCe6PMawPFCnQ@mail.gmail.com>
- <1144600e-52f1-4c1a-4854-c53e05af5b45@basealt.ru> <CANn89iKb+NQPOuZ9wdovQYVOwC=1fUMMdWd5VrEU=EsxTH7nFg@mail.gmail.com>
- <d602ebc3-f0e7-171c-7d76-e2f9bb4c2db6@basealt.ru> <CANn89iJ4hVyRHiZXWTiW9ftyN8PFDaWiZnzE7GVAzu1dT78Daw@mail.gmail.com>
- <6cbbecf1-eba1-f3e1-259a-24df71f44785@basealt.ru>
-In-Reply-To: <6cbbecf1-eba1-f3e1-259a-24df71f44785@basealt.ru>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 15 Feb 2024 21:32:42 +0100
-Message-ID: <CANn89i+mSOtzxOfY=FLhQAj2bZ+a-9KdzivGhBx8_V9YwaAeOw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
-To: kovalev@altlinux.org
-Cc: pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net, 
-	kuba@kernel.org, pabeni@redhat.com, osmocom-net-gprs@lists.osmocom.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nickel@altlinux.org, 
-	oficerovas@altlinux.org, dutyrok@altlinux.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 5:50=E2=80=AFPM <kovalev@altlinux.org> wrote:
->
-> 09.02.2024 22:21, Eric Dumazet wrote:
->
-> > Maybe, but the patch is not good, I think I and Pablo gave feedback on =
-this ?
-> >
-> > Please trace __netlink_dump_start() content of control->module
-> >
-> > gtp_genl_family.module should be set, and we should get it.
-> >
-> > Otherwise, if the bug is in the core, we would need a dozen of 'work
-> > arounds because it is better than nothing'
-> >
-> > Thank you.
->
-> Thanks.
->
-> I tracked the moment when the __netlink_dump_start() function was
-> called, it turned out that in the gtp_init() initialization function
-> before registering pernet subsystem (gtp_net_ops), therefore, outdated
-> data is used, which leads to a crash.
->
-> The documentation says that ops structure must be assigned before
-> registering a generic netlink family [1].
->
-> I have fixed and sent a new patch [2].
->
-> [1]
-> https://elixir.bootlin.com/linux/v6.8-rc4/source/net/netlink/genetlink.c#=
-L773
->
-> [2]
-> https://lore.kernel.org/netdev/20240214162733.34214-1-kovalev@altlinux.or=
-g/T/#u
->
+On Thu, Feb 15, 2024 at 09:22:07PM +0100, Vlastimil Babka wrote:
+> On 2/15/24 19:29, Kent Overstreet wrote:
+> > On Thu, Feb 15, 2024 at 08:47:59AM -0800, Suren Baghdasaryan wrote:
+> >> On Thu, Feb 15, 2024 at 8:45 AM Michal Hocko <mhocko@suse.com> wrote:
+> >> >
+> >> > On Thu 15-02-24 06:58:42, Suren Baghdasaryan wrote:
+> >> > > On Thu, Feb 15, 2024 at 1:22 AM Michal Hocko <mhocko@suse.com> wrote:
+> >> > > >
+> >> > > > On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
+> >> > > > [...]
+> >> > > > > @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
+> >> > > > >  #ifdef CONFIG_MEMORY_FAILURE
+> >> > > > >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
+> >> > > > >  #endif
+> >> > > > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> >> > > > > +     {
+> >> > > > > +             struct seq_buf s;
+> >> > > > > +             char *buf = kmalloc(4096, GFP_ATOMIC);
+> >> > > > > +
+> >> > > > > +             if (buf) {
+> >> > > > > +                     printk("Memory allocations:\n");
+> >> > > > > +                     seq_buf_init(&s, buf, 4096);
+> >> > > > > +                     alloc_tags_show_mem_report(&s);
+> >> > > > > +                     printk("%s", buf);
+> >> > > > > +                     kfree(buf);
+> >> > > > > +             }
+> >> > > > > +     }
+> >> > > > > +#endif
+> >> > > >
+> >> > > > I am pretty sure I have already objected to this. Memory allocations in
+> >> > > > the oom path are simply no go unless there is absolutely no other way
+> >> > > > around that. In this case the buffer could be preallocated.
+> >> > >
+> >> > > Good point. We will change this to a smaller buffer allocated on the
+> >> > > stack and will print records one-by-one. Thanks!
+> >> >
+> >> > __show_mem could be called with a very deep call chains. A single
+> >> > pre-allocated buffer should just do ok.
+> >> 
+> >> Ack. Will do.
+> > 
+> > No, we're not going to permanently burn 4k here.
+> > 
+> > It's completely fine if the allocation fails, there's nothing "unsafe"
+> > about doing a GFP_ATOMIC allocation here.
+> 
+> Well, I think without __GFP_NOWARN it will cause a warning and thus
+> recursion into __show_mem(), potentially infinite? Which is of course
+> trivial to fix, but I'd myself rather sacrifice a bit of memory to get this
+> potentially very useful output, if I enabled the profiling. The necessary
+> memory overhead of page_ext and slabobj_ext makes the printing buffer
+> overhead negligible in comparison?
 
-Excellent detective work, thanks a lot !
+__GFP_NOWARN is a good point, we should have that.
+
+But - and correct me if I'm wrong here - doesn't an OOM kick in well
+before GFP_ATOMIC 4k allocations are failing? I'd expect the system to
+be well and truly hosed at that point.
+
+If we want this report to be 100% reliable, then yes the preallocated
+buffer makes sense - but I don't think 100% makes sense here; I think we
+can accept ~99% and give back that 4k.
 
