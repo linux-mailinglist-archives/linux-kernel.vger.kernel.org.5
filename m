@@ -1,149 +1,96 @@
-Return-Path: <linux-kernel+bounces-67543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66115856D37
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:59:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E53856D36
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 19:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 901E71C23A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:59:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A35481F21E5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32A41386DE;
-	Thu, 15 Feb 2024 18:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B662139565;
+	Thu, 15 Feb 2024 18:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="UMhNdIoJ"
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gMANnlTF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34AFA1386B3
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 18:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F34F3D6D;
+	Thu, 15 Feb 2024 18:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708023548; cv=none; b=sYB79rEz3qi6ZYoTy/QNnUPx83MiGZefOL2K3e3onxI33Lb8OmUF16KnSDuQKGKZIomxy8xTNawqmwLj0Yi0n413eyvrxzbp6q1WoElhrFzxWAZtmdyDb1x0Z13VAk5HV53MwYPkicqMqU+TKGa3bald9V8KbQ5wRBlw17IW8qg=
+	t=1708023529; cv=none; b=n1ZCfgD5JQuX0a+P60XUuY8uzsjuCkSI6rKVt1hQ5VYrQX4rLl2BEk5o9w+CbRQVJkMLzuGv1wgqH3fznepSlTGG/fdKegaYZvWjrSHGA74GYhpJv286YMYaZrTfZoKMLIVhGYlHhAspyiHIpqLhDbFJMVdkakUJTO9HaI02mh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708023548; c=relaxed/simple;
-	bh=kmiOofdVKBZVE7X7tgel+gK+VIQLaBji30JFdTlsCpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QM44DWSah3W+l5XbNrxK535ZkzrDyOae9nGpbjO0NG37ei3OMEDgQOTN3uUzOBq4UdoHZB4qYwjOAz6gbx8kUfI1/p2jfsWRYY0awGF22BMIBIf2Su3avTCKQan47m4NBqQ3CXGTsE2HdH4U4LGqPfNcwfnCNyxj1CAhecnL6wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=UMhNdIoJ; arc=none smtp.client-ip=185.67.36.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id A8752240103
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:59:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1708023543; bh=kmiOofdVKBZVE7X7tgel+gK+VIQLaBji30JFdTlsCpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=UMhNdIoJX+oPIy9wjgs8iWrbai1s3wc/ZJRKPbMdeadqavkK9jVNbBpGdRHve5KR8
-	 v+nmVTghcjYPWr7f2gz6b/cXhOvnU1/+QhIiCvfHN56JB7/JyGhR0MeTeGWDSCUAAT
-	 rK6EoYAoMwe3MLH8szK1PYHDWZ+Mt58WYjzhdrlSjQxk699XsJ/LxQrZ9JXRL2c9pN
-	 o6bbqXNsfzxDJamuyfla2solZu9SU0m17YWnfhrzVwjyqCKc6bzjESobFQ4xHLO5wQ
-	 D0C3VclvwlyA5IhL1XdnrXq/YUz65LA4dhAu+/4C61HoIBPrKbd1uoCfGVoBydwLRi
-	 h2qd9BfnOS8xA==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TbPVX19dJz6tx2;
-	Thu, 15 Feb 2024 19:58:59 +0100 (CET)
-From: Yueh-Shun Li <shamrocklee@posteo.net>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] minmax: substitute local variables using __UNIQUE_ID()
-Date: Thu, 15 Feb 2024 18:58:15 +0000
-Message-ID: <20240215185820.2285834-1-shamrocklee@posteo.net>
+	s=arc-20240116; t=1708023529; c=relaxed/simple;
+	bh=hMviSDR7IR+GwWkZCHnOzDa9PpoRzyHBelNBMVSD3GE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=F0wkBC+puKrsYf2kzVzQPW5u7DrX9SsJJSY88dgDzRbJgdtjthHNwHS+2FHFXftGy5c/r6y63i7p7oSFMBajuScBSM/aiBLnfnvTquSRmF3ZOtZdhsrS0AAqsCLpn3gduCDcvNkWyqT7QzRnNmIc7MV4Rc072WMhL5CTfoR00JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gMANnlTF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E038DC433C7;
+	Thu, 15 Feb 2024 18:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708023528;
+	bh=hMviSDR7IR+GwWkZCHnOzDa9PpoRzyHBelNBMVSD3GE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gMANnlTFcL5eM9hIehGB9iWbnA1rJKQPb+9d96/PIXlWWoV6wF4rmRpq0orkAN2Xr
+	 wZjpnbehEbi8PkSdguJBOlvaI1N+vkUtYCMxi9EELVmX6MQpyVPC9IKs8loS/i72B0
+	 xIagK6XErn2h0FDOyEVgts7zHDQeEY5i8ZMyKDh8eH+vWO7ROgU4zd4LTnCZ0HatOp
+	 tNxPhAeesMa+KhkZb1q2l8Xl2YLXxeSzcy8VZd/wfKgGM18gPhUwDJRdHA1T73LbGU
+	 Y4zWCpsQ4Lf80Bo7COn+NllJxbI1B//IDnGGZJgjamum1n60BijBeujtS9ZHsnrEIT
+	 kpZO2fztcNrSg==
+Date: Thu, 15 Feb 2024 10:58:46 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
+ <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown
+ <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
+ <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v4 05/17] net: pse-pd: Introduce PSE types
+ enumeration
+Message-ID: <20240215105846.6dd48886@kernel.org>
+In-Reply-To: <20240215-feature_poe-v4-5-35bb4c23266c@bootlin.com>
+References: <20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com>
+	<20240215-feature_poe-v4-5-35bb4c23266c@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Substitute identifier names of local variables used in macro
-definitions inside minmax.h with those generated by __UNIQUE_ID(prefix)
-to eliminate passible naming collisions.
+On Thu, 15 Feb 2024 17:02:46 +0100 Kory Maincent wrote:
+> Introduce an enumeration to define PSE types (C33 or PoDL),
+> utilizing a bitfield for potential future support of both types.
+> Include 'pse_get_types' helper for external access to PSE type info.
 
-Identifier names like __x, __y and __tmp are everywhere inside the
-kernel source. This patch ensures that macros provided by minmax.h
-will work even when identifiers of these names appear in the expanded
-input arguments.
+I haven't read the series, just noticed this breaks the build:
 
-Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
----
- include/linux/minmax.h | 41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+error: ../include/uapi/linux/pse.h: missing "WITH Linux-syscall-note" for SPDX-License-Identifier
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 2ec559284a9f..df7e45106c3a 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -129,10 +129,14 @@
-  * @x: value1
-  * @y: value2
-  */
--#define min_not_zero(x, y) ({			\
--	typeof(x) __x = (x);			\
--	typeof(y) __y = (y);			\
--	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
-+#define min_not_zero(x, y)						\
-+	__min_not_zero_impl(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y))
-+#define __min_not_zero_impl(x, y, __x, __y)				\
-+	({								\
-+		typeof(x) __x = (x);					\
-+		typeof(y) __y = (y);					\
-+		__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y));	\
-+	})
- 
- /**
-  * clamp - return a value clamped to a given range with strict typechecking
-@@ -185,13 +189,19 @@
-  * typeof() keeps the const qualifier. Use __unqual_scalar_typeof() in order
-  * to discard the const qualifier for the __element variable.
-  */
--#define __minmax_array(op, array, len) ({				\
--	typeof(&(array)[0]) __array = (array);				\
--	typeof(len) __len = (len);					\
--	__unqual_scalar_typeof(__array[0]) __element = __array[--__len];\
--	while (__len--)							\
--		__element = op(__element, __array[__len]);		\
--	__element; })
-+#define __minmax_array(op, array, len)					\
-+	__minmax_array_impl(op, array, len, __UNIQUE_ID(__array),	\
-+			    __UNIQUE_ID(__len), __UNIQUE_ID(__element))
-+#define __minmax_array_impl(op, array, len, __array, __len, __element)	\
-+	({								\
-+		typeof(&(array)[0]) __array = (array);			\
-+		typeof(len) __len = (len);				\
-+		__unqual_scalar_typeof(__array[0])			\
-+			__element = __array[--__len];			\
-+		while (__len--)						\
-+			__element = op(__element, __array[__len]);	\
-+		__element;						\
-+	})
- 
- /**
-  * min_array - return minimum of values present in an array
-@@ -267,7 +277,12 @@ static inline bool in_range32(u32 val, u32 start, u32 len)
-  * @a: first value
-  * @b: second value
-  */
--#define swap(a, b) \
--	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-+#define swap(a, b) __swap_impl(a, b, __UNIQUE_ID(__tmp))
-+#define __swap_impl(a, b, __tmp)			\
-+	do {						\
-+		typeof(a) __tmp = (a);			\
-+		(a) = (b);				\
-+		(b) = __tmp;				\
-+	} while (0)
- 
- #endif	/* _LINUX_MINMAX_H */
--- 
-2.42.0
+but why the separate header? Is it going to be used in other parts of
+uAPI than just in ethtool?
 
+> This patch is sponsored by Dent Project <dentproject@linuxfoundation.org>
+
+side-note: no objections to the line but for accounting purposes
+(i.e. when we generate development stats) we use the Author / From
+line exclusively. So it'd be easier to compute stats of things funded
+by Dent if you used:
+
+From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+
+but that's entirely up to you :)
 
