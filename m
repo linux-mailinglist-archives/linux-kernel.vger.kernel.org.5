@@ -1,97 +1,71 @@
-Return-Path: <linux-kernel+bounces-66937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F37C185641A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F021856419
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 651DFB27294
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:59:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5E01B28B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:01:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7DF12F586;
-	Thu, 15 Feb 2024 12:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iefFi7C0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0DA12F399;
+	Thu, 15 Feb 2024 12:59:57 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D02B12B162;
-	Thu, 15 Feb 2024 12:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3669130ACA
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 12:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708001956; cv=none; b=KW+VAk/dnG+3RgI5uhEtjX5O6X/UH0azEYtvJjfwDLqvsEZbyKB0frChkZJnWKTdO2vTS8+uME7lVwqyc2DhaBij/KbnDZEK6NkcMyaweYWzBqXVLNKIqj9Xs6/Xalp2O/52jPVb29UNQ9KkQA+606TeKO4JxxSCtPNW3pR1thU=
+	t=1708001997; cv=none; b=rn4VJ2fdY1UZSRvv1RQpwNH89CX7UBequVeQqvvtQujJ+5xLQ82rZd7LnACmvAnBvYndfmasW+svoHQ/MZQynjg6dQOCFcV3X9wB4MjWxAtoxF1mxntad4XwhW9da7IYddyi3vHMjQv2kPpxTCKeO5Ca5CilrAizAujRAreBCzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708001956; c=relaxed/simple;
-	bh=t2wWwdv8gsHGUFU9xSsq2sd3TsOFW6DhmUhaco8Iz/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uS8DTLWv3KOFXU0z7ZSLDOaUYLl8se5mFkENhcnJrk0cNTt4fi617OIolhsBAMCzjbH3Hi4/UuVQm+A/hGeNNo66XlcbFL8Bz2+yJaxDG84Vwduy2f1+zh60lyz6PPS8jpHxlVBwTOzqQvQplBIsjFyiOOF6IHLaOdDutTPWzBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iefFi7C0; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708001955; x=1739537955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t2wWwdv8gsHGUFU9xSsq2sd3TsOFW6DhmUhaco8Iz/k=;
-  b=iefFi7C0MRtreJf89kqJ06Rd5laIHk1eVTRl3MFQ5lH/w5YvGjq20BuF
-   v/uC+xXHS2xbosdBnLqhO+jkO5AGQ7W9SWkObwrx3hu1/wfakz3WqFBwm
-   jg8E0l2AsXQk4o0MHr9kCST4IKBWI9OU4IELuv9zKBSifp+7qV+QGlo04
-   x18UTaepxfuleSjSxOVr3lWFNcTxVgP1joCwwftnbNLO2LIqAGpZyFQ0c
-   2+e4o0P8zpX72HtiuIZv7+tCoEUBueypBcQ/Pm9GwuIF4BOgTrHP0PquC
-   t9qxZJQmNkAsMJpOq0PNqYZ+ZVcZNglv92Xucx8YMUkMdyJIbWLS3fThI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1961394"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="1961394"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:59:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="8227918"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 04:59:12 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 0535111F871;
-	Thu, 15 Feb 2024 14:53:09 +0200 (EET)
-Date: Thu, 15 Feb 2024 12:53:09 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] media: i2c: imx335: Support multiple link
- frequency
-Message-ID: <Zc4JNYxvLCfkyQKb@kekkonen.localdomain>
-References: <20240131055208.170934-1-umang.jain@ideasonboard.com>
- <20240131055208.170934-4-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1708001997; c=relaxed/simple;
+	bh=UC17XZcFYPFqDIb9k2pMp2QXwXJqh0VGue9d5HvnQ3A=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=AFLjFkQlQ11iKbSpbRe62Br3rHYhyaTVA7e4diVDbUHulN3NqIfbgPps/sKvrbEaK9eMXhtNYWKMvXmca1KdxPEWTqgkcaNnbChFHAi5Lj2snxVtELxrXl5Xg2x++I14OFYAIo+aEpQ41ZNknHDguAQE3Bjp1uHvbgivz43Ss7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TbFX94csjz4x0t;
+	Thu, 15 Feb 2024 23:59:53 +1100 (AEDT)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: npiggin@gmail.com, aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com, christophe.leroy@csgroup.eu, christophe.leroy@c-s.fr, Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, nixiaoming@huawei.com, wangbing6@huawei.com, douzhaolei@huawei.com, wangfangpeng1@huawei.com
+In-Reply-To: <1705974359-43790-1-git-send-email-xiaojiangfeng@huawei.com>
+References: <1705974359-43790-1-git-send-email-xiaojiangfeng@huawei.com>
+Subject: Re: [PING PATCH] powerpc/kasan: Fix addr error caused by page alignment
+Message-Id: <170800185784.599237.15590850355904015757.b4-ty@ellerman.id.au>
+Date: Thu, 15 Feb 2024 23:57:37 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240131055208.170934-4-umang.jain@ideasonboard.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Umang,
-
-On Wed, Jan 31, 2024 at 11:22:06AM +0530, Umang Jain wrote:
-> Support link frequency of 445MHz in addition to 594MHz.
-> Break out the register set specific to each data lane rate and also add
-> the general timing register set corresponding to the each data
-> lane rate.
+On Tue, 23 Jan 2024 09:45:59 +0800, Jiangfeng Xiao wrote:
+> In kasan_init_region, when k_start is not page aligned,
+> at the begin of for loop, k_cur = k_start & PAGE_MASK
+> is less than k_start, and then va = block + k_cur - k_start
+> is less than block, the addr va is invalid, because the
+> memory address space from va to block is not alloced by
+> memblock_alloc, which will not be reserved
+> by memblock_reserve later, it will be used by other places.
 > 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> [...]
 
-Please use the same subject line prefix (i.e. without "i2c: ").
+Applied to powerpc/fixes.
 
--- 
-Regards,
+[1/1] powerpc/kasan: Fix addr error caused by page alignment
+      https://git.kernel.org/powerpc/c/4a7aee96200ad281a5cc4cf5c7a2e2a49d2b97b0
 
-Sakari Ailus
+cheers
 
