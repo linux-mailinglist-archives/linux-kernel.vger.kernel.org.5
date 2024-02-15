@@ -1,238 +1,209 @@
-Return-Path: <linux-kernel+bounces-66723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A248C8560B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:04:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17778560B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 188FB1F2418F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:04:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C62C11C21B80
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA2B12AADA;
-	Thu, 15 Feb 2024 10:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA3D131755;
+	Thu, 15 Feb 2024 10:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mHQocX0N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MxA9Wv+l";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SRh6mLPL"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6948883A04
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707994652; cv=none; b=lUXHJ7QSRHiGu4DsOpRGvs+t4fe2+75pBv/hbVmYlcgv1M0IU/GNRv5DP8DXIQEAwENzOnEjetPPo8Sj6bmKkUJ5cwOvkSFyUeaFDmAo3Z6CSZbv0sj7jbfamrcPI3AwoRiHV9kE2YjctsmnRsW6RemA8zFZDsUsKqOBeHM5Gn0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707994652; c=relaxed/simple;
-	bh=fia32X7UBkpe3dW/uCV30sxHEtkvNs3IFKVG0jds3Xg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ZUqUdv8tE7iTwqtQZHeWXJrfs4F5tYCPWuJRLpC5z3qs4ojUuI+odHKdhDFd2pxgQVVd097EYdEfDh3dl4Gu7HUkC5coORx3NdvaXCzfSAxr82qheVi+5BEhOmi69imOoOyuSTl8f38G52CXEn+/A1hE9nuO+NVP2plMMggE1bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mHQocX0N; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707994650; x=1739530650;
-  h=date:from:to:cc:subject:message-id;
-  bh=fia32X7UBkpe3dW/uCV30sxHEtkvNs3IFKVG0jds3Xg=;
-  b=mHQocX0NIv7g3h5GEdXhlJtdfzBGrjVLn67K4FSizxLk8N3qluHj719Z
-   wU2lGPJBqlBgTf8Ni8aocHr7wIrW+c5gAguhZoY/SY5F5RPSYcZ6KCEQ1
-   ApjJVq/+dhh2LwcvxyjN/aiBIozUQLjEnMuwpo61W93DgEGJM2AgYPVIr
-   dy+Bs0kTFC+dRS0xVsjolf1P/Fm/ACe6D9jJWP9eWUKeH/isY50SYS4xK
-   WU7cjmd3fR+BnIqMwntPbxhp3yjvDsXRQRTNar1KxCmsBoQ/9u//GA1Lo
-   rYmcFsSJBW0VgZnYjrIqRWH9pQo7CqVUBqO4FswCAIhZ+ZR++CzjqyWjO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1948591"
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="1948591"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 02:57:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
-   d="scan'208";a="3460932"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 15 Feb 2024 02:56:52 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1raZPb-0000QS-0W;
-	Thu, 15 Feb 2024 10:56:37 +0000
-Date: Thu, 15 Feb 2024 18:55:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/merge] BUILD SUCCESS
- 218b13db258c091e646857fc962ef45fe2163054
-Message-ID: <202402151840.iW7Gvdz6-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970A8127B6D;
+	Thu, 15 Feb 2024 10:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707994616; cv=fail; b=UN9zl6ZowK8+WLcz757uSNW9IafpykMhEgF448K0q08twg6NMhURIqKqSn3M/odE/5yBPte2Q5iq2YaEmOUBv6zTjpKLKP/G16Cu7EsZbM/nRpoGeA0WObJOqW7zpo1fFnScxwXEUx6I71d3wwziUVxWSeYXDKXOzBE6k1C0nnA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707994616; c=relaxed/simple;
+	bh=yPCpBZe+BJNcNa7L7yBGygG2Uy/ySl+05MojNia3pRY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=KQK8BtHXdKlAEBRJrMy7xv8CAkrq9fOesUZkVhDjLkIvzvcrw1nYdBZtQSjeFpu8n3k7bKAyIADnsXuZrnHxVGbhucRuExt6sD4ywLwdP8VszuSS+BZJTEFbdbU7ESXCe70hecqEboJnFf7w2fn4W9D/Mtn4q9hlOAwdO5v7ji0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MxA9Wv+l; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SRh6mLPL; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41F6ixB0000670;
+	Thu, 15 Feb 2024 10:56:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=yPCpBZe+BJNcNa7L7yBGygG2Uy/ySl+05MojNia3pRY=;
+ b=MxA9Wv+l7gmCcUGJFsjZs8bm5r47iLJvo+GIshrOABT1lbuneLfhJpXjRa2qHtWDH2MR
+ neFB/E0lOu/wtdDlwn4CNj+yigPJ6encW43NHdrmbx1onwQHk7MK8jW+C200PGZrPjNY
+ IECX+wk0uKpLhI7oX4zCx2lQLkxsd4A06dKm5o5JxhzbKWYdKeGjaPiq1HVqqT9Vaqe7
+ ViUSxoYHZQgexaqFSS1AIJQ/CuimP4ID5AAEl+DNkl2DILmrT4JCfNuDP384jFzuX4dd
+ EHeLHe//Mym4YehViLK0Fk+U7Qf9To+nj37wd+E9ezy4G5fGTyFiX8KFYs6i2WNhSfxe og== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91w6swkg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 10:56:21 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41FAS3uE024589;
+	Thu, 15 Feb 2024 10:56:20 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykgmn3a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Feb 2024 10:56:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R3m0FsfS9xmYML/ZElm0AuejRKCzXurLdiid6DGXj4REhExu51sP2uWwXLsqkcg81u9Pt7NMIaeClwVZIsREODoVm7076g2waNM6KBwd1mmdSqsX751iStNHILSbYKOL8ocppwm/hAJsVQ7mpWtjZxUjzlMgOse+JnBQxIZ4lxLJLff3eT5gwspgPg9PEMBNkcp3rudjt3n2D0Ca6QuGf03juxBu3Qfpkm1xQ28CNC+FSdSR8dcZoSPPhhJSFkzbL+vcJ++Y4+mX3WH6Hn/tbB/5Q3E63ygVYyXnKooTtpXBcc4zYMiQzHXRqqwF2KFIl4UB9ZBxPcMB51ABIpPDKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yPCpBZe+BJNcNa7L7yBGygG2Uy/ySl+05MojNia3pRY=;
+ b=dEAHP5DUJHFslMjc3Gbc906C2vsg1ZOTmBe7IcapL+eRHaSaAMniGXshUBiqN/8vsvnx8thxsrGDSQ6mIIENNptnAXvryM6QChGSFqis4w7/n6ybPzbTUwAfiniC7ulpOwBU59Z14lJPGFbo0cVuxSDvBYn23jW/iPe1OsJylsL5Zt43NKNUQx3PiILecGa/70uVRYZPYPc0tUsU4lmRL+kD4R6mfUD9peeCz3jStfLjAl9sViPHV0MMcNwxgqt19nMJVWG7tj45rZVs7s3WqPTLO5f+kLu9nRI6sEvl4a8/u30i1iYoPewoA25qk0H+S0oEKOaw9WD9kSLDtfEN2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yPCpBZe+BJNcNa7L7yBGygG2Uy/ySl+05MojNia3pRY=;
+ b=SRh6mLPLac4UDEP+BUewDz/Hvx7enBNvOuDvnarS8A4JVOL1OO0fyNV/ks8NZvDT9/BLalbfWgu875A621eyh7fShVpUc0nCD+v7+KxT1HGRixfacsSmgvgOeroYbnyF2BACCl6RHRtTUqvXJUQuE0PTJ3moQ1WWipbHWSK9apg=
+Received: from LV8PR10MB7920.namprd10.prod.outlook.com (2603:10b6:408:1fd::10)
+ by BLAPR10MB5170.namprd10.prod.outlook.com (2603:10b6:208:321::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.27; Thu, 15 Feb
+ 2024 10:56:17 +0000
+Received: from LV8PR10MB7920.namprd10.prod.outlook.com
+ ([fe80::bdae:43a4:670c:48d1]) by LV8PR10MB7920.namprd10.prod.outlook.com
+ ([fe80::bdae:43a4:670c:48d1%4]) with mapi id 15.20.7270.036; Thu, 15 Feb 2024
+ 10:56:17 +0000
+Date: Thu, 15 Feb 2024 11:56:10 +0100
+From: Daniel Kiper <daniel.kiper@oracle.com>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ross Philipson <ross.philipson@oracle.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org,
+        dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+        mjg59@srcf.ucam.org, James.Bottomley@hansenpartnership.com,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        luto@amacapital.net, nivedita@alum.mit.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        kanth.ghatraju@oracle.com, trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v8 01/15] x86/boot: Place kernel_info at a fixed offset
+Message-ID: <Zc3tykqH2SjSVtd1@tomti.i.net-space.pl>
+References: <20240214221847.2066632-1-ross.philipson@oracle.com>
+ <20240214221847.2066632-2-ross.philipson@oracle.com>
+ <CAMj1kXH3Gvr3vDRLDdXuc0s7ZAQYE6+D7tmCRBjJWwWt2fn4-w@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH3Gvr3vDRLDdXuc0s7ZAQYE6+D7tmCRBjJWwWt2fn4-w@mail.gmail.com>
+X-ClientProxiedBy: WA1P291CA0008.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:19::19) To LV8PR10MB7920.namprd10.prod.outlook.com
+ (2603:10b6:408:1fd::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR10MB7920:EE_|BLAPR10MB5170:EE_
+X-MS-Office365-Filtering-Correlation-Id: f1eeb0ab-d3e0-4943-6049-08dc2e14bc8a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	rWSEJNDZidz3rrVjKErilHVErG0u96tcwBAaV+sOutnxY/a7Fk1KD35IYpTb79HH8dHligjMh95GOPHYyMm0Vds5AdjGCy/K8KnTp8GpesF1AUFoCAUWXMF99Gpj+lXQLpvbSX3s2OUdcy3IlEbrT18l2wXdDJ9Olgabm3ds02bD8w2/gASBj77tJ3dYiZCZ/fHhNjH0x6c6Npc0cgQXBF1PyeoaybcK2yhpE90xh5QCm3Vwt5pI4KMl9t+nX/6PzjkmlQTj0YqlRFGd9HOYsUwb/VsYWpP9gQQWkx08VUe7PYcsoGBt+CFNAJXQ9Bdo+xdOb7sjkw3ugqSTHs2/Upx4SZB3DM4zZN7Rxpc8ZPsg442PKA3PZYMZeuLWFTmlxl7ZvzvhQT3eEazyw2EvuXUzcgZFhIJ3yZof4bZSajTKDTTeZ2br0iS8vkgcSNXBK8pLFA5fTb3KzUFC0YXb6dD3lP7J7QOMlW3+f1pIo0LTMGv9JUekhV/Gn/QDLZmCVYMoou66/Co9O2VdNXZKqsBDCkjbF+uRlTsk39vKQCu16wnnYKrDxzbQZI4jC/mW
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR10MB7920.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(366004)(346002)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(44832011)(66556008)(7416002)(5660300002)(66946007)(4326008)(8936002)(8676002)(6916009)(66476007)(2906002)(26005)(86362001)(38100700002)(316002)(6666004)(478600001)(9686003)(6506007)(6486002)(6512007)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?ulL8RWxye+EK5/EQRSOpLvVF7pq+eNXstB4Xm9qON0CHR8D3RcPjV/NDzuQC?=
+ =?us-ascii?Q?vGaF9o7wLy1YyIM/X+KHUSOvYaxVazu6uQDMusyPyAqY9KZk8u98ffUOtZnm?=
+ =?us-ascii?Q?p/dPJfppLWrDt/m7N2X5A+VtJ3P5NUblLA1j3fuYqLKBn2oOe8gQQ7nAabVW?=
+ =?us-ascii?Q?TAj8ymt4CtY3P/CgoSjY1bKRAH2qH5CUplrEc2u6ogo4DHSgF5SEP5Ydcsbd?=
+ =?us-ascii?Q?bPKJAQaFcbZx+4tpEXtrAYkbxN610qQHjVrSPMr3pXpRRxOxjx2+0MqUYwQz?=
+ =?us-ascii?Q?z6XP9X+f/X9ccnBYyNAqXWATglDjzsMyUWac++isyZemHCeCDn1HiJghmo4r?=
+ =?us-ascii?Q?Rw8+7mQqMLgRxN1tfYAHNJeuNgj5odPJmBneprYRWURnLmr/FAUQTuMV9Q8f?=
+ =?us-ascii?Q?5sq3oxfvzEOwkZ3wWXP0bikKMWgdUh2pi8dC5plrIbiPMW+/eL6W0sS7iuFi?=
+ =?us-ascii?Q?Ll68NPjLmtx7yIvIA/PwNzHWlRkyv1KqKnzbGDKqQhcsTPdSu7FDdpaM2YDh?=
+ =?us-ascii?Q?D0EpPBiSalGv6YQw+0X82Seam2P+IUJHkMHx1wqXlYKnmgIAoYPd2drVTL7x?=
+ =?us-ascii?Q?gZFo17fhzyf7lqT4TWQgGbjydXU4H4AAdNehdDIbW9+uRcgDBWvbR3jDRY2o?=
+ =?us-ascii?Q?YalQPPvKPdgOoFeDI9T2PfnIwhIfwuQaGw6xeUubeCtWYsNbfo3x6O96ibTy?=
+ =?us-ascii?Q?o6NodA/KV+i8QIC4zbLg+8OAoonGqt3TLiLz6tjVXsFwpb8/Tot606GaoWsJ?=
+ =?us-ascii?Q?P/ydjMjL8uy+85uV3zCUK+nM2BAZM5YeVNFZ5Ume1OHCwZy8JbNU0UZKYbMG?=
+ =?us-ascii?Q?PBeXlvpyKZ5WJt5NCsbIbVqm/72jr0XSEjNROWD/uthrQm1CN5BbUNYc/ure?=
+ =?us-ascii?Q?CgTMHTClbo+w8jHIo5MAxsdJrvt+oB7zWulG+Dhcm0+iPbxqcsTUN7Iz954b?=
+ =?us-ascii?Q?bNme5nC5OH9M7CITkuBHTsSyzxPfBWNCGH8aaZJDBrPobC1X8O++OsId7Dot?=
+ =?us-ascii?Q?KmdYZ9LeTCWiRhFWHJAD0V2mxiAwBxegItk4RuakRP02iaotSbvCY61EJ3nM?=
+ =?us-ascii?Q?G3z8h5pRM9NRXWy4CXuWqvwT6sk3VBwt8fBLDyWcQfcJW2VTNkQZ3fTDZPeN?=
+ =?us-ascii?Q?1iaoR4PAkgzPjU1uDMqebPaIBaghYQCpkWsHognii9JQoUFiiqz5vup8oiWo?=
+ =?us-ascii?Q?aqXxDdwjNHayZSIiFQdNhlVPRSo6r+s1Qwyhg5YxlTx45qcJg4zfqIOp/SSD?=
+ =?us-ascii?Q?OS6ZnhyJSj9TLSY34CWWsbIUDsTY+joOR9dz/1ey2y5IazU+fLro1JOFL0gh?=
+ =?us-ascii?Q?71OhybIujGlAK74Otjk2qg76lA+SgF1gg8wxzBM7SyG0IIu84/YE9TCC9NH5?=
+ =?us-ascii?Q?29e34CHdU/nk2LrvgGjZvkvvtrB7tuxKHcGvbck74apV1Zq4WCmr9mr19dun?=
+ =?us-ascii?Q?XPxz2rU36iPWa7zZxIa3G4gSBYnmyf86JvIV0Dg4h7xYtEReMgVc7wSrSW7h?=
+ =?us-ascii?Q?dG9cjfHtdDWenoJrgRTz7eTj7aucHnb7axr2vLiMe2gvb+oL+SNxT7/ryux9?=
+ =?us-ascii?Q?CPPHK8fDC/t7HOaFFGsd8z2D+8s5O+CyZpUblNeo?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	99C1mulkHQ/qVS+nRitFJgw8BXbvZZLYFfu5Y800QvtMEOjfzKSJHY/1rl3Ajs7e80PWhZ0l0DldZGrqO8zXF8cw/N19ThPfOVBGDT+HPJX84n/wN3HAxX63fI32ycrkEHk/NK7+57+kwBbUdT/R44WYPudZ3Ek1Mv27ojK7XRY9g2blffT5+oFTKAg+/7ReHjuTCmcbcz2Fx+Tejj1oNdvZ2lO5DJ5QWbZI+vko6+PBAGcN1rcDjBdQW6nBQ/82CCxpq0XzPzMhvVyQ3h/OZaDFrLoJydgMserep6xNyH+cehqktDkeIX0tM1fskry0vrjBrpMa9yqDbd38gNYh4ETinbrboFCn2SUMFnbdDT2hk0hvrZWA+TUgQyppniLi2nvq/tAvRMSF7v7sfVDud+4bOHdgLz1oeHTS1gddu57q0mj7FEXwEv7USvFh1l7YByvZaL9dZKdSZS/DQvNmuGhuJk5lr6kp8y+LqUAJLs0GzPHkXS483iZrpsx0ZqG63ACGtqmrTMryuVhP8s5kDY7ZTzwC9tAFyiuk1w+5Z+heaqitGdVYUVKTPPuzsta0ruKxsTTwEWPs8zzNIEHwmOLsJnBA1ZndKPJD6k71UFU=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1eeb0ab-d3e0-4943-6049-08dc2e14bc8a
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR10MB7920.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2024 10:56:17.8120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AoUUkDPLR2vRZVDkv3SSTD7TazsJZNA2PewqJWcgndsXmZnY7ITwPRib/E3Q5ckTv8ojVrdIqiyNMtJKN0z8iA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5170
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-15_10,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402150086
+X-Proofpoint-ORIG-GUID: v7A_Mx55t8SU1ekVojVwFesSvbiSAqhC
+X-Proofpoint-GUID: v7A_Mx55t8SU1ekVojVwFesSvbiSAqhC
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
-branch HEAD: 218b13db258c091e646857fc962ef45fe2163054  Merge branch 'x86/core' into x86/merge, to ease integration testing
+On Thu, Feb 15, 2024 at 08:56:25AM +0100, Ard Biesheuvel wrote:
+> On Wed, 14 Feb 2024 at 23:31, Ross Philipson <ross.philipson@oracle.com> wrote:
+> >
+> > From: Arvind Sankar <nivedita@alum.mit.edu>
+> >
+> > There are use cases for storing the offset of a symbol in kernel_info.
+> > For example, the trenchboot series [0] needs to store the offset of the
+> > Measured Launch Environment header in kernel_info.
+> >
+>
+> Why? Is this information consumed by the bootloader?
 
-elapsed time: 1445m
+The bootloader stuffs this info, plus some offset IIRC, into special structure
+and finally it is consumed by SINIT ACM after GETSEC[SENTER] call.
 
-configs tested: 150
-configs skipped: 2
+Sadly this data is Intel specific and it is even not compatible with AMD.
+So, if I am not mistaken, we will need additional member for the AMD in
+the kernel_info.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> I'd like to get away from x86 specific hacks for boot code and boot
+> images, so I would like to explore if we can avoid kernel_info, or at
+> least expose it in a generic way. We might just add a 32-bit offset
+> somewhere in the first 64 bytes of the bootable image: this could
+> co-exist with EFI bootable images, and can be implemented on arm64,
+> RISC-V and LoongArch as well.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240215   gcc  
-arc                   randconfig-002-20240215   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                        clps711x_defconfig   clang
-arm                                 defconfig   clang
-arm                          ep93xx_defconfig   clang
-arm                      integrator_defconfig   clang
-arm                   randconfig-001-20240215   clang
-arm                   randconfig-002-20240215   gcc  
-arm                   randconfig-003-20240215   gcc  
-arm                   randconfig-004-20240215   gcc  
-arm                        shmobile_defconfig   gcc  
-arm                        spear6xx_defconfig   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240215   clang
-arm64                 randconfig-002-20240215   clang
-arm64                 randconfig-003-20240215   gcc  
-arm64                 randconfig-004-20240215   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240215   gcc  
-csky                  randconfig-002-20240215   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240215   clang
-hexagon               randconfig-002-20240215   clang
-i386         buildonly-randconfig-001-20240215   clang
-i386         buildonly-randconfig-002-20240215   clang
-i386         buildonly-randconfig-003-20240215   clang
-i386         buildonly-randconfig-004-20240215   clang
-i386         buildonly-randconfig-005-20240215   clang
-i386         buildonly-randconfig-006-20240215   clang
-i386                  randconfig-001-20240215   gcc  
-i386                  randconfig-002-20240215   gcc  
-i386                  randconfig-003-20240215   clang
-i386                  randconfig-004-20240215   gcc  
-i386                  randconfig-005-20240215   gcc  
-i386                  randconfig-006-20240215   gcc  
-i386                  randconfig-011-20240215   clang
-i386                  randconfig-012-20240215   clang
-i386                  randconfig-013-20240215   gcc  
-i386                  randconfig-014-20240215   gcc  
-i386                  randconfig-015-20240215   clang
-i386                  randconfig-016-20240215   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240215   gcc  
-loongarch             randconfig-002-20240215   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240215   gcc  
-nios2                 randconfig-002-20240215   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20240215   gcc  
-parisc                randconfig-002-20240215   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                          g5_defconfig   gcc  
-powerpc                      makalu_defconfig   clang
-powerpc               randconfig-001-20240215   gcc  
-powerpc               randconfig-002-20240215   clang
-powerpc               randconfig-003-20240215   clang
-powerpc                     tqm8555_defconfig   clang
-powerpc64             randconfig-001-20240215   clang
-powerpc64             randconfig-002-20240215   gcc  
-powerpc64             randconfig-003-20240215   clang
-riscv                            allmodconfig   clang
-riscv                            allyesconfig   clang
-riscv                 randconfig-001-20240215   gcc  
-riscv                 randconfig-002-20240215   gcc  
-s390                             alldefconfig   gcc  
-s390                             allmodconfig   clang
-s390                             allyesconfig   gcc  
-s390                  randconfig-001-20240215   clang
-s390                  randconfig-002-20240215   clang
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                     magicpanelr2_defconfig   gcc  
-sh                    randconfig-001-20240215   gcc  
-sh                    randconfig-002-20240215   gcc  
-sh                           se7343_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20240215   gcc  
-sparc64               randconfig-002-20240215   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   gcc  
-um                    randconfig-001-20240215   gcc  
-um                    randconfig-002-20240215   gcc  
-x86_64                            allnoconfig   clang
-x86_64       buildonly-randconfig-001-20240215   clang
-x86_64       buildonly-randconfig-002-20240215   clang
-x86_64       buildonly-randconfig-003-20240215   gcc  
-x86_64       buildonly-randconfig-004-20240215   gcc  
-x86_64       buildonly-randconfig-005-20240215   clang
-x86_64       buildonly-randconfig-006-20240215   gcc  
-x86_64                randconfig-001-20240215   clang
-x86_64                randconfig-002-20240215   clang
-x86_64                randconfig-003-20240215   gcc  
-x86_64                randconfig-004-20240215   clang
-x86_64                randconfig-005-20240215   clang
-x86_64                randconfig-006-20240215   clang
-x86_64                randconfig-011-20240215   gcc  
-x86_64                randconfig-012-20240215   gcc  
-x86_64                randconfig-013-20240215   gcc  
-x86_64                randconfig-014-20240215   gcc  
-x86_64                randconfig-015-20240215   gcc  
-x86_64                randconfig-016-20240215   clang
-x86_64                randconfig-071-20240215   clang
-x86_64                randconfig-072-20240215   clang
-x86_64                randconfig-073-20240215   gcc  
-x86_64                randconfig-074-20240215   gcc  
-x86_64                randconfig-075-20240215   clang
-x86_64                randconfig-076-20240215   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-xtensa                randconfig-001-20240215   gcc  
-xtensa                randconfig-002-20240215   gcc  
-xtensa                         virt_defconfig   gcc  
+The other architectures may or may not have need for such data due to
+differences in DRTM implementation. Anyway, whatever we do I want to
+be sure the DRTM can be used on UEFI and non-UEFI platforms. So, I am
+not entirely convinced the address/pointer to additional DRTM data
+should be part of the MS-DOS and/or PE header. Though I am not against
+building something generic shared among various architectures either.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Daniel
 
