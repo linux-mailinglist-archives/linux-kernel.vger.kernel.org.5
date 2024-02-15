@@ -1,107 +1,115 @@
-Return-Path: <linux-kernel+bounces-66269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823DE855988
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:37:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D984855989
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 04:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B55B71C21301
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:37:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C297FB2296C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:45:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2269D6FB8;
-	Thu, 15 Feb 2024 03:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC7C36FB8;
+	Thu, 15 Feb 2024 03:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fG4wDTPv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HcACt1nU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591AF6107;
-	Thu, 15 Feb 2024 03:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 146B833DD
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:45:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707968267; cv=none; b=MQdnvkTkmBHXMHNA7cI7L1KrXZGKOhSR+gS3S9FdcK9xc6vHPEu/UdRhFZhoYAyWuQfFbIqUTuqANObjoJqJPMPt+5eDILRuX5C5Z4bZy8oyWVVJB4W6nmwJ6nyMktp2ml8oNkL8i1VKw7V51Ns6MHk8zB7X3wIk5bMye2n7BPc=
+	t=1707968719; cv=none; b=nQiX28rfl85UVBBAdrH/VolSBNBKfMXBHliertc4koVyDTOtz0K6lkRBUplx7yai+hweEebSoz4/B70bFe7bD3FoyS0sBFD38r/+GTZR16+DdB3ucopox5q5oOAfbe3NzlHV1PqY1a+q5JeOuey/9Uj+3kL5jAak+N0tLHdCYpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707968267; c=relaxed/simple;
-	bh=RJHn7Ly5U/f25LfzqZOi+nH7XZAa0NPMODFDLRz/l1M=;
+	s=arc-20240116; t=1707968719; c=relaxed/simple;
+	bh=HCpAesOZ9BivNvW8yYNvBm2PY4syrHl8xlGIHLGijbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WHB/CDQcO+UrMI/hxulcLIrhtr1XkmTGXii15BLH7IGLHhrtwqvpm0HuQFL2KlflkbKo1dUVo6gZGNpHIMuPjX9A2D60pssLCThPCGV3AWdnAjRZuNSja8aMkzqEGHtjgEfAfRm8s/FdV3QbZd4Qpj74E+ExdSr9rFcCyeJuTyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fG4wDTPv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43CDAC433F1;
-	Thu, 15 Feb 2024 03:37:44 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=WO2x1LuWUTZEEQmP4RxpA1Sj6rzDEUH7bvcfRznJbYs0/iv9rGSKjFsMRD4z/ien58tcZY3bpVY1gAMP1rPNTDh+ty7foTr1SueFqxmBBtaUqG57hb9J72RhJ4exTds1qkgpNvjtrX74yiBN13px26/InPPjwRl6qf0tV8SfxLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HcACt1nU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 762D4C433F1;
+	Thu, 15 Feb 2024 03:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707968266;
-	bh=RJHn7Ly5U/f25LfzqZOi+nH7XZAa0NPMODFDLRz/l1M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fG4wDTPvk7DStsx7NpwPwtcVITPiEguqg3TwWhn+bT2+PhFLTqj1B44Xt0aoYB/7K
-	 LNhjTPCPYvWcMKdtTwLm+TVebEbxnB83oy19Ih0usZKVAPq5NNBG+M5uN8EeAI/kZM
-	 xsT1X60FbMoBraI44RolYCuOR+O5loEkPH3IBgwQ8LXNVUstmRG6pcIV9anHx6OQWJ
-	 EYWKBGP/CuTwnvD1TCk+a/nssOeD1uGzjdUMOPh2OeVW/PBxGQvntSD7jnmBc/UxbJ
-	 U7pI0D3kuysXtu70nAMDBQQK5dTjRyCJWPDohbvjWBMcJTtDULp9HWbFTqghpPKxlb
-	 oGjhRDerpW0iw==
-Date: Thu, 15 Feb 2024 11:37:42 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
-	Julius Werner <jwerner@chromium.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	kernel@collabora.com, chrome-platform@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable
- cbmem in the arm64 defconfig
-Message-ID: <Zc2HBmDPJnHt0WJC@google.com>
-References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
+	s=k20201202; t=1707968718;
+	bh=HCpAesOZ9BivNvW8yYNvBm2PY4syrHl8xlGIHLGijbQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=HcACt1nUHmU6MIboabfpkZtbTJqWVFKy7QlfttSkdSmnXEdjpFuvP2ttl+RBXE6iI
+	 cy51U0HyX55W5BU+Vj8jIymLxyDGgwaB6aEvGNTi2ZDfPXzslJNXPgCRTW82GLrf39
+	 iaWWlVXHkSDI5MK74/jA4LVPPgOGCqpJ0VmmABLtXeDowCnCRgyt5Us3+5lQusfQIs
+	 olBQRZlU4HFad1YrR+4GZqSlkDn3wT6phun/6b9A/5uIrfLEDS8pdHHfxX9yhB2jtM
+	 kDCgJ32EOW7nDsO1H1ZpX1CS8ZoLBA7/od8sFaCq5T5p3EBLWZgAnNJRQvK3if/PZT
+	 R8g3CORkE+l9w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1AC88CE0D11; Wed, 14 Feb 2024 19:45:18 -0800 (PST)
+Date: Wed, 14 Feb 2024 19:45:18 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+	andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, rostedt@goodmis.org,
+	David.Laight@aculab.com, richard@nod.at, jon.grimm@amd.com,
+	bharata@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
+Message-ID: <4e070ae0-29dc-41ee-aee6-0d3670304825@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <a7e785f8-d4c3-4b1b-9abe-36ac0b971e44@paulmck-laptop>
+ <87le7mpjpr.fsf@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
+In-Reply-To: <87le7mpjpr.fsf@oracle.com>
 
-On Mon, Feb 12, 2024 at 09:50:04AM -0500, Nícolas F. R. A. Prado wrote:
-> This series adds the missing pieces to the coreboot bus and the module
-> alias generation to allow coreboot modules to be automatically loaded
-> when matching devices are detected.
+On Wed, Feb 14, 2024 at 06:03:28PM -0800, Ankur Arora wrote:
 > 
-> The configs for cbmem coreboot entries are then enabled in the arm64
-> defconfig, as modules, to allow reading logs from coreboot on arm64
-> Chromebooks, which is useful for debugging the boot process.
+> Paul E. McKenney <paulmck@kernel.org> writes:
 > 
-> [...]
+> > On Mon, Feb 12, 2024 at 09:55:24PM -0800, Ankur Arora wrote:
+> >> Hi,
+> >>
+> >> This series adds a new scheduling model PREEMPT_AUTO, which like
+> >> PREEMPT_DYNAMIC allows dynamic switching between a none/voluntary/full
+> >> preemption model. However, unlike PREEMPT_DYNAMIC, it doesn't depend
+> >> on explicit preemption points for the voluntary models.
+> >>
+> >> The series is based on Thomas' original proposal which he outlined
+> >> in [1], [2] and in his PoC [3].
+> >>
+> >> An earlier RFC version is at [4].
+> >
+> > This uncovered a couple of latent bugs in RCU due to its having been
+> > a good long time since anyone built a !SMP preemptible kernel with
+> > non-preemptible RCU.  I have a couple of fixes queued on -rcu [1], most
+> > likely for the merge window after next, but let me know if you need
+> > them sooner.
 > 
-> ---
-> Nícolas F. R. A. Prado (4):
->       firmware: coreboot: Generate modalias uevent for devices
->       firmware: coreboot: Generate aliases for coreboot modules
->       firmware: coreboot: Replace tag with id table in driver struct
->       arm64: defconfig: Enable support for cbmem entries in the coreboot table
+> Thanks. As you can probably tell, I skipped out on !SMP in my testing.
+> But, the attached diff should tide me over until the fixes are in.
+
+That was indeed my guess.  ;-)
+
+> > I am also seeing OOM conditions during rcutorture testing of callback
+> > flooding, but I am still looking into this.
 > 
->  arch/arm64/configs/defconfig                   |  3 +++
+> That's on the PREEMPT_AUTO && PREEMPT_VOLUNTARY configuration?
 
-Hi Catalin and Will,
+On two of the PREEMPT_AUTO && PREEMPT_NONE configurations, but only on
+two of them thus far.  I am running a longer test to see if this might
+be just luck.  If not, I look to see what rcutorture scenarios TREE10
+and TRACE01 have in common.
 
-Is it OK to you if I pick the 4th patch (which touches the above files) to
-chrome-platform-firmware tree for the next merge window?
-
->  include/linux/mod_devicetable.h                | 10 ++++++++++
->  scripts/mod/devicetable-offsets.c              |  3 +++
->  scripts/mod/file2alias.c                       | 10 ++++++++++
-
-Hi Masahiro,
-
-Is it OK to you if I pick the 2nd patch (which touches the above files) to
-chrome-platform-firmware tree for the next merge window?
+							Thanx, Paul
 
