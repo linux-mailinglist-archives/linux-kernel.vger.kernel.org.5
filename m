@@ -1,159 +1,184 @@
-Return-Path: <linux-kernel+bounces-67827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F12EC857188
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:24:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3598B85717D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:21:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 949C9281083
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:24:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D230F283525
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF248145B14;
-	Thu, 15 Feb 2024 23:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAAD145347;
+	Thu, 15 Feb 2024 23:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bkuWqqaU"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PKZRg9Yl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7912B13475C;
-	Thu, 15 Feb 2024 23:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D4213AA4F;
+	Thu, 15 Feb 2024 23:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708039469; cv=none; b=cJH2jJmg/CDMlxiiC1KbxRK7dYXjlsNyWN6nXU6lxiAqDNEIEt2EtVHML3v+dNnHwFcNwmknf/WjZFqSgg6OnCOry/tkfLQQFpedZZPlgxD/5qxU9si1E3qTp2ZpAFjuvPuAPn+nZGFL/vw3/a/UqVxVkmZP4RMXXhs56Qq02xY=
+	t=1708039288; cv=none; b=HgKmw8Lj82Tgxmc2bV6Am28DPOn6ySe1GnLHIpdXWOiU/e6YOk476POgaffkq6AGOuyrxVyj3u4ASewPgdCA+3Y/Tz1PK9gmlKHI0vi24TlQTRWnSFyPP9IaKZf9VK7tsikClIwR4B2GFYGqqa0D44Kgrgue28XmRJUxAI8CtUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708039469; c=relaxed/simple;
-	bh=c0DueKZiAOAwvmHTn8r0NCMCSCOYfX1U98L77P7a8W8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JA8dZnLBa2ge6Y3efjov0xg/jBfK07x3Eyj0eKti06HpAfeiSoKBm9DCfWTbUWvYuVXwCQ778RdQ8Aq3LnL1O51CeRLO+WjObE6wlhpEIu2zjnNquAV7Q+jXqIyfNAMbCEKnDvf6A9MENxwK8j7WrEhQ9q50KDP3LtUAjLKg5d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bkuWqqaU; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708039467; x=1739575467;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=c0DueKZiAOAwvmHTn8r0NCMCSCOYfX1U98L77P7a8W8=;
-  b=bkuWqqaUkAfWbW3tOs/Ek6Uh6tJ1oj084R1p3W3glyAE3iAOFm15v1su
-   bG3x4Uh03d3BcfULydI/d9xVy3m0E/TQovcpk/QeZBLxm2Wuz8Z/VcKd5
-   6TfwM1J9XE1m9B/U+biHkQiY1+e1mteiJS+LugkIN/axnE5aOPirh4+9c
-   /XiyLdFA6DBGSH9dKbGsHPZfiyMh3GL44uN8jcHNLUeRke948nEK+HZz0
-   lAd2qZUxKjegVU6kQ3ywm3dWnZZx2QZXk8D6MZwCTRHS9pQYdlQG/kH64
-   SUrgt5qOHgUCTDwWxdzNS56TEpEhPIW1RwxTfjyK0G6VBpeZrQjOEl50T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5127824"
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="5127824"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:19:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
-   d="scan'208";a="4077327"
-Received: from jmjohns4-mobl1.amr.corp.intel.com (HELO [10.209.57.138]) ([10.209.57.138])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:19:33 -0800
-Message-ID: <38e34171-e116-46ee-8e2b-de7cc96d265e@intel.com>
-Date: Thu, 15 Feb 2024 15:19:33 -0800
+	s=arc-20240116; t=1708039288; c=relaxed/simple;
+	bh=7iJLw/6LPcevINvsicUat4ZsHVJ3XTY7Nx+EesDtbdc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g0xzXXiqH8eCFnGn3zmxWBUVuB2oVr8BreMCGeKpAYHbrFIuWXkvhuiQ/3gu1e0NbwPYq5NhMaR3fnUTfgFDHlLss6OoeNb58a5rT3/0Vj0cTCaxE+iBOdJ3GH4YxbrwwKwjCh8uDtOlJvGMnrHpLHzzwk4J9l4YMk33e1gHMpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PKZRg9Yl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EAE5C433F1;
+	Thu, 15 Feb 2024 23:21:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708039287;
+	bh=7iJLw/6LPcevINvsicUat4ZsHVJ3XTY7Nx+EesDtbdc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PKZRg9YlGF5yDV0vr9GDUjfS5j8SkYJfRBBInWE4tDM1CTtSYl1gFXShydBbVI7bY
+	 7YmtI/Il56ECCrfR7yarirDv3ZEMhRdUQRaYwX7QSPNA9zaB9B+KMzSadLFA/TRpNG
+	 9E6vT79qBLhN8LzeNvObmjPlopfyLooqyax6qz1GVP3QsBiDh+SxH/F9SH2elcjQ9k
+	 sTRnHQrMDIqAioVM1eVcWZcppzlbVdzFaVflE+xyl8q8L9xIeYt8EgsR+OoOmWOEXW
+	 ylHXGshIVK5PpmCY9Ow2Dr6/X6M8j2UWaNf8AaO38NwazJftHCKaSD9tv7DAG6ieZj
+	 uZsNhe3jUkZHg==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51182f8590bso1854648e87.0;
+        Thu, 15 Feb 2024 15:21:27 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWQ4zEsi7Qjo0XoJ/glC+mD+set9Drx8SIVlo3/rwkiWvUmou9bAOQ6wNEmLJSVXDOxuLGT85pJ+F3wYXdVpWHrE73a8RmN9zTbICf3a2a3Dlq5sIB2syFG5O8g02aLDsQJzwnVC2TrkKN5rcroYYwhSYOAUlCHus6g6Snx7+L/
+X-Gm-Message-State: AOJu0YwHq+s3BexQBSPR1Phzq5LnRp6ZeeIfKpjGEvSuOTtI8JJiAphN
+	MqB0Z9OQlkLxlnVGv4Ok+yQDJSzfrssu7A/IF290ILa4IoQxsfWMbER44aDeJPZH8PETUOG3Nzs
+	TKWjJfG/8pwywrnqSHHYgIjH5FLA=
+X-Google-Smtp-Source: AGHT+IGy+ro0gLdOQgR6w/ffrsZf/Qm7wt3zjX123wUPreRbqJOD3J6hNqRBaxU2o1QoV3B2+471el4akJoaXzGnsso=
+X-Received: by 2002:a19:e04c:0:b0:511:8691:62d4 with SMTP id
+ g12-20020a19e04c000000b00511869162d4mr2289262lfj.41.1708039285682; Thu, 15
+ Feb 2024 15:21:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>,
- Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
- hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
- dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
- corbet@lwn.net, void@manifault.com, peterz@infradead.org,
- juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
- arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-32-surenb@google.com> <Zc3X8XlnrZmh2mgN@tiehlicka>
- <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
- <Zc4_i_ED6qjGDmhR@tiehlicka>
- <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
- <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
- <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
- <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
- <20240215180742.34470209@gandalf.local.home>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240215180742.34470209@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240215225116.3435953-1-boqun.feng@gmail.com>
+In-Reply-To: <20240215225116.3435953-1-boqun.feng@gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 16 Feb 2024 00:21:14 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
+Message-ID: <CAMj1kXF3L5SdeXDfd3uYSOz-oG7+J31pd3WtZJ+g9eGDHDdOxg@mail.gmail.com>
+Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
+To: Boqun Feng <boqun.feng@gmail.com>, Oliver Smith-Denny <osde@linux.microsoft.com>
+Cc: linux-arm-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/15/24 15:07, Steven Rostedt wrote:
-> Just adding the patches increases the size by 5k. But the rest shows an
-> increase of 259k, and you are worried about 4k (and possibly less?)???
+(cc Oliver)
 
-Doesn't the new page_ext thingy add a pointer per 'struct page', or
-~0.2% of RAM, or ~32MB on a 16GB laptop?  I, too, am confused why 4k is
-even remotely an issue.
+On Thu, 15 Feb 2024 at 23:51, Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
+> a trouble with the following firmware memory region setup:
+>
+>         [..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
+>         [..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
+>
+
+Which memory types were listed here?
+
+> , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
+> range will be omitted from the the linear map due to 64k round-up. And
+> a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
+>
+>         [...] Unable to handle kernel paging request at virtual address f=
+fff0000dfd80000
+>
+
+You trimmed all the useful information here. ACPI reclaim memory is
+reclaimable, but we don't actually do so in Linux. So this is not
+general purpose memory, it is used for a specific purpose, and the
+code that accesses it is assuming that it is accessible via the linear
+map. There are reason why this may not be the case, so the fix might
+be to use memremap() in the access instead.
+
+> To fix this, add ACPI_MEMORY_NVS into the linear map.
+>
+
+There is a requirement in the arm64 bindings in the UEFI spec that
+says that mixed attribute mappings within a 64k page are not allowed.
+
+This is not a very clear description of the requirement or the issue
+it is intended to work around. In short, the following memory types
+are special
+
+=E2=80=93 EfiRuntimeServicesCode =E2=80=93 EfiRuntimeServicesData =E2=80=93=
+ EfiReserved =E2=80=93
+EfiACPIMemoryNVS
+
+and care must be taken to ensure that allocations of these types are
+never mapped with mismatched attributes, which might happen on a 64k
+page size OS if a mapping is rounded outwards and ends up covering the
+adjacent region.
+
+The Tianocore reference implementation of UEFI achieves this by simply
+aligning all allocations of these types to 64k, so that the OS never
+has to reason about whether or not region A and region B sharing a 64k
+page frame could have mappings or aliases that are incompatible.
+(I.e., all mappings of A are compatible with all mappings of B)
+
+ACPI reclaim is just memory, EfiACPIMemoryNVS could have special
+semantics that the OS knows nothing about. That makes it unsafe to
+assume that we can simply create a cacheable and writable mapping for
+this memory.
+
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> Cc: stable@vger.kernel.org # 5.15+
+> ---
+> We hit this in an ARM64 Hyper-V VM when using 64k page size, although
+> this issue may also be fixed if the efi memory regions are all 64k
+> aligned, but I don't find this memory region setup is invalid per UEFI
+> spec, also I don't find that spec disallows ACPI_MEMORY_NVS to be mapped
+> in the OS linear map, but if there is any better way or I'm reading the
+> spec incorrectly, please let me know.
+>
+
+I'd prefer fixing this in the firmware.
+
+> It's Cced stable since 5.15 because that's when Hyper-V ARM64 support is
+> added, and Hyper-V is the only one that hits the problem so far.
+>
+>  drivers/firmware/efi/efi-init.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-i=
+nit.c
+> index a00e07b853f2..9a1b9bc66d50 100644
+> --- a/drivers/firmware/efi/efi-init.c
+> +++ b/drivers/firmware/efi/efi-init.c
+> @@ -139,6 +139,7 @@ static __init int is_usable_memory(efi_memory_desc_t =
+*md)
+>         case EFI_LOADER_CODE:
+>         case EFI_LOADER_DATA:
+>         case EFI_ACPI_RECLAIM_MEMORY:
+> +       case EFI_ACPI_MEMORY_NVS:
+>         case EFI_BOOT_SERVICES_CODE:
+>         case EFI_BOOT_SERVICES_DATA:
+>         case EFI_CONVENTIONAL_MEMORY:
+> @@ -202,8 +203,12 @@ static __init void reserve_regions(void)
+>                         if (!is_usable_memory(md))
+>                                 memblock_mark_nomap(paddr, size);
+>
+> -                       /* keep ACPI reclaim memory intact for kexec etc.=
+ */
+> -                       if (md->type =3D=3D EFI_ACPI_RECLAIM_MEMORY)
+> +                       /*
+> +                        * keep ACPI reclaim and NVS memory and intact fo=
+r kexec
+> +                        * etc.
+> +                        */
+> +                       if (md->type =3D=3D EFI_ACPI_RECLAIM_MEMORY ||
+> +                           md->type =3D=3D EFI_ACPI_MEMORY_NVS)
+>                                 memblock_reserve(paddr, size);
+>                 }
+>         }
+> --
+> 2.43.0
+>
+>
 
