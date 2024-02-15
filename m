@@ -1,133 +1,113 @@
-Return-Path: <linux-kernel+bounces-67783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68A98570B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:47:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBFAA8570B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8C5F1C21BDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:47:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 925501F22591
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 22:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA68B13DBBE;
-	Thu, 15 Feb 2024 22:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E156D1419AD;
+	Thu, 15 Feb 2024 22:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FaW8KCF0"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O869b/tj"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678BB1EA80
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E1441A87;
+	Thu, 15 Feb 2024 22:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708037223; cv=none; b=W8suwwlAc6imfF+/VRFkfWdOAfv9lqKBR19oBS/DonEoyksqu4dSyi3Y83YmyCUXX4MSkW15aSc3g18G84wVyEq5JHzdKkIR1odTEmwB7IJruDNp05QIE+fHHQBuWKznJLacoPb53y/irQIqBtY0VrX7q5tVJCxxr0+Y/ZtTBtg=
+	t=1708037291; cv=none; b=kMi21VxkRXOCclYLqTHCL79+9t4ox8xKts0NFpaLt/5FIEPCfXWa1tlqqyCWxuERRuq13OjGiUSlmasEFKLv7nHwAgOIDnJOlantIDtU8d7LLv+PpBsqDFJHBaEmoguXRvpUY8FdcjoPNLRfmWfigAh1qcbmPF9erlPNDv4PUFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708037223; c=relaxed/simple;
-	bh=ySqDVtaxhw9+go8nYfR3xSx2fEIuu3orLN2+ehZNwLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uhyqVcqDoOHgsY70JeuslQvSHwbGisnYJrzylods9m41oTZD0ULmeDcUXI7gfcJ23+OPD7+p+04SyZaNnMvGoFSYucMLO459Sz+DzDA9oOX5Zal8RqU80LkKEU2tV1dnF2FlzoIRKQI5wGxIzIiT1rlnS/R78yRdgZPlzyuNkzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FaW8KCF0; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e09a890341so942458b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 14:47:02 -0800 (PST)
+	s=arc-20240116; t=1708037291; c=relaxed/simple;
+	bh=/kWliuY+oG1YGeiKJ1UUmE2TUPvHlC+v3vpcBhn1ISg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=mD6ooGTKQmK1mtFUqoZNzNI1+ec1j20iojacZBO23W3lE24TaFcSODxCof7qrOyUV4EOJ+p/oM0hzby9aRLlhfe0QJk5euSCSXZxeAnRq1MiVMaSx6Y7Pq+09R6MJhPFQvAsQjppla3l9P/OpibB4R61E0VfTPoSpGzmpUiTmMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O869b/tj; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-411de7c6b3dso10958305e9.3;
+        Thu, 15 Feb 2024 14:48:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708037222; x=1708642022; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RwGyOLLUpGP52iFQkqVrw7uMnUv0aQEKJVIPOZEZaEc=;
-        b=FaW8KCF06Ydi4TGPOeF1/CDqyfPPqO+Pka7HqTjQElatg+Pzw1FnTl2HmmaXlQA/G/
-         LCmAqBA6X66kXmTMVAA7XhbiPYWsy3DBzy0PViHCiPL03RL1967JnfHh87xfYH/mmo2z
-         Ad3F8RjwWm0P5RClLu0Hy+3udZtkQSJ+nmVb0=
+        d=gmail.com; s=20230601; t=1708037288; x=1708642088; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VxZz8dpdlBG3f4JnaEViziH04upv3BIHYbzmShbS36A=;
+        b=O869b/tjCbq72ocV+gFLIHARD3m86QP8X1cAkVmIVrXKVjec/40dXAzE4L5j6vpxGN
+         G37E0MCo+hM5vWetQgh86794+HyvZRJ7wQ/gi5//qBD/zdgdI29wBYbH0tu1E6fhr0d5
+         z+YqpI8soXl2gFK4Sor1b+9cTQLMj+9FjH+ttzgu+0p+rBLOffTNFN5Iv1/bpyqXfMW5
+         kNZoBZNhJdF9WvajH4LkjMGPMfczHwpyhNbQeUyw+5FRpuGkWlnIaTNlhH3o2z96mkqd
+         PK9csP/VDKfo10JJJmZYDK9RMzUJLL8L4q51EEuPW+7QCzIwZwB9qPHpahdrRAc7M36C
+         X0lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708037222; x=1708642022;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RwGyOLLUpGP52iFQkqVrw7uMnUv0aQEKJVIPOZEZaEc=;
-        b=Gn4A585dGGiseYmfYYoRGVAx5uYiFD0iizf2mNeNtFsa8iBL80wvwXp4PFAz/Z/fLh
-         Q1Fghjs0RuNtC6LmxB/21UD1HoQbaHlBmwfMrO7SK5T5U5gm2islGMF0dzJyILX0nlOT
-         Ph/f4sgpi5DSbBxJoQvFkZ+1UHPrIbwjsp4DQaRE7Ykq2JdZizmrXEzV/SVdKqSHcp1U
-         /7AAbWPmv1e1UOGQnksXzANBNXn7FoiH4rtKOm0OOuf8Y5eRCOP6uX6GyvG/vpGuruTY
-         Q+2IYFLi/uUO8ejW0OthBLAiovu751Olxv1ld0PPm5PNrUY2G4Xg3BlyWMWS/vYeTFk0
-         IWQQ==
-X-Gm-Message-State: AOJu0YyHTfOxt1luwiB1t/dkVlQ15q8C+CkphQm4xyOrMyJx+EeBqUsu
-	AYrriFjFA4IjiKa0a7XgETnr8m5Zs1SFDoupA9tr7bT+mnn1rTJSdmt+cQgftw==
-X-Google-Smtp-Source: AGHT+IHGP7caxK/sgbw8TPup0kP1V7LQ9zZNHAE4HwpBj9dOkQe9KhI+cYQXIQXSRLUDdE/1tgtpcA==
-X-Received: by 2002:a05:6a00:1d06:b0:6df:f7f3:6197 with SMTP id a6-20020a056a001d0600b006dff7f36197mr3644481pfx.34.1708037221717;
-        Thu, 15 Feb 2024 14:47:01 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e10-20020a056a001a8a00b006dd810cdd91sm1842236pfv.88.2024.02.15.14.47.01
+        d=1e100.net; s=20230601; t=1708037288; x=1708642088;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VxZz8dpdlBG3f4JnaEViziH04upv3BIHYbzmShbS36A=;
+        b=ZceB4IxEmPmtPGLaGhgHLYFVpUbKjy2f8P/YiQnIq73DD9n0xLU+iOa74fzDMOmCGy
+         6iyUuVl8xBNwzZOH8NKJcxxEhlyj0+LmKiPelOVmOoX4/8mPCEhFJejX47SyDxoqJBkX
+         bJexhjDdoQO4s0OB3tI7XFYyejP01OBp7TYiJT40rszHoPenS+/EqY0gswJSLtrMGSx/
+         hVJAtKSqT9ia0p9aCHVTovmyJk4TDeVYh5yPd4oe/glFGwJGAenUU/zoklkcwOlgmNHd
+         YOVTtt89AMqUgXTamPo1uuVsEXNhMSoXUJUOYJvebrUxI1hmXH6IHOh1MiEiffM47Naf
+         xADg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQKFolgSgY9SjwrWr0gcrS0OCfrGdyn3lrfqIn6bUkdBUvGbJspqGBxpVLDDwUzcQ0eed29pRkiwPspI5op5tJv6mumTExHLt9lbDG
+X-Gm-Message-State: AOJu0Yz1IvrGjuQzTM3Nz5EpR8aHUKFIQvzS1GDOIN3gCwY/GCX9u1VX
+	9xx6Do09big93SODVPAycsjpbKnwDBAy30sGR4XAJXvVJoBT36Wl
+X-Google-Smtp-Source: AGHT+IEHcn7vuCmdD0vbj0K6OCuGp4jwkwobudrNE34EGoVaEDBiYwLOq3sO8rU1BKDdccJHXR7NqA==
+X-Received: by 2002:a05:600c:3b28:b0:410:1d3b:3424 with SMTP id m40-20020a05600c3b2800b004101d3b3424mr2460999wms.28.1708037287695;
+        Thu, 15 Feb 2024 14:48:07 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id l3-20020a1c7903000000b00410b98a5c77sm442936wme.32.2024.02.15.14.48.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 14:47:01 -0800 (PST)
-Date: Thu, 15 Feb 2024 14:47:00 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Michal Wajdeczko <michal.wajdeczko@intel.com>
-Cc: linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH 1/2] wordpart.h: Helpers for making u16/u32/u64 values
-Message-ID: <202402151446.D9AE0626@keescook>
-References: <20240214214654.1700-1-michal.wajdeczko@intel.com>
- <202402141408.0E78D47@keescook>
- <a6652e88-c66f-44d5-93a4-be9fa7a4623d@intel.com>
+        Thu, 15 Feb 2024 14:48:07 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: David Airlie <airlied@redhat.com>,
+	dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] agp/amd64: remove redundant assignment to variable i
+Date: Thu, 15 Feb 2024 22:48:06 +0000
+Message-Id: <20240215224806.2074087-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6652e88-c66f-44d5-93a4-be9fa7a4623d@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 09:40:40PM +0100, Michal Wajdeczko wrote:
-> On 14.02.2024 23:09, Kees Cook wrote:
-> > On Wed, Feb 14, 2024 at 10:46:53PM +0100, Michal Wajdeczko wrote:
-> >> It is quite common practice to make u16, u32 or u64 values from
-> >> smaller words.  Add simple helpers for that.
-> >>
-> >> Signed-off-by: Michal Wajdeczko <michal.wajdeczko@intel.com>
-> >> ---
-> >> v2: new macro names due to conflict with crypto/aria.h
-> >>     explicit cast and truncation everywhere (Alexey)
-> >>     moved to wordpart.h (Andy)
-> >> ---
-> >> Cc: Kees Cook <keescook@chromium.org>
-> >> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> >> Cc: Jani Nikula <jani.nikula@intel.com>
-> >> ---
-> >>  include/linux/wordpart.h | 32 ++++++++++++++++++++++++++++++++
-> >>  1 file changed, 32 insertions(+)
-> >>
-> >> diff --git a/include/linux/wordpart.h b/include/linux/wordpart.h
-> >> index f6f8f83b15b0..8c75a5355112 100644
-> >> --- a/include/linux/wordpart.h
-> >> +++ b/include/linux/wordpart.h
-> >> @@ -31,6 +31,38 @@
-> >>   */
-> >>  #define lower_16_bits(n) ((u16)((n) & 0xffff))
-> >>  
-> >> +/**
-> >> + * make_u16_from_u8 - make u16 value from two u8 values
-> >> + * @hi: value representing upper 8 bits
-> >> + * @lo: value representing lower 8 bits
-> >> + */
-> >> +#define make_u16_from_u8(hi, lo) ((u16)((u16)(u8)(hi) << 8 | (u8)(lo)))
-> > 
-> > Do we want to actually do type validation here? Right now it's just
-> > cast/truncating, which based on the version log is by design. Is silent
-> > truncation the right thing to do?
-> 
-> note that even FIELD_PREP() is doing silent truncation and these macros
-> here could be treated as specialized/simplified variants of FIELD_PREP()
-> as alternate implementation can look like:
+The variable i is being initialized with a value that is never read,
+it is being re-assigned in the next for-loop statement. The
+initialization is redundant and can be removed.
 
-Also, isn't all of this endian-specific?
+Cleans up clang scan build warning:
+drivers/char/agp/amd64-agp.c:336:2: warning: Value stored to 'i' is
+never read [deadcode.DeadStores]
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/char/agp/amd64-agp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/char/agp/amd64-agp.c b/drivers/char/agp/amd64-agp.c
+index ce8651436609..47bd3b8a54b4 100644
+--- a/drivers/char/agp/amd64-agp.c
++++ b/drivers/char/agp/amd64-agp.c
+@@ -333,7 +333,6 @@ static int cache_nbs(struct pci_dev *pdev, u32 cap_ptr)
+ 	if (!amd_nb_has_feature(AMD_NB_GART))
+ 		return -ENODEV;
+ 
+-	i = 0;
+ 	for (i = 0; i < amd_nb_num(); i++) {
+ 		struct pci_dev *dev = node_to_amd_nb(i)->misc;
+ 		if (fix_northbridge(dev, pdev, cap_ptr) < 0) {
 -- 
-Kees Cook
+2.39.2
+
 
