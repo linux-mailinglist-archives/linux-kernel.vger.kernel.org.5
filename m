@@ -1,81 +1,68 @@
-Return-Path: <linux-kernel+bounces-66686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11462856039
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:52:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3189855F49
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:33:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD8CC287612
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:52:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AAA91F2230C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 10:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613D6136676;
-	Thu, 15 Feb 2024 10:40:01 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71543131742;
-	Thu, 15 Feb 2024 10:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B2512A158;
+	Thu, 15 Feb 2024 10:32:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B6D11292E7
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 10:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707993600; cv=none; b=di8aXNlW16WyUxURB8WlhpZQ71Zm0wJyKlKK22pbXAJO0T8WTnIZkZfQyuwagFooYuN3POgVYP1ajL/p1Opcev5rn6+n5daMdcELFz1A1yWLS5SCugyjEKZQINlxguOyqLiaTQn+r9gGb/2dXpHk/weFGrT3D19H/uyCc+ibdoQ=
+	t=1707993144; cv=none; b=arCnhyj3roBR4vhZ8ExcZcPOl+xwAriWEIWZp3/eYj8l+TOxYqaYl0vqCB8ETFd449uLgTK4QAevZMEQUlJqogYv9fMLeQHxvEYNYhsewX1U66gGqZKzs7jygZAtVocjXc8CCAMFZMXvbrg5wppaoiz+3mlfYZ4nHA41hO+f8uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707993600; c=relaxed/simple;
-	bh=xzVxo+pz89esXqXypP0zK8EBUx994TIoRv/UmpnrbNo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CMb1lrSVZQa3hhLRYwaNJVmK7/lzBe3bNjaDUHm1xxZ8oKfv8PNXL2/fq/5ZuYoPp2nEEg6jzlfbpqGgRd1WRicU+9+SSh2CA7hJULz2iqIPDFsSmr3/ifd1B2HThIkk3VnsLWlFHLo7c3q7v7N+vUL1zMhjNxEQIxrYFJ4oX4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TbB541JRtz9yB7M;
-	Thu, 15 Feb 2024 18:24:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 080FD1405A1;
-	Thu, 15 Feb 2024 18:39:46 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwAHABmc6c1lwxGNAg--.11795S7;
-	Thu, 15 Feb 2024 11:39:45 +0100 (CET)
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	chuck.lever@oracle.com,
-	jlayton@kernel.org,
-	neilb@suse.de,
-	kolga@netapp.com,
-	Dai.Ngo@oracle.com,
-	tom@talpey.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com,
-	zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com,
-	eric.snowberg@oracle.com,
-	dhowells@redhat.com,
-	jarkko@kernel.org,
-	stephen.smalley.work@gmail.com,
-	omosnace@redhat.com,
-	casey@schaufler-ca.com,
-	shuah@kernel.org,
-	mic@digikod.net
-Cc: linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	selinux@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v10 25/25] integrity: Remove LSM
-Date: Thu, 15 Feb 2024 11:31:13 +0100
-Message-Id: <20240215103113.2369171-26-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
-References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+	s=arc-20240116; t=1707993144; c=relaxed/simple;
+	bh=zGPpFPgOkEf0vHeV3GfdoGzLZsUOzO56F6ng+kMfFb4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UneJLJHTTsO7zvxZ3fD2U6qNFZ8mnMiab97tOKOhJ9uGm5x5CekFzCeHFMcACpfhrd5SaUkwjDADHW0yqoNlUY0IJF2JWP8pBEiLhJe+liXxPlLLnw3NWYY+h6u9tGBLTEbkXhjLVm0wnNVdFXm8fcb0fiEKSIjhVffCSC/rcVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1A3A1FB;
+	Thu, 15 Feb 2024 02:33:00 -0800 (PST)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AAFA73F7B4;
+	Thu, 15 Feb 2024 02:32:16 -0800 (PST)
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6 00/18] Transparent Contiguous PTEs for User Mappings
+Date: Thu, 15 Feb 2024 10:31:47 +0000
+Message-Id: <20240215103205.2607016-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,347 +70,328 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAHABmc6c1lwxGNAg--.11795S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFWxAw4fAw1DAFW7Gr4kZwb_yoWfuw4xpF
-	W7KayUJr4rZFW0kF4vyFy5ur4fK34qgFZ7W34Ykw1kAFyqvrn0qFs8AryUuF1rGrWFq34I
-	qr4akr45ZF1DtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42
-	IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlIxAI
-	cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2js
-	IEc7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x07UWVbkUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5Zf6QAAsZ
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Hi All,
 
-Since now IMA and EVM use their own integrity metadata, it is safe to
-remove the 'integrity' LSM, with its management of integrity metadata.
+This is a series to opportunistically and transparently use contpte mappings
+(set the contiguous bit in ptes) for user memory when those mappings meet the
+requirements. The change benefits arm64, but there is some (very) minor
+refactoring for x86 to enable its integration with core-mm.
 
-Keep the iint.c file only for loading IMA and EVM keys at boot, and for
-creating the integrity directory in securityfs (we need to keep it for
-retrocompatibility reasons).
+It is part of a wider effort to improve performance by allocating and mapping
+variable-sized blocks of memory (folios). One aim is for the 4K kernel to
+approach the performance of the 16K kernel, but without breaking compatibility
+and without the associated increase in memory. Another aim is to benefit the 16K
+and 64K kernels by enabling 2M THP, since this is the contpte size for those
+kernels. We have good performance data that demonstrates both aims are being met
+(see below).
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+Of course this is only one half of the change. We require the mapped physical
+memory to be the correct size and alignment for this to actually be useful (i.e.
+64K for 4K pages, or 2M for 16K/64K pages). Fortunately folios are solving this
+problem for us. Filesystems that support it (XFS, AFS, EROFS, tmpfs, ...) will
+allocate large folios up to the PMD size today, and more filesystems are coming.
+And for anonymous memory, "multi-size THP" is now upstream.
+
+
+Patch Layout
+============
+
+In this version, I've split the patches to better show each optimization:
+
+  - 1-2:    mm prep: misc code and docs cleanups
+  - 3-6:    mm,arm64,x86 prep: Add pte_advance_pfn() and make pte_next_pfn() a
+            generic wrapper around it
+  - 7-11:   arm64 prep: Refactor ptep helpers into new layer
+  - 12:     functional contpte implementation
+  - 23-18:  various optimizations on top of the contpte implementation
+
+
+Testing
+=======
+
+I've tested this series on both Ampere Altra (bare metal) and Apple M2 (VM):
+  - mm selftests (inc new tests written for multi-size THP); no regressions
+  - Speedometer Java script benchmark in Chromium web browser; no issues
+  - Kernel compilation; no issues
+  - Various tests under high memory pressure with swap enabled; no issues
+
+
+Performance
+===========
+
+High Level Use Cases
+~~~~~~~~~~~~~~~~~~~~
+
+First some high level use cases (kernel compilation and speedometer JavaScript
+benchmarks). These are running on Ampere Altra (I've seen similar improvements
+on Android/Pixel 6).
+
+baseline:                  mm-unstable (mTHP switched off)
+mTHP:                      + enable 16K, 32K, 64K mTHP sizes "always"
+mTHP + contpte:            + this series
+mTHP + contpte + exefolio: + patch at [6], which series supports
+
+Kernel Compilation with -j8 (negative is faster):
+
+| kernel                    | real-time | kern-time | user-time |
+|---------------------------|-----------|-----------|-----------|
+| baseline                  |      0.0% |      0.0% |      0.0% |
+| mTHP                      |     -5.0% |    -39.1% |     -0.7% |
+| mTHP + contpte            |     -6.0% |    -41.4% |     -1.5% |
+| mTHP + contpte + exefolio |     -7.8% |    -43.1% |     -3.4% |
+
+Kernel Compilation with -j80 (negative is faster):
+
+| kernel                    | real-time | kern-time | user-time |
+|---------------------------|-----------|-----------|-----------|
+| baseline                  |      0.0% |      0.0% |      0.0% |
+| mTHP                      |     -5.0% |    -36.6% |     -0.6% |
+| mTHP + contpte            |     -6.1% |    -38.2% |     -1.6% |
+| mTHP + contpte + exefolio |     -7.4% |    -39.2% |     -3.2% |
+
+Speedometer (positive is faster):
+
+| kernel                    | runs_per_min |
+|:--------------------------|--------------|
+| baseline                  |         0.0% |
+| mTHP                      |         1.5% |
+| mTHP + contpte            |         3.2% |
+| mTHP + contpte + exefolio |         4.5% |
+
+
+Micro Benchmarks
+~~~~~~~~~~~~~~~~
+
+The following microbenchmarks are intended to demonstrate the performance of
+fork() and munmap() do not regress. I'm showing results for order-0 (4K)
+mappings, and for order-9 (2M) PTE-mapped THP. Thanks to David for sharing his
+benchmarks.
+
+baseline:                  mm-unstable + batch zap [7] series
+contpte-basic:             + patches 0-19; functional contpte implementation
+contpte-batch:             + patches 20-23; implement new batched APIs
+contpte-inline:            + patch 24; __always_inline to help compiler
+contpte-fold:              + patch 25; fold contpte mapping when sensible
+
+Primary platform is Ampere Altra bare metal. I'm also showing results for M2 VM
+(on top of MacOS) for reference, although experience suggests this might not be
+the most reliable for performance numbers of this sort:
+
+| FORK           |         order-0        |         order-9        |
+| Ampere Altra   |------------------------|------------------------|
+| (pte-map)      |       mean |     stdev |       mean |     stdev |
+|----------------|------------|-----------|------------|-----------|
+| baseline       |       0.0% |      2.7% |       0.0% |      0.2% |
+| contpte-basic  |       6.3% |      1.4% |    1948.7% |      0.2% |
+| contpte-batch  |       7.6% |      2.0% |      -1.9% |      0.4% |
+| contpte-inline |       3.6% |      1.5% |      -1.0% |      0.2% |
+| contpte-fold   |       4.6% |      2.1% |      -1.8% |      0.2% |
+
+| MUNMAP         |         order-0        |         order-9        |
+| Ampere Altra   |------------------------|------------------------|
+| (pte-map)      |       mean |     stdev |       mean |     stdev |
+|----------------|------------|-----------|------------|-----------|
+| baseline       |       0.0% |      0.5% |       0.0% |      0.3% |
+| contpte-basic  |       1.8% |      0.3% |    1104.8% |      0.1% |
+| contpte-batch  |      -0.3% |      0.4% |       2.7% |      0.1% |
+| contpte-inline |      -0.1% |      0.6% |       0.9% |      0.1% |
+| contpte-fold   |       0.1% |      0.6% |       0.8% |      0.1% |
+
+| FORK           |         order-0        |         order-9        |
+| Apple M2 VM    |------------------------|------------------------|
+| (pte-map)      |       mean |     stdev |       mean |     stdev |
+|----------------|------------|-----------|------------|-----------|
+| baseline       |       0.0% |      1.4% |       0.0% |      0.8% |
+| contpte-basic  |       6.8% |      1.2% |     469.4% |      1.4% |
+| contpte-batch  |      -7.7% |      2.0% |      -8.9% |      0.7% |
+| contpte-inline |      -6.0% |      2.1% |      -6.0% |      2.0% |
+| contpte-fold   |       5.9% |      1.4% |      -6.4% |      1.4% |
+
+| MUNMAP         |         order-0        |         order-9        |
+| Apple M2 VM    |------------------------|------------------------|
+| (pte-map)      |       mean |     stdev |       mean |     stdev |
+|----------------|------------|-----------|------------|-----------|
+| baseline       |       0.0% |      0.6% |       0.0% |      0.4% |
+| contpte-basic  |       1.6% |      0.6% |     233.6% |      0.7% |
+| contpte-batch  |       1.9% |      0.3% |      -3.9% |      0.4% |
+| contpte-inline |       2.2% |      0.8% |      -1.6% |      0.9% |
+| contpte-fold   |       1.5% |      0.7% |      -1.7% |      0.7% |
+
+Misc
+~~~~
+
+John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
+some workloads at [8], when using 64K base page kernel.
+
+
 ---
- include/linux/integrity.h      |  14 ---
- security/integrity/iint.c      | 197 +--------------------------------
- security/integrity/integrity.h |  25 -----
- security/security.c            |   2 -
- 4 files changed, 2 insertions(+), 236 deletions(-)
+This series applies on top of [7], which in turn applies on top of mm-unstable
+(649936c3db47). A branch is available at [9].
 
-diff --git a/include/linux/integrity.h b/include/linux/integrity.h
-index ef0f63ef5ebc..459b79683783 100644
---- a/include/linux/integrity.h
-+++ b/include/linux/integrity.h
-@@ -19,24 +19,10 @@ enum integrity_status {
- 	INTEGRITY_UNKNOWN,
- };
- 
--/* List of EVM protected security xattrs */
- #ifdef CONFIG_INTEGRITY
--extern struct integrity_iint_cache *integrity_inode_get(struct inode *inode);
--extern void integrity_inode_free(struct inode *inode);
- extern void __init integrity_load_keys(void);
- 
- #else
--static inline struct integrity_iint_cache *
--				integrity_inode_get(struct inode *inode)
--{
--	return NULL;
--}
--
--static inline void integrity_inode_free(struct inode *inode)
--{
--	return;
--}
--
- static inline void integrity_load_keys(void)
- {
- }
-diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-index d4419a2a1e24..068ac6c2ae1e 100644
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -6,207 +6,14 @@
-  * Mimi Zohar <zohar@us.ibm.com>
-  *
-  * File: integrity_iint.c
-- *	- implements the integrity hooks: integrity_inode_alloc,
-- *	  integrity_inode_free
-- *	- cache integrity information associated with an inode
-- *	  using a rbtree tree.
-+ *	- initialize the integrity directory in securityfs
-+ *	- load IMA and EVM keys
-  */
--#include <linux/slab.h>
--#include <linux/init.h>
--#include <linux/spinlock.h>
--#include <linux/rbtree.h>
--#include <linux/file.h>
--#include <linux/uaccess.h>
- #include <linux/security.h>
--#include <linux/lsm_hooks.h>
- #include "integrity.h"
- 
--static struct rb_root integrity_iint_tree = RB_ROOT;
--static DEFINE_RWLOCK(integrity_iint_lock);
--static struct kmem_cache *iint_cache __ro_after_init;
--
- struct dentry *integrity_dir;
- 
--/*
-- * __integrity_iint_find - return the iint associated with an inode
-- */
--static struct integrity_iint_cache *__integrity_iint_find(struct inode *inode)
--{
--	struct integrity_iint_cache *iint;
--	struct rb_node *n = integrity_iint_tree.rb_node;
--
--	while (n) {
--		iint = rb_entry(n, struct integrity_iint_cache, rb_node);
--
--		if (inode < iint->inode)
--			n = n->rb_left;
--		else if (inode > iint->inode)
--			n = n->rb_right;
--		else
--			return iint;
--	}
--
--	return NULL;
--}
--
--/*
-- * integrity_iint_find - return the iint associated with an inode
-- */
--struct integrity_iint_cache *integrity_iint_find(struct inode *inode)
--{
--	struct integrity_iint_cache *iint;
--
--	if (!IS_IMA(inode))
--		return NULL;
--
--	read_lock(&integrity_iint_lock);
--	iint = __integrity_iint_find(inode);
--	read_unlock(&integrity_iint_lock);
--
--	return iint;
--}
--
--#define IMA_MAX_NESTING (FILESYSTEM_MAX_STACK_DEPTH+1)
--
--/*
-- * It is not clear that IMA should be nested at all, but as long is it measures
-- * files both on overlayfs and on underlying fs, we need to annotate the iint
-- * mutex to avoid lockdep false positives related to IMA + overlayfs.
-- * See ovl_lockdep_annotate_inode_mutex_key() for more details.
-- */
--static inline void iint_lockdep_annotate(struct integrity_iint_cache *iint,
--					 struct inode *inode)
--{
--#ifdef CONFIG_LOCKDEP
--	static struct lock_class_key iint_mutex_key[IMA_MAX_NESTING];
--
--	int depth = inode->i_sb->s_stack_depth;
--
--	if (WARN_ON_ONCE(depth < 0 || depth >= IMA_MAX_NESTING))
--		depth = 0;
--
--	lockdep_set_class(&iint->mutex, &iint_mutex_key[depth]);
--#endif
--}
--
--static void iint_init_always(struct integrity_iint_cache *iint,
--			     struct inode *inode)
--{
--	iint->ima_hash = NULL;
--	iint->version = 0;
--	iint->flags = 0UL;
--	iint->atomic_flags = 0UL;
--	iint->ima_file_status = INTEGRITY_UNKNOWN;
--	iint->ima_mmap_status = INTEGRITY_UNKNOWN;
--	iint->ima_bprm_status = INTEGRITY_UNKNOWN;
--	iint->ima_read_status = INTEGRITY_UNKNOWN;
--	iint->ima_creds_status = INTEGRITY_UNKNOWN;
--	iint->evm_status = INTEGRITY_UNKNOWN;
--	iint->measured_pcrs = 0;
--	mutex_init(&iint->mutex);
--	iint_lockdep_annotate(iint, inode);
--}
--
--static void iint_free(struct integrity_iint_cache *iint)
--{
--	kfree(iint->ima_hash);
--	mutex_destroy(&iint->mutex);
--	kmem_cache_free(iint_cache, iint);
--}
--
--/**
-- * integrity_inode_get - find or allocate an iint associated with an inode
-- * @inode: pointer to the inode
-- * @return: allocated iint
-- *
-- * Caller must lock i_mutex
-- */
--struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
--{
--	struct rb_node **p;
--	struct rb_node *node, *parent = NULL;
--	struct integrity_iint_cache *iint, *test_iint;
--
--	iint = integrity_iint_find(inode);
--	if (iint)
--		return iint;
--
--	iint = kmem_cache_alloc(iint_cache, GFP_NOFS);
--	if (!iint)
--		return NULL;
--
--	iint_init_always(iint, inode);
--
--	write_lock(&integrity_iint_lock);
--
--	p = &integrity_iint_tree.rb_node;
--	while (*p) {
--		parent = *p;
--		test_iint = rb_entry(parent, struct integrity_iint_cache,
--				     rb_node);
--		if (inode < test_iint->inode) {
--			p = &(*p)->rb_left;
--		} else if (inode > test_iint->inode) {
--			p = &(*p)->rb_right;
--		} else {
--			write_unlock(&integrity_iint_lock);
--			kmem_cache_free(iint_cache, iint);
--			return test_iint;
--		}
--	}
--
--	iint->inode = inode;
--	node = &iint->rb_node;
--	inode->i_flags |= S_IMA;
--	rb_link_node(node, parent, p);
--	rb_insert_color(node, &integrity_iint_tree);
--
--	write_unlock(&integrity_iint_lock);
--	return iint;
--}
--
--/**
-- * integrity_inode_free - called on security_inode_free
-- * @inode: pointer to the inode
-- *
-- * Free the integrity information(iint) associated with an inode.
-- */
--void integrity_inode_free(struct inode *inode)
--{
--	struct integrity_iint_cache *iint;
--
--	if (!IS_IMA(inode))
--		return;
--
--	write_lock(&integrity_iint_lock);
--	iint = __integrity_iint_find(inode);
--	rb_erase(&iint->rb_node, &integrity_iint_tree);
--	write_unlock(&integrity_iint_lock);
--
--	iint_free(iint);
--}
--
--static void iint_init_once(void *foo)
--{
--	struct integrity_iint_cache *iint = (struct integrity_iint_cache *) foo;
--
--	memset(iint, 0, sizeof(*iint));
--}
--
--static int __init integrity_iintcache_init(void)
--{
--	iint_cache =
--	    kmem_cache_create("iint_cache", sizeof(struct integrity_iint_cache),
--			      0, SLAB_PANIC, iint_init_once);
--	return 0;
--}
--DEFINE_LSM(integrity) = {
--	.name = "integrity",
--	.init = integrity_iintcache_init,
--	.order = LSM_ORDER_LAST,
--};
--
--
- /*
-  * integrity_kernel_read - read data from the file
-  *
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index 671fc50255f9..50d6f798e613 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -102,31 +102,6 @@ struct ima_file_id {
- 	__u8 hash[HASH_MAX_DIGESTSIZE];
- } __packed;
- 
--/* integrity data associated with an inode */
--struct integrity_iint_cache {
--	struct rb_node rb_node;	/* rooted in integrity_iint_tree */
--	struct mutex mutex;	/* protects: version, flags, digest */
--	struct inode *inode;	/* back pointer to inode in question */
--	u64 version;		/* track inode changes */
--	unsigned long flags;
--	unsigned long measured_pcrs;
--	unsigned long atomic_flags;
--	unsigned long real_ino;
--	dev_t real_dev;
--	enum integrity_status ima_file_status:4;
--	enum integrity_status ima_mmap_status:4;
--	enum integrity_status ima_bprm_status:4;
--	enum integrity_status ima_read_status:4;
--	enum integrity_status ima_creds_status:4;
--	enum integrity_status evm_status:4;
--	struct ima_digest_data *ima_hash;
--};
--
--/* rbtree tree calls to lookup, insert, delete
-- * integrity data associated with an inode.
-- */
--struct integrity_iint_cache *integrity_iint_find(struct inode *inode);
--
- int integrity_kernel_read(struct file *file, loff_t offset,
- 			  void *addr, unsigned long count);
- 
-diff --git a/security/security.c b/security/security.c
-index de8a9a7b2a30..4317bcd6ec6a 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -19,7 +19,6 @@
- #include <linux/kernel.h>
- #include <linux/kernel_read_file.h>
- #include <linux/lsm_hooks.h>
--#include <linux/integrity.h>
- #include <linux/fsnotify.h>
- #include <linux/mman.h>
- #include <linux/mount.h>
-@@ -1598,7 +1597,6 @@ static void inode_free_by_rcu(struct rcu_head *head)
-  */
- void security_inode_free(struct inode *inode)
- {
--	integrity_inode_free(inode);
- 	call_void_hook(inode_free_security, inode);
- 	/*
- 	 * The inode may still be referenced in a path walk and
--- 
-2.34.1
+I believe this is ready to go into mm-unstable as soon as [7] is in (which I
+also believe to be ready). Catalin has said he is happy for this to go via the
+mm-untable branch, once suitably acked by arm64 folks; Mark has reviewed v5 and
+I've made all of his suggested minor changes - hopefully he is comfortable
+acking the remaining patches now.
+
+Note: the quoted perf numbers are against v5, but I've rerun a subset of the
+tests against this version and results are consistent. Code changes are all
+minor and are not expected to make any difference anyway.
+
+
+Changes since v5 [5]
+====================
+
+  - Keep pte_next_pfn() as generic wrapper around pte_advance_pfn(). Allowed
+    dropping arm and powerpc changes (per David)
+  - Reshaped "Refactor ptep helpers into new layer" into 4 patches to better
+    show the conversion process (no change to code diff) (per Mark)
+  - Added comment to justify pte_mknoncont() at public API interface (per Mark)
+  - Added check for efi_mm in mm_is_user() (per Mark)
+  - Simplified a couple of pointer alignment statements (per Mark)
+  - Added braces for if in contpte_try_unfold_partial() (per Mark)
+  - Renamed some variables in __contpte_try_fold() (per Mark)
+  - Fixed couple of comment typos (per Mark)
+  - Enhanced docs for pte_batch_hint() (per David)
+  - Minor tidy up in folio_pte_batch() (per David)
+  - Picked up RBs/Acks (thanks to David, Mark, Ard)
+
+
+Changes since v4 [4]
+====================
+
+  - Rebased onto David's generic fork and zap batching work
+      - I had an implementation similar to this prior to v4, but ditched it
+        because I couldn't make it reliably provide a speedup; David succeeded.
+      - roughly speaking, a few functions get renamed compared to v4:
+          - pte_batch_remaining() -> pte_batch_hint()
+	  - set_wrprotects() -> wrprotect_ptes()
+          - clear_ptes() -> [get_and_]clear_full_ptes()
+      - Had to convert pte_next_pfn() to pte_advance_pfn()
+      - Integration into core-mm is simpler because most has been done by
+        David's work
+  - Reworked patches to better show the progression from basic implementation to
+    the various optimizations.
+  - Removed the 'full' flag that I added to set_ptes() and set_wrprotects() in
+    v4: I've been able to make up most of the performance in other ways, so this
+    keeps the interface simpler.
+  - Simplified contpte_set_ptes(nr > 1): Observed that set_ptes(nr > 1) is only
+    called for ptes that are initially not present. So updated the spec to
+    require that, and no longer need to check if any ptes are initially present
+    when applying a contpte mapping.
+
+
+Changes since v3 [3]
+====================
+
+  - Added v3#1 to batch set_ptes() when splitting a huge pmd to ptes; avoids
+    need to fold contpte blocks for perf improvement
+  - Separated the clear_ptes() fast path into its own inline function (Alistair)
+  - Reworked core-mm changes to copy_present_ptes() and zap_pte_range() to
+    remove overhead when memory is all order-0 folios (for arm64 and !arm64)
+  - Significant optimization of arm64 backend fork operations (set_ptes_full()
+    and set_wrprotects()) to ensure no regression when memory is order-0 folios.
+  - fixed local variable declarations to be reverse xmas tree. - Added
+    documentation for the new backend APIs (pte_batch_remaining(),
+    set_ptes_full(), clear_ptes(), ptep_set_wrprotects())
+  - Renamed tlb_get_guaranteed_space() -> tlb_reserve_space() and pass requested
+    number of slots. Avoids allocating memory when not needed; perf improvement.
+
+
+Changes since v2 [2]
+====================
+
+  - Removed contpte_ptep_get_and_clear_full() optimisation for exit() (v2#14),
+    and replaced with a batch-clearing approach using a new arch helper,
+    clear_ptes() (v3#2 and v3#15) (Alistair and Barry)
+  - (v2#1 / v3#1)
+      - Fixed folio refcounting so that refcount >= mapcount always (DavidH)
+      - Reworked batch demarcation to avoid pte_pgprot() (DavidH)
+      - Reverted return semantic of copy_present_page() and instead fix it up in
+        copy_present_ptes() (Alistair)
+      - Removed page_cont_mapped_vaddr() and replaced with simpler logic
+        (Alistair)
+      - Made batch accounting clearer in copy_pte_range() (Alistair)
+  - (v2#12 / v3#13)
+      - Renamed contpte_fold() -> contpte_convert() and hoisted setting/
+        clearing CONT_PTE bit to higher level (Alistair)
+
+
+Changes since v1 [1]
+====================
+
+  - Export contpte_* symbols so that modules can continue to call inline
+    functions (e.g. ptep_get) which may now call the contpte_* functions (thanks
+    to JohnH)
+  - Use pte_valid() instead of pte_present() where sensible (thanks to Catalin)
+  - Factor out (pte_valid() && pte_cont()) into new pte_valid_cont() helper
+    (thanks to Catalin)
+  - Fixed bug in contpte_ptep_set_access_flags() where TLBIs were missed (thanks
+    to Catalin)
+  - Added ARM64_CONTPTE expert Kconfig (enabled by default) (thanks to Anshuman)
+  - Simplified contpte_ptep_get_and_clear_full()
+  - Improved various code comments
+
+
+[1] https://lore.kernel.org/linux-arm-kernel/20230622144210.2623299-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-arm-kernel/20231115163018.1303287-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-arm-kernel/20231204105440.61448-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/lkml/20231218105100.172635-1-ryan.roberts@arm.com/
+[5] https://lore.kernel.org/linux-mm/633af0a7-0823-424f-b6ef-374d99483f05@arm.com/
+[6] https://lore.kernel.org/lkml/08c16f7d-f3b3-4f22-9acc-da943f647dc3@arm.com/
+[7] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com/
+[8] https://lore.kernel.org/linux-mm/c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com/
+[9] https://gitlab.arm.com/linux-arm/linux-rr/-/tree/features/granule_perf/contpte-lkml_v6
+
+
+Thanks,
+Ryan
+
+Ryan Roberts (18):
+  mm: Clarify the spec for set_ptes()
+  mm: thp: Batch-collapse PMD with set_ptes()
+  mm: Introduce pte_advance_pfn() and use for pte_next_pfn()
+  arm64/mm: Convert pte_next_pfn() to pte_advance_pfn()
+  x86/mm: Convert pte_next_pfn() to pte_advance_pfn()
+  mm: Tidy up pte_next_pfn() definition
+  arm64/mm: Convert READ_ONCE(*ptep) to ptep_get(ptep)
+  arm64/mm: Convert set_pte_at() to set_ptes(..., 1)
+  arm64/mm: Convert ptep_clear() to ptep_get_and_clear()
+  arm64/mm: New ptep layer to manage contig bit
+  arm64/mm: Split __flush_tlb_range() to elide trailing DSB
+  arm64/mm: Wire up PTE_CONT for user mappings
+  arm64/mm: Implement new wrprotect_ptes() batch API
+  arm64/mm: Implement new [get_and_]clear_full_ptes() batch APIs
+  mm: Add pte_batch_hint() to reduce scanning in folio_pte_batch()
+  arm64/mm: Implement pte_batch_hint()
+  arm64/mm: __always_inline to improve fork() perf
+  arm64/mm: Automatically fold contpte mappings
+
+ arch/arm64/Kconfig                |   9 +
+ arch/arm64/include/asm/pgtable.h  | 411 ++++++++++++++++++++++++++----
+ arch/arm64/include/asm/tlbflush.h |  13 +-
+ arch/arm64/kernel/efi.c           |   4 +-
+ arch/arm64/kernel/mte.c           |   2 +-
+ arch/arm64/kvm/guest.c            |   2 +-
+ arch/arm64/mm/Makefile            |   1 +
+ arch/arm64/mm/contpte.c           | 404 +++++++++++++++++++++++++++++
+ arch/arm64/mm/fault.c             |  12 +-
+ arch/arm64/mm/fixmap.c            |   4 +-
+ arch/arm64/mm/hugetlbpage.c       |  40 +--
+ arch/arm64/mm/kasan_init.c        |   6 +-
+ arch/arm64/mm/mmu.c               |  16 +-
+ arch/arm64/mm/pageattr.c          |   6 +-
+ arch/arm64/mm/trans_pgd.c         |   6 +-
+ arch/x86/include/asm/pgtable.h    |   8 +-
+ include/linux/efi.h               |   5 +
+ include/linux/pgtable.h           |  32 ++-
+ mm/huge_memory.c                  |  58 +++--
+ mm/memory.c                       |  19 +-
+ 20 files changed, 924 insertions(+), 134 deletions(-)
+ create mode 100644 arch/arm64/mm/contpte.c
+
+--
+2.25.1
 
 
