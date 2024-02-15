@@ -1,158 +1,161 @@
-Return-Path: <linux-kernel+bounces-66238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C898558EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:12:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B56878558ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 03:15:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D9F2B228CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:12:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F20EB276C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 02:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91D604409;
-	Thu, 15 Feb 2024 02:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81201392;
+	Thu, 15 Feb 2024 02:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="O6tI4cfT"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i4x4HRTx"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4904F184E;
-	Thu, 15 Feb 2024 02:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA112184E;
+	Thu, 15 Feb 2024 02:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707963144; cv=none; b=l9XWeLpfoBn8NE/ee9ZGaJ2DFzplqSjpFS3zZ+9R1D4sbbQKMPqTYIYoC2XVyO7hWEWcC8+/ScRBq9XeL7V2B/LfuTl0WFVHioGvfaZQfYezHk6NuYgJ3pGqAVNzWntxI3mhiwGzAbXXA/7fUk2lBghDan6oiGvv+YHThXqZ8kA=
+	t=1707963327; cv=none; b=fhoXx8O13Z2VoUBYjWwmrAqZS344/4VSDP3Kqhn4MltZWPWrN3znxULfWOqlgUQxF3yiQj2B1LRmlxYKWZShBnTCFqYM90CWe7eqPUyhFydw1kGgcHUtSqbKTrR2stSD7sdUMj7M/12PusJS4VDzcM5gduPcT7z4qCG5eK6Xzs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707963144; c=relaxed/simple;
-	bh=ewTPk57Oq+tWnySACn1qJU4IQLQWTno0sVk1wOLRR10=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ipaH2dhfwWXc9MsB6knvLC5TdN20n/sm+d9tougQNfNo7nUwG77cT3hmY8F1n+miPFo1tJtBmIp7dqchaP7NZj9/rr+ZGJnjXGVzfstJJsk1QRndS3RklhAGgKxMpnOxjbmW1zh+UgzRkKYVGxDgCDDVqVYqTxg33Gf9DF62QT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=O6tI4cfT; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41F2A2Op019521;
-	Thu, 15 Feb 2024 02:12:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=vNV6gUn87PAObdD1pIV9VlqS91LimTvXgPFC6zvbh2E=; b=O6
-	tI4cfTD2XGQKJGitF5yPmLjTBumwRdzBblhixIKxkuakwippgsY2gK/6WLMUyKKJ
-	uldxYHa+p9dIfs0yaJdaiOO0jMkWPQueiwmb6V2SU95gZ/L5L3Mv42C6Mtsg8Y5j
-	MjY6g4UGOtNLHIPhhsKs+Uerdve0WceIEvgqaSVQJmSw60WkPm8SNYfifY1ogAik
-	uvuloqhaZqe+XC4+CwOpl61gApVXeLM1NoUZmKlfiQVa+YImpFrCX30EtGe0iEzf
-	s4S3gl50hVvGVxmAJlzvlsi0fjKdpPNsSWHHrV8t1P7hzJr5ZaFCDPXl/hGleUwo
-	aznTCPRvMkIwXS44sO4A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w8ennb573-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 02:12:11 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41F2C9Vn002548
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Feb 2024 02:12:09 GMT
-Received: from [10.253.12.20] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 14 Feb
- 2024 18:12:06 -0800
-Message-ID: <4a124dff-f92d-4f2e-a6bf-bd7ad75a08df@quicinc.com>
-Date: Thu, 15 Feb 2024 10:12:03 +0800
+	s=arc-20240116; t=1707963327; c=relaxed/simple;
+	bh=Os4e0r0XH5+lXccwqGEMksaDDZuHN+IEX+6a1tIrWfI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ssNE9/dOuzEO3DrDVGGQyMkFDEARuZkzO1Yd3v7HfQXVxN6vGbS/g6znbhtgFHoLZM7DeIer1IFLmY9QrLh5QssWtmdjK004l4GuIuOC3DHE68+7bchdTgUIWppm3MVIyQHklrraLGtocs2/xJl6IHkY01QNoCZ7R03OLfIA0FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i4x4HRTx; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2xgKFSUqBYBFWruocdjixxesRScsvvle8lCKIAmFZm8=; b=i4x4HRTx6ntolPm6BiLkFfMoz6
+	xcuKPRa7KG+1LPBqJYU6CTf2R/4QlAzv1Ekme00BaPXWJghRpIRnFkvKP6amTPMzNrMramUBDcqPP
+	f2mzYUGmAI+4vkaMUVTun/EdF52LzJrDITLGs6NUxn57zdDW692Im7cHD9rXMugy59fvO5y07S9hJ
+	0W/WQ112MTzZLx5HdXKVg+QHYkWbVPaMT1K9UCpTnpK6AwcPIN6JrgX2csR8iRdgprnXaP0jmdUL9
+	UELBgEeLuJqrj4Tae0pVNFfjneZ3YrAf9NeHiz0jsBGDNlMfaxLFiWPVg+maRFKo2SAqp+rHJy0tT
+	325XYYow==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raRHY-0000000EniA-3gLF;
+	Thu, 15 Feb 2024 02:15:24 +0000
+Date: Wed, 14 Feb 2024 18:15:24 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	"gost.dev@samsung.com" <gost.dev@samsung.com>,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
+Message-ID: <Zc1zvBpL6x1kpsfk@bombadil.infradead.org>
+References: <20231104005747.1389762-2-da.gomez@samsung.com>
+ <202311152254.610174ff-oliver.sang@intel.com>
+ <ZVfS8fiudvHADtoR@bombadil.infradead.org>
+ <ZVfT3bs9+F0jqIAw@casper.infradead.org>
+ <ZVfUnhzv4UDigZKa@bombadil.infradead.org>
+ <ZbQEA6WIh0HrFTbP@bombadil.infradead.org>
+ <ZbQHWf0Hh04OwoZx@casper.infradead.org>
+ <ZbQQXO5YhKhdr1Ou@bombadil.infradead.org>
+ <ZbQW3PRAIw8e7m0m@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: qcom,coresight-tpdm: Rename
- qcom,dsb-element-size
-To: Suzuki K Poulose <suzuki.poulose@arm.com>, Rob Herring <robh@kernel.org>
-CC: Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Tao
- Zhang" <quic_taozha@quicinc.com>,
-        Alexander Shishkin
-	<alexander.shishkin@linux.intel.com>,
-        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>
-References: <20240213160521.15925-1-quic_jinlmao@quicinc.com>
- <20240213160521.15925-2-quic_jinlmao@quicinc.com>
- <20240213222957.GA2502642-robh@kernel.org>
- <c70df5a6-20af-4cee-b147-5847751fa36b@arm.com>
- <CAL_JsqKdAzPEGh941S05kraTjOcEpsPCnDRkppNkb8pBCpZu6g@mail.gmail.com>
- <729a4c17-9e86-467f-85cf-652c503fa14e@arm.com>
-Content-Language: en-US
-From: Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <729a4c17-9e86-467f-85cf-652c503fa14e@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: e9G6bCh0f_EvdqNHgGIomNzYQTtaHin0
-X-Proofpoint-ORIG-GUID: e9G6bCh0f_EvdqNHgGIomNzYQTtaHin0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_02,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
- spamscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402150016
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbQW3PRAIw8e7m0m@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
+On Fri, Jan 26, 2024 at 08:32:28PM +0000, Matthew Wilcox wrote:
+> On Fri, Jan 26, 2024 at 12:04:44PM -0800, Luis Chamberlain wrote:
+> > > We have a perfectly good system for "relaxing":
+> > > 
+> > >         xas_for_each_marked(&xas, page, end, PAGECACHE_TAG_DIRTY) {
+> > >                 xas_set_mark(&xas, PAGECACHE_TAG_TOWRITE);
+> > >                 if (++tagged % XA_CHECK_SCHED)
+> > >                         continue;
+> > > 
+> > >                 xas_pause(&xas);
+> > >                 xas_unlock_irq(&xas);
+> > >                 cond_resched();
+> > >                 xas_lock_irq(&xas);
+> > >         }
+> > 
+> > And yet we can get a soft lockup with order 20 (1,048,576 entries),
+> > granted busy looping over 1 million entries is insane, but it seems it
+> > the existing code may not be enough to avoid the soft lockup. Also
+> > cond_resched() may be eventually removed [0].
+> 
+> what?  you're in charge of when you sleep.  you can do this:
+> 
+> unsigned i = 0;
+> rcu_read_lock();
+> xas_for_each(...) {
+> 	...
+> 	if (iter++ % XA_CHECK_SCHED)
+> 		continue;
+> 	xas_pause();
+> 	rcu_read_unlock();
+> 	rcu_read_lock();
+> }
+> rcu_read_unlock();
+> 
+> and that will get rid of the rcu warnings.  right?
 
-On 2/15/2024 12:18 AM, Suzuki K Poulose wrote:
-> On 14/02/2024 16:03, Rob Herring wrote:
->> On Wed, Feb 14, 2024 at 9:56 AM Suzuki K Poulose 
->> <suzuki.poulose@arm.com> wrote:
->>>
->>> On 13/02/2024 22:29, Rob Herring wrote:
->>>> On Tue, Feb 13, 2024 at 08:05:17AM -0800, Mao Jinlong wrote:
->>>>> Change qcom,dsb-element-size to qcom,dsb-element-bits as the unit is
->>>>> bit.
->>>>
->>>> That may be, but this is an ABI and you are stuck with it. Unless, you
->>>> can justify why that doesn't matter. (IIRC, this is new, so maybe no
->>>> users yet?)
->>>
->>> This was added and support queued in v6.8. This change won't make it to
->>> v6.8 (given it has to go via two levels and is technically not a fix).
->>
->> I'd argue it is a fix. But given no users yet, delaying is fine.
->
-> I agree it is a fix, but not something that maintainers would like to
-> pull it during an rc cycle. As you said, since there are no real users
-> for this yet (and given it is all under a single vendor), it may be fine
-> to queue this if the DT maintainers are OK with this.
->
->
->>
->>> As James also pointed out, it doesn't matter what the name is (now that
->>> it has been published).
->>
->> v6.8 final is what we consider published.
->
-> I can't send this to Greg as a fix. For v6.8. We can fix it for v6.9 
-> cycle.
->
-> Suzuki
->
-Thanks all for the comments. I will update the commit message and fix 
-the warning.
+The RCU splat is long gone on my last iteration merged now on
+linux-next, what's left is just a soft lockup over 22 seconds when you
+enable disable preemption and enable RCU prooving and use 2 vcpus. This
+could happen for instance if we loop over test_get_entry() and don't
+want to use xas_for_each() API, in this case we don't as part of the
+selftest is to not trust the xarray API and test it.
 
-Thanks
-Jinlong Mao
+So in the simplest case for instance, this is used:
 
->>
->> Rob
->
+check_xa_multi_store_adv_add(xa, base, order, &some_val);               
+                                                                                
+for (i = 0; i < nrpages; i++)                                           
+	XA_BUG_ON(xa, test_get_entry(xa, base + i) != &some_val);  
+
+test_get_entry() will do the RCU locking for us. So while I agree that
+if you are using the xarray API using xas_for_each*() is best, we want
+to not trust the xarray API and prove it. So what do you think about
+something like this, as it does fix the soft lockup.
+
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index d4e55b4867dc..ac162025cc59 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -781,6 +781,7 @@ static noinline void *test_get_entry(struct xarray *xa, unsigned long index)
+ {
+ 	XA_STATE(xas, xa, index);
+ 	void *p;
++	static unsigned int i = 0;
+ 
+ 	rcu_read_lock();
+ repeat:
+@@ -790,6 +791,17 @@ static noinline void *test_get_entry(struct xarray *xa, unsigned long index)
+ 		goto repeat;
+ 	rcu_read_unlock();
+ 
++	/*
++	 * This is not part of the page cache, this selftest is pretty
++	 * aggressive and does not want to trust the xarray API but rather
++	 * test it, and for order 20 (4 GiB block size) we can loop over
++	 * over a million entries which can cause a soft lockup. Page cache
++	 * APIs won't be stupid, proper page cache APIs loop over the proper
++	 * order so when using a larger order we skip shared entries.
++	 */
++	if (++i % XA_CHECK_SCHED == 0)
++		schedule();
++
+ 	return p;
+ }
+ 
 
