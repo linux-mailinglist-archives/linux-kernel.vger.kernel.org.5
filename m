@@ -1,119 +1,107 @@
-Return-Path: <linux-kernel+bounces-66823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E153856266
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:01:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114288561F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 588C2B23165
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:43:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3F561F2C897
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 11:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6821512AADD;
-	Thu, 15 Feb 2024 11:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A0712AACF;
+	Thu, 15 Feb 2024 11:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OgdT35T/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kdmfDuII"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9740129A98
-	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B61E6350D
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 11:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707997378; cv=none; b=R1pNXozC8nMoO3XA4zL9q8ERgXZ/XVxm6QN+4sQvWT0LLjPqIPepcppnm/oowtIVgMHni+GUXkZ0+KGf+IMnI5+M5z7dw5hXn6riEtriySaqTiiu8SUIRliiXXIdwTr7erGRTrhh902QOqnXCIIFCRcJqipjEEVvykPiRulu7UE=
+	t=1707997482; cv=none; b=T8MRmc/xH1vVIkatj655y4oMpKNZfoG85wLixTjXktfJPG6DJYOtDe7e0VvdeVKimyI6tZpkaijDeYc2XvYceWyWn3JuQ4tstCST9BOJWrkUfFX+SIKx5vR0eDDYz8J6vZVsGE+nSXqBCTXakdtOh1yMePpNVOHqBCWp1OEpwS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707997378; c=relaxed/simple;
-	bh=/FTXlztzle2L/AhigWw1U4jQU2T/XKgKPnl46C3daJk=;
+	s=arc-20240116; t=1707997482; c=relaxed/simple;
+	bh=4EXfMA/5RJ5DHbaIGMJZ+ohUmy7XRCcrHj0wk7tuQco=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u0uNOLPDsq8sO8PQ8/MpxH/utU4k2yZEMUOS9Du7411X9yYcLKrQeiEfeit8hKDZfzYEXN/kLwqRfNizYwiacRhYGduVEtrmDUK8IFlKzbJ2XhtjaZ9eSPx7+d5LUsUvf5fEELcrv6/m84Hk/Kvqhjr75fRHuxrDtD2skWApde4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OgdT35T/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707997375;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xii2dGZNUM53ImanG6FtSPY3VdLuDxHQOVnxEu+XqVY=;
-	b=OgdT35T/QoeKVWWKMjtqQdx9e2l9EIH651v/EXRSp+8ybbxFa+s7ZZfvJK3NrimXKxThjJ
-	y7YGnU8m+YsnBH4FfITkNHgqS7FPywkPVjFt6yaSaTSbXHor8WRKw55giE79+FSFPTK7sM
-	YRgm/lqxTtRmhYabNyBoKRitma7nROo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-619-Za6kuhPdP7mORgoJwagK2g-1; Thu, 15 Feb 2024 06:42:52 -0500
-X-MC-Unique: Za6kuhPdP7mORgoJwagK2g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9FAAF845DC1;
-	Thu, 15 Feb 2024 11:42:51 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.56])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C20F2166B36;
-	Thu, 15 Feb 2024 11:42:51 +0000 (UTC)
-Date: Thu, 15 Feb 2024 06:44:28 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/14] writeback: don't call mapping_set_error on
- AOP_WRITEPAGE_ACTIVATE
-Message-ID: <Zc35HOF8+vVEkdQu@bfoster>
-References: <20240215063649.2164017-1-hch@lst.de>
- <20240215063649.2164017-2-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uLo8f9LqClM90dukmqgEEUhXJlKedvUtunTGmyTbk/hh5D2FH+LJAVobfw3OZmGusz3scp9zM1sW930B1T1bzbiDthPYQDeltH91ver02JgaAmrMHpFO4bqvavuHspjutSuOv9KDdVM6Qz5PpMM44oyNAHBuTMuIwpUC0FCzP5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kdmfDuII; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5116b540163so1223009e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 03:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1707997478; x=1708602278; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=s0Dx5FtY4ggm/AcNbdXVVFP1mItC63qDUNAWfsNzDFY=;
+        b=kdmfDuII8ME87+n4zKvi9LNMBGioOXzfzBJV9537N90tvwNiiYQc0H9U1oq8U31XRL
+         g/5uDJhj6pzRCtDTUrj+InWjQER1DTuXuLvcwuh5MgliGVhaKsg0ngxa0I2UA/RjarVW
+         6emkK1nJyRqlTyHJWzCTEz/7PueX1qQLcpXggsyTIWGM3F8dE9CSyc2FOQJVk486Mc9f
+         f8tM6nWeTE8jFGXq4ZdVC5pu80t7KPEIzubel1pMSQbd7pJXbTh1tTU2VppmjjKdXHt8
+         wXwpjGm/V9HcKWrLll9EUMWtJXsserjfVBSCkEQ4A9rARfNzPU0upGvsBwQktm9lbjjq
+         Y4aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707997478; x=1708602278;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s0Dx5FtY4ggm/AcNbdXVVFP1mItC63qDUNAWfsNzDFY=;
+        b=L5DBiNypqrOmYbaPQzltkmOXBZMNPyoqRDu/vazrhE1nXqozAbZXkQDqs+FGDDtPEr
+         RDgg2KciapA0uKE1Msafq1zk3Tis3qT8uHCN17zUrljgbTP9K17ci4MnYWmzHzkxlmKq
+         WEwa6pIeTtIaI2fUFrObvGqNTQ6VGACMKw3u7Z6XPqA+zhf/qlGfRQKCD6euiNUkGUpA
+         0Ro801Y0Pygh+MMPovjbtiNjrnIqg9lei8yaB8fa9styLg5qudsxpHNZ/W5a6ogv7VxI
+         SG+tjBhmS8VPVZH+Y13fV4/l9Hm+iNsb/uBG/Va8XI1BMHdJzu+ZmxioUxaiVHPSpZJP
+         e4IA==
+X-Forwarded-Encrypted: i=1; AJvYcCVTcbKh8mS6M5hOGhyxewgEw5Y+4oRaJ+pc78GpENwQYvrntauAlIA5ftxzXVvnJoLSatITJbaQLrFb3fQ4QVX5AfV/m6L67n8Mf/O3
+X-Gm-Message-State: AOJu0YzNGR9LdyuD51lz9UV05X00+xf+wsRDx4dNOyVfFz/1v8PVVmXj
+	TG+bb2X0otlv6DIu1+qUlFGvvVS8Je8Juo5v8S/5rq72Bx5dbgSDQ+VgXDXsKlU=
+X-Google-Smtp-Source: AGHT+IEu0C6G66d14pfWgMYK2wzM1oPNS0d7EodOMsfiSkKWIbZuEl20a097XvjUuM1uqVFibSZSPQ==
+X-Received: by 2002:ac2:58d5:0:b0:511:69bf:d1b0 with SMTP id u21-20020ac258d5000000b0051169bfd1b0mr1243154lfo.51.1707997478365;
+        Thu, 15 Feb 2024 03:44:38 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id c8-20020a7bc848000000b00410794ddfc6sm4787174wml.35.2024.02.15.03.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 03:44:38 -0800 (PST)
+Date: Thu, 15 Feb 2024 11:44:36 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Arnd Bergmann <arnd@kernel.org>, Karel Balej <balejk@matfyz.cz>,
+	dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] backlight: ktd2801: depend on GPIOLIB
+Message-ID: <20240215114436.GC9758@aspen.lan>
+References: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240215063649.2164017-2-hch@lst.de>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213-ktd2801-deps-v1-1-7feb5385eb9a@skole.hr>
 
-On Thu, Feb 15, 2024 at 07:36:36AM +0100, Christoph Hellwig wrote:
-> mapping_set_error should only be called on 0 returns (which it ignores)
-> or a negative error code.
-> 
-> writepage_cb ends up being able to call writepage_cb on the magic
-> AOP_WRITEPAGE_ACTIVATE return value from ->writepage which means
-> success but the caller needs to unlock the page.  Ignore that and
-> just call mapping_set_error on negative errors.
-> 
-> (no fixes tag as this goes back more than 20 years over various renames
->  and refactors so I've given up chasing down the original introduction)
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+On Tue, Feb 13, 2024 at 07:12:33PM +0100, Duje Mihanović wrote:
+> LEDS_EXPRESSWIRE depends on GPIOLIB, and so must anything selecting it:
+>
+> WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
+>   Depends on [n]: NEW_LEDS [=y] && GPIOLIB [=n]
+>   Selected by [m]:
+>   - BACKLIGHT_KTD2801 [=m] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE [=m]
+>
+> Fixes: 66c76c1cd984 ("backlight: Add Kinetic KTD2801 backlight support")
+> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 
-Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
->  mm/page-writeback.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 3f255534986a2f..703e83c69ffe08 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2535,7 +2535,9 @@ static int writepage_cb(struct folio *folio, struct writeback_control *wbc,
->  {
->  	struct address_space *mapping = data;
->  	int ret = mapping->a_ops->writepage(&folio->page, wbc);
-> -	mapping_set_error(mapping, ret);
-> +
-> +	if (ret < 0)
-> +		mapping_set_error(mapping, ret);
->  	return ret;
->  }
->  
-> -- 
-> 2.39.2
-> 
-> 
 
+Daniel.
 
