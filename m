@@ -1,141 +1,109 @@
-Return-Path: <linux-kernel+bounces-67023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB7D856503
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:55:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AC38564FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 14:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AFA0B2910E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:54:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32E31C24146
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD1C131E5F;
-	Thu, 15 Feb 2024 13:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F1A133411;
+	Thu, 15 Feb 2024 13:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ooptoa1b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OurA5zC6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B789212E1C4;
-	Thu, 15 Feb 2024 13:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673B6133298
+	for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 13:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708005094; cv=none; b=Uy/3anNjglQE8Wg1VxyHkwA8h6xrSbkm/AiWeUMlOydwak1yzxufC4VIzic3kRQKrSUzNoGt/gZ100nLdJOjwvYtjwawmRktjiz7BiN3ulG3HA2eCTwoTAQ3yMggjjItwXxWRFO5oYh2kONcYP+TrOb+pi/DJSWyVBaOif5SLNU=
+	t=1708005106; cv=none; b=g5yExhJ/luHjTdhsHOS5LOGtwRFGQsCfYZ5mT7VPe8/8WaGcjqO/Rlfe1ddJ7cl42vfrzNoBMcnEYY1jxQRW6u2G2IVok5bEVNHvYBnImoDoB+jmGP7RYW17iQ5zVYp7X0HqiY7PZ70sUsAGLUYgFpOQWlnTtlc2TrDMkEoe8wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708005094; c=relaxed/simple;
-	bh=3SvHROmvHaZOwf+5dxZxpWNMBRQ7DAeUJ0WpRa4dXEw=;
+	s=arc-20240116; t=1708005106; c=relaxed/simple;
+	bh=wcmjIxGB2DbqmTi/nOX3I60/8Enx7okKCq4LfkZVTLM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q81knbPJfqxox/mAtLXWirAcVpJD6NbYsdFJHN2SrwQ1Rcj09e+QeMmS28K4McVCNmvgiOwBPbcjcwBPr+/JUwejVDXwX/UEy9ttnxxRJRW/wPamW7bKwi5LjRriHZhJgbFj/JtzxghxrSBagri/JZiM+PN9M0kvIS2fjZLbazs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ooptoa1b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFFA0C433F1;
-	Thu, 15 Feb 2024 13:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708005094;
-	bh=3SvHROmvHaZOwf+5dxZxpWNMBRQ7DAeUJ0WpRa4dXEw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ooptoa1bOq/CzSvBCKFZgqMZ83F+3bmF4wZ8J0bvVfYsl6VMFE15EtSQzQXk5mADK
-	 8XtrSdYoIDInjtEkTLLxSuh2sl5aqWjGxyelX/X7g1h+MAdpDwsROW9yndLIOhmi4V
-	 sZigkUkhsDfYM99QvGuc5Z0IHpDngYBXKMdY2uJFb69Kl4R4YNZGqLaIg9nwJ5u1zA
-	 w/wzy2c/wyz2lBGitmnrNAV4L90Qy8sTDRtdSkhP9AiwcLjgyi7b9Sx5NjSzL96Fhd
-	 9KHklfx447Zb7CEeNUV3Dc6Uvr/ncPI0a3QK31S9o0UqYFRVdVYd1ToOpkBAr6otmP
-	 jkJLHWAUqrxaQ==
-Date: Thu, 15 Feb 2024 07:51:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 10/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240215135130.GA4139246-robh@kernel.org>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
- <20240208-feature_poe-v3-10-531d2674469e@bootlin.com>
- <20240209144349.GA3678044-robh@kernel.org>
- <20240214141310.119364c4@kmaincent-XPS-13-7390>
- <20240214164150.5be591d0@kmaincent-XPS-13-7390>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nlQO3CQv+AwmT+dPKFg5ODZtxBoFhDOUF0l7XN3uuWn2HhKw5HUHHWY279R7a+SC/LpvRrFgiv//kg6uGXq9wskiCftbXi7uJDi8nrQYUdJuD0qNOl8zjqGBDQLC963r3Brvg+BcUD0mbteXgBp5RF6vGkCXifeXGGZxrspI0yU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OurA5zC6; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708005104; x=1739541104;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=wcmjIxGB2DbqmTi/nOX3I60/8Enx7okKCq4LfkZVTLM=;
+  b=OurA5zC6qJGQr7mn04LD43UgZxxfnC1LHIg7fbNiru4aVzC4yCgMqn67
+   WY84IkaIRpNv3oY/4B5Pm0r2JXt17axQN4GU2ZzycA3T/D0TQ/UhvMTh1
+   UIp7+J9Nvrm6hOdiKh8BhHuiTD2h7g11SEydTlyVNRvmAFdNdIZmnxImS
+   3xev1IyVrfwfboH5WTuXWCAPnB1ox5eFJj/07ZhVtyj7fg+haVE9JIuha
+   Trn9HSDw+o4ZbkjHbQD6gePnp6A/J8JkReKbyYRt+xCGEs8PjvD41q4lI
+   SOfiYceU6Xb8WsawN40JZBq+Im4UzyM2q4pNHKh4NX/VQvtcwlnLsm2J5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="1964490"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="1964490"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:51:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10984"; a="912168991"
+X-IronPort-AV: E=Sophos;i="6.06,161,1705392000"; 
+   d="scan'208";a="912168991"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 05:51:42 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rac9L-00000004nsn-2Rj5;
+	Thu, 15 Feb 2024 15:51:39 +0200
+Date: Thu, 15 Feb 2024 15:51:39 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+	Michal Wajdeczko <michal.wajdeczko@intel.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Move upper_*_bits() and lower_*_bits()
+ to wordpath.h
+Message-ID: <Zc4W66VdxC2udn64@smile.fi.intel.com>
+References: <20240214172752.3605073-1-andriy.shevchenko@linux.intel.com>
+ <CAKPOu+-Xy1E_bZMDJu8YQB_s235k3k3GcbeNNP=Vkn2aC1uk_w@mail.gmail.com>
+ <Zc4Wu4dAJTXcGGVs@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240214164150.5be591d0@kmaincent-XPS-13-7390>
+In-Reply-To: <Zc4Wu4dAJTXcGGVs@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 14, 2024 at 04:41:50PM +0100, Köry Maincent wrote:
-> On Wed, 14 Feb 2024 14:13:10 +0100
-> Köry Maincent <kory.maincent@bootlin.com> wrote:
+On Thu, Feb 15, 2024 at 03:50:51PM +0200, Andy Shevchenko wrote:
+> On Thu, Feb 15, 2024 at 09:53:48AM +0100, Max Kellermann wrote:
+> > On Thu, Feb 15, 2024 at 9:49â€¯AM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > The wordpart.h header is collecting APIs related to the handling
+> > > parts of the word (usually in byte granularity). The upper_*_bits()
+> > > and lower_*_bits() are good candidates to be moved to there.
+> > 
+> > Sigh. This was actually a copy of my patch which I submitted a week
+> > before yours. https://lore.kernel.org/lkml/20240209164027.2582906-34-max.kellermann@ionos.com/
 > 
-> > Hello Rob,
-> > 
-> > Thanks for your review!
-> > 
-> > On Fri, 9 Feb 2024 14:43:49 +0000
-> > Rob Herring <robh@kernel.org> wrote:
-> > 
-> > > On Thu, Feb 08, 2024 at 02:08:47PM +0100, Kory Maincent wrote:  
-> > > > Before hand we set "#pse-cell" to 1 to define a PSE controller with    
-> > > 
-> > > #pse-cells
-> > >   
-> > > > several PIs (Power Interface). The drawback of this was that we could not
-> > > > have any information on the PI except its number.    
-> > > 
-> > > Then increase it to what you need. The whole point of #foo-cells is that 
-> > > it is variable depending on what the provider needs. 
-> > >   
-> > > > Add support for pse_pis and pse_pi node to be able to have more
-> > > > information on the PI like the number of pairset used and the pairset
-> > > > pinout.    
-> > > 
-> > > Please explain the problem you are trying to solve, not your solution. I 
-> > > don't understand what the problem is to provide any useful suggestions 
-> > > on the design.  
-> > 
-> > Please see Oleksij's reply.
-> > Thank you Oleksij, for the documentation!!
-> > 
-> > > > 
-> > > > Sponsored-by: Dent Project <dentproject@linuxfoundation.org>    
-> > > 
-> > > Is this a recognized tag? First I've seen it.  
-> > 
-> > This is not a standard tag but it has been used several times in the past.
+> But it was not standalone and the series has issues AFAICS.
+> Nevertheless, I like it!
 > 
-> Not so much used indeed:
-> $ git log --grep="Sponsored" | grep Sponsored     
->     Sponsored by:  The FreeBSD Foundation
->     Sponsored by:  The FreeBSD Foundation
->     Sponsored by:  The FreeBSD Foundation
->     Sponsored by:  The FreeBSD Foundation
->     Sponsored-by: Google Chromium project
->     Sponsored: Google ChromeOS
->     Sponsored: Google ChromeOS
-> 
-> Is it ok to keep it?
+> In any case the wordpart.h is only in Kees' tree, hence can't be applied
+> separately right now, so if you continue with a series it's technically can't
+> be applied before v6.9-rc1.
 
-IMO, its use should be documented like other tags, or it should not be 
-used. Just write a sentence to the same effect.
+Btw, you need to look to the patches by Ingo, you are repeating some of them.
 
-Rob
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
