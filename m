@@ -1,116 +1,158 @@
-Return-Path: <linux-kernel+bounces-67833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3102D85719E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:33:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A40538571B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:39:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B898B20E5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:33:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32BD61F2370C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 23:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B729145B03;
-	Thu, 15 Feb 2024 23:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF8B145FEF;
+	Thu, 15 Feb 2024 23:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e47L7sLl"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="eO8kA/v4"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1222612C53A;
-	Thu, 15 Feb 2024 23:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E718053362;
+	Thu, 15 Feb 2024 23:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708039990; cv=none; b=iQZgea46/aVXiHxiJGbXUWRK7q+s6XWCBlyIilDLYtzDVbbPc65aJ96G4c17q/BCrh4MwFkeAWtrQMeTkBTziY14A5SHN0UzsNbVU0s4Q6c8tyeJusaiq1crV6B/yC0MrPZpayYmeKlOiNkKJX61/7kHDkcZXEG5PA6CepebfNA=
+	t=1708040365; cv=none; b=ZQi61fatgJkAgiRJXIFfeb/0qb2rA5/lfVRFKDDu8Iam3HV4WQjkiENGTho+NilHR8ZO3z2hnhb81t3XYnC1fJkp0Pgd+jUGu09olyuwSZrDajxbOFyd4vAOPvl++nXWxlE8gqoTX0KULbmIpu9/0gZThN5lObDpYJaSvmzCsAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708039990; c=relaxed/simple;
-	bh=ogDnkah+1kseDBaMGbqErn7uqANEFp4Tc516iZ0KoSo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yv+qsZAm0Y8JKW3OJJ2HGXxNWkvNB+a1yPtDW2JW9ulJj9utMW9zbA5FpAcHyTGAPhlBVWo8vcOUJ1gFxlaANoFoVshP4LlZlPcEiAXgXgTZAH4l+KkbtnXZ5pDE64YvCp++NluccrnbWuwvnEeE4zqI/F5iSCUsf/+A2ZIjDV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e47L7sLl; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5116ec49081so1764622e87.2;
-        Thu, 15 Feb 2024 15:33:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708039985; x=1708644785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=daKJLiXz02A2IhuUMvvcuGUrV+LM5fm3TkypFzv3PXc=;
-        b=e47L7sLly43p6+pt6AdDawJ2fx6U2VS/X64HxL92mjO0SNMlyuSanb7TAd6LSkj2f4
-         IZkkTKyye5QPn1rJz/62IyV5ZL9dTDUzaxMI7b/4MYUV33fremvlaoM36UVYO/nsnB91
-         hA3YsuosmKMMbhRJ9JN+roYFk4gzl7vpe8ea1UblL3dTP5z52WWmjm54uHpS0BS8FmF1
-         Evphur3aYj1B0ikdxayMKcPNJTuSteM9CtONUij3iwwIydZICt3fmFF+zfqqqdKKyDfV
-         ht0QmkPgis4mh35isqNJRDnHAKeaPY4sXIDMUNp8i4PgkMBeA0wD7vU/XFEJHVz/4SiH
-         KTPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708039985; x=1708644785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=daKJLiXz02A2IhuUMvvcuGUrV+LM5fm3TkypFzv3PXc=;
-        b=AQGUCCMzmXt11cP9eY+y+raAbyfcF6EkJduX4dcnnF//rO1Jvwge+6JJf+99Mf2GzD
-         u+5mEmRiCID9IqciwnO1rCv0+RYhKxHh+tv5uLYyIDQNxuL5BGXhLc0hyqljWnlJTMLY
-         eZzsJi7weU16UB5XUhYcOO2Sx3wX6w9ROSfPV7/sgFNcurZdudMdZL+psv5zPdwyv9Kf
-         LJs8bE6FKdhecbzHeh8WSjpzCwirP+VXzY93rxMZ7i116JqSeVwWLlhT8DCeiier4Itz
-         dQ1hQCrm5WqFNxcm0UyhS4wWQvDSP4VOGG31SobdhOTFIx1HZyEhwtZSh8PNu53K45oU
-         OsXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxUGpIZkjW3MWd7T/bwtkFmZw82JoyjqxUiFfWLupZN9u3GXqMJlyBjVmP6BYo4qyHFB+CKywHQpuVMJMHzg7BCNA8GvgO/Yx2DCSSAQBuJHM8MYJn5W5mjiU/8SbseXGgCkDf
-X-Gm-Message-State: AOJu0Yza3zBAPoJNak0arqtg387BCWKR3ZMvhm0c3hAIuwwkccX91jvF
-	gqKI4aiHqSKuGo5vqEfvoGu6OByNsPMeA9LEiofJmvUS3dWpyQw1z3dT6if9tDTuiSQ3edaSZuC
-	SIMJN8P8K16HEj26/x0WTKjoa8IKXexr+KrB1BA==
-X-Google-Smtp-Source: AGHT+IENE8wf43qBl0Zp/ufGQixz/JdkekROujmuqvnHC8RivAR2m57lA0A1PMlQoGO6fQcrDbwFtrvrszZ9J489ujM=
-X-Received: by 2002:a05:6512:200e:b0:512:8dad:2918 with SMTP id
- a14-20020a056512200e00b005128dad2918mr1038613lfb.53.1708039984757; Thu, 15
- Feb 2024 15:33:04 -0800 (PST)
+	s=arc-20240116; t=1708040365; c=relaxed/simple;
+	bh=eQxomNVfWWrzdgxqJHK578iWgPvpAddY5NiTfq6HaqM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uwg1fLUCfkF21V6vK2bvNuVqVP/UKUdhN0pgvYT+iYaVWWUv/9XERee5TYFP0b9jjyNtZOjm1QBqVREXZCTmSxEDz1cfKD9dCakConn5TXWkJMAI+51l7eMVIdaj8hz58j0FDWHphz504dKV/enJcyajKASCctcPWYBFYyX9xTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=eO8kA/v4; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id C431F600D7;
+	Thu, 15 Feb 2024 23:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1708040360;
+	bh=eQxomNVfWWrzdgxqJHK578iWgPvpAddY5NiTfq6HaqM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eO8kA/v4+8nXr5onGAkqPI/kSCzCCvfHJDF2KhF0KWzQxwho/45G0JBuXIYcR9n5Z
+	 gV+DArGInYiw2AIha3jrBhaQA+2UmlEK8pZFcxiju3+5FxbyxeVP/Lx7zhtSj2XePM
+	 i93PU6Ii50ZU/33LEslZhmHUEyTPhcBO63zzAaxb+61HtMHvq9JyYNnXCHyD/IJHNH
+	 jRDr8+2ic+44USbaAqmXxPFKa55eXielNhn4Oirt16g6weyoC7qBwGCF+bxSfQEidr
+	 LzNielHJqRAKgJqg8uOri/f3QKf/G15ou3IrNU0d9lYBtm3QbIu8NAuFRa0vrFnEaF
+	 0WBGzaPbX4mOw==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 978AC200338;
+	Thu, 15 Feb 2024 23:34:02 +0000 (UTC)
+Message-ID: <a4798b5d-1a8a-41ab-842f-52e8c7ac00ed@fiberby.net>
+Date: Thu, 15 Feb 2024 23:34:02 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213200900.41722-1-rand.sec96@gmail.com> <20240214170203.5bf20e2d@kernel.org>
-In-Reply-To: <20240214170203.5bf20e2d@kernel.org>
-From: Rand Deeb <rand.sec96@gmail.com>
-Date: Fri, 16 Feb 2024 02:32:54 +0300
-Message-ID: <CAN8dotmVcmpqxO0SyPvit20Ny-tU3OMHr0LLoXRQ3bpPTS5WqA@mail.gmail.com>
-Subject: Re: [PATCH] dl2k: Fix potential NULL pointer dereference in receive_packet()
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, deeb.rand@confident.ru, 
-	lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/3] net: sched: cls_api: add skip_sw counter
+Content-Language: en-US
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llu@fiberby.dk, Vlad Buslov
+ <vladbu@nvidia.com>, Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <20240215160458.1727237-2-ast@fiberby.net>
+ <CAM0EoMndBjwC8Otx6th_dM_aV_r80NeLEke9C8PwzGt1q3vAMA@mail.gmail.com>
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <CAM0EoMndBjwC8Otx6th_dM_aV_r80NeLEke9C8PwzGt1q3vAMA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 4:02=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue, 13 Feb 2024 23:09:00 +0300 Rand Deeb wrote:
-> > +                     if (skb =3D=3D NULL) {
->
-> if (!skb) is more common
->
-> > +                             np->rx_ring[entry].fraginfo =3D 0;
-> > +                             printk (KERN_INFO
-> > +                                    "%s: receive_packet: "
-> > +                                    "Unable to re-allocate Rx skbuff.#=
-%d\n",
-> > +                                    dev->name, entry);
->
-> no prints on allocation failure, please, there logs will include OOM
-> splats already. A counter as suggested by Jake would be better.
-> --
-> pw-bot: cr
+Hi Jamal,
 
-Dear Jakub,
-Thank you for your feedback and suggestions.
+Thank you for the review.
 
-Regarding your comment on using `(!skb)` instead of `(skb =3D=3D NULL)`, I
-understand that `(!skb)` is more common and is also recommended by `
-checkpatch.pl`. However, I chose to keep the original code style and logic
-to maintain consistency and avoid confusion, especially for other
-developers who might be familiar with the existing format. The same
-applies to the `printk` statement. In the same function, there is an exact
-block of code used; should I fix it too?
+On 2/15/24 17:39, Jamal Hadi Salim wrote:
+> +Cc Vlad and Marcelo..
+> 
+> On Thu, Feb 15, 2024 at 11:06 AM Asbjørn Sloth Tønnesen <ast@fiberby.net> wrote:
+>>
+>> Maintain a count of skip_sw filters.
+>>
+>> This counter is protected by the cb_lock, and is updated
+>> at the same time as offloadcnt.
+>>
+>> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+>> ---
+>>   include/net/sch_generic.h | 1 +
+>>   net/sched/cls_api.c       | 4 ++++
+>>   2 files changed, 5 insertions(+)
+>>
+>> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+>> index 934fdb977551..46a63d1818a0 100644
+>> --- a/include/net/sch_generic.h
+>> +++ b/include/net/sch_generic.h
+>> @@ -476,6 +476,7 @@ struct tcf_block {
+>>          struct flow_block flow_block;
+>>          struct list_head owner_list;
+>>          bool keep_dst;
+>> +       atomic_t skipswcnt; /* Number of skip_sw filters */
+>>          atomic_t offloadcnt; /* Number of oddloaded filters */
+> 
+> For your use case is skipswcnt ever going to be any different than offloadcnt?
+
+No, we only use skip_sw filters, since we only use TC as a control path to
+install skip_sw rules into hardware.
+
+AFAICT offloadcnt is the sum of skip_sw filters, and filters with no flags which
+have implicitly been offloaded.
+
+The reason that I didn't just use offloadcnt, is that I'm not sure if it is
+acceptable to treat implicitly offloaded rules without skip_sw, as if they were
+explicitly skip_sw. It sounds reasonable, given that the filters without skip_* flags
+shouldn't really care.
+
+I tried to only trigger the TC bypass, in the cases that I was absolutely sure would
+be safe as a first step.
+
+
+> 
+> cheers,
+> jamal
+> 
+>>          unsigned int nooffloaddevcnt; /* Number of devs unable to do offload */
+>>          unsigned int lockeddevcnt; /* Number of devs that require rtnl lock. */
+>> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+>> index ca5676b2668e..397c3d29659c 100644
+>> --- a/net/sched/cls_api.c
+>> +++ b/net/sched/cls_api.c
+>> @@ -3483,6 +3483,8 @@ static void tcf_block_offload_inc(struct tcf_block *block, u32 *flags)
+>>          if (*flags & TCA_CLS_FLAGS_IN_HW)
+>>                  return;
+>>          *flags |= TCA_CLS_FLAGS_IN_HW;
+>> +       if (tc_skip_sw(*flags))
+>> +               atomic_inc(&block->skipswcnt);
+>>          atomic_inc(&block->offloadcnt);
+>>   }
+>>
+>> @@ -3491,6 +3493,8 @@ static void tcf_block_offload_dec(struct tcf_block *block, u32 *flags)
+>>          if (!(*flags & TCA_CLS_FLAGS_IN_HW))
+>>                  return;
+>>          *flags &= ~TCA_CLS_FLAGS_IN_HW;
+>> +       if (tc_skip_sw(*flags))
+>> +               atomic_dec(&block->skipswcnt);
+>>          atomic_dec(&block->offloadcnt);
+>>   }
+>>
+>> --
+>> 2.43.0
+>>
+
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
