@@ -1,100 +1,179 @@
-Return-Path: <linux-kernel+bounces-67398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09EBF856AE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:23:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E69856AEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 18:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8C4D288695
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:23:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE821C225B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 17:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7892013698B;
-	Thu, 15 Feb 2024 17:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0432A136997;
+	Thu, 15 Feb 2024 17:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="zu2d0f7X"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b="1VDP+dix"
+Received: from cmx-torrgo001.bell.net (mta-tor-005.bell.net [209.71.212.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F8B136661;
-	Thu, 15 Feb 2024 17:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BDC13698B;
+	Thu, 15 Feb 2024 17:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.71.212.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708017821; cv=none; b=slUOm2KMpS1rDcOisyXnVwixlBLWKj8zTygXnWuF+oKRhfsRDwDo8cNEidWgwZ/GIGZK9q4y05AgVIEqtxWrEsaSZpSryVjNJmGQldZ0GredzMgy4YIKUo1bkLIEPC59dQrnb0lCkM/qJX8LkF/e2J3ofeEh5rC9D3ao/itGjPo=
+	t=1708017927; cv=none; b=ACPPePT6WejiKzsUb+nf49jabthcYULm/f+zHJNdGekW/TlUuL4RtZdBSE+Ot19NaQKQRveLuNER8C05QLzGqXqn+81OLxt9V/7k6oVhQ407LV7V2GqSrq+k9kIW+etiilSc+Jcx8RjAdD7uSCAYUTiyl2pXnGqCCbJoeQJ1xA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708017821; c=relaxed/simple;
-	bh=rRFd3YQp8MSUYdcnX7Jk6rBVAemU7SUryccg8S+OLiI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FDjtzEcvSZlBehtm7SYZsLBQQBwjIx+C9XWRKaegLa87dGX+xk5kuDfuSSFM1jQQ/Ua6NsQlq4MvCYde7m00vL/VjYBFH3ryHonItj696PkclP8UYkm9Kd9G8Wn63lSELGhsbAQgfuso6juOXLr6x9wva6IcgDNVZRpAM8WDNVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=zu2d0f7X; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=La4s/vwj+gljO/UtWzPnryxXujz5t65E/dUslVMpOtI=; b=zu2d0f7Xkah1W7npzrqoHyfE1f
-	Gm1FDdi/WZPmGzBjRcovWOqYam4m6HORn4gj62msKIooFLjF6oT/+JLOFNDVwWsWDy7RHV4y+a2Tw
-	LpJ3KQ3fcm5HQ0aFrvdMLrm5NyccMYveiJkS9IfbcQXnSRcgkrKCqFfIOe0vu8op/I8E=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rafSZ-007uaA-KD; Thu, 15 Feb 2024 18:23:43 +0100
-Date: Thu, 15 Feb 2024 18:23:43 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: "Anwar, Md Danish" <a0501179@ti.com>
-Cc: Roger Quadros <rogerq@kernel.org>, MD Danish Anwar <danishanwar@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Tero Kristo <kristo@kernel.org>, srk@ti.com, r-gunasekaran@ti.com
-Subject: Re: [PATCH] arm64: dts: ti: k3-am654: Drop ti,syscon-rgmii-delay
- from ICSSG nodes
-Message-ID: <a0dc9fb7-2124-4f0d-a136-fc16a2301b0d@lunn.ch>
-References: <20240215105407.2868266-1-danishanwar@ti.com>
- <71adaabd-bb24-4181-9fdf-f7191e93edb5@kernel.org>
- <4ef87f6c-caa8-45a8-8649-422806ec6eb2@ti.com>
+	s=arc-20240116; t=1708017927; c=relaxed/simple;
+	bh=YGF+xg9Zw2HpAEfB/LLNS8J3xoEcd0UnFW42VadKhTk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L8z8VSzpyFvjV2E2E6y6eym/y3JoMgSlfVg6kq3LVXG0X6/dXKNoar8vkFzo5+ujZ+QDo8QJ39dBnqiT9pN/WgvB0hXjUWwppKwnDecdwXX4JennF/fkvgt2lTdwzbgKWpCdA+5MRDZBSfWwZZzK2vh7bAcKj8apR7kjiL3DC6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net; spf=pass smtp.mailfrom=bell.net; dkim=pass (2048-bit key) header.d=bell.net header.i=@bell.net header.b=1VDP+dix; arc=none smtp.client-ip=209.71.212.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bell.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bell.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bell.net; s=selector1; t=1708017925; 
+        bh=zaQaPX04GVXGx4EuNSfjTExmNxEJBUFZt8AtN9ccB6o=;
+        h=Message-ID:Date:MIME-Version:Subject:To:References:From:In-Reply-To:Content-Type;
+        b=1VDP+dixUeia2IAQ9nB44o3THF6eg+UXEi6JjWzO2edlDbvoFxxbfOfXiW+tuVLSlmuHGtKqFQQ6yB3dNyPaMioiNOIjtt7blMrsiGUQ09MJPr7aptIdokZF5oNi6X82QbGL8g9HBPvjEl/eMTnRUq3t/DnEI9RYALb74/LPr7+mjj1hTuKaFgUKOOOJ32I1rG3qhXlFLvk4nqVDd24X/JwcQt1paJvGjeN4ao6gDfFJ1sP7/FRUb7kCJALj+9StLtChltJaHUE5TKgiWy9G9AjFYUbwMCpA0TrzxygBA8fRqEM/P3+JPD0Ss4hINOW7pfeBMb+ILdPMrVBKBZgjqA==
+X-RG-SOPHOS: Clean
+X-RG-VADE-SC: 0
+X-RG-VADE: Clean
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 65CD68AA000FB6F2
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgedvledrvddtgddutddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuefgnffnpdfqfgfvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttddvjeenucfhrhhomheplfhohhhnucffrghvihguucetnhhglhhinhcuoegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvtheqnecuggftrfgrthhtvghrnhepjeelffffjeehgffgueehleegfeegueeigedtkeffgeduueetffegffejudekgfeunecukfhppedugedvrdduvdeirdduuddvrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheplgduledvrdduieekrddvrdeglegnpdhinhgvthepudegvddruddviedrudduvddrvdeffedpmhgrihhlfhhrohhmpegurghvvgdrrghnghhlihhnsegsvghllhdrnhgvthdpnhgspghrtghpthhtohepuddupdhrtghpthhtohepffgrvhhiugdrnfgrihhghhhtseetvegfnfetuedrvefqofdprhgtphhtthhopeflrghmvghsrdeuohhtthhomhhlvgihsehhrghnshgvnhhprghrthhnvghrshhhihhprdgtohhmpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegthhgrrhhlihgvsehrihhvohhsihhntgdrtghomhdprhgtphhtthhopegurghvvgdrrghnghhlihhnsegs
+	vghllhdrnhgvthdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from [192.168.2.49] (142.126.112.233) by cmx-torrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
+        id 65CD68AA000FB6F2; Thu, 15 Feb 2024 12:25:03 -0500
+Message-ID: <e73bdc36-5fb1-4ea8-9f96-608eb1a9b6af@bell.net>
+Date: Thu, 15 Feb 2024 12:25:03 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ef87f6c-caa8-45a8-8649-422806ec6eb2@ti.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, David Laight
+ <David.Laight@ACULAB.COM>, Charlie Jenkins <charlie@rivosinc.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
+ <a7e9691432374000b9566a0201d004e6@AcuMS.aculab.com>
+ <c22f28a2-b042-4abe-b9e4-a925b97073bb@roeck-us.net>
+ <4723822c-2acf-4c41-899c-1e3d5659d1d8@bell.net>
+ <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
+From: John David Anglin <dave.anglin@bell.net>
+Autocrypt: addr=dave.anglin@bell.net; keydata=
+ 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
+ T70V9SSrl2hiw38vRzsl
+In-Reply-To: <1e302d8f-4e94-4278-b556-b8fc54956efb@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 10:26:59PM +0530, Anwar, Md Danish wrote:
-> 
-> 
-> On 2/15/2024 9:27 PM, Roger Quadros wrote:
-> > 
-> > 
-> > On 15/02/2024 12:54, MD Danish Anwar wrote:
-> >> Drop ti,syscon-rgmii-delay from ICSSG0, ICSSG1 and ICSSG2 node as this
-> >> property is no longer used by ICSSG driver.
-> >>
-> >> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> >> ---
-> >>  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 2 --
-> >>  arch/arm64/boot/dts/ti/k3-am654-idk.dtso    | 4 ----
-> >>  2 files changed, 6 deletions(-)
-> > 
-> > What about the DT binding document?
-> > 
-> 
-> Now I am only removing the property from device tree. Once this proprty
-> is removed from all DTs, in the 6.9-rc-1 I will remove the binding as
-> well so that net people can merge that without getting any errors /
-> warnings.
+On 2024-02-15 12:06 p.m., Guenter Roeck wrote:
+> On 2/15/24 08:51, John David Anglin wrote:
+>> On 2024-02-15 10:44 a.m., Guenter Roeck wrote:
+>>> On 2/15/24 02:27, David Laight wrote:
+>>>> ...
+>>>>> It would be worthwhile tracking this down since there are
+>>>>> lots of unaligned data accesses (8-byte accesses on 4-byte aligned addresses)
+>>>>> when running the kernel in 64-bit mode.
+>>>>
+>>>> Hmmm....
+>>>> For performance reasons you really don't want any of them.
+>>>> The misaligned 64bit fields need an __attribute((aligned(4)) marker.
+>>>>
+>>>> If the checksum code can do them it really needs to detect
+>>>> and handle the misalignment.
+>>>>
+>>>> The misaligned trap handler probably ought to contain a
+>>>> warn_on_once() to dump stack on the first such error.
+>>>> They can then be fixed one at a time.
+>>>>
+>>>
+>>> Unaligned LDD at unwind_once+0x4a8/0x5e0
+>>>
+>>> Decoded:
+>>>
+>>> Unaligned LDD at unwind_once (arch/parisc/kernel/unwind.c:212 arch/parisc/kernel/unwind.c:243 arch/parisc/kernel/unwind.c:371 
+>>> arch/parisc/kernel/unwind.c:445)
+>>>
+>>> Source:
+>>>
+>>> static bool pc_is_kernel_fn(unsigned long pc, void *fn)
+>>> {
+>>>         return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
+>> This looks wrong to me.  Function descriptors should always be 8-byte aligned.  I think this
+>> routine should return false if fn isn't 8-byte aligned.
+>
+> Below you state "Code entry points only need 4-byte alignment."
+>
+> I think that contradicts each other. Also, the calling code is,
+> for example,
+>     pc_is_kernel_fn(pc, syscall_exit)
+>
+> I fail to see how this can be consolidated if it is ok
+> that syscall_exit is 4-byte aligned but, at the same time,
+> must be 8-byte aligned to be considered to be a kernel function.
+In the above call, syscall_exit is treated as a function pointer. It points to an 8-byte aligned
+function descriptor.  The descriptor holds the actual address of the function.  It only needs
+4-byte alignment.
 
-Did the binding have the property as mandatory? If so you are probably
-doing this the wrong way around. You should first modify the binding
-to mark it as optional and deprecated. Then modify the .dts{i} files
-to remove it.
+Descriptors need 8-byte alignment for efficiency on 64-bit parisc. The pc and gp are accessed
+using ldd instructions.
 
-   Andrew
+Dave
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
 
