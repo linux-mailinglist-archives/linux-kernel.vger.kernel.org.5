@@ -1,274 +1,227 @@
-Return-Path: <linux-kernel+bounces-66862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 280918562BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:11:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019548562BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 13:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE2AA289ABB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:11:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 262EA1C226FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Feb 2024 12:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6151A12BF15;
-	Thu, 15 Feb 2024 12:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F3F12BF1E;
+	Thu, 15 Feb 2024 12:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ci5TOMtk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b="oiYv1KhD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CQF7E91Y"
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB1A12AAD0;
-	Thu, 15 Feb 2024 12:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D92B12BEA6;
+	Thu, 15 Feb 2024 12:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707999069; cv=none; b=LPhV+UerSSo2uIeliTzMqDLxcBX/6kL/JWdJc6GTtmn0gbG68PPLehdEK5Qb4CoB45XokUKqK4frWAiBTrIEkdBY8C5oqBOdzUR0PHYEBG31KQnEFhJSHY1K8EvN9aIb8eTQV6Lg/oLiXSdBe3LnvZSAyidgf70fZ9+Tn9rMDho=
+	t=1707999085; cv=none; b=cPoQt2XinWYyNF9l4EWf6cpzlYIlD6OtDwGonjgJEtykqFffz33rPENjAownQ4tjvkCG+DyoDnrPtLmNGaEV1tl0LFYDqs55XeqfVfSngS6lAgA2ECcrLX87Ph0OL1Maagt4gB77a/Z9Nr+VAV9UOLHlnz6nzQtSb85D4o/4bKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707999069; c=relaxed/simple;
-	bh=9nHF1JeNWGrnT34kmP6Im2nsYTxU6ZcFOHGWkk5gonw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fn8tNhsQU2EBHRwSYk+FHnS9mxdy43OxYRrkj8Kg52nny9RKidBWHmecCJuIlq/WGOIZtrURV15wetsol4qydU+UltAqw4Fd1VFU1DHDdpIK2UuARUFNnoCmttMGYsu47ij7oM+K/lZnzpru1FrLOGG2orVZiH47H2Bd5lhU/5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ci5TOMtk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74FE5C433C7;
-	Thu, 15 Feb 2024 12:11:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707999069;
-	bh=9nHF1JeNWGrnT34kmP6Im2nsYTxU6ZcFOHGWkk5gonw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ci5TOMtkEJMMxJrQLFozu2b17KbIxL8Om9im8w1SZOoNXyzk6yodb0px5j4QXpzmR
-	 blxn6Yh1usZ5Q5qPcXabPlax1FAlkMYQ8ovYXTTNJfFMBhe56yohvZvv98kBXB3DAL
-	 8h1OwdjlggDXbO1dxOuxZfJi7gvH29VvyhAILPmk=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: corbet@lwn.net,
-	workflows@vger.kernel.org
-Cc: linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	security@kernel.org,
-	linux@leemhuis.info,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Sasha Levin <sashal@kernel.org>,
-	Lee Jones <lee@kernel.org>
-Subject: [PATCH v4] Documentation: Document the Linux Kernel CVE process
-Date: Thu, 15 Feb 2024 13:10:55 +0100
-Message-ID: <2024021500-laziness-grimace-ed80@gregkh>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1707999085; c=relaxed/simple;
+	bh=B9coxTR34G9S5wt1MlXuYGtAfSkjGgIF3CYmaIXdyHg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SzUS8zWf51fd8im066jjV8pmCAe/V4E7bXbMVWBYNop42eTbvPjRoKnPoSbW1b/woq3S0gcFMDBM01LZ9NoPwqo9KioNfiVfbDGkDQ5Gfah/EWXS98ApjMnCZuRLF5NT5RH0nfgWPDaF2L81wLM4/YUuVF1HKGu3odBi5wZzrW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me; spf=pass smtp.mailfrom=beims.me; dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b=oiYv1KhD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CQF7E91Y; arc=none smtp.client-ip=66.111.4.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=beims.me
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.nyi.internal (Postfix) with ESMTP id 3258B5C0098;
+	Thu, 15 Feb 2024 07:11:21 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 15 Feb 2024 07:11:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=beims.me; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1707999081;
+	 x=1708085481; bh=p2UamaqXBXvUpQwr3HNRfbWJwi3dY+qN7AALQra+c3w=; b=
+	oiYv1KhDBIeVCZaXSwSZZB7OvHK6Qu07FrN35RfPyXBo+NB3dkN6+u+Om9Oq3Jn5
+	TdCBwb6USnBqjEUdrSKusY2khT6mYn0RUsDOL+JBFZA3k8ejscKq0mh/P2fu6ict
+	BYrGWcKngzzOt/HBwv7IGityeozqdEnFUf7h0zXFeAvdhq8mHN4kDfNVhmDIxQmF
+	ATFoC9KBn1iQCicEKldIIHxQAOp+kEEwDtgYT5ihSmNokQAwOYKZAywc0UFrKG2D
+	AgobPRW0jKvlJTSDHeMjWd/bb0bHi7OaSmU0kI5n1p0YICCj/Xrwg/nhaZv4aaJe
+	3FKDlWvmH7wcu+YZgYAjjQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1707999081; x=
+	1708085481; bh=p2UamaqXBXvUpQwr3HNRfbWJwi3dY+qN7AALQra+c3w=; b=C
+	QF7E91YM+mIf76zRjJlnjZxt3YRF0xvBcOg8HNcYnz/1CUvkszAmO4iKKFRkdPae
+	TOMFUq52X2FLRZ8kWOmmx8yfvoXsq2XKbI390sOM681uTGdVjVFLkibLjRktGqdg
+	ROuNWLOsnWRmjvjAJrAv+lpwDzzfcoP9pS1U1T+vkJAJRh7fyKWY5FqKHJJDmX7M
+	WX4VXD+gpB1SC8IYvPsXqDyNsDTU2dKsJimY0f3ySnXLDQhWCZV/ZHdRbx/6i234
+	5b4BFcZDYd6Zr1X642NmM3+8EIM85NiTYDHllbUho3uDfunmmMktMVK9Sl2a+J4M
+	ZzpeEqdMMAvM1NI0rgWLQ==
+X-ME-Sender: <xms:aP_NZdeC7zAFYHPDrLuMSEGDbit4WhvjPM39VsEgriOGKbD9fl04Nw>
+    <xme:aP_NZbP7sV39YDVBUebguPXyJEDDmjHqWkHXnfubh-21eCQwF1UbT52oNmNs1SnCT
+    T1z2x90ZCBhUf-qGNU>
+X-ME-Received: <xmr:aP_NZWhVTwfSn5LkQhkng2xTd3pS0e7tfjaM3FodOcHYYF8rYwfJdWGL2-QtoKk7WFs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtgdefjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptfgrfhgr
+    vghluceuvghimhhsuceorhgrfhgrvghlsegsvghimhhsrdhmvgeqnecuggftrfgrthhtvg
+    hrnhepjeeijedvleegudevjeegledtveeifeetjeelieeijeegiefhleelhedtgeduieei
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrfh
+    grvghlsegsvghimhhsrdhmvg
+X-ME-Proxy: <xmx:aP_NZW85RpQFlSbNPy_6_JypuPopjFH3Z_bUXVsoEUYpdV7XKNbvTA>
+    <xmx:aP_NZZvyF6qkrDPmjulVYFRBUYdQxhUvC3-kpUMBTuk86YrIl0hOGw>
+    <xmx:aP_NZVEq9IFHdrV9dP9uBisGlfQqyyK-sosqyk44Psfbf1FDFjUxPQ>
+    <xmx:af_NZXWf-kEg7psXBTIwrUsV13EnCp9M_91ONwFQIYtBAqSNAETnoQ>
+Feedback-ID: idc214666:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Feb 2024 07:11:19 -0500 (EST)
+Message-ID: <b77af968-ec6f-44df-a544-4ea2a5ad3ff2@beims.me>
+Date: Thu, 15 Feb 2024 09:11:17 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Lines: 204
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9697; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=9nHF1JeNWGrnT34kmP6Im2nsYTxU6ZcFOHGWkk5gonw=; b=owGbwMvMwCRo6H6F97bub03G02pJDKln/4csYYyV7Kn9p6Ej/1ig3o91XlL4lUdd4Y/9Lz1Zz +t08zFrRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAEyEYRXDHM7JIl+nCD/4G9FT J5ZjYRXLcVC/mmHBOq0jt99JzBMIWXHuvkPxDSYGqVR9AA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
+ mlme
+Content-Language: pt-BR
+To: David Lin <yu-hao.lin@nxp.com>, Francesco Dolcini <francesco@dolcini.it>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "briannorris@chromium.org" <briannorris@chromium.org>,
+ "kvalo@kernel.org" <kvalo@kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+References: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
+ <97bb3869-3b82-4b64-87cd-9b63d4516649@beims.me>
+ <PA4PR04MB96389A5DDB41DFF80CBB4738D17D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <48364f66-99b4-40ca-b4b2-4adf1071960f@beims.me>
+ <ZcSB3_16C6JTgBJB@gaggiata.pivistrello.it>
+ <PA4PR04MB96381141AFBE8E61B8DD94F9D14D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+From: Rafael Beims <rafael@beims.me>
+In-Reply-To: <PA4PR04MB96381141AFBE8E61B8DD94F9D14D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The Linux kernel project now has the ability to assign CVEs to fixed
-issues, so document the process and how individual developers can get a
-CVE if one is not automatically assigned for their fixes.
+On 14/02/2024 23:07, David Lin wrote:
+>> From: Francesco Dolcini <francesco@dolcini.it>
+>> Sent: Thursday, February 8, 2024 3:25 PM
+>> To: Rafael Beims <rafael@beims.me>
+>> Cc: David Lin <yu-hao.lin@nxp.com>; linux-wireless@vger.kernel.org;
+>> linux-kernel@vger.kernel.org; briannorris@chromium.org; kvalo@kernel.org;
+>> francesco@dolcini.it; Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+>> Subject: Re: [EXT] Re: [PATCH v8 0/2] wifi: mwifiex: add code to support host
+>> mlme
+>>
+>> Caution: This is an external email. Please take care when clicking links or
+>> opening attachments. When in doubt, report the message using the 'Report
+>> this email' button
+>>
+>>
+>> On Wed, Feb 07, 2024 at 06:30:03PM -0300, Rafael Beims wrote:
+>>> On 30/01/2024 04:19, David Lin wrote:
+>>>>> From: Rafael Beims <rafael@beims.me> On 22/12/2023 00:21, David
+>>>>> Lin wrote:
+>>>>>> This series add host based MLME support to the mwifiex driver,
+>>>>>> this enables WPA3 support in both client and AP mode.
+>>>>>> To enable WPA3, a firmware with corresponding V2 Key API support
+>>>>>> is required.
+>>>>>> The feature is currently only enabled on NXP IW416 (SD8978), and
+>>>>>> it was internally validated by the NXP QA team. Other NXP Wi-Fi
+>>>>>> chips supported in current mwifiex are not affected by this change.
+>> ...
+>>
+>>>>>> David Lin (2):
+>>>>>>      wifi: mwifiex: add host mlme for client mode
+>>>>>>      wifi: mwifiex: add host mlme for AP mode
+>> ...
+>>
+>>>>> I applied the two commits of this series on top of v6.7 but
+>>>>> unfortunately the AP is failing to start with the patches. I get
+>>>>> this output from "hostapd -d" (running on a Verdin AM62 with IW416):
+>>>>>
+>>>>> nl80211: kernel reports: Match already configured
+>>>>> nl80211: Register frame command failed (type=176): ret=-114
+>>>>> (Operation already in progress)
+>>>>> nl80211: Register frame match - hexdump(len=0): [NULL]
+>>>>>
+>>>>> If I run the same hostapd on v6.7 without the patches, the AP is
+>>>>> started with no issues.
+>>>>>
+>>>>> Is there anything else that should be done in order to test this?
+>>>>>
+>>>>>
+>>>> I applied patch v8 (mbox from patch work) to Linux stable repository (tag
+>> v6.7.2).
+>>>> Both client and AP mode can work with and without WPA3.
+>>>>
+>>> I went back and executed the tests again. I re-applied the pach on top
+>>> of tag v6.7.2 to make sure we're seeing exactly the same thing.
+>>>
+>>> At first, the behavior I was seeing was exactly the same I reported before.
+>>> Upon starting hostapd with our basic example configuration, it would
+>>> fail to start the AP with the error:
+>>>
+>>> nl80211: kernel reports: Match already configured
+>>> nl80211: Could not configure driver mode
+>>>
+>>> After some investigation of what could cause this error, I found out
+>>> that it was connman that was interfering with this somehow. After
+>>> killing the connman service, the AP would start correctly.
+>>>
+>>> I want to point out that this behavior is different from the unpatched
+>>> driver. With that one we don't need to kill connman in order to start
+>>> the AP with hostapd.
+>> Any idea what's going on in this regard? Is such a change in behavior expected?
+>>
+>> Francesco
+> When I tried to test v6.7.2+ (with patch v8) on NB + SDIO IW416, it needs to issue "sudo systemctl stop NetworkManager" in order to test AP mode.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Lee Jones <lee@kernel.org>
----
-v4: Add MAINTAINER entry
-    Lots of tiny wording changes based on many reviews
-    Collected some Reviewed-by: tags
-    Fixed documenation build by properly referencing the security
-    process documentation file.
-v3: fix up wording in security-bugs.rst based on the changes to the cve
-    assignment process from v1, thanks to a private reviewer for
-    pointing that out.
-v2: Grammer fixes based on review from Randy
-    Updated paragraph about how CVE identifiers will be assigned
-    (automatically when added to stable trees, or ask us for one
-    directly before that happens if so desired)
+The issue I reported is that the kernel with the patch is behaving 
+differently when compared to the kernel without the patch. I kept all 
+the test conditions the same, just replacing the kernel. It seems that 
+you can reproduce this on your end using NetworkManager.
 
- Documentation/process/cve.rst           | 120 ++++++++++++++++++++++++
- Documentation/process/index.rst         |   1 +
- Documentation/process/security-bugs.rst |   5 +-
- MAINTAINERS                             |   5 +
- 4 files changed, 128 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/process/cve.rst
+This is a change in behavior on userspace that's not currently explained.
 
-diff --git a/Documentation/process/cve.rst b/Documentation/process/cve.rst
-new file mode 100644
-index 000000000000..6b244d938694
---- /dev/null
-+++ b/Documentation/process/cve.rst
-@@ -0,0 +1,120 @@
-+CVEs
-+====
-+
-+Common Vulnerabilities and Exposure (CVE®) numbers were developed as an
-+unambiguous way to identify, define, and catalog publicly disclosed
-+security vulnerabilities.  Over time, their usefulness has declined with
-+regards to the kernel project, and CVE numbers were very often assigned
-+in inappropriate ways and for inappropriate reasons.  Because of this,
-+the kernel development community has tended to avoid them.  However, the
-+combination of continuing pressure to assign CVEs and other forms of
-+security identifiers, and ongoing abuses by individuals and companies
-+outside of the kernel community has made it clear that the kernel
-+community should have control over those assignments.
-+
-+The Linux kernel developer team does have the ability to assign CVEs for
-+potential Linux kernel security issues.  This assignment is independent
-+of the :doc:`normal Linux kernel security bug reporting
-+process<../process/security-bugs>`.
-+
-+A list of all assigned CVEs for the Linux kernel can be found in the
-+archives of the linux-cve mailing list, as seen on
-+https://lore.kernel.org/linux-cve-announce/.  To get notice of the
-+assigned CVEs, please `subscribe
-+<https://subspace.kernel.org/subscribing.html>`_ to that mailing list.
-+
-+Process
-+-------
-+
-+As part of the normal stable release process, kernel changes that are
-+potentially security issues are identified by the developers responsible
-+for CVE number assignments and have CVE numbers automatically assigned
-+to them.  These assignments are published on the linux-cve-announce
-+mailing list as announcements on a frequent basis.
-+
-+Note, due to the layer at which the Linux kernel is in a system, almost
-+any bug might be exploitable to compromise the security of the kernel,
-+but the possibility of exploitation is often not evident when the bug is
-+fixed.  Because of this, the CVE assignment team is overly cautious and
-+assign CVE numbers to any bugfix that they identify.  This
-+explains the seemingly large number of CVEs that are issued by the Linux
-+kernel team.
-+
-+If the CVE assignment team misses a specific fix that any user feels
-+should have a CVE assigned to it, please email them at <cve@kernel.org>
-+and the team there will work with you on it.  Note that no potential
-+security issues should be sent to this alias, it is ONLY for assignment
-+of CVEs for fixes that are already in released kernel trees.  If you
-+feel you have found an unfixed security issue, please follow the
-+:doc:`normal Linux kernel security bug reporting
-+process<../process/security-bugs>`.
-+
-+No CVEs will be automatically assigned for unfixed security issues in
-+the Linux kernel; assignment will only automatically happen after a fix
-+is available and applied to a stable kernel tree, and it will be tracked
-+that way by the git commit id of the original fix.  If anyone wishes to
-+have a CVE assigned before an issue is resolved with a commit, please
-+contact the kernel CVE assignment team at <cve@kernel.org> to get an
-+identifier assigned from their batch of reserved identifiers.
-+
-+No CVEs will be assigned for any issue found in a version of the kernel
-+that is not currently being actively supported by the Stable/LTS kernel
-+team.  A list of the currently supported kernel branches can be found at
-+https://kernel.org/releases.html
-+
-+Disputes of assigned CVEs
-+-------------------------
-+
-+The authority to dispute or modify an assigned CVE for a specific kernel
-+change lies solely with the maintainers of the relevant subsystem
-+affected.  This principle ensures a high degree of accuracy and
-+accountability in vulnerability reporting.  Only those individuals with
-+deep expertise and intimate knowledge of the subsystem can effectively
-+assess the validity and scope of a reported vulnerability and determine
-+its appropriate CVE designation.  Any attempt to modify or dispute a CVE
-+outside of this designated authority could lead to confusion, inaccurate
-+reporting, and ultimately, compromised systems.
-+
-+Invalid CVEs
-+------------
-+
-+If a security issue is found in a Linux kernel that is only supported by
-+a Linux distribution due to the changes that have been made by that
-+distribution, or due to the distribution supporting a kernel version
-+that is no longer one of the kernel.org supported releases, then a CVE
-+can not be assigned by the Linux kernel CVE team, and must be asked for
-+from that Linux distribution itself.
-+
-+Any CVE that is assigned against the Linux kernel for an actively
-+supported kernel version, by any group other than the kernel assignment
-+CVE team should not be treated as a valid CVE.  Please notify the
-+kernel CVE assignment team at <cve@kernel.org> so that they can work to
-+invalidate such entries through the CNA remediation process.
-+
-+Applicability of specific CVEs
-+------------------------------
-+
-+As the Linux kernel can be used in many different ways, with many
-+different ways of accessing it by external users, or no access at all,
-+the applicability of any specific CVE is up to the user of Linux to
-+determine, it is not up to the CVE assignment team.  Please do not
-+contact us to attempt to determine the applicability of any specific
-+CVE.
-+
-+Also, as the source tree is so large, and any one system only uses a
-+small subset of the source tree, any users of Linux should be aware that
-+large numbers of assigned CVEs are not relevant for their systems.
-+
-+In short, we do not know your use case, and we do not know what portions
-+of the kernel that you use, so there is no way for us to determine if a
-+specific CVE is relevant for your system.
-+
-+As always, it is best to take all released kernel changes, as they are
-+tested together in a unified whole by many community members, and not as
-+individual cherry-picked changes.  Also note that for many bugs, the
-+solution to the overall problem is not found in a single change, but by
-+the sum of many fixes on top of each other.  Ideally CVEs will be
-+assigned to all fixes for all issues, but sometimes we will fail to
-+notice fixes, therefore assume that some changes without a CVE assigned
-+might be relevant to take.
-+
-diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
-index 6cb732dfcc72..de9cbb7bd7eb 100644
---- a/Documentation/process/index.rst
-+++ b/Documentation/process/index.rst
-@@ -81,6 +81,7 @@ of special classes of bugs: regressions and security problems.
- 
-    handling-regressions
-    security-bugs
-+   cve
-    embargoed-hardware-issues
- 
- Maintainer information
-diff --git a/Documentation/process/security-bugs.rst b/Documentation/process/security-bugs.rst
-index 692a3ba56cca..56c560a00b37 100644
---- a/Documentation/process/security-bugs.rst
-+++ b/Documentation/process/security-bugs.rst
-@@ -99,9 +99,8 @@ CVE assignment
- The security team does not assign CVEs, nor do we require them for
- reports or fixes, as this can needlessly complicate the process and may
- delay the bug handling.  If a reporter wishes to have a CVE identifier
--assigned, they should find one by themselves, for example by contacting
--MITRE directly.  However under no circumstances will a patch inclusion
--be delayed to wait for a CVE identifier to arrive.
-+assigned for a confirmed issue, they can contact the :doc:`kernel CVE
-+assignment team<../process/cve>` to obtain one.
- 
- Non-disclosure agreements
- -------------------------
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 73d898383e51..4d05ac516ded 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5610,6 +5610,11 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
- F:	drivers/net/can/ctucanfd/
- 
-+CVE ASSIGNMENT CONTACT
-+M:	CVE Assignment Team <cve@kernel.org>
-+S:	Maintained
-+F:	Documentation/process/cve.rst
-+
- CW1200 WLAN driver
- S:	Orphan
- F:	drivers/net/wireless/st/cw1200/
--- 
-2.43.1
+> For i.MX + SDIO IW416, it needs to install following two files for client and AP mode to "/lib/systemd/network" for systemd-networkd:
+>
+> <<Client mode: 80-wifi-station.network>>
+>
+> [Match]
+> Type=wlan
+> WLANInterfaceType=station
+>
+> [Network]
+> DHCP=yes
+>
+> <<AP mode: 80-wifi-ap.network>>
+>
+> [Match]
+> Type=wlan
+> WLANInterfaceType=ap
+>
+> [Network]
+> Address=192.168.100.1/24
+> DHCPServer=yes
+>
+> [DHCPServer]
+> PoolOffset=100
+> PoolSize=20
+>
+> I think this is not related to driver.
+>
+> David
+
+I didn't really understand what systemd-networkd has to do with anything 
+being discussed here. We could use it to create an AP, but that's not 
+the test I did. In my case I used hostapd directly.
+
+
+Rafael
 
 
