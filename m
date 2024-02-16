@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-68853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26878580FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:29:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34B398580FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B361C20CBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF9112840DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD184153504;
-	Fri, 16 Feb 2024 15:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A79115350B;
+	Fri, 16 Feb 2024 15:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vYE6a+lF";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fRcQqQ39"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MtO/3l1W";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wQAMJEvN"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA9C151CD1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F008412F58D;
 	Fri, 16 Feb 2024 15:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708096656; cv=none; b=t7bgiADvaHvjDk9kD1Yaf+tkfgcxi/xt2jCpTxCKYy/ThCK+67gJ1z76vEbTb78siF8dW8s6GX8FvX5ZGqTL1eXlMpHCn6N1LV+Vzd4g+jqhjnYzkPs8xP05PixUlgWHdocOrf7kt4hsSo5c2V0Hq8ZeB8QfBreQkEdQ+SQiFSY=
+	t=1708096657; cv=none; b=blE7SYTxgfaWUBVRgSE+kVy4gvsz9sBHOps9JqK7LmdO05O303qvnWTscfC7mNJusifzAigG6pYkZK0x8GkDgUXkSA9Lr/4Ph3PAkcdMdiNK9lLPL+mmpTAVq6Kz3zhOFa9EL9B9ML/HR9EDU38ReEc5/i/OCmKcZXC4Xou5gxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708096656; c=relaxed/simple;
-	bh=f+Pomw22bjmJQSqAaonzD4pq92J01FwuS8ZWk5FibSU=;
+	s=arc-20240116; t=1708096657; c=relaxed/simple;
+	bh=jnqSJHfslrhBICGWzcvHFv6dAd+zriQJlUn1mRadoO4=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=qxG1xovyAGvot5eBf1PWtHb4doczsFzt/Bcp5SqtIkNinQSGbaEmJpfMejJRKZuQTBqfdIKhdWpyrJiGwmJNG2QE/x89xmN/6T/qk+OH6/5m9h9/q2yl4pPLSXfi8HveyxRw3Cic+xeqNp+BJcB3yV6M8ZS4JDkoDXa/z3Nl5Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vYE6a+lF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fRcQqQ39; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=fF5FVkpDH3Cavnq6UQiqCNz4jEmIgTC4j+upG/Ple+WsQ1D6xL3n5/xj0uKoupomJ6VFiTp3RzPQQ5IW9BIjwivJtLy5NMMWvGjtlzL+lcU3SjDu5bdVL/9HYRdQveruA9S9UBNMPKerBmtlREm2+2FOPdLtTmwCifedElW3wME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MtO/3l1W; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wQAMJEvN; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 16 Feb 2024 15:17:31 -0000
+Date: Fri, 16 Feb 2024 15:17:32 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708096652;
+	s=2020; t=1708096653;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ClKQqsV2fHx/HnZA1kQWWWSBYlHj/gDkuhwxYdp7Ti4=;
-	b=vYE6a+lFGXFlo4N03MFkU7zCf+6uULtWxoMeg98Nx8Ww9OypPVxZ7/p3e9lGE0RnHYjSGR
-	DkqqFiuvGHUxVIXiNnRmbEIJ6JxApWIjeJVfYomKozb3fDUMy2igwUkosL5QJNEwIQGRIc
-	vIgiauKa2z+vsk3ZVVa3JLhfD5ioF5LC6pnLKu2nyLD3ljnlqFqvroksDWUQtPLziw7Sz6
-	c+AmptkRu4e8VX8Ipv8skJ8MQSyOt5HUrPy3QbDg0e9A8+mg4N4eO4zPFs9b7t3O2Z1uzm
-	qEgjm6gars2k2Q6JV51I5Jk5Z00dpXXmsb8geR+sPA+AZ+J1eZeX3M/MV8ny+w==
+	bh=GuZXgZgQMOpdkqba2wH7n65otQ5gnBTZw1k2QEi7uTE=;
+	b=MtO/3l1WuaruZh855tsQAJ3ITvi8rsf8J29ROckYZIbN4pjLYcbKz/A8ATnTM100hFGOj5
+	ODFCiAHNIV/Jsr2tD3r9Ym0fKajUTonIL6easktJj0usZ4g7x7bjmz+M0EtqrUsC+kIDtJ
+	VuN0lg8BJ+DYX7JvrSIMutHg4eE16ygxWjVXwUEBiq53pPpJFSsaHiiOCh03sa1J5joR3b
+	PVf6oZFZd/1WuCquFd6yeaUNH3WydRGKo02IvHAri3G6KNAAYwB8DDPmhcx3fQQ7ADDEHp
+	C1/JKiGMcMDTfHEFhUGof3Y9WiXQLhkyhytn3a3ezxbw6uktAWa32B5US3Wx8A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708096652;
+	s=2020e; t=1708096653;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ClKQqsV2fHx/HnZA1kQWWWSBYlHj/gDkuhwxYdp7Ti4=;
-	b=fRcQqQ39hRHl71Ql89xco9SQw3RxAgc0IVnu2g2h8zmfRtwecxhNe5FL6V3ishM0GFmC0X
-	2hmLTjRS5hcIp3DA==
+	bh=GuZXgZgQMOpdkqba2wH7n65otQ5gnBTZw1k2QEi7uTE=;
+	b=wQAMJEvNqYKYzzUb381gObhnaRpU/Sba7eii+FakTdrRkzlP0ZuuxuXYYR/EwgOfcFthEn
+	w9QryW6RbNvnWcBQ==
 From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/cpu/amd: Provide a separate accessor for Node ID
+Subject: [tip: x86/apic] x86/cpu: Use common topology code for Intel
 Cc: Thomas Gleixner <tglx@linutronix.de>, Juergen Gross <jgross@suse.com>,
  Sohil Mehta <sohil.mehta@intel.com>, Michael Kelley <mhklinux@outlook.com>,
  Zhang Rui <rui.zhang@intel.com>, Wang Wendy <wendy.wang@intel.com>,
  K Prateek Nayak <kprateek.nayak@amd.com>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240212153624.956116738@linutronix.de>
-References: <20240212153624.956116738@linutronix.de>
+In-Reply-To: <20240212153624.893644349@linutronix.de>
+References: <20240212153624.893644349@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170809665183.398.2358604943559947961.tip-bot2@tip-bot2>
+Message-ID: <170809665247.398.8018173860044927428.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,25 +83,22 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     7e3ec6286753b404666af9a58d283690302c9321
-Gitweb:        https://git.kernel.org/tip/7e3ec6286753b404666af9a58d283690302c9321
+Commit-ID:     22d63660c35eb751c63a709bf901a64c1726592a
+Gitweb:        https://git.kernel.org/tip/22d63660c35eb751c63a709bf901a64c1726592a
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Feb 2024 22:04:10 +01:00
+AuthorDate:    Tue, 13 Feb 2024 22:04:08 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 15 Feb 2024 22:07:37 +01:00
 
-x86/cpu/amd: Provide a separate accessor for Node ID
+x86/cpu: Use common topology code for Intel
 
-AMD (ab)uses topology_die_id() to store the Node ID information and
-topology_max_dies_per_pkg to store the number of nodes per package.
+Intel CPUs use either topology leaf 0xb/0x1f evaluation or the legacy
+SMP/HT evaluation based on CPUID leaf 0x1/0x4.
 
-This collides with the proper processor die level enumeration which is
-coming on AMD with CPUID 8000_0026, unless there is a correlation between
-the two. There is zero documentation about that.
+Move it over to the consolidated topology code and remove the random
+topology hacks which are sprinkled into the Intel and the common code.
 
-So provide new storage and new accessors which for now still access die_id
-and topology_max_die_per_pkg(). Will be mopped up after AMD and HYGON are
-converted over.
+No functional change intended.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juergen Gross <jgross@suse.com>
@@ -110,194 +107,219 @@ Tested-by: Michael Kelley <mhklinux@outlook.com>
 Tested-by: Zhang Rui <rui.zhang@intel.com>
 Tested-by: Wang Wendy <wendy.wang@intel.com>
 Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-Link: https://lore.kernel.org/r/20240212153624.956116738@linutronix.de
+Link: https://lore.kernel.org/r/20240212153624.893644349@linutronix.de
 
 ---
- arch/x86/events/amd/core.c       | 2 +-
- arch/x86/include/asm/processor.h | 3 +++
- arch/x86/include/asm/topology.h  | 8 ++++++++
- arch/x86/kernel/amd_nb.c         | 4 ++--
- arch/x86/kernel/cpu/cacheinfo.c  | 2 +-
- arch/x86/kernel/cpu/mce/amd.c    | 4 ++--
- arch/x86/kernel/cpu/mce/inject.c | 4 ++--
- drivers/edac/amd64_edac.c        | 4 ++--
- drivers/edac/mce_amd.c           | 4 ++--
- 9 files changed, 23 insertions(+), 12 deletions(-)
+ arch/x86/kernel/cpu/common.c          | 65 +--------------------------
+ arch/x86/kernel/cpu/cpu.h             |  4 +--
+ arch/x86/kernel/cpu/intel.c           | 25 +----------
+ arch/x86/kernel/cpu/topology.c        | 22 +---------
+ arch/x86/kernel/cpu/topology_common.c |  5 +-
+ 5 files changed, 4 insertions(+), 117 deletions(-)
 
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index 81f6d82..69a3b02 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -579,7 +579,7 @@ static void amd_pmu_cpu_starting(int cpu)
- 	if (!x86_pmu.amd_nb_constraints)
- 		return;
- 
--	nb_id = topology_die_id(cpu);
-+	nb_id = topology_amd_node_id(cpu);
- 	WARN_ON_ONCE(nb_id == BAD_APICID);
- 
- 	for_each_online_cpu(i) {
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 26620d7..26a6001 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -100,6 +100,9 @@ struct cpuinfo_topology {
- 	u32			logical_pkg_id;
- 	u32			logical_die_id;
- 
-+	// AMD Node ID and Nodes per Package info
-+	u32			amd_node_id;
-+
- 	// Cache level topology IDs
- 	u32			llc_id;
- 	u32			l2c_id;
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index fa5d803..1fd12e9 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -131,6 +131,8 @@ extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- #define topology_core_id(cpu)			(cpu_data(cpu).topo.core_id)
- #define topology_ppin(cpu)			(cpu_data(cpu).ppin)
- 
-+#define topology_amd_node_id(cpu)		(cpu_data(cpu).topo.die_id)
-+
- extern unsigned int __max_die_per_package;
- 
- #ifdef CONFIG_SMP
-@@ -161,6 +163,11 @@ int topology_update_package_map(unsigned int apicid, unsigned int cpu);
- int topology_update_die_map(unsigned int dieid, unsigned int cpu);
- int topology_phys_to_logical_pkg(unsigned int pkg);
- 
-+static inline unsigned int topology_amd_nodes_per_pkg(void)
-+{
-+	return __max_die_per_package;
-+}
-+
- extern struct cpumask __cpu_primary_thread_mask;
- #define cpu_primary_thread_mask ((const struct cpumask *)&__cpu_primary_thread_mask)
- 
-@@ -182,6 +189,7 @@ static inline int topology_phys_to_logical_pkg(unsigned int pkg) { return 0; }
- static inline int topology_max_die_per_package(void) { return 1; }
- static inline int topology_max_smt_threads(void) { return 1; }
- static inline bool topology_is_primary_thread(unsigned int cpu) { return true; }
-+static inline unsigned int topology_amd_nodes_per_pkg(void) { return 0; };
- #endif /* !CONFIG_SMP */
- 
- static inline void arch_fix_phys_package_id(int num, u32 slot)
-diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-index 053f6dc..5bf5f9f 100644
---- a/arch/x86/kernel/amd_nb.c
-+++ b/arch/x86/kernel/amd_nb.c
-@@ -386,7 +386,7 @@ struct resource *amd_get_mmconfig_range(struct resource *res)
- 
- int amd_get_subcaches(int cpu)
- {
--	struct pci_dev *link = node_to_amd_nb(topology_die_id(cpu))->link;
-+	struct pci_dev *link = node_to_amd_nb(topology_amd_node_id(cpu))->link;
- 	unsigned int mask;
- 
- 	if (!amd_nb_has_feature(AMD_NB_L3_PARTITIONING))
-@@ -400,7 +400,7 @@ int amd_get_subcaches(int cpu)
- int amd_set_subcaches(int cpu, unsigned long mask)
- {
- 	static unsigned int reset, ban;
--	struct amd_northbridge *nb = node_to_amd_nb(topology_die_id(cpu));
-+	struct amd_northbridge *nb = node_to_amd_nb(topology_amd_node_id(cpu));
- 	unsigned int reg;
- 	int cuid;
- 
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index c131c41..4a33218 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -595,7 +595,7 @@ static void amd_init_l3_cache(struct _cpuid4_info_regs *this_leaf, int index)
- 	if (index < 3)
- 		return;
- 
--	node = topology_die_id(smp_processor_id());
-+	node = topology_amd_node_id(smp_processor_id());
- 	this_leaf->nb = node_to_amd_nb(node);
- 	if (this_leaf->nb && !this_leaf->nb->l3_cache.indices)
- 		amd_calc_l3_indices(this_leaf->nb);
-diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-index 2b46eb0..9a0133e 100644
---- a/arch/x86/kernel/cpu/mce/amd.c
-+++ b/arch/x86/kernel/cpu/mce/amd.c
-@@ -1231,7 +1231,7 @@ static int threshold_create_bank(struct threshold_bank **bp, unsigned int cpu,
- 		return -ENODEV;
- 
- 	if (is_shared_bank(bank)) {
--		nb = node_to_amd_nb(topology_die_id(cpu));
-+		nb = node_to_amd_nb(topology_amd_node_id(cpu));
- 
- 		/* threshold descriptor already initialized on this node? */
- 		if (nb && nb->bank4) {
-@@ -1335,7 +1335,7 @@ static void threshold_remove_bank(struct threshold_bank *bank)
- 		 * The last CPU on this node using the shared bank is going
- 		 * away, remove that bank now.
- 		 */
--		nb = node_to_amd_nb(topology_die_id(smp_processor_id()));
-+		nb = node_to_amd_nb(topology_amd_node_id(smp_processor_id()));
- 		nb->bank4 = NULL;
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index 72f0695..308c5b5 100644
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -543,8 +543,8 @@ static void do_inject(void)
- 	if (boot_cpu_has(X86_FEATURE_AMD_DCM) &&
- 	    b == 4 &&
- 	    boot_cpu_data.x86 < 0x17) {
--		toggle_nb_mca_mst_cpu(topology_die_id(cpu));
--		cpu = get_nbc_for_node(topology_die_id(cpu));
-+		toggle_nb_mca_mst_cpu(topology_amd_node_id(cpu));
-+		cpu = get_nbc_for_node(topology_amd_node_id(cpu));
- 	}
- 
- 	cpus_read_lock();
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index 537b998..2b8c20b 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -1915,7 +1915,7 @@ ddr3:
- /* On F10h and later ErrAddr is MC4_ADDR[47:1] */
- static u64 get_error_address(struct amd64_pvt *pvt, struct mce *m)
- {
--	u16 mce_nid = topology_die_id(m->extcpu);
-+	u16 mce_nid = topology_amd_node_id(m->extcpu);
- 	struct mem_ctl_info *mci;
- 	u8 start_bit = 1;
- 	u8 end_bit   = 47;
-@@ -3446,7 +3446,7 @@ static void get_cpus_on_this_dct_cpumask(struct cpumask *mask, u16 nid)
- 	int cpu;
- 
- 	for_each_online_cpu(cpu)
--		if (topology_die_id(cpu) == nid)
-+		if (topology_amd_node_id(cpu) == nid)
- 			cpumask_set_cpu(cpu, mask);
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 5d7911f..f83dd86 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -793,19 +793,6 @@ static void get_model_name(struct cpuinfo_x86 *c)
+ 	*(s + 1) = '\0';
  }
  
-diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-index ec8b6c9..8130c3d 100644
---- a/drivers/edac/mce_amd.c
-+++ b/drivers/edac/mce_amd.c
-@@ -584,7 +584,7 @@ static void decode_mc3_mce(struct mce *m)
- static void decode_mc4_mce(struct mce *m)
+-void detect_num_cpu_cores(struct cpuinfo_x86 *c)
+-{
+-	unsigned int eax, ebx, ecx, edx;
+-
+-	c->x86_max_cores = 1;
+-	if (!IS_ENABLED(CONFIG_SMP) || c->cpuid_level < 4)
+-		return;
+-
+-	cpuid_count(4, 0, &eax, &ebx, &ecx, &edx);
+-	if (eax & 0x1f)
+-		c->x86_max_cores = (eax >> 26) + 1;
+-}
+-
+ void cpu_detect_cache_sizes(struct cpuinfo_x86 *c)
  {
- 	unsigned int fam = x86_family(m->cpuid);
--	int node_id = topology_die_id(m->extcpu);
-+	int node_id = topology_amd_node_id(m->extcpu);
- 	u16 ec = EC(m->status);
- 	u8 xec = XEC(m->status, 0x1f);
- 	u8 offset = 0;
-@@ -746,7 +746,7 @@ static void decode_smca_error(struct mce *m)
- 
- 	if ((bank_type == SMCA_UMC || bank_type == SMCA_UMC_V2) &&
- 	    xec == 0 && decode_dram_ecc)
--		decode_dram_ecc(topology_die_id(m->extcpu), m);
-+		decode_dram_ecc(topology_amd_node_id(m->extcpu), m);
+ 	unsigned int n, dummy, ebx, ecx, edx, l2size;
+@@ -867,54 +854,6 @@ static void cpu_detect_tlb(struct cpuinfo_x86 *c)
+ 		tlb_lld_4m[ENTRIES], tlb_lld_1g[ENTRIES]);
  }
  
- static inline void amd_decode_err_code(u16 ec)
+-int detect_ht_early(struct cpuinfo_x86 *c)
+-{
+-#ifdef CONFIG_SMP
+-	u32 eax, ebx, ecx, edx;
+-
+-	if (!cpu_has(c, X86_FEATURE_HT))
+-		return -1;
+-
+-	if (cpu_has(c, X86_FEATURE_CMP_LEGACY))
+-		return -1;
+-
+-	if (cpu_has(c, X86_FEATURE_XTOPOLOGY))
+-		return -1;
+-
+-	cpuid(1, &eax, &ebx, &ecx, &edx);
+-
+-	smp_num_siblings = (ebx & 0xff0000) >> 16;
+-	if (smp_num_siblings == 1)
+-		pr_info_once("CPU0: Hyper-Threading is disabled\n");
+-#endif
+-	return 0;
+-}
+-
+-void detect_ht(struct cpuinfo_x86 *c)
+-{
+-#ifdef CONFIG_SMP
+-	int index_msb, core_bits;
+-
+-	if (topo_is_converted(c))
+-		return;
+-
+-	if (detect_ht_early(c) < 0)
+-		return;
+-
+-	index_msb = get_count_order(smp_num_siblings);
+-	c->topo.pkg_id = apic->phys_pkg_id(c->topo.initial_apicid, index_msb);
+-
+-	smp_num_siblings = smp_num_siblings / c->x86_max_cores;
+-
+-	index_msb = get_count_order(smp_num_siblings);
+-
+-	core_bits = get_count_order(c->x86_max_cores);
+-
+-	c->topo.core_id = apic->phys_pkg_id(c->topo.initial_apicid, index_msb) &
+-		((1 << core_bits) - 1);
+-#endif
+-}
+-
+ static void get_cpu_vendor(struct cpuinfo_x86 *c)
+ {
+ 	char *v = c->x86_vendor_id;
+@@ -1899,10 +1838,6 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 				c->x86, c->x86_model);
+ 	}
+ 
+-#ifdef CONFIG_X86_64
+-	detect_ht(c);
+-#endif
+-
+ 	x86_init_rdrand(c);
+ 	setup_pku(c);
+ 	setup_cet(c);
+diff --git a/arch/x86/kernel/cpu/cpu.h b/arch/x86/kernel/cpu/cpu.h
+index 2a446ec..5a790f1 100644
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -76,11 +76,7 @@ extern void init_intel_cacheinfo(struct cpuinfo_x86 *c);
+ extern void init_amd_cacheinfo(struct cpuinfo_x86 *c);
+ extern void init_hygon_cacheinfo(struct cpuinfo_x86 *c);
+ 
+-extern void detect_num_cpu_cores(struct cpuinfo_x86 *c);
+-extern int detect_extended_topology_early(struct cpuinfo_x86 *c);
+ extern int detect_extended_topology(struct cpuinfo_x86 *c);
+-extern int detect_ht_early(struct cpuinfo_x86 *c);
+-extern void detect_ht(struct cpuinfo_x86 *c);
+ extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
+ 
+ void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c);
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index a927a8f..1bb37a6 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -315,13 +315,6 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 	}
+ 
+ 	check_memory_type_self_snoop_errata(c);
+-
+-	/*
+-	 * Get the number of SMT siblings early from the extended topology
+-	 * leaf, if available. Otherwise try the legacy SMT detection.
+-	 */
+-	if (detect_extended_topology_early(c) < 0)
+-		detect_ht_early(c);
+ }
+ 
+ static void bsp_init_intel(struct cpuinfo_x86 *c)
+@@ -603,24 +596,6 @@ static void init_intel(struct cpuinfo_x86 *c)
+ 
+ 	intel_workarounds(c);
+ 
+-	/*
+-	 * Detect the extended topology information if available. This
+-	 * will reinitialise the initial_apicid which will be used
+-	 * in init_intel_cacheinfo()
+-	 */
+-	detect_extended_topology(c);
+-
+-	if (!cpu_has(c, X86_FEATURE_XTOPOLOGY)) {
+-		/*
+-		 * let's use the legacy cpuid vector 0x1 and 0x4 for topology
+-		 * detection.
+-		 */
+-		detect_num_cpu_cores(c);
+-#ifdef CONFIG_X86_32
+-		detect_ht(c);
+-#endif
+-	}
+-
+ 	init_intel_cacheinfo(c);
+ 
+ 	if (c->cpuid_level > 9) {
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 208e17a..2b68f26 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -59,28 +59,6 @@ static int detect_extended_topology_leaf(struct cpuinfo_x86 *c)
+ }
+ #endif
+ 
+-int detect_extended_topology_early(struct cpuinfo_x86 *c)
+-{
+-#ifdef CONFIG_SMP
+-	unsigned int eax, ebx, ecx, edx;
+-	int leaf;
+-
+-	leaf = detect_extended_topology_leaf(c);
+-	if (leaf < 0)
+-		return -1;
+-
+-	set_cpu_cap(c, X86_FEATURE_XTOPOLOGY);
+-
+-	cpuid_count(leaf, SMT_LEVEL, &eax, &ebx, &ecx, &edx);
+-	/*
+-	 * initial apic id, which also represents 32-bit extended x2apic id.
+-	 */
+-	c->topo.initial_apicid = edx;
+-	smp_num_siblings = max_t(int, smp_num_siblings, LEVEL_MAX_SIBLINGS(ebx));
+-#endif
+-	return 0;
+-}
+-
+ /*
+  * Check for extended topology enumeration cpuid leaf, and if it
+  * exists, use it for populating initial_apicid and cpu topology
+diff --git a/arch/x86/kernel/cpu/topology_common.c b/arch/x86/kernel/cpu/topology_common.c
+index bcaaeec..ef99499 100644
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -71,7 +71,6 @@ bool topo_is_converted(struct cpuinfo_x86 *c)
+ 	/* Temporary until everything is converted over. */
+ 	switch (boot_cpu_data.x86_vendor) {
+ 	case X86_VENDOR_AMD:
+-	case X86_VENDOR_INTEL:
+ 	case X86_VENDOR_HYGON:
+ 		return false;
+ 	default:
+@@ -136,6 +135,10 @@ static void parse_topology(struct topo_scan *tscan, bool early)
+ 	case X86_VENDOR_ZHAOXIN:
+ 		parse_legacy(tscan);
+ 		break;
++	case X86_VENDOR_INTEL:
++		if (!IS_ENABLED(CONFIG_CPU_SUP_INTEL) || !cpu_parse_topology_ext(tscan))
++			parse_legacy(tscan);
++		break;
+ 	}
+ }
+ 
 
