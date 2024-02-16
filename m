@@ -1,80 +1,69 @@
-Return-Path: <linux-kernel+bounces-69371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3CC858824
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA7C858833
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B8402843CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:42:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A605286983
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA711420B8;
-	Fri, 16 Feb 2024 21:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35581482FF;
+	Fri, 16 Feb 2024 21:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="d/Z+i0Gs"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Z0huVsDe"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CF11468F6
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C0D145B03
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708119753; cv=none; b=SUZyHdSLtJXVaPglo35CEst4wgcuvvLd4VifPKpduRL6fqYJYuSZiL+tHoosWgA+9CaxohG0jiX6YpbSpmrC7LZtJnwmWbR+YS6+nWeC+ZKxhVv3aX+TQQLTmwEmLR1Ju0OAIwGbb1AqWvsNwng+cyeVtQqcCUiUhXkBSX18JfQ=
+	t=1708119968; cv=none; b=B2hi5D44jqn6gSUCe0hBsjzTGRMxjvxAOwFrCfTVYlmqLJstVtmRYz09bxsKkz8NdPV371qdT52fqa4Vfqwcd9KEHvsxbNz7NENItWCtvekfAI6JypRr86B5CKsebokHEDN3rvFvHAA4WolzLHuz5Xmnxwti5E+Vse8uphRU5ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708119753; c=relaxed/simple;
-	bh=4c3eMKTWbi+wcF5n+RJsW+tkHhjsCNbcJlVT2UgwhH8=;
+	s=arc-20240116; t=1708119968; c=relaxed/simple;
+	bh=o0ndNCuW/LGkSeAXqoK2Hh0K+6mw4AiIuP9CZwqmqZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B/noHfbefNTjKhkPMG3mKEr/+AJVd54ftQxS8CozDlMeEuG9nMmxsew+sYB1+m1AoKe4SSo4qMnLX0xmDBU/DzXJ900rtS6OdMcuGrqj56mlYHU3t8BBkpFWmZCt4PxJGu/9IWNf9mQ21c8Rlyk9jGzGpWIhCDDYqSGo+OH5ps4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=d/Z+i0Gs; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1522078a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708119751; x=1708724551; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pmqvLalSTvjyY0hPo1vwRpJX0mbABPaN9LQ6zaR4OAw=;
-        b=d/Z+i0GsxaluQ09Eag9Jx/VRbvIGgYqk5+TPqboE7vd2kcAWt6lWhgcIc/4QNYWYXe
-         uqFdfxjbZ0k9GvgePThKtazLI/P6K/n/ViTz7n5Itqt6D33I5vVZ6K+WX8Y/bThvkOcM
-         GZ5BrfacAeH+5+j4IKuYE90L+Hu0CbaEGetKQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708119751; x=1708724551;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pmqvLalSTvjyY0hPo1vwRpJX0mbABPaN9LQ6zaR4OAw=;
-        b=XP0DkscXumOLxuyIYdyOMGHAKPtnXy9hmRFSBcFyvJgxc4kqky/6oikqLn/Ly10Ddc
-         R9OjMpgTpLLhzFsQi2jx/2kHjb7YY1yKOdu2fDqP7skYyE1kF5no/xzXgmsLhW5U8OOa
-         Ve0gXpuFw/WRhw27LvVXGaNsqBV6yFCe1OXb/xo22B+LtbD5EAce2TRfcMJzzorlIw5q
-         wordyeG+mQ/gJZD8wjETYKHrjflxBhIp0qQ+tcQnifea+4qbXkPk3ha9LOSbF3n3eVT0
-         TiblsBWLCcjcGd/+flZh7W3EVfED/ccK0XkR+1v8RDyvUI73x782lWrMwmb9q4L0gzCK
-         Ehkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJyFvgUiFM4gpEGpJrvXtP8K5Y5yCsjaB7aJJdTcbAySfKr+6iVUZ/QXLWj/H+c2mSsY5j+O1KY8qbU6zO0y6cXSLNk4TDarfDDZey
-X-Gm-Message-State: AOJu0Yz442TMt/V741ISU0qBYIh/jmoOmUgvU/nJnrDPPBWD09PoZkdK
-	ZYGpQOg1xisfjcAFbk7EIvDsKpRtTmKWRzZ57fK+rgD229ehSMCIMG3I2u+fUw==
-X-Google-Smtp-Source: AGHT+IEXIq2vlhY0MRi3dbghbU5hzq6K5TiA/bjopoX0NzcTaYWwUJfK3zWU4HYBShZXvZGvCuUPfg==
-X-Received: by 2002:a17:90a:b902:b0:299:24ae:7ed9 with SMTP id p2-20020a17090ab90200b0029924ae7ed9mr5316353pjr.36.1708119750822;
-        Fri, 16 Feb 2024 13:42:30 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id cz15-20020a17090ad44f00b0029703476e9bsm453747pjb.44.2024.02.16.13.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 13:42:30 -0800 (PST)
-Date: Fri, 16 Feb 2024 13:42:29 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] wifi: brcmfmac: fweh: Fix boot crash on Raspberry
- Pi 4
-Message-ID: <202402161341.AC45AC7@keescook>
-References: <Zc+3PFCUvLoVlpg8@neat>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ewUN6hopgvzHh48GDypfjNR2hVnu/nwEEzaHG7AVYylA77n3g2K3QTBJJgA7NSuD/lVk9XhNt0AjAWtm8JN4hSpBSj1tkPvIe3kg/xqvHyoTV0nGJ5shBrbjnWltSAXbbpFZpcvIXky5IxwV9Prn7QOEZbzL5NB4XLyBvDWy+no=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Z0huVsDe; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-116-68.bstnma.fios.verizon.net [173.48.116.68])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41GLjLRn027258
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 16:45:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1708119925; bh=qX3u18CRlr9QIqISpdJUxdSosa3u7KUTMQrg629TsYY=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Z0huVsDeqd9GAdZu8WotBIJJhNJ7TRQBHuR0dYi51rt+y7Tb9Fr2zamV4RsUxNCDH
+	 hKaQiX3bjLkgl+FruGnCLynXeZ4NtqL1fiL84OVccG7/dtMxpVVsba3to8WcwyTyGr
+	 QOD/dzYfmyVqgGY7/P2iIpt0Vu3QmTQLETnqpuQLTqNUVGciJpAFwZkxjbEnqp6i4U
+	 WjF11+JfB+ZBM0AL8R7/U+R3q/sUDMILBXlIf90Fr7O4sG1G1Cqza9EB3ky0Pf+074
+	 odVEA7cSYStvHpU0EZkA8ECr2MkMNB2KJMk2FV5okZcb9lrAq1BCuMQu7gez9EvJvg
+	 cTtqws76t9BoA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id BD7C415C0336; Fri, 16 Feb 2024 16:45:21 -0500 (EST)
+Date: Fri, 16 Feb 2024 16:45:21 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jiri Kosina <jikos@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, corbet@lwn.net,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, security@kernel.org, linux@leemhuis.info,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v4] Documentation: Document the Linux Kernel CVE process
+Message-ID: <20240216214521.GC549270@mit.edu>
+References: <2024021500-laziness-grimace-ed80@gregkh>
+ <20240216192625.o3q6m7cjgkwyfe4y@treble>
+ <nycvar.YFH.7.76.2402162108370.21798@cbobk.fhfr.pm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,44 +72,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zc+3PFCUvLoVlpg8@neat>
+In-Reply-To: <nycvar.YFH.7.76.2402162108370.21798@cbobk.fhfr.pm>
 
-On Fri, Feb 16, 2024 at 01:27:56PM -0600, Gustavo A. R. Silva wrote:
-> Fix boot crash on Raspberry Pi by moving the update to `event->datalen`
-> before data is copied into flexible-array member `data` via `memcpy()`.
+On Fri, Feb 16, 2024 at 09:27:48PM +0100, Jiri Kosina wrote:
 > 
-> Flexible-array member `data` was annotated with `__counted_by(datalen)`
-> in commit 62d19b358088 ("wifi: brcmfmac: fweh: Add __counted_by for
-> struct brcmf_fweh_queue_item and use struct_size()"). The intention of
-> this is to gain visibility into the size of `data` at run-time through
-> its _counter_ (in this case `datalen`), and with this have its accesses
-> bounds-checked at run-time via CONFIG_FORTIFY_SOURCE and
-> CONFIG_UBSAN_BOUNDS.
+> Now that you have played the distro card (thanks!) here, let me just copy 
+> my comment from LWN where someone suggested "well, it's easy, it's the job 
+> of the [paid] distros to do the triage" ...
 > 
-> To effectively accomplish the above, we shall update the counter
-> (`datalen`), before the first access to the flexible array (`data`),
-> which was also done in the mentioned commit.
-> 
-> However, commit edec42821911 ("wifi: brcmfmac: allow per-vendor event
-> handling") inadvertently caused a buffer overflow, detected by
-> FORTIFY_SOURCE. It moved the `event->datalen = datalen;` update to after
-> the first `data` access, at which point `event->datalen` was not yet
-> updated from zero (after calling `kzalloc()`), leading to the overflow
-> issue.
-> 
-> This fix repositions the `event->datalen = datalen;` update before
-> accessing `data`, restoring the intended buffer overflow protection. :)
-> 
-> Fixes: edec42821911 ("wifi: brcmfmac: allow per-vendor event handling")
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Closes: https://gist.github.com/nathanchance/e22f681f3bfc467f15cdf6605021aaa6
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> The problem is, that with this new system, paid distros are going to 
+> suffer a big time (with no benefit to anybody at all). We'll have to put a 
+> lot of productive and creative (upstream) work on hold in order to have 
+> enough resources to sort out the havoc that LTS team is apparently going 
+> to create by DoSing the world with a truckload of irrelevant CVEs.
 
-Yup, this looks correct. Thanks!
+My observation is that the old system has had pretty low-quality
+CVE's, and worse, overly inflated CVE Severity Scores, which has
+forced all people who are supporting distro and cloud serves which
+sell into the US Government market to have to do very fast releases to
+meet FedRAMP requirements.  At least once, I protested an overly
+inflated CVSS score as being completely b.s., at a particular
+enterprise distro bugzilla, and my opinion as the upstream developer
+was completely ignored.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+So quite frankly, at least one enteprise distro hasn't impressed me
+with avoiding low quality CVE's and high CVSS scores, and so I'm quite
+willing to give the new system a chance.  (Especially since I've been
+told that the Linux Kernel CVE team isn't planning on issuing CVSS
+scores, which as far as I'm concerned, is *excellent* since my
+experience is that they are quite bogus, and quite arbitrary.)
 
--- 
-Kees Cook
+	      	   	     	   	  - Ted
 
