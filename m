@@ -1,121 +1,192 @@
-Return-Path: <linux-kernel+bounces-68276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1384A857819
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:54:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9298577FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9F25B2170C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:54:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C01921F22004
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5BA1A58E;
-	Fri, 16 Feb 2024 08:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776EE182D8;
+	Fri, 16 Feb 2024 08:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b="VSUNIuQt"
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="lTG+/3IC"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA5B18645
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.201.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6ED51798E
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073604; cv=none; b=L07XyXUEJZMgicK7Ky+Ag3ugnCR0564+Ts+eN96hvuYT58oGLpiriBqnA/7WjdZS4kdckpPw9kbkt5SCu+Ly2Fxki5TVGYorJTKqSyJCi/MFGy6Xq34ZqxKLuEZuX8cnJC80VcNopB+8WFTpY79uBAHDlKBnma3RaHN/PBkevVI=
+	t=1708073267; cv=none; b=I1ivuitEptRoW7M5frvlVaM6rPdZh0ZlkTPw5tkMQ2IHD/YUOACOADASdVnpNbstTt3qXPBk3oN49lSCdS/L2PoIfM/UOFb+SkpwT4+MdWoRQtklW2M1yUt5N6mmLrr8FTZ+Y4YZelRVtMqfamzUWoWICWyZbFUvFnDd3bNCezQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073604; c=relaxed/simple;
-	bh=WE3KdkX5VByr254yAyjqsfNttYARg0lCDLNK9YrlFKs=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=NBKTpmSQm6ayrFpU/H0h7y0hRo6Kb8P11hsIt6qAppD27Hy36O/zYSLeQVzPgQMYLy0j4HvdHHeDm4CU9/OFbDrAMkqxB7eG5r2pJKlakXFCyoaYrX4jZWHUX8oybtBOXqphYVJEY4lX9yBA9UzNaXYZj8pbn08z59DPAJn69As=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc; spf=pass smtp.mailfrom=walle.cc; dkim=pass (2048-bit key) header.d=walle.cc header.i=@walle.cc header.b=VSUNIuQt; arc=none smtp.client-ip=159.69.201.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=walle.cc
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=walle.cc
-Received: from localhost (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 4C017A4D;
-	Fri, 16 Feb 2024 09:47:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1708073254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=fR39o00YViWIydM7bubGunhhqgptLPWAjHHTwJdFOds=;
-	b=VSUNIuQtKG5mBOy/qRCA0dUIHc+yENa/6AhSz6KczbjA+IAIr8wxm9EtcnDg61uHqiw3Uv
-	HUNCPceY7/LpoSipR8VrFuXRWvpO63c8qVvyzOfpdOzSylOe689CU7zv7Hu4kVjZUFUys7
-	+BrIhjVj0i1PmKpA2dOJZnJDEBbWwzEpsjH/02+kjsSDAukuUVKosJz++HBgC1Tx1heiWa
-	tNSgrhyROhCR2VPj8/OtWgurmRB8IgsXI3EPVsi0utRjmoH+tkTT0suyJYuc37RvFGeJuU
-	KrwWfXOtim4QYzTqP9eDT5t/mkIqnSMFyqXuDIVBIbjVfmCsQGzqPjYGf3COMA==
-Content-Type: multipart/signed;
- boundary=52ba317e8c7c5ca537a8d63e6ea42f83f0a58640d2bb4d9412e895a495f2;
- micalg=pgp-sha256; protocol="application/pgp-signature"
-Date: Fri, 16 Feb 2024 09:47:27 +0100
-Message-Id: <CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
-Cc: <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>
-From: "Michael Walle" <michael@walle.cc>
-To: "Marco Felsch" <m.felsch@pengutronix.de>,
- <srinivas.kandagatla@linaro.org>, <gregkh@linuxfoundation.org>,
- <miquel.raynal@bootlin.com>, <rafal@milecki.pl>
-Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
-X-Mailer: aerc 0.16.0
-References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
-In-Reply-To: <20240215211401.1201004-1-m.felsch@pengutronix.de>
+	s=arc-20240116; t=1708073267; c=relaxed/simple;
+	bh=7O4Za22TfMXoaNzcbnPDMdkzDAdQuWqygdt/zrphP3E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lFfR+7fFbQvB/slJlqXd/Us0ww9jQM+8MHJmC5YOVU6LBgXZppja1jR2emPD0x3ehkhPZm0B0w9acETPUjWT/SRdaSoDix1Mgr+/uGzeWHmq4bYKpQ8tcV1cP3yAyt5jHTF7NWLBAh1oJtW3g1nFtJdj0kL7IF7Tkq1sMA2JIWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=lTG+/3IC; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c0485fc8b8so1551116b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708073264; x=1708678064; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=upnkKGhfzc8qqiqM2ipvrycRNTREZNhhxEHc3oR8BjY=;
+        b=lTG+/3IC/4NqThwYBOSFpt4ihKdNQ6ORZOmoIy0wB5vJ0KczAL7fV64wB0GOJjEAWd
+         gvdl4Vqgb1WK+csetdiklEcOC5ZTgACKCi8ugX/pjd3PiFTerGK7GU/vq8mSSewM1ZgA
+         aobMJJgdbTbCved3X7ypTS1zyKnQI+O7I8nfIvQMqdhiMXs6S7bS4OXYr/8VO03yexVw
+         WyF5Qw/8o4rzOTKJjmazjLlOaurJeZ+G4plzPFImVF0pjG4IGyG8xDLYvBl7tE5h9hV7
+         lrVGSVhmHpdD+qH2Fx9v8kDd26kBQKQAWmi73OfB4wCSLXLA1C/a/8cE+NFEw6R/G8tE
+         lNEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708073264; x=1708678064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=upnkKGhfzc8qqiqM2ipvrycRNTREZNhhxEHc3oR8BjY=;
+        b=E31FqSrVeo3xhEQ6WoIZTLlOGbNJu0x9hBsUqg2arRZe9ycu7iJe35rOxLqVGrUuor
+         6m+H0NbugWpaIm0YHOPERbsnZ0Aq1/pI+YEJUCbF1b6lCWFOCX4R++B6sEsZ4QXZvzsx
+         EKH6xz/owQJ4P938e5qduKgIx6RSD6CX7RzPOsYfpkjLAt/EtSErpOxAHwvlNSyvqwiz
+         0TShM1hbODXNOA4Fy5KjArXLnPJlUJfGJOVfUrM+TB4sjaVRoEeNSD2g5WAIWEVmjPT+
+         wBrq91cTgmuoI+1JP3S9/eHEim4GUsZM+Nk/hA6XiYri1Ee+qY15Rn0bRx8SQYzkQwOR
+         80FA==
+X-Forwarded-Encrypted: i=1; AJvYcCWe0CElAJIGh/1pSybSTlvZlWTxuYEATR6OzebCfYTPCn634/ndSWxaxbf/akvWMvjXEg92Py7tJsciVIeZXoojgNoG+I28PHobw1qi
+X-Gm-Message-State: AOJu0Yx6foc1GHuRMUw+SjAdL4WzIHa+MiEsy3HZDMeF4Iotv5gsrsmi
+	gUX2UlIBTjQuThqlkWLYD5k7PBz+0KFpsd4y5jVDuNXRhUpuo0zeC8QmH6FJeBE=
+X-Google-Smtp-Source: AGHT+IEqstXlPoKBOibfxM+Y85KLlPqpY851hu7oh3SjO27Hz6LOHiAT6sfWa+W7yLi0PA9vPrimoA==
+X-Received: by 2002:a05:6808:1448:b0:3c0:4129:946b with SMTP id x8-20020a056808144800b003c04129946bmr5317425oiv.46.1708073264459;
+        Fri, 16 Feb 2024 00:47:44 -0800 (PST)
+Received: from [10.4.195.175] ([139.177.225.229])
+        by smtp.gmail.com with ESMTPSA id r3-20020aa79883000000b006e042b50c39sm2666275pfl.144.2024.02.16.00.47.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 00:47:44 -0800 (PST)
+Message-ID: <e5b65d4e-55ff-4b9a-9add-563738b7193f@bytedance.com>
+Date: Fri, 16 Feb 2024 16:47:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-
---52ba317e8c7c5ca537a8d63e6ea42f83f0a58640d2bb4d9412e895a495f2
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] mm/zswap: global lru and shrinker shared by all
+ zswap_pools
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240210-zswap-global-lru-v2-0-fbee3b11a62e@bytedance.com>
+ <20240210-zswap-global-lru-v2-1-fbee3b11a62e@bytedance.com>
+ <Zc0Silj_TKkUBRBF@google.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <Zc0Silj_TKkUBRBF@google.com>
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 2024/2/15 03:20, Yosry Ahmed wrote:
+> On Wed, Feb 14, 2024 at 08:54:37AM +0000, Chengming Zhou wrote:
+>> Dynamic zswap_pool creation may create/reuse to have multiple
+>> zswap_pools in a list, only the first will be current used.
+>>
+>> Each zswap_pool has its own lru and shrinker, which is not
+>> necessary and has its problem:
+>>
+>> 1. When memory has pressure, all shrinker of zswap_pools will
+>>    try to shrink its own lru, there is no order between them.
+>>
+>> 2. When zswap limit hit, only the last zswap_pool's shrink_work
+>>    will try to shrink its lru, which is inefficient.
+> 
+> I think the rationale here was to try and empty the old pool first so
+> that we can completely drop it. However, since we only support exclusive
+> loads now, the LRU ordering should be entirely decided by the order of
+> stores, so I think the oldest entries on the LRU will naturally be the
+> from the oldest pool, right?
+> 
+> Probably worth stating this.
 
-On Thu Feb 15, 2024 at 10:14 PM CET, Marco Felsch wrote:
-> @@ -432,6 +466,7 @@ static int nvmem_populate_sysfs_cells(struct nvmem_de=
-vice *nvmem)
->  	struct bin_attribute **cells_attrs, *attrs;
->  	struct nvmem_cell_entry *entry;
->  	unsigned int ncells =3D 0, i =3D 0;
-> +	umode_t mode;
->  	int ret =3D 0;
-> =20
->  	mutex_lock(&nvmem_mutex);
-> @@ -456,15 +491,18 @@ static int nvmem_populate_sysfs_cells(struct nvmem_=
-device *nvmem)
->  		goto unlock_mutex;
->  	}
-> =20
-> +	mode =3D nvmem_bin_attr_get_umode(nvmem);
-> +
->  	/* Initialize each attribute to take the name and size of the cell */
->  	list_for_each_entry(entry, &nvmem->cells, node) {
->  		sysfs_bin_attr_init(&attrs[i]);
->  		attrs[i].attr.name =3D devm_kasprintf(&nvmem->dev, GFP_KERNEL,
->  						    "%s@%x", entry->name,
->  						    entry->offset);
-> -		attrs[i].attr.mode =3D 0444;
+Right, will add your this part in the commit message.
 
-cells are not writable if there is a read post process hook, see
-__nvmem_cell_entry_write().
+> 
+>>
+>> Anyway, having a global lru and shrinker shared by all zswap_pools
+>> is better and efficient.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> LGTM with a few comments, with those:
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
+> 
+>> ---
+>>  mm/zswap.c | 170 +++++++++++++++++++++++--------------------------------------
+>>  1 file changed, 65 insertions(+), 105 deletions(-)
+>>
+>> diff --git a/mm/zswap.c b/mm/zswap.c
+>> index 62fe307521c9..dbff67d7e1c7 100644
+>> --- a/mm/zswap.c
+>> +++ b/mm/zswap.c
+>> @@ -176,14 +176,18 @@ struct zswap_pool {
+>>  	struct kref kref;
+>>  	struct list_head list;
+>>  	struct work_struct release_work;
+>> -	struct work_struct shrink_work;
+>>  	struct hlist_node node;
+>>  	char tfm_name[CRYPTO_MAX_ALG_NAME];
+>> +};
+>> +
+>> +static struct {
+>>  	struct list_lru list_lru;
+>> -	struct mem_cgroup *next_shrink;
+>> -	struct shrinker *shrinker;
+>>  	atomic_t nr_stored;
+>> -};
+>> +	struct shrinker *shrinker;
+>> +	struct work_struct shrink_work;
+>> +	struct mem_cgroup *next_shrink;
+>> +	spinlock_t shrink_lock;
+> 
+> The lock is exclusively protecting next_shrink, right? Perhaps we should
+> rename it to next_shrink_lock or at least document this.
 
-if (entry->read_post_processing)
-	mode &=3D ~0222;
+Ok, I will add a comment to it.
 
--michael
+> 
+>> +} zswap;
+>>  
+>>  /*
+>>   * struct zswap_entry
+>> @@ -301,9 +305,6 @@ static void zswap_update_total_size(void)
+>>  * pool functions
+>>  **********************************/
+>>  
+>> -static void zswap_alloc_shrinker(struct zswap_pool *pool);
+>> -static void shrink_worker(struct work_struct *w);
+>> -
+>>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
+>>  {
+>>  	int i;
+>> @@ -353,30 +354,16 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
+>>  	if (ret)
+>>  		goto error;
+>>  
+>> -	zswap_alloc_shrinker(pool);
+>> -	if (!pool->shrinker)
+>> -		goto error;
+>> -
+>> -	pr_debug("using %s compressor\n", pool->tfm_name);
+> 
+> nit: the next patch introduces a new failure case between this debug
+> print and zswap_pool_debug() below, so it will become possible again
+> that we get one and not the other. Not a big deal though.
 
---52ba317e8c7c5ca537a8d63e6ea42f83f0a58640d2bb4d9412e895a495f2
-Content-Type: application/pgp-signature; name="signature.asc"
+Yes, not a big deal.
 
------BEGIN PGP SIGNATURE-----
-
-iIcEABYIAC8WIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZc8hHxEcbWljaGFlbEB3
-YWxsZS5jYwAKCRDNyh2jtWxG+8eBAQDGYo2DtOKLuL0CsiuJCDK03JOD16/qs+uF
-gwFEDQ6wUQEA3o3jofN51UHHDYz/EMyPvP6IRxGvCx7djrUXzzdHGgk=
-=dSaw
------END PGP SIGNATURE-----
-
---52ba317e8c7c5ca537a8d63e6ea42f83f0a58640d2bb4d9412e895a495f2--
+Thanks!
 
