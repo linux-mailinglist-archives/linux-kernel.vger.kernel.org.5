@@ -1,185 +1,165 @@
-Return-Path: <linux-kernel+bounces-68311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB748857892
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC5AE857894
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D020F1C21A8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:10:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16EE1C222BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D801B953;
-	Fri, 16 Feb 2024 09:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AF21B946;
+	Fri, 16 Feb 2024 09:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MKKyLvzm"
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="aQh742IY"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEBB31B815
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E663F14AA0
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074603; cv=none; b=U9FzfEq6kXWfBeLQFUJ4NHmAqc3EDxJMBLebMBSuLGfueFAxmF2Yjdse6Wa1xcssXYKMYZDyJonpaRAbQphnwwTjuHJkmEAXLrVXfsvJrXKIaL3zfC/4IyiTs4anaWA+MDdGPKT/FQO+3vxetzFo4zQv1m6OCgX4oevIx8KOaMQ=
+	t=1708074619; cv=none; b=Gp0Tt8PrC8qJqyi6WEe8N8/lTgiLElFRIoUjv2S4Kjl2kTI0g/MvWKwYBZPHdOoIMqDZpb++2XgmrcsSvdqpddvArRn1uOWN5aFpRoQcFjb0AgvwzF9zltUpzOt9KvGv/m7rV2VQEhuwceTkdMBIIrts6bTvVAFGjmuwS84cfcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074603; c=relaxed/simple;
-	bh=RKdmNzovEWVqmjvCpvHCRoTK7UqOk6nOdR+X9CIp0mM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TNdyW7ZTq2mj3AtPhiT8+maUfF47J1Iv2cDB1bcun7DNOaF4LYpo0OmFGzJJVWRyBRlriRSgau395+1SWmwoR8WLdtZCKfz+dM8uWtyW9WgAsTIHzccJKmApotNOitCZyl4zyHVqSUpNoEPqBoKrHEdr0bk7k0iCTdZ2GAVw8kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MKKyLvzm; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-46d331e3fd2so858934137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:10:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708074601; x=1708679401; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BFXkHkaZjLIExOljo2tyqPMEuvx89YjO8mstMPgUNwM=;
-        b=MKKyLvzmpGO5DRroKxzFrjhFIeDtFTiZb2MVMm/WRYFrr84tTx/PHjPZacChq00eyX
-         13nhXr/xn7428ctE/XDd9atSqYRc235ZDBQ1Lf3/rLsBPoTTuRbRXXwFxAs/GCnMmb2t
-         l2ioT/ci/CaF4lUj3+A8bAveUYK0697GNYuYh+o+eT+jhgBweOlug1Y5Adwxs+ZfaYif
-         UoCabZ2+jsMs+7DuT+kx2CAlKVUzON1B/6Ck3w8DJVzbm8Rwfu9DpVkIfAYOMysuH6Da
-         /NDFJLO27UFvOdG+HhYembLvPNyuU2hiMf4J8GZMdNlRnK/EcQnfwCDcxWWnJ22wyxl0
-         IWZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708074601; x=1708679401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BFXkHkaZjLIExOljo2tyqPMEuvx89YjO8mstMPgUNwM=;
-        b=TQiWbOPrkuenRI9GDhMI6vtgmXKxxhQz+QLArm1B2o4E0s95RBgMMJxiBRxyyiZU95
-         PrkkcAaXlr7uPuaJ0FXHu9Pc4LgIgxsRvlGmzDNOMVoVTmT2BIbmye1vw+Q8kmYwCnyh
-         3BTZ2sTG61knI9+m1AhCIZgX2Eqb4IpXd4E94TlgtK0SfrIJ1Z5nUF4gdeG9s3kYDVvi
-         sQgXZuGvtMQMfnZHyw7P0c0Ypmop9jQbzhOHZkBNwbc9Di41RI+8a+byQGS3wEFFoske
-         8vxwlhpljFJlUYKj2QRSkFqPga0QZwFXkAt05nhmlu8NtXCN88NAY/a///TeZxv80HHD
-         cLbw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/ivzoaTDgE9ym2z2sHiGzsR8UxGHxdFuv+WZ/42KN7kPg+Grtn2V2MokkLZKPhylgDQ32isWVEfXnE741Ff+SGCdZ60oN4XjmQ5vD
-X-Gm-Message-State: AOJu0Yz0MMFZQa73opIYk2f9AliCWqGe60v6ahx42zH51XCg9vNBpEJf
-	fO7f1PcxmjOrlqtC8ej0OotxYa5n++LFeAffPQ3qkTgoa1o33X3cLWIsQx21yY//sFQmoFUYCoM
-	8C5yDlWOyS895XajTOHvvU51LQjy9PBdI2bj+
-X-Google-Smtp-Source: AGHT+IE+YRbJk7VDMzz3D3amekUL1+l3+CmSNZ5i1D/cQ5UH+VxvljUAhLV8lOJpACZwspK/ZLU2oy1303I7RbZw0xE=
-X-Received: by 2002:a05:6102:35c:b0:46d:1ffd:d87d with SMTP id
- e28-20020a056102035c00b0046d1ffdd87dmr3366416vsa.17.1708074600649; Fri, 16
- Feb 2024 01:10:00 -0800 (PST)
+	s=arc-20240116; t=1708074619; c=relaxed/simple;
+	bh=pX7JMjia3f8IZ1xtc+dpQB+HCwVwI4T6Gmsse1DOXaw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A6X7ecf3td8UYVHjTzz3wyzss3Ywf6lUoeAdm5LS7gOJOu19FMdWEBFL9AHiPwlRxv/h48AK2KkjZnkuoE/M3nxNsBhfkhKjczrDHAvo4Sg5ZQ2XiQPFiOwPuEC6GiL3Q8YZzd3vzaO9MJ2SJZ0hqz16qVawL8f2yp98YjQ3kmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=aQh742IY; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E9CD6B3;
+	Fri, 16 Feb 2024 10:10:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708074611;
+	bh=pX7JMjia3f8IZ1xtc+dpQB+HCwVwI4T6Gmsse1DOXaw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aQh742IYvoolK5My4S/EJjipf+woHXwjn4yjaGmX27lEBVKGvvpacJ6xqq+EfJkFh
+	 z0FyP+tzzgul10HWShWvt480LwPLl1DWtPxavxyJJFe7pOASWnF01dIX5nMvE7R/bj
+	 LDVnz63UN/SArXeL3/+Dg8wcS384p+gNMC61h/ZI=
+Message-ID: <b2052bc9-b2da-489b-9e5b-3c9b4f6c1c99@ideasonboard.com>
+Date: Fri, 16 Feb 2024 11:10:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214172505.5044-1-dakr@redhat.com> <Zc0UNUGbmmBlzBAv@boqun-archlinux>
- <2d94d420-fca2-47c1-aee7-bbce7a1505cf@ryhl.io> <Zc1mWCBKNuLrS-tI@boqun-archlinux>
- <CAH5fLghO6Jy_hJXhRU_+eBSDHHveAvEOJA6fNkmMS9mqHvS6iQ@mail.gmail.com> <Zc5BJvyGIXgDQ21j@boqun-archlinux>
-In-Reply-To: <Zc5BJvyGIXgDQ21j@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 16 Feb 2024 10:09:49 +0100
-Message-ID: <CAH5fLggP+vBN=X8TDVkV4Le=Np=5hiCGn5fo+N9=H70zRKXAYw@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: str: add {make,to}_{upper,lower}case() to CString
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Alice Ryhl <alice@ryhl.io>, Danilo Krummrich <dakr@redhat.com>, ojeda@kernel.org, 
-	alex.gaynor@gmail.com, wedsonaf@gmail.com, gary@garyguo.net, 
-	bjorn3_gh@protonmail.com, benno.lossin@proton.me, a.hindborg@samsung.com, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR case
+Content-Language: en-US
+To: Alexander Stein <alexander.stein@ew.tq-group.com>,
+ Aradhya Bhatia <a-bhatia1@ti.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
+ marex@denx.de, Jan Kiszka <jan.kiszka@siemens.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
+ <f6af46e0-aadb-450a-9349-eec1337ea870@ti.com>
+ <2f3bb86b-6f8c-4807-985e-344a0c47864c@siemens.com>
+ <3277848.aeNJFYEL58@steina-w>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
+ wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
+ Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
+ eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
+ LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
+ G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
+ DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
+ 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
+ rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
+ Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
+ aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
+ ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
+ PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
+ VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
+ 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
+ uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
+ R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
+ sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
+ Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
+ PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
+ dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
+ qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
+ hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
+ DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
+ KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
+ 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
+ xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
+ UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
+ /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
+ 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
+ 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
+ mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
+ 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
+ suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
+ xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
+ m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
+ CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
+ CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
+ 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
+ ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
+ yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
+ 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
+In-Reply-To: <3277848.aeNJFYEL58@steina-w>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 5:51=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Thu, Feb 15, 2024 at 10:38:07AM +0100, Alice Ryhl wrote:
-> > On Thu, Feb 15, 2024 at 2:18=E2=80=AFAM Boqun Feng <boqun.feng@gmail.co=
-m> wrote:
-> > >
-> > > On Wed, Feb 14, 2024 at 08:59:06PM +0100, Alice Ryhl wrote:
-> > > > On 2/14/24 20:27, Boqun Feng wrote:
-> > > > > On Wed, Feb 14, 2024 at 06:24:10PM +0100, Danilo Krummrich wrote:
-> > > > > > --- a/rust/kernel/str.rs
-> > > > > > +++ b/rust/kernel/str.rs
-> > > > > > @@ -5,7 +5,7 @@
-> > > > > >   use alloc::alloc::AllocError;
-> > > > > >   use alloc::vec::Vec;
-> > > > > >   use core::fmt::{self, Write};
-> > > > > > -use core::ops::{self, Deref, Index};
-> > > > > > +use core::ops::{self, Deref, DerefMut, Index};
-> > > > > >   use crate::{
-> > > > > >       bindings,
-> > > > > > @@ -143,6 +143,19 @@ pub const fn from_bytes_with_nul(bytes: &[=
-u8]) -> Result<&Self, CStrConvertError
-> > > > > >           unsafe { core::mem::transmute(bytes) }
-> > > > > >       }
-> > > > > > +    /// Creates a mutable [`CStr`] from a `[u8]` without perfo=
-rming any
-> > > > > > +    /// additional checks.
-> > > > > > +    ///
-> > > > > > +    /// # Safety
-> > > > > > +    ///
-> > > > > > +    /// `bytes` *must* end with a `NUL` byte, and should only =
-have a single
-> > > > > > +    /// `NUL` byte (or the string will be truncated).
-> > > > > > +    #[inline]
-> > > > > > +    pub const unsafe fn from_bytes_with_nul_unchecked_mut(byte=
-s: &mut [u8]) -> &mut CStr {
-> > > > > > +        // SAFETY: Properties of `bytes` guaranteed by the saf=
-ety precondition.
-> > > > > > +        unsafe { &mut *(bytes as *mut [u8] as *mut CStr) }
-> > > > >
-> > > > > First `.cast::<[u8]>().cast::<CStr>()` is preferred than `as`. Be=
-sides,
-> > > > > I think the dereference (or reborrow) is only safe if `CStr` is
-> > > > > `#[repr(transparent)]. I.e.
-> > > > >
-> > > > >     #[repr(transparent)]
-> > > > >     pub struct CStr([u8]);
-> > > > >
-> > > > > with that you can implement the function as (you can still use `c=
-ast()`
-> > > > > implementation, but I sometimes find `transmute` is more simple).
-> > > > >
-> > > > >      pub const unsafe fn from_bytes_with_nul_unchecked_mut(bytes:=
- &mut [u8]) -> &mut CStr {
-> > > > >     // SAFETY: `CStr` is transparent to `[u8]`, so the transmute =
-is
-> > > > >     // safe to do, and per the function safety requirement, `byte=
-s`
-> > > > >     // is a valid `CStr`.
-> > > > >     unsafe { core::mem::transmute(bytes) }
-> > > > >      }
-> > > > >
-> > > > > but this is just my thought, better wait for others' feedback as =
-well.
-> > > >
-> > > > Transmuting references is generally frowned upon. It's better to us=
-e a
-> > > > pointer cast.
-> > > >
-> > >
-> > > Ok, but honestly, I don't think the pointer casting is better ;-) Wha=
-t
-> > > wants to be done here is simply converting a `&mut [u8]` to `&mut CSt=
-r`,
-> > > adding two levels of pointer casting is kinda noise. (Also
-> > > `from_bytes_with_nul` uses `transmute` as well).
-> >
-> > Here's my logic for preferring pointer casts: Transmute raises
-> > questions about the layout of fat pointers, whereas pointer casts are
-> > obviously okay.
-> >
->
-> But in this case, eventually you need to worry about fat pointer layout
-> when you dereference the `*mut CStr`, right? In other words, the
-> dereference is only safe if `*mut [u8]` has the same fat pointer layout
-> as `*mut CStr`. I prefer to transmute here because it's a newtype
-> paradigm, and transmute kinda makes that clear.
+On 15/02/2024 11:03, Alexander Stein wrote:
+> Hi everyone,
+> 
+> Am Donnerstag, 15. Februar 2024, 09:53:54 CET schrieb Jan Kiszka:
+>> On 11.12.23 09:07, Aradhya Bhatia wrote:
+>>> On 06/12/23 17:41, Tomi Valkeinen wrote:
+>>>> Hi,
+>>>>
+>>>> On 08/11/2023 14:45, Alexander Stein wrote:
+>>>>> Hi Tomi,
+>>>>>
+>>>>> Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
+>>>>>> These two patches are needed to make tc358767 work in the
+>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP
+>>>>>> connector.
+>>>>>>
+>>>>>> I have tested this with TI AM654 EVM with a tc358767 add-on card
+>>>>>> connected to a DP monitor.
+>>>>>
+>>>>> Just a question regarding the usage of this DSI-DP bridge.
+>>>>> What is the state of the DSI lanes after the DSI host has been
+>>>>> initialized,
+>>>>> but before calling atomic_pre_enable? AFAIK this bridge requires LP-11
+>>>>> on DSI
+>>>>> at any time for accessing the AUX channel.
+>>>
+>>> + Marek
+>>>
+>>> Marek, Alexander,
+>>>
+>>> A quick grep tells me that you have added devicetree for tc358767 in DSI
+>>> to (e)DP mode on other platforms. Could you please test these patches
+>>> and report if you find any issue?
+> 
+> Sorry, I can't provide any feedback here. I've yet to setup the DSI-DP
+> correctly.
 
-No, if the `*mut CStr` and `*mut [u8]` types disagree on whether the
-data or vtable pointer is first in the layout, then an as cast should
-swap them.
+Ok. Does anyone have a worry that these patches make the situation worse 
+for the DSI case than it was before? Afaics, if the DSI lanes are not 
+set up early enough by the DSI host, the driver would break with and 
+without these patches.
 
-The question of whether their vtables (well I guess it's just a length
-in this case) are compatible is separate.
+These do fix the driver for DRM_BRIDGE_ATTACH_NO_CONNECTOR and DPI, so 
+I'd like to merge these unless these cause a regression with the DSI case.
 
-Alice
+  Tomi
+
 
