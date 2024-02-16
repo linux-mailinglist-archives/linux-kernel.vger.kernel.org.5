@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-69128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 253728584DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:08:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F2598584DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7ACC284314
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:08:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7C031F218F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C79913AA57;
-	Fri, 16 Feb 2024 18:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5088213B2BC;
+	Fri, 16 Feb 2024 18:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwxTxdQm"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cGlfhXnC"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4E31384B5
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C1913AA49
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708106794; cv=none; b=a3i3d2SxWbrema/Ki8ZmhjAErNxa4DLg//mec9j4jlPqPNsx8klah1g7vT0Qth9RcrFFpqOpNYtU/WrDaKeoWsk3Ar1jBll0jymcSoAQOQU9sQCyYTGvfOVeI9UXe39s8qNuzs0HgIVgHOAgc/dT+Yk6rCaBD30ONc2XxjO4Awk=
+	t=1708106796; cv=none; b=WmghuzTK7TGPF7kc45SDwp0nb4Y7Q7ngcCTTkTzaEMtDt7Y9sa1NfCYxbaKjU7biAIwaJLyZCMp9LKpRuWowReUcRaTSnXnHdf1nhfMduXgsVcbm0iyaFQYQCIKFhWGQIxCT3tJmvZniZYhkEsH0pafwmB13FvNg2e5QOKogy3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708106794; c=relaxed/simple;
-	bh=cPP5CIKEOYRT6epnHGsws/oABavjhCk4bIN8XpK22Ek=;
+	s=arc-20240116; t=1708106796; c=relaxed/simple;
+	bh=kaVesntSH9WtASpo/ITaFDU41OYmgmXbJfft7L0rkZs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WKITA9x0/AMymPSzXmhIVmZ9ifyrJprIT9LmSuMm/Bg7/Sz7vxOF4oljAy+JTNygKV8ImlZOvys9BI47VnGQ+xQJdPdze+Qx2V7FREZ6tOB37d1NINW1EipXfBe8L6+LWrY3S8DRYAC0241OXgu2JHn9RVMZVm012b2jQYKfM/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwxTxdQm; arc=none smtp.client-ip=209.85.215.172
+	 MIME-Version; b=sxLsWt0HGy8CBx0ImpfDN+HjZSevPExetTpecUtfhYnlQTjAYuI3pngiM9pjBvYxK1LOatfLief6VLdKsX9oJVYRVTTh5ebfNZTOZSeOUU7xbvEqO7TL1KSeq2GK4EBU+seaAGNERAGHmrWviwvyRhfRkP72yrt/3KsUAPHHebk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cGlfhXnC; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so1749892a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:06:32 -0800 (PST)
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-363c2edac5aso6694365ab.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:06:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708106792; x=1708711592; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708106794; x=1708711594; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=41qYLxE4dVgv1c5XbTIQWibRRdLdTaJ138CgAqO4goo=;
-        b=dwxTxdQmJBJC9sl+oXNRB5dqMHScmAwNXDuwQ5HwAxO3dtUEq5WsQeBMNXh5SPj9zU
-         wI9Oxn2M3HAnmYilLY8CBVHNgv248RHoJ3HrY16k8xhq0iXMRys6z0arPy+LZP77i0SM
-         HZkqJ9d30iL/jsQgiANS1GCx6gx38qGIb40f/T3Z8on3WE5bPUumbN9T+PQ0pxBE738w
-         drBFM4C4zx8CWTDZi2umIYSt190aKFPPikoHJ8eAfiP/0tU5s/ZRjeomR/nQb/PlNIxG
-         yafc6s/dKcLI/eHCj7dfehY7SLP/QYN5T4Mxu5Pym4qtp7KGOWcmWCSxJPnWURWI1NuL
-         kR8A==
+        bh=JYw17V2FqKp0C6CYJFYt8WJLZzrh9NJi0Sqb0UNwGU0=;
+        b=cGlfhXnCY15ermxqwL3BXB/C52oZ8DhIeuCZTqOFqmTZSosb411H9oY04xxjJlC/Dh
+         yKhpnjHqTshQMtV752vr+2DlOZeRwD/xZPjGnjdzN306ggCBr4tMafR3q3BSlg668Imx
+         aX86ONAzBOJDriYCcEViR/74snj0hLoulqtXD/EYatJerqD7QChLbiRUJwsgaA3Pxp4Z
+         74+aLGpzLLBSFOCCnBPG5B9kA6jVST8zjmsseTZb40P+PW+vO6/Se+NJQhvkg26tXUMS
+         8zkhsqnYAx9tkGyEYgTRU3WVuneKhx3bEjI2RZ8WB1d2KF6eHwC0ZohqHqXgJkyDieQ1
+         GUKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708106792; x=1708711592;
+        d=1e100.net; s=20230601; t=1708106794; x=1708711594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=41qYLxE4dVgv1c5XbTIQWibRRdLdTaJ138CgAqO4goo=;
-        b=LakPDhblC1j8SXq/6Z1EVd2P3olj6zCG8Q7rjU7mGOMiJPMcA1b1uBIgd2s4agf8UJ
-         SKgfzAnJnEN7ZUjrkDAPQob6PyoYBs9Y9tuXmLg5XLheAEAugzUKWJ+yKQakClBZsHpn
-         QqBs41f0DCbGNOtoBzU62XR6B7telvmH2rJExOmnIbuTTBJUbT4G66coQrXfijHo2hZR
-         qK9p9ynC79cDxwVk9IYPY0uhtFog0H2k622aAaEorKzVrJ/UXMbysD03I8fJR0uRu2S3
-         nTYEeng6ZqC4UOs/uv6oex4/SFfrKVz7fM067PrVrYGJl42ShA7c9uNWEoVdgwtS6BQI
-         4iKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBXvdTXi1mQPonJeVY3sgTtnjZhwd3kZ/PcNLB0CKvOFXtRAmYiH3QD+egTTCokqsuJyzNXHdTK3GLQ132bMopKobkqPy1fmsuoQ2/
-X-Gm-Message-State: AOJu0YzVjM/aYNBvHVYxVr6bgq0FEIT+Ovj8fIJQgZXiTYeXQ+20scgw
-	kB8U4k8hk3vLmh5VLZUaNMDIBmrKB9HRd7Y5w2jW1Ghez1Yxp/Dx
-X-Google-Smtp-Source: AGHT+IF4O05+Yse0vLxiLY/eUZAMwN7fh7fbJWVpYz3+u1uTNezFrf3ZCNlMm3pJ/SUI71SIK4z4Zw==
-X-Received: by 2002:a17:90b:3ecc:b0:299:4e65:7c10 with SMTP id rm12-20020a17090b3ecc00b002994e657c10mr330669pjb.48.1708106791953;
-        Fri, 16 Feb 2024 10:06:31 -0800 (PST)
+        bh=JYw17V2FqKp0C6CYJFYt8WJLZzrh9NJi0Sqb0UNwGU0=;
+        b=SHYW6l2u3gymBy5IFRWnXgK3YgHMOkeaMdgHU1zv0HNCflvhiivw0xSyzt2OVO7v2i
+         iKZFHGT/mXkmMlgrTv9wrBG20KsuYeYRUIo7mrf6smmIbIlYQo/MByXGF7F4x3aDkuJz
+         fhfvZLf5zrG4pnbGzglLCmMZ88DU2zma+3Z3U0fQYjfhe4nxD/rUQBDey7VjwiXTmqLj
+         8cbGPYh+OpM2s/EQeIb7u8ymIeTgIStahhZAWVSGOBj0zPbKv2b/7J5Eljb7BeLnj3Xd
+         wYjIroayLsH3VF/QaJ2mn4iXUkRCKmmsA9fI5dztZ2taXm3WTRsutRmem/F0AbbbTY5h
+         e6dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXu8oSHa+ZKNBNt4VB/EEWKUKQHTGlhm9DS97VwSNMZYMhLCNgfWi45/+Oaaeu5Vzo61cb8w+41dstEdzlfmjCXatFZwQWsu19Zbv9h
+X-Gm-Message-State: AOJu0YyM40TsKkG/yuOtr4sQaCflQvC/5d8hhs38uEiV6uGefGAnL2zQ
+	uiqAfPVV2y8SlQOMzazpa7qYNhTTIu4W0Rxiv++uLPc2YSwJa9Zs
+X-Google-Smtp-Source: AGHT+IFNWQ/sv3Bjf6771BHNcBXMFQVdJtk9zqAKpJTecYXNn1NDx1aWeoGrBfL5tBRsD5eW7omG7g==
+X-Received: by 2002:a05:6e02:13c8:b0:363:d734:14b with SMTP id v8-20020a056e0213c800b00363d734014bmr6223644ilj.26.1708106793656;
+        Fri, 16 Feb 2024 10:06:33 -0800 (PST)
 Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id s22-20020a63af56000000b005dc507e8d13sm183390pgo.91.2024.02.16.10.06.31
+        by smtp.gmail.com with ESMTPSA id k131-20020a636f89000000b005d8b89bbf20sm190558pgc.63.2024.02.16.10.06.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 10:06:31 -0800 (PST)
+        Fri, 16 Feb 2024 10:06:33 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: jiangshanlai@gmail.com
@@ -74,9 +74,9 @@ Cc: torvalds@linux-foundation.org,
 	allen.lkml@gmail.com,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 10/17] workqueue: Make @flags handling consistent across set_work_data() and friends
-Date: Fri, 16 Feb 2024 08:04:51 -1000
-Message-ID: <20240216180559.208276-11-tj@kernel.org>
+Subject: [PATCH 11/17] workqueue: Preserve OFFQ bits in cancel[_sync] paths
+Date: Fri, 16 Feb 2024 08:04:52 -1000
+Message-ID: <20240216180559.208276-12-tj@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240216180559.208276-1-tj@kernel.org>
 References: <20240216180559.208276-1-tj@kernel.org>
@@ -88,115 +88,163 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-- set_work_data() takes a separate @flags argument but just ORs it to @data.
-  This is more confusing than helpful. Just take @data.
+The cancel[_sync] paths acquire and release WORK_STRUCT_PENDING, and
+manipulate WORK_OFFQ_CANCELING. However, they assume that all the OFFQ bit
+values except for the pool ID are statically known and don't preserve them,
+which is not wrong in the current code as the pool ID and CANCELING are the
+only information carried. However, the planned disable/enable support will
+add more fields and need them to be preserved.
 
-- Use the name @flags consistently and add the parameter to
-  set_work_pool_and_{keep|clear}_pending(). This will be used by the planned
-  disable/enable support.
+This patch updates work data handling so that only the bits which need
+updating are updated.
 
-No functional changes.
+- struct work_offq_data is added along with work_offqd_unpack() and
+  work_offqd_pack_flags() to help manipulating multiple fields contained in
+  work->data. Note that the helpers look a bit silly right now as there
+  isn't that much to pack. The next patch will add more.
+
+- mark_work_canceling() which is used only by __cancel_work_sync() is
+  replaced by open-coded usage of work_offq_data and
+  set_work_pool_and_keep_pending() in __cancel_work_sync().
+
+- __cancel_work[_sync]() uses offq_data helpers to preserve other OFFQ bits
+  when clearing WORK_STRUCT_PENDING and WORK_OFFQ_CANCELING at the end.
+
+- This removes all users of get_work_pool_id() which is dropped. Note that
+  get_work_pool_id() could handle both WORK_STRUCT_PWQ and !WORK_STRUCT_PWQ
+  cases; however, it was only being called after try_to_grab_pending()
+  succeeded, in which case WORK_STRUCT_PWQ is never set and thus it's safe
+  to use work_offqd_unpack() instead.
+
+No behavior changes intended.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/workqueue.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ include/linux/workqueue.h |  1 +
+ kernel/workqueue.c        | 51 ++++++++++++++++++++++++---------------
+ 2 files changed, 32 insertions(+), 20 deletions(-)
 
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 0ad534fe6673..e15fc77bf2e2 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -97,6 +97,7 @@ enum wq_misc_consts {
+ 
+ /* Convenience constants - of type 'unsigned long', not 'enum'! */
+ #define WORK_OFFQ_CANCELING	(1ul << WORK_OFFQ_CANCELING_BIT)
++#define WORK_OFFQ_FLAG_MASK	(((1ul << WORK_OFFQ_FLAG_BITS) - 1) << WORK_OFFQ_FLAG_SHIFT)
+ #define WORK_OFFQ_POOL_NONE	((1ul << WORK_OFFQ_POOL_BITS) - 1)
+ #define WORK_STRUCT_NO_POOL	(WORK_OFFQ_POOL_NONE << WORK_OFFQ_POOL_SHIFT)
+ #define WORK_STRUCT_PWQ_MASK	(~((1ul << WORK_STRUCT_PWQ_SHIFT) - 1))
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ea53b53f8ff9..7aa53a2e41af 100644
+index 7aa53a2e41af..e8f310aa16d6 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -777,29 +777,28 @@ static int work_next_color(int color)
-  * but stay off timer and worklist for arbitrarily long and nobody should
-  * try to steal the PENDING bit.
-  */
--static inline void set_work_data(struct work_struct *work, unsigned long data,
--				 unsigned long flags)
-+static inline void set_work_data(struct work_struct *work, unsigned long data)
- {
- 	WARN_ON_ONCE(!work_pending(work));
--	atomic_long_set(&work->data, data | flags | work_static(work));
-+	atomic_long_set(&work->data, data | work_static(work));
+@@ -391,6 +391,11 @@ struct wq_pod_type {
+ 	int			*cpu_pod;	/* cpu -> pod */
+ };
+ 
++struct work_offq_data {
++	u32			pool_id;
++	u32			flags;
++};
++
+ static const char *wq_affn_names[WQ_AFFN_NR_TYPES] = {
+ 	[WQ_AFFN_DFL]		= "default",
+ 	[WQ_AFFN_CPU]		= "cpu",
+@@ -887,29 +892,23 @@ static struct worker_pool *get_work_pool(struct work_struct *work)
+ 	return idr_find(&worker_pool_idr, pool_id);
  }
  
- static void set_work_pwq(struct work_struct *work, struct pool_workqueue *pwq,
--			 unsigned long extra_flags)
-+			 unsigned long flags)
+-/**
+- * get_work_pool_id - return the worker pool ID a given work is associated with
+- * @work: the work item of interest
+- *
+- * Return: The worker_pool ID @work was last associated with.
+- * %WORK_OFFQ_POOL_NONE if none.
+- */
+-static int get_work_pool_id(struct work_struct *work)
++static unsigned long shift_and_mask(unsigned long v, u32 shift, u32 bits)
  {
--	set_work_data(work, (unsigned long)pwq,
--		      WORK_STRUCT_PENDING | WORK_STRUCT_PWQ | extra_flags);
-+	set_work_data(work, (unsigned long)pwq | WORK_STRUCT_PENDING |
-+		      WORK_STRUCT_PWQ | flags);
+-	unsigned long data = atomic_long_read(&work->data);
++	return (v >> shift) & ((1 << bits) - 1);
++}
+ 
+-	if (data & WORK_STRUCT_PWQ)
+-		return work_struct_pwq(data)->pool->id;
++static void work_offqd_unpack(struct work_offq_data *offqd, unsigned long data)
++{
++	WARN_ON_ONCE(data & WORK_STRUCT_PWQ);
+ 
+-	return data >> WORK_OFFQ_POOL_SHIFT;
++	offqd->pool_id = shift_and_mask(data, WORK_OFFQ_POOL_SHIFT,
++					WORK_OFFQ_POOL_BITS);
++	offqd->flags = data & WORK_OFFQ_FLAG_MASK;
  }
  
- static void set_work_pool_and_keep_pending(struct work_struct *work,
--					   int pool_id)
-+					   int pool_id, unsigned long flags)
+-static void mark_work_canceling(struct work_struct *work)
++static unsigned long work_offqd_pack_flags(struct work_offq_data *offqd)
  {
--	set_work_data(work, (unsigned long)pool_id << WORK_OFFQ_POOL_SHIFT,
--		      WORK_STRUCT_PENDING);
-+	set_work_data(work, ((unsigned long)pool_id << WORK_OFFQ_POOL_SHIFT) |
-+		      WORK_STRUCT_PENDING | flags);
- }
- 
- static void set_work_pool_and_clear_pending(struct work_struct *work,
--					    int pool_id)
-+					    int pool_id, unsigned long flags)
- {
- 	/*
- 	 * The following wmb is paired with the implied mb in
-@@ -808,7 +807,8 @@ static void set_work_pool_and_clear_pending(struct work_struct *work,
- 	 * owner.
- 	 */
- 	smp_wmb();
--	set_work_data(work, (unsigned long)pool_id << WORK_OFFQ_POOL_SHIFT, 0);
-+	set_work_data(work, ((unsigned long)pool_id << WORK_OFFQ_POOL_SHIFT) |
-+		      flags);
- 	/*
- 	 * The following mb guarantees that previous clear of a PENDING bit
- 	 * will not be reordered with any speculative LOADS or STORES from
-@@ -909,7 +909,7 @@ static void mark_work_canceling(struct work_struct *work)
- 	unsigned long pool_id = get_work_pool_id(work);
- 
- 	pool_id <<= WORK_OFFQ_POOL_SHIFT;
--	set_work_data(work, pool_id | WORK_OFFQ_CANCELING, WORK_STRUCT_PENDING);
-+	set_work_data(work, pool_id | WORK_STRUCT_PENDING | WORK_OFFQ_CANCELING);
+-	unsigned long pool_id = get_work_pool_id(work);
+-
+-	pool_id <<= WORK_OFFQ_POOL_SHIFT;
+-	set_work_data(work, pool_id | WORK_STRUCT_PENDING | WORK_OFFQ_CANCELING);
++	return (unsigned long)offqd->flags;
  }
  
  static bool work_is_canceling(struct work_struct *work)
-@@ -2127,7 +2127,7 @@ static int try_to_grab_pending(struct work_struct *work, u32 cflags,
- 		 * this destroys work->data needed by the next step, stash it.
- 		 */
- 		work_data = *work_data_bits(work);
--		set_work_pool_and_keep_pending(work, pool->id);
-+		set_work_pool_and_keep_pending(work, pool->id, 0);
+@@ -4176,6 +4175,7 @@ EXPORT_SYMBOL(flush_rcu_work);
  
- 		/* must be the last step, see the function comment */
- 		pwq_dec_nr_in_flight(pwq, work_data);
-@@ -3203,7 +3203,7 @@ __acquires(&pool->lock)
- 	 * PENDING and queued state changes happen together while IRQ is
- 	 * disabled.
- 	 */
--	set_work_pool_and_clear_pending(work, pool->id);
-+	set_work_pool_and_clear_pending(work, pool->id, 0);
+ static bool __cancel_work(struct work_struct *work, u32 cflags)
+ {
++	struct work_offq_data offqd;
+ 	unsigned long irq_flags;
+ 	int ret;
  
- 	pwq->stats[PWQ_STAT_STARTED]++;
- 	raw_spin_unlock_irq(&pool->lock);
-@@ -4186,7 +4186,7 @@ static bool __cancel_work(struct work_struct *work, u32 cflags)
+@@ -4186,19 +4186,26 @@ static bool __cancel_work(struct work_struct *work, u32 cflags)
  	if (unlikely(ret < 0))
  		return false;
  
--	set_work_pool_and_clear_pending(work, get_work_pool_id(work));
-+	set_work_pool_and_clear_pending(work, get_work_pool_id(work), 0);
+-	set_work_pool_and_clear_pending(work, get_work_pool_id(work), 0);
++	work_offqd_unpack(&offqd, *work_data_bits(work));
++	set_work_pool_and_clear_pending(work, offqd.pool_id,
++					work_offqd_pack_flags(&offqd));
  	local_irq_restore(irq_flags);
  	return ret;
  }
-@@ -4213,7 +4213,7 @@ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+ 
+ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+ {
++	struct work_offq_data offqd;
+ 	unsigned long irq_flags;
+ 	bool ret;
+ 
+ 	/* claim @work and tell other tasks trying to grab @work to back off */
+ 	ret = work_grab_pending(work, cflags, &irq_flags);
+-	mark_work_canceling(work);
++
++	work_offqd_unpack(&offqd, *work_data_bits(work));
++	offqd.flags |= WORK_OFFQ_CANCELING;
++	set_work_pool_and_keep_pending(work, offqd.pool_id,
++				       work_offqd_pack_flags(&offqd));
+ 	local_irq_restore(irq_flags);
+ 
+ 	/*
+@@ -4208,12 +4215,16 @@ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+ 	if (wq_online)
+ 		__flush_work(work, true);
+ 
++	work_offqd_unpack(&offqd, *work_data_bits(work));
++
+ 	/*
+ 	 * smp_mb() at the end of set_work_pool_and_clear_pending() is paired
  	 * with prepare_to_wait() above so that either waitqueue_active() is
  	 * visible here or !work_is_canceling() is visible there.
  	 */
--	set_work_pool_and_clear_pending(work, WORK_OFFQ_POOL_NONE);
-+	set_work_pool_and_clear_pending(work, WORK_OFFQ_POOL_NONE, 0);
+-	set_work_pool_and_clear_pending(work, WORK_OFFQ_POOL_NONE, 0);
++	offqd.flags &= ~WORK_OFFQ_CANCELING;
++	set_work_pool_and_clear_pending(work, WORK_OFFQ_POOL_NONE,
++					work_offqd_pack_flags(&offqd));
  
  	if (waitqueue_active(&wq_cancel_waitq))
  		__wake_up(&wq_cancel_waitq, TASK_NORMAL, 1, work);
