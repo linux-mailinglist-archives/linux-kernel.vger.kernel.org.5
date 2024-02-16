@@ -1,146 +1,175 @@
-Return-Path: <linux-kernel+bounces-68591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1863A857CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:41:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECD2857CDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C74287727
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:41:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23B94B24836
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E61292DE;
-	Fri, 16 Feb 2024 12:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BEE12883C;
+	Fri, 16 Feb 2024 12:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tMec/5ws"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2077.outbound.protection.outlook.com [40.107.243.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EYWDIS6X";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sFnvtkmS"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC691292CE
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708087251; cv=fail; b=KASMOIzSnqeCG25pbI0jM/S4Vw9u8fqkvbNKe3DzoPBqGFBB0HIIoAg5c39tGicdQ3zu1eDuMoO4mWkfT3HT+WrarOgoAhDYY9521U2/RVovR+iWGChB4pEciGa3jZAMeFRRSpPcA2gbCn+SuIz3nQ/V4/qdroVbI87eM0BtUTE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708087251; c=relaxed/simple;
-	bh=qtuWbu7EK56Xmv+4uwHLGStLSArhBh9UF9jYl1MnQxs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V0iNsPW2t0RxuTx82uBOiWGq4Sgej8qtyGUvF49CoexLH5eKRkcm+qYUZs9IzblyftlHFqxqseLGar0FhMO9gnBXxnGHBR5VfqwcMS6esTrObzAACLaYxLnt8SfEsaJ3e5Ale+V6ntRCHDaukwC/JKGLky+3Cnc2PFmmjtaDUbc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tMec/5ws; arc=fail smtp.client-ip=40.107.243.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MCyOK5XiJudObf76hXXNobrsGrwgntO0RPqhyq1hcl0Bh18/HBZgQ55WuoUu3A7SBvo6ChrU830pG3zgQ3Kh0ZUSEskYqVqh0BggiXCkGpTdmqKvDGE/cB0KoQFlGAGIUZfyHV3mxK+tkKdQhpE0jCxk37u4M+jq6XFZalJOZ6GdVbyS7xh7EzmkfMwkuialaw83IroRL0lBgPbAb0w1BO0fwRzGwCBDMiD0ffwTzKZSgdKYrazgj3+pHAhgkIdmLKX6Y6FMrTIB/6ou9SyA93aNuuCfjhbNOd1O/vgD+w4sJq9UsKH007nwldAvuo1a5ftEYZm+bBj2SZtFuzP2Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vy5cMRZRanb0NbhtgpX7d0z1D4Qth75YYY3PnDr4D3g=;
- b=fy1qv9sRdu0m4C3V0NwptYUN00Y8lKx5kRrk37JoMrjtHev++L14xs6hv2OpaNGNyEcfv9tgjeHwrPCBTh8BDPEVfHj/3hDvVVhZvrNYiTg0guLZivKb5ixO8WsKABwWxQNSb+H+ueM4dpig/1OunczrN5x114HxLIF64yWs7MKSzfPq/N+6fMqgaFN2O9iL8AXPd8agWNbq4dvoR2M1S8hF7qF9olDPJNlpLwlACX+MPQc3omNe80MOepXIBTzgOo07lgq9vEkBtxPZlU3kqGEY4MIQ77yZvKbHcb/Y/LTTmsqRf3nf4UbdmRFLJYaDL4DXiyzN+VB4VFrsPgu3MQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vy5cMRZRanb0NbhtgpX7d0z1D4Qth75YYY3PnDr4D3g=;
- b=tMec/5wsXUS2iiEZkCOQKkUTpB/AuOxkDns4fLok3oi7/Qhd9+wvyfJ1SwLk8v3jvSg0dt7Vvykv0cluBSu2SNjhG5oyLGQICbUi8RWTu1d8pyquH44dcWGn2ZMJKKf02m/bUMCSxA55IFq0LCiuz+qxjjIS4rENHoAaXUyDjdA=
-Received: from BYAPR01CA0033.prod.exchangelabs.com (2603:10b6:a02:80::46) by
- PH8PR12MB6987.namprd12.prod.outlook.com (2603:10b6:510:1be::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
- 2024 12:40:46 +0000
-Received: from SJ1PEPF00001CEA.namprd03.prod.outlook.com
- (2603:10b6:a02:80:cafe::21) by BYAPR01CA0033.outlook.office365.com
- (2603:10b6:a02:80::46) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
- Transport; Fri, 16 Feb 2024 12:40:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ1PEPF00001CEA.mail.protection.outlook.com (10.167.242.26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 12:40:45 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
- 2024 06:40:44 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
- 2024 06:40:44 -0600
-Received: from xsjssw-mmedia4.xilinx.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35
- via Frontend Transport; Fri, 16 Feb 2024 06:40:43 -0600
-From: Rohit Visavalia <rohit.visavalia@amd.com>
-To: <gregkh@linuxfoundation.org>, <laurent.pinchart@ideasonboard.com>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<michal.simek@amd.com>, <dri-devel@lists.freedesktop.org>,
-	<linux-arm-kernel@lists.infradead.org>
-CC: <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm: xlnx: dp: Reset DisplayPort IP
-Date: Fri, 16 Feb 2024 04:40:43 -0800
-Message-ID: <20240216124043.1226713-1-rohit.visavalia@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C15F266D4;
+	Fri, 16 Feb 2024 12:43:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708087388; cv=none; b=VA/ghxP0RxmXF9ejbbDJAmTlgM0xYtKomYZpYqkyZZGeCi7ZKh+NRX2Cb7U232ISNJ1HQOYaZbrRqrajozue8lkjCU2u1W28R87V7y09i4+rKbt/cGNbq8/esDCPSEV3vYFcLaTxkfBqIdQ6jyCXL3nxhwRbq3HoEz2GCMAARQc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708087388; c=relaxed/simple;
+	bh=LFbSSqlguBhZyI1xwk5Pl9KhUuY44k1PlYM1rVuK++U=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=WA3bq11IuXkSb+Z9DTpkhLS9RPQEIytkdWC2ZvSsG75I0TmFsIA0EWh/XyiJCe79LYnK8T63RSaC8LAv8K/cBwaOZfbIbRVsPZPsWdD8Pz7JG7a72zIYcS7gxqpdpSOwz5PUUdhIztiwTSkSG9+aAD2JRoh6IAzXI9FexT1dhdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EYWDIS6X; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sFnvtkmS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5838721FF2;
+	Fri, 16 Feb 2024 12:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708087379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Cqlvy/DHQAcWHXEG+Le2aNhMjktrI0RvuODJSfbDi6I=;
+	b=EYWDIS6X0P3AvaQDzak4dUskv4WjUPl0DhujxiJyoQYwzmk0USCyWcEcsSuY+u0zX+Vxz1
+	H4dmfVlM+t2IsgvViaiIhL7f3qkSLlPLyVF52H7WWHOeIPe1PlNbEdr1YqG38/EU5tEwqA
+	hli63kknRAFLorfZLmVo1FeNJBfThh8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708087377; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Cqlvy/DHQAcWHXEG+Le2aNhMjktrI0RvuODJSfbDi6I=;
+	b=sFnvtkmSPCpYIC2DOZnCeG9CSo/P+2wtrEsVpmIaa0/QFhJqwnYt/9fyZ0MjbsNtGEo+ad
+	FkAVjTKX5lGwD+LZLErStP5M7BdXiynXevIVGIzXzlofhl5fkPsZmqKPWB2txoD77W7CqF
+	cahxEEwGBxnm40ZbY1veMsDjaX6da0o=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CFE4C13343;
+	Fri, 16 Feb 2024 12:42:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Nko6JFBYz2VYIwAAn2gu4w
+	(envelope-from <mpdesouza@suse.com>); Fri, 16 Feb 2024 12:42:56 +0000
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Date: Fri, 16 Feb 2024 09:42:45 -0300
+Subject: [PATCH bpf-next] selftests: bpf: Remove empty TEST_CUSTOM_PROGS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CEA:EE_|PH8PR12MB6987:EE_
-X-MS-Office365-Filtering-Correlation-Id: b0e26fbb-2eb2-4325-ec51-08dc2eec7f00
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	mKNu5LbkKaNBUuYYJ/5bLGKPSn8R7DW1Qmh4rig+n+kOG+hoK57nNPNJslXa2RpViCHLYxAAsqympEza5G0ZVG6kc+REUVk4kpZQzvKowCIKKC9N/GesqqXLiTp02qmO3599sXyxcuYhU5wMbqf3Bc/TB+ZWmYFcLYgYwyZBcEc7ZFvAzPfMgbDrdCCVucgnW6KCXRNfh1w89XkCCAifZChK7PHPhV7evVA/C/AFUM+sxYHHUV7zbZn2qDxb7xSOtr02OqK5eWB8tL3UOZgN87Yq6D4Njgmkf4o+rLaCEY/pcph2pyrj79NyxZ0eUdInmdb8YXDUGTdeKVKzwfHNulRlvUJBmuCENupyiBgbJl879OURXh0E+mCmnWQHL/4VwDf7VHLs9TbT5UwAQcY88008ofmXs+c/2QZxvw/tJ2kF9/X282ZGpmugjr+W86BsK38f0aAlSDDhec9GyXQVJLQSESEILinODyFsqPCWufvIho8sQrIcGIbqpxTHhLf4mlw93Z+yF2bq7/EATZF0C36atKhowMYfKjBV+YmujvjrYwxucLdfp/87ATzSldXen8pRla3UnjLuYODKxymWL/ShvLU5NKkejtSyhRnU6cbetCCdzrjKHz7Vs8dBjQxx2EbEsOJbCpC0W310LhaL1SzPS/vylP5ovhzhKYU523U=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(36860700004)(451199024)(82310400011)(186009)(1800799012)(64100799003)(46966006)(40470700004)(336012)(426003)(81166007)(356005)(82740400003)(70586007)(7416002)(5660300002)(4744005)(70206006)(8936002)(8676002)(4326008)(44832011)(2906002)(26005)(110136005)(2616005)(316002)(478600001)(1076003)(921011)(86362001)(36756003)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 12:40:45.6444
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0e26fbb-2eb2-4325-ec51-08dc2eec7f00
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00001CEA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6987
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240216-bpf-selftests-custom-progs-v1-1-f7cf281a1fda@suse.com>
+X-B4-Tracking: v=1; b=H4sIAERYz2UC/x3MQQqDMBBA0avIrB2Io5bSqxQXmk50oE1CJoog3
+ t3U5Vv8f4ByElZ4VQck3kQl+IKmrsAuo58Z5VMMZKgz1PQ4RYfKX5dZs6JdNYcfxhRmRSLT9e3
+ 0sPY5QhnExE72e/6Gf+d5zzCc5wXK3Ff1dgAAAA==
+To: Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708087374; l=1654;
+ i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
+ bh=LFbSSqlguBhZyI1xwk5Pl9KhUuY44k1PlYM1rVuK++U=;
+ b=isp8iI0S41hs8uBiLLql0fxxJu7GKe6d4CfKTC1+nylwLRjV1+y1YAe5hkB8Z2wCrQ+Jp68vj
+ NLQoTsKjJVqBK9B1vOLsXV65S9BQwlM+ULxJhy6SbRK6csj68Tg4bKg
+X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
+ pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=sFnvtkmS
+X-Spamd-Result: default: False [-0.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 R_RATELIMIT(0.00)[to_ip_from(RLwm53sskssc7cc3rt7fc71wwe)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 FREEMAIL_TO(0.00)[kernel.org,gmail.com,fb.com,iogearbox.net,linux.dev,google.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.81
+X-Rspamd-Queue-Id: 5838721FF2
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Assert DisplayPort reset signal before deasserting,
-it is to clear out any registers programmed before booting kernel.
+Commit f04a32b2c5b5 ("selftests/bpf: Do not use sign-file as testcase")
+removed the TEST_CUSTOM_PROGS assignment, and removed it from being used
+on TEST_GEN_FILES. Remove two leftovers from that cleanup.
 
-Signed-off-by: Rohit Visavalia <rohit.visavalia@amd.com>
+Found by inspection.
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- drivers/gpu/drm/xlnx/zynqmp_dp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/bpf/Makefile | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-index 1846c4971fd8..5a40aa1d4283 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-@@ -1714,6 +1714,10 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
- 		goto err_free;
- 	}
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index a38a3001527c..d9029d44b8f2 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -197,8 +197,7 @@ endif
+ # NOTE: Semicolon at the end is critical to override lib.mk's default static
+ # rule for binaries.
+ $(notdir $(TEST_GEN_PROGS)						\
+-	 $(TEST_GEN_PROGS_EXTENDED)					\
+-	 $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
++	 $(TEST_GEN_PROGS_EXTENDED)): %: $(OUTPUT)/% ;
  
-+	ret = zynqmp_dp_reset(dp, true);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = zynqmp_dp_reset(dp, false);
- 	if (ret < 0)
- 		goto err_free;
+ # sort removes libbpf duplicates when not cross-building
+ MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf	\
+@@ -752,7 +751,7 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
+ 
+-EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
++EXTRA_CLEAN := $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature bpftool							\
+ 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
+
+---
+base-commit: 682158ab532a5bd24399fec25b65fec561f0f6e9
+change-id: 20240215-bpf-selftests-custom-progs-220453b6cc8a
+
+Best regards,
 -- 
-2.25.1
+Marcos Paulo de Souza <mpdesouza@suse.com>
 
 
