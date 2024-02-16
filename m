@@ -1,203 +1,237 @@
-Return-Path: <linux-kernel+bounces-67968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D9C8573B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 03:16:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6299A8573B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 03:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AF521C22555
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:16:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1796BB2133E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C570FC12;
-	Fri, 16 Feb 2024 02:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBBD1FBE9;
+	Fri, 16 Feb 2024 02:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eOei/M2E";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="S0NvzB5O"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n8uUU6A7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC8AFBE9
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708049760; cv=fail; b=JSIKkdXNh7WYmpXmJ2+aoouHl8czf6L2/A5i/2s7ZmaQabIBuTNA3Tl7j0epJtRVWkWNS33PilKnN5f6qOvt4LEvk0VtwMf3ChYw72DLrT1gSPbownKJ8UI1WoD56N/hKyxP9q4fKEQErhTCXILHjJpCVY2PMmYdkc9VwjlObm4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708049760; c=relaxed/simple;
-	bh=mvZ141N+URpRl5KzZKumhnql9g5lXBr7L7SckQrL/7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=L8N82NHIv09x71eFnm344rjM9FMXHjlEKLX5yMCRKvTkCN1XXdLTKiWM0Ri6TFa3q2AOUZrWvzgbDBQXAj/PbwipoPqJ2tPYDZgzW7lF1kxNi9LepMQyNStEs6UEk/zt09POO7cao1LygPQsQIPr+UJpQJyEH2ZE2Geg1bAdIiY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eOei/M2E; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=S0NvzB5O; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FLSMAM001616;
-	Fri, 16 Feb 2024 02:15:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=pgBFvWwz5K2u/sLI9rxiV0o5yVFxFHz1Okkw69iX4tg=;
- b=eOei/M2EilKMtx1C7i/u1xyjB2aUhx8P5hOmH5bTGuHhm4Rg9OjZSiH15CIOUxfAeCsR
- V6ejcuvmk0kOqnICmUzF+aqhy+Fb+FE0WlUwxxfQ9aDKYqOVU4WaOgByfr5+1FDpMkc6
- mNJEdRUu0A4Ox1TzBsMFWsdK+V4BRdvpO/ip68pVoMYQ/3Fl4UnILqBLhtgHNRpalV9I
- 3etZFXMFsJ5z4Uy/UjlXT7DlBFoU2/DBhPy8+b5vc7qMXF2JWnJy38sRUeAdAMn/oPKe
- TV8HV5ngKCUxeplXBSksBsdTkJOG02AMpjRp5RV8UZclKNOCyrHK6gas73HaltpI12Qh 4g== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91f04441-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 02:15:29 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41G1AAqS031501;
-	Fri, 16 Feb 2024 02:15:27 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykbep93-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 02:15:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oEqMZJSx5AoTj8inDDsdxzIg10vNecYEm+a+BUO2C4LDarQdWBc+CSKvzzysu+szPPTklHcoVrzXGfjyyp2s5bY+WQNJcLyHQ/SsvKfhqKSbJQ6X6vyfPXNa0D0D+m7pXe3EaOY/FHlYUqv1vh0L+Rwt+xZ+V7dFbfgymgj2KvTj8tSt7uvJ00Lc4Rgb/KOAlwfOpuBWd/oH9/80diX5xjT7Bd4nGSTbQQs8LMO5nkgfgyc7rebrCoqckPerrMZiJibWGA2EL2YJqCIaY79ys2S8OHXKoIuDzHzoxr0gKi8gfh/rvnuW073bsOFL6+84FCKwZk0K13ndW1VygOhajA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pgBFvWwz5K2u/sLI9rxiV0o5yVFxFHz1Okkw69iX4tg=;
- b=TQWe7bIK474By01ibtquM0G+5MaJaqeR01ggfyFE1UGZ4V2cNQCA38bWeF+9XTcC1sxuvQ8Wc7KFcANE6q+xVoOAmNU6fz2QMdsHZwUl8BNHIPyKW4OcjzM6A+3yMDRajVO5mTvxLi+LgxWuH5YGOhMdqm831j//ICntrt2Rkmg94f5diAyoYQWfbOHxLlyVECTS3R2C8sD+cZAwTnWy//kY4iaWIeXFLZV9SeTCjOFvRLnmZvWvXBMUqzgC13696VwQz4p5c9OA62HYqzypikkAJqm2efrOhtt9RvtCFH/UUl3Hl5Z3iISXn6HYlY4z5/X4YAevzt17YPl6KIcBFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pgBFvWwz5K2u/sLI9rxiV0o5yVFxFHz1Okkw69iX4tg=;
- b=S0NvzB5OVVtuSuJ2LI8WrgROs0c1XWIIniqSZlq+igu5p3g3wyQcLdNs4Q45OnwyyHmfU5WUb+bkLyKPKkIGuZwCD7qnZ/ZeBNktCbBsjEa9U2Ul/nw9oriZGfbtXnJCDEAudE1sW4qoDYw5DPnTnrCTUDos6PrXvElEAo21gMY=
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
- by PH8PR10MB6622.namprd10.prod.outlook.com (2603:10b6:510:222::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Fri, 16 Feb
- 2024 02:15:25 +0000
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606]) by DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::20c8:7efa:f9a8:7606%4]) with mapi id 15.20.7292.029; Fri, 16 Feb 2024
- 02:15:25 +0000
-Date: Thu, 15 Feb 2024 21:15:23 -0500
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>, akpm@linux-foundation.org,
-        debug@rivosinc.com, broonie@kernel.org,
-        kirill.shutemov@linux.intel.com, keescook@chromium.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/8] mm: Switch mm->get_unmapped_area() to a flag
-Message-ID: <20240216021523.xb2q35kdchwdk4vh@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-	Dave Hansen <dave.hansen@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	akpm@linux-foundation.org, debug@rivosinc.com, broonie@kernel.org,
-	kirill.shutemov@linux.intel.com, keescook@chromium.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org,
-	peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
- <20240215231332.1556787-2-rick.p.edgecombe@intel.com>
- <acac6cc8-fd83-4541-8310-63f37cd41fa6@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acac6cc8-fd83-4541-8310-63f37cd41fa6@intel.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT3PR01CA0081.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:84::27) To DS0PR10MB7933.namprd10.prod.outlook.com
- (2603:10b6:8:1b8::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B04B8FBF7
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708049764; cv=none; b=ck3cdvs2/QLAkvY6tmE4PxMwGH0kKd9UWviXBbWH090DHFu/iE42Sg/qFbP/hXfQBPZATMB6wp+1Vg//cOlQ1CtOjD3KqAwIhJFFFWzUTnD+gBJh4i9DkiHygik9BpSBwkTCw7RmId/9bN+7mfJ0x2U7vsvLYd4qToofv+nwAp8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708049764; c=relaxed/simple;
+	bh=/B7/cwDvy9M2TT+TON0r/UhDVdY/tJaNubLEm1GVSFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RMQl7tYYKqBT5+ij3tNKPhwZMcDw0ViM3GWcmRVJAn2AXmCWH3Io9VTXctXK/ksDIM0kXmaia+OMlymhPDgdiaQROgoj+LamTcjYCbumVHdsmZCQJhaRpU+MLz47BjOj1fomyA/ab6BC44fGRR86QgZVBDvMUhM4qZB6PZkDlvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n8uUU6A7; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708049760; x=1739585760;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/B7/cwDvy9M2TT+TON0r/UhDVdY/tJaNubLEm1GVSFs=;
+  b=n8uUU6A70ZlRIk5I3jLQewCZeM6h2doBcwyFvrKYBwm9B6wCDWoLKBnx
+   Fm2OmCFqDeIp5LUk6kBJtTxnkKlk6mANRMWOPm1TPrF/Orro2Nq3YhMWz
+   yfScpA+bWMAOsRmfG1D8l8f0CoMRPWcDjvUKB3hpPiA/VhZGsSnGLuIH5
+   yCB6iub4mk038FmQRFj9Kvk7pfgKFSvfjyHb6naeFXWg2jMxw/o39njXR
+   smgTeNx4/2YFgVTCy8Xoipl7OZ63NgInozOHP5bWBxc8fVhifkOOIokCH
+   7WekBx737XptfJOsYOMdWgw2v0lM3SxSHdDQMPxN6GjzV3IbHKyRR30TW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2079990"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="2079990"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 18:15:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="3647355"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa007.fm.intel.com with ESMTP; 15 Feb 2024 18:15:57 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ranlb-0000wo-0a;
+	Fri, 16 Feb 2024 02:15:55 +0000
+Date: Fri, 16 Feb 2024 10:15:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/WFAMNAE-next20240215 1/1]
+ arch/powerpc/perf/core-book3s.c:2315:64: error: passing argument 3 of
+ 'perf_sample_save_brstack' from incompatible pointer type
+Message-ID: <202402161030.MBBR7fdm-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|PH8PR10MB6622:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13496501-0eb7-4db5-5eaf-08dc2e9522ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	+vCQuU2gs4rJCj3/zEu5B7XPggdiFpqzRkUDBCIH7x6WYLko1veboUk+/krfj+0Z5SHEOrWHvcoEgsUEMtB7u99jMfc4Zh5I/sn47DdiVGwG+kxfD1vpJiJl3/u7qNRNTUQGmKDwR1t2W5IMu139Vncq2jQKWMm/A7m4bO5zmJ0QDk8NUtCGSdWBUHOyXPA8S+a6uA7z5k1sJHwOgYoiPYqtcQOxdjfO7/BU/ocvllCVIok2QsWqk8iQ0cVWwK9cmX7GkPnxZ/8tPUbu14omHpEj7HD9YA3z3VkooAzs96Ioe0PCA1aBJWQWVCumUE/gtaWjRJnTxfjZeoeFUeSbrUjfAxUBcFttzDYrA/Kd/zF2Di+gpyHHgYZ714phmc3WYkeWmq2XtE3MjfSzEnky+qGIrlzJdmAGSUWBwJPYOSbXwqDz9K4hepvWRACGO8Y4/RbREOupN9M3PIDaIpOEM+6NcUUiRb4c8dPPDoURv/lY59+f8WlBEkmCkeoM23TViknJrZ+9krnedPvCiLMEmP4LiWYcCI4EMlV5D4mAXGnS5LCFeqzeMO2zW7df2fQb
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(136003)(396003)(376002)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(8936002)(8676002)(4326008)(1076003)(26005)(6916009)(478600001)(66946007)(41300700001)(316002)(66476007)(66556008)(6512007)(9686003)(6506007)(53546011)(6486002)(38100700002)(86362001)(5660300002)(2906002)(7416002)(33716001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?vGmHczr6WdGcYO3j3mHK03rrzfjt2OAvkvV5rpMMfx9SiVyZIvg+Lur2Jo1R?=
- =?us-ascii?Q?qnMv30MGVmf3mlxrQKeFTsylbGyoSFXfZZfZ2397UDGjVycLQfPyuA2kskwP?=
- =?us-ascii?Q?s1rRoQrVuyjKo6VkgbhlSOAmsYbQ2NwTiYkqNINWLjdEpEHxCDr2igPEsuf6?=
- =?us-ascii?Q?lcJ2RT5EQQTe2fxTENAnXNiDNMaC1g0uQn0haW7NMo4sBfrPsPMVPDho7TTV?=
- =?us-ascii?Q?xoEMOTHBk0/eTkWfs+ULUdiJ2TXjYOhZLpNs/vWszZK6lTmqGaOZfOy1u75Q?=
- =?us-ascii?Q?ZgRi7P0EvIcPn46Ao2nckVsrdec/ebNW7qjDAxVkZ7muyhE68haDVp8oBOYb?=
- =?us-ascii?Q?ipek1keMIQ6cDiHAEiNkJtm9jOXJqz7OwArYIqdp7Q0lzaH6q9TVwWwsL7Ec?=
- =?us-ascii?Q?MQEJUkloLp7uwoy5VP9E26s77EsksBGBrDFhBYDq6KveZKLifG8fIhv7T6Pb?=
- =?us-ascii?Q?ctnGpAZPPzgwablROi6OrzsVwBa0GDL39jSXhJagYLyj128czoBlaBbrC7gF?=
- =?us-ascii?Q?zZAvL46g5M68zml20nQezFCQ9n97Ca0arg/HoLweUwK6PcmRGnwT7wqf88AP?=
- =?us-ascii?Q?3yKNA2/bwtHQsvRoZIwRdrg7kTD2w9ViU+jSeUP2CyZKQYRY5u2IANS1QM9A?=
- =?us-ascii?Q?5fhy8rHEH9xnYL0ZKXefAeRg8SqhMYZjMuyueqIFdBL05iF6ZCYoprZRNf8u?=
- =?us-ascii?Q?i2twehqbLmPlXfT/ZDR2PDy2lKQMADSJkbtwMPVfV9cy346Kb9KnH/n7zobW?=
- =?us-ascii?Q?xEOl4eANJA6lyM6f/4ePNRAgWQmEeRIU98lXJJU6FgYfzHVvgFv4Y3vaAeLP?=
- =?us-ascii?Q?mSgXXhoCF6coDVhTumx1/8FfFKSzxSMiBB4jTwDtrr1eKPo0350BWkwVTQ4+?=
- =?us-ascii?Q?27XjXn9kgJlo9fHuirNylIhxtXWVg1vRJYgdTuGZ+xpfhG6cKLSz6L3HlEy0?=
- =?us-ascii?Q?jpCwM7kop8PTCt/bahyYi0UtOPVIIIpgCtkpUZwH4hX6mIofG4zBmb0gsyr4?=
- =?us-ascii?Q?qtI0k1pkzEoOrstRS3Soq8zzWbvYBp9qkD7eaqEgim3BDe2uEJww27d0PavV?=
- =?us-ascii?Q?w1AFhrJIty0TL3tEMONX8jBrRiAS6Au54CuEVBX1pTQQFCNdul7FB89RpCtI?=
- =?us-ascii?Q?LF3eLQP3wASMSasP5Wto9Rv6cFocvOruhC0jEl/zmC8t8DcUNu/MQ5oV7P3j?=
- =?us-ascii?Q?6clMap15gE0sNxPACd2O62An9ZYub85HJ5u2M0k+5ol+N1qvtMJRRbaGNEUp?=
- =?us-ascii?Q?XS/zh1Fuv6okOAyJLrcmjODNpZKs6r/P9ItfOY206mn7JlYQBWlc7Oa6VEZA?=
- =?us-ascii?Q?7c/ccZsQH8k/51XIO4/w6tH0ohQ6cdhITVOVZotUr3Jmin+MLJUCnIRyvxqI?=
- =?us-ascii?Q?ZuRZiWWgykwpq9ycKWKtj9MrpavKR5trzBZKF/DAYlR/64nRNORlZkVBCqMQ?=
- =?us-ascii?Q?r9/xQ/wKggR4WF6uLKGKUZ/cQgL0tYTniMF/MdsIFJg735VNId1SYm+oFdEa?=
- =?us-ascii?Q?zHppxFxgTMauEEzEC7izQ0FFq8JXKdP4i7dOhwYttGeYhAcsJzOJkwO07xGC?=
- =?us-ascii?Q?U9YISaBOcLCofpOwrrbn3CAo01ELlsjIskuM0AJR?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	uKQm5MDfaW7e2TmifYgWJO8XJEm1fxOY4790Io3tFFPNZsFnGii2Kdl9BY87JQOfMMJNlJnrLHOvQzZa1NjSABgIEr91ThpVZQbaKtlCBpc2zIqgwpRwFxLwTemADyGb39VdIO8Xi9+eXNqJQ9ylYvzonz98R3kOjnTz7tJzWonVimfBndcremCHruCOAfRp4fx5sF08kL703gVj1R2tFgABuHbvCQSWVWiAfZB0VNMPcgTe17BUXlqVIUF2/2VOXNfFDSoQgO27RFuWG6G5cH5WRof0bbcDL44W1P0+KGC7ppQJmRbxa0K2CNQmQZzmINdO4XBQHrOhmIz1AI9erHfgRF2MYBlXrY2XfJGY+iTlEEibbKIGu3zd1I2svsNz8Txa6wptKDjagvvcgfGSuJvCp4hZK53gOnKU56ALK4q++a9r2SjTHaygTBHObv7EkKcwn+RDQ+POc+AbNKhzYCnHxcULvLPXSjpSS/COaow9DBC5HVTcp/m/kQa/rbSfMK789AqyspdwyTK2DDYC68S151WwbxwmgUJd2nw4ViOQKuSrMmEiCIzXWpyiZZb1rFBTKNbiWQsPnSVwNQV9GcFW+HNOGCkzjDeNwWooCT8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13496501-0eb7-4db5-5eaf-08dc2e9522ff
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 02:15:25.3512
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dUQlu7GHIR0KftShwRKjozRAa4ke0LWljYWjEJT5oU7pdCkXET40Mw5wvVvN0GF5Bq4Zvh24X80ugbidCsWJAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6622
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_01,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=619 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402160015
-X-Proofpoint-ORIG-GUID: PnHu0ljv_RQAoqEm0j-PNGUKR1ehIywC
-X-Proofpoint-GUID: PnHu0ljv_RQAoqEm0j-PNGUKR1ehIywC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-* Dave Hansen <dave.hansen@intel.com> [240215 19:30]:
-> On 2/15/24 15:13, Rick Edgecombe wrote:
-> > The mm_struct contains a function pointer *get_unmapped_area(), which
-> > is set to either arch_get_unmapped_area() or
-> > arch_get_unmapped_area_topdown() during the initialization of the mm.
-> > 
-> > Since the function pointer only ever points to two functions that are named
-> > the same across all arch's, a function pointer is not really required. In
-> > addition future changes will want to add versions of the functions that
-> > take additional arguments. So to save a pointers worth of bytes in
-> > mm_struct, and prevent adding additional function pointers to mm_struct in
-> > future changes, remove it and keep the information about which
-> > get_unmapped_area() to use in a flag.
-> 
-> Indirect calls are just all kinds of evil, especially when Spectre-v2 is
-> in play.  This is a really good idea.
-> 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240215
+head:   2b08fd9386dd05331a6f385d45ea7272536123ec
+commit: 34a5c90f36e0238bfc95cda9e2eccf7e610bff1a [1/1] treewide: Address -Wflexible-array-member-not-at-end warnings
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20240216/202402161030.MBBR7fdm-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240216/202402161030.MBBR7fdm-lkp@intel.com/reproduce)
 
-Yes, this change can stand on its own I believe.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402161030.MBBR7fdm-lkp@intel.com/
 
-Acked-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+All errors (new ones prefixed by >>):
+
+   arch/powerpc/perf/core-book3s.c: In function 'record_and_restart':
+>> arch/powerpc/perf/core-book3s.c:2315:64: error: passing argument 3 of 'perf_sample_save_brstack' from incompatible pointer type [-Werror=incompatible-pointer-types]
+    2315 |                         perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
+         |                                                                ^~~~~~~~~~~~~~~~~~
+         |                                                                |
+         |                                                                struct perf_branch_stack_tag *
+   In file included from arch/powerpc/perf/core-book3s.c:10:
+   include/linux/perf_event.h:1269:71: note: expected 'struct perf_branch_stack *' but argument is of type 'struct perf_branch_stack_tag *'
+    1269 |                                             struct perf_branch_stack *brs,
+         |                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+   cc1: some warnings being treated as errors
+--
+   drivers/crypto/nx/nx-842.c: In function 'nx842_crypto_compress':
+>> drivers/crypto/nx/nx-842.c:254:43: error: initialization of 'struct nx842_crypto_header *' from incompatible pointer type 'struct nx842_crypto_header_tag *' [-Werror=incompatible-pointer-types]
+     254 |         struct nx842_crypto_header *hdr = &ctx->header;
+         |                                           ^
+   drivers/crypto/nx/nx-842.c: In function 'nx842_crypto_decompress':
+>> drivers/crypto/nx/nx-842.c:493:13: error: assignment to 'struct nx842_crypto_header *' from incompatible pointer type 'struct nx842_crypto_header_tag *' [-Werror=incompatible-pointer-types]
+     493 |         hdr = &ctx->header;
+         |             ^
+   cc1: some warnings being treated as errors
+
+
+vim +/perf_sample_save_brstack +2315 arch/powerpc/perf/core-book3s.c
+
+b0a873ebbf87bf arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-11  2228  
+4cb6a42e4c4bc1 arch/powerpc/perf/core-book3s.c    Kan Liang                  2020-10-01  2229  #define PERF_SAMPLE_ADDR_TYPE  (PERF_SAMPLE_ADDR |		\
+4cb6a42e4c4bc1 arch/powerpc/perf/core-book3s.c    Kan Liang                  2020-10-01  2230  				PERF_SAMPLE_PHYS_ADDR |		\
+4cb6a42e4c4bc1 arch/powerpc/perf/core-book3s.c    Kan Liang                  2020-10-01  2231  				PERF_SAMPLE_DATA_PAGE_SIZE)
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2232  /*
+57c0c15b524432 arch/powerpc/kernel/perf_event.c   Ingo Molnar                2009-09-21  2233   * A counter has overflowed; update its count and record
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2234   * things if requested.  Note that interrupts are hard-disabled
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2235   * here so there is no possibility of being interrupted.
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2236   */
+cdd6c482c9ff9c arch/powerpc/kernel/perf_event.c   Ingo Molnar                2009-09-21  2237  static void record_and_restart(struct perf_event *event, unsigned long val,
+a8b0ca17b80e92 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2011-06-27  2238  			       struct pt_regs *regs)
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2239  {
+cdd6c482c9ff9c arch/powerpc/kernel/perf_event.c   Ingo Molnar                2009-09-21  2240  	u64 period = event->hw.sample_period;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2241  	s64 prev, delta, left;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2242  	int record = 0;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2243  
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2244  	if (event->hw.state & PERF_HES_STOPPED) {
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2245  		write_pmc(event->hw.idx, 0);
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2246  		return;
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2247  	}
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2248  
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2249  	/* we don't have to worry about interrupts here */
+e78505958cf123 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-05-21  2250  	prev = local64_read(&event->hw.prev_count);
+86c74ab317c1ef arch/powerpc/kernel/perf_event.c   Eric B Munson              2011-04-15  2251  	delta = check_and_compute_delta(prev, val);
+e78505958cf123 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-05-21  2252  	local64_add(delta, &event->count);
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2253  
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2254  	/*
+cdd6c482c9ff9c arch/powerpc/kernel/perf_event.c   Ingo Molnar                2009-09-21  2255  	 * See if the total period for this event has expired,
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2256  	 * and update for the next period.
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2257  	 */
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2258  	val = 0;
+e78505958cf123 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-05-21  2259  	left = local64_read(&event->hw.period_left) - delta;
+e13e895f8430d8 arch/powerpc/perf/core-book3s.c    Michael Neuling            2012-11-05  2260  	if (delta == 0)
+e13e895f8430d8 arch/powerpc/perf/core-book3s.c    Michael Neuling            2012-11-05  2261  		left++;
+60db5e09c13109 arch/powerpc/kernel/perf_counter.c Peter Zijlstra             2009-05-15  2262  	if (period) {
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2263  		if (left <= 0) {
+60db5e09c13109 arch/powerpc/kernel/perf_counter.c Peter Zijlstra             2009-05-15  2264  			left += period;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2265  			if (left <= 0)
+60db5e09c13109 arch/powerpc/kernel/perf_counter.c Peter Zijlstra             2009-05-15  2266  				left = period;
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2267  
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2268  			/*
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2269  			 * If address is not requested in the sample via
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2270  			 * PERF_SAMPLE_IP, just record that sample irrespective
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2271  			 * of SIAR valid check.
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2272  			 */
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2273  			if (event->attr.sample_type & PERF_SAMPLE_IP)
+e6878835ac4794 arch/powerpc/perf/core-book3s.c    sukadev@linux.vnet.ibm.com 2012-09-18  2274  				record = siar_valid(regs);
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2275  			else
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2276  				record = 1;
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2277  
+4bca770ede796a arch/powerpc/kernel/perf_event.c   Anton Blanchard            2011-01-17  2278  			event->hw.last_period = event->hw.sample_period;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2279  		}
+98fb1807b97e3e arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-06-17  2280  		if (left < 0x80000000LL)
+98fb1807b97e3e arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-06-17  2281  			val = 0x80000000LL - left;
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2282  	}
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2283  
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2284  	write_pmc(event->hw.idx, val);
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2285  	local64_set(&event->hw.prev_count, val);
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2286  	local64_set(&event->hw.period_left, left);
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2287  	perf_event_update_userpage(event);
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2288  
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2289  	/*
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2290  	 * Due to hardware limitation, sometimes SIAR could sample a kernel
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2291  	 * address even when freeze on supervisor state (kernel) is set in
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2292  	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2293  	 * these cases.
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2294  	 */
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2295  	if (event->attr.exclude_kernel &&
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2296  	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
+d137845c973147 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-02-05  2297  	    is_kernel_addr(mfspr(SPRN_SIAR)))
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2298  		record = 0;
+aa8e21c053d72b arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-11-25  2299  
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2300  	/*
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2301  	 * Finally record data if requested.
+4574910e508708 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-01-09  2302  	 */
+0bbd0d4be8d5d3 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-05-14  2303  	if (record) {
+dc1d628a67a8f0 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-03-03  2304  		struct perf_sample_data data;
+dc1d628a67a8f0 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-03-03  2305  
+fd0d000b2c34aa arch/powerpc/perf/core-book3s.c    Robert Richter             2012-04-02  2306  		perf_sample_data_init(&data, ~0ULL, event->hw.last_period);
+df1a132bf3d350 arch/powerpc/kernel/perf_counter.c Peter Zijlstra             2009-06-10  2307  
+4cb6a42e4c4bc1 arch/powerpc/perf/core-book3s.c    Kan Liang                  2020-10-01  2308  		if (event->attr.sample_type & PERF_SAMPLE_ADDR_TYPE)
+da97e18458fb42 arch/powerpc/perf/core-book3s.c    Joel Fernandes (Google     2019-10-14  2309) 			perf_get_data_addr(event, regs, &data.addr);
+98fb1807b97e3e arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-06-17  2310  
+3925f46bb5902b arch/powerpc/perf/core-book3s.c    Anshuman Khandual          2013-04-22  2311  		if (event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK) {
+3925f46bb5902b arch/powerpc/perf/core-book3s.c    Anshuman Khandual          2013-04-22  2312  			struct cpu_hw_events *cpuhw;
+69111bac42f5ce arch/powerpc/perf/core-book3s.c    Christoph Lameter          2014-10-21  2313  			cpuhw = this_cpu_ptr(&cpu_hw_events);
+da97e18458fb42 arch/powerpc/perf/core-book3s.c    Joel Fernandes (Google     2019-10-14  2314) 			power_pmu_bhrb_read(event, cpuhw);
+571d91dcadfa3c arch/powerpc/perf/core-book3s.c    Kan Liang                  2023-10-25 @2315  			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
+3925f46bb5902b arch/powerpc/perf/core-book3s.c    Anshuman Khandual          2013-04-22  2316  		}
+3925f46bb5902b arch/powerpc/perf/core-book3s.c    Anshuman Khandual          2013-04-22  2317  
+79e96f8f930d42 arch/powerpc/perf/core-book3s.c    Madhavan Srinivasan        2017-04-11  2318  		if (event->attr.sample_type & PERF_SAMPLE_DATA_SRC &&
+e16fd7f2cb1a65 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2319  						ppmu->get_mem_data_src) {
+79e96f8f930d42 arch/powerpc/perf/core-book3s.c    Madhavan Srinivasan        2017-04-11  2320  			ppmu->get_mem_data_src(&data.data_src, ppmu->flags, regs);
+e16fd7f2cb1a65 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2321  			data.sample_flags |= PERF_SAMPLE_DATA_SRC;
+e16fd7f2cb1a65 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2322  		}
+79e96f8f930d42 arch/powerpc/perf/core-book3s.c    Madhavan Srinivasan        2017-04-11  2323  
+af31fd0c9107e4 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-03-22  2324  		if (event->attr.sample_type & PERF_SAMPLE_WEIGHT_TYPE &&
+2abe681da0a192 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2325  						ppmu->get_mem_weight) {
+af31fd0c9107e4 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2021-03-22  2326  			ppmu->get_mem_weight(&data.weight.full, event->attr.sample_type);
+2abe681da0a192 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2327  			data.sample_flags |= PERF_SAMPLE_WEIGHT_TYPE;
+2abe681da0a192 arch/powerpc/perf/core-book3s.c    Kan Liang                  2022-09-01  2328  		}
+a8b0ca17b80e92 arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2011-06-27  2329  		if (perf_event_overflow(event, &data, regs))
+a4eaf7f14675cb arch/powerpc/kernel/perf_event.c   Peter Zijlstra             2010-06-16  2330  			power_pmu_stop(event, 0);
+17899eaf88d689 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-08-06  2331  	} else if (period) {
+17899eaf88d689 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-08-06  2332  		/* Account for interrupt in case of invalid SIAR */
+17899eaf88d689 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-08-06  2333  		if (perf_event_account_interrupt(event))
+17899eaf88d689 arch/powerpc/perf/core-book3s.c    Athira Rajeev              2020-08-06  2334  			power_pmu_stop(event, 0);
+8a7b8cb91f26a6 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-05-26  2335  	}
+0bbd0d4be8d5d3 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-05-14  2336  }
+0bbd0d4be8d5d3 arch/powerpc/kernel/perf_counter.c Paul Mackerras             2009-05-14  2337  
+
+:::::: The code at line 2315 was first introduced by commit
+:::::: 571d91dcadfa3cef499010b4eddb9b58b0da4d24 perf: Add branch stack counters
+
+:::::: TO: Kan Liang <kan.liang@linux.intel.com>
+:::::: CC: Peter Zijlstra <peterz@infradead.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
