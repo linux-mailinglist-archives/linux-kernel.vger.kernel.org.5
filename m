@@ -1,195 +1,105 @@
-Return-Path: <linux-kernel+bounces-69298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F3A8586BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7AAB8586BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ED0D1C21A04
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:28:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1FE51C21634
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F43513A89D;
-	Fri, 16 Feb 2024 20:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8711E1E536;
+	Fri, 16 Feb 2024 20:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="F81Y3JNM"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02olkn2053.outbound.protection.outlook.com [40.92.15.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hmbSuJ/7"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46478135A6F;
-	Fri, 16 Feb 2024 20:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.15.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708115290; cv=fail; b=RZWmICzGaauBg5IaOBfJXfZY4tkb9DDaqVbOXVu8o9ZfdCsqWfq0Jz0yB9lNv9EAAGT0u/XAg+I2fWrMzZsQsqysaI2woq8V4ikeACrZ419yvjqbb1qsBRiEVnwLhwCyZOVI4Xiaywg0pUQJRGJHyXAwq3Mt9fGeXd8Ru9aEH4Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708115290; c=relaxed/simple;
-	bh=SJDyL0Y5Hw+hB9zEgGZ3gsfZrZ3gE6Mx/9PQlYCdfL8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=haRW7Kn1tbxwKHujJa0m+Z4QxaRfdeVSxqbdU1vBxF9Lca1saoYmU966obLkGIMuw/r1NIHu6QlQBKr3z7GqQPSgAtjoK9ZdE+VE3r24SWqPd3D85lILIQY76bAt85dfUSVnBJ6NtS1r7nToB3ENbZKQpT7Edbj6DWwX7BMRXmI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=F81Y3JNM; arc=fail smtp.client-ip=40.92.15.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C/egTgn1FRBHoeZ1PcjNE+kMkb4vH+i3EE6JLVf2iTbgk1AgIm1WeSxyo+IXYcNvk/HXXNxaOEaKRDOKSr64YGWPRlQrEtIQoHrwp81Hfazppq+QcjwybUa0ZgbpcXA5OXkgO73LWSPDUkWwCN2SJkLRTObzCjywVQH5hL5LjSOfVBAWixe1JFtbDQEO+AgnvrGJU334+KIKmDPtXs4o7ZWq5hdK3npsCNwWSbMiXbQ3uEe3Qtb4MFwJuCXK2KR/Sii04OBa6kyTMY6w3W9TJpB7wN20nWjETU8vPYHF3CZh1izuTFJna1Xb0ic8XZ12AeFF+kFQKNl58AP/MKs6oA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2McgmiSpt92YvfCZE/pQXZ4K8469yCZ7Qyr0GEiLRqM=;
- b=YFLvws0fylenDC5111LrSXlFxp1kqQ/IkB9yQyq4JpgOLlIWcboBZZ9vVbQyRvbVDHujm5Atb2sKuYKIBQ9QAojyHCWTZEbEKoScUU22IuFUndLEYL3CzL+R4jLRUGAE1uugrIM6bbPO8RHMFNdXEbAdseMH0ogHg5qGcYN27jzptVzhhHGizfEioUWWxUKj1GRUQYQE1+6KsbSTBSMlGWB6THfGYIYFXYnnOSqtpDw1chXMmVNE5k5xcPHTmJDDW8+wcI9hFydklJp7niNoqN6uCYkjNpePC1Z+en3PCW8zCeAPpvufTfMvdZ1vwNy/2y3KK46qi9rUwytbAnv/bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2McgmiSpt92YvfCZE/pQXZ4K8469yCZ7Qyr0GEiLRqM=;
- b=F81Y3JNM4LCCUnfEeGYDCtMxPD/UzJk5iqc242wapfjiosPvuhNT8FCleO7AFhA2vG8BaOFw7UgscZOHnhm/8O/8miTnA3gTmyRvDzlGQBPgG7AG4ErlOpWG2ntal6MdQegCNdXZP3uF3cgeT6iO5Dgl4Z9UCq2D/SAyKO5VccR4Ru7p0x/8D65petHR3CcWBdACtn+WZNuw2monCDNwt/+Ib5tDHjdaSeEv1qhvZHOBjrjhQvEuF7Z2ZMvtA6TXcHQMNRg6uDFggLnHi8tFEgZE0r4z5yzAnFEz9WH48qmp+BIrRyluWPwQ2P74+n1WL60pT4HkMb98nucVUAs6wA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by PH7PR02MB9943.namprd02.prod.outlook.com (2603:10b6:510:2f6::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Fri, 16 Feb
- 2024 20:28:04 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7292.029; Fri, 16 Feb 2024
- 20:28:04 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: =?iso-8859-1?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC: "haiyangz@microsoft.com" <haiyangz@microsoft.com>, "wei.liu@kernel.org"
-	<wei.liu@kernel.org>, "decui@microsoft.com" <decui@microsoft.com>,
-	"lpieralisi@kernel.org" <lpieralisi@kernel.org>, "kw@linux.com"
-	<kw@linux.com>, "robh@kernel.org" <robh@kernel.org>, "bhelgaas@google.com"
-	<bhelgaas@google.com>, "linux-pci@vger.kernel.org"
-	<linux-pci@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] PCI: hv: Fix ring buffer size calculation
-Thread-Topic: [PATCH v2 1/1] PCI: hv: Fix ring buffer size calculation
-Thread-Index: AQHaX+NrV9kpOA7q8kKo52FVqq7NobENDfiAgABebnA=
-Date: Fri, 16 Feb 2024 20:28:04 +0000
-Message-ID:
- <SN6PR02MB415749788D7DEA3D1D792913D44C2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240215074823.51014-1-mhklinux@outlook.com>
- <0802ce88-c86d-3a74-501f-28393d6112f3@linux.intel.com>
-In-Reply-To: <0802ce88-c86d-3a74-501f-28393d6112f3@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [bWeSa/l7ppB/jlQWtSALD2fEwot7yriq]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH7PR02MB9943:EE_
-x-ms-office365-filtering-correlation-id: faf18e99-8d82-41e6-2e5f-08dc2f2dc73c
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 4wD33byVVtvdJnor6cY2LnE7rLbubY42LnLmODLaZpSlasXEriWdwE1I/gIeJpO4YLTTqihSa/FTdJo9Lgsq4pDvIF3M5HzouZI+OSGbMK73MVpMT4H0yrfCSisDjA9kWiOQsVQW8JtlxarDOTW6izNoWXtdBAzZbUC6Pas4m0GCvgMhgwBCNYurAwwCL5FVjZG7sLtq5tR/XYr7gYzNMukFFn1kQr8L0fFxXYutubzwZUHRVJCDrxFWjP01RY1eYXJ3+wLPsN9GVpsI1YwvJgXLLCo2hbC1ZIzyCu/NgYJYIlr+GqJ7PiBqMGo5zy3O6x3I4szrVrjgNYrs3hs50eI/KbArA0R4aCkDi+mV4h+yENYug0T5Hruc/T5HwrpSeKP2LqLGSeQVq3pMlxpI46GPdZTIDJhURqOyzP11+hL1OnRELuHw+mCRawoUFQcmifJDywjfOk7ITDvh5tzUbjD+ORaiJmyQfxxpdrntXymA8D4+y5uS4B2HQZWYeI2/CAkwZz8JyxJpLLVVkaPfFGq3rZ73MM+mI5257S1aSw1A3QhlmZGioBPpmUCzm38+
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?qewd65Gc/ycHisuj0ElAd9/6wtomJsRBdY5swJwt4/czV+B0XvdIURCj6A?=
- =?iso-8859-1?Q?5qUoR4kMiojuufhYZrUUTgEjqjGxerLQLFEyDWOE2u+fFRX1sCSIPCdLT9?=
- =?iso-8859-1?Q?c1bm6FF9pvWf9MZ1UK5JWO0V/FNm9BJJxaVhkhYHrPusJkUQBBWIXxF0dK?=
- =?iso-8859-1?Q?jK7z3rTBGmRHG8+b/KCMkPxBx2GQQysAMD3iUEhUEgk19JvDFPmMNvbLoJ?=
- =?iso-8859-1?Q?QDeUlboSbHBEBY6NFunN92kRxhTp+w4wcN6dOiGXrVVX2froqDV38QCMpe?=
- =?iso-8859-1?Q?B0CrpIW9JG1wXRPxlpgTF/hyfQ5xHii2p2lqKinLSV3WrOFWRuXX1tHxvk?=
- =?iso-8859-1?Q?jBBrzDgkODVUAw3MUNuBGyxcpdRHL3mkKz+yJQVWl/I6zJ8Xj0ZJutV8m5?=
- =?iso-8859-1?Q?xbUk+VTZUqQy+lnjtApdwPp2lZmu84B0QQtHh6SAJOVUaRgBQtsqL21DT/?=
- =?iso-8859-1?Q?ZeboFRK66MDnZxT2TCv2fEj5dgjPFn+JdQ8dA14H72dLL4RNyvd1SH/evq?=
- =?iso-8859-1?Q?y/gWIxmiGdXpRIJpRst4iONKbd/NG0BIrcH1Tx/MJhKPsCaIUjVXHdztVX?=
- =?iso-8859-1?Q?FRHT9fPs+4nnN+b5WQBs679sfUAd525/xkuVj8tjjF/O+J2znNp3FxSYjG?=
- =?iso-8859-1?Q?BkfD30vsIPgmIebNymetPu2SHb7ketTz6mW/gtTTELTdA94gJ+BxekgS7+?=
- =?iso-8859-1?Q?V7nGKxm0XxDzBb6lOLgrqpJsk6AC3saCzF4BQYrJWZqD7qgClEPy5WxJEc?=
- =?iso-8859-1?Q?rNkcUJHpnKmv6MwwLY0y+mBxspbBFYnBOg4bRVnAQGYptyQWnlZOq7pYbe?=
- =?iso-8859-1?Q?iXo5uhWJBLxFrRjn0O5kirEGDiMYjii2cXY3JsOhzsro7eGwTnpmpOD20O?=
- =?iso-8859-1?Q?fwzbd49cPPGS5E2VpubSFPomy//7vYLpYbqAHI/YseAewlLI45Gf2ducUn?=
- =?iso-8859-1?Q?f3IdxipPBKLsOIzoiO8ejfn6ckRxMVOGXR899MjMyKYmUBKb5hDcsrOPw7?=
- =?iso-8859-1?Q?4tj2Pc+hYwaB/46UstF3viHMsnNodvHkr0OEfxcTiWTlz3bCQRGGLgmtdE?=
- =?iso-8859-1?Q?Ts9cDMqTOgVXBU/8l4Zb3L/O+/EDylihxNkeCGMaPbuNtHLO1aGQ7eC2a1?=
- =?iso-8859-1?Q?1+qUKLw9+6q7VNYnP+QXFxXuse3mv6d/JDL1jUYky9U4tC0Ny8WJofA/If?=
- =?iso-8859-1?Q?wDVUmz1XDtaokSlhU+ucRDOyExo7DtqITL1kTk2Keb+sRKKRMozGFSEl/A?=
- =?iso-8859-1?Q?PmpN6xZj2VWcTac1CRy6qKQFBdY7nzj+N8uDF1fWY=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF2D1EA90
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 20:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708115430; cv=none; b=ftfewh9AbEPEGTo2TCzeDrCnnfzZHAK28nXmfAvFtbsXb5UoSHwCG0aaWdQWWNkvWb4BkHQOK8dWJhfgwuaJZghqxnGExdRD+31eQFJFPLG+GvG1De7Ktokrc7viOSVCy4a3OUnRQz04Vd4lfAlXcavIZQtWErCYLpF1HdZICRI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708115430; c=relaxed/simple;
+	bh=HWIjr5/59taS8YpBBo7ebv0rKOCWRQ/5J9QUZ3NT2aM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DgNbWEmhb9Hi1VQKOhZIU4iuc3rtXf1MSz/YdeA9mhRLSxiQwfyorSGfcC1MLmlxckCUs/3acqTt10d2EYYbZHs0Yw4/WKuZ+FFAhtzxoL+s75huBWDF5loRmNpB3WAd18+yPsHW5L6KtQ9CS+tZAsejWK75TmWHvMTVbKtBCKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hmbSuJ/7; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3debe0167fso109211366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:30:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708115427; x=1708720227; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pH0qD4eQ9yoqb3qmhmjfrX0mmcBGSF4Iayx1D/NOKIE=;
+        b=hmbSuJ/7NoFHts7lby2w7ttNbWbzqjr8lZUgm8iovBfuF+eBL0NGPY97yrF+M3FO8S
+         v56OjJaokdNZ/zwLTKTpF1I9m/lI3TkTySYawQuHp8o572yqSH+CwXVF789e5Hf8aXtW
+         sGsX+meXiR7n0he98abhF9roNw7K3/KMwAU/xmF7J/XPuAjGpkbNOPt08wmbkvm90Bi2
+         ZLM3mrvTNvjubACST+P/1YRCiu8ANO8GePJyihYdjPqu7UI8iTyDb33hqtND/LG0kPF1
+         sZTpHna6vp4vV9rt3Kzg2rohqlS82GyNo9Wph6OU3mI4MYh4w0w/0+MkLxpKOia3vZZr
+         Vnsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708115427; x=1708720227;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pH0qD4eQ9yoqb3qmhmjfrX0mmcBGSF4Iayx1D/NOKIE=;
+        b=CIUWLUnpDJFwN9Hu52knnPkq0LW64CODdj6/4GXcOhBL/nkSa4l19h07h2MnAHTpkC
+         SVKt0j9m2ioGf7s/xjoV7gCq5W58DH9rwNbCn/43ZwMus7+vLqQJ8Sa0qUpB/cs+GF1C
+         9CatnQjuIO7O7vTv6OfBCn2qzpVL/XavK/T+kO6w6Gb9rYeoOiH7vlKN1QoxqTgilqgL
+         OISlhPNfmogqTy/ehc1pKouW6HHTXacq9Hfg9POFa4gk7o80FjvSuviUjEm9TFV94pDC
+         6WLKGi2yt5BAmWfcbpJxR3gAuJRWJ88+omEl2BoPdcoNelJzKfpauld3w9RtD0+QljnW
+         vzlA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxRIb9iFyKJfzof0rmrmP5hZ9o1/NEUhfx9c6gAJ8jPciTMGL7hIhqX0Ctcb4eZctrXwF102TwVOkF4w/Q8CuB/k+HqKdtzUKrCNlt
+X-Gm-Message-State: AOJu0YxezCP56VuY0ehFIRQ40YdM2jV7Beg2YZt4sGI/L4+UxJT8Egnn
+	owZLGSQ8Dqve161E9st6pV94BXyWCkAPjbiagLjCGMtYjnVsQ4lGuDmDr9Ny
+X-Google-Smtp-Source: AGHT+IGcDan+MHupoKMtiTLo/p8jVQOdKLMDi8rbZuJ5C8LLozz5mEsLJNFCMX0JHRFnVvXKEDV3eA==
+X-Received: by 2002:a17:907:382:b0:a3d:841e:3d75 with SMTP id ss2-20020a170907038200b00a3d841e3d75mr4032285ejb.61.1708115427233;
+        Fri, 16 Feb 2024 12:30:27 -0800 (PST)
+Received: from andrea ([31.189.39.37])
+        by smtp.gmail.com with ESMTPSA id lj8-20020a170907188800b00a3dd52e758bsm312334ejc.100.2024.02.16.12.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 12:30:26 -0800 (PST)
+Date: Fri, 16 Feb 2024 21:30:22 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Eric Chan <ericchancf@google.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/4] riscv/barrier: Define __{mb,rmb,wmb}
+Message-ID: <Zc/F3qB8I+AaN9Wr@andrea>
+References: <20240213223810.2595804-1-ericchancf@google.com>
+ <20240213223909.2596587-1-ericchancf@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: faf18e99-8d82-41e6-2e5f-08dc2f2dc73c
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2024 20:28:04.1998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR02MB9943
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213223909.2596587-1-ericchancf@google.com>
 
-From: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com> Sent: Friday, Februar=
-y 16, 2024 6:46 AM
->=20
-> On Wed, 14 Feb 2024, mhkelley58@gmail.com wrote:
-> >
-> > For a physical PCI device that is passed through to a Hyper-V guest VM,
-> > current code specifies the VMBus ring buffer size as 4 pages.  But this
-> > is an inappropriate dependency, since the amount of ring buffer space
-> > needed is unrelated to PAGE_SIZE. For example, on x86 the ring buffer
-> > size ends up as 16 Kbytes, while on ARM64 with 64 Kbyte pages, the ring
-> > size bloats to 256 Kbytes. The ring buffer for PCI pass-thru devices
-> > is used for only a few messages during device setup and removal, so any
-> > space above a few Kbytes is wasted.
-> >
-> > Fix this by declaring the ring buffer size to be a fixed 16 Kbytes.
-> > Furthermore, use the VMBUS_RING_SIZE() macro so that the ring buffer
-> > header is properly accounted for, and so the size is rounded up to a
-> > page boundary, using the page size for which the kernel is built. While
-> > w/64 Kbyte pages this results in a 64 Kbyte ring buffer header plus a
-> > 64 Kbyte ring buffer, that's the smallest possible with that page size.
-> > It's still 128 Kbytes better than the current code.
-> >
-> > Cc: <stable@vger.kernel.org> # 5.15.x
-> > Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-> > Reviewed-by: Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > ---
-> > Changes in v2:
-> > * Use SZ_16K instead of 16 * 1024
-> > ---
-> >  drivers/pci/controller/pci-hyperv.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controll=
-er/pci-
-> hyperv.c
-> > index 1eaffff40b8d..baadc1e5090e 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -465,7 +465,7 @@ struct pci_eject_response {
-> >  	u32 status;
-> >  } __packed;
-> >
-> > -static int pci_ring_size =3D (4 * PAGE_SIZE);
-> > +static int pci_ring_size =3D VMBUS_RING_SIZE(SZ_16K);
-> >
-> >  /*
-> >   * Driver specific state.
-> >
->=20
-> Hi,
->=20
-> You forgot to add #include <linux/sizes.h> for it.
->=20
-> With that fixed:
->=20
-> Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
->=20
+On Tue, Feb 13, 2024 at 10:39:09PM +0000, Eric Chan wrote:
+> Introduce __{mb,rmb,wmb}, and rely on the generic definitions for
+> {mb,rmb,wmb}. Although KCSAN is not yet support, it can be made more
 
-Fixed in v3.  I mis-interpreted your previous comment about
-adding the #include "if needed".  It's not needed to compile
-correctly, as sizes.h is indirectly included through some other
-#include.  But it's better to directly #include what's needed
-lest some unrelated change cause a failure.
+                                        supported, the code/definitions
 
-Michael
+
+> -#define mb()		RISCV_FENCE(iorw,iorw)
+> -#define rmb()		RISCV_FENCE(ir,ir)
+> -#define wmb()		RISCV_FENCE(ow,ow)
+> +#define __mb()		RISCV_FENCE(iorw,iorw)
+> +#define __rmb()		RISCV_FENCE(ir,ir)
+> +#define __wmb()		RISCV_FENCE(ow,ow)
+
+It seems you forgot to apply Emil's suggestion from v3; please do in v6.
+(No need to do something immediately, still reviewing this version.  ;))
+
+  Andrea
 
