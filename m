@@ -1,191 +1,237 @@
-Return-Path: <linux-kernel+bounces-68062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D074985757F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:10:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E724D857587
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 558021F236A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E364286C8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C92612E47;
-	Fri, 16 Feb 2024 05:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAFE14A90;
+	Fri, 16 Feb 2024 05:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hPBUpLS4"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qg9xQ89A"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EE263CF
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044B713AE2;
+	Fri, 16 Feb 2024 05:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708060205; cv=none; b=cbC/ySP2omkBS1ZV54UVblyYK/kbLJ7Z+IP7n/KPxfb7NB+xQwpNnxn26+6FWTAZshv9SYCXOqeU/S34HTfXFKdYrAdaw5XJ9vJT4XZjabK1X7Y0noxeexY1nokRKW93Z5gXDgYPA1ibul8gOhrOKnUYutu22RtHuOLJg6Ed934=
+	t=1708060620; cv=none; b=E+j9Dn7BbhQjRFtsRwPRLXxq/UahZcy15l9OTTu38V1v8jCsW3OXmi6qjwdz8l0X9jQ9aK55haaBZTHQD2oGyoX8jJhRQQvdldH3Y6kauSve5xY0ryopbGO9wpgYdUVUJbGNyI30Yab3SrClqXJZCvWJRNhu/CjOA0efNJl7bmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708060205; c=relaxed/simple;
-	bh=iV4xyfoj4RAGaEV3TwSlOffEIYtm/b/aiUVQz4Pjzf4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ppDdkVKKbxTf+vWDNYUbkhgHy8QMZ4jmDgxv9T2gspY10/5SZagNUtSdnhsxtMJVRc4kuyodUBGPlvjMwmATtpLbnv851/pVeuF10JF2OshMLGnqgwPxRbic2y/JrsKRUmkmn0w3H2DgzMAKAFtzMYEhJDBTA1fW2fsZg1nvIog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hPBUpLS4; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d51ba18e1bso17028725ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:10:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708060203; x=1708665003; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=osRd6e0938TIuqccy/3nmWVE3X+VrWpnZGag3nbS18c=;
-        b=hPBUpLS4cBBiTV70H8F1iCPSfqNikpM/VvHSjhNnE2a/819s4orgUQptu6iV2xCAFD
-         42SIRkL4qOIykNBWzGEqnEUHaVdCUeQK8cPCyNEiaLNy2nRCLzlbEBsOBTH1ovDsKvbW
-         0o6oa9SYHF78IoG2TtGe3bcIUM3zyj1Xm6wYu7/ux9EvC0Fc6HnmnkfCz9+tFtLsQCtb
-         TEB9ePashq4W89zBvIXPeXI49+wQI90BrtiJRiNsu02AgUDcjNYL50dUtaBYVka/z+ZM
-         asOP2D+DxkpCjZMxtk9IL3XuJz2xE2xZHkdKJ1dDzKAvrZqLCkle9abn7qooIdan+IbT
-         2j+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708060203; x=1708665003;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=osRd6e0938TIuqccy/3nmWVE3X+VrWpnZGag3nbS18c=;
-        b=WcikG8IGXnNu7kf9URKsOjrf0UnJkOHhGtrJluifsHu8o+8nN46rzOhRNtoeeWvJYx
-         k8VAhcTgyk/sjMpAlAMWWX0dSc8VZgpUSKMM62xs3wQ9Pf5IRTUjrwC+jYTkF28ylcc7
-         tlyDsqfmjyriyZiVqJMchi8X4gMGf85I0qwhl4/iPZiiDfP9IZV4d2SwdNvEh84SgBQ9
-         2iHAGPFPgcrMkWCjmLemcDZSU/eza4qXnhLTuQdY9iV4lcB9Qy7blKhjpO1QPFBABS+j
-         uz+tQRXmI6gDkin/uPlY/BHUU9liMYJ3+G0audRuKPKpRwG6eB/q9nXI4+3IsaKTqNv/
-         xX6Q==
-X-Gm-Message-State: AOJu0Yyt+svQ4VjGNqtOg8NbANYarC+tse2WZ8AxqiESnjKrqnI5+uK5
-	6B05MnGzUIlji7AIB3Mc0MozEGGMOnWvJXgHb3O/PjCZrynOQEBW
-X-Google-Smtp-Source: AGHT+IFLgPrqUhJJrliYsCvJt8xu+toWS3zAYEFkp18ojTMUN3FKRzyo8q5WPXB8jZ5pobj+7Gzimw==
-X-Received: by 2002:a17:902:aa84:b0:1d9:c17b:43f3 with SMTP id d4-20020a170902aa8400b001d9c17b43f3mr3587876plr.15.1708060202909;
-        Thu, 15 Feb 2024 21:10:02 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id bi11-20020a170902bf0b00b001db499c5c12sm2084701plb.143.2024.02.15.21.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 21:10:02 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 15 Feb 2024 19:10:01 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH v2 wq/for-6.9] workqueue, irq_work: Build fix for
- !CONFIG_IRQ_WORK
-Message-ID: <Zc7uKXZwHdATHyMY@slm.duckdns.org>
-References: <Zc0IzeM6tAvm1NTl@mtj.duckdns.org>
- <Zc65DUZKIx5IIgrX@slm.duckdns.org>
+	s=arc-20240116; t=1708060620; c=relaxed/simple;
+	bh=r47PztbsN/xdHZ1e4Vw9ogIQSHZ/xcydjlXY6bRNRc0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Be3nhbZO2mmjxvgkd8w9aPhvues/88bMN1Ea5isrOOAjCJ8Ez75KgiXA724nd1w+c15BHRbKgX1zCdICSHGNZzc+WK+LeSxxVa1Pr+oxsKJDuPg0vY5sztnj3nAiVVt9flc5xKOex3IHFMFztGFRPlNoPTEdUGYknEzMIsTJbFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qg9xQ89A; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708060618; x=1739596618;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r47PztbsN/xdHZ1e4Vw9ogIQSHZ/xcydjlXY6bRNRc0=;
+  b=Qg9xQ89AjPJ+BuPHAYeeEvq47xbVznxebseBD35+L+R8ALPBkdrAwv+6
+   sK3m4HLRNlwJXwx2oP2LG1ide1SQz1+VMyQD9uboLY7gA2gILhJd1FGoJ
+   q+h6VGrxJldIqAUNIgOFhF8R4C0X2mGa7Fa1b7TTe7NuwfzIFdXAxxyQX
+   Q3lDc39xMojbmhMX2YMGjAko1jUOrMZWu3Gu9gBjKQ3vtWNo/QZB58cVh
+   xWXanrWz6xdvElH3WJNYV0iXwauPAxfEsscRBEvTq6pfXWhOl4idXlWdC
+   jxWZOmdMiig6yPuqEaLE+sKqBkTJvShwG0maEv30FyuTlnzdKOd3JxjUF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5149338"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="5149338"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 21:16:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="4063882"
+Received: from lvngo-mobl1.amr.corp.intel.com (HELO vcostago-mobl3.intel.com) ([10.125.17.186])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 21:16:56 -0800
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To: brauner@kernel.org,
+	amir73il@gmail.com,
+	hu1.chen@intel.com
+Cc: miklos@szeredi.hu,
+	malini.bhandaru@intel.com,
+	tim.c.chen@intel.com,
+	mikko.ylinen@intel.com,
+	lizhen.you@intel.com,
+	linux-unionfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Subject: [RFC v3 0/5] overlayfs: Optimize override/revert creds
+Date: Thu, 15 Feb 2024 21:16:35 -0800
+Message-ID: <20240216051640.197378-1-vinicius.gomes@intel.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zc65DUZKIx5IIgrX@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-2f34d7337d98 ("workqueue: Fix queue_work_on() with BH workqueues") added
-irq_work usage to workqueue; however, it turns out irq_work is actually
-optional and the change breaks build on configuration which doesn't have
-CONFIG_IRQ_WORK enabled.
 
-Fix build by making workqueue use irq_work only when CONFIG_SMP and enabling
-CONFIG_IRQ_WORK when CONFIG_SMP is set. It's reasonable to argue that it may
-be better to just always enable it. However, this still saves a small bit of
-memory for tiny UP configs and also the least amount of change, so, for now,
-let's keep it conditional.
+Hi,
 
-Verified to do the right thing for x86_64 allnoconfig and defconfig, and
-aarch64 allnoconfig, allnoconfig + prink disable (SMP but nothing selects
-IRQ_WORK) and a modified aarch64 Kconfig where !SMP and nothing selects
-IRQ_WORK.
+Changes from RFC v2:
+ - Added separate patches for the warnings for the discarded const
+   when using the cleanup macros: one for DEFINE_GUARD() and one for
+   DEFINE_LOCK_GUARD_1() (I am uncertain if it's better to squash them
+   together);
+ - Reordered the series so the backing file patch is the first user of
+   the introduced helpers (Amir Goldstein);
+ - Change the definition of the cleanup "class" from a GUARD to a
+   LOCK_GUARD_1, which defines an implicit container, that allows us
+   to remove some variable declarations to store the overriden
+   credentials (Amir Goldstein);
+ - Replaced most of the uses of scoped_guard() with guard(), to reduce
+   the code churn, the remaining ones I wasn't sure if I was changing
+   the behavior: either they were nested (overrides "inside"
+   overrides) or something calls current_cred() (Amir Goldstein).
 
-v2: `depends on SMP` leads to Kconfig warnings when CONFIG_IRQ_WORK is
-    selected by something else when !CONFIG_SMP. Use `def_bool y if SMP`
-    instead.
+New questions:
+ - The backing file callbacks are now called with the "light"
+   overriden credentials, so they are kind of restricted in what they
+   can do with their credentials, is this acceptable in general?
+ - in ovl_rename() I had to manually call the "light" the overrides,
+   both using the guard() macro or using the non-light version causes
+   the workload to crash the kernel. I still have to investigate why
+   this is happening. Hints are appreciated.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 2f34d7337d98 ("workqueue: Fix queue_work_on() with BH workqueues")
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
----
-Hello,
+Link to the RFC v2:
 
-Unfortunately, the previous patch triggers Kconfig warnings when IRQ_WORK is
-selected by something else but !CONFIG_SMP. This one seems to do the right
-thing in all cases.
+https://lore.kernel.org/r/20240125235723.39507-1-vinicius.gomes@intel.com/
 
-Naresh, Anders, can you please test it again?
+Original cover letter (lightly edited):
 
-Thanks.
+It was noticed that some workloads suffer from contention on
+increasing/decrementing the ->usage counter in their credentials,
+those refcount operations are associated with overriding/reverting the
+current task credentials. (the linked thread adds more context)
 
- init/Kconfig       |  2 +-
- kernel/workqueue.c | 24 +++++++++++++++---------
- 2 files changed, 16 insertions(+), 10 deletions(-)
+In some specialized cases, overlayfs is one of them, the credentials
+in question have a longer lifetime than the override/revert "critical
+section". In the overlayfs case, the credentials are created when the
+fs is mounted and destroyed when it's unmounted. In this case of long
+lived credentials, the usage counter doesn't need to be
+incremented/decremented.
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 8df18f3a9748..0d21c9e0398f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -106,7 +106,7 @@ config CONSTRUCTORS
- 	bool
- 
- config IRQ_WORK
--	bool
-+	def_bool y if SMP
- 
- config BUILDTIME_TABLE_SORT
- 	bool
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 04e35dbe6799..6ae441e13804 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1209,6 +1209,20 @@ static struct irq_work *bh_pool_irq_work(struct worker_pool *pool)
- 	return &per_cpu(bh_pool_irq_works, pool->cpu)[high];
- }
- 
-+static void kick_bh_pool(struct worker_pool *pool)
-+{
-+#ifdef CONFIG_SMP
-+	if (unlikely(pool->cpu != smp_processor_id())) {
-+		irq_work_queue_on(bh_pool_irq_work(pool), pool->cpu);
-+		return;
-+	}
-+#endif
-+	if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
-+		raise_softirq_irqoff(HI_SOFTIRQ);
-+	else
-+		raise_softirq_irqoff(TASKLET_SOFTIRQ);
-+}
-+
- /**
-  * kick_pool - wake up an idle worker if necessary
-  * @pool: pool to kick
-@@ -1227,15 +1241,7 @@ static bool kick_pool(struct worker_pool *pool)
- 		return false;
- 
- 	if (pool->flags & POOL_BH) {
--		if (likely(pool->cpu == smp_processor_id())) {
--			if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
--				raise_softirq_irqoff(HI_SOFTIRQ);
--			else
--				raise_softirq_irqoff(TASKLET_SOFTIRQ);
--		} else {
--			irq_work_queue_on(bh_pool_irq_work(pool), pool->cpu);
--		}
--
-+		kick_bh_pool(pool);
- 		return true;
- 	}
- 
+Add a lighter version of credentials override/revert to be used in
+these specialized cases. To make sure that the override/revert calls
+are paired, add a cleanup guard macro. This was suggested here:
+
+https://lore.kernel.org/all/20231219-marken-pochen-26d888fb9bb9@brauner/
+
+With a small number of tweaks:
+ - Used inline functions instead of macros;
+ - A small change to store the credentials into the passed argument,
+   the guard is now defined as (note the added '_T ='):
+
+      DEFINE_GUARD(cred, const struct cred *, _T = override_creds_light(_T),
+		  revert_creds_light(_T));
+
+ - Allow "const" arguments to be used with these kind of guards;
+
+Some comments:
+ - If patch 1/5 and 2/5 are not a good idea (adding the cast), the
+   alternative I can see is using some kind of container for the
+   credentials;
+ - The only user for the backing file ops is overlayfs, so these
+   changes make sense, but may not make sense in the most general
+   case;
+
+For the numbers, some from 'perf c2c', before this series:
+(edited to fit)
+
+#
+#        ----- HITM -----                                        Shared                          
+#   Num  RmtHitm  LclHitm                      Symbol            Object         Source:Line  Node
+# .....  .......  .......  ..........................  ................  ..................  ....
+#
+  -------------------------
+      0      412     1028  
+  -------------------------
+	  41.50%   42.22%  [k] revert_creds            [kernel.vmlinux]  atomic64_64.h:39     0  1
+	  15.05%   10.60%  [k] override_creds          [kernel.vmlinux]  atomic64_64.h:25     0  1
+	   0.73%    0.58%  [k] init_file               [kernel.vmlinux]  atomic64_64.h:25     0  1
+	   0.24%    0.10%  [k] revert_creds            [kernel.vmlinux]  cred.h:266           0  1
+	  32.28%   37.16%  [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
+	   9.47%    8.75%  [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
+	   0.49%    0.58%  [k] inode_owner_or_capable  [kernel.vmlinux]  mnt_idmapping.h:81   0  1
+	   0.24%    0.00%  [k] generic_permission      [kernel.vmlinux]  namei.c:354          0
+
+  -------------------------
+      1       50      103  
+  -------------------------
+	 100.00%  100.00%  [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
+
+  -------------------------
+      2       50       98  
+  -------------------------
+	  96.00%   96.94%  [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
+	   2.00%    1.02%  [k] update_load_avg   [kernel.vmlinux]  atomic64_64.h:25   0  1
+	   0.00%    2.04%  [k] update_load_avg   [kernel.vmlinux]  fair.c:4118        0
+	   2.00%    0.00%  [k] update_cfs_group  [kernel.vmlinux]  fair.c:3932        0  1
+
+after this series:
+
+#
+#        ----- HITM -----                                   Shared                        
+#   Num  RmtHitm  LclHitm                 Symbol            Object       Source:Line  Node
+# .....  .......  .......   ....................  ................  ................  ....
+#
+  -------------------------
+      0       54       88  
+  -------------------------
+	 100.00%  100.00%   [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
+
+  -------------------------
+      1       48       83  
+  -------------------------
+	  97.92%   97.59%   [k] update_cfs_group  [kernel.vmlinux]  atomic64_64.h:15   0  1
+	   2.08%    1.20%   [k] update_load_avg   [kernel.vmlinux]  atomic64_64.h:25   0  1
+	   0.00%    1.20%   [k] update_load_avg   [kernel.vmlinux]  fair.c:4118        0  1
+
+  -------------------------
+      2       28       44  
+  -------------------------
+	  85.71%   79.55%   [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
+	  14.29%   20.45%   [k] generic_permission      [kernel.vmlinux]  mnt_idmapping.h:81   0  1
+
+The contention is practically gone.
+
+Link: https://lore.kernel.org/all/20231018074553.41333-1-hu1.chen@intel.com/
+
+Vinicius Costa Gomes (5):
+  cleanup: Fix discarded const warning when defining lock guard
+  cleanup: Fix discarded const warning when defining guard
+  cred: Add a light version of override/revert_creds()
+  fs: Optimize credentials reference count for backing file ops
+  overlayfs: Optimize credentials usage
+
+ fs/backing-file.c       | 27 +++++--------------
+ fs/overlayfs/copy_up.c  |  4 +--
+ fs/overlayfs/dir.c      | 23 +++++++---------
+ fs/overlayfs/file.c     | 28 +++++--------------
+ fs/overlayfs/inode.c    | 59 +++++++++++++++--------------------------
+ fs/overlayfs/namei.c    | 20 ++++----------
+ fs/overlayfs/readdir.c  | 16 +++--------
+ fs/overlayfs/util.c     | 10 +++----
+ fs/overlayfs/xattrs.c   | 33 +++++++++--------------
+ include/linux/cleanup.h |  4 +--
+ include/linux/cred.h    | 21 +++++++++++++++
+ kernel/cred.c           |  6 ++---
+ 12 files changed, 97 insertions(+), 154 deletions(-)
+
 -- 
-2.43.2
+2.43.0
 
 
