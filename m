@@ -1,46 +1,47 @@
-Return-Path: <linux-kernel+bounces-69426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A6DD8588E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:38:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82108588E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04BC51F21DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:38:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42CFA282417
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D792814A0B6;
-	Fri, 16 Feb 2024 22:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0893514A0BC;
+	Fri, 16 Feb 2024 22:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ceGIhwRt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="draIw5KD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1DD14831E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053251487C7;
 	Fri, 16 Feb 2024 22:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708123020; cv=none; b=AJOAKTZDnBOJ1/RA2FcgBGwL6MneRDAQcK24Mes+2BZAzRhGffDSDjucwxkkfUOjxzp1KRxoIpP0oIyx2deSJOR0/g+ii7w+nXJeByMeIpQEnUo4wkZlKbV7bXinruU6wDgA3aMCh7hxkV0xicX8EWAfKXLcTjqEIXuQzxwPxaM=
+	t=1708123020; cv=none; b=O1S9VPMYGxvDSn8PiVu3AxOwoYkfgodA1Dz3CPmaxxfbfpic5JTmelVn8hv/Is9BBR67u73m3p7PygKp4dNmv1jg2N8AsgDhBeyfquFacxlYyBg+YbTVH9QriaAJDOS/68i2VaUkto02x4zO0EgMMorNf4ZiHpxg0/bs17vUcUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708123020; c=relaxed/simple;
-	bh=eJIaDZ7rjnMFktwjotvFLcESURdj1UH+fKntueNKal8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T/J6uQBJVG/+9z/5xQIZyz/YCVthOV2ieHVBUxU3CD14zX0/YVuYKbuUPScym7VrU6F1v/Y1zGYVhF+Rk8qMrOxvkxkPOT5BIIbAGF3Tm15X1mhDFVV7ng/5CZAtGURVtPJiJ3f/RDvpe9JcFBNZOccgkvRKO3J6fSra5c7m3IE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ceGIhwRt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF0DC43390;
+	bh=resC3EdVnr1VmQ6d66ZukTMXBA464nmyoeCuIzkpf5w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KbpQ1pr2bUjZsdQxxkvXbDV4GVH4lxQhvWpyIH/E/PO1Cn0MKYL43Qqqunu29FaVIywRfLNBO6wwprPnKleUk5ScBGISHRE1gkBSMbG2YG/NYFy5E+pooBoA1xVbWfHidTbHucNMPWUfSS2zW/Ub39/n2eosLqn6r0hEgXceRRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=draIw5KD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A2F4C43399;
 	Fri, 16 Feb 2024 22:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708123019;
-	bh=eJIaDZ7rjnMFktwjotvFLcESURdj1UH+fKntueNKal8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ceGIhwRtCOjKE6/hp2iveWbcgQxDHInN0jP5U8DEPYIirqzCCKfx0/OSbieNF3NgV
-	 HVny9G3RyBYZry2mSh6uBbkk9f+fZm1L7kkCWSAEFpmmRf6BBeZm4mMgc1n1Hlu7cg
-	 Z2MX1sdkHnKw/y63QFZNxSupxOtAxCAjS0xd3dWTVfPRV+XWxJ1TrW4F4EtkNOWCBa
-	 7eJTCEuDqtFjnMFuydsP1jBq5FVkw45wfw+n9oUjQXxJg/SL51YfuRXTqBta21xzHT
-	 UsYkE630OnwHIGYvMHVXA0Typ3HqIqkiE2b/whKNCib4Tn4jZ7NHbNFpgodYcfhCDw
-	 XFNQUY5I3M/oQ==
+	bh=resC3EdVnr1VmQ6d66ZukTMXBA464nmyoeCuIzkpf5w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=draIw5KD63MEn6mgslqrvMSi26qiChhLr8ex3vt00LPfpA/aWvyugWlMNhmzwxCv6
+	 RiQFtfVMspq4nLZkh3TJ+binLJdvgu0JPDILLMqqeqYPrCaCrGfrwK0C+s85ahZmKR
+	 1KkpKQFHOSbu7fX0UehI05abFt4NBrL5lrHUaGXENxTv2NDyLeRqtCKOGwTs9Aki+u
+	 myHX3KNUorXJT+4LDg0E4iqeQEYbS+tYiZ1geny4Lqr1i9yNOftNq8JmtHjQkHc1Ie
+	 Nmo01cuAp5734p1gluhp7QpePpSOll9yWdQfcPSZ3+Q5t6HCV0FeljM9LMWLrMHePs
+	 5KBDoRFenk0zA==
 Received: by mercury (Postfix, from userid 1000)
-	id 890981061C38; Fri, 16 Feb 2024 23:36:56 +0100 (CET)
+	id 8D1131062D86; Fri, 16 Feb 2024 23:36:56 +0100 (CET)
 From: Sebastian Reichel <sre@kernel.org>
 To: Sebastian Reichel <sre@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -58,11 +59,13 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3 00/16] UNI-T UTi260B support
-Date: Fri, 16 Feb 2024 23:34:19 +0100
-Message-ID: <20240216223654.1312880-1-sre@kernel.org>
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 01/16] dt-bindings: pinctrl: fsl,imx6ul-pinctrl: convert to YAML
+Date: Fri, 16 Feb 2024 23:34:20 +0100
+Message-ID: <20240216223654.1312880-2-sre@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240216223654.1312880-1-sre@kernel.org>
+References: <20240216223654.1312880-1-sre@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,135 +74,183 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+Convert i.MX6UL pinctrl bindings to YAML.
 
-Hi,
-
-This adds adds support for the UNI-T UTi260B thermal camera, which is based
-on i.MX6ULL. Patches 1-14 clean up all warnings reported by CHECK_DTBS for
-i.MX6ULL (i.e. for an empty board). They are not specific to the UTi260B and
-in fact that machine has most of the IP handled by these patches marked as
-disabled. Then patches 15+16 introduce the vendor and board compatible DT
-bindings. Finally the last patches adds support for the thermal camera itself.
-
-The DT is based on reverse engineered information. More information about
-the device can be found in this presentation from Embedded Recipes 2023:
-
- * https://embedded-recipes.org/2023/wp-content/uploads/2023/10/Running-FOSS-on-a-Thermal-Camera-Sebastian-Reichel-compressed.pdf
- * https://www.youtube.com/watch?v=uvObsCG-Cqo
-
-I also prepared a branch with these patches (and a minimal kernel config)
-and published it here:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-misc.git/log/?h=uti260b-v3
-
-Changes since PATCHv2:
- * https://lore.kernel.org/all/20240213010347.1075251-1-sre@kernel.org/
-  - drop fsl,imx-asrc YAML binding conversion (merged)
-  - collect a bunch of Reviewed-by/Acked-by tags
-  - weim DT binding: fix issue with requirements
-  - xnur-gpio -> xnur-gpios change: Improve patch long description
-
-Changes since PATCHv1:
- * https://lore.kernel.org/all/20240210012114.489102-1-sre@kernel.org/
-  - uni-t,imx6ull-uti260b -> uni-t,uti260b
-  - add Acked-by for uni-t vendor prefix
-  - add Acked-by for HDMI audio index fix
-  - add Acked-by for LCDIF power-domain requirement drop
-  - anatop DT binding: Fixed indentation in example
-  - anatop DT binding: Described IRQs
-  - touchscreen DT binding: change tsc@ to touchscreen@ in example
-  - touchscreen DT binding: change xnur-gpio to xnur-gpios
-  - weim DT binding: drop acme,whatever example
-  - weim DT binding: use flash@ instead of nor@
-  - weim DT binding: update weim.txt reference in arcx,anybus-controller.txt
-  - weim DT binding: switch to memory-controller binding
-  - fsl,imx-asrc DT binding: fix ASoC patch subject prefix
-  - fsl,imx-asrc DT binding: add constraints
-  - add new patch fixing xnur-gpio(s) in all i.MX6UL board DT files
-  - add new patch fixing touchscreen nodename in i.MX6UL SoC DT file
-  - add new patch fixing weim nodename in all i.MX SoC DT files
-  - device DTS: use color/functions for the led
-  - device DTS: increase SPI speed
-  - device DTS: add comment for SD / eMMC node
-
-Unadressed feedback from PATCHv1:
-  - anatop phandle vs parent: technically it makes sense to just use the
-    parent, but this driver is only used by i.MX6. The current code makes
-	use of the phandle, so we cannot drop it because of backwards
-	compatibility. So I don't see a point in deprecating this property.
-  - touchscreen binding: I kept measure-delay-time and pre-charge-time
-    values in hex, since that is being used everywhere and the unit
-	is unknown. The values are directly written into HW registers and
-	the i.MX6UL TRM does not provide any hints about the unit. I do not
-	have an i.MX6UL device with a touchsreen, so I cannot test either.
-  - regulator name in DT: I did not rename the regulators to just
-    "regulator", since the nodename must be unique.
-
-Greetings,
-
--- Sebastian
-
-Sebastian Reichel (16):
-  dt-bindings: pinctrl: fsl,imx6ul-pinctrl: convert to YAML
-  dt-bindings: bus: imx-weim: convert to YAML
-  dt-bindings: input: touchscreen: fsl,imx6ul-tsc convert to YAML
-  dt-bindings: soc: imx: fsl,imx-anatop: add binding
-  dt-bindings: soc: imx: fsl,imx-iomuxc-gpr: add imx6
-  dt-bindings: lcdif: Do not require power-domains for i.MX6ULL
-  dt-bindings: fsl-imx-sdma: fix HDMI audio index
-  ARM: dts: imx6ull: fix pinctrl node name
-  ARM: dts: imx6ul: Remove fsl,anatop from usbotg1
-  ARM: dts: imx6ul: add missing #thermal-sensor-cells
-  ARM: dts: nxp: imx6ul: xnur-gpio -> xnur-gpios
-  ARM: dts: nxp: imx6ul: fix touchscreen node name
-  ARM: dts: nxp: imx: fix weim node name
-  dt-bindings: vendor-prefixes: add UNI-T
-  dt-bindings: arm: add UNI-T UTi260B
-  ARM: dts: imx6ull-uti260b: Add board
-
- .../devicetree/bindings/arm/fsl.yaml          |   1 +
- .../devicetree/bindings/bus/imx-weim.txt      | 117 ----
- .../bindings/display/fsl,lcdif.yaml           |   8 +-
- .../devicetree/bindings/dma/fsl,imx-sdma.yaml |   3 +-
- .../input/touchscreen/fsl,imx6ul-tsc.yaml     |  97 +++
- .../bindings/input/touchscreen/imx6ul_tsc.txt |  38 --
- .../fsl/fsl,imx-weim-peripherals.yaml         |  31 +
- .../memory-controllers/fsl/fsl,imx-weim.yaml  | 203 +++++++
- .../mc-peripheral-props.yaml                  |   1 +
- .../bindings/pinctrl/fsl,imx6ul-pinctrl.txt   |  37 --
- .../bindings/pinctrl/fsl,imx6ul-pinctrl.yaml  | 116 ++++
- .../bindings/soc/imx/fsl,imx-anatop.yaml      | 128 ++++
- .../bindings/soc/imx/fsl,imx-iomuxc-gpr.yaml  |  18 +-
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
- arch/arm/boot/dts/nxp/imx/imx1.dtsi           |   2 +-
- arch/arm/boot/dts/nxp/imx/imx27.dtsi          |   2 +-
- arch/arm/boot/dts/nxp/imx/imx31.dtsi          |   2 +-
- arch/arm/boot/dts/nxp/imx/imx35.dtsi          |   2 +-
- arch/arm/boot/dts/nxp/imx/imx51.dtsi          |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6qdl.dtsi        |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6sl.dtsi         |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6sx.dtsi         |   2 +-
- .../boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi    |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6ul-geam.dts     |   2 +-
- .../nxp/imx/imx6ul-imx6ull-opos6uldev.dtsi    |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6ul.dtsi         |   6 +-
- .../boot/dts/nxp/imx/imx6ull-dhcom-som.dtsi   |   2 +-
- arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts | 572 ++++++++++++++++++
- arch/arm/boot/dts/nxp/imx/imx6ull.dtsi        |   2 +-
- .../fieldbus/arcx,anybus-controller.txt       |   2 +-
- 31 files changed, 1195 insertions(+), 212 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/bus/imx-weim.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/fsl,imx6ul-tsc.yaml
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/imx6ul_tsc.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim-peripherals.yaml
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,imx-weim.yaml
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sebastian Reichel <sre@kernel.org>
+---
+ .../bindings/pinctrl/fsl,imx6ul-pinctrl.txt   |  37 ------
+ .../bindings/pinctrl/fsl,imx6ul-pinctrl.yaml  | 116 ++++++++++++++++++
+ 2 files changed, 116 insertions(+), 37 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
  create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-anatop.yaml
- create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
 
+diff --git a/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
+deleted file mode 100644
+index 7ca4f6118d9a..000000000000
+--- a/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.txt
++++ /dev/null
+@@ -1,37 +0,0 @@
+-* Freescale i.MX6 UltraLite IOMUX Controller
+-
+-Please refer to fsl,imx-pinctrl.txt in this directory for common binding part
+-and usage.
+-
+-Required properties:
+-- compatible: "fsl,imx6ul-iomuxc" for main IOMUX controller or
+-  "fsl,imx6ull-iomuxc-snvs" for i.MX 6ULL's SNVS IOMUX controller.
+-- fsl,pins: each entry consists of 6 integers and represents the mux and config
+-  setting for one pin.  The first 5 integers <mux_reg conf_reg input_reg mux_val
+-  input_val> are specified using a PIN_FUNC_ID macro, which can be found in
+-  imx6ul-pinfunc.h under device tree source folder.  The last integer CONFIG is
+-  the pad setting value like pull-up on this pin.  Please refer to i.MX6 UltraLite
+-  Reference Manual for detailed CONFIG settings.
+-
+-CONFIG bits definition:
+-PAD_CTL_HYS                     (1 << 16)
+-PAD_CTL_PUS_100K_DOWN           (0 << 14)
+-PAD_CTL_PUS_47K_UP              (1 << 14)
+-PAD_CTL_PUS_100K_UP             (2 << 14)
+-PAD_CTL_PUS_22K_UP              (3 << 14)
+-PAD_CTL_PUE                     (1 << 13)
+-PAD_CTL_PKE                     (1 << 12)
+-PAD_CTL_ODE                     (1 << 11)
+-PAD_CTL_SPEED_LOW               (0 << 6)
+-PAD_CTL_SPEED_MED               (1 << 6)
+-PAD_CTL_SPEED_HIGH              (3 << 6)
+-PAD_CTL_DSE_DISABLE             (0 << 3)
+-PAD_CTL_DSE_260ohm              (1 << 3)
+-PAD_CTL_DSE_130ohm              (2 << 3)
+-PAD_CTL_DSE_87ohm               (3 << 3)
+-PAD_CTL_DSE_65ohm               (4 << 3)
+-PAD_CTL_DSE_52ohm               (5 << 3)
+-PAD_CTL_DSE_43ohm               (6 << 3)
+-PAD_CTL_DSE_37ohm               (7 << 3)
+-PAD_CTL_SRE_FAST                (1 << 0)
+-PAD_CTL_SRE_SLOW                (0 << 0)
+diff --git a/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
+new file mode 100644
+index 000000000000..906b264a9e3c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/fsl,imx6ul-pinctrl.yaml
+@@ -0,0 +1,116 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/fsl,imx6ul-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale IMX6UL IOMUX Controller
++
++maintainers:
++  - Dong Aisheng <aisheng.dong@nxp.com>
++
++description:
++  Please refer to fsl,imx-pinctrl.txt and pinctrl-bindings.txt in this directory
++  for common binding part and usage.
++
++allOf:
++  - $ref: pinctrl.yaml#
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx6ul-iomuxc
++      - fsl,imx6ull-iomuxc-snvs
++
++  reg:
++    maxItems: 1
++
++# Client device subnode's properties
++patternProperties:
++  'grp$':
++    type: object
++    description:
++      Pinctrl node's client devices use subnodes for desired pin configuration.
++      Client device subnodes use below standard properties.
++
++    properties:
++      fsl,pins:
++        description:
++          each entry consists of 6 integers and represents the mux and config
++          setting for one pin. The first 5 integers <mux_reg conf_reg input_reg
++          mux_val input_val> are specified using a PIN_FUNC_ID macro, which can
++          be found in <arch/arm/boot/dts/imx6ul-pinfunc.h>. The last integer
++          CONFIG is the pad setting value like pull-up on this pin. Please
++          refer to i.MX6UL Reference Manual for detailed CONFIG settings.
++        $ref: /schemas/types.yaml#/definitions/uint32-matrix
++        items:
++          items:
++            - description: |
++                "mux_reg" indicates the offset of mux register.
++            - description: |
++                "conf_reg" indicates the offset of pad configuration register.
++            - description: |
++                "input_reg" indicates the offset of select input register.
++            - description: |
++                "mux_val" indicates the mux value to be applied.
++            - description: |
++                "input_val" indicates the select input value to be applied.
++            - description: |
++                "pad_setting" indicates the pad configuration value to be applied:
++                  PAD_CTL_HYS                     (1 << 16)
++                  PAD_CTL_PUS_100K_DOWN           (0 << 14)
++                  PAD_CTL_PUS_47K_UP              (1 << 14)
++                  PAD_CTL_PUS_100K_UP             (2 << 14)
++                  PAD_CTL_PUS_22K_UP              (3 << 14)
++                  PAD_CTL_PUE                     (1 << 13)
++                  PAD_CTL_PKE                     (1 << 12)
++                  PAD_CTL_ODE                     (1 << 11)
++                  PAD_CTL_SPEED_LOW               (0 << 6)
++                  PAD_CTL_SPEED_MED               (1 << 6)
++                  PAD_CTL_SPEED_HIGH              (3 << 6)
++                  PAD_CTL_DSE_DISABLE             (0 << 3)
++                  PAD_CTL_DSE_260ohm              (1 << 3)
++                  PAD_CTL_DSE_130ohm              (2 << 3)
++                  PAD_CTL_DSE_87ohm               (3 << 3)
++                  PAD_CTL_DSE_65ohm               (4 << 3)
++                  PAD_CTL_DSE_52ohm               (5 << 3)
++                  PAD_CTL_DSE_43ohm               (6 << 3)
++                  PAD_CTL_DSE_37ohm               (7 << 3)
++                  PAD_CTL_SRE_FAST                (1 << 0)
++                  PAD_CTL_SRE_SLOW                (0 << 0)
++
++    required:
++      - fsl,pins
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    iomuxc: pinctrl@20e0000 {
++      compatible = "fsl,imx6ul-iomuxc";
++      reg = <0x020e0000 0x4000>;
++
++      mux_uart: uartgrp {
++        fsl,pins = <
++          0x0084 0x0310 0x0000 0 0 0x1b0b1
++          0x0088 0x0314 0x0624 0 3 0x1b0b1
++        >;
++      };
++    };
++  - |
++    iomuxc_snvs: pinctrl@2290000 {
++      compatible = "fsl,imx6ull-iomuxc-snvs";
++      reg = <0x02290000 0x4000>;
++
++      pinctrl_snvs_usbc_det: snvsusbcdetgrp {
++        fsl,pins = <
++          0x0010 0x0054 0x0000 0x5 0x0 0x130b0
++        >;
++      };
++    };
 -- 
 2.43.0
 
