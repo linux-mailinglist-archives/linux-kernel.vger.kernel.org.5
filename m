@@ -1,343 +1,268 @@
-Return-Path: <linux-kernel+bounces-68447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E69C4857A51
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8DC857A54
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BF84B2498B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:31:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8211B24DFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D4147F6E;
-	Fri, 16 Feb 2024 10:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114854F204;
+	Fri, 16 Feb 2024 10:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="dJY6ftFh"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="AhFboV3T"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64D435884
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE3948787;
+	Fri, 16 Feb 2024 10:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708079471; cv=none; b=ECuZBDQdeENigjuIsJumgCTADOE4R+phg9KQQOUcSJAl3tDwsxEvPgNPqwndcz6GAHxj+TmXTROz3X/mrWRzfdEXbh9qxwf2rqrA1zLJYS9RYld8dzCAau9hNj4YAsKWV/+JqBT7OaHHMoK4+tvxuRt47s9HBUtgpQTOwUqgyPs=
+	t=1708079511; cv=none; b=gXXxVYUjN8+V3YkG5nZvoQBTXr2Nb/ZCrPAUswBWF1K/rpp8yflbqot0zKXN9RXLgQ0xXyR922w5xEtZHiwjUBNxC22o1D3lUW8f1vPzeH0N5aK4vipREK8GlTXPj3sj0LM69Ll4qMoga/eP3FTdI33mOEuP2LsxU6KTXhTWPPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708079471; c=relaxed/simple;
-	bh=I83TNhqClB3Gx2Xpm9j06FD9JteHVB7WC+8FSzlxZEI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=RMAa8yBlHp6oCF7X5Q50GXfZmzO4IV6QGYkU3+xsE/AUAZA6y0CmIUCvcluHXdnuuP72If3xhRSFa4RIh3KRoeYNettBXoJo5g7xzQ9AjDGXWjMESZo+PABrQ75dYoH5SOOW0Pi4WPEZNhWGbvV5cwS4gMNVitiilbTZA3g6e4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=dJY6ftFh; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240216103105euoutp02b7912389cabad4d8fb6cdeeda6da445b~0UTlsTsyk3045130451euoutp02a
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:31:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240216103105euoutp02b7912389cabad4d8fb6cdeeda6da445b~0UTlsTsyk3045130451euoutp02a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708079465;
-	bh=xt2ynN5M4KAj6tHqiVtX0hIoyZhRqcNU8aJG8AjVTk8=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=dJY6ftFhASb4dfIUZaqrP2hGR42wB9Tgz2/mWAJ6A7ZO/71dakSojrQfivaSXoJuT
-	 h4oQfvSyQV5bcNKOkm92Vn/sT1XqhzwFd55QZErOERMQHu/joywI9zpwaLxKDoyqih
-	 K56Mxzl5Mdr1cCavQnNVzgcZe7HDYqsWpuOc9/cg=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240216103105eucas1p28c598cab052ba2c98403a9a7c2388510~0UTlWa3OY0059900599eucas1p2W;
-	Fri, 16 Feb 2024 10:31:05 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 49.0E.09539.9693FC56; Fri, 16
-	Feb 2024 10:31:05 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240216103104eucas1p1fac9b939d4af1648d222963fbef59645~0UTk0-eNx2540025400eucas1p1o;
-	Fri, 16 Feb 2024 10:31:04 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240216103104eusmtrp10a5cf307211e12623642de4102c1d4c3~0UTk0UCoA0272402724eusmtrp12;
-	Fri, 16 Feb 2024 10:31:04 +0000 (GMT)
-X-AuditID: cbfec7f2-52bff70000002543-c8-65cf3969d098
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 61.72.09146.8693FC56; Fri, 16
-	Feb 2024 10:31:04 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240216103104eusmtip1539149280582d6d86e2daac5bbc48e69~0UTkHJCtc0251502515eusmtip1f;
-	Fri, 16 Feb 2024 10:31:04 +0000 (GMT)
-Message-ID: <179caa10-5f86-4707-8bb0-fe1b316326d6@samsung.com>
-Date: Fri, 16 Feb 2024 11:31:03 +0100
+	s=arc-20240116; t=1708079511; c=relaxed/simple;
+	bh=csqlvpw2z/3yyzJxjjS9Fpo71nKwxnAJ+b++04+50pQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ArBP6ExZ3AbhPMX2lwJDxNHNdaLT6vgxCwn5q/kvStNzVw5zA9J4491QNib0E4MJ+bFIP1JgFNvQ8nkXcER6djBlYzGzM9uUrQepHdF2iZGVVn5HVMs4loNdN1P3YZvSHV8AZf37l4J4h6CR+Yls1vrbLLw4SR98gWxVOuZY7QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=AhFboV3T; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1708079508; x=1739615508;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WOmoaQaLsDmrtvGLYushRM/n3wRCUbdTRdZi3Ojwz58=;
+  b=AhFboV3T/PVE5Q0xAgLw0tTQF8tuKNIEWAU2jIkgz+n3kyXhnLGjx4pl
+   UX+z5cNUwBSEUrNtlBC6O1X8MNdFSX5+jC44OLBlwEzT2/TNf/VvsDrz5
+   b+jR3lwPFonYyOW9QJ/ZTtnf/i9pWJKRZNGM7i0i4AFR8jwGUtxLesW3z
+   4CYffV+67nc1oF1DyV+XYvMmZOpAoiBqgYrWfNYZk9+ebc3wUw2Vs6RAV
+   mjMmliD8JhI9mua5dYDBXZbxFjGApVEHlLSeHv4Tw/jm8qMThduIEmDMP
+   LDBNKNJEonp8S8NQ19jPFsg5SK6kXhfHVM/GtGJTOm7SVsRhQzJKRiJ69
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.06,164,1705359600"; 
+   d="scan'208";a="35443453"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 16 Feb 2024 11:31:45 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 22D87280075;
+	Fri, 16 Feb 2024 11:31:45 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, Paul Elder <paul.elder@ideasonboard.com>
+Cc: kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com, aford173@gmail.com, Paul Elder <paul.elder@ideasonboard.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Dafna Hirschfeld <dafna@fastmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Heiko Stuebner <heiko@sntech.de>, "moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 08/12] media: rkisp1: Support i.MX8MP's 34-bit DMA
+Date: Fri, 16 Feb 2024 11:31:46 +0100
+Message-ID: <1884916.CQOukoFCf9@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240216095458.2919694-9-paul.elder@ideasonboard.com>
+References: <20240216095458.2919694-1-paul.elder@ideasonboard.com> <20240216095458.2919694-9-paul.elder@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] gpio: cdev: use correct pointer accessors with
- SRCU
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij
-	<linus.walleij@linaro.org>, Kent Gibson <warthog618@gmail.com>, Alex Elder
-	<elder@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, "Paul E .
- McKenney" <paulmck@kernel.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Wolfram Sang <wsa@the-dreams.de>, Mark
-	Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Bartosz
-	Golaszewski <bartosz.golaszewski@linaro.org>, kernel test robot
-	<oliver.sang@intel.com>
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20240214084419.6194-3-brgl@bgdev.pl>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCKsWRmVeSWpSXmKPExsWy7djP87qZludTDb5P4bPobZrOZLHi2xom
-	i10PtrFZTH34hM3iw7xWdotjDfeYLebOnsRoMeXPciaLzfP/MFpc3jWHzWLBp78sFp+WfGOx
-	2NiyldFi5YlZzA58Houv3Wb1mHhW12PnrLvsHov3vGTy2LSqk83jzrU9bB7zTgZ6nDz1hMXj
-	8ya5AM4oLpuU1JzMstQifbsEroxdpzpZCx7ZVbzo62dtYJxu0sXIySEhYCLRsWYrK4gtJLCC
-	UWLvF+MuRi4g+wujxIyN+5ggnM+MEtMv72CD6bi98S4TRMdyRonXp7Igij4ySnSsfMQMkuAV
-	sJP48O4V2FgWAVWJ/009rBBxQYmTM5+wgNiiAvIS92/NYAexhQUCJT4d72YEsZkFxCVuPZkP
-	tllEYAazxMop/8AcZoGFjBI73jwB28AmYCjR9bYL7CROASOJTVf62CG65SWat85mBmmQEFjP
-	KfGu6xcjxN0uEj8eT2CBsIUlXh3fwg5hy0icntzDAtHQziix4Pd9JghnAqNEw/NbUN3WEnfO
-	/QJaxwG0QlNi/S59iLCjxKG/O1hBwhICfBI33gpCHMEnMWnbdGaIMK9ER5sQRLWaxKzj6+DW
-	HrxwiXkCo9IspICZhRQAs5C8Mwth7wJGllWM4qmlxbnpqcWGeanlesWJucWleel6yfm5mxiB
-	Ce/0v+OfdjDOffVR7xAjEwfjIUYJDmYlEd5JvWdShXhTEiurUovy44tKc1KLDzFKc7AoifOq
-	psinCgmkJ5akZqemFqQWwWSZODilGpjmSAXMlEq/8rUpZknfgcmm1vuc+UK9DtfaVR3LLL2g
-	o9B/4G76nnnXA0+rF5hmaf0zUkzl0vq3sebWUoH3b7e6hKV26ew1ecbQ1hHZ4HWip8/N7tgW
-	+2lb6+z3tMXP1b23KdLz6DaBmz9jmw6Urm+Y0b+dTfVjYcnLnW9Lg89EHnD0fmU8c/bdWROz
-	bqXkOzycfDSPVzOjZMPs0/ZJfb+e3JGtSu8WWCx26zNX2vu3t0OCmlfpu516UneC8bjE5kN2
-	vxQXal9fOC9QYOrNClknxa8b3M4/Zpr462/Tnf2S2kJei8ykz2ulcixjYbQ1+3RtJWPRDSMl
-	jQcdvtr7Z+Vz/y+1zNR3af7YzLg2uVmJpTgj0VCLuag4EQColN6B5wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsVy+t/xu7oZludTDdrv6Fj0Nk1nsljxbQ2T
-	xa4H29gspj58wmbxYV4ru8WxhnvMFnNnT2K0mPJnOZPF5vl/GC0u75rDZrHg018Wi09LvrFY
-	bGzZymix8sQsZgc+j8XXbrN6TDyr67Fz1l12j8V7XjJ5bFrVyeZx59oeNo95JwM9Tp56wuLx
-	eZNcAGeUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2C
-	XsauU52sBY/sKl709bM2ME436WLk5JAQMJG4vfEuUxcjF4eQwFJGiVMf3zNBJGQkTk5rYIWw
-	hSX+XOtiA7GFBN4zSsy6FAVi8wrYSXx49wqshkVAVeJ/Uw8rRFxQ4uTMJywgtqiAvMT9WzPY
-	QWxhgUCJT8e7GUFsZgFxiVtP5oMtFhGYwyyxZu4mdhCHWWAho0TDkkNA2ziAtkVK3NkfDtLA
-	JmAo0fUW4ghOASOJTVf62CEGmUl0be2CGiov0bx1NvMERqFZSO6YhWTfLCQts5C0LGBkWcUo
-	klpanJueW2yoV5yYW1yal66XnJ+7iREY39uO/dy8g3Heq496hxiZOBgPMUpwMCuJ8E7qPZMq
-	xJuSWFmVWpQfX1Sak1p8iNEUGBgTmaVEk/OBCSavJN7QzMDU0MTM0sDU0sxYSZzXs6AjUUgg
-	PbEkNTs1tSC1CKaPiYNTqoFpcr/Ao9oPLd9SNcIMKyyuXPy/20f5m9Lp0PSKu6Yr97789Fsu
-	Z9KMpPSb2caXKgUku479fs8psDljee+fuzZ3o/MFXX2rXT1YZ94p0q3c77/yJTNraav6q+m7
-	mn9F1L9nrVB9IDOz2r5ZvK0+OyUh36WsKdCxce4px7N1yfPW3LUrZfiw8P6KhibJrmmeos+k
-	XeX13Z43zTjqNb/uV7beZda6w+enWVybvF5Spsdner6f1Y+ba5JnqL5i0WSXzN/K+ord+CG3
-	+tWb5Sfa3269vuxwXuDKg3XSecxGG7TXJAn8Np2dMGnq1FMFvIE1fckXJbzMr27Yk/ezNGma
-	Xn/E7ePZPT9n3lTdt6yYJUGJpTgj0VCLuag4EQDedz+ZeAMAAA==
-X-CMS-MailID: 20240216103104eucas1p1fac9b939d4af1648d222963fbef59645
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240216103104eucas1p1fac9b939d4af1648d222963fbef59645
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240216103104eucas1p1fac9b939d4af1648d222963fbef59645
-References: <20240214084419.6194-1-brgl@bgdev.pl>
-	<20240214084419.6194-3-brgl@bgdev.pl>
-	<CGME20240216103104eucas1p1fac9b939d4af1648d222963fbef59645@eucas1p1.samsung.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On 14.02.2024 09:44, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> We never dereference the chip pointer in character device code so we can
-> use the lighter rcu_access_pointer() helper. This also makes lockep
-> happier as it no longer complains about suspicious rcu_dereference()
-> usage.
->
-> Fixes: d83cee3d2bb1 ("gpio: protect the pointer to gpio_chip in gpio_device with SRCU")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202402122234.d85cca9b-lkp@intel.com
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Hi Paul,
+
+thanks for the update.
+
+Am Freitag, 16. Februar 2024, 10:54:54 CET schrieb Paul Elder:
+> On the ISP that is integrated in the i.MX8MP, DMA addresses have been
+> extended to 34 bits, with the 32 MSBs stored in the DMA address
+> registers and the 2 LSBs set to 0.
+>=20
+> To support this:
+> - Shift the addresses to the right by 2 when writing to registers
+> - Set the dma mask to 34 bits
+> - Use dma_addr_t instead of u32 when storing the addresses
+>=20
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> Tested-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
->   drivers/gpio/gpiolib-cdev.c | 25 ++++++++++++-------------
->   1 file changed, 12 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 9323b357df43..85037fa4925e 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -206,7 +206,7 @@ static long linehandle_ioctl(struct file *file, unsigned int cmd,
->   
->   	guard(srcu)(&lh->gdev->srcu);
->   
-> -	if (!rcu_dereference(lh->gdev->chip))
-> +	if (!rcu_access_pointer(lh->gdev->chip))
->   		return -ENODEV;
->   
->   	switch (cmd) {
-> @@ -1521,7 +1521,7 @@ static long linereq_ioctl(struct file *file, unsigned int cmd,
->   
->   	guard(srcu)(&lr->gdev->srcu);
->   
-> -	if (!rcu_dereference(lr->gdev->chip))
-> +	if (!rcu_access_pointer(lr->gdev->chip))
->   		return -ENODEV;
->   
->   	switch (cmd) {
-> @@ -1552,7 +1552,7 @@ static __poll_t linereq_poll(struct file *file,
->   
->   	guard(srcu)(&lr->gdev->srcu);
->   
-> -	if (!rcu_dereference(lr->gdev->chip))
-> +	if (!rcu_access_pointer(lr->gdev->chip))
->   		return EPOLLHUP | EPOLLERR;
->   
->   	poll_wait(file, &lr->wait, wait);
-> @@ -1574,7 +1574,7 @@ static ssize_t linereq_read(struct file *file, char __user *buf,
->   
->   	guard(srcu)(&lr->gdev->srcu);
->   
-> -	if (!rcu_dereference(lr->gdev->chip))
-> +	if (!rcu_access_pointer(lr->gdev->chip))
->   		return -ENODEV;
->   
->   	if (count < sizeof(le))
-> @@ -1875,7 +1875,7 @@ static __poll_t lineevent_poll(struct file *file,
->   
->   	guard(srcu)(&le->gdev->srcu);
->   
-> -	if (!rcu_dereference(le->gdev->chip))
-> +	if (!rcu_access_pointer(le->gdev->chip))
->   		return EPOLLHUP | EPOLLERR;
->   
->   	poll_wait(file, &le->wait, wait);
-> @@ -1913,7 +1913,7 @@ static ssize_t lineevent_read(struct file *file, char __user *buf,
->   
->   	guard(srcu)(&le->gdev->srcu);
->   
-> -	if (!rcu_dereference(le->gdev->chip))
-> +	if (!rcu_access_pointer(le->gdev->chip))
->   		return -ENODEV;
->   
->   	/*
-> @@ -1996,7 +1996,7 @@ static long lineevent_ioctl(struct file *file, unsigned int cmd,
->   
->   	guard(srcu)(&le->gdev->srcu);
->   
-> -	if (!rcu_dereference(le->gdev->chip))
-> +	if (!rcu_access_pointer(le->gdev->chip))
->   		return -ENODEV;
->   
->   	/*
-> @@ -2510,7 +2510,7 @@ static long gpio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->   	guard(srcu)(&gdev->srcu);
->   
->   	/* We fail any subsequent ioctl():s when the chip is gone */
-> -	if (!rcu_dereference(gdev->chip))
-> +	if (!rcu_access_pointer(gdev->chip))
->   		return -ENODEV;
->   
->   	/* Fill in the struct and pass to userspace */
-> @@ -2595,7 +2595,7 @@ static __poll_t lineinfo_watch_poll(struct file *file,
->   
->   	guard(srcu)(&cdev->gdev->srcu);
->   
-> -	if (!rcu_dereference(cdev->gdev->chip))
-> +	if (!rcu_access_pointer(cdev->gdev->chip))
->   		return EPOLLHUP | EPOLLERR;
->   
->   	poll_wait(file, &cdev->wait, pollt);
-> @@ -2618,7 +2618,7 @@ static ssize_t lineinfo_watch_read(struct file *file, char __user *buf,
->   
->   	guard(srcu)(&cdev->gdev->srcu);
->   
-> -	if (!rcu_dereference(cdev->gdev->chip))
-> +	if (!rcu_access_pointer(cdev->gdev->chip))
->   		return -ENODEV;
->   
->   #ifndef CONFIG_GPIO_CDEV_V1
-> @@ -2696,7 +2696,7 @@ static int gpio_chrdev_open(struct inode *inode, struct file *file)
->   	guard(srcu)(&gdev->srcu);
->   
->   	/* Fail on open if the backing gpiochip is gone */
-> -	if (!rcu_dereference(gdev->chip))
-> +	if (!rcu_access_pointer(gdev->chip))
->   		return -ENODEV;
->   
->   	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
-> @@ -2796,8 +2796,7 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
->   
->   	guard(srcu)(&gdev->srcu);
->   
-> -	gc = rcu_dereference(gdev->chip);
-> -	if (!gc)
-> +	if (!rcu_access_pointer(gdev->chip))
->   		return -ENODEV;
->   
->   	chip_dbg(gc, "added GPIO chardev (%d:%d)\n", MAJOR(devt), gdev->id);
+> Changes since v5:
+>=20
+> - Improve the commit message
+>=20
+> Changes since v4:
+>=20
+> - Squash in fix from Tomi:
+>   -
+> https://gitlab.com/ideasonboard/nxp/linux/-/commit/d6477fe673b1c0d05d12ae=
+21
+> d8db9a03b07e7fea
+>=20
+> Changes since v2:
+>=20
+> - Document the RKISP1_FEATURE_DMA_34BIT bit
+> - Use the rkisp1_has_feature() macro
+> ---
+>  .../platform/rockchip/rkisp1/rkisp1-capture.c | 20 ++++++++++---------
+>  .../platform/rockchip/rkisp1/rkisp1-common.h  |  4 +++-
+>  .../platform/rockchip/rkisp1/rkisp1-dev.c     |  8 ++++++++
+>  3 files changed, 22 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c index
+> ca95f62822fa..1ee7639c42b7 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
+> @@ -648,11 +648,13 @@ static void rkisp1_dummy_buf_destroy(struct
+> rkisp1_capture *cap)
+>=20
+>  static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
+>  {
+> +	u8 shift =3D rkisp1_has_feature(cap->rkisp1, DMA_34BIT) ? 2 : 0;
+> +
+>  	cap->buf.curr =3D cap->buf.next;
+>  	cap->buf.next =3D NULL;
+>=20
+>  	if (!list_empty(&cap->buf.queue)) {
+> -		u32 *buff_addr;
+> +		dma_addr_t *buff_addr;
+>=20
+>  		cap->buf.next =3D list_first_entry(&cap->buf.queue, struct=20
+rkisp1_buffer,
+> queue); list_del(&cap->buf.next->queue);
+> @@ -660,7 +662,7 @@ static void rkisp1_set_next_buf(struct rkisp1_capture
+> *cap) buff_addr =3D cap->buf.next->buff_addr;
+>=20
+>  		rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
+> -			     buff_addr[RKISP1_PLANE_Y]);
+> +			     buff_addr[RKISP1_PLANE_Y] >> shift);
+>  		/*
+>  		 * In order to support grey format we capture
+>  		 * YUV422 planar format from the camera and
+> @@ -669,17 +671,17 @@ static void rkisp1_set_next_buf(struct rkisp1_captu=
+re
+> *cap) if (cap->pix.cfg->fourcc =3D=3D V4L2_PIX_FMT_GREY) {
+>  			rkisp1_write(cap->rkisp1,
+>  				     cap->config->mi.cb_base_ad_init,
+> -				     cap->buf.dummy.dma_addr);
+> +				     cap->buf.dummy.dma_addr >>=20
+shift);
+>  			rkisp1_write(cap->rkisp1,
+>  				     cap->config->mi.cr_base_ad_init,
+> -				     cap->buf.dummy.dma_addr);
+> +				     cap->buf.dummy.dma_addr >>=20
+shift);
+>  		} else {
+>  			rkisp1_write(cap->rkisp1,
+>  				     cap->config->mi.cb_base_ad_init,
+> -				     buff_addr[RKISP1_PLANE_CB]);
+> +				     buff_addr[RKISP1_PLANE_CB] >>=20
+shift);
+>  			rkisp1_write(cap->rkisp1,
+>  				     cap->config->mi.cr_base_ad_init,
+> -				     buff_addr[RKISP1_PLANE_CR]);
+> +				     buff_addr[RKISP1_PLANE_CR] >>=20
+shift);
+>  		}
+>  	} else {
+>  		/*
+> @@ -687,11 +689,11 @@ static void rkisp1_set_next_buf(struct rkisp1_captu=
+re
+> *cap) * throw data if there is no available buffer.
+>  		 */
+>  		rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
+> -			     cap->buf.dummy.dma_addr);
+> +			     cap->buf.dummy.dma_addr >> shift);
+>  		rkisp1_write(cap->rkisp1, cap->config->mi.cb_base_ad_init,
+> -			     cap->buf.dummy.dma_addr);
+> +			     cap->buf.dummy.dma_addr >> shift);
+>  		rkisp1_write(cap->rkisp1, cap->config->mi.cr_base_ad_init,
+> -			     cap->buf.dummy.dma_addr);
+> +			     cap->buf.dummy.dma_addr >> shift);
+>  	}
+>=20
+>  	/* Set plane offsets */
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h index
+> 69940014d597..26573f6ae575 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> @@ -114,6 +114,7 @@ enum rkisp1_isp_pad {
+>   * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on =
+the
+> main path * @RKISP1_FEATURE_SELF_PATH: The ISP has a self path
+>   * @RKISP1_FEATURE_DUAL_CROP: The ISP has the dual crop block at the
+> resizer input + * @RKISP1_FEATURE_DMA_34BIT: The ISP uses 34-bit DMA
+> addresses
+>   *
+>   * The ISP features are stored in a bitmask in &rkisp1_info.features and
+> allow * the driver to implement support for features present in some ISP
+> versions @@ -124,6 +125,7 @@ enum rkisp1_feature {
+>  	RKISP1_FEATURE_MAIN_STRIDE =3D BIT(1),
+>  	RKISP1_FEATURE_SELF_PATH =3D BIT(2),
+>  	RKISP1_FEATURE_DUAL_CROP =3D BIT(3),
+> +	RKISP1_FEATURE_DMA_34BIT =3D BIT(4),
+>  };
+>=20
+>  #define rkisp1_has_feature(rkisp1, feature) \
+> @@ -239,7 +241,7 @@ struct rkisp1_vdev_node {
+>  struct rkisp1_buffer {
+>  	struct vb2_v4l2_buffer vb;
+>  	struct list_head queue;
+> -	u32 buff_addr[VIDEO_MAX_PLANES];
+> +	dma_addr_t buff_addr[VIDEO_MAX_PLANES];
+>  };
+>=20
+>  /*
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c index
+> d0a3a13d9dd7..54a62487a4e8 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -552,6 +552,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	struct device *dev =3D &pdev->dev;
+>  	struct rkisp1_device *rkisp1;
+>  	struct v4l2_device *v4l2_dev;
+> +	unsigned long long dma_mask;
 
-Here 'gc' is left uninitialized and nukes if GPIO DEBUGs are enabled. 
-Here is an example (captured on today's linux-next):
+The signature for dma_set_mask_and_coherent() uses u64 for the mask, so I=20
+would use the same type here as well.
 
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 
-00000000 when read
-[00000000] *pgd=00000000
-Internal error: Oops: 5 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc4-next-20240216 #8096
-Hardware name: Samsung Exynos (Flattened Device Tree)
-PC is at gpiolib_cdev_register+0xd4/0x170
-LR is at chainhash_table+0x784/0x20000
-pc : [<c05dbe54>]    lr : [<c18bb74c>]    psr: 20000013
-..
-Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-Control: 10c5387d  Table: 4000404a  DAC: 00000051
-Register r0 information: non-slab/vmalloc memory
-Register r1 information: NULL pointer
-Register r2 information: non-paged memory
-Register r3 information: non-paged memory
-Register r4 information: slab kmalloc-1k start c1e5f800 pointer offset 0 
-size 1024
-Register r5 information: NULL pointer
-Register r6 information: non-paged memory
-Register r7 information: slab kmalloc-1k start c1e5f800 pointer offset 
-952 size 1024
-Register r8 information: NULL pointer
-Register r9 information: slab kmalloc-1k start c1e5f800 pointer offset 
-960 size 1024
-Register r10 information: non-paged memory
-Register r11 information: non-slab/vmalloc memory
-Register r12 information: NULL pointer
-Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
-Stack: (0xf082db90 to 0xf082e000)
-..
-  gpiolib_cdev_register from gpiochip_setup_dev+0x44/0xb0
-  gpiochip_setup_dev from gpiochip_add_data_with_key+0x9ac/0xaac
-  gpiochip_add_data_with_key from devm_gpiochip_add_data_with_key+0x20/0x5c
-  devm_gpiochip_add_data_with_key from samsung_pinctrl_probe+0x938/0xb18
-  samsung_pinctrl_probe from platform_probe+0x5c/0xb8
-  platform_probe from really_probe+0xe0/0x400
-  really_probe from __driver_probe_device+0x9c/0x1f4
-  __driver_probe_device from driver_probe_device+0x30/0xc0
-  driver_probe_device from __device_attach_driver+0xa8/0x120
-  __device_attach_driver from bus_for_each_drv+0x80/0xcc
-  bus_for_each_drv from __device_attach+0xac/0x1fc
-  __device_attach from bus_probe_device+0x8c/0x90
-  bus_probe_device from device_add+0x5d4/0x7fc
-  device_add from of_platform_device_create_pdata+0x94/0xc4
-  of_platform_device_create_pdata from of_platform_bus_create+0x1f8/0x4c0
-  of_platform_bus_create from of_platform_bus_create+0x268/0x4c0
-  of_platform_bus_create from of_platform_populate+0x80/0x110
-  of_platform_populate from of_platform_default_populate_init+0xd4/0xec
-  of_platform_default_populate_init from do_one_initcall+0x64/0x2fc
-  do_one_initcall from kernel_init_freeable+0x1c4/0x228
-  kernel_init_freeable from kernel_init+0x1c/0x12c
-  kernel_init from ret_from_fork+0x14/0x28
-Exception stack(0xf082dfb0 to 0xf082dff8)
-..
----[ end trace 0000000000000000 ]---
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
----[ end Kernel panic - not syncing: Attempted to kill init! 
-exitcode=0x0000000b ]---
+Best regards,
+Alexander
+
+>  	unsigned int i;
+>  	int ret, irq;
+>  	u32 cif_id;
+> @@ -566,6 +567,13 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	dev_set_drvdata(dev, rkisp1);
+>  	rkisp1->dev =3D dev;
+>=20
+> +	dma_mask =3D rkisp1_has_feature(rkisp1, DMA_34BIT) ? DMA_BIT_MASK(34)=20
+:
+> +							  =20
+DMA_BIT_MASK(32);
+> +
+> +	ret =3D dma_set_mask_and_coherent(dev, dma_mask);
+> +	if (ret)
+> +		return ret;
+> +
+>  	mutex_init(&rkisp1->stream_lock);
+>=20
+>  	rkisp1->base_addr =3D devm_platform_ioremap_resource(pdev, 0);
 
 
-Probably the easiest way to fix this issue is to replace chip_dbg with 
-the following dev_dbg() call:
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
-dev_dbg(&gdev->dev, "(%s): added GPIO chardev (%d:%d)\n", gdev->label, 
-MAJOR(devt), gdev->id);
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
 
 
