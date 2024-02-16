@@ -1,82 +1,84 @@
-Return-Path: <linux-kernel+bounces-69481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E3B858A25
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:30:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3CE858A2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:31:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9493C1F22ACF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:30:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D64781C21D55
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113D41487F9;
-	Fri, 16 Feb 2024 23:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0AE6148FE3;
+	Fri, 16 Feb 2024 23:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FgYNol8o"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="i6xb+ltJ"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD81014831D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43091487C0
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708126209; cv=none; b=XCP8dD5yJIL+/oxhSqMF2J/Xszej8ZkZLUJkE7GZvEwWH/1glx0aPIRVXb/v6geCUL9IfYZpPGyLlzyKOGjASfYbCxaM7xOJEzbp3ACK3FCpWyf80fTh5sYZnypsrcn+mGjhdjDFgfcIrYhx+iOMDzQZlpsD0HzlGMxAXvw41Lg=
+	t=1708126296; cv=none; b=thy5w6t/fWqq4vOWVd/cMvXsjVgtmop8nVzxShXu02+1IC+jkHi/wICHfVMEA6VobhDYFOPfPSGm/WsD08FA2RGj0AcItCZc/8WtuGU2jnku25jKqERfUvkLvXt+r0hXUf0lAMYLYGfzAKJqMjmzgQxiyAwd7FxSU21LD3GxKNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708126209; c=relaxed/simple;
-	bh=N8SWEam9A1kUZnQAkUusNza4SpfF9G3Tl7KB3Dv0a+E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FyDwLRYMr6RVQpANTAVJQYbbKN58xoXrsk0LErUCFua+mUQmwxAPU6M0+qJvSEMOmxKIZDcx9xWB1oEHWpx1zHcwKBmtxxZrG1ZaCWcqyAXbu3KyEw/q4UGkntRFiIyRMXEejpf8XdkA/bYK/U7ePP0KqnDhBu2NKoiJRRg0O2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FgYNol8o; arc=none smtp.client-ip=209.85.215.179
+	s=arc-20240116; t=1708126296; c=relaxed/simple;
+	bh=jOdQW5rW0KnYyOq1p/yDKH9PCkLL/4PmnhZS1DjdHKg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PXrq23pk5jGFMNd+97YoYLEtRqCiRt20Iw/+56iwdWALH3wjDhIP23CEFCYHk+Sd08zYoqu30H2lukbQognsny3BjcZud3sAvM1S8cCA/mMHmUG5D/XjPpEMHyymba1yfLKd6bLBL9d8JJDFbwGE7fLPm8i6kk/a92gwhhajaWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=i6xb+ltJ; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso952333a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:30:07 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d71cb97937so27008925ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:31:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708126207; x=1708731007; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1708126294; x=1708731094; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=q0M9H+uKm2YFk/vFzLDf9keBJtUyzrYL6KC8P62658M=;
-        b=FgYNol8oVtCGDGTyPNtvffjaXBJo3IhIdi2Pj3vouNzKG+PwAlnukfH0AqBs46Xim3
-         AqQErSj00ToeNkb7jJVeYq6qqNp9o82mLJyRBvv3Hm/xKhhKQ3J0SvCEgbKOw89nS21r
-         Gbn+1XGfFKp/DDqocOZ3r51M5IN9EdGWB69nw=
+        bh=uN4qOGv2a6E3MQcDzEdcHEHjdiL8tvE8cOZTYxiPwL4=;
+        b=i6xb+ltJvOyyeoUSgcEbRjqGbQ+I+3C7PIufIW08s02wpB7G0GMPPlH7kA8ygfcKuK
+         TLz4Oa37GcJ8EOdxnOqqXixJHu4t/3W/OszBTnwRbhO6OqAVnaf5gXUroPb/Ed5VbmNP
+         5E+6nezOOxuFn9TEGvO9Qb2k9lKMu3FXn52v4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708126207; x=1708731007;
+        d=1e100.net; s=20230601; t=1708126294; x=1708731094;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q0M9H+uKm2YFk/vFzLDf9keBJtUyzrYL6KC8P62658M=;
-        b=WMFl47oHh0ss6nboKo/70Y14+ZJhz8xAOoDU2afSMmZ002ZbLBoEsJ/vwGOprPmahz
-         T+ULTPJdXCsn9IgXDyyUiff8OfA8OFhJpw1GMBtWPj+c7R58HWe6UdBpx+QCmO78n0fi
-         fHL7uPdSVTvzzF197PA9209USTFtvr7U7koK8WqncvqzSDxIt4gPnNkpWnrpvDNNH3+M
-         QaLbHLiENDm7ZuAhbNZoNBsFqDrSznD4UruH7FTgsX7+twna5LtqDJeOaHDTdgfz1fz1
-         XBWUjErhehb1zG11HLQOnlYlx0BsL6OKXPVp+WtWQ3Fbb6HH2YZnEJYeaIfVEx057u0L
-         8UPg==
-X-Forwarded-Encrypted: i=1; AJvYcCXmz1ey29NdO1ORbDzMTxStBqvdkQV40Xn9z5O44+kpeHK5H50+R/Q31Lv2g0IdFuLAyEVLsVBfqVPdCjnkYwRGnoOKwFZagSPUhQ/Y
-X-Gm-Message-State: AOJu0YxEty1ChbsMiSrHKHo071N1T505rSzozj+indo7xM2ihtd+prw6
-	w1MjApxksKCER1dRBC52AVT8D8bPmaWrse/6ThzVuERWut8ar0bXMghDCTNXIw==
-X-Google-Smtp-Source: AGHT+IHLDngRzVnt3PaLTBd99dKYJp4xFnvTjecToZpLjHNMXyYWqFfP0n9Z2AGZ2Gv8wIpZON41YA==
-X-Received: by 2002:a05:6a20:c78e:b0:1a0:762c:7c9f with SMTP id hk14-20020a056a20c78e00b001a0762c7c9fmr7240423pzb.36.1708126207106;
-        Fri, 16 Feb 2024 15:30:07 -0800 (PST)
+        bh=uN4qOGv2a6E3MQcDzEdcHEHjdiL8tvE8cOZTYxiPwL4=;
+        b=SyM6MToZP7gFXPcenf0NmvtNapCgQ3unEKlvxw9e0peeTn1I4zl3ZS7/8UqZRl1UyF
+         GN2fQWvO7z794Z+OqEIrcFeiyT30l37Pp6PhGwTW+TiO0WfIzfRt4jVN6kpcdxVTe071
+         iELXHkvM5LXtvnHWL6cybbozmaH/x0OLTTMo1IylK+3Sk2ZDfEJZ+iXPP1NcbQydyw2G
+         Pax/Wi4xHWnqUWMep3KXTCE+dd44il5q+EuRqi1DTOakWIR++tKeQkzGNBbOZNVlO4ZI
+         smIyMMVlygicVBLOEajfER4Zqx3ZWIlpQf4CdYLDfiSp3mjlpXmKE1XF4zO/huRvWrch
+         wq2w==
+X-Forwarded-Encrypted: i=1; AJvYcCW0Q1L6HagXSQywfG6J2IbJvA4LFF8SGhIpzOfzvuhbQd1FeRPw3lhCYA1bd+Gbfs9OsbAgk+42Ui3Vp7MJO2Z0hS3/WRmmOpyMZTam
+X-Gm-Message-State: AOJu0Ywe3tovrPTyjY28EYeT+LO9aM7fmeW+oNjpzIdrcR0WlrfeGlAH
+	phwfL44Zoa7c8X7zBLRFbHei+aUj5dY8D69w4b1LzRd7A0V83Plqgyoby7p/3g==
+X-Google-Smtp-Source: AGHT+IHYCWfbnUZ5HuqCPPkKFAYJgYB1thSC9ROdHinB5aTKmF0kNsJglIf3SEJgNPB6vkQ1wKYPdg==
+X-Received: by 2002:a17:902:a987:b0:1db:9c20:5c91 with SMTP id bh7-20020a170902a98700b001db9c205c91mr4503197plb.26.1708126293947;
+        Fri, 16 Feb 2024 15:31:33 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id du5-20020a056a002b4500b006e0a55790easm466312pfb.216.2024.02.16.15.30.06
+        by smtp.gmail.com with ESMTPSA id kn14-20020a170903078e00b001d8f82c61cdsm371747plb.231.2024.02.16.15.31.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 15:30:06 -0800 (PST)
+        Fri, 16 Feb 2024 15:31:33 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
-To: Christian Benvenuti <benve@cisco.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Kees Cook <keescook@chromium.org>,
-	Satish Kharat <satishkh@cisco.com>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
 	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
 	netdev@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH] enic: Avoid false positive under FORTIFY_SOURCE
-Date: Fri, 16 Feb 2024 15:30:05 -0800
-Message-Id: <20240216233004.work.012-kees@kernel.org>
+Subject: [PATCH] netfilter: x_tables: Use unsafe_memcpy() for 0-sized destination
+Date: Fri, 16 Feb 2024 15:31:32 -0800
+Message-Id: <20240216233128.work.366-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -84,61 +86,62 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1636; i=keescook@chromium.org;
- h=from:subject:message-id; bh=N8SWEam9A1kUZnQAkUusNza4SpfF9G3Tl7KB3Dv0a+E=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlz+/98DESvFGFikq/0c5rAXVNW2jvDZ5ZdvQsL
- mU7EaKbFGCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc/v/QAKCRCJcvTf3G3A
- Ji9aD/wJ76bdgoqZWSC+dTOnrSCAtpdSTGT0TYNd0E5WDFwXtv/ju5qL2URM/kXi0qw4A/nJ8HT
- mQmgTScQTSQHancdPF/ow4o0623XWG8Lhi7zX4Aga7ArrngyLmoMUVzLbEc5r2t4tAL5uM/3mG5
- yRboorFeOmWeG/gKm2+DKeslq4o0kk7kiDrHHqqix4W05WJqOkEyhBxl3UGRt/Inxn2QasEIgv3
- Q4qmhn+J+zNJUDB/Cw97dZ1AYd+ILfULWCj5ewdLF148SSXa7bMSaJtuciASjVS3bifRJWhL/Kr
- dksz0Kcj2/K3BFeJzLF0I6A4VYMq13vcSAFf6C8pCLPphpgma4+gzVGE/K42gCUkxf1osxLV1Ni
- 0XKZMLZudf6fcM4vVpruc6Yq0LctwFZoOcdtNjGo44QjUw3SxYorBUlrjB0nZIKTpSiIiTyZerZ
- yGt4KFEe9KE1QWLBK0dZNuF5xuJD6TRbZxcYW3gnd0d8hntPyda3gjWtglmWRXdKLD6SprT3uve
- J+VAEUd5UbRXrGSUaLxUZwe7IcYwwlcSLeh4JsEa3hMR3euf+97r66AJ2f5U0LN4pcM/MaPN5Tx
- 0kq1INBYqjbjZe0/PrjlMJh3uvs4vr1gY8PwL+8jomC+wBvbpSSL9FYP82hH1QHUId3b9yZHMC4
- FUU3ziy zehgYZ+g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1607; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=jOdQW5rW0KnYyOq1p/yDKH9PCkLL/4PmnhZS1DjdHKg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlz/BT+pya3GeMtcIriH/e+CPxrqjEAzWQnu8l0
+ 3unAX1y/EiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc/wUwAKCRCJcvTf3G3A
+ JucjD/9S6378diNRxHdllYwRjhQFF55zpJBsrgb5CoQpz4g3967S3N/XRb9FUCJZ2741ghKLG8G
+ vhnAD1P4VsHm3e1EQXMeNvyEC7ktk8kg3m3S3SEYfkRqdB31Y9GDL3wIXuLI5LBsVgKiAYJ7IeE
+ 2fv265fAcWTklZIr4VNCtl4x/x3dUxnFtQFDqgv5W13Qq+tpIMSSbDlNB8Dr+UP+VtFPiyO9GiZ
+ w5FgIxyTBZav+LGMzKcYVW7c7e3pFCUblaI+CQZu4mswl/D9D12KxufIjRwygnbGGFsC6VLDhAa
+ EYAZhf9lgWuRBf5oJQh/QiImTntMQOSskI4Tnw4H4CrSeN5q5Vf0Sqyyejrpsvl/UEAN2+FwLuQ
+ bQO0Jm7GBXXRWzJGIWZ2MJXpfCyxvbn/lO3Yf/jv2d5UB0yvtzThfT1OMTHGujGhGYNT+mlmTVv
+ FTH5UgFzIQMOcAtT/Dk/NcoAi80rt2suzgxoH9K6CYWTOenO7+hRm6PmsxB61y04NFpDKcpJ+x/
+ UYlIX8n6PtqsL4aI/Oj/JeZ7jo/cPwRDd8TSE0LGpAQPpOpiktvkX74hurPk7E1uQ+0J1e/Uetj
+ dc5DhHQUArhyuNWCIbo6B9SuKk2nyGqrB42oRb/sGXMx/uUqH7bmNp2xRV8Vf3qB9i+cpUc/bS5
+ +IoRHOC wkGajx1g==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
-code base has been converted to flexible arrays. In order to enforce
-the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
-destinations need to be handled. Unfortunately, struct vic_provinfo
-resists full conversion, as it contains a flexible array of flexible
-arrays, which is only possible with the 0-sized fake flexible array.
-
-Use unsafe_memcpy() to avoid future false positives under
-CONFIG_FORTIFY_SOURCE.
+The struct xt_entry_target fake flexible array has not be converted to a
+true flexible array, which is mainly blocked by it being both UAPI and
+used in the middle of other structures. In order to properly check for
+0-sized destinations in memcpy(), an exception must be made for the one
+place where it is still a destination. Since memcpy() was already
+skipping checks for 0-sized destinations, using unsafe_memcpy() is no
+change in behavior.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-Cc: Christian Benvenuti <benve@cisco.com>
-Cc: Satish Kharat <satishkh@cisco.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Eric Dumazet <edumazet@google.com>
 Cc: Jakub Kicinski <kuba@kernel.org>
 Cc: Paolo Abeni <pabeni@redhat.com>
 Cc: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
 Cc: netdev@vger.kernel.org
 ---
- drivers/net/ethernet/cisco/enic/vnic_vic.c | 3 ++-
+ net/netfilter/x_tables.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cisco/enic/vnic_vic.c b/drivers/net/ethernet/cisco/enic/vnic_vic.c
-index 20fcb20b42ed..66b577835338 100644
---- a/drivers/net/ethernet/cisco/enic/vnic_vic.c
-+++ b/drivers/net/ethernet/cisco/enic/vnic_vic.c
-@@ -49,7 +49,8 @@ int vic_provinfo_add_tlv(struct vic_provinfo *vp, u16 type, u16 length,
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 21624d68314f..da5d929c7c85 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1142,7 +1142,8 @@ void xt_compat_target_from_user(struct xt_entry_target *t, void **dstptr,
+ 	if (target->compat_from_user)
+ 		target->compat_from_user(t->data, ct->data);
+ 	else
+-		memcpy(t->data, ct->data, tsize - sizeof(*ct));
++		unsafe_memcpy(t->data, ct->data, tsize - sizeof(*ct),
++			      /* UAPI 0-sized destination */);
  
- 	tlv->type = htons(type);
- 	tlv->length = htons(length);
--	memcpy(tlv->value, value, length);
-+	unsafe_memcpy(tlv->value, value, length,
-+		      /* Flexible array of flexible arrays */);
- 
- 	vp->num_tlvs = htonl(ntohl(vp->num_tlvs) + 1);
- 	vp->length = htonl(ntohl(vp->length) +
+ 	tsize += off;
+ 	t->u.user.target_size = tsize;
 -- 
 2.34.1
 
