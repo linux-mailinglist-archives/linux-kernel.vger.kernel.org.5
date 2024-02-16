@@ -1,145 +1,81 @@
-Return-Path: <linux-kernel+bounces-67884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A369F857252
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:14:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1798F857255
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5306E280DE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:14:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A335B1F24104
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF849149DE3;
-	Fri, 16 Feb 2024 00:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D744A0F;
+	Fri, 16 Feb 2024 00:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EExMkWbe"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NmuFr7oc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F1AEC2;
-	Fri, 16 Feb 2024 00:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCC1320A;
+	Fri, 16 Feb 2024 00:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708042454; cv=none; b=ZGbyeduyu6WR7sIcvRJcMaXpYRB5UJa9a2XORCxmj6nr0VyZpBYMTHRvWTNYzI0xRwygS6CkLivu0sv9SeC8o9raw1EDABEGrbolrtooh/EtcrK39c4Q7H3UZ0iws29K9v419ZnJkhYsZFrD1CwpVhaExd41dBAj+j6OEPsutjI=
+	t=1708042484; cv=none; b=LqKkqju+PWdzbEIai+0FfCo2or/GirgB5DMGzDaOj2msLPGTAqmlki2qTn4GFnC+fvwy0o2bhLB5eT/TujHf1/iRGTEHvxOFPwJkVKYVSInfxkI431aLHuT/MJ2G5PKKK/SW0uxHP7W7DNZ3yXAT9kEbnHNK0sKtJ6QZw/bFLDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708042454; c=relaxed/simple;
-	bh=DTuSJ52J8N/bX5W9VU/x7SAXIJrn5eN4LG3JgCE/Q4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gFcJ9dOR5Ew8R7ZinDqqB4TxQ/YkON7sG9sjbZv6l+xvLpK3YNexiQLliPF+uAERi00GMJoANZpitIDN0zpqv0vaD4NdTWiG0+YHcYoMXdiak0r1uwgMSmNYE0cfsqPemEGtr73zcgIp8/fNu/XXmafWubNwax6cqTEsu/dP21c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EExMkWbe; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dca1efad59so1354726a12.2;
-        Thu, 15 Feb 2024 16:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708042451; x=1708647251; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VP/5h+SFOqXWog8lvjT9gXJwkgwdET6/xnyGoYUrUPc=;
-        b=EExMkWbe7Y6IODudWEM1LotiPHfoBUDEviizsvcWknDZQxaYfG5ndlbMCZiCr3R8mW
-         vGojo4CmuLs3RQeq3yVjSfUwBcj9kXLyOmQsrbux1A6nnn4HecvPBhx7EeA6Ch328Wja
-         AtKa3F549FzbnR49bko2EOflZjaa2SNym54FRp7myyJjPy361we8V7EPhsyG4DTOfsWO
-         OeNRzp6u/ktH2IDnyQCuicrK/XtI0l9C9QgnEaEDzfbZt5gB4ofrPihY3fhbR61lZUGa
-         G15Uv+rSwjAh2CQWDcp2/P7bn9EmtNpw14up3tgFI2coroH4/aHJMTg8Srp6wTGyq7rH
-         2CEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708042451; x=1708647251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VP/5h+SFOqXWog8lvjT9gXJwkgwdET6/xnyGoYUrUPc=;
-        b=TEciIaekf1VnNo24wf1zRo4Va5WIPUfvBl48gr4s0MBC8zyT0G/x/fodxxyzmcReoJ
-         Z/NWDm1RSxxXV1Sf9duyCmw0M+M6SbiMMCtumbj7sxAdU8G19b6TfXfAXZyGwYRzDSRB
-         zUIEOSSCG4i19eLtKQd39dC3kKtjSDttoJl2JbXBq+MO1rWFyMpV2Wlc0rcnD9hk4QiA
-         IA1Ee9H8B+y6B9DzkPTIjhOk71e8zZWWlB4RDC+l5e/dU3jmnuACSUtaIgTSdaRXyK9R
-         R+zl4GWbuhdwnEry68XcbBbU4TFEdtiAEJjNIz+lnOAnutlIqI9ZZFikJR/reBQIfQH0
-         8eqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWlhW7rpU85oebcuEEpKO6xu/yJ5E22JYPUJmULSziquOLIt0mjAhSulAnEvh5scIZT+RfAoo2mXQYaw7bPniDVyh4CTQqwN4tr54qKYe3nfRXZrvxSlBskqnmsgwtuc60gYpGMthKgvdMy9jLmCyibPB7Pbbtex21jkFBOKKzCb5x7Cw==
-X-Gm-Message-State: AOJu0YxEdpnnCkNewNxAWe2lMz/Smz5tV6ZYX0egurK0TmQPcQdVbP+7
-	N0fvD1oiwc/luWa6NHjaOgISQMVO49O55T6p9mzQ9OR/L3Iq8Zmd66g+h897abBCw1pNXl1Ki+F
-	1qgZi+Nfrkg6ZR9W46ogXKWIFt0s=
-X-Google-Smtp-Source: AGHT+IFhwxLZc95mR6lY8QS8HgeEDyxXetiOfTmfelxCWBGmp0Tl402/VsSw6kJNGFWHF6XwzY3dALjnGKRo0dbup/0=
-X-Received: by 2002:a17:90b:1e0d:b0:299:32f0:8124 with SMTP id
- pg13-20020a17090b1e0d00b0029932f08124mr492527pjb.42.1708042451599; Thu, 15
- Feb 2024 16:14:11 -0800 (PST)
+	s=arc-20240116; t=1708042484; c=relaxed/simple;
+	bh=8459CvzrorfNe/cHAzd0ENqIMMQm58MSFuttK55PuAY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=aoOQXz4IWy8j7t1Xp4GJ/X1UL3g8GnB4He5mKjTytTKOIxcyO7wqiTM7bcUpyZMrCzApIjINTw278t1LPsbv94w86ZLbgO5sN0EKqoGTd4DRDwxsaLmwT+0kR7R8hOHbDutXQaZ727fJm195jKuJ+8UamuGGOZDRemEIC3+DwtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NmuFr7oc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C5DC433F1;
+	Fri, 16 Feb 2024 00:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708042483;
+	bh=8459CvzrorfNe/cHAzd0ENqIMMQm58MSFuttK55PuAY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NmuFr7ocD51+UfkvZDHdvyhHagtotjPmkxo7YcRAWBCFwI6mcb1Dk8SCHmgCXuvdB
+	 n0AX/l1ga0WmPPMZCUeBERXcafl8pl0yCjOhZDCFHuAUl6NY44ayokHvZqWCiY91PU
+	 uv3zTNGTY0GhIcYj/dVFAIW1OmfzQsp3zc+0Nm5E=
+Date: Thu, 15 Feb 2024 16:14:41 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Sourav Panda <souravpanda@google.com>
+Cc: corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
+ mike.kravetz@oracle.com, muchun.song@linux.dev, rppt@kernel.org,
+ david@redhat.com, rdunlap@infradead.org, chenlinxuan@uniontech.com,
+ yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com, bhelgaas@google.com,
+ ivan@cloudflare.com, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ hannes@cmpxchg.org, shakeelb@google.com, kirill.shutemov@linux.intel.com,
+ wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz,
+ Liam.Howlett@Oracle.com, surenb@google.com, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+Subject: Re: [PATCH v8 1/1] mm: report per-page metadata information
+Message-Id: <20240215161441.c8a2350a61f6929c0dbe9e7b@linux-foundation.org>
+In-Reply-To: <20240214225741.403783-2-souravpanda@google.com>
+References: <20240214225741.403783-1-souravpanda@google.com>
+	<20240214225741.403783-2-souravpanda@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240214173950.18570-1-khuey@kylehuey.com> <20240214173950.18570-4-khuey@kylehuey.com>
-In-Reply-To: <20240214173950.18570-4-khuey@kylehuey.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 15 Feb 2024 16:13:59 -0800
-Message-ID: <CAEf4BzYFbVeVhSjj2wSLfg+qRs5x+yS1Wq9jwLNpJJPPtFiFqQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 3/4] perf/bpf: Allow a bpf program to suppress
- all sample side effects
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Song Liu <song@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 9:40=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
->
-> Returning zero from a bpf program attached to a perf event already
-> suppresses any data output. Return early from __perf_event_overflow() in
-> this case so it will also suppress event_limit accounting, SIGTRAP
-> generation, and F_ASYNC signalling.
->
-> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> Acked-by: Song Liu <song@kernel.org>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  kernel/events/core.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 24a718e7eb98..a329bec42c4d 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9574,6 +9574,11 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->
->         ret =3D __perf_event_account_interrupt(event, throttle);
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       if (event->prog && !bpf_overflow_handler(event, data, regs))
-> +               return ret;
-> +#endif
-> +
->         /*
->          * XXX event_limit might not quite work as expected on inherited
->          * events
-> @@ -9623,10 +9628,7 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->                 irq_work_queue(&event->pending_irq);
->         }
->
-> -#ifdef CONFIG_BPF_SYSCALL
-> -       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
-> -#endif
-> -               READ_ONCE(event->overflow_handler)(event, data, regs);
-> +       READ_ONCE(event->overflow_handler)(event, data, regs);
->
+On Wed, 14 Feb 2024 14:57:40 -0800 Sourav Panda <souravpanda@google.com> wrote:
 
-Sorry, I haven't followed previous discussions, but why can't this
-change be done as part of patch 1?
+> Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
+> to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
+> to /proc/meminfo. This information can be used by users to see how
+> much memory is being used by per-page metadata, which can vary
+> depending on build configuration, machine architecture, and system
+> use.
 
->         if (*perf_event_fasync(event) && event->pending_kill) {
->                 event->pending_wakeup =3D 1;
-> --
-> 2.34.1
->
+Would this information be available by the proposed memory
+allocation profiling?
+
+https://lkml.kernel.org/r/20240212213922.783301-1-surenb@google.com
 
