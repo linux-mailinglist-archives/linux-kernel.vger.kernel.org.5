@@ -1,179 +1,203 @@
-Return-Path: <linux-kernel+bounces-68299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B90C85785D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:03:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DFD2857863
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E0CB28AD37
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:03:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AC4828AD3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB671B812;
-	Fri, 16 Feb 2024 09:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985711BC5E;
+	Fri, 16 Feb 2024 09:03:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AMluWySJ"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2RZg1KAp"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536901BC20;
-	Fri, 16 Feb 2024 09:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46EF1B972
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074211; cv=none; b=cT0HBRhyXEgZBz653f2Unq0k9ubNJJQiNRhK7/nTPFnF+hXpZi3Brda9gxFo5oq4h1wMsVLT+QbpEW+bfuyG01N2zvS/Z7Ij2BJyhj8as9Ssk2GMh8VZHz3R9SDGF1p+4nwByTKGKO/jt5QAK6v3WT348p/tYThvn3q1+sEHveo=
+	t=1708074217; cv=none; b=X2DVsSoegpdDM792saNkLzficpAI4IR4s1swuXCBtYAxBjAwDkOoCS7WNX5zlJkHEjJQBouZwq+xEJ6NWVxWeXwEHFhTn2tuXfZ6Zer2legwn0CBDNQLZDUDoJ7JPRez99kvxFvFugFiGpHpWmCeT7yP4vRVeiO3Ebegat0oVyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074211; c=relaxed/simple;
-	bh=wmHmO3hQl2xzz6OrDd+kS6DBHr35sl7ZTkYdpIxTxLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JxKEHyPhl67CayEDWhtCcEhz0y9tFp+QrPxOCBDO7Vhf27iaaw9sYgER+OzGbmZtuvBFarSQe+4Fxd2C30RfR1nLHPVpufBizzpZ5hsWxYD6v76uErboujs5CGphfvlzCEOhlflmvdHAZuRToBvrkaHnIQl4bGtw18mkh8l6QBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AMluWySJ; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e1126f57f1so1050911b3a.2;
-        Fri, 16 Feb 2024 01:03:30 -0800 (PST)
+	s=arc-20240116; t=1708074217; c=relaxed/simple;
+	bh=dkw5/IVhfZj5zs7Oe1iWKLQE3h839PLLeYTuwMZDLgM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q7NQd3rcrbzDys+vYGwQ33zRhvENT8XZfIDWzahNYrn37zhlToqnOgKfO6gzIW6ymRlS5odIJ1h4/OvhU5gSW9xVnhN27B3yyIgMgqjAWarHLNlj++kmVVWep7NpKwKt/QqNNqj269rgHD6vJoRTyjI4sYWxnF8qMb0DS0kC7SU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2RZg1KAp; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso1815038276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:03:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708074209; x=1708679009; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MS1ou+eQuFlj30s1QbfAMDR5SDcOmiXSN2q4UOae8S0=;
-        b=AMluWySJdyByYcFvWwvKQjtfZEroR9M2sIFst4lnM0wGkJfA/6Ufw7Y0bsF/Bdc7JO
-         XNDFuI/4EvPLqf/0h8OXLk/PEoI2vLiidURRrrbrddINiMNwmFZIJZ5aLHfdr915q6PI
-         HxFXkVGuXvzxzhqcLbpLoOxnCQQbnyTrzCrypxFkycS5KlNCeYTHd2VXTJlg0vRihQMP
-         lSccoidfeUZykOSoRlxwhwk3PVOg4qAz6zAbJR/bJfnX0oZZJP1fimkvBF/WpxYv/8Uo
-         9tWXa1OfPNFKgjjzs6V5i3VOH0BPCCr3GbMeX/NM2xASFLGbNjzJrzrSKTE7FgOmcDJZ
-         mcMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708074209; x=1708679009;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1708074215; x=1708679015; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MS1ou+eQuFlj30s1QbfAMDR5SDcOmiXSN2q4UOae8S0=;
-        b=nV04RyY0RkGS+Ieea6TNER3TFmbR7uGlkiw/8DLuhEs7a5UadlohRaCTkbNrD+TaKm
-         5qf/0B7cMSyvJFKDkfccMAsdtyIFN1oXOHfIAYAKdBj8wc0DGSKH2cB29ZMIT1z8hjbv
-         qW6B0kMtd6Q4ZO8k96DLRt5RwriE1ORhztpbY43gqX0jEj45kaYBor4R85l6zyG0iaDP
-         zviTUajCRo5QwzMNcGxcZ6Fv6cmu8NCDrNrFQn7vG2B9YvBoqtHYssaKjdLfz728q+Cx
-         f82qFXaFcWdhq2/6IIjtlWt4vNSBEgBFlEK5H1wZ0yrKpN5hF1AM6hWXCQvpMc8Gw6Nz
-         zpyg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQEmBc78kBf71MOLTiORqCSpegu29DeOUTrqaDXJWqEiaSnP75RGsUCziu4dc0eW/ApeZqjaW0U2lnR4vIS6X4CkX2Wgm53d2RwpZJvE8A0CZFvY7viM4/1u1SnetXvCdnQqlj
-X-Gm-Message-State: AOJu0YxFOn+38aIkr31YGvTSrYJRTIlIPayVoTAoGwkdIQS3ujy97RuA
-	CPw+kbvQA0tWJUZPzO7J/33EkMCZRaPGISq1byRjKWBNOzQhzBHn
-X-Google-Smtp-Source: AGHT+IFPPQoTVszJuTvd2g54FI0WiOshhaB26U2aFpB37euTnEANRoYDUOlPLAQnSRxm4SGFtWUoNw==
-X-Received: by 2002:a05:6a00:a88:b0:6e0:f3f4:8da9 with SMTP id b8-20020a056a000a8800b006e0f3f48da9mr6528361pfl.4.1708074209431;
-        Fri, 16 Feb 2024 01:03:29 -0800 (PST)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 16-20020a056a00071000b006dbdac1595esm2706594pfl.141.2024.02.16.01.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 01:03:28 -0800 (PST)
-Date: Fri, 16 Feb 2024 17:03:23 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Cc: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-	manjunath.b.patil@oracle.com
-Subject: Re: [PATCH RFC] bonding: rate-limit bonding driver inspect messages
-Message-ID: <Zc8k2wYZRvtfrtmW@Laptop-X1>
-References: <20240215172554.4211-1-praveen.kannoju@oracle.com>
+        bh=GIsEikU4izdqkDoN+ZKv97zMNiSEQemJahB5wDm74LU=;
+        b=2RZg1KApnj84nHSlLVc2ycT5QOJVaBNgiKZM04mw2rYJ+dHzqmQIvADP5iUlzJ9/yK
+         efgpsIJ9a3h0Wf04i0V99FO+5BESARCJSjnrnF5mRyd3LAPn/N/EV63r7WHu8VAUopFy
+         /xVET4gcr5k9GO4TXksAfX2s2OZjhvzYCtGsxRbCm9+knPX9AHOSlELdDysXodtDIe5Z
+         3yxTO7ETynRqPcuSbbaZSQiXKGac7pDYmxSAX08LkQZwj06a+dMyX0LpgmM3WoZNjD+5
+         LW1GNS5DRJuwXZob9VEhtSKjJy5wHha0aEx5j75PWx5m1ft19/Ke/LgFplw+qS4Wxy8F
+         Vd9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708074215; x=1708679015;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GIsEikU4izdqkDoN+ZKv97zMNiSEQemJahB5wDm74LU=;
+        b=tCPJ8SaZoKQQwgz4eHir/rNTLG8LXlnIN4MuESJcL/JQUEMtyE8km1YJW1N9gmy9LN
+         92bE2hQ1M1UoT1bPJYVMxnw0y7SSMI2cHd9HqGcQXytjcHDXKeeB+JE/vXCsTo9y6eKy
+         rV9fiDqfTsjmI6D8vl15z+wzviT4my65p74ByDUfrKwGy8g+az94XYNFEi80WsuBdrXy
+         n55vjhU8PnfvHkWj3+kjxJVvEzqEFfZ8dkWC4qbhWaId5dXLNf+QtupUVcsQ/UjxHXbo
+         wJMPhdXIzOubc9savdDWDXJt403GfWNb+lltcTcuFct73cO4faHPuPqn9OKqh5Ko5SoC
+         U7GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJGdwdh6sdGddS01yx66tBQuJp/WrnzmxOOCww/38+ABTq51FebY+jWFMwQ5WtSXgwtdwx0drmbWK9Rp/Mdxoch7xlX4xusPtA+65W
+X-Gm-Message-State: AOJu0YzSipyROcqOhMFL4ju74vJbzg9EiZKqnmwa8V6Qk45PrArLLy9W
+	Xnd8bYVYSucIDWEu7VxC/rTmEhHzdkt6T74v2D+NJyIm7YbsB3YKmJ+xi2eW2/IVlfpQICNs6MU
+	qb5c9FXaN76qCL6ElMGp0LSjtRCLCjc/fHauS
+X-Google-Smtp-Source: AGHT+IE8IHpuOe2beld9vVWKFUEkUtO+/3eNyPe5KrBlxSBI4QdK9EveZ1I5XPH056j0G4IXvvphLveaFK0jjo4oCok=
+X-Received: by 2002:a05:6902:200b:b0:dcb:be59:25e1 with SMTP id
+ dh11-20020a056902200b00b00dcbbe5925e1mr5215694ybb.30.1708074214367; Fri, 16
+ Feb 2024 01:03:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215172554.4211-1-praveen.kannoju@oracle.com>
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
+ <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+ <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
+ <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
+ <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn> <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
+In-Reply-To: <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 16 Feb 2024 01:03:22 -0800
+Message-ID: <CAJuCfpGbZtUEb+Ay_abmOc=Tc4tuTtLVSK4ANpwvwG_VTAD9-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 10:55:54PM +0530, Praveen Kumar Kannoju wrote:
-> Rate limit bond driver log messages, to prevent a log flood in a run-away
-> situation, e.g couldn't get rtnl lock. Message flood leads to instability
-> of system and loss of other crucial messages.
+On Fri, Feb 16, 2024 at 1:02=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Thu, Feb 15, 2024 at 5:27=E2=80=AFPM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Thu, Feb 15, 2024 at 08:22:44PM -0500, Pasha Tatashin wrote:
+> > > On Thu, Feb 15, 2024 at 8:00=E2=80=AFPM Kent Overstreet
+> > > <kent.overstreet@linux.dev> wrote:
+> > > >
+> > > > On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
+> > > > > On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@goo=
+gle.com> wrote:
+> > > > >
+> > > > > > +Example output.
+> > > > > > +
+> > > > > > +::
+> > > > > > +
+> > > > > > +    > cat /proc/allocinfo
+> > > > > > +
+> > > > > > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_pa=
+ge
+> > > > > > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:=
+_kmalloc_order
+> > > > > > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:a=
+lloc_slab_obj_exts
+> > > > > > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:a=
+lloc_pages_exact
+> > > > > > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtab=
+le func:__pte_alloc_one
+> > > > >
+> > > > > I don't really like the fancy MiB stuff.  Wouldn't it be better t=
+o just
+> > > > > present the amount of memory in plain old bytes, so people can us=
+e sort
+> > > > > -n on it?
+> > > >
+> > > > They can use sort -h on it; the string_get_size() patch was specifi=
+cally
+> > > > so that we could make the output compatible with sort -h
+> > > >
+> > > > > And it's easier to tell big-from-small at a glance because
+> > > > > big has more digits.
+> > > > >
+> > > > > Also, the first thing any sort of downstream processing of this d=
+ata is
+> > > > > going to have to do is to convert the fancified output back into
+> > > > > plain-old-bytes.  So why not just emit plain-old-bytes?
+> > > > >
+> > > > > If someone wants the fancy output (and nobody does) then that can=
+ be
+> > > > > done in userspace.
+> > > >
+> > > > I like simpler, more discoverable tools; e.g. we've got a bunch of
+> > > > interesting stuff in scripts/ but it doesn't get used nearly as muc=
+h -
+> > > > not as accessible as cat'ing a file, definitely not going to be
+> > > > installed by default.
+> > >
+> > > I also prefer plain bytes instead of MiB. A driver developer that
+> > > wants to verify up-to the byte allocations for a new data structure
+> > > that they added is going to be disappointed by the rounded MiB
+> > > numbers.
+> >
+> > That's a fair point.
+> >
+> > > The data contained in this file is not consumable without at least
+> > > "sort -h -r", so why not just output bytes instead?
+> > >
+> > > There is /proc/slabinfo  and there is a slabtop tool.
+> > > For raw /proc/allocinfo we can create an alloctop tool that would
+> > > parse, sort and show data in human readable format based on various
+> > > criteria.
+> > >
+> > > We should also add at the top of this file "allocinfo - version: 1.0"=
+,
+> > > to allow future extensions (i.e. column for proc name).
+> >
+> > How would we feel about exposing two different versions in /proc? It
+> > should be a pretty minimal addition to .text.
+> >
+> > Personally, I hate trying to count long strings digits by eyeball...
+>
+> Maybe something like this work for everyone then?:
 
-Hi Praveen,
+s/work/would work
 
-The patch looks good to me. But would you please help explain why these
-slave_info() are chosen under net_ratelimit?
+making too many mistakes. time for bed...
 
-Thanks
-Hangbin
-> 
-> v2: Use exising net_ratelimit() instead of introducing new rate-limit
-> parameter.
-> 
-> Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-> ---
->  drivers/net/bonding/bond_main.c | 36 ++++++++++++++++++++----------------
->  1 file changed, 20 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 4e0600c..e92eba1 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -2610,12 +2610,13 @@ static int bond_miimon_inspect(struct bonding *bond)
->  			commit++;
->  			slave->delay = bond->params.downdelay;
->  			if (slave->delay) {
-> -				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
-> -					   (BOND_MODE(bond) ==
-> -					    BOND_MODE_ACTIVEBACKUP) ?
-> -					    (bond_is_active_slave(slave) ?
-> -					     "active " : "backup ") : "",
-> -					   bond->params.downdelay * bond->params.miimon);
-> +				if (net_ratelimit())
-> +					slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
-> +						   (BOND_MODE(bond) ==
-> +						   BOND_MODE_ACTIVEBACKUP) ?
-> +						   (bond_is_active_slave(slave) ?
-> +						   "active " : "backup ") : "",
-> +						   bond->params.downdelay * bond->params.miimon);
->  			}
->  			fallthrough;
->  		case BOND_LINK_FAIL:
-> @@ -2623,9 +2624,10 @@ static int bond_miimon_inspect(struct bonding *bond)
->  				/* recovered before downdelay expired */
->  				bond_propose_link_state(slave, BOND_LINK_UP);
->  				slave->last_link_up = jiffies;
-> -				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
-> -					   (bond->params.downdelay - slave->delay) *
-> -					   bond->params.miimon);
-> +				if (net_ratelimit())
-> +					slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
-> +						   (bond->params.downdelay - slave->delay) *
-> +						   bond->params.miimon);
->  				commit++;
->  				continue;
->  			}
-> @@ -2648,18 +2650,20 @@ static int bond_miimon_inspect(struct bonding *bond)
->  			slave->delay = bond->params.updelay;
->  
->  			if (slave->delay) {
-> -				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
-> -					   ignore_updelay ? 0 :
-> -					   bond->params.updelay *
-> -					   bond->params.miimon);
-> +				if (net_ratelimit())
-> +					slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
-> +						   ignore_updelay ? 0 :
-> +						   bond->params.updelay *
-> +						   bond->params.miimon);
->  			}
->  			fallthrough;
->  		case BOND_LINK_BACK:
->  			if (!link_state) {
->  				bond_propose_link_state(slave, BOND_LINK_DOWN);
-> -				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
-> -					   (bond->params.updelay - slave->delay) *
-> -					   bond->params.miimon);
-> +				if (net_ratelimit())
-> +					slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
-> +						   (bond->params.updelay - slave->delay) *
-> +						   bond->params.miimon);
->  				commit++;
->  				continue;
->  			}
-> -- 
-> 1.8.3.1
-> 
+>
+> 160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
 
