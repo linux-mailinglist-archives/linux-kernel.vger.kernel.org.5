@@ -1,232 +1,155 @@
-Return-Path: <linux-kernel+bounces-68895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E8E85819B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:43:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6DF85819C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B375EB26353
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D6C288BA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D8812FB18;
-	Fri, 16 Feb 2024 15:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4BF12FB1D;
+	Fri, 16 Feb 2024 15:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YlNB43Kt"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="ZuspdC6U";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CdpuErcc"
+Received: from fhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E825E5337E;
-	Fri, 16 Feb 2024 15:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A5D12F58E
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708098053; cv=none; b=iinvObBpRkoyfksi+uHSwjaehELwn1XrEICCiL8cl42z5OwPtPINSxTlZ76K5X5wfgpm2wmAvEJ6J8iVxTIY8Ql5mKQxqwI6DLGsTudki/xO1FB74yAaR1VLdx/lRB6n6ewErTF+wCFitJj3NYd1w0DX1o3iYeyYI7B2rLMgxMk=
+	t=1708098127; cv=none; b=BFZJ/lw+fqGH0gx63+Q/O48JCZeWpYfmeCopxLLRgSeY1cwO4EQi1HkIQfTYEQ9s1rsBqOWwTkDHiSuEwhHhDYasQ6kEz6l2tRQME5mi0Hzyg//PdSyYWJ6HXP3nmwruUACAG6vfD5MD9Nsx0+zGNACBbEmHMxZwlavrY2YjRl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708098053; c=relaxed/simple;
-	bh=tE2GWatWT8oP2ZQhkomyvIyTdSsLPe+MKsFnCtD5OJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=s6qinD2+X7su2gmRYkCAg91eOGfn66izY6OG/NkIdkpZcqC4QjGzzYn3Qs+eY2/z6mOSTUv6+FNLd44T7QIFrASmXrgzfSCIkj5BmZrqsvdxKtAphVDBrjjaQAaNkQX0avyK1k91lb049+kN19l3Kho8G6D2SvzEnPVZlYG72O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YlNB43Kt; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GDZ8Bd031229;
-	Fri, 16 Feb 2024 15:40:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=kahaCjahMWDF4y8yM8htOlv1FY4glQMHTdWBNdyHkcY=; b=Yl
-	NB43Kty1huwQOtg+YPiq+vqus3647/GsmwEiqhSDmK0UJQwtrkkpqjgLDhWpBoME
-	5nu0VpVJPYl66kvhxE8DyVLS4xMHg5isfvLp00aiXO3Lz13If/gpLBYs7+RBvTWq
-	8m+6W+eBoBEpTmZDtQ0MMuI/rxJkO34CYQTb7rc9Z4EuMS309LIzHLRw/7EUJQv1
-	JJVhe8XtX86U2L1qomwhOCXKDkpOH5wjFYn2Gf+NvDiAKoQpETKQZx+fb4vWGg73
-	iQ3MC5lYQRUexIA9GFlv0ttenIr03UIV0HeilVZ93s2kBKiVPBPsavcuDJqHix47
-	zLYC8kTivDmMVTi88v/Q==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9wxf1ekg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 15:40:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GFeejx005904
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 15:40:40 GMT
-Received: from [10.216.32.60] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 07:40:33 -0800
-Message-ID: <17c6b3df-2acd-45e2-8167-02c629b1e972@quicinc.com>
-Date: Fri, 16 Feb 2024 21:10:28 +0530
+	s=arc-20240116; t=1708098127; c=relaxed/simple;
+	bh=YwWFU5uOs8zzSn6GrqtN3NGSiqYfpg74Nr/4T8Vgy6Y=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=WI0QXLAgCq2B84jApXbp4WGWCmJj4OFjVPFUBbPbhj//NpXAbMW/giUA4f2+K31zYjTOaM5EEg0IFkFTscDG8B+KCvHYTlK6bUWtlsKJ61tA0nlSJ3ZdfnRcvhcfM7fQIiJ+wCgfiG/VlDLM0Be/vSs0wWbc6XmZo8gb3Cneaq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=ZuspdC6U; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CdpuErcc; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 7E5CD11400B1;
+	Fri, 16 Feb 2024 10:42:04 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute3.internal (MEProxy); Fri, 16 Feb 2024 10:42:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1708098124; x=1708184524; bh=sUxjDTmnmG
+	gAl2CwI/6tSDR1ZH3j5RSpbJn+uyf5Z1k=; b=ZuspdC6ULYqPpjDbug1L1BO9M0
+	y97ssMlKCIs63CQCwhr7wnd5YtxtUV5MDcZdwuUTuvw62Lg3NEpN5I50Da+tC4X8
+	UGXgVLPqbVge/IwHjjy1ltXTV0/DbFobkc/iVwdZMFypCv/xF8dtJPLNo1HKn7u9
+	CT3doUkUzeRBq/k+lr+URzGuNShi8soKUXlliAynBMIvZER407o60B3UWjzG//uG
+	yVu8Q9FhQK+w/BUaEQd10mLGxUekO4hHXDdmzMqkMeR2cY/ORBvUTCJJkB4Qtl4V
+	mxonLR8kJ9gHiJCJ44PI+Oel1r13EXLuI7Rv+cO9ffQe9p4qNKpUWxksIHCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708098124; x=1708184524; bh=sUxjDTmnmGgAl2CwI/6tSDR1ZH3j
+	5RSpbJn+uyf5Z1k=; b=CdpuErccI8WCZEtHbmtA5kRBEv8/H16Hf7+IkEJhaKc7
+	ZU91a6PSs2lf/fF6cXSWTw2lvLLLrojjDpmdVuBQPKFbEw7DKtWPn8s+7DNQ62+0
+	HLvUP+4Q1c2MXZXSM7PbtSwB/DFxebztDvivGujZ0GZzOUcGU2mfC7upnBJmK32r
+	BSAF+GL+LXdg/cDOD7dupq6mMphym3gC64NA0NYwnGpisC0TAFfaih9/0qQI0XCk
+	icNL9VHjkxvey+kPMxh/SQvMvB2yXrdpoIAeiQjTSqnskLh4EYSvh2ClKajwmDjG
+	+UMZO4gUJoQ44NWxfIwZ+xeCRbaKkVGy2hcMQjxPbg==
+X-ME-Sender: <xms:TILPZVue59Wm_fswr80hlYOic2knwPbIh6T7V21-8zD0iCWafZmA5A>
+    <xme:TILPZedKvlkWmyIH0NC8cKxPtc3Ko4BS1luEp5TXeWpGw8yB5ufUR_1GZK2y7iLCk
+    lFNYrWt3bWIPmM3eA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvgdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfuthgv
+    fhgrnhcuqfdktfgvrghrfdcuoehsohhrvggrrhesfhgrshhtmhgrihhlrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeejueehgedtueetgefhheejjeeigffhieefjeehuddvueegtdfh
+    heevgfeggfektdenucffohhmrghinhepihhnfhhrrgguvggrugdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsohhrvggrrhesfhgr
+    shhtmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:TILPZYzGpYN5iZmIF7Xz88mqp6ndTTW2vN-S_wJLztyZTrOk73bXjw>
+    <xmx:TILPZcO96rMeOMp02vucsrpn5orH_glWnR7TarDV6rcPxqlnKmvLOQ>
+    <xmx:TILPZV_Cd8cwXYOoufHJsKUXqQcypAQQitJj4CWwfnA_zJetQjGhSw>
+    <xmx:TILPZYkzXE5hWx4TEuyAIpNdZCvTwW3up4DuMC0fFNHdEDBkod27rA>
+Feedback-ID: i84414492:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 36A631700096; Fri, 16 Feb 2024 10:42:04 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: ipq9574: Add SPI nand support
-Content-Language: en-US
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <broonie@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-CC: <quic_srichara@quicinc.com>, <quic_varada@quicinc.com>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-5-quic_mdalam@quicinc.com>
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20240215134856.1313239-5-quic_mdalam@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3KcsEsejO-HkA8HjskYi5QH3C9VhFz_j
-X-Proofpoint-ORIG-GUID: 3KcsEsejO-HkA8HjskYi5QH3C9VhFz_j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_15,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 clxscore=1015
- impostorscore=0 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160125
+Message-Id: <4931a861-551f-43b7-bc9d-a48810b686e5@app.fastmail.com>
+In-Reply-To: <20240215-icy-oblong-67adb68a4074@spud>
+References: <20240213033744.4069020-1-samuel.holland@sifive.com>
+ <20240213033744.4069020-3-samuel.holland@sifive.com>
+ <20240213-88c9d65fd2b6465fc4793f56@orel>
+ <20240215-icy-oblong-67adb68a4074@spud>
+Date: Fri, 16 Feb 2024 10:41:43 -0500
+From: "Stefan O'Rear" <sorear@fastmail.com>
+To: "Conor Dooley" <conor@kernel.org>,
+ "Andrew Jones" <ajones@ventanamicro.com>
+Cc: "Samuel Holland" <samuel.holland@sifive.com>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -fixes v2 2/4] dt-bindings: riscv: Add ratified privileged ISA
+ versions
+Content-Type: text/plain
 
+On Thu, Feb 15, 2024, at 8:14 AM, Conor Dooley wrote:
+> On Tue, Feb 13, 2024 at 03:25:44PM +0100, Andrew Jones wrote:
+>> On Mon, Feb 12, 2024 at 07:37:33PM -0800, Samuel Holland wrote:
+>
+>> Note, QEMU doesn't add these extensions to the ISA string yet, but I think
+>> it should start, particularly the profile CPU types which should ensure
+>> all the profile's mandatory extensions are added to the ISA string in
+>> order to avoid any confusion.
+>
+> Something to note about these "mandatory extensions" that are names for
+> things we already assumed were present - they're utterly useless and any
+> DT property should note their absence, not presence, in order to be of any
+> use. Anything parsing a DT cannot see "svbare" and gain any new
+> information, since the lack of it could be something that predates the
+> definition of "svbare" or something without "svbare".
 
+This is consistent with the way we handle other extensions that are assumed
+at compile time - if you build with RISCV_ISA_C=y, omitting "c" from
+riscv,isa-extensions will not cause an error.
 
-On 2/15/2024 7:18 PM, Md Sadre Alam wrote:
-> Add SPI NAND support for ipq9574 SoC.
-> 
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> ---
->   .../boot/dts/qcom/ipq9574-rdp-common.dtsi     | 43 +++++++++++++++++++
->   arch/arm64/boot/dts/qcom/ipq9574.dtsi         | 27 ++++++++++++
->   2 files changed, 70 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> index 91e104b0f865..5b54a027fa5d 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
-> @@ -139,6 +139,49 @@ gpio_leds_default: gpio-leds-default-state {
->   		drive-strength = <8>;
->   		bias-pull-up;
->   	};
-> +
-> +	qpic_snand_default_state: qpic-snand-default-state {
-> +		clock-pins {
-> +			pins = "gpio5";
-> +			function = "qspi_clk";
-> +			drive-strength = <8>;
-> +			bias-disable;
-> +		};
-> +
-> +		cs-pins {
-> +			pins = "gpio4";
-> +			function = "qspi_cs";
-> +			drive-strength = <8>;
-> +			bias-disable;
-> +		};
-> +
-> +		data-pins {
-> +			pins = "gpio0", "gpio1", "gpio2";
+It's also the case for any extension whatsoever that if that extension is
+not present in the device tree, no information is provided.
 
+It might be useful for diagnostic purposes to have a "binding version"
+somewhere to indicate which extensions _would_ be documented; not sure if
+there is already a mechanism for this.  For extensions that the kernel has
+a hard requirement on like svbare, see above.
 
-As per the pinctrl driver[1], there are 4 data pins.
+> Shit, but that's exactly why I deprecated riscv,isa.
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pinctrl/qcom/pinctrl-ipq9574.c#n296
+If zicsr and zifencei were broken out from i today, there would not be a
+problem, because i as specified by riscv,isa-extensions would refer to a
+specific version that included zicsr and zifencei with a new name for the
+new, smaller version of i.
 
+It's not working here because privileged architecture versions aren't (yet)
+included in riscv,isa-extensions.
 
-> +			function = "qspi_data";
-> +			drive-strength = <8>;
-> +			bias-disable;
-> +		};
-> +	};
-> +};
-> +
-> +&qpic_bam {
-> +	status = "okay";
-> +};
-> +
-> +&qpic_nand {
-> +	pinctrl-0 = <&qpic_snand_default_state>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +
-> +	flash@0 {
-> +		compatible = "spi-nand";
-> +		reg = <0>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		nand-ecc-engine = <&qpic_nand>;
-> +		nand-ecc-strength = <4>;
-> +		nand-ecc-step-size = <512>;
-> +	};
->   };
->   
->   &usb_0_dwc3 {
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> index 7f2e5cbf3bbb..d963dd2035dd 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> @@ -319,6 +319,33 @@ tcsr: syscon@1937000 {
->   			reg = <0x01937000 0x21000>;
->   		};
->   
-> +		qpic_bam: dma-controller@7984000 {
+-s
 
-
-Nodes should be ordered by unit address in ascending order. So please 
-move these nodes to the right place.
-
-
-> +			compatible = "qcom,bam-v1.7.0";
-> +			reg = <0x7984000 0x1c000>;
-
-
-address should be padded to 8 bytes.
-
-> +			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&gcc GCC_QPIC_AHB_CLK>;
-> +			clock-names = "bam_clk";
-> +			#dma-cells = <1>;
-> +			qcom,ee = <0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		qpic_nand: spi@79b0000 {
-> +			compatible = "qcom,ipq9574-snand";
-> +			reg = <0x79b0000 0x10000>;
-
-
-Ditto..
-
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			clocks = <&gcc GCC_QPIC_CLK>,
-> +			<&gcc GCC_QPIC_AHB_CLK>,
-> +			<&gcc GCC_QPIC_IO_MACRO_CLK>;
-
-
-Fix the alignment.
-
-> +			clock-names = "core", "aon", "iom";
-> +			dmas = <&qpic_bam 0>,
-> +				<&qpic_bam 1>,
-> +				<&qpic_bam 2>;
-
-
-Here as well.
-
-
-> +			dma-names = "tx", "rx", "cmd";
-> +			status = "disabled";
-> +		};
-> +
->   		sdhc_1: mmc@7804000 {
->   			compatible = "qcom,ipq9574-sdhci", "qcom,sdhci-msm-v5";
->   			reg = <0x07804000 0x1000>,
+> Cheers,
+> Conor.
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> Attachments:
+> * signature.asc
 
