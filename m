@@ -1,145 +1,163 @@
-Return-Path: <linux-kernel+bounces-69236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1778858616
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:18:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65AA858618
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60931C214F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:18:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34957B22E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5753D137C2A;
-	Fri, 16 Feb 2024 19:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FDA136662;
+	Fri, 16 Feb 2024 19:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gAqdyzcJ"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="YAYd1qKQ"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A28135A73;
-	Fri, 16 Feb 2024 19:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F63135A51
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708111127; cv=none; b=SpaayeapfYX+pZICbO/pVXZ5YEG31sz8bnfCFo9m0n4xg30xp1riNvKebyJXzk9gfzxCRara75PK6xjuZ/r7H67gIKKwIO53DUCr91kjwtBXBN/NPHac55O1p9KpWN3p9ivVCrJWuRpIYMqmYT7vYt6IKwYdzBWVZDNNsTeXS84=
+	t=1708111250; cv=none; b=K6xFEyn1xXp+MbJaQlfaZq79tJxIQ6an7Xybe+7Ir+dHJXUiVqlpkCIYrWV1mArgzpPtyIaJwOcFLP1xekgAyTemZgZA12pIO1gKNHd8uG1CH01YaD0vnWVjRwX6sPuvApT9pZQftx0TRaizw8ZXt/aWFQdcwvyQ8+sXwR08qiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708111127; c=relaxed/simple;
-	bh=2Jhhh9ICggAF5bLuB5D2MLLnslAhKlyRqkv8sny2Ytg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UR2zWfXXJ4yqAJon/DqROw/UmyEDb4UYCbeyx/ySaCeatfJ7I0tZA2zBW/fZKRrb15e1f+FhUT8JceA3hCXAZq93U6yNo4uKnCKezQFEqCXAVPtGF091GQuC2kMzppjqjSuLd6eAcdEqVfsDECy+pg7fQmSNjHgHbiX7E+jLELc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gAqdyzcJ; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41GIvF22022224;
-	Fri, 16 Feb 2024 19:18:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=wQ7cNoLiknZDmwS2Em7PNRkOjFwYxd3dHjovbtNrxUQ=;
- b=gAqdyzcJY9lqgK5tNxEFFWSf7lLIcYj1ZKTPdvdYdbUE85elYvPEB3rIjvTxPsm6FGgb
- vY1RU23R8jfPhAj9sufnA60seoix47kRDitmMp92sk0Bf+/vTGlRhF0U8vys3jS+rGGt
- e7rGfNwDIk2jY/gaj1uT8KiymPI0rP/9DYbSJCIxe7B5ttQiLx0zZkTeulJSd0L1c2MW
- 2GmfrdSclQbnLexqzrW0ufHvunX/PY56uBa96yGS+sXNJMc+VTNRj3StcAad3EmHRSQA
- Ka3vdJbHu72mCrFv9lzMw3h2ho+7TNSymhXGp2rjN7q1+E2FtoC7WUSlurOyPTu9dQvU UA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wadecgedg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 19:18:34 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41GJFltf016203;
-	Fri, 16 Feb 2024 19:18:33 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6myn56v2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 19:18:33 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41GJIUka18678328
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 19:18:33 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8EB0A58061;
-	Fri, 16 Feb 2024 19:18:30 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4215158055;
-	Fri, 16 Feb 2024 19:18:30 +0000 (GMT)
-Received: from [9.61.14.18] (unknown [9.61.14.18])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Feb 2024 19:18:30 +0000 (GMT)
-Message-ID: <18f09f37-8a95-4166-9a2c-5ab094589781@linux.ibm.com>
-Date: Fri, 16 Feb 2024 13:18:30 -0600
+	s=arc-20240116; t=1708111250; c=relaxed/simple;
+	bh=hzaxoakXROKnRJ1C4f1sq6rI3UoGJj8IleqSmH8R1vE=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=qSZUFx3XXvtmEdConTyZEgSanng3YV8L6t0HfkdjX4eEvDw/w2K3Lcfaz+FvvRfps/tDZmdWb4sV9u+/LRPcUiBIC4KlA+y3xQ7j9W51FQCj9Nj44dqkJ3ss/XhwnrpAJbB9hDVv/bExnzD3bAEiM81CAE1kp1qJB6LJG3hwEfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YAYd1qKQ; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-602dae507caso39472497b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:20:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708111248; x=1708716048; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=meszDWVr+WK9vZcLqk0e2fu64K4eX/Xq5d5kxnUSTVw=;
+        b=YAYd1qKQmi3b7OIzroA6kRwD+8y3mztD5alVgQredwbg5Az5UIRQUXbsTOeILyE9zq
+         eySGpcKb2XSUEE1ME1/YpgxnfqahhFk8b/Sg2sv3St6a6wd3qOO0gSqgJJzKzxPA/9eB
+         C81p4DX+SREo9hsQFpuWV+GwETBcc8d0zxY3B73Featt7pcEaZeK6Nw8FUFvfX9lSq2l
+         JJT5siq9qBbXDP9DCaLXWTww2cQ/OXkb16RRgCQZBCKFbvLEGo/0xixb9SpP3y7oadDT
+         Dggdhs080S5qCskISolpYDbMoI2Aq6VafewYK0LjfEsv3lPtbGKlOZJ2MMmYbVOBfmsR
+         yFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708111248; x=1708716048;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=meszDWVr+WK9vZcLqk0e2fu64K4eX/Xq5d5kxnUSTVw=;
+        b=X5rEbvjjtslfOx5SqIkAo71rsch5UO6XuGaUmfdJ7eTA91bRp3xrqbCfwBKwt+mk6t
+         VTF6Y8+qdPnJGEn6agxDBcXJs2WY7ECTuOCzPP9UD8qmzZ1/KVBlfWLiuytmdwKcda3V
+         cV1b3/C/KSUpUQ8mDNHiY7lASKb0ob/Roe8qIdEReXY8vACa8UZLTpWtXy+kZepeDY/C
+         aGcI78Q9thb8VpeVd/FPu0YWe37jOgP8PM257+3aVVBDNlxh9c68y4pwe8t+XLLJreMP
+         JTIJrDGOACU5UDUasCQ/D9JhMfcJg03xrq2vx3wdRKIEjdTw7bvpw+qtAd2gqANrrjib
+         c/5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUK5dkAXnDlLLf2U9Dfq9VOK6FTY3L4Qyc2YofzjrDAXjScqnRggOKdTMDzl12JwveAnY6x6v3Vlg62A04bIovv6wOYSxzmgEHAVFRD
+X-Gm-Message-State: AOJu0YxHWgx38VXBKAqFrQHh2HVX8ZkM4hO69QkSH28dYrdx1gtMkvVo
+	YkSI2/+lYLmHNbRNrEsqodeW3EnXDsT7zHmgyrg0QY4BQoN3MwcdNypv3ZT0Voktv1shfNyOKQr
+	/4rElkw==
+X-Google-Smtp-Source: AGHT+IFd5YfFbZwtV7cT/VlHdN9K2fe2lBmafMny/iGIIW5e9gwseuiwlWljLcHbG6jW1vGdn0ybSSOZRMfV
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:4b5c:352:4272:e34e])
+ (user=irogers job=sendgmr) by 2002:a0d:cc4a:0:b0:5ff:4789:a406 with SMTP id
+ o71-20020a0dcc4a000000b005ff4789a406mr1224133ywd.1.1708111248392; Fri, 16 Feb
+ 2024 11:20:48 -0800 (PST)
+Date: Fri, 16 Feb 2024 11:20:44 -0800
+Message-Id: <20240216192044.119897-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/33] fsi: aspeed: Add AST2700 support
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        andi.shyti@kernel.org, alistair@popple.id.au, joel@jms.id.au,
-        jk@ozlabs.org, sboyd@kernel.org, mturquette@baylibre.com,
-        robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-References: <20240215220759.976998-1-eajames@linux.ibm.com>
- <20240215220759.976998-11-eajames@linux.ibm.com>
- <3600c556-ccb3-40a8-9c53-a718a97468ae@linaro.org>
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <3600c556-ccb3-40a8-9c53-a718a97468ae@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lN1N6RTLy6D58WBsPeYXE0nRw7yPH5_I
-X-Proofpoint-ORIG-GUID: lN1N6RTLy6D58WBsPeYXE0nRw7yPH5_I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_18,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- phishscore=0 clxscore=1015 adultscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402160150
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Subject: [PATCH v2] perf list: For metricgroup only list include description
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+If perf list is invoked with 'metricgroups' include the description
+unless it is invoked with flags to exclude it. Make the description of
+metricgroup dumping dependent on the desc flag in print_state as with
+metrics.
 
-On 2/16/24 02:09, Krzysztof Kozlowski wrote:
-> On 15/02/2024 23:07, Eddie James wrote:
->> AST2700 requires a few bits set differently in the OPB retry
->> counter register, so add some match data and set the register
->> accordingly.
->>
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> ---
->>   drivers/fsi/fsi-master-aspeed.c | 28 +++++++++++++++++++++++++---
->
->> +
->>   static const struct of_device_id fsi_master_aspeed_match[] = {
->> -	{ .compatible = "aspeed,ast2600-fsi-master" },
->> +	{
->> +		.compatible = "aspeed,ast2600-fsi-master",
->> +		.data = &fsi_master_ast2600_data,
->> +	},
->> +	{
->> +		.compatible = "aspeed,ast2700-fsi-master",
-> Undocumented. Really, you do not have checkpatch in IBM?
->
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
+Before:
+```
+$ perf list metricgroups
+List of pre-defined events (to be used in -e or -M):
 
+Metric Groups:
 
-I ran checkpatch. There are several FSI drivers with undocumented 
-compatible strings, and the Aspeed master documentation isn't in yaml 
-format, so that would require an update too. Therefore I ignored the 
-warning - my mistake. I will document it in v2.
+Backend
+Bad
+BadSpec
+..
+```
 
+After:
+```
+$ perf list metricgroups
+List of pre-defined events (to be used in -e or -M):
 
->
->
-> Best regards,
-> Krzysztof
->
+Metric Groups:
+
+Backend [Grouping from Top-down Microarchitecture Analysis Metrics spreadsheet]
+Bad [Grouping from Top-down Microarchitecture Analysis Metrics spreadsheet]
+BadSpec
+..
+```
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+v2 rebases on top of perf-tools-next patch:
+79bacb6ad73c perf list: Add output file option
+https://lore.kernel.org/r/20240124043015.1388867-3-irogers@google.com
+---
+ tools/perf/builtin-list.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+index e27a1b1288c2..02bf608d585e 100644
+--- a/tools/perf/builtin-list.c
++++ b/tools/perf/builtin-list.c
+@@ -208,17 +208,24 @@ static void default_print_metric(void *ps,
+ 	if (!print_state->last_metricgroups ||
+ 	    strcmp(print_state->last_metricgroups, group ?: "")) {
+ 		if (group && print_state->metricgroups) {
+-			if (print_state->name_only)
++			if (print_state->name_only) {
+ 				fprintf(fp, "%s ", group);
+-			else if (print_state->metrics) {
+-				const char *gdesc = describe_metricgroup(group);
++			} else {
++				const char *gdesc = print_state->desc
++					? describe_metricgroup(group)
++					: NULL;
++				const char *print_colon = "";
++
++				if (print_state->metrics) {
++					print_colon = ":";
++					fputc('\n', fp);
++				}
+ 
+ 				if (gdesc)
+-					fprintf(fp, "\n%s: [%s]\n", group, gdesc);
++					fprintf(fp, "%s%s [%s]\n", group, print_colon, gdesc);
+ 				else
+-					fprintf(fp, "\n%s:\n", group);
+-			} else
+-				fprintf(fp, "%s\n", group);
++					fprintf(fp, "%s%s\n", group, print_colon);
++			}
+ 		}
+ 		zfree(&print_state->last_metricgroups);
+ 		print_state->last_metricgroups = strdup(group ?: "");
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
