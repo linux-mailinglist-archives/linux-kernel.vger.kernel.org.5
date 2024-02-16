@@ -1,49 +1,71 @@
-Return-Path: <linux-kernel+bounces-68465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25FA857A93
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:46:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8B4857A97
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:47:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431AA1F24ABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:46:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4FD6B217A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9D7535BE;
-	Fri, 16 Feb 2024 10:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5471E535AA;
+	Fri, 16 Feb 2024 10:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XYQcs0ay"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="paic9VLj"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E574EB46;
-	Fri, 16 Feb 2024 10:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B339537F6
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708080408; cv=none; b=qqzfmydUhTugs5u79gnxJzz4LFVz7aGkH5sqHhVJW7oHGLV+xZtPHZ4gzr61H330Hj+Nx6WkwH72TZLIkZ4ESWsgCjZMwia85XfT8NSdhOu4iv7pk94FNXnJMpl20n4OBz5qapUs2UZCMO3+fUopLWsRso3d7DKpc7ltUaWnbOc=
+	t=1708080415; cv=none; b=BGla8h4pRP/c6sagSZX2D1P2gGmF6UkrEYLVyi9aqYGX2gG8nf1WKlyP/uudhQjEuQg43I6ZKOh9sQsNxsIugw/Pzy+7SU7KxpV5UdH98ShUIwBb837iixuQxNDcwvEbmG8c2HjCBHzK+LFx6V2DHRPo189tUU9LhxxtJ+Qm9m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708080408; c=relaxed/simple;
-	bh=zO/aYULRDd5g66VH3wDZFlrX3sUYi1N5HOHVoHCRZV4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=h8QYr2I2RQXXiBnfA0OqiMVKhnz37+QjX87vDxktpowNB1+j/k/SHMGXTw5iscL1dPDT3A9wGgSllMNJeb6jJxF2YsaNueBdoyzvSDBN/1413ulvOHSyxVB0xtZ0GQeDfQGIRTCjVt1iobSUQTpZ61BI3f7cwOaf37LtRKXYJ+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XYQcs0ay; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DBFFB40010;
-	Fri, 16 Feb 2024 10:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708080398;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pOFZYp9L0rsUmowBF6zr/rLZrw3lql63KQCsfDEtWYw=;
-	b=XYQcs0ayxwkHosheDGS+xMf4VR7v/mXreOiEjH5x5j54nNfito6uMSJ3ZQsQ1GFcOHosrk
-	sk56mZqniap2andZ4ef8ZJW6MczWT3QdoADxEcPswfadR0K2fhCmXm2jewctoz3F8q7ofP
-	+5FM0XeU/uuT84AM+aS3UG5xif8zvLwyVtZ/Rfud6akypxVtvTNHU7zw1N/ENVeBozcljT
-	YElJRis/88Ap6dTbQi8/jp+cw1YwaIMUSmbE5DVKzh/EZOV6o6//X6SE2tMK3iATbi5yej
-	lKHE6RtCfgvCRny0FxT2A9QbxLRhalrdHpYliiK/TZC5dIpuYvJFgdgd4l0/bw==
+	s=arc-20240116; t=1708080415; c=relaxed/simple;
+	bh=/Fv7pZduc9Bvxjs3c+I5eHvPrfvb1kDFVxbm5FfqWTc=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=GPg5SdZcJdkdSign7VXGskcsZKrVH9gv1W0eS+bg/pTzedxi/3tDtzJi+/whzEDRXfEotUfa4bjsXrkguRZvCkyqlLoPV2Pz5S4P0OUcOsooQ2wIMFRrGFeeOoJ6h1o9u/YtiumxP8zps4mCuv2Mh4pz97bRZw6J3qx9Gh8M8iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=paic9VLj; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2a17f3217aso238816266b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:46:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1708080410; x=1708685210; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZN902PZ33RtjgjeWH2GYWtC877xiVrHyazftcFvMCYA=;
+        b=paic9VLj5iB9jqOQ7uUKubylKN1a13uNYqBxMszXFySy6AwDGoraMfpiKIdSn/tJbx
+         AtFXy2km0WaFV+IGqjfMCFzgiGCH9fLImFZ53UPYkitkoayNT+DYjRp5QUP2CZZqK4vM
+         HfkobiS62CI/VmoeUimZCJW7yfKnwmhntyyWcHrFZ9Nz2c3ASXEXiiCAC2kdRNA/0EZJ
+         cj60P7QOFkr2TjNct+EnZaox2mw9Q5zUiqRSPZsnB3uUFYdbxEPnIwlzI4gaR/msZ1nE
+         NLqgixfq4ACI2xAFLTHsRgeqZJYM8xcZvInGgDOk6gRwgX3SaGgrcO6zSw5YC6RUGwG3
+         dHpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708080410; x=1708685210;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZN902PZ33RtjgjeWH2GYWtC877xiVrHyazftcFvMCYA=;
+        b=As+Sshkdks0+yezXtcwK43YTGtIT5GSF2Yx+/5b5teIrS/ZACAgVyx/UynXJVxxWc8
+         mVCReWXSnp7d6NXifImyBRw62NmAvxSUMpSELKY8P98oUAl7WzheXjKGJ874PfJgNibA
+         KSbDZf2Dj0BAMxtlW6iyH6mYATCH3fVEZll7kSNlp5MEiRlBc8bEZdWdw9IAZPhxF3dJ
+         MVzxdVMSYFW/CTSn4yAjDtc7HjyfAvCYql+mLcPURnn0+ZeL/fB5oOAcsOQBSZC+6EbH
+         arDnfFjWYmS32OLV89ZZb2BtdPHOz3khBfMOVYYHAbI1R+DnLd489QMTOdGxZ4ta03CK
+         aFQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUESyVfpA1vhXv9eCKtI14hYDaZ38K92wcwOOwWva3h7e7mvmOMn/MHhHEOul4yYJd66is799SX8nmmM5FwaiRezdOjffxSoi7TaRJT
+X-Gm-Message-State: AOJu0YyhoyiXRyuouIJK7I91KZCCLCQltAHrDw3A3xwLhlnsxXYOHrWE
+	ZLS7qXDq/NhQtgu/g9Tz7cITdvoh3z9vUTfudw6kbtjv0gwh+nsfCSK79VeLris=
+X-Google-Smtp-Source: AGHT+IG5rkARmaWUictA1Ft2Xt9RaqG2EvVFtFJRmC7NNAJ+R9vH+8s1KCC+Eq70YL/6ULgKJ1LJ7w==
+X-Received: by 2002:a17:906:3757:b0:a3d:9e6b:2776 with SMTP id e23-20020a170906375700b00a3d9e6b2776mr2966222ejc.17.1708080410468;
+        Fri, 16 Feb 2024 02:46:50 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id p17-20020a1709060e9100b00a3d11feb32esm1429131ejf.186.2024.02.16.02.46.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 02:46:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,110 +74,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Fri, 16 Feb 2024 11:46:36 +0100
-Message-Id: <CZ6FYTJD4L6Q.171I9ZOL1S965@bootlin.com>
-Subject: Re: [PATCH 19/23] gpio: nomadik: grab optional reset control and
- deassert it at probe
-Cc: <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-mips@vger.kernel.org>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Philipp Zabel" <p.zabel@pengutronix.de>, "Linus Walleij"
- <linus.walleij@linaro.org>, "Bartosz Golaszewski" <brgl@bgdev.pl>, "Rob
- Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+Date: Fri, 16 Feb 2024 11:46:49 +0100
+Message-Id: <CZ6FYZLGWT3K.ZBHYDQ7TDN4B@fairphone.com>
+Cc: "Andy Gross" <agross@kernel.org>, "Bjorn Andersson"
+ <andersson@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Thara
+ Gopinath" <thara.gopinath@gmail.com>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+ "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
  <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+ "Bhupesh Sharma" <bhupesh.sharma@linaro.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm6350: Add Crypto Engine
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Stephan Gerhold" <stephan@gerhold.net>
 X-Mailer: aerc 0.15.2
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
- <20240214-mbly-gpio-v1-19-f88c0ccf372b@bootlin.com>
- <d51dbac55d3677031bfab8bfe959f7b556b1c373.camel@pengutronix.de>
-In-Reply-To: <d51dbac55d3677031bfab8bfe959f7b556b1c373.camel@pengutronix.de>
-X-GND-Sasl: theo.lebrun@bootlin.com
+References: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
+ <20240105-sm6350-qce-v1-2-416e5c7319ac@fairphone.com>
+ <ZZguvdJTyVgfxm4D@gerhold.net>
+In-Reply-To: <ZZguvdJTyVgfxm4D@gerhold.net>
 
-Hello,
-
-On Thu Feb 15, 2024 at 11:19 AM CET, Philipp Zabel wrote:
-> On Mi, 2024-02-14 at 17:24 +0100, Th=C3=A9o Lebrun wrote:
-> > Fetch a reference to the optional shared reset control and deassert it
-> > if it exists.
+On Fri Jan 5, 2024 at 5:30 PM CET, Stephan Gerhold wrote:
+> On Fri, Jan 05, 2024 at 05:15:44PM +0100, Luca Weiss wrote:
+> > Add crypto engine (CE) and CE BAM related nodes and definitions for thi=
+s
+> > SoC.
 > >=20
-> > Optional because not all platforms that use this driver have a reset
-> > attached to the reset block. Shared because some platforms that use the
-> > reset (at least Mobileye EyeQ5) share the reset across banks.
+> > For reference:
 > >=20
-> > Do not keep a reference to the reset control as it is not needed
-> > afterwards; the driver does not handle suspend, does not use runtime PM
-> > and does not register a remove callback.
->
-> I suppose you don't care that the reset is only ever deasserted once
-> and never asserted again on this hardware, but for shared reset
-> controls the expectation is that deassert/assert calls are balanced:
->
-> https://docs.kernel.org/driver-api/reset.html?highlight=3Dbalanced#assert=
-ion-and-deassertion
->
-> So maybe this warrants a comment in the code. Or do you mean to
-> suppress unbind via suppress_bind_attrs to explain away any missing
-> cleanup?
-
-Those resets are shared only across GPIO banks which have no reason to
-be unbind-able. I'll add a comment and disable unbind.
-
-> > The operation is done in nmk_gpio_populate_chip(). This function is
-> > called by either gpio-nomadik or pinctrl-nomadik, whoever comes first.
-> > This is here for historic reasons and could probably be removed now; it
-> > seems gpio-ranges enforces the ordering to be pinctrl-first. It is not
-> > the topic of the present patch however.
+> >   [    2.297419] qcrypto 1dfa000.crypto: Crypto device found, version 5=
+5.1
 > >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 > > ---
-> >  drivers/gpio/gpio-nomadik.c | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
+> >  arch/arm64/boot/dts/qcom/sm6350.dtsi | 31 ++++++++++++++++++++++++++++=
++++
+> >  1 file changed, 31 insertions(+)
 > >=20
-> > diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
-> > index 21bb6d6363fc..b623c093b54d 100644
-> > --- a/drivers/gpio/gpio-nomadik.c
-> > +++ b/drivers/gpio/gpio-nomadik.c
-> > @@ -513,12 +513,14 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(stru=
-ct device_node *np,
-> >  {
-> >  	struct nmk_gpio_chip *nmk_chip;
-> >  	struct platform_device *gpio_pdev;
-> > +	struct reset_control *reset;
-> >  	struct gpio_chip *chip;
-> >  	struct resource *res;
-> >  	struct clk *clk;
-> >  	void __iomem *base;
-> >  	uintptr_t flags;
-> >  	u32 id, ngpio;
-> > +	int ret;
+> > diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts=
+/qcom/sm6350.dtsi
+> > index 8fd6f4d03490..516aadbb16bb 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > @@ -1212,6 +1212,37 @@ ufs_mem_phy_lanes: phy@1d87400 {
+> >  			};
+> >  		};
 > > =20
-> >  	gpio_pdev =3D of_find_device_by_node(np);
-> >  	if (!gpio_pdev) {
-> > @@ -576,6 +578,19 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struc=
-t device_node *np,
-> >  	clk_prepare(clk);
-> >  	nmk_chip->clk =3D clk;
-> > =20
-> > +	reset =3D devm_reset_control_get_optional_shared(&gpio_pdev->dev, NUL=
-L);
-> > +	if (IS_ERR(reset)) {
-> > +		dev_err(&pdev->dev, "failed getting reset control: %ld\n",
-> > +			PTR_ERR(reset));
-> > +		return ERR_CAST(reset);
+> > +		cryptobam: dma-controller@1dc4000 {
+> > +			compatible =3D "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
+> > +			reg =3D <0 0x01dc4000 0 0x24000>;
+> > +			interrupts =3D <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+> > +			#dma-cells =3D <1>;
+> > +			qcom,ee =3D <0>;
+> > +			qcom,controlled-remotely;
+> > +			num-channels =3D <16>;
+> > +			qcom,num-ees =3D <4>;
+> > +			iommus =3D <&apps_smmu 0x432 0x0000>,
+> > +				 <&apps_smmu 0x438 0x0001>,
+> > +				 <&apps_smmu 0x43f 0x0000>,
+> > +				 <&apps_smmu 0x426 0x0011>,
+> > +				 <&apps_smmu 0x436 0x0011>;
 >
-> Consider using dev_err_probe() here.
+> The last two lines look equivalent to me: 0x436 & ~0x0011 =3D 0x426.
 
-Makes sense, will do so for next revision.
+I don't understand the IOMMU SID + mask really, but I think I've seen
+somewhere before like here that TZ can be a bit picky with the SIDs?
 
-Thanks for the review Philipp,
+https://lore.kernel.org/linux-arm-msm/opqdrmyj3y64nqqqmakjydn5rkspizufyeavm=
+7ec7c7ufqz4wk@ey2a7bq3shfj/
+https://lore.kernel.org/linux-arm-msm/11b5db69-49f5-4d7b-81c9-687d66a5cb0d@=
+linaro.org/
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I don't quite want to risk having some obscure use case breaking because
+we cleaned up the dts ;)
+
+But if you're more sure than me that it won't break, let me know!
+
+>
+> It's also a bit weird that the mask has one more digit than the stream
+> ID. And ordered numerically (by stream ID, first number) it would be a
+> bit easier to read. :-)
+
+Sorting them is no problem, can do that for v2.
+
+>
+> Thanks,
+> Stephan
+
 
