@@ -1,40 +1,39 @@
-Return-Path: <linux-kernel+bounces-69356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF7D8587EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:21:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594308587D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F18CB2BF10
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:17:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6FC1C23313
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9490145FEF;
-	Fri, 16 Feb 2024 21:16:57 +0000 (UTC)
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EAFE146904;
+	Fri, 16 Feb 2024 21:16:58 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BC41384A6;
-	Fri, 16 Feb 2024 21:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5F11420DE;
+	Fri, 16 Feb 2024 21:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708118217; cv=none; b=UiA0ofiGjWKkI+OIyp2Z22hISoKgc+A3sv/DscOcRA4/uZomnCD97HoIsq22ZwHjAewWUX03iGpLTaZ7F5Oimj4tYurT8Wqx+JXyZc+6lG0bFMZd33hJT/oiaSw145JrLJx69iYFmxdh4sSacsokmxeS/fjTIYVwDWhGDVo3jfI=
+	t=1708118218; cv=none; b=p62i/zXkcnYD+MmAlLG9DOfN3KmIP8BMGMPWqhDN9ukaXG8UDTySEldjBFKRRIG/MCRLggY/wq0QeE83nM1YgSBXyLOQFjQQC2Kagm8s0f4SK9RNefYmgiNYvs8WTOjHZ11+6bvd88t6owt3qFherhLaxWJZsuA5l/Or+szkz0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708118217; c=relaxed/simple;
-	bh=qSJ1/TTcVsBzLbrf10anAAA1rn4tSH4MQZtvL9vgfq0=;
+	s=arc-20240116; t=1708118218; c=relaxed/simple;
+	bh=ilUd2XEnYNcfkPcVbpE92eytf80u0600eDPMHH5G6bY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ctNtWpqSFCcTWO+XbMPK010CayhfPNoQEKyr2gRSECLU1qPqVONeT9XYC4gzMQroN+efvUt/vI164/N2WyFU8lSbjXrrV0xUWC7LjH2wwG/XdXEx+Y8zxTDPqZhee6q1BbNZhyLyOjPcAJAtwHMyVURSlHL60b0g+sZhr9wtHKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+	 In-Reply-To:To:Cc; b=nh9kKxaPcUSC8+N8eyO4e1LMnM7hXSH9TgylfhvukioPqF0D0MYH9B5JTF9dN1IZismoTZpdR5fZcp02DoaZSyZGvKAzWAIpSGnDMtsVTmEL0zZUhwf9e6v0EylOlISpPYPjHp2+jzIUdCVgDMJUsmn3h+bTV1vdwmAuUwucPx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 4D76785ED3;
-	Fri, 16 Feb 2024 22:16:46 +0100 (CET)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 0A4F987249;
+	Fri, 16 Feb 2024 22:16:47 +0100 (CET)
 From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Fri, 16 Feb 2024 22:15:43 +0100
-Subject: [PATCH v2 1/2] Revert "leds: Only descend into leds directory when
- CONFIG_NEW_LEDS is set"
+Date: Fri, 16 Feb 2024 22:15:44 +0100
+Subject: [PATCH v2 2/2] leds: expresswire: don't depend on NEW_LEDS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,7 +42,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240216-expresswire-deps-v2-1-8be59c4a75f5@skole.hr>
+Message-Id: <20240216-expresswire-deps-v2-2-8be59c4a75f5@skole.hr>
 References: <20240216-expresswire-deps-v2-0-8be59c4a75f5@skole.hr>
 In-Reply-To: <20240216-expresswire-deps-v2-0-8be59c4a75f5@skole.hr>
 To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
@@ -56,57 +55,82 @@ Cc: Flavio Suligoi <f.suligoi@asem.it>, Hans de Goede <hdegoede@redhat.com>,
  Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
  linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-leds@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ kernel test robot <lkp@intel.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1177;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2063;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=qSJ1/TTcVsBzLbrf10anAAA1rn4tSH4MQZtvL9vgfq0=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlz9CFxRmO8aCVhI+x7Vyk3o4zgPCoN+3XgcQJJ
- NpHqnxdDoqJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZc/QhQAKCRCaEZ6wQi2W
- 4Up1D/49POAcQZkjzsmoC6tbb2ATYuJ4+xypsjy5ftiHT8PPYhNfH++nm/LAWiDrnrYkypgvapd
- bksdzvOS+Y8dMkJa/HBO9gsH1rwbrofF03499pw8O2F3T603yHExlOMfPF088VXjC2nhMraaLK6
- K5bkxB+1oQHJwmpbMCTw0RJauc1Rb9CLVVwzkKBdQ1zll/1pqqXa5PE9jCFwfeOZhau851f71l6
- Q6s7V851M6nZws/AwNfAj65kIouCaDMKe4TPuC/Bc48J53txYJmOxvB2lbfhzhcfFX+E/IidvKa
- 6qGxTeM2Talut0R3FFuwlImB1PHSklspCh5BHxdihW3srpa+w1Ra37s9XrHhOKgkozonCqNuCjw
- 3m0MTKr0/cYpEhobeNjJQiedoWncEDIdFZ8FcMX9ZHvYRhWklqjHbUZspd6LUx3PHjEjo0iR+Hq
- n8EhyXu3sGDZ1zZl4mq4rzGHoKvtl4Ni4FemC7IE09bZEHWlp8e8Q8373xSUcj7wFYJdbH2z10A
- rVYuLq6cyK7cim7j+z6lCXy7SiW4IsYbRtVNYrHKcj6jfJ8NMvu5uViH5V1iiGtkYoJ4O0zXTtZ
- SRLw7ltEpmGPKRAdzwxlwK0EwLDLTgvDFhcaPeR2vP8pKje+4F9PxLEAHdDLyFfTRodRmM45wIj
- WD0L6umB+kpeo2w==
+ bh=ilUd2XEnYNcfkPcVbpE92eytf80u0600eDPMHH5G6bY=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlz9CFbQMadin7Zla/M2jnk+iQ4GhiLeNoguKar
+ l1fhos+V66JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZc/QhQAKCRCaEZ6wQi2W
+ 4e5nD/9KEaP/IJ5aCnN9dT5oMviYaX+wYXZI5R60COC8fWdFX0HrlrZL8u44u4GR1W5TgbNFsdL
+ Z3NNqjzgV84k0a5fNIslVFCKi4GUCWrj4xaA+6vuN+iBw+e7fls5IN1wqHWqnmpjLqmC1tkT+Tb
+ 7SGnrwm3P0lUkZthiAX3Ox1fmKMBJfDSmT3NntRlLbO8pcjylfNOWnYOKvMMtIVxJvmFrMSl6Iy
+ eqq/wa1RJpN+15orAfXTU1OB5/NuPseaIoN9FvWuyX26LV0oEHJJ1dYLwWCZ+aUSEtj8FFCtMyP
+ H7VVrIW8jrD18Hv+KCog8JJcOZ1PCTDaA/U/M7GhMJY9lMHDu1U/ekxbgfZzDWUjTqi2ebUA9MU
+ 7U1NwcqfQ5hlDykSBzKZbLxbxrWQXB05miTWlE55+PAiz+t+k9oVMno8wlqpCmaUdHZvg30+kL8
+ KhodxUneOoU7fmTz9uWxqqbYa064GnK0Pv13fGP9121TIrxtx7Zpghp7RcffeQU0YiYhNJfNMDO
+ G9oa58a0t0W589NGvH64zFZDjVMABnmuAMKQ5aiS5e3O/6QS3EOa7sIFDbQfwP8wKZDtoEVF44d
+ Eo7lxKkX8sAzs9Pdqd5BCsqPEdI6MVhOKuXW9Rt4zyF/CzrIJdqgAguBTX1jy3nyNl5dzzKCxPe
+ 690wlyjR4kIHKgA==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-This reverts commit b1ae40a5db6191c42e2e45d726407096f030ee08.
+The ExpressWire library does not depend on NEW_LEDS and selecting it
+from a subsystem other than LEDs may cause Kconfig warnings:
 
-The ExpressWire library introduced in commit 25ae5f5f4168 ("leds:
-Introduce ExpressWire library") does not depend on NEW_LEDS, but without
-this revert it would never get compiled if NEW_LEDS is not enabled.
-Revert this commit to allow the library to be compiled.
+WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
+  Depends on [n]: NEW_LEDS [=n] && GPIOLIB [=y]
+  Selected by [y]:
+  - BACKLIGHT_KTD2801 [=y] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE [=y]
 
-Link: https://lore.kernel.org/2cacd8dc-6150-4aa2-af9e-830a202fb0a8@app.fastmail.com
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Move it out of the "if NEW_LEDS" block to allow selection from other
+subsystems (in particular backlight) without raising this warning.
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Closes: https://lore.kernel.org/20240212111819.936815-1-arnd@kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402161410.IG9I4odj-lkp@intel.com/
+Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: 25ae5f5f4168 ("leds: Introduce ExpressWire library")
 Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
 Changes in v2:
-- Add "commit" before hash to silence checkpatch
+- Change Link: to Closes: to silence checkpatch
+- Add kernel test robot's error report
 ---
- drivers/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/Kconfig | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 37fd6ce3bd7f..3bf5cab4b451 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -135,7 +135,7 @@ obj-$(CONFIG_CPU_IDLE)		+= cpuidle/
- obj-y				+= mmc/
- obj-y				+= ufs/
- obj-$(CONFIG_MEMSTICK)		+= memstick/
--obj-$(CONFIG_NEW_LEDS)		+= leds/
-+obj-y				+= leds/
- obj-$(CONFIG_INFINIBAND)	+= infiniband/
- obj-y				+= firmware/
- obj-$(CONFIG_CRYPTO)		+= crypto/
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index 52328d295b4e..66998b938ed3 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -6,6 +6,12 @@ config LEDS_GPIO_REGISTER
+ 	  As this function is used by arch code it must not be compiled as a
+ 	  module.
+ 
++# This library does not depend on NEW_LEDS and must be independent so it can be
++# selected from other subsystems (specifically backlight).
++config LEDS_EXPRESSWIRE
++	bool
++	depends on GPIOLIB
++
+ menuconfig NEW_LEDS
+ 	bool "LED Support"
+ 	help
+@@ -186,10 +192,6 @@ config LEDS_EL15203000
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called leds-el15203000.
+ 
+-config LEDS_EXPRESSWIRE
+-	bool
+-	depends on GPIOLIB
+-
+ config LEDS_TURRIS_OMNIA
+ 	tristate "LED support for CZ.NIC's Turris Omnia"
+ 	depends on LEDS_CLASS_MULTICOLOR
 
 -- 
 2.43.1
