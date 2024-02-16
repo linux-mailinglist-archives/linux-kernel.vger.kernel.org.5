@@ -1,131 +1,88 @@
-Return-Path: <linux-kernel+bounces-68739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E046857F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:24:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E25857F34
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 839C11C250CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:24:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6544A1F22814
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD23212CDBC;
-	Fri, 16 Feb 2024 14:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="r2qhOFjR"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC8412D74E;
+	Fri, 16 Feb 2024 14:23:06 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D93768F2;
-	Fri, 16 Feb 2024 14:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E8612CD81;
+	Fri, 16 Feb 2024 14:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708093460; cv=none; b=sJ7OuCuDlArf4Xtut+jcmd40UtDD0drq2bRn8mcz2/wSDNqNb73MQ01hhOriuHF6tqR1yLgmQZ96GzpHWpVLL5lmbAT3WjaZ3eaqT3FBWtIkspHlf4FHEOtqMxzjXuAVKEvQniRrM/eEjSo1tBdlvmcdNTBpZg+ce52bkkLPaDM=
+	t=1708093386; cv=none; b=gfKRkBq7O9kDY+5cPI9d6QEjYEAUwf9bl1Csk5DOzUZSnetZjywoAj6Tv07s/Cjtt8BGL90o18IrfdrZWAQ8plsuuMDVfdtZlA6TLTxlTx5W61D/rBr++6D1p5tUiXuf+ulwPcxHcMFzLUWLReCZ6sKdh9KUMSbFJqs1CKnq9cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708093460; c=relaxed/simple;
-	bh=ttSbueMpnZzxUwwuEo1qu9ErDitQEVMUZYtC+Z8xcRI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=aR5eQCsHQVaY121QGhaAYHV1/V2TUf9EgUQfErP/98mEDn/V9SdmQKFPPRI2x2hiApPZaAk3s9Fz61foxw3LLhWuZkcWcrmkbKwR6mkuRl+xSxohZqAaFZ4eF6rp2XG0cs+iknstZoUIjoZHoSTXT+UyQ8fwWBhzv6vsVjA7leI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=r2qhOFjR; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41GDbf69023625;
-	Fri, 16 Feb 2024 14:24:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kVLFjMdLRyAqk9/I67nXGPs5FqcWXlsOTQVhBYO1On8=;
- b=r2qhOFjRW8UTcSLercnUjAKOfnpW1VemTl4XGyr3VSFyBEs0k6u5RgQZTiYfCEpqlnYH
- BbVOBLosYSN7OCeGGn84q9ErXB9wpL81bBkzkeJzQfZMENKwfWaYxGzvBHrbrf3WQEX4
- a6FHFb2LNSzVwdhXaq8ltFDPPR0l9WqgXuqp0Zff9zUJkuyHWY9nBP6+4fQyjFVS/uCK
- 450dEyT6beQWQntNlx0VTQS1ldADlxtx9YpIhRgCul5L0Pi+EWrX7MxnKtRr0GvXolyE
- z+lv1SxWtiY0x/eRCfi/EkjFsEZDtu4k+JdlSgDNNd3EaTkZzbzdUzVSylRvTWuY8zbV cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wa8rfh83d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:24:15 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41GE7pwv010422;
-	Fri, 16 Feb 2024 14:24:15 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wa8rfh834-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:24:15 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41GD1XpS024975;
-	Fri, 16 Feb 2024 14:24:14 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6mfpur63-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:24:14 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41GEOBqF26411536
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 14:24:13 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 33EF358045;
-	Fri, 16 Feb 2024 14:24:11 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 297E258052;
-	Fri, 16 Feb 2024 14:24:08 +0000 (GMT)
-Received: from [9.171.40.55] (unknown [9.171.40.55])
-	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Feb 2024 14:24:07 +0000 (GMT)
-Message-ID: <417a1b7c-4136-4f96-a614-9fd976dc884d@linux.ibm.com>
-Date: Fri, 16 Feb 2024 15:24:07 +0100
+	s=arc-20240116; t=1708093386; c=relaxed/simple;
+	bh=3uVqjCq21IDwouamDzcl8wNTz0tAsFTEz5ibWpWf16g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fW3PdSTsenxBsYkffNFWJRkWzx2LcolocrRYveKLV4SZMXHWEKYqAGHd1mbBkhNTsDAMOtAASj9RGICt1zOwq5AO1eDA0+xhqQI50ACFuA0AOaP3nJIQ85mNW4HAT5AsvoJ8dkAkeGwizgHdLAkTqP3ocpweh1ZP+TOxC8K4CSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E4EC433C7;
+	Fri, 16 Feb 2024 14:23:04 +0000 (UTC)
+Date: Fri, 16 Feb 2024 09:24:39 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 28/36] tracing: Add ftrace_partial_regs() for
+ converting ftrace_regs to pt_regs
+Message-ID: <20240216092439.197072a5@gandalf.local.home>
+In-Reply-To: <20240216220902.a3e017e72273c7894bfe6b16@kernel.org>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723236068.502590.9568421023325291255.stgit@devnote2>
+	<20240215111134.7bfd1408@gandalf.local.home>
+	<20240216220902.a3e017e72273c7894bfe6b16@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-Subject: Re: [PATCH net-next 09/15] net/smc: introduce loopback-ism statistics
- attributes
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-10-guwen@linux.alibaba.com>
-Content-Language: en-GB
-In-Reply-To: <20240111120036.109903-10-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rVHuDyuLSug9_H380LkCjAEYrlEvWBIf
-X-Proofpoint-ORIG-GUID: h1k7cY6hFCi6W2gBuQh3wf0176dc4VQG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_13,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=805 malwarescore=0 bulkscore=0 adultscore=0
- clxscore=1015 spamscore=0 phishscore=0 priorityscore=1501 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402160115
 
+On Fri, 16 Feb 2024 22:09:02 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-
-On 11.01.24 13:00, Wen Gu wrote:
-> This introduces some statistics attributes of loopback-ism. They can be
-> read from /sys/devices/virtual/smc/loopback-ism/{xfer_tytes|dmbs_cnt}.
+> On Thu, 15 Feb 2024 11:11:34 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->   net/smc/smc_loopback.c | 74 ++++++++++++++++++++++++++++++++++++++++++
->   net/smc/smc_loopback.h | 22 +++++++++++++
->   2 files changed, 96 insertions(+)
+> > On Wed,  7 Feb 2024 00:12:40 +0900
+> > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> >   
+> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > Add ftrace_partial_regs() which converts the ftrace_regs to pt_regs.
+> > > If the architecture defines its own ftrace_regs, this copies partial
+> > > registers to pt_regs and returns it. If not, ftrace_regs is the same as
+> > > pt_regs and ftrace_partial_regs() will return ftrace_regs::regs.  
+> > 
+> > This says what this patch is doing and not why it is doing it.  
 > 
+> Hmm, OK. The reason is the eBPF needs this to keep the same pt_regs
+> interface to access registers.
+> Thus when replacing the pt_regs with ftrace_regs in fprobes (which is
+> used by kprobe_multi eBPF event), this will be required.
+> I'll add this to next version.
 
-I've read the comments from Jiri and your answer. I can understand your 
-thought. However, from the perspective of the end user, it makes more 
-sense to integetrate the stats info into 'smcd stats'. Otherwise, it 
-would make users confused to find out with which tool to check which 
-statisic infornation. Sure, some improvement of the smc-tools is also needed
+Thanks, that should go into the change log.
+
+-- Steve
 
