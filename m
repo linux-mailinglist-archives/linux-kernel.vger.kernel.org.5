@@ -1,137 +1,118 @@
-Return-Path: <linux-kernel+bounces-69156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718DD85852A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:29:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13431858536
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:30:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FC7C1F215D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3B3D282255
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DAD136678;
-	Fri, 16 Feb 2024 18:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OuzPwnJ8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC2B135A4F;
+	Fri, 16 Feb 2024 18:29:28 +0000 (UTC)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826A7135400
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F62132C1E;
+	Fri, 16 Feb 2024 18:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108088; cv=none; b=a6Qf5GQS6b8r0qwxr0mUA29kSYciVwhMqWtBtXaSL6KlPNXm8Ji+DW54CcZAfg7b0GJNoKQsKmSf9avrzlCV9QfkPAC9EP79UOdkWDCstOqItA16GX8O9jF+37FveSLx2C+taarTzmt2FJs1FVPbMoJybcutV3TumqLzEgbGX2E=
+	t=1708108167; cv=none; b=e7ek9fxfkDD3osz3Ypcij2mksM6ozVqIWdVT0KShmk81AZJwZUhfL2QUSseVGDE0QfAYurh2CvqBruZob/0ukMxbtWQ2YEy8KdAvnATYtM0vYj1lV+2f4uomUMOD2mtJhszYhMLXE5v7Y3ds3Mah6tzZxQpMFd8UljzWNSf42kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108088; c=relaxed/simple;
-	bh=JpCJOojqx/HfeVTgc5nG9gyIcDxyi7NBWEmokq6KIOY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PSOx/f/5qrE2UD3xeZhzynGv63j/ueNzb5T5sHIniiXHHz3gYMILpeiIbLfgWmsZnIiXTZDpJT3haDpqmCJY7euD/T5q/YQtSL3QKqF6Il4IqStdIRB++PkSLGK+POu1w97PX9N/sGCoeQ5smSMs2EG5k+MYZYD7SNCFsu3FGwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OuzPwnJ8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708108085;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=04otk5iNZ32itm1hBkllWfSwBWl7wL1ic55X2+oUtF8=;
-	b=OuzPwnJ86Cz+5xKg4WbOapzOnsMHr6TwMCZWwYAFTfwHVD3ZJGk+/NpSBKnRHJvjOde2lQ
-	xif8LUGp8MjF1VwcgjVQpGwSAnGCcg+kw0gTI+4k+XGn+RnCZeseWMDt68adwxxVc9/LQZ
-	IJn+uoMFhHHQ0ZQkO3gD0eds6uniJmY=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-383-FGRI0xkuPTOKuOQxPJP0OQ-1; Fri, 16 Feb 2024 13:28:03 -0500
-X-MC-Unique: FGRI0xkuPTOKuOQxPJP0OQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-511681b1fc4so2240230e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:28:03 -0800 (PST)
+	s=arc-20240116; t=1708108167; c=relaxed/simple;
+	bh=Ne8xg4QKO8vlkGfaVlGWtJwENf4akY4EeRwI1yGSafI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JZE2h3LvIJDg2fwFxEnblRt/60fU2z5SnPotkJgI4wENhAzudbbGqwtDtjUtcIntNY9iTPfeuh2jkbVAstHTST5BqLXiJJ72ty88Y406tMB8cMPcLhkG4qsua7JxXmGpyMY2IQAzkXJvsp10GMfbBZV8VwbBoW6wNyNtLORXLok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e2f6c7e623so255931a34.1;
+        Fri, 16 Feb 2024 10:29:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708108082; x=1708712882;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=04otk5iNZ32itm1hBkllWfSwBWl7wL1ic55X2+oUtF8=;
-        b=YbRiYImwfCTnXng349PExS3pV78xrkPs70HrRQS1mFC1WH+kQKm60WSpYryyXtMHUj
-         IXRzDpMD9KqDV13G2ylmH87xGWrQEXIPGMa20HiSWOcHFQ/rJu+iMVGKh4MqW0d4icsx
-         CL7HD2KWCncyzh3GdoFwslVO35lehtqVzvKgBK/qIyEj4PKBK4Jr1uE9jpvlAMO0VxPw
-         MXupPPc+u+F0wCMXNXGSdId4WdkjMAcmLO9M6Vq2PBM+9sMNlgWXQplTcee6lcjA5dzh
-         ASCRg4e9qnDOII3lPJ8pEXEKsUJSJPc7nLmOrV5x2wXSxr8/PyFlkfe4SO/1Zg7+5QTr
-         hUlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwcLMqWVfw9juG749mghJ2uOMB8l3sUo8qX4FO/mCvJXMIP3VpGufgr9aZ2ePZSulTUFHvB7Fmmqg+sFOreS92Wbm8b0q1r1VEOzTc
-X-Gm-Message-State: AOJu0YwwjSthTkMRa3HLqr9c73hFzyM8mWCpWwbrvkomhVI5fcMm0SNy
-	Z7Vhry49KLFjP76xPZhmIuJgBuQT63DvnFKb9oN9kJQHE99tMz2VQg42tOFqV6GXn56mlFlsCmI
-	V9UPHbrWnJR89T6lV7p8C0RR5F3xpUiGGaWd747YJLXH4AHgTarnyB5Y3c7hhgA==
-X-Received: by 2002:a05:6512:6d5:b0:512:86fa:a781 with SMTP id u21-20020a05651206d500b0051286faa781mr5126921lff.62.1708108082049;
-        Fri, 16 Feb 2024 10:28:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFlTdqcYB6gYrq3Gc55U5e1iav+rzbv+UkBZ9iNFp6WAozBF1MgQrgrIw9sAy+0/Uzd7DC4mA==
-X-Received: by 2002:a05:6512:6d5:b0:512:86fa:a781 with SMTP id u21-20020a05651206d500b0051286faa781mr5126912lff.62.1708108081675;
-        Fri, 16 Feb 2024 10:28:01 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id p27-20020a056402501b00b00562d908daf4sm224163eda.84.2024.02.16.10.28.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 10:28:01 -0800 (PST)
-Message-ID: <6536ebe0-4577-41dd-b3f1-1525b9fe30b7@redhat.com>
-Date: Fri, 16 Feb 2024 19:28:00 +0100
+        d=1e100.net; s=20230601; t=1708108165; x=1708712965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xevg9rwR53zY/upqk61QtAld9IftUGoKfcejbCC75vc=;
+        b=hQ6oCSkmtz7T/os6fWpS0WO4lm2b/c1BdGPCNTY0qRtV9pCCxkgTHKw8F5krItP+08
+         LMugQeShnGI1Cl5NAJC6W4tDsFFvf9WuVqzUEfSUV1h/CsPQ2vnYprIhc4JqVBeT0X1V
+         OZtpGhj51dfBJotYSqd0PwyTCPVGzpX7TF9Xvlr6YD+0j9hLRZ3x5+SoVoAbtKg13nW+
+         Vu0pcNYpByDmo6CQGEEGGTp1bRDePN5lqgzDjNWdbQXcRbO8fL3yajCpEoqeSG/0HNrU
+         cnErIyTxOcuTWxsIfOKUffah+fID1QruTdcVCMoPX0RF9hVI5SrziYcH1/JRCoxZQID0
+         dCmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCT6hgWES8rpBsOtYR+CZi0PWiDS1I0cTdUwZwSS88RTNCpA741d/ZiHtknpVy4GafsD/Vd/Uvc77yERcy7hrQScBYKartQWkZg6GF3Ho7ZO+KLca0nJGuL9uLyFnld/91/z/oTR6lYZDNl5CMTHU+5oUwBOKv3I1Y0PixoLIPH3cr8lyxtiZov9PfsvTcizEhzxYEE8twhCFVuHlG
+X-Gm-Message-State: AOJu0YwXoVEwQlIlrUECTYZ56mnSSLMKrtdc+BdqQ+PTx6RRUPJ8jUIL
+	7IUll0fsf1N8UqWGFbvYO97naAKFbRgCeWo8aMEd9C7Rn/8K0QNCebX6VoGq6bwmSSWXc5wdfh4
+	5xo/PJsT3/IEJIIOUMM1ZhBDYGqw=
+X-Google-Smtp-Source: AGHT+IGM/WZWmSVFsRu3sWU2hnItSwF4jUO+khGBGlZgVbdsDBhRjTBzXoZc5e8qhAHjFj/i7ZeDRh3n1JoBl2SaK8s=
+X-Received: by 2002:a05:6820:1f8d:b0:59c:d8cd:ecee with SMTP id
+ eq13-20020a0568201f8d00b0059cd8cdeceemr2830708oob.1.1708108165273; Fri, 16
+ Feb 2024 10:29:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/nouveau/mmu/r535: uninitialized variable in
- r535_bar_new_()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Lyude Paul <lyude@redhat.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>,
- dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Karol Herbst <kherbst@redhat.com>
-References: <dab21df7-4d90-4479-97d8-97e5d228c714@moroto.mountain>
-From: Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <dab21df7-4d90-4479-97d8-97e5d228c714@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240213074416.2169929-1-onkarnath.1@samsung.com>
+ <CGME20240213074430epcas5p4c520bf2cce121cf5fa970eed429231a8@epcms5p3>
+ <CAJZ5v0gBrc0FctEswQj_JMcZRqoswRgXvBRzT++tseUWBgYJWA@mail.gmail.com> <20240216054540epcms5p3b0b3f97fe4ec4a8126549a579e596910@epcms5p3>
+In-Reply-To: <20240216054540epcms5p3b0b3f97fe4ec4a8126549a579e596910@epcms5p3>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 16 Feb 2024 19:29:14 +0100
+Message-ID: <CAJZ5v0h7Ed2VWPdsa_=m-PDfgOj2rCSUF=FEbpTEBg1Y9+PZ1w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: use %pe for better readability of errors
+ while printing
+To: onkarnath.1@samsung.com
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>, 
+	"bhelgaas@google.com" <bhelgaas@google.com>, "viresh.kumar@linaro.org" <viresh.kumar@linaro.org>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "peterz@infradead.org" <peterz@infradead.org>, 
+	"juri.lelli@redhat.com" <juri.lelli@redhat.com>, 
+	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>, 
+	"dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>, 
+	"bsegall@google.com" <bsegall@google.com>, "mgorman@suse.de" <mgorman@suse.de>, 
+	"bristot@redhat.com" <bristot@redhat.com>, "vschneid@redhat.com" <vschneid@redhat.com>, 
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Rohit Thapliyal <r.thapliyal@samsung.com>, 
+	Maninder Singh <maninder1.s@samsung.com>, "helgaas@kernel.org" <helgaas@kernel.org>, 
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/13/24 19:09, Dan Carpenter wrote:
-> If gf100_bar_new_() fails then "bar" is not initialized.
-> 
-> Fixes: 5bf0257136a2 ("drm/nouveau/mmu/r535: initial support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+On Fri, Feb 16, 2024 at 6:54=E2=80=AFAM Onkarnath <onkarnath.1@samsung.com>=
+ wrote:
+>
+> >On Tue, Feb 13, 2024 at 9:20=E2=80=AFAM Onkarnarth <onkarnath.1@samsung.=
+com> wrote:
+> >>
+> >> From: Onkarnath <onkarnath.1@samsung.com>
+> >>
+> >> As %pe is already introduced, it's better to use it in place of (%ld) =
+for
+> >> printing errors in logs. It would enhance readability of logs.
+> >>
+> >> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> >
+> >What exactly is the role of this S-o-b?  Has the person helped you to
+> >develop the patch or something else?
+> >
+>
+> Yes It was meant for Co-developed tag, Because We are working collectivel=
+y for making errors more readable for our product kernel.(5.4)
+> And some part of this patch was made by him.
+>
+> Then we checked that it is also suggested by open source to have %pe for =
+printing errors:
+> https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mo=
+untain/
+>
+> So I prepared same changes for open source kernel, and because of smaller=
+ patch I kept it as normal signed-off tag only.
+> If it is needed I can resend with Co-developed tag.
 
-Applied to drm-misc-fixes, thanks!
-
-> ---
-> It looks like this was intended to handle a failure from the "rm" func
-> but "rm" can't actually fail so it's easier to write the error handling
-> for the code as-is.
-> 
->   drivers/gpu/drm/nouveau/nvkm/subdev/bar/r535.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bar/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bar/r535.c
-> index 4135690326f4..3a30bea30e36 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/bar/r535.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bar/r535.c
-> @@ -168,12 +168,11 @@ r535_bar_new_(const struct nvkm_bar_func *hw, struct nvkm_device *device,
->   	rm->flush = r535_bar_flush;
->   
->   	ret = gf100_bar_new_(rm, device, type, inst, &bar);
-> -	*pbar = bar;
->   	if (ret) {
-> -		if (!bar)
-> -			kfree(rm);
-> +		kfree(rm);
->   		return ret;
->   	}
-> +	*pbar = bar;
->   
->   	bar->flushBAR2PhysMode = ioremap(device->func->resource_addr(device, 3), PAGE_SIZE);
->   	if (!bar->flushBAR2PhysMode)
-
+No need, I can add it for you.  Thanks for the explanation!
 
