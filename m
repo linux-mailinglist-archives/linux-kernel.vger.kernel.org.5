@@ -1,138 +1,134 @@
-Return-Path: <linux-kernel+bounces-68703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F3B1857EA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:06:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA062857EAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:06:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E4C1F236A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:06:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76098B24760
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A1F12EBCB;
-	Fri, 16 Feb 2024 14:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ihkqir4E"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158D712EBFB;
+	Fri, 16 Feb 2024 14:05:08 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C834712D762
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CAD12E1FB;
+	Fri, 16 Feb 2024 14:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708092305; cv=none; b=mqsgtLWTuhsPZoRgEjUfxwpo+Owj/ipGXtV5ajaCKM0JSRXYrRkNr8zHuLEJ6lKXI2wmT29i2JtMwIr1jHzbQHmc6wV7wc4ySIrrIC10VZSLd/8AZyQPc4PGwtQjHMkDx7IFfkHANbomX5t3q8Abjcwbb2Rb9/QTz+MpCgWjllM=
+	t=1708092307; cv=none; b=U/QKWZfudAqW3xFjt/DBWRIcMbJ6VXj7CvvMqTVEX+sl4YxlipJvG9vlRrOzBmq6MAbRdZ3Fq8R3z1AE4HDAekXiEzGV4j4OTbRgiEKBtoB5cRc8GtGLzg3s+nrV13aONdWKV8E0JfJwNfQ/OF/ZxgU6ODEd8oVjkZJ7CmPCLu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708092305; c=relaxed/simple;
-	bh=S9ObBQzYVuHAYhxgjzcEipyH1kHqp28U2gCU0ebksac=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RRi8Z3BFbgTX0r9E4A7CFWghyzDEkbcIboOGMYXlwy5sgAZrnfOnc04DA6pl2xXqGLbAQ/RVj6hRzK0GpKXPnEhjvke6ugmOOGBrHGlOcmBXhdj2LcdNh8E6PO+s7QVr/reVhmZSjdK0tV9+3z2oq2AVx6KRe2RM7kEQjNBZ7Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ihkqir4E; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso5513561fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708092302; x=1708697102; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/v2msNXgl5RHuPphj5KBMCkDajVznlUfP/afxgplpAs=;
-        b=ihkqir4EE6LrbjtNcLzGe8tVPa+DL8XkHK+nkWOni/JWcdzvhhWazNqoqJWDXZuLSR
-         UVTEVP5DcMaetAYRg/0JwmcxTxs7By2kuLRoGbsb2V8FBsrwCYkTKVrT/VhWFL9kVlZh
-         xZXV+0CaK4oH9tcWk3cN6aWftodpBq14Xo/XBjm2fVAF/GQbiZG/0Kex2qYKhcj1K5C9
-         YzVOcmS9kXD8krnABm1UxdyT9fO38SiFadHQeQ1rt1jGDADgURLjCPz8zA1WT5kZ9pZB
-         ycREtgsgxaA1PytzPnEoO1RGP6HbuGtGqRBJT5X4A+xvhu0hV2L6zQdUTLBAlXdq2Zsh
-         urKA==
+	s=arc-20240116; t=1708092307; c=relaxed/simple;
+	bh=QZXZX2IoWGNDy7kmcmAiaCDX9jMXDdWmkZ9Kx1tLQO4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zy7KkWLzNOeJutWXdceI4ZRBavY9Tlo03b9keI3SAQu8Y1D3Ig3aAQ4lCvp3PLvwQPVHguKafQzkMumQg3VHxR8DPenw4EXXeVK6Fptsl4h1tshXeDFLrU0zMYNM6iiqh86HHciI6VtMTi+rMMbkgaesYLpiUd0E/a2zOYoMEaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-607fc3e69adso6253357b3.0;
+        Fri, 16 Feb 2024 06:05:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708092302; x=1708697102;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708092304; x=1708697104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/v2msNXgl5RHuPphj5KBMCkDajVznlUfP/afxgplpAs=;
-        b=jrT1LkqBDrOgbrNZBdtjO83Lw6s2LSQY57BIj2UbGm4wTA3hnrJXJaD1qybAMf/jD7
-         VM5To6x7/Qql0rQaNKHUHO//eaIJKjxrQ7W9w5P2nvRgQhBNfgcm1OAbSfb1uIwnHoTU
-         PsFDQTyj8RBl6bvlMObTvJjW1bCO8XpZ/y0JT+ZYDdannvc577vre50Z0wf9lTF98Zvc
-         AaQos5LunZ63jy119emuAno7s+IBOAu1LXkfpOn+dgNwVDwA7dI7oW7PaKLv+qj5iCnN
-         gceUxZFTf0ik1RgMeSYIy5zHWi7u5XYXyo0aFc9/MHvCkP4Wqpw48jRfj6I6fKZH585X
-         075g==
-X-Forwarded-Encrypted: i=1; AJvYcCVQn+BHqfNTi4PHGfp/eGb93q4Ixrj86KfoXw0tFEdbLxn/08zrJBbC8p40lDjG7cHnu0tjgKKotNg8BW8RR5DSHZZN7V8VNqN47VkS
-X-Gm-Message-State: AOJu0YxI6Kefatd6hhfpFz6aI7/Hnmnu05VJ6ZFwz70mojz718QTlt3x
-	fzVdXojSOcD5X+ioUJ+UzmTP8qKk8I8ntc8GxkktXM6ZDnwW9VuHa7tRRfRQYKYoRYCKHI6KFu+
-	eWx0=
-X-Google-Smtp-Source: AGHT+IHLhKN55xXNcr4Qf+H/L/Y6F/cf4HESGkjS3taK4mPtI0tOKK3/xuOIFtwCp9VREBhceA/Qog==
-X-Received: by 2002:a05:651c:2116:b0:2d1:1cc8:6ea5 with SMTP id a22-20020a05651c211600b002d11cc86ea5mr4073121ljq.5.1708092301998;
-        Fri, 16 Feb 2024 06:05:01 -0800 (PST)
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id az5-20020a05600c600500b0040e4733aecbsm2516628wmb.15.2024.02.16.06.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 06:05:00 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: krzysztof.kozlowski+dt@linaro.org,
-	robh@kernel.org,
-	conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	broonie@kernel.org,
-	andi.shyti@kernel.org,
-	semen.protsenko@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 7/7] ARM: dts: samsung: s5pv210: specify the SPI FIFO depth
-Date: Fri, 16 Feb 2024 14:04:49 +0000
-Message-ID: <20240216140449.2564625-8-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240216140449.2564625-1-tudor.ambarus@linaro.org>
-References: <20240216140449.2564625-1-tudor.ambarus@linaro.org>
+        bh=ssDcYGlo0XYIPkaIe9oJbg8yYcN5gJ/6X+ClgyE2yKE=;
+        b=MklT8zJCPr9HWHNrXrPSi3LSI298iu9F/IgFdPs5Qd7jbp6RQdmNfl+nq/IFFjH4ol
+         Xg8WKzrWwgeB4pDXoFbxthtd7wuIjvMF2+Nw9PMprt+8YOiIPjmjNPUhMLzeemFaXCVU
+         D2nWSSTpk05KM6iAiu2PQ0EZrFDbRIBzduWKXsv4hlYKu+VSCBRL2o5PH131imxVq2US
+         qG4u8kPZHJQ51g50phLMGiKKp2eriMfLpTB4Budc3B8JoIliDNyZ0do7aOmBsq/fSw9D
+         yfL8Fdz4/wKUpuSAcSfvbwMMVHxyXfBtobQVRbpA2zKABj27LcVfIk8tiNKms2nVYW3W
+         TRDw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2yXUGvT8ZUWdUG466HHmD1fAjUIXMbLxmymA7OQLjw/bf+1Lf8zuYJsjPWckTNXe/YpyJCpdBXJBYPZpdPq+kpy2Bh+90Uc+uvtt9H2dJVm5vkzXZqyVKQ8M1VVFo55v2X+W+pclQu9poqk8ICg8S/QN/NUa4j8Vo88i4HZ6PSlFQ6Ogu1ioG0t2lJ+weZc4gbEk16FHXFoRoO+SG+MndeXW57SXL
+X-Gm-Message-State: AOJu0YxGGZ+0HVpVWFhoEO33fvRWfmxSGI8Erk7mw05F9wp+nJX2bZta
+	sPmveRc3Je4mY57Ogz03rbSAqKKTeKQMvoGKUPrJ3V4fk8QiZHoLyl7ZrbswGA8=
+X-Google-Smtp-Source: AGHT+IGkvWkUSPgZyYUvxAEQQJfdydoi7Q0iPKDpUVwAA1grbOfQyQQWVBV1tBnTizRVlDHcrSfkBw==
+X-Received: by 2002:a0d:e8c7:0:b0:604:3f64:48e1 with SMTP id r190-20020a0de8c7000000b006043f6448e1mr5462798ywe.5.1708092304430;
+        Fri, 16 Feb 2024 06:05:04 -0800 (PST)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id c2-20020a0df302000000b006046bd562a5sm348965ywf.128.2024.02.16.06.05.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 06:05:04 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso2174811276.3;
+        Fri, 16 Feb 2024 06:05:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXJ3hNqBqctAjgCA8ureXlIFqpb2gcuGE+5ntQB1ylGWYYX3cSCLLXERFPw3RmqsAo4N3Ro6NnZS9BQrFC1XejilUEfGVJNeraq04So3XjnogxCn6fU+ZGM5OiD65Kj0bm5TG5E/c6EBs/SybjKXMcFAnD0erXSnpw20kNOZEq5tWJwUYIs/xMq5sziKJVT++PlJL5B7rqWQWRIYm8nojJmp1SnaQ6G
+X-Received: by 2002:a25:b78d:0:b0:dc6:c510:df6b with SMTP id
+ n13-20020a25b78d000000b00dc6c510df6bmr5663068ybh.55.1708092304106; Fri, 16
+ Feb 2024 06:05:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com> <20240208124300.2740313-7-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240208124300.2740313-7-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 16 Feb 2024 15:04:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW2AsXJk_crdeiMjMHzBKq91UO1d=ukwjW0hkCK4DRvTw@mail.gmail.com>
+Message-ID: <CAMuHMdW2AsXJk_crdeiMjMHzBKq91UO1d=ukwjW0hkCK4DRvTw@mail.gmail.com>
+Subject: Re: [PATCH 06/17] dt-bindings: clock: renesas,rzg2l-cpg: Update
+ #power-domain-cells = <1>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Up to now the SPI alias was used as an index into an array defined in
-the SPI driver to determine the SPI FIFO depth. Drop the dependency on
-the SPI alias and specify the SPI FIFO depth directly into the SPI node.
+Hi Claudiu,
 
-The SPI nodes defined in s5pv210.dtsi are not enabled in any board file.
-No SPI aliases are defined, thus choose the FIFO depth using common
-sense: index 0 of the array for spi0, and index 1 for spi1.
-No functional change expected.
+On Thu, Feb 8, 2024 at 1:43=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
+rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> The driver will be modified (in the next commits) to be able to specify
+> individual power domain ID for each IP. Update the documentation to cope
+> with this.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- arch/arm/boot/dts/samsung/s5pv210.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for your patch!
 
-diff --git a/arch/arm/boot/dts/samsung/s5pv210.dtsi b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-index ed560c9a3aa1..3eba870db73f 100644
---- a/arch/arm/boot/dts/samsung/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-@@ -161,6 +161,7 @@ spi0: spi@e1300000 {
- 			pinctrl-0 = <&spi0_bus>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			fifo-depth = <256>;
- 			status = "disabled";
- 		};
- 
-@@ -177,6 +178,7 @@ spi1: spi@e1400000 {
- 			pinctrl-0 = <&spi1_bus>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+			fifo-depth = <64>;
- 			status = "disabled";
- 		};
- 
--- 
-2.44.0.rc0.258.g7320e95886-goog
+> --- a/Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+> +++ b/Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+> @@ -57,7 +57,7 @@ properties:
+>        can be power-managed through Module Standby should refer to the CP=
+G device
+>        node in their "power-domains" property, as documented by the gener=
+ic PM
+>        Domain bindings in Documentation/devicetree/bindings/power/power-d=
+omain.yaml.
+> -    const: 0
+> +    const: 1
 
+While the driver will soon support both 0 and 1, we may need to keep 0
+for RZ/V2M for now?  RZ/V2M does not have CPG_BUS_*_MSTOP registers,
+but uses the Internal Power Domain Controller (PMC).
+
+Please add a link to the power domain numbers in
+<dt-bindings/clock/r9a0*-cpg.h>,
+like is done for #clock-cells.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
