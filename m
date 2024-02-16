@@ -1,246 +1,264 @@
-Return-Path: <linux-kernel+bounces-68416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD02B8579F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:10:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A8A8579F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F79FB215AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:10:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73C41C23B64
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0821D1C684;
-	Fri, 16 Feb 2024 10:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+MBYkqu"
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEED91C684;
+	Fri, 16 Feb 2024 10:10:43 +0000 (UTC)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892A41BF5C;
-	Fri, 16 Feb 2024 10:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C116B1BC4C
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708078219; cv=none; b=Qw6DC46EyS3HETIKXyiVEOFfCt+9kXKo+f6LHpQdmRqWkAvYfv+dJs1mwMmusU8baqq+VGVf/pQFR7UFYzlGtlIp/GEpHBAOfiarU5XbqVIjD7Tj7zmmTPmG42I5Q/AA4VkORAkWncC4ysyfGOSwwWqsm3eXEgs2Fn6v7+QbXfQ=
+	t=1708078243; cv=none; b=i++eJ7z2u19UG84sH2J9ShiEFc4lF7bMOQmz3tizMPWThwN08iz2L3FSV3aUU8BHcvEhlRo2mPToYdNYd+OJDV4nygj6wcyw57yvDaBNgzJPeFK0oXK6wpSlfGMRtHmgqKHos13BGnk7I5LRp2G5W84b4lnNUq1xBHCbXhAbLts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708078219; c=relaxed/simple;
-	bh=qmJKpLziGLsqa42azR1puMC/gEi8CKY4n/XU1SYvzyE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KtXo/H+nCkEnGanF8B/GJQXGhESsYgBocZYPv5ACK+opToXvvZHEo8ATRxTItkSlGW0AmdPUjIyaSO4cQbyBaj4wqzv+czM+uNC1LkXjzJOnnnvU8/jn5zdMfMYGEo2RrDxRqBq4ctugxlX44m63YdTAvlV6FFCI8Z0HVPDdRqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+MBYkqu; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4c01076b9faso875900e0c.2;
-        Fri, 16 Feb 2024 02:10:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708078216; x=1708683016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5JkzbFOHD1LBq/kZlIZ36OV9INmft/mRs0RusCRScXg=;
-        b=D+MBYkquU0oyoh5UiDG361HyqNjj2KTN8ZP+2wWK7Zk1AfH0LuLEGiKV6AM5xFdE13
-         HhXuVGS3ewo3enYRSDYltI3NNhHbo3cprxHvvHVIvrfwcZte+3ujhKD2CT/coJb0AdxK
-         4G+prKb86oeU/Omt2joMTExEaZ1LGYuhT1m2FoP6nHHToaIZ1Yj8jA8YiXPIiRyOymSK
-         WpMjtvN/To8Hi09IXQkxuflAls4NFkZDKdLr0Fv90ItVAxy9bR30YbvTviHc8Eb0voo2
-         emOYSX/ykIf6gOY6GPZOJsuj6ko3iSJI+YXTwvF6Qm+fIPtH1CNH5j9G2wkVHSb7uguy
-         jCWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708078216; x=1708683016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5JkzbFOHD1LBq/kZlIZ36OV9INmft/mRs0RusCRScXg=;
-        b=qcpYbEMhi3WrN936fugkthaxsuhdiCDXQHtabIoHOlrpSJ32QYKyeqdGucGB0COrWM
-         1G0YAw6YlnoXmJG7EHXowXaM76B19jA8D++jE4UOubnCjYI9lORk3Fj9nMa9z/+WI1Ct
-         yw/ZvbAyh3ZNOpVeU3gXBYS7amiyjOnlqDfVXca/nSQrpBuJPhooaE7u2SG5vAWsBUjJ
-         fHUKXvsvtFMnCXl7qf/LHr5R2zYNgm+lMAHskOenF32CNpwcGpYwvPq1tKCfGxaYfgsB
-         CLtMBghPDrTkQsVk6vs/VapkDzRbWUHVOC1ZWwnMuZjhIZknAD9rbt4JoVz+7RA1FjgN
-         NmAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVSjrd+ORSMn8O2YKv3PSBoY4MTiA2+lkAeMDEhPegVcXXdVoApmSai6eDxVXss7tHDh1SWhiNxAuyHvDSJWpQLIH4RY4vx46V85JQxCutkJPJzjxyU1JKqWkuDUXWti7XpHkjHu0BExRfH
-X-Gm-Message-State: AOJu0YwU483QifGqJ5pnUx9j7AelW3xL9u7wVGcbgvIzoO1KPnoxOTeT
-	vQKsEGbsO4S8DvHwjOv2txnub9agX6yjJb355+FCzfmRmFfU/BxZ1MkpPnZAneHK8o7jhve23rQ
-	Lda5cXZi2Z1D4RZJaKBjZPzxWWEg=
-X-Google-Smtp-Source: AGHT+IH1dSaXgm/Qiz9YTbYv81wbn+JFDDceA34zHrKDgZ/8eZ+F38uzQOKuRFzuO+hj41Yo+z3nNHAe2WBoNUtB3c0=
-X-Received: by 2002:a1f:4b07:0:b0:4c0:285e:79a with SMTP id
- y7-20020a1f4b07000000b004c0285e079amr3929989vka.3.1708078216129; Fri, 16 Feb
- 2024 02:10:16 -0800 (PST)
+	s=arc-20240116; t=1708078243; c=relaxed/simple;
+	bh=qBSXF9Zc1QKlrZ+06XqkLDFWW0lt4a3ZfZcT0bPy+94=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F9EjNu53/mxbexQzyJpSASx5+m7utmmrkiiCr0xlZaRXQ6P6lzDC5zXZ2c3822LbZbgGgxlZyugSmDv0HN6NQpKGdY5b1Di3dcYA+8obLa/+BNaFCm+EtbawD/ALI9ujQt2CuZ6WOg5yhogUeGOdlt2V/wcs2NrthGnfWykglKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4TbnkQ4JZhz9syV;
+	Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id HuB_5vFxQkNh; Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4TbnkQ3gyQz9syQ;
+	Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 7A7148B786;
+	Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id vPXdAzl_fD0h; Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 19F748B765;
+	Fri, 16 Feb 2024 11:10:38 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Use user_mode() macro when possible
+Date: Fri, 16 Feb 2024 11:10:36 +0100
+Message-ID: <fbf74887dcf1f1ba9e1680fc3247cbb581b00662.1708078228.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216040815.114202-1-21cnbao@gmail.com> <20240216040815.114202-3-21cnbao@gmail.com>
- <Zc8dEn7eqFmC_Kcd@google.com>
-In-Reply-To: <Zc8dEn7eqFmC_Kcd@google.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 16 Feb 2024 23:10:04 +1300
-Message-ID: <CAGsJ_4x6z48N9Sq1V8Bn16eSdRAjBcy3=O_a2iizg=D-tPng=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] mm/zswap: remove the memcpy if acomp is not sleepable
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: akpm@linux-foundation.org, davem@davemloft.net, hannes@cmpxchg.org, 
-	herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, linux-mm@kvack.org, 
-	nphamcs@gmail.com, zhouchengming@bytedance.com, chriscli@google.com, 
-	chrisl@kernel.org, ddstreet@ieee.org, linux-kernel@vger.kernel.org, 
-	sjenning@redhat.com, vitaly.wool@konsulko.com, 
-	Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708078237; l=6868; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=qBSXF9Zc1QKlrZ+06XqkLDFWW0lt4a3ZfZcT0bPy+94=; b=BWteZ+EaPU7+bUG/td5WmSid8nuSCQibIVyuztn2t8Faibsom32MAAUA97mbccszmMWiG5vd7 zApsEaiaNYIASZl4rZBOJwaJs5EAuPEEQIFgyX7abcCBj2pyZz1KIW9
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 16, 2024 at 9:30=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Fri, Feb 16, 2024 at 05:08:14PM +1300, Barry Song wrote:
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > Most compressors are actually CPU-based and won't sleep during
-> > compression and decompression. We should remove the redundant
-> > memcpy for them.
-> >
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> > ---
-> >  mm/zswap.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 350dd2fc8159..6319d2281020 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
-> >       struct crypto_wait wait;
-> >       u8 *buffer;
-> >       struct mutex mutex;
-> > +     bool is_sleepable;
-> >  };
-> >
-> >  /*
-> > @@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu,=
- struct hlist_node *node)
-> >               goto acomp_fail;
-> >       }
-> >       acomp_ctx->acomp =3D acomp;
-> > +     acomp_ctx->is_sleepable =3D acomp_is_sleepable(acomp);
->
-> Just one question here. In patch 1, sleepable seems to mean "not async".
-> IIUC, even a synchronous algorithm may sleep (e.g. if there is a
-> cond_resched or waiting for a mutex). Does sleepable in acomp terms the
-> same as "atomic" in scheduling/preemption terms?
+There is a nice macro to check user mode.
 
-I think the answer is yes though async and sleepable are slightly
-different semantically
-generally speaking. but for comp cases, they are equal.
+Use it instead of open coding anding with MSR_PR to increase
+readability and avoid having to comment what that anding is for.
 
-We have two backends for compression/ decompression - scomp and acomp. if c=
-omp
-is using scomp backend, we can safely think they are not sleepable at
-least from the
-below three facts.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/interrupt.h |  2 +-
+ arch/powerpc/kernel/syscall.c        |  2 +-
+ arch/powerpc/kernel/traps.c          |  4 ++--
+ arch/powerpc/lib/sstep.c             | 23 +++++++++++------------
+ arch/powerpc/perf/core-book3s.c      |  2 +-
+ arch/powerpc/xmon/xmon.c             |  4 ++--
+ 6 files changed, 18 insertions(+), 19 deletions(-)
 
-1. in zRAM, we are using scomp APIs only - crypto_comp_decompress()/
-crypto_comp_compress(),  which are definitely scomp, we have never consider=
-ed
-sleeping problem in zram drivers:
-static int zram_read_from_zspool(struct zram *zram, struct page *page,
-                                 u32 index)
-{
-        struct zcomp_strm *zstrm;
-        unsigned long handle;
-        unsigned int size;
-        void *src, *dst;
-        u32 prio;
-        int ret;
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index a4196ab1d016..7b610864b364 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -97,7 +97,7 @@ DECLARE_STATIC_KEY_FALSE(interrupt_exit_not_reentrant);
+ 
+ static inline bool is_implicit_soft_masked(struct pt_regs *regs)
+ {
+-	if (regs->msr & MSR_PR)
++	if (user_mode(regs))
+ 		return false;
+ 
+ 	if (regs->nip >= (unsigned long)__end_soft_masked)
+diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.c
+index 77fedb190c93..f6f868e817e6 100644
+--- a/arch/powerpc/kernel/syscall.c
++++ b/arch/powerpc/kernel/syscall.c
+@@ -31,7 +31,7 @@ notrace long system_call_exception(struct pt_regs *regs, unsigned long r0)
+ 	user_exit_irqoff();
+ 
+ 	BUG_ON(regs_is_unrecoverable(regs));
+-	BUG_ON(!(regs->msr & MSR_PR));
++	BUG_ON(!user_mode(regs));
+ 	BUG_ON(arch_irq_disabled_regs(regs));
+ 
+ #ifdef CONFIG_PPC_PKEY
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 11e062b47d3f..f23430adb68a 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -404,7 +404,7 @@ noinstr void hv_nmi_check_nonrecoverable(struct pt_regs *regs)
+ 		return;
+ 	if (!(regs->msr & MSR_HV))
+ 		return;
+-	if (regs->msr & MSR_PR)
++	if (user_mode(regs))
+ 		return;
+ 
+ 	/*
+@@ -1510,7 +1510,7 @@ static void do_program_check(struct pt_regs *regs)
+ 		if (!is_kernel_addr(bugaddr) && !(regs->msr & MSR_IR))
+ 			bugaddr += PAGE_OFFSET;
+ 
+-		if (!(regs->msr & MSR_PR) &&  /* not user-mode */
++		if (!user_mode(regs) &&
+ 		    report_bug(bugaddr, regs) == BUG_TRAP_TYPE_WARN) {
+ 			regs_add_return_ip(regs, 4);
+ 			return;
+diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
+index 5766180f5380..e65f3fb68d06 100644
+--- a/arch/powerpc/lib/sstep.c
++++ b/arch/powerpc/lib/sstep.c
+@@ -1429,7 +1429,7 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
+ 			return 1;
+ 
+ 		case 18:	/* rfid, scary */
+-			if (regs->msr & MSR_PR)
++			if (user_mode(regs))
+ 				goto priv;
+ 			op->type = RFI;
+ 			return 0;
+@@ -1742,13 +1742,13 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
+ 			return 1;
+ #endif
+ 		case 83:	/* mfmsr */
+-			if (regs->msr & MSR_PR)
++			if (user_mode(regs))
+ 				goto priv;
+ 			op->type = MFMSR;
+ 			op->reg = rd;
+ 			return 0;
+ 		case 146:	/* mtmsr */
+-			if (regs->msr & MSR_PR)
++			if (user_mode(regs))
+ 				goto priv;
+ 			op->type = MTMSR;
+ 			op->reg = rd;
+@@ -1756,7 +1756,7 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
+ 			return 0;
+ #ifdef CONFIG_PPC64
+ 		case 178:	/* mtmsrd */
+-			if (regs->msr & MSR_PR)
++			if (user_mode(regs))
+ 				goto priv;
+ 			op->type = MTMSR;
+ 			op->reg = rd;
+@@ -3437,14 +3437,14 @@ int emulate_loadstore(struct pt_regs *regs, struct instruction_op *op)
+ 		 * stored in the thread_struct.  If the instruction is in
+ 		 * the kernel, we must not touch the state in the thread_struct.
+ 		 */
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & MSR_FP))
++		if (!user_mode(regs) && !(regs->msr & MSR_FP))
+ 			return 0;
+ 		err = do_fp_load(op, ea, regs, cross_endian);
+ 		break;
+ #endif
+ #ifdef CONFIG_ALTIVEC
+ 	case LOAD_VMX:
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & MSR_VEC))
++		if (!user_mode(regs) && !(regs->msr & MSR_VEC))
+ 			return 0;
+ 		err = do_vec_load(op->reg, ea, size, regs, cross_endian);
+ 		break;
+@@ -3459,7 +3459,7 @@ int emulate_loadstore(struct pt_regs *regs, struct instruction_op *op)
+ 		 */
+ 		if (op->reg >= 32 && (op->vsx_flags & VSX_CHECK_VEC))
+ 			msrbit = MSR_VEC;
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & msrbit))
++		if (!user_mode(regs) && !(regs->msr & msrbit))
+ 			return 0;
+ 		err = do_vsx_load(op, ea, regs, cross_endian);
+ 		break;
+@@ -3495,8 +3495,7 @@ int emulate_loadstore(struct pt_regs *regs, struct instruction_op *op)
+ 		}
+ #endif
+ 		if ((op->type & UPDATE) && size == sizeof(long) &&
+-		    op->reg == 1 && op->update_reg == 1 &&
+-		    !(regs->msr & MSR_PR) &&
++		    op->reg == 1 && op->update_reg == 1 && !user_mode(regs) &&
+ 		    ea >= regs->gpr[1] - STACK_INT_FRAME_SIZE) {
+ 			err = handle_stack_update(ea, regs);
+ 			break;
+@@ -3508,14 +3507,14 @@ int emulate_loadstore(struct pt_regs *regs, struct instruction_op *op)
+ 
+ #ifdef CONFIG_PPC_FPU
+ 	case STORE_FP:
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & MSR_FP))
++		if (!user_mode(regs) && !(regs->msr & MSR_FP))
+ 			return 0;
+ 		err = do_fp_store(op, ea, regs, cross_endian);
+ 		break;
+ #endif
+ #ifdef CONFIG_ALTIVEC
+ 	case STORE_VMX:
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & MSR_VEC))
++		if (!user_mode(regs) && !(regs->msr & MSR_VEC))
+ 			return 0;
+ 		err = do_vec_store(op->reg, ea, size, regs, cross_endian);
+ 		break;
+@@ -3530,7 +3529,7 @@ int emulate_loadstore(struct pt_regs *regs, struct instruction_op *op)
+ 		 */
+ 		if (op->reg >= 32 && (op->vsx_flags & VSX_CHECK_VEC))
+ 			msrbit = MSR_VEC;
+-		if (!(regs->msr & MSR_PR) && !(regs->msr & msrbit))
++		if (!user_mode(regs) && !(regs->msr & msrbit))
+ 			return 0;
+ 		err = do_vsx_store(op, ea, regs, cross_endian);
+ 		break;
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index b7ff680cde96..01d14523c938 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -256,7 +256,7 @@ static bool regs_sipr(struct pt_regs *regs)
+ 
+ static inline u32 perf_flags_from_msr(struct pt_regs *regs)
+ {
+-	if (regs->msr & MSR_PR)
++	if (user_mode(regs))
+ 		return PERF_RECORD_MISC_USER;
+ 	if ((regs->msr & MSR_HV) && freeze_events_kernel != MMCR0_FCHV)
+ 		return PERF_RECORD_MISC_HYPERVISOR;
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index b3b94cd37713..c79bed133f44 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -1820,8 +1820,8 @@ static void print_bug_trap(struct pt_regs *regs)
+ 	const struct bug_entry *bug;
+ 	unsigned long addr;
+ 
+-	if (regs->msr & MSR_PR)
+-		return;		/* not in kernel */
++	if (user_mode(regs))
++		return;
+ 	addr = regs->nip;	/* address of trap instruction */
+ 	if (!is_kernel_addr(addr))
+ 		return;
+-- 
+2.43.0
 
-        handle =3D zram_get_handle(zram, index);
-        ...
-        src =3D zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
-        if (size =3D=3D PAGE_SIZE) {
-                dst =3D kmap_local_page(page);
-                memcpy(dst, src, PAGE_SIZE);
-                kunmap_local(dst);
-                ret =3D 0;
-        } else {
-                dst =3D kmap_local_page(page);
-                ret =3D zcomp_decompress(zstrm, src, size, dst);
-                kunmap_local(dst);
-                zcomp_stream_put(zram->comps[prio]);
-        }
-        zs_unmap_object(zram->mem_pool, handle);
-        return ret;
-}
-
-2. zswap used to only support scomp before we moved to use
-crypto_acomp_compress()
-and crypto_acomp_decompress() APIs whose backends can be either scomp
-or acomp, thus new hardware-based compression drivers can be used in zswap.
-
-But before we moved to these new APIs in commit  1ec3b5fe6eec782 ("mm/zswap=
-:
-move to use crypto_acomp API for hardware acceleration") , zswap had
-never considered
-sleeping problems just like zRAM.
-
-3. There is no sleeping in drivers using scomp backend.
-
-$ git grep crypto_register_scomp
-crypto/842.c:   ret =3D crypto_register_scomp(&scomp);
-crypto/deflate.c:       ret =3D crypto_register_scomp(&scomp);
-crypto/lz4.c:   ret =3D crypto_register_scomp(&scomp);
-crypto/lz4hc.c: ret =3D crypto_register_scomp(&scomp);
-crypto/lzo-rle.c:       ret =3D crypto_register_scomp(&scomp);
-crypto/lzo.c:   ret =3D crypto_register_scomp(&scomp);
-crypto/zstd.c:  ret =3D crypto_register_scomp(&scomp);
-drivers/crypto/cavium/zip/zip_main.c:   ret =3D
-crypto_register_scomp(&zip_scomp_deflate);
-drivers/crypto/cavium/zip/zip_main.c:   ret =3D
-crypto_register_scomp(&zip_scomp_lzs);
-
-which are the most common cases.
-
->
-> Also, was this tested with debug options to catch any possible sleeps in
-> atomic context?
-
-yes. i have enabled CONFIG_DEBUG_ATOMIC_SLEEP=3Dy.
-
->
-> If the answer to both questions is yes, the change otherwise LGTM. Feel
-> free to add:
-> Acked-by: Yosry Ahmed <yosryahmed@google.com>
-
-Thanks!
-
->
-> Thanks!
->
-> >
-> >       req =3D acomp_request_alloc(acomp_ctx->acomp);
-> >       if (!req) {
-> > @@ -1368,7 +1370,7 @@ static void __zswap_load(struct zswap_entry *entr=
-y, struct page *page)
-> >       mutex_lock(&acomp_ctx->mutex);
-> >
-> >       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
-> > -     if (!zpool_can_sleep_mapped(zpool)) {
-> > +     if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) {
-> >               memcpy(acomp_ctx->buffer, src, entry->length);
-> >               src =3D acomp_ctx->buffer;
-> >               zpool_unmap_handle(zpool, entry->handle);
-> > @@ -1382,7 +1384,7 @@ static void __zswap_load(struct zswap_entry *entr=
-y, struct page *page)
-> >       BUG_ON(acomp_ctx->req->dlen !=3D PAGE_SIZE);
-> >       mutex_unlock(&acomp_ctx->mutex);
-> >
-> > -     if (zpool_can_sleep_mapped(zpool))
-> > +     if (!acomp_ctx->is_sleepable || zpool_can_sleep_mapped(zpool))
-> >               zpool_unmap_handle(zpool, entry->handle);
-> >  }
-> >
-> > --
-> > 2.34.1
-> >
-
-Thanks
-Barry
 
