@@ -1,189 +1,124 @@
-Return-Path: <linux-kernel+bounces-68667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E9BA857E0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:50:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A77857E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3686F1C24DCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:50:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A613B23D26
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAAB12BEA5;
-	Fri, 16 Feb 2024 13:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABD412BF1C;
+	Fri, 16 Feb 2024 13:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="S88AS8To";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jjQKU8QU";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="slifVxb0";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="x2u6/Hks"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EqjqDDeE"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF3159B5F
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FDD12BEBB
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708091431; cv=none; b=Z6YNxAiL312s8mAJImIlyZakthKtvi/EOLhmIRu2WLuBfcZ8Cq3EqJ8QH7IIvIWJ00xPT03O2qJrp9qchu5w/DbD7IXugNTEbDdr0VV2Cj4VOmBGgsLKUG6PGRW5Wa7DHwgFqU6SOkWkFHbQeAKAZ16bsupXDWUf6WPJNZW0wHc=
+	t=1708091543; cv=none; b=eoZ5VuDr5CrMAMc74v6fheNZffm1nm5fdSkiElBDLyuAI+0wcQE8iW3fOQqakAO4MFDT4+rEZ8Dsnp09NygYeR3PQAeFynPUM4dmRnfmmp6dZQPOeu2T6JFKPsY6gP7z4TOSd0PHC2pcz/n4MOyBoM9ZefGs611PD1ZOTzEk4h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708091431; c=relaxed/simple;
-	bh=UFLyol9XebIXP8E+TiARQB654sIagqzRAjL0tNlzEP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jGqjRptmN+Tl2XbKuPmMD4eeQ9wDPi2bMSbCYr6F6szZUh11smw9mPzcpIHWFtCWQ4cZjLxYfM79+vPRJx6UtwNcqhPDPXhBQJWa8NSyvpqHctMpvqgCKZxS8ccA+hzRnuzWzPePwmgH29MTk74nOyr5NzsGV9uW0OImXkR1wF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=S88AS8To; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jjQKU8QU; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=slifVxb0; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=x2u6/Hks; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6C1D71FB6D;
-	Fri, 16 Feb 2024 13:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708091425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fVE5Nc1YdqNYE0FuXxixZvVN4v97TGfURnkyaIu6vK4=;
-	b=S88AS8ToOwW/JD63VpMifx+DoVD5NJ+fJ/N0q8YM9aTt4CBQNpk5fcPeqk8C7NsOQ92Q5F
-	cRlgR5qSLfYoP9BgYUxXxXMRqL+JgFoTnJ05oFiXqOxLaGHNpBUkjq8OAnvl+MQ+BoxHbV
-	VU14LdBd0vJ4Ja6F6NL7O/vsmLX/zRo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708091425;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fVE5Nc1YdqNYE0FuXxixZvVN4v97TGfURnkyaIu6vK4=;
-	b=jjQKU8QU422ZwWsFPRUX3Aew9UBTnQmnY+dpX7NK6cj9VMM1VmtQla8oqxnDALUWyvbT4E
-	9Ieoj3KaQxSjuhBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708091423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fVE5Nc1YdqNYE0FuXxixZvVN4v97TGfURnkyaIu6vK4=;
-	b=slifVxb0mezcFjG1w7d1nnjS+XsyZjUonCKMS5M6rUXAstSt7GSpQ3l+/g+HKs7Frmz3Xl
-	/sHi9GWut05qabo0nTYAZzNM49tdaKNONZYre7Fo4C5OAVX/j/JigKo7Nj45QnHfPazjEC
-	qaPIm0CVzfHH5uZ8q+euSe8BvgceFFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708091423;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fVE5Nc1YdqNYE0FuXxixZvVN4v97TGfURnkyaIu6vK4=;
-	b=x2u6/HksgKeceJM5Wwh9KgO8YJkdfurk6kqdxjCrOaLeN3xzBG/tavvkg3MhX5r19rbtvp
-	rU9QWAKvdlGiyTBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 99B3013421;
-	Fri, 16 Feb 2024 13:50:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id COudIh5oz2WJMAAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Fri, 16 Feb 2024 13:50:22 +0000
-Date: Fri, 16 Feb 2024 14:51:24 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Byungchul Park <byungchul@sk.com>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org
-Subject: Re: [PATCH v3] sched/numa, mm: do not promote folios to nodes not
- set N_MEMORY
-Message-ID: <Zc9oXOwGMGGE4bBh@localhost.localdomain>
-References: <20240216114045.24828-1-byungchul@sk.com>
+	s=arc-20240116; t=1708091543; c=relaxed/simple;
+	bh=u9tEtOdYNtqmd9/AAMeHdwwwzLY9Mj2tgiqsEJ7VPpM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LC1cPOdHodDczJBbfQMrsaI4CrN3h1D5QP8QQZhmTKgMuGiJOIwOPbmJm3QErizaa6BwatD/3WlFCMYdtEvjEe67effGJKW12YaLmBouSNheOWL0+z2jheQvkYVx5eXw6KALIUAW1flsYYYVj5gXmBXKp5AjkzCKj/l5/B5h82Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EqjqDDeE; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2a17f3217aso265136066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:52:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708091539; x=1708696339; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eAoF57+HdoC1GvJ/hU1s41OTdJ+yNr5fmH12PpHzZhk=;
+        b=EqjqDDeEeAgfHKRhm/7FXhs0vvIRfhisModT51YJU6FDzTZjjdAi01Z5nBex8wO3FX
+         QiYjtpfTWT19pdvvbqHoNWneUeR+3/LamsjoyxSAEWfmiSqKhL+vtFjB7q9SZrBf7waA
+         XSgHkvxqZSZaV0KElN0jf61j5Xh1+2j2ALP9E4SfVdnTCfuBwYAuoU013tzj6NS0Y1ey
+         nYBHKDRzMxCaXDK4Kcu2+D3IoHNZFqYZedT1gZDTSf1UBoEtfcguP9I7SSiGkkq0SrDk
+         4p/CheNZkRd9OFFvtiV4tHkcyrZS9rTbJ1e+2zydbwhFAcl6SD1/n7WYEzT/cKHgX7xk
+         u0Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708091539; x=1708696339;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eAoF57+HdoC1GvJ/hU1s41OTdJ+yNr5fmH12PpHzZhk=;
+        b=mYrpNeYbJCcpBA5RUEwOcQN5s9sTYAEGDGsyTlMrVvqKWMBY/cl5Gb7/YSPhJV43uO
+         cQj6cn9hcL0CQUeHmWXdTFg+vWOfDQBjoJHCqNdZnxcjdUHj7E5Gg4mKxb3dVX8A9zn+
+         bpbXkVJTdqNQCf6U2ey1vuIb9juW6q8P42TNIBvbOcFkUSgJSTJkLSIMqqpNsgArXprG
+         P4q0PKChOuqfN4+kyGpl/nuk8WvlKam8+pR5ic4VDmWFHYsodFiyME0EwdKWhRdWbybf
+         vuxVQyqFJgSEMJVHf1aOh3wAAkI6qHFbLLqDncPsG0zpr/HuG/UNU66ifgFCZbWZBTdj
+         Jl5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXs8bqXH9a2ZLHjZYbWlNhBNsuY/wKby4h3CUh8UC//xSQWEYkgtPPJZwxYp+PHuNjKhYnYYjk6f2dyKcFiFf8xMUk0r19nTzvm4e8N
+X-Gm-Message-State: AOJu0YyrRGWYH9zEnWcB1nw02xQqRmdb91Kvjv3DEpHhoeLkR+Q61d3+
+	AY3ujFVUEPlGw2YcfIAY9paAKTtoHjmtOtkp+J+fTLj02BTG4v8GhUfuJNHbu2c=
+X-Google-Smtp-Source: AGHT+IGIr51M+n4RbWiqG86O/TMKzx4D2zAaPxdwzmAymCsRVnzRuXwWYgdoG5YWn0HjGcOK7zRPyA==
+X-Received: by 2002:a17:906:7c46:b0:a3b:e975:c530 with SMTP id g6-20020a1709067c4600b00a3be975c530mr3480002ejp.51.1708091539563;
+        Fri, 16 Feb 2024 05:52:19 -0800 (PST)
+Received: from krzk-bin.. ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id oq25-20020a170906cc9900b00a3cd41b3c19sm1559709ejb.199.2024.02.16.05.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 05:52:19 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] gpio: constify opaque pointer "data" in gpio_device_find()
+Date: Fri, 16 Feb 2024 14:52:17 +0100
+Message-Id: <20240216135217.129795-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216114045.24828-1-byungchul@sk.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=slifVxb0;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="x2u6/Hks"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.82 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.31)[75.44%]
-X-Spam-Score: -1.82
-X-Rspamd-Queue-Id: 6C1D71FB6D
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 16, 2024 at 08:40:45PM +0900, Byungchul Park wrote:
-> From 150af2f78e19217a1d03e47e3ee5279684590fb4 Mon Sep 17 00:00:00 2001
-> From: Byungchul Park <byungchul@sk.com>
-> Date: Fri, 16 Feb 2024 20:18:10 +0900
-> Subject: [PATCH v3] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
+The opaque pointer "data" in each match function used by
+gpio_device_find() is a pointer to const, thus the same argument passed
+to gpio_device_find() can adjusted similarly.
 
-"do not try to promote folios to memoryless nodes"
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/gpio/gpiolib.c      | 2 +-
+ include/linux/gpio/driver.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-because AFAICS we are just trying.
-Even if should_numa_migrate_memory() returns true, I assume that we will
-fail somewhere down the chain e.g: migrate_pages() when we see that this
-node does not any memory, right?
-
-> A numa node might not have its local memory but CPUs. Promoting a folio
-> to the node's local memory is nonsense. So avoid nodes not set N_MEMORY
-> from getting promoted.
-
-If you talk about memoryless nodes everybody gets it better IMHO.
-"Memoryless nodes do not have any memory to migrate to, so stop trying it."
-
-
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  kernel/sched/fair.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d7a3c63a2171..7ed9ef3c0134 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1828,6 +1828,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
->  	int dst_nid = cpu_to_node(dst_cpu);
->  	int last_cpupid, this_cpupid;
->  
-> +	/*
-> +	 * A node of dst_nid might not have its local memory. Promoting
-> +	 * a folio to the node is meaningless.
-> +	 */
-> +	if (!node_state(dst_nid, N_MEMORY))
-> +		return false;
-
-"Cannot migrate to memoryless nodes"
-
-seems shorter and more clear.
-
-So, what happens when we return true here? will we fail at
-migrate_pages() I guess? That is quite down the road so I guess
-this check can save us some time.
-
-
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 0e332b24c7b8..8c9cb324b7a4 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1112,7 +1112,7 @@ EXPORT_SYMBOL_GPL(gpiochip_remove);
+  * If the function returns non-NULL, the returned reference must be freed by
+  * the caller using gpio_device_put().
+  */
+-struct gpio_device *gpio_device_find(void *data,
++struct gpio_device *gpio_device_find(const void *data,
+ 				     int (*match)(struct gpio_chip *gc,
+ 						  const void *data))
+ {
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 51b23211794d..251a610f2234 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -628,7 +628,7 @@ int devm_gpiochip_add_data_with_key(struct device *dev, struct gpio_chip *gc,
+ 				    void *data, struct lock_class_key *lock_key,
+ 				    struct lock_class_key *request_key);
+ 
+-struct gpio_device *gpio_device_find(void *data,
++struct gpio_device *gpio_device_find(const void *data,
+ 				int (*match)(struct gpio_chip *gc, const void *data));
+ struct gpio_device *gpio_device_find_by_label(const char *label);
+ struct gpio_device *gpio_device_find_by_fwnode(const struct fwnode_handle *fwnode);
 -- 
-Oscar Salvador
-SUSE Labs
+2.34.1
+
 
