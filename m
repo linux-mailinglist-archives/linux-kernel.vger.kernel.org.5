@@ -1,166 +1,169 @@
-Return-Path: <linux-kernel+bounces-68176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BB98576D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:33:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839E38576DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BC221F21483
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:33:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39193284804
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC37168DA;
-	Fri, 16 Feb 2024 07:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GojglAen"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD89C12E78;
-	Fri, 16 Feb 2024 07:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BA9168DC;
+	Fri, 16 Feb 2024 07:34:00 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D6015E8B
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708068801; cv=none; b=LJW/CIS8FI2aevGKYyTp6NYo9bC8YpM181zs0PWfQJ4h26sdfBQ4TvdduwOn4v/4A2CPvY4YiEdsqS18OoF4tAbiT0Sc2EvVWWtp6G973udGUdJGhcvxb/wt2vwQoizvSk/CCAFstniQaoz9SOQLFXC+re+8JiXGXKkltTDqtM4=
+	t=1708068840; cv=none; b=ru0GPkPqkH7wGPlmRidzk5YlLf+bwM735Aijh0FXmUQYa5QSnwpElLPEPd45PqdQLQCJXMKixHicctGE6DEE6MmGYBc/wlIxdOtOzICn9uDpIzHHHhX32zQ2PE5A6gAPxD5scC9dzmHHXkM4QiQ8i5fD6VnHytQ041InQS0QzKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708068801; c=relaxed/simple;
-	bh=JrFYOs2FPwXmy1/XqxjA+hM8SVuG/+lRE4KuH28UyIQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m+lkVy0ySrJWHDPUnzTEz8sLHwLwX8njaJhxxiZX1bXuYIOQmkfTZK+ahE4U6K+lHJVFdKxoU1/hsj6ufHderuz2QPn9Iohb4/MxWot/+oHlYxD+Yk4pmNyeZoyk7/lrSoc4BsWj03geYlcDx97xkQhaqGAFKZjmbTmX43ehay4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GojglAen; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d94b222a3aso16570005ad.2;
-        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708068799; x=1708673599; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
-        b=GojglAenlNi0EnQJb3tIkM/u89ntEnEhLAGtRAOxrR/YorRBL2r//5aiEIKpuOaB2m
-         1JA48yUCxAGeqPEeOh9BzNHROV+UDuw6b4EFvBv5f5gOPuG+2kPmvVzZco88MeyEYA/Z
-         YOm4VA69fySIMuFADHHV+937tVWa3HZFDeqkNzR9tIHv1pbJNS+hL/IR5kMU6z4k19KY
-         1kinCRBD2A5kUWPTDq/R6rPS5qDpK4Zcg6QETvL/UK2fLazHXj0nkXnV4br7IFOAfrXu
-         0OMQ4NZ+DE2/S+1sc3ZBZLwjAHeS5Q6s6oYdhSWWH7SZ22+SKKfkKg8D4wJruKSc3v11
-         nIbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708068799; x=1708673599;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
-        b=RAYoNZA/omPU+TJZIEgyoQ+QDZ6pGy+Sl9bx8hKrTJdLSU8jgTVP8D5aeiaS/q0SOo
-         p7TOB2dmtTsBA1uVMJ1TQEhQ9AvOZ/jNl3pvgWpywNT9U7/qjDQFKzEtvc7sgvaGKSnv
-         2Hg7MGvIzX6mSewPqHPaKGrx/n++n6Y7hm8676/5hRwgaNeD7C3LbAfW5xNfqlnTaAOh
-         Y2VgNwoCAyUkAMiWDFQitAWYnWx5MZFcDa4gycOTDhKfyCsMgfzg8Z/AOLqScVqzh/iH
-         XeQ33MJSYHQLTnjd63VCyYhvd8xhXct4y/OFOY/HsZjUeQu9SmXQmlch5ITBv4hvQy9G
-         eCzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUt7d9P/9S0aFggW9rYhvzDoW+RTEogK2K+lnAWDua8emgx5tYQZnAWib2oZLz6iIdXrMK9d6UivaAbZR3R7dQ8nz3877ORF//kN3Kc
-X-Gm-Message-State: AOJu0YzYyJqLjlucmZETBsVhuTzgkG9QQTnjtcuBFUxl6KKA/OWbYc5Q
-	X8wRBxQf16EZVXW7EhMvaf3EQGrvZXz1Gav7pbGVewfVhQRxE9EC
-X-Google-Smtp-Source: AGHT+IFr+SagVtSO4PmH1xd1WdlIdpB5MqwREa//fHVExHaysAvSPd55ite6cpQYSsFOtL+XMQw1TQ==
-X-Received: by 2002:a17:902:d4c3:b0:1d9:a647:5566 with SMTP id o3-20020a170902d4c300b001d9a6475566mr4766249plg.4.1708068799003;
-        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r10-20020a1709028bca00b001db7d3276fbsm2367607plo.27.2024.02.15.23.33.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 23:33:17 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] parisc/unaligned: Rewrite 64-bit inline assembly of emulate_ldd()
-Date: Thu, 15 Feb 2024 23:33:15 -0800
-Message-Id: <20240216073315.3801833-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708068840; c=relaxed/simple;
+	bh=cAH7DMxuXm3UwwG9aeS1vnD0RhVr10jUVfSZVMparjw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=HnKpub/sw+BS4spwOxJpV7acg0kGwgO8IBwvxWrOX/ZeKqvns2we3vJjJTBmPLwOARIyR6p3Hg5QW7NorJObi3ww2lLoPuiJYlJvmyCskEuDZynFKP/uziHv4AbVouKaTbtDxFWCcv09s8HMGpZbIPWi7rNyTgXlYOB9qp+Kajg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-0a-65cf0fde2f2c
+From: Byungchul Park <byungchul@sk.com>
+To: mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	akpm@linux-foundation.org
+Subject: [PATCH v2] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
+Date: Fri, 16 Feb 2024 16:33:40 +0900
+Message-Id: <20240216073340.55404-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLLMWRmVeSWpSXmKPExsXC9ZZnke49/vOpBs9fSlrMWb+GzeLS46ts
+	FtNfNrJYPJ2wldnibv9UFovLu+awWdxb85/VYvK7Z4wWlw4sYLI43nuAyWJfxwMmi44j35gt
+	th79zu7A67Fm3hpGj5Z9t9g9Fmwq9di8Qstj06dJ7B53ru1h8zgx4zeLx/t9V9k8Np+u9vi8
+	SS6AK4rLJiU1J7MstUjfLoEr4/X3p4wFJ2Uq+vZMY25gfCPexcjJISFgItF9aS4TjD21bTE7
+	iM0moC5x48ZP5i5GLg4RgTeMEp3LzrCBJJgF8iRa//eBNQgLBEss2LOWBcRmEVCV2HyyixHE
+	5hUwlTj84QkzxFB5idUbDoANkhDYwCaxeMFvVoiEpMTBFTdYJjByL2BkWMUolJlXlpuYmWOi
+	l1GZl1mhl5yfu4kRGIjLav9E72D8dCH4EKMAB6MSD++BP2dThVgTy4orcw8xSnAwK4nwTuo9
+	kyrEm5JYWZValB9fVJqTWnyIUZqDRUmc1+hbeYqQQHpiSWp2ampBahFMlomDU6qBkeG6t7RV
+	z+Lv3zazH5rH8NDrYszfcg9e346DylkSgmFBsUL9R2o5l22qbur+FiKT/WJtTqWcavcpaZZF
+	b8VunJfVuJ6rJqSd4zJZXyNrZ6/b48ivi/0D/6Tue/WibMERQ8X3y20bNrmxM8peW6M84/wT
+	vyfz5BcEv5U/GFaVILaRr7NAcm+uEktxRqKhFnNRcSIA4FVAu0ACAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCLMWRmVeSWpSXmKPExsXC5WfdrHuP/3yqwcWj3BZz1q9hs7j0+Cqb
+	xfSXjSwWTydsZba42z+VxeLw3JOsFpd3zWGzuLfmP6vF5HfPGC0uHVjAZHG89wCTxb6OB0wW
+	HUe+MVtsPfqd3YHPY828NYweLftusXss2FTqsXmFlsemT5PYPe5c28PmcWLGbxaP9/uusnks
+	fvGByWPz6WqPz5vkArijuGxSUnMyy1KL9O0SuDJef3/KWHBSpqJvzzTmBsY34l2MnBwSAiYS
+	U9sWs4PYbALqEjdu/GTuYuTiEBF4wyjRuewMG0iCWSBPovV/HxOILSwQLLFgz1oWEJtFQFVi
+	88kuRhCbV8BU4vCHJ8wQQ+UlVm84wDyBkWMBI8MqRpHMvLLcxMwcU73i7IzKvMwKveT83E2M
+	wLBaVvtn4g7GL5fdDzEKcDAq8fAe+HM2VYg1say4MvcQowQHs5II76TeM6lCvCmJlVWpRfnx
+	RaU5qcWHGKU5WJTEeb3CUxOEBNITS1KzU1MLUotgskwcnFINjNUZnqo/itbvuv1Aeo511C6O
+	i4pX9E2vfo7ekHNjo72qaMARVe4Da5zLNtbPPP7jdMHFTSc9J8hMuNbMs++iudYr3vlf9FYt
+	+7IvRmQGZ9HKKoMG46mWLu47D1eV/D1dfNS0MGX/tTm5Fc3bp3RxBK4XfPV55TY73aDbOyaK
+	TDUu6n9QXLFSRleJpTgj0VCLuag4EQAptKZcJwIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Convert to use real temp variables instead of clobbering processor
-registers. This aligns the 64-bit inline assembly code with the 32-bit
-assembly code which was rewritten with commit 427c1073a2a1
-("parisc/unaligned: Rewrite 32-bit inline assembly of emulate_ldd()").
+Changes from v1:
+	1. Trim the verbose oops in the commit message. (feedbacked by
+	   Phil Auld)
+	2. Rewrite a comment in code. (feedbacked by Phil Auld)
 
-While at it, fix comment in 32-bit rewrite code. Temporary variables are
-now used for both 32-bit and 64-bit code, so move their declarations
-to the function header.
+--->8---
+From 6830b59db267a31b78f6f09af12ae0e3132b4bca Mon Sep 17 00:00:00 2001
+From: Byungchul Park <byungchul@sk.com>
+Date: Fri, 16 Feb 2024 16:26:23 +0900
+Subject: [PATCH v2] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
 
-No functional change intended.
+While running qemu with a configuration where some CPUs don't have their
+local memory and with a kernel numa balancing on, the following oops has
+been observed. It's because of null pointers of ->zone_pgdat of zones of
+those nodes that are not initialized properly at booting time. So should
+avoid nodes not set N_MEMORY from getting promoted.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> BUG: unable to handle page fault for address: 00000000000033f3
+> #PF: supervisor read access in kernel mode
+> #PF: error_code(0x0000) - not-present page
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP NOPTI
+> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> Code: (omitted)
+> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+> ? __die
+> ? page_fault_oops
+> ? __pte_offset_map_lock
+> ? exc_page_fault
+> ? asm_exc_page_fault
+> ? wakeup_kswapd
+> migrate_misplaced_page
+> __handle_mm_fault
+> handle_mm_fault
+> do_user_addr_fault
+> exc_page_fault
+> asm_exc_page_fault
+> RIP: 0033:0x55b897ba0808
+> Code: (omitted)
+> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
+> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
+> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
+> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
+> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
+>  </TASK>
+
+Signed-off-by: Byungchul Park <byungchul@sk.com>
+Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
 ---
-Implemented while analyzing a bug. I am not really sure of it is worth
-the effort, but I figured that I might as well submit it.
+ kernel/sched/fair.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
- arch/parisc/kernel/unaligned.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
-
-diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
-index c520e551a165..622c7b549fb8 100644
---- a/arch/parisc/kernel/unaligned.c
-+++ b/arch/parisc/kernel/unaligned.c
-@@ -169,7 +169,8 @@ static int emulate_ldw(struct pt_regs *regs, int toreg, int flop)
- static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
- {
- 	unsigned long saddr = regs->ior;
--	__u64 val = 0;
-+	unsigned long shift;
-+	__u64 val = 0, temp1;
- 	ASM_EXCEPTIONTABLE_VAR(ret);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d7a3c63a2171..859ef78ef72b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1828,6 +1828,15 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+ 	int dst_nid = cpu_to_node(dst_cpu);
+ 	int last_cpupid, this_cpupid;
  
- 	DPRINTF("load " RFMT ":" RFMT " to r%d for 8 bytes\n", 
-@@ -180,25 +181,22 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
- 
- #ifdef CONFIG_64BIT
- 	__asm__ __volatile__  (
--"	depd,z	%3,60,3,%%r19\n"		/* r19=(ofs&7)*8 */
--"	mtsp	%4, %%sr1\n"
--"	depd	%%r0,63,3,%3\n"
--"1:	ldd	0(%%sr1,%3),%0\n"
--"2:	ldd	8(%%sr1,%3),%%r20\n"
--"	subi	64,%%r19,%%r19\n"
--"	mtsar	%%r19\n"
--"	shrpd	%0,%%r20,%%sar,%0\n"
-+"	depd,z	%4,60,3,%2\n"		/* shift=(ofs&7)*8 */
-+"	mtsp	%5, %%sr1\n"
-+"	depd	%%r0,63,3,%4\n"
-+"1:	ldd	0(%%sr1,%4),%0\n"
-+"2:	ldd	8(%%sr1,%4),%3\n"
-+"	subi	64,%2,%2\n"
-+"	mtsar	%2\n"
-+"	shrpd	%0,%3,%%sar,%0\n"
- "3:	\n"
- 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 3b, "%1")
- 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 3b, "%1")
--	: "=r" (val), "+r" (ret)
--	: "0" (val), "r" (saddr), "r" (regs->isr)
--	: "r19", "r20" );
-+	: "+r" (val), "+r" (ret), "=&r" (shift), "=&r" (temp1)
-+	: "r" (saddr), "r" (regs->isr) );
- #else
--    {
--	unsigned long shift, temp1;
- 	__asm__ __volatile__  (
--"	zdep	%2,29,2,%3\n"		/* r19=(ofs&3)*8 */
-+"	zdep	%2,29,2,%3\n"		/* shift=(ofs&3)*8 */
- "	mtsp	%5, %%sr1\n"
- "	dep	%%r0,31,2,%2\n"
- "1:	ldw	0(%%sr1,%2),%0\n"
-@@ -214,7 +212,6 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
- 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(3b, 4b, "%1")
- 	: "+r" (val), "+r" (ret), "+r" (saddr), "=&r" (shift), "=&r" (temp1)
- 	: "r" (regs->isr) );
--    }
- #endif
- 
- 	DPRINTF("val = 0x%llx\n", val);
++	/*
++	 * A node of dst_nid might not have its local memory. Promoting
++	 * a folio to the node is meaningless. What's even worse, oops
++	 * can be observed by the null pointer of ->zone_pgdat in
++	 * various points of the code during migration.
++	 */
++	if (!node_state(dst_nid, N_MEMORY))
++		return false;
++
+ 	/*
+ 	 * The pages in slow memory node should be migrated according
+ 	 * to hot/cold instead of private/shared.
 -- 
-2.39.2
+2.17.1
 
 
