@@ -1,62 +1,67 @@
-Return-Path: <linux-kernel+bounces-69463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BB88589E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 575508589E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 431981F252C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:11:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A68F1F28601
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DA7C14A4C0;
-	Fri, 16 Feb 2024 23:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E44914A4F1;
+	Fri, 16 Feb 2024 23:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6u+KcAj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odrj2f42"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD8539856;
-	Fri, 16 Feb 2024 23:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F7014900F;
+	Fri, 16 Feb 2024 23:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708125052; cv=none; b=tPf2UOV7rz/7BNyTs+S13BA7Byal2jaynsiT35xxI3GuhmBriGYlqElUaBxmDwIjc7j6Jw1pyqZOIeHg5O93dOn2T3bZaewI5jii9MfzrFdIBdHOWyNYHR97opswpTogDQ3MwfBg7J+GXirHCoVQCSiu1lUjvikTVewU/EmK22U=
+	t=1708125054; cv=none; b=ixYIjZrV7eIURNm4JK37k3Fqw6P6KDznVH3Ka85Ez3KaAhp+kwMmZ2tO78HJEqw8JyRcLDfQd62hGg9KBF4yG1ASpxQeZz6GdoePNzv0hUgWkNYdr8WLsYTHOhHM3v1XMhQ3xyEZUAYc/NzzdS4Hz8g4PT1j9StReP0NmVFWzfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708125052; c=relaxed/simple;
-	bh=JUGSRD3rDk0UjCIEiP93HgNR4Op20XxL9d8nDPwBv/0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bFArRGLSL8279aIBkZModZFq+/FtY6hFIKWhSMzFjCVHND3W+A+ZX97iu1ojDl0Y3E1mq0GQSsX75fSwHK4i+DmF/F8k9uebT1jWrXuQykcVw4HCTlzG9l0MliAHOEnUo5dfhYoe3SkN6zMP4dAr1iH6qW+lof9+juWXSxxIMbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6u+KcAj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3561CC4166D;
-	Fri, 16 Feb 2024 23:10:51 +0000 (UTC)
+	s=arc-20240116; t=1708125054; c=relaxed/simple;
+	bh=iBsqvuJx9/Q2mBm8XmU6WQRn/IPKZuxa3TbJISaCg2c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=efgPzOGxrpSY2AlGhHLOIGjpwCtARtwU8bJfA9PBz35kmZN3kwc7gq0thcBiRATkCx3JB1oAT8jOq2Rje8k9DnKtBXwbdAsozfGPsaz92Aj7NR/mXbYj3cNsl39eVX6B265vaYLeGheDcaQtyEBE7tAtvVBPg4CfQEloBnj3Ars=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odrj2f42; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DB83C433B2;
+	Fri, 16 Feb 2024 23:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708125052;
-	bh=JUGSRD3rDk0UjCIEiP93HgNR4Op20XxL9d8nDPwBv/0=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=J6u+KcAjGVuWFQJGSqc02GtUpAXsEvfTLznJKUVYBOXciMEiqfSuvo9CCkm/+cDRh
-	 1L9n0DYkBE0OHHhVQ+PJQaxkdxGwailhYxKRqUaqQwjUIHGf/6F+qDppTrnFVwpnCQ
-	 1oZtBfk1OojCyMK/mS2ZXV9+50wfP3UFjZE8JFm/K78jvE9FCMkKTI1Nv9ni3XKHdd
-	 NvAX5CRBW1t5nQ26sEr6cPCxcLv25poGNQvT++Xdm616QxtHa3n8LaBgN2lQYmrI38
-	 dQnjqXAVzdxV43UIC6GN318oilf4Unyvzygrw/Uj5PCIJXyEekpgEHLjfI/y8kZtYW
-	 622lgCVG5vHVQ==
+	s=k20201202; t=1708125053;
+	bh=iBsqvuJx9/Q2mBm8XmU6WQRn/IPKZuxa3TbJISaCg2c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=odrj2f42ooh6z4ljcUNzH7WcqJrODOUpXLeoAFuMQPEDsd91GQFO1OvMuK04yJqx3
+	 WcU03WwarfutjrV1eZNdyb66MtWCfbmLOwtUAw/qNC+Uki87cBF5l+BgYMoVe4I02c
+	 mr06K5RZkwVGE7006QYP4NHgg2Ybq79GUzyFtzvdbVKveA8YT+GWIg7ror/FVHcLuc
+	 Jay75OLSPKHzWtNvAndwZMevalckocMaIuyUmG5f1O0ECOKZMmRm91e1zUKk/SLsJK
+	 d9woVUroyFRnRewtCi37+vJlN97Z6dvYzNMEVHUxCh3IfHE5onojJaWs6orZJ3nb8u
+	 +kIyp1rOUstcQ==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Luca Weiss <luca.weiss@fairphone.com>
+Cc: ~postmarketos/upstreaming@lists.sr.ht,
+	phone-devel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 1/2] arm64: dts: qcom: sdm845-db845c: correct PCIe wake-gpios
-Date: Fri, 16 Feb 2024 17:10:37 -0600
-Message-ID: <170812504024.18043.16466655341911725987.b4-ty@kernel.org>
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: (subset) [PATCH 0/3] Add PPG support for PMI632 LPG dtsi
+Date: Fri, 16 Feb 2024 17:10:38 -0600
+Message-ID: <170812504026.18043.12596968738983352722.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108131216.53867-1-krzysztof.kozlowski@linaro.org>
-References: <20240108131216.53867-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240205-pmi632-ppg-v1-0-e236c95a2099@fairphone.com>
+References: <20240205-pmi632-ppg-v1-0-e236c95a2099@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,20 +72,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 08 Jan 2024 14:12:15 +0100, Krzysztof Kozlowski wrote:
-> Bindings allow a "wake", not "enable", GPIO.  Schematics also use WAKE
-> name for the pin:
-> 
->   sdm845-db845c.dtb: pcie@1c00000: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
+On Mon, 05 Feb 2024 10:51:37 +0100, Luca Weiss wrote:
+> Hook up the PBS & SDAM to the PMI632 LPG so that we can use the
+> hw_pattern for the LEDs.
 > 
 > 
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: sdm845-db845c: correct PCIe wake-gpios
-      commit: 584a327c5cffc36369b2a8953d9448826240f1ac
-[2/2] arm64: dts: qcom: sm8150: correct PCIe wake-gpios
-      commit: 7c38989d0f7a35c83e7c4781271d42662903fa8d
+[3/3] arm64: defconfig: Enable QCOM PBS
+      commit: 9c5c14c066f353ac1f4e3b4dd6e19451eac61e0c
 
 Best regards,
 -- 
