@@ -1,277 +1,245 @@
-Return-Path: <linux-kernel+bounces-69285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2936B8586A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:20:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 937AF8586A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0551C20F3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:20:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A5D1280F67
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A835A13958B;
-	Fri, 16 Feb 2024 20:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BB91386B3;
+	Fri, 16 Feb 2024 20:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="Jib9uMGo"
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.142])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eLcHg2O3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A7613849D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 20:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.222.135.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19717138496
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 20:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708114823; cv=none; b=p7OMFL8S1OqR5El78KmJ4swVNptB3Lv2mRVYEWOLZh3zNREtU99iipQX/blQD/Uoc78zWq8RNBsQmoM6rkc5NfSptQcJbilm4LggsRge+6o0iVCA1xxXUXKwIkLYyQCJ3JXga5uODyQjzgb07YjE+3Ye11ghrLA5gIpd4jl9KCE=
+	t=1708114847; cv=none; b=ejGBLs83aoTM5mgR7w1j/502mh2ukOLfeBeGxgWgcoVgF1BMoetraOlnROEL+41btx3pvn1zkHhbx/ISh1Jk1mQUdokH8kActSltQzeaxwuX/lje6ZDQbxUuKFTDks3WKIlHzZb+WSzZ4/ywwRf5FfXGw872/kbPrrvfcFumy3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708114823; c=relaxed/simple;
-	bh=K/h1DiJQZpuXmKZCBLykYam4RQ5/rwmjbzvVMNkW5OU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AR9xVriP8qAcDMg4QPu7Lx/u/N1bpU1IHpopW+Brw2kbuILL1ktBEgg183LEgJ5wTxXJn7Ts2/QSmvukeABuTmPvdxePjpVEhoAh0PE/nd9Su7NDcIJlAx24xHeKDVMdeP1+F/Ym/sx2qqs4svye1JK43CV0qy1awsiMiZLR2jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl; spf=pass smtp.mailfrom=o2.pl; dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b=Jib9uMGo; arc=none smtp.client-ip=193.222.135.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 17528 invoked from network); 16 Feb 2024 21:20:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1708114809; bh=qmYllgnwKksRx5/Imr5XsNxmytwFQiqpm7EidwFAVVU=;
-          h=Subject:To:Cc:From;
-          b=Jib9uMGoYCv+XdfnuLL+E0b6/X8TnX6dmdXwEq52OzPhq9JBbk/IQODFpn9XkcvHv
-           9QLazsNdhc+YMrbOXcSZX9uibHfoO+Lw6mZ9+e+3L7Ktg3BEgqCchbrpzC4elLgHgL
-           bbqg4JTKfb2sIXvwXbBkWH0ntrfNQCRyuJ7Ob234=
-Received: from aafh184.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.137.184])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <helgaas@kernel.org>; 16 Feb 2024 21:20:09 +0100
-Message-ID: <520eaafc-e723-49d4-8a6b-375fc64dd511@o2.pl>
-Date: Fri, 16 Feb 2024 21:20:06 +0100
+	s=arc-20240116; t=1708114847; c=relaxed/simple;
+	bh=LjXrhM5S5R5YyJMzFZKDmPkYrKpRkwV4zq5L+4sY/P8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=pf56FyeEl19ia+jZHK2ESDN14sctYPplwLSDdGLjtoHReDd5u9LXyKbIoOAuKmbQQk3owklR7ez4YimpbXzyY513Ko6/oesgown76LVXheALJXD2lJ0U7GkO23qQK8lVomX3oyfbO4PRIAJEPI/QDbyfhamdC+U59BRc4TYTpq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eLcHg2O3; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708114845; x=1739650845;
+  h=date:from:to:cc:subject:message-id;
+  bh=LjXrhM5S5R5YyJMzFZKDmPkYrKpRkwV4zq5L+4sY/P8=;
+  b=eLcHg2O3r4Vcnx8GiW6T3Vsjq763aXFdWzhWMWL3jCTzpYvRlYJ9DWUd
+   2qzekVdJQFvnvnr2poSvqsOhFNEXbbs31wV3Yi69yrYuq/RfF6zYDfpXj
+   cKUAW8odDqHHYcT4hk8pYUzCBc1WcNIcCtPZ5T1Xq5pBevrFMWS7ox1GI
+   Jyw3OmZZICOujpuizPTu8kObGg5sxJOKtIrZ2SITXGSMrRjD0oD9u8nnn
+   EEOjq8q9dp0xw2zLuLKli2/sNodmKFc1Rd4qotv5LcewzETJ2e+gxOEAW
+   AhQi2qeJ+g7MxjMfF/A7gFAydqEXVQ5KgA0zAeWVvf/Wypra+sqoj9Lnh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2372575"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2372575"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 12:20:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="8520641"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 16 Feb 2024 12:20:43 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rb4hM-0001b0-2e;
+	Fri, 16 Feb 2024 20:20:40 +0000
+Date: Sat, 17 Feb 2024 04:20:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:irq/msi] BUILD SUCCESS
+ 9bbe13a5d414a7f8208dba64b54d2b6e4f7086bd
+Message-ID: <202402170424.2tedNrJl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
- returned from _PRT
-Content-Language: en-GB
-To: Bjorn Helgaas <helgaas@kernel.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, Len Brown <lenb@kernel.org>,
- Jean Delvare <jdelvare@suse.de>, Borislav Petkov <bp@alien8.de>
-References: <20240216184946.GA1349514@bhelgaas>
-From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <20240216184946.GA1349514@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 4ac63e82f2f54a09f826c6db96293531
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [8XOF]                               
 
-W dniu 16.02.2024 o 19:49, Bjorn Helgaas pisze:
-> On Fri, Feb 16, 2024 at 07:26:06PM +0100, Rafael J. Wysocki wrote:
->> On Tue, Dec 26, 2023 at 1:50 PM Mateusz Jończyk <mat.jonczyk@o2.pl> wrote:
->>> On some platforms, the ACPI _PRT function returns duplicate interrupt
->>> routing entries. Linux uses the first matching entry, but sometimes the
->>> second matching entry contains the correct interrupt vector.
->>>
->>> As a debugging aid, print a warning to dmesg if duplicate interrupt
->>> routing entries are present. This way, we could check how many models
->>> are affected.
->>>
->>> This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
->>> SMBus controller. This controller is nonfunctional unless its interrupt
->>> usage is disabled (using the "disable_features=0x10" module parameter).
->>>
->>> After investigation, it turned out that the driver was using an
->>> incorrect interrupt vector: in lspci output for this device there was:
->>>         Interrupt: pin B routed to IRQ 19
->>> but after running i2cdetect (without using any i2c-i801 module
->>> parameters) the following was logged to dmesg:
->>>
->>>         [...]
->>>         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->>>         i801_smbus 0000:00:1f.3: Transaction timeout
->>>         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
->>>         i801_smbus 0000:00:1f.3: Transaction timeout
->>>         irq 17: nobody cared (try booting with the "irqpoll" option)
->>>
->>> Existence of duplicate entries in a table returned by the _PRT method
->>> was confirmed by disassembling the ACPI DSDT table.
->>>
->>> Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
->>> Manager), which is neither of the two vectors returned by _PRT.
->>> As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
->>> working under Windows. It appears that Windows has reconfigured the
->>> chipset independently to use another interrupt vector for the device.
->>> This is possible, according to the chipset datasheet [1], page 436 for
->>> example (PIRQ[n]_ROUT—PIRQ[A,B,C,D] Routing Control Register).
->>>
->>> [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
->>>
->>> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
->>> Cc: Bjorn Helgaas <bhelgaas@google.com>
->>> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
->>> Cc: Len Brown <lenb@kernel.org>
->>> Cc: Borislav Petkov <bp@suse.de>
->>> Cc: Jean Delvare <jdelvare@suse.de>
->>> Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
->>> Previously-tested-by: Jean Delvare <jdelvare@suse.de>
->>>
->>> ---
->>> Hello,
->>>
->>> I'm resurrecting an older patch that was discussed back in January:
->>>
->>> https://lore.kernel.org/lkml/20230121153314.6109-1-mat.jonczyk@o2.pl/T/#u
->>>
->>> To consider: should we print a warning or an error in case of duplicate
->>> entries? This may not be serious enough to disturb the user with an
->>> error message at boot.
->>>
->>> I'm also looking into modifying the i2c-i801 driver to disable its usage
->>> of interrupts if one did not fire.
->>>
->>> v2: - add a newline at the end of the kernel log message,
->>>     - replace: "if (match == NULL)" -> "if (!match)"
->>>     - patch description tweaks.
->>> v3: - fix C style issues pointed by Jean Delvare,
->>>     - switch severity from warning to error.
->>> v3 RESEND: retested on top of v6.2-rc4
->>> v4: - rebase and retest on top of v6.7-rc7
->>>     - switch severity back to warning,
->>>     - change pr_err() to dev_warn() and simplify the code,
->>>     - modify patch description (describe Windows behaviour etc.)
->>> ---
->>>  drivers/acpi/pci_irq.c | 25 ++++++++++++++++++++++---
->>>  1 file changed, 22 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
->>> index ff30ceca2203..1fcf72e335b0 100644
->>> --- a/drivers/acpi/pci_irq.c
->>> +++ b/drivers/acpi/pci_irq.c
->>> @@ -203,6 +203,8 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
->>>         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
->>>         struct acpi_pci_routing_table *entry;
->>>         acpi_handle handle = NULL;
->>> +       struct acpi_prt_entry *match = NULL;
->>> +       const char *match_int_source = NULL;
->>>
->>>         if (dev->bus->bridge)
->>>                 handle = ACPI_HANDLE(dev->bus->bridge);
->>> @@ -219,13 +221,30 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
->>>
->>>         entry = buffer.pointer;
->>>         while (entry && (entry->length > 0)) {
->>> -               if (!acpi_pci_irq_check_entry(handle, dev, pin,
->>> -                                                entry, entry_ptr))
->>> -                       break;
->>> +               struct acpi_prt_entry *curr;
->>> +
->>> +               if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &curr)) {
->>> +                       if (!match) {
->>> +                               match = curr;
->>> +                               match_int_source = entry->source;
->>> +                        } else {
->>> +                               dev_warn(&dev->dev, FW_BUG
->> dev_info() would be sufficient here IMV.
->>
->>> +                                      "ACPI _PRT returned duplicate IRQ routing entries for INT%c: %s[%d] and %s[%d]\n",
->>> +                                      pin_name(curr->pin),
->>> +                                      match_int_source, match->index,
->>> +                                      entry->source, curr->index);
->>> +                               /* We use the first matching entry nonetheless,
->>> +                                * for compatibility with older kernels.
-> The usual comment style in this file is:
->
->   /*
->    * We use ...
->    */
->
->>> +                                */
->>> +                       }
->>> +               }
->>> +
->>>                 entry = (struct acpi_pci_routing_table *)
->>>                     ((unsigned long)entry + entry->length);
->>>         }
->>>
->>> +       *entry_ptr = match;
->>> +
->>>         kfree(buffer.pointer);
->>>         return 0;
->>>  }
->>>
->>> base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
->>> --
->> Bjorn, any concerns regarding this one?
-> No concerns from me.  
->
-> I guess this only adds a message, right?  It doesn't actually fix
-> anything or change any behavior?
-Exactly.
-> This talks about "duplicate" entries, which suggests to me that they
-> are identical, but I don't think they are.  It sounds like it's two
-> "matching" entries, i.e., two entries for the same (device, pin)?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/msi
+branch HEAD: 9bbe13a5d414a7f8208dba64b54d2b6e4f7086bd  genirq/msi: Provide MSI_FLAG_PARENT_PM_DEV
 
-Right.
+elapsed time: 1445m
 
-> And neither of the two _PRT entries yields a working i801 device?
+configs tested: 157
+configs skipped: 3
 
-Unpatched Linux uses the first matching entry, but the second one gives
-a working i801 device. The point is to print a warning message to see
-how many devices are affected and whether it is safe to switch the code
-to use the last matching entry in all instances.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Therefore I used dev_warn().
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240216   gcc  
+arc                   randconfig-002-20240216   gcc  
+arm                              alldefconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                          collie_defconfig   gcc  
+arm                                 defconfig   clang
+arm                            hisi_defconfig   gcc  
+arm                        keystone_defconfig   gcc  
+arm                          moxart_defconfig   gcc  
+arm                        neponset_defconfig   gcc  
+arm                   randconfig-003-20240216   gcc  
+arm                   randconfig-004-20240216   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-002-20240216   gcc  
+arm64                 randconfig-004-20240216   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240216   gcc  
+csky                  randconfig-002-20240216   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240216   gcc  
+i386         buildonly-randconfig-004-20240216   gcc  
+i386         buildonly-randconfig-005-20240216   gcc  
+i386                                defconfig   clang
+i386                  randconfig-003-20240216   gcc  
+i386                  randconfig-005-20240216   gcc  
+i386                  randconfig-011-20240216   gcc  
+i386                  randconfig-012-20240216   gcc  
+i386                  randconfig-013-20240216   gcc  
+i386                  randconfig-015-20240216   gcc  
+i386                  randconfig-016-20240216   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240216   gcc  
+loongarch             randconfig-002-20240216   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           ip28_defconfig   gcc  
+mips                      loongson3_defconfig   gcc  
+mips                      pic32mzda_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240216   gcc  
+nios2                 randconfig-002-20240216   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
+parisc                randconfig-001-20240216   gcc  
+parisc                randconfig-002-20240216   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    klondike_defconfig   gcc  
+powerpc                 mpc832x_rdb_defconfig   gcc  
+powerpc                     tqm5200_defconfig   gcc  
+powerpc64             randconfig-003-20240216   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240216   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240216   gcc  
+s390                  randconfig-002-20240216   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                            hp6xx_defconfig   gcc  
+sh                          landisk_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                          r7785rp_defconfig   gcc  
+sh                    randconfig-001-20240216   gcc  
+sh                    randconfig-002-20240216   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sh                  sh7785lcr_32bit_defconfig   gcc  
+sh                          urquell_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240216   gcc  
+sparc64               randconfig-002-20240216   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-001-20240216   gcc  
+um                    randconfig-002-20240216   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-005-20240216   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240216   gcc  
+x86_64                randconfig-003-20240216   gcc  
+x86_64                randconfig-004-20240216   gcc  
+x86_64                randconfig-005-20240216   gcc  
+x86_64                randconfig-011-20240216   gcc  
+x86_64                randconfig-012-20240216   gcc  
+x86_64                randconfig-014-20240216   gcc  
+x86_64                randconfig-073-20240216   gcc  
+x86_64                randconfig-074-20240216   gcc  
+x86_64                randconfig-076-20240216   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20240216   gcc  
+xtensa                randconfig-002-20240216   gcc  
 
-> Bjorn
-
-Greetings,
-
-Mateusz
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
