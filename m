@@ -1,259 +1,222 @@
-Return-Path: <linux-kernel+bounces-68056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0838885756C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:57:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD1D85757D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DC3BB22918
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:57:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A338C1F233DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F295C134CC;
-	Fri, 16 Feb 2024 04:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F9D0134A9;
+	Fri, 16 Feb 2024 05:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="FNro7KLo"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jEbKhf86"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B73B134A0;
-	Fri, 16 Feb 2024 04:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2383646;
+	Fri, 16 Feb 2024 05:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708059456; cv=none; b=a30S/MgxnjypyQS3gGPUlRQ30ekZAGVYyIVt3ZSxlPssioGuOcaF73fo73nuUY626RfyslPnm747nxvKAS9RwPh9qzEZxdQqo51kfg4ix4txRsw/QWcg8Nu/TYUVNbcwNTCsIhvm0sSZQae6tHwveSde2rC8O+BCS7tryEpLcE4=
+	t=1708059864; cv=none; b=rz8pAkDqEdvHnRtcW0Utus4K0+HNvcSLV5ZXEZ/VYDOJrBBZUb8S2BAkyMqccnitIj73ci0jmWU/Mp+DXTF92LPuU+klsBF18b6Ar+ixMtqDdELH+/FfNZ/Tb4IyWhL9oQni0oOthedlg0z7LRa3FhBzP1xxlBar1Zynv4GTNqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708059456; c=relaxed/simple;
-	bh=3Y4HMSaLBEWeWUuNQmzxVN/phbzyKq/55gEBAgAU9XY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jSf6NF5VPaQC+VfxlYUZPzf2dC6qdq1olBsufRygPn710lYj9Rv9IIX5HZ43lXLBV11l1NxPHchfDpIqohvxqWftrlwp1WM9Fa5Qg79z08tzNMpbxsUm9xshBSF9wiMf0gf6toPOSNueeXO2slFnVtcd19S3jfBaRlFVyR2NcPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=FNro7KLo; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708059432; x=1708664232; i=deller@gmx.de;
-	bh=3Y4HMSaLBEWeWUuNQmzxVN/phbzyKq/55gEBAgAU9XY=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=FNro7KLoAnnifC6gGptxg4FjadLJ5o84c7aij5va+ivWMZ1j1+ymN4YQxb/fHbEG
-	 D0VNpSD4kFRCK+LhJ5ad34lOHpAky09yCmUpbVWbo36eO7mqzfN3WvRUYkgtOgZIM
-	 hHHNqA+NEEigc4iPcFt784vwCGK9BWbpGVJEFPCFKiOuqpm9dEUTGEJe/JvPkc2SX
-	 X5pOBMg+OrF7VY20IKpHC/bazkVZd8AS2f7E6a/cOxESvSr6+4JtG86vkjTqihQdQ
-	 TPzXCKuD3syTqB91UwKiLXHknyvwEVJghf3fUthQuezXwgpkY0CkI1ETye34SbTxV
-	 WLacsXg2ugvcqop1UQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.158.42]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MYvcG-1rWMBc32Ia-00Uoff; Fri, 16
- Feb 2024 05:57:12 +0100
-Message-ID: <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
-Date: Fri, 16 Feb 2024 06:54:55 +0100
+	s=arc-20240116; t=1708059864; c=relaxed/simple;
+	bh=mvd4+ES9H4+E9FF2CWmYJA4SeFWwPFFspFFuFegVVh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qdjgfXXgUuFqprvRckaF2KcvlqBYyLK2HPHIeNoKnCo5fLDEcBZ5qS6TSQRk2wp8K6bvyVr8gJQ3DKsacO+6JsMuRNbRou/gIKfgHi8tEJbQwUKnobPe+kkmjn6A06xmPG/lgI9i2P+DuS78NEQirgE8CSKV5mEsQq8qoCrEBx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jEbKhf86; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708059862; x=1739595862;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mvd4+ES9H4+E9FF2CWmYJA4SeFWwPFFspFFuFegVVh4=;
+  b=jEbKhf862ItoEj6j4DWJjHfsp5k5FAWZ48quhUD0oDFQAaTjjXjgBGPB
+   JXyu7B3nZ/VmoE3nSN3SElQrRGK+3c5pKtP6ZM7eTHU+mO2Quo88o43bS
+   pH9rh4TBE4CKkdbcRdnDl9PllfcfEHlOTz8p3KzFkOFnpGT60lHnl/uGD
+   p90qCT9cH2Le8IhhF4p3JRv2QfACioPHWz6wPrMTgMed3aOuYtn0JQqT7
+   HtPZCGjplAUH4ECYu/ZiADyb3JoxrZvHm4d5Sgu/vpoL8fSb7nKvpoNwL
+   gFefVdO5B0Gqh8yo+pERSC0oXT/vt/WQgzOUw7ii+JONYZ8g8f3jCviap
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5148363"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="5148363"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 21:04:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="34532258"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 15 Feb 2024 21:04:15 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1raqOT-00010S-0h;
+	Fri, 16 Feb 2024 05:04:13 +0000
+Date: Fri, 16 Feb 2024 13:03:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev, amd-gfx@lists.freedesktop.org,
+	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+	linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
+	linux-renesas-soc@vger.kernel.org,
+	"open list:ACPI" <linux-acpi@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Melissa Wen <mwen@igalia.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
+Message-ID: <202402161205.v9d7IYpg-lkp@intel.com>
+References: <20240214215756.6530-2-mario.limonciello@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, Charlie Jenkins <charlie@rivosinc.com>
-Cc: David Laight <David.Laight@aculab.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:becarR+ef4dzegsvkMywz78csqT++Tf06H+URxCa80SXC0se2DA
- 69OKNWH4d4j0ZlrqTSZ6d0szjEP/XoVceimRnGQ6mOHmqGk2dXAOLkluBMy2pd44lPx4xym
- 3hIUEYJFowGMYXUHu5l2w8EgsuGKc/TY+KO/ssoxZV3zpTgTjO/NoQZvijq8CUiyRhHq0x/
- cCUlAnUYjCMPfDQTBFA0Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:F9qjsjB5Dxk=;jDqY0E6LxS4oP/gBh+GIhPxe9wK
- 45di+uCMIaRg71h+2iVBBhZ12S1tFIHeSYFgs0DK4dDJ0oY6s1oWeCEYGurTlWifvqARQSZL/
- +6AxF7OHtDleuohxOY/ODhha0UtMwpzMgR4go9HDGpqA+h5pv34rk1y8CWeXJrPX/gy4IFoIS
- P2aEegPC1K54okOY56VePIMVjgQCQ5bobYt0xNqj+5a6e9fNh578YckpBwxpnsCEpgud3B+Xu
- qMKulRR/b0Is9Q2Rlr7FE89E38wI9eqOML+YmoWTCwMvfxcl3Na7bGjZQKNO20GmZurlaDD3G
- TTJQ58beLHyVgsPo1LGJKM8M5u7+LgzevuvtGKkJrkb/hYGo0XNxLc8uBOfKdWejOzUMV9Ga0
- 1NSx5xiRRj9sBoH6kvcQFysjVE+ozfp9KmH8dYB0qagS7QRsRRc470/7c6pDeIJ/sHL7d6y5X
- p+Zrxr65lKcWv2EMBC+EkeSvG2JnJ+L5g+MX3hs7eCShcLwjdBJsG84FlBu5EYL277UhVBO2r
- 0WD6zVspf1su+Te/WXGTMcTWYEMUR9rIa/7unTtN8Iv6bGE8uvvUg3k1bO1ABD0qEYZLDdcQX
- QORH5N+TTOZaf8+avYLIGJaoT8HqVOWYxe8IvSODKAJ6jrWcc+8QUFXd/qHLsyN7KhsrBZ2J9
- KbH3no/NVksEI70vR2P7NMRR3GUFDV6z0RGxYGokGskUEXb+WJdTVD7rNzbu50rkS4q/WNSFF
- /muXA2jkMKis69KjpPCMoHmFGHEsAs/DgY6n2fNv+i26+wgxg+QUzTsL+5NleVNeeQn6YAfBS
- qwofV39ojtDXSSh9a4BrNmClr7zUeUWgdkiAGvJ+mtncA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214215756.6530-2-mario.limonciello@amd.com>
 
-On 2/15/24 02:58, Guenter Roeck wrote:
-> Hi Charlie,
->
-> On 2/14/24 17:30, Charlie Jenkins wrote:
->> On Wed, Feb 14, 2024 at 03:03:07PM -0800, Guenter Roeck wrote:
->>> On 2/14/24 13:41, Charlie Jenkins wrote:
->>>> The test cases for ip_fast_csum and csum_ipv6_magic were failing on a
->>>> variety of architectures that are big endian or do not support
->>>> misalgined accesses. Both of these test cases are changed to support =
-big
->>>> and little endian architectures.
->>>>
->>>> The test for ip_fast_csum is changed to align the data along (14 +
->>>> NET_IP_ALIGN) bytes which is the alignment of an IP header. The test =
-for
->>>> csum_ipv6_magic aligns the data using a struct. An extra padding fiel=
-d
->>>> is added to the struct to ensure that the size of the struct is the s=
-ame
->>>> on all architectures (44 bytes).
->>>>
->>>> The test for csum_ipv6_magic somewhat arbitrarily aligned saddr and
->>>> daddr. This would fail on parisc64 due to the following code snippet =
-in
->>>> arch/parisc/include/asm/checksum.h:
->>>>
->>>> add=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 %4, %0, %0\n"
->>>> ldd,ma=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8(%1), %6\n"
->>>> ldd,ma=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8(%2), %7\n"
->>>> add,dc=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 %5, %0, %0\n"
->>>>
->>>> The second add is expecting carry flags from the first add. Normally,
->>>> a double word load (ldd) does not modify the carry flags. However,
->>>> because saddr and daddr may be misaligned, ldd triggers a misalignmen=
-t
->>>> trap that gets handled in arch/parisc/kernel/unaligned.c. This causes
->>>> many additional instructions to be executed between the two adds. Thi=
-s
->>>> can be easily solved by adding the carry into %0 before executing the
->>>> ldd.
->>>>
->>>
->>> I really think this is a bug either in the trap handler or in the hppa=
-64
->>> qemu emulation. Only unaligned ldd instructions affect (actually,
->>> unconditionally set) the carry flag. That doesn't happen with unaligne=
-d
->>> ldw instructions. It would be worthwhile tracking this down since ther=
-e are
->>> lots of unaligned data accesses (8-byte accesses on 4-byte aligned add=
-resses)
->>> when running the kernel in 64-bit mode. On the other side, I guess thi=
-s
->>> is a different problem. Not sure though if that should even be mention=
-ed
->>> here since that makes it sound as if it would be expected that such
->>> accesses impact the carry flag.
->>
->> I wasn't confident it was a bug somewhere so that's why I sent this pat=
-ch.
->>
->> However, I have just found the section of the processor manual [1] I wa=
-s
->> looking for (Section Privileged Software-Accessible Registers subsectio=
-n
->> Processor Status Word (PSW)):
->>
->> "Processor state is encoded in a 64-bit register called the Processor
->> Status Word (PSW). When an interruption occurs, the current value of th=
-e
->> PSW is saved in the Interruption Processor Status Word (IPSW) and
->> usually all defined PSW bits are set to 0.
->>
->> "The PSW is set to the contents of the IPSW by the RETURN FROM
->> INTERRUPTION instruction. The interruption handler may restore the
->> original PSW, modify selected bits, or may change the PSW to an entirel=
-y
->> new value."
->>
->> Stored in the PSW register are the "Carry/borrow bits". This confirms
->> that the carry/borrow bits should be restored. The save is supposed to
->> automatically happen upon an interrupt and restored by the RETURN FROM
->> INTERRUPTION, thus this is a QEMU bug and not a Linux bug (please
->> correct me if I am wrong).
->>
->
-> I know that much (I looked into the manual as well), I just really don't
-> know if this is a Linux bug or a QEMU bug, and I have not been able to
-> nail it down. I think someone with access to hardware will need to confi=
-rm.
->
-> Specifically: Yes, the carry/borrow bits should be restored. Question is
-> if the Linux kernel's interrupt handler doesn't restore the carry bits
-> or if the problem is on the qemu side.
->
->> This v8 was not needed after-all it seems. It would be best to stick
->> with the v7.
->>
-> I tend to agree; after all, v7 exposes the problem, making it easier to
-> determine if the problem can be reproduced on real hardware.
->
-> FWIW,I wrote some test code which exposes the problem.
+Hi Mario,
 
-Can you please give a pointer to this test code?
-I'm happy to try it on real hardware.
+kernel test robot noticed the following build warnings:
 
-> It is quite easy to show that carry is always set after executing ldd
-> on an unaligned address. That is also why I know for sure that the
-> problem is not seen with ldw on unaligned addresses.
-Interesting.
-In general I think it's quite important to differentiate between
-running on qemu or running on physical hardware.
-Qemu just recently got 64-bit support, and it's not yet behaving
-like real hardware. One thing I noticed is, that read hardware
-does not seem to jump into the exception handler twice, while
-qemu does. So, if you run into an exception (e.g. unaligned ldd)
-then if a second exception happens in the fault handler (e.g. second
-unaligned ldd to resolve wrongly-coded code lookup), you will
-get different behaviour between hardware and emulation.
-This is also the reason why qemu still fails to emulate newer
-64-bit Linux kernels which uses kernel modules.
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.8-rc4 next-20240215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Helge
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/drm-Stop-using-select-ACPI_VIDEO-in-all-drivers/20240215-055936
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20240214215756.6530-2-mario.limonciello%40amd.com
+patch subject: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
+config: alpha-kismet-CONFIG_FB_BACKLIGHT-CONFIG_FB_ATY128-0-0 (https://download.01.org/0day-ci/archive/20240216/202402161205.v9d7IYpg-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240216/202402161205.v9d7IYpg-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402161205.v9d7IYpg-lkp@intel.com/
+
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for FB_BACKLIGHT when selected by FB_ATY128
+   .config:233:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
+   .config:335:warning: symbol value 'n' invalid for AIC79XX_DEBUG_MASK
+   .config:336:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
+   .config:437:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
+   .config:511:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_Y
+   .config:613:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
+   .config:620:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
+   .config:705:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
+   .config:719:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
+   .config:766:warning: symbol value 'n' invalid for XEN_MEMORY_HOTPLUG_LIMIT
+   .config:774:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
+   .config:791:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
+   .config:825:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
+   .config:840:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
+   .config:871:warning: symbol value 'n' invalid for USB_GADGET_STORAGE_NUM_BUFFERS
+   .config:875:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
+   .config:894:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
+   .config:903:warning: symbol value 'n' invalid for NET_EMATCH_STACK
+   .config:905:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
+   .config:1160:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
+   .config:1246:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
+   .config:1287:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
+   .config:1411:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
+   .config:1517:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_BAUDRATE
+   .config:1543:warning: symbol value 'n' invalid for WATCHDOG_OPEN_TIMEOUT
+   .config:1547:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
+   .config:1739:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
+   .config:1833:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
+   .config:1972:warning: symbol value 'n' invalid for KCOV_IRQ_AREA_SIZE
+   .config:2263:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
+   .config:2304:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
+   .config:2383:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
+   .config:2500:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
+   .config:2535:warning: symbol value 'n' invalid for PANEL_PARPORT
+   .config:2622:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
+   .config:2808:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
+   .config:2904:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
+   .config:2906:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
+   .config:2928:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
+   .config:2945:warning: symbol value 'n' invalid for DEBUG_OBJECTS_ENABLE_DEFAULT
+   .config:2952:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
+   .config:3033:warning: symbol value 'n' invalid for MTD_REDBOOT_DIRECTORY_BLOCK
+   .config:3058:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
+   .config:3075:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
+   .config:3098:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:3339:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
+   .config:3430:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
+   .config:3434:warning: symbol value 'n' invalid for INET_TABLE_PERTURB_ORDER
+   .config:3476:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
+   .config:3596:warning: symbol value 'n' invalid for UCLAMP_BUCKETS_COUNT
+   .config:3678:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
+   .config:3697:warning: symbol value 'n' invalid for VERBOSE_MCHECK_ON
+   .config:3699:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
+   .config:3745:warning: symbol value 'n' invalid for DE2104X_DSL
+   .config:3756:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
+   .config:4000:warning: symbol value 'n' invalid for IP_VS_SH_TAB_BITS
+   .config:4019:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
+   .config:4118:warning: symbol value 'n' invalid for CMA_AREAS
+   .config:4145:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
+   .config:4176:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_X
+   .config:4290:warning: symbol value 'n' invalid for RIONET_RX_SIZE
+   .config:4465:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
+   .config:4574:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
+   .config:4596:warning: symbol value 'n' invalid for IBM_EMAC_TXB
+   .config:4702:warning: symbol value 'n' invalid for IP_VS_MH_TAB_INDEX
+   .config:4979:warning: symbol value 'n' invalid for ARCH_MMAP_RND_BITS
+   .config:5060:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
+   .config:5079:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
+   .config:5216:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
+   .config:5237:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
+   .config:5330:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
+   .config:5347:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
+   .config:5434:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
+   .config:5517:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
+   .config:5609:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
+   .config:5638:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
+   .config:5728:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
+   .config:5736:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
+   .config:5759:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
+   .config:5922:warning: symbol value 'n' invalid for RCU_BOOST_DELAY
+   .config:5956:warning: symbol value 'n' invalid for SERIAL_8250_RUNTIME_UARTS
+   .config:6051:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
+   .config:6218:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
+   .config:6236:warning: symbol value 'n' invalid for SERIAL_SH_SCI_NR_UARTS
+   .config:6337:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MAX
+   .config:6588:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
+   .config:6732:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
+   .config:6783:warning: symbol value 'n' invalid for DVB_MAX_ADAPTERS
+   .config:6793:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
+   .config:6801:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
+   .config:6860:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_MAX_TAGS
+   .config:6968:warning: symbol value 'n' invalid for RIONET_TX_SIZE
+   .config:6999:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
+   .config:7132:warning: symbol value 'n' invalid for SCSI_MESH_RESET_DELAY_MS
+   .config:7173:warning: symbol value 'n' invalid for IBM_EMAC_RXB
+   .config:7195:warning: symbol value 'n' invalid for LOCKDEP_BITS
+   .config:7306:warning: symbol value 'n' invalid for OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:7367:warning: symbol value 'n' invalid for SCSI_MPT3SAS_MAX_SGE
+   .config:7497:warning: symbol value 'n' invalid for PSTORE_DEFAULT_KMSG_BYTES
+   .config:7540:warning: symbol value 'n' invalid for PANEL_LCD
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
