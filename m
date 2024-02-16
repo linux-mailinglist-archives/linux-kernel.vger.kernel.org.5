@@ -1,173 +1,204 @@
-Return-Path: <linux-kernel+bounces-68548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE284857C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:53:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43CBA857C2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E544284077
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:53:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65A21F21D2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99BE78683;
-	Fri, 16 Feb 2024 11:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28BA78B60;
+	Fri, 16 Feb 2024 11:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z+SYydbn"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dwMlX+4h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644FC59B5F;
-	Fri, 16 Feb 2024 11:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03F177F32;
+	Fri, 16 Feb 2024 11:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708084403; cv=none; b=Ly/q5bt2ewconZGbrYma3/GcK4bkV/4g3bvVeLI2DY51uH1YItypRq+g0DcqkMgiop+LRsDkvoAFeM5mEC4BKazMlnsAPJ37uO4AAaLAmYsGXLDPZYPJ2bLIEl8k08Q43UpKbhW7NUI+1Ky6gRp/tVN44EqpMZLiLzv4+Uc3L1w=
+	t=1708084508; cv=none; b=PRwixDBq+/OccRfOpWBmHDbazwAgVEaxgHsYzDy8/2Ls9wqVjTa1uzEgpczGE/ZZV/VGM3dP1DRu8+izuV9Oh1ZXyBNrwHj47rOpvJWt5d85pp5s/NzjxBkT77Re7j1gzeTJXtC91lw5wAQ0hyxJt+1ijTYpIU6V8BUOQMunOl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708084403; c=relaxed/simple;
-	bh=rprh8FmcfW3UGidBPWanTNOuKUyGfL0148rKwu9AYlI=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=cBx0t46h05Aa8aab1kKZXWk7RWKFFRDb6bkeF8OphVhHb+1yc6aKjclFB+jyHj86vkY+OmvageWhVG77CyfGw6ObGMiJM705JZzmUXZyrlwsjNC+bLcZUAv7FlUkp+l7wtMnlqQOCCgaM/hj0rHWWwN9oLD8IvHzUTzLi26gc1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z+SYydbn; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2a17f3217aso248211866b.2;
-        Fri, 16 Feb 2024 03:53:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708084399; x=1708689199; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FONUejouVKRdUMu9T/GH3sU6Bm1U62wIrGpiqv/zAl8=;
-        b=Z+SYydbnv0Qv9993W+V8ECZtwJePy1QGv9N0Igz7kEveLKfk5qfirhKJj7piPqikqs
-         lZC75I6YQ+UP0FXci+bLPZeAnRjuLS+j/RD08FhgwMh5exWkww5Q99cx/AQccRnHqvS+
-         HO74MCIjubVPnARbJh2Xj6vf8gpZSnMpy2Cp3bEMxLX7PL4yft0h+Fz1L/EzhnwbByOs
-         8PdbqEtabrB+1L2Nl2hW0R1PZ0lfh/46j5jNHopxq1nE84D16dxEZxxlw+mVypc9XY/q
-         l6VMzkLJNSaX1po0CuIT9ZmuYi8DapqGIR04eUHDFPzBYSkiTJhDrrH0//5FAaKUvL5Z
-         V/Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708084399; x=1708689199;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FONUejouVKRdUMu9T/GH3sU6Bm1U62wIrGpiqv/zAl8=;
-        b=lvDdBnc1MggmjShlFYel+NnbnbnI2A+oV7qozLwtkaZNib9lGg9JZe6l1OUnTsBand
-         CJYm4TY8kS6NiuBnMFXKuaGvlHdW+R2+ODo4kO5be5q0CxuvuTDELr42nhwduojlWDAU
-         qODAzv7fBG9q3D6NYV44bwFnoI133xyUYceNGTNLGQge1NnTK55Gi4bVdBxwu0PwwqUP
-         fi47cJycV5zmPS4F8hlG6PjRlbobSRM/ZIjar0DRtjiqibV+/VIfSZcvHTCZFCsiFiN9
-         Eu0d1ExttedG+iSy4RzP3DUgCSfzf6ErOyqe6UQ7GVZbZr+kGXVmX1x0A9LAlTcpO2Bt
-         1NlA==
-X-Forwarded-Encrypted: i=1; AJvYcCV1+fxjzsAr8z4jrslhUDsavcUG1nPl5c+KSQZ1jguUUkLDMyLgPQNW1AKJyIyDfMGJcnQeh9XyHs4efg0TxCG/pGGVUvX6VS0vS7HlTfaxsBhqCsafCxKyPDV0Vfn5kUtdC9SZj0ty1CI=
-X-Gm-Message-State: AOJu0YzhXfYfegUxOqrzMVaIYysSf+27LQwvE7XEwok6mRWISxQ6wU0K
-	UDB3qfmiBsDQVWuc3RfkgTQBlK7UHgpJ0bucVPg/tA4P1BBYsrf8+oTWSPuC
-X-Google-Smtp-Source: AGHT+IETKBqVDm9ABkmTptZnMQ26UxMCndCjuDTSarB5s9mLn3o//7N3rMAR3bUK8JqRgEzNJtXBDw==
-X-Received: by 2002:a17:906:4a17:b0:a38:107a:94f6 with SMTP id w23-20020a1709064a1700b00a38107a94f6mr3046427eju.71.1708084399406;
-        Fri, 16 Feb 2024 03:53:19 -0800 (PST)
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id sn24-20020a170906629800b00a3d296f46besm1471739ejc.120.2024.02.16.03.53.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 03:53:19 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=9dee9a19cb63a77cc8f9975bef85216d69227f6fdf7a09b5460baac60383;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708084508; c=relaxed/simple;
+	bh=SA/YJ6YmFTOGSDTYSeuOE5s7qE3eDZedvAeQG7HfBNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=m9LDmpim4UDAxNzuqteU9rrGwAtWlZ5WOxR6Ss+s7xPskiwPCd3BMosdBQzn4RVEDQe6q5P7UEgCrWmVQXELjmKhcP2gJ+Gbxj/GdbPWmF0JHijR27r9GcZ5M5snrpdDCCAHY0AH5fLLDIKX4cBKAZAvHmoiEqz+s6VC0PyLDls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dwMlX+4h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F07C433C7;
+	Fri, 16 Feb 2024 11:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708084508;
+	bh=SA/YJ6YmFTOGSDTYSeuOE5s7qE3eDZedvAeQG7HfBNU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dwMlX+4hqM+35ItC8oNX4wJDYCVxbor87inn8l4hyq0tf2GMmp8agL4soLMrlJJqM
+	 WxiwKGHpH0Mvj2aXIh8NrBeR6cPI8OBJaWMOiAa7lIPG/ZXhCz/ibiRdKkTFmFvINX
+	 ofgrzg5VKifW+lgTUjoOqkdZm53MDOuFiKHDqBCcXOIOBzYGML7Vq8+6V/ArIxpjOn
+	 0sKCbSLY4VBA9matMdN4zZroOun1234EwOHTaaLYx7EGGu10clW6gz2BRnB8nO+BR3
+	 8Wj4PQIvXKek9vf7HGGxpHTFqJLKiNn1YEDlH6p1mlyyyq9466UlWHid1j5CxEY2Yq
+	 rQddtYw1gETJg==
+Date: Fri, 16 Feb 2024 11:54:55 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>, corbet@lwn.net,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ nuno.sa@analog.com, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] docs: iio: add documentation for device buffers
+Message-ID: <20240216115455.676a7947@jic23-huawei>
+In-Reply-To: <CAMknhBFD54XotZrGeZK_48G=FDOWAr1vAf0pQwO=8o05jsTFRA@mail.gmail.com>
+References: <20240213081720.17549-1-ramona.gradinariu@analog.com>
+	<20240213081720.17549-3-ramona.gradinariu@analog.com>
+	<CAMknhBFD54XotZrGeZK_48G=FDOWAr1vAf0pQwO=8o05jsTFRA@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 16 Feb 2024 12:53:18 +0100
-Message-Id: <CZ6HDVZIGHOE.2SGOQNXEGENY3@gmail.com>
-Cc: <marvin24@gmx.de>, <ac100@lists.launchpad.net>,
- <linux-tegra@vger.kernel.org>, <linux-staging@lists.linux.dev>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Staging: nvec: nvec: fixed two usleep_range is
- preferred over udelay warnings
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Nam Cao" <namcao@linutronix.de>, "Moritz C. Weber"
- <mo.c.weber@gmail.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240212133645.1836-1-mo.c.weber@gmail.com>
- <20240212152110.4f8fe0e6@namcao>
-In-Reply-To: <20240212152110.4f8fe0e6@namcao>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---9dee9a19cb63a77cc8f9975bef85216d69227f6fdf7a09b5460baac60383
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-On Mon Feb 12, 2024 at 3:21 PM CET, Nam Cao wrote:
-> On 12/Feb/2024 Moritz C. Weber wrote:
-> > Fixed a code style issue raised by checkpatch.
-> > ---
-> >  drivers/staging/nvec/nvec.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
-> > index 2823cacde..18c5471d5 100644
-> > --- a/drivers/staging/nvec/nvec.c
-> > +++ b/drivers/staging/nvec/nvec.c
-> > @@ -627,7 +627,7 @@ static irqreturn_t nvec_interrupt(int irq, void *de=
-v)
-> >  		break;
-> >  	case 2:		/* first byte after command */
-> >  		if (status =3D=3D (I2C_SL_IRQ | RNW | RCVD)) {
-> > -			udelay(33);
-> > +			usleep_range(32, 33);
-> >  			if (nvec->rx->data[0] !=3D 0x01) {
-> >  				dev_err(nvec->dev,
-> >  					"Read without prior read command\n");
-> > @@ -714,7 +714,7 @@ static irqreturn_t nvec_interrupt(int irq, void *de=
-v)
-> >  	 * We experience less incomplete messages with this delay than withou=
-t
-> >  	 * it, but we don't know why. Help is appreciated.
-> >  	 */
-> > -	udelay(100);
-> > +	usleep_range(99, 100);
-> > =20
-> >  	return IRQ_HANDLED;
-> >  }
->
-> I have zero knowledge about this driver, but nvec_interrupt() seems to be
-> a hard interrupt handler, and sleeping in an interrupt handler is a big n=
-o
-> no. So I think this change breaks the driver.
->
-> Delaying like the driver is currently doing doesn't break things, but it =
-is
-> not very nice because this is interrupt handler and the processor cannot
-> switch to other tasks, so delaying is wasting processor's cycles here. Th=
-e
-> better fix would be to figure out how to remove the delay entirely, or
-> switch to threaded interrupt handler and then we can use usleep_range() i=
-n
-> there, but you need actual hardware to test such changes.
+A few follow up comments on your David's review
+Anything I deleted didn't need a comment as all made sense to me!
 
-Also, pay attention to what else is being said in the timers-howto.rst
-documentation. It specifically mentions that usleep_range() uses a range
-in order to give the scheduler some leeway in coalescing with other
-wakeups, so choosing a range of 32-33 us or 99-100 us isn't very useful.
+> 
+> > +to 0, for devices with a single buffer.  
+> 
+> Is /sys/bus/iio/devices/deviceX/buffer (without the Y) for backwards
+> compatibility?
 
-Thierry
+Yes. For these docs I'd not mention it. New software should be aware of multiple
+buffers being possible and not use it. Same is true of the scan_elements directory.
+If we really want to mention it, say buffer/ and scan_elements are for backwards
+compatibility and should not be used in new userspace software.
 
---9dee9a19cb63a77cc8f9975bef85216d69227f6fdf7a09b5460baac60383
-Content-Type: application/pgp-signature; name="signature.asc"
+They aren't going anywhere, but better people start from a multibuffer world!
 
------BEGIN PGP SIGNATURE-----
+> 
+> > +
+> > +Read / Write attribute which states the total number of data samples (capacity)
+> > +that can be stored by the buffer.
+> > +
+> > +Enable
+> > +------
+> > +
+> > +Read / Write attribute which starts / stops the buffer capture. This file should
+> > +be written last, after length and selection of scan elements.  
+> 
+> Could be useful here to mention that writing a non-zero value here to
+> enable the buffer may result in an error, such as EINVAL, e.g. if an
+> invalid configuration was selected, like choosing a combination of
+> scan elements that don't match one of the valid scan masks.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXPTK4ACgkQ3SOs138+
-s6HDBg/+P8CNOrCzq0UAXAn0mSLmDzBCDoTF2tNRfscugg1X/aUy1k62/Wrl3o8w
-g/kk1Co+PKjv/pikrkRxGq6Hw1mB0uCNeLF9WOeJ8ijLlLmuAB/AUsC4JV9vjPyz
-Wq88rVERC2yTV+Fltl7rCPBAGRusyiQsvin/ifMLdLnAvi5Oo0XXARCMzwTAT9e6
-a511+LMNYQhKShvpBLxY+nK2QhkxqdO8RoPYUq28PxRUkgSp2ubV3WQmXRLoQzub
-eJjdhHcCdphcToYj5qwoXYjXL70HdqJv4Ofm7dewaIXiNmPgcmBuqSfYmQQasPw8
-0CbI2oe0BLNvpCv152JyHm132Vm4oT8w3Wdbbsgxh+TEufI95pNH0dJZ99/y+m7R
-CRETAQWZMJZJMq0if6EttBWO36JrRNg0HbuBJNbvnxWb9zdV0UhEpB1b4Sm/bseG
-xec05cKaqzbzc+D5+Wl34k0dOrhgMJKuvTsguorqaIH/kuamMWYLCCl+qhfxBwlZ
-dOMGB83vevWj3F6C5TKyVk1Cu7VNzK51ydR7hukp780RvXm+DG6aUCtTAkBAQupc
-e6HInnb8n/Dou8TNA+BLFQ2FRWeio9zeA7pVii0pZS0bFPIFRBoAbYdOv+2Bmcef
-+MxAelYKEZlY6KLJR/6sX2QV4kqt6VzcBtuRlIu5QSyCuAS0aAY=
-=ZEj0
------END PGP SIGNATURE-----
+Be careful to not refer to matching.  Could be a subset.  I'd refer to
+"an unsupported combination of channels" or something like that.
 
---9dee9a19cb63a77cc8f9975bef85216d69227f6fdf7a09b5460baac60383--
+
+> > +directory. The scan elements attributes are presented below.
+> > +
+> > +**_en**
+> > +
+> > +Read/ Write attribute used for enabling a channel. If and only if its value
+> > +is non zero, then a triggered capture will contain data samples for this
+> > +channel.
+> > +
+> > +**_index**
+> > +
+> > +Read-only positive integer attribute specifying the position of the channel in  
+> 
+> Isn't 0 a valid scan index? So non-negative? Or unsigned?
+
+Yes - unsigned would be my preference.
+
+> 
+> > +the buffer. Note these are not dependent on what is enabled and may not be
+> > +contiguous. Thus for user-space to establish the full layout these must be used
+> > +in conjunction with all _en attributes to establish which channels are present,
+> > +and the relevant _type attributes to establish the data storage format.
+> > +  
+> 
+> It would also be nice to get an example on the binary layout for
+> something that has multiple channels enabled. In particular with the
+> data alignment, e.g. when you have a 16-bit word followed by a 64-bit
+> word.
+> 
+
+Agreed - the padding is sometimes not what people expect.
+
+> 
+> > +**_type**
+> > +
+> > +Read-only attribute containing the description of the scan element data storage
+> > +within the buffer and hence the form in which it is read from user space. Format
+> > +is [be|le]:[s|u]bits/storagebits[Xrepeat][>>shift], where:
+> > +
+> > +- **be** or **le** specifies big or little endian.
+> > +- **s** or **u**, specifies if signed (2's complement) or unsigned.
+> > +- **bits**, is the number of valid data bits.
+> > +- **storagebits**, is the number of bits (after padding) that it occupies in the
+> > +  buffer.
+> > +- **repeat**, specifies the number of bits/storagebits repetitions. When the
+> > +  repeat element is 0 or 1, then the repeat value is omitted.
+> > +- **shift**, if specified, is the shift that needs to be applied prior to
+> > +  masking out unused bits.
+> > +
+> > +For example, a driver for a 3-axis accelerometer with 12 bit resolution where
+> > +data is stored in two 8-bits registers as follows:
+> > +
+> > +.. code-block:: bash  
+> 
+> Doesn't look like this should use "bash" styling.
+> 
+> > +
+> > +          7   6   5   4   3   2   1   0
+> > +        +---+---+---+---+---+---+---+---+
+> > +        |D3 |D2 |D1 |D0 | X | X | X | X | (LOW byte, address 0x06)
+> > +        +---+---+---+---+---+---+---+---+
+> > +
+> > +          7   6   5   4   3   2   1   0
+> > +        +---+---+---+---+---+---+---+---+
+> > +        |D11|D10|D9 |D8 |D7 |D6 |D5 |D4 | (HIGH byte, address 0x07)
+> > +        +---+---+---+---+---+---+---+---+
+> > +
+> > +will have the following scan element type for each axis:
+> > +
+> > +.. code-block:: bash
+> > +
+> > +        $ cat /sys/bus/iio/devices/iio:device0/buffer0/in_accel_y_type
+> > +        le:s12/16>>4
+> > +
+> > +A user space application will interpret data samples read from the buffer as two
+> > +byte little endian signed data, that needs a 4 bits right shift before masking
+> > +out the 12 valid bits of data.  
+> 
+> Is it always assumed that scan data is `raw` and needs to be
+> multiplied by `scale` for that channel to convert it to SI (or IIO
+> standard) units?
+
+Definitely by far the most common case but there are a few exceptions where
+there isn't a _raw attribute but only an _input one where the assumption is
+processed data.  Tricky to mention that here without adding complexity.
+Maybe just add some weasel words to hint there are corners not covered by
+this doc.
+
+> 
+> > +
+> > +Please see Documentation/ABI/testing/sysfs-bus-iio for a complete description of
+> > +the attributes.  
+> 
+> Is it also worth mentioning
+> ``Documentation/ABI/testing/sysfs-bus-iio-dma-buffer`` here?
+
+I'd not do that until we have a section for these docs on dma buffers which
+are different in a bunch of ways. Would just be a potential source of
+confusion.
+
+Jonathan
+  
+
 
