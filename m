@@ -1,77 +1,78 @@
-Return-Path: <linux-kernel+bounces-68799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 360A8858087
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:18:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611E5858088
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A222A1F214BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:18:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B8671C2159D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96716132C04;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF99012F5A7;
 	Fri, 16 Feb 2024 15:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PYGjqzHI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YHezxx1N"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sl93zbkn";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PE/rMggH"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1EE130ACC;
-	Fri, 16 Feb 2024 15:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B5D12F590;
+	Fri, 16 Feb 2024 15:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708096617; cv=none; b=BB1JZ2VXxLBBUfWrrjuPg+p75YqzCq1xXgt+UWfgbKEVkZdhp/0n0thyOX5zA0Nxz6Ke1RHtAGayAz/Co/lIU5TRyduEmBKocQ70aHzYvCiIJgMqy8Ry+nQXiUuHBNKtmyxpt/nNGVtSp5GmnjpoIWlw0CGBDaZmfJW1i1jHAsY=
+	t=1708096617; cv=none; b=u+oOYX4Sh6nAYcmVIj+q5z05opsaTIW45mgwa4906mq77E06Q/LV5OuCNxEUHEV6Qu1SEmyOeUir0HxIlPWAkeZ54ae9szIW7HwgLcrc7gS2h9akSjrCHbJ03jwmscfeSncfjjx1FSzRIRHB1gCnGDqICe+6K0Y5EqT5mQhcWpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708096617; c=relaxed/simple;
-	bh=1c5hT4fBKSoANsCYlOu9xaG/na8kCzGK6QRtm0piWNA=;
+	bh=+XYyH0X4LqNz/ud5Odxa5nl9Dj0yPEJYpVmJs5Ok9p0=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=nwT2KnBH3QfkbtIaiXgZLTdguaQe4uMlVos8rFCRaHx7+rfh8UTG0sX748gHMhqg9g5pR9RkKAeZayj4EiyQYeSN3Aa7aWO+4I4ljhtLM17PrnAt3KHYg2+1iw0i4sGlsVoI47KgsQCuOT8CYE6OyB4ycJDinOzzk8Q6Codf2g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PYGjqzHI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YHezxx1N; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=kehlTy5yM2b7sUDdoMUsb0711h95SNtaog5vXnGR4bl0VdYlXjCQ/ajQAr3wDYbsciyDBAGM5w69dbmm9hZz0tZWrO9w387HxHowO70eWJH32amLYRqVXMMQmHAM3rt7Wx4JzAqjfuvjSeSf7XOrLkXBHz9BEARnmTr8b3BhRfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sl93zbkn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PE/rMggH; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 16 Feb 2024 15:16:52 -0000
+Date: Fri, 16 Feb 2024 15:16:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708096613;
+	s=2020; t=1708096614;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ram1BQLces8ccj3rOEtZ1/S6JnRizAsepkEnpTUclmE=;
-	b=PYGjqzHIcs/J49HXXKXknFvFtHKIX4uJRn2KYz2SVo8Uz2yiNF0ATWUFKx1gWGcn9OtQT8
-	c3c66y8rtIqkmPupH4nGIqEIcfCrbSwCMbwVnvBICrbs448WhtqVTt0V2YMrOb6+fSbLdS
-	3pWV0jmxNH4Aa0C3BobzEAB5aGk44ENNyjv6cb3o03Sx6MUCibUIZP0xpynpX9RVrykIVt
-	BDK2VgJctZwRSHCjkjV/irmRO0Au4/DX88uZcNomfgjMEX/8bv6ARyBlvrwyF/TefuCQ1h
-	x71CMjP2pAWqrzWT73xZOgzaMDXK2OLC7+zzDEFojDZNREdT+sKXn4EvSGVbYw==
+	bh=N5/8/aLLXz9RfSNC8H3jsllxQyKpHjM57EMETjBQtaw=;
+	b=sl93zbkntHsGUBm0cL1m9h5INEvFLM/M0OwJg8hCBjWb44R0eomWxLUxIX2F9bcpaVCeUo
+	gsiu2cgqeee6wd5+OiOUfqU/sa43+Sdz6sHmGtmcK5F+rnSpssFJpXGx6eEyX5i7gMI36R
+	UlvWIoLnSJZ7Ux9d+n7OwjqNG6izPvRZ7rr0v8FqwYA9sSg4h8vQWZNdVwH7P3gXvZk8TM
+	9KEwIKbloczY3qawU9s2EPedkLNyt0l28vk20xI+Vouq8+rAIG4pOAy6+XlEYyBEqpi+hf
+	OBkvr9jFR7rxFBQE+itKvUD48B/uHcXQGXDJcsJfrtav1AzDOLTObGJnzwb3cA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708096613;
+	s=2020e; t=1708096614;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ram1BQLces8ccj3rOEtZ1/S6JnRizAsepkEnpTUclmE=;
-	b=YHezxx1NU7/8x5HD8VQH0EANVwxDSLx1L4d6OezId9saUfKLbwre2thRBsQI6SjmSxPxyb
-	2RiXw4ykzcWMvtDg==
+	bh=N5/8/aLLXz9RfSNC8H3jsllxQyKpHjM57EMETjBQtaw=;
+	b=PE/rMggHZlqBFxYjAeI6ToIC4rxFzu+uzS3/WHuOa28zdORmEbSNF87OkuSPvN6qD6asPI
+	qqVmPwcsk8PcdIBg==
 From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/cpu/topology: Use topology bitmaps for sizing
+Subject:
+ [tip: x86/apic] x86/cpu/topology: Let XEN/PV use topology from CPUID/MADT
 Cc: Thomas Gleixner <tglx@linutronix.de>,
  Michael Kelley <mhklinux@outlook.com>, Sohil Mehta <sohil.mehta@intel.com>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240213210252.681709880@linutronix.de>
-References: <20240213210252.681709880@linutronix.de>
+In-Reply-To: <20240213210252.626195405@linutronix.de>
+References: <20240213210252.626195405@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170809661242.398.10126317582436561573.tip-bot2@tip-bot2>
+Message-ID: <170809661330.398.9115116026114184217.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -81,288 +82,199 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/apic branch of tip:
 
-Commit-ID:     090610ba704a66d7a58919be3bad195f24499ecb
-Gitweb:        https://git.kernel.org/tip/090610ba704a66d7a58919be3bad195f24499ecb
+Commit-ID:     354da4cf57af5d8b5302251204d6077600b6d3d6
+Gitweb:        https://git.kernel.org/tip/354da4cf57af5d8b5302251204d6077600b6d3d6
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 13 Feb 2024 22:06:03 +01:00
+AuthorDate:    Tue, 13 Feb 2024 22:06:02 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 15 Feb 2024 22:07:44 +01:00
 
-x86/cpu/topology: Use topology bitmaps for sizing
+x86/cpu/topology: Let XEN/PV use topology from CPUID/MADT
 
-Now that all possible APIC IDs are tracked in the topology bitmaps, its
-trivial to retrieve the real information from there.
+It turns out that XEN/PV Dom0 has halfways usable CPUID/MADT enumeration
+except that it cannot deal with CPUs which are enumerated as disabled in
+MADT.
 
-This gets rid of the guesstimates for the maximal packages and dies per
-package as the actual numbers can be determined before a single AP has been
-brought up.
+DomU has no MADT and provides at least rudimentary topology information in
+CPUID leaves 1 and 4.
 
-The number of SMT threads can now be determined correctly from the bitmaps
-in all situations. Up to now a system which has SMT disabled in the BIOS
-will still claim that it is SMT capable, because the lowest APIC ID bit is
-reserved for that and CPUID leaf 0xb/0x1f still enumerates the SMT domain
-accordingly. By calculating the bitmap weights of the SMT and the CORE
-domain and setting them into relation the SMT disabled in BIOS situation
-reports correctly that the system is not SMT capable.
+For both it's important that there are not more possible Linux CPUs than
+vCPUs provided by the hypervisor.
 
-It also handles the situation correctly when a hybrid systems boot CPU does
-not have SMT as it takes the SMT capability of the APs fully into account.
+As this is ensured by counting the vCPUs before enumeration happens:
+
+  - lift the restrictions in the CPUID evaluation and the MADT parser
+
+  - Utilize MADT registration for Dom0
+
+  - Keep the fake APIC ID registration for DomU
+
+  - Fix the XEN APIC fake so the readout of the local APIC ID works for
+    Dom0 via the hypercall and for DomU by returning the registered
+    fake APIC IDs.
+
+With that the XEN/PV fake approximates usefulness.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mhklinux@outlook.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-Link: https://lore.kernel.org/r/20240213210252.681709880@linutronix.de
+Link: https://lore.kernel.org/r/20240213210252.626195405@linutronix.de
+
+
+
+
 
 ---
- arch/x86/include/asm/smp.h            |  3 +--
- arch/x86/include/asm/topology.h       | 23 ++++++++++++-----------
- arch/x86/kernel/cpu/common.c          |  9 ++++++---
- arch/x86/kernel/cpu/debugfs.c         |  2 +-
- arch/x86/kernel/cpu/topology.c        | 20 +++++++++++++++++++-
- arch/x86/kernel/cpu/topology_common.c | 24 ------------------------
- arch/x86/kernel/smpboot.c             | 16 ----------------
- arch/x86/xen/smp.c                    |  2 --
- 8 files changed, 39 insertions(+), 60 deletions(-)
+ arch/x86/kernel/acpi/boot.c           | 25 ++++++++-----------------
+ arch/x86/kernel/cpu/topology_common.c |  2 +-
+ arch/x86/xen/apic.c                   | 14 +++++++-------
+ arch/x86/xen/smp_pv.c                 | 13 ++++++++-----
+ 4 files changed, 24 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index f1510d6..5318470 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -8,7 +8,7 @@
- #include <asm/current.h>
- #include <asm/thread_info.h>
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index df741fb..4bf82db 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -23,8 +23,6 @@
+ #include <linux/serial_core.h>
+ #include <linux/pgtable.h>
  
--extern int smp_num_siblings;
-+extern unsigned int smp_num_siblings;
- 
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_core_map);
-@@ -109,7 +109,6 @@ void cpu_disable_common(void);
- void native_smp_prepare_boot_cpu(void);
- void smp_prepare_cpus_common(void);
- void native_smp_prepare_cpus(unsigned int max_cpus);
--void calculate_max_logical_packages(void);
- void native_smp_cpus_done(unsigned int max_cpus);
- int common_cpu_up(unsigned int cpunum, struct task_struct *tidle);
- int native_kick_ap(unsigned int cpu, struct task_struct *tidle);
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index 3e11a5a..94ef1a6 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -143,7 +143,18 @@ extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- 
- #define topology_amd_node_id(cpu)		(cpu_data(cpu).topo.amd_node_id)
- 
--extern unsigned int __max_die_per_package;
-+extern unsigned int __max_dies_per_package;
-+extern unsigned int __max_logical_packages;
-+
-+static inline unsigned int topology_max_packages(void)
-+{
-+	return __max_logical_packages;
-+}
-+
-+static inline unsigned int topology_max_die_per_package(void)
-+{
-+	return __max_dies_per_package;
-+}
- 
- #ifdef CONFIG_SMP
- #define topology_cluster_id(cpu)		(cpu_data(cpu).topo.l2c_id)
-@@ -152,14 +163,6 @@ extern unsigned int __max_die_per_package;
- #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
- #define topology_sibling_cpumask(cpu)		(per_cpu(cpu_sibling_map, cpu))
- 
--extern unsigned int __max_logical_packages;
--#define topology_max_packages()			(__max_logical_packages)
+-#include <xen/xen.h>
 -
--static inline int topology_max_die_per_package(void)
--{
--	return __max_die_per_package;
--}
--
- extern int __max_smt_threads;
- 
- static inline int topology_max_smt_threads(void)
-@@ -193,13 +196,11 @@ static inline bool topology_is_primary_thread(unsigned int cpu)
- }
- 
- #else /* CONFIG_SMP */
--#define topology_max_packages()			(1)
- static inline int
- topology_update_package_map(unsigned int apicid, unsigned int cpu) { return 0; }
- static inline int
- topology_update_die_map(unsigned int dieid, unsigned int cpu) { return 0; }
- static inline int topology_phys_to_logical_pkg(unsigned int pkg) { return 0; }
--static inline int topology_max_die_per_package(void) { return 1; }
- static inline int topology_max_smt_threads(void) { return 1; }
- static inline bool topology_is_primary_thread(unsigned int cpu) { return true; }
- static inline unsigned int topology_amd_nodes_per_pkg(void) { return 0; };
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index b221e14..4babe3c 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -73,11 +73,14 @@
- u32 elf_hwcap2 __read_mostly;
- 
- /* Number of siblings per CPU package */
--int smp_num_siblings = 1;
-+unsigned int smp_num_siblings __ro_after_init = 1;
- EXPORT_SYMBOL(smp_num_siblings);
- 
--unsigned int __max_die_per_package __read_mostly = 1;
--EXPORT_SYMBOL(__max_die_per_package);
-+unsigned int __max_dies_per_package __ro_after_init = 1;
-+EXPORT_SYMBOL(__max_dies_per_package);
-+
-+unsigned int __max_logical_packages __ro_after_init = 1;
-+EXPORT_SYMBOL(__max_logical_packages);
- 
- static struct ppin_info {
- 	int	feature;
-diff --git a/arch/x86/kernel/cpu/debugfs.c b/arch/x86/kernel/cpu/debugfs.c
-index 86de544..543efc4 100644
---- a/arch/x86/kernel/cpu/debugfs.c
-+++ b/arch/x86/kernel/cpu/debugfs.c
-@@ -29,7 +29,7 @@ static int cpu_debug_show(struct seq_file *m, void *p)
- 	seq_printf(m, "amd_node_id:         %u\n", c->topo.amd_node_id);
- 	seq_printf(m, "amd_nodes_per_pkg:   %u\n", topology_amd_nodes_per_pkg());
- 	seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
--	seq_printf(m, "max_die_per_pkg:     %u\n", __max_die_per_package);
-+	seq_printf(m, "max_dies_per_pkg:    %u\n", __max_dies_per_package);
- 	seq_printf(m, "smp_num_siblings:    %u\n", smp_num_siblings);
+ #include <asm/e820/api.h>
+ #include <asm/irqdomain.h>
+ #include <asm/pci_x86.h>
+@@ -166,12 +164,6 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
  	return 0;
  }
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index 07124da..630ebe5 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -348,8 +348,8 @@ void __init topology_init_possible_cpus(void)
- {
- 	unsigned int assigned = topo_info.nr_assigned_cpus;
- 	unsigned int disabled = topo_info.nr_disabled_cpus;
-+	unsigned int cnta, cntb, cpu, allowed = 1;
- 	unsigned int total = assigned + disabled;
--	unsigned int cpu, allowed = 1;
- 	u32 apicid;
  
- 	if (!restrict_to_up()) {
-@@ -372,6 +372,24 @@ void __init topology_init_possible_cpus(void)
- 	total_cpus = allowed;
- 	set_nr_cpu_ids(allowed);
- 
-+	cnta = domain_weight(TOPO_PKG_DOMAIN);
-+	cntb = domain_weight(TOPO_DIE_DOMAIN);
-+	__max_logical_packages = cnta;
-+	__max_dies_per_package = 1U << (get_count_order(cntb) - get_count_order(cnta));
-+
-+	pr_info("Max. logical packages: %3u\n", cnta);
-+	pr_info("Max. logical dies:     %3u\n", cntb);
-+	pr_info("Max. dies per package: %3u\n", __max_dies_per_package);
-+
-+	cnta = domain_weight(TOPO_CORE_DOMAIN);
-+	cntb = domain_weight(TOPO_SMT_DOMAIN);
-+	/*
-+	 * Can't use order delta here as order(cnta) can be equal
-+	 * order(cntb) even if cnta != cntb.
-+	 */
-+	smp_num_siblings = DIV_ROUND_UP(cntb, cnta);
-+	pr_info("Max. threads per core: %3u\n", smp_num_siblings);
-+
- 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
- 	if (topo_info.nr_rejected_cpus)
- 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
-diff --git a/arch/x86/kernel/cpu/topology_common.c b/arch/x86/kernel/cpu/topology_common.c
-index b0b68c8..0276978 100644
---- a/arch/x86/kernel/cpu/topology_common.c
-+++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -196,16 +196,6 @@ void cpu_parse_topology(struct cpuinfo_x86 *c)
- 		       tscan.dom_shifts[dom], x86_topo_system.dom_shifts[dom]);
- 	}
- 
--	/* Bug compatible with the existing parsers */
--	if (tscan.dom_ncpus[TOPO_SMT_DOMAIN] > smp_num_siblings) {
--		if (system_state == SYSTEM_BOOTING) {
--			pr_warn_once("CPU%d: SMT detected and enabled late\n", cpu);
--			smp_num_siblings = tscan.dom_ncpus[TOPO_SMT_DOMAIN];
--		} else {
--			pr_warn_once("CPU%d: SMT detected after init. Too late!\n", cpu);
--		}
--	}
--
- 	topo_set_ids(&tscan);
- 	topo_set_max_cores(&tscan);
- }
-@@ -232,20 +222,6 @@ void __init cpu_init_topology(struct cpuinfo_x86 *c)
- 	topo_set_max_cores(&tscan);
- 
- 	/*
--	 * Bug compatible with the existing code. If the boot CPU does not
--	 * have SMT this ends up with one sibling. This needs way deeper
--	 * changes further down the road to get it right during early boot.
--	 */
--	smp_num_siblings = tscan.dom_ncpus[TOPO_SMT_DOMAIN];
--
--	/*
--	 * Neither it's clear whether there are as many dies as the APIC
--	 * space indicating die level is. But assume that the actual number
--	 * of CPUs gives a proper indication for now to stay bug compatible.
--	 */
--	__max_die_per_package = tscan.dom_ncpus[TOPO_DIE_DOMAIN] /
--		tscan.dom_ncpus[TOPO_DIE_DOMAIN - 1];
--	/*
- 	 * AMD systems have Nodes per package which cannot be mapped to
- 	 * APIC ID.
- 	 */
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 7f85f17..93470eb 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -139,8 +139,6 @@ static DEFINE_PER_CPU_READ_MOSTLY(struct logical_maps, logical_maps) = {
- 	.phys_die_id	= U32_MAX,
- };
- 
--unsigned int __max_logical_packages __read_mostly;
--EXPORT_SYMBOL(__max_logical_packages);
- static unsigned int logical_packages __read_mostly;
- static unsigned int logical_die __read_mostly;
- 
-@@ -1267,24 +1265,10 @@ void __init native_smp_prepare_boot_cpu(void)
- 	native_pv_lock_init();
- }
- 
--void __init calculate_max_logical_packages(void)
+-static __init void acpi_register_lapic(u32 apic_id, u32 acpi_id, bool present)
 -{
--	int ncpus;
--
--	/*
--	 * Today neither Intel nor AMD support heterogeneous systems so
--	 * extrapolate the boot cpu's data to all packages.
--	 */
--	ncpus = cpu_data(0).booted_cores * topology_max_smt_threads();
--	__max_logical_packages = DIV_ROUND_UP(total_cpus, ncpus);
--	pr_info("Max logical packages: %u\n", __max_logical_packages);
+-	if (!xen_pv_domain())
+-		topology_register_apic(apic_id, acpi_id, present);
 -}
 -
- void __init native_smp_cpus_done(unsigned int max_cpus)
+ static bool __init acpi_is_processor_usable(u32 lapic_flags)
  {
- 	pr_debug("Boot done\n");
+ 	if (lapic_flags & ACPI_MADT_ENABLED)
+@@ -233,7 +225,7 @@ acpi_parse_x2apic(union acpi_subtable_headers *header, const unsigned long end)
+ 		return 0;
+ 	}
  
--	calculate_max_logical_packages();
- 	build_sched_topology();
- 	nmi_selftest();
- 	impress_friends();
-diff --git a/arch/x86/xen/smp.c b/arch/x86/xen/smp.c
-index 4b0d6ff..114b362 100644
---- a/arch/x86/xen/smp.c
-+++ b/arch/x86/xen/smp.c
-@@ -123,8 +123,6 @@ void __init xen_smp_cpus_done(unsigned int max_cpus)
- {
- 	if (xen_hvm_domain())
- 		native_smp_cpus_done(max_cpus);
--	else
--		calculate_max_logical_packages();
+-	acpi_register_lapic(apic_id, processor->uid, enabled);
++	topology_register_apic(apic_id, processor->uid, enabled);
+ #else
+ 	pr_warn("x2apic entry ignored\n");
+ #endif
+@@ -268,9 +260,9 @@ acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned long end)
+ 	 * to not preallocating memory for all NR_CPUS
+ 	 * when we use CPU hotplug.
+ 	 */
+-	acpi_register_lapic(processor->id,	/* APIC ID */
+-			    processor->processor_id, /* ACPI ID */
+-			    processor->lapic_flags & ACPI_MADT_ENABLED);
++	topology_register_apic(processor->id,	/* APIC ID */
++			       processor->processor_id, /* ACPI ID */
++			       processor->lapic_flags & ACPI_MADT_ENABLED);
+ 
+ 	has_lapic_cpus = true;
+ 	return 0;
+@@ -288,9 +280,9 @@ acpi_parse_sapic(union acpi_subtable_headers *header, const unsigned long end)
+ 
+ 	acpi_table_print_madt_entry(&header->common);
+ 
+-	acpi_register_lapic((processor->id << 8) | processor->eid,/* APIC ID */
+-			    processor->processor_id, /* ACPI ID */
+-			    processor->lapic_flags & ACPI_MADT_ENABLED);
++	topology_register_apic((processor->id << 8) | processor->eid,/* APIC ID */
++			       processor->processor_id, /* ACPI ID */
++			       processor->lapic_flags & ACPI_MADT_ENABLED);
+ 
+ 	return 0;
+ }
+@@ -1090,8 +1082,7 @@ static int __init early_acpi_parse_madt_lapic_addr_ovr(void)
+ 		return count;
+ 	}
+ 
+-	if (!xen_pv_domain())
+-		register_lapic_address(acpi_lapic_addr);
++	register_lapic_address(acpi_lapic_addr);
+ 
+ 	return count;
+ }
+diff --git a/arch/x86/kernel/cpu/topology_common.c b/arch/x86/kernel/cpu/topology_common.c
+index 3876a33..b0b68c8 100644
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -77,7 +77,7 @@ static bool fake_topology(struct topo_scan *tscan)
+ 	topology_set_dom(tscan, TOPO_SMT_DOMAIN, 0, 1);
+ 	topology_set_dom(tscan, TOPO_CORE_DOMAIN, 0, 1);
+ 
+-	return tscan->c->cpuid_level < 1 || xen_pv_domain();
++	return tscan->c->cpuid_level < 1;
  }
  
- void xen_smp_send_reschedule(int cpu)
+ static void parse_topology(struct topo_scan *tscan, bool early)
+diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
+index 8835d1c..8b045dd 100644
+--- a/arch/x86/xen/apic.c
++++ b/arch/x86/xen/apic.c
+@@ -43,20 +43,20 @@ static u32 xen_apic_read(u32 reg)
+ 	struct xen_platform_op op = {
+ 		.cmd = XENPF_get_cpuinfo,
+ 		.interface_version = XENPF_INTERFACE_VERSION,
+-		.u.pcpu_info.xen_cpuid = 0,
+ 	};
+-	int ret;
+-
+-	/* Shouldn't need this as APIC is turned off for PV, and we only
+-	 * get called on the bootup processor. But just in case. */
+-	if (!xen_initial_domain() || smp_processor_id())
+-		return 0;
++	int ret, cpu;
+ 
+ 	if (reg == APIC_LVR)
+ 		return 0x14;
+ 	if (reg != APIC_ID)
+ 		return 0;
+ 
++	cpu = smp_processor_id();
++	if (!xen_initial_domain())
++		return cpu ? cpuid_to_apicid[cpu] << 24 : 0;
++
++	op.u.pcpu_info.xen_cpuid = cpu;
++
+ 	ret = HYPERVISOR_platform_op(&op);
+ 	if (ret)
+ 		op.u.pcpu_info.apic_id = BAD_APICID;
+diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
+index 44706f0..27d1a5b 100644
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -156,11 +156,9 @@ static void __init xen_pv_smp_config(void)
+ 
+ 	topology_register_boot_apic(apicid++);
+ 
+-	for (i = 1; i < nr_cpu_ids; i++) {
+-		if (HYPERVISOR_vcpu_op(VCPUOP_is_up, i, NULL) < 0)
+-			break;
++	for (i = 1; i < nr_cpu_ids; i++)
+ 		topology_register_apic(apicid++, CPU_ACPIID_INVALID, true);
+-	}
++
+ 	/* Pretend to be a proper enumerated system */
+ 	smp_found_config = 1;
+ }
+@@ -451,5 +449,10 @@ void __init xen_smp_init(void)
+ 	/* Avoid searching for BIOS MP tables */
+ 	x86_init.mpparse.find_mptable		= x86_init_noop;
+ 	x86_init.mpparse.early_parse_smp_cfg	= x86_init_noop;
+-	x86_init.mpparse.parse_smp_cfg		= xen_pv_smp_config;
++
++	/* XEN/PV Dom0 has halfways sane topology information via CPUID/MADT */
++	if (xen_initial_domain())
++		x86_init.mpparse.parse_smp_cfg	= x86_init_noop;
++	else
++		x86_init.mpparse.parse_smp_cfg	= xen_pv_smp_config;
+ }
 
