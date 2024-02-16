@@ -1,152 +1,112 @@
-Return-Path: <linux-kernel+bounces-68530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC84D857BCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:36:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A419857BDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4779FB20BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:36:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 505DB1F260C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96BCD77F1C;
-	Fri, 16 Feb 2024 11:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB257866E;
+	Fri, 16 Feb 2024 11:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JZJ+TYrs"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE6qel9i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BF859169;
-	Fri, 16 Feb 2024 11:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1345A768F4;
+	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708083408; cv=none; b=BBs/OsxE3ZBrF7XHOYBo51HljETf7ad0F/FNV+swlm7BpB2Mq6W5Uq+ibZoiL+TjRNI811Qk5hcKFQDEn3SH2j5qz6Y4CKIoGVQTx6qIf/jeY42wqLt9aL1iuKieFYjZ+NJTy97kZd3Dj3WkhEVEXtPV6A0objP2bHT5M51ab00=
+	t=1708083475; cv=none; b=Cr2f3WAhDKjZQ5DEBP57fNgoLCl5UT9zX1Tp07apos8o1iccVyjg/VF6JAjDZ00XslrEexj4DDjMkj3eKyq2aqN0ZxyNjG9SOl6/WikN45hwviNVIImoND0vXCZqiOO/CTwc8wS7C/vPRIC7ZWqtBZsqalnkYh73NAGcFcFHJTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708083408; c=relaxed/simple;
-	bh=/aYZiCQV3Ziq90vP84iGl4qvR520PN8iVoyhRcLNOsQ=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:
-	 References:In-Reply-To; b=kYq94lJNW44DmpQrL93eJ9MfYfDUEa+wNEafkI8/XBh4tqt636dAv0OfrIvIFv7NV4J7JUMoQkiMNAQqm8y/a3VNJmwIc+p8pHdYz2X3huNMLoxjGJYEk6BBxGTJ30fKiCkgQYO4VMrjQ7Sdz4wULediT9dKR3ZiWbbvofIddNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JZJ+TYrs; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a26f73732c5so100403166b.3;
-        Fri, 16 Feb 2024 03:36:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708083405; x=1708688205; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=krj5k8+V71cWpO8vb8ZHzT1+fsI8D5xdWWG998LplEM=;
-        b=JZJ+TYrscPjEDthiB1xtbIAkow6eUU82Ul0kiC7avjztDs0pWd2pCkRnM8z9xyARVa
-         9hIDnFupCYQEYFlEuoX/RyLMM8Mp2wQhCDBQOq4gUC7bA5h4CG/RV2df0w3/QO4pWFI9
-         HxP66ydn+SK2ZdXWU1NvNHFvKLFfR+ETLkMOA2oFdSfMKyRfdD1lyMt7cvfq6auo9KOv
-         ISD3FOlkcjp8dKv3384j41aahGzeNOG1uBqR1LziMJc151yMIT+pmbBtC9C+sCayC0jo
-         Lkqo0HdunR+QiuYULjrdHtZ+AsBOzdwvNo7GI3ZAYsMyDso0QHAuEBVx/BArXuzPbZDf
-         q/ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708083405; x=1708688205;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=krj5k8+V71cWpO8vb8ZHzT1+fsI8D5xdWWG998LplEM=;
-        b=T7Gcp+Tb1VR3uB2ZRKwTLNvqmWMRy1tPXelHnnS3L5ZDk38YT3OpaYIhifiYeC/PBA
-         2WvG4fVoK5JqYodDXpuj94rSs/U+Rh+KrTgEMIbidYXyA9Z1P+6LNQnQaDtsk4MCbIVf
-         UO/Wmr/KZAXKoXQiz5KoQTLtLMVHoeR4OwoSs3vBy1Fe0MMFLtT1NP5hQgz7a9//C1KH
-         Psia1LehY8ehvLEyBTcwqkH5PqITefNgHwOU6tIFXWvgCrc7IbDU31apRMMc7TVan1Nj
-         MlJ6++HCzHN4l9kg4oaxUK+K8Aotuedhg9QYpUNytq61ddzjL+jzakfUvYl/zNM76p2q
-         qmSw==
-X-Forwarded-Encrypted: i=1; AJvYcCXk/WUPkFX96IRvomHBl53lN4L+FQNsLzPsIxiq78wmfES5BHbZh3XGQ8ehAkZrzbe8O9fAp/3+U/4nh+67JrYZVnfMFu3eO6XIS8Zw8wSn7K8viiherq30f6dOtWtijxS9SeDQ0CS/hGQ=
-X-Gm-Message-State: AOJu0YygYTtBwR2a36/p3NBvOy87Yjv1Zdyt1z2gk5bkNTbw8Aoe5Aw/
-	pS0ljS+BOxpJKsxqdA/wZ/klvA4DIvkeqH9NCs9uMsqeorQeFcO1Jir6JZBT
-X-Google-Smtp-Source: AGHT+IGLbge1rHEsBBQQH35yemiF7YoxH2kRUo/mHs5+Vjmaxfi5yxh+gbpQUNnLgJDkcMQIEf55Nw==
-X-Received: by 2002:a17:906:b847:b0:a3c:b36d:dffb with SMTP id ga7-20020a170906b84700b00a3cb36ddffbmr3003663ejb.16.1708083405146;
-        Fri, 16 Feb 2024 03:36:45 -0800 (PST)
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id vk4-20020a170907cbc400b00a3cf243de37sm1467694ejc.111.2024.02.16.03.36.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 03:36:44 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=7dfaaa8787f0119adde6de01fee310d24161838f59b74c6b8992af9b9481;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708083475; c=relaxed/simple;
+	bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gpw+aQHdpPsdIxzKVvk1czY5ZbW9P9F+8E9zbmsBltVdKutFDh3x+r2ITztYpFlJxA4/yXyVDZtWIDfuLrVhTOxG0r0MrD7RAmDfX8F/XFvnhYfeFQPDey0yqttNUTQS/KeFuyr50fB8ZNdq71uXtNPY/O8GBSpL+MGbI+MRsv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE6qel9i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 90B78C433F1;
+	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708083474;
+	bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=nE6qel9igDEND7NN6yL/ahcCE4OXVOXTr7PkE6K3heACD2JUsMY8KL1KtPk4Na0Nn
+	 QSGHJsUEc56GYy2cmnFYwjATjTHAJO3aFQX1N2//SWicP6MLQghAbIR4kuidNWBjKo
+	 dAXTjjHKfDVNPIEzum69AIWfNVNUqLl6Dvd3x9rFYMLJp5cA7XhA3BR+tJzpJUJQN0
+	 OgUDnRXPL71DUyi4PlNJlipZUePYl1/xABXyoZpT1pb4Jd/Nl88zN15OVdpgIRo+fR
+	 jSTsHaQkCMTdsLElXvCyeX9bZBEWyFqA9ynOVl/c6GSMicq8tPK9hh1qVnmbNRJuia
+	 a0keoFzX2y3BA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7727DC48260;
+	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH RFC 0/4] clk: hisilicon: add support for Hi3798MV200
+Date: Fri, 16 Feb 2024 19:37:50 +0800
+Message-Id: <20240216-clk-mv200-v1-0-a29ace29e636@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 16 Feb 2024 12:36:44 +0100
-Message-Id: <CZ6H177U2UI5.2451NH03W3643@gmail.com>
-Subject: Re: [PATCH] soc/tegra: pmc: Add SD wake event for Tegra234
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Petlozu Pravareshwar" <petlozup@nvidia.com>, <jonathanh@nvidia.com>,
- <pshete@nvidia.com>, <p.zabel@pengutronix.de>,
- <dmitry.osipenko@collabora.com>, <ulf.hansson@linaro.org>,
- <kkartik@nvidia.com>, <cai.huoqing@linux.dev>, <spatra@nvidia.com>,
- <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240216080450.456135-1-petlozup@nvidia.com>
-In-Reply-To: <20240216080450.456135-1-petlozup@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA5Jz2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0Mz3eScbN3cMiMDA93kZIvkxFRjS7PUVAMloPqCotS0zAqwWdFKQW7
+ OSrG1tQBqPn+cYAAAAA==
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708083473; l=1516;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
+ b=97nMuwfwFk2N77rE/E+Z7xVKb7FuduTDlsPB/TDm/akUScmHkujGzAXrn8iw7+wSwLWbtovKE
+ od9wqcKgyCICPE5pxHE76StiuaspaYhWRMxG4x5xUGGuKp0E+BzuDy1
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
---7dfaaa8787f0119adde6de01fee310d24161838f59b74c6b8992af9b9481
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+This SoC is similar to Hi3798CV200 with a few more clocks in CRG module.
 
-On Fri Feb 16, 2024 at 9:04 AM CET, Petlozu Pravareshwar wrote:
-> From: Prathamesh Shete <pshete@nvidia.com>
->
-> Add SD wake event for Tegra234 so that system can be woken up from
-> suspend when SD card hot-plug/unplug event is detected.
->
-> Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
-> Signed-off-by: Petlozu Pravareshwar <petlozup@nvidia.com>
-> ---
->  drivers/soc/tegra/pmc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-> index 6dfcc7f50ece..dc4eab3191c2 100644
-> --- a/drivers/soc/tegra/pmc.c
-> +++ b/drivers/soc/tegra/pmc.c
-> @@ -3,7 +3,7 @@
->   * drivers/soc/tegra/pmc.c
->   *
->   * Copyright (c) 2010 Google, Inc
-> - * Copyright (c) 2018-2023, NVIDIA CORPORATION. All rights reserved.
-> + * Copyright (c) 2018-2024, NVIDIA CORPORATION. All rights reserved.
->   *
->   * Author:
->   *	Colin Cross <ccross@google.com>
-> @@ -4199,6 +4199,7 @@ static const struct tegra_wake_event tegra234_wake_=
-events[] =3D {
->  	TEGRA_WAKE_IRQ("pmu", 24, 209),
->  	TEGRA_WAKE_GPIO("power", 29, 1, TEGRA234_AON_GPIO(EE, 4)),
->  	TEGRA_WAKE_GPIO("mgbe", 56, 0, TEGRA234_MAIN_GPIO(Y, 3)),
-> +	TEGRA_WAKE_GPIO("sd_wake", 8, 0, TEGRA234_MAIN_GPIO(G, 7)),
+Note this driver is still ongoing, many clocks are not registered in the
+driver now. Feedback is welcomed, especially from HiSilicon people.
 
-These are also meant to be ordered by wake ID, so I've moved this up to
-where it belongs.
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Yang Xiwen (4):
+      dt-binding: clock: histb-clock: Add missing common clock and Hi3798MV200 specific clock definition
+      clk: hisilicon: add CRG driver for Hi3798MV200 SoC
+      dt-binding: clock: merge all hisilicon clock bindings to hisilicon,clock-reset-generator
+      dt-binding: clock: hisilicon,clock-reset-controller: add Hi3798MV200 SoC support
 
-Thierry
+ .../devicetree/bindings/clock/hi3660-clock.txt     |  47 ---
+ .../devicetree/bindings/clock/hi3670-clock.txt     |  43 ---
+ .../devicetree/bindings/clock/hi6220-clock.txt     |  52 ---
+ .../devicetree/bindings/clock/hisi-crg.txt         |  50 ---
+ .../clock/hisilicon,clock-reset-generator.yaml     | 175 +++++++++
+ .../clock/hisilicon,hi3559av100-clock.yaml         |  59 ---
+ drivers/clk/hisilicon/Kconfig                      |   8 +
+ drivers/clk/hisilicon/Makefile                     |   1 +
+ drivers/clk/hisilicon/crg-hi3798mv200.c            | 428 +++++++++++++++++++++
+ include/dt-bindings/clock/histb-clock.h            |  21 +
+ 10 files changed, 633 insertions(+), 251 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240216-clk-mv200-cc8cae396ee0
 
---7dfaaa8787f0119adde6de01fee310d24161838f59b74c6b8992af9b9481
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXPSMwACgkQ3SOs138+
-s6HGcQ//f0JPfFQemTw/AVj0XnDY0Qyq4ffTv5okvdFIaRP3pUav403BUiPGz1N4
-85NYWHrawOTY6mjmwORsSNo/2Vjmj0ZUnf9CK8tRgXORsu434TVrQFr519YhDC7V
-yngQlDG5E1RpcaJhLTods46uFXugZ5c8u3yjiFjb9nwx7Ntq7HR6mj7+DWhhFx6H
-CkVua+IuPQMqREKsZn+cZzyOqj0S5hFNJDuK+a430lAn4z/KYV+zczTJsQrE4AxI
-CBJkV/jD9EuMc+Y4sfPFivo6WrwoUBdXtWbLYhl5vPbk4cVojTl4aTDzpoa8Z5sR
-/AE3GWptKpbT+fxSbdh4dduQB1YcqRf3KTqB4yHCQlPpmuHLUfSo+DNHRlvp5Cgr
-QFw1vySnPx2Oje/mKWrP/S6EXpxAHPQfaMFpDh8Zq1RVUmCCGsnULpM+WXNgO8M1
-1H+fGqxzFRffJqg4LnBcZdd9DUi1Gs3bGZM0H6OIAonppJ57fr+IR4RJCQKNbxNl
-JU9koXkRThejqqFPTFmoZc3JZmde7jVu1jAfVXZjbCWm8RliW4oHhr247YLU6VFo
-7Gff07i7IyInA1OSlkFkc1Nbl9isbSKflzGzpp4k0oCaRhNRTM4TQrwxkhzZSKRM
-MNmCPmCQ/1/R3BJhQfEtIkgC+3WZUKAegM96ED2iakcWgPnOk+Y=
-=XUQf
------END PGP SIGNATURE-----
-
---7dfaaa8787f0119adde6de01fee310d24161838f59b74c6b8992af9b9481--
 
