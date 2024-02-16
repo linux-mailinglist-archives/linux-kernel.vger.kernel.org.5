@@ -1,173 +1,143 @@
-Return-Path: <linux-kernel+bounces-68395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11EBC8579A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:00:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659018579AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713671F22A5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:00:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3557528B101
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818D62C19D;
-	Fri, 16 Feb 2024 09:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E6B1C292;
+	Fri, 16 Feb 2024 09:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sFdaR3B2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q1u5265l";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="U68w4s5s";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hUFQkUFy"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="CcMs6WvF"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CDA286AD;
-	Fri, 16 Feb 2024 09:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A821B812;
+	Fri, 16 Feb 2024 09:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708077377; cv=none; b=OwKK+kOfuv+qRtWGrEzFuAuepESIrrOTCB+OLrJHdYt7hMjEohRfmTTJ7/d/0mobz3qaSkG1p7nhOYcWHpw+O4a1CDY3lSXsRQTEtnuw+BN9PTZIcO1h9tZ68zhzie58UJGSreLrr1fQ1jLIeBGj3gwgweCGSG9NyDJyxxihTog=
+	t=1708077496; cv=none; b=B4XQXqp9re//dXZH2b3c356JosfoWIi8mGDXjSsPuoD+YPDmcm92rMd247l6nIPokiNMSp/Q9GaQ3VuvGGkdNDFx0XLiXSVcxvNGvYpJ8FQneZOodcGuq7FIKtqndjftwrcns7wkkgZHkUWt9XVUDHaAws5hZZcXg5D0wN8Tlpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708077377; c=relaxed/simple;
-	bh=qgM1IbsvGzczAw5jKcy/6Q9s0+/lUCgswwXcIJQTBxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMHtqI/crBLLOFUeIuc/a/GwNhpzxM+xZDFYYz8O5SycmNHGbsQhrIysG+cU2BnR02Jd+ZjYXhnApsBVLlWew9dmT6eiZ9rxJWHM8iNu+LUvdrrxU6XLnDV1XNr/U//HdcMJaF2OvpFMQ+paTergCWpAPdn+DSPgYq6Cjq408K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sFdaR3B2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q1u5265l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=U68w4s5s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hUFQkUFy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 068471FD76;
-	Fri, 16 Feb 2024 09:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708077374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pNCgQz/H7sNNYdQvBrUS+xmQz09BZKChFVLuwjEdyzo=;
-	b=sFdaR3B2F/c4/C9vdJjb5tpPLGCRCsVtOza5Vs/rchdT2YuxOVFgqbo29eZQFRZ0epbTRk
-	zrayHjgjx24loTZaRbzTo94YxXmqe8ZHhH4QrR4rKVghu1ao1gNnAb2G8XnLWoWcSo8VGM
-	Ox6dZC4VY6hPPT+VDnR9jkNJEDjS6bc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708077374;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pNCgQz/H7sNNYdQvBrUS+xmQz09BZKChFVLuwjEdyzo=;
-	b=q1u5265lt3L+BLmK4qcsM6nhmIzrCguj+x5xAp8ZGAULrWTHtRl3GNtg0nhquv4IvrM8NO
-	ZvCoRvFhln7MaRBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708077372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pNCgQz/H7sNNYdQvBrUS+xmQz09BZKChFVLuwjEdyzo=;
-	b=U68w4s5sd0ck087sZcyeF+kWHg6W6d8MhxXdfC7kYKRFzZJ3cs26gCojoSO1T3pH8Czejb
-	K3kqII4z0NNaBAiFpof8PMyprokMl3TfwnCpm4MpsYV55Sq1u2TC2Lv5yWgM3mRF7oQu1s
-	FuBuHuDgEMJFCUcdAxGUEt30jmpa8LE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708077372;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pNCgQz/H7sNNYdQvBrUS+xmQz09BZKChFVLuwjEdyzo=;
-	b=hUFQkUFy+hBBC85M+zi0X10ZJdNZKjhg91zVQcedSMJCXMntROXVj+fpkid/9Xvkj9xai/
-	9pxCymfOYoljLxCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F214913421;
-	Fri, 16 Feb 2024 09:56:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TB8UOzsxz2XJAQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Fri, 16 Feb 2024 09:56:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A2E43A0807; Fri, 16 Feb 2024 10:56:07 +0100 (CET)
-Date: Fri, 16 Feb 2024 10:56:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+628e71e1cb809306030f@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org,
-	jack@suse.cz, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, tintinm2017@gmail.com,
-	tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_discard_allocated_blocks
-Message-ID: <20240216095607.zj3iqh4f7xkfy5ni@quack3>
-References: <000000000000d8f8c20605156732@google.com>
- <000000000000457fc50611782483@google.com>
+	s=arc-20240116; t=1708077496; c=relaxed/simple;
+	bh=Igmoy1QfrGqffoxw4riM61fuv9HSbbNYM74Sz4fxSTg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ehjn/huvL700jH9yVVmATBPz4HJy4VLaVfAGXjubx/5LFgOcIWy4y5Kf+hmxSrSTyisq9ws1VY9E8rhg0wDFQQZKh3JXyN2DT+QF0JvWcrWSK8Mvd0qQCVGqFjlrsWqwpAPgKFViPKzquyZcsJCie+jc5pVoSxih6Qhdf47pHZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=CcMs6WvF; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: dfaecea2ccb111eea2298b7352fd921d-20240216
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=9E/UvhK5CSAsRCQgb1278nkWwKaiC3/rTLcvlSnjgNE=;
+	b=CcMs6WvF5d7loJMAWZtv51nKSvSl8fulQFJU5PZXS2zfL5CMi5Bm0AaKXoMqPQCFFKzkakF0SVxqg5iMI+d3myUQoc6dCZp1Ua3IjDfWKXPko/S+gJTUaJSmJkcw+D7Z8UQw8DGGeXpQ9qLAd1OSpkNmx791/6Xrl6bwTnncku0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:599dcc33-084b-4862-ae1e-31e6349c55f2,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:f49af583-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: dfaecea2ccb111eea2298b7352fd921d-20240216
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+	(envelope-from <macpaul.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 447384518; Fri, 16 Feb 2024 17:58:02 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 16 Feb 2024 17:58:01 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 16 Feb 2024 17:58:01 +0800
+From: Macpaul Lin <macpaul.lin@mediatek.com>
+To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+CC: Bear Wang <bear.wang@mediatek.com>, Pablo Sun <pablo.sun@mediatek.com>,
+	Macpaul Lin <macpaul.lin@mediatek.com>, Macpaul Lin <macpaul@gmail.com>,
+	Chunfeng Yun <chunfeng.yun@mediatek.com>, MediaTek Chromebook Upstream
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Chen-Yu Tsai
+	<wenst@chromium.org>
+Subject: [PATCH] arm64: dts: mediatek: mt8395-genio-1200-evk: add u3port1 for xhci1
+Date: Fri, 16 Feb 2024 17:57:51 +0800
+Message-ID: <20240216095751.4937-1-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000457fc50611782483@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=U68w4s5s;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hUFQkUFy
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[42.37%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ed626705db308b2d];
-	 TAGGED_RCPT(0.00)[628e71e1cb809306030f];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,syzkaller.appspot.com:url,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[dilger.ca,kernel.dk,kernel.org,suse.cz,vger.kernel.org,googlegroups.com,gmail.com,mit.edu];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 1.49
-X-Rspamd-Queue-Id: 068471FD76
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-On Thu 15-02-24 20:26:02, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e72f42180000
-> start commit:   7ba2090ca64e Merge tag 'ceph-for-6.6-rc1' of https://githu..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ed626705db308b2d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=628e71e1cb809306030f
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111acb20680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112d9f34680000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+This patch fixes an issue where xhci1 was not functioning properly because
+the state and PHY settings were incorrect.
 
-Looks sensible.
+The introduction of the 'force-mode' property in the phy-mtk-tphy driver
+allows for the correct initialization of xhci1 by updating the Device Tree
+settings accordingly.
+
+The necessary fixup which added support for the 'force-mode' switch in the
+phy-mtk-tphy driver.
+commit 9b27303003f5 ("phy: mediatek: tphy: add support force phy mode switch")
+Link: https://lore.kernel.org/r/20231211025624.28991-2-chunfeng.yun@mediatek.com
+
+Prior to this fix, the system would exhibit the following probe failure messages
+for xhci1:
+  xhci-mtk 11290000.usb: supply vbus not found, using dummy regulator
+  xhci-mtk 11290000.usb: uwk - reg:0x400, version:104
+  xhci-mtk 11290000.usb: xHCI Host Controller
+  xhci-mtk 11290000.usb: new USB bus registered, assigned bus number 5
+  xhci-mtk 11290000.usb: clocks are not stable (0x1003d0f)
+  xhci-mtk 11290000.usb: can't setup: -110
+  xhci-mtk 11290000.usb: USB bus 5 deregistered
+  xhci-mtk: probe of 11290000.usb failed with error -110
+
+With the application of this dts fixup, the aforementioned initialization errors
+are resolved and xhci1 is working.
+
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
+index 7fc515a07c65..e0b9f2615c11 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
+@@ -854,6 +854,10 @@
  
-#syz fix: fs: Block writes to mounted block devices
-
-								Honza
+ &u3phy1 {
+ 	status = "okay";
++
++	u3port1: usb-phy@700 {
++		mediatek,force-mode;
++	};
+ };
+ 
+ &u3phy2 {
+@@ -885,6 +889,8 @@
+ };
+ 
+ &xhci1 {
++	phys = <&u2port1 PHY_TYPE_USB2>,
++	       <&u3port1 PHY_TYPE_USB3>;
+ 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+ 	status = "okay";
+ };
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.18.0
+
 
