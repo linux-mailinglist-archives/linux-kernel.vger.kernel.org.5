@@ -1,94 +1,120 @@
-Return-Path: <linux-kernel+bounces-68498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB7B857B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:08:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7ED857B2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E1B71C23B71
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:08:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D72EA1F221B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117ED60EE3;
-	Fri, 16 Feb 2024 11:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5E958ABE;
+	Fri, 16 Feb 2024 11:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUr/PeLl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="uRLKV7C1"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D35C65193;
-	Fri, 16 Feb 2024 11:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBB558201
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708081557; cv=none; b=B7uBkjWU9KbU4TnoRQgVCcf2nxgJDQjr5C2kBzMiK3vUf9RueC+MLwXLoFRGGYXg4a9n8+zoxrMV0jshIcepb+j3QdrnqYdwLoO17yd5ftjyFUVgB+jKoLF9oCgTC8O/OTtUcnAX3eO/9ttSKNXi2dg5ndteX2FYIzD2ByOwIH4=
+	t=1708081713; cv=none; b=ScrL1uUhr/Msx7b9auPaPZRfVt0HusIib6nGG7hd8L8YOgryOPil1151j9GKnIfnlppN9YfahYZb68uPuelKa59jRxE8PkqdONceiJx/hqfmygmpW/S7TXt4CIWOcJSFibcgC7wFvN0bzldM60I0d3Wn4w9bKoljWo4hh65xcGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708081557; c=relaxed/simple;
-	bh=9EwGRDiJUOCQYFRJiAC9JK5wa11kNaXqYFEr9m1LBXI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZHGZacx8oOWd4+HrNjVHu3DvU+W/eInM4wsBtsozQ/RaDjBpnhxcd0q+bkySmvK0mWkOCOqrae+t1nasyPOAVRdGHaudGTUrWYUmj07V3Y9BEKmWrE7OxZAiwVz5bdMI57D0aCFYwKV7ecNh4TmKBe+hT/3Q+A59WPW4n27x2es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUr/PeLl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7011BC433F1;
-	Fri, 16 Feb 2024 11:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708081556;
-	bh=9EwGRDiJUOCQYFRJiAC9JK5wa11kNaXqYFEr9m1LBXI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tUr/PeLlXLrcCeA8bz9B7z5OEd4rXjFpW7Jcpru53mBQK0XYTWFg3ovrgPrPj8PII
-	 BsX8YUTpL+Xf2J4nyojXidQ0RNCBnb2P6x7xypkdjCWnpA0f8nP3AbT2lMa9Quela+
-	 /X89F3sPJV9ztGQ0+5hDGDM1O2Cdt8AU+0FXX+dEBqrOeyA+eXfg2p8jWiyD+0Yosz
-	 uzUdXEr73HYuu++3e/2FUDx6ILb6wVPPxGzSvHUTb/+cGUEmgiw8hjwieFJrvQbjHq
-	 ymbNDzYlRCnI8obgptfdqrDhjT0w2zVxLCHZN80HpQ0eG37EOX0MUmK04qcPhtr+3J
-	 t87c6twyf0/lw==
-Date: Fri, 16 Feb 2024 11:05:43 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, lars@metafoo.de,
- ang.iglesiasg@gmail.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: iio: pressure: Add SPI support for BMP38x and
- BMP390
-Message-ID: <20240216110543.5d6289f6@jic23-huawei>
-In-Reply-To: <Zc5D35_4FdERZXe4@smile.fi.intel.com>
-References: <20240215164332.506736-1-vassilisamir@gmail.com>
-	<Zc5D35_4FdERZXe4@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708081713; c=relaxed/simple;
+	bh=OprIDaPfMCHTrZGtzB7FNvr1ioR2TZWLJ6gWaxHzNCU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ow1R742ptkGAOCNzRqk9javGN1+JFWFvb8rOSXc17wzgAs4XdBcJoEpIFIeMGp542GqOJPfIP5LQP+Lh5kxymV3aFvmO6LZCmIT4/q6vIHW1XzeljKazuRoafU0ZQMTS8bbjCKwYgHgsJ1PPbUiKt81H4rX0KvnsTe4qdvtHHzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=uRLKV7C1; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41243d19ecaso3295175e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 03:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708081710; x=1708686510; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EszBtn+jIheCOSLeYTHssTg9bKih2RCDj7mGXuxi30s=;
+        b=uRLKV7C1tka+OPOtcefryDzYiwY8AZV/WjgELsxghjlQC+daxEERptABks3qUFTjbg
+         MYJ+yY+jTRb0zi4wjco6i9Kb0GL3hPgbKSFy+QcQaygmZTEBHtxlI39BQ4K5748eYmy4
+         s5Aru84a9GpwNe4QjK7F0zKB2hfxhdXzK66h2aXY4yjOEUSFXratBWJO+GcX+umkO7Nv
+         jRtF6g6SaECsgAt6ne5ypBEXqosu1pVz2JE4LBEvr7wTPATdvhpCcU1SU9pjBLZ0QKGy
+         E8TJSCRRq+EnpdNeiexxNN2taIPAyXbiOg6MUegAnJ0QN/A9EbWz+MQkEHoVmIwKI8LZ
+         D9eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708081710; x=1708686510;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EszBtn+jIheCOSLeYTHssTg9bKih2RCDj7mGXuxi30s=;
+        b=he4ZMlsAUF9qTnnGJ8m2wsQm4cyr+ZCUQmLF0ZaflBhfTqG9V2NQ2jIT050WGkw7eU
+         rVJvh5mpZu0+QAxOAw8SVesYmisybRDkfwC7n98sM6TAe7VF6OgapiSnyu8Q7uzkkN2z
+         KFasHVJ5M/ZALBVNMSJOAb5FJg+3CATCRGDrklsP1efmdipcFDQbtVYY9OH2iUJ6WDwa
+         eapyOQ467b9nAXM0d0454zLGIFrbvBrK1tFCl08RPgU/TF6xdXhcLFHJWKHrn5nPdF4U
+         c3d9jVoAdyrJaDjd0eJyR4JCRtKaP/e4dmZQPnnb3hFmHRTs7NWVezOh3vtcPiJtpX2F
+         QEPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUL15aFLW2c9gHJeWlHP8+Yk2FtwgWu152rIhO8sVYJ9vwrBOdGvXqiuT12AvKyvKuXmDZL82dPLVtQyRlaaYBO4MWCIQ2JJ5VBYymh
+X-Gm-Message-State: AOJu0YzuOU+oVJXE3iLglN/FvEmuQEIN4xANNMs3lW6xzDvcR+i29xHn
+	6gsrAB82uNbB2SwPIS1JlLaer+ysDyJw8irZjwEPb0odISYmmMaIbj1GGrp2Mot3op5//Xu4rLI
+	l
+X-Google-Smtp-Source: AGHT+IGL3+BGpCfUXj33fuIZnvOkJJ7Z9V9jcvb5acLLTv95N8YEYsCPGLn9NsotNVH3Oj0dvrdDZA==
+X-Received: by 2002:a05:600c:4588:b0:411:e0f0:7a71 with SMTP id r8-20020a05600c458800b00411e0f07a71mr3655646wmo.33.1708081710360;
+        Fri, 16 Feb 2024 03:08:30 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:7758:12d:16:5f19])
+        by smtp.gmail.com with ESMTPSA id fc13-20020a05600c524d00b00412157dc70bsm2033110wmb.30.2024.02.16.03.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 03:08:30 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: fixes for v6.8-rc5
+Date: Fri, 16 Feb 2024 12:08:27 +0100
+Message-Id: <20240216110827.16793-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 15 Feb 2024 19:03:27 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-> On Thu, Feb 15, 2024 at 05:43:32PM +0100, Vasileios Amoiridis wrote:
-> > According to the datasheet of BMP38x and BMP390 devices, in SPI
-> > operation, the first byte that returns after a read operation is
-> > garbage and it needs to be dropped and return the rest of the
-> > bytes.  
-> 
-> Thank you for the patch, my comments below.
-> 
-> ...
-> 
-> > +static int bmp380_regmap_spi_read(void *context, const void *reg,
-> > +				  size_t reg_size, void *val, size_t val_size)
-> > +{
-> > +	struct spi_device *spi = to_spi_device(context);
-> > +	u8 ret[BMP380_SPI_MAX_REG_COUNT_READ + 1];
-> > +	ssize_t status;
-> > +	u8 buf;  
-> 
-> AFAIU this buffer is not DMA-capable.
+Linus,
 
-Doesn't matter in this case as spi_write_then_read() bounces anyway so you don't need
-to provide it with a dma safe buffer. It's in the docs, so we can rely
-on this not changing.
+Please pull the following fixes from the GPIO tree for the next RC.
 
-https://elixir.bootlin.com/linux/latest/source/drivers/spi/spi.c#L4391
+Thanks,
+Bartosz
 
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
+
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.8-rc5
+
+for you to fetch changes up to 2df8aa3cad407044f2febdbbdf220c6dae839c79:
+
+  gpiolib: add gpio_device_get_label() stub for !GPIOLIB (2024-02-13 11:02:53 +0100)
+
+----------------------------------------------------------------
+gpio fixes for v6.8-rc5
+
+- add missing stubs for functions that are not built with GPIOLIB disabled
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (3):
+      gpiolib: add gpiod_to_gpio_device() stub for !GPIOLIB
+      gpiolib: add gpio_device_get_base() stub for !GPIOLIB
+      gpiolib: add gpio_device_get_label() stub for !GPIOLIB
+
+ include/linux/gpio/driver.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
