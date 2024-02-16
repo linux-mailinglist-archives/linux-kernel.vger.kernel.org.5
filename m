@@ -1,190 +1,119 @@
-Return-Path: <linux-kernel+bounces-68476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84A05857ACD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:59:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1939857ACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DBD91C22D62
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:59:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DC7FB22C25
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DCD55E5E;
-	Fri, 16 Feb 2024 10:59:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8C31EA73;
-	Fri, 16 Feb 2024 10:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51A755E55;
+	Fri, 16 Feb 2024 10:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="xnk0vA7X"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8890456777
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708081172; cv=none; b=lFUBoD5EaMQYkhAry51liSdOp+RQYkDoNCebkz+iXWASRHBjaeNsMndMsq9ZOZ+Kt5j5GFejo9VO2LOsNw9isdKP3Bn+YFHBCVJX+psbetzDApYqOKieV6hfP39vcNUaV5M2R9zH5Q6w8NAUsPX8ooUZphNktCVY1QYGqBHk8LY=
+	t=1708081183; cv=none; b=ZQRerCsxRf9bHbEA2b59U2ecOe/KJOtaZUQ7cm9Akb8qwwnR7+hpVI3iiA5PlP9dHa1BCCUNHILxU9rs6sO++9fkiFHvoQ2nGgpDZZKHmFjlHgY98jRTlwwHaQHBnPpf8RZ/j6zPR2Y8GznMDyP7hKOiGsc3HQ7BfMVk0T7+V+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708081172; c=relaxed/simple;
-	bh=uLoh1fA7+KxUZ+aSmp5HZ3rjZuo+r7L8js30YHxUnWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WtjouBDR/ZP/fBjZSsrEIyJknDwexOYYvHJJxvYuM6akS6ORqw23irD5aLmjqsuKS5L5x4KyRsRidNxZ6sXez/xZwPKnXOjk+V9H2Dxg5efoQsMKBZxRH/avwyN3mLKZkpDiyT3n1biaRVBuOfctb6VEyU253NLVP0R5Jz867AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 910E11FB;
-	Fri, 16 Feb 2024 03:00:09 -0800 (PST)
-Received: from [192.168.68.110] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2F263F766;
-	Fri, 16 Feb 2024 02:59:26 -0800 (PST)
-Message-ID: <af3a7c1f-f054-47b8-b257-d11e877631e9@arm.com>
-Date: Fri, 16 Feb 2024 10:59:25 +0000
+	s=arc-20240116; t=1708081183; c=relaxed/simple;
+	bh=0+W7YvnXsbigDW20wUUhl3v3SbWmF/ZQM4L9pAdvkn8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kQc7xxRVtbBNlj7t1vs53APX7vFKvsXMaKCzcAsaOzldiPCaN447RrT8EnWOwNoBZ33FzkPQJh72/j/1CNLCEYgQVkdXdVsH6uyeT1k0LmU8DzDytFsCg7qkmwL+xF9UrYq2J9XgEattgNSbzur4kjCbey9Xn2wuS4B+xMXma1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=xnk0vA7X; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33adec41b55so976411f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:59:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708081180; x=1708685980; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0chfNNhs8bBmYgWUUEe6ZqXEIPXfXJhTDLop2ZkZRQE=;
+        b=xnk0vA7XDmXDTbOkY77VFVUdFbzqZ1rAD2btF2V5YJBf5eP8gpEO8/GwjCQL7NRSgG
+         fLPNouOBmdlSLgWQQ20TLGDz8Ekjs73O/uw/5+NQnUYY0+4Hui+MR+4fnKZmxUzpLZAn
+         pGl0DAwwObr3pfTGGedhTQhm2HJiFyBM4NwgW0TUZCo7pIsdfLYG+jdoPqoeu/F7qW6K
+         n3FTwg7Riy1H3cPICkrejcB6Ycb9+YIGAXvXlRHIraMzXRuj1PcYVB9Kv33Sa5PDZ7v7
+         xXSr5fHYGm7vSYq46s/PEFR3xGUlR+1DJ+pH1mmHyKKiCWDo8l7uVq98r9/LVeBFtLR5
+         O9mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708081180; x=1708685980;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0chfNNhs8bBmYgWUUEe6ZqXEIPXfXJhTDLop2ZkZRQE=;
+        b=DDvqTxCp26ZCFwX+hX9vqa6YV2epz4+yB+s2xhDsWgbxyn6nY1kUlGzan4txvwNeYC
+         lRra2zAdx+DxvdNBc9uR7Ewy9UqWmVpISwl5qSTrU8Bpo4Y+1GtafasreH8VeYzGMgw9
+         xZIAzMrIkzjq+b9wdkRlixQ5oY3ztEvAsEC4ExDPVhneQh7Zmly8oIL8rqz+OP9WALc0
+         I0MaMpX7sucRsms84/AbXgBfEzHAxw8rZHZEhDVU1ywwhe0Spjok2WoB4D921AGlcn5s
+         BVc2Yl+pGxCwc5/qNDcwDsvRvYPRppXUmVfzf3tTJByWU8JROtRl/Ewk0jKLUqqbMxpr
+         hN2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUXaolcKSQdJzRwPNF6U1twKbCAncKiXbFCqtOe2W61gZDW0HDXLwr/MAvWtZUDQTM+zdRy9XAGRuF10t16Zc35DnXrbTk6NiyUjJBU
+X-Gm-Message-State: AOJu0YzglzqxX/4h2F+82Lh5YrKMpNCCy8rBfCw9lCKO5hQqlLrIs0xP
+	vQR/f4wnkSSx+u8ooaYaF6vlRTVBP5saDka6ATsPA5TKTLQ2+M0wwXTP2GQ5nng=
+X-Google-Smtp-Source: AGHT+IEbZWK8/FIIiShmTZucyyUKH6SVCkbFOFG6fztKHXZBfziSGGMFocQi+qchbIAutXv/2TbwXA==
+X-Received: by 2002:a5d:644b:0:b0:33c:e2ff:6c81 with SMTP id d11-20020a5d644b000000b0033ce2ff6c81mr3223015wrw.48.1708081179462;
+        Fri, 16 Feb 2024 02:59:39 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:7758:12d:16:5f19])
+        by smtp.gmail.com with ESMTPSA id k3-20020a056000004300b0033b79d385f6sm1874079wrx.47.2024.02.16.02.59.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 02:59:39 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] gpio: cdev: fix a NULL-pointer dereference with DEBUG enabled
+Date: Fri, 16 Feb 2024 11:59:30 +0100
+Message-Id: <20240216105930.16265-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm/filemap: Allow arch to request folio size for exec
- memory
-Content-Language: en-GB
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>,
- John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org
-References: <20240215154059.2863126-1-ryan.roberts@arm.com>
- <20240215144849.aba06863acc08b8ded09a187@linux-foundation.org>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240215144849.aba06863acc08b8ded09a187@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 15/02/2024 22:48, Andrew Morton wrote:
-> On Thu, 15 Feb 2024 15:40:59 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
->> Change the readahead config so that if it is being requested for an
->> executable mapping, do a synchronous read of an arch-specified size in a
->> naturally aligned manner.
-> 
-> Some nits:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Thanks for taking a look, Andrew!
+We are actually passing the gc pointer to chip_dbg() so we have to
+srcu_dereference() it.
 
-> 
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -1115,6 +1115,18 @@ static inline void update_mmu_cache_range(struct vm_fault *vmf,
->>   */
->>  #define arch_wants_old_prefaulted_pte	cpu_has_hw_af
->>
->> +/*
->> + * Request exec memory is read into pagecache in at least 64K folios. The
->> + * trade-off here is performance improvement due to storing translations more
->> + * effciently in the iTLB vs the potential for read amplification due to reading
-> 
-> "efficiently"
+Fixes: 8574b5b47610 ("gpio: cdev: use correct pointer accessors with SRCU")
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Closes: https://lore.kernel.org/lkml/179caa10-5f86-4707-8bb0-fe1b316326d6@samsung.com/
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpiolib-cdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-ACK; will fix if there is a v3
-
-> 
->> + * data from disk that won't be used. The latter is independent of base page
->> + * size, so we set a page-size independent block size of 64K. This size can be
->> + * contpte-mapped when 4K base pages are in use (16 pages into 1 iTLB entry),
->> + * and HPA can coalesce it (4 pages into 1 TLB entry) when 16K base pages are in
->> + * use.
->> + */
->> +#define arch_wants_exec_folio_order() ilog2(SZ_64K >> PAGE_SHIFT)
->> +
-> 
-> To my eye, "arch_wants_foo" and "arch_want_foo" are booleans.  Either
-> this arch wants a particular treatment or it does not want it.
-> 
-> I suggest a better name would be "arch_exec_folio_order".
-
-ACK; will fix if there is a v3
-
-> 
->>  static inline bool pud_sect_supported(void)
->>  {
->>  	return PAGE_SIZE == SZ_4K;
->> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->> index aab227e12493..6cdd145cbbb9 100644
->> --- a/include/linux/pgtable.h
->> +++ b/include/linux/pgtable.h
->> @@ -407,6 +407,18 @@ static inline bool arch_has_hw_pte_young(void)
->>  }
->>  #endif
->>
->> +#ifndef arch_wants_exec_folio_order
->> +/*
->> + * Returns preferred minimum folio order for executable file-backed memory. Must
->> + * be in range [0, PMD_ORDER]. Negative value implies that the HW has no
->> + * preference and mm will not special-case executable memory in the pagecache.
->> + */
-> 
-> I think this comment contains material which would be useful above the
-> other arch_wants_exec_folio_order() implementation - the "must be in
-> range" part.  So I suggest all this material be incorporated into a
-> single comment which describes arch_wants_exec_folio_order().  Then
-> this comment can be removed entirely.  Assume the reader knows to go
-> seek the other definition for the commentary.
-
-Hmm... The approach I've been taking for other arch-overridable helpers is to
-put the API spec against the default implementation (i.e. here) then put
-comments about the specific implementation against the override. If anything I
-would prefer to formalize this comment into proper doc header comment and leave
-it here (see for example set_ptes(), and in recent patches now in mm-unstable;
-get_and_clear_full_ptes(), wrprotect_ptes(), etc).
-
-I'll move all of this to the arm64 code if you really think that's the right
-approach, but that's not my personal preference.
-
-Thanks,
-Ryan
-
-> 
->> +static inline int arch_wants_exec_folio_order(void)
->> +{
->> +	return -1;
->> +}
->> +#endif
->> +
->>  #ifndef arch_check_zapped_pte
->>  static inline void arch_check_zapped_pte(struct vm_area_struct *vma,
->>  					 pte_t pte)
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 142864338ca4..7954274de11c 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3118,6 +3118,25 @@ static struct file *do_sync_mmap_readahead(struct vm_fault *vmf)
->>  	}
->>  #endif
->>
->> +	/*
->> +	 * Allow arch to request a preferred minimum folio order for executable
->> +	 * memory. This can often be beneficial to performance if (e.g.) arm64
->> +	 * can contpte-map the folio. Executable memory rarely benefits from
->> +	 * read-ahead anyway, due to its random access nature.
-> 
-> "readahead"
-> 
->> +	 */
->> +	if (vm_flags & VM_EXEC) {
->> +		int order = arch_wants_exec_folio_order();
->> +
->> +		if (order >= 0) {
->> +			fpin = maybe_unlock_mmap_for_io(vmf, fpin);
->> +			ra->size = 1UL << order;
->> +			ra->async_size = 0;
->> +			ractl._index &= ~((unsigned long)ra->size - 1);
->> +			page_cache_ra_order(&ractl, ra, order);
->> +			return fpin;
->> +		}
->> +	}
->> +
->>  	/* If we don't want any read-ahead, don't bother */
->>  	if (vm_flags & VM_RAND_READ)
->>  		return fpin;
-> 
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 85037fa4925e..f384fa278764 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -2795,8 +2795,8 @@ int gpiolib_cdev_register(struct gpio_device *gdev, dev_t devt)
+ 		return ret;
+ 
+ 	guard(srcu)(&gdev->srcu);
+-
+-	if (!rcu_access_pointer(gdev->chip))
++	gc = srcu_dereference(gdev->chip, &gdev->srcu);
++	if (!gc)
+ 		return -ENODEV;
+ 
+ 	chip_dbg(gc, "added GPIO chardev (%d:%d)\n", MAJOR(devt), gdev->id);
+-- 
+2.40.1
 
 
