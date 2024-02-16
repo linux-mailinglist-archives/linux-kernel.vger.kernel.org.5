@@ -1,139 +1,110 @@
-Return-Path: <linux-kernel+bounces-69079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8922D858439
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:36:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB2F858440
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C2B71F22A6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:36:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AC462839BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25ED4132C3D;
-	Fri, 16 Feb 2024 17:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0648D132C29;
+	Fri, 16 Feb 2024 17:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KPrPgQZM"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKCfSaKb"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E107A13475F
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F17D219ED;
+	Fri, 16 Feb 2024 17:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708104926; cv=none; b=hYB3k3IhKLHDyLzlI+PlgzzKUwIhNhhXtjotKtP4BEErwQ8Ea8QKZn5WmcLgks3PZ0tWlnlcSzmUCNwRPkB64cTfGnMA99+uUAZWYqlQbDhka8S9YpOTAPkaiwdX7s58MmSuR9Gck+O3FJEpoo2/ilnup5WTU4ruZC6l4LDQnW4=
+	t=1708105039; cv=none; b=DG5EXsv3xTyj0k9CDpSRzqAe3dHSKpcbVy6ZaVefYYhftv6f1Alo+y/bLtKAvUmitIJBvRFHd2bJdT+tYhg1uxK5xWyGLi/5e/PX+jacy0MLdxfkGkLXCQ/fd0PYeiRQPrRWMQ7od60O4xjuFfXQU1W17IDhER9Oqlb4+6bYB4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708104926; c=relaxed/simple;
-	bh=R1GLPwlYfMEGgtPbyaSg7QFWg/JNBX3HH10DnKKcCK4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gvwPDV/jp5Sdqapww8ws1Km6HkIsYXt4OJue8AkrGYDpN9+ld/9CZwwdGfI45CuTzn+o+FlkaM+DWuB5zICMJ2/ApGy6WloDGldBK2z38m4XSqTHiqzPOyQlZqQU7qH6Uxxfqf+ymWwBPOVqplLzoZJhiNv6+L5+CQ+NWZ41QBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KPrPgQZM; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d71cb97937so23933615ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:35:23 -0800 (PST)
+	s=arc-20240116; t=1708105039; c=relaxed/simple;
+	bh=K3ILZL73XsaCWQJVqqLCkkb+Rz4ec5sI85BBccikSU4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LGX4v+SzWe5v2s3OchKqn7i2xmCtoi/tDJHrL7S0Yqq385I6fVk64TdF4FJEUQ+zkaeyNnQb0yNQKUkM+wBbloWCzr3PT07/RBUJIoHkPxgGb08zX5ZNmSb1aGjx87myf8aWVeWeHA9BpTUxhGsszqB4MkdFXiWAgFDzwE4zgr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NKCfSaKb; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33d26da3e15so188740f8f.1;
+        Fri, 16 Feb 2024 09:37:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708104923; x=1708709723; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kWuu4IaCb+ecu+2X4FcUxgf2SPat8siMwG6Oun2YK2w=;
-        b=KPrPgQZMwL1HCPXC7wBU5oYFvj++78+R55108VsQBi9jWS3x1PBHwgZBUJwMGjt/Xv
-         WVjSaOp7tOYhLOP8O6I0ZLqJ4/Wu4fg/CkBFN8IyfO5ycTtacmT9czYIuhMMhjPKJVia
-         4h95pCe9D530v3bQIKJ+XaL0xamOufrpXZUtpbssjW+t8I1RHatNGdiudZkqkMjtW9q6
-         VfT7l2oCkFqsAJEa9U1KrPRxjlj+O9vPKqtcpRA58/2JEf5wlDoF0ry+Opw7fH6EmOin
-         32bAYoR8TAcbdnquUDA6xZeNuJnknd9ZgmUAebdqOR29ir+Rdega9Q9mrcqdCcXQatGd
-         QPVg==
+        d=gmail.com; s=20230601; t=1708105036; x=1708709836; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PL5pjz0aQhfCwh8cDYpS+9GgpPQ8XWmRdLVnQ4KRRE=;
+        b=NKCfSaKbl0BI6vej5f0CeS/QqE/B4BWPDXFVgbO+UU3gAOeGgZ4n8jyLofBCIe+PqR
+         I4sNjgwYslIfCtFyim6YGjTTOg4EeFzCL+65t7bgpRwXpf1yEip8t6Ra7Z1+U1cexew4
+         bI/G3LrUxa9dpiFJAbHfGC5uBrm0P9gKC87FCkBKqxjgJ6pvehb0FaMfzsGzShpC6p8C
+         YQRX3Gqi3/muMV0wiEKpPPfLknt5Z04dFlj3rkwUuWJ+kDRGOlsEJ5WUcF5GSqMhny/D
+         aF+zQ6iuqwkFVm9KrjXi0I4kJUAzK5AXAZ3HhEPw5DBbGyP04RGy3NC7NGlF4zDKyQAn
+         5ITQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708104923; x=1708709723;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kWuu4IaCb+ecu+2X4FcUxgf2SPat8siMwG6Oun2YK2w=;
-        b=PKd7iE81YRydd3QoABZTL/Ru2LmPS994YjTiekwIHGcGHQ4Rj2g+hGYWTo5UtM8NW2
-         /w0eoiVU2EA1VymEGdghokfeVCsD1CpNvC98Eb9kK9QPfVtmmHTCwLVpj9+Zbsuh2C8I
-         ibAFg4n94ul4226pAKQEw62b1y/t3yE5z6OlPIh9aDxMU5SjpZg297EdtqR/PpF+oJEs
-         mygBUutiMR7afet/z3yQPgP8Sww4DCbL/NeoSDIbVsdcXmqoVHqwwerQltevPDVlu1W3
-         /gKTV8q5dIdNVQv5xpbeO18VSuZnHVTSTfFJ7hviYvj5KteECXEuEAQPSA5DRv+haB04
-         L3FA==
-X-Forwarded-Encrypted: i=1; AJvYcCWaqoe3dHulJotWxVREaqNgm+19SWwmqZ/I0gQSIX45R6I1kC6Gt8KSPfFI1zgcf8ZOC/rPIgq3Ytrc0sORg5ou3hhUWmGvwvlpO+CF
-X-Gm-Message-State: AOJu0Yx+z39vD15pBdyrDl3dMr6KhA3xHzo2J4qwWQvXEFNgWtog8XUT
-	uHAuWgZF4H4WlX9bg7hFUXDE8MKiZUeF87dIw4MqQq1IWItMNCPa9JbdBfvuYg==
-X-Google-Smtp-Source: AGHT+IGdCXZredO/BC7qQxhRij/KCAb3j/MIg4DPBT6lo3YCmbYRREkXZE3AZg1N6MirSxETbxerBw==
-X-Received: by 2002:a17:902:ea12:b0:1db:ae5f:a38d with SMTP id s18-20020a170902ea1200b001dbae5fa38dmr2114924plg.5.1708104923231;
-        Fri, 16 Feb 2024 09:35:23 -0800 (PST)
-Received: from [127.0.1.1] ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id v9-20020a170902b7c900b001db5241100fsm118592plz.183.2024.02.16.09.35.19
+        d=1e100.net; s=20230601; t=1708105036; x=1708709836;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7PL5pjz0aQhfCwh8cDYpS+9GgpPQ8XWmRdLVnQ4KRRE=;
+        b=B9NiXMy4wITj58HLSBIRcsGfQ2GvEOI5z/a+K1PhkJBvFLeTdmE02WQP1lAxrk5dZ+
+         vNLfIf2WJZbo3bwamdK7haPchgYbX9Vh0hnByWI84TnLnLvOm78JR/Uqq+qT1QloXbDv
+         EwhaBMjE9ZYJt1TbAvPhebpGgkl30QEkLwcIuoEfYrjsNAxB50KgZngj/P3jUIQnlNJR
+         vh8u3QsOqdpA8hqUa/SFEOAVCWZlFESGTzIwQtonScG89w3pUD39QvM7n5TVTEb7r4ps
+         CDiC6YMlibEp6zHCVERJxH6sZy7METpJmpPtGEfyU8zcizo5jwEmG1Kzw9KwStvmoykF
+         IzVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuu/bx9VxQCZ787Z6lERM4MiiZ8L/KydYRPXqG0iJQQmqIk9ev6kqLr0jQBI2uV8DhZ1JU6y9tKJfvSMXc6gXFEEKzD8j8oYrlvxe/
+X-Gm-Message-State: AOJu0YwYt0snruea+iuoE9fieFwpXEN/t/aYf4WrOYO/RWEsA5D1S6Fi
+	G8U3au0c1K0MifbO1h0w+rmniFAsBNFLF/m3G08DjGF9OhNJeR73EirTNu0a
+X-Google-Smtp-Source: AGHT+IE4Pg4KOZFCvGbz9RS6Hr8h5JfxjxLesAYKmccGoAykkWg5lkM4U9fXR0qhVQka1c1+7hYq1Q==
+X-Received: by 2002:a5d:6f19:0:b0:33d:2779:442a with SMTP id ay25-20020a5d6f19000000b0033d2779442amr570329wrb.9.1708105035546;
+        Fri, 16 Feb 2024 09:37:15 -0800 (PST)
+Received: from zambezi.redhat.com (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
+        by smtp.gmail.com with ESMTPSA id u1-20020a5d5141000000b0033ce3311805sm2755864wrt.10.2024.02.16.09.37.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 09:35:22 -0800 (PST)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Fri, 16 Feb 2024 23:04:44 +0530
-Subject: [PATCH v2 5/5] PCI: epf-mhi: Enable HDMA for SA8775P SoC
+        Fri, 16 Feb 2024 09:37:14 -0800 (PST)
+From: Ilya Dryomov <idryomov@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ceph-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 6.8-rc5
+Date: Fri, 16 Feb 2024 18:37:02 +0100
+Message-ID: <20240216173705.1837988-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240216-dw-hdma-v2-5-b42329003f43@linaro.org>
-References: <20240216-dw-hdma-v2-0-b42329003f43@linaro.org>
-In-Reply-To: <20240216-dw-hdma-v2-0-b42329003f43@linaro.org>
-To: Jingoo Han <jingoohan1@gmail.com>, 
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Marek Vasut <marek.vasut+renesas@gmail.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Serge Semin <fancer.lancer@gmail.com>, linux-pci@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- Mrinmay Sarkar <quic_msarkar@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=919;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=l9TZl5f3ruMfAhDvync60x+vuqThCg8E95q3H1HbSYw=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlz5y+NwBcDBvMsgLY/9ArhUeU4RtpAOkSNOPA0
- cL+6HT1tTCJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZc+cvgAKCRBVnxHm/pHO
- 9YdiB/9TA+DKLXxIZYpi/4hnMyIkUsM2WJIWyQ6w7vRVyPe9xkvRVouAEDo3kakdlZprxiUhdRE
- RVaU7JFkgelmHQuyS7am0hGDZJpDmEmPrmuGigJlrygDliRLE85n5WP2vnnN7WKQuYN+W8HQnv0
- l0f9zuR0+G+HEp9D1og10j/2BOueS6fmgssxK8rtfpi2VW+6FgY0KiiqpsWdUq7od5/Ucw2nR1F
- NbjzPj1POiJNg12Bi3HrhcTLZjvb0KwfS/lV5Mj1NKvbtl2anyrbqaqqbejjAuqCSzx91cCovSW
- ddbe/L2NDfdpqcgHjOuBkoP+92IIH3SP4KN6C52nTmQjmNqV
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+Content-Transfer-Encoding: 8bit
 
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Hi Linus,
 
-SA8775P SoC supports Hyper DMA (HDMA) DMA Engine present in the DWC IP. So,
-let's enable it in the EPF driver so that the DMA Engine APIs can be used
-for data transfer.
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-[mani: reworded commit message]
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/endpoint/functions/pci-epf-mhi.c | 1 +
- 1 file changed, 1 insertion(+)
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-index 2c54d80107cf..570c1d1fb12e 100644
---- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-@@ -137,6 +137,7 @@ static const struct pci_epf_mhi_ep_info sa8775p_info = {
- 	.epf_flags = PCI_BASE_ADDRESS_MEM_TYPE_32,
- 	.msi_count = 32,
- 	.mru = 0x8000,
-+	.flags = MHI_EPF_USE_DMA,
- };
- 
- struct pci_epf_mhi {
+are available in the Git repository at:
 
--- 
-2.25.1
+  https://github.com/ceph/ceph-client.git tags/ceph-for-6.8-rc5
 
+for you to fetch changes up to dbc347ef7f0c53aa4a5383238a804d7ebbb0b5ca:
+
+  ceph: add ceph_cap_unlink_work to fire check_caps() immediately (2024-02-13 11:22:54 +0100)
+
+----------------------------------------------------------------
+Additional cap handling fixes from Xiubo to avoid "client isn't
+responding to mclientcaps(revoke)" stalls on the MDS side.
+
+----------------------------------------------------------------
+Xiubo Li (2):
+      ceph: always queue a writeback when revoking the Fb caps
+      ceph: add ceph_cap_unlink_work to fire check_caps() immediately
+
+ fs/ceph/caps.c       | 65 ++++++++++++++++++++++++++++++++--------------------
+ fs/ceph/mds_client.c | 48 ++++++++++++++++++++++++++++++++++++++
+ fs/ceph/mds_client.h |  5 ++++
+ 3 files changed, 93 insertions(+), 25 deletions(-)
 
