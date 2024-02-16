@@ -1,180 +1,155 @@
-Return-Path: <linux-kernel+bounces-68867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49868858120
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:33:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B22C858122
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B4EBB214FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:33:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C8511C20CC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168111332AF;
-	Fri, 16 Feb 2024 15:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="BWVCT3bW"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2052.outbound.protection.outlook.com [40.107.14.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4B0133424;
+	Fri, 16 Feb 2024 15:25:21 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C1512FB36;
-	Fri, 16 Feb 2024 15:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708097087; cv=fail; b=oyGOIcvzotwl5yY2gnMxlvpv8lkj8iF/e6avIuxVZml3Gc2AmUFXjv2bGQsJaZvo9dboKlGGWk9DrhGnfr1koaK2AzfmdOCDFKMoF7dKKVSwx8eax167Uy62UmwMCM/hmH0aYHkV5yrs3ztdbT6ay3MIjo/DrEIcruuTFTbv+BY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708097087; c=relaxed/simple;
-	bh=KLt7lkxMIDXwqVaa187HXcW2n371/Kn3gOTNz7xxQIQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=izzj9PM7sFJH+huksknSPZ3usSIzpHoyTLMd6R9ukLcZBUWfBktqv4SYt5a/Itn3j4xJCWtqfDn44SshLxtCjkrqVt3C+h4/ZSaMDuRQJWo8N/Ygx8JkBkokjKO98g09nAWqb8Bk55tSFViquxrepuGlqGwfWcdo7YgsyfAuav4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=BWVCT3bW; arc=fail smtp.client-ip=40.107.14.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gT7l+K0uiYbEZ9Btcgx18GvCiLqfYXFDto9tJJT6f3MO/dkM2wPC++AYF8/Zln/LL6a3cdirkaz+krcIrzk/+78KLM+b7+vGXgmJ30TKto5/z6EL9Stq77ym5WsXV4c7uJwKRM4hxO9IlOavj9rB4DXQox0LyzB+2VAIQCrcsf3RUWlhi9AdWuZc32PluumM82iRpAjQz7npCZDOF1QwTikqHC/pPbPVFau9zWuV7xdRLgqoMSiXXu5ZIF5S1z0OneiGjdDMbOIcywgX2VDWmKraqt5feprg4pAWhUu+uzbXUrW3wqiSMmJKqS5gJ6mQuKURimL4ZL/KGTJCKqm6QA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=37sPE7amiEW/LSX22nPYRRTcsfGA/KdN6cUCAu0caMo=;
- b=K6m+029TjOBDUfaggbDiCzMEYw6rXaASO0EGHx9DDYnaVetsE6RiwijLeBZyQUh21pYdm6RHS9jZ84sMztbU8c6jvHsxZvGsZFknmky5CDtBaCIBjNwMQWEU/n1bMSjT05ldUf/f5nikPV8l5JWBO57h2Az75XTcuBFsojPmALKBdVfZ+Bp/RFifFWekmv7j2r7WkHsSapBxZqEX659SZzfc0NMQSniUM+YUQ1NjlDho5WlGGjx1BhyYcYH50EvWjVYkAMoTJwgYsPVVzbhy5TW4wO7d0fa4nXHm7C4r7mkABC4l8JEDwjKWD2egoI6fsvCRZVFL6N6a8kbvr6IyWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=davemloft.net smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=37sPE7amiEW/LSX22nPYRRTcsfGA/KdN6cUCAu0caMo=;
- b=BWVCT3bWLezGZ4YNRA3eUmnHdFNmxIGzbiP4pWbKy1m1b6os9GvD0woLLMUSY/VciCflj6BA8J6rEyUVR1MreNqdeCiRmj1RVb0A+/nmBiUuhFeSKHtV6LURftvfJ+TOglOjgViDbyfblx/kUr+yxjs2dfA9qDrbbRU6sYqxjhE=
-Received: from AM6PR02CA0036.eurprd02.prod.outlook.com (2603:10a6:20b:6e::49)
- by GVXPR02MB10805.eurprd02.prod.outlook.com (2603:10a6:150:158::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Fri, 16 Feb
- 2024 15:24:39 +0000
-Received: from AMS0EPF0000019D.eurprd05.prod.outlook.com
- (2603:10a6:20b:6e:cafe::3) by AM6PR02CA0036.outlook.office365.com
- (2603:10a6:20b:6e::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
- Transport; Fri, 16 Feb 2024 15:24:39 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- AMS0EPF0000019D.mail.protection.outlook.com (10.167.16.249) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 15:24:38 +0000
-Received: from se-mail01w.axis.com (10.20.40.7) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 16 Feb
- 2024 16:24:38 +0100
-Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 16 Feb 2024 16:24:38 +0100
-Received: from pc55637-2337.se.axis.com (pc55637-2337.se.axis.com [10.88.4.11])
-	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 7D2D7146C8;
-	Fri, 16 Feb 2024 16:24:38 +0100 (CET)
-Received: by pc55637-2337.se.axis.com (Postfix, from userid 363)
-	id 805D422DFE41; Fri, 16 Feb 2024 16:24:38 +0100 (CET)
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Date: Fri, 16 Feb 2024 16:24:21 +0100
-Subject: [PATCH] net: stmmac: mmc_core: Assign, don't add interrupt
- registers
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E9813341C;
+	Fri, 16 Feb 2024 15:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708097120; cv=none; b=q2mGgKIBxAn6TjwjO39Ufb/W1hxkMd/BGWSJs/y0YCXqtXph2LHV26dyuIYMK4uwuxuc33RCijSkR69Ga7N0qH8HYwaINA/0DtW9YkU89HRU5WYbs5+62Z/ZUM5y7oppcrk9gGVWUaYIsuW6TuO83zln6QPpLWMA/R/CZwXBk2g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708097120; c=relaxed/simple;
+	bh=0d4a909JZ7AEgtDboMnxUVr1QUz9fzJ35MpJ5SdnxVU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=m+KM3bMUJTkKHy0ZMFQ+3364GANlwW0wo20LZAMamDtb56QLLR4kzjHX+5TqbuOqd6vsMaQLLkUL9D/nk3MW0HuqIqXbOe3QL98VAmNPqNJo7TYw0VsTjakEBomS6yBH7b4vcCZhLNE15LYBywswpT+q4o4qCWFnylFdHcvVfLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TbwMf0scdz9xrth;
+	Fri, 16 Feb 2024 23:09:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 20943140489;
+	Fri, 16 Feb 2024 23:25:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.48.131.30])
+	by APP2 (Coremail) with SMTP id GxC2BwAHQCRBfs9lTLSaAg--.11044S2;
+	Fri, 16 Feb 2024 16:25:08 +0100 (CET)
+From: Petr Tesarik <petrtesarik@huaweicloud.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
+	Petr Tesarik <petrtesarik@huaweicloud.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Xin Li <xin3.li@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Pengfei Xu <pengfei.xu@intel.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ze Gao <zegao2021@gmail.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Kai Huang <kai.huang@intel.com>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Brian Gerst <brgerst@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Joerg Roedel <jroedel@suse.de>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Tina Zhang <tina.zhang@intel.com>,
+	Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	David Howells <dhowells@redhat.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Subject: [RFC 0/8] PGP key parser using SandBox Mode
+Date: Fri, 16 Feb 2024 16:24:27 +0100
+Message-Id: <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com>
-X-B4-Tracking: v=1; b=H4sIACR+z2UC/x3MQQqAIBBA0avIrBPUzEVXiQjJqWZhhSMRiHdPW
- r7F/wUYEyHDKAokfIjpOht0J2A9/LmjpNAMRhmrjHaSc4x+XTj7zBL7welgnQoKoSV3wo3efzf
- NtX7B5gzPXgAAAA==
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
-	<joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC: <netdev@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708097078; l=1873;
- i=jesper.nilsson@axis.com; s=20240216; h=from:subject:message-id;
- bh=KLt7lkxMIDXwqVaa187HXcW2n371/Kn3gOTNz7xxQIQ=;
- b=3AALvebc5WkJMbXlrwZxPpsh1ObS6AysvNlUkoKDysRlH9NCs9RnpgTWV+fLG7HDlSKOqIyPe
- 7QLfuZE3uWxDndTDmgJVBcsqLy5Nf8nwDBFp8fi9h+qWyLn8IbDsfKR
-X-Developer-Key: i=jesper.nilsson@axis.com; a=ed25519;
- pk=RDobTFVrTaE8iMP112Wk0CDiLdcV7I+OkaCECzhr/bI=
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF0000019D:EE_|GVXPR02MB10805:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b8cb483-070b-4cda-4313-08dc2f036409
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4oX4JGtheX+f2uX5984nJb+nT7QU/Rl4A8HnTm6vL2KgcQ3+uSnBGmEHt0/BkXhbCIYzyDjRZPiciAXZKAKSfNGRoK1zWxJ5izpDYP28SrAiOliulLq0lunBeXFtpTbcPTS1zZXXE0SNCgtjmn8QJ6UOqmxfig+SZmsMHY5KH80ZGgdICMTFXq0Sw8DxqZ66Luf5zGYvRtE+4VNynwZAjwJpUH+JH4ResLdsQgSRGgvj07rcvsKavb3JR01sjLIpKOSONKYjh+mGEuwCkzrW+ENMb2c7Bw7QGQkTaZfHtNyFDwTdvtKdxaS07hjHqDRs/S4dgQAXXYJRcRcrrDObULR3Qh7AgOblEHdDsv9WIoD8trooQ1+V8LporRZVdQrwE584RqumLz9NKQ0v0pIviU/WEYtMighgPMUbvp5miNziOZG5ZL4xvoPf1vCqVZrut2du23F7iW+4p2R6zzIpPZcO4Bg6xOLbdw9fJi3mIoF9mZIFKyA/o9tKdo1vVbHCv0I7Iw7vjugYWQIofT1Qm8Da1/27Tj34AwxmTQemVhYyo8GAlS6dvjSmKxEcalqQHpIAuHjDc1P7V3NzCiCV+YOwhvo22mg9O7ULrkseBq55UoSVQOX6nCTWYUZATgxmPM/EpPehkKdcAhUVzfEMG3UZTV/8DkN2vmGS6chqADU=
-X-Forefront-Antispam-Report:
-	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(82310400011)(186009)(64100799003)(451199024)(36860700004)(1800799012)(46966006)(40470700004)(478600001)(2616005)(316002)(7416002)(5660300002)(44832011)(2906002)(8676002)(8936002)(4326008)(70586007)(70206006)(54906003)(110136005)(42186006)(41300700001)(6666004)(36756003)(26005)(83380400001)(426003)(107886003)(81166007)(86362001)(336012)(356005)(6266002)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 15:24:38.9191
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b8cb483-070b-4cda-4313-08dc2f036409
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF0000019D.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR02MB10805
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:GxC2BwAHQCRBfs9lTLSaAg--.11044S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1DWF1kurW7KFy5Kw17KFg_yoW8Ww4Upa
+	n5C395tF48try2krWfJw1xWw45AF48Ar4agw4Iqw1UC3sFqr48CFZ2kr13Ga47GFy8X348
+	trs8AF15WF1Uta7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUva14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+	8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+	uYvjfUojjgUUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
-The MMC IPC interrupt status and interrupt mask registers are of
-little use as Ethernet statistics, but incrementing counters
-based on the current interrupt and interrupt mask registers
-makes them worse than useless.
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-For example, if the interrupt mask is set to 0x08420842,
-the current code will increment by that amount each iteration,
-leading to the following sequence of nonsense:
+While I started working on my development branch to illustrate how
+SandBox Mode could be enhanced to allow dynamic memory allocation and
+other features necessary to convert some existing code, my colleague
+Roberto Sassu set out and adapted a PGP key parser to run in a sandbox.
 
-mmc_rx_ipc_intr_mask: 969816526
-mmc_rx_ipc_intr_mask: 1108361744
+Disclaimer:
 
-Change the increment to a straight assignment to make the
-statistics at least nominally useful.
+The code had to be rearranged in order to avoid memory allocations
+and crypto operations in the sandbox. The code might contain errors.
 
-Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
----
- drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+David Howells (4):
+  PGPLIB: PGP definitions (RFC 4880)
+  PGPLIB: Basic packet parser
+  PGPLIB: Signature parser
+  KEYS: PGP data parser
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-index 6a7c1d325c46..6051a22b3cec 100644
---- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-@@ -280,8 +280,8 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
- 	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
- 	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
- 	/* IPC */
--	mmc->mmc_rx_ipc_intr_mask += readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
--	mmc->mmc_rx_ipc_intr += readl(mmcaddr + MMC_RX_IPC_INTR);
-+	mmc->mmc_rx_ipc_intr_mask = readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
-+	mmc->mmc_rx_ipc_intr = readl(mmcaddr + MMC_RX_IPC_INTR);
- 	/* IPv4 */
- 	mmc->mmc_rx_ipv4_gd += readl(mmcaddr + MMC_RX_IPV4_GD);
- 	mmc->mmc_rx_ipv4_hderr += readl(mmcaddr + MMC_RX_IPV4_HDERR);
+Roberto Sassu (4):
+  mpi: Introduce mpi_key_length()
+  rsa: add parser of raw format
+  KEYS: Run PGP key parser in a sandbox
+  KEYS: Add intentional fault injection
 
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240216-stmmac_stats-e3561d460d0e
+ crypto/asymmetric_keys/Kconfig          |  17 +
+ crypto/asymmetric_keys/Makefile         |  20 +
+ crypto/asymmetric_keys/pgp.h            | 206 +++++++++
+ crypto/asymmetric_keys/pgp_library.c    | 556 ++++++++++++++++++++++++
+ crypto/asymmetric_keys/pgp_parser.h     |  18 +
+ crypto/asymmetric_keys/pgp_public_key.c | 441 +++++++++++++++++++
+ crypto/asymmetric_keys/pgplib.h         |  58 +++
+ crypto/rsa.c                            |  14 +-
+ crypto/rsa_helper.c                     |  69 +++
+ include/crypto/internal/rsa.h           |   6 +
+ include/linux/mpi.h                     |   2 +
+ lib/crypto/mpi/mpicoder.c               |  33 +-
+ 12 files changed, 1429 insertions(+), 11 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/pgp.h
+ create mode 100644 crypto/asymmetric_keys/pgp_library.c
+ create mode 100644 crypto/asymmetric_keys/pgp_parser.h
+ create mode 100644 crypto/asymmetric_keys/pgp_public_key.c
+ create mode 100644 crypto/asymmetric_keys/pgplib.h
 
-Best regards,
 -- 
-
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+2.34.1
 
 
