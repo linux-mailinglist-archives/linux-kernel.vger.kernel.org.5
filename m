@@ -1,83 +1,88 @@
-Return-Path: <linux-kernel+bounces-68582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF9D857CB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:36:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AA8E857CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:36:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B784BB22F19
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:36:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DB071C20E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA72212A16C;
-	Fri, 16 Feb 2024 12:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1D7433D3;
+	Fri, 16 Feb 2024 12:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GbvU/Ry5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4293F129A74
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EC3129A77;
+	Fri, 16 Feb 2024 12:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708086911; cv=none; b=LQxl8PUY9WPMvwSkxqIHB4geD1uxMVSnF4GfVSMFEKg+C4kYWFsggaxJv41MIfTm41vfGu72heoCtZASmT/PbKsbiSrwRXKL40MfXA7GIRo92g0XtHvdIBYlH/DlRNuIwKVk2r44t2spPAhsCiE9c5QBmfVHD5LTqCmtD8Rwh1E=
+	t=1708086909; cv=none; b=NXQ0ulMx0yBYn0krhiGhB/BGJ1KlvChhoxEQg3ZcUutj7tq6LVfdQ/pOmKLOXkDxJGtqvYyAjWLkS0lBoT+y+HcJqtVkqNxUfEHgiu0UJDFFf+UJm1nCSLq+J8DRVb4fw3G/prLbcEu5wtS+Zs9f4hJgsFL/s876Vno1S1zd0MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708086911; c=relaxed/simple;
-	bh=Pl4R/QWLLFRDsjgD9md2zsv8zdcqMfqx2HQS9GMeEz0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PRzqYMbAK/AR/xBI1c71A4uOuoCsV8C1t6Nh3oB2VpzaTrw40QBC6QXyayoT3qZAQIzdnjEu3DYnTgynJN7zmvQ9m6gYeV2qD7WY22GSGzU9Uu5y0OB28k0V+O0xaaiJp0yIDE9l5UMlG8/A1RiugBx0qmd5fs/WjB6owe+Fuvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F79C43394;
-	Fri, 16 Feb 2024 12:35:05 +0000 (UTC)
-Date: Fri, 16 Feb 2024 12:35:03 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 18/18] arm64/mm: Automatically fold contpte mappings
-Message-ID: <Zc9Wd0N03pPY5Nq5@arm.com>
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-19-ryan.roberts@arm.com>
+	s=arc-20240116; t=1708086909; c=relaxed/simple;
+	bh=riZV/gkwObqh/32FznqVlHkFGhQ6oMb4j7nisfi+Pj8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=O6D4bN9k82Y3QzuRjURl54DixTOCjIXFaT9zybyTLATnCWAbj/2zqvsmtSshJQ2egbGRcEmxJISBfIkphjRGcfZ79fDm07HU9je7Mhh0ORprtl+U7t/SwgnZeSe8TZpeU2JC/NjA99CaJX0rJiyjk+1vDMldfMRd/gkbL+6qrGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GbvU/Ry5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F96C43390;
+	Fri, 16 Feb 2024 12:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708086909;
+	bh=riZV/gkwObqh/32FznqVlHkFGhQ6oMb4j7nisfi+Pj8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=GbvU/Ry5/vrxGXr+/cJ3ce+0WWNod37nCHhivKlwvOvOdU5rB51aeeuNiEHWGi+8U
+	 TXcgT9qIiajvxhmUVcdq9QiyvNJO934lWk/dSBK1mHGl1qC52TivCDJiNA3gjEkbOK
+	 Jujz3PrRMuF3/zL1pp1CFwJdkmJu+dQ9Gl/6h22lnW0l/yY6H6QSrS+VpCo7YWm/bT
+	 lMZfmM73SdV1EKg7JQYCsf8aadyoODC1NHPcwbSRF0ag4mDj9WmJ+iT6fbdS4LMrnp
+	 OiHS+V5j/x/7KZw/4N6vqdOTXTkXo9IhSr0aJNQyCwXOneWWbM0qaL2814yyhoK2fU
+	 wEBhPlEo4mgjA==
+From: Vinod Koul <vkoul@kernel.org>
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Sean Wang <sean.wang@mediatek.com>, dmaengine@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+In-Reply-To: <20240213063919.20196-1-zajec5@gmail.com>
+References: <20240213063919.20196-1-zajec5@gmail.com>
+Subject: Re: [PATCH] dt-bindings: dma: convert MediaTek High-Speed
+ controller to the json-schema
+Message-Id: <170808690375.369652.1439304081643409723.b4-ty@kernel.org>
+Date: Fri, 16 Feb 2024 18:05:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215103205.2607016-19-ryan.roberts@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
 
-On Thu, Feb 15, 2024 at 10:32:05AM +0000, Ryan Roberts wrote:
-> There are situations where a change to a single PTE could cause the
-> contpte block in which it resides to become foldable (i.e. could be
-> repainted with the contiguous bit). Such situations arise, for example,
-> when user space temporarily changes protections, via mprotect, for
-> individual pages, such can be the case for certain garbage collectors.
-> 
-> We would like to detect when such a PTE change occurs. However this can
-> be expensive due to the amount of checking required. Therefore only
-> perform the checks when an indiviual PTE is modified via mprotect
-> (ptep_modify_prot_commit() -> set_pte_at() -> set_ptes(nr=1)) and only
-> when we are setting the final PTE in a contpte-aligned block.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+On Tue, 13 Feb 2024 07:39:19 +0100, Rafał Miłecki wrote:
+> This helps validating DTS files. Introduced changes:
+> 1. Adjusted "reg" in example
+> 2. Added includes to example
+> 
+> 
+
+Applied, thanks!
+
+[1/1] dt-bindings: dma: convert MediaTek High-Speed controller to the json-schema
+      commit: fa3400504824944ec04bd3f236fd5ac57c099fd5
+
+Best regards,
+-- 
+~Vinod
+
+
 
