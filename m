@@ -1,270 +1,192 @@
-Return-Path: <linux-kernel+bounces-68296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1047857852
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30CA885785A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F8528A6DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:01:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECB8528AD0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8022A1B94D;
-	Fri, 16 Feb 2024 09:01:24 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9968C1B959;
+	Fri, 16 Feb 2024 09:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Aa4qGi5k"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45BF71B81C
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E20D1B80B
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074083; cv=none; b=gwFPcvS+0vTy46YMGnJ39NjRUX25Ex4sTWfk1NKfdVb2hLC41wOBVkteUtOrysiEkFf1RAdDnS077tCyH+VMo9a0OEsg0y20uduBADBIv/q82UlXqlw566UzLCVxF6rHsDtr8CP4szmDbV3om97AOde6nUVQbB6STRE4aRSK8ZM=
+	t=1708074159; cv=none; b=Gv4eK7wfhKvLnC0FI/aoEEutoj+ug9OCwjIIsJ0HKrP6qvPuxI2TGYFNq0nrqr+s002gEpzD38p/lI639YVxsj0Zb0LkGar+u1jrVTryLoh3VRSl+KmHiRsr+FS8ldiSSxE32zPj7f6AkUQ7ZyiEQMmBI+4IjN4kvcl1a7wV6N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074083; c=relaxed/simple;
-	bh=B9zeYn0vSNSA1QGN9jiimfT1KpPUVXk7FTAlcoVpw6Q=;
+	s=arc-20240116; t=1708074159; c=relaxed/simple;
+	bh=0ASL8/2Fnq0OuCZD8H09gdyT0FLFuomqfwj8h+QBwB4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B03oCCA3oEyodtTDLrKoUkRYW8HHuNs+FMnopkcGHh/v/taHQLe6IrzryeazvWRT2s79ItJWKyZsCEJgxqvEYqtKi62J/mHU+FuTBRZZqakPNuTUh734K/V+waE5/mvbh3h+yI2eksSmpV3RNTIkQiqIxYo0tYeH4HukGPX0SUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6077444cb51so21007387b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:01:20 -0800 (PST)
+	 To:Cc:Content-Type; b=GPCC4F9Gzn3DdMECBbixUv3zW4Xd72lfts2mC+15CfnCunXJdGpWBNcLt7UzFs553rTC+uJhJzFWFnjL9zWLcaVQwrjox51oa3MScAU2823JsqHsUHkPLQv/VTzAX+9u1k28ixNGH4QxCahaiNQTr60eI/whPbOHANFd8EgPlmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Aa4qGi5k; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso1914980276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:02:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708074157; x=1708678957; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aC0zV0jURwgzq9Q6615BgsaS7tbK8PR71BWfZKB9Bg0=;
+        b=Aa4qGi5ko2WzUV+jH6oa9oWrZHue0INtEQodKMwZR6oy3qFY32F7/uf0Ro+Qike6sh
+         m5ajjY6rF0LavNZfRoy2p4RP/PP1yXtuX02ypA0PYGfHpLaoabIdf3fLcHrkvvhjnohg
+         cjOItnTUFyF6XUMwzZDvwCA+D+cO0ZTrAuRhhJUadlOBRhCob4rMzccgQxIMvl7WlSKn
+         tgf2qKEgQ4I715/ta689QJRUTChZE6GR2DEoP4DyerGfEN+Csa1egLgGeWs2xjVX7w3j
+         zp/InkjOkfMB1PKGN9U7ay33MxCloKc3paseNzbzkPHhO5dZzXoyZ2Aal+jL6PSesebg
+         wgmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708074079; x=1708678879;
+        d=1e100.net; s=20230601; t=1708074157; x=1708678957;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uafFwhOF4SdmeZiWT79n+qBV7xcoaBZJpLX6qG+RRKA=;
-        b=Y4AbuRhgqnYw0FE57Ou8fIscDCqYgT6TkT88oDYNp06saZiZCUP3IZmj76OA+GVYCA
-         peIt/ZniYTgTYrsfNMhrxy6Q1dKEc75qPhOi4jmoGVEv6CmEPTZWUW5Ta2FjVNkbfQO4
-         TbPdi+c7MuZRZhVRUfErJIl3DdpYyZd5YArxVK5PEq72CWa4UF0pA2WYV7ixpAfgFjso
-         RW+ocE3pnQjPFPfaXrhzzgZd/o349A2UdTKrqfOPYolBBA6PjVEAyZy27UhhtdausOQZ
-         Z+qw7lxP6huCM22wEVw8q65rsJiemg6jI/511z1bGc5a9NFvIePhxqWdKwj8eeqpI05h
-         2U/A==
-X-Forwarded-Encrypted: i=1; AJvYcCW2rz/W8uReIEZj3yktwfzPsUXAtU5yArU9mRU4c8DcS6wg2WG1YIq2a9aFfKrff+mBi5+oHDw5UeVBE75k7RCy1AcTgYnRSAuEgltj
-X-Gm-Message-State: AOJu0Yw2YJ/vEkdUBJezE6O+qlQOWQ+j9A84/L9oNlXNb9q72wAFkCAw
-	tvAoYW7K5KFYdAOfQN/fPn/WM3IOuF4Oe3HmqcNlyrcTIxfZFlBFkMXrigazFi4RtQ==
-X-Google-Smtp-Source: AGHT+IHUb40FdD0QQHi5yfzRKa1NcSxHg64dQT8QF0IBIOzUqvI9D8JI3zvOB74zO2NtdD1NQNbI+Q==
-X-Received: by 2002:a81:4f84:0:b0:607:df5f:5e0c with SMTP id d126-20020a814f84000000b00607df5f5e0cmr2598327ywb.3.1708074078892;
-        Fri, 16 Feb 2024 01:01:18 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id s5-20020a817705000000b00607bc220c5esm262389ywc.102.2024.02.16.01.01.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 01:01:18 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso1533322276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:01:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU4G+na2J6ci5h8qtAe9U0PkZkIK8vumTLlg9KzA1c/zzwYMAnF3K8v3hWPYzuYsCcwmS0ju8YY78CD4OZ+rwSRM6znnPel5pjYCMwd
-X-Received: by 2002:a25:ae28:0:b0:dc2:4fff:75ee with SMTP id
- a40-20020a25ae28000000b00dc24fff75eemr3098050ybj.3.1708074078174; Fri, 16 Feb
- 2024 01:01:18 -0800 (PST)
+        bh=aC0zV0jURwgzq9Q6615BgsaS7tbK8PR71BWfZKB9Bg0=;
+        b=IBCx+9OrDodx+LITn6KIsUznMfTKkuqykTZHkDHta5ZgD78ieUkGEocptlqpVT8t7C
+         +KO9r0OZIIFfu9zR1UFr3uSI2wWlc0+3NqrcwHuWHSwf586q7U5f/cP6v56OeMudbqpO
+         dImnbDjVMUgsnPssYfbFaggtfkmXGIZyx1OYs0nXSiM4XuOQELgpdn3ch7sEwVYmzNyp
+         8g6sbTD4YmC6kwivYVGFBUaO68OlZgQqphOwG70HOed0beOmJrvp/ja0dZ0jzIuubcKs
+         EwonWhj/rAl2pBSr58B0hSMt0QpmiTCYfnOnSqoBPwcaVNZUtohuHDyfVxnYyM/c3VZa
+         QeJw==
+X-Forwarded-Encrypted: i=1; AJvYcCVVwYDgyWnM2edNEeyQbXYRV3l4vQWcezy0GTJogKIMJ2WoHxuywuAO++Qs9QCCED/t28OdBiYNfyoZYfXyxyuGhA9/9hxW39s2Ok4K
+X-Gm-Message-State: AOJu0YxzbxMC7t5GZvsN1BXpvNL0xLZTsFc9MolAXmQ1b7ti6K/6/bI7
+	euYu6SJA1AKa+y83ByvaLCn5qm6WKwKsCrbjpS2wa3omrpPZ8G8PwNQi4U5AtPz0FL42jQKRSfn
+	91HZBJpeaAwDckQSPVNuel5IbM621v6sjlnxY
+X-Google-Smtp-Source: AGHT+IEM+380cGg5HHP1OkOXBhTo7zHOdUbLmTZ9RIz7nJiHcIKUi7+k7jSA3j73/vSCaixotNnzkCuz3vuGoeIcxZc=
+X-Received: by 2002:a05:6902:1b85:b0:dc6:421a:3024 with SMTP id
+ ei5-20020a0569021b8500b00dc6421a3024mr5156888ybb.43.1708074156727; Fri, 16
+ Feb 2024 01:02:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240207-fix_sparse_errors_checksum_tests-v6-0-4caa9629705b@rivosinc.com>
- <8dedf370-47e1-405d-85cf-53f3acfa16a0@roeck-us.net> <Zcmr8C1dTuaPvXqJ@ghost> <cbee3cb7-04bc-43bf-95af-774fb72f7905@roeck-us.net>
-In-Reply-To: <cbee3cb7-04bc-43bf-95af-774fb72f7905@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 16 Feb 2024 10:01:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWLQbWPVFaVri6PGPybbVZLunQ6kMUUhEW0KCp8oUMJow@mail.gmail.com>
-Message-ID: <CAMuHMdWLQbWPVFaVri6PGPybbVZLunQ6kMUUhEW0KCp8oUMJow@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] lib: checksum: Fix issues with checksum tests
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Charlie Jenkins <charlie@rivosinc.com>, David Laight <David.Laight@aculab.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
+ <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+ <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
+ <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com> <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn>
+In-Reply-To: <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 16 Feb 2024 01:02:25 -0800
+Message-ID: <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi G=C3=BCnter,
-
-On Mon, Feb 12, 2024 at 6:13=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
-> On Mon, Feb 12, 2024 at 12:26:08AM -0500, Charlie Jenkins wrote:
-> > On Sun, Feb 11, 2024 at 11:18:36AM -0800, Guenter Roeck wrote:
-> > > On 2/7/24 16:22, Charlie Jenkins wrote:
-> > > > The ip_fast_csum and csum_ipv6_magic tests did not have the data
-> > > > types properly casted, and improperly misaligned data.
+On Thu, Feb 15, 2024 at 5:27=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Thu, Feb 15, 2024 at 08:22:44PM -0500, Pasha Tatashin wrote:
+> > On Thu, Feb 15, 2024 at 8:00=E2=80=AFPM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > >
+> > > On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
+> > > > On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@googl=
+e.com> wrote:
 > > > >
-> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > > +Example output.
+> > > > > +
+> > > > > +::
+> > > > > +
+> > > > > +    > cat /proc/allocinfo
+> > > > > +
+> > > > > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
+> > > > > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_k=
+malloc_order
+> > > > > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:all=
+oc_slab_obj_exts
+> > > > > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:all=
+oc_pages_exact
+> > > > > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable=
+ func:__pte_alloc_one
+> > > >
+> > > > I don't really like the fancy MiB stuff.  Wouldn't it be better to =
+just
+> > > > present the amount of memory in plain old bytes, so people can use =
+sort
+> > > > -n on it?
 > > >
-> > > I sorted out most of the problems with this version, but I still get:
+> > > They can use sort -h on it; the string_get_size() patch was specifica=
+lly
+> > > so that we could make the output compatible with sort -h
 > > >
-> > >     # test_csum_ipv6_magic: ASSERTION FAILED at lib/checksum_kunit.c:=
-513
-> > >     Expected ( u64)csum_result =3D=3D ( u64)expected, but
-> > >         ( u64)csum_result =3D=3D 16630 (0x40f6)
-> > >         ( u64)expected =3D=3D 65535 (0xffff)
-> > >     not ok 5 test_csum_ipv6_magic
-> > >
-> > > on m68k:q800. This is suspicious because there is no 0xffff in
-> > > expected_csum_ipv6_magic[]. With some debugging information:
-> > >
-> > > ####### num_tests=3D86 i=3D84 expect array size=3D84
-> > > ####### MAX_LEN=3D512 WORD_ALIGNMENT=3D4 magic data size=3D42
-> > >
-> > > That means the loop
-> > >
-> > >     for (int i =3D 0; i < num_tests; i++) {
-> > >             ...
-> > >             expected =3D (__force __sum16)expected_csum_ipv6_magic[i]=
-;
-> > >             ...
-> > >     }
-> > >
-> > > will access data beyond the end of the expected_csum_ipv6_magic[] arr=
-ay,
-> > > possibly because m68k doesn't pad struct csum_ipv6_magic_data to 44 b=
-ytes.
-> >
-> > Okay I will check that out.
-> >
-> > >
-> > > In this context, is the comment about proto having to be 0 really tru=
-e ?
-> > > It seems to me that the calculated checksum must be identical on both
-> > > little and big endian systems. After all, they need to be able to tal=
-k
-> > > to each other.
-> >
-> > I agree, but I couldn't find a solution other than setting it to zero.
-> > Maybe I am missing something simple...
-> >
->
-> Try the patch below on top of yours. It should work on both big and littl=
+> > > > And it's easier to tell big-from-small at a glance because
+> > > > big has more digits.
+> > > >
+> > > > Also, the first thing any sort of downstream processing of this dat=
+a is
+> > > > going to have to do is to convert the fancified output back into
+> > > > plain-old-bytes.  So why not just emit plain-old-bytes?
+> > > >
+> > > > If someone wants the fancy output (and nobody does) then that can b=
 e
-> endian systems.
+> > > > done in userspace.
+> > >
+> > > I like simpler, more discoverable tools; e.g. we've got a bunch of
+> > > interesting stuff in scripts/ but it doesn't get used nearly as much =
+-
+> > > not as accessible as cat'ing a file, definitely not going to be
+> > > installed by default.
+> >
+> > I also prefer plain bytes instead of MiB. A driver developer that
+> > wants to verify up-to the byte allocations for a new data structure
+> > that they added is going to be disappointed by the rounded MiB
+> > numbers.
 >
-> Key changes:
-> - use random_buf directly instead of copying anything
-> - no need to convert source / destination addresses
-> - csum in the buffer is in network byte order and needs
->   to stay that way
-> - len in the buffer is in network byte order and needs to be
->   converted to host byte order since that is expected by
->   csum_ipv6_magic()
-> - the expected value is in host byte order and needs to be
->   converted to network byte order for comparison
-> - protocol is just fine and converted by csum_ipv6_magic()
->   as needed
-
-Thanks for your patch!
-
-> --- a/lib/checksum_kunit.c
-> +++ b/lib/checksum_kunit.c
-
-> @@ -465,44 +468,36 @@ static void test_ip_fast_csum(struct kunit *test)
->         }
->  }
+> That's a fair point.
 >
-> +#define IPV6_NUM_TESTS ((MAX_LEN - sizeof(struct in6_addr) * 2 - sizeof(=
-int) * 3) / WORD_ALIGNMENT)
-> +
->  static void test_csum_ipv6_magic(struct kunit *test)
->  {
->  #if defined(CONFIG_NET)
-> +       const struct in6_addr *saddr;
-> +       const struct in6_addr *daddr;
-> +       unsigned int len;
->         __sum16 csum_result, expected;
-> -       struct csum_ipv6_magic_data {
-> -               const struct in6_addr saddr;
-> -               const struct in6_addr daddr;
-> -               unsigned int len;
-> -               __wsum csum;
-> -               unsigned char proto;
-> -       } data, *data_ptr;
-> -       int num_tests =3D MAX_LEN / WORD_ALIGNMENT - sizeof(struct csum_i=
-pv6_magic_data);
-> +       unsigned char proto;
-> +       unsigned int csum;
+> > The data contained in this file is not consumable without at least
+> > "sort -h -r", so why not just output bytes instead?
+> >
+> > There is /proc/slabinfo  and there is a slabtop tool.
+> > For raw /proc/allocinfo we can create an alloctop tool that would
+> > parse, sort and show data in human readable format based on various
+> > criteria.
+> >
+> > We should also add at the top of this file "allocinfo - version: 1.0",
+> > to allow future extensions (i.e. column for proc name).
 >
-> -       for (int i =3D 0; i < num_tests; i++) {
-> -               data_ptr =3D (struct csum_ipv6_magic_data *)(random_buf +=
- (i * WORD_ALIGNMENT));
-> +       const int daddr_offset =3D sizeof(struct in6_addr);
-> +       const int len_offset =3D sizeof(struct in6_addr) + sizeof(struct =
-in6_addr);
-> +       const int csum_offset =3D sizeof(struct in6_addr) + sizeof(struct=
- in6_addr) +
-> +         sizeof(int);
-> +       const int proto_offset =3D sizeof(struct in6_addr) + sizeof(struc=
-t in6_addr) +
-> +         sizeof(int) * 2;
-
-Please no manual offset calculations.
-Please fix the csum_ipv6_magic_data structure definition instead.
-
+> How would we feel about exposing two different versions in /proc? It
+> should be a pretty minimal addition to .text.
 >
-> -               cpu_to_be32_array((__be32 *)&data.saddr, (const u32 *)&da=
-ta_ptr->saddr,
-> -                                 sizeof_field(struct csum_ipv6_magic_dat=
-a, saddr) / 4);
-> -               cpu_to_be32_array((__be32 *)&data.daddr, (const u32 *)&da=
-ta_ptr->daddr,
-> -                                 sizeof_field(struct csum_ipv6_magic_dat=
-a, daddr) / 4);
-> -               data.len =3D data_ptr->len;
-> -               data.csum =3D (__force __wsum)htonl((__force u32)data_ptr=
-->csum);
-> -               /*
-> -                * proto must be zero to be compatible between big-endian=
- and
-> -                * little-endian CPUs. On little-endian CPUs, proto is
-> -                * converted to a big-endian 32-bit value before the chec=
-ksum
-> -                * operation. This causes proto to be in the most signifi=
-cant
-> -                * 8 bits on a little-endian CPU. On big-endian CPUs prot=
-o will
-> -                * remain in the least significant 8 bits. There does not=
- exist
-> -                * a transformation to an arbitrary proto that will allow
-> -                * csum_ipv6_magic to return the same value on a big-endi=
-an and
-> -                * little-endian CPUs.
-> -                */
-> -               data.proto =3D 0;
-> -               csum_result =3D csum_ipv6_magic(&data.saddr, &data.daddr,
-> -                                             data.len, data.proto,
-> -                                             data.csum);
-> -               expected =3D (__force __sum16)expected_csum_ipv6_magic[i]=
-;
-> +       for (int i =3D 0; i < IPV6_NUM_TESTS; i++) {
-> +               int index =3D i * WORD_ALIGNMENT;
-> +
-> +               saddr =3D (const struct in6_addr *)(random_buf + index);
-> +               daddr =3D (const struct in6_addr *)(random_buf + index + =
-daddr_offset);
-> +               len =3D ntohl(*(unsigned int *)(random_buf + index + len_=
-offset));
-> +               csum =3D *(unsigned int *)(random_buf + index + csum_offs=
-et);
-> +               proto =3D *(random_buf + index + proto_offset);
-> +
-> +               csum_result =3D csum_ipv6_magic(saddr, daddr, len, proto,=
- csum);
-> +               expected =3D (__force __sum16)htons(expected_csum_ipv6_ma=
-gic[i]);
->                 CHECK_EQ(csum_result, expected);
->         }
->  #endif /* !CONFIG_NET */
+> Personally, I hate trying to count long strings digits by eyeball...
 
-Gr{oetje,eeting}s,
+Maybe something like this work for everyone then?:
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
 
