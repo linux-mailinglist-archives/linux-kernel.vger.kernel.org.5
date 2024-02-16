@@ -1,316 +1,100 @@
-Return-Path: <linux-kernel+bounces-68602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5E5D857CFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:59:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB9C857CF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B8B3B20B58
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517DA1F2382D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7821292D0;
-	Fri, 16 Feb 2024 12:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACCF1292E0;
+	Fri, 16 Feb 2024 12:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="l530KQlS"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="NAeRzwHM"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1201292D3
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0471212883D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708088355; cv=none; b=Wp8ovbMZ4nkEcEWJF1FwwPouLmiGYZOaGEq37P2owiZ5i+fncojcP/PcXQo/Bdovjb0bcjZdJV/L1DWZfIVTo6BVWwQ3SlUPLqgVLJXY4k0LbEoPMG2LUAAD2N+3uBma9wzD1dNVPy+GRCyfw3qo+XnC8HGMIPOadLFyKzub1XM=
+	t=1708087931; cv=none; b=ZtomVC+cVpYsZLjhMikLrEP3mTQ/DoLdWAV8kZG58OQZUZjBgksvCEGozDvWIcIrcD8b18ZMthxKdJ/XGEuP5kRMdxnyUl7BUiM5bsJmtCfF/53RAiwkDxsNKCtTk/lFp9GcTPBHf91rEgznXnlBv9thhXvJZgz6V7e2U4a5d5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708088355; c=relaxed/simple;
-	bh=ztukOrv72pACnLN/LBb1pjlApd0Wuv5E3PPbJyRaPJE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J7FNg2wM3cUrYWJrKj2qYU1/yTfk16qbQmwc2eQz1eK2Co3xSo64bEitmxz+G1fosbMmjShSWYDYHWjZ0OAoWFOSF/Yiz+c4UhCbhVpYn0vD4CoZLbI2fukf5t7hXN3iaA3u9pj3mOstJgc6gR1gKIq6z2RY+sbZrWJcF6PndTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=l530KQlS; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from lvc-arm12.ispras.local (unknown [83.149.199.78])
-	by mail.ispras.ru (Postfix) with ESMTPSA id BE57B40241B8;
-	Fri, 16 Feb 2024 12:51:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru BE57B40241B8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1708087878;
-	bh=S1r8Mq3qgF/963ARXbA2g2vgUJ1UOzD2+uwWm8hvuMU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l530KQlS2F9fEvWEyHl8g2mcEv5y1S8LDqebs9zWqV1IBJoQpJB2NWVvHu1/byxMK
-	 /7f0bxZaBr3BjfVZmVEoS2lzkVSq2rYwDfOsAO4nmCgr7cbEofREBynkQkJM808RiS
-	 lqUSHobGdoN8Dl115yt8N6JYyQeh5nLP3fKFt1YY=
-From: Katya Orlova <e.orlova@ispras.ru>
-To: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Cc: Katya Orlova <e.orlova@ispras.ru>,
-	Yannick Fertre <yannick.fertre@foss.st.com>,
-	Philippe Cornu <philippe.cornu@foss.st.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	dri-devel@lists.freedesktop.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH v4] drm/stm: Avoid use-after-free issues with crtc and plane
-Date: Fri, 16 Feb 2024 15:50:40 +0300
-Message-Id: <20240216125040.8968-1-e.orlova@ispras.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240122111128.10852-1-e.orlova@ispras.ru>
-References: 
+	s=arc-20240116; t=1708087931; c=relaxed/simple;
+	bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F8LsCGTXCzfI+Temy5eNQNo/66G1mezyXpj+x56YyjrT2z+ZgIzzEnnM0KP2ciJLaY44m3gF3cfuPov+q3Zpgm0IAQR6Vx8b41YrY5UT2IWhfLvCkLle9HCJsFfqgOW+CWnjadXBkF1zrGpnVv2EzTQjx/wSmKZgRYnoSUccLFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=NAeRzwHM; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563fe793e1cso473860a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1708087925; x=1708692725; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
+        b=NAeRzwHMVuMwPDLmVTt3la0rkO+dWY1Bm0ndQSPnsY4Z6fCkUFiACxb3zLvr5xL3cR
+         eZmp6nH83tF+nacmEtHYSNAO2FJQEpA1DeEWtpwB+ytQ6c3Mzo2q+iRJcSSqwm1ohG48
+         YAnk+TfDkiFeP4pyRC5kd3H86XEMaS8RXRQJZSVJ8du5Cg/YoHXwIW7GZYJ3pOKa8JvI
+         rZlCcMSnCloXlrqP2mviAcSUcgJ/+5D5PAdg1FsTrsmaB3sTsW3eo9NPMWNrYJwGQqIL
+         3iOHIqwxx6sR+Nn5wJSCx0Jhk01JJSANXtFS6QftD2VBGsDjCcgrRLy0Yz9Et8zQVDtm
+         Hx6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708087925; x=1708692725;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
+        b=m2Mtra4MinsD9PWl0dlzXus2SoeSKtvnTrRJgz18ZEZ2vnFNEN64KztDHpy5TAFqEV
+         NapmQcqTc9PrtZ6t4+daSadjS/LijoQlX6F2SlJrF4To6IudDpkiZ3DkymJUmwAfuWfT
+         td5LzO67GdOKREuZYc4u1jYOXiSa7jGIiKsY0saph+ug0/ou7Ols3UXpNfegkbTnPZW3
+         8vwsB6aq2T9YFbrRUulFhoOh6VuioOgHg/2WD9+CZFowiAOgZ4ShcZrlpSfBZh5JwjCA
+         iFXaaxsmj2lTnEw2YI1aBAdyotNe4zZcIFbIadVA05dMk40b9Jzsm3SpKP3f66JDoOHt
+         r4Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXy9ssgN0ZShgJVlKrJXj8DcwB2vfQr6NKKlrdBUTw/jvt2zj50OHKV/rq3qw7M3Vxu84zzkHWesM3HglwYgD9j5MCCYepqOENLd9Dl
+X-Gm-Message-State: AOJu0YxQwqU9wqke05/gtYVxg719dljj1tyHuWWS7c/nV+Nsi3jDc3AN
+	GOg5sOBoQp65SLQoIMGqU/2jLat2QcZKujhmt8pdnfaHygXdmITI0qhjkebDEqI=
+X-Google-Smtp-Source: AGHT+IFRBKb/J9TVj5LcjAPyURuoUyqdHkJtfwCi4Sl/QZ1XMIhc2qmgUFA+H+LpAaevvSb7nPXWTg==
+X-Received: by 2002:a05:6402:1045:b0:561:cec7:cb1b with SMTP id e5-20020a056402104500b00561cec7cb1bmr3344924edu.32.1708087924910;
+        Fri, 16 Feb 2024 04:52:04 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id eh15-20020a0564020f8f00b00563e97360f9sm558625edb.31.2024.02.16.04.52.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 04:52:04 -0800 (PST)
+Date: Fri, 16 Feb 2024 13:52:01 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llu@fiberby.dk
+Subject: Re: [PATCH net-next 1/3] net: sched: cls_api: add skip_sw counter
+Message-ID: <Zc9acSjD6Cf6UFrz@nanopsycho>
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <20240215160458.1727237-2-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240215160458.1727237-2-ast@fiberby.net>
 
-ltdc_load() calls functions drm_crtc_init_with_planes(),
-drm_universal_plane_init() and drm_encoder_init(). These functions
-should not be called with parameters allocated with devm_kzalloc()
-to avoid use-after-free issues [1].
+Thu, Feb 15, 2024 at 05:04:42PM CET, ast@fiberby.net wrote:
+>Maintain a count of skip_sw filters.
+>
+>This counter is protected by the cb_lock, and is updated
+>at the same time as offloadcnt.
+>
+>Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 
-Use allocations managed by the DRM framework.
-
-Found by Linux Verification Center (linuxtesting.org).
-
-[1]
-https://lore.kernel.org/lkml/u366i76e3qhh3ra5oxrtngjtm2u5lterkekcz6y2jkndhuxzli@diujon4h7qwb/
-
-Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
----
-v4: rebase on the drm-misc
-v3: style problems
-v2: use allocations managed by the DRM as
-Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com> suggested.
-Also add a fix for encoder.
- drivers/gpu/drm/stm/drv.c  |  3 +-
- drivers/gpu/drm/stm/ltdc.c | 73 ++++++++++----------------------------
- 2 files changed, 20 insertions(+), 56 deletions(-)
-
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index e8523abef27a..152bec2c0238 100644
---- a/drivers/gpu/drm/stm/drv.c
-+++ b/drivers/gpu/drm/stm/drv.c
-@@ -25,6 +25,7 @@
- #include <drm/drm_module.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_vblank.h>
-+#include <drm/drm_managed.h>
- 
- #include "ltdc.h"
- 
-@@ -75,7 +76,7 @@ static int drv_load(struct drm_device *ddev)
- 
- 	DRM_DEBUG("%s\n", __func__);
- 
--	ldev = devm_kzalloc(ddev->dev, sizeof(*ldev), GFP_KERNEL);
-+	ldev = drmm_kzalloc(ddev, sizeof(*ldev), GFP_KERNEL);
- 	if (!ldev)
- 		return -ENOMEM;
- 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 5576fdae4962..eeaabb4e10d3 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -36,6 +36,7 @@
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_simple_kms_helper.h>
- #include <drm/drm_vblank.h>
-+#include <drm/drm_managed.h>
- 
- #include <video/videomode.h>
- 
-@@ -1199,7 +1200,6 @@ static void ltdc_crtc_atomic_print_state(struct drm_printer *p,
- }
- 
- static const struct drm_crtc_funcs ltdc_crtc_funcs = {
--	.destroy = drm_crtc_cleanup,
- 	.set_config = drm_atomic_helper_set_config,
- 	.page_flip = drm_atomic_helper_page_flip,
- 	.reset = drm_atomic_helper_crtc_reset,
-@@ -1212,7 +1212,6 @@ static const struct drm_crtc_funcs ltdc_crtc_funcs = {
- };
- 
- static const struct drm_crtc_funcs ltdc_crtc_with_crc_support_funcs = {
--	.destroy = drm_crtc_cleanup,
- 	.set_config = drm_atomic_helper_set_config,
- 	.page_flip = drm_atomic_helper_page_flip,
- 	.reset = drm_atomic_helper_crtc_reset,
-@@ -1545,7 +1544,6 @@ static void ltdc_plane_atomic_print_state(struct drm_printer *p,
- static const struct drm_plane_funcs ltdc_plane_funcs = {
- 	.update_plane = drm_atomic_helper_update_plane,
- 	.disable_plane = drm_atomic_helper_disable_plane,
--	.destroy = drm_plane_cleanup,
- 	.reset = drm_atomic_helper_plane_reset,
- 	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
-@@ -1572,7 +1570,6 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
- 	const u64 *modifiers = ltdc_format_modifiers;
- 	u32 lofs = index * LAY_OFS;
- 	u32 val;
--	int ret;
- 
- 	/* Allocate the biggest size according to supported color formats */
- 	formats = devm_kzalloc(dev, (ldev->caps.pix_fmt_nb +
-@@ -1613,14 +1610,10 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
- 		}
- 	}
- 
--	plane = devm_kzalloc(dev, sizeof(*plane), GFP_KERNEL);
--	if (!plane)
--		return NULL;
--
--	ret = drm_universal_plane_init(ddev, plane, possible_crtcs,
--				       &ltdc_plane_funcs, formats, nb_fmt,
--				       modifiers, type, NULL);
--	if (ret < 0)
-+	plane = drmm_universal_plane_alloc(ddev, struct drm_plane, dev,
-+					   possible_crtcs, &ltdc_plane_funcs, formats,
-+					   nb_fmt, modifiers, type, NULL);
-+	if (IS_ERR(plane))
- 		return NULL;
- 
- 	if (ldev->caps.ycbcr_input) {
-@@ -1643,15 +1636,6 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
- 	return plane;
- }
- 
--static void ltdc_plane_destroy_all(struct drm_device *ddev)
--{
--	struct drm_plane *plane, *plane_temp;
--
--	list_for_each_entry_safe(plane, plane_temp,
--				 &ddev->mode_config.plane_list, head)
--		drm_plane_cleanup(plane);
--}
--
- static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
- {
- 	struct ltdc_device *ldev = ddev->dev_private;
-@@ -1677,14 +1661,14 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
- 
- 	/* Init CRTC according to its hardware features */
- 	if (ldev->caps.crc)
--		ret = drm_crtc_init_with_planes(ddev, crtc, primary, NULL,
--						&ltdc_crtc_with_crc_support_funcs, NULL);
-+		ret = drmm_crtc_init_with_planes(ddev, crtc, primary, NULL,
-+						 &ltdc_crtc_with_crc_support_funcs, NULL);
- 	else
--		ret = drm_crtc_init_with_planes(ddev, crtc, primary, NULL,
--						&ltdc_crtc_funcs, NULL);
-+		ret = drmm_crtc_init_with_planes(ddev, crtc, primary, NULL,
-+						 &ltdc_crtc_funcs, NULL);
- 	if (ret) {
- 		DRM_ERROR("Can not initialize CRTC\n");
--		goto cleanup;
-+		return ret;
- 	}
- 
- 	drm_crtc_helper_add(crtc, &ltdc_crtc_helper_funcs);
-@@ -1698,9 +1682,8 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
- 	for (i = 1; i < ldev->caps.nb_layers; i++) {
- 		overlay = ltdc_plane_create(ddev, DRM_PLANE_TYPE_OVERLAY, i);
- 		if (!overlay) {
--			ret = -ENOMEM;
- 			DRM_ERROR("Can not create overlay plane %d\n", i);
--			goto cleanup;
-+			return -ENOMEM;
- 		}
- 		if (ldev->caps.dynamic_zorder)
- 			drm_plane_create_zpos_property(overlay, i, 0, ldev->caps.nb_layers - 1);
-@@ -1713,10 +1696,6 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
- 	}
- 
- 	return 0;
--
--cleanup:
--	ltdc_plane_destroy_all(ddev);
--	return ret;
- }
- 
- static void ltdc_encoder_disable(struct drm_encoder *encoder)
-@@ -1776,23 +1755,19 @@ static int ltdc_encoder_init(struct drm_device *ddev, struct drm_bridge *bridge)
- 	struct drm_encoder *encoder;
- 	int ret;
- 
--	encoder = devm_kzalloc(ddev->dev, sizeof(*encoder), GFP_KERNEL);
--	if (!encoder)
--		return -ENOMEM;
-+	encoder = drmm_simple_encoder_alloc(ddev, struct drm_encoder, dev,
-+					    DRM_MODE_ENCODER_DPI);
-+	if (IS_ERR(encoder))
-+		return PTR_ERR(encoder);
- 
- 	encoder->possible_crtcs = CRTC_MASK;
- 	encoder->possible_clones = 0;	/* No cloning support */
- 
--	drm_simple_encoder_init(ddev, encoder, DRM_MODE_ENCODER_DPI);
--
- 	drm_encoder_helper_add(encoder, &ltdc_encoder_helper_funcs);
- 
- 	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
--	if (ret) {
--		if (ret != -EPROBE_DEFER)
--			drm_encoder_cleanup(encoder);
-+	if (ret)
- 		return ret;
--	}
- 
- 	DRM_DEBUG_DRIVER("Bridge encoder:%d created\n", encoder->base.id);
- 
-@@ -1962,8 +1937,7 @@ int ltdc_load(struct drm_device *ddev)
- 			goto err;
- 
- 		if (panel) {
--			bridge = drm_panel_bridge_add_typed(panel,
--							    DRM_MODE_CONNECTOR_DPI);
-+			bridge = drmm_panel_bridge_add(ddev, panel);
- 			if (IS_ERR(bridge)) {
- 				DRM_ERROR("panel-bridge endpoint %d\n", i);
- 				ret = PTR_ERR(bridge);
-@@ -2045,7 +2019,7 @@ int ltdc_load(struct drm_device *ddev)
- 		}
- 	}
- 
--	crtc = devm_kzalloc(dev, sizeof(*crtc), GFP_KERNEL);
-+	crtc = drmm_kzalloc(ddev, sizeof(*crtc), GFP_KERNEL);
- 	if (!crtc) {
- 		DRM_ERROR("Failed to allocate crtc\n");
- 		ret = -ENOMEM;
-@@ -2072,9 +2046,6 @@ int ltdc_load(struct drm_device *ddev)
- 
- 	return 0;
- err:
--	for (i = 0; i < nb_endpoints; i++)
--		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
--
- 	clk_disable_unprepare(ldev->pixel_clk);
- 
- 	return ret;
-@@ -2082,16 +2053,8 @@ int ltdc_load(struct drm_device *ddev)
- 
- void ltdc_unload(struct drm_device *ddev)
- {
--	struct device *dev = ddev->dev;
--	int nb_endpoints, i;
--
- 	DRM_DEBUG_DRIVER("\n");
- 
--	nb_endpoints = of_graph_get_endpoint_count(dev->of_node);
--
--	for (i = 0; i < nb_endpoints; i++)
--		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
--
- 	pm_runtime_disable(ddev->dev);
- }
- 
--- 
-2.30.2
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
