@@ -1,175 +1,139 @@
-Return-Path: <linux-kernel+bounces-68218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D63785776A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:20:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FA5B85776E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:20:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1949B239E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C24081C20ED8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939001AACA;
-	Fri, 16 Feb 2024 08:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26F620DF6;
+	Fri, 16 Feb 2024 08:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0ASr/SL"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UW8Zvy0A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648BA17732
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0049320DE5;
+	Fri, 16 Feb 2024 08:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071025; cv=none; b=JOZ2VqB0l3C7AuxJa5yIeE2jd1zxgvbd40f7T5n1dmwDw39zQ2hBITxsxIptWoOBzlu7b7aas4roKbJPz1/tjCuTbN069kWP7evOv1xQy1dlJgE0c9DBBN2qsRLyJrCioEBxS6F3Shy2ZmJMP4tdaSJJlRqtnuslDMIShcmuroY=
+	t=1708071062; cv=none; b=OLuVEkGSqQHLL52zJ9Di6FwQfvniVqWxHNab9N8+nf6YBPMjWW7hejoNBtRbYroH2RMHy9kdpU8wzm6IOnc5u79KQf1YUPVegWwsQqO/S71b0R0EWFL3nHSsJoIW7PNqR5eZSnkkm+DzkASAkwqA2Vboz3o6sBxns1z2JchCTew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071025; c=relaxed/simple;
-	bh=0uydNOdWxU499+hAnc9/iQNbM8NCAF4AuCCa9QpChxk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jCgDuYxtfGl3Y8xHaNBkKI49fXWKplbpKKbkRhzCuVhV3m4Xt5u1zVQ1rnp/anJpcz0b3+rjBPR1Nm0PwKEqDBFodgUat0M9d075YDLqgf89mo0XyqxzaohyoE0jMBpkQj3KODyt20rz5wDq/amoqErxbpknI3hW83ySP0HMTFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0ASr/SL; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso1617280a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708071023; x=1708675823; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FIMHZLHgidom8xzo0JtT7bpMHA+BcXdFvKux27+zxKg=;
-        b=S0ASr/SLEpJDapQlzFwaAUSzO4DqsJmn84GeQGRpBI8BeT4xE9v96pvgSCkax7brPi
-         PMM+Qw6u/XjcSYmwWGN/0Xm0sqQDuWtd83/l7nL+CsDiTOFrtmF/LIQ6ZpaWdMYgcwjD
-         qvtHgG9RbRDX8f5Yd0gu1tPiTgj+3VlvUyDCcK4LSxjWO4oUHe8JWbaBhyiavOOcilVY
-         IiVii/wyQJRL/s2pmEl4FUlOf4BL8IoeH/XjV+xeWUrRRYbmjFUoO/WQfzFUqBYBWMGF
-         +757jS3Ha7xq5Tj9xwttqOVXXufcL0Lp+JV5TrdoKqdE4U7myhsKQCBUhjdbdX6Rg6n2
-         FzYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708071023; x=1708675823;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FIMHZLHgidom8xzo0JtT7bpMHA+BcXdFvKux27+zxKg=;
-        b=Ku3nAwHoAqxsTR3cKvuY8pDv7IvV2klKNF1lz/AUSLiESFApDx/wfpY1mB/6FV21UR
-         hrQCPo9gXaVUyn9dNnkaUH56jdVbExB7XFnGY8iJEwe53TtLNIV9M2hQq6HJLUx85xyZ
-         xDTVlPZv93X4MZ0QcPPoYq4o4d2tQRjtfGSVslQc7WKfdL8VdaQpK4CC10V+pCqWD0pD
-         Pn7762cpIVdcPnpcvkajLedQxmnV5vRTqb3Sk9HtTY/x1SVS9IAu3VhOo8nCuMQhDfcD
-         uuPvcTncaWsmtfINw/bLTLcestN315/IoGflXGK9SB2/0AoU02Moqtzm57PxsSdl3ezD
-         3VHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOrTThk4JlhSHLg6Td5razsVFsW7SSgf0xCplElkY7Ty0bdDkVCamxZxhfdQiYKnDlARbP5Ewd2J2fEpn5uXJv7Yh6E355LJ+4iSLj
-X-Gm-Message-State: AOJu0Yx6uuWqMxkvoYHPIbtylvKJutZu8mzmLn63BhlqCE7Ov6F5BxgS
-	Y3ava/2+zikyRHAWHBmvIU+74fXEU8/u6UitI1wyfmnPfOyy0FUPe8Q/MO+dlU09thNH7xoIlef
-	ve51jI9OYSG7GyV2GvA3i8QyxLpQxX0AlEftY2amfsyoU4la+
-X-Google-Smtp-Source: AGHT+IEA3fqIoDaQ25VyAh6A9qdU6NnwReaS2v0dhLKfI8uGBigq12wwATXweFxw1oPtdit7dobAjVX5Vbv9szvUA+c=
-X-Received: by 2002:a05:6a21:670b:b0:19c:9b7b:66a with SMTP id
- wh11-20020a056a21670b00b0019c9b7b066amr4587380pzb.49.1708071023666; Fri, 16
- Feb 2024 00:10:23 -0800 (PST)
+	s=arc-20240116; t=1708071062; c=relaxed/simple;
+	bh=l93if2O0u3Z6Ig82G971j4qIaGPmYsDswEQZHOfkQEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EZHKWqaL0zJ4akRDDnQV2EA1o01mqG0h1wBhIWlxhbjFNTojA/hYY/RxqQz0sIC3fr8KiJOHq/tttEMqPrShLm+3FkLAez2R2CvFX0Gap3g8M2XTB3VB3bNvj2T3EVLSNlqmL0F54TRcdKoyEcezdJqIP7/1OJF3J1GvNv1Bu3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UW8Zvy0A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2763C433C7;
+	Fri, 16 Feb 2024 08:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708071061;
+	bh=l93if2O0u3Z6Ig82G971j4qIaGPmYsDswEQZHOfkQEs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UW8Zvy0A3B7+ULCj44cMkq5OK8KSnkqp+6/5TEIkVJ7ieoCQDdsX20tfvcwaRbd/2
+	 wv9K4BFIhVm/oFXL/TTuuAu8ZqPB+WwGE4nlrpdZL3vcBGJo8zX00xkntW2+zmWTHT
+	 EhzMyT4DotDTeeR7HzTzLE/Xj9mJe169YGUHnV+GYuqmzSNqjqbQ/T6QbVTWrdri4C
+	 qhikLkWnYw+MGCfpSLc3LZ8RfdNtH225JZo4VaYpBLQPedu9B7YadsW23KdaKR7PeH
+	 FELIrB73X2aXzNCLVuWiZTyi4l1WGKxtUDgSUTSuejWRLDNahBsQxP6sxTlJFQgF46
+	 RiTJbqINXfo4A==
+Message-ID: <f42ebeb2-9ece-4e0d-b91d-4a0076fe7c8f@kernel.org>
+Date: Fri, 16 Feb 2024 09:10:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216061433.535522-1-sshegde@linux.ibm.com>
-In-Reply-To: <20240216061433.535522-1-sshegde@linux.ibm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 16 Feb 2024 09:10:12 +0100
-Message-ID: <CAKfTPtCFx3-0N+53u3Y5so1n8Zjw57c_fxf=09_Y9NTCP-zH1g@mail.gmail.com>
-Subject: Re: [PATCH] sched: remove duplicate ifdefs
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, sshegde@linux.vnet.ibm.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: iio: ti,tmp117: add vcc supply binding
+Content-Language: en-US
+To: Marco Felsch <m.felsch@pengutronix.de>, puranjay12@gmail.com,
+ jic23@kernel.org, lars@metafoo.de
+Cc: thomas.haemmerle@leica-geosystems.com, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+References: <20240215204746.1197619-1-m.felsch@pengutronix.de>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240215204746.1197619-1-m.felsch@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 16 Feb 2024 at 07:14, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
->
-> when a ifdef is used in the below manner, second one could be considered as
-> duplicate.
->
-> ifdef DEFINE_A
-> ...code block...
-> ifdef DEFINE_A       <-- This is a duplicate.
-> ...code block...
-> endif
-> else
-> ifndef DEFINE_A     <-- This is also duplicate.
-> ...code block...
-> endif
-> endif
-> More details about the script and methods used to find these code
-> patterns are in cover letter of [1]
->
-> In the scheduler code, there are two places where above pattern can be
-> observed.
-> Hunk1: Code is under check of CONFIG_UCLAMP_TASK in kernel/sched/core.c
-> from line 1353. Hence the same check at line 1795 is duplicate.
-> Hunk2: Minor update of comment.
-> Hunk3: Code is already under the check of CONFIG_SMP in
-> kernel/sched/fair.c from line 8591. Hence the same check in line 10185
-> is a duplicate.
->
-> No functional change is intended here. It only aims to improve code
-> readability.
->
-> [1]:https://lore.kernel.org/all/20240118080326.13137-1-sshegde@linux.ibm.com/
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+On 15/02/2024 21:47, Marco Felsch wrote:
+> From: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+> 
+> Add the binding to specify the vcc supply. We can't make it required
+> since this would break the backward compatibility.
+> 
+> Signed-off-by: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
-> ---
-> Changes since v2:
-> - Dropped RFC tag.
-> - Split the patches into individual from the series.
-> - Added more context to each Hunk for review.
->
->  kernel/sched/core.c | 4 +---
->  kernel/sched/fair.c | 2 --
->  2 files changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 9116bcc90346..a76c7095f736 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1792,7 +1792,6 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css);
->  #endif
->
->  #ifdef CONFIG_SYSCTL
-> -#ifdef CONFIG_UCLAMP_TASK
->  #ifdef CONFIG_UCLAMP_TASK_GROUP
->  static void uclamp_update_root_tg(void)
->  {
-> @@ -1898,7 +1897,6 @@ static int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
->         return result;
->  }
->  #endif
-> -#endif
->
->  static int uclamp_validate(struct task_struct *p,
->                            const struct sched_attr *attr)
-> @@ -2065,7 +2063,7 @@ static void __init init_uclamp(void)
->         }
->  }
->
-> -#else /* CONFIG_UCLAMP_TASK */
-> +#else /* !CONFIG_UCLAMP_TASK */
->  static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
->  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
->  static inline int uclamp_validate(struct task_struct *p,
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 533547e3c90a..8e30e2bb77a0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10182,10 +10182,8 @@ static int idle_cpu_without(int cpu, struct task_struct *p)
->          * be computed and tested before calling idle_cpu_without().
->          */
->
-> -#ifdef CONFIG_SMP
->         if (rq->ttwu_pending)
->                 return 0;
-> -#endif
->
->         return 1;
->  }
-> --
-> 2.39.3
->
+Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+people, so fix your workflow. Tools might also fail if you work on some
+ancient tree (don't, instead use mainline), work on fork of kernel
+(don't, instead use mainline) or you ignore some maintainers (really
+don't). Just use b4 and everything should be fine, although remember
+about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+
+Best regards,
+Krzysztof
+
 
