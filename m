@@ -1,163 +1,106 @@
-Return-Path: <linux-kernel+bounces-68941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB57858231
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CB2E858238
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8041F22BFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:13:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA9EC284435
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A9212FB30;
-	Fri, 16 Feb 2024 16:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1ED12FB31;
+	Fri, 16 Feb 2024 16:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uQ2AVVwa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lFFJCQwz"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CD012D770;
-	Fri, 16 Feb 2024 16:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7DE12FB2A;
+	Fri, 16 Feb 2024 16:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708099999; cv=none; b=LYbihIk37TNqKBVOa5a8VJy6r6irZgoLk4byqabC2UZp7Ne6ui7JPdjhkwY3oLQZ6ddhsYVNFFNsyk4hCS6BNHw3hBlznLjsfuKZk6GMQpDjrDSQXQcG9H6SMIFeaoEUGDW65fH+MF+7NZ8qvTyB33ngbgz3MyAzdqgdSSj0zCQ=
+	t=1708100033; cv=none; b=N03AQ0Tv/8Y/D/XMjpMjgNltGbxirvZNSloMoyuM+ZBOdJcd/WgDAjqlPYUiTt05+w6snmJE7FDBWm9mTtgJMrJCgU1Zrda4w7y2Ab6FF0NUrrPyw3EXyaQO/4XvB6GLO21ALlpWKPlj1f9wzWmWt5BcL3ojPad97UPGeodR6MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708099999; c=relaxed/simple;
-	bh=0C9+pCgjxRMOl9W9M/RJQspbO81gdJ2Y5+OCFt5kwAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RoV3Sp4kkpKAZEudGTRBi1Ale0uBx48kMrjKFf3THWhCZNUagFyxmQ/h+NrM/3OdBN362aQMmV/f+z55DxF90sZjq9RDEa47TCMjXk1NTJeHVuHLGQYoOYVNmvhmn1EwkUgkXu+seSDSV5lEmvnrJWcdLCnymgQPuDxHhzHmhCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uQ2AVVwa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585B0C433C7;
-	Fri, 16 Feb 2024 16:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708099998;
-	bh=0C9+pCgjxRMOl9W9M/RJQspbO81gdJ2Y5+OCFt5kwAw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uQ2AVVwaKgHAtfDxbKsFun3Cxph1v1ovRg2RMHIfxNpeAFMxZoBEOaPhg+KMRRTFM
-	 dLRVSYRF1YV2rMCcilm14ixVSLxgl1pfJyn5kLRar+fPcQITEyDRQG3ehlzAljPYF2
-	 0Z39Z/YUMeaeipQ00UVGpvdYRSjtImymJsFsrnozJG3a+dkvLQn22ewV5tlTro2cyf
-	 qQBkStYqVNzmodLKgIfctm15lIX3C6B+Bw7ZCBViG6f3pse+iE6j3E/YIMwBNWZxN2
-	 Azgk3l0gu6/rm8sOJZr7FAlI2Yak86+3NTqkyi8VIituSoZpvE8MgpL59ggOqSjqva
-	 DBapcF2ROFIgQ==
-Date: Fri, 16 Feb 2024 16:13:12 +0000
-From: Will Deacon <will@kernel.org>
-To: Nicolin Chen <nicolinc@nvidia.com>
-Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, kbusch@kernel.org,
-	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
-Subject: Re: [PATCH v1 0/2] nvme-pci: Fix dma-iommu mapping failures when
- PAGE_SIZE=64KB
-Message-ID: <20240216161312.GA2203@willie-the-truck>
-References: <cover.1707851466.git.nicolinc@nvidia.com>
- <20240214164138.GA31927@willie-the-truck>
- <Zc0bLAIXSAqsQJJv@Asurada-Nvidia>
- <20240215142208.GA753@willie-the-truck>
- <20240215163544.GA821@willie-the-truck>
- <Zc6rr/LleQ2krkyg@Asurada-Nvidia>
+	s=arc-20240116; t=1708100033; c=relaxed/simple;
+	bh=pgWB8gIDXuJeUwDAXlFyiHSuW8VCIa9c0sSJlQvxunQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=M6kck5E1nmqu/l49ZEy0lm+OG9r26K8yQh6WDBGdvWwop9tc/cUaxva5odVm6C5YQgcCIH56Ye7LMmvINlLLHYM42j7ZYGQ2zOW1rRBKWCftvhh+4FPsdFrHcBrEHumex6mOb6FlZwgU/WgV96PjkRjb3Z88cPiZvqi1dsr20/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lFFJCQwz; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GDrAhE004249;
+	Fri, 16 Feb 2024 16:13:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+s47s+oRh66JHw0QvJ6IVx2HVUlYYq8i2oqDQRbbDig=; b=lF
+	FJCQwzs80Of5CG+ukeY9DHL2bH7il19HDv5gI9hnHgau0nkXlj3Ld+CmTXojaddx
+	fQOiQ30S7Zzn04MpZ/j6dG5B+s56Brbakz1+kqEs74n2IM5SCbxOUeXv7DL0AjW6
+	5OO11o6eA+hAZgkBsXxevUFrifBHQt/MwqGlMYN0p3rNbRqkIvNycD8W+2BBeqJy
+	JKMXJniTgZoNf5mbyLzJ1nU5V7U5Te0LY/srqMU6VZevK1Hf/lLSbjrsTi08k9IO
+	qSrwT4+7Y1ig9oOieup8oGy9Dnok7ZcUacZ3LaSn5EGzK6Qn4wUB+6gcJdfzjx7H
+	ZP+m9OL9Sta2iQC41VQg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9fkfc0y0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 16:13:36 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GGDZiH015439
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 16:13:35 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
+ 2024 08:13:35 -0800
+Message-ID: <ce40205b-25c6-6ba5-23a4-70a51b4e1b21@quicinc.com>
+Date: Fri, 16 Feb 2024 09:13:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zc6rr/LleQ2krkyg@Asurada-Nvidia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] f2fs: doc: Fix bouncing email address for Sahitya Tummala
+Content-Language: en-US
+To: <jaegeuk@kernel.org>, <chao@kernel.org>, <quic_stummala@quicinc.com>,
+        <quic_bjorande@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+References: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Cr2KoCkvvaPxsIziVfFyMR7TPWg19cuW
+X-Proofpoint-GUID: Cr2KoCkvvaPxsIziVfFyMR7TPWg19cuW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_15,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ adultscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=307
+ spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402160130
 
-Hi Nicolin,
-
-Thanks for sharing all the logs, .config etc.
-
-On Thu, Feb 15, 2024 at 04:26:23PM -0800, Nicolin Chen wrote:
-> On Thu, Feb 15, 2024 at 04:35:45PM +0000, Will Deacon wrote:
-> > On Thu, Feb 15, 2024 at 02:22:09PM +0000, Will Deacon wrote:
-> > > On Wed, Feb 14, 2024 at 11:57:32AM -0800, Nicolin Chen wrote:
-> > > > On Wed, Feb 14, 2024 at 04:41:38PM +0000, Will Deacon wrote:
-> > > > > On Tue, Feb 13, 2024 at 01:53:55PM -0800, Nicolin Chen wrote:
-> > > > And it seems to get worse, as even a 64KB mapping is failing:
-> > > > [    0.239821] nvme 0000:00:01.0: swiotlb buffer is full (sz: 65536 bytes), total 32768 (slots), used 0 (slots)
-> > > >
-> > > > With a printk, I found the iotlb_align_mask isn't correct:
-> > > >    swiotlb_area_find_slots:alloc_align_mask 0xffff, iotlb_align_mask 0x800
-> > > >
-> > > > But fixing the iotlb_align_mask to 0x7ff still fails the 64KB
-> > > > mapping..
-> > >
-> > > Hmm. A mask of 0x7ff doesn't make a lot of sense given that the slabs
-> > > are 2KiB aligned. I'll try plugging in some of the constants you have
-> > > here, as something definitely isn't right...
-> > 
-> > Sorry, another ask: please can you print 'orig_addr' in the case of the
-> > failing allocation?
+On 2/2/2024 9:52 AM, Jeffrey Hugo wrote:
+> The servers for the @codeaurora domain are long retired and any messages
+> addressed there will bounce.  Sahitya Tummala has a .mailmap entry to an
+> updated address, but the documentation files still list @codeaurora
+> which might be a problem for anyone reading the documentation directly.
+> Update the documentation files to match the .mailmap update.
 > 
-> I added nvme_print_sgl() in the nvme-pci driver before its
-> dma_map_sgtable() call, so the orig_addr isn't aligned with
-> PAGE_SIZE=64K or NVME_CTRL_PAGE_SIZE=4K:
->  sg[0] phys_addr:0x0000000105774600 offset:17920 length:512 dma_address:0x0000000000000000 dma_length:0
-> 
-> Also attaching some verbose logs, in case you'd like to check:
->    nvme 0000:00:01.0: swiotlb_area_find_slots: dma_get_min_align_mask 0xfff, IO_TLB_SIZE 0xfffff7ff
->    nvme 0000:00:01.0: swiotlb_area_find_slots: alloc_align_mask 0xffff, iotlb_align_mask 0x7ff
->    nvme 0000:00:01.0: swiotlb_area_find_slots: stride 0x20, max 0xffff
->    nvme 0000:00:01.0: swiotlb_area_find_slots: tlb_addr=0xbd830000, iotlb_align_mask=0x7ff, alloc_align_mask=0xffff
-> => nvme 0000:00:01.0: swiotlb_area_find_slots: orig_addr=0x105774600, iotlb_align_mask=0x7ff
+> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 
-With my patches, I think 'iotlb_align_mask' will be 0x800 here, so this
-particular allocation might be alright, however I think I'm starting to
-see the wider problem. The IOMMU code is asking for a 64k-aligned
-allocation so that it can map it safely, but at the same time
-dma_get_min_align_mask() is asking for congruence in the 4k NVME page
-offset. Now, because we're going to allocate a 64k-aligned mapping and
-offset it, I think the NVME alignment will just fall out in the wash and
-checking the 'orig_addr' (which includes the offset) is wrong.
+Jaegeuk Kim will you apply this?
 
-So perhaps this diff (which I'm sadly not able to test) will help? You'll
-want to apply it on top of my other patches. The idea is to ignore the
-bits of 'orig_addr' which will be aligned automatically by offseting from
-the aligned allocation. I fixed the max() thing too, although that's only
-an issue for older kernels.
-
-Cheers,
-
-Will
-
---->8
-
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 283eea33dd22..4a000d97f568 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-        dma_addr_t tbl_dma_addr =
-                phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
-        unsigned long max_slots = get_max_slots(boundary_mask);
--       unsigned int iotlb_align_mask =
--               dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-+       unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
-        unsigned int nslots = nr_slots(alloc_size), stride;
-        unsigned int offset = swiotlb_align_offset(dev, orig_addr);
-        unsigned int index, slots_checked, count = 0, i;
-@@ -993,6 +992,9 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-        BUG_ON(!nslots);
-        BUG_ON(area_index >= pool->nareas);
-
-+       alloc_align_mask |= (IO_TLB_SIZE - 1);
-+       iotlb_align_mask &= ~alloc_align_mask;
-+
-        /*
-         * For mappings with an alignment requirement don't bother looping to
-         * unaligned slots once we found an aligned one.
-@@ -1004,7 +1006,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-         * allocations.
-         */
-        if (alloc_size >= PAGE_SIZE)
--               stride = max(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-+               stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-
-        spin_lock_irqsave(&area->lock, flags);
-        if (unlikely(nslots > pool->area_nslabs - area->used))
-
+-Jeff
 
