@@ -1,209 +1,187 @@
-Return-Path: <linux-kernel+bounces-69249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19B285863B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:36:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0337858643
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5A951C22269
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:36:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3301F23B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FC3137C3B;
-	Fri, 16 Feb 2024 19:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746D4138496;
+	Fri, 16 Feb 2024 19:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qorFVVK0"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IrNflfaR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021491369AA
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03CB1353FF
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708112194; cv=none; b=Y4E/N0trPcA+OsxrwmhwkOyOOfGvQkQswl4peISzwsrqjBGAyk9MlKTCvZ8wIglt8AlkkyccN+nJkjSxEtmEKMz75HOFjAlbWpZCAkrbz/H9NCVW9bVLZgK/XCjAC2FZtLlkAQtfO5wRYJdRjggQgquQTQv4SkcI2U1nusmRADw=
+	t=1708112430; cv=none; b=OpXp3oGJ12XDD81qCWHEsvXCyUSvZ+2Gh8kqB049I/i1qL8oakcJ7byN1xkrfCOSqc9vqYF9pjzlNcFBDQAA8exaI3NpdP1YKs5mkNzGSQRULEFvOOyhFYHYZy1Wh6q2vjCBx+dLESPzzGNvQAf0UM3VXQ3SuyIZNkjOkw0diJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708112194; c=relaxed/simple;
-	bh=zoaMVN5WsEZ7tHCBpQ2AebI1jsm3Rure9cJ8nlN0tco=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=GsZl9w0BOoxheP1T5veS645P9dZPtcmGb/0PMdbXUBzg/WR0ycUdRM+t4c1YjRm115DxwQjLDidbIeSZ5vafTTYHFf+ogs4UcEsSi5EKL/zz6oFVuXBTnfadfpougqlF8aVxcv+oEap8YeWLT9uCFJG8NOjZ4X687akh6XCGrfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qorFVVK0; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd703b721dso1677514276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:36:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708112191; x=1708716991; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lfgjHKYjHP2121FLeMU5tIKbfb7QyfojO45shr+5tbw=;
-        b=qorFVVK0Q8b6iSxaWdfmiILpC/j0QPYNpTkN4628VpHoYmzOTjwD0CAC7vZm5Ed35G
-         zHE1fMxQ/WASZsLYRp59rNlS+or80KoOfmJGhhxHScdjF7H9h4Cr6i1ZKFtEbohsxRIg
-         Fz/3hpEDJRCR3aYn22RrCx/aRP2xKQ8rB+ggu9JmjaQTvljHeuZM4M2sPsn7/6p4X+9R
-         XJVVrdqZfDsH2OlZXRV0BA96ZsvUXjA72nAyuv0JZJzwNwEZHU5t/CcsnBCjkxuOyFvj
-         89LQJhq6uPfRB7ya5HmPV1rqWyGV0BBrT5a4M+zfJaM+wNFqM52Z03QkRedJVbfyjJec
-         VU3Q==
+	s=arc-20240116; t=1708112430; c=relaxed/simple;
+	bh=2kEtxKUR+YXMyVhQ0XNlntdk3ty7ZikevcYC5ACSZCA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bduHMa+WASpv1tadHxFfvKaZD0gsYsTcAL+frnHOVbhX48i/UZ1usGdu76vfTobe9+Pijl4wYZyE3sGL/Tm2wNBuDVaDher7drBNn3hcdOdWOpjEJzxUQfncyyui8p4sPhMJHXrResYQ1h10wnNX+1cLK4HGyBrzP2Mk3KE9bXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IrNflfaR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708112427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S3XNc86fIkfMukvVvTcsnQ6iarjT+k2RqqCdbeeV/AY=;
+	b=IrNflfaRxRGcajOh1Bq9ni7C3uh9FZu109RU++bZ/RstL06UK02mgEoxwl8LFW8X5DQX+C
+	oSVrp1x22LfrpM4m4O7VGzlVE7hoB4GD2tiiq17fgcsWorOY+NRTaqHPCoViN5qoZRSNbq
+	xi9STXuqt9AMsoz4FLikgm8YQVLhdls=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-Fer2LpSKNFOZKNJsrj6Ojg-1; Fri, 16 Feb 2024 14:40:25 -0500
+X-MC-Unique: Fer2LpSKNFOZKNJsrj6Ojg-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-42c709698f8so59652801cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:40:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708112191; x=1708716991;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lfgjHKYjHP2121FLeMU5tIKbfb7QyfojO45shr+5tbw=;
-        b=XoNwhwNkZIWwpvWjdgFEyk0JUgByBzdNvtbeBid8KkU7LIrhKwqWj9WGQRROQJkECy
-         WPw4WJOY6KkiG2+gN8IfwquaH2AWqs7dISD1W2Puv0kVLuKgBEr+XwPovW9hkklurVSL
-         rB5xhyYMPgC/m52s+RlgtBC8gFgVQq89i153y9KsOv/6wBnavJslRXmmvcILJzIq+DJs
-         sR7zcaSETn2AAVlJx6fsr2lIw21FG48CjoqSYxSOQI4ZBZ7TI0FBJC3t0ZtjluLJeSr5
-         rXQItxFRILWbZrEfe8zcqMvcklqI/Q5jNIWVqlbM3PPYWisGa+Q3hvLrYFXrkyw1G/Kr
-         MttA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2j6b6plUlKE+j9oVhS4iEfjW8GTpFKOYLX+5T+jiZDgJYKHPumpcuvBApHMPD9BMz/rOwsBvomT+kumJXHalMRu/jdk9V6M2erkNX
-X-Gm-Message-State: AOJu0YwaYwXacn8Uy4qpKJigP4D4HeS1uO65mDXOx7phF8R0vZea2Onp
-	hvPY6Z+3CJe8wNbOslLcZIbxyd2o7v95L4OJasJ7oi9MC2zZ6RI3ug27bg/37vfr0/NmXA/5OhJ
-	loE+UlMiJ6S8N45FFsA==
-X-Google-Smtp-Source: AGHT+IGkoSHjnXot+loB1N5ZuNRt5N8VxUGJ6/UFaoxop8ccs97PBa1BIdb79SyTS7sUrIplfqaWWprqqLC4kVNf
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1504:b0:dcc:8be2:7cb0 with
- SMTP id q4-20020a056902150400b00dcc8be27cb0mr351960ybu.0.1708112190960; Fri,
- 16 Feb 2024 11:36:30 -0800 (PST)
-Date: Fri, 16 Feb 2024 19:36:29 +0000
-In-Reply-To: <CAGsJ_4x6z48N9Sq1V8Bn16eSdRAjBcy3=O_a2iizg=D-tPng=Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1708112425; x=1708717225;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3XNc86fIkfMukvVvTcsnQ6iarjT+k2RqqCdbeeV/AY=;
+        b=jiUblCm/GlooeB/qnthUNMT+pksBLv9tUH4ub3kC6ZH+tptGptlxM46x7Q1z7yxk0v
+         evvgWHYdP0XiKqrytlmJVGvNlUj8Mc6aE9JVF79j9NdnKinctLwn4tXgCfYra5Ivr3lV
+         drnVtuHQgp3EgTV+mDdkGsHei96QHTRdILk7zTqIf8lp+cfQLuaxQhr2dvZ9sM2B0bwP
+         HAyIuZ0eD8CUrepGvTow3mXY9v0uVeqiFQoFHQQ2D+KulQWFayptXtBrMP/SrM4O3tWs
+         AVBGbW9oA/Yxu8RSh7F4g9asR1d5De5KNDHvwAtybx2e4UWgy8NXX7vSReRKboXjzMcb
+         pUdA==
+X-Gm-Message-State: AOJu0YzTkQybOstqmRvYFYK07RD836eQKcQQizDExO7aQO8g1G5/26ya
+	IJUTxO+rNoBMsLDq3QTDbVWEc3OcaZ4uhzN7Js+zAqKVI8IL7ZiiKWKxnGxXVna5Pb5egMJvK3V
+	f1Q54q4wJ1SY3ZyHiT5c8gVlQQitKL4zi/1k0y5U3wEJb7ZaC5MIUuLQWJl01gQ==
+X-Received: by 2002:ac8:584e:0:b0:42d:ac7d:a334 with SMTP id h14-20020ac8584e000000b0042dac7da334mr10657991qth.33.1708112424924;
+        Fri, 16 Feb 2024 11:40:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHGT33+1/X1VeKyj5dxhhKselaG7Wc6wazzQ604JXGpTkd5+Zr2xU/Dyyx1tXCNah0WjW6nkg==
+X-Received: by 2002:ac8:584e:0:b0:42d:ac7d:a334 with SMTP id h14-20020ac8584e000000b0042dac7da334mr10657964qth.33.1708112424634;
+        Fri, 16 Feb 2024 11:40:24 -0800 (PST)
+Received: from m8.users.ipa.redhat.com (2603-7000-9400-fe80-0000-0000-0000-0154.res6.spectrum.com. [2603:7000:9400:fe80::154])
+        by smtp.gmail.com with ESMTPSA id y5-20020ac87c85000000b0042c6c5bc47fsm207931qtv.83.2024.02.16.11.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 11:40:24 -0800 (PST)
+Message-ID: <c7feceb3a7816c2f8686a907fbea2028477464a0.camel@redhat.com>
+Subject: Re: [PATCH v2 00/14] Add support for NIST P521 to ecdsa and ecdh
+From: Simo Sorce <simo@redhat.com>
+To: Stefan Berger <stefanb@linux.ibm.com>, keyrings@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+ davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
+Date: Fri, 16 Feb 2024 14:40:23 -0500
+In-Reply-To: <b507fd52-a807-4325-981b-3852f4f6190b@linux.ibm.com>
+References: <20240215231414.3857320-1-stefanb@linux.ibm.com>
+	 <3bdb1c9e0ac35c7dc3fbba1233bc7df80ac466a2.camel@redhat.com>
+	 <b507fd52-a807-4325-981b-3852f4f6190b@linux.ibm.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240216040815.114202-1-21cnbao@gmail.com> <20240216040815.114202-3-21cnbao@gmail.com>
- <Zc8dEn7eqFmC_Kcd@google.com> <CAGsJ_4x6z48N9Sq1V8Bn16eSdRAjBcy3=O_a2iizg=D-tPng=Q@mail.gmail.com>
-Message-ID: <Zc-5IcVmJgJs_4nr@google.com>
-Subject: Re: [PATCH v2 2/3] mm/zswap: remove the memcpy if acomp is not sleepable
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, davem@davemloft.net, hannes@cmpxchg.org, 
-	herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org, linux-mm@kvack.org, 
-	nphamcs@gmail.com, zhouchengming@bytedance.com, chriscli@google.com, 
-	chrisl@kernel.org, ddstreet@ieee.org, linux-kernel@vger.kernel.org, 
-	sjenning@redhat.com, vitaly.wool@konsulko.com, 
-	Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 
-On Fri, Feb 16, 2024 at 11:10:04PM +1300, Barry Song wrote:
-> On Fri, Feb 16, 2024 at 9:30=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Fri, Feb 16, 2024 at 05:08:14PM +1300, Barry Song wrote:
-> > > From: Barry Song <v-songbaohua@oppo.com>
-> > >
-> > > Most compressors are actually CPU-based and won't sleep during
-> > > compression and decompression. We should remove the redundant
-> > > memcpy for them.
-> > >
-> > > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > > Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-> > > Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> > > ---
-> > >  mm/zswap.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > > index 350dd2fc8159..6319d2281020 100644
-> > > --- a/mm/zswap.c
-> > > +++ b/mm/zswap.c
-> > > @@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
-> > >       struct crypto_wait wait;
-> > >       u8 *buffer;
-> > >       struct mutex mutex;
-> > > +     bool is_sleepable;
-> > >  };
-> > >
-> > >  /*
-> > > @@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cp=
-u, struct hlist_node *node)
-> > >               goto acomp_fail;
-> > >       }
-> > >       acomp_ctx->acomp =3D acomp;
-> > > +     acomp_ctx->is_sleepable =3D acomp_is_sleepable(acomp);
-> >
-> > Just one question here. In patch 1, sleepable seems to mean "not async"=
-.
-> > IIUC, even a synchronous algorithm may sleep (e.g. if there is a
-> > cond_resched or waiting for a mutex). Does sleepable in acomp terms the
-> > same as "atomic" in scheduling/preemption terms?
+On Fri, 2024-02-16 at 14:32 -0500, Stefan Berger wrote:
 >=20
-> I think the answer is yes though async and sleepable are slightly
-> different semantically
-> generally speaking. but for comp cases, they are equal.
+> On 2/16/24 14:27, Simo Sorce wrote:
+> > On Thu, 2024-02-15 at 18:13 -0500, Stefan Berger wrote:
+> > > This series of patches adds support for the NIST P521 curve to ecdsa =
+and
+> > > ecdh. Test cases for NIST P521 are added to both modules.
+> > >=20
+> > > An issue with the current code in ecdsa and ecdh is that it assumes t=
+hat
+> > > input arrays providing key coordinates for example, are arrays of dig=
+its
+> > > (a 'digit' is a 'u64'). This works well for all currently supported
+> > > curves, such as NIST P192/256/384, but does not work for NIST P521 wh=
+ere
+> > > coordinates are 8 digits + 2 bytes long. So some of the changes deal =
+with
+> > > converting byte arrays to digits and digits to byte arrays.
+> > >=20
+> > >=20
+> > > Regards,
+> > >     Stefan
+> > >=20
+> > > v2:
+> > >   - Reformulated some patch descriptions
+> > >   - Fixed issue detected by krobot
+> > >   - Some other small changes to the code
+> > >=20
+> > > Stefan Berger (14):
+> > >    crypto: ecdsa - Convert byte arrays with key coordinates to digits
+> > >    crypto: ecdsa - Adjust tests on length of key parameters
+> > >    crypto: ecdsa - Extend res.x mod n calculation for NIST P521
+> > >    crypto: ecc - Implement vli_mmod_fast_521 for NIST p521
+> > >    crypto: ecc - For NIST P521 use vli_num_bits to get number of bits
+> > >    crypto: ecc - Add NIST P521 curve parameters
+> > >    crypto: ecdsa - Register NIST P521 and extend test suite
+> > >    x509: Add OID for NIST P521 and extend parser for it
+> > >    crypto: ecdh - Use properly formatted digits to check for valid ke=
+y
+> > >    crypto: ecc - Implement ecc_digits_to_bytes to convert digits to b=
+yte
+> > >      array
+> > >    crypto: Add nbits field to ecc_curve structure
+> > >    crypto: ecc - Implement and use ecc_curve_get_nbytes to get curve'=
+s
+> > >      nbytes
+> > >    crypto: ecdh - Use functions to copy digits from and to byte array
+> > >    crypto: ecdh - Add support for NIST P521 and add test case
+> > >=20
+> > >   crypto/asymmetric_keys/x509_cert_parser.c |   3 +
+> > >   crypto/ecc.c                              |  71 +++++--
+> > >   crypto/ecc_curve_defs.h                   |  45 +++++
+> > >   crypto/ecdh.c                             |  59 +++++-
+> > >   crypto/ecdsa.c                            |  48 ++++-
+> > >   crypto/testmgr.c                          |  14 ++
+> > >   crypto/testmgr.h                          | 225 +++++++++++++++++++=
++++
+> > >   include/crypto/ecc_curve.h                |   3 +
+> > >   include/crypto/ecdh.h                     |   1 +
+> > >   include/crypto/internal/ecc.h             |  61 +++++-
+> > >   include/linux/oid_registry.h              |   1 +
+> > >   11 files changed, 495 insertions(+), 36 deletions(-)
+> >=20
+> > Hi Stefan,
+> > what kind of side-channel testing was performed on this code?
+> > And what is the use case you are adding it for?
 >=20
-> We have two backends for compression/ decompression - scomp and acomp. if=
- comp
-> is using scomp backend, we can safely think they are not sleepable at
-> least from the
-> below three facts.
+> We're using public keys for signature verification. I am not aware that
+> public key usage is critical to side channels.
 >=20
-> 1. in zRAM, we are using scomp APIs only - crypto_comp_decompress()/
-> crypto_comp_compress(),  which are definitely scomp, we have never consid=
-ered
-> sleeping problem in zram drivers:
-> static int zram_read_from_zspool(struct zram *zram, struct page *page,
->                                  u32 index)
-> {
->         struct zcomp_strm *zstrm;
->         unsigned long handle;
->         unsigned int size;
->         void *src, *dst;
->         u32 prio;
->         int ret;
->=20
->         handle =3D zram_get_handle(zram, index);
->         ...
->         src =3D zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
->         if (size =3D=3D PAGE_SIZE) {
->                 dst =3D kmap_local_page(page);
->                 memcpy(dst, src, PAGE_SIZE);
->                 kunmap_local(dst);
->                 ret =3D 0;
->         } else {
->                 dst =3D kmap_local_page(page);
->                 ret =3D zcomp_decompress(zstrm, src, size, dst);
->                 kunmap_local(dst);
->                 zcomp_stream_put(zram->comps[prio]);
->         }
->         zs_unmap_object(zram->mem_pool, handle);
->         return ret;
-> }
->=20
-> 2. zswap used to only support scomp before we moved to use
-> crypto_acomp_compress()
-> and crypto_acomp_decompress() APIs whose backends can be either scomp
-> or acomp, thus new hardware-based compression drivers can be used in zswa=
-p.
->=20
-> But before we moved to these new APIs in commit  1ec3b5fe6eec782 ("mm/zsw=
-ap:
-> move to use crypto_acomp API for hardware acceleration") , zswap had
-> never considered
-> sleeping problems just like zRAM.
->=20
-> 3. There is no sleeping in drivers using scomp backend.
->=20
-> $ git grep crypto_register_scomp
-> crypto/842.c:   ret =3D crypto_register_scomp(&scomp);
-> crypto/deflate.c:       ret =3D crypto_register_scomp(&scomp);
-> crypto/lz4.c:   ret =3D crypto_register_scomp(&scomp);
-> crypto/lz4hc.c: ret =3D crypto_register_scomp(&scomp);
-> crypto/lzo-rle.c:       ret =3D crypto_register_scomp(&scomp);
-> crypto/lzo.c:   ret =3D crypto_register_scomp(&scomp);
-> crypto/zstd.c:  ret =3D crypto_register_scomp(&scomp);
-> drivers/crypto/cavium/zip/zip_main.c:   ret =3D
-> crypto_register_scomp(&zip_scomp_deflate);
-> drivers/crypto/cavium/zip/zip_main.c:   ret =3D
-> crypto_register_scomp(&zip_scomp_lzs);
->=20
-> which are the most common cases.
+> The use case for adding it is primarily driven by closing a gap to=20
+> complete the support for the common ECDSA NIST curves.
 
-Thanks for explaining. Ideally we should be able to catch any violations
-with proper debug options as you mentioned. Please include more info the
-commit message about sleepability, a summarized version of what you
-described above.
+Is there an assumption the ECDH code uses exclusively ephemeral keys?
+
+Simo.
+
+--=20
+Simo Sorce
+Distinguished Engineer
+RHEL Crypto Team
+Red Hat, Inc
+
+
+
+
+
+
+
+
 
