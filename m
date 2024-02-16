@@ -1,188 +1,127 @@
-Return-Path: <linux-kernel+bounces-68926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEEE5858202
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:59:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC6E858204
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B338B26049
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:59:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 259051F2282D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5737113172C;
-	Fri, 16 Feb 2024 15:57:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8797132477;
+	Fri, 16 Feb 2024 15:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="INUCV6mq"
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C3dk/DW6"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8868C12C809;
-	Fri, 16 Feb 2024 15:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.190.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355C4130AC8;
+	Fri, 16 Feb 2024 15:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708099056; cv=none; b=Fr85swdryohF9xe/7biVaAARlqkeoUkSTv5Yz5GjkEVhKOxO7V0nCZMRGBGzFFiGazUpe3Lkael8ESTuAjVWaNdLRnYYUEvn9GdTjzTTjBeFE6vRCRV/TqX7fFMVnBfC506q2sQqAb9vRyhAyrKR0Ld+mvLcvzNOHMmf4wraV8A=
+	t=1708099073; cv=none; b=kD6QL42ifpZSsLdpHsSPqcZeKz/5tTrnFsqzIpf4LIuaE11xV/bL/x+2u0B8Ys5C/koPeqKJ2Gd/Pm9WrJFqvadPN2gS9bS772fXWnPS1nOADnzwafx6SKy+14XBq97XYtivXbzCgbVGvdZ3AB16mJBhHg8ShM6Tv4IPQsW7TSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708099056; c=relaxed/simple;
-	bh=92zPtdd0rAFo21Fvita8bJaJeG+DPj1KURFAzjkg2QY=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Vt545GRyr3U7Ma/FVO5Kj9FTL4LUnjzQe5l3PsDe1tqFLzYmfuMuWw3XkOLrup3sXUPpNSykZoDPBZsuKgL3G5LJDJ9E7UxuLe4SZDBrGIGSEo1QaUDXKjzMLgmIjZ3t+TDtS0FZUjVeY6EtVCVPSskcsTWAsnZH/TY/L0Qomrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=INUCV6mq; arc=none smtp.client-ip=207.171.190.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1708099055; x=1739635055;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=ySlk5EP+5EPRFvPn7fKspQz+Y/lmLyPoeT8Lylq3p9Y=;
-  b=INUCV6mqjR9bApW5bPO0D8ZD37F1XaWRtO+wK3N12g+gRywP9XEtWK7q
-   ndTGY0ChLjMKu8+L1K953A1sZd20aXSOhg1LMfmMqY+yW1LdE/Wox4nkc
-   X5kIvTHlyqVnclXMUhgTxt3+hLdbhTBmhYh6uejjdrWjQlLrKrWTap/YR
-   E=;
-X-IronPort-AV: E=Sophos;i="6.06,165,1705363200"; 
-   d="scan'208";a="327444091"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 15:57:26 +0000
-Received: from EX19MTAUEC002.ant.amazon.com [10.0.0.204:20286]
- by smtpin.naws.us-east-1.prod.farcaster.email.amazon.dev [10.0.58.150:2525] with esmtp (Farcaster)
- id 5a50e3a4-7605-4a6b-bd7b-2201142338a7; Fri, 16 Feb 2024 15:57:25 +0000 (UTC)
-X-Farcaster-Flow-ID: 5a50e3a4-7605-4a6b-bd7b-2201142338a7
-Received: from EX19D008UEA002.ant.amazon.com (10.252.134.125) by
- EX19MTAUEC002.ant.amazon.com (10.252.135.253) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 15:57:10 +0000
-Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
- EX19D008UEA002.ant.amazon.com (10.252.134.125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 15:57:09 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 16 Feb 2024 15:57:09 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-	id 4FB1420D21; Fri, 16 Feb 2024 16:57:09 +0100 (CET)
-From: Pratyush Yadav <ptyadav@amazon.de>
-To: Alexander Graf <graf@amazon.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kexec@lists.infradead.org>,
-	<linux-doc@vger.kernel.org>, <x86@kernel.org>, Eric Biederman
-	<ebiederm@xmission.com>, "H . Peter Anvin" <hpa@zytor.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
-	<rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>, "Mark
- Rutland" <mark.rutland@arm.com>, Tom Lendacky <thomas.lendacky@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>, James Gowans <jgowans@amazon.com>,
-	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, <arnd@arndb.de>,
-	<pbonzini@redhat.com>, <madvenka@linux.microsoft.com>, Anthony Yznaga
-	<anthony.yznaga@oracle.com>, Usama Arif <usama.arif@bytedance.com>, "David
- Woodhouse" <dwmw@amazon.co.uk>, Benjamin Herrenschmidt
-	<benh@kernel.crashing.org>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
- Kozlowski" <krzk@kernel.org>
-Subject: Re: [PATCH v3 04/17] kexec: Add KHO parsing support
-In-Reply-To: <20240117144704.602-5-graf@amazon.com> (Alexander Graf's message
-	of "Wed, 17 Jan 2024 14:46:51 +0000")
-References: <20240117144704.602-1-graf@amazon.com>
-	<20240117144704.602-5-graf@amazon.com>
-Date: Fri, 16 Feb 2024 16:57:09 +0100
-Message-ID: <mafs0eddc8kru.fsf@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708099073; c=relaxed/simple;
+	bh=ITD6vm4D0hcte0a35hM4My1XHmKxCPQiRxMuV5erL6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TTiXYdF5W+TPPa5YqXJ2URWD52+3m/mR7sQ/0Wu3POHCzSSxT72fHDt7tFtcd8WfT7N6jMgnU0ukI/pdMbeo7LiomQHIBLnvBYgTrBdvO+57UBH+dUBwRnTHt3t4Npkn3mZm7U3EDO3PoZJXBDTJtee56bn4IR9rOzrBW6xGkok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C3dk/DW6; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zCyJDd9dKPDmdypQXGurJ7KaNpNOw4+5thN7/7/eyiU=; b=C3dk/DW6uAoWvTuhYne1bfRsVK
+	AFRFMv8cN14x0aHBmtqjvahsWzQK+FPnbZDYVHperY/+KHBRo1XhXb567u60YCv08qQ8J+MVeSGQ9
+	1x119URCwWtBQXYV5u3Fp+ktf+Afjf9+nsUaJK0ZIpmn+63y/Im5SUjp7ZE7tKmRq/ZslvmgixOt2
+	n7hihfuNkMxshd73kzO/yEJcUSTS7FrMe7ixIAu8TEU5eWUaZzyK7H2DC5OzqwyWkPuio4mo83+iB
+	tbNOT59j9CjoFtIoRSKPUX3mgyxqdcuioLt3X5Ufel4z7HraKIzr9R/PBYNEpjMM3ypzTo9Y3duO1
+	qGjm3Vcw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rb0as-000000053rW-287p;
+	Fri, 16 Feb 2024 15:57:42 +0000
+Date: Fri, 16 Feb 2024 15:57:42 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Chuck Lever <cel@kernel.org>, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, hughd@google.com, akpm@linux-foundation.org,
+	oliver.sang@intel.com, feng.tang@intel.com,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Subject: Re: [PATCH RFC 7/7] libfs: Re-arrange locking in offset_iterate_dir()
+Message-ID: <Zc-F9i0bcyN-j-GK@casper.infradead.org>
+References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
+ <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
+ <20240215131638.cxipaxanhidb3pev@quack3>
+ <20240215170008.22eisfyzumn5pw3f@revolver>
+ <20240215171622.gsbjbjz6vau3emkh@quack3>
+ <20240215210742.grjwdqdypvgrpwih@revolver>
+ <20240216101546.xjcpzyb3pgf2eqm4@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216101546.xjcpzyb3pgf2eqm4@quack3>
 
-Hi,
+On Fri, Feb 16, 2024 at 11:15:46AM +0100, Jan Kara wrote:
+> On Thu 15-02-24 16:07:42, Liam R. Howlett wrote:
+> > The limitations are outlined in the documentation as to how and when to
+> > lock.  I'm not familiar with the xarray users, but it does check for
+> > locking with lockdep, but the way this is written bypasses the lockdep
+> > checking as the locks are taken and dropped without the proper scope.
+> > 
+> > If you feel like this is a trap, then maybe we need to figure out a new
+> > plan to detect incorrect use?
+> 
+> OK, I was a bit imprecise. What I wanted to say is that this is a shift in
+> the paradigm in the sense that previously, we mostly had (and still have)
+> data structure APIs (lists, rb-trees, radix-tree, now xarray) that were
+> guaranteeing that unless you call into the function to mutate the data
+> structure it stays intact.
 
-On Wed, Jan 17 2024, Alexander Graf wrote:
+hm, no.  The radix tree never guaranteed that to you; I just documented
+that it wasn't guaranteed for the XArray.
 
-> When we have a KHO kexec, we get a device tree, mem cache and scratch
-> region to populate the state of the system. Provide helper functions
-> that allow architecture code to easily handle memory reservations based
-> on them and give device drivers visibility into the KHO DT and memory
-> reservations so they can recover their own state.
->
-> Signed-off-by: Alexander Graf <graf@amazon.com>
->
-> ---
->
-[...]
-> +/**
-> + * kho_return_mem - Notify the kernel that initially reserved memory is no
-> + * longer needed. When the last consumer of a page returns their mem, kho
-> + * returns the page to the buddy allocator as free page.
-> + */
-> +void kho_return_mem(const struct kho_mem *mem)
-> +{
-> +	uint64_t start_pfn, end_pfn, pfn;
-> +
-> +	start_pfn = PFN_DOWN(mem->addr);
-> +	end_pfn = PFN_UP(mem->addr + mem->len);
-> +
-> +	for (pfn = start_pfn; pfn < end_pfn; pfn++)
-> +		kho_return_pfn(pfn);
-> +}
-> +EXPORT_SYMBOL_GPL(kho_return_mem);
-> +
-> +static void kho_claim_pfn(ulong pfn)
-> +{
-> +	struct page *page = pfn_to_page(pfn);
-> +
-> +	WARN_ON(!page);
-> +	if (WARN_ON(page_count(page) != 1))
-> +		pr_err("Claimed non kho pfn %lx", pfn);
+> Now maple trees are shifting more in a direction
+> of black-box API where you cannot assume what happens inside. Which is fine
+> but then we have e.g. these iterators which do not quite follow this
+> black-box design and you have to remember subtle details like calling
+> "mas_pause()" before unlocking which is IMHO error-prone. Ideally, users of
+> the black-box API shouldn't be exposed to the details of the internal
+> locking at all (but then the performance suffers so I understand why you do
+> things this way). Second to this ideal variant would be if we could detect
+> we unlocked the lock without calling xas_pause() and warn on that. Or maybe
+> xas_unlock*() should be calling xas_pause() automagically and we'd have
+> similar helpers for RCU to do the magic for you?
 
-You do sanity checks but then never actually change anything on the
-page. kho_claim_mem()'s documentation says: "This function removes the
-reserved state for all pages that the mem spans". So this function
-should at the very least call ClearPageReserved().
+If you're unlocking the lock that protects a data structure while still
+using that data structure, you should always be aware that you're doing
+something very dangerous!  It's no different from calling inode_unlock()
+inside a filesystem.  Sure, you can do it, but you'd better be ready to
+deal with the consequences.
 
-Also, checking the page count is a very rough heuristic. There can be
-other non-KHO pages with page count == 1. Do you think it would make
-more sense to use one of the private pageflags bits to mark a page
-KHO-owned? If not, shouldn't you at least also check if the page is
-reserved?
+The question is, do we want to be able to defragment slabs or not?
+My thinking is "yes", for objects where we can ensure there are no
+current users (at least after an RCU grace period), we want to be able
+to move them.  That does impose certain costs (and subtleties), but just
+like fast-GUP and lockless page-cache, I think it's worth doing.
 
-> +}
-> +
-> +/**
-> + * kho_claim_mem - Notify the kernel that a handed over memory range is now in
-> + * use by a kernel subsystem and considered an allocated page. This function
-> + * removes the reserved state for all pages that the mem spans.
-> + */
-> +void *kho_claim_mem(const struct kho_mem *mem)
-> +{
-> +	u64 start_pfn, end_pfn, pfn;
-> +	void *va = __va(mem->addr);
-> +
-> +	start_pfn = PFN_DOWN(mem->addr);
-> +	end_pfn = PFN_UP(mem->addr + mem->len);
-> +
-> +	for (pfn = start_pfn; pfn < end_pfn; pfn++)
-> +		kho_claim_pfn(pfn);
-> +
-> +	return va;
-> +}
-> +EXPORT_SYMBOL_GPL(kho_claim_mem);
-> +
-[...]
+Of course, we don't have slab defragmentation yet, so we're not getting
+any benefit from this.  The most recent attempt was in 2019:
+https://lore.kernel.org/linux-mm/20190603042637.2018-1-tobin@kernel.org/
+but there were earlier attepts in 2017:
+https://lore.kernel.org/linux-mm/20171227220636.361857279@linux.com/
+and 2008:
+https://lore.kernel.org/linux-mm/20080216004526.763643520@sgi.com/
 
---
-Regards,
-Pratyush Yadav
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+so I have to believe it's something we want, just haven't been able to
+push across the "merge this now" line.
 
