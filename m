@@ -1,106 +1,271 @@
-Return-Path: <linux-kernel+bounces-68943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CB2E858238
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:14:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FBA9858236
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA9EC284435
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:14:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70E81F22C84
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1ED12FB31;
-	Fri, 16 Feb 2024 16:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9E312FB37;
+	Fri, 16 Feb 2024 16:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lFFJCQwz"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BGr+sj5u"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7DE12FB2A;
-	Fri, 16 Feb 2024 16:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708100033; cv=none; b=N03AQ0Tv/8Y/D/XMjpMjgNltGbxirvZNSloMoyuM+ZBOdJcd/WgDAjqlPYUiTt05+w6snmJE7FDBWm9mTtgJMrJCgU1Zrda4w7y2Ab6FF0NUrrPyw3EXyaQO/4XvB6GLO21ALlpWKPlj1f9wzWmWt5BcL3ojPad97UPGeodR6MM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708100033; c=relaxed/simple;
-	bh=pgWB8gIDXuJeUwDAXlFyiHSuW8VCIa9c0sSJlQvxunQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=M6kck5E1nmqu/l49ZEy0lm+OG9r26K8yQh6WDBGdvWwop9tc/cUaxva5odVm6C5YQgcCIH56Ye7LMmvINlLLHYM42j7ZYGQ2zOW1rRBKWCftvhh+4FPsdFrHcBrEHumex6mOb6FlZwgU/WgV96PjkRjb3Z88cPiZvqi1dsr20/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lFFJCQwz; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GDrAhE004249;
-	Fri, 16 Feb 2024 16:13:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+s47s+oRh66JHw0QvJ6IVx2HVUlYYq8i2oqDQRbbDig=; b=lF
-	FJCQwzs80Of5CG+ukeY9DHL2bH7il19HDv5gI9hnHgau0nkXlj3Ld+CmTXojaddx
-	fQOiQ30S7Zzn04MpZ/j6dG5B+s56Brbakz1+kqEs74n2IM5SCbxOUeXv7DL0AjW6
-	5OO11o6eA+hAZgkBsXxevUFrifBHQt/MwqGlMYN0p3rNbRqkIvNycD8W+2BBeqJy
-	JKMXJniTgZoNf5mbyLzJ1nU5V7U5Te0LY/srqMU6VZevK1Hf/lLSbjrsTi08k9IO
-	qSrwT4+7Y1ig9oOieup8oGy9Dnok7ZcUacZ3LaSn5EGzK6Qn4wUB+6gcJdfzjx7H
-	ZP+m9OL9Sta2iQC41VQg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9fkfc0y0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 16:13:36 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GGDZiH015439
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 16:13:35 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 08:13:35 -0800
-Message-ID: <ce40205b-25c6-6ba5-23a4-70a51b4e1b21@quicinc.com>
-Date: Fri, 16 Feb 2024 09:13:34 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9123912F5A9
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708100031; cv=fail; b=vAOmJ8E6hafZGUxwIka5nweY3wAoDIdtYCvqkjEh4KeTazvMbWA3z/BpixX8sCr+wX8N2iVew4okjIiThqZxzmhtzeJ/LmJif0oJEbYvPtR+0vVIG1av1KOIv/m2U2AHgx94ptnrXWfeSbDG0cdsywK8B7gF+YvSlyBKI51AKpI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708100031; c=relaxed/simple;
+	bh=9h7L4Z850jVg1KjionmaGxKJ+9FN5kXNjVbCSwSF+G8=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=BcEVjo8iryqgabfVMxJGbbNJIq5WxzPvDrqUc59WDr/qgglZiMB3se8sOWfZSVsR2vVcfS/6LqusO0zeXCSs8v+zSiNR0UsJD+2jFYufaFwhggI/5UxacIbimFBXcQ1i9ZANfI7zKOilPHJ1K3KA+aVta1lnGHaKQCgICXltx9I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BGr+sj5u; arc=fail smtp.client-ip=40.107.243.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EJhZETIh2m+VfBcEiDcsrNbcvR9Ms1gsxQWcROCDG3I43MOQJYNxq2kmXjAxBb4CcXSYaPovdLOXDPNJpuFgRhFv/IgcVK3lJpWt6D04BCm0grJJDlm4EvsRPNy8Uf1Jppf7jGMXcNDMU/31zbfRmIP/fpimM0VYUyAFkSJCEBVOz/LT8SNpYAB5J1g55eK5Eua2OhF5eIdCosgWWh4Uk96PeL4aRU5Sv6XAPr1wznx4p6EaAKHKSoCRd0w9XKqY0fqNQNU8QJDi5uuqjTU+ySihWRrKMzy9gGYilTlLv2NIQZwfDxXp10d6s+W9l+hJo7isrx2WZfz8rVq4hFUm/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FFQ/bj6GQDTICITZ6xjvVphNMCXiOGVFxgnXgd2q9dE=;
+ b=PB3ZNqvt/D2ETD2OIiqj6LPrUlUYIYcj2rM+TnyNWhU06HeLHeIoqhoGYUexfi6n/ZMh3B4O07Xni1LiboC/glyDUjPmumtYWS24c1Zd4FQSVSkM9Yckubm5ft4iHRgtpVJtSArwVRKn1jpheYiFNDSqNuzk6NzBV/h6JP8NmnVdDK8v9Kend/6ty7rZzzIVU/mdC2QqPgdHLsOEXN5y3nIIE8xfNOU+NZqLw2+qM5EmsVNoN066cFo+Eq0MmA3wt39lRB13jxicuAvGM9txiIcBaV9zSkmgGB57h8GZuWn/dxMlY0+0BTElbQ1nQQMQF16vlpADlCpSJmmsn2LedQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FFQ/bj6GQDTICITZ6xjvVphNMCXiOGVFxgnXgd2q9dE=;
+ b=BGr+sj5uKah0Afdox3BUVYONBt53tS2K+COEbfChSx4bxcLC3Rk5MNjD7LmAWVvRrpa7qL6wTCf/HY3yIn2XUyF04BS0gHXRjklhnQPKQ4NxtW7/Sq//KeY/RHY0ggD2JybLtV/xebJLF+M15ntFFMKNZtJoLL03lqjYiETVUHY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by PH8PR12MB7025.namprd12.prod.outlook.com (2603:10b6:510:1bc::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.15; Fri, 16 Feb
+ 2024 16:13:44 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::3f6b:792d:4233:f994]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::3f6b:792d:4233:f994%6]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
+ 16:13:44 +0000
+Message-ID: <d30e50bf-5b8e-47cb-8abf-e474f8490c99@amd.com>
+Date: Fri, 16 Feb 2024 11:13:40 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+Content-Language: en-US
+From: Harry Wentland <harry.wentland@amd.com>
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org,
+ Mario Limonciello <mario.limonciello@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
+ Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+ <20240216101936.2e210be2@eldfell>
+ <82280a39-4e1d-41ee-82fb-758ceed953e4@amd.com>
+ <20240216174242.15d07657@eldfell>
+ <a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
+In-Reply-To: <a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0023.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::31)
+ To CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] f2fs: doc: Fix bouncing email address for Sahitya Tummala
-Content-Language: en-US
-To: <jaegeuk@kernel.org>, <chao@kernel.org>, <quic_stummala@quicinc.com>,
-        <quic_bjorande@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20240202165208.4091800-1-quic_jhugo@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Cr2KoCkvvaPxsIziVfFyMR7TPWg19cuW
-X-Proofpoint-GUID: Cr2KoCkvvaPxsIziVfFyMR7TPWg19cuW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_15,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- adultscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=307
- spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160130
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH8PR12MB7025:EE_
+X-MS-Office365-Filtering-Correlation-Id: b4193c45-8e1e-4c18-56c9-08dc2f0a3fb6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+d48l5cySRbOcFFHE3uKhn5D6hENyX0LoUFZKoDMbqiVtOn7s+9LKVgY9w3th5pfWejhYVlvMpOy6DSZr3o/vHFDADqkWowkYnCK83AaTczj8K0uClkX0BIG5sWtTgi3IFRKeGAgkxiPYeyGA4wy7PaQ2DHUKBGNwqpuZo6vrqUGySVQNXSW8w2YX4t5p30d9JLvqggRNWy532TjJaLmlJwfadzoc9RBBr9ZyJ6COcmblqel1yUsvhIvDFWGrDnwraOK3I9w9dWnuY1Ig0InbYqakj0KH7tykmYt4N5eqF53kCTCboYIvJtvo1VAEVWQdqmxBYx35SuX9s4UjoOWE4RAMYPJF42OFpAhkNQAdpHirfnN83IFAspv+7UcbK9Ta56QSnGbjIERbfl9zLYXOYe3aDh9CiyqJv4lcnKqrHeXdimVVR10aXAH9KdavivGEaZyR4+ONtSu4PD8p5eqdFQD4KJ/JaDkTRVsMAbjTHL/Cfby/LvO83aHWLei48GvcsrTBuog9ZticZr5lT/n/jWBo2dqtV2thLENCf4M0GQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(8676002)(66946007)(5660300002)(44832011)(31686004)(8936002)(2906002)(66556008)(66476007)(6916009)(4326008)(54906003)(316002)(6666004)(6512007)(6506007)(966005)(478600001)(53546011)(41300700001)(6486002)(83380400001)(86362001)(36756003)(38100700002)(2616005)(26005)(31696002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MGloNldJTHdSQ3J3S3JLaVZZdUl3QWtZRFhickxncnBiOWZ1a0xNMHA0L2ZB?=
+ =?utf-8?B?T1BXMTVCQ1paWjladlJLUVNpeDh1UVNqeit4OWZKR2ptVFJyOTF6RnRLV1o2?=
+ =?utf-8?B?eEI4UTcyL0pyT3FqNGovbjRJY2NnMlBGR3dnb3NuV1d4Mm9Kb2VhRDBZRWkw?=
+ =?utf-8?B?OWVzdVdob1FZa2RMZzZlZzBiWEJhYWxmdXNQWHhGa25wYk9FQzhOOTBhSWEy?=
+ =?utf-8?B?RHpONFdtaXlXa2xmUHBVWWtrQlpkOTFZRHNBZFZGZ1hxVS9XdDhJcUZqUkFi?=
+ =?utf-8?B?a0VMZU5BNkg1M3JDeEtqU1pYTC9mTDBzaUVKSHV6MGwyMFBkTStvV1k4ZnZY?=
+ =?utf-8?B?NVpIcmM0aUZDKzROQWlVYVVJcGhJUlFBcWZpWC8vb21xUnVGcW1iZHFDaHZz?=
+ =?utf-8?B?VE96MjVhYTd2UVh6UTlrb00yZUk3WXN6MEtGa1A0RGRDeVRBRHpObTd4ODNR?=
+ =?utf-8?B?SmRZWmxNQ1E4cmtFWjh3R3JrNUNpSU9VemdGS3QvaTlvWVFZR3N3TTJFYzh3?=
+ =?utf-8?B?L0ZweWpqK09icThFR1NNY0NISWxaZjhqUUUrTVZYTUxUWFRGRllMZitabGND?=
+ =?utf-8?B?K3FheGhkQXgwdjJYSUVXaWhnR1BBaS9DUm1iWnQrVXZnOEVGVDNkb0x6VjBY?=
+ =?utf-8?B?bitSN3hRbFo4dnVOSzkvT0dnS2FsYzR2S2x1U3FsMG9aeTZlSWxFVkxpSVFB?=
+ =?utf-8?B?ZkVhUGRHcmo5VC81MTZza2YwcVBibmJkd1d2MXNZbzYyT29UUktCUzBOVXh4?=
+ =?utf-8?B?bG1LeWg5dnVYMzRZNnN5Q2xWT1diZGlKdENyMVZjbDdXNUpQcHYvcVU1THMw?=
+ =?utf-8?B?MXJEU0Yvd29DOTZBRDYxRnhybDNjSnJPRCtybmdRcXkzZnZmUGFZOUVmT2d6?=
+ =?utf-8?B?OHJzNHZUY3lGRUdJaHp4ek92RXJkenlRMjNIS290VEY5NGZYWmR6QzJVbDhL?=
+ =?utf-8?B?RkNFb3Z4NWR1WWVvUjYrditjOHNVSFhyQ2IwQXZjSlRnblkvbU01QzdwM3Fx?=
+ =?utf-8?B?WkhtRDJncTFmREFxTWlhV3hyU1o1dC9kTVRHcW5XOUdoT1EvMWhuZ1VxdDM3?=
+ =?utf-8?B?dFo1ZStCTVY4dmFaeXFnaUMvOTVSUXV4Wk4rZFNVekJHSG5UVEpxNVovUWZ6?=
+ =?utf-8?B?b0NlaE5xOEg0YUdIbmxmWVhGdW1wWi9Kb1I4TFB6anh6eWw0ZEpyaUVhS01t?=
+ =?utf-8?B?VmtZcjhacDFHUG9sR3oyTGFXS2YxZ2VoeThwREM1ZUZJZW1iTkV3Wk8rOHV1?=
+ =?utf-8?B?dUlpK1lHSDROWWgxb3VqTzJudFhTUlMwRWI0S2hwR0NIS1lGNUxZcmdUS1M5?=
+ =?utf-8?B?b0V4NVZ3a01taCtHTjR1Z3dxMEM2Tjg5L2hQMm9xNG1mSmpOcGl0amdWaEVu?=
+ =?utf-8?B?dDBvbmovdnBvUGJqUUowRWJHcmFDcVF6OFArRkFTVGM4NU8wWklOT0phWkdq?=
+ =?utf-8?B?UU5CdUpQR3h1M25RbXlYb05Ea1FRTVlMOW5YeDZreDNjMlZHRm93KzRlK0JV?=
+ =?utf-8?B?akxudVVIenFweCtZWDJNaFAzSEdSQ21aQWRTR0ZYSlp2ekhsWkcrVjMrOHdG?=
+ =?utf-8?B?Z3FzK0M3aE9GWHQzcHNpNEtNRnN1eVRDK3FxS0ExOUJrQ2hkWS94QmNvbWM3?=
+ =?utf-8?B?clNwQ2I5RzlvM0Q4Y1FaR05RbnIwVU1Id21GeEZYZHlaYkZGc2dxSk81eUVD?=
+ =?utf-8?B?dHdOS0JaRVZXbzI0VnVhZ3o5SUU5YTVuN2VWclRLUEpSTXliYzNvZHFRaXp1?=
+ =?utf-8?B?Y0JGakRHRytWZG42eitFQUJsNXRNQ0lmbkRWN1B1WGJuT1RWZDJrVWxxWmFC?=
+ =?utf-8?B?YklUS3ZyQTVSQ252YVlyVkFpYllMYkZxYUQ4RnNTV3E0dm1xUzQrRWN5VnBV?=
+ =?utf-8?B?cVZWSWlUVm1jTG9jOEIrbUpZc2wrUWtYT1hvWmM0YnNOYzJya0tJS1d5NlA4?=
+ =?utf-8?B?dkNZQTNmazhaTklLVjFaZ3labm9tVWdkMWhXL1RJQTVxRlI5eWxyVmRLM1dx?=
+ =?utf-8?B?NlRLSUdwcS84V1JKbWtTS1VLbVV0S0dmRlp6QlJmTmdGMVFhQVF3ZUlweU9F?=
+ =?utf-8?B?cEV1SWIxRTk1NEZ6ZHhwQXRHbEpXeDh5anRDSHZoZWdGTm1ScytlRUZZbzYw?=
+ =?utf-8?Q?SH1rn+PVDFxluKz41u03pnwwn?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4193c45-8e1e-4c18-56c9-08dc2f0a3fb6
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 16:13:44.6385
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8h0HCLhdFv433QKt3nhTZFUATlZPzFQoXbc4iMUgcQ2KjFjbWW0AC8rdJ5zntZIlaRRB/8CNDBQ5+Oc7PMNF/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7025
 
-On 2/2/2024 9:52 AM, Jeffrey Hugo wrote:
-> The servers for the @codeaurora domain are long retired and any messages
-> addressed there will bounce.  Sahitya Tummala has a .mailmap entry to an
-> updated address, but the documentation files still list @codeaurora
-> which might be a problem for anyone reading the documentation directly.
-> Update the documentation files to match the .mailmap update.
+
+
+On 2024-02-16 11:11, Harry Wentland wrote:
 > 
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> 
+> On 2024-02-16 10:42, Pekka Paalanen wrote:
+>> On Fri, 16 Feb 2024 09:33:47 -0500
+>> Harry Wentland <harry.wentland@amd.com> wrote:
+>>
+>>> On 2024-02-16 03:19, Pekka Paalanen wrote:
+>>>> On Fri, 2 Feb 2024 10:28:35 -0500
+>>>> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
+>>>>   
+>>>>> We want programs besides the compositor to be able to enable or disable
+>>>>> panel power saving features.  
+>>>>
+>>>> Could you also explain why, in the commit message, please?
+>>>>
+>>>> It is unexpected for arbitrary programs to be able to override the KMS
+>>>> client, and certainly new ways to do so should not be added without an
+>>>> excellent justification.
+>>>>
+>>>> Maybe debugfs would be more appropriate if the purpose is only testing
+>>>> rather than production environments?
+>>>>   
+>>>>> However, since they are currently only
+>>>>> configurable through DRM properties, that isn't possible. So, to remedy
+>>>>> that issue introduce a new "panel_power_savings" sysfs attribute.  
+>>>>
+>>>> When the DRM property was added, what was used as the userspace to
+>>>> prove its workings?
+>>>>   
+>>>
+>>> I don't think there ever was a userspace implementation and doubt any
+>>> exists today. Part of that is on me. In hindsight, the KMS prop should
+>>> have never gone upstream.
+>>>
+>>> I suggest we drop the KMS prop entirely.
+>>
+>> Sounds good. What about the sysfs thing? Should it be a debugfs thing
+>> instead, assuming the below question will be resolved?
+>>
+> 
+> 
+> It's intended to be used by the power profiles daemon (PPD). I don't think
+> debugfs is the right choice. See
+> https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/commit/41ed5d33a82b0ceb7b6d473551eb2aa62cade6bc
+> 
+>>> As for the color accuracy topic, I think it is important that compositors
+>>> can have full control over that if needed, while it's also important
+>>> for HW vendors to optimize for power when absolute color accuracy is not
+>>> needed. An average end-user writing code or working on their slides
+>>> would rather have a longer battery life than a perfectly color-accurate
+>>> display. We should probably think of a solution that can support both
+>>> use-cases.
+>>
+>> I agree. Maybe this pondering should start from "how would it work from
+>> end user perspective"?
+>>
+>> "Automatically" is probably be most desirable answer. Some kind of
+> 
+> I agree
+> 
+>> desktop settings with options like "save power at the expense of image
+>> quality":
+>> - always
+>> - not if watching movies/gaming
+>> - on battery
+>> - on battery, unless I'm watching movies/gaming
+>> - never
+>>
+> 
+> It's interesting that you split out movies/gaming, specifically. AMD's
+> ABM algorithm seems to have considered movies in particular when
+> evaluating the power/fidelity trade-off.
+> 
+> I wouldn't think consumer media is very particular about a specific
+> color fidelity (despite what HDR specs try to make you believe). Where
+> color fidelity would matter to me is when I'd want to edit pictures or
+> video.
+> 
+> The "abm_level" property that we expose is really just that, a setting
+> for the strength of the power-savings effect, with 0 being off and 4 being
+> maximum strength and power saving, at the expense of fidelity.
+> 
+> Mario's work is to let the PPD control it and set the ABM levels based on
+> the selected power profile:
+> 0 - Performance
+> 1 - Balance
+> 3 - Power
+> 
+> And I believe we've looked at disabling ABM (setting it to 0) automatically
+> if we know we're on AC power.
+> 
+>> Or maybe there already is something like that, and it only needs to be
+>> plumbed through?
+>>
+>> Which would point towards KMS clients needing to control it, which
+>> means a generic KMS prop rather than vendor specific?
+>>
+>> Or should the desktop compositor be talking to some daemon instead of
+>> KMS for this? Maybe they already are?
+>>
+> 
+> I think the intention is for the PPD to be that daemon. Mario can elaborate.
+> 
 
-Jaegeuk Kim will you apply this?
+Some more details and screenshots on how the PPD is expected to work and look:
+https://linuxconfig.org/how-to-manage-power-profiles-over-d-bus-with-power-profiles-daemon-on-linux
 
--Jeff
+Harry
+
+> Harry
+> 
+>>
+>> Thanks,
+>> pq
+> 
+
 
