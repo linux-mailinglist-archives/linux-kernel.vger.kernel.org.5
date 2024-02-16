@@ -1,148 +1,129 @@
-Return-Path: <linux-kernel+bounces-69288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843858586A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:22:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61CE08586A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23DC11F23327
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:22:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9491C1C20FAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000C213AA5A;
-	Fri, 16 Feb 2024 20:22:26 +0000 (UTC)
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F583139573;
+	Fri, 16 Feb 2024 20:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YNtWCZN+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QdVOnBs3"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25ABA137C5A;
-	Fri, 16 Feb 2024 20:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5CB12FF60;
+	Fri, 16 Feb 2024 20:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708114946; cv=none; b=THbKRU3mPW0TKxmEyVCBE+jCBZmDqY75qoyASNIEXwdqE/xBZrRc4WpNPoYdNjSser34sXYnEzwdm3bh1eoe6MO1fK89W4bkrIsQeXq4ThnBtKO/facJKB3TcKfsmJM4tkgZXdwh3KieweSLxcxfbnYZHEYba6G6HiGTChH/IgY=
+	t=1708114937; cv=none; b=fdFZ99MKkc3QjERHWlLb9MIQFJSmy/A8txiGVgduQnwvp2nor64uHmNN+mV3+HXMzSZjdvbOJ552ZtoHe5N1DTbKMRJLUAIrQnwNWDlPUMD93G5bMKCGYtT/lTw/CKJ82+A2vmAmsTfmmVqx7Nkzs14BbV5py386iGBTuvf2QXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708114946; c=relaxed/simple;
-	bh=pnCogIDz14LG5tHCuqzaTGDuVoRYHckFSaXPPX5xATI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C+jeZxzIvDTOHcNHNbn/AiMwru+8OT7/NVbuzS1+8vSW9x8u18oIEp0As2nPBfpawzqeYzMAfOFbVql6jtIsCiVN8iM1+Ke5cdyRUABpR8zRGYwFXt5olLnlloKGrtEX+YY2uImxZLAUg0/Tty26S84HioJh4UJC0K9em3HsuQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2995185dbbbso141325a91.3;
-        Fri, 16 Feb 2024 12:22:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708114944; x=1708719744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Oq0A0N9FMvQiwLtedEjU1Y/XLo5XcWAr1iJu9cUBjms=;
-        b=XbjlfEqd+soG7CDvwv1svXhAN+6q+9p5qM1xGRrzcZCwmaLMe+cWmCQMP3tFLzK5s5
-         vZD4Q2P2MOQb1/WuCNKrOpeRIXzzX5YyMGLR5J7hdf6fepJMaOOatR2YlbWob6xPvNDi
-         Cdd4w9HP+T8uGIMRSKj1HrTGRdjr6Z8C2D2J1lvBhy+4RdePyZvLAw3yIwwZTwqn/+qT
-         h1t4caU/0DqaQ71pi1y3qB/FmSjLe75jZOex613fSdmer7IuXdxEFayS3lMbz6/+TGOc
-         Kr/oVYlJ10/LfaEmpYEWRiGl8QUuIH1Ums3Ctir4XR0P8TtdGgFhDAwiK60pIGVIZKyQ
-         OwTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCViRTV6pk25t8bwPxbK1Ecv35GIy19g8oPun8kbS481pRrFx+YijGyOcwIcLTb8vpb3fNd7KKwMJlOVmlLaThOO3ME5V7QwPB5FCnajvXfZ70ZdvBTbmuCc60lfX3xUHHw3Lqq5/cXqGxZTgF8sJw==
-X-Gm-Message-State: AOJu0Yx4HBD9BFvtEnK9VDVtae3cMXJRoKLiw+xMJBavzAdWV4vv/TVH
-	hdfjFFSrQIMFbwVT9YaeZnpuGsAMXCUhXlM1Yv9ygEkoLx5/JmPzttHGSC3Vs8mCIDA5aN22YiR
-	EtKXHTEBjsAMyA0LBRZn5QcRH+2k=
-X-Google-Smtp-Source: AGHT+IFguJIhRwRsgj6T4qcPSOxXHVK81XmIp86YrUJaYpTa7bcm2JYGq7PJIvPTaMXl36nvaefa641o/QO8CYYI9Dw=
-X-Received: by 2002:a17:90a:a883:b0:299:1aaa:5ff with SMTP id
- h3-20020a17090aa88300b002991aaa05ffmr4758561pjq.7.1708114944478; Fri, 16 Feb
- 2024 12:22:24 -0800 (PST)
+	s=arc-20240116; t=1708114937; c=relaxed/simple;
+	bh=nypb2KZnPJWR1XM7XwoJ16qmP0FPMeXO2miQqYZ+euc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NOkRVgMjejxNga2bXFF+kBKZlxfpv5bSsOodeaiPAaAh6ITcGPmce8pR4NcuOqooq2ti3MkGTYtglCqnCIYhPVobvoShjmHQtdvYacfCjby/0ROeDdI3gIm9GfcDFyB+iQmPSOD3DQLCIXbXh8WARoQo3a31NSjbzFraAMYlsbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YNtWCZN+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QdVOnBs3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708114934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=le97KJdlsGBLqsiJ8aQfiKStXYCU6YwRihA6kx6vD50=;
+	b=YNtWCZN+oyza7Psrnp+o015RwbGOpg7nwPBmGlhWYhJoroMvc1j1yPwMbdlPkFxbZ099DY
+	cStpTLOPTTibGQZ6dRsFGbknNWj8VO1bsaW0+eIPgqMroaaMzbPCD9kzTrmYNUuMFWb7Rj
+	ujCSgGzYaticow53nctzXgJ7gXOWC7OHA853+v+EVBm0Dfhgy8aJUr2OraiKqXEDadV/3w
+	6oHgKU9uZR+LgRSztvgBVrr5BHhCt3HKME+aXGG9fOPGB7PbQ3OGIwarKrqfLDj1DRPg+y
+	ibA8yxPAnWLA+2R6lNb0h0dxwF1h8gILaiyDbknkPS3KZEXgJ990PuKUR4aPzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708114934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=le97KJdlsGBLqsiJ8aQfiKStXYCU6YwRihA6kx6vD50=;
+	b=QdVOnBs3rHq1ra9e49kCrw2tSi/Be1PmqZXRATLKXzAosslD2EHYAtI+BnLejPsm8NkGNU
+	OKEsdip73eiy+dBQ==
+To: Anup Patel <anup@brainfault.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>, Marc Zyngier
+ <maz@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Atish Patra
+ <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, Sunil V L
+ <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v12 14/25] irqchip/sifive-plic: Convert PLIC driver into
+ a platform driver
+In-Reply-To: <CAAhSdy2aeyJBcMVre12jGwU52oP9Z=1emB-bcYxygdR3QhP+6w@mail.gmail.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-15-apatel@ventanamicro.com> <87jzn4ctks.ffs@tglx>
+ <CAAhSdy2aeyJBcMVre12jGwU52oP9Z=1emB-bcYxygdR3QhP+6w@mail.gmail.com>
+Date: Fri, 16 Feb 2024 21:22:13 +0100
+Message-ID: <878r3kcg7e.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214045356.748330-1-irogers@google.com> <20240214045356.748330-7-irogers@google.com>
-In-Reply-To: <20240214045356.748330-7-irogers@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 16 Feb 2024 12:22:12 -0800
-Message-ID: <CAM9d7cg5O_1yKpk_X5vn380Cu28ObLjjjnOONHF75D07ZbkR3g@mail.gmail.com>
-Subject: Re: [PATCH v4 6/8] perf tests: Use scandirat for shell script finding
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, James Clark <james.clark@arm.com>, 
-	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 8:54=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
+On Fri, Feb 16 2024 at 22:41, Anup Patel wrote:
+> On Fri, Feb 16, 2024 at 9:03=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>> I don't think that removing the setup protection is correct.
+>>
+>> Assume you have maxcpus=3DN on the kernel command line, then the above
+>> for_each_online_cpu() loop would result in cpuhp_setup =3D=3D true when =
+the
+>> instances for the not onlined CPUs are set up, no?
 >
-> Avoid filename appending buffers by using openat, faccessat and
-> scandirat more widely. Turn the script's path back to a file name
-> using readlink from /proc/<pid>/fd/<fd>.
+> A platform can have multiple PLIC instances where each PLIC
+> instance targets a subset of HARTs (or CPUs).
 >
-> Read the script's description using api/io.h to avoid fdopen
-> conversions. Whilst reading perform additional sanity checks on the
-> script's contents.
+> Previously (before this patch), we were probing PLIC very early so on
+> a platform with multiple PLIC instances, we need to ensure that cpuhp
+> setup is done only after PLIC context associated with boot CPU is
+> initialized hence the plic_cpuhp_setup_done check.
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/builtin-test.c  |  21 ++---
->  tools/perf/tests/tests-scripts.c | 144 ++++++++++++++++++-------------
->  tools/perf/tests/tests-scripts.h |   1 -
->  3 files changed, 95 insertions(+), 71 deletions(-)
->
-> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-t=
-est.c
-> index eff3c62e9b47..6d5001daaf63 100644
-> --- a/tools/perf/tests/builtin-test.c
-> +++ b/tools/perf/tests/builtin-test.c
-> @@ -300,22 +300,20 @@ static int test_and_print(struct test_suite *t, int=
- subtest)
->  }
->
->  struct shell_test {
-> -       const char *dir;
->         const char *file;
->  };
->
->  static int shell_test__run(struct test_suite *test, int subdir __maybe_u=
-nused)
->  {
->         int err;
-> -       char script[PATH_MAX];
->         struct shell_test *st =3D test->priv;
-> +       char *cmd;
->
-> -       path__join(script, sizeof(script) - 3, st->dir, st->file);
-> -
-> -       if (verbose > 0)
-> -               strncat(script, " -v", sizeof(script) - strlen(script) - =
-1);
-> -
-> -       err =3D system(script);
-> +       asprintf(&cmd, "%s%s", st->file, verbose ? " -v" : "");
-> +       if (!cmd)
-> +               return TEST_FAIL;
+> This patch converts PLIC driver into a platform driver so now PLIC
+> instances are probed after all available CPUs are brought-up. In this
+> case, the cpuhp setup must be done only after PLIC context of all
+> available CPUs are initialized otherwise some of the CPUs crash
+> in plic_starting_cpu() due to lack of PLIC context initialization.
 
-It fails to build.
+You're missing the point.
 
-tests/tests-scripts.c: In function =E2=80=98shell_test__run=E2=80=99:
-tests/tests-scripts.c:130:9: error: ignoring return value of
-=E2=80=98asprintf=E2=80=99 declared with attribute =E2=80=98warn_unused_res=
-ult=E2=80=99
-[-Werror=3Dunused-result]
-  130 |         asprintf(&cmd, "%s%s", file, verbose ? " -v" : "");
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Assume you have 8 CPUs and 2 PLIC instances one for CPU0-3 and one for
+CPU4-7.
+
+Add "maxcpus=3D4" on the kernel command line, then only the first 4 CPUs
+are brought up.
+
+So at probe time cpu_online_mask has bit 0,1,2,3 set.
+
+When the first PLIC it probed the loop which checks the context for each
+online CPU will not clear cpuhp_setup and the hotplug state is installed.
+
+Now the second PLIC is probed (the one for the offline CPUs 4-7) and the
+loop will again not clear cpuhp_setup and it tries to install the state
+again, no?
 
 Thanks,
-Namhyung
 
-
-> +       err =3D system(cmd);
-> +       free(cmd);
->         if (!err)
->                 return TEST_OK;
->
+        tglx
 
