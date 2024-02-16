@@ -1,100 +1,123 @@
-Return-Path: <linux-kernel+bounces-67880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31418857246
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:10:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BB26857249
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:11:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC03A1F2556B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:10:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 085CA281B3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1918F49;
-	Fri, 16 Feb 2024 00:09:15 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250A6819;
+	Fri, 16 Feb 2024 00:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="2JnqoC7T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4E0149DE4
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6607F9
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708042154; cv=none; b=p6P0NeflwbP6eOFWlyyRX9qd7fkThm7w21VmZoa/ZWpk6ICnPxAAcQcibXJOyUTnSTxAZrj6z9R0WeZMGDjXlOhCAqrsKp9kOTFCAg0Dbpmz8Bp51x8hYWM6l1pbHFYYcFTrjblYaafIrPbsiaf2MQ+V51k9XvVuCZ8I2oMwYYI=
+	t=1708042276; cv=none; b=kktg2yVEHW6CQZHAxhz/qayRXhihM/9I2nnAYziD7NIVcAaidVDXLn5+W+NmBcNmkUyZK82SZI7+oiVdXkY9rpdYGomEjiOpF08sHOTS0hi1Bg4ai0V29af8T8MgkoLLlEHZoMiShBkF28NtShBO5EMC/hq682dA0nrSXupEoHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708042154; c=relaxed/simple;
-	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=CKjkDrpTXiDQGk2rVrl1M/JFAJSOuBJ6DiOZUW+TfzKBXa23OSrJcraqoHDiZvq6gPJkMfMlHDAr+qhAHmK6L60odOdPKlL7Ey4xG1D7m3SmdH+9+tcHjpLjPfkWp1KbCIj56+rtYKl+GUKeqzSGeDylQnWEPRHtW6r3B0i/8E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363ca646a1dso12915535ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:09:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708042152; x=1708646952;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=QZ3MBuoZ023B62CCPhHXe20IwjJG4SjAqXIAPSkV8zvDnWkMlJ/RqLXLPFLLNYmMuQ
-         xygLrM96feDskKn187wRz+NmPtQ7DtzTBlraHaGVA/SdLwcHcWc+NaQCLZhN0h7whiKH
-         ioc1Ch7lrVSJWc+R/dre57xhSLO7tngbdw8Jzo7W9H2rSyQ59NhXUH9RNAtdwkYm04ED
-         CR3lbwqFqEW0iMc9zkBTZYw05ZOka9KaCccWvkvHusz8lKXJMww/N+ynObHeMmBICSXZ
-         bOfUAvoTUfDyHIhmtNgGTPjcH2P5BAp7XizAQv+ducw6ou1DuMACzJwCaH/zTj+U0fpL
-         ucpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWfrTOlGKeHtIq/h6T9TMMd/c9vuk6Ci5D3jLEFen28Vk/0WaHpG62Kcjr+Y+1S6x1E35C6jTPyRhIj2f3VgpASz8QagUefaDlZD2+
-X-Gm-Message-State: AOJu0YwVpzCGQtj5oSdu0y9BZ476vaAdJaBsvoRLX5tEF84Web4fvoFO
-	PnI8hNabTOQKlMQv0MqICmoEOTy1gZQriVcVW0F6uiCwzyubrQdYBL/J0ZRVCH9YmOXpzb+Ws/3
-	Ws5i0ijmv0Taf/Tq6eiCy7ZiHrNK7fYUmOfUZy11GBNRYwswVxSfPLUI=
-X-Google-Smtp-Source: AGHT+IHWCVuUeC7v0lAZJFezIkfQcaDrrBjAbxzk6k6ndWAM0wqDyd8gqinQBOi355JqaWTeH85DoeiriithR+xpOQuYk5VA0C5d
+	s=arc-20240116; t=1708042276; c=relaxed/simple;
+	bh=Fn3qWD1l8WtNeMT36sgkXFrzcnjkumD5gzR7J9xNGow=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ZjcSxhPQ5h2iU0VpTH/sSX3LqVwB9+fleaGTzx0p2SgfiNzH5CcYtcaMcereSSAbpEyY70S7lUR8iL4KaL+cW+eXxiTCdO+rHtqbGebmiM+mgcaEpH8QlzHFjT7889QiXImnaeYFG5dvwpwcirzybrbD35ULu6k7adjnYanV02E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=2JnqoC7T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E9F0C433F1;
+	Fri, 16 Feb 2024 00:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708042275;
+	bh=Fn3qWD1l8WtNeMT36sgkXFrzcnjkumD5gzR7J9xNGow=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=2JnqoC7T7PFPayFBUfvmx2p43g3EwjuraCfHTdMXSi8hUfbXagstUKaiPR3VI9B9z
+	 eNZeJKcSNM+64t+t+STnMcoNdQD2nTDhc0G0pClYP0t32vtXILpxlQ0PiPFoxhbPVC
+	 xdL5h7l70ILmglM4+2wQS0EztFTId16TUkja23S0=
+Date: Thu, 15 Feb 2024 16:11:14 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Chris Li <chrisl@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Wei Xu
+ <weixugc@google.com>, Yu Zhao <yuzhao@google.com>, Greg Thelen
+ <gthelen@google.com>, Chun-Tse Shao <ctshao@google.com>, Yosry Ahmed
+ <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, Mel Gorman
+ <mgorman@techsingularity.net>, Huang Ying <ying.huang@intel.com>, Nhat Pham
+ <nphamcs@gmail.com>, Kairui Song <kasong@tencent.com>, Barry Song
+ <v-songbaohua@oppo.com>, Tim Chen <tim.c.chen@linux.intel.com>
+Subject: Re: [PATCH v4] mm: swap: async free swap slot cache entries
+Message-Id: <20240215161114.6bd444ed839f778eefdf6e0a@linux-foundation.org>
+In-Reply-To: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+References: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218a:b0:363:c75c:8c9 with SMTP id
- j10-20020a056e02218a00b00363c75c08c9mr271591ila.5.1708042152425; Thu, 15 Feb
- 2024 16:09:12 -0800 (PST)
-Date: Thu, 15 Feb 2024 16:09:12 -0800
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c1bf960611748d2f@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Wed, 14 Feb 2024 17:02:13 -0800 Chris Li <chrisl@kernel.org> wrote:
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+> We discovered that 1% swap page fault is 100us+ while 50% of
+> the swap fault is under 20us.
+>=20
+> Further investigation shows that a large portion of the time
+> spent in the free_swap_slots() function for the long tail case.
+>=20
+> The percpu cache of swap slots is freed in a batch of 64 entries
+> inside free_swap_slots(). These cache entries are accumulated
+> from previous page faults, which may not be related to the current
+> process.
+>=20
+> Doing the batch free in the page fault handler causes longer
+> tail latencies and penalizes the current process.
+>=20
+> When the swap cache slot is full, schedule async free cached
+> swap slots in a work queue,=A0before the next swap fault comes in.
+> If the next swap fault comes in very fast, before the async
+> free gets a chance to run. It will directly free all the swap
+> cache in the swap fault the same way as previously.
+>=20
+> Testing:
+>=20
+> Chun-Tse did some benchmark in chromebook, showing that
+> zram_wait_metrics improve about 15% with 80% and 95% confidence.
+>=20
+> I recently ran some experiments on about 1000 Google production
+> machines. It shows swapin latency drops in the long tail
+> 100us - 500us bucket dramatically.
+>=20
+> platform	(100-500us)	 	(0-100us)
+> A		1.12% -> 0.36%		98.47% -> 99.22%
+> B		0.65% -> 0.15%		98.96% -> 99.46%
+> C		0.61% -> 0.23%		98.96% -> 99.38%
+>=20
 
-#syz fix: exact-commit-title
+What this description lacks is any description of why anyone cares.=20
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+The patch clearly decreases overall throughput (speed-vs-latency is a
+common tradeoff).
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+And the "we don't know how to fix this properly so punt it into a
+kernel thread" approach remains lame.  For example, the risk that the
+now-liberated allocator can outpace the async freeing, resulting in
+unlimited object windup.
 
----
-[1] I expect the commit to be present in:
+And here's a fun one: what happens if the producer of these objects has
+SCHED_FIFO policy and it's a uniprocessor machine?  If the producer sits
+there allocating objects and the freeing thread never executes?  Has
+this been considered, and tested for?
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+All these concerns, risks and complexity and the changelog offers us no
+reason to take any of this on.  What's wrong with the existing code?=20
+Please exhaustively describe the issues which are being seen.  And
+explain why those issues are sufficiently serious to leave the above
+issues and risks unaddressed.
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
