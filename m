@@ -1,134 +1,123 @@
-Return-Path: <linux-kernel+bounces-68048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC9485754E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:17:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8494085754F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3BF12858DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:17:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6F9285F88
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC0612B71;
-	Fri, 16 Feb 2024 04:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EFB1AADB;
+	Fri, 16 Feb 2024 04:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fy945UcM"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JMf7oFB/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69B4182AE;
-	Fri, 16 Feb 2024 04:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1DC1AAA5
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708056855; cv=none; b=EJFWVN9n0wQrNfDc913BjV/h2jHFTPUqchMvLYQbBiCbYo4pVU3oxsRYsBlU2ZQVXSK7StYU5ma2KuFIMxgv9hycJ9ANy2OW5M3RBnQK9BQX1tuXQxPwBT8MlcN8+FvnEpVp+2CdwnDCgbI2+ZX8xTax5zN1IZoFtVLNlyHuwa4=
+	t=1708056988; cv=none; b=L2G78DQMnixjdmpGU1O8+u7e5YUBzqITxLOjxewam62lWxn8m9KC5vgeHcFZJXiwKy7BVv6q7b+4D7VuSwKIFvvErcZ7brTr+EPGjlTK488ADPZOzcKOFZBilLJDGFrkgQTqiEZRkiAfNjdbzli9oaLNjhyjyacCcAP3Hr0WuH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708056855; c=relaxed/simple;
-	bh=KdfMx3qtwL3V+MMACICNC/k5ORbx+f53ihuYasAXbXE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gMD/044tnSl9LCpgS2gubiORljzARvP12eENqCvWnC43mb7RZ0F9uAqfOFMdP8cAtXzBeQoBjaJzwIYZ95Iy8703loZiDLvO9V5D867aPsN4T91P5gdJneTWDtpOnr1NdIlIuT/QbSoH29w2pxJfP/YqLoxokT5IBTR2tOmz9K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fy945UcM; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41G3CJPU019202;
-	Fri, 16 Feb 2024 04:13:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bLxNPSUeDM1zYoU0JmieJdwQm/KA7OT3+zW4QSPieE0=;
- b=fy945UcMGaXZolPWT1ZARC8XgJ+JtR4MDVcIytDOnagRJBTZOgvA21r2fi83CTQM7kI3
- GdWRsrinLwCrmthOcxlV2VXJCpmRBhPkpfTedSrBmiJ2khA05GObdIxutmF+6J5dTk6l
- PXAzK8bXVLjGhF6mEkQ8kajY8yTZi7fFumyIm5biBtpgcSmwmhWRDLyhM8pfwYqQqiNR
- lRK07CMbL1V97DVYAn5kagDNyQJxtlNMW6ShNNd2XEIE5OmlqODiOYesKfB8LUu7EsTR
- LiW71RiyBRPAwpJt5Liw6EIQWxHZ6zThtTJH2j4mAyXzWIEubqTEQsZOQz1dyYIx+oWx sA== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9ykj8x2w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 04:13:57 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41G4Bmj1009896;
-	Fri, 16 Feb 2024 04:13:56 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npm8prg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 04:13:56 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41G4Drjl19530426
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 04:13:55 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2D6B858064;
-	Fri, 16 Feb 2024 04:13:53 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 763E15805A;
-	Fri, 16 Feb 2024 04:13:52 +0000 (GMT)
-Received: from [9.61.99.202] (unknown [9.61.99.202])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Feb 2024 04:13:52 +0000 (GMT)
-Message-ID: <f651ea8d-795a-4511-92a1-3441d3467c35@linux.ibm.com>
-Date: Thu, 15 Feb 2024 22:13:51 -0600
+	s=arc-20240116; t=1708056988; c=relaxed/simple;
+	bh=sUxXigIboc9iP68W8TP9S/5UxJ1R1MlA21rkHc06KEQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=WlU9bFClOlfRmmR6XCv8agDPcx1CGJhwcsVSrJhZD+Pdi92eL5MTarsTvSJh6g0gkKLb3TwrK8ZUWmoPL1+q7y1cKppp04gnwFdpNk6nQBA7hq6WfDruw3G1HdUoevm0N6H3Ag4JRAXyHT9N9sJIXuGJ4Z+px05XhQlAztWyxYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JMf7oFB/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2EA5C433F1;
+	Fri, 16 Feb 2024 04:16:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708056988;
+	bh=sUxXigIboc9iP68W8TP9S/5UxJ1R1MlA21rkHc06KEQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JMf7oFB/ecGdP2c3QkPhYjjbePLbikrAt7dmWv8nrdDMNsNFliGc9DEjRK57jB38B
+	 68YjhDSAUnWKltkJC42+AlGd7wJp6GL21Uiqh0ZYDWJG04sm6wS1WkrEqQBEbWXnQF
+	 11GlZf75R65UA9wZGC0DHB7ZjbQKDqkAjfHESTw0=
+Date: Thu, 15 Feb 2024 20:16:27 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Chris Li <chrisl@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Wei Xu <weixugc@google.com>, Yu Zhao
+ <yuzhao@google.com>, Greg Thelen <gthelen@google.com>, Chun-Tse Shao
+ <ctshao@google.com>, Yosry Ahmed <yosryahmed@google.com>, Michal Hocko
+ <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, Huang Ying
+ <ying.huang@intel.com>, Nhat Pham <nphamcs@gmail.com>, Kairui Song
+ <kasong@tencent.com>, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH v4] mm: swap: async free swap slot cache entries
+Message-Id: <20240215201627.5abd1841192feaa262d545ba@linux-foundation.org>
+In-Reply-To: <1b9a69d1ecaac45a228eb2993d5d9b8234a84155.camel@linux.intel.com>
+References: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+	<20240215161114.6bd444ed839f778eefdf6e0a@linux-foundation.org>
+	<1b9a69d1ecaac45a228eb2993d5d9b8234a84155.camel@linux.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] uapi/auxvec: Define AT_HWCAP3 and AT_HWCAP4 aux
- vector, entries
-Content-Language: en-US
-To: Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@kernel.org>,
-        linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Cc: Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Nick Piggin <npiggin@au1.ibm.com>
-References: <a406b535-dc55-4856-8ae9-5a063644a1af@linux.ibm.com>
- <aa657f01-7cb1-43f4-947e-173fc8a53f1f@app.fastmail.com>
- <a50cf258-b861-40e5-8ca9-dec7721400ec@linux.ibm.com>
- <87edddp48o.fsf@mail.lhotse>
-From: Peter Bergner <bergner@linux.ibm.com>
-In-Reply-To: <87edddp48o.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GyEMjP-TllGv82einiGrI8xf55oCrydv
-X-Proofpoint-ORIG-GUID: GyEMjP-TllGv82einiGrI8xf55oCrydv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_03,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=713 clxscore=1015 bulkscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402160031
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-On 2/15/24 7:49 PM, Michael Ellerman wrote:
-> Peter Bergner <bergner@linux.ibm.com> writes:
->> On 2/15/24 2:16 AM, Arnd Bergmann wrote:
->>> On Wed, Feb 14, 2024, at 23:34, Peter Bergner wrote:
->>>> Arnd, we seem to have consensus on the patch below.  Is this something
->>>> you could take and apply to your tree? 
->>>>
->>>
->>> I don't mind taking it, but it may be better to use the
->>> powerpc tree if that is where it's actually being used.
->>
->> So this is not a powerpc only patch, but we may be the first arch
->> to use it.  Szabolcs mentioned that aarch64 was pretty quickly filling
->> up their AT_HWCAP2 and that they will eventually require using AT_HWCAP3
->> as well.  If you still think this should go through the powerpc tree,
->> I can check on that.
-> 
-> I'm happy to take it with Arnd's ack.
-> 
-> I trimmed up the commit message a bit, see below.
+On Thu, 15 Feb 2024 17:38:38 -0800 Tim Chen <tim.c.chen@linux.intel.com> wr=
+ote:
 
-Perfect.  Thanks everyone!
+> > What this description lacks is any description of why anyone cares.=20
+> >=20
+> > The patch clearly decreases overall throughput (speed-vs-latency is a
+> > common tradeoff).
 
-Peter
+This, please.
+
+> > And the "we don't know how to fix this properly so punt it into a
+> > kernel thread" approach remains lame.  For example, the risk that the
+> > now-liberated allocator can outpace the async freeing, resulting in
+> > unlimited object windup.
+>=20
+>=20
+> Andrew,
+>=20
+> What you are saying about outpacing asyn free is true for v1 and v2 versi=
+ons of the patch.
+>=20
+> But in this latest version, if another reclaim comes in before the async =
+free has kicked in,
+> we would be freeing the whole cache directly, same as original code, with=
+out waiting
+> for the async free.  It is different from the first version
+> where you go into the free one at a time mode while waiting for the async=
+ free.=A0
+> That was also my objection to the first two versions as you could be in t=
+his
+> slow free one at a time mode for a long time.
+>=20
+> So now we should not have unlimited object windup.  And we would be doing=
+ free
+> in batch of 64, either still in the direct path or in the async path.
+>=20
+
+OK, thanks, I didn't read closely enough,
+
+> If the next swap fault comes in very fast, before the async
+> free gets a chance to run. It will directly free all the swap
+> cache in the swap fault the same way as previously.
+
+And might it be a win to cancel the async_work in this case?
 
 
+Again, without a clear description of the userspace-visible effects of
+this problem I am groping in the dark.  My hands blindly landed upon
+the question: the overall effect here is to leave worst-case latency
+unaltered, but to decrease average latency.  Does this satisfy the
+yet-to-be-described requirements?
+
+
+Also, the V4 patch's quoted quantitative testing results are pasted
+from the V2 patch's.  V2 was a fundamentally different implementation.=20
+I think it is fair to say that V4 is "untested", with regard to
+satisfying its runtime objectives.
 
