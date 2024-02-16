@@ -1,227 +1,125 @@
-Return-Path: <linux-kernel+bounces-68086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3A6D8575D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0329A8575D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:08:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 744821F231B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:07:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E951F231A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0639B1401C;
-	Fri, 16 Feb 2024 06:07:31 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6938A14AA8;
+	Fri, 16 Feb 2024 06:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RLzjIZP0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF13134BD
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD12014A8D;
+	Fri, 16 Feb 2024 06:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708063650; cv=none; b=R8yAPR8VIOA6WVRKHNqilx7K5X/x6eDEZXLfZJ/XdHHOx2KtSFyhQkIdZpuqN5TJ8fhZuK1x4IFXsrp/BHLBePbnj6TJYSHdlREql7kdC9vyZvQzRknQiW1/JTxJA3ZhO4Kcy4AhATF/JSA2tEjoSgpdI8bY1NoUhaaVhSdGeaI=
+	t=1708063656; cv=none; b=C/nXkQU6+7ZgVaSBDIuKiRc5VUfE1uS5cIAivcPgG7hE+3zxDwU2tEX9tJCu6wGy4Ozrs8edq4OJDlmUQyThgCYSkeK7PP66jEB8jksuxoMAq9SNueQegCsUHMgqo/cTc9sQKHdyFl03TrI0Et9zzl75RwMOlr4A8bFhKygHva0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708063650; c=relaxed/simple;
-	bh=QMpt0SCftdJcIjYbXJ1LMcwEQQ/VGD+/cEUDupOQkiU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u27E691yXWXgKehHNnier3vptR9MJ5T6T2B2fwAnNfj8V0AZKH/rLtTkBw93nVeZAIymFtMIx5ynnEi42I7qZh8p4D37g1t6nqhQxh8IsOGnQ4IzAmZztJFaaqq9YL1PVblT3vvapfCAjyucyxAMVmHhG0c0FMpPokIexX1v07Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b68b9af3so12874945ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:07:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708063648; x=1708668448;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4F2YASos/WaI9dxX5WGWFwdCo+2tbvtN26YAtxHcV9s=;
-        b=FqD5Ea6T1adXdhgFvwVC0IWaGoaqQ6lDbsC3ZL8xw9Q3X8JJssmSl7sOqKuyDid/8L
-         zIB/klj7wA6LR7ghtjnuXs2SluwxB1BbB9J05Y3CMievNeuYLPlm5qMmIkXKZYXXf3to
-         3WNiXTkiwMptwEyzpQlWjSfJnwJ0rGHhp5H9QJq+s1zbavkYPsXL0LAku0rZ2zw0GmxM
-         E6Hx9B49LkEIhP5Qd6m4f/sWCsY5512pgSTniMYk6v/JrEsQhRA+lgulJjNK8pipY2oh
-         WpnkpF9wFb+I1KP1QuwLW9muIaunMvJspmiO/l1BnKrmUNG4PzheFCILg1obrlhfybdO
-         kfyA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFYaehYNSiZpIA7krdmqpQS9pHAOOTJce0T1YsrBxPc8m4as9xn23onaJS5Izg8ur/iriCXn1pANy1KwXiER7imjUtoik/uHUKdS7c
-X-Gm-Message-State: AOJu0YwkAERnukzkyQBW+hi2CEDZuT+jgJNhailYH4zYf4vHXNWpfFdB
-	rcmVaJq6f+JyZ9SBG9ZRGImEcYtuTg/qOG/LKkaF+p2XxIsQJ1Iw48scdNP5l2HI+/ivOTjOIJu
-	1iIj6hwD038CddFk9dpSu3McxpcjcAwUcGbZLkBff0cZ55HCmvbI3czs=
-X-Google-Smtp-Source: AGHT+IG0M6rkbOe11lpZQGSZExlEryIZb9CjCRq56IOJvg3Fha44Kc2qgLHGDvA0MYeWpzzardLkaha1l9WT8hXlZy4DNY66p9EK
+	s=arc-20240116; t=1708063656; c=relaxed/simple;
+	bh=gKqdrhGvXwQa/MD1xKqhRz44sgn+aAyq0soE+fJ1C/s=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=nQuErmtIWK0A0E1kD5KBaAXGLf2FYlgw10u3ArjlpKBLOQeR36SNNfzQ+au48sHJWySRNIeQwSF1ENSSgcgXefAeySzEFiJT/PQSk88amfx5MEivdGi1nvivvQ8olysYl/fJKLLR+0iB7ax66fy5T2UDu7bBZgOu+8y6OMW+Rh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RLzjIZP0; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708063655; x=1739599655;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=gKqdrhGvXwQa/MD1xKqhRz44sgn+aAyq0soE+fJ1C/s=;
+  b=RLzjIZP03GqlWvB8S2MWPG8IGeqepMb7tyMhqKVuEWsw912rJA8EHeGo
+   hLHgTb7TzXpnvoMR1Jk9TIGdgraL7GPppAlmTZ9r68yY5j+1Zucc0q8Gs
+   Dcf1peUrTbEMgSCr2XvcUNR4IEeZzHkM7yYk0RKfhAC+xsuJweA4LmYQp
+   k+Yt0q+W2ML7A28FmT4y3wKWYj72W3ed5KtPozzB+VH7sTxeuHQDg7VeY
+   Y1YKSObizax0mO483lTBlQWs0X+qbGLwupC0gILHwb9g7p3vsE04Egeow
+   gsw3zW1ViPQnY/aVB1i598TUqAbt2okDtxaBvQW+SOv+VpZAqi9LxE+Uk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="6013712"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="6013712"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 22:07:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="4048552"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 15 Feb 2024 22:07:32 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Dave Hansen" <dave.hansen@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+ <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+Date: Fri, 16 Feb 2024 00:07:28 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda8:0:b0:363:cc38:db1c with SMTP id
- g8-20020a92cda8000000b00363cc38db1cmr322034ild.6.1708063647882; Thu, 15 Feb
- 2024 22:07:27 -0800 (PST)
-Date: Thu, 15 Feb 2024 22:07:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fc6b2c0611798e90@google.com>
-Subject: [syzbot] [mm?] possible deadlock in lock_vma
-From: syzbot <syzbot+27f783f9d240834c9d44@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axelrasmussen@google.com, brauner@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, lokeshgidra@google.com, mirq-linux@rere.qmqm.pl, 
-	peterx@redhat.com, rppt@kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2i70mqs3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Hello,
+Hi Dave,
 
-syzbot found the following issue on:
+On Thu, 15 Feb 2024 17:43:18 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-HEAD commit:    ae00c445390b Add linux-next specific files for 20240212
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17478592180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4eb3a27eddb32a14
-dashboard link: https://syzkaller.appspot.com/bug?extid=27f783f9d240834c9d44
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17406e42180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111cb500180000
+> On 2/5/24 13:06, Haitao Huang wrote:
+>>  static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl  
+>> *encl)
+>>  {
+>> @@ -1003,14 +1001,6 @@ static struct mem_cgroup  
+>> *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>>  	struct sgx_encl_mm *encl_mm;
+>>  	int idx;
+>>
+>> -	/*
+>> -	 * If called from normal task context, return the mem_cgroup
+>> -	 * of the current task's mm. The remainder of the handling is for
+>> -	 * ksgxd.
+>> -	 */
+>> -	if (!current_is_ksgxd())
+>> -		return get_mem_cgroup_from_mm(current->mm);
+>
+> Why is this being removed?
+>
+> Searching the enclave mm list is a last resort.  It's expensive and
+> imprecise.
+>
+> get_mem_cgroup_from_mm(current->mm), on the other hand is fast and  
+> precise.
+>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8b2a2d0b511f/disk-ae00c445.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a668a09c9d03/vmlinux-ae00c445.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4ad623928692/bzImage-ae00c445.xz
+I introduced a boolean flag to indicate caller is in kthread (ksgxd or  
+cgroup workqueue), so sgx_encl_alloc_backing only calls this function if  
+that flag is true, meaning search through the mm_list is needed.
 
-The issue was bisected to:
+But now I think a more straightforward way is to just replace  
+current_is_ksgxd() with (current->flags & PF_KTHREAD).
 
-commit 31d97016c80a83daa4c938014c81282810a14773
-Author: Lokesh Gidra <lokeshgidra@google.com>
-Date:   Thu Feb 8 21:22:04 2024 +0000
+Thanks
 
-    userfaultfd: use per-vma locks in userfaultfd operations
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129ff100180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=119ff100180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=169ff100180000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+27f783f9d240834c9d44@syzkaller.appspotmail.com
-Fixes: 31d97016c80a ("userfaultfd: use per-vma locks in userfaultfd operations")
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-rc4-next-20240212-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor800/5064 is trying to acquire lock:
-ffff888021d401a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:146 [inline]
-ffff888021d401a0 (&mm->mmap_lock){++++}-{3:3}, at: lock_vma+0xc5/0x260 mm/userfaultfd.c:73
-
-but task is already holding lock:
-ffff88802b989730 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma+0x1a1/0x260 mm/userfaultfd.c:87
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&vma->vm_lock->lock){++++}-{3:3}:
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
-       vma_start_write include/linux/mm.h:716 [inline]
-       vma_link+0x2c6/0x550 mm/mmap.c:416
-       insert_vm_struct+0x1a3/0x260 mm/mmap.c:3331
-       __bprm_mm_init fs/exec.c:282 [inline]
-       bprm_mm_init fs/exec.c:384 [inline]
-       alloc_bprm+0x543/0xa00 fs/exec.c:1579
-       kernel_execve+0x99/0xa10 fs/exec.c:2008
-       try_to_run_init_process init/main.c:1361 [inline]
-       kernel_init+0xe8/0x2b0 init/main.c:1488
-       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
-
--> #0 (&mm->mmap_lock){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
-       mmap_read_lock include/linux/mmap_lock.h:146 [inline]
-       lock_vma+0xc5/0x260 mm/userfaultfd.c:73
-       find_and_lock_vmas mm/userfaultfd.c:1405 [inline]
-       move_pages+0x18c/0xff0 mm/userfaultfd.c:1546
-       userfaultfd_move fs/userfaultfd.c:2008 [inline]
-       userfaultfd_ioctl+0x5c10/0x72c0 fs/userfaultfd.c:2126
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:871 [inline]
-       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:857
-       do_syscall_64+0xfb/0x240
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(&vma->vm_lock->lock);
-                               lock(&mm->mmap_lock);
-                               lock(&vma->vm_lock->lock);
-  rlock(&mm->mmap_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor800/5064:
- #0: ffff88802b989730 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma+0x1a1/0x260 mm/userfaultfd.c:87
-
-stack backtrace:
-CPU: 1 PID: 5064 Comm: syz-executor800 Not tainted 6.8.0-rc4-next-20240212-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
- mmap_read_lock include/linux/mmap_lock.h:146 [inline]
- lock_vma+0xc5/0x260 mm/userfaultfd.c:73
- find_and_lock_vmas mm/userfaultfd.c:1405 [inline]
- move_pages+0x18c/0xff0 mm/userfaultfd.c:1546
- userfaultfd_move fs/userfaultfd.c:2008 [inline]
- userfaultfd_ioctl+0x5c10/0x72c0 fs/userfaultfd.c:2126
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:857
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f86fc35f329
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd53428e38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd53429008 RCX: 00007f86fc35f329
-RDX: 0000000020000040 RSI: 00000000c028aa05 RDI: 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Haitao
 
