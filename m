@@ -1,90 +1,46 @@
-Return-Path: <linux-kernel+bounces-68071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813C6857599
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:25:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC16C85759A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:26:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F7BC1F24B96
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:25:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC522870DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F4212E70;
-	Fri, 16 Feb 2024 05:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P1oezMxk"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32E812E47;
-	Fri, 16 Feb 2024 05:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96FA1401F;
+	Fri, 16 Feb 2024 05:26:38 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940FB13FF5
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708061105; cv=none; b=ewmZc3jYt+a8Dwmc5gqUPyoeGIxivvZHTjY0scA9PQm8Pn4V/n00BNsw6pNlEe01sEmLAgKb4FDUGP3yMX68xByIfVQcab3vg+oKkq/4BcCjxVxHRNffrMfiLCvoQEUiEPL3/F0vSH0WXvMG+kklxIglXHay+kNiyi1VGOyogm4=
+	t=1708061198; cv=none; b=iAZC+f5b3/lDg9HL/mTj3V58B4ufjzx4VgqEx08PvxGqdqQaifXaIqKjHxi0JtoYM2uFL2qEc+C3WN4N0NxEKz691xvkNmLdhmTpppyIOApjkPtYDu/eKxgllB1Tl8jK3m1ntTPh03fjqfMcF87GYiLvzDlfUfho2bxSw4AHMZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708061105; c=relaxed/simple;
-	bh=rUg6ZFfwUKtv14xjQgr7IX90k7VSLNddTK8RPxqtVdw=;
+	s=arc-20240116; t=1708061198; c=relaxed/simple;
+	bh=BCGUs+XPqlsHMKywtVkBNYulrsfSierwkDKEjUULfzY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ngv+MGupJvmC4SDl9ABBZ2WGK7En8x1aINqFR8hAJD1VwgusLwHNoOvOaTlytjxaf0eYxtK/cCxqowvk8XYiVOq0Bu5XJnsYjMYwHe0NlMntb0gA4n1ApL7GuW7AHVQDwNtq3qd6KIjYvOoDHJxdZf9L2KYWb2vKxYt6ErgRdfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P1oezMxk; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e0f4e3bc59so214852b3a.0;
-        Thu, 15 Feb 2024 21:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708061103; x=1708665903; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p3mWIQ7D+pLVN07S5/RpUdrrZDU46psA9pYkkZCoUhY=;
-        b=P1oezMxkWoW4Cltjq7BA5mIz458QreXXcMPdj0jz+uZIl+jgYeao/N2NziEl9uGfii
-         ljgUHWmkLfD7aHUJCmcwHSJ41nRvQTsKxuQtiPn+LDqymJwI9P4jCznA7dvm/5BcTotT
-         Mc302g2P3hnEjm1L/LrblobIgqOXnbBQjDFhX3vfa70Z92uL25410E2hKq9YHDL4wN1j
-         efu6+2bDTuoXbO/aEo0VRoJMbB3o7gwkIt9cWLV+yvCP5rRVnqymlN8T+tL1XYKSDzB9
-         SMNinVhaqugGTNkFzI5qWOvagNcW6VwHWxz5iKh13GYgoXliTRrQzVX/o2XkxGI16cH0
-         VBNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708061103; x=1708665903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p3mWIQ7D+pLVN07S5/RpUdrrZDU46psA9pYkkZCoUhY=;
-        b=NYl4v6DeKdFKSJfjtnTgO4fae50XcdSQ8KTN+GifwU6AY77/Uiv88CpmkeO7u0YHqO
-         7OrZKqBvJeZ7amHFEYO/gFrLiendCKEJ9Kqinfs8C3oJYg4Jvy68e3iiHNF3ZiJipDBb
-         iooIX/J9/TjtbOnrT4RtgkBa2ijZUKOc+xqTDMYYJD0CxDMCevasJIXZd8WTS+px2Zpp
-         RxfLwF6zcyqhjiF4bN4TFUPR1+AcH+s0sa3jAmN+FV361hQqU6Tk1SEVZ5KUtItjcToY
-         OufdMTL8ntw9J4rxqlcbdKOBkwntJ0jdXie8QEnbVKc3xytcJAmxf2A3bHT9c1PPgUil
-         Bi/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXy4NOAoMfzVDx0wMJZRJXZpuKeSSpBYsp5dRihiTNEb9z+BZRAAS9PTzZO9cDi4SF2woHcwHeat8OKL9o+EuuxU5oQDqQLvg8BzS0q2X4yKMA78ou3oNusDfrmlEpLdLjwhczf5XfEqjYo
-X-Gm-Message-State: AOJu0YzaaSFqULj4KTzFF8Nz0ysDM8bG2tQkZmw+MgwMCYQ0xunkW5Td
-	gAM/LZE8jBra6mhSmVJirfLcGekLAzeRdpX3HJTKoIblWgPXRfOgvDX6N2Hm
-X-Google-Smtp-Source: AGHT+IEDIbyxDQfttuCUZtaKqFdALB1hFroyepppIXLzFOSGpxGiR3GXf3WOqPK9ItuIJ4N3I+fAJw==
-X-Received: by 2002:a05:6a20:c90a:b0:19c:ad6b:e1c2 with SMTP id gx10-20020a056a20c90a00b0019cad6be1c2mr4138691pzb.12.1708061102954;
-        Thu, 15 Feb 2024 21:25:02 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b5-20020a170902ed0500b001d9773a198esm2102486pld.201.2024.02.15.21.25.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 21:25:02 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 15 Feb 2024 21:25:00 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Helge Deller <deller@gmx.de>
-Cc: Charlie Jenkins <charlie@rivosinc.com>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Message-ID: <b8065a61-f5eb-4ec5-a9af-6d6bcdf1ee9b@roeck-us.net>
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net>
- <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
- <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=V6eSzuf3oMOrS+vxjC1mybfl0G8e2HXVcIVBecLUL9h5r/p4qaxYyyI9SHaJkBxKoLJkomSdj9C81mhsZKK3YxtWGsgyzesUM9hUGoaMvpVtQwJiwF4hXRUAtQplxDjqgZXz3/MGlMFLLss7tMwUff2YdR+1NQb+qrIIVPsPDBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-73-65cef2034c86
+Date: Fri, 16 Feb 2024 14:26:22 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Phil Auld <pauld@redhat.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
+ N_MEMORY
+Message-ID: <20240216052621.GA32626@system.software.com>
+References: <20240214035355.18335-1-byungchul@sk.com>
+ <20240214123137.GA70927@lorien.usersys.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,122 +49,169 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
+In-Reply-To: <20240214123137.GA70927@lorien.usersys.redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LhesuzSJf507lUgwtnZS3mrF/DZnHp8VU2
+	i+kvG1ksnk7Yymxxt38qi8XlXXPYLO6t+c9qMfndM0aLSwcWMFmc2HuW0eJ47wEmi30dD5gs
+	Oo58Y7bYevQ7uwOfx5p5axg9WvbdYvdYsKnUY/MKLY9Nnyaxe9y5tofN48SM3ywe7/ddZfPY
+	fLra4/MmuQCuKC6blNSczLLUIn27BK6MQ78PsBf81qxoO3+aqYHxhGIXIyeHhICJxPMn71i7
+	GDnA7L9LxUDCLAKqEg1P57GA2GwC6hI3bvxkBrFFBBQk3k3vYu9i5OJgFjjFJDHh8wV2kF5h
+	gTCJv28UQGp4BSwk/n/cww5iCwlkScyacp4RIi4ocXLmE7CZzAJaEjf+vWQCaWUWkJZY/o8D
+	JMwpYC8x7Vc/WImogLLEgW3HmUBWSQi0s0ss+zGBCeJkSYmDK26wTGAUmIVk7CwkY2chjF3A
+	yLyKUSgzryw3MTPHRC+jMi+zQi85P3cTIzCWltX+id7B+OlC8CFGAQ5GJR7eA3/OpgqxJpYV
+	V+YeYpTgYFYS4Z3UeyZViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQi
+	mCwTB6dUA6PnpuomucLjDLfq2H/s/CZ69DiXZrvoQx79P/bnDFk3THS6w/4s+c/+g2md+9n+
+	hZdGPzgg+4HhgfnuaOPPi8qWn2gWT53YwJ0zk/fuN3a+8pOpghkiG/bNVJF6Ldj8VPjR1rrP
+	d7rnOXX+/afz/VdOmwzDTNHv6RPb/fa0y7C88+0y3VqoOFOJpTgj0VCLuag4EQAJH9QvoQIA
+	AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKLMWRmVeSWpSXmKPExsXC5WfdrMv86VyqwcafAhZz1q9hs7j0+Cqb
+	xfSXjSwWTydsZba42z+VxeLw3JOsFpd3zWGzuLfmP6vF5HfPGC0uHVjAZHFi71lGi+O9B5gs
+	9nU8YLLoOPKN2WLr0e/sDvwea+atYfRo2XeL3WPBplKPzSu0PDZ9msTucefaHjaPEzN+s3i8
+	33eVzWPxiw9MHptPV3t83iQXwB3FZZOSmpNZllqkb5fAlXHo9wH2gt+aFW3nTzM1MJ5Q7GLk
+	4JAQMJH4u1Ssi5GTg0VAVaLh6TwWEJtNQF3ixo2fzCC2iICCxLvpXexdjFwczAKnmCQmfL7A
+	DtIrLBAm8feNAkgNr4CFxP+Pe9hBbCGBLIlZU84zQsQFJU7OfAI2k1lAS+LGv5dMIK3MAtIS
+	y/9xgIQ5Bewlpv3qBysRFVCWOLDtONMERt5ZSLpnIemehdC9gJF5FaNIZl5ZbmJmjqlecXZG
+	ZV5mhV5yfu4mRmBkLKv9M3EH45fL7ocYBTgYlXh4D/w5myrEmlhWXJl7iFGCg1lJhHdS75lU
+	Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxe4akJQgLpiSWp2ampBalFMFkmDk6pBkZR9VPzRd6l
+	CkUq/JrLfk9YS12MgS361cX/0qEsLL/5jj/jd7jyccn39yKWUTd3C4mUbgiZL3rRq9dU8rp5
+	yS+vqowDQkcsDwsHP+uetzxu7p60nNvPP1zKWSwa+u/2hvtLm41ZKtkatj8NkVHM6vF4+a+H
+	Z576sw3mnhvlNyyaw5oib978wleJpTgj0VCLuag4EQBti/rFiAIAAA==
+X-CFilter-Loop: Reflected
 
-On Fri, Feb 16, 2024 at 06:54:55AM +0100, Helge Deller wrote:
+On Wed, Feb 14, 2024 at 07:31:37AM -0500, Phil Auld wrote:
+> Hi,
 > 
-> Can you please give a pointer to this test code?
-> I'm happy to try it on real hardware.
+> On Wed, Feb 14, 2024 at 12:53:55PM +0900 Byungchul Park wrote:
+> > While running qemu with a configuration where some CPUs don't have their
+> > local memory and with a kernel numa balancing on, the following oops has
+> > been observed. It's because of null pointers of ->zone_pgdat of zones of
+> > those nodes that are not initialized at booting time. So should avoid
+> > nodes not set N_MEMORY from getting promoted.
+> > 
+> > > BUG: unable to handle page fault for address: 00000000000033f3
+> > > #PF: supervisor read access in kernel mode
+> > > #PF: error_code(0x0000) - not-present page
+> > > PGD 0 P4D 0
+> > > Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > > CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
+> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > >    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+> > > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> > > Code: (omitted)
+> > > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> > > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> > > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> > > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> > > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> > > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > PKRU: 55555554
+> > > Call Trace:
+> > >  <TASK>
+> > > ? __die
+> > > ? page_fault_oops
+> > > ? __pte_offset_map_lock
+> > > ? exc_page_fault
+> > > ? asm_exc_page_fault
+> > > ? wakeup_kswapd
+> > > migrate_misplaced_page
+> > > __handle_mm_fault
+> > > handle_mm_fault
+> > > do_user_addr_fault
+> > > exc_page_fault
+> > > asm_exc_page_fault
+> > > RIP: 0033:0x55b897ba0808
+> > > Code: (omitted)
+> > > RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
+> > > RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
+> > > RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
+> > > RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
+> > > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+> > > R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
+> > >  </TASK>
+> > > Modules linked in:
+> > > CR2: 00000000000033f3
+> > > ---[ end trace 0000000000000000  ]---
+> > > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
+> > > Code: (omitted)
+> > > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
+> > > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
+> > > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
+> > > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
+> > > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
+> > > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
+> > > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > PKRU: 55555554
+> > > note: masim[895] exited with irqs disabled
 > 
-See below.
+> I think you could trim the down a little bit.
 
-Guenter
+Thank you for the feedback. I will.
 
----
-From 0478f35f02224994e1d81e614b66219ab7539f7f Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Wed, 14 Feb 2024 11:25:18 -0800
-Subject: [PATCH] carry tests
+> > 
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > Reported-by: hyeongtak.ji@sk.com
+> > ---
+> >  kernel/sched/fair.c | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index d7a3c63a2171..6d215cc85f14 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -1828,6 +1828,23 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+> >  	int dst_nid = cpu_to_node(dst_cpu);
+> >  	int last_cpupid, this_cpupid;
+> >  
+> > +	/*
+> > +	 * A node of dst_nid might not have its local memory. Promoting
+> > +	 * a folio to the node is meaningless. What's even worse, oops
+> > +	 * can be observed by the null pointer of ->zone_pgdat in
+> > +	 * various points of the code during migration.
+> > +	 *
+> 
+> > +	 * For instance, oops has been observed at CPU2 while qemu'ing:
+> > +	 *
+> > +	 * {qemu} \
+> > +	 *    -numa node,nodeid=0,mem=1G,cpus=0-1 \
+> > +	 *    -numa node,nodeid=1,cpus=2-3 \
+> > +	 *    -numa node,nodeid=2,mem=8G \
+> > +	 *    ...
+> 
+> This part above should probably be in the commit message not in the code.
+> The first paragraph of comment is plenty.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- lib/checksum_kunit.c | 76 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
+I will.
 
-diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-index 72c313ba4c78..8f7925396e53 100644
---- a/lib/checksum_kunit.c
-+++ b/lib/checksum_kunit.c
-@@ -546,12 +546,88 @@ static void test_csum_ipv6_magic(struct kunit *test)
- #endif /* !CONFIG_NET */
- }
- 
-+#ifdef CONFIG_64BIT
-+
-+static __inline__ int get_carry64(void *addr)
-+{
-+	int carry = 0;
-+	unsigned long sum = 0xffffffff;
-+	unsigned long tmp;
-+
-+	__asm__ __volatile__ (
-+"	add	%0, %0, %0\n"	/* clear carry			*/
-+"	ldd	0(%2), %3\n"	/* load from memory		*/
-+"	add	%1, %3, %1\n"	/* optionally generate carry	*/
-+"	ldd	0(%2), %3\n"	/* load from memory again	*/
-+"	add,dc	%0, %0, %0\n"	/* return carry			*/
-+	: "=r" (carry), "=r" (sum), "=r" (addr), "=r" (tmp)
-+	: "0" (carry), "1" (sum), "2" (addr)
-+	: "memory");
-+
-+	return carry;
-+}
-+
-+static __inline__ int get_carry32(void *addr)
-+{
-+	int carry = 0;
-+	unsigned int sum = 0xffffffff;
-+	unsigned int tmp;
-+
-+	__asm__ __volatile__ (
-+"	add	%0, %0, %0\n"	/* clear carry			*/
-+"	ldw	0(%2), %3\n"	/* load from memory		*/
-+"	add	%1, %3, %1\n"	/* optionally generate carry	*/
-+"	ldw	0(%2), %3\n"	/* load from memory again	*/
-+"	addc	%0, %0, %0\n"	/* return carry			*/
-+	: "=r" (carry), "=r" (sum), "=r" (addr), "=r" (tmp)
-+	: "0" (carry), "1" (sum), "2" (addr)
-+	: "memory");
-+
-+	return carry;
-+}
-+
-+static void test_bad_carry(struct kunit *test)
-+{
-+	int carry;
-+
-+	memset(tmp_buf, 0xff, sizeof(tmp_buf));
-+	carry = get_carry64(&tmp_buf[0]);
-+	pr_info("#### carry64 aligned, expect 1 -> %d\n", carry);
-+	carry = get_carry64(&tmp_buf[4]);
-+	pr_info("#### carry64 unaligned 4, expect 1 -> %d\n", carry);
-+
-+	carry = get_carry64(&tmp_buf[2]);
-+	pr_info("#### carry64 unaligned 2, expect 1 -> %d\n", carry);
-+
-+	carry = get_carry32(&tmp_buf[0]);
-+	pr_info("#### carry32 aligned, expect 1 -> %d\n", carry);
-+	carry = get_carry32(&tmp_buf[2]);
-+	pr_info("#### carry64 unaligned, expect 1 -> %d\n", carry);
-+
-+	memset(tmp_buf, 0, sizeof(tmp_buf));
-+	carry = get_carry64(&tmp_buf[0]);
-+	pr_info("#### carry64 aligned, expect 0 -> %d\n", carry);
-+	carry = get_carry64(&tmp_buf[4]);
-+	pr_info("#### carry64 unaligned 4, expect 0 -> %d\n", carry);
-+	carry = get_carry64(&tmp_buf[2]);
-+	pr_info("#### carry64 unaligned 2, expect 0 -> %d\n", carry);
-+
-+	carry = get_carry32(&tmp_buf[0]);
-+	pr_info("#### carry32 aligned, expect 0 -> %d\n", carry);
-+	carry = get_carry32(&tmp_buf[2]);
-+	pr_info("#### carry32 unaligned, expect 0 -> %d\n", carry);
-+}
-+#else
-+static void test_bad_carry(struct kunit *test) {}
-+#endif /* CONFIG_64BIT */
-+
- static struct kunit_case __refdata checksum_test_cases[] = {
- 	KUNIT_CASE(test_csum_fixed_random_inputs),
- 	KUNIT_CASE(test_csum_all_carry_inputs),
- 	KUNIT_CASE(test_csum_no_carry_inputs),
- 	KUNIT_CASE(test_ip_fast_csum),
- 	KUNIT_CASE(test_csum_ipv6_magic),
-+	KUNIT_CASE(test_bad_carry),
- 	{}
- };
- 
--- 
-2.39.2
+Thanks. I will respin it.
 
+	Byungchul
+
+> Otherwise, I think the check probably makes sense.
+> 
+> 
+> Cheers,
+> Phil
+> 
+> > +	 */
+> > +	if (!node_state(dst_nid, N_MEMORY))
+> > +		return false;
+> > +
+> >  	/*
+> >  	 * The pages in slow memory node should be migrated according
+> >  	 * to hot/cold instead of private/shared.
+> > -- 
+> > 2.17.1
+> > 
+> > 
+> 
+> -- 
 
