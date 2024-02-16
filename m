@@ -1,142 +1,146 @@
-Return-Path: <linux-kernel+bounces-69265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5890A858662
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:48:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FC7858668
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158F9283265
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 396A1283318
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65590138496;
-	Fri, 16 Feb 2024 19:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FB41386B3;
+	Fri, 16 Feb 2024 19:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="VY15vxuq";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="cDmr2Ici"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="YX/jXwaF"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B763137C3B;
-	Fri, 16 Feb 2024 19:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708112896; cv=pass; b=sh4uKNqvDgzjXomB58VXpGcKJDAUwuVe10LCCO+B3977SzYA0D7TosizdLU2WgCdi1czd8IIKuApUbrCPNykk822Qre1BOzNh7OKANT280f7SbqpVIqGOq0ML9fDjt3Z+I1guT4bMneoC1TUWq6cEtZC/A3vyhWUaZ3jMLR1ZQw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708112896; c=relaxed/simple;
-	bh=XhOtdNnL6eEzH/sKAz15MgQet09Za2R2LkT+X2Dc7DE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fW/Nc4OuMyQLfrJFr84IhTj9bDv+3In7O/UJ8Ykq4RNjoxkZJgXhJrzzNOkHOMbs00rKPmyEA5N+XIXd4iMHQdUynVMeGugI9HBMCQI64ONmbrJOYL/Gd0RK8PwqYVrIAL8UqShBBs/DAIVZN1H9koht4rBSE61N/kYR3ekKy6o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=VY15vxuq; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=cDmr2Ici; arc=pass smtp.client-ip=85.215.255.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1708112869; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KGkoHJFu2YAlYmriH2+xQyJ9nwsngEiqlNNCm1xKWUd/hVUtuwsDDRSoCsVRXXEjqP
-    c89EaBZg4ku2z/c7mQD4aiz8UsdKrAhV68tq50K5MfIGIb0UFkYXCbu99DOI48lx2iOQ
-    lFVspYW4wFrTAr16VzPWJjLeMK21CUfu7W3ZeKTpnd/h1tVPi6DHQVtIScOu3vEpOxbu
-    rCa+o0dCTquogTQ2hIhB5e2c+Vn8qXLchjHsyE3M1H0O/RTtv8d8r1lplO3e/bC2upfC
-    Zjzy87bkafLyv9PZ+i7d2gddL/xmYxUldb1H3m6/J6G6dOOZ4t/BNVke2sI0I4iUPjp8
-    ldeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1708112869;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=9MVBjdTVYapRTGhwhTcOMWbNz5YT9tAdKc3x5vE1TuI=;
-    b=qmFwEJ/zZoHWbdR5b06JvaVwBXLCdP++GsVRXYM0dkxv5xT99zfw6IeUUNVzOkE0Vd
-    FJHSzm04HfzzfyU39DjhuKzbWsR6X4nsr/ZAK3+YW1UjB6aQpyRkY5UJ2Gsg1OLadj1e
-    2GRzp6InNsbwkV5BdzimIdImPiDAzyGyYWBV/5CXHh2rQrGmzx/G//TFJBUTWpEAaXm7
-    3HzMZM9at+LURFl72cs2jH7ynu8PUJckguYr53xQOMpa4nHdEU+NfGIsYVPYQV8dXVGX
-    2HXWuGgK+rSNOk0VDZ1KDipVgB9CU8fyfKMUhG7owZNr4lgcMgYlMFwe4TGPVH8c3QgG
-    DhaA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1708112869;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=9MVBjdTVYapRTGhwhTcOMWbNz5YT9tAdKc3x5vE1TuI=;
-    b=VY15vxuqw0SNGfl/4aYQdwhegCPEipJcXkOG6X0zRmiFqFept7kSaDKl11TeUFC7Jn
-    Zox1bmsZUwvi7W7vi+F71ktHLhl9sFT3w42InTUdlr5tXaAw0TyF9WR7oNCHW6bVqHYo
-    y6uPXAi7Agd2Bp/vizSSlQdHSWuI5/Bs8sXTeLyOHnN3Vcg2njlDMBAMpXUy9APYGk9X
-    4NTTMzOptjWcoE2LQBK2Xib4v5kwwZZe5Msdj/m4nEw9CvD8co4jhm/JZp6HJy2pHfHT
-    5sRkoo0ksVEnkz84Bypj2iiF5qu2oqs4qhWdRfm5Lc2O5pHy2DX9dy62tXpjdt56o2s5
-    bCCQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1708112869;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=9MVBjdTVYapRTGhwhTcOMWbNz5YT9tAdKc3x5vE1TuI=;
-    b=cDmr2Icii0xVmoHQ1vM/74ocO5tbT0UTzW/SouRaYASPAy0hso+p5O0B+z9XPTioJu
-    pWx1sqZR7yGn1U9FUdBQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFr0USEbHoO0g=="
-Received: from [IPV6:2a00:6020:4a8e:5010::923]
-    by smtp.strato.de (RZmta 49.11.2 AUTH)
-    with ESMTPSA id K49f9c01GJlm2Hx
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 16 Feb 2024 20:47:48 +0100 (CET)
-Message-ID: <12cd0fd0-be86-4af0-8d6b-85d3a81edd2a@hartkopp.net>
-Date: Fri, 16 Feb 2024 20:47:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1F2137C52
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708112921; cv=none; b=bBv97PZKutw2kHG9v+IpZ6yiaYA2TsKp1qIzmz9byAzp+bSU8ZJNsjgvW3H/HAo/scZ/wie+IOhtr3ITTtWqqVnJduVlZtZjSKvTxHDxg2ahrVgtnidjvQJDD6N9uuk5vr4R+BPPuz7k/4qj9u5VFtsu8knQbrkGhwLQCg5rsm0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708112921; c=relaxed/simple;
+	bh=m2Wvv0O31LwrnCQdUKYEs3sNTTEexlxilQS/jlCfnew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVtbJCMX7loztu8DlJaZvsMDSNoSOgNAEkjnFyt5BoEI71Q/mqHeHab6vfHcbA9jkXiVGvKLqmVkTsHv1vOMi7Mgyg8NqmWhyjrgnbe0yTUsJ6xh6JktMFbJq53TvmJ4N8IrfXJ6Ipmx+KGPtbnX264fLVOlhvkwRaDRIBvR63Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=YX/jXwaF; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0a4e1789cso28534601fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:48:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708112917; x=1708717717; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XMO1uzBf5Ipo+B8nJFhezHnHhPZI6cIYH4qqZglP7mw=;
+        b=YX/jXwaFS/hB9HhbzEkfX8cSH4LyyWANTm6daW/jaTDSixVYXYJ8kZXl3XHjLa3Rq5
+         iUU7aAFL94+s6iHS0CLve1DvbxMa9hUYM1/71ifPsUJaQtqPisbfE2CAyc63oAFT5TYc
+         basuhP0hUoEqMIyhM6lAWzzOrGne74JlZevCrQ6aEqmeEOZOLPD92I6Q1VECKXoj7181
+         cJsP3MdtZsEMuJnK5kLDEp6U40o4AFqha5hdIx6sII//n8rmeQswx6ppCWitx/d/slrB
+         JV0e12TJmGqbB/jOQHav8Aj3G/UvLeAdBikf7bajKfSKPmyGdPqrTYRIVQcx46M0HIHQ
+         E2lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708112917; x=1708717717;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XMO1uzBf5Ipo+B8nJFhezHnHhPZI6cIYH4qqZglP7mw=;
+        b=NY0tUkpw2hKqAwy9P4vH8acV6sdXALZm3RgNvfdu78jn/9XzESjBcFY7YKYoA7Hg0a
+         MiD89N/Vb9qGBulM8yxvERvyRb+hLKWQUuoT5XWCh095kiNMeqs6exb9TL4dbHsUV3vx
+         rOiQ5XtVlWnLx5R/QeWGKzVE/1aMmVW3tIiYj634Qp3HsXZmQpaSCK7U5jf/qtVGZ5fs
+         LMOlvrSwqzPkjyA0MHSpN4SMldWh4MZZcKyUpVB6bHcND9Y/4bTDGwGoSYoNPZkRcFwL
+         wrxu1EyVdyKDI0G7LOPW3EjQzxMBs49QXRE9OYFKlyAwBu+7Syx52Uq2aOaJzlNzDNFE
+         H2Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCWp3kU/s3T5b8/3lkYQI208BGIjqlB8aMitY5Q6LToqv7SmHJs6Lgtt/nRCCUiZWiyg4k/QskBYklpIPO+E2YumcnAikyhii8ZilEU5
+X-Gm-Message-State: AOJu0YyuRIjcIZIaRqEFvUiFAveEy281P0JJJYIULtcfZNE3uKfPV+Os
+	iIZ1l4H4jOI1nvPvMIaXJAnbPjSB7ceCjIizhNvb8AVcB+Tsx6OJHbyEvyFnEkRJPYIArlQaiD1
+	wgQ6m7q5eMFo329pLWac/ZDIe5EyGyjKBMT9DEQ==
+X-Google-Smtp-Source: AGHT+IEiJLDM3GyyGWObGaRCyMN7MxvgX2HQgceLg5ERcIU76EjTibg8tg0F0e6PZPfErw11n01+i2wIipIreSPlOTo=
+X-Received: by 2002:ac2:5bd1:0:b0:511:a021:220a with SMTP id
+ u17-20020ac25bd1000000b00511a021220amr4183994lfn.21.1708112917508; Fri, 16
+ Feb 2024 11:48:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: softing: remove redundant NULL check
-To: Simon Horman <horms@kernel.org>, Daniil Dulov <d.dulov@aladdin.ru>
-Cc: Wolfgang Grandegger <wg@grandegger.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20240211150535.3529-1-d.dulov@aladdin.ru>
- <20240216172701.GP40273@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20240216172701.GP40273@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+ <20231226200205.562565-11-pasha.tatashin@soleen.com> <20240213131210.GA28926@willie-the-truck>
+ <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com> <20240216175752.GB2374@willie-the-truck>
+In-Reply-To: <20240216175752.GB2374@willie-the-truck>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 16 Feb 2024 14:48:00 -0500
+Message-ID: <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
+To: Will Deacon <will@kernel.org>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	yu-cheng.yu@intel.com, rientjes@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Simon,
+On Fri, Feb 16, 2024 at 12:58=E2=80=AFPM Will Deacon <will@kernel.org> wrot=
+e:
+>
+> On Tue, Feb 13, 2024 at 10:44:53AM -0500, Pasha Tatashin wrote:
+> > > >  SecPageTables
+> > > > -              Memory consumed by secondary page tables, this curre=
+ntly
+> > > > -              currently includes KVM mmu allocations on x86 and ar=
+m64.
+> > > > +              Memory consumed by secondary page tables, this curre=
+ntly includes
+> > > > +              KVM mmu and IOMMU allocations on x86 and arm64.
+> >
+> > Hi Will,
+> >
+> > > While I can see the value in this for IOMMU mappings managed by VFIO,
+> > > doesn't this end up conflating that with the normal case of DMA domai=
+ns?
+> > > For systems that e.g. rely on an IOMMU for functional host DMA, it se=
+ems
+> > > wrong to subject that to accounting constraints.
+> >
+> > The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
+> > is passed to the iommu mapping functions. We do that from the vfio,
+> > iommufd, and vhost. Without this flag, the memory useage is reported
+> > in /proc/meminfo as part of  SecPageTables field, but not constrained
+> > in cgroup.
+>
+> Thanks, Pasha, that explanation makes sense. I still find it bizarre to
+> include IOMMU allocations from the DMA API in SecPageTables though, and
+> I worry that it will confuse people who are using that metric as a way
+> to get a feeling for how much memory is being used by KVM's secondary
+> page-tables. As an extreme example, having a non-zero SecPageTables count
+> without KVM even compiled in is pretty bizarre.
 
-I have a general question on the "Fixes:" tag in this patch:
+I agree; I also prefer a new field in /proc/meminfo named
+'IOMMUPageTables'. This is what I proposed at LPC, but I was asked to
+reuse the existing 'SecPageTables' field instead. The rationale was
+that 'secondary' implies not only KVM page tables, but any other
+non-regular page tables.
 
-On 16.02.24 18:27, Simon Horman wrote:
-> On Sun, Feb 11, 2024 at 07:05:35AM -0800, Daniil Dulov wrote:
->> In this case dev cannot be NULL, so remove redundant check.
->>
->> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>
->> Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
+I would appreciate the opinion of IOMMU maintainers on this: is it
+preferable to bundle the information with 'SecPageTables' or maintain
+a separate field?
 
-IMHO this is simply an improvement which is done by all patches applied 
-to the kernel but it does not really "fix" anything from a functional 
-standpoint.
-
-Shouldn't we either invent a new tag or better leave it out to not 
-confuse the stable maintainers?
-
-Best regards,
-Oliver
-
->> Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
-> 
-> Hi Daniil,
-> 
-> I am not sure that dev cannot be NULL.
-> But I do see that the code assumes it is not, and would crash if it is.
-> So I think that, functionally, your statement is correct.
-> 
-> 	priv = netdev_priv(dev);
-> 	card = priv->card;
-> 
-> Reviewed-by: Simon Horman <horms@kernel.org>
-> 
+Pasha
 
