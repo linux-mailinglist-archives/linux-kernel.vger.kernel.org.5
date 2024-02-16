@@ -1,181 +1,235 @@
-Return-Path: <linux-kernel+bounces-68648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C709857DD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:38:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F55C857DD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F33F1C23C3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1629F289980
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917B112A16A;
-	Fri, 16 Feb 2024 13:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD53412AAFB;
+	Fri, 16 Feb 2024 13:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eOIC0/dV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="QBNyrtkG"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C781B966;
-	Fri, 16 Feb 2024 13:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF8912A16C;
+	Fri, 16 Feb 2024 13:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708090709; cv=none; b=JYCD6uJWh5pGiKZqx3L/CtNozK09SG4lp4+k5oj1lD2TN5GjB0oZZyNf2kogj8pTNsW20AU25IvTii0sXkLFfYNDWHBSp8FPzu2FFNOiYPQBymtbHNCto0Tf2nNqawjPJty8YEemSKrltT5C5+pKKgnDDAPsH+Ob3zbcyJ1u/80=
+	t=1708090734; cv=none; b=kB2+d6uqN/u99klaxNKxCPDcYrOvbIpsiM3uYkeh78LvxJKY4GW6819DoTBEauOi3bzXY9Ufq+NIn0Q4DY9hna7PDgqbhI7ZaMt/AfYXQXOii5fHI3a+46pft+1F0fyWi+HyqxkT3RMZAnyv8cJ6NK8BkCUIKUshSwtXprvTYT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708090709; c=relaxed/simple;
-	bh=1u9HwamzWLOm9AMbpv7x1BatZRX6+yB9Jmf2+70ZxCk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TKqqYSdufq87zI+4O9DAkOX13t1ERHlYZjITz1hQ9dBKnUYEJPs57sR8yy8C+UtrQ60+0zJlP7EpMFo6Wmldp2cUJplOKuVX5GBNy7KyvVmCVw2bY97X9S2EkzA01hzkYiMG+IYFQAHC9bgQxg/m9jSF8jPba/9N4kPKaNl6hJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eOIC0/dV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 003F7C433C7;
-	Fri, 16 Feb 2024 13:38:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708090709;
-	bh=1u9HwamzWLOm9AMbpv7x1BatZRX6+yB9Jmf2+70ZxCk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eOIC0/dVvZxnqVJu25rVJGRMzQVkBX+NLonF1mB6rBXjiS74yPS8A8SFRvJ5trq1Q
-	 fH4TqdwTr1mXPNd2ko6fTLjHBAJkC7etcguYz0DfUr84WbUyR+UmW3TeLMT9zZaUfy
-	 +ueglii2LAnw0tc2/gZ197NdnuOmUTuxmkWTAQeV9X/RgjouHRCX2MwI0ERB5Wou6b
-	 T6xOT7JWsnWf/pU7lhWHbNjoX0Dm+3XZCL/i2jUlzUFLf4hp6U+UqHiE7t20NqlhhN
-	 3R7DCRbtRogSOEEhGBrLstZQa7SWBZg8NR3yyRqbrOXh09t3acaHEz3meKe/TS3mEP
-	 uH7KjqqnU3JiA==
-Date: Fri, 16 Feb 2024 13:38:16 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: devicetree@vger.kernel.org, linux-iio@vger.kernel.org, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>,
- Liam Beguin <liambeguin@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Maksim Kiselev <bigunclemax@gmail.com>, Marcus Folkesson
- <marcus.folkesson@gmail.com>, Marius Cristea
- <marius.cristea@microchip.com>, Mark Brown <broonie@kernel.org>, Niklas
- Schnelle <schnelle@linux.ibm.com>, Okan Sahin <okan.sahin@analog.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] iio: adc: ti-ads1298: Add driver
-Message-ID: <20240216133816.18c42c99@jic23-huawei>
-In-Reply-To: <20240214063736.88283-2-mike.looijmans@topic.nl>
-References: <20240214063736.88283-1-mike.looijmans@topic.nl>
-	<1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.da2f422c-5c6b-41b4-8916-d1a90f0f0973@emailsignatures365.codetwo.com>
-	<20240214063736.88283-2-mike.looijmans@topic.nl>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708090734; c=relaxed/simple;
+	bh=5N3X7lp87ZiHhf4Mvpp9zVNBKPXjjavdVv2neQg8O1A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hitUnGstj3zABHmoSqa03UQRK+LB0KUYeB+nKjiUdemmqsnxlL3giaQRfVg+smgGzuXaqKRISrEfYI6KzrlFW6w5qYgI5UgHIMPF7OdovGiNO9Z3bS8JQ8v663Ii/agX7ZZBXq9Aw+R4CzCJLnrroeoneLshTlO/4rlKwd/PEyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=QBNyrtkG; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 97F1E600D4;
+	Fri, 16 Feb 2024 13:38:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1708090727;
+	bh=5N3X7lp87ZiHhf4Mvpp9zVNBKPXjjavdVv2neQg8O1A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=QBNyrtkGfchK5k290FeKAGyMxNYN3m4UxvXRnyc/0lBGIEh8nwkHZ3pifFmy3Sv/G
+	 gEYnUHqysQzgUVMv6TJQx32+DvgGsLXu+Go3d27vUj4WWpqIpftll8h6JjQdFVTM22
+	 BbqOA6E47/cwzO+tHqp3NMqI5hlEIDXfVLR5j94AACQ7XZXorXwLF00hPjQmjVZ/l1
+	 PB5XAxI9vLMGTrCSHf83MobQ2Jld1hrMbzWol3FsqTegF1Z/jMYeGwDIiwDTN5fX1d
+	 WNhz1zPl1YXFJCqez/5bLiQJxZj4Vjm/AlXrmRFE5nx6WqlIWRUeoeds/CR5PkhoDw
+	 EkYY/1f0ME4Sg==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 94BDD2004F9;
+	Fri, 16 Feb 2024 13:38:27 +0000 (UTC)
+Message-ID: <901babe8-71dc-41c7-931a-e450a12d7e1f@fiberby.net>
+Date: Fri, 16 Feb 2024 13:38:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/3] net: sched: make skip_sw actually skip
+ software
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llu@fiberby.dk, Vlad Buslov
+ <vladbu@nvidia.com>, Marcelo Ricardo Leitner <mleitner@redhat.com>
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <20240215160458.1727237-4-ast@fiberby.net>
+ <CAM0EoMmyGwA9Q=RibR+Fc41_dPZyhBRWiBEejSbPsS9NhaUFVQ@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <CAM0EoMmyGwA9Q=RibR+Fc41_dPZyhBRWiBEejSbPsS9NhaUFVQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 14 Feb 2024 07:37:36 +0100
-Mike Looijmans <mike.looijmans@topic.nl> wrote:
+Hi Jamal,
 
-> Skeleton driver for the TI ADS1298 medical ADC. This device is
-> typically used for ECG and similar measurements. Supports data
-> acquisition at configurable scale and sampling frequency.
+On 2/15/24 17:49, Jamal Hadi Salim wrote:
+> On Thu, Feb 15, 2024 at 11:06 AM Asbjørn Sloth Tønnesen <ast@fiberby.net> wrote:
+>>
+>> TC filters come in 3 variants:
+>> - no flag (no opinion, process wherever possible)
+>> - skip_hw (do not process filter by hardware)
+>> - skip_sw (do not process filter by software)
+>>
+>> However skip_sw is implemented so that the skip_sw
+>> flag can first be checked, after it has been matched.
+>>
+>> IMHO it's common when using skip_sw, to use it on all rules.
+>>
+>> So if all filters in a block is skip_sw filters, then
+>> we can bail early, we can thus avoid having to match
+>> the filters, just to check for the skip_sw flag.
+>>
+>>   +----------------------------+--------+--------+--------+
+>>   | Test description           | Pre    | Post   | Rel.   |
+>>   |                            | kpps   | kpps   | chg.   |
+>>   +----------------------------+--------+--------+--------+
+>>   | basic forwarding + notrack | 1264.9 | 1277.7 |  1.01x |
+>>   | switch to eswitch mode     | 1067.1 | 1071.0 |  1.00x |
+>>   | add ingress qdisc          | 1056.0 | 1059.1 |  1.00x |
+>>   +----------------------------+--------+--------+--------+
+>>   | 1 non-matching rule        |  927.9 | 1057.1 |  1.14x |
+>>   | 10 non-matching rules      |  495.8 | 1055.6 |  2.13x |
+>>   | 25 non-matching rules      |  280.6 | 1053.5 |  3.75x |
+>>   | 50 non-matching rules      |  162.0 | 1055.7 |  6.52x |
+>>   | 100 non-matching rules     |   87.7 | 1019.0 | 11.62x |
+>>   +----------------------------+--------+--------+--------+
+>>
+>> perf top (100 n-m skip_sw rules - pre patch):
+>>    25.57%  [kernel]  [k] __skb_flow_dissect
+>>    20.77%  [kernel]  [k] rhashtable_jhash2
+>>    14.26%  [kernel]  [k] fl_classify
+>>    13.28%  [kernel]  [k] fl_mask_lookup
+>>     6.38%  [kernel]  [k] memset_orig
+>>     3.22%  [kernel]  [k] tcf_classify
+>>
+>> perf top (100 n-m skip_sw rules - post patch):
+>>     4.28%  [kernel]  [k] __dev_queue_xmit
+>>     3.80%  [kernel]  [k] check_preemption_disabled
+>>     3.68%  [kernel]  [k] nft_do_chain
+>>     3.08%  [kernel]  [k] __netif_receive_skb_core.constprop.0
+>>     2.59%  [kernel]  [k] mlx5e_xmit
+>>     2.48%  [kernel]  [k] mlx5e_skb_from_cqe_mpwrq_nonlinear
+>>
 > 
-> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> The concept makes sense - but i am wondering when you have a mix of
+> skip_sw and skip_hw if it makes more sense to just avoid looking up
+> skip_sw at all in the s/w datapath? Potentially by separating the
+> hashes for skip_sw/hw. I know it's a deeper surgery - but would be
+> more general purpose....unless i am missing something
+ >
+>> Test setup:
+>>   DUT: Intel Xeon D-1518 (2.20GHz) w/ Nvidia/Mellanox ConnectX-6 Dx 2x100G
+>>   Data rate measured on switch (Extreme X690), and DUT connected as
+>>   a router on a stick, with pktgen and pktsink as VLANs.
+>>   Pktgen was in range 12.79 - 12.95 Mpps across all tests.
+>>
 > 
-Hi Mike,
+> Hrm. Those are "tiny" numbers (25G @64B is about 3x that). What are
+> the packet sizes?
+> Perhaps the traffic generator is a limitation here?
+> Also feels like you are doing exact matches? A sample flower rule
+> would have helped.
 
-One final thing noticed on a (hopefully) last read through.
+Yeah, I would also have liked those number to be higher. Sorry forgot to mention it is 64B packets.
 
-/sys/bus/iio:device0/name is going to read ads1298 whichever
-chip is detected.
+Sadly, I used two machine to compensate for my lack of pktgen skills.
+I know that there are faster packet generators, but I just used the in-kernel one,
+and haven't invested much time into it, but the normal ethtool params mentioned in
+the doc didn't change much, and since it was still more than enough packets that DUT
+would go to 100% CPU, I didn't pursue it further.
 
-Would be more useful to users if it identified the actual
-part given that is easily read from the ID register.
+pktgen A: Xeon E5-1620 v2 @ 3.70GHz w/ ConnectX-6 Dx and 100G link.
+pktgen B: Xeon(R) D-2123IT @ 2.20GHz w/ Intel X722 and 10G link.
 
-Jonathan
+Both pktgen boxes are running stock Debian bullseye kernel (v6.1)
 
-> ---
-> 
-> Changes in v4:
-> Explain rdata_xfer_busy better and remove post-decrement
-> Reset assert explanation and add cansleep
-> Additional style changes
-> 
-> Changes in v3:
-> Indentation fixups
-> Remove unused headers
-> Remove #define leftovers
-> Use devm_get_clk_optional_enabled
-> Use ilog2 instead of fls()-1
-> Magic "23" replaced
-> Explain the extra "0" in read/write register
-> use guard() from cleanup.h
-> use REGCACHE_MAPLE
-> 
-> Changes in v2:
-> Remove accidental "default y" in Kconfig
-> Indentation and similar cosmetic fixes
-> Magic numbers into constants
-> Short return paths in read_raw and write_raw
-> DMA buffer alignment
-> Bounce buffer is u32 instead of u8
-> Avoid races using claim_direct_mode
-> Check errors on all register accesses
-> Immediate SPI restart to reduce underruns
-> "name" is chip name, not unique
+I found this to work best:
+/pktgen_sample05_flow_per_thread.sh -i enp8s0f0np0 -s 64 -d 10.53.22.3 -m 2a:11:22:33:21:11 -p 1024-65000 -t 8 -n 0
 
-I missed this until having a final read through but it's not the chip name
-in the driver currently - the name is always ads1298 despite there being a handy
-ID register that tells us what we actually have.
+Datarates monitored through SNMP using:
+   snmpdelta -Cp 10 -c public -v 2c -Cs $hostname IF-MIB::ifInUcastPkts.1057 IF-MIB::ifOutUcastPkts.1057
+
+VLAN config, MAC and IP addressing:
+   v21:
+     2a:11:22:33:21:11 - 10.53.21.1/27 - dut v21      (tagged VLAN)
+     2a:11:22:33:21:12 - 10.53.21.2/27 - pktgen-a     (untagged)
+     2a:11:22:33:21:13 - 10.53.21.3/27 - pktgen-b     (untagged)
+
+   v22:
+     2a:11:22:33:22:21 - 10.53.22.2/31 - dut v22      (tagged VLAN)
+     2a:11:22:33:22:22 - 10.53.22.3/31 - packet drop  (untagged)
 
 
-> 
->  drivers/iio/adc/Kconfig      |  11 +
->  drivers/iio/adc/Makefile     |   1 +
->  drivers/iio/adc/ti-ads1298.c | 766 +++++++++++++++++++++++++++++++++++
->  3 files changed, 778 insertions(+)
->  create mode 100644 drivers/iio/adc/ti-ads1298.c
+Switch MAC address table config:
+   # static entry
+   create fdb 2a:11:22:33:21:11 vlan "v21" port 57
 
-> +
-> +static const char *ads1298_family_name(unsigned int id)
-> +{
-> +	switch (id & ADS1298_MASK_ID_FAMILY) {
-> +	case ADS1298_ID_FAMILY_ADS129X:
-> +		return "ADS129x";
-> +	case ADS1298_ID_FAMILY_ADS129XR:
-> +		return "ADS129xR";
-> +	default:
-> +		return "(unknown)";
-> +	}
-> +}
+   # blackhole pktsink
+   create fdb 2a:11:22:33:22:22 vlan "v22" blackhole
 
-..
+flow control are disabled on all links:
+   ethtool -A $dev rx off tx off
 
-> +static int ads1298_probe(struct spi_device *spi)
-> +{
+I have uploaded the script used for the flower rules in the tests here:
+   https://files.fiberby.net/ast/2024/tc_skip_sw/flower_placement_tests.sh
 
-..
 
-> +
-> +	priv->tx_buffer[0] = ADS1298_CMD_RDATA;
-> +	priv->rdata_xfer.tx_buf = priv->tx_buffer;
-> +	priv->rdata_xfer.rx_buf = priv->rx_buffer;
-> +	priv->rdata_xfer.len = ADS1298_SPI_RDATA_BUFFER_SIZE;
-> +	/* Must keep CS low for 4 clocks */
-> +	priv->rdata_xfer.delay.value = 2;
-> +	priv->rdata_xfer.delay.unit = SPI_DELAY_UNIT_USECS;
-> +	spi_message_init_with_transfers(&priv->rdata_msg, &priv->rdata_xfer, 1);
-> +	priv->rdata_msg.complete = &ads1298_rdata_complete;
-> +	priv->rdata_msg.context = indio_dev;
-> +
-> +	indio_dev->name = spi_get_device_id(spi)->name;
+> cheers,
+> jamal
+>> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+>> ---
+>>   include/net/pkt_cls.h | 5 +++++
+>>   net/core/dev.c        | 3 +++
+>>   2 files changed, 8 insertions(+)
+>>
+>> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+>> index a4ee43f493bb..a065da4df7ff 100644
+>> --- a/include/net/pkt_cls.h
+>> +++ b/include/net/pkt_cls.h
+>> @@ -74,6 +74,11 @@ static inline bool tcf_block_non_null_shared(struct tcf_block *block)
+>>          return block && block->index;
+>>   }
+>>
+>> +static inline bool tcf_block_has_skip_sw_only(struct tcf_block *block)
+>> +{
+>> +       return block && atomic_read(&block->filtercnt) == atomic_read(&block->skipswcnt);
+>> +}
+>> +
+>>   static inline struct Qdisc *tcf_block_q(struct tcf_block *block)
+>>   {
+>>          WARN_ON(tcf_block_shared(block));
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index d8dd293a7a27..7cd014e5066e 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -3910,6 +3910,9 @@ static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
+>>          if (!miniq)
+>>                  return ret;
+>>
+>> +       if (tcf_block_has_skip_sw_only(miniq->block))
+>> +               return ret;
+>> +
+>>          tc_skb_cb(skb)->mru = 0;
+>>          tc_skb_cb(skb)->post_ct = false;
+>>          tcf_set_drop_reason(skb, *drop_reason);
+>> --
+>> 2.43.0
+>>
 
-I was going to just tweak this whilst applying.  Using the spi device id often
-ends up being fragile in the long term because of the split between the different
-ID tables and the mess that happens if fallback compatibles are in use and
-the spi IDs are missing (you will get a warning about this at runtime
-but it'll carry on anyway).
-
-Easier to just hard code the name for now and when you have multiple
-devices supported, add this to a chip_info type structure.
-Or we could make it support the more specific name given the detection above.
-Is there a reason to not do that given a more accurate name is
-easy to work out and may be useful to a user?
-
-Jonathan
-
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
