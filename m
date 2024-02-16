@@ -1,110 +1,115 @@
-Return-Path: <linux-kernel+bounces-68775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA2A9857FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:00:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 538E1858003
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27EE11C23A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D371F21507
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39AA12F388;
-	Fri, 16 Feb 2024 15:00:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C0C12F373;
+	Fri, 16 Feb 2024 15:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D7UfS5hW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y+i/G1OA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65D912F377;
-	Fri, 16 Feb 2024 15:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE77A12C7FB
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095636; cv=none; b=WSnKbv02/hYDPJypUOn90JUtOZ1dBpJjBih9OO7g38+G/lhwEMYGznkZEs4xdmmhdCz6MdqRqse+4Qi8CON+PmcT2vdGYDwxgfPzojZu1Xd3di4/Zi8BzOY3AoNHy+l9QXZpaXn/TrxVSX5vtyCSgcdFsS78ahimBQdxg/PDQ00=
+	t=1708095777; cv=none; b=Km6koc1UUq0I6cpzPdKBchO1uDb5MqYTPwDQYTN7bb+JxZ2lf2dX+KkAoC3l38083R/TQ/7UmOAHpPHEbyl3nqZ7HpNthz3vSvW7BqIiwnwvUbagaNj6U8qpk3GQgdGGkZrmThJNiv/2zrO5dfaF9omIBlEBJ+X4FSeID7Wgreo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095636; c=relaxed/simple;
-	bh=SlsPKpnC/Bj0Ge4xbcBdLPan6kK3Dz/4j4gB5D2L1VU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jJLPXRKHJppiqP3jzddhxf6OiHfPHJfNZ/56C/os0xfVMNJmbymhug0wxnOb4qYkpBrWOrZdy5nTphmlfQ9EAYiNaM9kbXAQFfaWz9u+yPgscunRRY96fkc6RBS0NAcHWi/quDA7ondmJHDZmPGpUbk2QVU4hvgqhP7Za4sUwzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D7UfS5hW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E34C433C7;
-	Fri, 16 Feb 2024 15:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708095636;
-	bh=SlsPKpnC/Bj0Ge4xbcBdLPan6kK3Dz/4j4gB5D2L1VU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=D7UfS5hWvGrV0c6HztB7bftM4x+YCOGfe5XNHzdaBtCU5NHG7ikVTCROH0Ro2x6Fk
-	 aymugkNxgqOhjTDC8Q4mDsS4Urx1OqBt++KzVAkiiTbD3+Y9rrX6q/fdisgHK8rYiU
-	 gv29Tp86xePMnEvOq09zB3sw7nShc9yhyo+tNNuWH05m+gdlyoh6wIXiAGRg75FuaS
-	 yMtrhPcN+iZVKApW6SEoe6n9ZrFoeQHcYk69gcM9H7a9Bb+feOVszxs2wkLSgXGdjf
-	 SOtcjbeL6Nd495I9YY2XsR3K71f/GIKJldp47nUPJ5gYtvFCV2lPUPeXSidzx2MHZM
-	 XjrPt+mQ3Rpbw==
-Date: Fri, 16 Feb 2024 15:00:25 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Petre Rodan <petre.rodan@subdimension.ro>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter
- Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 0/6] iio: pressure: hsc030pa: cleanup and triggered
- buffer
-Message-ID: <20240216150025.6c718307@jic23-huawei>
-In-Reply-To: <20240211075645.28777-1-petre.rodan@subdimension.ro>
-References: <20240211075645.28777-1-petre.rodan@subdimension.ro>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708095777; c=relaxed/simple;
+	bh=GqVjIc3Y9GJCrVy/nye5izgJbw3sIDygaE+0C7huDFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=kA20wpgxmszgwj3IbS1hNtO7AHufvJo9QrR0u1qBBw8ABNw7f6p9clrswY1CUP0lp5Ly5OweCKnWbcAil56qdmU3oja53OpsI+zqRo3IRDd0seqYgwCqb05loULvyauMGXnZUBP5donCMFtc3EhAdRfxAzB73t2wUHjoUgR0YUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y+i/G1OA; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708095773;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=aZ1RnOnTSLBiglbkhX1NHskWW94OsYikvhSwmo5Uu90=;
+	b=Y+i/G1OAhEhbfjjwzvvNOl/sHLxJfT+AtT3zfVECWlDpHoBeEjeZ0LsD2XsxS+batTiLHw
+	OowJj+qZRPXBDWHqLqiIEiiqMX1kub07CGUCuoeOZfejL0UtWjWIAtV/fFan9WMrEjF0C7
+	qS1LLY7+iYmD2R19V8Wd8PevVklB/OY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-329-W3BTSf1FMa6m6Uev6EHpOg-1; Fri, 16 Feb 2024 10:02:51 -0500
+X-MC-Unique: W3BTSf1FMa6m6Uev6EHpOg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F014684AE4A;
+	Fri, 16 Feb 2024 15:02:50 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id BDB1240C9444;
+	Fri, 16 Feb 2024 15:02:50 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id B80BE4086D5AC; Fri, 16 Feb 2024 12:02:15 -0300 (-03)
+Date: Fri, 16 Feb 2024 12:02:15 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: [PATCH] net/core/dev.c: enable timestamp static key if CPU isolation
+ is configured
+Message-ID: <Zc9493j46rZMRIDv@tpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Sun, 11 Feb 2024 09:56:31 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
 
-> This set of patches covers the following:
-> 
->  - small cleanup
->  - mandatory 2ms delay between readings
->  - support for triggered buffer readings
+For systems that use CPU isolation (via nohz_full), creating or destroying
+a socket with  timestamping (SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
+static key to be enabled/disabled. This in turn causes undesired 
+IPIs to isolated CPUs.
 
-Hi Petre
+So enable the static key unconditionally, if CPU isolation is enabled,
+thus avoiding the IPIs.
 
-Applied to the togreg branch of iio.git but that will initially be pushed
-out as testing for 0-day to take a look at it.
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-Thanks,
-
-Jonathan
-
-> 
-> The support for devices that have "sleep mode" factory option that was
-> present in v1 of this patchset was removed, for a few reasons:
-> 
->  - a Honeywell employee told me that this chip variant is extremely
->     unlikely to be found in the wild, which also makes testing the
->     driver functionality impossible
->  - I found no reliable way of generating i2c/spi bus traffic with no
->     payload (toggle CS for SPI case, send i2c packet containing only
->     the address byte) that are required for the wakeup sequence.
-
-> 
-> Petre Rodan (6):
->   dt-bindings: iio: pressure: honeywell,hsc030pa.yaml add spi props
->   iio: pressure: hsc030pa: use signed type to hold div_64() result
->   iio: pressure: hsc030pa: include cleanup
->   iio: pressure: hsc030pa: update datasheet URLs
->   iio: pressure: hsc030pa add mandatory delay
->   iio: pressure: hsc030pa add triggered buffer
-> 
->  .../iio/pressure/honeywell,hsc030pa.yaml      |  3 ++
->  drivers/iio/pressure/Kconfig                  |  2 +
->  drivers/iio/pressure/hsc030pa.c               | 49 ++++++++++++++++++-
->  drivers/iio/pressure/hsc030pa.h               |  7 +++
->  drivers/iio/pressure/hsc030pa_i2c.c           |  9 +++-
->  drivers/iio/pressure/hsc030pa_spi.c           |  7 ++-
->  6 files changed, 73 insertions(+), 4 deletions(-)
-> 
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 0d548431f3fa..cc9a77b4aa4e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -153,6 +153,7 @@
+ #include <linux/prandom.h>
+ #include <linux/once_lite.h>
+ #include <net/netdev_rx_queue.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+@@ -11601,3 +11602,14 @@ static int __init net_dev_init(void)
+ }
+ 
+ subsys_initcall(net_dev_init);
++
++static int __init net_dev_late_init(void)
++{
++	/* avoid static key IPIs to isolated CPUs */
++	if (housekeeping_enabled(HK_TYPE_MISC))
++		net_enable_timestamp();
++
++	return 0;
++}
++
++late_initcall(net_dev_late_init);
 
 
