@@ -1,199 +1,133 @@
-Return-Path: <linux-kernel+bounces-69459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F748589D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7287C8589D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34B891C20445
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:10:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4AD21C238EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8CDC148FE6;
-	Fri, 16 Feb 2024 23:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B99681487ED;
+	Fri, 16 Feb 2024 23:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AOXSXFWr"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPcOPUlX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA291487D8
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FB41487D8;
+	Fri, 16 Feb 2024 23:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708125013; cv=none; b=sJdrPHDuWnIJT/MEtjPlf+m7KIhqqJZEzuCLxsC7MihcrcVnRmWzX8p/sZVnoaUawtmbONU593LXYIPR9OuPC+CJtGlEQ5O2m00fzHZKMhmUTk/zwN5d1d3GEB10aC7wsbAl3O90Z9MnZ6h7JEwRCLJK1ENDs9AMoSzqEZ07JoY=
+	t=1708125049; cv=none; b=QI/CGXHC0vJTYRvDN4/DRcjlMS3q7zgIynRIDKBLV70A8M/l5Bob0xaPIGuQc/fge4PfMl+nJDgHOvQfqXFZOT8A/DQ+uYB+jWHixKzdapFmfYRBPo6d6RVq4XoRlscRWYVqdfKFZ7TYM+D1suw0tbTe5t+piw6xv/4fw/m1xa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708125013; c=relaxed/simple;
-	bh=mfmEA6zSa+OORWqKlFgSku5kK5nwRZdQXnKi8D/SPd8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y/Fwk23B/7cnwhSCXtErtOroFRgFtYc4Dy0XiuylCmYgRLylktLvL3EeVtHMSSO8ALWxdqkh4VojpiVsizT5LlLsvRb3ID4/taM/hNr8U1w4Fa4i0ki1KJ/tlZ1Pz0wV0aPVAI8pGLmcwkWXZmBZi4kLuOJikYLXcDulr+kpkHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AOXSXFWr; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607fe8cc6d8so9763837b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708125010; x=1708729810; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EpftqacOdWcIxz3VUpc3zI1U/E0RwbiBZdYsX7Kb7J4=;
-        b=AOXSXFWrpecqGsj3FvbdDQIjHjP887SkBI4Bl4qgqmEyp6wk619/ClmzdoNIeOtz1j
-         tDFBRTTZ4BXijtr5HVAG7cqu0BwWijfc2LxgvgRliDfPlGHPIGKzJIhHQjwHJelHjVyQ
-         rp/dpDg/lvX62bGEdspeYlpgcqI7rCHt98CpiYsWMLSCTyHysVsLgsH/Mi9PXkv8IZPW
-         RnrDP9WUVm04kHfQ67x4VehA87dgAMMC2vEyqSy2YCDH6nUvxKMvEaFL93I/+w8AsTPZ
-         1hRoKNSn/OHxCPYYv+J9IC1EJfc+1aBHZQcbLbRU6Wlr1XeozRteflUVXWLLrhaypy2B
-         //xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708125010; x=1708729810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EpftqacOdWcIxz3VUpc3zI1U/E0RwbiBZdYsX7Kb7J4=;
-        b=kSqHw+X/eXXriUpM3zbNojA/2A5X9G2ycAvComxp5WaxpJta7x8r9sdNBXO5YXKeoP
-         Wyd3pmn7yesI/h+TnUHvXf6HOK4tJ/hJQj2YO9c4ucYgtDk+Hvg1meFe8dWL2Stv+FD0
-         mDwm+YtOLAV6lI4KNbFYQlxNoPoRBAgkoMCoLBz6EtvDmM56pYww4YZVW8Px+T87ECn3
-         MVgfWfUaS9ri7AcoPhkvQKzg1YGxR1nMALlkAa6moBA7E3raPeGngz5m7xvMYYnUD1s7
-         CY2PnUMCgB3srdzbHIHfysfhzVS9GIGCiSdeNjBy5TtxpXdo1Y21Himm4XcF97VVGEEv
-         SxOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUsqyNMgQWB0bbqiYt6+HsvW7IT3Tbp4e28LPy+S+D5CDF3Cdyf4NRXGC09HdNuHvn+Di+8Rd+MbWDxLzhyu+/GEvAECAwZ/wcICl6a
-X-Gm-Message-State: AOJu0Yw3ba0msThMzZyldNlj/AX+rIP76Yc9M8MkM3B7BR2XMr8AoVYi
-	zVW8g9hHxFwLqKt/4Zpfcay+B+x/EUc90hWcoLT7E4FLEihaI8XAldS6rLDSgP9vY11Gl1r4o3I
-	885RnQP7I+muIZUBv/GOVu3b9s6FRAbdQOoJCaA==
-X-Google-Smtp-Source: AGHT+IH7vS67BhaJmZ0qKWVe6no0q/4H1vlJ1cE1CsXNcFt1Pp6VcJPBg/0mptzu0uQFXbGKADhe7nfa9TyYWhC6deg=
-X-Received: by 2002:a0d:ebc6:0:b0:607:ec66:36b3 with SMTP id
- u189-20020a0debc6000000b00607ec6636b3mr5019006ywe.19.1708125010589; Fri, 16
- Feb 2024 15:10:10 -0800 (PST)
+	s=arc-20240116; t=1708125049; c=relaxed/simple;
+	bh=O1OpOHiJH5zAid7vlc60M8xCXnRul9XZwxmxl+Zq6Q4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=q3KWh+IXFFNrVVVuGtPEIIZwFgjjIOKWXtKvvtvD7Kom8WiwEBX+kyjh4qiG4w5CohQgBUJFQHcI87sVfoLjuBEPFkTpyM7zMfzle+a2G+lQIbtGloaCWrtd5tfO0GmfQACvs8nC3cKX2dJOveBhyZkTVfVHpW5vKMWXshCYXfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPcOPUlX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A1AC433C7;
+	Fri, 16 Feb 2024 23:10:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708125048;
+	bh=O1OpOHiJH5zAid7vlc60M8xCXnRul9XZwxmxl+Zq6Q4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iPcOPUlXdd4/uI8/7fckkIg397L0BJnmzQRmWSzBrvenU4JTuB7fEicErRN0Bk1k4
+	 WxYRfc0oYGAvgRG5kk22ltJnpDd2vCs/ZrITRhNYPK+2jyQt8cQI3TcvtJji52K2aA
+	 zcEhdyY5K9ceUKNBfivobZGTLTl2D8j1HOavGxbzrj0kB+5kOd3RizYAKhYMtIlSrO
+	 QAif2aWB1WhTfMSR8ddjxMkV71YLko8cNZdHpqbsl+FEoFH6NmWPEd4500dbgzrYEO
+	 CAtJBaAEFcdP4p9LTIjH1H2m3Le8zXqWB72EVGsEppBvlolNjNUvWiipydf+usjEhM
+	 chfFn6ayt4wzg==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andy Gross <agross@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	Rob Herring <robh@kernel.org>
+Subject: Re: (subset) [PATCH v7 00/22] soc: qcom: spm: add support for SPM regulator
+Date: Fri, 16 Feb 2024 17:10:34 -0600
+Message-ID: <170812504022.18043.16483839903637850626.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
+References: <20240102-saw2-spm-regulator-v7-0-0472ec237f49@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-9-brgl@bgdev.pl>
-In-Reply-To: <20240216203215.40870-9-brgl@bgdev.pl>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 17 Feb 2024 01:09:59 +0200
-Message-ID: <CAA8EJpry2yiGXrtPqZ6RXnoTqQZr_hxA_gCPsUbmyFtEBuD4VA@mail.gmail.com>
-Subject: Re: [PATCH v5 08/18] arm64: dts: qcom: sm8650-qrd: add the Wifi node
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, 16 Feb 2024 at 22:33, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Neil Armstrong <neil.armstrong@linaro.org>
->
-> Describe the ath12k WLAN on-board the WCN7850 module present on the
-> board.
-
-WCN7850 is the same combo WiFi + BT chip. Is there any reason for
-describing its parts separately rather than using the same PMU
-approach?
-
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> [Bartosz:
->   - move the pcieport0 node into the .dtsi
->   - make regulator naming consistent with existing DT code
->   - add commit message]
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 29 +++++++++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sm8650.dtsi    | 10 +++++++++
->  2 files changed, 39 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-> index b07cac2e5bc8..4623c358f634 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-> @@ -845,6 +845,28 @@ &pcie0 {
->         status = "okay";
->  };
->
-> +&pcieport0 {
-> +       wifi@0 {
-> +               compatible = "pci17cb,1107";
-> +               reg = <0x10000 0x0 0x0 0x0 0x0>;
-> +
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&wlan_en>;
-> +
-> +               enable-gpios = <&tlmm 16 GPIO_ACTIVE_HIGH>;
-> +
-> +               vdd-supply = <&vreg_s4i_0p85>;
-> +               vddio-supply = <&vreg_l15b_1p8>;
-> +               vddio1p2-supply = <&vreg_l3c_1p2>;
-> +               vddaon-supply = <&vreg_s2c_0p8>;
-> +               vdddig-supply = <&vreg_s3c_0p9>;
-> +               vddrfa1p2-supply = <&vreg_s1c_1p2>;
-> +               vddrfa1p8-supply = <&vreg_s6c_1p8>;
-> +
-> +               clocks = <&rpmhcc RPMH_RF_CLK1>;
-> +       };
-> +};
-> +
->  &pcie0_phy {
->         vdda-phy-supply = <&vreg_l1i_0p88>;
->         vdda-pll-supply = <&vreg_l3i_1p2>;
-> @@ -1139,6 +1161,13 @@ wcd_default: wcd-reset-n-active-state {
->                 bias-disable;
->                 output-low;
->         };
-> +
-> +       wlan_en: wlan-en-state {
-> +               pins = "gpio16";
-> +               function = "gpio";
-> +               drive-strength = <8>;
-> +               bias-pull-down;
-> +       };
->  };
->
->  &uart14 {
-> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> index d488b3b3265e..baf4932e460c 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> @@ -2293,6 +2293,16 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
->                         dma-coherent;
->
->                         status = "disabled";
-> +
-> +                       pcieport0: pcie@0 {
-> +                               device_type = "pci";
-> +                               reg = <0x0 0x0 0x0 0x0 0x0>;
-> +                               #address-cells = <3>;
-> +                               #size-cells = <2>;
-> +                               ranges;
-> +
-> +                               bus-range = <0x01 0xff>;
-> +                       };
->                 };
->
->                 pcie0_phy: phy@1c06000 {
-> --
-> 2.40.1
->
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
+On Tue, 02 Jan 2024 07:17:20 +0200, Dmitry Baryshkov wrote:
+> The apq8064 rework to use cacheinfo takes more than expected, so I've
+> spanwed this series. It is an excerpt of the APQ8064 cpufreq series
+> [1], so it it continues the version numbering for those patches.
+> 
+> The Subsystem Power Manager (SPM) / SPM AutoVoltageScaling Wrapper2
+> (SAW2) are hardware blocks used on some of Qualcomm platforms to handle
+> the voltage rails. It does this by bypassing RPM and directly
+> interfacing the PMIC. Extend current SPM driver to export this
+> regulator.
+> 
+> [...]
+
+Applied, thanks!
+
+[01/22] dt-bindings: soc: qcom: merge qcom,saw2.txt into qcom,spm.yaml
+        commit: c9491a16e571d7f33e1d00d1ec4ce9b035bb290c
+[02/22] dt-bindings: soc: qcom: qcom,saw2: add missing compatible strings
+        commit: 31ac56a59e7a8ed4ccd4831b73a1cc1ad9653b7f
+[03/22] dt-bindings: soc: qcom: qcom,saw2: define optional regulator node
+        commit: aa4e327fbbf665e96701fa1f53a97ae86b646603
+[04/22] soc: qcom: spm: remove driver-internal structures from the driver API
+        commit: 57e2b067f19b8de616d1e849ce3786df602bfe7f
+[05/22] soc: qcom: spm: add support for voltage regulator
+        commit: 6496dba142f4461360cae263126965e4ac761ab9
+[06/22] ARM: dts: qcom: apq8084: use new compat string for L2 SAW2 unit
+        commit: 551d90275631a7dd2d290aa60aedabc597029216
+[07/22] ARM: dts: qcom: msm8974: use new compat string for L2 SAW2 unit
+        commit: c0fe5442b1e5bcfbfe5272896e4dab23e1dfcc19
+[08/22] ARM: dts: qcom: msm8960: use SoC-specific compatibles for SAW2 devices
+        commit: 9f77f78bd420ffddafe8c019c9e94097ef32c4d6
+[09/22] ARM: dts: qcom: ipq4019: use SoC-specific compatibles for SAW2 devices
+        commit: 8cad85bfe08f419ea57a8a395e4ab0dcf346d617
+[10/22] ARM: dts: qcom: ipq8064: use SoC-specific compatibles for SAW2 devices
+        commit: e6e2986a3d57a4d6590c3654d64cd417585c1c66
+[11/22] ARM: dts: qcom: apq8064: rename SAW nodes to power-manager
+        commit: 3a3b949fd9555190f2a477271b79e6194f0a824b
+[12/22] ARM: dts: qcom: apq8084: rename SAW nodes to power-manager
+        commit: 07eb49b318000f8953c3de73f400b799215d6a32
+[13/22] ARM: dts: qcom: msm8960: rename SAW nodes to power-manager
+        commit: 34725e24f20d98a9bba2850934c2adef65b9ec0e
+[14/22] ARM: dts: qcom: msm8974: rename SAW nodes to power-manager
+        commit: e624dc495a425dc0598688c8c1aa5c028ca30750
+[15/22] ARM: dts: qcom: ipq4019: rename SAW nodes to power-manager
+        commit: 3ea06103ee40351dc4793e37c0e51e00753e3d26
+[16/22] ARM: dts: qcom: ipq8064: rename SAW nodes to power-manager
+        commit: 04e354e0b4dd409298c1909fdd8897055e9b3641
+[17/22] ARM: dts: qcom: apq8064: declare SAW2 regulators
+        commit: 893768803fa4ab7e5d75448980832b517d251a25
+[18/22] ARM: dts: qcom: msm8960: declare SAW2 regulators
+        commit: 378cc1b3e6cd3cab1f8c4a5e1891664545c2c7e9
+[19/22] ARM: dts: qcom: apq8084: drop 'regulator' property from SAW2 device
+        commit: 8c843db2bca12e911e0d0343c52a9e9a17704ae3
+[20/22] ARM: dts: qcom: msm8974: drop 'regulator' property from SAW2 device
+        commit: a560ff0acc0418e3c689ca2b050e00f964020b14
+[21/22] ARM: dts: qcom: ipq4019: drop 'regulator' property from SAW2 devices
+        commit: c169576dddff63be2108cb289a9ab1b7fc19ef53
+[22/22] ARM: dts: qcom: ipq8064: drop 'regulator' property from SAW2 devices
+        commit: 4ad2506d5a17387dcbedbd24e60d33f6421e249e
+
+Best regards,
 -- 
-With best wishes
-Dmitry
+Bjorn Andersson <andersson@kernel.org>
 
