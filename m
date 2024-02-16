@@ -1,87 +1,74 @@
-Return-Path: <linux-kernel+bounces-68101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BBA8575FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:26:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA3EC8575F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:25:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82F0C1F236F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:26:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B887CB213CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A5F14A99;
-	Fri, 16 Feb 2024 06:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2AB14A90;
+	Fri, 16 Feb 2024 06:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="KjyM5UKr"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="uA/KiaCG"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7829914285
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2A314A82;
+	Fri, 16 Feb 2024 06:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708064756; cv=none; b=rUUf9rECn8w96HGkc1p7jvILEjuY9iWVby48f8uKUKMj5k1iaeE5PA62HWveUJAS6nQzRaaq4lsjPoCl8JEKg9kWmdlyguhPIOr41ou/PiIM+0Pg+0d3fIKo4M//TO18I7ptDgQ4ZkWBmciyxGaBd3fegpB9NLFw6HL90cCKsB4=
+	t=1708064694; cv=none; b=AC/pYSJWSSse9/Or1FbjPMm71Yb19WMRgjiSq54xt7CVr6f2O1HhcPF+Z3TIo3qhFfA/EEaWdbh7H6B0iHBKKnFj6zH1CtOuej8dOYLOUUC2TmmsXxIQk0U43UcnVc6dwS/N+mNLYvrGr7LKrSWhxKT1LhVYi46ZZGVkhhyf7lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708064756; c=relaxed/simple;
-	bh=KivuariFpPolApka+H/P0dLLds23Rk9TayxJQuSEfUA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nSrk+YLoIuZjw92J8BfE4AxiQlEzm3a4cISqABUSuoTCdNzqi1NeAFzk0tAueqYPPaCuSHfSRbXCKv4hgvCi/ZqqE7LI3BCjryaIUkexvAXgi7hTtJfnRIPIr+CTEcLoScwgWA7VUQCMa2LhNeLsPCffuV0cwzSPmAPUU7b4/HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=KjyM5UKr; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d73066880eso16131485ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1708064754; x=1708669554; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=go9pnzcnTe/ILY9pnIwCtci+zv9qwK5zq4OGjkRdcEg=;
-        b=KjyM5UKrCBnBUsAhPJf5Qq1h/eDoGCJdjpJveuH8aW0mNYx0SNyaQHbJoSXLhVNq+0
-         Yfa9AWpWtC5n0cs2pJhRYeVMwNHq1X3DRbzYLXc2/oVkVGaPgRAEze0oGxaSAEjblFpA
-         1CimS/2Ldj/K6VIBBvL0ynaNYRSrNTVlNJ43bRYnWT5Pjr3mQ8B4IaJTzB85EsnsXr2e
-         0aotyhvG/5OZWWmSl3UxpflJpcyuX7G4Ve0CARJsChC188jJRTaIqtXoKeXRUKRRRsxO
-         JBz4OQQ7ZlfdtBGPr46YREVjYeqgCJ2vPocNn/9dJCRglxRTtomqSiUJKG9CQnisFHoP
-         AX+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708064754; x=1708669554;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=go9pnzcnTe/ILY9pnIwCtci+zv9qwK5zq4OGjkRdcEg=;
-        b=Bv/p1iIEN45tVeXmJIufDURWY3JodQE7OFeWZ2V9LtoJLWvXWewlba7JCdLndHPDbL
-         4Re5WylHq8hUTVrFbE8neozc7+ybzEfj0Rf+Rhtm7syLxdXbCGJ00Mdi4vHDjcyUvYS/
-         3DTLPDbLUZ2Nt+6fAfX/lsg2MZntFsAFIrlV3nb/5SNrkWMpHS9QnB82Il1xprJNH9HZ
-         GZz9dK93xib4QIsZ1fTq+92gmjuZtoxRBX+gqtc5xnpMj5sw3vPm6bMQBV3qMTn6eOJC
-         u1XixAxqTj67e0JAFu//fYzBT+MKYR8LPIkkB83shUGjn45zsN/EUXYnvgw5MwYmmLAu
-         NcoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvlcFAe/KtJy4f15fSpqOK/m5Qk6jZUCiaWMtTVUQtHPrsWGPiUuiTD2lCwQ+5gyI29hElhQVMi5flnbpZw3tsaKwZOsnr0a0zWK8C
-X-Gm-Message-State: AOJu0YzmleIuZ4u04gNYT98/mZ7Mqd78sI/fmsyRv4xaainDb9yR7MP0
-	UL6M1rhMqmrIp0YwaybhKuBP3yaIiY/Qs2miM1VHHNNbcIMKv9rViqQ84V5D8O4=
-X-Google-Smtp-Source: AGHT+IH7EJcml3M4W23V2oRSWcTU5ivUA9Rpf9CNv3pePb82LUOuAhNto94gZ7SLmoyVt9dN2Th53g==
-X-Received: by 2002:a17:90a:fb48:b0:299:3e78:91f6 with SMTP id iq8-20020a17090afb4800b002993e7891f6mr113505pjb.23.1708064753743;
-        Thu, 15 Feb 2024 22:25:53 -0800 (PST)
-Received: from starnight.endlessm-sf.com ([123.51.167.56])
-        by smtp.googlemail.com with ESMTPSA id sh18-20020a17090b525200b00298d8804ba8sm4398089pjb.46.2024.02.15.22.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 22:25:53 -0800 (PST)
-From: Jian-Hong Pan <jhp@endlessos.org>
-To: Bjorn Helgaas <helgaas@kernel.org>,
-	Johan Hovold <johan@kernel.org>,
-	David Box <david.e.box@linux.intel.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Nirmal Patel <nirmal.patel@linux.intel.com>,
-	Jonathan Derrick <jonathan.derrick@linux.dev>,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@endlessos.org,
-	Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH v4 1/3] PCI: vmd: Enable PCI PM's L1 substates of remapped PCIe Root Port and NVMe
-Date: Fri, 16 Feb 2024 14:24:14 +0800
-Message-ID: <20240216062412.247052-3-jhp@endlessos.org>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708064694; c=relaxed/simple;
+	bh=OjNcTROTQuYiQBi7zbRQZh7+zMPm1lCe0wYciCgWBaM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iRLoEPmhv3cxMwXJ6nJHSv64J0NfDOfegZlKUxY8NDkjZ6x6tfvxzftTKxf83BxxcvmLMuBm+4OAY/aktTGExMQvOGBxfXRkKKiijdXpCMSjAnGQWoH2yhkyY4v4Un/8sWFkkemVrW4zYHcdKc/oZrZNAat25416kKlY0w+jaGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=uA/KiaCG; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41G6OS5G010608;
+	Fri, 16 Feb 2024 00:24:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708064668;
+	bh=jR7zLnCATcHDsbKaHff/Ke+5+AL39mtD15RLlVq4wbU=;
+	h=From:To:CC:Subject:Date;
+	b=uA/KiaCGvx1RMBQQmRON4nSIlo5clqTtPNO8bbAjlwqSdSUAAqM1KFxoQlBpONjTj
+	 /nehz3Lw7NcCjWWVkCLgANbwVB7pIV+XRjpsDPD8cOEzuEVi3GekEX+72bAhdkb3D6
+	 LHDzCTbLphoqNDsyvGk029kA8kadimHy+BO47rqs=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41G6ORU3002244
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 16 Feb 2024 00:24:28 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 16
+ Feb 2024 00:24:27 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 16 Feb 2024 00:24:27 -0600
+Received: from localhost (ti.dhcp.ti.com [172.24.227.95] (may be forged))
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41G6OQV7039766;
+	Fri, 16 Feb 2024 00:24:27 -0600
+From: Devarsh Thakkar <devarsht@ti.com>
+To: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>
+CC: <praneeth@ti.com>, <a-bhatia1@ti.com>, <j-luthra@ti.com>,
+        <devarsht@ti.com>
+Subject: [PATCH v5 0/4] Add common1 region for AM62, AM62A & AM65x
+Date: Fri, 16 Feb 2024 11:54:22 +0530
+Message-ID: <20240216062426.4170528-1-devarsht@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,85 +76,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The remapped PCIe Root Port and NVMe have PCI PM L1 substates capability,
-but they are disabled originally.
+This adds DSS common1 region for respective SoCs supporting it.
 
-Here is a failed example on ASUS B1400CEAE:
+Changelog:
+V2 : Remove do-not-merge tag and add am62a dss common1 reion
+V3 : Add Fixes tag to each commit
+V4 : Add Reviewed-by tag and AM62A SoC TRM Link
+V5 : Split dts patch to separate patches for each SoC
 
-Capabilities: [900 v1] L1 PM Substates
-        L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
-                  PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
-        L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
-                   T_CommonMode=0us LTR1.2_Threshold=0ns
-        L1SubCtl2: T_PwrOn=10us
+Devarsh Thakkar (4):
+  dt-bindings: display: ti,am65x-dss: Add support for common1 region
+  arm64: dts: ti: Add common1 register space for AM65x SoC
+  arm64: dts: ti: Add common1 register space for AM62x SoC
+  arm64: dts: ti: Add common1 register space for AM62A SoC
 
-Power on all of the VMD remapped PCI devices before enable PCI-PM L1 PM
-Substates by following PCI Express Base Specification Revision 6.0, section
-5.5.4.
+ .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi                   | 5 +++--
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi                  | 5 +++--
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi                   | 5 +++--
+ 4 files changed, 14 insertions(+), 8 deletions(-)
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
-v2:
-- Power on the VMD remapped devices with pci_set_power_state_locked()
-- Prepare the PCIe LTR parameters before enable L1 Substates
-- Add note into the comments of both pci_enable_link_state() and
-  pci_enable_link_state_locked() for kernel-doc.
-- The original patch set can be split as individual patches.
-
-v3:
-- Re-send for the missed version information.
-- Split drivers/pci/pcie/aspm.c modification into following patches.
-- Fix the comment for enasuring the PCI devices in D0.
-
-v4:
-- The same
-
- drivers/pci/controller/vmd.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index 87b7856f375a..6aca3f77724c 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -751,11 +751,9 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
- 	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
- 		return 0;
- 
--	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
--
- 	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
- 	if (!pos)
--		return 0;
-+		goto out_enable_link_state;
- 
- 	/*
- 	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
-@@ -763,7 +761,7 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
- 	 */
- 	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
- 	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
--		return 0;
-+		goto out_enable_link_state;
- 
- 	/*
- 	 * Set the default values to the maximum required by the platform to
-@@ -775,6 +773,13 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
- 	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
- 	pci_info(pdev, "VMD: Default LTR value set by driver\n");
- 
-+out_enable_link_state:
-+	/*
-+	 * Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
-+	 * PCIe r6.0, sec 5.5.4.
-+	 */
-+	pci_set_power_state_locked(pdev, PCI_D0);
-+	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
- 	return 0;
- }
- 
 -- 
-2.43.2
+2.34.1
 
 
