@@ -1,128 +1,160 @@
-Return-Path: <linux-kernel+bounces-69179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2D4858571
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:42:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C977185858D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:45:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A6EB1F22054
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:42:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 016081C229F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717431353E2;
-	Fri, 16 Feb 2024 18:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BE01487D5;
+	Fri, 16 Feb 2024 18:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OUJFcnwO"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DLxdkdtb"
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9061DFC1;
-	Fri, 16 Feb 2024 18:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02FEC146912
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108916; cv=none; b=pICBqRhaLznZxiLzf16hLy5mHCQn4lbFkEnze0zvEjjdH9KOwHjQ/i8tPgf9ZLVhTAf6KX7v2CjKhdwHx4CW3GqeR1mD8zGRD9YabG4SVbGUcHq5upd7u7W/iFUZuP5xsNInmJwVcR8RbBABUTdhguZ2PKn/uNo2En2ap0YuG9s=
+	t=1708108947; cv=none; b=CHmiclOoAkWP923z5vcbSMwyrTR5syGmEPmfklcX5yZuGb5q9ZvlfxMo8rAchqilRAQ3bWwN3HgsvVquWLSGYLOWviAFaPTH/AeXJgGg8RJObmAB8ukkRAUWD4+4rZpAYyDwEj6XeeI1BMs27jBZwOLQUQMmgFlDzz8lJ1wNf94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108916; c=relaxed/simple;
-	bh=Zf7/xKVUtC3FLAgXvdomOnhF/wHgDc9OrVC5WgqEjok=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KERtv4b3Srza5iI2Srv+Bu2tU7Bw8lkIeiOG18eMBKs2kQ2qwVagsgnvPcIY12BH+O65OMjeFgiNoR8BsBHCUuocX/1TkEjzG3ny937FeGsKlB3ATA59A/2ffmY2xQp51kgUZI0QFSJg+pqeD3qJoO8fcJAk2HVdD64YkuiynNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OUJFcnwO; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1da0cd9c0e5so26474155ad.0;
-        Fri, 16 Feb 2024 10:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708108915; x=1708713715; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XjQgdkE/jPZ++9MXgFHn+9XTMWAWyikiws9QFHGLfSA=;
-        b=OUJFcnwO7S8RziH7/smI+f+R9/72Y3b7o2rggjFsmd0AhJus6bjUyrjAVFQweUn1QX
-         C0s//Pc0V1F/BfUINMBTU/65s/fX4LoYamY6wW+Z1gUfh7/g27P7lFQ1XWTUrWkbsRYP
-         oE8YqlcT4yBXa0hRREWjvgHTukr+jhUGaSSb4txk6bI/obWDGaGpznyvL6FADRHRHUAs
-         2NOQaqlzWybI83gBK/Qj+tUvHbL1s42HCG7c+uw0HgxatSEvCiRtGoml+yJgXYcW9joa
-         R7h4SZlmJ2q0TdgcGa5hQfbW7KMtjCLbb8NgPhNVqH7oYD2Oc15Ukp/2yrCtL5H+Z3L/
-         B4Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708108915; x=1708713715;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XjQgdkE/jPZ++9MXgFHn+9XTMWAWyikiws9QFHGLfSA=;
-        b=o5sAc2uVYeemQeyxmkKmy0rs1bCeEEgvaXE7sTrTeCzJcGh7Edk7e+ZAy74wGhjbuj
-         LgCl0e0jVPiK5WVyOaIgUcpEt8MttzT6gree4rEkPJdXE5xYfgq47nwQ/DNHNdIN2ACK
-         7pycr4H6F2xMh1ow1yzVMewBHi/ctAy9PCJ9CnCbRHzg3Dx7VJYGzm44/ADd0lmY7K1h
-         l8amLaaobHc2IRD4NZdfcvHPTqb5uantmoEQS8euP9B498zHTjyR4GPPy1I6ptgEO6+L
-         iFbZSsaozUPbePQ2TQfeawAvc8wnDLMHLPetIIgBDu84z4wqmOF6quBMwVTm00UylS2e
-         J+Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCVN7LPj+G0GI1e0BrypeDQOGLAgaGDJ/wCBtb4t6mg+xi7zgBqlBXOR3lWPmj8nkW9f/6eEehzZAet65VU3f7pxbusJy1s1xLJ+2jzOG78dT3ItmGHG4WN9Guem72W/QprYP7un
-X-Gm-Message-State: AOJu0YyxsnRhJ2pMcWhMOsrcE4bOZROpyMOCxcw5vUnwzpRTuppnE/So
-	xJqUo6Z/d8amrVGI4FjFfGzamNBr5n8ZXC6Z+06KgQ/+a4IbwXx2
-X-Google-Smtp-Source: AGHT+IHdMFXim/u4KxeWeVJTCZ0KkraNd/DjUzriSD2xX/sF7NRPdtUWtrNXgTS3sajSEZupo6LydQ==
-X-Received: by 2002:a17:902:ce8e:b0:1da:1fe7:cacf with SMTP id f14-20020a170902ce8e00b001da1fe7cacfmr9406297plg.25.1708108914685;
-        Fri, 16 Feb 2024 10:41:54 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id jw6-20020a170903278600b001d9620dd3fdsm173858plb.206.2024.02.16.10.41.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 10:41:54 -0800 (PST)
-Message-ID: <0e0ba573-1ae0-4a4b-8286-fdbc8dbe7639@gmail.com>
-Date: Fri, 16 Feb 2024 10:41:52 -0800
+	s=arc-20240116; t=1708108947; c=relaxed/simple;
+	bh=YOt99fgiOeGafpp1nEhSIUqA34CgCiK6op8GicPElws=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=c6cL/+krNqC6ZHADvOpE+9t9GJwdBOllN0Ya0Yt+Lo9Zl0N9i8PX0P427XgVE6sPNMcUk0SD1+f/TFx6T5se5d25JxGbncLDgHuCIVXVr44iHl3WO8s8u8RPo4JuZ47kYAaz4VWNBUnWqtqelVz32ByeKkyCY64R4K1E3M6ToTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DLxdkdtb; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708108944;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+6/2b6cdY93cfhwg+wgl1iJpv6T7icr8cPzff5WRiiM=;
+	b=DLxdkdtbNwcuA4gLo4jd1yD05qIOD+omQNvakwfPpgTo6UMoTeIbl9XzhWZhJZwtRffA+j
+	S6COGILK/oPKkNX85TmWz314nYUf1N7NFk3Rob9ONKeUXrHUuFrI9W4PpXWgZer+wkhrb/
+	NjTdniGek0pEoQhqcV0ARz6GeS0cHrQ=
+From: Oliver Upton <oliver.upton@linux.dev>
+To: kvmarm@lists.linux.dev
+Cc: kvm@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-kernel@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>
+Subject: [PATCH v3 10/10] KVM: arm64: vgic: Don't acquire the lpi_list_lock in vgic_put_irq()
+Date: Fri, 16 Feb 2024 18:41:53 +0000
+Message-ID: <20240216184153.2714504-11-oliver.upton@linux.dev>
+In-Reply-To: <20240216184153.2714504-1-oliver.upton@linux.dev>
+References: <20240216184153.2714504-1-oliver.upton@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: sysfs: Do not create sysfs for non BQL
- device
-Content-Language: en-US
-To: Stephen Hemminger <stephen@networkplumber.org>,
- Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- horms@kernel.org, Johannes Berg <johannes.berg@intel.com>
-References: <20240216094154.3263843-1-leitao@debian.org>
- <20240216092905.4e2d3c7c@hermes.local>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240216092905.4e2d3c7c@hermes.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2/16/24 09:29, Stephen Hemminger wrote:
-> On Fri, 16 Feb 2024 01:41:52 -0800
-> Breno Leitao <leitao@debian.org> wrote:
-> 
->> +static bool netdev_uses_bql(const struct net_device *dev)
->> +{
->> +	if (dev->features & NETIF_F_LLTX ||
->> +	    dev->priv_flags & IFF_NO_QUEUE)
->> +		return false;
->> +
->> +	return IS_ENABLED(CONFIG_BQL);
->> +}
-> 
-> Various compilers will warn about missing parens in that expression.
-> It is valid but mixing & and || can be bug trap.
-> 
-> 	if ((dev->features & NETIF_F_LLTX) || (dev->priv_flags & IFF_NO_QUEUE))
-> 		return false;
-> 
-> Not all drivers will be using bql, it requires driver to have that code.
-> So really it means driver could be using BQL.
-> Not sure if there is a way to find out if driver has the required BQL bits.
+The LPI xarray's xa_lock is sufficient for synchronizing writers when
+freeing a given LPI. Furthermore, readers can only take a new reference
+on an IRQ if it was already nonzero.
 
-There is not a feature flag to be keying off if that is what you are 
-after, you would need to audit the drivers and see whether they make 
-calls to netdev_tx_sent_queue(), netdev_tx_reset_queue(), 
-netdev_tx_completed_queue().
+Stop taking the lpi_list_lock unnecessarily and get rid of
+__vgic_put_lpi_locked().
 
-I suppose you might be able to programmatically extract that information 
-by looking at whether a given driver object file has a reference to 
-dql_{reset,avail,completed} or do that at the source level, whichever is 
-easier.
+Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+---
+ arch/arm64/kvm/vgic/vgic-its.c |  4 ++--
+ arch/arm64/kvm/vgic/vgic.c     | 21 ++++-----------------
+ arch/arm64/kvm/vgic/vgic.h     |  1 -
+ 3 files changed, 6 insertions(+), 20 deletions(-)
+
+diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+index c3d1bca0b458..d84cb7618c59 100644
+--- a/arch/arm64/kvm/vgic/vgic-its.c
++++ b/arch/arm64/kvm/vgic/vgic-its.c
+@@ -647,7 +647,7 @@ static void vgic_its_cache_translation(struct kvm *kvm, struct vgic_its *its,
+ 	 * was in the cache, and increment it on the new interrupt.
+ 	 */
+ 	if (cte->irq)
+-		__vgic_put_lpi_locked(kvm, cte->irq);
++		vgic_put_irq(kvm, cte->irq);
+ 
+ 	/*
+ 	 * The irq refcount is guaranteed to be nonzero while holding the
+@@ -684,7 +684,7 @@ void vgic_its_invalidate_cache(struct kvm *kvm)
+ 		if (!cte->irq)
+ 			break;
+ 
+-		__vgic_put_lpi_locked(kvm, cte->irq);
++		vgic_put_irq(kvm, cte->irq);
+ 		cte->irq = NULL;
+ 	}
+ 
+diff --git a/arch/arm64/kvm/vgic/vgic.c b/arch/arm64/kvm/vgic/vgic.c
+index 2a288d6c0be7..c8208f81fdc8 100644
+--- a/arch/arm64/kvm/vgic/vgic.c
++++ b/arch/arm64/kvm/vgic/vgic.c
+@@ -110,13 +110,13 @@ static void vgic_irq_release(struct kref *ref)
+ {
+ }
+ 
+-/*
+- * Drop the refcount on the LPI. Must be called with lpi_list_lock held.
+- */
+-void __vgic_put_lpi_locked(struct kvm *kvm, struct vgic_irq *irq)
++void vgic_put_irq(struct kvm *kvm, struct vgic_irq *irq)
+ {
+ 	struct vgic_dist *dist = &kvm->arch.vgic;
+ 
++	if (irq->intid < VGIC_MIN_LPI)
++		return;
++
+ 	if (!kref_put(&irq->refcount, vgic_irq_release))
+ 		return;
+ 
+@@ -126,19 +126,6 @@ void __vgic_put_lpi_locked(struct kvm *kvm, struct vgic_irq *irq)
+ 	kfree_rcu(irq, rcu);
+ }
+ 
+-void vgic_put_irq(struct kvm *kvm, struct vgic_irq *irq)
+-{
+-	struct vgic_dist *dist = &kvm->arch.vgic;
+-	unsigned long flags;
+-
+-	if (irq->intid < VGIC_MIN_LPI)
+-		return;
+-
+-	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
+-	__vgic_put_lpi_locked(kvm, irq);
+-	raw_spin_unlock_irqrestore(&dist->lpi_list_lock, flags);
+-}
+-
+ void vgic_flush_pending_lpis(struct kvm_vcpu *vcpu)
+ {
+ 	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+diff --git a/arch/arm64/kvm/vgic/vgic.h b/arch/arm64/kvm/vgic/vgic.h
+index f874b9932c5a..0c2b82de8fa3 100644
+--- a/arch/arm64/kvm/vgic/vgic.h
++++ b/arch/arm64/kvm/vgic/vgic.h
+@@ -180,7 +180,6 @@ vgic_get_mmio_region(struct kvm_vcpu *vcpu, struct vgic_io_device *iodev,
+ 		     gpa_t addr, int len);
+ struct vgic_irq *vgic_get_irq(struct kvm *kvm, struct kvm_vcpu *vcpu,
+ 			      u32 intid);
+-void __vgic_put_lpi_locked(struct kvm *kvm, struct vgic_irq *irq);
+ void vgic_put_irq(struct kvm *kvm, struct vgic_irq *irq);
+ bool vgic_get_phys_line_level(struct vgic_irq *irq);
+ void vgic_irq_set_phys_pending(struct vgic_irq *irq, bool pending);
 -- 
-Florian
+2.44.0.rc0.258.g7320e95886-goog
 
 
