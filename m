@@ -1,116 +1,201 @@
-Return-Path: <linux-kernel+bounces-69373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276B0858831
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5725E858834
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D08A31F23238
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:46:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 854971C2164C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDCF1482F0;
-	Fri, 16 Feb 2024 21:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B0F146904;
+	Fri, 16 Feb 2024 21:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TdZbvg5k"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cYi8K41L"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8326145B03
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:45:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A819E12CDBC;
+	Fri, 16 Feb 2024 21:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708119957; cv=none; b=MX8og+tL6ByCBPvHLoX03ViOl5QHF+Is4nCVgf3ZxF2ApdtKK+VIewUa2Ifgenz7y9UGahaJ7M1AgWEWH+Mdhg9cmyOAxO8+Vieo8t/gm3dzrwEuQFBV3ltlg45GLACrqukoIG/SYWJqFo/AfMsDCrc7Tnd2gLPPBPpUe3P2mFw=
+	t=1708120001; cv=none; b=oTZAvfks/Jir8xsr77mdEwluh4tkGpgtUqcTRTESA+CP1xm/nIBiWQvWWVNm4Jwri8WsxHzba+ie2G70XClBQEi1p9XgO7ChrA8ErZ6BMT8uCYdT/da5a03IegpkND4rk2oGbCdFMjDhzAPts+kOdjKW39TFdO3TI8GTG3VVryI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708119957; c=relaxed/simple;
-	bh=sWcb4QWZQerF6dGRRf3Saf0ygsiHNPwWHpaQ0U2ubAU=;
+	s=arc-20240116; t=1708120001; c=relaxed/simple;
+	bh=GBzUaQTzQIXEH3jwfRFQFMZy7ku57c714xxsPdAdDks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fX4I3CKclvLx6zvzgu+G6bGjh1p7BOhBMfmN5CEqmkzMeJ2tAyGRr2uFS0orlcIpftJTslluvE3sStNf5kvv8qDKydWUYK+OvwItrEwYReB6NZ2hN/f+WjMHaPEuMuC03u1zEduLoydujOm4JE7GAxPaE3Kj4OoGcC5F5qy3rls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TdZbvg5k; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59fa37c33dbso433769eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:45:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708119954; x=1708724754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jksvwB5iTFy80QFc8o5j3z92gnehVl2fAGc//WCCKZg=;
-        b=TdZbvg5k1WzoSRChsZ8ZH0hIBJkpubl4faHGJBahsAR4Rn1FbSpuNIqXbeQxN+Lqv3
-         cl5u9EIsM6UTMHn1zhkGC3A8fvhn+6ZBQ0aSS07tZXNk8Ix1XkWGigxhdKpvhSubBrYd
-         irmgEFLSC+x384R3lGCtxIpLBrVn8qbSNCONA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708119954; x=1708724754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jksvwB5iTFy80QFc8o5j3z92gnehVl2fAGc//WCCKZg=;
-        b=UAPsZyrq1C2wOQsLn/pL34w0vLZTWp7qANxvI+4cYnWJxyhS/qcN4gfISIVhySlVkf
-         g1MWFfP2c6W9z/XPoNmgxxZJgfoHrWDBSDHreTdkiJNAIycnhJ8Iv6w+lTpp24SMF5wo
-         2rydAPt57SEC9jjFGZdEOEKtc7ftPRblYpJx3aQMGnQpFfWPmknJT2jaOQdZa5K66fxy
-         mZb6gr5RBJpNKPhtcaZ/CC4xOdneEsQBalINwvIWBpg0a03BZ6z9Dm9WqhyCRSmgzxJn
-         axROuV3WPSeykq/kWsY9AT+7rzNTD+DlGi1KDrd2G3XS7AMDHAMPp7g5ohQ1J0MnvLvv
-         Ecvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmG+mtiT4xgzLVIG/lXoPOEwhN4MnTK3dh4scKJrqkxRXelPsexJWhzWlTWOJzKaPzDdKmQgxKnaaL1rpAQlxq6ju7kr99ExO6ml7j
-X-Gm-Message-State: AOJu0Ywhq3ivJhZ68v+g9vjrkYwGJ+9A/EyXcleWS6x62J0aoW1AuG00
-	IIxIF9WqjhAWgonyt9I2s5olbJ4Yld/UGbBmOejU3mKfwwd7i8LTVf7RVzMaMtH3fsQTG542y50
-	=
-X-Google-Smtp-Source: AGHT+IF9+vJFbk3kmtKKuYnkYafkp2Qrd9UzE5RWwOf99PqpIE62RSHCclH6Xu0D7RM+/Fd/EwCtzg==
-X-Received: by 2002:a05:6358:648b:b0:179:2136:9971 with SMTP id g11-20020a056358648b00b0017921369971mr6537867rwh.11.1708119953974;
-        Fri, 16 Feb 2024 13:45:53 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b11-20020a6567cb000000b005dcbb855530sm296297pgs.76.2024.02.16.13.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 13:45:53 -0800 (PST)
-Date: Fri, 16 Feb 2024 13:45:52 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fortify: Include more details when reporting overflows
-Message-ID: <202402161343.DC688FDB@keescook>
-References: <20240216203935.work.829-kees@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BGDG6Jfp4dRhTdKwILgk5VsWvuv5BRz6Fh4yQObUy1Xgt09iNDS0gb+W6sQePmr7Vy8m4I3wkpoY6OaKlpC5NNmCiFC5zJ0WVaM9RzOnS4SXfGgsFvBCwOv9Hz9Zj09NHvEUrDF1QQHacqznn8h6tKAAtRw1mVtVMjqF8rhlq8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cYi8K41L reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 617F340E00B2;
+	Fri, 16 Feb 2024 21:46:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id cpescH5LrsrR; Fri, 16 Feb 2024 21:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708119993; bh=DMZt+yXqUGedwpCJ2zmwPDYvJ2VbTlzxw7/c4wws5E0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cYi8K41Ly2JMpJv2SfCy29Fg1W2su34spl64iCzzqTnxb+4UICFx+ojVY6R7Iv8xX
+	 9n9zOuZNpGfji9+IuZcZRkMCeTQv/g9ICUxxuCv1MbfXyd2ROjQym9MwefnZQdlrbD
+	 d1hap9xFbXYR+/xpD+h5hjS4NlKpXm/oUO4jysId+j9F52xRYq2moAXDH2INwHH1c6
+	 KZQfR7hHBi7YF81b81vs0W40k+JhyBwKpFltGaNK8TAoJ35sV8JBQzaW/xHqeo1hsO
+	 Dwnj/o/W/Zh5PRn1Ce4T8TP7gg3p90XgWRz5gzztFq1J1AeqBc5kCkxY6bQilt2Obg
+	 7kQw/yxcSgLTgg0gQJ2PdEEVGOGxw2Jeh1aeRIDu9E105117EWeFgeITh3+j4thFly
+	 qCcOXz3q3FTQzSghhqv9dP6bUkDGhDsepFd4XCOIS0e7zOFXhBGDH1V40p6bD5ziT8
+	 98Do8ZlQHL0Y+GgSOUcx3F7xhjr+eJo1DGr1RxkpdOgUuboae9UXsszPBlAlhshd4d
+	 BWV0O1nZ9ybdFZkfwtG+6Fv4dieRMFw5vNfLLS7S7ZeMzEYqbA6ygbzjaC1rpXGz74
+	 lSYzIb2qgHqikEDfdfFks39FpgLXAwaQUW8kx2435GBzak9TPTSKYp2QzmgaDtRMh0
+	 FBUSgTczgtCshqCRj7qBDEP0=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2D5940E0192;
+	Fri, 16 Feb 2024 21:46:22 +0000 (UTC)
+Date: Fri, 16 Feb 2024 22:46:17 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Xin Li <xin@zytor.com>, Sean Christopherson <seanjc@google.com>,
+	Max Kellermann <max.kellermann@ionos.com>, hpa@zytor.com,
+	x86@kernel.org, linux-kernel@vger.kernel.org,
+	Stephen Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org,
+	Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
+ disabled
+Message-ID: <20240216214617.GBZc_XqVtMuY9_eWWG@fat_crate.local>
+References: <20240215133631.136538-1-max.kellermann@ionos.com>
+ <Zc5sMmT20kQmjYiq@google.com>
+ <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
+ <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240216203935.work.829-kees@kernel.org>
+In-Reply-To: <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 12:39:41PM -0800, Kees Cook wrote:
-> When a memcpy() would exceed the length of an entire structure, no
-> detailed WARN would be emitted, making debugging a bit more challenging.
-> Similarly, other buffer overflow reports would have no size information
-> reported.
->
-> Always warn for memcpy() overflows, but distinguish between the two
-> cases in the message before continuing (warn-only) or blocking the copy
-> (hard-fail). Additionally add size information to existing overflow
-> reports.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
++ Arnd for
 
-This will need a v2 ... something in my manipulations is triggering a
-bizarre warning in Clang:
+https://lore.kernel.org/r/20240216202527.2493264-1-arnd@kernel.org
 
+On Fri, Feb 16, 2024 at 07:31:46AM +0100, Paolo Bonzini wrote:
+> On 2/16/24 03:10, Xin Li wrote:
+> > On 2/15/2024 11:55 AM, Sean Christopherson wrote:
+> > > +Paolo and Stephen
+> > >=20
+> > > FYI, there's a build failure in -next due to a collision between
+> > > kvm/next and
+> > > tip/x86/fred.=C2=A0 The above makes everything happy.
+> > >=20
+> > > On Thu, Feb 15, 2024, Max Kellermann wrote:
+> > > > When KVM is disabled, the POSTED_INTR_* macros do not exist, and =
+the
+> > > > build fails.
+> > > >=20
+> > > > Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code=
+")
+> > > > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> > > > ---
+> > > > =C2=A0 arch/x86/entry/entry_fred.c | 2 ++
+> > > > =C2=A0 1 file changed, 2 insertions(+)
+> > > >=20
+> > > > diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_f=
+red.c
+> > > > index ac120cbdaaf2..660b7f7f9a79 100644
+> > > > --- a/arch/x86/entry/entry_fred.c
+> > > > +++ b/arch/x86/entry/entry_fred.c
+> > > > @@ -114,9 +114,11 @@ static idtentry_t
+> > > > sysvec_table[NR_SYSTEM_VECTORS] __ro_after_init =3D {
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SYSVEC(IRQ_WORK_VECTOR,=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 irq_work),
+> > > > +#if IS_ENABLED(CONFIG_KVM)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SYSVEC(POSTED_INTR_VECTOR,=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_posted_intr_ipi),
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SYSVEC(POSTED_INTR_WAKEUP_VECTOR,=C2=
+=A0=C2=A0=C2=A0 kvm_posted_intr_wakeup_ipi),
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SYSVEC(POSTED_INTR_NESTED_VECTOR,=C2=
+=A0=C2=A0=C2=A0 kvm_posted_intr_nested_ipi),
+> > > > +#endif
+> > > > =C2=A0 };
+> > > > =C2=A0 static bool fred_setup_done __initdata;
+> > > > --=20
+> > > > 2.39.2
+> >=20
+> > We want to minimize #ifdeffery (which is why we didn't add any to
+> > sysvec_table[]), would it be better to simply remove "#if
+> > IS_ENABLED(CONFIG_KVM)" around the the POSTED_INTR_* macros from the
+> > Linux-next tree?
+> >=20
+> > BTW, kvm_posted_intr_*() are defined to NULL if !IS_ENABLED(CONFIG_KV=
+M).
+>=20
+> It is intentional that KVM-related things are compiled out completely
+> if !IS_ENABLED(CONFIG_KVM), because then it's also not necessary to hav=
+e
+>=20
+> # define fred_sysvec_kvm_posted_intr_ipi                NULL
+> # define fred_sysvec_kvm_posted_intr_wakeup_ipi         NULL
+> # define fred_sysvec_kvm_posted_intr_nested_ipi         NULL
+>=20
+> in arch/x86/include/asm/idtentry.h. The full conflict resultion is
+>=20
+> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+> index ac120cbdaaf2..660b7f7f9a79 100644
+> --- a/arch/x86/entry/entry_fred.c
+> +++ b/arch/x86/entry/entry_fred.c
+> @@ -114,9 +114,11 @@ static idtentry_t sysvec_table[NR_SYSTEM_VECTORS] =
+__ro_after_init =3D {
+>      SYSVEC(IRQ_WORK_VECTOR,            irq_work),
+> +#if IS_ENABLED(CONFIG_KVM)
+>      SYSVEC(POSTED_INTR_VECTOR,        kvm_posted_intr_ipi),
+>      SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    kvm_posted_intr_wakeup_ipi),
+>      SYSVEC(POSTED_INTR_NESTED_VECTOR,    kvm_posted_intr_nested_ipi),
+> +#endif
+>  };
+>  static bool fred_setup_done __initdata;
+> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idt=
+entry.h
+> index 749c7411d2f1..758f6a2838a8 100644
+> --- a/arch/x86/include/asm/idtentry.h
+> +++ b/arch/x86/include/asm/idtentry.h
+> @@ -745,10 +745,6 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,        sy=
+svec_irq_work);
+>  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,        sysvec_kvm_posted_i=
+ntr_ipi);
+>  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    sysvec_kvm_poste=
+d_intr_wakeup_ipi);
+>  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,    sysvec_kvm_poste=
+d_intr_nested_ipi);
+> -#else
+> -# define fred_sysvec_kvm_posted_intr_ipi        NULL
+> -# define fred_sysvec_kvm_posted_intr_wakeup_ipi        NULL
+> -# define fred_sysvec_kvm_posted_intr_nested_ipi        NULL
+>  #endif
+>  #if IS_ENABLED(CONFIG_HYPERV)
+>=20
+> and it seems to be a net improvement to me.  The #ifs match in
+> the .h and .c files, and there are no unnecessary initializers
+> in the sysvec_table.
 
-./fs/dlm/rcom.c:490:13: error: member reference type 'int' is not a pointer
-  490 |         memcpy(rc->rc_buf, rc_in->rc_buf, sizeof(struct rcom_lock));
-      |                ~~  ^
-./include/linux/fortify-string.h:636:47: note: expanded from macro 'memcpy'
-  636 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-      |                                               ^
-./include/linux/fortify-string.h:591:20: note: expanded from macro '__fortify_memcpy_chk'
-  591 |         __underlying_##op(p, q, __fortify_size);                        \
-      |                           ^
+Ok, I'll pick up Max' patch tomorrow and we must remember to tell Linus
+during the merge window about this.
 
+Thx.
 
-I'll track it down...
+--=20
+Regards/Gruss,
+    Boris.
 
---
-Kees Cook
+https://people.kernel.org/tglx/notes-about-netiquette
 
