@@ -1,76 +1,79 @@
-Return-Path: <linux-kernel+bounces-68175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B269E8576D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:31:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96BB98576D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4A6C1C21351
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:31:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BC221F21483
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0E117584;
-	Fri, 16 Feb 2024 07:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC37168DA;
+	Fri, 16 Feb 2024 07:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JglQ2D7x"
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GojglAen"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7D214F64;
-	Fri, 16 Feb 2024 07:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD89C12E78;
+	Fri, 16 Feb 2024 07:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708068657; cv=none; b=CDTuQdPqOg+NheLfQjHPMfqZmUSRYol5muUkS3cQM5e2f9yyRad7OVmHbacVRtUhlihFMUY7Vl7Guox/Q/Q0a39YkUic75cxfgzb015vQz2TMU+iWuf9Nv/46hvJtH1rqX9whhM7oPBQ4u9HqUEB9XB0CinR3Bod903nJHEclis=
+	t=1708068801; cv=none; b=LJW/CIS8FI2aevGKYyTp6NYo9bC8YpM181zs0PWfQJ4h26sdfBQ4TvdduwOn4v/4A2CPvY4YiEdsqS18OoF4tAbiT0Sc2EvVWWtp6G973udGUdJGhcvxb/wt2vwQoizvSk/CCAFstniQaoz9SOQLFXC+re+8JiXGXKkltTDqtM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708068657; c=relaxed/simple;
-	bh=il5N1vnmpl55nKiBSWodnniLgzwmVnkncxtusVGJsMM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=IzLIKSgk7gNWc3E5WFkTf5e21tHsO0noEwGOI1jvh+AvMcHGDBQs/DZ7LL+ZMeuMP8HSANvdQBarrYUQy/C0cLqARmiJ8Bbz3c3Rjbp2XCnBIqp8OP7JXk8TTPGuayluUVMUKWhMBgY5Y9+TrzZj/SW/JpIo9EbofMxdwtTBJwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=JglQ2D7x; arc=none smtp.client-ip=203.205.221.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1708068650; bh=LI7+HfgPn91X8B3ek8ngduF8UyNONzqL8p0IqpzD8OY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=JglQ2D7xWlF+jVeRZBQCYSfWeujkI2+Z/N52xLrrRIYJRtiaXcmZMSI85Z2z+Spfq
-	 yxzgLQgRU7QNGUw1WUuhVYR6C5azLNuDjlM8u9h8Qjgz+Hn8EHh1zuTUJ4MrGr+P/r
-	 lCWZgGxJ6eOzoWDXOSk0p3T2OBrOzjkZqhA8DwkM=
-Received: from pek-lxu-l1.wrs.com ([36.129.58.158])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id 7AF038ED; Fri, 16 Feb 2024 15:30:47 +0800
-X-QQ-mid: xmsmtpt1708068647tzqympn6w
-Message-ID: <tencent_19D16EF24CA0E7F686C252C8C66D49A2AE06@qq.com>
-X-QQ-XMAILINFO: NhpLzBn2I3XwYSLVf/8Xh+7+MIRs05BE/7Vh5PSJieJn3W2fTye9GkDn6FJ70g
-	 xXdV/4O6/JYaFIHCw6UHV38RuHI6rhuZrjL7IrUuX+hakjaXZYY94m+sgAU7CGy+x2MOaZZONIaC
-	 iF2+NjBGCJ3/5GzpORsuxFio8wpZNqVi/0dxECcIZXwx91R+RUv26/quIc8i4es2kVO17wdWwBor
-	 J2uXIsmhmHnP6fmx8GOUn7ejfFbYq2D0f2kxw1+U9AySXwP4g6jQqAvmldae34dmYO/mHFWfPjeb
-	 WxmUkNfxFPrah53xVNXuLZFp7eyQNLjjpq/uPuyXCiJON6RSwRSZuJDDz1eFWn0MN66RPyETjhxT
-	 5JJXIqdHXza3DnHQTgkuKywCBnWkaRfAE4hdZc7N7Vh109XsKXODV1XzWL2UedzjzrMbs4cWEYVt
-	 K/H0qpc31pDDXUC/5ptxnmjYQMwxPg2yxwp75t7IysYYrSdvn28UTeEH41NITDWSYkCuSHkLZo0s
-	 K0LTIKYRmZtoDIxydWPLZwIHb9d1Nw1qtxRwyU3SE/026t5DtjKOl3WkpcaHJsC7t0dbwnRjkviT
-	 NXF+s60ZYCt4wHVXUcEMfe1yGfHt5pn4wcjKTyyaL0mHOMmfABqoZyM3T6brzpgcAsBV90CXO6eM
-	 6s4c1Yl/k/yx0A+v8qTkQmwB8NNa5931sYTkHyMQ+ZqYGILq3GBbg6ARu18BCnfvWnnOeRi8mPjN
-	 Ns8BoPHHBC90b5rq+DFEQbHFfUWWbyWEqfnQt4P6NxppxdnozrMhnqcbSYZ77G7lAwEszTfuSpXB
-	 UmwmaIljwPOVlz5izt9B+cmf6Y+F1TF+krGYOKhJ0ku1JW/GCOk+ULtadcCVfiHSiLIEApVxIYXp
-	 IiB7XnEprRNUuffUXA74Wnhlsgt9PwW/xO/6XtffWJ4Zmf4USrKpRCu8OSANW4qA==
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
-Cc: isely@pobox.com,
+	s=arc-20240116; t=1708068801; c=relaxed/simple;
+	bh=JrFYOs2FPwXmy1/XqxjA+hM8SVuG/+lRE4KuH28UyIQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m+lkVy0ySrJWHDPUnzTEz8sLHwLwX8njaJhxxiZX1bXuYIOQmkfTZK+ahE4U6K+lHJVFdKxoU1/hsj6ufHderuz2QPn9Iohb4/MxWot/+oHlYxD+Yk4pmNyeZoyk7/lrSoc4BsWj03geYlcDx97xkQhaqGAFKZjmbTmX43ehay4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GojglAen; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d94b222a3aso16570005ad.2;
+        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708068799; x=1708673599; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
+        b=GojglAenlNi0EnQJb3tIkM/u89ntEnEhLAGtRAOxrR/YorRBL2r//5aiEIKpuOaB2m
+         1JA48yUCxAGeqPEeOh9BzNHROV+UDuw6b4EFvBv5f5gOPuG+2kPmvVzZco88MeyEYA/Z
+         YOm4VA69fySIMuFADHHV+937tVWa3HZFDeqkNzR9tIHv1pbJNS+hL/IR5kMU6z4k19KY
+         1kinCRBD2A5kUWPTDq/R6rPS5qDpK4Zcg6QETvL/UK2fLazHXj0nkXnV4br7IFOAfrXu
+         0OMQ4NZ+DE2/S+1sc3ZBZLwjAHeS5Q6s6oYdhSWWH7SZ22+SKKfkKg8D4wJruKSc3v11
+         nIbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708068799; x=1708673599;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CMrR5jQVO31f2C7rY/OyhbWryGnGfhcw/HWvAL8HISw=;
+        b=RAYoNZA/omPU+TJZIEgyoQ+QDZ6pGy+Sl9bx8hKrTJdLSU8jgTVP8D5aeiaS/q0SOo
+         p7TOB2dmtTsBA1uVMJ1TQEhQ9AvOZ/jNl3pvgWpywNT9U7/qjDQFKzEtvc7sgvaGKSnv
+         2Hg7MGvIzX6mSewPqHPaKGrx/n++n6Y7hm8676/5hRwgaNeD7C3LbAfW5xNfqlnTaAOh
+         Y2VgNwoCAyUkAMiWDFQitAWYnWx5MZFcDa4gycOTDhKfyCsMgfzg8Z/AOLqScVqzh/iH
+         XeQ33MJSYHQLTnjd63VCyYhvd8xhXct4y/OFOY/HsZjUeQu9SmXQmlch5ITBv4hvQy9G
+         eCzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt7d9P/9S0aFggW9rYhvzDoW+RTEogK2K+lnAWDua8emgx5tYQZnAWib2oZLz6iIdXrMK9d6UivaAbZR3R7dQ8nz3877ORF//kN3Kc
+X-Gm-Message-State: AOJu0YzYyJqLjlucmZETBsVhuTzgkG9QQTnjtcuBFUxl6KKA/OWbYc5Q
+	X8wRBxQf16EZVXW7EhMvaf3EQGrvZXz1Gav7pbGVewfVhQRxE9EC
+X-Google-Smtp-Source: AGHT+IFr+SagVtSO4PmH1xd1WdlIdpB5MqwREa//fHVExHaysAvSPd55ite6cpQYSsFOtL+XMQw1TQ==
+X-Received: by 2002:a17:902:d4c3:b0:1d9:a647:5566 with SMTP id o3-20020a170902d4c300b001d9a6475566mr4766249plg.4.1708068799003;
+        Thu, 15 Feb 2024 23:33:19 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r10-20020a1709028bca00b001db7d3276fbsm2367607plo.27.2024.02.15.23.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 23:33:17 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-parisc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	mchehab@kernel.org,
-	pvrusb2-owner@isely.net,
-	pvrusb2@isely.net,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH usb] media/pvrusb2: fix uaf in pvr2_context_set_notify
-Date: Fri, 16 Feb 2024 15:30:47 +0800
-X-OQ-MSGID: <20240216073046.1137237-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000028b68806103b4266@google.com>
-References: <00000000000028b68806103b4266@google.com>
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] parisc/unaligned: Rewrite 64-bit inline assembly of emulate_ldd()
+Date: Thu, 15 Feb 2024 23:33:15 -0800
+Message-Id: <20240216073315.3801833-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,67 +82,85 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-[Syzbot reported]
-BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
-Read of size 4 at addr ffff888113aeb0d8 by task kworker/1:1/26
+Convert to use real temp variables instead of clobbering processor
+registers. This aligns the 64-bit inline assembly code with the 32-bit
+assembly code which was rewritten with commit 427c1073a2a1
+("parisc/unaligned: Rewrite 32-bit inline assembly of emulate_ldd()").
 
-CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.8.0-rc1-syzkaller-00046-gf1a27f081c1f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
- pvr2_context_notify drivers/media/usb/pvrusb2/pvrusb2-context.c:95 [inline]
- pvr2_context_disconnect+0x94/0xb0 drivers/media/usb/pvrusb2/pvrusb2-context.c:272
+While at it, fix comment in 32-bit rewrite code. Temporary variables are
+now used for both 32-bit and 64-bit code, so move their declarations
+to the function header.
 
-Freed by task 906:
-kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
-kasan_save_track+0x14/0x30 mm/kasan/common.c:68
-kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
-poison_slab_object mm/kasan/common.c:241 [inline]
-__kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
-kasan_slab_free include/linux/kasan.h:184 [inline]
-slab_free_hook mm/slub.c:2121 [inline]
-slab_free mm/slub.c:4299 [inline]
-kfree+0x105/0x340 mm/slub.c:4409
-pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
-pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+No functional change intended.
 
-[Analyze]
-Task A set disconnect_flag = !0, which resulted in Task B's condition being met
-and releasing mp, leading to this issue.
-
-[Fix]
-Place the disconnect_flag assignment operation after all code in pvr2_context_disconnect()
-to avoid this issue.
-
-Reported-and-tested-by: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/media/usb/pvrusb2/pvrusb2-context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Implemented while analyzing a bug. I am not really sure of it is worth
+the effort, but I figured that I might as well submit it.
 
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 1764674de98b..e93bca93ce4c 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -267,9 +267,9 @@ static void pvr2_context_exit(struct pvr2_context *mp)
- void pvr2_context_disconnect(struct pvr2_context *mp)
+ arch/parisc/kernel/unaligned.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
+
+diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
+index c520e551a165..622c7b549fb8 100644
+--- a/arch/parisc/kernel/unaligned.c
++++ b/arch/parisc/kernel/unaligned.c
+@@ -169,7 +169,8 @@ static int emulate_ldw(struct pt_regs *regs, int toreg, int flop)
+ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
  {
- 	pvr2_hdw_disconnect(mp->hdw);
--	mp->disconnect_flag = !0;
- 	if (!pvr2_context_shutok())
- 		pvr2_context_notify(mp);
-+	mp->disconnect_flag = !0;
- }
+ 	unsigned long saddr = regs->ior;
+-	__u64 val = 0;
++	unsigned long shift;
++	__u64 val = 0, temp1;
+ 	ASM_EXCEPTIONTABLE_VAR(ret);
  
+ 	DPRINTF("load " RFMT ":" RFMT " to r%d for 8 bytes\n", 
+@@ -180,25 +181,22 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
  
+ #ifdef CONFIG_64BIT
+ 	__asm__ __volatile__  (
+-"	depd,z	%3,60,3,%%r19\n"		/* r19=(ofs&7)*8 */
+-"	mtsp	%4, %%sr1\n"
+-"	depd	%%r0,63,3,%3\n"
+-"1:	ldd	0(%%sr1,%3),%0\n"
+-"2:	ldd	8(%%sr1,%3),%%r20\n"
+-"	subi	64,%%r19,%%r19\n"
+-"	mtsar	%%r19\n"
+-"	shrpd	%0,%%r20,%%sar,%0\n"
++"	depd,z	%4,60,3,%2\n"		/* shift=(ofs&7)*8 */
++"	mtsp	%5, %%sr1\n"
++"	depd	%%r0,63,3,%4\n"
++"1:	ldd	0(%%sr1,%4),%0\n"
++"2:	ldd	8(%%sr1,%4),%3\n"
++"	subi	64,%2,%2\n"
++"	mtsar	%2\n"
++"	shrpd	%0,%3,%%sar,%0\n"
+ "3:	\n"
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 3b, "%1")
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 3b, "%1")
+-	: "=r" (val), "+r" (ret)
+-	: "0" (val), "r" (saddr), "r" (regs->isr)
+-	: "r19", "r20" );
++	: "+r" (val), "+r" (ret), "=&r" (shift), "=&r" (temp1)
++	: "r" (saddr), "r" (regs->isr) );
+ #else
+-    {
+-	unsigned long shift, temp1;
+ 	__asm__ __volatile__  (
+-"	zdep	%2,29,2,%3\n"		/* r19=(ofs&3)*8 */
++"	zdep	%2,29,2,%3\n"		/* shift=(ofs&3)*8 */
+ "	mtsp	%5, %%sr1\n"
+ "	dep	%%r0,31,2,%2\n"
+ "1:	ldw	0(%%sr1,%2),%0\n"
+@@ -214,7 +212,6 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
+ 	ASM_EXCEPTIONTABLE_ENTRY_EFAULT(3b, 4b, "%1")
+ 	: "+r" (val), "+r" (ret), "+r" (saddr), "=&r" (shift), "=&r" (temp1)
+ 	: "r" (regs->isr) );
+-    }
+ #endif
+ 
+ 	DPRINTF("val = 0x%llx\n", val);
 -- 
-2.43.0
+2.39.2
 
 
