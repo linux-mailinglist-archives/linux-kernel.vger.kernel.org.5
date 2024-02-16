@@ -1,161 +1,114 @@
-Return-Path: <linux-kernel+bounces-68860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B8085810A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:30:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BCA858117
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:32:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D481F22CAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C025280A18
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0686B154453;
-	Fri, 16 Feb 2024 15:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C37130E2E;
+	Fri, 16 Feb 2024 15:21:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aRpEmFXp";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lMZJoCrI"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t8WSu/vW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05574153509;
-	Fri, 16 Feb 2024 15:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD2212F588;
+	Fri, 16 Feb 2024 15:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708096661; cv=none; b=JZlyCkM+yvoYOo0p39oJ3yMPKJpkdssU3Cp9Bv1wJz4DG4hE7ADkeVAkSzv3stnUkHhU7UOCZA57snbSNNQV6E+XEXN5KNL5ckNaQwmtmtK79xkfiLMCVCnYBzCBijLSY82j5sm6UysYjqpVEa0+ARr5uGZfkZrkTOpAXL0pVnU=
+	t=1708096887; cv=none; b=lI0Vjzxse7dFaTUvTDnGB6Xj50ibck8zL/dCDuYT5cb884K27RI5l0Qw0/HmkyY+fh9mAH/sGwlXAjYBEb4H5rO0WQTOIq8QspGuIskSFeDLEZk+zDDzgtH9vMSABTjZbzG2X7ePrif/ck4R+nm2uJe1JVdYAnymm42IWaVgNdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708096661; c=relaxed/simple;
-	bh=I+3YM0Sc9d/6cQd7mXs7Drrg1BF4ZhRMibyaOT0SszY=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=pfoyu5VzPW0akWdTnB/Sjm3jIQyHwV9VCO8JOjL12JJdMHt5/DL7IPqa16uL53UT+ca3n1FBW70enq0t1tMXAh8aAaSFzKmPP9Ume3kbjCOoly+lWXTnLquS3Xob8H7rqh4Yvqi3qMOtN7mgYoeSYRRpulseBZa713Lth1Cri9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aRpEmFXp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lMZJoCrI; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 16 Feb 2024 15:17:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708096657;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sd5Rxkj6Qpeh/8fSJdNQa3DIJfRUev+zF0vQruhTEGc=;
-	b=aRpEmFXpJsWVNq0vMKbg8vwa3NeFLDvAq97UYxhkksqOWz8T08gjtZlRYgRiJ9ni22SkFQ
-	5bJV0vkHkb7aM5UySfp9q+YUI1BTsZKoiKlOiedgjAdfJY8TN62yxehO5OA5QcATYbJWTu
-	Ud13U7Waa54KRJFcwsuDTeXrCplIdI9aeCEl4+zCZSrh7EeaBagag26dBsrtgoooAHXZkG
-	AzI8YwFkEJBmxl3DwJSWIdBFH4F5uQBr4c3+BgGQi/wjo2aJo4g1zDn/dhWcFMOBLFpouy
-	JQRZg2f54GrP7e2JOKSH4YqZO47Bz+h/4tLFkOJ4zFCLE+2ZUHKcu61bKpcMTg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708096657;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sd5Rxkj6Qpeh/8fSJdNQa3DIJfRUev+zF0vQruhTEGc=;
-	b=lMZJoCrI4Ky2dlvmX7DfyKwStfdM8uUB7DD6yJz8+A0nUeMkMKKHRBXflQMlcS1KDJj239
-	Im5iSWxj/E43WiBA==
-From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/cpu: Provide cpuid_read() et al.
-Cc: Thomas Gleixner <tglx@linutronix.de>, Juergen Gross <jgross@suse.com>,
- Sohil Mehta <sohil.mehta@intel.com>, Michael Kelley <mhklinux@outlook.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Zhang Rui <rui.zhang@intel.com>, Wang Wendy <wendy.wang@intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <878r3mg570.ffs@tglx>
-References: <878r3mg570.ffs@tglx>
+	s=arc-20240116; t=1708096887; c=relaxed/simple;
+	bh=IxnSWTB2sBXQF0390u8a976PN+j85jvd6/lGGofC8VY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=durNq1Usy8ycXEIB5IyPqp8CBDhtm25OabWQ652YEgmKA+mooBCXQa4qp7HO/f+saKChORjlID/7mbxU3knRAJ60zWt3OfGg1iJNRG9gowP8EcD1xL/G7ahUlDcwnZbxsfdOTRWIKkGckf1KS8kEpqldJZ5vJbwphgAqn9b1AEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t8WSu/vW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 46FDDC433C7;
+	Fri, 16 Feb 2024 15:21:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708096887;
+	bh=IxnSWTB2sBXQF0390u8a976PN+j85jvd6/lGGofC8VY=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=t8WSu/vWzA3RAuEKVApWeF6Dn0DnVniiHCrLWnfntoku88Vb4Y4mz6lsLI+iafxcj
+	 kWAwRes8UHJnyXfUA1go2QS5nTZP6X50jjefqD8QpTvzmWEXr8giiaAtac90S3vVZp
+	 Wa+71Tp7fjI90vI8iIOx0XTN102gI82qtTK7n7ca3hOE8BMkULDF6DCzlayADLyJ23
+	 0Yaq1kP+aujvX1aonwgNiC1nUsySQ1ZSNfPMx/ehkd416Iks+baHt9zkSeABW39DzP
+	 xAB4c9ySq2sGW/c8sYuaE+4AHfA6gzFlifDdF9nkZQS+ALJiqtjWKFXcqjv0RfYuLI
+	 gkB1Qdkr4YqXQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CA8AC48260;
+	Fri, 16 Feb 2024 15:21:27 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH RFC 0/4] phy: hisi-inno-phy: add support for
+ hi3798mv200-usb2-phy
+Date: Fri, 16 Feb 2024 23:21:00 +0800
+Message-Id: <20240216-inno-phy-v1-0-1ab912f0533f@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170809665630.398.15151652103627710582.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFx9z2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0Mz3cy8vHzdgoxK3USjFAtzozSzJHOTJCWg8oKi1LTMCrBR0UpBbs5
+ KsbW1AO6AnyJfAAAA
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Jiancheng Xue <xuejiancheng@hisilicon.com>, 
+ Pengcheng Li <lpc.li@hisilicon.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, 
+ David Yang <mmyangfl@gmail.com>, Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708096886; l=1304;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=IxnSWTB2sBXQF0390u8a976PN+j85jvd6/lGGofC8VY=;
+ b=jVZPCURmpgkvsGh4pmLptz411OscyhZfFOxAAmB4AKycoTJpCK24CwzaBAjfCCKBgjM8qYArr
+ uVTzXRcqYHvCIgzGWjYN3cP73jcSNBzIRH0pfkqv/yg6MlQsD8aC2Eo
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-The following commit has been merged into the x86/apic branch of tip:
+This should be considered a dirty hack. The proper solution would be
+extracting write_reg logic to a separate regmap driver. Leaving only
+"write BIT(2) to address 0x6" to the PHY driver.
 
-Commit-ID:     43d86e3cd9a77912772cf7ad37ad94211bf7351d
-Gitweb:        https://git.kernel.org/tip/43d86e3cd9a77912772cf7ad37ad94211bf7351d
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 14 Feb 2024 21:29:39 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 15 Feb 2024 22:07:36 +01:00
+The initial commit is already doing things wrong. The following patches
+adding hi3798mv100 support is also very confusing. The name of the
+enumeration "PHY_TYPE_x" is very misleading as if it's the phy which is
+different across SoCs. But actually it's the bus (i.e. how to write to a
+given address) which is different, not the PHY.
 
-x86/cpu: Provide cpuid_read() et al.
-
-Provide a few helper functions to read CPUID leafs or individual registers
-into a data structure without requiring unions.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Juergen Gross <jgross@suse.com>
-Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-Tested-by: Michael Kelley <mhklinux@outlook.com>
-Tested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
-Tested-by: Wang Wendy <wendy.wang@intel.com>
-Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/878r3mg570.ffs@tglx
-
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- arch/x86/include/asm/cpuid.h | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+)
+Yang Xiwen (4):
+      dt-binding: phy: hisi-inno-usb2: convert to YAML
+      phy: hisilicon: enable clocks for every ports
+      phy: hisi-inno-usb2: add support for direct MMIO
+      dt-binding: phy: hisi-inno-usb2: add compatible of hisilicon,hi3798mv200-usb2-phy
 
-diff --git a/arch/x86/include/asm/cpuid.h b/arch/x86/include/asm/cpuid.h
-index 9bee3e7..6b122a3 100644
---- a/arch/x86/include/asm/cpuid.h
-+++ b/arch/x86/include/asm/cpuid.h
-@@ -127,6 +127,42 @@ static inline unsigned int cpuid_edx(unsigned int op)
- 	return edx;
- }
- 
-+static inline void __cpuid_read(unsigned int leaf, unsigned int subleaf, u32 *regs)
-+{
-+	regs[CPUID_EAX] = leaf;
-+	regs[CPUID_ECX] = subleaf;
-+	__cpuid(regs + CPUID_EAX, regs + CPUID_EBX, regs + CPUID_ECX, regs + CPUID_EDX);
-+}
-+
-+#define cpuid_subleaf(leaf, subleaf, regs) {		\
-+	static_assert(sizeof(*(regs)) == 16);		\
-+	__cpuid_read(leaf, subleaf, (u32 *)(regs));	\
-+}
-+
-+#define cpuid_leaf(leaf, regs) {			\
-+	static_assert(sizeof(*(regs)) == 16);		\
-+	__cpuid_read(leaf, 0, (u32 *)(regs));		\
-+}
-+
-+static inline void __cpuid_read_reg(unsigned int leaf, unsigned int subleaf,
-+				    enum cpuid_regs_idx regidx, u32 *reg)
-+{
-+	u32 regs[4];
-+
-+	__cpuid_read(leaf, subleaf, regs);
-+	*reg = regs[regidx];
-+}
-+
-+#define cpuid_subleaf_reg(leaf, subleaf, regidx, reg) {		\
-+	static_assert(sizeof(*(reg)) == 4);			\
-+	__cpuid_read_reg(leaf, subleaf, regidx, (u32 *)(reg));	\
-+}
-+
-+#define cpuid_leaf_reg(leaf, regidx, reg) {			\
-+	static_assert(sizeof(*(reg)) == 4);			\
-+	__cpuid_read_reg(leaf, 0, regidx, (u32 *)(reg));	\
-+}
-+
- static __always_inline bool cpuid_function_is_indexed(u32 function)
- {
- 	switch (function) {
+ .../bindings/phy/hisilicon,inno-usb2-phy.yaml      | 125 +++++++++++++++++++++
+ .../devicetree/bindings/phy/phy-hisi-inno-usb2.txt |  71 ------------
+ drivers/phy/hisilicon/phy-hisi-inno-usb2.c         |  57 ++++++----
+ 3 files changed, 161 insertions(+), 92 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240216-inno-phy-a2d872f6b74b
+
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
+
 
