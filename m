@@ -1,140 +1,118 @@
-Return-Path: <linux-kernel+bounces-69200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACB98585A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:48:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E998585A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B9B1B22755
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:48:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4357D1C2347C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A19A145FE3;
-	Fri, 16 Feb 2024 18:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A06713B2BC;
+	Fri, 16 Feb 2024 18:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WnwjsxD1"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EMXp6Z7l"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D921A1350DA;
-	Fri, 16 Feb 2024 18:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E28C13B291;
+	Fri, 16 Feb 2024 18:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109080; cv=none; b=FHe6ktGz0p66+Rd7oaL/FWUphn2e9LLTPhdLllA2vCVrpVwFc3sZ7Ozm1LAfKW3xKbZWSyk8AWoDNOd8RXpmX9xwiydfu4qRB925+Ybiox/ist5A69Eng/MyHlrBqQEGPRf1P3tG2FPSg1pNSi2kw8i0d3QdEMSnc2BcdLMoWqI=
+	t=1708109063; cv=none; b=pFlVkuWnrieO9GHN4PLoCqKXN4py/hahiyZwMtP+fUwbWfkoKD06jalwjASuMQqp2UWbMVU532EVD4yaftxZkdAJk12cQSRGBgiO7HW3rACIvSbE1ld2FIKuKfg4f3NTYSMVYWQlb7uiD1ShseVTB9ZuWSxNruLsQMG8H4tDlG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109080; c=relaxed/simple;
-	bh=hJV2Di9TWXWAH3jf5tFtKbA4cNPOaMlqPYf8O81MJlc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SzX8HJuw3lTLzPe7/rhqkaaQ+nessS4K0+m5lHCzexDwlQQmcb/XwwwEBrQ12ckP9JUrYJRvXYqitKYq2WNgZDZs04tOURTu58Prpx8UGhnxGVUPMm38A4O8ctjHLwJlnooUaldcVXze+9qy7AvXUk+fnNVb6jEJfOLIyEpLKyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WnwjsxD1; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=JPht/1NFabyfyAOA5BnhQyFPe9WOLuLC26kmHTjwpJ4=; b=WnwjsxD1L1lvhPKHcta+fg5QNv
-	mNvLs2E2BVgDiXG1+rHXoVpgxMdweoF9Z2/QMR1miNan5T+p9pxwVUexrD0fzJRd32j1ZQc+rUOE/
-	rFRXTBwu9OXwEiyLB5XvSnD0fXw8C0xLmH8XSGYVkSYh3kCbEqTrLeMy/O5Iz+S43136WS33xxVyg
-	43ePNyMUTLCyiv58BFK8ket/CJEtNsLx2PMuTmHc70Y4WGS99GrItcIBoXuAseN071UXVmNrJagnq
-	8EyLtNzGZ1LrbvCNbw3qhKQe7coIJR2tNt21j+DZ5ta3RSeWN0Mp9pEejrT/Xdqa5Aqfdtj/4Zlz9
-	Fc7OTCpw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb3Bz-00000005ODb-2ifl;
-	Fri, 16 Feb 2024 18:44:11 +0000
-Date: Fri, 16 Feb 2024 18:44:11 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>,
-	Dave Hansen <dave.hansen@intel.com>,
-	Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-	Pengfei Xu <pengfei.xu@intel.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Kai Huang <kai.huang@intel.com>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Joerg Roedel <jroedel@suse.de>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Tina Zhang <tina.zhang@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: Re: [RFC 6/8] KEYS: PGP data parser
-Message-ID: <Zc-s-42WoZhW_2c8@casper.infradead.org>
-References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
- <20240216152435.1575-1-petrtesarik@huaweicloud.com>
- <20240216152435.1575-7-petrtesarik@huaweicloud.com>
- <Zc-Q5pVHjngq9lpX@casper.infradead.org>
- <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+	s=arc-20240116; t=1708109063; c=relaxed/simple;
+	bh=rQJ9yGcOerFYeIUKIrA67jwMFOH9tKo2s2yrBJL41rs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cFCR+edUi6uwJlbU71UT2S74UeiJ+EMPZGLfnp1XFhZ2Vi/6Nm+lUcimra8qnUTXGQ2UM30wE3XfKZwUh5KoUDuGgTTOOagJW5QD684PEc/qKLDjzmRODMXOgTsiHg/kSmN1dsMMvrbp0U/7K/VgNbWkdm+884L7ifhLryJV9X0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EMXp6Z7l; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e0fc87fc2dso1513053b3a.3;
+        Fri, 16 Feb 2024 10:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708109061; x=1708713861; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vdvHdhs5HWjtp6zPVbusqBE9tw93+ZSMA0vMObsFyvs=;
+        b=EMXp6Z7lVz1OXzbPl8iJl46SJlh7JQSqEl4c0u9BgUzKdLGw/vofRMRJGgXIpowRjV
+         NNHhlt0+HR9XSy3GbawOIZQj3504Oq71IxstGKzX0TEmYQOecVVjFOKY6tZbyZyhE2/N
+         xU7Hrg62nyopV4MB7/T14qtJArOCS2eE8P1hmmyChrCxn6kyIe9ZZiL5fdCswq/iA0T/
+         y60pnFDCphV7nI5yxkxSkjNGrZ56qjUBnXxVsAG/VuE/QQmmuZ/GRZQoDuQqJOkdBONy
+         EOBFShJfJKS2xHVYUjvxAOA/WGgUZIYyprVG00H3R4zZ+P8cky7syOTuv47fsyV8zc/x
+         K26w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708109061; x=1708713861;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vdvHdhs5HWjtp6zPVbusqBE9tw93+ZSMA0vMObsFyvs=;
+        b=Nfpmn94L/i2S4OayjoZXP3uQEySFLwiUO1prZi/e6bPiAizgliY+9kiiYCkeqZVW1i
+         phRqbvnX1FBTCNp9z0cARkeHn97QRveCbHAzrstPOFEt++f8fZ2iaHkr3JrxpHaRmo5s
+         e5EDl8mAsBaPVprgawCCGdk9kcOCqzH4rLPeUF9etredm54OOswIBM6vT4BZl3e5gWew
+         2dshvvGHRS6vnzOjbUA2bdY+3M2ajWeIrPrUn04EJcNPSig2mc1NAAKCsjlMsxR3uJQv
+         3GjY8cHelxg7nB15wrp+rJEu1odAs292Fz8PN83AwJxsbvDFWbvwWVmPei1AXEDVgofh
+         b8rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUe3iQkPMPjLuvkxEWdG1LQ53uNAWgC0dwIvMHws5b4YCihWfjeHvy5cFefZjGPU4RinULaYv1iKuTW2cXu4OZGjtjFYUyGOyIDNylCnK8W1Gn+VTTYxHklc92kXIsLAhkoRQusQmfto/Kkq609mmIfqluWDlzH+lrPIdgxD1SI
+X-Gm-Message-State: AOJu0YycWelBkp1tntVZt9hDPyBb4VbqqtRo0jO+FjKneG1cnsyTOQcS
+	GJcQKaMBFjqjQQgv7NWCOT59TrczAjzb/B1CKhoIJpN0gp54TT4T
+X-Google-Smtp-Source: AGHT+IHS6krIzakMCH+NkmCv2HXoz/o823TFey7e3p2Coi5EOWHNMENhjMR6x7XjaaDS9i3xNnUvpQ==
+X-Received: by 2002:a17:902:d2c1:b0:1db:92e1:2e54 with SMTP id n1-20020a170902d2c100b001db92e12e54mr6638958plc.33.1708109061469;
+        Fri, 16 Feb 2024 10:44:21 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c20-20020a170902c1d400b001dbc3f2e7e8sm5586plc.98.2024.02.16.10.44.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 10:44:21 -0800 (PST)
+Message-ID: <7afce107-0c78-490f-a0de-9c205f6d589d@gmail.com>
+Date: Fri, 16 Feb 2024 10:44:18 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next v8 03/13] net: Make net_hwtstamp_validate
+ accessible
+Content-Language: en-US
+To: Kory Maincent <kory.maincent@bootlin.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>,
+ Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+ Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com,
+ Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-3-510f42f444fb@bootlin.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240216-feature_ptp_netnext-v8-3-510f42f444fb@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 05:53:01PM +0100, Roberto Sassu wrote:
-> On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
-> > On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
-> > > From: David Howells <dhowells@redhat.com>
-> > > 
-> > > Implement a PGP data parser for the crypto key type to use when
-> > > instantiating a key.
-> > > 
-> > > This parser attempts to parse the instantiation data as a PGP packet
-> > > sequence (RFC 4880) and if it parses okay, attempts to extract a public-key
-> > > algorithm key or subkey from it.
-> > 
-> > I don't understand why we want to do this in-kernel instead of in
-> > userspace and then pass in the actual key.
+On 2/16/24 07:52, Kory Maincent wrote:
+> Make the net_hwtstamp_validate function accessible in prevision to use
+> it from ethtool to validate the hwtstamp configuration before setting it.
 > 
-> Sigh, this is a long discussion.
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-Well, yes.  When you don't lay out why this is of value, it turns into a
-long discussion.  This isn't fun for me either.
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-> PGP keys would be used as a system-wide trust anchor to verify RPM
-> package headers, which already contain file digests that can be used as
-> reference values for kernel-enforced integrity appraisal.
-
-The one example we have of usage comes in patch 7 of this series and is:
-
-gpg --dearmor < <PGP key> | keyctl padd asymmetric "" @u
-
-And you're already using two userspace programs there.  Why not a third?
-
-gpg --dearmor < <PGP key> | ./scripts/parse-pgp-packets | keyctl padd asymmetric "" @u
-
-> With the assumptions that:
-> 
-> - In a locked-down system the kernel has more privileges than root
-> - The kernel cannot offload this task to an user space process due to
->   insufficient isolation
-> 
-> the only available option is to do it in the kernel (that is what I got
-> as suggestion).
-
-This sounds like there's some other way of getting the key into the
-kernel which doesn't rely on userspace.  Or are you assuming that nobody
-bothered to trojan 'cat'?
 
