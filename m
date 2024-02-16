@@ -1,125 +1,134 @@
-Return-Path: <linux-kernel+bounces-69058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB408583F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:19:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A0B8583F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F6C9B2609A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:19:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 315C7B20A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CFD130E3D;
-	Fri, 16 Feb 2024 17:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D55131E22;
+	Fri, 16 Feb 2024 17:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="bQxTPOn9"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0LjRmmr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3EF2E641
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB9A130E2E;
+	Fri, 16 Feb 2024 17:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103928; cv=none; b=Y3Qb1D47umFYeDRP1EdKgtY2cF4mACvE6uVD+9LldvPmNatHKqdqXVzQly+Rdw67yrntdr0VuUywbe2Le6nqfvf84o2HVQFeKKhXlAoPRpuJPmuqS9C98ScoZALTEnCJdRFxV7fQnd3OR2iJsnMP0PQVrQB7e7FzQnUt0X3tjuA=
+	t=1708103976; cv=none; b=OQqyLtfaSCkNKTnAnTvHMyvaJi+2Bgtaco5FD8ov+2dC6+LpQszxJT2oX/4istq8d95873TjmQtpmWic+hWUnWCxyDi3xdwuzeuZPocqohPybztTR91qJXC6PWDyuS737/ZmZMB4t3mbCuhrq/9c0xddyflO23onETLdQsbs//I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103928; c=relaxed/simple;
-	bh=2eKrnC6xOIWZ1NTwD/IJazyXMwCp/t3u/M4Pc8vdQNQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gsnFcZG82DqJxgncC53hOIdJ2uynsg2bgb5B6e2DeC7n/oaUSBvqhj0m9C/UjfTDZjwgzWGZkFQ0E/rfYN8OPqQ6sSEU80xqD7llMgRTgOdN1mpoX36xRa0DomqOCm5P6Th4Fzq8D1NE980rfpRnnxAJB4NPLi77otFWnrrx7MI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=bQxTPOn9; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42a4516ec46so23093441cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708103925; x=1708708725; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ttXNwKWugMJyygslP182txVVK8JBh5UVtMFEymJTCI0=;
-        b=bQxTPOn9WTXLnpyhxDEsmtOgQUNtA+cfA8a1UJ/SnidZ4cNowB3IzH91BFmbR8yVVX
-         n5w9F5nCodKqFu4cv6Uo1TVdfDutrblXDoFJCBkpZNdgpsd3jAvxKQvocFs73FqfCfnZ
-         Ty8VcdWL0UVMUiz/dwFRCwY4UMecgApLg+pC9V7lKjQCnK/TDEMitZ+rOeF6cfrnwUTN
-         LvwR1PIp8T9BlpxILOqJFiRfZN2sNWNAIXHBG51pGvUgQ4AI+Dmqk3zSvYQ5y0/2lE1r
-         bNuROBCX77VZOrM68PUxyOF9LjQHmtZ0WcLMbANRzuWCLmEccyY6XJidFLSGtG0TnzLC
-         MGGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103925; x=1708708725;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ttXNwKWugMJyygslP182txVVK8JBh5UVtMFEymJTCI0=;
-        b=WGHbWx7adWGRAlCaA8Fsl7TpMiSTRPqb+kKDiQMqLhdjBTW7HtcWJ2jY33g48DTN5/
-         RM8DBTEj6eB1+aHDkQTWDB1qR5Mwty6CKc/kwkXfa3bPFQeh1E47GtGSMabQdWD1ds2g
-         o1a1QQh+BGL4o27c9lnORN3ymodUJPZYGbI01Ue4KB0Uh7vo0N2zYGsJ3eqVwwaiQ5A7
-         hfBTHAEXLhqfWyexBVMoBFKT5B70Bm39827kBq/YHpmH+kloJ71Cjc5L+Z7jtc6wsX+w
-         cZ9p1WcSXX/MvTlyYPVtfQTa+J0VPEd9Y7fgyuJrb19COPhXbis/wghxJ23Mqx0U8ytN
-         CXow==
-X-Forwarded-Encrypted: i=1; AJvYcCXchenqCK18WUrDRpxq7tBUm/On+4Pkj3ySBxFh70AUxzsfbSAcyOkNI6tXsQ6DZlpxNz3M0umGIc9WskCUfgIWvJObXBB+vkCUXcaq
-X-Gm-Message-State: AOJu0YwkVMzBwxdT9OS/ttUBzZrF/vgiR9cKe/K9GXymCgtoPeC+XbSl
-	axYqlgCKbYL+iEPWlWRXY/rkAU0r5qVeBrPEFQjdq00Oc8HgaXeJStJgM1V5+33VU/t/P/fgIox
-	K3aWMgN3v7PT3EVtR4PrYhMvNF5JG+4ns8ojUtA==
-X-Google-Smtp-Source: AGHT+IGK94jPimX8q7FvTT5r2WHXeqQfvdyDWPQi6YyK2aTQJC/GbkrY2OBKc6aAMFaGl9yMXVM9CDJXDWJJ3i4OZS8=
-X-Received: by 2002:a05:622a:130d:b0:42c:7b12:70bd with SMTP id
- v13-20020a05622a130d00b0042c7b1270bdmr14455790qtk.9.1708103925488; Fri, 16
- Feb 2024 09:18:45 -0800 (PST)
+	s=arc-20240116; t=1708103976; c=relaxed/simple;
+	bh=jajtT3fYHh89nUBt1oc4FBYREo5Q6SP3UVEpUB3mdy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XgwyLfiWiJpQeoyXwy5rBUMfGWkUCwG/uVx8AEQ6nu1tAwJJDIiivDLv0Y2x03wGw+uloayFHkq+a46ENVPnGCzJzh8ntPNOW557hweugCHoCMe41u6/sGD9v86AJQfylI6sZ0Lp/gYBIEks8JurHPR1ITNsHQXaI2IHRuYMSTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0LjRmmr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46519C433F1;
+	Fri, 16 Feb 2024 17:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708103975;
+	bh=jajtT3fYHh89nUBt1oc4FBYREo5Q6SP3UVEpUB3mdy4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=n0LjRmmrxZpNVzyFYsGwbD2p2LVFKzK/EygU0fH5X81lxXU83MhmJtw7YY11T+2B8
+	 w+VDan533UAdx4NDrW7mkty+fbRZxfLmmS0QdpY3lcDpDnaJfKM/dtk/HKlu+wqUTU
+	 nJGYtVNdtePqCm5Sk1K8Lv6AhXjZFnoxAvLUuwTdGEAECQtquMC0AVmdXtWvnt92xh
+	 s5g9MWKeoVymdPNgdozymbdVy+i+VPygj5fgTbh0Kz7Eu6iiseEdh3zp3peKzTfZ43
+	 v2SzrAbPVxyASWWglWdBtB7tD3GgxC62grBFCHGKQSKvyiHR0EluWK29qTXj4CghR3
+	 IQQRHnrI5QJ6A==
+Date: Fri, 16 Feb 2024 17:19:21 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Mike Looijmans <mike.looijmans@topic.nl>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ devicetree@vger.kernel.org, linux-iio@vger.kernel.org, Arnd Bergmann
+ <arnd@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Beguin
+ <liambeguin@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Maksim Kiselev
+ <bigunclemax@gmail.com>, Marcus Folkesson <marcus.folkesson@gmail.com>,
+ Marius Cristea <marius.cristea@microchip.com>, Mark Brown
+ <broonie@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>, Okan Sahin
+ <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] iio: adc: ti-ads1298: Add driver
+Message-ID: <20240216171921.5a6b6b20@jic23-huawei>
+In-Reply-To: <fb7d41fc-328a-4ce1-88ad-5ce22ee158e4@topic.nl>
+References: <Zc-E3-MNe9dG9tdW@smile.fi.intel.com>
+	<fb7d41fc-328a-4ce1-88ad-5ce22ee158e4@topic.nl>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
- <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
- <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
- <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
- <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn> <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
-In-Reply-To: <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Fri, 16 Feb 2024 12:18:09 -0500
-Message-ID: <CA+CK2bCsW34RQtKhrp=1=3opMcfB=NSsLTnpwSejkULvo7CbTw@mail.gmail.com>
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> > Personally, I hate trying to count long strings digits by eyeball...
->
-> Maybe something like this work for everyone then?:
->
-> 160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
+On Fri, 16 Feb 2024 17:07:49 +0100
+Mike Looijmans <mike.looijmans@topic.nl> wrote:
 
-That would be even harder to parse.
+> On 16-02-2024 16:53, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> +       if (reset_gpio) {
+> +               /*
+> +                * Deassert reset now that clock and power are active.
+> +                * Minimum reset pulsewidth is 2 clock cycles.
+> +                */
+> +               udelay(ADS1298_CLOCKS_TO_USECS(2));
+> 
+> This is sleeping context and you are calling unsleeping function. I haven't
+> checked the macro implementation and I have no idea what is the maximum it may
+> give, but making code robust just use fsleep() call.
+> 
+> It'll actually delay for 1 us (the "clock" is ~2MHz). So fsleep will compile to udelay anyway, which is fine, fsleep might get smarter in future and this would then profit.
+> 
+> 
+> 
+> +               gpiod_set_value_cansleep(reset_gpio, 0);
+> +       } else {
+> +               ret = ads1298_write_cmd(priv, ADS1298_CMD_RESET);
+> +               if (ret)
+> +                       return dev_err_probe(dev, ret, "RESET failed\n");
+> +       }
+> +       /* Wait 18 clock cycles for reset command to complete */
+> +       udelay(ADS1298_CLOCKS_TO_USECS(18));
+> 
+> Ditto.
+> 
+> ...
+> 
+> 
+> If it's the only issue I think Jonathan can modify when applying
+> (no new patch version would be needed).
+> 
+> That'd be nice.
 
-This one liner should converts bytes to human readable size:
-sort -rn /proc/allocinfo | numfmt --to=iec
+ok.  As this is still the top of my tree I'll just tweak it.
 
-Also, a "alloctop" script that would auto-update the current top
-allocators would be useful to put in tools/mm/
+Does anyone else read fsleep as femtosecond sleep every time? :)
+Maybe computers will go that fast one day.
 
-Pasha
+Jonathan
+
+
+> 
+> 
+> --
+> Mike Looijmans
+> System Expert
+> 
+> TOPIC Embedded Products B.V.
+> Materiaalweg 4, 5681 RJ Best
+> The Netherlands
+> 
+> T: +31 (0) 499 33 69 69
+> E: mike.looijmans@topic.nl<mailto:mike.looijmans@topic.nl>
+> W: www.topic.nl<http://www.topic.nl>
+> 
+> 
+
 
