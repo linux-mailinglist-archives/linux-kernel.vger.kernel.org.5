@@ -1,199 +1,197 @@
-Return-Path: <linux-kernel+bounces-69269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 729C585866F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:55:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFAD85866E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F9931C21913
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:55:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95CCDB20FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333B8137C4A;
-	Fri, 16 Feb 2024 19:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="i3I6X8lW"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F7C137C4A;
+	Fri, 16 Feb 2024 19:54:53 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C69412A158
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708113303; cv=fail; b=PjUxPFEmgRgwBs8i+DOQp6dRWyNQuRc9E7gJvpZ8UjZ8bOTQ8+sEF2MynDVz9dM5IAewsu4dLJhSDt/RvKpeoKPf5mFE8ybqkqHL6p1UQ62ZMMzf23mwbpTFGJy7sIsoJL3exC69La94Qh2VnirK3kSbsHfPt3n/lv6UKQWQsLU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708113303; c=relaxed/simple;
-	bh=eW2l9Ubf6GWpEIi4dPv2tGAvRzUJaOBRVQmljof41RE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jjlamcMtSuMpoAKDbMFbR2WK9kwpgn1eR1zVhMxJ4CA7o2sLv4UAxKyoxtCnHBJ2GYfLB+eDDrI6glEqv7i60tLlvZlCYfDbM46x/BE/RuUEv3vFpZkgwHaV9YQvCdgZkRCVoC70Dtwt9EqdmOEWwfevMFGyh6KQbpiGDtrHmYY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=i3I6X8lW; arc=fail smtp.client-ip=40.107.102.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eREkjBD7OE03OGlcoRgVX4QcfsbMgF5wQ4m+t0MLofPuzPQTNVRFzPp3kXO/Y4/7bjm7XgSWXK57fG655OmgjXkEd/LGlBTiSVLdbWz9dFBoGbQRXq6Yb8F/9N59+KilWPR5LkH1JdSP7E3b3J8vq+Lho+ygDtweysGr0IfW1B+EZlbMdCFaHL0PNkI/T10QvK4cMmM4+FUpdSKyqkIzxnLklVeLzWEjtWAtwJv+padT5kZPQL0HUaUJNKidClFbFdMn8vpGrc/+/zdrSlPlEjQ7hRjQhU0thrTleohZgEDO8mBWLBkKtGa1DJ+vObG+u8SW+WOjCVi5KYzCrsv7dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3eBl0YL4UveGysKbWrmJ/SGCE6Os0x5Ff4eZ4jDZzHE=;
- b=ey3Kjis6LmXiycGnMgiXHz5d3xoMNKAshp4cC8L+v8ne2Xt2/1UJJwP4f94nfAfSYP8CVlXrEyWI+7y37awwPe1SKYZZEZUlB+kSIT9h0CFVtNx7lwqovM8jJUsn5WyExEdJcGvJiEiD1K5VtveobK5AwDj8XZ/Q7l0OKz8++MAdXXJksvBwv/iBGbiAT8IfTTBBjvtD40LKxlyyPcdap5XtHI1ibeOzeXvdAxHh1cya+S4DHkA9/akJZ+5HAmNjjvzusR8IbQs+pGytRlfd3GsNM/iPpj5hQgAiFyrl4kL/YIUUy8ZHfiQBZhIYRKWLb2Mi2F8VkvOSG6e+4VdPwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3eBl0YL4UveGysKbWrmJ/SGCE6Os0x5Ff4eZ4jDZzHE=;
- b=i3I6X8lWMwXGN+RJ7oT8pgRgr15XR5QngTRoUJ+CiK663VlbGrHsIi75fpTbU5P5tHxiK5WRQDdKIOhxmNDhXijk4U8MCrXKv/i2Ef2xM05CA7AJcNLRWJA/vSY1zmBGErLYfFOa0yQRW4bSPsrFyoWMlx+u+cHEiRKUMsuzw1F8Y796kHW9fly0s/5tDCQmuVLQYBAVvPmb+o0ag0hW45RLgNI64Nl3d3uOiRrSpTWu0yAATQFY9jzgjmhk1Ti261LiG4fSOltcjRkTQjDOwFmHQ29ueRLF0HOP9Ua9yIzgcUIb/LqOcQPzWRaWZvNkm1LpPf53jvIi6JxLe7yZZQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by SA1PR12MB7037.namprd12.prod.outlook.com (2603:10b6:806:24c::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.15; Fri, 16 Feb
- 2024 19:54:58 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::90bb:c583:cc57:aa1a]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::90bb:c583:cc57:aa1a%4]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
- 19:54:58 +0000
-Message-ID: <f9fc2b31-11cb-4969-8961-9c89fea41b74@nvidia.com>
-Date: Fri, 16 Feb 2024 11:54:00 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
-To: Catalin Marinas <catalin.marinas@arm.com>,
- Ryan Roberts <ryan.roberts@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-13-ryan.roberts@arm.com> <Zc9UQy-mtYAzNWm2@arm.com>
- <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com> <Zc-Tqqfksho3BHmU@arm.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <Zc-Tqqfksho3BHmU@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0168.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::23) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD46712A158;
+	Fri, 16 Feb 2024 19:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708113292; cv=none; b=EiZWTRnuUiOre6QhFC66QV0LSbYrbZnsTvoaWNh/TT6PuLB6Pp/H+cxW9EKx0p+uzJ4JDOw7ASODHihPZZQffk2L/hrHxggbTpUU3RiSFSppZ2EOtgVKWnIpQLujy+xW4h3XYvt2r4mAOQoDluJcuCdi2Gk/0fT953C+SgejbgY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708113292; c=relaxed/simple;
+	bh=B4jAjw1DiDA/xtjvyDVRYyJzCcc0H7WBMUUgQrnUfT4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NqUucYg6fmKZImx+hfg49cvR9PKfJHCpNnCqoJdKL7nbSDpig1GGMmfmcga/Nt8TbZ0+8fzepzNl43trPyt38VNhe1/Z5pUOEYGGdH8TufNoa8ehxfNWPhY0DYLx89UHau8VVaoP7pM/T05Jmozb8I8p+iZypFfqE55C7BajOaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tc2Ll2C7Jz9y4gk;
+	Sat, 17 Feb 2024 03:39:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 845EE140153;
+	Sat, 17 Feb 2024 03:54:46 +0800 (CST)
+Received: from [10.81.208.49] (unknown [10.81.208.49])
+	by APP1 (Coremail) with SMTP id LxC2BwD37xhzvc9lL4ujAg--.27938S2;
+	Fri, 16 Feb 2024 20:54:45 +0100 (CET)
+Message-ID: <5b0ce7ef-3f4e-4c1b-a0b7-bf48e8169c4e@huaweicloud.com>
+Date: Fri, 16 Feb 2024 20:54:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|SA1PR12MB7037:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2bb9202b-d11d-4ead-fb87-08dc2f292765
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	FFDcAmfCUDi7lNIGoFKT5umchN/09hbUUKHVyRx0ypwbbG9jjVppZFRX+tbSq8vEUh8FkDVF6aTW9wv8suk4c4XS8xzlvP6eADr5E4XK9gLlbFi83PzfjC5xM5WK1o3q4fRZMcRoW7BUWOl/MzCMiQANioL/MOLZyFqS3a1zFQha9QJAtSWRoTSgCNT50IO5ZxELla0syHBjQ7LNODwseCTjIC/4wkWa6hb3lqWeI7WuY9iKBpY0AoC+Wd6HEMwj5rP85Eu2uiwdEOK1BBlhHtjmEf2TAjqyFhlVA9CP9QFoyBGdVFGjebBOkdVxDJLMc1hA7swEVmKKKWmq+PS8yhbPluPdbSzKeEA5B8knneRdCanyrcd2PoPvr9cj8dYl2PF0IPLCW954NC5+jFK16nRd0ASbwMcOmk0uZKx/P160GIZ3UckccMm96r5IuztUs4ASKbrdLFn9NrySVy7UWYdW7u06kXPmq+oSCapClnaTldwtmrMASJmrUuvxjYvLYKVB12P9aww0J3wGBZAATcE9gpcWVBDbM8NPY2LLkjCXC0fZgV9axQvzYYwlhmq+6H51IZjACcAFsUG54e9MpHowXbTeT44g7n56W0vz/d0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(396003)(376002)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(5660300002)(66556008)(31686004)(7416002)(8676002)(66476007)(4326008)(66946007)(8936002)(2906002)(86362001)(31696002)(36756003)(38100700002)(83380400001)(54906003)(2616005)(41300700001)(110136005)(966005)(478600001)(53546011)(6512007)(6486002)(6506007)(6666004)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Sk1uMXlRMEw2azg5anh0Vi9WZG1NSlhGQ0lWbjl5VVNpcnE3ZXNnUDBUQ2JM?=
- =?utf-8?B?QUVsemk5Q2U1Y1d3S1hoMHhwYzFoeGdkM00zNmxFM1Rhc1EzTTdNK3dRaUJ0?=
- =?utf-8?B?Y3dRemNwVHMyaUNmNE12ZVRzU2VJTytRcXRnWGJ3bmxaMTdRYzBaNXhZWUN2?=
- =?utf-8?B?RE5jVFhiQmwxZk42MDRRQXVJVFJLaVNtenViRzVOSjVodUdkSk9mbksvTm5L?=
- =?utf-8?B?ZGkwRENWMVZmWkJwUmFTcGVVRjBvYjgvQlFuVlJubHQrOXJnRmMrVEZmZ1hv?=
- =?utf-8?B?NURPS0lOQnBHM0F3eVkzeEtqSGgvUUtrOThESGZ6K0JmSjJiM1B4dHZLMzNu?=
- =?utf-8?B?MjhPTVVyVTNHRmZnYVN6anFSZGc5eUNZNzY3dnNhSFFXd2JCbWIxVFBYb3pO?=
- =?utf-8?B?bFZ4bko0MHhXZmtSYlFldUhuK25tNmlKMlJ4SnMyN2NJbkNQcHU5aFBKMkZR?=
- =?utf-8?B?T1ZkZE1uaUFJa3RVVjZaREpQTWx4QVlvN2k3N0FrbU5acCtQclNVcXMwRHVm?=
- =?utf-8?B?aHB0RzNMUXlVRUhUZHpmTndIVWcyMWErWTJ4bFdCR0RTT0Ezd2Jobm9GSkd6?=
- =?utf-8?B?VVYrUElBRTNveVpoNnQ0L0dnUXVWUXVyRW5kYlpVUEF4N0xSYmd0UGFDdnR3?=
- =?utf-8?B?TU5SYksxL3N6azFmbW9MZU5uV2x0b00zSW96VGxnSjlQZk03RGV0WktYTHRw?=
- =?utf-8?B?M3FKSytEOXhsV2lVc3EyWHdXMm5qa1B6eUlvZEZUYUZmZWQ3UWc5MkdTcGlk?=
- =?utf-8?B?SUY2TTFtUUxxOGJEZUVheG5QQ1I1NFNxZW11a2RBdlFpNjNIbmtlYy9YVmE2?=
- =?utf-8?B?Z3pkWW93cDNUTXBlSnNLUjQ3SlYyY0UwOGVkOENBYVdJWk1pclpoRkNDQldT?=
- =?utf-8?B?MWJwVUw2WVYrSmxJUFFvL0hXVUhkVjg4aGZ6LzcwZUtMZlBGR09RSll5WWNm?=
- =?utf-8?B?VndFTXBQRGdYQUU0L2V5QS9Xd093YkkxSEJCZHlHcmJOQjA1REV6VEJucnlE?=
- =?utf-8?B?R0NrSHA1dlBOczl6djRwcktUMFRiWVRhVE45M08vMFpmTENpUkpENmtrVXJN?=
- =?utf-8?B?VFVnSER5UFN6YVBaQ211UDRETklNWTVLOE5ZbFFFK1llblc4a3hwYXFPU3Rl?=
- =?utf-8?B?YVAxRDRoa0dIVXBYaUtmbUIzblZ4K29XODZXMWJyOThHZmw1TUozcDlZQ0s3?=
- =?utf-8?B?cEdGVUg2dHB1RW8yMXB1aHE2dGRHKzl3WWsycU4yRGRnMzFqSDVpUkNEMW54?=
- =?utf-8?B?Y0o2ME05d1BTNmVSanFUSC95THFlKzdaVFpKSXpZeUZIVFNRM0RxS2xFOUNO?=
- =?utf-8?B?M0dVSXhVSkpPVHFqTjdFRHEwL1FwUkYrNEdjVFhjYW9aYnFGZXduTTU3S1RC?=
- =?utf-8?B?RU91V20zOGNpaXVWWG1RVXhTclRlUUhLV3hZSmY1ck9ncGRFQXlwTjdSSWly?=
- =?utf-8?B?S2dUeXhGTzNzci9Pc2ltWnlTWUZFWHpOKzRNZDVicjZMdkp2R0h3bTJHZ3lh?=
- =?utf-8?B?bWV3WGJLNzlORDJ1azcrU01KaEIvK3JCOTNyT01vU2dEWDRiWVY5eGh2Zkww?=
- =?utf-8?B?RHp2UVJXbFRZZXBFWkQxNkdVUXRWa1RIZ3pEQkV6S3ZjZ1BxRktSVGR1OGJw?=
- =?utf-8?B?eVVuZjlRc2JWUjVjRHk5dkRQNWxSZCtHSmJOZzBseXFVdDBQV1puTGUxRnQy?=
- =?utf-8?B?eEd3SlhGNFJlWGpsVFBiRlpMNHFlK1V2bEJENFBaWGNQKzhwMHRCN3lKK2dl?=
- =?utf-8?B?aVNlMTl6bW5iK2hpMXRWM09DaUxPd1U2eE8vQ1RMQTE3bEhBYVQ0a09IZ1VX?=
- =?utf-8?B?eTdYRXhpRHZtY0h2RUc0bDQ0dERtaTdVWFFSWjJEOVFVaHZxYlp6NDkwMS84?=
- =?utf-8?B?bVJzNXV6SkQ2cE81WkN5dXdzZ1lPaEdyMmdaODMwdmUzdlVLSEM1TXl5TFZu?=
- =?utf-8?B?UnhrM2hsa2toaXcwN1NhNTI3YTUzYmpvYnRJTmRDelBUaU1oUEduQnk1WERW?=
- =?utf-8?B?MEdWYW0wdjVSQnl4b20zWmFRT09BR1V3azlKMDZFRkVTY3V0RmJCTjFHV0xR?=
- =?utf-8?B?cDV4RVF1blNPL0ErWFhaUy9mSlVybEhqUGNvR1pmblBJL1NDaG9uVDNpRmx2?=
- =?utf-8?B?bUg1YTdwbWJTUFpOVkQzVndScEJPZHVxWitYR1ZlUmFrNGhxUkFieEt6ajlv?=
- =?utf-8?B?N3c9PQ==?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bb9202b-d11d-4ead-fb87-08dc2f292765
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 19:54:58.2522
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tYFs7QaSRMLyt/R7Q3aDY30BUASXNWQtAGnIcrtPe6onDe75TP6c4wBFGUw/H8keyUceOuUauu5pcbgjsT7SWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7037
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 6/8] KEYS: PGP data parser
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>,
+ Dave Hansen <dave.hansen@intel.com>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
+ <petr@tesarici.cz>, Jonathan Corbet <corbet@lwn.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Xin Li <xin3.li@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Kees Cook <keescook@chromium.org>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Pengfei Xu <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ze Gao <zegao2021@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
+ Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Joerg Roedel <jroedel@suse.de>, "Mike Rapoport (IBM)" <rppt@kernel.org>,
+ Tina Zhang <tina.zhang@intel.com>, Jacob Pan
+ <jacob.jun.pan@linux.intel.com>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>, David Howells
+ <dhowells@redhat.com>, Petr Tesarik <petr.tesarik1@huawei-partners.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+ <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+ <20240216152435.1575-7-petrtesarik@huaweicloud.com>
+ <Zc-Q5pVHjngq9lpX@casper.infradead.org>
+ <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+ <Zc-s-42WoZhW_2c8@casper.infradead.org>
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <Zc-s-42WoZhW_2c8@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwD37xhzvc9lL4ujAg--.27938S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4DJw1kJry3try7CF1UGFg_yoWrGF1kpF
+	WfKas0kF4ktr4fCr1qyw4xWryFvrs3tFy5Gr9YyryrAFn0gr12krySka1YgF9rKr4kGa1j
+	qr4YvF9xCa4DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+	J73DUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5pusAABs+
 
-On 2/16/24 08:56, Catalin Marinas wrote:
-..
->> The problem is that the contpte_* symbols are called from the ptep_* inline
->> functions. So where those inlines are called from modules, we need to make sure
->> the contpte_* symbols are available.
+On 2/16/2024 7:44 PM, Matthew Wilcox wrote:
+> On Fri, Feb 16, 2024 at 05:53:01PM +0100, Roberto Sassu wrote:
+>> On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
+>>> On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
+>>>> From: David Howells <dhowells@redhat.com>
+>>>>
+>>>> Implement a PGP data parser for the crypto key type to use when
+>>>> instantiating a key.
+>>>>
+>>>> This parser attempts to parse the instantiation data as a PGP packet
+>>>> sequence (RFC 4880) and if it parses okay, attempts to extract a public-key
+>>>> algorithm key or subkey from it.
+>>>
+>>> I don't understand why we want to do this in-kernel instead of in
+>>> userspace and then pass in the actual key.
 >>
->> John Hubbard originally reported this problem against v1 and I enumerated all
->> the drivers that call into the ptep_* inlines here:
->> https://lore.kernel.org/linux-arm-kernel/b994ff89-1a1f-26ca-9479-b08c77f94be8@arm.com/#t
->>
->> So they definitely need to be exported. Perhaps we can tighten it to
-
-Yes. Let's keep the in-tree modules working.
-
->> EXPORT_SYMBOL_GPL(), but I was being cautious as I didn't want to break anything
->> out-of-tree. I'm not sure what the normal policy is? arm64 seems to use ~equal
->> amounts of both.
-
-EXPORT_SYMBOL_GPL() seems appropriate and low risk. As Catalin says below,
-these really are deeply core mm routines, and any module operating at this
-level is not going to be able to survive on EXPORT_SYMBOL alone, IMHO.
-
-Now, if only I could find an out of tree module to test that claim on... :)
-
-
-> I don't think we are consistent here. For example set_pte_at() can't be
-> called from non-GPL modules because of __sync_icache_dcache. OTOH, such
-> driver is probably doing something dodgy. Same with
-> apply_to_page_range(), it's GPL-only (called from i915).
+>> Sigh, this is a long discussion.
 > 
-> Let's see if others have any view over the next week or so, otherwise
-> I'd go for _GPL and relax it later if someone has a good use-case (can
-> be a patch on top adding _GPL).
+> Well, yes.  When you don't lay out why this is of value, it turns into a
+> long discussion.  This isn't fun for me either.
+> 
+>> PGP keys would be used as a system-wide trust anchor to verify RPM
+>> package headers, which already contain file digests that can be used as
+>> reference values for kernel-enforced integrity appraisal.
+> 
+> The one example we have of usage comes in patch 7 of this series and is:
+> 
+> gpg --dearmor < <PGP key> | keyctl padd asymmetric "" @u
+> 
+> And you're already using two userspace programs there.  Why not a third?
 
-I think going directly to _GPL for these is fine, actually.
+I think this is very easy to answer. Why not extracting the public key 
+from an x509 certificate in user space, sending it to the kernel, and 
+using it for kernel module verification?
 
+> gpg --dearmor < <PGP key> | ./scripts/parse-pgp-packets | keyctl padd asymmetric "" @u
+> 
+>> With the assumptions that:
+>>
+>> - In a locked-down system the kernel has more privileges than root
+>> - The kernel cannot offload this task to an user space process due to
+>>    insufficient isolation
+>>
+>> the only available option is to do it in the kernel (that is what I got
+>> as suggestion).
+> 
+> This sounds like there's some other way of getting the key into the
+> kernel which doesn't rely on userspace.  Or are you assuming that nobody
+> bothered to trojan 'cat'?
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Apologies for not providing the full information at once. I'm worried 
+that would be too long, and pieces can be lost in the way. If it is not 
+a problem, I'm going to clarify on request.
+
+Ok, so, I'm not going to use cat to upload the PGP keys. These will be 
+embedded in the kernel image, when the Linux distribution vendors build 
+their kernel.
+
+This works for both secure boot and trusted boot, since the kernel image 
+can be measured/verified by the boot loader.
+
+Another source for keys is the MOK database, since users might want the 
+ability to verify their own software, which does not come from the Linux 
+distribution.
+
+I briefly anticipated the full picture, but I will tell it more explicitly.
+
+The kernel, with the embedded PGP keys, will be able to verify the 
+signature of the RPM package headers.
+
+A component that I recently developed, the digest_cache LSM, has the 
+ability to extract file digests from RPM headers and provide a simple 
+interface for IMA, IPE, BPF LSM and any other component to query the 
+calculated digest of files being accessed, and allow/deny access to them 
+depending on whether the query is successful or not.
+
+I already anticipate the question, if you have the problem parsing PGP 
+keys, why don't you have the problem parsing RPM package headers?
+
+I started finding a solution before this became available, and the only 
+alternative I found was to formally verify my code. So, I took Frama-C, 
+wrote the assertions, and verified that not only the code is 
+functionally correct for correct sequences of bytes, but that there is 
+no illegal memory access for any arbitrary sequence (unfortunately, I 
+can prove for a small buffer size).
+
+So, I'm probably going to do the same for the PGP parser, if this does 
+not fly. But, we were very optimistic that this could be a valid 
+alternative!
+
+Roberto
 
 
