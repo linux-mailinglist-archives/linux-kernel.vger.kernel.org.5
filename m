@@ -1,148 +1,167 @@
-Return-Path: <linux-kernel+bounces-68892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379BD858187
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E87E5858191
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E706A285B75
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CE2D2873CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B0512F58E;
-	Fri, 16 Feb 2024 15:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117CC134CFB;
+	Fri, 16 Feb 2024 15:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="gmc3RLnk"
-Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N29fMtxq"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6864B5465D;
-	Fri, 16 Feb 2024 15:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70AC134CC8;
+	Fri, 16 Feb 2024 15:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708097879; cv=none; b=i8tDbXqFS9d7Ue8esDNdgXBRUMsf2n45TcqU7oxDGPgqKGnJhyDNS/HKbH8V11LKSsxHCR0o96nCcul2Y2IZqWyNTs63+MH1GZwCG8mDsxIuJUW091TNHxnyu6/QXwAAhPUxiKLEtf0KPd35Ufoo0QSSAYyfn5FtWYUUh56HmFM=
+	t=1708097915; cv=none; b=tL0C8jfuJiW2srib7zNvY6VtEP+wNLst8ajpQ2UqStw+AgZPM4pfapW2zueiNnPRMX7bdi9Nb1A8aRrkVF+ur/iRRm/xe0Yg93bk7fcg62ayt3Jrb1KhJ3ccBtBwKJFX0ZRCaoBwo/9Oopkp5B1IJT7txu1iDZkyzM8z8uKl3Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708097879; c=relaxed/simple;
-	bh=y9Q3fD2tnKTk+FgvsD0F3JDBSD+nj+VyEVSlrWNPkAQ=;
-	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=d3ZX8atQlO2qbkHGfRnNtc9PQcItouKytwVOQFzMDrxc9gxb77AYMCHX4KoEX/Q6D60bObo8z4HzTV3ejeSx1K1yicdwtjIOTTfd1OO7vymUVl8Pm3ESqdlQroh9mIcjOnQ6pUhtQOAO+n109TOYVP8mJzMh7YuwoX4v4Jyfn3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=gmc3RLnk; arc=none smtp.client-ip=52.119.213.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1708097878; x=1739633878;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=0cZh71B0l8IG4uZIp4OIszUKFw5xlrbFMIKov5F9rMU=;
-  b=gmc3RLnki406KhSIyDzlrLXhs60xT4GU23LmmmnOWGxS4T6hfCDSu6pa
-   x4grGGjjJtDqoVUkrGwxLWXfqw3psxUj5uVL5gDHk9fTh44/u4FX1NkDu
-   qMGx5hYqrJ0TOoVk2d6GdC+2ak0L81wJQKP3gYHWKu6nH5sB+s5yKvnPQ
-   8=;
-X-IronPort-AV: E=Sophos;i="6.06,165,1705363200"; 
-   d="scan'208";a="613548127"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 15:37:56 +0000
-Received: from EX19MTAUEC002.ant.amazon.com [10.0.0.204:15970]
- by smtpin.naws.us-east-1.prod.farcaster.email.amazon.dev [10.0.23.202:2525] with esmtp (Farcaster)
- id a4a5ea06-05a2-4ef6-b192-ef4a9bf9607e; Fri, 16 Feb 2024 15:37:54 +0000 (UTC)
-X-Farcaster-Flow-ID: a4a5ea06-05a2-4ef6-b192-ef4a9bf9607e
-Received: from EX19D008UEA001.ant.amazon.com (10.252.134.62) by
- EX19MTAUEC002.ant.amazon.com (10.252.135.253) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 15:37:50 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
- EX19D008UEA001.ant.amazon.com (10.252.134.62) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 15:37:50 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 16 Feb 2024 15:37:50 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-	id BFA7920CE8; Fri, 16 Feb 2024 16:37:49 +0100 (CET)
-From: Pratyush Yadav <ptyadav@amazon.de>
-To: Alexander Graf <graf@amazon.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kexec@lists.infradead.org>,
-	<linux-doc@vger.kernel.org>, <x86@kernel.org>, Eric Biederman
-	<ebiederm@xmission.com>, "H . Peter Anvin" <hpa@zytor.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Steven Rostedt
-	<rostedt@goodmis.org>, Andrew Morton <akpm@linux-foundation.org>, "Mark
- Rutland" <mark.rutland@arm.com>, Tom Lendacky <thomas.lendacky@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>, James Gowans <jgowans@amazon.com>,
-	Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>, <arnd@arndb.de>,
-	<pbonzini@redhat.com>, <madvenka@linux.microsoft.com>, Anthony Yznaga
-	<anthony.yznaga@oracle.com>, Usama Arif <usama.arif@bytedance.com>, "David
- Woodhouse" <dwmw@amazon.co.uk>, Benjamin Herrenschmidt
-	<benh@kernel.crashing.org>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
- Kozlowski" <krzk@kernel.org>
-Subject: Re: [PATCH v3 05/17] kexec: Add KHO support to kexec file loads
-In-Reply-To: <20240117144704.602-6-graf@amazon.com> (Alexander Graf's message
-	of "Wed, 17 Jan 2024 14:46:52 +0000")
-References: <20240117144704.602-1-graf@amazon.com>
-	<20240117144704.602-6-graf@amazon.com>
-Date: Fri, 16 Feb 2024 16:37:49 +0100
-Message-ID: <mafs0le7k8lo2.fsf@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708097915; c=relaxed/simple;
+	bh=bVKMokvUVHH0ObAvaZP4W6+bwagIC69WeJsmMPf1YHA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mcQ8ZPJ8RUkCDt3bqlAaR8eHw9vG8++ZigGpNGHYDemtJKgXcu7niEc2KOUnbJx+2nXT4WOzgfx9ML63ROXRLS7XWBc/PcKvmZEEkRQGTPIr0KQXy6qKgKHbOEZU7VXxlrlO0AGB7wb4mD5qj44kGNVoZQsvccqrft2GITUdqiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N29fMtxq; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708097914; x=1739633914;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=bVKMokvUVHH0ObAvaZP4W6+bwagIC69WeJsmMPf1YHA=;
+  b=N29fMtxqmROTY+PI5ZzrRZoe+FfCEVe5O+nwAZKyTE7Ja2trr0RFLOFQ
+   cAR/qFOGnzJ2u08AfnijLg2hTAXxAD5JECrTMlfsLWJKi3AEl7/Zn1RMe
+   EGmYfUZgCnz7vErNVX8o06mqaU0naQ9D/YDff1VA96FjRYbt+8e96/xw8
+   v/+wkay8ce7r73kaIbyCUeDSUsUuPxZmsidEKlUBLoFabhjBJTWCbQnhz
+   zNwUUWjlZs5iEnKNUr76c6UuRjiNA++GDa0p8Z7vGsE52l6EiCFaUSlm7
+   sovdUCgGeRAXTvz+eyXeMnV8vvrKDEFy6eDMXJq2XP8ffgLrEQrG8wNcF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2379802"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2379802"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:38:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="8467723"
+Received: from vbchikar-mobl1.amr.corp.intel.com (HELO [10.209.63.169]) ([10.209.63.169])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:38:31 -0800
+Message-ID: <c65eb8f1-2903-4043-a3ab-945d880043b5@intel.com>
+Date: Fri, 16 Feb 2024 07:38:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/8] PGP key parser using SandBox Mode
+Content-Language: en-US
+To: Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
+ Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Xin Li <xin3.li@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Kees Cook <keescook@chromium.org>,
+ "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+ Pengfei Xu <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Ze Gao <zegao2021@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
+ Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Joerg Roedel <jroedel@suse.de>, "Mike Rapoport (IBM)" <rppt@kernel.org>,
+ Tina Zhang <tina.zhang@intel.com>, Jacob Pan
+ <jacob.jun.pan@linux.intel.com>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ David Howells <dhowells@redhat.com>,
+ Petr Tesarik <petr.tesarik1@huawei-partners.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+ <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 2/16/24 07:24, Petr Tesarik wrote:
+> While I started working on my development branch to illustrate how
+> SandBox Mode could be enhanced to allow dynamic memory allocation and
+> other features necessary to convert some existing code, my colleague
+> Roberto Sassu set out and adapted a PGP key parser to run in a sandbox.
+> 
+> Disclaimer:
+> 
+> The code had to be rearranged in order to avoid memory allocations
+> and crypto operations in the sandbox. The code might contain errors.
 
-On Wed, Jan 17 2024, Alexander Graf wrote:
+I'm confused by this.  The kernel doesn't (appear to) have a PGP parser
+today.  So are you saying that it *should* have one and it's only
+feasible if its confined in a sandbox?
 
-> Kexec has 2 modes: A user space driven mode and a kernel driven mode.
-> For the kernel driven mode, kernel code determines the physical
-> addresses of all target buffers that the payload gets copied into.
->
-> With KHO, we can only safely copy payloads into the "scratch area".
-> Teach the kexec file loader about it, so it only allocates for that
-> area. In addition, enlighten it with support to ask the KHO subsystem
-> for its respective payloads to copy into target memory. Also teach the
-> KHO subsystem how to fill the images for file loads.
+A much more powerful example would be to take something that the kernel
+has already and put it in a sandbox.  That would show us how difficult
+it is to sandbox something versus just doing it _normally_ in the kernel.
 
-This patch causes compilation failures when CONFIG_KEXEC_FILE is not
-enabled. I am not listing them all here since there are a bunch. You can
-try disabling it and see them for yourself.
+As it stands, I fear this was just the largest chunk of sandbox code
+that was laying around and it seemed like a good idea to just chuck
+~1400 lines of code over the wall at a huge cc list.
 
-Since Documentation/kho/usage.rst says:
-
-    It is important that you use the ``-s`` parameter to use the
-    in-kernel kexec file loader, as user space kexec tooling currently
-    has no support for KHO with the user space based file loader.
-
-you can just make CONFIG_KEXEC_FILE a dependency for CONFIG_KEXEC_KHO to
-get rid of these errors.
-
-Or, if you foresee wanting to use the user space tooling to use KHO as
-well then you should refactor your code to work with the option enabled
-and disabled.
-
->
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-[...]
-
---
-Regards,
-Pratyush Yadav
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+I'm not sure I want to see any more SandBox mode filling up my inbox.
 
