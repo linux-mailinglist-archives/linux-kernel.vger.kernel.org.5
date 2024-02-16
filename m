@@ -1,159 +1,111 @@
-Return-Path: <linux-kernel+bounces-68783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CD885803B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:09:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BE3858037
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9959D1C22528
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:09:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33F651F22A50
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559F612FB06;
-	Fri, 16 Feb 2024 15:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Czp8tKkC"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24FD12F596;
+	Fri, 16 Feb 2024 15:08:49 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9E01292F4;
-	Fri, 16 Feb 2024 15:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7FF1292F4;
+	Fri, 16 Feb 2024 15:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708096135; cv=none; b=rypQ04JyHtgLItTGyOrpOzRdTVmhXk2X3Jfe62FjlCpPBJ3W45Tg8WNeqxCtqxLYuYrjOQF/ol24VSnGFfDN/vCbhZssMJiXWRuOfMa4Btl+F4lz2/xGqaryogGs4bfcWBKiovEHJsV5tGiQAAaRy+bcXjNV5FPggpfqafzN/RU=
+	t=1708096129; cv=none; b=eXGl7BwbvVv5/xzB8RUxf2YrEyMLXLu5tvwg8BBJgD7T8ug7nemyR8AunT3StClECHtUBav1gJMEayX6WRwuOhfG1Nk6CYTfp/R75XcWvs/bpq2NPX87Z2IQtJpkPlgNU+eYqmhvvAsm1DMPfUzzauqKe2GKs+fIO96W4aI3n24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708096135; c=relaxed/simple;
-	bh=b2g5R64dRf9ayZbi4lbGay7eXPb9wiPuGz4M+ef2a1I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NmVTDrAfdq1fP7qqwOU0JcviAIjuO87DfI/Y0nAmNZCs5Yx7bE9xvLOlCG1rRtpLzT6Oy7PIbmZiiLQs4F+6XLKXDVS26cZm8mawI+DgNJIPY3muRBfDxWPB+Ui++keoCgeZNpL2DgmFt8eR+6UtGd7lyEym3Wu30Hl/4VCT8ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Czp8tKkC; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41GF8W0L114580;
-	Fri, 16 Feb 2024 09:08:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708096112;
-	bh=SVSdtMRcvm8l3QkqkcyDPXSfszJ5GRE8MQ9FEavnTSc=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Czp8tKkC+6AQ4v1uTYFweTkLSF1/x2Ix/br+dDckKUx5nSDKZD4UtU2yHcJEljWbt
-	 P+ApyGPQedbFkFL6LwqGBRP+TpA3W3oXeQVW7Ca9ZrPj3MwNiw4oaAv2EV3OixdZlU
-	 JUwfUdBKxPoZvaP3kP2lKzRMzmKSuhvJyJiqM3io=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41GF8W0p023273
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 16 Feb 2024 09:08:32 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 16
- Feb 2024 09:08:32 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 16 Feb 2024 09:08:32 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41GF8VV9100285;
-	Fri, 16 Feb 2024 09:08:31 -0600
-Message-ID: <d3ca964c-7fdd-4ed6-8f9c-348d21e5666c@ti.com>
-Date: Fri, 16 Feb 2024 09:08:31 -0600
+	s=arc-20240116; t=1708096129; c=relaxed/simple;
+	bh=AOCAORj/NLMv+eKT0QBmdsr53HgKAYcc7MKJyrnstS4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eG6DcpN9WmjNgRfhaCLTzq3OKykmXQ27KdZQ754lTGCIq6EQWAWD0z7EMS81dYcvFII2P+7Vav6mhTZa7aUSaEXOM/QPFia5bnUEaBz8lfXhlCmXBDkAmrJdiESMNT8AJqbbz7UJbbmlInbjdCVKf5o0bH7z6lei95YkkS7NItk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2338378"
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="2338378"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:08:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912374432"
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="912374432"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:08:40 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1razpN-000000054tL-1WLs;
+	Fri, 16 Feb 2024 17:08:37 +0200
+Date: Fri, 16 Feb 2024 17:08:37 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v3 02/18] pinctrl: pinctrl-single: remove dead code in
+ suspend() and resume() callbacks
+Message-ID: <Zc96dSff5Y-dufrJ@smile.fi.intel.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-2-5c2e4a3fac1f@bootlin.com>
+ <Zc4tedAhqYX3bQcw@smile.fi.intel.com>
+ <78add459-a96a-46c6-83ff-e2657d4d3db4@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] arm64: dts: ti: k3-j784s4-main: Fix mux-reg-masks in
- serdes_ln_ctrl
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, Peter Rosin <peda@axentia.se>
-CC: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <c-vankar@ti.com>, <srk@ti.com>
-References: <20240213080348.248916-1-s-vadapalli@ti.com>
- <1be60db1-f292-1074-5898-801380e1fb22@axentia.se>
- <af73545a-1746-4e14-a3f2-772d72e6ff97@ti.com>
- <4abe2bde-1171-4b77-b7bc-49491792a721@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <4abe2bde-1171-4b77-b7bc-49491792a721@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78add459-a96a-46c6-83ff-e2657d4d3db4@bootlin.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 2/15/24 10:56 PM, Siddharth Vadapalli wrote:
-> On 24/02/13 11:08AM, Andrew Davis wrote:
->> On 2/13/24 3:19 AM, Peter Rosin wrote:
->>> Hi!
->>>
->>> 2024-02-13 at 09:03, Siddharth Vadapalli wrote:
->>>> From: Chintan Vankar <c-vankar@ti.com>
->>>>
->>>> Change offset in mux-reg-masks property for serdes_ln_ctrl node
->>>> since reg-mux property is used in compatible.
->>>>
->>>> Fixes: 2765149273f4 ("mux: mmio: use reg property when parent device is not a syscon")
->>>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
->>>> Acked-by: Andrew Davis <afd@ti.com>
->>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>>> ---
-> ...
+On Fri, Feb 16, 2024 at 08:59:47AM +0100, Thomas Richard wrote:
+> On 2/15/24 16:27, Andy Shevchenko wrote:
+> > On Thu, Feb 15, 2024 at 04:17:47PM +0100, Thomas Richard wrote:
+> >> No need to check the pointer returned by platform_get_drvdata(), as
+> >> platform_set_drvdata() is called during the probe.
+> > 
+> > This patch should go _after_ the next one, otherwise the commit message doesn't
+> > tell full story and the code change bring a potential regression.
 > 
->>>> +			mux-reg-masks = <0x0 0x3>, <0x4 0x3>, /* SERDES0 lane0/1 select */
->>>> +					<0x8 0x3>, <0xc 0x3>, /* SERDES0 lane2/3 select */
->>>> +					<0x10 0x3>, <0x14 0x3>, /* SERDES1 lane0/1 select */
->>>> +					<0x18 0x3>, <0x1c 0x3>, /* SERDES1 lane2/3 select */
->>>> +					<0x20 0x3>, <0x24 0x3>, /* SERDES2 lane0/1 select */
->>>> +					<0x28 0x3>, <0x2c 0x3>; /* SERDES2 lane2/3 select */
->>>>    			idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>,
->>>>    				      <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
->>>>    				      <J784S4_SERDES0_LANE2_IP3_UNUSED>,
->>>
->>> Ouch. I suspect there is a similar problem in
->>> arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi:
->>>
->>>
->>> 	fss: bus@47000000 {
->>> 		compatible = "simple-bus";
->>> 		reg = <0x0 0x47000000 0x0 0x100>;
->>> 		#address-cells = <2>;
->>> 		#size-cells = <2>;
->>> 		ranges;
->>>
->>> 		hbmc_mux: mux-controller@47000004 {
->>> 			compatible = "reg-mux";
->>> 			reg = <0x00 0x47000004 0x00 0x2>;
->>> 			#mux-control-cells = <1>;
->>> -			mux-reg-masks = <0x4 0x2>; /* HBMC select */
->>> +			mux-reg-masks = <0x0 0x2>; /* HBMC select */
->>> 		};
->>>
->>> Who knows what non-upstreamed devices and devicetrees are affected?
->>> I guess we need to revert 2765149273f4 ("mux: mmio: use reg property
->>> when parent device is not a syscon") unless someone sees a sane way
->>> to fix this.
->>
->> There are only two in-tree nodes with "reg-mux" with a reg property: the
->> one this patch fixes, and the hbmc_mux you point out, both in TI devices.
->> I'd say it is safe to assume we are the only users, and our non-upstreamed
->> DTs depend on that patch, reverting it would cause more issues for
->> out-of-tree users than just fixing the two broken nodes above.
+> Hello Andy,
 > 
-> Peter,
-> 
-> Is it alright for this patch to be merged, given Andrew's response above?
-> The problem with "hbmc_mux" node that you pointed out above could be fixed
-> by another patch. Please let me know.
+> I'm ok to move this patch after the next one.
+> But for my understanding, could you explain me why changing the order is
+> important in this case ?
 
-The hbmc_mux fix is now also posted:
+Old PM calls obviously can be called in different circumstances and these
+checks are important.
 
-https://lore.kernel.org/linux-arm-kernel/20240215141957.13775-1-afd@ti.com/
+Just squash these two patches to avoid additional churn and we are done.
 
-Andrew
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> 
-> Regards,
-> Siddharth.
+
 
