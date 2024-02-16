@@ -1,166 +1,491 @@
-Return-Path: <linux-kernel+bounces-68350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7674E85791E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:43:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA706857920
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A2C1F25674
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:43:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9F7B1F25672
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161881C292;
-	Fri, 16 Feb 2024 09:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE72B1BDEB;
+	Fri, 16 Feb 2024 09:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LnTfHmA8"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XF2rQLxl"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8C1C29C
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6C01BC31;
+	Fri, 16 Feb 2024 09:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708076586; cv=none; b=cn0u8bGtf57FKmWFmyDjJ9enV6LPBOEfnxQYu+QgWGcYQQuBZqQHLiXWDlV+ZGForL0hG/u34zgTTQVFfsl3W187pyfs/mZFRP+uogmkmdd5GXie41GCS3y08Qd0YFUgZm7Cva2L0Cbpsg4qTf4emPeKPIUpH1KbWUGBD5JkjTE=
+	t=1708076720; cv=none; b=PZZCiIUyG9ia04c0RPcxR8dl6RJN6sx2AqjJM3deKcpwxF0NSMQ9fdSj3MDUVJF/qA221OPzNFPIb1mgoqb/GZQ+PbVCrnF8qVAJmtuh/WUYHZqStddJHtcNNj1i/t58670W+uYtePB1uMeT2Q8uFb153427c2cFZvoyBOyLQ8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708076586; c=relaxed/simple;
-	bh=erJbXgT6svUzCFGLPxEPNcIji7DFpwP5TtlqCfzm5O8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LeBeG5ZRTCiN1XJNbIDNIINUMfnwrU0cRgdVd8idnBRZl0KBYomfAE4i7wO17eoWEtSff3+NXIAHR0miAOo7mSsg3dYy8qUqWM+CpA0YrkaAhY5BcmW1UnliWs1VSGWC9H0uAdHwqwDPQTluWgBI2tpnGY6mUiUh7DZjFcXAR3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LnTfHmA8; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2a17f3217aso230311066b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:43:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708076582; x=1708681382; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=50f7zKmZnRI9LrVHCKInlnIFfogg3BhO8mJWvUu8tZs=;
-        b=LnTfHmA8v5elccLMuK1io6WFMXhUNhTl5Z8kRNjwh4e1UalYqlLuccT7x2o098cC2o
-         D6fUULVTiRSRi5PgsxZDYQO5CwWE0v7jWQ2pAJiSoUwPi8YpiBd3Td0OtDG31VWeXy5z
-         6SW/Fef+czcSVvrt/6o1RfMuPlhi/UPPNm3HtJ/FM8tOBktD6P0vyO9n8K6TWV/eCuDp
-         Kax2tqwbAOcZEyVKTgp3dy8693eI3U6dpJ0QmdEEinpCTFRsGaXi5nrECnIVheiP8DSC
-         p5XsPZGQQzY+wqHow7C6jDGRuIXJd5sMtdQJVrZfxrAYKPaCOLuTzNzcE7zS3Vo+jwrs
-         SQRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708076582; x=1708681382;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=50f7zKmZnRI9LrVHCKInlnIFfogg3BhO8mJWvUu8tZs=;
-        b=kiaw9grbXZtbkAOSxYFwkbqTjahXB+r9+bmB97u5SkNg450u2MD8z+BCOS9ZzpaXT9
-         /6H/CYHjXJs5Wbxi0AWtbL7GnYukNYe7suyaQmoOVGRxTtssUKW82WgYGQplq2JaUoQM
-         P9p71EzKvS2MvizkLHYiJ6s6acYIr/nlH4vLARZ9GCOwswhDSkeu+4M7omxkSfZ4bx9O
-         HG6L6dTMB8V3gOKmv6SPRP7+0cspmup3yHZbtt6ddeAV3sWICF3hRJldYfoKne7kOwso
-         WMaX7tGz7iV+vPAo/X7S4GW4KPt5yvmEEARGcRPKaSNnqmleC79cphzhQrKLOTRFy34s
-         9izQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXyrZ9ALSBhRasc5iCJyTEpp66R/4t87CY5JJq8JoAK+909l7rSdQ3R4B5t4/W1CCWptsAqFgPpPoiDrMnOh2DowFL1uU/sDUWDHGKG
-X-Gm-Message-State: AOJu0YzmVqkDDTLHrx54OJV5yz6uMx+xwxqbnSz3N9Ks6098SPrtLRup
-	otmX+Ft0A1MHd98rQ+DwzGBS8C2mdq6ezHzPStjVE3q+vmomo1oF/1Vn+bHfp1BVrf9T/YhJDTE
-	F
-X-Google-Smtp-Source: AGHT+IE1PPpt5WXjLMqsV+j10ORMRQbg86LRvVNhA6Wu9P6fc3uH1nDSTRPe/hwaqeL9gfQQqKyPDA==
-X-Received: by 2002:a17:906:9a8d:b0:a3d:5db0:120d with SMTP id ag13-20020a1709069a8d00b00a3d5db0120dmr3006253ejc.23.1708076582527;
-        Fri, 16 Feb 2024 01:43:02 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id br21-20020a170906d15500b00a3d64b37a35sm1380977ejb.137.2024.02.16.01.43.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 01:43:02 -0800 (PST)
-Message-ID: <df33fe7c-8732-4e30-8e9e-0c74252c8c76@linaro.org>
-Date: Fri, 16 Feb 2024 10:43:00 +0100
+	s=arc-20240116; t=1708076720; c=relaxed/simple;
+	bh=s+ABArMhG5l+/dloR8rQVw+DT5r+vfEHo5dp9ArBV20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bD8/Uh/RMY+FLJyYtyVPbL47RjPz7dC/eyOMsVdKSeWZvE22QNdWVpfYq6LVK623Z848oATKTXVv3x4Y0DMq+qqdlKUaS4yOs3OdeRvtOsRVx3heXB27eWsKsoEVXCYbDsmLndApQNcK8XIu8v+EsXhFnAwbMO/5MRPUwkpbsDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XF2rQLxl; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708076715;
+	bh=s+ABArMhG5l+/dloR8rQVw+DT5r+vfEHo5dp9ArBV20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XF2rQLxl4LqyeQoGYrD3ZNizU3vH53ayvBneykwJYAj9aKRc2v98gKAReCC1GIXVZ
+	 lg2aaRUG992gVHMxcYifPLrksJTfEAkxeT9M/sIsmGv79gvFIVRbdKkmnuHnh+ORAM
+	 8kujHyXjGt8a7bbB5vRGdRhlqBN55wFNClXMcAiuP7ioU3UncCPU/K5+0T4u7fuVGT
+	 L44p9aP2dUaBfHi9gev3LYVLnccQ4MgBTtnMCqdBYJWB08QSSAwozRNmiXnPJHLfJu
+	 fupTLx4WtweD4DHuIcFZ+Qc773nUHKlxJri1I57uI26YGMK1AVQS0WadoaH4lzLGWq
+	 kpfLK0bD5VRrg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 79CAA3780FC7;
+	Fri, 16 Feb 2024 09:45:15 +0000 (UTC)
+Date: Fri, 16 Feb 2024 10:45:14 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: nas.chung@chipsnmedia.com, jackson.lee@chipsnmedia.com,
+	mchehab@kernel.org, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, nm@ti.com, praneeth@ti.com,
+	vigneshr@ti.com, a-bhatia1@ti.com, j-luthra@ti.com, b-brnich@ti.com,
+	detheridge@ti.com, p-mantena@ti.com, vijayp@ti.com
+Subject: Re: [PATCH] media: chips-media: wave5: Add hrtimer based polling
+ support
+Message-ID: <20240216094514.lm4naivfrbiexotl@basti-XPS-13-9310>
+References: <20240125130833.1953617-1-devarsht@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/9] media: dt-bindings: Add Chameleon v3 framebuffer
-Content-Language: en-US
-To: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>,
- Rob Herring <robh@kernel.org>
-Cc: chromeos-krk-upstreaming@google.com, tzimmermann@suse.de,
- maarten.lankhorst@linux.intel.com, hverkuil-cisco@xs4all.nl,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- mchehab@kernel.org, ribalda@chromium.org, robh+dt@kernel.org,
- mripard@kernel.org, airlied@gmail.com, linux-media@vger.kernel.org,
- akpm@linux-foundation.org, dinguyen@kernel.org, devicetree@vger.kernel.org,
- daniel@ffwll.ch, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-References: <20240212131323.2162161-1-panikiel@google.com>
- <20240212131323.2162161-8-panikiel@google.com>
- <170774854498.294434.14234480400138512065.robh@kernel.org>
- <CAM5zL5qx1sw=NSWE7gv3E80MCMJ4=tvc44WDAnBrfsJ2qQB3iw@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAM5zL5qx1sw=NSWE7gv3E80MCMJ4=tvc44WDAnBrfsJ2qQB3iw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240125130833.1953617-1-devarsht@ti.com>
 
-On 12/02/2024 16:51, Paweł Anikiel wrote:
->>
->> If you already ran 'make dt_binding_check' and didn't see the above
->> error(s), then make sure 'yamllint' is installed and dt-schema is up to
->> date:
->>
->> pip3 install dtschema --upgrade
->>
->> Please check and re-submit after running the above command yourself. Note
->> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
->> your schema. However, it must be unset to test all examples with your schema.
->>
-> 
-> I was missing a '#include
-> <dt-bindings/interrupt-controller/arm-gic.h>' in the dt binding
-> example. I ran dt_binding_check after adding it and it reports no
-> errors. I will include the fix in v2.
+Hey Devarsh,
 
-Please test the patch before sending...
+@nas.chung@chipsnmedia.com or @jackson.lee@chipsnmedia.com
+Could you please run tests on the hardware with this patch and review
+this patch to make sure that this doesn't break the other hardware with
+Wave5 chips. Thanks!
 
-Best regards,
-Krzysztof
+On 25.01.2024 18:38, Devarsh Thakkar wrote:
+>Add support for starting a polling timer in case interrupt is not
 
+s/interrupt/an interrupt/
+
+>available. This helps keep the VPU functional in SoC's such as AM62A, where
+
+s/helps keep/helps to keep/
+s/SoC's/SoCs/
+
+>the hardware interrupt hookup may not be present due to an SoC errata [1].
+
+I would prefer if we do not hack the driver to adjust to SoC errata,
+instead of adding polling functionality you could also implement a fake
+IRQ chip, then the driver can still assume that an interrupt is present
+and you create a virtual interrupt source that does polling in the
+background.
+You could start by adding the fake irq-chip within the wave5 folder and
+later on that could be moved to the `drivers/irqchip/` directory (by you
+or someone else), which would be a nice addition to the Linux kernel to
+provide machines without IRQ support a way to register an interrupt.
+Please have a look at that potential solution, you potentially need to
+share the registers between the codec and the fake irq-chip in the DTS.
+
+>
+>The timer is shared across all instances of encoder and decoder and is
+
+s/encoder and decoder/encoders and decoders/
+
+>started when first instance of encoder or decoder is opened and stopped
+
+s/first/the first/
+s/encoder or decoder/an encoder or a decoder/
+
+>when last instance is closed, thus avoiding per instance polling and saving
+
+s/last/the last/
+
+>CPU bandwidth.
+>
+>hrtimer callback is called with 5ms polling interval while any of the
+
+s/hrtimer/The hrtimer/
+
+>encoder/decoder instances are running to check the interrupt status as
+>being done in irq handler.
+
+s/irq/the irq/
+
+Could you ellaborate why you choose the HRtimer for this job and why
+does it need to be a 5ms polling interval, is that a requirement of this
+specific hardware or the best constant you figured out during testing?
+
+>
+>Based on above interrupt status, use a worker thread to iterate over the
+
+s/on above interrupt status/on the interrupt status above/
+
+>interrupt status for each instance and send completion event as being done
+
+s/completion/a completion/
+
+>in irq thread function.
+
+s/irq/the irq/
+
+>
+>Parse for irq number before v4l2 device registration and if not available
+>only then, initialize hrtimer and worker thread.
+
+Thanks for the effort on the description but you do not have to write
+out word for word what the code is doing, the code should be descriptive
+enough on its own.
+More important is that you clearly describe, for example:
+- why did you choose a certain design?
+- why did you choose for the HRtimer?
+- why is the 5ms interval is important (are other intervals also valid?)
+- why did you choose to add a polling mechanism instead of possible alternatives (like for example an fake irq-chip),
+- 
+>
+>Move the core functionality of irq thread function to a separate function
+
+s/irq/the irq/
+
+>wave5_vpu_handle_irq so that it can be used by both the worker thread when
+>using polling mode and irq thread when using interrupt mode.
+
+s/irq/the irq/
+
+>
+>Protect hrtimer access and instance list with device specific mutex locks
+
+s/hrtimer/the hrtimer/
+
+>to avoid race conditions while different instances of encoder and decoder
+
+s/encoder and decoder/encoders and decoders/
+
+>are started together.
+>
+>Add module param to change polling interval for debug purpose.
+
+s/module/a module/
+s/polling/the polling/
+s/debug purpose/debugging purposes/
+
+Here again is the question, what can the user expect with different
+polling intervals? Is there a valid range of intervals?
+
+The actual implementation seems good, but I would like to first make
+sure that we take the best possible approach to this issue.
+
+Greetings,
+Sebastian
+
+>
+>[1] https://www.ti.com/lit/pdf/spruj16
+>(Ref: Section 4.2.3.3 Resets, Interrupts, and Clocks)
+>
+>Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>---
+>Test logs:
+>https://gist.github.com/devarsht/613bc8aa66e65814c8374ffb6a4f50fb
+>---
+> .../platform/chips-media/wave5/wave5-helper.c |  16 ++-
+> .../chips-media/wave5/wave5-vpu-dec.c         |  13 +-
+> .../chips-media/wave5/wave5-vpu-enc.c         |  13 +-
+> .../platform/chips-media/wave5/wave5-vpu.c    | 117 ++++++++++++------
+> .../platform/chips-media/wave5/wave5-vpuapi.h |   4 +
+> 5 files changed, 122 insertions(+), 41 deletions(-)
+>
+>diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>index 8433ecab230c..475b7628964f 100644
+>--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>@@ -52,6 +52,8 @@ int wave5_vpu_release_device(struct file *filp,
+> 			     char *name)
+> {
+> 	struct vpu_instance *inst = wave5_to_vpu_inst(filp->private_data);
+>+	struct vpu_device *dev = inst->dev;
+>+	int ret = 0;
+>
+> 	v4l2_m2m_ctx_release(inst->v4l2_fh.m2m_ctx);
+> 	if (inst->state != VPU_INST_STATE_NONE) {
+>@@ -71,8 +73,20 @@ int wave5_vpu_release_device(struct file *filp,
+> 	}
+>
+> 	wave5_cleanup_instance(inst);
+>+	if (dev->irq < 0) {
+>+		ret = mutex_lock_interruptible(&dev->dev_lock);
+>+		if (ret)
+>+			return ret;
+>
+>-	return 0;
+>+		if (list_empty(&dev->instances)) {
+>+			dev_dbg(dev->dev, "Disabling the hrtimer\n");
+>+			hrtimer_cancel(&dev->hrtimer);
+>+		}
+>+
+>+		mutex_unlock(&dev->dev_lock);
+>+	}
+>+
+>+	return ret;
+> }
+>
+> int wave5_vpu_queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq,
+>diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>index ef227af72348..c8624c681fa6 100644
+>--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>@@ -1810,7 +1810,6 @@ static int wave5_vpu_open_dec(struct file *filp)
+> 	v4l2_fh_add(&inst->v4l2_fh);
+>
+> 	INIT_LIST_HEAD(&inst->list);
+>-	list_add_tail(&inst->list, &dev->instances);
+>
+> 	inst->v4l2_m2m_dev = inst->dev->v4l2_m2m_dec_dev;
+> 	inst->v4l2_fh.m2m_ctx =
+>@@ -1867,6 +1866,18 @@ static int wave5_vpu_open_dec(struct file *filp)
+>
+> 	wave5_vdi_allocate_sram(inst->dev);
+>
+>+	ret = mutex_lock_interruptible(&dev->dev_lock);
+>+	if (ret)
+>+		goto cleanup_inst;
+>+
+>+	if (dev->irq < 0 && !hrtimer_active(&dev->hrtimer) && list_empty(&dev->instances))
+>+		hrtimer_start(&dev->hrtimer, ns_to_ktime(dev->vpu_poll_interval * NSEC_PER_MSEC),
+>+			      HRTIMER_MODE_REL_PINNED);
+>+
+>+	list_add_tail(&inst->list, &dev->instances);
+>+
+>+	mutex_unlock(&dev->dev_lock);
+>+
+> 	return 0;
+>
+> cleanup_inst:
+>diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>index f29cfa3af94a..9e88424761b6 100644
+>--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>@@ -1554,7 +1554,6 @@ static int wave5_vpu_open_enc(struct file *filp)
+> 	v4l2_fh_add(&inst->v4l2_fh);
+>
+> 	INIT_LIST_HEAD(&inst->list);
+>-	list_add_tail(&inst->list, &dev->instances);
+>
+> 	inst->v4l2_m2m_dev = inst->dev->v4l2_m2m_enc_dev;
+> 	inst->v4l2_fh.m2m_ctx =
+>@@ -1729,6 +1728,18 @@ static int wave5_vpu_open_enc(struct file *filp)
+>
+> 	wave5_vdi_allocate_sram(inst->dev);
+>
+>+	ret = mutex_lock_interruptible(&dev->dev_lock);
+>+	if (ret)
+>+		goto cleanup_inst;
+>+
+>+	if (dev->irq < 0 && !hrtimer_active(&dev->hrtimer) && list_empty(&dev->instances))
+>+		hrtimer_start(&dev->hrtimer, ns_to_ktime(dev->vpu_poll_interval * NSEC_PER_MSEC),
+>+			      HRTIMER_MODE_REL_PINNED);
+>+
+>+	list_add_tail(&inst->list, &dev->instances);
+>+
+>+	mutex_unlock(&dev->dev_lock);
+>+
+> 	return 0;
+>
+> cleanup_inst:
+>diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>index bfe4caa79cc9..968ec9baf1ef 100644
+>--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>@@ -26,6 +26,9 @@ struct wave5_match_data {
+> 	const char *fw_name;
+> };
+>
+>+static int vpu_poll_interval = 5;
+>+module_param(vpu_poll_interval, int, 0644);
+>+
+> int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned int timeout)
+> {
+> 	int ret;
+>@@ -40,7 +43,7 @@ int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned int timeout)
+> 	return 0;
+> }
+>
+>-static irqreturn_t wave5_vpu_irq_thread(int irq, void *dev_id)
+>+static void wave5_vpu_handle_irq(void *dev_id)
+> {
+> 	u32 seq_done;
+> 	u32 cmd_done;
+>@@ -48,42 +51,67 @@ static irqreturn_t wave5_vpu_irq_thread(int irq, void *dev_id)
+> 	struct vpu_instance *inst;
+> 	struct vpu_device *dev = dev_id;
+>
+>-	if (wave5_vdi_read_register(dev, W5_VPU_VPU_INT_STS)) {
+>-		irq_reason = wave5_vdi_read_register(dev, W5_VPU_VINT_REASON);
+>-		wave5_vdi_write_register(dev, W5_VPU_VINT_REASON_CLR, irq_reason);
+>-		wave5_vdi_write_register(dev, W5_VPU_VINT_CLEAR, 0x1);
+>-
+>-		list_for_each_entry(inst, &dev->instances, list) {
+>-			seq_done = wave5_vdi_read_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO);
+>-			cmd_done = wave5_vdi_read_register(dev, W5_RET_QUEUE_CMD_DONE_INST);
+>-
+>-			if (irq_reason & BIT(INT_WAVE5_INIT_SEQ) ||
+>-			    irq_reason & BIT(INT_WAVE5_ENC_SET_PARAM)) {
+>-				if (seq_done & BIT(inst->id)) {
+>-					seq_done &= ~BIT(inst->id);
+>-					wave5_vdi_write_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO,
+>-								 seq_done);
+>-					complete(&inst->irq_done);
+>-				}
+>+	irq_reason = wave5_vdi_read_register(dev, W5_VPU_VINT_REASON);
+>+	wave5_vdi_write_register(dev, W5_VPU_VINT_REASON_CLR, irq_reason);
+>+	wave5_vdi_write_register(dev, W5_VPU_VINT_CLEAR, 0x1);
+>+
+>+	list_for_each_entry(inst, &dev->instances, list) {
+>+		seq_done = wave5_vdi_read_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO);
+>+		cmd_done = wave5_vdi_read_register(dev, W5_RET_QUEUE_CMD_DONE_INST);
+>+
+>+		if (irq_reason & BIT(INT_WAVE5_INIT_SEQ) ||
+>+		    irq_reason & BIT(INT_WAVE5_ENC_SET_PARAM)) {
+>+			if (seq_done & BIT(inst->id)) {
+>+				seq_done &= ~BIT(inst->id);
+>+				wave5_vdi_write_register(dev, W5_RET_SEQ_DONE_INSTANCE_INFO,
+>+							 seq_done);
+>+				complete(&inst->irq_done);
+> 			}
+>+		}
+>
+>-			if (irq_reason & BIT(INT_WAVE5_DEC_PIC) ||
+>-			    irq_reason & BIT(INT_WAVE5_ENC_PIC)) {
+>-				if (cmd_done & BIT(inst->id)) {
+>-					cmd_done &= ~BIT(inst->id);
+>-					wave5_vdi_write_register(dev, W5_RET_QUEUE_CMD_DONE_INST,
+>-								 cmd_done);
+>-					inst->ops->finish_process(inst);
+>-				}
+>+		if (irq_reason & BIT(INT_WAVE5_DEC_PIC) ||
+>+		    irq_reason & BIT(INT_WAVE5_ENC_PIC)) {
+>+			if (cmd_done & BIT(inst->id)) {
+>+				cmd_done &= ~BIT(inst->id);
+>+				wave5_vdi_write_register(dev, W5_RET_QUEUE_CMD_DONE_INST,
+>+							 cmd_done);
+>+				inst->ops->finish_process(inst);
+> 			}
+>-
+>-			wave5_vpu_clear_interrupt(inst, irq_reason);
+> 		}
+>+
+>+		wave5_vpu_clear_interrupt(inst, irq_reason);
+> 	}
+>+}
+>+
+>+static irqreturn_t wave5_vpu_irq_thread(int irq, void *dev_id)
+>+{
+>+	struct vpu_device *dev = dev_id;
+>+
+>+	if (wave5_vdi_read_register(dev, W5_VPU_VPU_INT_STS))
+>+		wave5_vpu_handle_irq(dev);
+>
+> 	return IRQ_HANDLED;
+> }
+>
+>+static void wave5_vpu_irq_work_fn(struct kthread_work *work)
+>+{
+>+	struct vpu_device *dev = container_of(work, struct vpu_device, work);
+>+
+>+	if (wave5_vdi_read_register(dev, W5_VPU_VPU_INT_STS))
+>+		wave5_vpu_handle_irq(dev);
+>+}
+>+
+>+static enum hrtimer_restart wave5_vpu_timer_callback(struct hrtimer *timer)
+>+{
+>+	struct vpu_device *dev =
+>+			container_of(timer, struct vpu_device, hrtimer);
+>+
+>+	kthread_queue_work(dev->worker, &dev->work);
+>+	hrtimer_forward_now(timer, ns_to_ktime(vpu_poll_interval * NSEC_PER_MSEC));
+>+
+>+	return HRTIMER_RESTART;
+>+}
+>+
+> static int wave5_vpu_load_firmware(struct device *dev, const char *fw_name,
+> 				   u32 *revision)
+> {
+>@@ -209,16 +237,24 @@ static int wave5_vpu_probe(struct platform_device *pdev)
+>
+> 	dev->irq = platform_get_irq(pdev, 0);
+> 	if (dev->irq < 0) {
+>-		dev_err(&pdev->dev, "failed to get irq resource\n");
+>-		ret = -ENXIO;
+>-		goto err_enc_unreg;
+>-	}
+>-
+>-	ret = devm_request_threaded_irq(&pdev->dev, dev->irq, NULL,
+>-					wave5_vpu_irq_thread, IRQF_ONESHOT, "vpu_irq", dev);
+>-	if (ret) {
+>-		dev_err(&pdev->dev, "Register interrupt handler, fail: %d\n", ret);
+>-		goto err_enc_unreg;
+>+		dev_err(&pdev->dev, "failed to get irq resource, falling back to polling\n");
+>+		hrtimer_init(&dev->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
+>+		dev->hrtimer.function = &wave5_vpu_timer_callback;
+>+		dev->worker = kthread_create_worker(0, "vpu_irq_thread");
+>+		if (IS_ERR(dev->worker)) {
+>+			dev_err(&pdev->dev, "failed to create vpu irq worker\n");
+>+			ret = PTR_ERR(dev->worker);
+>+			goto err_vdi_release;
+>+		}
+>+		dev->vpu_poll_interval = vpu_poll_interval;
+>+		kthread_init_work(&dev->work, wave5_vpu_irq_work_fn);
+>+	} else {
+>+		ret = devm_request_threaded_irq(&pdev->dev, dev->irq, NULL,
+>+						wave5_vpu_irq_thread, IRQF_ONESHOT, "vpu_irq", dev);
+>+		if (ret) {
+>+			dev_err(&pdev->dev, "Register interrupt handler, fail: %d\n", ret);
+>+			goto err_enc_unreg;
+>+		}
+> 	}
+>
+> 	ret = wave5_vpu_load_firmware(&pdev->dev, match_data->fw_name, &fw_revision);
+>@@ -254,6 +290,11 @@ static int wave5_vpu_remove(struct platform_device *pdev)
+> {
+> 	struct vpu_device *dev = dev_get_drvdata(&pdev->dev);
+>
+>+	if (dev->irq < 0) {
+>+		kthread_destroy_worker(dev->worker);
+>+		hrtimer_cancel(&dev->hrtimer);
+>+	}
+>+
+> 	mutex_destroy(&dev->dev_lock);
+> 	mutex_destroy(&dev->hw_lock);
+> 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
+>diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>index 352f6e904e50..edc50450ddb8 100644
+>--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>@@ -756,6 +756,10 @@ struct vpu_device {
+> 	u32 product_code;
+> 	struct ida inst_ida;
+> 	struct clk_bulk_data *clks;
+>+	struct hrtimer hrtimer;
+>+	struct kthread_work work;
+>+	struct kthread_worker *worker;
+>+	int vpu_poll_interval;
+> 	int num_clks;
+> };
+>
+>-- 
+>2.34.1
+>
+>
 
