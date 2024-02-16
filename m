@@ -1,134 +1,97 @@
-Return-Path: <linux-kernel+bounces-68657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CD8857DEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:45:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B5D857DEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D659CB2479E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:45:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 191121C24C88
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:45:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA86512BE8D;
-	Fri, 16 Feb 2024 13:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kl5L6pNm"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C41212BEBB;
+	Fri, 16 Feb 2024 13:45:34 +0000 (UTC)
+Received: from sonata.ens-lyon.org (domu-toccata.ens-lyon.fr [140.77.166.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF03A1292E1;
-	Fri, 16 Feb 2024 13:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F6C12B158
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708091090; cv=none; b=KgashKEWWxeZiDLu4kAzg1vgHIbkeJgHpOh+R4ZuGxt7HZNKnmw8VE9YSZxtX2JdRSPOb7Ry0ya+QLGMEFTPZPnxEDjCurJGzrXAvHv/QcvpJejP0b4MEJZvK+wkhWqf6ApasT0qpBhZyxZvEGD/DirKDjUGmsA+G7ChrBBVtw0=
+	t=1708091133; cv=none; b=mbe0Bguq/761/M72HMzY+gdCMJwYP3NQLOqUqXQlvPztWemEJxVYgdhutMnSxQgpP8BTRJgBk0NUiyI/lmaBaPP7UVWO6FGHOSSNs4B3Ponv5lc4Ss91XGW9VbFyVeOyHWB12M36WO7zFTIJqh+xzyzN7uaaqa/roCf6ramE83o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708091090; c=relaxed/simple;
-	bh=S4L92NZefLEC20yFJLLOf9G1GvTAmeD77uKPAtDEInU=;
+	s=arc-20240116; t=1708091133; c=relaxed/simple;
+	bh=HnKyETVuwfznkWP5RdU6qtJiw6e9+UYW2nYbDUD/+9U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yyrb0g2co5kOUeTmdgra5IytzxLFn+aMZG/btiLO7Yiu/oD2XnEmeIv0XDeOR6FtjqwdpjNcI6Gcvx7ZttWaEP6jxJvFkvurzfdPSl8wJ57qE004WIxqjg200Y5nz9Ck8UguYE/bD7y7lRenX9oj04wjW2Tf9fdeElCwbMhRCuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kl5L6pNm; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-206689895bfso502027fac.1;
-        Fri, 16 Feb 2024 05:44:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708091088; x=1708695888; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=coY0/edAbFAUsr5sc75rIWJqDfxEuZndNgC2ac1TWf0=;
-        b=Kl5L6pNm8WRaBF9pMzqOOnX4Utia2gymKiQTQohl/tPrVU+lZPTxxVcriA5PybwuXU
-         MQENf3q8xWJwuN7Us9rIMpKQhyb/k5NPBXH3GoZnka0avZ9MNLqdkSGa4IzOWdiJ56yO
-         bWJwLFT2v8AwqRjBnmnFVZJip3Zx1LosA02P+iinXFC497fSjXl6+vtD60tiKZGwnIcc
-         qIZCwFUaUR53FQZdQ8hr/lxC9pp1DtucWbn4oZfxi1MTOHQ3w/faWIfcICXBGBSkxqrc
-         V6jkuPYkYwP44EQ5Sy67mHAi1Q48O434EqHBUfOaFBr6Z4rSQI9ZenrTTX6CSuCCHpgf
-         6cQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708091088; x=1708695888;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=coY0/edAbFAUsr5sc75rIWJqDfxEuZndNgC2ac1TWf0=;
-        b=obL02OJgVLIA4py66YAPqhfWNqlFDcWpGpZbsSAmHisfoTXl4Wk4nzJtWdv5ONVSJq
-         9xMFnr51j2P7JsoIUKONqR5SFgGbhz1De5YKIi4+aHlLB+8vgqk/SZt1HggNZmBRzil6
-         B5QimRf+kfvCOuUgxwZz6zh0qRqZdI24+bJlmx733i5VoP4G8C+6Pz7nZVVNDKyo4a1v
-         RzkSpxnZSbzSt9G97q2NMeznqdTLVapIx/rnv9e5TIgAw7gi7blYjSeKRjphudzMKnyM
-         pwkd4VEBDbPNuVB00pH19XYBaogNij5GWGxiKteEz+hEfbtuiYIcn3uygZdgh7EHQLZa
-         80Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCX/6h5UIzZoFe+uZhXIY9snFybnr+fVQZVtWRjYfqDn2c3Q9g7InY/tuGKEdlaM7EgBwN7fgqRHNvAc77sLVM76ZRPZNMup4XVuaUkGtU0FZ0Km2MVa3qonYVEqYdCJHpYzX9fBy93w
-X-Gm-Message-State: AOJu0YzaOpZlmtsxArc0FSPb6NOTYmM5ZUbbfxbDrHx8ODF44QL1M1BL
-	x0uwSmqjVlXAgZhAGgaTHY75D+KV7qvZYfKqKH+2XuZzOAoDNvRR
-X-Google-Smtp-Source: AGHT+IElgS92FK4m1DLWIi46UcX2f1EmeSGSn87CJJzItyfhuyEmA1PDbtcANh4MI1yqwPzl+LS7+A==
-X-Received: by 2002:a05:6871:152:b0:21a:3542:2ab5 with SMTP id z18-20020a056871015200b0021a35422ab5mr4479651oab.41.1708091087679;
-        Fri, 16 Feb 2024 05:44:47 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id m20-20020a63f614000000b005dab535fac2sm3249117pgh.90.2024.02.16.05.44.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 05:44:46 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id 3BB9C18483F4A; Fri, 16 Feb 2024 20:44:42 +0700 (WIB)
-Date: Fri, 16 Feb 2024 20:44:41 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Linux USB <linux-usb@vger.kernel.org>
-Cc: pmalani@chromium.org, jthies@google.com,
-	"Christian A. Ehrhardt" <lk@c--e.de>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 3/3] usb: typec: ucsi: Get PD revision for partner
-Message-ID: <Zc9myZ-1oE_qsSQB@archie.me>
-References: <20240209223824.622869-1-abhishekpandit@chromium.org>
- <20240209143723.v5.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LBXnCNnxlm2e5DDSeBY2jXTPiT2puAiHNNyKL3Axp9rc0OWi1Ouy38BRpF59k1EjlkYxllkEh1SzVcJv/m0rl4xL3dI7DWj52nUNjelv8J7myDmY9zr9VMpSK8yD0F2WnJ7OjfgqK1v6WaxqwRiMszSnMZKbUQG8dao93cV3PA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id AF25EA02CD;
+	Fri, 16 Feb 2024 14:45:22 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 9VEhNYFXxryf; Fri, 16 Feb 2024 14:45:22 +0100 (CET)
+Received: from begin (nat-inria-interne-52-gw-01-bso.bordeaux.inria.fr [194.199.1.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 83FFFA02B3;
+	Fri, 16 Feb 2024 14:45:22 +0100 (CET)
+Received: from samy by begin with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1rayWo-00000002MJH-0bJO;
+	Fri, 16 Feb 2024 14:45:22 +0100
+Date: Fri, 16 Feb 2024 14:45:22 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: Alexey Gladkov <legion@kernel.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [RFC PATCH v1 0/5] VT: Add ability to get font requirements
+Message-ID: <20240216134522.s6d22mljxyfd3fsx@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	Alexey Gladkov <legion@kernel.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <cover.1708011391.git.legion@kernel.org>
+ <d7743747-1ec2-4557-9f2f-4cffd77284b3@kernel.org>
+ <Zc9ijvUofv4PCLw_@example.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xmkz5NkVvM5TFQTX"
-Content-Disposition: inline
-In-Reply-To: <20240209143723.v5.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
-
-
---xmkz5NkVvM5TFQTX
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zc9ijvUofv4PCLw_@example.org>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
 
-On Fri, Feb 09, 2024 at 02:37:32PM -0800, Abhishek Pandit-Subedi wrote:
-> +	command =3D UCSI_GET_CONNECTOR_CAPABILITY | UCSI_CONNECTOR_NUMBER(con->=
-num);
-> +	ret =3D ucsi_send_command(con->ucsi, command, &con->cap, sizeof(con->ca=
-p));
-> +	if (ret < 0) {
-> +		dev_err(con->ucsi->dev, "GET_CONNECTOR_CAPABILITY failed (%d)\n", ret);
-> +		return ret;
-> +	}
+Alexey Gladkov, le ven. 16 févr. 2024 14:26:38 +0100, a ecrit:
+> On Fri, Feb 16, 2024 at 08:21:38AM +0100, Jiri Slaby wrote:
+> > On 15. 02. 24, 16:37, Alexey Gladkov wrote:
+> > > We now have KD_FONT_OP_SET_TALL, but in fact such large fonts cannot be
+> > > loaded. No console driver supports tall fonts.
+> > 
+> > I thought fbcon can, no? If not, we should likely remove all the 
+> > KD_FONT_OP_SET_TALL checks here and there.
+> 
+> I thought so too until kbd users started trying to use such fonts. A month
+> after adding KD_FONT_OP_SET_TALL, support for large fonts was turned off
+> in fbcon:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=2b09d5d364986f724f17001ccfe4126b9b43a0be
+> 
+> But I don't think we need to remove KD_FONT_OP_SET_TALL completely. Maybe
+> support for large fonts can be fixed.
 
-Did you mean that above error is raised when the connector capability
-isn't recognized?
+Some users *need* it to be fixed, because they need large fonts to be
+able to read their screen.
 
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---xmkz5NkVvM5TFQTX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZc9mxgAKCRD2uYlJVVFO
-o4zwAP4oR4MoDeAuM/4kruIg8A3QFNP39W25pV7k9DiiprHnsAD/cmXqIp4eEyzP
-g2tnAN+Z4hBZ05uI4CtQwV1FLWWM3wU=
-=oYH6
------END PGP SIGNATURE-----
-
---xmkz5NkVvM5TFQTX--
+Samuel
 
