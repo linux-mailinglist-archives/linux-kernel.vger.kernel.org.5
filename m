@@ -1,92 +1,117 @@
-Return-Path: <linux-kernel+bounces-68063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75DF857581
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:16:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A750C85758D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314571F243FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:16:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD151B23BAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8978B12E67;
-	Fri, 16 Feb 2024 05:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A3317742;
+	Fri, 16 Feb 2024 05:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ikfMUqwn"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P6/WkIuk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE1B149E0D;
-	Fri, 16 Feb 2024 05:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2B31401F;
+	Fri, 16 Feb 2024 05:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708060602; cv=none; b=JZzQZ2aTA7fCtkTlZP6FCLdNgP6OdiRFAzi/BY0ODeybgvr0vmD0vf9uxWNFyCCb+T12xAAUs9uAKPqGBceX+/zvBY+1h6RR3ee4LD5LjI//xdYWp0RNVDpUfp/WelIUzSwcMEdHuUXe9AcK1XW696HlA+2bQNzfc/2mN3OQqJA=
+	t=1708060622; cv=none; b=csvl1Ve5uR2dg6XGsX38xlw//99IXPmX+VVEUEfHXp5D7STZHICufzg6kzARK1ejHSCWucZ7uNXlBE2+spUOW98UszUzIE0zg02TQfAVx8tIUnqMjTYtsvLiYPK16Ewt0b/it4DcFxoeWJxU7zc6cAaiY07SvR6qMldidlgYCLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708060602; c=relaxed/simple;
-	bh=rkbPUj9WoAcVfyHOhHqhnbvphHLdHXFwVyZw3xLKxWA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SazVDhtujQllWkQpzKVTPo6XGUs3NY3ZqKQsW+jyspQizIH0YbETULrJQ1jrnLMSSwIwnNRNf7N/hdqY703+385UM96wGTmLcTeXH25PgnJ9yUNhgKJ/OqnouPguH6flnfE/5gAN45Mq5TQqt7gZxOZ/FkH8BhmW9axQjVJID8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ikfMUqwn; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=X0MGq7CH0jqL6zN/5YH5WmRXuWM0TxaTkyW5nWr14jo=; b=ikfMUqwndoD/ATerf3pEWG1j+S
-	4Tk9huM5XoWgvE3N38lzYf5FnCzl4pIWNdrW5An+SgMr3wairx9Q+b+bU/UQU2MdKUHeQbli1L1Yo
-	D2a44nX/b7PLfgCE8voQIC7K46hMAuyuoGfZ1Jwf0xIfCsWbyAnWbO1x4WrRJsEltOAEB6d2/2r5p
-	3OJNwE/nX7vsuuBR7NHVnB7iqIMEvZx1vYhADF1cORZJZiAPCpHzJXYp2+OQga/AyZMcesCFNbmvB
-	IAf+fuL5DsluWN0GMh1YzSyWOS3o28lL1W+8au2Z4lbqOlpf2XIpHgZVmMHbPLveEAdoRrP1rt2pi
-	2wSopX5g==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raqaT-000000016tb-2YQJ;
-	Fri, 16 Feb 2024 05:16:37 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org
-Subject: [PATCH -next] spi: spi-summary.rst: fix underline length
+	s=arc-20240116; t=1708060622; c=relaxed/simple;
+	bh=WuYpU7Tl3Hur5yBPxFGUFGTbvu6gUXpdmpQ3/MOYgP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EbOq+tEqGmdG3c/i2yqT0Zojwf8RQNWDzHeYybMROxiqyw5s7I4nm0BC8YEmHZH7naIW88BhsJUSZN1qMEq1kMwxCoUe+8zRX73M74qkhLNlFHySCPs686ghGg1qGOiJUwArYkVAWTjAJeO7O5OlsiPXwj8CW2cgquFf7ls+nkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P6/WkIuk; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708060620; x=1739596620;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WuYpU7Tl3Hur5yBPxFGUFGTbvu6gUXpdmpQ3/MOYgP8=;
+  b=P6/WkIukM1WMIcrK5jB/PJtlx3+pm40IBnHV1UZIrCuWbqfQpwuSAZeo
+   ZI1bhFLCqHeHgJiDRd5fjcAEv9egOJgYkGU7U/mRI3y5SA39b7Ylf18fL
+   1/IMlaON17vpu6azAqozSp9CgAML7JX2Gn+/b4LfCGPe+iVfkoIDk8pnk
+   bojIgfceUdMy4WkS+BL7/HtWOXLxkEv6/OhNZPxaoR8t14ZE7upc+LPu1
+   bW+NAlbjpAnidW52/HD4Xi8otYAkyb+xoeXtHTLhAMcnhIpRihKrKEuDA
+   Eepu5TLZh3Mo9v+lPmbBsVB4UcOtdqhBp7Wwn8JISETI2c/JPmZ7LlF0S
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5149345"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="5149345"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 21:16:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="4063888"
+Received: from lvngo-mobl1.amr.corp.intel.com (HELO vcostago-mobl3.intel.com) ([10.125.17.186])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 21:16:57 -0800
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To: brauner@kernel.org,
+	amir73il@gmail.com,
+	hu1.chen@intel.com
+Cc: miklos@szeredi.hu,
+	malini.bhandaru@intel.com,
+	tim.c.chen@intel.com,
+	mikko.ylinen@intel.com,
+	lizhen.you@intel.com,
+	linux-unionfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Subject: [RFC v3 2/5] cleanup: Fix discarded const warning when defining guard
 Date: Thu, 15 Feb 2024 21:16:37 -0800
-Message-ID: <20240216051637.10920-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+Message-ID: <20240216051640.197378-3-vinicius.gomes@intel.com>
+X-Mailer: git-send-email 2.43.1
+In-Reply-To: <20240216051640.197378-1-vinicius.gomes@intel.com>
+References: <20240216051640.197378-1-vinicius.gomes@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The change to use "target" requires an underline to be extended by
-one more character to fix a documentation build warning:
+When defining guards for const types the void* return implicitly
+discards the const modifier. Be explicit about it.
 
-  Documentation/spi/spi-summary.rst:274: WARNING: Title underline too short.
-  Declare target Devices
-  ^^^^^^^^^^^^^^^^^^^^^
+Compiler warning (gcc 13.2.1):
 
-Fixes: hash ("spi: Update the "master/slave" terminology in documentation")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Dhruva Gole <d-gole@ti.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org
+/include/linux/cleanup.h:154:18: warning: return discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+  154 |         { return *_T; }
+      |                  ^~~
+/include/linux/cred.h:193:1: note: in expansion of macro ‘DEFINE_GUARD’
+  193 | DEFINE_GUARD(cred, const struct cred *, _T = override_creds_light(_T),
+      | ^~~~~~~~~~~~
+
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 ---
- Documentation/spi/spi-summary.rst |    2 +-
+ include/linux/cleanup.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -- a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
---- a/Documentation/spi/spi-summary.rst
-+++ b/Documentation/spi/spi-summary.rst
-@@ -271,7 +271,7 @@ an external clock, where another derives
- settings of some master clock.
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 085482ef46c8..c0347eb137a5 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -151,7 +151,7 @@ static inline class_##_name##_t class_##_name##ext##_constructor(_init_args) \
+ #define DEFINE_GUARD(_name, _type, _lock, _unlock) \
+ 	DEFINE_CLASS(_name, _type, if (_T) { _unlock; }, ({ _lock; _T; }), _type _T); \
+ 	static inline void * class_##_name##_lock_ptr(class_##_name##_t *_T) \
+-	{ return *_T; }
++	{ return (void *)*_T; }
  
- Declare target Devices
--^^^^^^^^^^^^^^^^^^^^^
-+^^^^^^^^^^^^^^^^^^^^^^
- 
- The second kind of information is a list of what SPI target devices exist
- on the target board, often with some board-specific data needed for the
+ #define DEFINE_GUARD_COND(_name, _ext, _condlock) \
+ 	EXTEND_CLASS(_name, _ext, \
+-- 
+2.43.1
+
 
