@@ -1,139 +1,164 @@
-Return-Path: <linux-kernel+bounces-69358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594308587D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D4AE8587D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6FC1C23313
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:17:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 363FE1C22B70
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EAFE146904;
-	Fri, 16 Feb 2024 21:16:58 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C56DF145B03;
+	Fri, 16 Feb 2024 21:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="g1kLTSFU"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5F11420DE;
-	Fri, 16 Feb 2024 21:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E17C412BEA5;
+	Fri, 16 Feb 2024 21:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708118218; cv=none; b=p62i/zXkcnYD+MmAlLG9DOfN3KmIP8BMGMPWqhDN9ukaXG8UDTySEldjBFKRRIG/MCRLggY/wq0QeE83nM1YgSBXyLOQFjQQC2Kagm8s0f4SK9RNefYmgiNYvs8WTOjHZ11+6bvd88t6owt3qFherhLaxWJZsuA5l/Or+szkz0I=
+	t=1708118219; cv=none; b=jhiXOGf/4MFkMfujMs7IGerutgBlTg4ik74n9Utcv2RpWFY84aIfuZuIgLFeE5XgC+p8u04btAbrmXCgy/qrpZc9m7ajaFpMnwudaHRkEOhacUrmxrwgGuWcqyYeuIjoJiuAjgpc0KN7XWVMtYgM6vzWuvUTZ5pmXgBe6JUbkM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708118218; c=relaxed/simple;
-	bh=ilUd2XEnYNcfkPcVbpE92eytf80u0600eDPMHH5G6bY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nh9kKxaPcUSC8+N8eyO4e1LMnM7hXSH9TgylfhvukioPqF0D0MYH9B5JTF9dN1IZismoTZpdR5fZcp02DoaZSyZGvKAzWAIpSGnDMtsVTmEL0zZUhwf9e6v0EylOlISpPYPjHp2+jzIUdCVgDMJUsmn3h+bTV1vdwmAuUwucPx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 0A4F987249;
-	Fri, 16 Feb 2024 22:16:47 +0100 (CET)
-From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Fri, 16 Feb 2024 22:15:44 +0100
-Subject: [PATCH v2 2/2] leds: expresswire: don't depend on NEW_LEDS
+	s=arc-20240116; t=1708118219; c=relaxed/simple;
+	bh=CfkJOwc768uqlPsNwBarTmKVFwEcec7Zu4eQPfcuDKY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QfKe8Dt6l9+h68A6oIwHnQSzj94U1jSLnLjOpax3hfM+Eb7KkVO5M5hO4Gc+Ilt52KztLRBVvlxYifw2EOGfUARtC8IA1YFhFdG1vWhgG86UscazfSEk2qJTuy81K5a2MnMIxDKA7OqdtStQpkY+AZ1D5vt5bo4j+wVU7+/W5d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=g1kLTSFU; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C4BCF120005;
+	Sat, 17 Feb 2024 00:16:39 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C4BCF120005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1708118199;
+	bh=GEWIYujsIGK1qBJth7fHLRLKuwS+uxfDCkWZ+vejPIE=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=g1kLTSFU/u0PFhAK9lpAHIYHQ6fCHKPgC64MEZ5lIh/EsphXaQCQnFtUVl4TtrH9H
+	 92t13h7IEbtsOhr6Z0iIbjLy8fgLW6JOXC4CWxodvLsZOFIUkeUSf/ot8vkJW6CAZv
+	 oOZGN1v0byMaOabycadNHweKo95a0pbmK/3VdjbAImaEtx7suu3fd36DC08NGALWT0
+	 b2hVCjKiX9XjUQeZo9FGY/LJdEJ4wzEu9qYAUhjsu7UpgHxlRT2q/70NO7XWmlOtiM
+	 /2fSTVC/znuEqLELw+r00EExbmhM5f/ZTLu8snobgRRxEmuwDDPWGVSwUZ/9PMmbvN
+	 noWr4Ki9EN3UQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sat, 17 Feb 2024 00:16:39 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 17 Feb
+ 2024 00:16:39 +0300
+Date: Sat, 17 Feb 2024 00:16:39 +0300
+From: Evgeny Bachinin <eabachinin@salutedevices.com>
+To: Viacheslav Bocharov <adeep@lexina.in>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
+	<jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 3/5] firmware: meson_sm: move common definitions to
+ header file
+Message-ID: <7zhsafmokydl3fxtfsjjnhizq6tidxsuefqcemsqqwqdje6m4p@gxfz3ajr76mv>
+References: <20231122125643.1717160-1-adeep@lexina.in>
+ <20231122125643.1717160-4-adeep@lexina.in>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240216-expresswire-deps-v2-2-8be59c4a75f5@skole.hr>
-References: <20240216-expresswire-deps-v2-0-8be59c4a75f5@skole.hr>
-In-Reply-To: <20240216-expresswire-deps-v2-0-8be59c4a75f5@skole.hr>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, Hans de Goede <hdegoede@redhat.com>, 
- Jianhua Lu <lujianhua000@gmail.com>, 
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Helge Deller <deller@gmx.de>, Jingoo Han <jingoohan1@gmail.com>, 
- Karel Balej <balejk@matfyz.cz>, dri-devel@lists.freedesktop.org, 
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-leds@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
- kernel test robot <lkp@intel.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2063;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=ilUd2XEnYNcfkPcVbpE92eytf80u0600eDPMHH5G6bY=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlz9CFbQMadin7Zla/M2jnk+iQ4GhiLeNoguKar
- l1fhos+V66JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZc/QhQAKCRCaEZ6wQi2W
- 4e5nD/9KEaP/IJ5aCnN9dT5oMviYaX+wYXZI5R60COC8fWdFX0HrlrZL8u44u4GR1W5TgbNFsdL
- Z3NNqjzgV84k0a5fNIslVFCKi4GUCWrj4xaA+6vuN+iBw+e7fls5IN1wqHWqnmpjLqmC1tkT+Tb
- 7SGnrwm3P0lUkZthiAX3Ox1fmKMBJfDSmT3NntRlLbO8pcjylfNOWnYOKvMMtIVxJvmFrMSl6Iy
- eqq/wa1RJpN+15orAfXTU1OB5/NuPseaIoN9FvWuyX26LV0oEHJJ1dYLwWCZ+aUSEtj8FFCtMyP
- H7VVrIW8jrD18Hv+KCog8JJcOZ1PCTDaA/U/M7GhMJY9lMHDu1U/ekxbgfZzDWUjTqi2ebUA9MU
- 7U1NwcqfQ5hlDykSBzKZbLxbxrWQXB05miTWlE55+PAiz+t+k9oVMno8wlqpCmaUdHZvg30+kL8
- KhodxUneOoU7fmTz9uWxqqbYa064GnK0Pv13fGP9121TIrxtx7Zpghp7RcffeQU0YiYhNJfNMDO
- G9oa58a0t0W589NGvH64zFZDjVMABnmuAMKQ5aiS5e3O/6QS3EOa7sIFDbQfwP8wKZDtoEVF44d
- Eo7lxKkX8sAzs9Pdqd5BCsqPEdI6MVhOKuXW9Rt4zyF/CzrIJdqgAguBTX1jy3nyNl5dzzKCxPe
- 690wlyjR4kIHKgA==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231122125643.1717160-4-adeep@lexina.in>
+User-Agent: NeoMutt/20231006
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183517 [Feb 16 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: eabachinin@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/16 20:10:00 #23642199
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-The ExpressWire library does not depend on NEW_LEDS and selecting it
-from a subsystem other than LEDs may cause Kconfig warnings:
+On Wed, Nov 22, 2023 at 03:56:41PM +0300, Viacheslav Bocharov wrote:
+> Move SM_CHIPID_* constants from firmware meson sm driver to
+> header file.
+> 
+> Signed-off-by: Viacheslav Bocharov <adeep@lexina.in>
+> ---
+>  drivers/firmware/meson/meson_sm.c       | 4 ----
+>  include/linux/firmware/meson/meson_sm.h | 4 ++++
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/firmware/meson/meson_sm.c b/drivers/firmware/meson/meson_sm.c
+> index 402851ed4ac0..96e50811336f 100644
+> --- a/drivers/firmware/meson/meson_sm.c
+> +++ b/drivers/firmware/meson/meson_sm.c
+> @@ -240,10 +240,6 @@ struct meson_sm_firmware *meson_sm_get(struct device_node *sm_node)
+>  }
+>  EXPORT_SYMBOL_GPL(meson_sm_get);
+>  
+> -#define SM_CHIP_ID_LENGTH	119
+> -#define SM_CHIP_ID_OFFSET	4
+> -#define SM_CHIP_ID_SIZE		12
+> -
+>  static ssize_t serial_show(struct device *dev, struct device_attribute *attr,
+>  			 char *buf)
+>  {
+> diff --git a/include/linux/firmware/meson/meson_sm.h b/include/linux/firmware/meson/meson_sm.h
+> index 8eaf8922ab02..f62acd2bf52a 100644
+> --- a/include/linux/firmware/meson/meson_sm.h
+> +++ b/include/linux/firmware/meson/meson_sm.h
+> @@ -7,6 +7,10 @@
+>  #ifndef _MESON_SM_FW_H_
+>  #define _MESON_SM_FW_H_
+>  
+> +#define SM_CHIP_ID_LENGTH	119
 
-WARNING: unmet direct dependencies detected for LEDS_EXPRESSWIRE
-  Depends on [n]: NEW_LEDS [=n] && GPIOLIB [=y]
-  Selected by [y]:
-  - BACKLIGHT_KTD2801 [=y] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE [=y]
+Does anybody know why this value is 119 bytes?
+if in-shmem data, arrived from BL31, contains only up to 20 bytes
+(in case of chipID v2):
++-----------+---------+---------------------------------+
+| chipID ver|  cpu_id |        12b-serial               |
+|  4 bytes  | 4 bytes |(per particular die unique data) |
++-----------+---------+---------------------------------+
 
-Move it out of the "if NEW_LEDS" block to allow selection from other
-subsystems (in particular backlight) without raising this warning.
+> +#define SM_CHIP_ID_OFFSET	4
+> +#define SM_CHIP_ID_SIZE		12
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Closes: https://lore.kernel.org/20240212111819.936815-1-arnd@kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202402161410.IG9I4odj-lkp@intel.com/
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Fixes: 25ae5f5f4168 ("leds: Introduce ExpressWire library")
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
-Changes in v2:
-- Change Link: to Closes: to silence checkpatch
-- Add kernel test robot's error report
----
- drivers/leds/Kconfig | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+It seems that either the value (12) is incorrect or the current naming
+is misleading. This is because the chipID is 16 bytes. Of course,
+likely the SoC serial was meant here...
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 52328d295b4e..66998b938ed3 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -6,6 +6,12 @@ config LEDS_GPIO_REGISTER
- 	  As this function is used by arch code it must not be compiled as a
- 	  module.
- 
-+# This library does not depend on NEW_LEDS and must be independent so it can be
-+# selected from other subsystems (specifically backlight).
-+config LEDS_EXPRESSWIRE
-+	bool
-+	depends on GPIOLIB
-+
- menuconfig NEW_LEDS
- 	bool "LED Support"
- 	help
-@@ -186,10 +192,6 @@ config LEDS_EL15203000
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called leds-el15203000.
- 
--config LEDS_EXPRESSWIRE
--	bool
--	depends on GPIOLIB
--
- config LEDS_TURRIS_OMNIA
- 	tristate "LED support for CZ.NIC's Turris Omnia"
- 	depends on LEDS_CLASS_MULTICOLOR
+Furthermore, it appears that SM_CHIP_ID_SIZE is an unused symbol. It
+has been unused since its creation in
+0789724f86a5 ('firmware: meson_sm: Add serial number sysfs entry')
+
+> +
+>  enum {
+>  	SM_EFUSE_READ,
+>  	SM_EFUSE_WRITE,
+> -- 
+> 2.34.1
+> 
+> 
 
 -- 
-2.43.1
-
-
+Best Regards,
+Evgeny Bachinin
 
